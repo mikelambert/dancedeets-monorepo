@@ -50,7 +50,7 @@ import type {
   NavigationSceneRendererProps,
 } from 'NavigationTypeDefinition';
 import {
-  EventSignupsView
+  EventSignupsView,
 } from '../event_signups/views';
 import * as RemoteConfig from '../remoteConfig';
 
@@ -122,12 +122,13 @@ setDefaultState('EVENT_SIGNUPS_NAV', { key: 'EventSignups', title: 'Battle Signu
 
 class GradientTabBar extends React.Component {
   render() {
-    return <LinearGradient
+    return (<LinearGradient
       start={[0.0, 0.0]} end={[0.0, 1]}
       colors={[gradientTop, gradientBottom]}
-      style={this.props.style}>
+      style={this.props.style}
+    >
       {this.props.children}
-    </LinearGradient>;
+    </LinearGradient>);
   }
 }
 
@@ -136,47 +137,47 @@ class _EventView extends React.Component {
     const { scene } = this.props.sceneProps;
     const { route } = scene;
     switch (route.key) {
-    case 'EventList':
-      return <EventListContainer
-        onEventSelected={(event) => {
-          trackWithEvent('View Event', event);
-          this.props.navigatable.onNavigate({key: 'EventView', title: event.name, event: event});
-        }}
-        onAddEventClicked={(source) => {
-          track('Add Event', {source: source});
-          this.props.openAddEvent(this.props);
-        }}
-      />;
-    case 'EventView':
-      return <EventPager
-        onEventNavigated={(event)=> {
-          trackWithEvent('View Event', event);
-          this.props.navigatable.onSwap('EventView', {key: 'EventView', title: event.name, event: event});
-        }}
-        onFlyerSelected={(event)=> {
-          trackWithEvent('View Flyer', event);
-          this.props.navigatable.onNavigate({
-            key: 'FlyerView',
-            title: this.props.intl.formatMessage(messages.viewFlyer),
-            image: event.picture.source,
-            width: event.picture.width,
-            height: event.picture.height,
-          });
-        }}
-        selectedEvent={route.event}
-      />;
-    case 'FlyerView':
-      return <ZoomableImage
-        url={route.image}
-        width={route.width}
-        height={route.height}
-      />;
-    case 'AddEvent':
-      return <AddEvents />;
+      case 'EventList':
+        return (<EventListContainer
+          onEventSelected={(event) => {
+            trackWithEvent('View Event', event);
+            this.props.navigatable.onNavigate({ key: 'EventView', title: event.name, event });
+          }}
+          onAddEventClicked={(source) => {
+            track('Add Event', { source });
+            this.props.openAddEvent(this.props);
+          }}
+        />);
+      case 'EventView':
+        return (<EventPager
+          onEventNavigated={(event) => {
+            trackWithEvent('View Event', event);
+            this.props.navigatable.onSwap('EventView', { key: 'EventView', title: event.name, event });
+          }}
+          onFlyerSelected={(event) => {
+            trackWithEvent('View Flyer', event);
+            this.props.navigatable.onNavigate({
+              key: 'FlyerView',
+              title: this.props.intl.formatMessage(messages.viewFlyer),
+              image: event.picture.source,
+              width: event.picture.width,
+              height: event.picture.height,
+            });
+          }}
+          selectedEvent={route.event}
+        />);
+      case 'FlyerView':
+        return (<ZoomableImage
+          url={route.image}
+          width={route.width}
+          height={route.height}
+        />);
+      case 'AddEvent':
+        return <AddEvents />;
     }
   }
 }
-const EventView =  connect(
+const EventView = connect(
   state => ({
     user: state.user.userData,
   }),
@@ -185,7 +186,7 @@ const EventView =  connect(
       if (!props.user && !await canGetValidLoginFor(props.intl.formatMessage(messages.featureAddingEvents), props.intl, dispatch)) {
         return;
       }
-      props.navigatable.onNavigate({key: 'AddEvent', title: props.intl.formatMessage(messages.addEvent)});
+      props.navigatable.onNavigate({ key: 'AddEvent', title: props.intl.formatMessage(messages.addEvent) });
     },
   }),
 )(injectIntl(_EventView));
@@ -195,30 +196,30 @@ class _LearnView extends React.Component {
     const { scene } = this.props.sceneProps;
     const { route } = scene;
     switch (route.key) {
-    case 'TutorialStyles':
-      return <PlaylistStylesView
-        onSelected={(style) => {
-          track('Tutorial Style Selected', {
-            tutorialStyle: style.title,
-          });
-          this.props.navigatable.onNavigate({key: 'TutorialList', title: this.props.intl.formatMessage(messages.styleTutorialTitle, {style: style.title}), tutorials: style.tutorials});
-        }}
-        />;
-    case 'TutorialList':
-      return <PlaylistListView
-        playlists={route.tutorials}
-        onSelected={(playlist) => {
-          track('Tutorial Selected', {
-            tutorialName: playlist.title,
-            tutorialStyle: playlist.style,
-          });
-          this.props.navigatable.onNavigate({key: 'Tutorial', title: playlist.title, tutorial: playlist});
-        }}
-        />;
-    case 'Tutorial':
-      return <PlaylistView
-        playlist={route.tutorial}
-        />;
+      case 'TutorialStyles':
+        return (<PlaylistStylesView
+          onSelected={(style) => {
+            track('Tutorial Style Selected', {
+              tutorialStyle: style.title,
+            });
+            this.props.navigatable.onNavigate({ key: 'TutorialList', title: this.props.intl.formatMessage(messages.styleTutorialTitle, { style: style.title }), tutorials: style.tutorials });
+          }}
+        />);
+      case 'TutorialList':
+        return (<PlaylistListView
+          playlists={route.tutorials}
+          onSelected={(playlist) => {
+            track('Tutorial Selected', {
+              tutorialName: playlist.title,
+              tutorialStyle: playlist.style,
+            });
+            this.props.navigatable.onNavigate({ key: 'Tutorial', title: playlist.title, tutorial: playlist });
+          }}
+        />);
+      case 'Tutorial':
+        return (<PlaylistView
+          playlist={route.tutorial}
+        />);
     }
   }
 }
@@ -229,15 +230,15 @@ class _AboutView extends React.Component {
     const { scene } = this.props.sceneProps;
     const { route } = scene;
     switch (route.key) {
-    case 'About':
-      return <ProfilePage
-        onNotificationPreferences={() => {
-          track('Open Notification Preferences');
-          this.props.navigatable.onNavigate({key: 'NotificationPreferences', title: this.props.intl.formatMessage(messages.notificationsTitle)});
-        }}
-        />;
-    case 'NotificationPreferences':
-      return <NotificationPreferences>Hey</NotificationPreferences>;
+      case 'About':
+        return (<ProfilePage
+          onNotificationPreferences={() => {
+            track('Open Notification Preferences');
+            this.props.navigatable.onNavigate({ key: 'NotificationPreferences', title: this.props.intl.formatMessage(messages.notificationsTitle) });
+          }}
+        />);
+      case 'NotificationPreferences':
+        return <NotificationPreferences>Hey</NotificationPreferences>;
     }
   }
 }
@@ -255,7 +256,7 @@ class _TabbedAppView extends React.Component {
 
   constructor(props) {
     super(props);
-    this.state = {event_signup_user_ids: []};
+    this.state = { event_signup_user_ids: [] };
   }
 
   componentWillMount() {
@@ -264,17 +265,17 @@ class _TabbedAppView extends React.Component {
 
   async loadWhitelist() {
     const event_signup_user_ids = await RemoteConfig.get('event_signup_user_ids');
-    this.setState({event_signup_user_ids});
+    this.setState({ event_signup_user_ids });
   }
 
   icon(source) {
-    return <Image source={source} style={styles.icon}/>;
+    return <Image source={source} style={styles.icon} />;
   }
 
   render() {
     let extraTabs = null;
     if (this.props.user && this.state.event_signup_user_ids.includes(this.props.user.profile.id)) {
-      extraTabs = <TabNavigator.Item
+      extraTabs = (<TabNavigator.Item
         selected={this.props.selectedTab === 'event_signups'}
         title={'Event Signups'}
         titleStyle={styles.titleStyle}
@@ -285,23 +286,24 @@ class _TabbedAppView extends React.Component {
           if (this.props.selectedTab === 'event_signups') {
             this.event_signups_navigator.dispatchProps.goHome();
           } else {
-            track('Tab Selected', {Tab: 'Event Signups'});
+            track('Tab Selected', { Tab: 'Event Signups' });
             this.props.selectTab('event_signups');
           }
-        }}>
+        }}
+      >
         <EventSignupsNavigator
-          ref={(x) => {this.event_signups_navigator = x;}}
+          ref={(x) => { this.event_signups_navigator = x; }}
           renderScene={(sceneProps: NavigationSceneRendererProps, nav: Navigatable) =>
             <EventSignupsView sceneProps={sceneProps} navigatable={nav} />
           }
-          />
-      </TabNavigator.Item>;
+        />
+      </TabNavigator.Item>);
     }
-    return <TabNavigator
-        tabBarStyle={styles.tabBarStyle}
-        sceneStyle={styles.tabBarSceneStyle}
-        tabBarClass={GradientTabBar}
-      >
+    return (<TabNavigator
+      tabBarStyle={styles.tabBarStyle}
+      sceneStyle={styles.tabBarSceneStyle}
+      tabBarClass={GradientTabBar}
+    >
       <TabNavigator.Item
         selected={this.props.selectedTab === 'events'}
         title={this.props.intl.formatMessage(messages.events)}
@@ -313,16 +315,17 @@ class _TabbedAppView extends React.Component {
           if (this.props.selectedTab === 'events') {
             this.event_navigator.dispatchProps.goHome();
           } else {
-            track('Tab Selected', {Tab: 'Events'});
+            track('Tab Selected', { Tab: 'Events' });
             this.props.selectTab('events');
           }
-        }}>
+        }}
+      >
         <EventNavigator
-          ref={(x) => {this.event_navigator = x;}}
+          ref={(x) => { this.event_navigator = x; }}
           renderScene={(sceneProps: NavigationSceneRendererProps, nav: Navigatable) =>
             <EventView sceneProps={sceneProps} navigatable={nav} />
           }
-          />
+        />
       </TabNavigator.Item>
       <TabNavigator.Item
         selected={this.props.selectedTab === 'learn'}
@@ -335,17 +338,18 @@ class _TabbedAppView extends React.Component {
           if (this.props.selectedTab === 'learn') {
             this.learn_navigator.dispatchProps.goHome();
           } else {
-            track('Tab Selected', {Tab: 'Learn'});
+            track('Tab Selected', { Tab: 'Learn' });
             this.props.selectTab('learn');
-            //this.setState({ selectedTab: 'learn' });
+            // this.setState({ selectedTab: 'learn' });
           }
-        }}>
+        }}
+      >
         <LearnNavigator
-          ref={(x) => {this.learn_navigator = x;}}
+          ref={(x) => { this.learn_navigator = x; }}
           renderScene={(sceneProps: NavigationSceneRendererProps, nav: Navigatable) =>
             <LearnView sceneProps={sceneProps} navigatable={nav} />
           }
-          />
+        />
       </TabNavigator.Item>
       <TabNavigator.Item
         selected={this.props.selectedTab === 'about'}
@@ -356,19 +360,20 @@ class _TabbedAppView extends React.Component {
         renderSelectedIcon={() => this.icon(require('../containers/icons/profile-highlighted.png'))}
         onPress={() => {
           if (this.props.selectedTab !== 'about') {
-            track('Tab Selected', {Tab: 'About'});
+            track('Tab Selected', { Tab: 'About' });
             this.props.selectTab('about');
           }
-        }}>
+        }}
+      >
         <AboutNavigator
-          ref={(x) => {this.about_navigator = x;}}
+          ref={(x) => { this.about_navigator = x; }}
           renderScene={(sceneProps: NavigationSceneRendererProps, nav: Navigatable) =>
             <AboutView sceneProps={sceneProps} navigatable={nav} />
           }
         />
       </TabNavigator.Item>
       {extraTabs}
-    </TabNavigator>;
+    </TabNavigator>);
   }
 }
 export default connect(
@@ -377,11 +382,11 @@ export default connect(
     selectedTab: state.mainTabs.selectedTab,
   }),
   dispatch => ({
-    selectTab: (x) => dispatch(selectTab(x)),
+    selectTab: x => dispatch(selectTab(x)),
   }),
 )(injectIntl(_TabbedAppView));
 
-var tabBarHeight = semiNormalize(52);
+const tabBarHeight = semiNormalize(52);
 
 let styles = StyleSheet.create({
   icon: {

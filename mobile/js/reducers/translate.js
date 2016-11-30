@@ -4,7 +4,7 @@
  * @flow
  */
 
-import type {Action} from '../actions/types';
+import type { Action } from '../actions/types';
 
 export type TranslatedEvent = {
   visible: boolean;

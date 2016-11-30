@@ -45,7 +45,7 @@ class _LoginButtonWithAlternate extends React.Component {
 
   constructor(props) {
     super(props);
-    this.state = {enabled: true};
+    this.state = { enabled: true };
   }
 
   render() {
@@ -55,9 +55,9 @@ class _LoginButtonWithAlternate extends React.Component {
           icon={require('./icons/facebook.png')}
           caption={this.props.intl.formatMessage(messages.loginButton)}
           onPress={async () => {
-            this.setState({enabled: false});
+            this.setState({ enabled: false });
             await this.props.onLogin();
-            this.setState({enabled: true});
+            this.setState({ enabled: true });
           }}
           enabled={this.state.enabled}
           textStyle={styles.buttonStyle}

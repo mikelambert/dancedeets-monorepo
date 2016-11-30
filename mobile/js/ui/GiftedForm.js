@@ -45,7 +45,7 @@ export class MyGiftedSubmitWidget extends GiftedForm.SubmitWidget {
 
 export class MyGiftedForm extends React.Component {
   render() {
-    return <Card>
+    return (<Card>
       <GiftedForm
         scrollEnabled={false}
         formName="signupForm" // GiftedForm instances that use the same name will also share the same states
@@ -53,7 +53,7 @@ export class MyGiftedForm extends React.Component {
         clearOnClose={false} // delete the values of the form when unmounted
 
         formStyles={{
-          containerView: {backgroundColor: 'transparent'},
+          containerView: { backgroundColor: 'transparent' },
           TextInputWidget: {
             rowContainer: {
               backgroundColor: 'transparent',
@@ -67,8 +67,8 @@ export class MyGiftedForm extends React.Component {
             },
             textInputTitleInline: defaultFont,
             textInputTitle: defaultFont,
-            textInput: Object.assign({}, defaultFont, {backgroundColor: purpleColors[1]}),
-            textInputInline: Object.assign({}, defaultFont, {backgroundColor: purpleColors[1]}),
+            textInput: Object.assign({}, defaultFont, { backgroundColor: purpleColors[1] }),
+            textInputInline: Object.assign({}, defaultFont, { backgroundColor: purpleColors[1] }),
           },
           SubmitWidget: {
             submitButton: {
@@ -78,6 +78,6 @@ export class MyGiftedForm extends React.Component {
         }}
         {...this.props}
       />
-    </Card>;
+    </Card>);
   }
 }

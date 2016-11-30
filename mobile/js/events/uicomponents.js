@@ -132,17 +132,17 @@ const messages = defineMessages({
   attending: {
     id: 'event.rsvp.attending',
     defaultMessage: 'I\'ll be there!',
-    description: 'Clickable text for when a user wants to attend an event'
+    description: 'Clickable text for when a user wants to attend an event',
   },
   maybe: {
     id: 'event.rsvp.maybe',
     defaultMessage: 'I might flake…',
-    description: 'Clickable text for when a user wants to attend an event'
+    description: 'Clickable text for when a user wants to attend an event',
   },
   declined: {
     id: 'event.rsvp.declined',
     defaultMessage: 'No thanks.',
-    description: 'Clickable text for when a user wants to attend an event'
+    description: 'Clickable text for when a user wants to attend an event',
   },
   milesAway: {
     id: 'distance.miles',
@@ -167,7 +167,7 @@ class SubEventLine extends React.Component {
       <HorizontalView style={eventStyles.detailLine}>
         <Image key="image" source={this.props.icon} style={eventStyles.detailIcon} />
         <View style={eventStyles.detailTextContainer}>
-        {this.props.children}
+          {this.props.children}
         </View>
       </HorizontalView>
     );
@@ -177,11 +177,11 @@ class SubEventLine extends React.Component {
 class EventCategories extends React.Component {
   render() {
     if (this.props.categories.length > 0) {
-      return <SubEventLine icon={require('./images/categories.png')}>
+      return (<SubEventLine icon={require('./images/categories.png')}>
         <Text
           style={eventStyles.detailText}
-          >{this.props.categories.slice(0,8).join(', ')}</Text>
-      </SubEventLine>;
+        >{this.props.categories.slice(0, 8).join(', ')}</Text>
+      </SubEventLine>);
     } else {
       return null;
     }
@@ -190,7 +190,7 @@ class EventCategories extends React.Component {
 
 class _AddToCalendarButton extends React.Component {
   render() {
-    return <Button
+    return (<Button
       style={this.props.style}
       icon={require('./images/calendar.png')}
       caption={this.props.intl.formatMessage(messages.addToCalendar)}
@@ -202,7 +202,7 @@ class _AddToCalendarButton extends React.Component {
           AlertIOS.alert(this.props.intl.formatMessage(messages.addedToCalendar));
         }
       }}
-    />;
+    />);
   }
 }
 const AddToCalendarButton = injectIntl(_AddToCalendarButton);
@@ -212,12 +212,12 @@ class _EventDateTime extends React.Component {
 
   render() {
     const formattedText = formatStartEnd(this.props.start, this.props.end, this.props.intl);
-    return <SubEventLine icon={require('./images/datetime.png')}>
-      <View style={{alignItems: 'flex-start'}}>
+    return (<SubEventLine icon={require('./images/datetime.png')}>
+      <View style={{ alignItems: 'flex-start' }}>
         <Text style={[eventStyles.detailText, eventStyles.rowDateTime]}>{formattedText}</Text>
         {this.props.children}
       </View>
-    </SubEventLine>;
+    </SubEventLine>);
   }
   componentDidMount() {
     // refresh our 'relative start offset' every minute
@@ -233,22 +233,22 @@ function formatDistance(intl, distanceKm) {
   const useKm = Locale.constants().usesMetricSystem;
   if (useKm) {
     const km = Math.round(distanceKm);
-    return intl.formatMessage(messages.kmAway, {km});
+    return intl.formatMessage(messages.kmAway, { km });
   } else {
     const miles = Math.round(distanceKm * 0.621371);
-    return intl.formatMessage(messages.milesAway, {miles});
+    return intl.formatMessage(messages.milesAway, { miles });
   }
 }
 
 class _EventVenue extends React.Component {
   render() {
-    var components = [];
+    const components = [];
     if (this.props.venue.name) {
       components.push(<Autolink
         key="line1"
         style={[eventStyles.detailText, this.props.style]}
         text={this.props.venue.name}
-        />);
+      />);
     }
     if (this.props.venue.address) {
       components.push(<Text
@@ -265,10 +265,10 @@ class _EventVenue extends React.Component {
       const km = geolib.getDistance(this.props.currentPosition.coords, this.props.venue.geocode) / 1000;
       distanceComponent = <Text>{formatDistance(this.props.intl, km)}</Text>;
     }
-    return <SubEventLine icon={require('./images/location.png')}>
+    return (<SubEventLine icon={require('./images/location.png')}>
       {components}
       {distanceComponent}
-    </SubEventLine>;
+    </SubEventLine>);
   }
 }
 const EventVenue = injectIntl(_EventVenue);
@@ -323,8 +323,8 @@ class _EventAddedBy extends React.Component {
   async loadProfileName() {
     const creation = this.props.event.annotations.creation;
     if (creation && creation.creator && creation.creator != '701004') {
-      const result = await performRequest('GET', creation.creator, {fields: 'name'});
-      this.setState({...this.state, addedBy: result.name});
+      const result = await performRequest('GET', creation.creator, { fields: 'name' });
+      this.setState({ ...this.state, addedBy: result.name });
     }
   }
 
@@ -334,11 +334,11 @@ class _EventAddedBy extends React.Component {
 
   render() {
     if (this.state.addedBy) {
-      //TODO: When we add Profiles, let's link to the Profile view itself: eventStyles.rowLink
+      // TODO: When we add Profiles, let's link to the Profile view itself: eventStyles.rowLink
       return (
         <SubEventLine icon={require('./images/user-add.png')}>
           <HorizontalView>
-            <Text style={eventStyles.detailText}>{this.props.intl.formatMessage(messages.addedBy, {name: this.state.addedBy})}</Text>
+            <Text style={eventStyles.detailText}>{this.props.intl.formatMessage(messages.addedBy, { name: this.state.addedBy })}</Text>
           </HorizontalView>
         </SubEventLine>
       );
@@ -366,23 +366,23 @@ class _EventOrganizers extends React.Component {
     // On Android, just send them to the URL and let the native URL intecerpetor send it to FB.
     if (Platform.OS === 'ios' && await Linking.canOpenURL('fb://')) {
       // We don't really need to pass fields=, but the FB SDK complains if we don't
-      const metadata = await performRequest('GET', adminId, {metadata: '1', fields: ''});
+      const metadata = await performRequest('GET', adminId, { metadata: '1', fields: '' });
       const idType = metadata.metadata.type;
       if (idType === 'user') {
         // This should work, but doesn't...
         // adminUrl = 'fb://profile/' + adminId;
         // So let's send them to the URL directly:
-        adminUrl = 'https://www.facebook.com/' + adminId;
+        adminUrl = `https://www.facebook.com/${adminId}`;
       } else if (idType === 'page') {
-        adminUrl = 'fb://page/?id=' + adminId;
+        adminUrl = `fb://page/?id=${adminId}`;
       } else {
-        adminUrl = 'https://www.facebook.com/' + adminId;
+        adminUrl = `https://www.facebook.com/${adminId}`;
       }
       // Every event lists all members of the event who created it
       // Group events only list members (not the group, which is in a different field)
       // Page events list the members and the page id, too
     } else {
-      adminUrl = 'https://www.facebook.com/' + adminId;
+      adminUrl = `https://www.facebook.com/${adminId}`;
     }
     try {
       Linking.openURL(adminUrl);
@@ -392,19 +392,19 @@ class _EventOrganizers extends React.Component {
   }
 
   adminLink(admin) {
-    return <TouchableOpacity
+    return (<TouchableOpacity
       key={admin.id}
       onPress={() => {
         this._openAdmin(admin.id);
       }}
-    ><Text style={[eventStyles.detailText, eventStyles.detailListText, eventStyles.rowLink]}>{admin.name}</Text></TouchableOpacity>;
+    ><Text style={[eventStyles.detailText, eventStyles.detailListText, eventStyles.rowLink]}>{admin.name}</Text></TouchableOpacity>);
   }
 
   render() {
     if (this.props.event.admins.length) {
-      return <SubEventLine icon={require('./images/organizer.png')}>
+      return (<SubEventLine icon={require('./images/organizer.png')}>
         {this.textRender()}
-      </SubEventLine>;
+      </SubEventLine>);
     } else {
       return null;
     }
@@ -420,24 +420,22 @@ class _EventOrganizers extends React.Component {
       );
     } else {
       // TODO: fetch the types of each admin, and sort them with the page first (or show only the page?)
-      let organizers = this.props.event.admins.map((admin) => {
-        return <HorizontalView>
-          <Text style={[eventStyles.detailText, eventStyles.detailListText]}> – </Text>
-          {this.adminLink(admin)}
-        </HorizontalView>;
-      });
+      const organizers = this.props.event.admins.map(admin => <HorizontalView>
+        <Text style={[eventStyles.detailText, eventStyles.detailListText]}> – </Text>
+        {this.adminLink(admin)}
+      </HorizontalView>);
       let text = '';
       if (this.state.opened) {
         text = this.props.intl.formatMessage(messages.hideOrganizers);
       } else {
-        text = this.props.intl.formatMessage(messages.showOrganizers, {count: this.props.event.admins.length});
+        text = this.props.intl.formatMessage(messages.showOrganizers, { count: this.props.event.admins.length });
       }
       return (
         <View>
           <TouchableOpacity
-          onPress={()=>{this.setState({opened: !this.state.opened});}}
+            onPress={() => { this.setState({ opened: !this.state.opened }); }}
           >
-            <Text style={[eventStyles.detailText, eventStyles.rowLink, {marginBottom: 5}]}>
+            <Text style={[eventStyles.detailText, eventStyles.rowLink, { marginBottom: 5 }]}>
               {text}
             </Text>
           </TouchableOpacity>
@@ -474,9 +472,9 @@ class _EventRsvpControl extends React.Component {
   async loadRsvp() {
     // We don't check this.props.user here, since there may be a delay before it gets set,
     // relative to the code flow that calls this from onRsvpChange.
-    this.setState({loading: true});
+    this.setState({ loading: true });
     const rsvpIndex = await new RsvpOnFB().getRsvpIndex(this.props.event.id);
-    this.setState({defaultRsvp: rsvpIndex, loading: false});
+    this.setState({ defaultRsvp: rsvpIndex, loading: false });
   }
 
   async onRsvpChange(index: number, oldIndex: number): Promise<> {
@@ -496,36 +494,36 @@ class _EventRsvpControl extends React.Component {
       throw new Error('Already loading values, do not allow any changes!');
     }
     const rsvp = RsvpOnFB.RSVPs[index];
-    trackWithEvent('RSVP', this.props.event, {'RSVP Value': rsvp});
+    trackWithEvent('RSVP', this.props.event, { 'RSVP Value': rsvp });
     // We await on this, so exceptions are propagated up (and segmentedControl can undo actions)
-    this.setState({...this.state, loading: true});
+    this.setState({ ...this.state, loading: true });
     await new RsvpOnFB().send(this.props.event.id, rsvp);
-    console.log('Successfully RSVPed as ' + rsvp + ' to event ' + this.props.event.id);
+    console.log(`Successfully RSVPed as ${rsvp} to event ${this.props.event.id}`);
     // Now while the state is still 'loading', let's reload the latest RSVP from the server.
     // And when we receive it, we'll unset state.loading, re-render this component.
     await this.loadRsvp();
   }
 
   render() {
-    return <SegmentedControl
+    return (<SegmentedControl
       // When loading, we construct a "different" SegmentedControl here (forcing it via key=),
       // so that when we flip to having a defaultRsvp, we construct a *new* SegmentedControl.
       // This ensures that the SegmentedControl's constructor runs (and pulls in the new defaultRsvp).
-      key={ this.state.loading ? 'loading' : 'segmentedControl' }
-      enabled={ !this.state.loading }
-      values={RsvpOnFB.RSVPs.map((x)=>this.props.intl.formatMessage(messages[x]))}
+      key={this.state.loading ? 'loading' : 'segmentedControl'}
+      enabled={!this.state.loading}
+      values={RsvpOnFB.RSVPs.map(x => this.props.intl.formatMessage(messages[x]))}
       defaultIndex={this.state.defaultRsvp}
       tintColor={yellowColors[0]}
-      style={{marginTop: 5, flex: 1}}
+      style={{ marginTop: 5, flex: 1 }}
       tryOnChange={this.onRsvpChange}
-      />;
+    />);
   }
 }
 const EventRsvpControl = connect(
-  (state) => ({
+  state => ({
     user: state.user.userData,
   }),
-  (dispatch) => ({
+  dispatch => ({
     canGetValidLoginFor: async (feature, props) => {
       if (!props.user && !await canGetValidLoginFor(feature, props.intl, dispatch)) {
         return false;
@@ -546,16 +544,16 @@ class _EventRsvp extends React.Component {
             maybeCount: this.props.event.rsvp.maybe_count,
           });
         } else {
-          counts = this.props.intl.formatMessage(messages.attendingCount, {attendingCount: this.props.event.rsvp.maybe_count});
+          counts = this.props.intl.formatMessage(messages.attendingCount, { attendingCount: this.props.event.rsvp.maybe_count });
         }
       }
-      //TODO: Maybe make a pop-out to show the list-of-users-attending prepended by DD users
+      // TODO: Maybe make a pop-out to show the list-of-users-attending prepended by DD users
       const countsText = <Text style={eventStyles.detailText}>{counts}</Text>;
       const rsvpControl = (this.props.event.source.name === 'Facebook Event') ? <EventRsvpControl event={this.props.event} /> : null;
-      return <SubEventLine icon={require('./images/attending.png')}>
+      return (<SubEventLine icon={require('./images/attending.png')}>
         {countsText}
         {rsvpControl}
-      </SubEventLine>;
+      </SubEventLine>);
     } else {
       return null;
     }
@@ -571,15 +569,19 @@ class _EventDescription extends React.Component {
       description = translatedEvent.translation.description;
     }
 
-    return <Card title={
-      <HorizontalView style={[eventStyles.splitButtons, {
-        margin: 5,
-        alignItems: 'center',
-      }]}>
-        <Text style={eventStyles.rowTitle}>{this.props.intl.formatMessage(messages.eventDetails)}</Text>
-        <EventTranslate event={this.props.event} />
-      </HorizontalView>
-    }>
+    return (<Card
+      title={
+        <HorizontalView
+          style={[eventStyles.splitButtons, {
+            margin: 5,
+            alignItems: 'center',
+          }]}
+        >
+          <Text style={eventStyles.rowTitle}>{this.props.intl.formatMessage(messages.eventDetails)}</Text>
+          <EventTranslate event={this.props.event} />
+        </HorizontalView>
+    }
+    >
       {this.props.children}
       <Autolink
         linkStyle={eventStyles.rowLink}
@@ -587,20 +589,18 @@ class _EventDescription extends React.Component {
         text={description}
         // Currently only works on Android with my recent change:
         // https://github.com/mikelambert/react-native/commit/90a79cc11ee493f0dd6a8a2a5fa2a01cb2d12cad
-        selectable={true}
+        selectable
         hashtag="instagram"
         twitter
       />
-    </Card>;
+    </Card>);
   }
 }
 
 const EventDescription = connect(
-  (state) => {
-    return {
-      translatedEvents: state.translate.events,
-    };
-  },
+  state => ({
+    translatedEvents: state.translate.events,
+  }),
 )(injectIntl(_EventDescription));
 
 
@@ -612,51 +612,51 @@ class EventMap extends React.Component {
   constructor(props) {
     super(props);
     if (Platform.OS === 'ios') {
-      this.state = {mapOk: true};
+      this.state = { mapOk: true };
     } else {
-      this.state = {mapOk: false};
+      this.state = { mapOk: false };
       this.checkAndroidMaps();
     }
   }
 
   async checkAndroidMaps() {
     const available = await GoogleApiAvailability.isGooglePlayServicesAvailable();
-    this.setState({mapOk: available});
+    this.setState({ mapOk: available });
   }
 
   render() {
     if (!this.state.mapOk) {
       return null;
     }
-    return <MapView
-        liteMode={true} // Android-only, uses a simpler view that scrolls better.
-        style={[eventStyles.eventMap, this.props.style]}
-        region={{
+    return (<MapView
+      liteMode // Android-only, uses a simpler view that scrolls better.
+      style={[eventStyles.eventMap, this.props.style]}
+      region={{
+        latitude: this.props.venue.geocode.latitude,
+        longitude: this.props.venue.geocode.longitude,
+        latitudeDelta: this.props.defaultSize,
+        longitudeDelta: this.props.defaultSize,
+      }}
+      zoomEnabled={false}
+      rotateEnabled={false}
+      scrollEnabled={false}
+      pitchEnabled={false}
+    >
+      <MapView.Marker
+        coordinate={{
           latitude: this.props.venue.geocode.latitude,
           longitude: this.props.venue.geocode.longitude,
-          latitudeDelta: this.props.defaultSize,
-          longitudeDelta: this.props.defaultSize,
         }}
-        zoomEnabled={false}
-        rotateEnabled={false}
-        scrollEnabled={false}
-        pitchEnabled={false}
-      >
-        <MapView.Marker
-          coordinate={{
-            latitude: this.props.venue.geocode.latitude,
-            longitude: this.props.venue.geocode.longitude,
-          }}
-        />
-      </MapView>;
+      />
+    </MapView>);
   }
 }
 
 async function openVenueWithApp(venue: Venue) {
-  const latLong = venue.geocode.latitude + ',' + venue.geocode.longitude;
-  const venueName = venue.name || '(' + latLong + ')';
+  const latLong = `${venue.geocode.latitude},${venue.geocode.longitude}`;
+  const venueName = venue.name || `(${latLong})`;
 
-  var venueUrl: string = '';
+  let venueUrl: string = '';
   if (Platform.OS === 'ios') {
     if (await Linking.canOpenURL('comgooglemaps://')) {
       const qs = querystring.stringify({
@@ -664,14 +664,14 @@ async function openVenueWithApp(venue: Venue) {
         center: latLong,
         zoom: 15,
       });
-      venueUrl = 'comgooglemaps://?' + qs;
+      venueUrl = `comgooglemaps://?${qs}`;
     } else {
       const qs = querystring.stringify({
         q: venueName,
         ll: latLong,
         z: 5,
       });
-      venueUrl = 'http://maps.apple.com/?' + qs;
+      venueUrl = `http://maps.apple.com/?${qs}`;
     }
   } else if (Platform.OS === 'android') {
       // "geo:lat,lng?q=query
@@ -694,9 +694,9 @@ async function openVenueWithApp(venue: Venue) {
        * We don't want to do a search around it because of #1 and #2 will search for the wrong things.
        * So instead, the best we can do is to label the lat/long point
        */
-    const q = latLong ? (latLong + '(' + venueName + ')') : venueName;
-    const qs = querystring.stringify({q: q});
-    venueUrl = 'geo:0,0?' + qs;
+    const q = latLong ? (`${latLong}(${venueName})`) : venueName;
+    const qs = querystring.stringify({ q });
+    venueUrl = `geo:0,0?${qs}`;
   } else {
     console.error('Unknown platform: ', Platform.OS);
   }
@@ -725,9 +725,10 @@ class _EventRow extends React.Component {
           <TouchableOpacity onPress={() => this.props.onEventSelected(this.props.event)} activeOpacity={0.5}>
             <Text
               numberOfLines={2}
-              style={[eventStyles.rowTitle, eventStyles.rowLink]}>{this.props.event.name}</Text>
+              style={[eventStyles.rowTitle, eventStyles.rowLink]}
+            >{this.props.event.name}</Text>
             <HorizontalView>
-              <View style={{width: 100}}>
+              <View style={{ width: 100 }}>
                 {imageProps.length ? <Image
                   source={imageProps}
                   originalWidth={imageProps[0].width}
@@ -735,7 +736,7 @@ class _EventRow extends React.Component {
                   style={eventStyles.thumbnail}
                 /> : null}
               </View>
-              <View style={{flex: 1}}>
+              <View style={{ flex: 1 }}>
                 <EventCategories categories={this.props.event.annotations.categories} />
                 <EventDateTime start={this.props.event.start_time} end={this.props.event.end_time} />
                 <EventVenue venue={this.props.event.venue} currentPosition={this.props.currentPosition} />
@@ -756,7 +757,8 @@ class _EventRow extends React.Component {
             /> : null}
             <Text
               numberOfLines={2}
-              style={[eventStyles.rowTitle, eventStyles.rowLink]}>{this.props.event.name}</Text>
+              style={[eventStyles.rowTitle, eventStyles.rowLink]}
+            >{this.props.event.name}</Text>
             <EventCategories categories={this.props.event.annotations.categories} />
             <EventDateTime start={this.props.event.start_time} end={this.props.event.end_time} />
             <EventVenue venue={this.props.event.venue} currentPosition={this.props.currentPosition} />
@@ -767,22 +769,20 @@ class _EventRow extends React.Component {
   }
 }
 export const EventRow = connect(
-  (state) => {
-    return {
-      listLayout: state.search.listLayout,
-    };
-  },
+  state => ({
+    listLayout: state.search.listLayout,
+  }),
 )(_EventRow);
 
 class EventShare extends React.Component {
   render() {
-    var shareContent = {
+    const shareContent = {
       contentType: 'link',
       contentUrl: this.props.event.getUrl(),
     };
-    return <View style={eventStyles.shareIndent}>
+    return (<View style={eventStyles.shareIndent}>
       <FBShareButton shareContent={shareContent} />
-    </View>;
+    </View>);
   }
 }
 
@@ -792,7 +792,7 @@ class _EventTranslate extends React.Component {
     const translatedText = (translatedEvent && translatedEvent.visible)
       ? this.props.intl.formatMessage(messages.untranslate)
       : this.props.intl.formatMessage(messages.translate);
-    return <Button
+    return (<Button
       icon={require('./images/translate.png')}
       caption={translatedText}
       size="small"
@@ -800,15 +800,13 @@ class _EventTranslate extends React.Component {
         trackWithEvent('Translate', this.props.event);
         this.props.toggleEventTranslation(this.props.event.id, this.props.intl.locale, this.props.intl);
       }}
-    />;
+    />);
   }
 }
 const EventTranslate = connect(
-  (state) => {
-    return {
-      translatedEvents: state.translate.events,
-    };
-  },
+  state => ({
+    translatedEvents: state.translate.events,
+  }),
   (dispatch: Dispatch) => ({
     toggleEventTranslation: (eventId, language, intl) => dispatch(toggleEventTranslation(eventId, language, intl)),
   }),
@@ -832,14 +830,14 @@ class _EventTickets extends React.Component {
   render() {
     if (this.props.event.ticket_uri) {
       const hostname = url.parse(this.props.event.ticket_uri).hostname;
-      return <SubEventLine icon={require('./images/ticket.png')}>
+      return (<SubEventLine icon={require('./images/ticket.png')}>
         <HorizontalView>
           <Text style={[eventStyles.detailText]}>{this.props.intl.formatMessage(messages.ticketsLink)}{' '}</Text>
           <TouchableOpacity onPress={this.onTicketClicked} activeOpacity={0.5}>
             <Text style={[eventStyles.detailText, eventStyles.rowLink]}>{hostname}</Text>
           </TouchableOpacity>
         </HorizontalView>
-      </SubEventLine>;
+      </SubEventLine>);
     } else {
       return null;
     }
@@ -876,17 +874,17 @@ class _FullEventView extends React.Component {
     const imageProps = this.props.event.getResponsiveFlyers();
     if (imageProps.length) {
       const flyerImage =
-        <ProportionalImage
+        (<ProportionalImage
           source={imageProps}
           originalWidth={imageProps[0].width}
           originalHeight={imageProps[0].height}
           style={eventStyles.thumbnail}
-        />;
+        />);
 
       flyer =
-        <TouchableOpacity onPress={this.onFlyerClicked} activeOpacity={0.5}>
+        (<TouchableOpacity onPress={this.onFlyerClicked} activeOpacity={0.5}>
           {flyerImage}
-        </TouchableOpacity>;
+        </TouchableOpacity>);
     }
 
     const map = this.props.event.venue.geocode
@@ -901,19 +899,21 @@ class _FullEventView extends React.Component {
 
     return (
       <ProgressiveLayout
-        style={[eventStyles.container, {width: width}]}
+        style={[eventStyles.container, { width }]}
       >
         {flyer}
         <Card
           title={
             <Text
               numberOfLines={2}
-              style={eventStyles.rowTitle}>{name}</Text>
-          }>
+              style={eventStyles.rowTitle}
+            >{name}</Text>
+          }
+        >
           <EventCategories categories={this.props.event.annotations.categories} />
           <EventRsvp event={this.props.event} />
           <EventDateTime start={this.props.event.start_time} end={this.props.event.end_time} >
-            <AddToCalendarButton event={this.props.event} style={{marginTop: 5}}/>
+            <AddToCalendarButton event={this.props.event} style={{ marginTop: 5 }} />
           </EventDateTime>
           <TouchableOpacity onPress={this.onLocationClicked} activeOpacity={0.5}>
             <EventVenue style={eventStyles.rowLink} venue={this.props.event.venue} currentPosition={this.props.currentPosition} />
@@ -933,11 +933,9 @@ class _FullEventView extends React.Component {
   }
 }
 export const FullEventView = connect(
-  (state) => {
-    return {
-      translatedEvents: state.translate.events,
-    };
-  },
+  state => ({
+    translatedEvents: state.translate.events,
+  }),
 )(_FullEventView);
 
 const detailHeight = 15;

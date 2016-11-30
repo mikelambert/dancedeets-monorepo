@@ -160,7 +160,7 @@ export async function addEvent(eventId: string) {
     return null;
   }
   await verifyAuthenticated();
-  return await retryWithBackoff(2000, 2, 3, createRequest('events_add', {event_id: eventId}, {event_id: eventId}));
+  return await retryWithBackoff(2000, 2, 3, createRequest('events_add', { event_id: eventId }, { event_id: eventId }));
 }
 
 export async function translateEvent(eventId: string) {

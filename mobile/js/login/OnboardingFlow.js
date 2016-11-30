@@ -37,7 +37,7 @@ class OnboardingFlow extends React.Component {
 
   onDontWantLoginPressed() {
     track('Login - Without Facebook');
-    this.setState({...this.state, screen: 'NO_LOGIN'});
+    this.setState({ ...this.state, screen: 'NO_LOGIN' });
   }
 
   onSkipLogin() {
@@ -47,28 +47,28 @@ class OnboardingFlow extends React.Component {
 
   render() {
     if (this.state.screen === 'CAROUSEL') {
-      return <TutorialScreen
+      return (<TutorialScreen
         onLogin={async () => {
-          track('Login - FBLogin Button Pressed', {'Button': 'First Screen'});
+          track('Login - FBLogin Button Pressed', { Button: 'First Screen' });
           await this.props.onLogin();
         }}
         onNoLogin={this.onDontWantLoginPressed}
-      />;
+      />);
     } else if (this.state.screen === 'NO_LOGIN') {
-      return <NoLoginScreen
+      return (<NoLoginScreen
         onLogin={async () => {
-          track('Login - FBLogin Button Pressed', {'Button': 'Second Screen'});
+          track('Login - FBLogin Button Pressed', { Button: 'Second Screen' });
           await this.props.onLogin();
         }}
         onNoLogin={this.onSkipLogin}
-        />;
+      />);
     }
   }
 }
 
 export default connect(
     null,
-    (dispatch) => ({
+    dispatch => ({
       onLogin: async () => await loginButtonPressed(dispatch),
       skipLogin: () => dispatch(skipLogin()),
     }),

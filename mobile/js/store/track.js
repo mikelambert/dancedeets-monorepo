@@ -29,8 +29,8 @@ import { AccessToken, AppEventsLogger } from 'react-native-fbsdk';
 import { performRequest } from '../api/fb';
 import { Crashlytics } from 'react-native-fabric';
 
-import type {Action} from '../actions/types';
-import type {Event} from '../events/models';
+import type { Action } from '../actions/types';
+import type { Event } from '../events/models';
 
 let trackingEnabled = true;
 
@@ -73,7 +73,7 @@ export function track(eventName: string, params: ?Params) {
   }
   if (params != null) {
     const firebaseSafeParams = {};
-    for (let key of Object.keys(params)) {
+    for (const key of Object.keys(params)) {
       firebaseSafeParams[firebaseSafe(key)] = params[key];
     }
     AppEventsLogger.logEvent(eventName, 1, params);
@@ -125,32 +125,31 @@ async function setupPersonProperties() {
   Mixpanel.identify(token.userID);
   Analytics.setUserId(token.userID);
 
-  const user = await performRequest('GET', 'me', {fields: 'id,name,first_name,last_name,gender,locale,timezone,email,link'});
-  const now = new Date().toISOString().slice(0,19); // Trim off the fractional seconds from our ISO?UTC time
+  const user = await performRequest('GET', 'me', { fields: 'id,name,first_name,last_name,gender,locale,timezone,email,link' });
+  const now = new Date().toISOString().slice(0, 19); // Trim off the fractional seconds from our ISO?UTC time
 
   Crashlytics.setUserName(user.name);
   Crashlytics.setUserEmail(user.email);
   Mixpanel.set({
-    '$first_name': user.first_name,
-    '$last_name': user.last_name,
+    $first_name: user.first_name,
+    $last_name: user.last_name,
     'FB Gender': user.gender,
     'FB Locale': user.locale,
     'FB Timezone': user.timezone,
-    '$email': user.email,
+    $email: user.email,
     'Last Login': now,
   });
-  Mixpanel.setOnce({'$created': now});
+  Mixpanel.setOnce({ $created: now });
 
   Analytics.setUserProperties({
-    'FBFirstName': user.first_name,
-    'FBLastName': user.last_name,
-    'FBGender': user.gender,
-    'FBLocale': user.locale,
-    'FBTimezone': user.timezone.toString(),
-    'FBEmail': user.email,
-    'LastLogin': now,
+    FBFirstName: user.first_name,
+    FBLastName: user.last_name,
+    FBGender: user.gender,
+    FBLocale: user.locale,
+    FBTimezone: user.timezone.toString(),
+    FBEmail: user.email,
+    LastLogin: now,
   });
-
 }
 
 export async function trackLogin() {
@@ -161,7 +160,7 @@ export async function trackLogin() {
   // This ensures the latter functions operate against the correct user.
   // TODO: Retrieve push token
   await setupPersonProperties();
-  //Mixpanel.addPushDeviceToken(...);
+  // Mixpanel.addPushDeviceToken(...);
 }
 
 export function trackLogout() {
@@ -169,13 +168,13 @@ export function trackLogout() {
     return;
   }
   track('Logout');
-  //Mixpanel.removePushToken();
+  // Mixpanel.removePushToken();
   Mixpanel.reset();
   Analytics.setUserId(null);
 }
 
 export function trackDispatches(action: Action): void {
   if (!trackingEnabled) {
-    return;
+
   }
 }

@@ -93,12 +93,12 @@ export default class ZoomableImage extends React.Component {
     const horizontal = (widthScale < heightScale);
 
     if (Platform.OS == 'android') {
-      return <PhotoView
+      return (<PhotoView
         maximumZoomScale={Math.max(zoomScale, 4.0)}
         minimumZoomScale={Math.min(zoomScale, 1.0)}
-        style={[styles.image, {flex: 1, width: this.props.width, height: this.props.height}]}
-        source={{uri: this.props.url}}
-        />;
+        style={[styles.image, { flex: 1, width: this.props.width, height: this.props.height }]}
+        source={{ uri: this.props.url }}
+      />);
     } else {
       return this.renderIOS(zoomScale, horizontal);
     }
@@ -107,7 +107,7 @@ export default class ZoomableImage extends React.Component {
   renderIOS(zoomScale: number, horizontal: boolean) {
     return (
       <ScrollView
-        ref={(x) => {this.zoomable_scroll = x;}}
+        ref={(x) => { this.zoomable_scroll = x; }}
         onScroll={this.onZoomChanged}
         scrollEventThrottle={100}
         scrollsToTop={false}
@@ -119,13 +119,13 @@ export default class ZoomableImage extends React.Component {
         minimumZoomScale={Math.min(zoomScale, 1.0)}
         horizontal={horizontal}
         directionalLockEnabled={false}
-        centerContent={true}
-        style={{flex: 1}}
-        >
-        <TouchableWithoutFeedback onPress={this.toggleZoom} style={{flex: 1}}>
+        centerContent
+        style={{ flex: 1 }}
+      >
+        <TouchableWithoutFeedback onPress={this.toggleZoom} style={{ flex: 1 }}>
           <Image
-            style={[styles.image, {width: this.props.width, height: this.props.height}]}
-            source={{uri: this.props.url}}
+            style={[styles.image, { width: this.props.width, height: this.props.height }]}
+            source={{ uri: this.props.url }}
           />
         </TouchableWithoutFeedback>
       </ScrollView>
@@ -133,21 +133,21 @@ export default class ZoomableImage extends React.Component {
   }
 
   toggleZoom(e: any) {
-    var timestamp = new Date().getTime();
+    const timestamp = new Date().getTime();
     if (timestamp - this.state.lastTapTimestamp <= 500) {
-      var {locationX, locationY} = e.nativeEvent;
-      var size = this.state.isZoomed ? {width: 10000, height: 10000} : {width: 0, height: 0};
-      this.zoomable_scroll.scrollResponderZoomTo({x: locationX, y: locationY, ...size});
+      let { locationX, locationY } = e.nativeEvent;
+      const size = this.state.isZoomed ? { width: 10000, height: 10000 } : { width: 0, height: 0 };
+      this.zoomable_scroll.scrollResponderZoomTo({ x: locationX, y: locationY, ...size });
     }
-    this.setState({lastTapTimestamp: timestamp});
+    this.setState({ lastTapTimestamp: timestamp });
   }
 
   onZoomChanged(e: any) {
-    this.setState({isZoomed: e.nativeEvent.zoomScale > 1});
+    this.setState({ isZoomed: e.nativeEvent.zoomScale > 1 });
   }
 }
 
-var styles = StyleSheet.create({
+let styles = StyleSheet.create({
   image: {
     flex: 1,
     resizeMode: Image.resizeMode.contain,

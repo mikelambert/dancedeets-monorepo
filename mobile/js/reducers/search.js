@@ -6,7 +6,7 @@
 
 import { Dimensions } from 'react-native';
 
-import type {Action} from '../actions/types';
+import type { Action } from '../actions/types';
 import type { SearchQuery, SearchResults } from '../events/search';
 
 export type State = {

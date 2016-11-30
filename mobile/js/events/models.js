@@ -23,7 +23,7 @@ export type Cover = {
 
 export class JsonDerivedObject {
   constructor(data: any) {
-    for (var attr in data) {
+    for (const attr in data) {
       if (data.hasOwnProperty(attr)) {
         (this: any)[attr] = data[attr];
       }
@@ -48,7 +48,7 @@ export class Venue extends JsonDerivedObject {
 
   fullAddress() {
     if (this.address) {
-      return [this.name, this.address.street, this.address.city, this.address.state, this.address.country].filter((x) => x).join(', ');
+      return [this.name, this.address.street, this.address.city, this.address.state, this.address.country].filter(x => x).join(', ');
     } else {
       return this.name;
     }
@@ -56,7 +56,7 @@ export class Venue extends JsonDerivedObject {
 
   cityState() {
     if (this.address) {
-      return [this.address.city, this.address.state].filter((x) => x).join(', ');
+      return [this.address.city, this.address.state].filter(x => x).join(', ');
     } else {
       return null;
     }
@@ -64,7 +64,7 @@ export class Venue extends JsonDerivedObject {
 
   cityStateCountry() {
     if (this.address) {
-      return [this.address.city, this.address.state, this.address.country].filter((x) => x).join(', ');
+      return [this.address.city, this.address.state, this.address.country].filter(x => x).join(', ');
     } else {
       return null;
     }
@@ -105,7 +105,7 @@ export class Event extends JsonDerivedObject {
 
   constructor(eventData: JSONObject) {
     super(eventData);
-    this.venue = new Venue(eventData['venue']);
+    this.venue = new Venue(eventData.venue);
   }
 
   getResponsiveFlyers() {
@@ -129,6 +129,6 @@ export class Event extends JsonDerivedObject {
   }
 
   getUrl() {
-    return 'http://www.dancedeets.com/events/' + this.id + '/';
+    return `http://www.dancedeets.com/events/${this.id}/`;
   }
 }

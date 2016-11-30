@@ -25,15 +25,15 @@ class _FBShareButton extends React.Component {
 
   render() {
     return (
-        <View style={{flexDirection: 'row'}}><Button
-          icon={require('./images/facebook.png')}
-          caption={this.props.intl.formatMessage(messages.share)}
-          size="small"
-          onPress={() => {
-            ShareDialog.show(this.props.shareContent);
-          }}
-          {...this.props}
-        /></View>
+      <View style={{ flexDirection: 'row' }}><Button
+        icon={require('./images/facebook.png')}
+        caption={this.props.intl.formatMessage(messages.share)}
+        size="small"
+        onPress={() => {
+          ShareDialog.show(this.props.shareContent);
+        }}
+        {...this.props}
+      /></View>
     );
   }
 }

@@ -22,7 +22,7 @@
 
 import { trackDispatches } from './track';
 
-module.exports = store => next => action => {
+module.exports = store => next => (action) => {
   trackDispatches(action);
   return next(action);
 };

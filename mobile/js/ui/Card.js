@@ -9,15 +9,15 @@ export default class Card extends React.Component {
   _root: React.Component;
 
   render() {
-    return <View
-        ref={(x) => {
-          this._root = x;
-        }}
-        style={[styles.card, this.props.style]}
-      >
+    return (<View
+      ref={(x) => {
+        this._root = x;
+      }}
+      style={[styles.card, this.props.style]}
+    >
       <View style={[styles.titleBackground, this.props.titleBackgroundStyle]}>{this.props.title}</View>
       <View style={[styles.mainBackground, this.props.mainBackgroundStyle]}>{this.props.children}</View>
-    </View>;
+    </View>);
   }
 
   setNativeProps(props) {
@@ -37,7 +37,7 @@ const styles = StyleSheet.create({
   card: {
     backgroundColor: purpleColors[2],
     borderColor: purpleColors[0],
-    //borderWidth: 1,
+    // borderWidth: 1,
     borderRadius: 10,
     margin: 10,
   },

@@ -18,7 +18,7 @@ export async function getPreference(key: string, defaultValue: boolean): Promise
   if (key == null) {
     throw new Error('Need key for getPreference');
   }
-  const result = await AsyncStorage.getItem('preferences.notifications.' + key);
+  const result = await AsyncStorage.getItem(`preferences.notifications.${key}`);
   if (result !== null) {
     return result === '1';
   }
@@ -29,5 +29,5 @@ export async function setPreference(key: string, value: boolean) {
   if (key == null) {
     throw new Error('Need key for setPreference');
   }
-  await AsyncStorage.setItem('preferences.notifications.' + key, value ? '1' : '0');
+  await AsyncStorage.setItem(`preferences.notifications.${key}`, value ? '1' : '0');
 }

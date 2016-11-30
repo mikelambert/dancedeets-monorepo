@@ -30,7 +30,7 @@ class EventPager extends React.Component {
 
   constructor(props) {
     super(props);
-    var dataSource = new ViewPager.DataSource({
+    const dataSource = new ViewPager.DataSource({
       pageHasChanged: (row1, row2) => row1 !== row2,
     });
     this.state = {
@@ -42,11 +42,11 @@ class EventPager extends React.Component {
   }
 
   renderEvent(eventData: Object, pageID: number | string) {
-    return <FullEventView
+    return (<FullEventView
       onFlyerSelected={this.props.onFlyerSelected}
       event={eventData.event}
       currentPosition={eventData.position}
-    />;
+    />);
   }
 
   _getNewState(props, position) {
@@ -55,18 +55,18 @@ class EventPager extends React.Component {
     position = position || this.state.position;
 
     if (results && results.results) {
-      const pageIndex = results.results.findIndex((x) => x.id === this.props.selectedEvent.id);
+      const pageIndex = results.results.findIndex(x => x.id === this.props.selectedEvent.id);
       if (pageIndex !== -1) {
-        finalResults = results.results.map((event) => ({event, position}));
+        finalResults = results.results.map(event => ({ event, position }));
       }
     }
     // If we have an event that's not in the list, it's because we're just displaying this event.
     if (!finalResults.length) {
-      finalResults = [this.props.selectedEvent].map((event) => ({event, position}));
+      finalResults = [this.props.selectedEvent].map(event => ({ event, position }));
     }
     const state = {
       ...this.state,
-      position: position,
+      position,
       dataSource: this.state.dataSource.cloneWithPages(finalResults),
     };
     return state;
@@ -88,7 +88,7 @@ class EventPager extends React.Component {
   getSelectedPage() {
     let initialPage = null;
     if (this.props.search.results && this.props.search.results.results) {
-      initialPage = this.props.search.results.results.findIndex((x) => x.id === this.props.selectedEvent.id);
+      initialPage = this.props.search.results.results.findIndex(x => x.id === this.props.selectedEvent.id);
     }
     return initialPage;
   }
@@ -97,24 +97,20 @@ class EventPager extends React.Component {
     // We use react-native-viewpager instead of react-native-carousel,
     // because we only want to render a few pages in the big list
     // (as opposed to a fully rendered pageable/scrollable view, which will scale poorly)
-    return <ViewPager
+    return (<ViewPager
       dataSource={this.state.dataSource}
       renderPage={this.renderEvent}
       renderPageIndicator={false}
-      onChangePage={ (i) => this.props.onEventNavigated(this.state.dataSource.getPageData(i).event) }
+      onChangePage={i => this.props.onEventNavigated(this.state.dataSource.getPageData(i).event)}
       initialPage={this.getSelectedPage()}
-    />;
+    />);
   }
 }
-const mapStateToProps = (state) => {
-  return {
-    search: state.search,
-  };
-};
-const mapDispatchToProps = (dispatch) => {
-  return {
-  };
-};
+const mapStateToProps = state => ({
+  search: state.search,
+});
+const mapDispatchToProps = dispatch => ({
+});
 
 export default connect(
   mapStateToProps,

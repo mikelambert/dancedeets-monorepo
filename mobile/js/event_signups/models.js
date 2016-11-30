@@ -39,6 +39,6 @@ export type CompetitionCategory = {
 
 export function categoryDisplayName(category: CompetitionCategory) {
   const nxn = category.teamSize ? `${category.teamSize}×${category.teamSize}` : '';
-  const displayName = nxn ? `${nxn} ${category.name}` : category.name; //TODO: backup to some variant of 'style'
+  const displayName = nxn ? `${nxn} ${category.name}` : category.name; // TODO: backup to some variant of 'style'
   return displayName;
 }

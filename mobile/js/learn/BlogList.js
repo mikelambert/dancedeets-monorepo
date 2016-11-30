@@ -15,7 +15,7 @@ import {
   Text,
 } from '../ui';
 import {
-  getRemoteBlogs
+  getRemoteBlogs,
 } from './liveLearnConfig';
 import type {
   BlogPost,
@@ -32,33 +32,35 @@ import YouTube from 'react-native-youtube';
 export class BlogPostContents extends React.Component {
   render() {
     if (this.props.post.youtubeId) {
-      return <YouTube
+      return (<YouTube
         videoId={this.props.post.youtubeId}
-        play={true}
-        hidden={true}
-        playsInline={true}
+        play
+        hidden
+        playsInline
         loop={false}
-        style={{alignSelf: 'stretch', height: 300}}
-        />;
+        style={{ alignSelf: 'stretch', height: 300 }}
+      />);
     } else {
-      return <WKWebView
-        source={{uri: this.props.post.url}}
+      return (<WKWebView
+        source={{ uri: this.props.post.url }}
         style={styles.listView}
-        />;
+      />);
     }
   }
 }
 
 export class BlogPostTitle extends React.Component {
   render() {
-    return <TouchableHighlight onPress={() => {
-      this.props.onPress(this.props.post);
-    }}>
+    return (<TouchableHighlight
+      onPress={() => {
+        this.props.onPress(this.props.post);
+      }}
+    >
       <View>
         <Text style={styles.text}>{this.props.post.title}</Text>
         <Text style={styles.text}>{this.props.post.author}</Text>
       </View>
-    </TouchableHighlight>;
+    </TouchableHighlight>);
   }
 }
 
@@ -76,10 +78,10 @@ export class FeedListView extends React.Component {
 
   constructor(props: FeedProps) {
     super(props);
-    var dataSource = new ListView.DataSource({
+    const dataSource = new ListView.DataSource({
       rowHasChanged: (row1, row2) => row1 !== row2,
     });
-    this.state = {dataSource};
+    this.state = { dataSource };
     this.state = this._getNewState(this.props.items);
   }
 
@@ -97,8 +99,8 @@ export class FeedListView extends React.Component {
   }
 
   render() {
-    const {items, ...otherProps} = this.props;
-    return <ListView
+    const { items, ...otherProps } = this.props;
+    return (<ListView
       style={[styles.listView]}
       {...otherProps}
       dataSource={this.state.dataSource}
@@ -106,7 +108,7 @@ export class FeedListView extends React.Component {
       pageSize={5}
       scrollRenderAheadDistance={10000}
       indicatorStyle="white"
-     />;
+    />);
   }
 }
 
@@ -123,29 +125,31 @@ export class BlogPostList extends React.Component {
   }
 
   _renderRow(post: BlogPost) {
-    return <BlogPostTitle
+    return (<BlogPostTitle
       post={post}
       onPress={this.props.onSelected}
-    />;
+    />);
   }
 
   render() {
-    return <FeedListView
+    return (<FeedListView
       items={this.props.blog.posts}
       renderRow={this._renderRow}
-      />;
+    />);
   }
 }
 
 class BlogTitle extends React.Component {
   render() {
-    return <TouchableHighlight onPress={() => {
-      this.props.onPress(this.props.blog);
-    }}>
-      <View style={{margin: 7}}>
+    return (<TouchableHighlight
+      onPress={() => {
+        this.props.onPress(this.props.blog);
+      }}
+    >
+      <View style={{ margin: 7 }}>
         <Text style={styles.text}>{this.props.blog.title}</Text>
       </View>
-    </TouchableHighlight>;
+    </TouchableHighlight>);
   }
 }
 
@@ -161,10 +165,10 @@ export class BlogList extends React.Component {
 
   constructor(props: BlogProps) {
     super(props);
-    var dataSource = new ListView.DataSource({
+    const dataSource = new ListView.DataSource({
       rowHasChanged: (row1, row2) => row1 !== row2,
     });
-    this.state = {dataSource};
+    this.state = { dataSource };
     // We don't take in any props.blogs, so no need to run this:
     // this.state = this._getNewState(this.props.blogs);
     (this: any)._renderRow = this._renderRow.bind(this);
@@ -186,7 +190,7 @@ export class BlogList extends React.Component {
         return new Promise((resolve, reject) => resolve());
       }
     }));
-    const filteredBlogData = blogData.filter((x) => x);
+    const filteredBlogData = blogData.filter(x => x);
     this.setState(this._getNewState(filteredBlogData));
   }
 
@@ -204,14 +208,14 @@ export class BlogList extends React.Component {
   }
 
   _renderRow(blog: Blog) {
-    return <BlogTitle
+    return (<BlogTitle
       blog={blog}
       onPress={this.props.onSelected}
-    />;
+    />);
   }
 
   render() {
-    return <ListView
+    return (<ListView
       style={[styles.listView]}
       dataSource={this.state.dataSource}
       renderRow={this._renderRow}
@@ -219,7 +223,7 @@ export class BlogList extends React.Component {
       pageSize={5}
       scrollRenderAheadDistance={10000}
       indicatorStyle="white"
-     />;
+    />);
   }
 }
 
@@ -229,5 +233,5 @@ const styles = StyleSheet.create({
   },
   text: {
     color: 'white',
-  }
+  },
 });

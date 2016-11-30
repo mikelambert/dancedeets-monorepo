@@ -4,7 +4,7 @@
  * @flow
  */
 
-import type {Action, User} from '../actions/types';
+import type { Action, User } from '../actions/types';
 
 export type State = {
   isLoggedIn: boolean;

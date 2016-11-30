@@ -24,7 +24,7 @@ import {
   injectIntl,
 } from 'react-intl';
 
-var PAGES = [
+const PAGES = [
   'Page 0',
   'Page 1',
   'Page 2',
@@ -62,7 +62,7 @@ const messages = defineMessages({
     defaultMessage: 'Share your event\nShare your city\'s events\nReach dancers worldwide\nand join our 90,000 events',
     description: 'Intro screen list of features',
   },
-  'nologin': {
+  nologin: {
     id: 'tutorial.nologin',
     defaultMessage: 'Don\'t want to login?',
     description: 'Link to a page for users who don\'t want to FB login',
@@ -86,22 +86,22 @@ const TopView = injectIntl(_TopView);
 
 class _TutorialScreen extends React.Component {
   render() {
-    var pages = PAGES.map((val, i) => this._renderPage(i));
-    return <Carousel
+    const pages = PAGES.map((val, i) => this._renderPage(i));
+    return (<Carousel
       indicatorOffset={0}
       indicatorColor="#FFFFFF"
       indicatorSize={25}
       indicatorSpace={15}
       animate={false}
       loop={false}
-      >
+    >
       {pages}
-    </Carousel>;
+    </Carousel>);
   }
 
   _renderPage(pageId: number) {
-    var contents = this._renderPageContents(pageId);
-    return <View
+    const contents = this._renderPageContents(pageId);
+    return (<View
       style={{
         flex: 1,
         // We need to have a black background,
@@ -112,59 +112,66 @@ class _TutorialScreen extends React.Component {
         // Without this, the layout gets wonky.
         width: Dimensions.get('window').width,
       }}
-      key={pageId}>
-    {contents}
-    </View>;
+      key={pageId}
+    >
+      {contents}
+    </View>);
   }
 
   _renderPageContents(pageID: number) {
     // We manually insert a bottomFade into each page below,
     // so that we can stick buttons/links/text on top of the fade.
 
-    var bottomFade = <LinearGradient
+    const bottomFade = (<LinearGradient
       start={[0.0, 0.0]} end={[0.0, 1.0]}
       locations={[0.0, 0.8, 1.0]}
       colors={['#00000000', '#000000CC', '#000000CC']}
-      style={styles.bottomFade} />;
+      style={styles.bottomFade}
+    />);
 
     if (pageID === 0) {
       return <LaunchScreen>{bottomFade}</LaunchScreen>;
     } else if (pageID === 1) {
-      return <Image
+      return (<Image
         style={styles.container}
-        source={require('./images/Onboard1.jpg')}>
+        source={require('./images/Onboard1.jpg')}
+      >
         {bottomFade}
         <Image
-        style={[styles.container, styles.centerItems]}
-          source={require('./images/Onboard1Text.png')}>
+          style={[styles.container, styles.centerItems]}
+          source={require('./images/Onboard1Text.png')}
+        >
           <TopView page={0} />
         </Image>
-      </Image>;
+      </Image>);
     } else if (pageID === 2) {
-      return <Image
+      return (<Image
         style={[styles.container, styles.centerItems]}
-        source={require('./images/Onboard2.jpg')}>
+        source={require('./images/Onboard2.jpg')}
+      >
         {bottomFade}
         <TopView page={1} />
-      </Image>;
+      </Image>);
     } else if (pageID === 3) {
-      return <View style={styles.container}>
+      return (<View style={styles.container}>
         <Image
           style={styles.container}
-          source={require('./images/Onboard3.jpg')}>
+          source={require('./images/Onboard3.jpg')}
+        >
           {bottomFade}
           <Image
             style={[styles.container, styles.centerItems, styles.topAndBottom]}
-            source={require('./images/Onboard3Text.png')}>
+            source={require('./images/Onboard3Text.png')}
+          >
             <TopView page={2} />
             <LoginButtonWithAlternate
               onLogin={this.props.onLogin}
               onNoLogin={this.props.onNoLogin}
               noLoginText={this.props.intl.formatMessage(messages.nologin)}
-              />
+            />
           </Image>
         </Image>
-      </View>;
+      </View>);
     }
   }
 }

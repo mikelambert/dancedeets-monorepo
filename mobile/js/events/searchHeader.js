@@ -76,18 +76,19 @@ class SearchInput extends React.Component {
   }
 
   animatedRelayout() {
-    this.setState({focused: this.textInput.isFocused()});
+    this.setState({ focused: this.textInput.isFocused() });
     LayoutAnimation.easeInEaseOut();
   }
 
   render() {
     const { style, ...otherProps } = { style: {}, ...this.props };
-    return <TextInput {...otherProps}
-      ref={(x) => {this.textInput = x;}}
+    return (<TextInput
+      {...otherProps}
+      ref={(x) => { this.textInput = x; }}
       style={[defaultFont, styles.searchField, this.state.focused ? styles.focusedField : {}, style]}
       placeholderTextColor="rgba(255, 255, 255, 0.5)"
       keyboardAppearance="dark"
-      selectTextOnFocus={true}
+      selectTextOnFocus
       autoCorrect={false}
       autoCapitalize="none"
       clearButtonMode="while-editing"
@@ -117,7 +118,7 @@ class SearchInput extends React.Component {
         }
         this.textInput.blur();
       }}
-    />;
+    />);
   }
 
   blur() {
@@ -148,18 +149,18 @@ class _SearchHeader extends React.Component {
   onLayout(e: SyntheticEvent) {
     const nativeEvent: any = e.nativeEvent;
     const height = nativeEvent.layout.height;
-    this.setState({height});
+    this.setState({ height });
   }
 
   render() {
-    return <View style={{flex: 1}}>
+    return (<View style={{ flex: 1 }}>
       <HorizontalView
         onLayout={this.onLayout}
         style={[styles.floatTop, styles.statusBar]}
         blurType="dark"
       >
         <SearchInput
-          ref={(x) => {this.location = x;}}
+          ref={(x) => { this.location = x; }}
           placeholder={this.props.intl.formatMessage(messages.location)}
           returnKeyType="search"
           onChangeText={(text) => {
@@ -181,7 +182,7 @@ class _SearchHeader extends React.Component {
           value={this.props.searchQuery.location}
         />
         <SearchInput
-          ref={(x) => {this.keywords = x;}}
+          ref={(x) => { this.keywords = x; }}
           placeholder={this.props.intl.formatMessage(messages.keywords)}
           returnKeyType="search"
           onChangeText={(text) => {
@@ -197,19 +198,19 @@ class _SearchHeader extends React.Component {
           style={styles.toggleButton}
           icon={require('./images/add_calendar.png')}
           onPress={this.props.onAddEvent}
-          />
+        />
         <Button
           size="small"
           style={styles.toggleButton}
           icon={this.props.listLayout ? require('./search-images/large-flyer.png') : require('./search-images/small-flyer.png')}
           onPress={this.props.toggleLayout}
-          />
+        />
       </HorizontalView>
       {this.props.children}
       <AutocompleteList
-        ref={(x) => {this.location_autocomplete = x;}}
-        style={{top: this.state.height}}
-        textValue={()=>this.props.searchQuery.location}
+        ref={(x) => { this.location_autocomplete = x; }}
+        style={{ top: this.state.height }}
+        textValue={() => this.props.searchQuery.location}
         queryLanguage={Locale.constants().localeIdentifier}
         currentLocationLabel={this.props.intl.formatMessage(messages.currentLocation)}
         onLocationSelected={async (text) => {
@@ -217,35 +218,31 @@ class _SearchHeader extends React.Component {
           this.location.blur();
           await this.props.performSearch();
         }}
-        predefinedPlaces={this.props.intl.formatMessage(messages.locations).split('\n').map((x) => ({description: x}))}
+        predefinedPlaces={this.props.intl.formatMessage(messages.locations).split('\n').map(x => ({ description: x }))}
       />
-    </View>;
+    </View>);
   }
 }
 const SearchHeader = injectIntl(_SearchHeader);
 
-const mapStateToProps = (state) => {
-  return {
-    listLayout: state.search.listLayout,
-    searchQuery: state.search.searchQuery,
-  };
-};
-const mapDispatchToProps = (dispatch) => {
-  return {
-    updateLocation: async (location) => {
-      await dispatch(updateLocation(location));
-    },
-    updateKeywords: async (keywords) => {
-      await dispatch(updateKeywords(keywords));
-    },
-    performSearch: async () => {
-      await dispatch(performSearch());
-    },
-    toggleLayout: async () => {
-      await dispatch(toggleLayout());
-    },
-  };
-};
+const mapStateToProps = state => ({
+  listLayout: state.search.listLayout,
+  searchQuery: state.search.searchQuery,
+});
+const mapDispatchToProps = dispatch => ({
+  updateLocation: async (location) => {
+    await dispatch(updateLocation(location));
+  },
+  updateKeywords: async (keywords) => {
+    await dispatch(updateKeywords(keywords));
+  },
+  performSearch: async () => {
+    await dispatch(performSearch());
+  },
+  toggleLayout: async () => {
+    await dispatch(toggleLayout());
+  },
+});
 export default connect(
   mapStateToProps,
   mapDispatchToProps

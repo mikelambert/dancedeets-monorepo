@@ -85,12 +85,12 @@ export default class ProportionalImage extends React.Component {
     return (
       <View
         onLayout={this.onLayout}
-        ref={(x) => {this.view = x;}}
+        ref={(x) => { this.view = x; }}
         {...this.props}
-        >
+      >
         <Animated.Image
           {...this.props}
-          style={[{opacity: this.state.opacity, height: this.state.height, width: this.state.width}, this.props.style]}
+          style={[{ opacity: this.state.opacity, height: this.state.height, width: this.state.width }, this.props.style]}
           onLoad={this.onLoad}
         />
       </View>

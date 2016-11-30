@@ -71,7 +71,7 @@ class Button extends React.Component {
       activityIndicator = (
         <View style={styles.spinnerContainer}>
           <ActivityIndicator
-            animating={true}
+            animating
             size="small"
             color={this.props.activityIndicatorColor || 'white'}
           />
@@ -79,12 +79,12 @@ class Button extends React.Component {
       );
       contentOpacity = 0;
     }
-    return <View>
+    return (<View>
       {activityIndicator}
-      <View style={{opacity: contentOpacity}}>
+      <View style={{ opacity: contentOpacity }}>
         {this._renderRealContent()}
       </View>
-      </View>;
+    </View>);
   }
 
   render() {
@@ -97,13 +97,14 @@ class Button extends React.Component {
     } else if (this.props.color === 'red') {
       colors = [redColors[0], redColors[1], redColors[1]];
     }
-    const buttonContents = <LinearGradient
+    const buttonContents = (<LinearGradient
       start={[0, 0]} end={[0, 1]}
       locations={[0.0, 0.7, 1.0]}
       colors={colors}
-      style={[styles.button, size]}>
-        {this._renderContent()}
-    </LinearGradient>;
+      style={[styles.button, size]}
+    >
+      {this._renderContent()}
+    </LinearGradient>);
 
     if (this.props.enabled) {
       return (
@@ -112,7 +113,8 @@ class Button extends React.Component {
           onPress={this.props.onPress}
           activeOpacity={0.8}
           style={[this.props.style]}
-          testID={this.props.testID}>
+          testID={this.props.testID}
+        >
           {buttonContents}
         </TouchableOpacity>
       );
@@ -122,7 +124,7 @@ class Button extends React.Component {
   }
 }
 
-var styles = StyleSheet.create({
+let styles = StyleSheet.create({
   button: {
     flexDirection: 'row',
     alignItems: 'center',

@@ -108,7 +108,7 @@ class _FilterHeader extends React.Component {
           <Text style={styles.headerText}>{this.props.intl.formatMessage(messages.showEvents)}</Text>
           <SegmentedControl
             values={[this.props.intl.formatMessage(messages.showEventsAll), this.props.intl.formatMessage(messages.showEventsNotYetAdded)]}
-            style={{flex: 1}}
+            style={{ flex: 1 }}
             defaultIndex={this.props.displayOptions.onlyUnadded ? 1 : 0}
             tintColor={yellowColors[1]}
             tryOnChange={index => this.props.setOnlyUnadded(index === 1)}
@@ -119,7 +119,7 @@ class _FilterHeader extends React.Component {
           <Text style={styles.headerText}>{this.props.intl.formatMessage(messages.sort)}</Text>
           <SegmentedControl
             values={[this.props.intl.formatMessage(messages.sortByStartDate), this.props.intl.formatMessage(messages.sortByName)]}
-            style={{flex: 1}}
+            style={{ flex: 1 }}
             tintColor={yellowColors[1]}
             defaultIndex={this.props.displayOptions.sortOrder === 'ByName' ? 1 : 0}
             tryOnChange={index => this.props.setSortOrder(index === 1 ? 'ByName' : 'ByDate')}
@@ -155,7 +155,7 @@ class _AddEventRow extends React.Component {
     if (this.props.event.clickedConfirming) {
       tempOverlay = (
         <View style={{ position: 'absolute', top: 20, left: 0 }}>
-          <Button size="small" caption={this.props.intl.formatMessage(messages.addEventButton)} onPress={()=>{this.props.onEventAdded(this.props.event);}} />
+          <Button size="small" caption={this.props.intl.formatMessage(messages.addEventButton)} onPress={() => { this.props.onEventAdded(this.props.event); }} />
         </View>
       );
     } else if (this.props.event.pending) {
@@ -168,7 +168,7 @@ class _AddEventRow extends React.Component {
     const addedBanner = (this.props.event.loaded ?
       (
         <View style={styles.disabledOverlay}>
-          <View style={[styles.redRibbon, {top: width / 2 - 10}]}>
+          <View style={[styles.redRibbon, { top: width / 2 - 10 }]}>
             <Text style={styles.redRibbonText}>
               {this.props.intl.formatMessage(messages.addedBanner).toUpperCase()}
             </Text>
@@ -183,10 +183,10 @@ class _AddEventRow extends React.Component {
     const row = (
       <HorizontalView>
         <View style={styles.leftEventImage}>
-          <View style={{ borderRadius: 10, width: width, overflow: 'hidden' }}>
+          <View style={{ borderRadius: 10, width, overflow: 'hidden' }}>
             <Image
               source={{ uri: imageUrl }}
-              style={{ width: width, height: width }}
+              style={{ width, height: width }}
             />
             {addedBanner}
           </View>

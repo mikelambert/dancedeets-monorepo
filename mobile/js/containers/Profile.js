@@ -52,7 +52,7 @@ const messages = defineMessages({
   tagline: {
     id: 'dancedeets.tagline',
     defaultMessage: 'Street Dance Events. Worldwide.',
-    description: 'Our tagline for DanceDeets, used when sharing the app/site'
+    description: 'Our tagline for DanceDeets, used when sharing the app/site',
   },
   shareTitle: {
     id: 'share.title',
@@ -135,27 +135,27 @@ const credits = [
       'French: Mai Le, Hayet',
       'Japanese: Huu Rock',
       'Chinese: Wei, King Kong, Zoe',
-    ]
-  ]
+    ],
+  ],
 ];
 
 class CreditSubList extends React.Component {
   render() {
-    const subcreditGroups = this.props.list.map((x) => <Text key={x} style={{left: 10}}>- {x}</Text>);
+    const subcreditGroups = this.props.list.map(x => <Text key={x} style={{ left: 10 }}>- {x}</Text>);
     return <View>{subcreditGroups}</View>;
   }
 }
 
 class _Credits extends React.Component {
   render() {
-    const creditHeader = <Heading1 style={{marginBottom: 5}}>{this.props.intl.formatMessage(messages.credits)}</Heading1>;
-    const creditGroups = credits.map((x) => <View key={x[0]} ><Text style={{fontWeight: 'bold'}}>{x[0]}:</Text><CreditSubList list={x[1]}/></View>);
+    const creditHeader = <Heading1 style={{ marginBottom: 5 }}>{this.props.intl.formatMessage(messages.credits)}</Heading1>;
+    const creditGroups = credits.map(x => <View key={x[0]} ><Text style={{ fontWeight: 'bold' }}>{x[0]}:</Text><CreditSubList list={x[1]} /></View>);
     const version = <Text style={styles.versionStyle}>Version: {NativeEnv.get('VERSION_NAME')}</Text>;
-    return <Card style={this.props.style}>
+    return (<Card style={this.props.style}>
       {creditHeader}
       {version}
       {creditGroups}
-    </Card>;
+    </Card>);
   }
 }
 const Credits = injectIntl(_Credits);
@@ -168,7 +168,7 @@ const shareLinkContent = {
 
 class _ShareButtons extends React.Component {
   getShareLinkContent() {
-    return Object.assign({}, shareLinkContent, {contentDescription: this.props.intl.formatMessage(messages.tagline)});
+    return Object.assign({}, shareLinkContent, { contentDescription: this.props.intl.formatMessage(messages.tagline) });
   }
 
   render() {
@@ -181,7 +181,7 @@ class _ShareButtons extends React.Component {
           caption={this.props.intl.formatMessage(messages.shareFacebook)}
           icon={require('../login/icons/facebook.png')}
           onPress={() => {
-            track('Share DanceDeets', {Button: 'Share FB Post'});
+            track('Share DanceDeets', { Button: 'Share FB Post' });
             ShareDialog.show(this.getShareLinkContent());
           }}
           style={styles.noFlexButton}
@@ -191,7 +191,7 @@ class _ShareButtons extends React.Component {
           caption={this.props.intl.formatMessage(messages.shareFacebookMessenger)}
           icon={require('../login/icons/facebook-messenger.png')}
           onPress={() => {
-            track('Share DanceDeets', {Button: 'Send FB Message'});
+            track('Share DanceDeets', { Button: 'Send FB Message' });
             MessageDialog.show(this.getShareLinkContent());
           }}
           style={styles.noFlexButton}
@@ -201,7 +201,7 @@ class _ShareButtons extends React.Component {
           caption={this.props.intl.formatMessage(messages.shareGeneric)}
           icon={Platform.OS === 'ios' ? require('./share-icons/small-share-ios.png') : require('./share-icons/small-share-android.png')}
           onPress={() => {
-            track('Share DanceDeets', {Button: 'Send Native'});
+            track('Share DanceDeets', { Button: 'Send Native' });
             const localizedShareLinkContent = this.getShareLinkContent();
             Share.open({
               message: localizedShareLinkContent.contentDescription,
@@ -222,54 +222,54 @@ const ShareButtons = injectIntl(_ShareButtons);
 function sendEmail() {
   track('Send Feedback');
   Mailer.mail({
-      subject: 'DanceDeets Feeback',
-      recipients: [`feedback+${Platform.OS}@dancedeets.com`],
-      body: '',
-    }, (error, event) => {
-        if (error) {
-          AlertIOS.alert('Error', 'Please email us at feedback@dancedeets.com');
-        }
-    });
+    subject: 'DanceDeets Feeback',
+    recipients: [`feedback+${Platform.OS}@dancedeets.com`],
+    body: '',
+  }, (error, event) => {
+    if (error) {
+      AlertIOS.alert('Error', 'Please email us at feedback@dancedeets.com');
+    }
+  });
 }
 
 function sendAdvertisingEmail() {
   track('Advertising');
   Mailer.mail({
-      subject: 'Advertising/Promotion Interest',
-      recipients: ['advertising@dancedeets.com'],
-      body: '',
-    }, (error, event) => {
-        if (error) {
-          AlertIOS.alert('Error', 'Please email us at feedback@dancedeets.com');
-        }
-    });
+    subject: 'Advertising/Promotion Interest',
+    recipients: ['advertising@dancedeets.com'],
+    body: '',
+  }, (error, event) => {
+    if (error) {
+      AlertIOS.alert('Error', 'Please email us at feedback@dancedeets.com');
+    }
+  });
 }
 
 class _UserProfile extends React.Component {
   render() {
     const user = this.props.user;
     if (!user) {
-      const loginButton = <Button
+      const loginButton = (<Button
         icon={require('../login/icons/facebook.png')}
-        style={{margin: 10}}
+        style={{ margin: 10 }}
         size="small"
         caption={this.props.intl.formatMessage(messages.login)}
         onPress={this.props.logIn}
-      />;
+      />);
       return loginButton;
     }
 
-    const logoutButton = <Button
-      style={{marginBottom: 10}}
+    const logoutButton = (<Button
+      style={{ marginBottom: 10 }}
       size="small"
       caption={this.props.intl.formatMessage(messages.logout)}
       onPress={() => this.props.logOutWithPrompt(this.props.intl)}
-    />;
+    />);
     const friendCount = user.friends.data.length || 0;
-    const image = user.picture ? <Image style={styles.profileImageSize} source={{uri: user.picture.data.url}}/> : null;
+    const image = user.picture ? <Image style={styles.profileImageSize} source={{ uri: user.picture.data.url }} /> : null;
     let friendsCopy = null;
     if (friendCount !== 0) {
-      friendsCopy = <Text style={{marginBottom: 10}}>{this.props.intl.formatMessage(messages.friendsUsing, {count: friendCount})}</Text>;
+      friendsCopy = <Text style={{ marginBottom: 10 }}>{this.props.intl.formatMessage(messages.friendsUsing, { count: friendCount })}</Text>;
     }
 
     // For some reason, if we use HorizontalView to lay things out (and we don't set a Card width),
@@ -278,20 +278,20 @@ class _UserProfile extends React.Component {
     // and so the bottom info bits overwrite or overflow improperly.
     // By just using an absolutely positioned element with a margin to manually flow,
     // things work so much better.
-    return <Card>
+    return (<Card>
       <View style={styles.profileLeft}>{image}</View>
       <View style={styles.profileRight}>
         <Heading1>{user.profile.name || ' '}</Heading1>
-        <Text style={{fontStyle: 'italic', marginBottom: 10}}>{user.ddUser.formattedCity || ' '}</Text>
+        <Text style={{ fontStyle: 'italic', marginBottom: 10 }}>{user.ddUser.formattedCity || ' '}</Text>
         {logoutButton}
       </View>
       {friendsCopy}
-      <Text style={{fontWeight: 'bold'}}>{this.props.intl.formatMessage(messages.profileDetailsHeader)}</Text>
+      <Text style={{ fontWeight: 'bold' }}>{this.props.intl.formatMessage(messages.profileDetailsHeader)}</Text>
       <Text>{this.props.intl.formatMessage(messages.profileDetailsContents, {
         handAdded: user.ddUser.num_hand_added_events || 0,
         autoAdded: user.ddUser.num_auto_added_events || 0,
       })}</Text>
-    </Card>;
+    </Card>);
   }
 }
 const UserProfile = connect(
@@ -300,7 +300,7 @@ const UserProfile = connect(
   }),
   (dispatch: Dispatch) => ({
     logIn: async () => await loginButtonPressed(dispatch),
-    logOutWithPrompt: (intl) => dispatch(logOutWithPrompt(intl)),
+    logOutWithPrompt: intl => dispatch(logOutWithPrompt(intl)),
   }),
 )(injectIntl(_UserProfile));
 
@@ -311,14 +311,14 @@ class _Profile extends React.Component {
     // iOS handles notification settings automatically for us, so let's offer this there
     let notificationButton = null;
     if (Platform.OS === 'android') {
-      notificationButton = <Button
+      notificationButton = (<Button
         size="small"
         caption={this.props.intl.formatMessage(messages.buttonNotificationSettings)}
         onPress={this.props.onNotificationPreferences}
-        />;
+      />);
     }
 
-    return <ScrollView style={styles.container} contentContainerStyle={styles.containerContent}>
+    return (<ScrollView style={styles.container} contentContainerStyle={styles.containerContent}>
 
       <UserProfile />
 
@@ -326,13 +326,13 @@ class _Profile extends React.Component {
 
       <ShareButtons />
 
-      <Button size="small" caption={this.props.intl.formatMessage(messages.buttonSendFeedback)} onPress={sendEmail} style={styles.noFlexButton}/>
+      <Button size="small" caption={this.props.intl.formatMessage(messages.buttonSendFeedback)} onPress={sendEmail} style={styles.noFlexButton} />
 
-      <Button size="small" caption={this.props.intl.formatMessage(messages.buttonAdvertisePromote)} onPress={sendAdvertisingEmail} style={styles.noFlexButton}/>
+      <Button size="small" caption={this.props.intl.formatMessage(messages.buttonAdvertisePromote)} onPress={sendAdvertisingEmail} style={styles.noFlexButton} />
 
       <Credits />
 
-    </ScrollView>;
+    </ScrollView>);
   }
 }
 export default injectIntl(_Profile);

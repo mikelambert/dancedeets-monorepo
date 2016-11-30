@@ -105,9 +105,9 @@ class SectionHeader extends React.Component {
   };
 
   render() {
-    return <View style={styles.sectionHeader}>
+    return (<View style={styles.sectionHeader}>
       <Text style={styles.sectionHeaderText}>{this.props.title}</Text>
-    </View>;
+    </View>);
   }
 }
 
@@ -120,7 +120,7 @@ class Onebox extends React.Component {
   oneboxClicked() {
     let url = this.props.onebox.url;
     // We want to track the pre-augmented URL
-    track('Onebox', {URL: url});
+    track('Onebox', { URL: url });
 
     // TOOD: Set up and use a webview to keep things "in-app" ?
     if (url.indexOf('?') > -1) {
@@ -146,14 +146,14 @@ class Onebox extends React.Component {
 
 class _AddEventButton extends React.Component {
   render() {
-    return <Button
+    return (<Button
       caption={this.props.intl.formatMessage(messages.addEvent)}
       color="red"
-      textStyle={{fontWeight: 'bold'}}
+      textStyle={{ fontWeight: 'bold' }}
       style={styles.addEventButton}
       onPress={this.props.onPress}
       testID="addEvents"
-    />;
+    />);
   }
 }
 const AddEventButton = injectIntl(_AddEventButton);
@@ -168,7 +168,7 @@ class _EventListContainer extends React.Component {
 
   constructor(props) {
     super(props);
-    var dataSource = new ListView.DataSource({
+    const dataSource = new ListView.DataSource({
       rowHasChanged: (row1, row2) => row1 !== row2,
       sectionHeaderHasChanged: (s1, s2) => s1 !== s2,
     });
@@ -189,11 +189,11 @@ class _EventListContainer extends React.Component {
     if (results) {
       if (results.onebox_links != null && results.onebox_links.length > 0) {
         const oneboxKey = this.props.intl.formatMessage(messages.specialLinks);
-        dataBlob[oneboxKey] = results.onebox_links.map((x) => x);
+        dataBlob[oneboxKey] = results.onebox_links.map(x => x);
         sectionHeaders.push(oneboxKey);
       }
       if (results.results != null && results.results.length > 0) {
-        for (var e of results.results) {
+        for (const e of results.results) {
           const start = moment(e.start_time, moment.ISO_8601);
           const formattedStart = this.props.intl.formatDate(start.toDate(), weekdayDate);
           if (!(formattedStart in dataBlob)) {
@@ -208,7 +208,7 @@ class _EventListContainer extends React.Component {
     }
     return {
       dataBlob,
-      sectionHeaders
+      sectionHeaders,
     };
   }
 
@@ -224,7 +224,7 @@ class _EventListContainer extends React.Component {
   componentWillReceiveProps(nextProps) {
     this.setState(this._getNewState(nextProps));
     if (nextProps.search.results !== this.props.search.results) {
-      this.list_view.scrollTo({x: 0, y: 0, animated: false});
+      this.list_view.scrollTo({ x: 0, y: 0, animated: false });
     }
   }
 
@@ -258,7 +258,7 @@ class _EventListContainer extends React.Component {
     if (!address) {
       return;
     }
-    await auth({location: address});
+    await auth({ location: address });
     // After sending an auth to update the user's address,
     // we should reload our local user's data too.
     this.props.loadUserData();
@@ -292,9 +292,9 @@ class _EventListContainer extends React.Component {
   async loadLocation() {
     try {
       const position = await getPosition();
-      this.setState({position});
+      this.setState({ position });
     } catch (e) {
-      console.log('Error fetching user location for finding distance-to-event: ' + e);
+      console.log(`Error fetching user location for finding distance-to-event: ${e}`);
     }
   }
 
@@ -308,13 +308,13 @@ class _EventListContainer extends React.Component {
 
   _renderRow(row) {
     if ('id' in row) {
-      return <EventRow
+      return (<EventRow
         event={row}
         onEventSelected={this.props.onEventSelected}
         currentPosition={this.state.position}
-      />;
+      />);
     } else {
-      return <Onebox onebox={row}/>;
+      return <Onebox onebox={row} />;
     }
   }
 
@@ -330,12 +330,12 @@ class _EventListContainer extends React.Component {
   }
 
   renderErrorView() {
-    return <View style={styles.errorView}>
+    return (<View style={styles.errorView}>
       <Text style={styles.errorText}>
         {this.props.intl.formatMessage(messages.fetchEventsError)}{' '}
         {this.props.intl.formatMessage(messages.networkRetry)}
       </Text>
-    </View>;
+    </View>);
   }
 
   renderSummaryView() {
@@ -354,7 +354,7 @@ class _EventListContainer extends React.Component {
       // Don't show any header for non-existent search queries/results
       return null;
     }
-    const header = this.props.intl.formatMessage(message, {location: query.location, keywords: query.keywords});
+    const header = this.props.intl.formatMessage(message, { location: query.location, keywords: query.keywords });
     return <Text style={styles.listHeader}>{header}</Text>;
   }
 
@@ -370,17 +370,17 @@ class _EventListContainer extends React.Component {
     } else {
       return null;
     }
-    return <AdMobBanner
-      bannerSize={"smartBannerPortrait"}
+    return (<AdMobBanner
+      bannerSize={'smartBannerPortrait'}
       adUnitID={adUnitID}
       didFailToReceiveAdWithError={this.bannerError}
-    />;
+    />);
   }
 
   renderListView() {
     return (
       <ListView
-        ref={(x) => {this.list_view = x;}}
+        ref={(x) => { this.list_view = x; }}
         style={[styles.listView]}
         dataSource={this.state.dataSource}
         renderHeader={this._renderHeader}
@@ -392,7 +392,7 @@ class _EventListContainer extends React.Component {
         }
         renderRow={this._renderRow}
         renderSectionHeader={(data, sectionID) =>
-          <SectionHeader title={_.upperFirst(sectionID)}/>
+          <SectionHeader title={_.upperFirst(sectionID)} />
         }
         initialListSize={5}
         pageSize={1}
@@ -406,24 +406,28 @@ class _EventListContainer extends React.Component {
   render() {
     return (
       <View style={styles.container}>
-        <SearchHeader onAddEvent={() => {
-          this.props.onAddEventClicked('Search Header');
-        }} >
+        <SearchHeader
+          onAddEvent={() => {
+            this.props.onAddEventClicked('Search Header');
+          }}
+        >
           {this.renderListView()}
         </SearchHeader>
-        <AddEventButton onPress={() => {
-          this.props.onAddEventClicked('Floating Button');
-        }} />
+        <AddEventButton
+          onPress={() => {
+            this.props.onAddEventClicked('Floating Button');
+          }}
+        />
       </View>
     );
   }
 }
 export default connect(
-  (state) => ({
+  state => ({
     search: state.search,
     user: state.user.userData,
   }),
-  (dispatch) => ({
+  dispatch => ({
     detectedLocation: async (location) => {
       await dispatch(detectedLocation(location));
     },

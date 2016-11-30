@@ -25,7 +25,7 @@ export default class ProgressiveLayout extends React.Component {
     const dataSource = new ListView.DataSource({
       rowHasChanged: (row1, row2) => row1 !== row2,
     });
-    this.state = {dataSource};
+    this.state = { dataSource };
     this.state = this._getNewState(props);
     (this: any)._renderRow = this._renderRow.bind(this);
   }
@@ -45,8 +45,8 @@ export default class ProgressiveLayout extends React.Component {
   }
 
   render() {
-    const {children, ...otherProps} = this.props;
-    return <ListView
+    const { children, ...otherProps } = this.props;
+    return (<ListView
       dataSource={this.state.dataSource}
       renderRow={this._renderRow}
       initialListSize={1}
@@ -54,6 +54,6 @@ export default class ProgressiveLayout extends React.Component {
       scrollRenderAheadDistance={10000}
       indicatorStyle="white"
       {...otherProps}
-    />;
+    />);
   }
 }

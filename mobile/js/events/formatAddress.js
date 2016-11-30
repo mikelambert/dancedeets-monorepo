@@ -66,7 +66,7 @@ export type Address = {
 
 
 export function format(address: Address) {
-  var components = [];
+  const components = [];
   // We really need *something* smaller than the AdminArea/State level.
   // Especially since there might not be a State sometimes (ie Helsinki, Finland).
   if (address.locality != null) {
@@ -78,9 +78,9 @@ export function format(address: Address) {
       // AdminArea=Tokyo
       //
       // Los Altos Hills, CA (ignores Santa Clara County in subadminarea)
-      components.push(address.locality);
+    components.push(address.locality);
   } else if (address.subAdminArea != null) {
-      components.push(address.subAdminArea);
+    components.push(address.subAdminArea);
   } else if (address.subAdministrativeArea != null) {
       // Sometimes there is only a SubAdminArea:
       // LatLong=60.1836354,24.9206748
@@ -88,7 +88,7 @@ export function format(address: Address) {
       // Locality=null
       // SubAdminArea=Helsinki
       // AdminArea=null
-      components.push(address.subAdministrativeArea);
+    components.push(address.subAdministrativeArea);
   } else if (address.subLocality != null) {
       // Sometimes there is only a SubLocality:
       // LatLong=40.790278,-73.959722
@@ -98,7 +98,7 @@ export function format(address: Address) {
       // AdminArea=Ontario
       // Dundas appears to be the smallest unit of geography,
       // so we check for it in the third if-block, hoping to find a proper city first.
-      components.push(address.subLocality);
+    components.push(address.subLocality);
   }
   // Sometimes there is too much data, and we want to drop a lot of it:
   // LatLong=40.790278,-73.959722
@@ -110,15 +110,15 @@ export function format(address: Address) {
 
   // Then grab the States/Province/etc (for those who have it)
   if (address.adminArea != null) {
-      components.push(address.adminArea);
+    components.push(address.adminArea);
   }
   if (address.administrativeArea != null) {
-      components.push(address.administrativeArea);
+    components.push(address.administrativeArea);
   }
   // And finally the Country, which should always be there...unless....I'm on a boat!
   // So let's be safe and make this optional, in which case we basically take whatever we can get
   if (address.country != null) {
-      components.push(address.country);
+    components.push(address.country);
   }
   return components.join(', ');
 }

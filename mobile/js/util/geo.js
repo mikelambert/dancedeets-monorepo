@@ -14,7 +14,7 @@ function getCurrentPosition() {
   return new Promise((resolve, reject) => {
     const highAccuracy = Platform.OS == 'ios';
     navigator.geolocation.getCurrentPosition(resolve, reject,
-      {enableHighAccuracy: highAccuracy, timeout: 10 * 1000, maximumAge: 10 * 60 * 1000}
+      { enableHighAccuracy: highAccuracy, timeout: 10 * 1000, maximumAge: 10 * 60 * 1000 }
     );
   });
 }

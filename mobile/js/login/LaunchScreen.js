@@ -13,17 +13,17 @@ import {
 
 export default class LaunchScreen extends React.Component {
   render() {
-    return <Image
+    return (<Image
       style={styles.container}
-      source={{uri: Platform.OS === 'ios' ? 'launch_screen.jpg' : 'launch_screen'}}
-      >
+      source={{ uri: Platform.OS === 'ios' ? 'launch_screen.jpg' : 'launch_screen' }}
+    >
       {this.props.children}
-    </Image>;
+    </Image>);
   }
 }
 
 
-var styles = StyleSheet.create({
+let styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: 'transparent',
@@ -31,5 +31,5 @@ var styles = StyleSheet.create({
     // it to prefer flex: 1
     width: undefined,
     height: undefined,
-  }
+  },
 });

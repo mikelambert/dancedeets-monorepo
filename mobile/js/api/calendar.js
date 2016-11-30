@@ -16,13 +16,13 @@ import moment from 'moment';
 
 function OkAlert(title: string, message: string, cancel = false): Promise<void> {
   return new Promise((resolve, reject) => {
-    var buttons = [];
+    const buttons = [];
     if (cancel) {
-      //TODO(localization)
-      buttons.push({text: 'Cancel', onPress: () => reject(), style: 'cancel'});
+      // TODO(localization)
+      buttons.push({ text: 'Cancel', onPress: () => reject(), style: 'cancel' });
     }
-    //TODO(localization)
-    buttons.push({text: 'OK', onPress: () => resolve()});
+    // TODO(localization)
+    buttons.push({ text: 'OK', onPress: () => resolve() });
     Alert.alert(title, message, buttons);
   });
 }
@@ -32,12 +32,12 @@ function OkCancelAlert(title: string, message: string): Promise<void> {
 }
 
 function getDescription(event: Event): string {
-  return event.getUrl() + '\n\n' + event.description;
+  return `${event.getUrl()}\n\n${event.description}`;
 }
 
 function getStartEndTime(event: Event) {
   // Parse dates-with-timezones, and use them to construct an event
-  var start = moment(event.start_time, moment.ISO_8601);
+  const start = moment(event.start_time, moment.ISO_8601);
   let end = null;
   if (event.end_time) {
     end = moment(event.end_time, moment.ISO_8601);
@@ -48,11 +48,11 @@ function getStartEndTime(event: Event) {
 }
 
 async function addIOS(event: Event) {
-  var status = await CalendarEventsIOS.authorizationStatus();
+  let status = await CalendarEventsIOS.authorizationStatus();
 
   if (status === 'undetermined') {
     try {
-      //TODO(localization)
+      // TODO(localization)
       await OkCancelAlert('Add to Calendar', 'To add this event to your calendar, you need to allow access to your calendar.');
       status = await CalendarEventsIOS.authorizeEventStore();
     } catch (error) {}
@@ -63,7 +63,7 @@ async function addIOS(event: Event) {
       OkAlert('Cannot Access Calendar', 'Could not access calendar.');
     } else if (status === 'denied') {
       try {
-        //TODO(localization)
+        // TODO(localization)
         await OkCancelAlert('Cannot Access Calendar', 'Please open Settings to allow Calendar permissions.');
         if (await Permissions.canOpenSettings()) {
           Permissions.openSettings();
@@ -96,7 +96,7 @@ function androidDate(date: Date) {
   try {
     return new Date(date - tzOffset).toISOString().replace(/T/, ' ').slice(0, 16);
   } catch (e) {
-    throw new Error('Date: new Date(' + date.toString() + ' - ' + tzOffset + ') returned invalid date');
+    throw new Error(`Date: new Date(${date.toString()} - ${tzOffset}) returned invalid date`);
   }
 }
 

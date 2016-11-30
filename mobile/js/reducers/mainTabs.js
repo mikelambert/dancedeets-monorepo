@@ -4,7 +4,7 @@
  * @flow
  */
 
-import type {Action} from '../actions/types';
+import type { Action } from '../actions/types';
 
 export type State = {
   selectedTab: string;
@@ -16,7 +16,7 @@ const initialState = {
 
 export function mainTabs(state: State = initialState, action: Action): State {
   if (action.type === 'TAB_SELECT') {
-    return {...state, selectedTab: action.tab};
+    return { ...state, selectedTab: action.tab };
   }
   return state;
 }

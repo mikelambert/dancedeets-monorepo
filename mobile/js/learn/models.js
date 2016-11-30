@@ -33,11 +33,11 @@ export class MediumBlog extends Blog {
     this.title = json.payload.value.name;
     this.description = json.payload.value.shortDescription;
     this.url = `https://medium.com/${json.payload.value.slug}`;
-    this.authorLookup = Object.keys(users).reduce(function(previous, x) {
+    this.authorLookup = Object.keys(users).reduce((previous, x) => {
       previous[x] = users[x].name;
       return previous;
     }, {});
-    this.posts = realPosts.map((x) => this.parseMediumPost(x));
+    this.posts = realPosts.map(x => this.parseMediumPost(x));
   }
 
   parseMediumPost(realPost: any): BlogPost {
@@ -47,7 +47,7 @@ export class MediumBlog extends Blog {
       preview: realPost.virtuals.snippet,
       postTime: realPost.createdAt,
       author: this.authorLookup[realPost.creatorId],
-      url: url,
+      url,
     };
   }
 
@@ -68,7 +68,7 @@ export class FeedBlog extends Blog {
     this.title = json.feed.title;
     this.description = json.feed.subtitle;
     this.url = json.feed.link;
-    this.posts = realPosts.map((x) => this.parseFeedPost(x));
+    this.posts = realPosts.map(x => this.parseFeedPost(x));
   }
 
   parseFeedPost(realPost: any): BlogPost {
@@ -100,13 +100,13 @@ export class YoutubePlaylistBlog extends Blog {
     });
     // Filter out any private/deleted videos which we can't access contentDetails for
     const filteredPlaylistItems = playlistItemsJson.items
-      .filter((x) => contentDetailsLookup[x.snippet.resourceId.videoId]);
+      .filter(x => contentDetailsLookup[x.snippet.resourceId.videoId]);
 
-    this.posts = filteredPlaylistItems.map((x) => this.parsePlaylistItem(x.snippet, contentDetailsLookup[x.snippet.resourceId.videoId]));
+    this.posts = filteredPlaylistItems.map(x => this.parsePlaylistItem(x.snippet, contentDetailsLookup[x.snippet.resourceId.videoId]));
   }
 
   author() {
-    //TODO: Fix this!
+    // TODO: Fix this!
     return this.posts[0].author;
   }
 
@@ -123,40 +123,40 @@ export class YoutubePlaylistBlog extends Blog {
 
   static getUrl(path: string, args: Object) {
     const formattedArgs = querystring.stringify(args);
-    var fullPath = path;
+    let fullPath = path;
     if (formattedArgs) {
-      fullPath += '?' + formattedArgs;
+      fullPath += `?${formattedArgs}`;
     }
     return fullPath;
   }
 
   static async getTimes(playlistItemsJson) {
-    const videoIds = playlistItemsJson.items.map((x) => x.snippet.resourceId.videoId);
+    const videoIds = playlistItemsJson.items.map(x => x.snippet.resourceId.videoId);
     const playlistItemsUrl = YoutubePlaylistBlog.getUrl('https://www.googleapis.com/youtube/v3/videos',
-    {
-      id: videoIds.join(','),
-      maxResults: 50,
-      part: 'contentDetails',
-      key: YoutubeKey,
-    });
+      {
+        id: videoIds.join(','),
+        maxResults: 50,
+        part: 'contentDetails',
+        key: YoutubeKey,
+      });
     const videosResult = await (await fetch(playlistItemsUrl)).json();
     return videosResult;
   }
 
   static async load(playlistId) {
     const playlistItemsUrl = YoutubePlaylistBlog.getUrl('https://www.googleapis.com/youtube/v3/playlistItems',
-    {
-      playlistId: playlistId,
-      maxResults: 50,
-      part: 'snippet',
-      key: YoutubeKey,
-    });
+      {
+        playlistId,
+        maxResults: 50,
+        part: 'snippet',
+        key: YoutubeKey,
+      });
     const playlistUrl = YoutubePlaylistBlog.getUrl('https://www.googleapis.com/youtube/v3/playlists',
-    {
-      id: playlistId,
-      part: 'snippet',
-      key: YoutubeKey,
-    });
+      {
+        id: playlistId,
+        part: 'snippet',
+        key: YoutubeKey,
+      });
     const playlistItemsResult = await (await fetch(playlistItemsUrl)).json();
     const videosResult = await YoutubePlaylistBlog.getTimes(playlistItemsResult);
     const playlistResult = await (await fetch(playlistUrl)).json();

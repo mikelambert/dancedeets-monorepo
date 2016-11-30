@@ -33,7 +33,7 @@ import {
 	Text,
 } from '../ui';
 import {
-	purpleColors
+	purpleColors,
 } from '../Colors';
 
 const {
@@ -64,77 +64,77 @@ type CallingProps = {
 };
 
 const NavigationHeaderTitle = ({ children, style, textStyle, viewProps }) => (
-  <View style={[ styles.title, style ]} {...viewProps}>
-    <Text style={[ styles.titleText, textStyle ]} numberOfLines={1}>{children}</Text>
+  <View style={[styles.title, style]} {...viewProps}>
+    <Text style={[styles.titleText, textStyle]} numberOfLines={1}>{children}</Text>
   </View>
 );
 
 class _Navigator extends React.Component {
-	props: NavigatorProps & Navigatable & CallingProps;
+  props: NavigatorProps & Navigatable & CallingProps;
 
-	constructor(props) {
-		super(props);
-		(this: any)._renderHeader = this._renderHeader.bind(this);
-		(this: any).renderLeft = this.renderLeft.bind(this);
-		(this: any).renderTitle = this.renderTitle.bind(this);
-		(this: any).renderRight = this.renderRight.bind(this);
-	}
+  constructor(props) {
+    super(props);
+    (this: any)._renderHeader = this._renderHeader.bind(this);
+    (this: any).renderLeft = this.renderLeft.bind(this);
+    (this: any).renderTitle = this.renderTitle.bind(this);
+    (this: any).renderRight = this.renderRight.bind(this);
+  }
 
-	renderLeft(props) {
-		if (!props.scene.index) {
-			return null;
-		}
-		const icon = Platform.OS == 'ios' ? require('./navbar-icons/back-ios.png') : require('./navbar-icons/back-android.png');
-		return <TouchableOpacity style={styles.centeredContainer} onPress={props.onNavigateBack}>
-			<Image style={{height: 18, width: 18}} source={icon} />
-		</TouchableOpacity>;
-	}
+  renderLeft(props) {
+    if (!props.scene.index) {
+      return null;
+    }
+    const icon = Platform.OS == 'ios' ? require('./navbar-icons/back-ios.png') : require('./navbar-icons/back-android.png');
+    return (<TouchableOpacity style={styles.centeredContainer} onPress={props.onNavigateBack}>
+      <Image style={{ height: 18, width: 18 }} source={icon} />
+    </TouchableOpacity>);
+  }
 
-	renderTitle(props) {
-		let title = props.scene.route.title;
-		if (props.scene.route.message) {
-			title = this.props.intl.formatMessage(props.scene.route.message);
-		}
-		return <NavigationHeaderTitle>
-			{title}
-		</NavigationHeaderTitle>;
-	}
+  renderTitle(props) {
+    let title = props.scene.route.title;
+    if (props.scene.route.message) {
+      title = this.props.intl.formatMessage(props.scene.route.message);
+    }
+    return (<NavigationHeaderTitle>
+      {title}
+    </NavigationHeaderTitle>);
+  }
 
-	renderRight(props) {
-		if (props.scene.route.event) {
-			return <View style={styles.centeredContainer}><ShareEventIcon event={props.scene.route.event} /></View>;
-		}
-		return null;
-	}
+  renderRight(props) {
+    if (props.scene.route.event) {
+      return <View style={styles.centeredContainer}><ShareEventIcon event={props.scene.route.event} /></View>;
+    }
+    return null;
+  }
 
-	_renderHeader(props) {
+  _renderHeader(props) {
 		// 0.33: Disable for now, as it doesn't appear to work: <GradientBar style={styles.navHeader}>
-		return <NavigationHeader
-			{...props}
-			style={[styles.navHeader, {backgroundColor: gradientTop, borderBottomWidth: 0}]}
-			renderLeftComponent={this.renderLeft}
-			renderTitleComponent={this.renderTitle}
-			renderRightComponent={this.renderRight}
+    return (<NavigationHeader
+      {...props}
+      style={[styles.navHeader, { backgroundColor: gradientTop, borderBottomWidth: 0 }]}
+      renderLeftComponent={this.renderLeft}
+      renderTitleComponent={this.renderTitle}
+      renderRightComponent={this.renderRight}
       // Use this.props here, instead of passed-in props
       onNavigateBack={this.props.onBack}
-		/>;
-	}
+    />);
+  }
 
-	render() {
-		return (
-			<NavigationCardStack
-				navigationState={this.props.navigationState}
-				style={styles.outerContainer}
-				onBack={this.props.onBack}
-				renderHeader={this._renderHeader}
-				renderScene={(props) => this.props.renderScene(props, this.props)}
-				cardStyle={{
-					backgroundColor: purpleColors[4],
-					marginTop: APPBAR_HEIGHT + STATUSBAR_HEIGHT,
-				}}
-			/>
-		);
-	}
+  render() {
+    return (
+      <NavigationCardStack
+        navigationState={this.props.navigationState}
+        style={styles.outerContainer}
+        onBack={this.props.onBack}
+        renderHeader={this._renderHeader}
+        renderScene={props => this.props.renderScene(props, this.props)}
+        cardStyle={{
+          backgroundColor: purpleColors[4],
+          marginTop: APPBAR_HEIGHT + STATUSBAR_HEIGHT,
+        }}
+      />
+    );
+  }
 
   backToHome() {
     this.props.goHome();
@@ -142,64 +142,64 @@ class _Navigator extends React.Component {
 }
 const Navigator = injectIntl(_Navigator);
 
-export default function(navName: string) {
-	const component = connect(
+export default function (navName: string) {
+  const component = connect(
 		state => ({
-			navigationState: getNamedState(state.navigationState, navName),
-		}),
+  navigationState: getNamedState(state.navigationState, navName),
+}),
 		(dispatch: Dispatch) => ({
-			onNavigate: (destState) => dispatch(navigatePush(navName, destState)),
-			goHome: async () => {
-				await dispatch(navigatePop(navName));
-				await dispatch(navigatePop(navName));
-			},
-			onBack: () => dispatch(navigatePop(navName)),
-			onSwap: (key, newRoute) => dispatch(navigateSwap(navName, key, newRoute)),
-		}),
+  onNavigate: destState => dispatch(navigatePush(navName, destState)),
+  goHome: async () => {
+    await dispatch(navigatePop(navName));
+    await dispatch(navigatePop(navName));
+  },
+  onBack: () => dispatch(navigatePop(navName)),
+  onSwap: (key, newRoute) => dispatch(navigateSwap(navName, key, newRoute)),
+}),
 	)(Navigator);
-	component.navName = navName;
-	return component;
+  component.navName = navName;
+  return component;
 }
 
 const styles = StyleSheet.create({
-	outerContainer: {
-		flex: 1,
-		backgroundColor: 'black',
-	},
-	container: {
-		flex: 1,
-	},
+  outerContainer: {
+    flex: 1,
+    backgroundColor: 'black',
+  },
+  container: {
+    flex: 1,
+  },
 	// These are basically copied from NavigationHeader.js
-	navHeader: {
-		alignItems: 'center',
-		elevation: 1,
-		flexDirection: 'row',
-		height: APPBAR_HEIGHT + STATUSBAR_HEIGHT,
-		justifyContent: 'flex-start',
-		left: 0,
-		marginBottom: 16, // This is needed for elevation shadow
-		position: 'absolute',
-		right: 0,
-		top: 0,
-	},
-	centeredContainer: {
-		flex: 1,
-		justifyContent: 'center',
-		marginLeft: 10,
-		marginRight: 10,
-	},
-	title: {
+  navHeader: {
+    alignItems: 'center',
+    elevation: 1,
+    flexDirection: 'row',
+    height: APPBAR_HEIGHT + STATUSBAR_HEIGHT,
+    justifyContent: 'flex-start',
+    left: 0,
+    marginBottom: 16, // This is needed for elevation shadow
+    position: 'absolute',
+    right: 0,
+    top: 0,
+  },
+  centeredContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    marginLeft: 10,
+    marginRight: 10,
+  },
+  title: {
     flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
-    marginHorizontal: 16
+    marginHorizontal: 16,
   },
   titleText: {
     flex: 1,
     fontSize: semiNormalize(18),
     fontWeight: '500',
     color: 'white',
-    textAlign: Platform.OS === 'ios' ? 'center' : 'left'
-  }
+    textAlign: Platform.OS === 'ios' ? 'center' : 'left',
+  },
 
 });

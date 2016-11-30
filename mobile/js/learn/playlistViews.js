@@ -94,7 +94,7 @@ const messages = defineMessages({
   languagePrefixedTitle: {
     id: 'tutorialVideos.languagePrefixedTitle',
     defaultMessage: '{language}: {title}',
-    description: 'When we have a foreign language tutorial, we prefix that language to the title'
+    description: 'When we have a foreign language tutorial, we prefix that language to the title',
   },
   timeHoursMinutes: {
     id: 'tutorialVideos.timeHoursMinutes',
@@ -158,13 +158,11 @@ class _PlaylistStylesView extends React.Component {
   async load() {
     const playlistsJson = await getRemoteTutorials();
 
-    const constructedPlaylists = playlistsJson.map((style) => {
-      return {
-        ...style,
-        tutorials: sortedTutorials(style.tutorials, this.props.intl.locale).map((x) => new Playlist(x)),
-      };
-    });
-    this.setState({stylePlaylists: constructedPlaylists});
+    const constructedPlaylists = playlistsJson.map(style => ({
+      ...style,
+      tutorials: sortedTutorials(style.tutorials, this.props.intl.locale).map(x => new Playlist(x)),
+    }));
+    this.setState({ stylePlaylists: constructedPlaylists });
   }
 
   renderRow(style: any) {
@@ -175,7 +173,7 @@ class _PlaylistStylesView extends React.Component {
     if (style.style.titleMessage) {
       styleTitle = this.props.intl.formatMessage(style.style.titleMessage);
     }
-    return <TouchableHighlight
+    return (<TouchableHighlight
       onPress={() => {
         this.props.onSelected(style, this.state.stylePlaylists[style]);
       }}
@@ -183,32 +181,36 @@ class _PlaylistStylesView extends React.Component {
         margin: boxMargin,
         borderRadius: 10,
       }}
+    >
+      <View
+        style={{
+          width: boxWidth,
+          padding: 5,
+          backgroundColor: purpleColors[2],
+          borderRadius: 10,
+          alignItems: 'center',
+        }}
       >
-      <View style={{
-        width: boxWidth,
-        padding: 5,
-        backgroundColor: purpleColors[2],
-        borderRadius: 10,
-        alignItems: 'center',
-      }}>
-        <Image source={style.style.thumbnail} resizeMode="contain" style={{width: imageWidth, height: imageWidth}}/>
+        <Image source={style.style.thumbnail} resizeMode="contain" style={{ width: imageWidth, height: imageWidth }} />
         <Text style={[styles.boxTitle, styles.boxText]}>{styleTitle}</Text>
-        <Text style={styles.boxText}>{this.props.intl.formatMessage(messages.numTutorials, {count: style.tutorials.length})}</Text>
-        <Text style={styles.boxText}>{this.props.intl.formatMessage(messages.totalTime, {time: length})}</Text>
+        <Text style={styles.boxText}>{this.props.intl.formatMessage(messages.numTutorials, { count: style.tutorials.length })}</Text>
+        <Text style={styles.boxText}>{this.props.intl.formatMessage(messages.totalTime, { time: length })}</Text>
       </View>
-    </TouchableHighlight>;
+    </TouchableHighlight>);
   }
 
   renderHeader() {
-    return <Text style={{
-      textAlign: 'center',
-      margin: 10,
-      width: listViewWidth(),
-    }}>{this.props.intl.formatMessage(messages.chooseStyle)}</Text>;
+    return (<Text
+      style={{
+        textAlign: 'center',
+        margin: 10,
+        width: listViewWidth(),
+      }}
+    >{this.props.intl.formatMessage(messages.chooseStyle)}</Text>);
   }
 
   render() {
-    return <FeedListView
+    return (<FeedListView
       items={this.state.stylePlaylists}
       renderRow={this.renderRow}
       renderHeader={this.renderHeader}
@@ -219,7 +221,7 @@ class _PlaylistStylesView extends React.Component {
         flexWrap: 'wrap',
         alignItems: 'flex-start',
       }}
-      />;
+    />);
   }
 }
 export const PlaylistStylesView = injectIntl(_PlaylistStylesView);
@@ -242,9 +244,9 @@ class _PlaylistListView extends React.Component {
     let title = playlist.title;
     if (this.props.intl.locale != playlist.language) {
       const localizedLanguage = languages[this.props.intl.locale][playlist.language];
-      title = this.props.intl.formatMessage(messages.languagePrefixedTitle, {language: _.upperFirst(localizedLanguage), title: playlist.title});
+      title = this.props.intl.formatMessage(messages.languagePrefixedTitle, { language: _.upperFirst(localizedLanguage), title: playlist.title });
     }
-    return <TouchableHighlight
+    return (<TouchableHighlight
       onPress={() => {
         this.props.onSelected(playlist);
       }}
@@ -252,63 +254,68 @@ class _PlaylistListView extends React.Component {
         margin: boxMargin,
         borderRadius: 10,
       }}
-      >
+    >
       <View
         style={{
           width: boxWidth,
           backgroundColor: purpleColors[2],
           padding: 5,
           borderRadius: 10,
-        }}>
-        <Image source={{uri: playlist.thumbnail}} resizeMode="cover" style={styles.thumbnail} />
+        }}
+      >
+        <Image source={{ uri: playlist.thumbnail }} resizeMode="cover" style={styles.thumbnail} />
         <Text style={[styles.boxTitle, styles.boxText]}>{title}</Text>
-        <Text style={styles.boxText}>{this.props.intl.formatMessage(messages.numVideosWithDuration, {count: playlist.getVideoCount(), duration})}</Text>
+        <Text style={styles.boxText}>{this.props.intl.formatMessage(messages.numVideosWithDuration, { count: playlist.getVideoCount(), duration })}</Text>
       </View>
-    </TouchableHighlight>;
+    </TouchableHighlight>);
   }
 
   renderHeader() {
-    return <Text style={{
-      textAlign: 'center',
-      margin: 10,
-      width: listViewWidth(),
-    }}>{this.props.intl.formatMessage(messages.chooseTutorial)}</Text>;
+    return (<Text
+      style={{
+        textAlign: 'center',
+        margin: 10,
+        width: listViewWidth(),
+      }}
+    >{this.props.intl.formatMessage(messages.chooseTutorial)}</Text>);
   }
 
   renderFooter() {
-    return <View style={{
+    return (<View
+      style={{
         margin: 10,
         width: listViewWidth(),
-      }}>
+      }}
+    >
       <Text>
-      {this.props.intl.formatMessage(messages.tutorialFooter)}
+        {this.props.intl.formatMessage(messages.tutorialFooter)}
       </Text>
-      <HorizontalView style={{alignItems: 'center'}}>
-      <Button
-        size="small"
-        caption={this.props.intl.formatMessage(messages.contact)}
-        onPress={this.sendTutorialContactEmail}
-      >Contact Us</Button>
-      <Text>{this.props.intl.formatMessage(messages.contactSuffix)}</Text>
+      <HorizontalView style={{ alignItems: 'center' }}>
+        <Button
+          size="small"
+          caption={this.props.intl.formatMessage(messages.contact)}
+          onPress={this.sendTutorialContactEmail}
+        >Contact Us</Button>
+        <Text>{this.props.intl.formatMessage(messages.contactSuffix)}</Text>
       </HorizontalView>
-    </View>;
+    </View>);
   }
 
   sendTutorialContactEmail() {
     track('Contact Tutorials');
     Mailer.mail({
-        subject: 'More Tutorials',
-        recipients: ['advertising@dancedeets.com'],
-        body: '',
-      }, (error, event) => {
-          if (error) {
-            AlertIOS.alert('Error', 'Please email us at feedback@dancedeets.com');
-          }
-      });
+      subject: 'More Tutorials',
+      recipients: ['advertising@dancedeets.com'],
+      body: '',
+    }, (error, event) => {
+      if (error) {
+        AlertIOS.alert('Error', 'Please email us at feedback@dancedeets.com');
+      }
+    });
   }
 
   render() {
-    return <FeedListView
+    return (<FeedListView
       items={this.props.playlists}
       renderRow={this.renderRow}
       renderHeader={this.renderHeader}
@@ -320,7 +327,7 @@ class _PlaylistListView extends React.Component {
         flexWrap: 'wrap',
         alignItems: 'flex-start',
       }}
-      />;
+    />);
   }
 }
 export const PlaylistListView = injectIntl(_PlaylistListView);
@@ -329,12 +336,12 @@ function formatDuration(formatMessage: (message: Object, timeData: Object) => st
   const hours = Math.floor(durationSeconds / 60 / 60);
   const minutes = Math.floor(durationSeconds / 60) % 60;
   if (durationSeconds > 60 * 60) {
-    return formatMessage(messages.timeHoursMinutes, {hours, minutes});
+    return formatMessage(messages.timeHoursMinutes, { hours, minutes });
   } else if (durationSeconds > 60) {
-    return formatMessage(messages.timeMinutes, {minutes});
+    return formatMessage(messages.timeMinutes, { minutes });
   } else {
     const seconds = durationSeconds;
-    return formatMessage(messages.timeSeconds, {seconds});
+    return formatMessage(messages.timeSeconds, { seconds });
   }
 }
 
@@ -351,11 +358,11 @@ export class SectionedListView extends React.Component {
 
   constructor(props: SectionedListViewProps) {
     super(props);
-    var dataSource = new ListView.DataSource({
+    const dataSource = new ListView.DataSource({
       rowHasChanged: (row1, row2) => row1 !== row2,
       sectionHeaderHasChanged: (s1, s2) => s1 !== s2,
     });
-    this.state = {dataSource};
+    this.state = { dataSource };
     this.state = this._getNewState(this.props.items, this.props.sectionHeaders);
   }
 
@@ -372,16 +379,16 @@ export class SectionedListView extends React.Component {
   }
 
   render() {
-    const {sectionHeaders, items, ...otherProps} = this.props;
-    return <ListView
-      ref={(x) => this.listView = x}
+    const { sectionHeaders, items, ...otherProps } = this.props;
+    return (<ListView
+      ref={x => this.listView = x}
       dataSource={this.state.dataSource}
       initialListSize={10}
       pageSize={5}
       scrollRenderAheadDistance={10000}
       indicatorStyle="white"
       {...otherProps}
-     />;
+    />);
   }
 
   scrollTo(options: {x?: number; y?: number; animated?: boolean}) {
@@ -400,8 +407,8 @@ class YouTubeNoReload extends React.Component {
     }
     const style = this.props.style;
     const nextStyle = nextProps.style;
-    const trimmedProps = {...this.props, style: null, videoId: null};
-    const trimmedNextProps = {...nextProps, style: null, videoId: null};
+    const trimmedProps = { ...this.props, style: null, videoId: null };
+    const trimmedNextProps = { ...nextProps, style: null, videoId: null };
     const diff = !styleEqual(style, nextStyle) || !shallowEqual(trimmedProps, trimmedNextProps) || !shallowEqual(this.state, nextState);
     if (!diff && (this.props.videoId != nextProps.videoId)) {
       // setNativeProps only exists on Android, be careful!
@@ -421,12 +428,12 @@ class YouTubeNoReload extends React.Component {
   }
 
   render() {
-    return <YouTube
+    return (<YouTube
       ref={(x) => {
         this._root = x;
       }}
       {...this.props}
-      />;
+    />);
   }
 }
 
@@ -467,18 +474,18 @@ class _PlaylistView extends React.Component {
   renderHeader() {
     const subtitle = this.props.playlist.subtitle ? <Text style={styles.playlistSubtitle}>{this.props.playlist.subtitle}</Text> : null;
     const duration = formatDuration(this.props.intl.formatMessage, this.props.playlist.getDurationSeconds());
-    return <View style={styles.playlistRow}>
+    return (<View style={styles.playlistRow}>
       <Text style={styles.playlistTitle}>{this.props.playlist.title}</Text>
       {subtitle}
       <Text style={styles.playlistSubtitle}>{this.props.playlist.author} - {duration}</Text>
-    </View>;
+    </View>);
   }
 
   renderRow(rowData: any, section: string, row: string) {
-    const {video, selected} = rowData;
+    const { video, selected } = rowData;
     const duration = formatDuration(this.props.intl.formatMessage, video.getDurationSeconds());
     const sectionIndex = this.props.playlist.getSectionHeaders().indexOf(section);
-    return <TouchableHighlight
+    return (<TouchableHighlight
       underlayColor={purpleColors[0]}
       activeOpacity={0.5}
       onPress={() => {
@@ -497,25 +504,25 @@ class _PlaylistView extends React.Component {
         const top = e.nativeEvent.layout.y;
         const bottom = top + e.nativeEvent.layout.height;
         this.setCachedLayoutForRow(sectionIndex, rowIndex, top, bottom);
-      }}>
+      }}
+    >
       <View>
-      <HorizontalView style={[styles.videoRow, selected ? styles.videoActiveRow : styles.videoInactiveRow]}>
-        <Image source={require('./images/play.png')} style={styles.videoPlay} />
-        <View style={{flex: 1}}>
-          <Text style={styles.videoTitle}>{video.title}</Text>
-          <Text style={styles.videoDuration}>{duration}</Text>
-        </View>
-      </HorizontalView>
+        <HorizontalView style={[styles.videoRow, selected ? styles.videoActiveRow : styles.videoInactiveRow]}>
+          <Image source={require('./images/play.png')} style={styles.videoPlay} />
+          <View style={{ flex: 1 }}>
+            <Text style={styles.videoTitle}>{video.title}</Text>
+            <Text style={styles.videoDuration}>{duration}</Text>
+          </View>
+        </HorizontalView>
       </View>
-    </TouchableHighlight>;
-
+    </TouchableHighlight>);
   }
 
   setCachedLayoutForRow(section, row, top, bottom) {
     if (!this.cachedLayout[section]) {
       this.cachedLayout[section] = [];
     }
-    this.cachedLayout[section][row] = {top, bottom};
+    this.cachedLayout[section][row] = { top, bottom };
   }
 
   renderSectionHeader(data: Video[], sectionId: string) {
@@ -526,10 +533,10 @@ class _PlaylistView extends React.Component {
     }
     const sectionData = JSON.parse(sectionId);
     const duration = formatDuration(this.props.intl.formatMessage, sectionData.durationSeconds);
-    return <View style={styles.sectionRow}>
+    return (<View style={styles.sectionRow}>
       <Text style={styles.sectionTitle}>{sectionData.title}</Text>
       <Text style={styles.sectionDuration}>{duration}</Text>
-    </View>;
+    </View>);
   }
 
   getSelectedVideo() {
@@ -537,7 +544,7 @@ class _PlaylistView extends React.Component {
   }
 
   ensureTutorialVisible(index) {
-    const {section, row} = this.props.playlist.getVideoSectionRow(index);
+    const { section, row } = this.props.playlist.getVideoSectionRow(index);
     // {top, bottom} of the element
     const element = this.cachedLayout[section][row];
     // {top, bottom} of the containing view's current scroll position
@@ -566,7 +573,7 @@ class _PlaylistView extends React.Component {
   onListViewScroll(e) {
     const top = e.nativeEvent.contentOffset.y;
     const bottom = top + e.nativeEvent.layoutMeasurement.height;
-    this.viewDimensions = {top, bottom};
+    this.viewDimensions = { top, bottom };
   }
 
   onChangeState(props: Object) {
@@ -575,7 +582,7 @@ class _PlaylistView extends React.Component {
       const newIndex = this.props.tutorialVideoIndex + 1;
       if (newIndex < this.props.playlist.getVideoCount()) {
         // scroll it into view
-        this.ensureTutorialVisible(newIndex)
+        this.ensureTutorialVisible(newIndex);
         // and select it, playing the video
         this.props.setTutorialVideoIndex(newIndex);
       }
@@ -585,7 +592,7 @@ class _PlaylistView extends React.Component {
   onListViewLayout(e) {
     const top = e.nativeEvent.layout.y;
     const bottom = top + e.nativeEvent.layout.height;
-    this.viewDimensions = {top, bottom};
+    this.viewDimensions = { top, bottom };
   }
 
   render() {
@@ -597,24 +604,24 @@ class _PlaylistView extends React.Component {
     // speed-rate, play/pause, back-ten-seconds, airplay
     const video = this.getSelectedVideo();
     const height = Dimensions.get('window').width * video.height / video.width;
-    return <View style={styles.container}>
+    return (<View style={styles.container}>
       <YouTubeNoReload
         ref={(x) => {
           this.youtubePlayer = x;
         }}
         apiKey={googleKey}
         videoId={video.youtubeId}
-        play={true} // auto-play when loading a tutorial
+        play // auto-play when loading a tutorial
         hidden={false}
-        playsInline={true}
+        playsInline
         loop={false}
         rel={false}
-        showinfo={true}
-        //controls={0}
-        modestbranding={true}
-        style={{alignSelf: 'stretch', height: height}}
+        showinfo
+        // controls={0}
+        modestbranding
+        style={{ alignSelf: 'stretch', height }}
         onChangeState={this.onChangeState}
-        />
+      />
       <View style={styles.listViewWrapper}>
         <SectionedListView
           ref={(x) => {
@@ -627,18 +634,16 @@ class _PlaylistView extends React.Component {
           renderHeader={this.renderHeader}
           onScroll={this.onListViewScroll}
           onLayout={this.onListViewLayout}
-          />
+        />
       </View>
-    </View>;
+    </View>);
   }
 }
 export const PlaylistView = connect(
-  (state) => {
-    return {
-      tutorialVideoIndex: state.tutorials.videoIndex,
-      selectedTab: state.mainTabs.selectedTab,
-    };
-  },
+  state => ({
+    tutorialVideoIndex: state.tutorials.videoIndex,
+    selectedTab: state.mainTabs.selectedTab,
+  }),
   (dispatch: Dispatch) => ({
     setTutorialVideoIndex: (eventId, language) => dispatch(setTutorialVideoIndex(eventId, language)),
   }),

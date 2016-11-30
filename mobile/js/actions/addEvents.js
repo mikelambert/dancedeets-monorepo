@@ -17,7 +17,7 @@ export function reloadAddEvents(): ThunkAction {
     await dispatch(reloadStart());
     try {
       const responseData = await getAddEvents();
-      track('Add Event Loaded', {'Potential Events': responseData.events.length});
+      track('Add Event Loaded', { 'Potential Events': responseData.events.length });
       await dispatch(reloadComplete(responseData.events));
     } catch (e) {
       console.log('error fetching events', e, e.stack);

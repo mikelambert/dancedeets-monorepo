@@ -34,13 +34,13 @@ function disabledColor(color: string, multiplier: number = 0.5) {
     (colorNumber & 0x00ff0000) >> 16,         // g
     (colorNumber & 0x0000ff00) >> 8,          // b
   ];
-  const disabledColorComponents = colorComponents.map((d) => d * multiplier);
+  const disabledColorComponents = colorComponents.map(d => d * multiplier);
   const disabledNumber = (
     (disabledColorComponents[0] << 16) |
-    (disabledColorComponents[1] << 8)  |
+    (disabledColorComponents[1] << 8) |
     (disabledColorComponents[2] << 0)
   );
-  const disabledHex = '#' + ('000000' + disabledNumber.toString(16)).substr(-6);
+  const disabledHex = `#${(`000000${disabledNumber.toString(16)}`).substr(-6)}`;
   return disabledHex;
 }
 
@@ -77,7 +77,7 @@ export default class SegmentedControl extends React.Component {
     }
     // Android does this automatically before we come in. But iOS does not, so enforce it here.
     if (Platform.OS == 'ios') {
-      this.setState({selectedIndex: index});
+      this.setState({ selectedIndex: index });
     }
     // If we're not enabled, don't actually attempt to do anything
     // This is important for Android, which doesn't support enabled natively,
@@ -91,8 +91,8 @@ export default class SegmentedControl extends React.Component {
       //
       // By changing the state back-and-forth, we force a native update and re-render,
       // which ensures the native component will point at selectedIndex.
-      this.setState({selectedIndex: index});
-      this.setState({selectedIndex: oldIndex});
+      this.setState({ selectedIndex: index });
+      this.setState({ selectedIndex: oldIndex });
       return;
     }
     // Only we're enabled, let's try our update (and rolling back, if there were any failures)
@@ -101,35 +101,35 @@ export default class SegmentedControl extends React.Component {
         await this.props.tryOnChange(index, oldIndex);
       } catch (e) {
         console.warn('Undoing SegmentedControl due to error calling tryOnChange:', e, e.stack);
-        this.setState({selectedIndex: oldIndex});
+        this.setState({ selectedIndex: oldIndex });
       }
     } else {
-      this.setState({selectedIndex: index});
+      this.setState({ selectedIndex: index });
     }
   }
 
 
   render() {
     if (Platform.OS === 'ios') {
-      return <SegmentedControlIOS
+      return (<SegmentedControlIOS
         style={this.props.style}
         values={this.props.values}
         enabled={this.props.enabled}
         selectedIndex={this.state.selectedIndex}
-        onChange={(event) => this.onChange(event.nativeEvent.selectedSegmentIndex)}
+        onChange={event => this.onChange(event.nativeEvent.selectedSegmentIndex)}
         tintColor={this.props.tintColor} // iOS handles the disabled color automatically
-      />;
+      />);
     } else {
       const tintColor = this.props.enabled ? this.props.tintColor : disabledColor(this.props.tintColor);
-      return <SegmentedControlAndroid
+      return (<SegmentedControlAndroid
         key="selected"
-        style={[{height: 30}, this.props.style]}
+        style={[{ height: 30 }, this.props.style]}
         childText={this.props.values}
         orientation="horizontal"
-        onChange={(event) => this.onChange(event.selected)}
+        onChange={event => this.onChange(event.selected)}
         tintColor={[tintColor, '#000000']}
         selectedPosition={this.state.selectedIndex}
-        />;
+      />);
     }
   }
 }

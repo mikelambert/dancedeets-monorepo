@@ -44,10 +44,10 @@ class LoginFlow extends React.Component {
   }
 }
 export default connect(
-  (state) => ({
+  state => ({
     isOnboarding: state.user.isOnboarding,
   }),
-  (dispatch) => ({
+  dispatch => ({
     autoLoginAtStartup: () => autoLoginAtStartup(dispatch),
   }),
 )(LoginFlow);

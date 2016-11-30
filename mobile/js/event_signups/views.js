@@ -74,7 +74,7 @@ class CompactTeam extends React.Component {
 }
 
 function getCategorySignups(category: Category): Array<Signup> {
-  const result: Array<any> = Object.entries(category.signups || {}).sort().map((x) => x[1]);
+  const result: Array<any> = Object.entries(category.signups || {}).sort().map(x => x[1]);
   return result;
 }
 
@@ -85,7 +85,7 @@ class _UserRegistrationStatus extends React.Component {
 
   constructor(props) {
     super(props);
-    this.state = {isLoading: false};
+    this.state = { isLoading: false };
   }
 
   render() {
@@ -93,53 +93,51 @@ class _UserRegistrationStatus extends React.Component {
       <Button
         caption="Register"
         onPress={async () => {
-          this.setState({isLoading: true});
+          this.setState({ isLoading: true });
           await this.props.onRegister(this.props.category);
-          this.setState({isLoading: false});
+          this.setState({ isLoading: false });
         }}
         isLoading={this.state.isLoading}
-        />
+      />
     );
     if (this.props.user) {
       const userId = this.props.user.profile.id;
       const signups = getCategorySignups(this.props.category);
-      const signedUpTeams = signups.filter((signup) => userId in (signup.dancers || {}));
+      const signedUpTeams = signups.filter(signup => userId in (signup.dancers || {}));
       if (signedUpTeams.length) {
-        const teamTexts = signedUpTeams.map((team) => {
-          return <HorizontalView style={styles.registrationLineOuter} key={team}>
-            <CompactTeam team={team} style={styles.registrationIndent}/>
-            <Button
-              caption="Unregister"
-              onPress={async () => {
-                this.setState({isLoading: true});
-                await this.props.onUnregister(this.props.category, team);
-                this.setState({isLoading: false});
-              }}
-              isLoading={this.state.isLoading}
-              />
-          </HorizontalView>;
-        });
-        return <View>
+        const teamTexts = signedUpTeams.map(team => <HorizontalView style={styles.registrationLineOuter} key={team}>
+          <CompactTeam team={team} style={styles.registrationIndent} />
+          <Button
+            caption="Unregister"
+            onPress={async () => {
+              this.setState({ isLoading: true });
+              await this.props.onUnregister(this.props.category, team);
+              this.setState({ isLoading: false });
+            }}
+            isLoading={this.state.isLoading}
+          />
+        </HorizontalView>);
+        return (<View>
           <HorizontalView style={styles.registrationLine}>
             <Image
               source={require('./images/green-check.png')}
               style={styles.registrationStatusIcon}
-              />
+            />
             <Text style={styles.registrationStatusText}>Registered:</Text>
           </HorizontalView>
           {teamTexts}
-        </View>;
+        </View>);
       } else {
-        return <HorizontalView style={styles.registrationLineOuter}>
+        return (<HorizontalView style={styles.registrationLineOuter}>
           <HorizontalView style={styles.registrationLine}>
             <Image
               source={require('./images/red-x.png')}
               style={styles.registrationStatusIcon}
-              />
+            />
             <Text style={styles.registrationStatusText}>Not Registered</Text>
           </HorizontalView>
           {registerButton}
-        </HorizontalView>;
+        </HorizontalView>);
       }
     } else {
       return registerButton;
@@ -181,7 +179,7 @@ class CategorySummaryView extends React.Component {
   render() {
     const displayName = categoryDisplayName(this.props.category);
     const dancerIcons = this.dancerIcons(this.props.category);
-    return <View
+    return (<View
       style={{
         width: boxWidth,
         backgroundColor: purpleColors[2],
@@ -191,18 +189,18 @@ class CategorySummaryView extends React.Component {
       ref={(x) => {
         this._root = x;
       }}
-       >
-      <HorizontalView style={{justifyContent: 'space-between'}}>
+    >
+      <HorizontalView style={{ justifyContent: 'space-between' }}>
         <View>{dancerIcons}</View>
-        <Animated.View style={{position:'relative',transform:[{skewY: '-180deg'}]}}>{dancerIcons}</Animated.View>
+        <Animated.View style={{ position: 'relative', transform: [{ skewY: '-180deg' }] }}>{dancerIcons}</Animated.View>
       </HorizontalView>
-      <Text style={{marginVertical: 10, textAlign: 'center', fontWeight: 'bold', fontSize: semiNormalize(30), lineHeight: semiNormalize(34)}}>{displayName}</Text>
+      <Text style={{ marginVertical: 10, textAlign: 'center', fontWeight: 'bold', fontSize: semiNormalize(30), lineHeight: semiNormalize(34) }}>{displayName}</Text>
       <UserRegistrationStatus
         category={this.props.category}
         onRegister={this.props.onRegister}
         onUnregister={this.props.onUnregister}
-        />
-    </View>;
+      />
+    </View>);
   }
 
   setNativeProps(props) {
@@ -218,14 +216,14 @@ class _BattleView extends React.Component {
   }
 
   renderHeader() {
-    return <FitImage
-      source={{uri: this.props.battleEvent.headerLogoUrl}}
-      style={{flex: 1, width: Dimensions.get('window').width}}
-    />;
+    return (<FitImage
+      source={{ uri: this.props.battleEvent.headerLogoUrl }}
+      style={{ flex: 1, width: Dimensions.get('window').width }}
+    />);
   }
 
   renderRow(category: any) {
-    return <TouchableHighlight
+    return (<TouchableHighlight
       onPress={() => {
         this.props.onSelected(category);
       }}
@@ -233,19 +231,19 @@ class _BattleView extends React.Component {
         margin: boxMargin,
         borderRadius: 10,
       }}
-      >
+    >
       <CategorySummaryView
         category={category}
         onRegister={this.props.onRegister}
         onUnregister={this.props.onUnregister}
-        />
-    </TouchableHighlight>;
+      />
+    </TouchableHighlight>);
   }
 
   render() {
     let view = null;
     if (this.props.battleEvent) {
-      view = <FeedListView
+      view = (<FeedListView
         items={this.props.battleEvent.categories}
         renderHeader={this.renderHeader}
         renderRow={this.renderRow}
@@ -254,12 +252,12 @@ class _BattleView extends React.Component {
           justifyContent: 'flex-start',
           alignItems: 'center',
         }}
-        />;
+      />);
     }
-    return <TrackFirebase
+    return (<TrackFirebase
       path="events/justeDebout"
       storageKey="battleEvent"
-      >{view}</TrackFirebase>;
+    >{view}</TrackFirebase>);
   }
 }
 const BattleView = connect(
@@ -277,19 +275,19 @@ class _TeamList extends React.Component {
   }
 
   renderRow(signup: Signup) {
-    const dancers = Object.keys(signup.dancers || {}).map((x) => <Text key={x} style={{marginLeft: 20}}>{signup.dancers[x].name}</Text>);
-    return <Card>
+    const dancers = Object.keys(signup.dancers || {}).map(x => <Text key={x} style={{ marginLeft: 20 }}>{signup.dancers[x].name}</Text>);
+    return (<Card>
       <Text>{signup.teamName}:</Text>
       {dancers}
-    </Card>;
+    </Card>);
   }
 
   render() {
-    return <FeedListView
+    return (<FeedListView
       items={this.props.signups}
       renderRow={this.renderRow}
       renderHeader={this.props.renderHeader}
-      />;
+    />);
   }
 }
 const TeamList = injectIntl(_TeamList);
@@ -301,21 +299,23 @@ class _Category extends React.Component {
 
   render() {
     const signups = getCategorySignups(this.props.category);
-    return <TeamList signups={signups}
+    return (<TeamList
+      signups={signups}
       renderHeader={() => <View
         style={{
           alignSelf: 'center',
           marginTop: 10,
-        }}>
-          <CategorySummaryView
-            category={this.props.category}
-            onRegister={this.props.onRegister}
-            onUnregister={this.props.onUnregister}
-          />
-          <Text>{signups.length} competitors:</Text>
-        </View>
+        }}
+      >
+        <CategorySummaryView
+          category={this.props.category}
+          onRegister={this.props.onRegister}
+          onUnregister={this.props.onUnregister}
+        />
+        <Text>{signups.length} competitors:</Text>
+      </View>
       }
-    />;
+    />);
   }
 }
 const Category = injectIntl(_Category);
@@ -327,10 +327,10 @@ class _RegistrationPage extends React.Component {
 
   constructor(props) {
     super(props);
-    const state = {values: {
+    const state = { values: {
       ...this.teamDefaults(),
       team_name: '',
-    }};
+    } };
     if (this.props.user) {
       state.values.dancer_name_1 = this.props.user.profile.name;
     }
@@ -341,8 +341,8 @@ class _RegistrationPage extends React.Component {
   computeDefaultTeamName() {
     const dancers = [];
     let index = 1;
-    while (this.state.values['dancer_name_' + index]) {
-      dancers.push(this.state.values['dancer_name_' + index]);
+    while (this.state.values[`dancer_name_${index}`]) {
+      dancers.push(this.state.values[`dancer_name_${index}`]);
       index += 1;
     }
     return dancers.join(' and ');
@@ -357,29 +357,29 @@ class _RegistrationPage extends React.Component {
   teamDefaults() {
     const defaults = {};
     this.teamIndices().forEach((index) => {
-      defaults['dancer_name_' + (index + 1)] = '';
+      defaults[`dancer_name_${index + 1}`] = '';
     });
     return defaults;
   }
 
   teamWidgets() {
-    return this.teamIndices().map((index) =>
+    return this.teamIndices().map(index =>
       <GiftedForm.TextInputWidget
         key={index}
-        name={'dancer_name_' + (index + 1)}
-        title={'Dancer ' + (index + 1)}
+        name={`dancer_name_${index + 1}`}
+        title={`Dancer ${index + 1}`}
         placeholder=""
 
         {...this.textInputProps()}
-        />
+      />
     );
   }
 
   teamValidators() {
     const validators = {};
     this.teamIndices().forEach((index) => {
-      validators['dancer_name_' + (index + 1)] = {
-        title: 'Dancer ' + (index + 1),
+      validators[`dancer_name_${index + 1}`] = {
+        title: `Dancer ${index + 1}`,
         validate: [],
       };
     });
@@ -405,7 +405,7 @@ class _RegistrationPage extends React.Component {
   }
 
   handleValueChange(values) {
-    this.setState({values});
+    this.setState({ values });
   }
 
   render() {
@@ -415,35 +415,34 @@ class _RegistrationPage extends React.Component {
     let teamMembers = requirements.minTeamSize ? this.teamWidgets() : null;
     if (this.props.user) {
       teamMember1 = [
-        <GiftedForm.HiddenWidget name="dancer_id_1" value={this.props.user.profile.id} />
-      ,
+        <GiftedForm.HiddenWidget name="dancer_id_1" value={this.props.user.profile.id} />,
         <GiftedForm.TextInputWidget
           name="dancer_name_1" // mandatory
           title="Dancer 1 (You)"
           validationImage={false}
 
           {...this.textInputProps()}
-        />
+        />,
       ];
       teamMembers = teamMembers ? teamMembers.slice(1) : null;
     }
 
     let teamName = null;
     if (requirements.needsTeamName) {
-      teamName = <GiftedForm.TextInputWidget
+      teamName = (<GiftedForm.TextInputWidget
         name="team_name" // mandatory
         title="Team Name"
         placeholder={this.computeDefaultTeamName()}
 
         {...this.textInputProps()}
-      />;
+      />);
     }
-    return <MyGiftedForm
+    return (<MyGiftedForm
       navigator={this.fakeNavigator()}
       scrollEnabled={false}
       formName="signupForm" // GiftedForm instances that use the same name will also share the same states
 
-      openModal={(route) => this.props.navigatePush(route)}
+      openModal={route => this.props.navigatePush(route)}
 
       defaults={this.state.values}
 
@@ -480,16 +479,16 @@ class _RegistrationPage extends React.Component {
             ** postSubmit(['Username already taken', 'Email already taken']); // disable the loader and display an error message
             ** GiftedFormManager.reset('signupForm'); // clear the states of the form manually. 'signupForm' is the formName used
             */
-            const newValues = {...values};
+            const newValues = { ...values };
             if (!newValues.team_name) {
               newValues.team_name = this.computeDefaultTeamName();
             }
-            const result = await eventRegister('justeDebout', this.props.category.id, {team: newValues});
+            const result = await eventRegister('justeDebout', this.props.category.id, { team: newValues });
             if (postSubmit) {
               postSubmit();
             }
             // Do we want this?
-            //this.props.onRegisterSubmit();
+            // this.props.onRegisterSubmit();
             if (modalNavigator) {
               modalNavigator.pop();
             }
@@ -497,7 +496,7 @@ class _RegistrationPage extends React.Component {
         }}
 
       />
-    </MyGiftedForm>;
+    </MyGiftedForm>);
   }
 }
 const RegistrationPage = connect(
@@ -505,8 +504,8 @@ const RegistrationPage = connect(
     user: state.user.userData,
   }),
   (dispatch: Dispatch, props) => ({
-    navigatePush: (route) => dispatch(navigatePush('EVENT_SIGNUPS_NAV', route)),
-    navigatePop: (route) => dispatch(navigatePop('EVENT_SIGNUPS_NAV')),
+    navigatePush: route => dispatch(navigatePush('EVENT_SIGNUPS_NAV', route)),
+    navigatePop: route => dispatch(navigatePop('EVENT_SIGNUPS_NAV')),
   }),
 )(injectIntl(_RegistrationPage));
 
@@ -519,7 +518,7 @@ class _EventSignupsView extends React.Component {
 
   onRegister(category) {
     const displayName = categoryDisplayName(category);
-    this.props.navigatable.onNavigate({key: 'Register', title: `${displayName} Registration`, categoryId: category.id});
+    this.props.navigatable.onNavigate({ key: 'Register', title: `${displayName} Registration`, categoryId: category.id });
   }
 
   async onUnregister(category, teamToDelete) {
@@ -544,28 +543,28 @@ class _EventSignupsView extends React.Component {
     let category = null;
 
     switch (route.key) {
-    case 'EventSignups':
-      return <BattleView
-        onSelected={(selectedCategory) => {
-          //trackWithEvent('View Event', event);
-          const displayName = categoryDisplayName(selectedCategory);
-          this.props.navigatable.onNavigate({key: 'Category', title: displayName, categoryId: selectedCategory.id});
-        }}
-        onRegister={this.onRegister}
-        onUnregister={this.onUnregister}
-      />;
-    case 'Category':
-      category = this.props.battleEvent.categories.find((x) => x.id === route.categoryId);
-      return <Category
-        category={category}
-        onRegister={this.onRegister}
-        onUnregister={this.onUnregister}
-        />;
-    case 'Register':
-      category = this.props.battleEvent.categories.find((x) => x.id === route.categoryId);
-      return <RegistrationPage
-        category={category}
-        />;
+      case 'EventSignups':
+        return (<BattleView
+          onSelected={(selectedCategory) => {
+          // trackWithEvent('View Event', event);
+            const displayName = categoryDisplayName(selectedCategory);
+            this.props.navigatable.onNavigate({ key: 'Category', title: displayName, categoryId: selectedCategory.id });
+          }}
+          onRegister={this.onRegister}
+          onUnregister={this.onUnregister}
+        />);
+      case 'Category':
+        category = this.props.battleEvent.categories.find(x => x.id === route.categoryId);
+        return (<Category
+          category={category}
+          onRegister={this.onRegister}
+          onUnregister={this.onUnregister}
+        />);
+      case 'Register':
+        category = this.props.battleEvent.categories.find(x => x.id === route.categoryId);
+        return (<RegistrationPage
+          category={category}
+        />);
     }
   }
 }
@@ -574,7 +573,7 @@ export const EventSignupsView = connect(
     battleEvent: state.firebase.battleEvent,
   }),
   (dispatch: Dispatch, props) => ({
-    navigatePop: (route) => dispatch(navigatePop('EVENT_SIGNUPS_NAV')),
+    navigatePop: route => dispatch(navigatePop('EVENT_SIGNUPS_NAV')),
   }),
 )(injectIntl(_EventSignupsView));
 
