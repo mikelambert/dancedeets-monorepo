@@ -7,6 +7,6 @@
     "moment": "^2.17.0",
     "react": "^15.4.1",
     "react-intl": "^2.1.5",
-    "react-native-locale": "0.0.11"
+    "react-native-locale": "github:mikelambert/react-native-locale"
   }
 }
