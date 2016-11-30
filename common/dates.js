@@ -6,11 +6,7 @@
 
 'use strict';
 
-import React, {createElement} from 'react';
 import _ from 'lodash/string';
-import {
-  injectIntl,
-} from 'react-intl';
 import moment from 'moment';
 
 export const weekdayDateTime = {weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: 'numeric'};
