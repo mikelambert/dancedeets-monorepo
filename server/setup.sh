@@ -45,6 +45,10 @@ echo "Installing npm modules"
 cd $BASE_DIR
 npm install
 
+# Now point directly to the common/ module, instead of using the installed version
+rm -rf node_modules/dancedeets-common
+ln -s ../../common node_modules/dancedeets-common
+
 cd $BASE_DIR/node_server
 npm install
 
