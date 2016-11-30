@@ -56,6 +56,9 @@ import {
 } from '../actions';
 import url from 'url';
 import GoogleApiAvailability from 'react-native-google-api-availability';
+import {
+  formatStartEnd,
+} from 'dancedeets-common/dates';
 
 const messages = defineMessages({
   addToCalendar: {
@@ -210,35 +213,10 @@ class _EventDateTime extends React.Component {
   interval: number;
 
   render() {
-    const textFields = [];
-    const now = moment(this.props.intl.now());
-    const start = moment(this.props.start, moment.ISO_8601);
-    const formattedStart = _.upperFirst(this.props.intl.formatDate(start.toDate(), weekdayDateTime));
-    if (this.props.end) {
-      const end = moment(this.props.end, moment.ISO_8601);
-      const duration = end.diff(start);
-      if (duration > moment.duration(1, 'days')) {
-        const formattedEnd = _.upperFirst(this.props.intl.formatDate(end, weekdayDateTime));
-        textFields.push(formattedStart + ' - \n' + formattedEnd);
-      } else {
-        const formattedEndTime = this.props.intl.formatTime(end);
-        textFields.push(formattedStart + ' - ' + formattedEndTime);
-      }
-      const relativeDuration = moment.duration(duration).humanize();
-      textFields.push(` (${relativeDuration})`);
-    } else {
-      textFields.push(formattedStart);
-    }
-    // Ensure we do some sort of timer refresh update on this
-    const relativeStart = start.diff(now);
-    if (relativeStart > 0 && relativeStart < moment.duration(2, 'weeks')) {
-      const relativeStartOffset = _.upperFirst(moment.duration(relativeStart).humanize(true));
-      textFields.push('\n');
-      textFields.push(relativeStartOffset);
-    }
+    const formattedText = formatStartEnd(this.props.start, this.props.end, this.props.intl);
     return <SubEventLine icon={require('./images/datetime.png')}>
       <View style={{alignItems: 'flex-start'}}>
-        <Text style={[eventStyles.detailText, eventStyles.rowDateTime]}>{textFields.join('')}</Text>
+        <Text style={[eventStyles.detailText, eventStyles.rowDateTime]}>{formattedText}</Text>
         {this.props.children}
       </View>
     </SubEventLine>;

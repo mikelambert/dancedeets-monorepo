@@ -11,10 +11,15 @@ import FormatText from 'react-format-text';
 import querystring from 'querystring';
 import moment from 'moment';
 import {
+  injectIntl,
+} from 'react-intl';
+import {
   defaultLocale,
   intl,
 } from 'dancedeets-common/intl';
-import {StartEnd} from './shared';
+import {
+  formatStartEnd,
+} from 'dancedeets-common/dates';
 
 /* intersperse: Return an array with the separator interspersed between
  * each element of the input array.
@@ -132,7 +137,7 @@ function schemaDateFormat(dateTime) {
   return moment(dateTime).format('%Y-%m-%dT%H:%M:%S');
 }
 
-class EventLinks extends React.Component {
+class _EventLinks extends React.Component {
   render() {
     const event = this.props.event;
     let rsvpElement = null;
@@ -157,6 +162,7 @@ class EventLinks extends React.Component {
       </ImagePrefix>;
     }
 
+    const formattedStartEndText = formatStartEnd(event.start_time, event.end_time, this.props.intl);
     return <Card>
       <ImagePrefix className="product-social-links">
         <a className="link-event-share twitter-share-button" href="https://twitter.com/intent/tweet?hashtags=dancedeets" data-count="none">Tweet</a>
@@ -166,7 +172,7 @@ class EventLinks extends React.Component {
         <a className="link-event-source" href={event.source.url}>{'View Original: ' + event.source.name}</a>
       </ImagePrefix>
       <ImagePrefix iconName="clock-o">
-        <StartEnd start={event.start_time} end={event.end_time} tagName={FormatText} />
+        <FormatText>{formattedStartEndText}</FormatText>
         <meta itemProp="startDate" content={schemaDateFormat(event.start_time)} />
         {event.end_time ?
           <meta itemProp="endDate" content={schemaDateFormat(event.end_time)} /> :
@@ -180,6 +186,7 @@ class EventLinks extends React.Component {
     </Card>;
   }
 }
+const EventLinks = injectIntl(_EventLinks);
 
 // TODO: full_address
 class MapWithLinks extends React.Component {
