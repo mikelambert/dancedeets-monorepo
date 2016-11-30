@@ -1,0 +1,48 @@
+{
+  'parser': 'babel-eslint',
+
+  'extends': [
+    'airbnb'
+  ],
+
+  'rules': {
+    // A few overrides for what I prefer in this project (and legacy code)
+    'comma-dangle': [2, 'always-multiline'],
+    'no-console': 0,
+    'react/no-multi-comp': 0, // We'd have too many files
+    'no-use-before-define': 0, // Someties can lead to more intuitive flow/layout
+    'no-unused-vars': 0, // Sometimes unused vars represent documentation of arguments
+    'no-else-return': 0, // Sometimes it's much clearer to understand alternation logical flow with 'else's
+    'react/prefer-stateless-function': 0, // TODO: We should revisit this one...
+    'class-methods-use-this': 0, // Shouldn't have to do major rewrites just because of not using 'this'
+    'import/prefer-default-export': 0, // Sometimes we import only one item, in anticipation of making it easy to import future items
+    'react/jsx-filename-extension': [1, { 'extensions': ['.js', '.jsx'] }], // React Native uses Components in js files all the time
+    'no-underscore-dangle': 0, // There's enough code I've written and uses this, it's not worth warning on    
+    'no-duplicate-imports': 0, // This breaks when we 'import' and 'import type' on the same module
+    'generator-star-spacing': 0, // This breaks on async/await
+
+    // Up our length limit to 150
+    'max-len': ['error', 150, 2, {
+      ignoreUrls: true,
+      ignoreComments: false,
+      ignoreRegExpLiterals: true,
+      ignoreStrings: true,
+      ignoreTemplateLiterals: true,
+    }],
+
+    'react/sort-comp': ['error', {
+      order: [
+        'static-methods',
+        '/^props$/',
+        '/^state$/',
+        '/^_.+$/',
+        'lifecycle',
+        '/^on.+$/',
+        '/^(get|set)(?!(InitialState$|DefaultProps$|ChildContext$)).+$/',
+        'everything-else',
+        '/^render.+$/',
+        'render'
+      ],
+    }],
+  }
+}

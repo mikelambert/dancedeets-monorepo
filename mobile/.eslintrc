@@ -8,5 +8,10 @@
     '__dirname': false,
     '__filename': false,
     '__fbBatchedBridgeConfig': false,
+    'navigator': false,
+    'Promise': false,
+  },
+  'rules': {
+    'global-require': 0,
   }
 }
