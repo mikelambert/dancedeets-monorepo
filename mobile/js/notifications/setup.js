@@ -34,6 +34,7 @@ import {
   PreferenceNames,
   getPreference,
 } from './prefs';
+import { getCurrentLocale } from '../locale';
 import { constructIntl } from 'dancedeets-common/intl';
 
 export let globalHandler = null;
@@ -150,7 +151,7 @@ class Handler {
 }
 
 function init() {
-  const intl = constructIntl();
+  const intl = constructIntl(getCurrentLocale());
   globalHandler = new Handler(null, intl);
   let lastTokenRegistration = null;
 

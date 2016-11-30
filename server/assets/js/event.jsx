@@ -10,7 +10,10 @@ import React from 'react';
 import FormatText from 'react-format-text';
 import querystring from 'querystring';
 import moment from 'moment';
-import {intl} from 'dancedeets-common/intl';
+import {
+  defaultLocale,
+  intl,
+} from 'dancedeets-common/intl';
 import {StartEnd} from './shared';
 
 /* intersperse: Return an array with the separator interspersed between
@@ -249,4 +252,9 @@ export default class EventPage extends React.Component {
   }
 }
 
-module.exports = intl(EventPage);
+function getCurrentLocale() {
+  // TODO: load the locale from the incoming request headers
+  return defaultLocale;
+}
+
+module.exports = intl(EventPage, getCurrentLocale());

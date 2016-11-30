@@ -32,6 +32,7 @@
     "react-native-geocoder": "^0.4.3",
     "react-native-gifted-form": "0.0.13",
     "react-native-google-api-availability": "^0.0.1",
+    "react-native-locale": "github:mikelambert/react-native-locale",
     "react-native-linear-gradient": "^1.5.9",
     "react-native-mail": "^1.6.0",
     "react-native-maps": "github:mikelambert/react-native-maps#v11",

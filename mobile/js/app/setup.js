@@ -17,6 +17,7 @@ import { intl } from 'dancedeets-common/intl';
 import ProcessInfo from 'react-native-processinfo';
 // Initialize firestack
 import firestack from '../firestack';
+import { getCurrentLocale } from '../locale';
 
 export default function setup(): Class<Object> {
   console.disableYellowBox = true;
@@ -46,7 +47,7 @@ export default function setup(): Class<Object> {
     }
   }
 
-  return intl(Root);
+  return intl(Root, getCurrentLocale());
 }
 
 global.LOG = (...args) => {

@@ -6,19 +6,16 @@
 
 'use strict';
 
-
-
 import React from 'react';
 import {
   addLocaleData,
   IntlProvider,
 } from 'react-intl';
-import Locale from 'react-native-locale';
 import areIntlLocalesSupported from 'intl-locales-supported';
 import moment from 'moment';
 
-const defaultLocale = 'en';
-const locales = ['en', 'ja', 'fr', 'zh-Hant'];
+export const defaultLocale = 'en';
+export const supportedLocales = ['en', 'ja', 'fr', 'zh-Hant'];
 
 import 'moment/locale/fr';
 import 'moment/locale/ja';
@@ -38,7 +35,7 @@ const messages = {
 // https://github.com/yahoo/intl-locales-supported#usage
 if (global.Intl) {
   // Determine if the built-in `Intl` has the locale data we need.
-  if (!areIntlLocalesSupported(locales)) {
+  if (!areIntlLocalesSupported(supportedLocales)) {
     // `Intl` exists, but it doesn't have the data we need, so load the
     // polyfill and replace the constructors we need with the polyfill's.
     require('intl');
@@ -65,14 +62,7 @@ addLocaleData(require('react-intl/locale-data/fr'));
 addLocaleData(require('react-intl/locale-data/ja'));
 addLocaleData(require('react-intl/locale-data/zh'));
 
-const getCurrentLocale = () => {
-  const currentLocale = Locale.constants().localeIdentifier.split('_')[0];
-  return locales.indexOf(currentLocale) !== -1
-    ? currentLocale
-    : defaultLocale;
-};
-
-function configureMoment(currentLocale) {
+function configureMoment(currentLocale: string) {
   // Our Locale.constants().localeIdentifier returns zh-Hant_US.
   // But moment locales are zh-tw (traditional) and zh-cn (simplified).
   // So manually convert the getCurrentLocale() 'zh' to the 'zh-tw' moment needs:
@@ -83,8 +73,7 @@ function configureMoment(currentLocale) {
   moment.locale(momentLocale);
 }
 
-export function constructIntl() {
-  let currentLocale = getCurrentLocale();
+export function constructIntl(currentLocale: string) {
   configureMoment(currentLocale);
   return new IntlProvider({
     defaultLocale: defaultLocale,
@@ -95,11 +84,10 @@ export function constructIntl() {
   }).getChildContext().intl;
 }
 
-export function intl(Wrapped: any) {
+export function intl(Wrapped: any, currentLocale: string) {
   class Internationalize extends React.Component {
 
     render() {
-      let currentLocale = getCurrentLocale();
       configureMoment(currentLocale);
       return (
         <IntlProvider
