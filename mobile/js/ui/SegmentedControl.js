@@ -10,7 +10,7 @@ import {
   Platform,
   SegmentedControlIOS,
 } from 'react-native';
-import normalizeColor from 'normalizeColor';
+import normalizeColor from 'react-native/Libraries/StyleSheet/normalizeColor';
 import SegmentedControlAndroid from 'react-native-segmented-android';
 
 type Props = {

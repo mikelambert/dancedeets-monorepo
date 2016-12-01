@@ -2,6 +2,7 @@
   'extends': [
     'plugin:import/react-native'
   ],
+
   'globals': {
     '__BUNDLE_START_TIME__': false,
     '__DEV__': true,
@@ -10,7 +11,11 @@
     '__fbBatchedBridgeConfig': false,
     'navigator': false,
     'Promise': false,
+    'window': false,
+    'XMLHttpRequest': false,
+    'fetch': false,
   },
+
   'rules': {
     'global-require': 0,
   }

@@ -20,7 +20,8 @@
  * DEALINGS IN THE SOFTWARE
  */
 
-module.exports = store => next => action =>
+module.exports = store => next => action => (
   Array.isArray(action)
     ? action.map(next)
-    : next(action);
+    : next(action)
+);

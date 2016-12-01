@@ -19,7 +19,7 @@ function fixStickyTouch(window) {
         }
       };
       for (const si in window.document.styleSheets) {
-        if (window.document.styleSheets.hasOwnProperty(si)) {
+        if ({}.hasOwnProperty.call(window.document.styleSheets, si)) {
           const styleSheet = window.document.styleSheets[si];
           if (!styleSheet.rules) {
             continue;

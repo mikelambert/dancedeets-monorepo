@@ -31,6 +31,7 @@ type Props = {
   testID: ?string;
   isLoading: boolean;
   enabled: ?boolean;
+  activityIndicatorColor: string;
 };
 
 class Button extends React.Component {
@@ -46,6 +47,7 @@ class Button extends React.Component {
     testID: null,
     isLoading: false,
     enabled: true,
+    activityIndicatorColor: 'white',
   };
 
   props: Props;
@@ -76,7 +78,7 @@ class Button extends React.Component {
           <ActivityIndicator
             animating
             size="small"
-            color={this.props.activityIndicatorColor || 'white'}
+            color={this.props.activityIndicatorColor}
           />
         </View>
       );

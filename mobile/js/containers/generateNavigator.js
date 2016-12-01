@@ -4,7 +4,10 @@
  * @flow
  */
 
-import React, { Element } from 'react';
+import React, {
+  Element,
+  PropTypes,
+} from 'react';
 import {
   Image,
   NavigationExperimental,
@@ -68,6 +71,12 @@ const NavigationHeaderTitle = ({ children, style, textStyle, viewProps }) => (
     <Text style={[styles.titleText, textStyle]} numberOfLines={1}>{children}</Text>
   </View>
 );
+NavigationHeaderTitle.propTypes = {
+  children: PropTypes.arrayOf(PropTypes.element),
+  style: View.propTypes.style,
+  textStyle: View.propTypes.style,
+  viewProps: View.propTypes,
+};
 
 class _Navigator extends React.Component {
   props: NavigatorProps & Navigatable & CallingProps;

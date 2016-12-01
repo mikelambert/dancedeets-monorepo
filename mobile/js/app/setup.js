@@ -17,7 +17,7 @@ import ScreenshotSlideshow from '../ScreenshotSlideshow';
 import firestack from '../firestack';
 import { getCurrentLocale } from '../locale';
 
-export default function setup(): Class<Object> {
+export default function setup() {
   console.disableYellowBox = true;
 
   class Root extends React.Component {

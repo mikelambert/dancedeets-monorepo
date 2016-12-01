@@ -13,10 +13,10 @@ import {
   TouchableHighlight,
   View,
 } from 'react-native';
-import { HorizontalView } from './Misc';
-import { Text } from './DDText';
 import Qs from 'qs';
 import emojiFlags from 'emoji-flags';
+import { HorizontalView } from './Misc';
+import { Text } from './DDText';
 import { googleKey } from '../keys';
 import {
   semiNormalize,
@@ -37,15 +37,15 @@ type Result = {
 
 
 type Props = {
-  style: Object, // style for ListView
-  styles: Object, // styles for subcomponents
+  style: View.PropTypes.style, // style for ListView
+  styles: { [name: string]: View.PropTypes.style }, // styles for subcomponents
   onLocationSelected: (location: string) => (void | Promise<void>),
   minLength: number,
   fetchDetails: boolean,
   textValue: () => string,
   query: Object,
   GoogleReverseGeocodingQuery: Object,
-  predefinedPlaces: Result[],
+  predefinedPlaces: Array<Result>,
   currentLocation: boolean,
   currentLocationLabel: string,
   filterReverseGeocodingByTypes: string[],
@@ -54,15 +54,6 @@ type Props = {
 };
 
 export default class AutocompleteList extends React.Component {
-  state: {
-    dataSource: ListView.DataSource,
-    listViewDisplayed: boolean,
-  };
-
-  _results: Result[] = [];
-  _requests: XMLHttpRequest[] = [];
-
-
   static defaultProps: Props = {
     onLocationSelected: (x) => {},
     minLength: 0,
@@ -76,7 +67,6 @@ export default class AutocompleteList extends React.Component {
     },
     GoogleReverseGeocodingQuery: {
     },
-    style: {},
     styles: {},
     predefinedPlaces: [],
     currentLocation: true,
@@ -84,6 +74,16 @@ export default class AutocompleteList extends React.Component {
     filterReverseGeocodingByTypes: ['political', 'locality', 'administrative_area_level_3'],
     predefinedPlacesAlwaysVisible: false,
   };
+
+  props: Props;
+
+  state: {
+    dataSource: ListView.DataSource,
+    listViewDisplayed: boolean,
+  };
+
+  _results: Result[] = [];
+  _requests: XMLHttpRequest[] = [];
 
   constructor(props: any) {
     super(props);
@@ -99,9 +99,60 @@ export default class AutocompleteList extends React.Component {
       listViewDisplayed: false,
     };
     (this: any).onTextInputFocus = this.onTextInputFocus.bind(this);
-    (this: any)._onPress = this._onPress.bind(this);
+    (this: any).onPress = this.onPress.bind(this);
     (this: any).onTextInputChangeText = this.onTextInputChangeText.bind(this);
     (this: any).renderRow = this.renderRow.bind(this);
+  }
+
+  componentWillUnmount() {
+    this.abortRequests();
+  }
+
+  onTextInputChangeText(text: string) {
+    this.request(text);
+    this.setState({
+      listViewDisplayed: true,
+    });
+  }
+
+  onTextInputBlur() {
+    this.setState({ listViewDisplayed: false });
+  }
+
+  onTextInputFocus() {
+    this.setState({ listViewDisplayed: true });
+  }
+
+  onPress(rowData: Result) {
+    if (rowData.isCurrentLocation === true) {
+      // display loader
+      this.enableRowLoader(rowData);
+      delete rowData.isLoading;
+      this.getCurrentLocation();
+    } else {
+      delete rowData.isLoading;
+      this.props.onLocationSelected(rowData.description);
+    }
+  }
+
+  async getCurrentLocation() {
+    this.abortRequests();
+    try {
+      const address = await getAddress();
+      this.props.onLocationSelected(address);
+    } catch (e) {
+      this.disableRowLoaders();
+      console.warn(e);
+    }
+  }
+
+  getRowLoader() {
+    return (
+      <ActivityIndicator
+        animating
+        size="small"
+      />
+    );
   }
 
   buildRowsFromResults(results: Result[]): Result[] {
@@ -140,37 +191,22 @@ export default class AutocompleteList extends React.Component {
       const firstTerm = x.terms[0].value;
       const lastTerm = x.terms[x.terms.length - 1].value;
       const code = lookupCountryCode(lastTerm) || lookupCountryCode(firstTerm);
-      const flag = emojiFlags.data.find(c => c.code == code);
+      const flag = emojiFlags.data.find(c => c.code === code);
       x.flag = flag != null ? flag.emoji : '';
     });
     return fullResults;
   }
 
-  componentWillUnmount() {
-    this._abortRequests();
-  }
-
-  _abortRequests() {
-    for (let i = 0; i < this._requests.length; i++) {
+  abortRequests() {
+    for (let i = 0; i < this._requests.length; i += 1) {
       this._requests[i].abort();
     }
     this._requests = [];
   }
 
-  async getCurrentLocation() {
-    this._abortRequests();
-    try {
-      const address = await getAddress();
-      this.props.onLocationSelected(address);
-    } catch (e) {
-      this._disableRowLoaders();
-      console.warn(e);
-    }
-  }
-
-  _enableRowLoader(rowData: Result) {
+  enableRowLoader(rowData: Result) {
     const rows = this.buildRowsFromResults(this._results);
-    for (let i = 0; i < rows.length; i++) {
+    for (let i = 0; i < rows.length; i += 1) {
       if (rows[i].isCurrentLocation === true && rowData.isCurrentLocation === true) {
         rows[i].isLoading = true;
         this.setState({
@@ -181,8 +217,8 @@ export default class AutocompleteList extends React.Component {
     }
   }
 
-  _disableRowLoaders() {
-    for (let i = 0; i < this._results.length; i++) {
+  disableRowLoaders() {
+    for (let i = 0; i < this._results.length; i += 1) {
       if (this._results[i].isLoading === true) {
         this._results[i].isLoading = false;
       }
@@ -192,41 +228,8 @@ export default class AutocompleteList extends React.Component {
     });
   }
 
-  _onPress(rowData: Result) {
-    if (rowData.isCurrentLocation === true) {
-      // display loader
-      this._enableRowLoader(rowData);
-      delete rowData.isLoading;
-      this.getCurrentLocation();
-    } else {
-      delete rowData.isLoading;
-      this.props.onLocationSelected(rowData.description);
-    }
-  }
-
-  _filterResultsByTypes(responseJSON: Object, types: string[]) {
-    if (types.length === 0) {
-      return responseJSON.results;
-    }
-
-    const results: Object[] = [];
-    for (let i = 0; i < responseJSON.results.length; i++) {
-      let found = false;
-      for (let j = 0; j < types.length; j++) {
-        if (responseJSON.results[i].types.indexOf(types[j]) !== -1) {
-          found = true;
-          break;
-        }
-      }
-      if (found === true) {
-        results.push(responseJSON.results[i]);
-      }
-    }
-    return results;
-  }
-
   createRequest(url: string) {
-    const f = function (resolve, reject) {
+    const f = (resolve, reject) => {
       const request = new XMLHttpRequest();
       this._requests.push(request);
       request.onreadystatechange = () => {
@@ -247,8 +250,8 @@ export default class AutocompleteList extends React.Component {
     return new Promise(f.bind(this));
   }
 
-  _request(text: string) {
-    this._abortRequests();
+  request(text: string) {
+    this.abortRequests();
     if (text.length >= this.props.minLength) {
       const query = Object.assign({}, this.props.query, { language: this.props.queryLanguage });
       const url = `https://maps.googleapis.com/maps/api/place/autocomplete/json?&input=${encodeURI(text)}&${Qs.stringify(query)}`;
@@ -271,29 +274,13 @@ export default class AutocompleteList extends React.Component {
     }
   }
 
-  onTextInputChangeText(text: string) {
-    this._request(text);
-    this.setState({
-      listViewDisplayed: true,
-    });
-  }
-
-  _getRowLoader() {
-    return (
-      <ActivityIndicator
-        animating
-        size="small"
-      />
-    );
-  }
-
   renderLoader(rowData: Result) {
     if (rowData.isLoading === true) {
       return (
         <HorizontalView
           style={[defaultStyles.loader, this.props.styles.loader]}
         >
-          {this._getRowLoader()}
+          {this.getRowLoader()}
         </HorizontalView>
       );
     }
@@ -314,7 +301,7 @@ export default class AutocompleteList extends React.Component {
     return (
       <TouchableHighlight
         onPress={() =>
-          this._onPress(rowData)
+          this.onPress(rowData)
         }
         underlayColor="#c8c7cc"
       >
@@ -335,16 +322,8 @@ export default class AutocompleteList extends React.Component {
     );
   }
 
-  onTextInputBlur() {
-    this.setState({ listViewDisplayed: false });
-  }
-
-  onTextInputFocus() {
-    this.setState({ listViewDisplayed: true });
-  }
-
   render() {
-    let { style, ...otherProps } = this.props;
+    const { style, ...otherProps } = this.props;
     if ((this.props.textValue() !== '' || this.props.predefinedPlaces.length || this.props.currentLocation === true) && this.state.listViewDisplayed === true) {
       return (
         <ListView

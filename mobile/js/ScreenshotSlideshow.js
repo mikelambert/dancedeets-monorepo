@@ -43,7 +43,7 @@ const messages = defineMessages({
 class _ScreenshotSlideshow extends React.Component {
   props: {
     transitionPage: (page: React.Component<*, *, *>) => void;
-    children: List<React.Element<*>>;
+    children: Array<React.Element<*>>;
 
     // Self-managed props
     intl: intlShape;
