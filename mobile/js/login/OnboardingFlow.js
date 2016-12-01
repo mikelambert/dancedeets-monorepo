@@ -62,6 +62,9 @@ class OnboardingFlow extends React.Component {
         }}
         onNoLogin={this.onSkipLogin}
       />);
+    } else {
+      console.error('Unknown state screen: ', this.state.screen);
+      return null;
     }
   }
 }

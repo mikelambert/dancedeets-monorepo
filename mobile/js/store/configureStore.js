@@ -6,11 +6,11 @@
 
 import { applyMiddleware, createStore } from 'redux';
 import thunk from 'redux-thunk';
+import createLogger from 'redux-logger';
 import promise from './promise';
 import array from './array';
 import analytics from './analytics';
 import reducers from '../reducers';
-import createLogger from 'redux-logger';
 
 const isDebuggingInChrome = __DEV__ && !!window.navigator.userAgent;
 

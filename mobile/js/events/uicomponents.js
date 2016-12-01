@@ -45,14 +45,17 @@ import {
   semiNormalize,
   Text,
 } from '../ui';
-import type { User } from '../actions/types';
+import type {
+  User,
+  ThunkAction,
+  Dispatch,
+} from '../actions/types';
 import { Event, Venue } from './models';
 import { linkColor, yellowColors } from '../Colors';
 import { add as CalendarAdd } from '../api/calendar';
 import { performRequest } from '../api/fb';
 import RsvpOnFB from '../api/fb-event-rsvp';
 import { trackWithEvent } from '../store/track';
-import type { ThunkAction, Dispatch } from '../actions/types';
 import type { TranslatedEvent } from '../reducers/translate';
 import { weekdayDateTime } from '../formats';
 import {
@@ -232,6 +235,15 @@ class _EventDateTime extends React.Component {
 
   _interval: number;
 
+  componentDidMount() {
+    // refresh our 'relative start offset' every minute
+    this._interval = setInterval(() => this.forceUpdate(), 60 * 1000);
+  }
+
+  componentWillUnmount() {
+    clearInterval(this._interval);
+  }
+
   render() {
     const formattedText = formatStartEnd(this.props.start, this.props.end, this.props.intl);
     return (<SubEventLine icon={require('./images/datetime.png')}>
@@ -240,13 +252,6 @@ class _EventDateTime extends React.Component {
         {this.props.children}
       </View>
     </SubEventLine>);
-  }
-  componentDidMount() {
-    // refresh our 'relative start offset' every minute
-    this._interval = setInterval(() => this.forceUpdate(), 60 * 1000);
-  }
-  componentWillUnmount() {
-    clearInterval(this._interval);
   }
 }
 const EventDateTime = injectIntl(_EventDateTime);
@@ -438,7 +443,7 @@ class _EventOrganizers extends React.Component {
     }
   }
 
-  adminLink(admin) {
+  renderAdminLink(admin) {
     return (<TouchableOpacity
       key={admin.id}
       onPress={() => {
@@ -447,29 +452,19 @@ class _EventOrganizers extends React.Component {
     ><Text style={[eventStyles.detailText, eventStyles.detailListText, eventStyles.rowLink]}>{admin.name}</Text></TouchableOpacity>);
   }
 
-  render() {
-    if (this.props.event.admins.length) {
-      return (<SubEventLine icon={require('./images/organizer.png')}>
-        {this.textRender()}
-      </SubEventLine>);
-    } else {
-      return null;
-    }
-  }
-
-  textRender() {
+  renderText() {
     if (this.props.event.admins.length === 1) {
       return (
         <HorizontalView>
           <Text style={eventStyles.detailText}>{this.props.intl.formatMessage(messages.organizer)}{' '}</Text>
-          {this.adminLink(this.props.event.admins[0])}
+          {this.renderAdminLink(this.props.event.admins[0])}
         </HorizontalView>
       );
     } else {
       // TODO: fetch the types of each admin, and sort them with the page first (or show only the page?)
       const organizers = this.props.event.admins.map(admin => <HorizontalView>
         <Text style={[eventStyles.detailText, eventStyles.detailListText]}> – </Text>
-        {this.adminLink(admin)}
+        {this.renderAdminLink(admin)}
       </HorizontalView>);
       let text = '';
       if (this.state.opened) {
@@ -489,6 +484,16 @@ class _EventOrganizers extends React.Component {
           {this.state.opened ? organizers : null}
         </View>
       );
+    }
+  }
+
+  render() {
+    if (this.props.event.admins.length) {
+      return (<SubEventLine icon={require('./images/organizer.png')}>
+        {this.renderText()}
+      </SubEventLine>);
+    } else {
+      return null;
     }
   }
 }
@@ -525,14 +530,6 @@ class _EventRsvpControl extends React.Component {
     }
   }
 
-  async loadRsvp() {
-    // We don't check this.props.user here, since there may be a delay before it gets set,
-    // relative to the code flow that calls this from onRsvpChange.
-    this.setState({ loading: true });
-    const rsvpIndex = await new RsvpOnFB().getRsvpIndex(this.props.event.id);
-    this.setState({ defaultRsvp: rsvpIndex, loading: false });
-  }
-
   async onRsvpChange(index: number, oldIndex: number): Promise<> {
     if (!this.props.user) {
       if (!await this.props.canGetValidLoginFor(this.props.intl.formatMessage(messages.featureRSVP), this.props)) {
@@ -558,6 +555,14 @@ class _EventRsvpControl extends React.Component {
     // Now while the state is still 'loading', let's reload the latest RSVP from the server.
     // And when we receive it, we'll unset state.loading, re-render this component.
     await this.loadRsvp();
+  }
+
+  async loadRsvp() {
+    // We don't check this.props.user here, since there may be a delay before it gets set,
+    // relative to the code flow that calls this from onRsvpChange.
+    this.setState({ loading: true });
+    const rsvpIndex = await new RsvpOnFB().getRsvpIndex(this.props.event.id);
+    this.setState({ defaultRsvp: rsvpIndex, loading: false });
   }
 
   render() {
@@ -873,7 +878,7 @@ class _EventTranslate extends React.Component {
 
     // Self-managed props
     intl: intlShape;
-    translatedEvents: Array<TranslatedEvent>;
+    translatedEvents: { [id: string]: TranslatedEvent };
     toggleEventTranslation: (eventId: string, language: string, intl: intlShape) => void;
   }
 
@@ -905,6 +910,9 @@ const EventTranslate = connect(
 class _EventTickets extends React.Component {
   props: {
     event: Event;
+
+    // Self-managed props
+    intl: intlShape;
   }
 
   constructor(props) {

@@ -29,6 +29,7 @@ const messages = {
   'zh-Hant': zh,
 };
 
+/* eslint-disable global-require, import/no-extraneous-dependencies */
 // https://github.com/yahoo/intl-locales-supported#usage
 if (global.Intl) {
   // Determine if the built-in `Intl` has the locale data we need.
@@ -52,6 +53,7 @@ if (global.Intl.__addLocaleData) {
   require('intl/locale-data/jsonp/ja');
   require('intl/locale-data/jsonp/zh');
 }
+/* eslint-enable global-require, import/no-extraneous-dependencies */
 
 // These has pluralRuleFunction, necessary for react-intl's use of intl-messageformat
 addLocaleData(require('react-intl/locale-data/en'));

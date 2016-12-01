@@ -15,6 +15,7 @@ import {
 } from 'react-native-fbsdk';
 import {
   injectIntl,
+  intlShape,
   defineMessages,
 } from 'react-intl';
 import type { Dispatch } from './actions/types';
@@ -40,6 +41,17 @@ const messages = defineMessages({
 });
 
 class _ScreenshotSlideshow extends React.Component {
+  props: {
+    transitionPage: (page: React.Component<*, *, *>) => void;
+    children: List<React.Element<*>>;
+
+    // Self-managed props
+    intl: intlShape;
+  }
+  state: {
+    page: number;
+  };
+
   constructor(props) {
     super(props);
     this.state = {
@@ -47,10 +59,6 @@ class _ScreenshotSlideshow extends React.Component {
     };
     (this: any).transitionPage = this.transitionPage.bind(this);
   }
-
-  state: {
-    page: number;
-  };
 
   componentWillMount() {
     disableTracking();
@@ -106,7 +114,7 @@ class _ScreenshotSlideshow extends React.Component {
       case 4:
         // await this.setupProfileView(dispatch);
         break;
-      case 5:
+      default:
         break;
     }
     this.setState({ page: this.state.page + 1 });

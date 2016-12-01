@@ -25,7 +25,7 @@ function fixStickyTouch(window) {
             continue;
           }
 
-          for (let ri = styleSheet.rules.length - 1; ri >= 0; ri-=1) {
+          for (let ri = styleSheet.rules.length - 1; ri >= 0; ri -= 1) {
             const st = styleSheet.rules[ri].selectorText;
             if (st) {
               if (st.match(':hover')) {

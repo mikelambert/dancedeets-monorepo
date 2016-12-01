@@ -5,43 +5,62 @@
  */
 /* global $ */
 
-'use strict';
 
 import React from 'react';
 import dateFormat from 'date-fns/format';
 
-var StudioImage = React.createClass({
+type DateTime = any;
+type StudioClassType = any;
+
+class StudioImage extends React.Component {
+  props: {
+    studioName: string;
+  }
+
   contextTypes: {
     imagePath: React.PropTypes.string,
-  },
-  render: function() {
-    var imageSrc = this.context.imagePath + this.props.studioName.toLowerCase() + '.png';
-    return (
-      <img src={imageSrc} width="16" height="16" />
-    );
-  },
-});
+  }
 
-var SelectButton = React.createClass({
-  toggleState: function(e) {
+  render() {
+    const imageSrc = `${this.context.imagePath + this.props.studioName.toLowerCase()}.png`;
+    return (
+      <img src={imageSrc} role="presentation" width="16" height="16" />
+    );
+  }
+}
+
+class SelectButton extends React.Component {
+  props: {
+    onChange: () => void;
+    value: boolean;
+    thumbnail: boolean;
+    item: any;
+  }
+
+  _button: React.Element<*>;
+
+  toggleState(e) {
     this.manualToggleState();
     this.props.onChange();
     e.preventDefault();
-  },
-  manualToggleState: function() {
-    var button = $(this.refs.button);
+  }
+
+  manualToggleState() {
+    const button = $(this._button);
     button.toggleClass('active');
     button.blur();
-  },
-  isActive: function() {
-    return $(this.refs.button).hasClass('active');
-  },
-  render: function() {
-    var extraClass = '';
+  }
+
+  isActive() {
+    return $(this._button).hasClass('active');
+  }
+
+  render() {
+    let extraClass = '';
     if (this.props.value) {
       extraClass = 'active';
     }
-    var contents = [];
+    const contents = [];
     if (this.props.thumbnail) {
       contents.push(<StudioImage studioName={this.props.item} />);
     }
@@ -50,32 +69,40 @@ var SelectButton = React.createClass({
     return (
       <button
         type="button"
-        className={'btn btn-default btn-sm ' + extraClass}
-        ref="button"
+        className={`btn btn-default btn-sm ${extraClass}`}
+        ref={(x) => { this._button = x; }}
         onClick={this.toggleState}
-        >
+      >
         {contents}
-        </button>
+      </button>
     );
-  },
-});
+  }
+}
 
-var MultiSelectList = React.createClass({
-  getValues: function() {
-    var values = [];
-    var refs = this.refs;
-    this.props.list.forEach(function(item, i) {
-      if (refs['item' + i].isActive()) {
+class MultiSelectList<T> extends React.Component {
+  props: {
+    onChange: () => void;
+    list: Array<T>;
+    value: T;
+    thumbnails: boolean;
+  }
+
+  getValues() {
+    const values = [];
+    const refs = this.refs;
+    this.props.list.forEach((item, i) => {
+      if (refs[`item${i}`].isActive()) {
         values.push(item);
       }
     });
     return values;
-  },
-  setAll: function() {
-    var refs = this.refs;
-    this.props.list.forEach(function(item, i) {
-      if (refs['item' + i].isActive()) {
-        refs['item' + i].manualToggleState();
+  }
+
+  setAll() {
+    const refs = this.refs;
+    this.props.list.forEach((item, i) => {
+      if (refs[`item${i}`].isActive()) {
+        refs[`item${i}`].manualToggleState();
       }
     });
     // Ensure we leave it active
@@ -83,16 +110,17 @@ var MultiSelectList = React.createClass({
       this.refs['item-all'].manualToggleState();
     }
     this.props.onChange();
-  },
-  unsetAll: function() {
+  }
+
+  unsetAll() {
     if (this.refs['item-all'].isActive()) {
       this.refs['item-all'].manualToggleState();
     }
 
-    var anySet = false;
-    var refs = this.refs;
-    this.props.list.forEach(function(item, i) {
-      if (refs['item' + i].isActive()) {
+    let anySet = false;
+    const refs = this.refs;
+    this.props.list.forEach((item, i) => {
+      if (refs[`item${i}`].isActive()) {
         anySet = true;
       }
     });
@@ -101,73 +129,80 @@ var MultiSelectList = React.createClass({
     }
 
     this.props.onChange();
-  },
-  render: function() {
-    var options = [];
-    var emptyList = (this.props.value.length === 0);
+  }
+
+  render() {
+    const options = [];
+    const emptyList = (this.props.value.length === 0);
     options.push(
       <SelectButton key="All" item="All" ref={'item-all'} value={emptyList} onChange={this.setAll} />
     );
-    var thumbnails = this.props.thumbnails;
-    var value = this.props.value;
-    var unsetAll = this.unsetAll;
-    this.props.list.forEach(function(item, i) {
-      var subItems = [item];
+    const thumbnails = this.props.thumbnails;
+    const value = this.props.value;
+    const unsetAll = this.unsetAll;
+    this.props.list.forEach((item, i) => {
+      let subItems = [item];
+      let realItem = item;
       if (item.constructor === Array) {
         subItems = item[1];
-        item = item[0];
+        realItem = item[0];
       }
 
-      var selected = true;
-      subItems.forEach(function(subItem) {
+      let selected = true;
+      subItems.forEach((subItem) => {
         selected = selected && (value.indexOf(subItem) !== -1);
       });
 
       options.push(
-        <SelectButton key={item} item={item} ref={'item' + i} value={selected} onChange={unsetAll} thumbnail={thumbnails} />
+        <SelectButton key={realItem} item={realItem} ref={`item${i}`} value={selected} onChange={unsetAll} thumbnail={thumbnails} />
       );
     });
     return (
       <div className="btn-group" role="group">
-      {options}
+        {options}
       </div>
     );
-  },
-});
+  }
+}
 
 function getDayId(dayName) {
   return dayName;
 }
 
-var DayLink = React.createClass({
-  onClick: function() {
-    var id = getDayId(this.props.dayName);
-    if ($('#' + id).length === 0) {
+class DayLink extends React.Component {
+  props: {
+    dayName: string;
+  }
+
+  onClick() {
+    const id = getDayId(this.props.dayName);
+    if ($(`#${id}`).length === 0) {
       return;
     }
-    var scrollOffset = $('#navbar').outerHeight();
-    var nudgeOffset = 5;
-    $('html, body').animate({scrollTop: $('#' + id).offset().top - scrollOffset - nudgeOffset}, 300);
+    const scrollOffset = $('#navbar').outerHeight();
+    const nudgeOffset = 5;
+    $('html, body').animate({ scrollTop: $(`#${id}`).offset().top - scrollOffset - nudgeOffset }, 300);
     // return false; // React does not require that onClick handlers return false
-  },
-  render: function() {
+  }
+
+  render() {
     return (
-      <a href={'#' + getDayId(this.props.dayName)} onClick={this.onClick}>{this.props.dayName}</a>
+      <a href={`#${getDayId(this.props.dayName)}`} onClick={this.onClick}>{this.props.dayName}</a>
     );
-  },
-});
+  }
+}
 
 // TODO: i18n?
-var dayOfWeekNames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+const dayOfWeekNames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 
-var DayNavMenu = React.createClass({
-  render: function() {
-    var weeks = [];
-    for (var i = 0; i < 7; i++) {
+class DayNavMenu extends React.Component {
+  render() {
+    const weeks = [];
+    for (let i = 0; i < 7; i += 1) {
       if (i > 0) {
-        weeks.push(<span key={'|-' + i}> | </span>);
+        weeks.push(<span key={`|-${i}`}> | </span>);
       }
-      var dayName = dayOfWeekNames[i];
+      const dayName = dayOfWeekNames[i];
       weeks.push(
         <DayLink
           key={dayName}
@@ -178,21 +213,31 @@ var DayNavMenu = React.createClass({
     return (
       <span className="navmenu-height headline-underline">Jump to:
       {' '}
-      {weeks}
+        {weeks}
       </span>
     );
-  },
-});
+  }
+}
 
-var SearchBar = React.createClass({
-  onChange: function() {
+class SearchBar extends React.Component {
+  props: {
+    initialStudios: Array<any>;
+    initialStyles: Array<any>;
+    studios: Array<any>;
+    styles: Array<any>;
+    teacher: string;
+    onUserInput: (styles: Array<any>, studios: Array<any>, teacher: string) => void;
+  }
+
+  onChange() {
     this.props.onUserInput(
-        this.refs.styles.getValues(),
-        this.refs.studios.getValues(),
-        this.refs.teacher.value
+      this.refs.styles.getValues(),
+      this.refs.studios.getValues(),
+      this.refs.teacher.value
     );
-  },
-  render: function() {
+  }
+
+  render() {
     return (
       <form>
         <div>
@@ -211,7 +256,7 @@ var SearchBar = React.createClass({
             value={this.props.studios}
             ref="studios"
             onChange={this.onChange}
-            thumbnails={true}
+            thumbnails
           />
         </div>
         <div>
@@ -221,52 +266,63 @@ var SearchBar = React.createClass({
             value={this.props.teacher}
             ref="teacher"
             onChange={this.onChange}
-            />
+          />
         </div>
       </form>
     );
-  },
-});
+  }
+}
 
-var ClassSummary = React.createClass({
-  render: function() {
-    var classes = this.props.styles.join(', ');
+class ClassSummary extends React.Component {
+  props: {
+    styles: Array<string>;
+    studios: Array<string>;
+    teacher: string;
+  }
+
+  render() {
+    let classes = this.props.styles.join(', ');
     if (!classes) {
       classes = 'All';
     }
-    var studios = this.props.studios.join(', ');
+    let studios = this.props.studios.join(', ');
     if (studios) {
-      studios = 'at ' + studios;
+      studios = `at ${studios}`;
     }
-    var query = this.props.teacher;
+    let query = this.props.teacher;
     if (query) {
-      query = 'with "' + query + '"';
+      query = `with "${query}"`;
     }
 
     return (
       <div>
-      {classes} classes {studios} {query}
+        {classes} classes {studios} {query}
       </div>
     );
-  },
-});
+  }
+}
 
-var StudioClass = React.createClass({
-  render: function() {
+class StudioClass extends React.Compoent {
+  render() {
     return (
       <div>
         <a href={this.props.studio_class.url}>
-        <StudioImage studioName={this.props.studio_class.location} />
+          <StudioImage studioName={this.props.studio_class.location} />
         </a>
         {this.props.studio_class.location}: {this.props.studio_class.name}
       </div>
     );
-  },
-});
+  }
+}
 
-var DayHeader = React.createClass({
-  render: function() {
-    var contents = (
+class DayHeader extends React.Component {
+  props: {
+    date: DateTime;
+    useAnchor: boolean;
+  }
+
+  render() {
+    let contents = (
       <h4>{dateFormat(this.props.date, 'ddd MMM D')}</h4>
     );
     if (this.props.useAnchor) {
@@ -277,42 +333,49 @@ var DayHeader = React.createClass({
       );
     }
     return contents;
-  },
-});
+  }
+}
 
-var TimeHeader = React.createClass({
-  render: function() {
+class TimeHeader extends React.Component {
+  props: {
+    datetime: DateTime;
+  }
+
+  render() {
     return (
       <b>{dateFormat(this.props.datetime, 'h:mma')}</b>
     );
-  },
-});
+  }
+}
 
-var ClassTitle = React.createClass({
-  render: function() {
-    var filteredClasses = this.props.filteredClasses;
+class ClassTitle extends React.Component {
+  props: {
+    filteredClasses: Array<StudioClassType>;
+  }
+  render() {
+    const filteredClasses = this.props.filteredClasses;
     return (
       <div><b>Showing {filteredClasses.length} classes:</b></div>
     );
-  },
-});
+  }
+}
 
-var SponsoredSummary = React.createClass({
-  render: function() {
-    var sponsoredStudios = {};
-    this.props.classes.forEach(function(studioClass) {
-      var sponsor = studioClass.sponsor;
+class SponsoredSummary extends React.Compoent {
+  render() {
+    const sponsoredStudios = {};
+    this.props.classes.forEach((studioClass) => {
+      const sponsor = studioClass.sponsor;
       if (!(sponsor in sponsoredStudios)) {
         sponsoredStudios[sponsor] = {};
       }
-      var studio = studioClass.location;
+      const studio = studioClass.location;
       sponsoredStudios[sponsor][studio] = true;
     });
-    var sponsorHtml = [];
+    const sponsorHtml = [];
     if ('MINDBODY' in sponsoredStudios) {
-      var studioList = Object.keys(sponsoredStudios.MINDBODY);
+      const studioList = Object.keys(sponsoredStudios.MINDBODY);
       sponsorHtml.push(
-        <div key="MINDBODY" style={ {margin: '1em 0em', fontStyle: 'italic'} }>
+        <div key="MINDBODY" style={{ margin: '1em 0em', fontStyle: 'italic' }}>
           Studios Powered by <a href="http://www.mindbodyonline.com">MINDBODY</a>:{' '}
           {studioList.join(', ')}
         </div>
@@ -321,19 +384,23 @@ var SponsoredSummary = React.createClass({
     return (
       <div>{sponsorHtml}</div>
     );
-  },
-});
+  }
+}
 
-var StudioClasses = React.createClass({
-  render: function() {
-    var rows = [];
-    var lastStudioClass = null;
-    var goodClasses = this.props.filteredClasses;
-    var aNamedDays = {};
-    goodClasses.forEach(function(studioClass) {
+class StudioClasses extends React.Component {
+  props: {
+    filteredClasses: Array<StudioClassType>;
+  }
+
+  render() {
+    const rows = [];
+    let lastStudioClass = null;
+    const goodClasses = this.props.filteredClasses;
+    const aNamedDays = {};
+    goodClasses.forEach((studioClass) => {
       // Section header rendering
       if (lastStudioClass === null || dateFormat(studioClass.startTime, 'YYYY-MM-DD') !== dateFormat(lastStudioClass.startTime, 'YYYY-MM-DD')) {
-        var day = dateFormat(studioClass.startTime, 'dddd');
+        const day = dateFormat(studioClass.startTime, 'dddd');
         rows.push(
           <DayHeader
             date={studioClass.startTime}
@@ -351,12 +418,12 @@ var StudioClasses = React.createClass({
       lastStudioClass = studioClass;
     });
     return <div>{rows}</div>;
-  },
-});
+  }
+}
 
 function toggleSearchBar() {
   $('#navbar-collapsable').slideToggle('fast');
-  var icon = $('#navbar-collapse-button-icon');
+  const icon = $('#navbar-collapse-button-icon');
   if (icon.hasClass('fa-caret-square-o-up')) {
     icon.removeClass('fa-caret-square-o-up');
     icon.addClass('fa-caret-square-o-down');
@@ -368,33 +435,33 @@ function toggleSearchBar() {
   }
 }
 
-function parseISO(s) {
-  s = s.split(/\D/);
+function parseISO(str) {
+  const s = str.split(/\D/);
   return new Date(Number(s[0]), Number(s[1]) - 1, Number(s[2]), Number(s[3]), Number(s[4]), Number(s[5]), 0);
 }
 
 class App extends React.Component {
   props: {
     imagePath: string,
-    searchLocation: string,
     classes: Array<any>;
+    location: string;
   };
 
   constructor(props) {
     super(props);
     const studiosSet = {};
     const stylesSet = {};
-    this.props.classes.forEach(function(studioClass) {
+    this.props.classes.forEach((studioClass) => {
       studiosSet[studioClass.location] = true;
-      studioClass.categories.forEach(function(category) {
+      studioClass.categories.forEach((category) => {
         if (category !== 'All-Styles') {
           stylesSet[category] = true;
         }
       });
     });
-    const newClasses = this.props.classes.map(studioClass => {
-      const {startTime, ...rest} = studioClass;
-      return {startTime: parseISO(startTime), ...rest};
+    const newClasses = this.props.classes.map((studioClass) => {
+      const { startTime, ...rest } = studioClass;
+      return { startTime: parseISO(startTime), ...rest };
     });
     function caseInsensitiveSort(a, b) {
       return a.toLowerCase().localeCompare(b.toLowerCase());
@@ -413,80 +480,40 @@ class App extends React.Component {
   }
 
   getChildContext() {
-    return {imagePath: this.props.imagePath};
-  }
-
-  filteredClasses() {
-    var goodClasses = [];
-    var state = this.state;
-    this.state.initialClasses.forEach(function(studioClass) {
-      // Class filtering logic
-      if (state.teacher) {
-        if (studioClass.name.toLowerCase().indexOf(state.teacher.toLowerCase()) === -1) {
-          return;
-        }
-      }
-      if (state.studios.length) {
-        if (state.studios.filter(function(studio) {
-          return studio === studioClass.location;
-        }).length === 0) {
-          return;
-        }
-      }
-      if (state.styles.length) {
-        if (state.styles.filter(function(searchStyle) {
-          var classHasStyle = studioClass.categories.filter(function(classStyle) {
-            return searchStyle === classStyle;
-          });
-          return classHasStyle.length > 0;
-        }).length === 0) {
-          return;
-        }
-      }
-      goodClasses.push(studioClass);
-    });
-    return goodClasses;
-  }
-
-  handleUserInput(styles, studios, teacher) {
-    this.setState({
-      styles: styles,
-      studios: studios,
-      teacher: teacher,
-    });
+    return { imagePath: this.props.imagePath };
   }
 
   componentDidMount() {
-    var allowedTime = 500; // maximum time allowed to travel that distance
-    var startX;
-    var startY;
-    var startTime;
-    var skipScroll = false;
+    const allowedTime = 500; // maximum time allowed to travel that distance
+    let startX;
+    let startY;
+    let startTime;
+    let skipScroll = false;
 
     $('#navbar').on({
-      touchstart: function(jqueryEvent) {
-        var e = jqueryEvent.originalEvent;
+      touchstart(jqueryEvent) {
+        const e = jqueryEvent.originalEvent;
         if (!e.changedTouches) {
           return;
         }
-        var touchobj = e.changedTouches[0];
+        const touchobj = e.changedTouches[0];
         skipScroll = true;
         startX = touchobj.pageX;
         startY = touchobj.pageY;
         startTime = new Date().getTime(); // record time when finger first makes contact with surface
         console.log(touchobj.target.localName);
       },
-      touchmove: function(jqueryEvent) {
+      touchmove(jqueryEvent) {
         if (skipScroll) {
           jqueryEvent.preventDefault();
         }
       },
-      touchend: function(jqueryEvent) {
+      touchend(jqueryEvent) {
         skipScroll = false;
-        var e = jqueryEvent.originalEvent;
-        var touchobj = e.changedTouches[0];
-        var elapsedTime = new Date().getTime() - startTime; // get time elapsed
-        var validSwipe = elapsedTime <= allowedTime && Math.abs(touchobj.pageY - startY) > 50 && Math.abs(touchobj.pageX - startX) <= 100;
+        const e = jqueryEvent.originalEvent;
+        const touchobj = e.changedTouches[0];
+        const elapsedTime = new Date().getTime() - startTime; // get time elapsed
+        const validSwipe = elapsedTime <= allowedTime && Math.abs(touchobj.pageY - startY) > 50 && Math.abs(touchobj.pageX - startX) <= 100;
         if (validSwipe) {
           if ($('#navbar-collapsable').is(':visible') && touchobj.pageY < startY) {
             toggleSearchBar();
@@ -504,30 +531,66 @@ class App extends React.Component {
   componentDidUpdate() {
     // Now scroll back so the navbar is directly at the top of the screen
     // and all of the results start fresh, beneath it
-    var normalAffixedTop = $('#navbar-container').offset().top;
+    const normalAffixedTop = $('#navbar-container').offset().top;
     if ($(document).scrollTop() > normalAffixedTop) {
       window.scroll(0, normalAffixedTop);
     }
   }
 
+  filteredClasses() {
+    const goodClasses = [];
+    const state = this.state;
+    this.state.initialClasses.forEach((studioClass) => {
+      // Class filtering logic
+      if (state.teacher) {
+        if (studioClass.name.toLowerCase().indexOf(state.teacher.toLowerCase()) === -1) {
+          return;
+        }
+      }
+      if (state.studios.length) {
+        if (state.studios.filter(studio => studio === studioClass.location).length === 0) {
+          return;
+        }
+      }
+      if (state.styles.length) {
+        if (state.styles.filter((searchStyle) => {
+          const classHasStyle = studioClass.categories.filter(classStyle => searchStyle === classStyle);
+          return classHasStyle.length > 0;
+        }).length === 0) {
+          return;
+        }
+      }
+      goodClasses.push(studioClass);
+    });
+    return goodClasses;
+  }
+
+  handleUserInput(styles, studios, teacher) {
+    this.setState({
+      styles,
+      studios,
+      teacher,
+    });
+  }
+
   render() {
-    var filteredClasses = this.filteredClasses();
+    const filteredClasses = this.filteredClasses();
     return (
       <div>
         <div
           id="navbar-container"
-          style={ {
+          style={{
             marginBottom: '1em',
-          } }
-          >
+          }}
+        >
           <div
             className="headline"
             id="navbar"
-            style={ {
+            style={{
               zIndex: 50,
-            } }
+            }}
           >
-            <table><tbody><tr><td style={ {width: '100%'} }>
+            <table><tbody><tr><td style={{ width: '100%' }}>
               <div id="navbar-collapsable" className="navmenu-height">
                 <b>{this.props.location} Street Dance Classes</b>
                 <SearchBar
@@ -545,21 +608,22 @@ class App extends React.Component {
                   styles={this.state.styles}
                   studios={this.state.studios}
                   teacher={this.state.teacher}
-                  />
+                />
               </div>
               <DayNavMenu />
-            </td><td style={ {verticalAlign: 'bottom'} }>
+            </td><td style={{ verticalAlign: 'bottom' }}>
               <i
-              id="navbar-collapse-button-icon"
-              onClick={toggleSearchBar}
-              className="fa fa-caret-square-o-up fa-lg"></i>
+                id="navbar-collapse-button-icon"
+                onClick={toggleSearchBar}
+                className="fa fa-caret-square-o-up fa-lg"
+              />
             </td></tr></tbody></table>
           </div>
         </div>
         <div>
           <ClassTitle
             filteredClasses={filteredClasses}
-            />
+          />
           <StudioClasses
             classes={this.state.initialClasses}
             styles={this.state.styles}

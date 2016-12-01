@@ -13,7 +13,7 @@ import {
 
 export default class LaunchScreen extends React.Component {
   props: {
-    children: Array<React.Element<*>>;
+    children?: Array<React.Component<*, *, *>>;
   }
 
   render() {

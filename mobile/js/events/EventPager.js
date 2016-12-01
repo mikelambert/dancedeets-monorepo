@@ -4,11 +4,10 @@
  * @flow
  */
 
-import type { State } from '../reducers/search';
-
 import React from 'react';
 import ViewPager from 'react-native-viewpager';
 import { connect } from 'react-redux';
+import type { State } from '../reducers/search';
 import { Event } from './models';
 import { FullEventView } from './uicomponents';
 import type { ThunkAction } from '../actions/types';
@@ -17,16 +16,17 @@ import {
 } from '../util/geo';
 
 class EventPager extends React.Component {
-  state: {
-    dataSource: ViewPager.DataSource,
-    position: ?Object,
-  };
   props: {
     onFlyerSelected: (x: Event) => ThunkAction,
     onEventNavigated: (x: Event) => void,
     search: State,
     selectedEvent: Event,
-  };
+  }
+
+  state: {
+    dataSource: ViewPager.DataSource,
+    position: ?Object,
+  }
 
   constructor(props) {
     super(props);
@@ -41,48 +41,35 @@ class EventPager extends React.Component {
     (this: any).renderEvent = this.renderEvent.bind(this);
   }
 
-  renderEvent(eventData: Object, pageID: number | string) {
-    return (<FullEventView
-      onFlyerSelected={this.props.onFlyerSelected}
-      event={eventData.event}
-      currentPosition={eventData.position}
-    />);
-  }
-
-  getNewState(props, position) {
-    const results = props.search.results;
-    let finalResults = [];
-    position = position || this.state.position;
-
-    if (results && results.results) {
-      const pageIndex = results.results.findIndex(x => x.id === this.props.selectedEvent.id);
-      if (pageIndex !== -1) {
-        finalResults = results.results.map(event => ({ event, position }));
-      }
-    }
-    // If we have an event that's not in the list, it's because we're just displaying this event.
-    if (!finalResults.length) {
-      finalResults = [this.props.selectedEvent].map(event => ({ event, position }));
-    }
-    const state = {
-      ...this.state,
-      position,
-      dataSource: this.state.dataSource.cloneWithPages(finalResults),
-    };
-    return state;
+  componentWillMount() {
+    this.loadLocation();
   }
 
   componentWillReceiveProps(nextProps) {
     this.setState(this.getNewState(nextProps, this.state.position));
   }
 
-  async loadLocation() {
-    const position = await getPosition();
-    this.setState(this.getNewState(this.props, position));
-  }
+  getNewState(props, position) {
+    const results = props.search.results;
+    let finalResults = [];
+    const newPosition = position || this.state.position;
 
-  componentWillMount() {
-    this.loadLocation();
+    if (results && results.results) {
+      const pageIndex = results.results.findIndex(x => x.id === this.props.selectedEvent.id);
+      if (pageIndex !== -1) {
+        finalResults = results.results.map(event => ({ event, newPosition }));
+      }
+    }
+    // If we have an event that's not in the list, it's because we're just displaying this event.
+    if (!finalResults.length) {
+      finalResults = [this.props.selectedEvent].map(event => ({ event, newPosition }));
+    }
+    const state = {
+      ...this.state,
+      position: newPosition,
+      dataSource: this.state.dataSource.cloneWithPages(finalResults),
+    };
+    return state;
   }
 
   getSelectedPage() {
@@ -91,6 +78,19 @@ class EventPager extends React.Component {
       initialPage = this.props.search.results.results.findIndex(x => x.id === this.props.selectedEvent.id);
     }
     return initialPage;
+  }
+
+  async loadLocation() {
+    const position = await getPosition();
+    this.setState(this.getNewState(this.props, position));
+  }
+
+  renderEvent(eventData: Object, pageID: number | string) {
+    return (<FullEventView
+      onFlyerSelected={this.props.onFlyerSelected}
+      event={eventData.event}
+      currentPosition={eventData.position}
+    />);
   }
 
   render() {

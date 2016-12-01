@@ -14,13 +14,29 @@ import {
   View,
 } from 'react-native';
 import _ from 'lodash/string';
+import {
+  injectIntl,
+  defineMessages,
+} from 'react-intl';
+import { connect } from 'react-redux';
+import FitImage from 'react-native-fit-image';
+import { GiftedForm } from 'react-native-gifted-form';
+import type {
+  NavigationRoute,
+  NavigationSceneRendererProps,
+  NavigationState,
+} from 'react-native/Libraries/NavigationExperimental/NavigationTypeDefinition';
 import { track } from '../store/track';
 import { FeedListView } from '../learn/BlogList';
 import {
   Button,
+  Card,
+  HorizontalView,
   MyGiftedForm,
   MyGiftedSubmitWidget,
-  HorizontalView,
+  normalize,
+  ProportionalImage,
+  semiNormalize,
   Text,
 } from '../ui';
 import {
@@ -28,35 +44,29 @@ import {
   yellowColors,
 } from '../Colors';
 import {
-  injectIntl,
-  defineMessages,
-} from 'react-intl';
-import {
   navigatePop,
   navigatePush,
 } from '../actions';
-import {
-  Card,
-  normalize,
-  ProportionalImage,
-  semiNormalize,
-} from '../ui';
-import { connect } from 'react-redux';
-import type { Dispatch } from '../actions/types';
+import type {
+  Dispatch,
+  User,
+} from '../actions/types';
 import {
   categoryDisplayName,
 } from './models';
 import type {
+  CompetitionCategory,
   Signup,
 } from './models';
+import type {
+  Navigatable,
+} from '../containers/generateNavigator';
 import {
   eventRegister,
   eventUnregister,
 } from '../api/dancedeets';
 import danceStyles from '../styles';
-import FitImage from 'react-native-fit-image';
 import { TrackFirebase } from '../firestack';
-import { GiftedForm } from 'react-native-gifted-form';
 
 // Try to make our boxes as wide as we can...
 let boxWidth = normalize(350);
@@ -68,6 +78,11 @@ if (Dimensions.get('window').width >= 1024) {
 const boxMargin = 5;
 
 class CompactTeam extends React.Component {
+  props: {
+    style: View.propTypes.style;
+    team: Signup;
+  }
+
   render() {
     return <Text style={[this.props.style, styles.registrationStatusText]}>{this.props.team.teamName}</Text>;
   }
@@ -79,6 +94,15 @@ function getCategorySignups(category: Category): Array<Signup> {
 }
 
 class _UserRegistrationStatus extends React.Component {
+  props: {
+    category: CompetitionCategory;
+    onRegister: (category: CompetitionCategory) => void;
+    onUnregister: (category: CompetitionCategory, team: Signup) => void;
+
+    // Self-managed props
+    user: ?User;
+  }
+
   state: {
     isLoading: boolean;
   }
@@ -153,14 +177,24 @@ const UserRegistrationStatus = connect(
 )(injectIntl(_UserRegistrationStatus));
 
 class CategorySummaryView extends React.Component {
-  _root: ReactElement<any>;
+  props: {
+    category: CompetitionCategory;
+    onRegister: (category: CompetitionCategory) => void;
+    onUnregister: (category: CompetitionCategory, team: Signup) => void;
+  }
+
+  _root: React.Element<any>;
+
+  setNativeProps(props) {
+    this._root.setNativeProps(props);
+  }
 
   dancerIcons(category: any) {
     const teamSize = Math.max(category.teamSize, 1);
 
     const images = [];
     const imageWidth = (boxWidth - 20) / (2 * Math.max(teamSize, 2));
-    for (let i = 0; i < teamSize; i++) {
+    for (let i = 0; i < teamSize; i += 1) {
       images.push(<ProportionalImage
         key={i}
         resizeDirection="width"
@@ -201,10 +235,6 @@ class CategorySummaryView extends React.Component {
         onUnregister={this.props.onUnregister}
       />
     </View>);
-  }
-
-  setNativeProps(props) {
-    this._root.setNativeProps(props);
   }
 }
 
@@ -275,7 +305,9 @@ class _TeamList extends React.Component {
   }
 
   renderRow(signup: Signup) {
-    const dancers = Object.keys(signup.dancers || {}).map(x => <Text key={x} style={{ marginLeft: 20 }}>{signup.dancers[x].name}</Text>);
+    const dancers = Object.keys(signup.dancers || {}).map(x =>
+      <Text key={x} style={{ marginLeft: 20 }}>{signup.dancers ? signup.dancers[x].name : ''}</Text>
+    );
     return (<Card>
       <Text>{signup.teamName}:</Text>
       {dancers}
@@ -293,8 +325,10 @@ class _TeamList extends React.Component {
 const TeamList = injectIntl(_TeamList);
 
 class _Category extends React.Component {
-  constructor(props: any) {
-    super(props);
+  props: {
+    category: CompetitionCategory;
+    onRegister: (category: CompetitionCategory) => void;
+    onUnregister: (category: CompetitionCategory, team: Signup) => void;
   }
 
   render() {
@@ -321,6 +355,15 @@ class _Category extends React.Component {
 const Category = injectIntl(_Category);
 
 class _RegistrationPage extends React.Component {
+  props: {
+    user: ?User;
+    category: CompetitionCategory;
+
+    // Self-managed props
+    navigatePush: (route: NavigationRoute) => void;
+    navigatePop: () => void;
+  }
+
   state: {
     values: any;
   }
@@ -350,8 +393,8 @@ class _RegistrationPage extends React.Component {
 
   teamIndices() {
     const requirements = this.props.category.signupRequirements;
-    const zero_to_n = Array.from(Array(requirements.maxTeamSize).keys());
-    return zero_to_n;
+    const zeroToN = Array.from(Array(requirements.maxTeamSize).keys());
+    return zeroToN;
   }
 
   teamDefaults() {
@@ -510,6 +553,17 @@ const RegistrationPage = connect(
 )(injectIntl(_RegistrationPage));
 
 class _EventSignupsView extends React.Component {
+  props: {
+    sceneProps: NavigationSceneRendererProps;
+    navigatable: Navigatable;
+
+    // Self-managed props
+    battleEvent: {
+      categories: Array<CompetitionCategory>;
+    };
+    navigatePop: () => void;
+  }
+
   constructor(props) {
     super(props);
     (this: any).onRegister = this.onRegister.bind(this);
@@ -522,7 +576,7 @@ class _EventSignupsView extends React.Component {
   }
 
   async onUnregister(category, teamToDelete) {
-    const [teamKey, ] = Object.entries(category.signups || {}).filter(([key, team]) => team === teamToDelete)[0];
+    const [teamKey] = Object.entries(category.signups || {}).filter(([key, team]) => team === teamToDelete)[0];
     await eventUnregister('justeDebout', category.id, teamKey);
   }
 
@@ -565,6 +619,8 @@ class _EventSignupsView extends React.Component {
         return (<RegistrationPage
           category={category}
         />);
+      default:
+        return null;
     }
   }
 }

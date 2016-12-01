@@ -26,8 +26,8 @@ import Mixpanel from 'react-native-mixpanel';
 // TODO(lambert): Eventually migrate this to react-native-firestack
 import { Analytics } from 'react-native-firebase3';
 import { AccessToken, AppEventsLogger } from 'react-native-fbsdk';
-import { performRequest } from '../api/fb';
 import { Crashlytics } from 'react-native-fabric';
+import { performRequest } from '../api/fb';
 
 import type { Action } from '../actions/types';
 import type { Event } from '../events/models';
@@ -49,10 +49,9 @@ function initMixpanel() {
     mixpanelApiKey = 'f5d9d18ed1bbe3b190f9c7c7388df243';
   }
 
-  const mixpanel = Mixpanel.sharedInstanceWithToken(mixpanelApiKey);
+  Mixpanel.sharedInstanceWithToken(mixpanelApiKey);
   // Don't use global track(), since this is a Mixpanel-only event:
   Mixpanel.track('$app_open');
-  return mixpanel;
 }
 
 initMixpanel();
@@ -174,7 +173,4 @@ export function trackLogout() {
 }
 
 export function trackDispatches(action: Action): void {
-  if (!trackingEnabled) {
-
-  }
 }

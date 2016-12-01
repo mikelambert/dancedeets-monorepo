@@ -76,18 +76,18 @@ class _NotificationPreferences extends React.Component {
     vibration: true,
   };
 
-  constructor(props) {
-    super(props);
-    this.state = {
-    };
-  }
-
   props: {
     intl: intlShape;
   }
 
   state: {
     [key: string]: boolean
+  }
+
+  constructor(props) {
+    super(props);
+    this.state = {
+    };
   }
 
   componentWillMount() {

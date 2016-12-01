@@ -10,16 +10,17 @@ import {
   StyleSheet,
   View,
 } from 'react-native';
+import {
+  defineMessages,
+  injectIntl,
+  intlShape,
+} from 'react-intl';
 import LoginButtonWithAlternate from './LoginButtonWithAlternate';
 import {
   normalize,
   Text,
 } from '../ui';
 import { linkColor } from '../Colors';
-import {
-  defineMessages,
-  injectIntl,
-} from 'react-intl';
 
 const messages = defineMessages({
   useWebsite: {
@@ -53,6 +54,13 @@ to help us help your dance scene.
 });
 
 class _NoLoginScreen extends React.Component {
+  props: {
+    onLogin: () => void;
+    onNoLogin: (name: string) => void;
+
+    // Self-managed props
+    intl: intlShape;
+  }
   render() {
     return (
       <View style={styles.container}>

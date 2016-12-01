@@ -17,6 +17,7 @@ type Props = {
   originalHeight: number;
   style?: any;
   duration: number;
+  resizeDirection: 'width' | 'height';
 };
 
 export default class ProportionalImage extends React.Component {
@@ -47,7 +48,7 @@ export default class ProportionalImage extends React.Component {
     const nativeEvent: any = e.nativeEvent;
     const layout = nativeEvent.layout;
     const aspectRatio = this.props.originalWidth / this.props.originalHeight;
-    if (this.props.resizeDirection == 'width') {
+    if (this.props.resizeDirection === 'width') {
       const measuredWidth = aspectRatio * layout.height;
       const currentWidth = layout.width;
       if (measuredWidth !== currentWidth) {

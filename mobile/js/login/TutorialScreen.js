@@ -12,17 +12,18 @@ import {
   View,
 } from 'react-native';
 import Carousel from 'react-native-carousel';
-import LaunchScreen from './LaunchScreen';
 import LinearGradient from 'react-native-linear-gradient';
+import {
+  defineMessages,
+  injectIntl,
+  intlShape,
+} from 'react-intl';
+import LaunchScreen from './LaunchScreen';
 import LoginButtonWithAlternate from './LoginButtonWithAlternate';
 import {
   normalize,
   Text,
 } from '../ui';
-import {
-  defineMessages,
-  injectIntl,
-} from 'react-intl';
 
 const PAGES = [
   'Page 0',
@@ -70,6 +71,12 @@ const messages = defineMessages({
 });
 
 class _TopView extends React.Component {
+  props: {
+    page: number;
+
+    // Self-managed props
+    intl: intlShape;
+  }
   render() {
     const page = this.props.page;
     const header = this.props.intl.formatMessage(messages[`tutorial.${page}.header`]);
@@ -85,18 +92,12 @@ class _TopView extends React.Component {
 const TopView = injectIntl(_TopView);
 
 class _TutorialScreen extends React.Component {
-  render() {
-    const pages = PAGES.map((val, i) => this.renderPage(i));
-    return (<Carousel
-      indicatorOffset={0}
-      indicatorColor="#FFFFFF"
-      indicatorSize={25}
-      indicatorSpace={15}
-      animate={false}
-      loop={false}
-    >
-      {pages}
-    </Carousel>);
+  props: {
+    onLogin: () => void;
+    onNoLogin: (name: string) => void;
+
+    // Self-managed props
+    intl: intlShape;
   }
 
   renderPage(pageId: number) {
@@ -173,6 +174,22 @@ class _TutorialScreen extends React.Component {
         </Image>
       </View>);
     }
+    console.error('Unknown page render: ', pageID);
+    return null;
+  }
+
+  render() {
+    const pages = PAGES.map((val, i) => this.renderPage(i));
+    return (<Carousel
+      indicatorOffset={0}
+      indicatorColor="#FFFFFF"
+      indicatorSize={25}
+      indicatorSpace={15}
+      animate={false}
+      loop={false}
+    >
+      {pages}
+    </Carousel>);
   }
 }
 export default injectIntl(_TutorialScreen);

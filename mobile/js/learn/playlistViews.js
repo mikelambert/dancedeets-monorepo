@@ -238,13 +238,13 @@ export const PlaylistStylesView = injectIntl(_PlaylistStylesView);
 
 type PlaylistListViewProps = {
   onSelected: (playlist: Playlist) => void;
-  playlists: Playlist[];
+  playlists: Array<Playlist>;
 };
 
 class _PlaylistListView extends React.Component {
   props: {
     playlists: Array<Playlist>;
-    onSelected: (playlist: Playlist) => ();
+    onSelected: (playlist: Playlist) => void;
 
     // Self-managed props
     intl: intlShape;
@@ -277,6 +277,7 @@ class _PlaylistListView extends React.Component {
       const localizedLanguage = languages[this.props.intl.locale][playlist.language];
       title = this.props.intl.formatMessage(messages.languagePrefixedTitle, { language: _.upperFirst(localizedLanguage), title: playlist.title });
     }
+    const numVideosDuration = this.props.intl.formatMessage(messages.numVideosWithDuration, { count: playlist.getVideoCount(), duration });
     return (<TouchableHighlight
       onPress={() => {
         this.props.onSelected(playlist);
@@ -296,7 +297,7 @@ class _PlaylistListView extends React.Component {
       >
         <Image source={{ uri: playlist.thumbnail }} resizeMode="cover" style={styles.thumbnail} />
         <Text style={[styles.boxTitle, styles.boxText]}>{title}</Text>
-        <Text style={styles.boxText}>{this.props.intl.formatMessage(messages.numVideosWithDuration, { count: playlist.getVideoCount(), duration })}</Text>
+        <Text style={styles.boxText}>{numVideosDuration}</Text>
       </View>
     </TouchableHighlight>);
   }
@@ -372,7 +373,8 @@ export class SectionedListView extends React.Component {
   state: {
     dataSource: ListView.DataSource,
   };
-  listView: ListView;
+
+  _listView: ListView;
 
   constructor(props: SectionedListViewProps) {
     super(props);
@@ -396,10 +398,14 @@ export class SectionedListView extends React.Component {
     return state;
   }
 
+  scrollTo(options: {x?: number; y?: number; animated?: boolean}) {
+    this._listView.scrollTo(options);
+  }
+
   render() {
     const { sectionHeaders, items, ...otherProps } = this.props;
     return (<ListView
-      ref={x => { this.listView = x; }}
+      ref={(x) => { this._listView = x; }}
       dataSource={this.state.dataSource}
       initialListSize={10}
       pageSize={5}
@@ -408,15 +414,15 @@ export class SectionedListView extends React.Component {
       {...otherProps}
     />);
   }
-
-  scrollTo(options: {x?: number; y?: number; animated?: boolean}) {
-    this.listView.scrollTo(options);
-  }
 }
 
 // This is a wrapper around <YouTube> that ignores any changes to the videoId,
 // and instead uses them to update the YouTube object directly.
 class YouTubeNoReload extends React.Component {
+  props: {
+    style: View.propTypes.style;
+    videoId: string;
+  }
   _root: any;
 
   shouldComponentUpdate(nextProps, nextState) {
@@ -428,7 +434,7 @@ class YouTubeNoReload extends React.Component {
     const trimmedProps = { ...this.props, style: null, videoId: null };
     const trimmedNextProps = { ...nextProps, style: null, videoId: null };
     const diff = !styleEqual(style, nextStyle) || !shallowEqual(trimmedProps, trimmedNextProps) || !shallowEqual(this.state, nextState);
-    if (!diff && (this.props.videoId != nextProps.videoId)) {
+    if (!diff && (this.props.videoId !== nextProps.videoId)) {
       // setNativeProps only exists on Android, be careful!
       this.setNativeProps({
         videoId: nextProps.videoId,
@@ -460,10 +466,10 @@ type PlaylistViewProps = {
 };
 
 class _PlaylistView extends React.Component {
-  youtubePlayer: YouTubeNoReload;
-  sectionedListView: SectionedListView;
-  cachedLayout: Array<Array<{top: number, bottom: number}>>;
-  viewDimensions: {top: number, bottom: number};
+  _youtubePlayer: YouTubeNoReload;
+  _sectionedListView: SectionedListView;
+  _cachedLayout: Array<Array<{top: number, bottom: number}>>;
+  _viewDimensions: {top: number, bottom: number};
 
   constructor(props: PlaylistViewProps) {
     super(props);
@@ -473,7 +479,15 @@ class _PlaylistView extends React.Component {
     (this: any).onChangeState = this.onChangeState.bind(this);
     (this: any).onListViewLayout = this.onListViewLayout.bind(this);
     (this: any).onListViewScroll = this.onListViewScroll.bind(this);
-    this.cachedLayout = [];
+    this._cachedLayout = [];
+  }
+
+  componentWillReceiveProps(nextProps: any) {
+    if (nextProps.selectedTab !== 'learn') {
+      this._youtubePlayer.setNativeProps({
+        play: false,
+      });
+    }
   }
 
   componentWillUnmount() {
@@ -481,18 +495,10 @@ class _PlaylistView extends React.Component {
     this.props.setTutorialVideoIndex(0);
   }
 
-  componentWillReceiveProps(nextProps: any) {
-    if (nextProps.selectedTab !== 'learn') {
-      this.youtubePlayer.setNativeProps({
-        play: false,
-      });
-    }
-  }
-
   onListViewScroll(e) {
     const top = e.nativeEvent.contentOffset.y;
     const bottom = top + e.nativeEvent.layoutMeasurement.height;
-    this.viewDimensions = { top, bottom };
+    this._viewDimensions = { top, bottom };
   }
 
   onChangeState(props: Object) {
@@ -511,20 +517,26 @@ class _PlaylistView extends React.Component {
   onListViewLayout(e) {
     const top = e.nativeEvent.layout.y;
     const bottom = top + e.nativeEvent.layout.height;
-    this.viewDimensions = { top, bottom };
+    this._viewDimensions = { top, bottom };
   }
-
 
   getSelectedVideo() {
     return this.props.playlist.getVideo(this.props.tutorialVideoIndex);
   }
 
+  setCachedLayoutForRow(section, row, top, bottom) {
+    if (!this._cachedLayout[section]) {
+      this._cachedLayout[section] = [];
+    }
+    this._cachedLayout[section][row] = { top, bottom };
+  }
+
   ensureTutorialVisible(index) {
     const { section, row } = this.props.playlist.getVideoSectionRow(index);
     // {top, bottom} of the element
-    const element = this.cachedLayout[section][row];
+    const element = this._cachedLayout[section][row];
     // {top, bottom} of the containing view's current scroll position
-    const view = this.viewDimensions;
+    const view = this._viewDimensions;
 
     let newScroll = null;
     // if we're off the bottom of the screen
@@ -539,19 +551,13 @@ class _PlaylistView extends React.Component {
     }
     // only scroll if necessary
     if (newScroll !== null) {
-      this.sectionedListView.scrollTo({
+      this._sectionedListView.scrollTo({
         y: newScroll,
         animated: true,
       });
     }
   }
 
-  setCachedLayoutForRow(section, row, top, bottom) {
-    if (!this.cachedLayout[section]) {
-      this.cachedLayout[section] = [];
-    }
-    this.cachedLayout[section][row] = { top, bottom };
-  }
 
   renderHeader() {
     const subtitle = this.props.playlist.subtitle ? <Text style={styles.playlistSubtitle}>{this.props.playlist.subtitle}</Text> : null;
@@ -622,11 +628,11 @@ class _PlaylistView extends React.Component {
     // for my client feature-bar (if i support scrub bar):
     // speed-rate, play/pause, back-ten-seconds, airplay
     const video = this.getSelectedVideo();
-    const height = Dimensions.get('window').width * video.height / video.width;
+    const height = (Dimensions.get('window').width * video.height) / video.width;
     return (<View style={styles.container}>
       <YouTubeNoReload
         ref={(x) => {
-          this.youtubePlayer = x;
+          this._youtubePlayer = x;
         }}
         apiKey={googleKey}
         videoId={video.youtubeId}
@@ -644,7 +650,7 @@ class _PlaylistView extends React.Component {
       <View style={styles.listViewWrapper}>
         <SectionedListView
           ref={(x) => {
-            this.sectionedListView = x;
+            this._sectionedListView = x;
           }}
           items={this.props.playlist.getItems(this.props.tutorialVideoIndex)}
           sectionHeaders={this.props.playlist.getSectionHeaders()}

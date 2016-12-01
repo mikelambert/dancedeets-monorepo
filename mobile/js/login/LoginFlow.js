@@ -9,14 +9,16 @@ import {
   Platform,
   View,
 } from 'react-native';
+import { connect } from 'react-redux';
 import LaunchScreen from './LaunchScreen';
 import OnboardingFlow from './OnboardingFlow';
-import { connect } from 'react-redux';
 import { autoLoginAtStartup } from '../actions';
 
 class LoginFlow extends React.Component {
-  constructor(props) {
-    super(props);
+  props: {
+    // Self-managed props
+    isOnboarding: boolean;
+    autoLoginAtStartup: () => void;
   }
 
   componentDidMount() {
@@ -40,6 +42,8 @@ class LoginFlow extends React.Component {
       // So instead, let's draw a no-op, and let the application background show through,
       // which ends up being a continuation of our launch screen as the app loads.
       return <View />;
+    } else {
+      return null;
     }
   }
 }
