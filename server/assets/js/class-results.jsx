@@ -87,11 +87,12 @@ class MultiSelectList<T> extends React.Component {
     thumbnails: boolean;
   }
 
+  _itemRefs: { [id: string]: React.Element<*> };
+
   getValues() {
     const values = [];
-    const refs = this.refs;
     this.props.list.forEach((item, i) => {
-      if (refs[`item${i}`].isActive()) {
+      if (this._itemRefs[`item${i}`].isActive()) {
         values.push(item);
       }
     });
@@ -99,33 +100,31 @@ class MultiSelectList<T> extends React.Component {
   }
 
   setAll() {
-    const refs = this.refs;
     this.props.list.forEach((item, i) => {
-      if (refs[`item${i}`].isActive()) {
-        refs[`item${i}`].manualToggleState();
+      if (this._itemRefs[`item${i}`].isActive()) {
+        this._itemRefs[`item${i}`].manualToggleState();
       }
     });
     // Ensure we leave it active
-    if (!this.refs['item-all'].isActive()) {
-      this.refs['item-all'].manualToggleState();
+    if (!this._itemRefs['item-all'].isActive()) {
+      this._itemRefs['item-all'].manualToggleState();
     }
     this.props.onChange();
   }
 
   unsetAll() {
-    if (this.refs['item-all'].isActive()) {
-      this.refs['item-all'].manualToggleState();
+    if (this._itemRefs['item-all'].isActive()) {
+      this._itemRefs['item-all'].manualToggleState();
     }
 
     let anySet = false;
-    const refs = this.refs;
     this.props.list.forEach((item, i) => {
-      if (refs[`item${i}`].isActive()) {
+      if (this._itemRefs[`item${i}`].isActive()) {
         anySet = true;
       }
     });
     if (!anySet) {
-      this.refs['item-all'].manualToggleState();
+      this._itemRefs['item-all'].manualToggleState();
     }
 
     this.props.onChange();
@@ -135,7 +134,7 @@ class MultiSelectList<T> extends React.Component {
     const options = [];
     const emptyList = (this.props.value.length === 0);
     options.push(
-      <SelectButton key="All" item="All" ref={'item-all'} value={emptyList} onChange={this.setAll} />
+      <SelectButton key="All" item="All" ref={(x) => { this._itemRefs['item-all'] = x; }} value={emptyList} onChange={this.setAll} />
     );
     const thumbnails = this.props.thumbnails;
     const value = this.props.value;
@@ -228,12 +227,15 @@ class SearchBar extends React.Component {
     teacher: string;
     onUserInput: (styles: Array<any>, studios: Array<any>, teacher: string) => void;
   }
+  _styles: React.Element<MultiSelectList>;
+  _studios: React.Element<MultiSelectList>;
+  _teacher: React.Element<*>;
 
   onChange() {
     this.props.onUserInput(
-      this.refs.styles.getValues(),
-      this.refs.studios.getValues(),
-      this.refs.teacher.value
+      this._styles.getValues(),
+      this._studios.getValues(),
+      this._teacher.value
     );
   }
 
@@ -245,7 +247,7 @@ class SearchBar extends React.Component {
           <MultiSelectList
             list={this.props.initialStyles}
             value={this.props.styles}
-            ref="styles"
+            ref={(x) => { this._styles = x; }}
             onChange={this.onChange}
           />
         </div>
@@ -254,7 +256,7 @@ class SearchBar extends React.Component {
           <MultiSelectList
             list={this.props.initialStudios}
             value={this.props.studios}
-            ref="studios"
+            ref={(x) => { this._studios = x; }}
             onChange={this.onChange}
             thumbnails
           />
@@ -264,7 +266,7 @@ class SearchBar extends React.Component {
           <input
             type="text"
             value={this.props.teacher}
-            ref="teacher"
+            ref={(x) => { this._teacher = x; }}
             onChange={this.onChange}
           />
         </div>
