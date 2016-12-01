@@ -51,13 +51,13 @@ app.post('/render', (req, res) => {
       });
     } else {
       req.body.component = eval(data); // eslint-disable-line no-eval
-      reactRender(req.body, (err, markup) => {
-        if (err) {
+      reactRender(req.body, (err2, markup) => {
+        if (err2) {
           res.json({
             error: {
-              type: err.constructor.name,
-              message: err.message,
-              stack: err.stack,
+              type: err2.constructor.name,
+              message: err2.message,
+              stack: err2.stack,
             },
             markup: null,
           });
@@ -72,6 +72,6 @@ app.post('/render', (req, res) => {
   });
 });
 
-server.listen(PORT, ADDRESS, function() {
-  console.log('React render server listening at http://' + ADDRESS + ':' + PORT);
+server.listen(PORT, ADDRESS, () => {
+  console.log(`React render server listening at http://${ADDRESS}:${PORT}`);
 });
