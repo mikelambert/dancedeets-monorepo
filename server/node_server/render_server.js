@@ -1,4 +1,11 @@
-var argv = require('yargs')
+import fs from 'fs';
+import http from 'http';
+import express from 'express';
+import bodyParser from 'body-parser';
+import reactRender from 'react-render';
+import yargs from 'yargs';
+
+const argv = yargs
   .option('p', {
     alias: 'port',
     description: 'Specify the server\'s port',
@@ -13,31 +20,26 @@ var argv = require('yargs')
   .strict()
   .argv;
 
-var fs = require('fs');
-var http = require('http');
-var express = require('express');
-var bodyParser = require('body-parser');
-var reactRender = require('react-render');
 
 // Ensure support for loading files that contain ES6+7 & JSX
 // Disabled for now, since we cannot use this in a webpack-compiled script
 // And unfortunately, the 10K file limit on GAE keeps us from using uncompiled.
 // require('babel-core/register');
 
-var ADDRESS = argv.address;
-var PORT = argv.port;
+const ADDRESS = argv.address;
+const PORT = argv.port;
 
-var app = express();
-var server = new http.Server(app);
+const app = express();
+const server = new http.Server(app);
 
 app.use(bodyParser.json());
 
-app.get('/', function(req, res) {
+app.get('/', (req, res) => {
   res.end('React render server');
 });
 
-app.post('/render', function(req, res) {
-  fs.readFile(req.body.path, {encoding: 'utf8'}, function(err, data) {
+app.post('/render', (req, res) => {
+  fs.readFile(req.body.path, { encoding: 'utf8' }, (err, data) => {
     if (err) {
       res.json({
         error: {
@@ -49,7 +51,7 @@ app.post('/render', function(req, res) {
       });
     } else {
       req.body.component = eval(data); // eslint-disable-line no-eval
-      reactRender(req.body, function(err, markup) {
+      reactRender(req.body, (err, markup) => {
         if (err) {
           res.json({
             error: {
@@ -62,7 +64,7 @@ app.post('/render', function(req, res) {
         } else {
           res.json({
             error: null,
-            markup: markup,
+            markup,
           });
         }
       });
