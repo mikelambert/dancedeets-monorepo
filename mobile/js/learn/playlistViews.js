@@ -10,6 +10,7 @@ import {
   Dimensions,
   Image,
   ListView,
+  NativeModules,
   Platform,
   StyleSheet,
   TouchableHighlight,
@@ -25,7 +26,6 @@ import YouTube from 'react-native-youtube';
 import shallowEqual from 'fbjs/lib/shallowEqual';
 import styleEqual from 'style-equal';
 import _ from 'lodash/string';
-import Mailer from 'react-native-mail';
 import { track } from '../store/track';
 import { FeedListView } from './BlogList';
 import {
@@ -47,6 +47,8 @@ import {
 } from '../actions';
 import { googleKey } from '../keys';
 import type { Style } from '../styles';
+
+const Mailer = NativeModules.RNMail;
 
 type PlaylistStylesViewProps = {
   onSelected: (playlist: Playlist) => void;

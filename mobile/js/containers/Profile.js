@@ -8,6 +8,7 @@ import React from 'react';
 import {
   AlertIOS,
   Image,
+  NativeModules,
   Platform,
   ScrollView,
   StyleSheet,
@@ -22,7 +23,6 @@ import {
   defineMessages,
 } from 'react-intl';
 import NativeEnv from 'react-native-native-env';
-import Mailer from 'react-native-mail';
 import {
   logOutWithPrompt,
   loginButtonPressed,
@@ -43,6 +43,8 @@ import type {
   Dispatch,
   User,
 } from '../actions/types';
+
+const Mailer = NativeModules.RNMail;
 
 const STATUSBAR_HEIGHT = Platform.OS === 'ios' ? 20 : 0;
 

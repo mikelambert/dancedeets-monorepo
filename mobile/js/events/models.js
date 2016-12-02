@@ -23,9 +23,9 @@ export type Cover = {
 
 export class JsonDerivedObject {
   constructor(data: any) {
-    for (const attr of data) {
+    Object.keys(data).forEach((attr) => {
       (this: any)[attr] = data[attr];
-    }
+    });
   }
 }
 

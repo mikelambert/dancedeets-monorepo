@@ -72,10 +72,10 @@ const NavigationHeaderTitle = ({ children, style, textStyle, viewProps }) => (
   </View>
 );
 NavigationHeaderTitle.propTypes = {
-  children: PropTypes.arrayOf(PropTypes.element),
+  children: PropTypes.string,
   style: View.propTypes.style,
   textStyle: View.propTypes.style,
-  viewProps: View.propTypes,
+  viewProps: PropTypes.shape({}),
 };
 
 class _Navigator extends React.Component {

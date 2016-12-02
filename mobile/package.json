@@ -36,7 +36,7 @@
     "react-native-google-api-availability": "^0.0.1",
     "react-native-linear-gradient": "^1.5.9",
     "react-native-locale": "github:mikelambert/react-native-locale",
-    "react-native-mail": "github:mikelambert/react-native-mail",
+    "react-native-mail": "^2.0.0",
     "react-native-maps": "github:mikelambert/react-native-maps#v11",
     "react-native-mixpanel": "github:mikelambert/react-native-mixpanel",
     "react-native-native-env": "0.0.4",
