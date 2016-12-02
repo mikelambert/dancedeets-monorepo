@@ -459,8 +459,9 @@ class _RegistrationPage extends React.Component {
     let teamMembers = requirements.minTeamSize ? this.teamWidgets() : null;
     if (this.props.user) {
       teamMember1 = [
-        <GiftedForm.HiddenWidget name="dancer_id_1" value={this.props.user.profile.id} />,
+        <GiftedForm.HiddenWidget key="hidden_0" name="dancer_id_1" value={this.props.user.profile.id} />,
         <GiftedForm.TextInputWidget
+          key={0}
           name="dancer_name_1" // mandatory
           title="Dancer 1 (You)"
           validationImage={false}
@@ -638,7 +639,6 @@ const checkSize = 20;
 const checkMargin = 10;
 let styles = StyleSheet.create({
   container: {
-    flex: 1,
   },
   miniThumbnail: {
     height: 50,
