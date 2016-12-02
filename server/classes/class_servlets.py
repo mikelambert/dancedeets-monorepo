@@ -125,6 +125,10 @@ def process_upload_finalization(studio_name):
     if len(results) == num_events:
         logging.error("Processing %s events for studio %s, and did not reach the end of days-with-duplicates", num_events, studio_name)
 
+    if not results:
+        logging.warning("Didn't find any classes to de-dupe. Let's ignore this, it's most likely a dev server with no data.")
+        return
+
     max_scrape_time = max(results, key=lambda x: x.scrape_time).scrape_time
 
     classes_by_date = {}
