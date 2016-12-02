@@ -25,6 +25,7 @@ export class MyGiftedSubmitWidget extends GiftedForm.SubmitWidget {
     return (
       <View>
         <Button
+          style={this.getStyle('submitButton')}
           textStyle={this.getStyle('textSubmitButton')}
           disabledStyle={this.getStyle('disabledSubmitButton')}
 
@@ -44,7 +45,7 @@ export class MyGiftedSubmitWidget extends GiftedForm.SubmitWidget {
 
 export class MyGiftedForm extends React.Component {
   render() {
-    return (<Card>
+    return (
       <GiftedForm
         scrollEnabled={false}
         formName="signupForm" // GiftedForm instances that use the same name will also share the same states
@@ -77,6 +78,6 @@ export class MyGiftedForm extends React.Component {
         }}
         {...this.props}
       />
-    </Card>);
+    );
   }
 }
