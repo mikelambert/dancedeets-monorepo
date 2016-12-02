@@ -248,7 +248,8 @@ class _BattleView extends React.Component {
   renderHeader() {
     return (<FitImage
       source={{ uri: this.props.battleEvent.headerLogoUrl }}
-      style={{ flex: 1, width: Dimensions.get('window').width }}
+      // TODO: set this height dynamically, perhaps from the json data
+      style={{ flex: 1, width: Dimensions.get('window').width, height: 200 }}
     />);
   }
 

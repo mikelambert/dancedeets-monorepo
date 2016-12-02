@@ -150,7 +150,7 @@ class CreditSubList extends React.Component {
   };
 
   render() {
-    const subcreditGroups = this.props.list.map(x => <Text key={x} style={{ left: 10 }}>- {x}</Text>);
+    const subcreditGroups = this.props.list.map(x => <Text key={x} style={{ left: 5 }}>- {x}</Text>);
     return <View>{subcreditGroups}</View>;
   }
 }

@@ -23,6 +23,7 @@ type Props = {
 export default class ProportionalImage extends React.Component {
   static defaultProps = {
     duration: 200,
+    resizeDirection: 'height',
   };
 
   props: Props;
