@@ -1,6 +1,4 @@
 projects:
   default: 27474
 requirements:
-  eggs:
-  - ./eggs/icalendar.egg
   file: ./shub-requirements.txt

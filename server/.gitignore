@@ -6,6 +6,9 @@ app-devserver.yaml
 dist/
 dist-includes/
 
+# generated directory when we 'shub deploy'
+project.egg-info/
+
 # secret files
 keys.yaml
 facebook-dev.yaml
@@ -31,3 +34,5 @@ scratch
 # installed libraries
 lib/
 node_modules/
+
+
