@@ -50,8 +50,9 @@ app.post('/render', (req, res) => {
         markup: null,
       });
     } else {
-      req.body.component = eval(data); // eslint-disable-line no-eval
-      reactRender(req.body, (err2, markup) => {
+      const body = req.body;
+      body.component = eval(data); // eslint-disable-line no-eval
+      reactRender(body, (err2, markup) => {
         if (err2) {
           res.json({
             error: {
