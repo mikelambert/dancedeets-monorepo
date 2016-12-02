@@ -11,7 +11,7 @@ import {
   TextInput as RealTextInput,
   StyleSheet,
 } from 'react-native';
-import { default as RealAutolink } from 'react-native-autolink';
+import RealAutolink from 'react-native-autolink';
 import {
   semiNormalize,
 } from '../ui/normalize';

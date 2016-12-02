@@ -1,6 +1,4 @@
-if (window.prodMode) {
-  require('trackjs');
-}
+require('trackjs');
 
 const $ = require('jquery');
 
@@ -23,7 +21,7 @@ const fixStickyTouch = require('./sticky-touch');
 
 const appInstallPromos = require('./app-install-promo');
 
-fbSetup(window, window.fbPermissions, window.fbAppId, window.baseHostname);
+fbSetup(window.fbPermissions, window.fbAppId, window.baseHostname);
 
 if (window.showSmartBanner) {
   $.smartbanner({

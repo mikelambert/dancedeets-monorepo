@@ -22,6 +22,7 @@ import {
   defineMessages,
 } from 'react-intl';
 import NativeEnv from 'react-native-native-env';
+import Mailer from 'react-native-mail';
 import {
   logOutWithPrompt,
   loginButtonPressed,
@@ -42,8 +43,6 @@ import type {
   Dispatch,
   User,
 } from '../actions/types';
-
-const Mailer = require('NativeModules').RNMail;
 
 const STATUSBAR_HEIGHT = Platform.OS === 'ios' ? 20 : 0;
 

@@ -1,7 +1,7 @@
 const jQuery = require('jquery');
 require('jquery.cookie');
 
-const FBSetup = (window, fbPermissions, fbAppId, baseHostname) => {
+const FBSetup = (fbPermissions, fbAppId, baseHostname) => {
   let loginPressed = false;
 
   function deleteLoginCookies() {

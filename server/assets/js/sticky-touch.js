@@ -18,13 +18,9 @@ function fixStickyTouch(window) {
           keepSelectors.push(s);
         }
       };
-      for (const si in window.document.styleSheets) {
-        if ({}.hasOwnProperty.call(window.document.styleSheets, si)) {
-          const styleSheet = window.document.styleSheets[si];
-          if (!styleSheet.rules) {
-            continue;
-          }
-
+      for (const si of window.document.styleSheets) {
+        const styleSheet = window.document.styleSheets[si];
+        if (styleSheet.rules) {
           for (let ri = styleSheet.rules.length - 1; ri >= 0; ri -= 1) {
             const st = styleSheet.rules[ri].selectorText;
             if (st) {

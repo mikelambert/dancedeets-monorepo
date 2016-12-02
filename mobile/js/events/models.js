@@ -23,10 +23,8 @@ export type Cover = {
 
 export class JsonDerivedObject {
   constructor(data: any) {
-    for (const attr in data) {
-      if ({}.hasOwnProperty.call(data, attr)) {
-        (this: any)[attr] = data[attr];
-      }
+    for (const attr of data) {
+      (this: any)[attr] = data[attr];
     }
   }
 }

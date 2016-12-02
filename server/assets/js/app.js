@@ -67,10 +67,12 @@ const App = (() => {
     initAnimateDropdown() {
       function menuMode() {
         jQuery('.dropdown').on('show.bs.dropdown', () => {
-          jQuery(this).find('.dropdown-menu').first().stop(true, true).slideDown();
+          const menu = jQuery(this).find('.dropdown-menu');
+          menu.first().stop(true, true).slideDown();
         });
         jQuery('.dropdown').on('hide.bs.dropdown', () => {
-          jQuery(this).find('.dropdown-menu').first().stop(true, true).slideUp();
+          const menu = jQuery(this).find('.dropdown-menu');
+          menu.first().stop(true, true).slideUp();
         });
       }
 

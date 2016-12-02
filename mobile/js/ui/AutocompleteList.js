@@ -181,10 +181,9 @@ export default class AutocompleteList extends React.Component {
       res = [];
     }
 
-    const fullResults = [...res, ...results];
-    fullResults.forEach((x) => {
+    const fullResults = [...res, ...results].map((x) => {
       if (!x.terms) {
-        return;
+        return x;
       }
       // Usually Google maps returns the country last, but sometimes it is returned first.
       // So let's handle both cases.
@@ -192,7 +191,8 @@ export default class AutocompleteList extends React.Component {
       const lastTerm = x.terms[x.terms.length - 1].value;
       const code = lookupCountryCode(lastTerm) || lookupCountryCode(firstTerm);
       const flag = emojiFlags.data.find(c => c.code === code);
-      x.flag = flag != null ? flag.emoji : '';
+      const emoji = flag != null ? flag.emoji : '';
+      return { ...x, flag: emoji };
     });
     return fullResults;
   }

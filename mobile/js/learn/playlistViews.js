@@ -25,6 +25,7 @@ import YouTube from 'react-native-youtube';
 import shallowEqual from 'fbjs/lib/shallowEqual';
 import styleEqual from 'style-equal';
 import _ from 'lodash/string';
+import Mailer from 'react-native-mail';
 import { track } from '../store/track';
 import { FeedListView } from './BlogList';
 import {
@@ -46,8 +47,6 @@ import {
 } from '../actions';
 import { googleKey } from '../keys';
 import type { Style } from '../styles';
-
-const Mailer = require('NativeModules').RNMail;
 
 type PlaylistStylesViewProps = {
   onSelected: (playlist: Playlist) => void;
@@ -166,7 +165,7 @@ class _PlaylistStylesView extends React.Component {
   }
 
   async load() {
-    const playlistsJson = await getRemoteTutorials();
+    const playlistsJson = getRemoteTutorials();
 
     const constructedPlaylists = playlistsJson.map(style => ({
       ...style,

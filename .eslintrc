@@ -30,6 +30,14 @@
       ignoreTemplateLiterals: true,
     }],
 
+    // Allow ForOfStatement
+    'no-restricted-syntax': [
+      'error',
+      'ForInStatement',
+      'LabeledStatement',
+      'WithStatement',
+    ],
+
     'react/sort-comp': ['error', {
       order: [
         'static-methods',

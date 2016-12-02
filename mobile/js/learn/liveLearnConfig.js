@@ -26,6 +26,6 @@ async function loadConfig() {
 export async function getRemoteBlogs() {
   return JSON.parse(await RemoteConfig.getNamespacedString('blogs', 'Learn'));
 }
-export async function getRemoteTutorials() {
+export function getRemoteTutorials() {
   return defaultTutorials;
 }

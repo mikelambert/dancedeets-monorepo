@@ -29,12 +29,14 @@
 {% block body %}{% endblock %}
 
 <script type="text/javascript">
+{% if prod_mode %}
 window._trackJs = {
 {% if user %}
   userId: "{{ user.fb_uid }} - {{ user.full_name }}",
 {% endif %}
   token: '77a8a7079d734df7a94150f8f0d7e16f'
 };
+{% endif %}
 window.fbPermissions = {{ fb_permissions|tojson }};
 window.fbAppId = {{ app_id|tojson }};
 window.baseHostname = {{ base_hostname|tojson }};
