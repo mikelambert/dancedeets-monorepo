@@ -161,19 +161,18 @@ class _PlaylistStylesView extends React.Component {
     (this: any).renderRow = this.renderRow.bind(this);
     (this: any).renderHeader = this.renderHeader.bind(this);
     this.state = {
-      stylePlaylists: [],
+      stylePlaylists: this.constructPlaylists(),
     };
-    this.load();
   }
 
-  async load() {
+  constructPlaylists() {
     const playlistsJson = getRemoteTutorials();
 
     const constructedPlaylists = playlistsJson.map(style => ({
       ...style,
       tutorials: sortedTutorials(style.tutorials, this.props.intl.locale).map(x => new Playlist(x)),
     }));
-    this.setState({ stylePlaylists: constructedPlaylists });
+    return constructedPlaylists;
   }
 
   renderRow(style: any) {
