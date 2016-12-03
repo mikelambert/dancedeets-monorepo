@@ -22,6 +22,8 @@ import {
 } from 'dancedeets-common/js/dates';
 import {
   Event,
+} from 'dancedeets-common/js/events/models';
+import type {
   JSONObject,
 } from 'dancedeets-common/js/events/models';
 
@@ -41,7 +43,7 @@ function intersperse(arr: Array<any>, sep: string) {
 
 class Card extends React.Component {
   props: {
-    children: Array<React.Element<*>>;
+    children?: Array<React.Element<*>>;
   }
 
   render() {
@@ -89,7 +91,7 @@ class Title extends React.Component {
 class ImagePrefix extends React.Component {
   props: {
     iconName: string;
-    children: Array<React.Element<*>>;
+    children?: Array<React.Element<*>>;
   }
 
   render() {
@@ -232,7 +234,7 @@ class _EventLinks extends React.Component {
       <Card>
         {/* categories */}
         {/* RSVP buttons! */}
-        <ImagePrefix className="product-social-links">
+        <ImagePrefix iconName="share-square-o" className="product-social-links">
           <a className="link-event-share twitter-share-button" href="https://twitter.com/intent/tweet?hashtags=dancedeets" data-count="none">Tweet</a>
           <div className="link-event-share fb-share-button" data-href="{{ canonical_url }}" data-layout="button" data-size="small" data-mobile-iframe="true">
             <a className="fb-xfbml-parse-ignore" rel="noopener noreferrer" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u={{ canonical_url }}&amp;src=sdkpreparse">Share</a>
@@ -323,7 +325,7 @@ class Description extends React.Component {
   }
 }
 
-export default class EventPage extends React.Component {
+class _EventPage extends React.Component {
   props: {
     event: JSONObject;
   }
@@ -352,10 +354,9 @@ export default class EventPage extends React.Component {
     );
   }
 }
+export default intl(_EventPage, getCurrentLocale());
 
 function getCurrentLocale() {
   // TODO: load the locale from the incoming request headers
   return defaultLocale;
 }
-
-module.exports = intl(EventPage, getCurrentLocale());

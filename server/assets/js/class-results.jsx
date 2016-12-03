@@ -18,7 +18,7 @@ class StudioImage extends React.Component {
   }
 
   contextTypes: {
-    imagePath: React.PropTypes.string,
+    imagePath: string,
   }
 
   render() {
@@ -33,7 +33,7 @@ class SelectButton extends React.Component {
   props: {
     onChange: () => void;
     value: boolean;
-    thumbnail: boolean;
+    thumbnail?: boolean;
     item: any;
   }
 
@@ -84,10 +84,10 @@ class MultiSelectList<T> extends React.Component {
     onChange: () => void;
     list: Array<T>;
     value: T;
-    thumbnails: boolean;
+    thumbnails?: boolean;
   }
 
-  _itemRefs: { [id: string]: React.Element<*> };
+  _itemRefs: { [id: string]: SelectButton };
 
   getValues() {
     const values = [];
@@ -304,7 +304,7 @@ class ClassSummary extends React.Component {
   }
 }
 
-class StudioClass extends React.Compoent {
+class StudioClass extends React.Component {
   render() {
     return (
       <div>
@@ -362,7 +362,11 @@ class ClassTitle extends React.Component {
   }
 }
 
-class SponsoredSummary extends React.Compoent {
+class SponsoredSummary extends React.Component {
+  props: {
+    classes: Array<StudioClassType>;
+  }
+
   render() {
     const sponsoredStudios = {};
     this.props.classes.forEach((studioClass) => {
@@ -442,14 +446,25 @@ function parseISO(str) {
   return new Date(Number(s[0]), Number(s[1]) - 1, Number(s[2]), Number(s[3]), Number(s[4]), Number(s[5]), 0);
 }
 
-class App extends React.Component {
-  props: {
-    imagePath: string,
-    classes: Array<any>;
-    location: string;
-  };
+type AppProps = {
+  imagePath: string,
+  classes: Array<StudioClassType>;
+  location: string;
+};
 
-  constructor(props) {
+class App extends React.Component {
+  props: AppProps;
+
+  state: {
+    styles: Array<string>;
+    studios: Array<string>;
+    teacher: string;
+    initialClasses: Array<StudioClassType>;
+    initialStudios: Array<string>;
+    initialStyles: Array<string>;
+  }
+
+  constructor(props: AppProps) {
     super(props);
     const studiosSet = {};
     const stylesSet = {};
@@ -478,7 +493,7 @@ class App extends React.Component {
       initialStyles: Object.keys(stylesSet).sort(caseInsensitiveSort),
     };
 
-    this.handleUserInput = this.handleUserInput.bind(this);
+    (this: any).handleUserInput = this.handleUserInput.bind(this);
   }
 
   getChildContext() {
@@ -567,7 +582,7 @@ class App extends React.Component {
     return goodClasses;
   }
 
-  handleUserInput(styles, studios, teacher) {
+  handleUserInput(styles: Array<string>, studios: Array<string>, teacher: string) {
     this.setState({
       styles,
       studios,

@@ -7,7 +7,7 @@
 import url from 'url';
 
 type JSON = string | number | boolean | null | JSONObject | JSONArray;
-type JSONObject = { [key:string]: JSON };
+export type JSONObject = { [key:string]: JSON };
 type JSONArray = Array<JSON>;
 type MiniImageProp = {
   uri: string;
@@ -124,7 +124,7 @@ export class Event extends JsonDerivedObject {
     const results = [320, 480, 720, 1080, 1440].map((x) => {
       // Careful! We are re-using parsedSource here.
       // If we do more complex things, we may need to create and modify copies...
-      parsedSource.query.width = x;
+      parsedSource.query = { ...parsedSource.query, width: x };
       const result = {
         uri: url.format(parsedSource),
         width: x,
