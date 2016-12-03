@@ -135,12 +135,20 @@ class ImageWithLinks extends React.Component {
     );
   }
 }
-// TODO: add calendar_start_end
+
+function googleCalendarStartEndFormat(event) {
+  const fmt = 'YYYYMMDDTHHmmss[Z]';
+  const start = moment(event.start_time).utc().format(fmt);
+  const endTime = event.end_time ? moment(event.end_time) : moment(event.start_time).add(2, 'hours');
+  const end = endTime.utc().format(fmt);
+  return `${start}/${end}`;
+}
+
 function getAddToCalendarLink(event) {
   const args = {
     action: 'TEMPLATE',
     text: event.name,
-    dates: '{{event.calendar_start_end|urlencode }}',
+    dates: googleCalendarStartEndFormat(event),
     details: `Event Details:\n${event.getUrl()}`,
     location: event.venue.fullAddress().replace('\n', ', '),
     sf: true,
