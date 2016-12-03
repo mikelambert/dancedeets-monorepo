@@ -51,7 +51,7 @@ app.post('/render', (req, res) => {
       });
     } else {
       const body = req.body;
-      body.component = eval(data); // eslint-disable-line no-eval
+      body.component = eval(data).default; // eslint-disable-line no-eval
       reactRender(body, (err2, markup) => {
         if (err2) {
           res.json({
