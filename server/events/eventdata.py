@@ -6,9 +6,9 @@ from google.appengine.ext import ndb
 
 import event_types
 from events import event_locations
-import fb_api
 from loc import gmaps_api
 from . import namespaces
+from util import fb_events
 
 REGION_RADIUS = 200 # kilometers
 
@@ -273,7 +273,7 @@ class DBEvent(ndb.Model):
         else:
             if 'cover_info' in self.fb_event:
                 # Old FB API versions returned ints instead of strings, so let's stringify manually to ensure we can look up the cover_info
-                cover = self.fb_event['cover_info'][str(self.fb_event['info']['cover']['cover_id'])]
+                cover = self.fb_event['cover_info'][str(self.fb_event['info']['cover']['id'])]
                 return cover['images']
             else:
                 return []

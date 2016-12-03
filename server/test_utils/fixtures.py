@@ -26,7 +26,7 @@ def create_event(event_id='1000001', start_time=None, location='NYC'):
                     "start_time": start_time.strftime("%Y-%m-%dT%H:%M:%S-0400"),
                     "id": event_id,
                 }),
-            '/?fields=images&ids=%7Bresult%3Dinfo%3A%24.cover.cover_id%7D':
+            '/?fields=images&ids=%7Bresult%3Dinfo%3A%24.cover.id%7D':
                 (400, {'error': {'message': 'Cannot specify an empty identifier', 'code': 2500, 'type': 'OAuthException'}}),
             picture_url:
                 (200, {

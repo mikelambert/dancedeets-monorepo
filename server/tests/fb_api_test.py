@@ -315,7 +315,7 @@ class TestEventFailureHandling(FBApiTestCase):
         fb_api.FBAPI.results = {
             url:
                 (200, {'id': 'eid'}),
-            '/?fields=images&ids=%7Bresult%3Dinfo%3A%24.cover.cover_id%7D': fb_api_stub.RESULT_TIMEOUT,
+            '/?fields=images&ids=%7Bresult%3Dinfo%3A%24.cover.id%7D': fb_api_stub.RESULT_TIMEOUT,
             picture_url:
                 (200, {}),
         }
@@ -328,7 +328,7 @@ class TestEventFailureHandling(FBApiTestCase):
         fb_api.FBAPI.results = {
             url:
                 (200, {'id': 'eid'}),
-            '/?fields=images&ids=%7Bresult%3Dinfo%3A%24.cover.cover_id%7D': fb_api_stub.RESULT_TIMEOUT,
+            '/?fields=images&ids=%7Bresult%3Dinfo%3A%24.cover.id%7D': fb_api_stub.RESULT_TIMEOUT,
             picture_url: fb_api_stub.RESULT_TIMEOUT,
         }
 
@@ -343,7 +343,7 @@ class TestEventFailureHandling(FBApiTestCase):
                     "start_time": "2014-07-12T17:00:00-0400",
                     "id": "eid"
                 }),
-            '/?fields=images&ids=%7Bresult%3Dinfo%3A%24.cover.cover_id%7D':
+            '/?fields=images&ids=%7Bresult%3Dinfo%3A%24.cover.id%7D':
                 (400, {'error': {'message': 'Cannot specify an empty identifier', 'code': 2500, 'type': 'OAuthException'}}),
             picture_url:
                 (200, {
