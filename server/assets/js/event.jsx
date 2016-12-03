@@ -12,6 +12,7 @@ import {
   injectIntl,
   intlShape,
 } from 'react-intl';
+import url from 'url';
 import {
   defaultLocale,
   intl,
@@ -206,18 +207,27 @@ class _EventLinks extends React.Component {
         </ImagePrefix>
       );
     }
+    let ticketElement = null;
+    if (this.props.event.ticket_uri) {
+      const hostname = url.parse(this.props.event.ticket_uri).hostname;
+      ticketElement = (
+        <ImagePrefix iconName="ticket">
+          Tickets:<br />
+          <a href={this.props.event.ticket_uri}>{hostname}</a>
+        </ImagePrefix>
+      );
+    }
 
     const formattedStartEndText = formatStartEnd(event.start_time, event.end_time, this.props.intl);
     return (
       <Card>
+        {/* categories */}
+        {/* RSVP buttons! */}
         <ImagePrefix className="product-social-links">
           <a className="link-event-share twitter-share-button" href="https://twitter.com/intent/tweet?hashtags=dancedeets" data-count="none">Tweet</a>
           <div className="link-event-share fb-share-button" data-href="{{ canonical_url }}" data-layout="button" data-size="small" data-mobile-iframe="true">
             <a className="fb-xfbml-parse-ignore" rel="noopener noreferrer" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u={{ canonical_url }}&amp;src=sdkpreparse">Share</a>
           </div>
-        </ImagePrefix>
-        <ImagePrefix iconName={event.source.name === 'Facebook Event' ? 'facebook-square' : 'external-link'}>
-          <a className="link-event-source" href={event.source.url}>{`View Original: ${event.source.name}`}</a>
         </ImagePrefix>
         <ImagePrefix iconName="clock-o">
           <FormatText>{formattedStartEndText}</FormatText>
@@ -230,7 +240,13 @@ class _EventLinks extends React.Component {
           <a href={getAddToCalendarLink(event)} className="link-event-add-to-calendar">Add to Google Calendar</a>
         </ImagePrefix>
         {rsvpElement}
+        {ticketElement}
+        <ImagePrefix iconName={event.source.name === 'Facebook Event' ? 'facebook-square' : 'external-link'}>
+          <a className="link-event-source" href={event.source.url}>{`View Original: ${event.source.name}`}</a>
+        </ImagePrefix>
+        {/* <EventAddedBy event={this.props.event} /> */}
         {organizerElement}
+        {/* maybe move 'share' buttons down here? */}
       </Card>
     );
   }
