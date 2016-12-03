@@ -114,17 +114,22 @@ class ImageWithLinks extends React.Component {
     if (!this.props.event.picture) {
       return null;
     }
+    const url = `/events/image_proxy/${this.props.event.id}`;
     return (
-      <Card><img
-        role="presentation"
-        src={this.props.event.picture.source}
-        style={{
-          width: '100%',
-          borderRadius: '5px',
-        }}
-      /><br />
+      <Card>
+        <a className="link-event-flyer" href={url}>
+          <img
+            role="presentation"
+            src={this.props.event.picture.source}
+            style={{
+              width: '100%',
+              borderRadius: '5px',
+            }}
+          />
+        </a>
+        <br />
         <ImagePrefix iconName="picture-o">
-          <a className="link-event-flyer" href={`/events/image_proxy/${this.props.event.id}`}>See Full Flyer</a>
+          <a className="link-event-flyer" href={url}>See Full Flyer</a>
         </ImagePrefix>
       </Card>
     );
