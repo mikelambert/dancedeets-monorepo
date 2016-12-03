@@ -8,7 +8,8 @@
     "lodash": "^4.17.2",
     "moment": "^2.17.0",
     "react": "^15.4.1",
-    "react-intl": "^2.1.5"
+    "react-intl": "^2.1.5",
+    "url": "^0.11.0"
   },
   "devDependencies": {
     "babel-preset-latest": "^6.16.0",
