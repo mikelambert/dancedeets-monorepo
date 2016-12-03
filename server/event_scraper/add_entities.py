@@ -31,6 +31,8 @@ def add_update_event(fb_event, fbl, creating_uid=None, visible_to_fb_uids=None, 
         # Don't override the original creating_fb_uid
         #STR_ID_MIGRATE
         e.creating_fb_uid = long(creating_uid) if creating_uid else None
+        user = fbl.get(fb_api.LookupUser, creating_uid)
+        e.creating_name = user['profile']['name']
 
     if visible_to_fb_uids is None:
         if creating_uid is not None:

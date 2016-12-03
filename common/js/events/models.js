@@ -102,6 +102,7 @@ export class Event extends JsonDerivedObject {
     categories: Array<string>,
     creation: {
       creator: ?string,
+      creatorName: ?string,
       method: string,
       time: string,
     },

@@ -218,6 +218,15 @@ class _EventLinks extends React.Component {
       );
     }
 
+    let addedByElement = null;
+    if (this.props.event.annotations.creation && this.props.event.annotations.creation.creatorName) {
+      addedByElement = (
+        <ImagePrefix iconName="user-plus">
+          Added By: {this.props.event.annotations.creation.creatorName}
+        </ImagePrefix>
+      );
+    }
+
     const formattedStartEndText = formatStartEnd(event.start_time, event.end_time, this.props.intl);
     return (
       <Card>
@@ -242,9 +251,9 @@ class _EventLinks extends React.Component {
         {rsvpElement}
         {ticketElement}
         <ImagePrefix iconName={event.source.name === 'Facebook Event' ? 'facebook-square' : 'external-link'}>
-          <a className="link-event-source" href={event.source.url}>{`View Original: ${event.source.name}`}</a>
+          View Original: <a className="link-event-source" href={event.source.url}>{event.source.name}</a>
         </ImagePrefix>
-        {/* <EventAddedBy event={this.props.event} /> */}
+        {addedByElement}
         {organizerElement}
         {/* maybe move 'share' buttons down here? */}
       </Card>
