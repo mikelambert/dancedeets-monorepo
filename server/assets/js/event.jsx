@@ -19,6 +19,10 @@ import {
 import {
   formatStartEnd,
 } from 'dancedeets-common/js/dates';
+import {
+  Event,
+  JSONObject,
+} from 'dancedeets-common/js/events/models';
 
 /* intersperse: Return an array with the separator interspersed between
  * each element of the input array.
@@ -286,26 +290,28 @@ class Description extends React.Component {
 
 export default class EventPage extends React.Component {
   props: {
-    event: Event;
+    event: JSONObject;
   }
 
   render() {
+    console.log(this.props.event);
+    const event = new Event(this.props.event);
     return (
       <div className="container" itemScope itemType="http://schema.org/DanceEvent">
         <span itemProp="url" content="canonical_url" />
         <div className="row">
           <div className="col-xs-12">
-            <Title event={this.props.event} />
+            <Title event={event} />
           </div>
         </div>
         <div className="row">
           <div className="col-sm-5">
-            <ImageWithLinks event={this.props.event} />
-            <EventLinks event={this.props.event} />
-            <MapWithLinks event={this.props.event} />
+            <ImageWithLinks event={event} />
+            <EventLinks event={event} />
+            <MapWithLinks event={event} />
           </div>
           <div className="col-sm-7">
-            <Description event={this.props.event} />
+            <Description event={event} />
           </div>
         </div>
       </div>
