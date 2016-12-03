@@ -44,17 +44,25 @@ export class Venue extends JsonDerivedObject {
   name: string;
   id: string;
 
-  fullAddress() {
+  fullAddress(seperator: string = ', ') {
     if (this.address) {
-      return [this.name, this.address.street, this.address.city, this.address.state, this.address.country].filter(x => x).join(', ');
+      return [this.name, this.address.street, this.cityStateCountry()].filter(x => x).join(seperator);
     } else {
       return this.name;
     }
   }
 
-  cityState() {
+  streetCityStateCountry(seperator: string = ', ') {
     if (this.address) {
-      return [this.address.city, this.address.state].filter(x => x).join(', ');
+      return [this.address.street, this.cityStateCountry()].filter(x => x).join(seperator);
+    } else {
+      return null;
+    }
+  }
+
+  cityState(seperator: string = ', ') {
+    if (this.address) {
+      return [this.address.city, this.address.state].filter(x => x).join(seperator);
     } else {
       return null;
     }

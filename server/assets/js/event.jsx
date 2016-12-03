@@ -64,8 +64,8 @@ class Title extends React.Component {
       categoryLinks = <li>categorized as: {intersperse(categories, ', ')}.</li>;
     }
     let locationLinks = null;
-    if (event.cityStateCountry) {
-      locationLinks = <li>in <a href={`/?location=${event.cityStateCountry}`}>{event.cityStateCountry}</a>.</li>;
+    if (event.venue.cityStateCountry()) {
+      locationLinks = <li>in <a href={`/?location=${event.venue.cityStateCountry()}`}>{event.venue.cityStateCountry()}</a>.</li>;
     }
     let moreLinks = null;
     if (categoryLinks || locationLinks) {
@@ -131,15 +131,13 @@ class ImageWithLinks extends React.Component {
   }
 }
 // TODO: add calendar_start_end
-// TODO: add full_address
-// TODO: add canonical_url
 function getAddToCalendarLink(event) {
   const args = {
     action: 'TEMPLATE',
     text: event.name,
     dates: '{{event.calendar_start_end|urlencode }}',
-    details: 'Event Details:\nevent.canonical_url',
-    location: 'event.full_address'.replace('\n', ', '),
+    details: `Event Details:\n${event.getUrl()}`,
+    location: event.venue.fullAddress().replace('\n', ', '),
     sf: true,
     output: 'xml',
   };
@@ -226,7 +224,6 @@ class _EventLinks extends React.Component {
 }
 const EventLinks = injectIntl(_EventLinks);
 
-// TODO: full_address
 class MapWithLinks extends React.Component {
   props: {
     event: Event;
@@ -254,15 +251,15 @@ class MapWithLinks extends React.Component {
   render() {
     const venue = this.props.event.venue;
     if (venue) {
-      let locationName = venue.name;
+      let locationName = <FormatText>{venue.name}</FormatText>;
       if (venue.id) {
         locationName = <a href={`https://www.facebook.com/${venue.id}`}>{locationName}</a>;
       }
       return (
         <Card>
           <ImagePrefix iconName="map-marker">
-            {locationName}<br />
-            <FormatText>{venue.full_address}</FormatText>
+            <div>{locationName}</div>
+            <FormatText>{venue.streetCityStateCountry('\n')}</FormatText>
           </ImagePrefix>
           {this.map()}
         </Card>
