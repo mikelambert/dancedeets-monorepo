@@ -32,6 +32,7 @@ import querystring from 'querystring';
 import {
   formatStartEnd,
 } from 'dancedeets-common/js/dates';
+import { Event, Venue } from 'dancedeets-common/js/events/models';
 import {
   Autolink,
   Button,
@@ -50,7 +51,6 @@ import type {
   ThunkAction,
   Dispatch,
 } from '../actions/types';
-import { Event, Venue } from 'dancedeets-common/js/events/models';
 import { linkColor, yellowColors } from '../Colors';
 import { add as CalendarAdd } from '../api/calendar';
 import { performRequest } from '../api/fb';
@@ -372,8 +372,14 @@ class _EventAddedBy extends React.Component {
   async loadProfileName() {
     const creation = this.props.event.annotations.creation;
     if (creation && creation.creator && creation.creator !== '701004') {
-      const result = await performRequest('GET', creation.creator, { fields: 'name' });
-      this.setState({ ...this.state, addedBy: result.name });
+      let name = null;
+      if (creation.creatorName) {
+        name = creation.creatorName;
+      } else {
+        const result = await performRequest('GET', creation.creator, { fields: 'name' });
+        name = result.name;
+      }
+      this.setState({ addedBy: name });
     }
   }
 
