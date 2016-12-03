@@ -111,21 +111,39 @@ class ImagePrefix extends React.Component {
 class ImageWithLinks extends React.Component {
   props: {
     event: Event;
+    amp: boolean;
   }
 
   render() {
-    if (!this.props.event.picture) {
+    const picture = this.props.event.picture;
+    if (!picture) {
       return null;
     }
-    const eventUrl = `/events/image_proxy/${this.props.event.id}`;
+    const eventUrl = picture.source;
+    let img = null;
+    if (this.props.amp) {
+      img = (
+        <amp-img
+          src={eventUrl}
+          layout="responsive"
+          width={picture.width}
+          height={picture.height}
+        />
+      );
+    } else {
+      img = (
+        <img
+          role="presentation"
+          src={picture.source}
+          className="event-flyer"
+        />
+      );
+    }
+
     return (
       <Card>
         <a className="link-event-flyer" href={eventUrl}>
-          <img
-            role="presentation"
-            src={this.props.event.picture.source}
-            className="event-flyer"
-          />
+          {img}
         </a>
         <br />
         <ImagePrefix iconName="picture-o">
@@ -173,7 +191,7 @@ function schemaDateFormat(dateTime) {
 class _EventLinks extends React.Component {
   props: {
     event: Event;
-
+    amp: boolean;
     // Self-managed props
     intl: intlShape;
 
@@ -226,17 +244,24 @@ class _EventLinks extends React.Component {
       );
     }
 
-    const formattedStartEndText = formatStartEnd(event.start_time, event.end_time, this.props.intl);
-    return (
-      <Card>
-        {/* categories */}
-        {/* RSVP buttons! */}
+    let shareLinks = null;
+    if (!this.props.amp) {
+      shareLinks = (
         <ImagePrefix iconName="share-square-o" className="product-social-links">
           <a className="link-event-share twitter-share-button" href="https://twitter.com/intent/tweet?hashtags=dancedeets" data-count="none">Tweet</a>
           <div className="link-event-share fb-share-button" data-href="{{ canonical_url }}" data-layout="button" data-size="small" data-mobile-iframe="true">
             <a className="fb-xfbml-parse-ignore" rel="noopener noreferrer" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u={{ canonical_url }}&amp;src=sdkpreparse">Share</a>
           </div>
         </ImagePrefix>
+      );
+    }
+
+    const formattedStartEndText = formatStartEnd(event.start_time, event.end_time, this.props.intl);
+    return (
+      <Card>
+        {/* categories */}
+        {/* RSVP buttons! */}
+        {shareLinks}
         <ImagePrefix iconName="clock-o">
           <FormatText>{formattedStartEndText}</FormatText>
           <meta itemProp="startDate" content={schemaDateFormat(event.start_time)} />
@@ -264,6 +289,7 @@ const EventLinks = injectIntl(_EventLinks);
 class MapWithLinks extends React.Component {
   props: {
     event: Event;
+    amp: boolean;
   }
 
   map() {
@@ -272,6 +298,26 @@ class MapWithLinks extends React.Component {
       return null;
     }
     const mapUrl = `http://maps.google.com/?daddr=${geocode.latitude},${geocode.longitude}`;
+
+    let mapContents = null;
+    if (this.props.amp) {
+      const staticMapImageUrl = (
+        'http://www.google.com/maps/api/staticmap?key=AIzaSyAvvrWfamjBD6LqCURkATAWEovAoBm1xNQ&size=450x450&scale=2&zoom=13&' +
+        `center=${geocode.latitude},${geocode.longitude}&` +
+        `markers=color:blue%7C${geocode.latitude},${geocode.longitude}`
+      );
+      mapContents = (
+        <amp-img
+          src={staticMapImageUrl}
+          layout="responsive"
+          width="300"
+          height="300"
+        />
+      );
+    } else {
+      mapContents = <div id="map-wrapper" className="responsive-map-wrapper" />;
+    }
+
     return (
       <div>
         { this.props.event.description ?
@@ -279,7 +325,7 @@ class MapWithLinks extends React.Component {
           null
         }
         <a className="link-event-map" href={mapUrl} rel="noopener noreferrer" target="_blank">
-          <div id="map-wrapper" className="responsive-map-wrapper" />
+          {mapContents}
         </a>
       </div>
     );
@@ -325,13 +371,14 @@ class Description extends React.Component {
 class _EventPage extends React.Component {
   props: {
     event: JSONObject;
+    amp?: boolean;
   }
 
   render() {
     const event = new Event(this.props.event);
     return (
       <div className="container" itemScope itemType="http://schema.org/DanceEvent">
-        <span itemProp="url" content="canonical_url" />
+        <meta itemProp="url" content="canonical_url" />
         <div className="row">
           <div className="col-xs-12">
             <Title event={event} />
@@ -339,9 +386,9 @@ class _EventPage extends React.Component {
         </div>
         <div className="row">
           <div className="col-sm-5">
-            <ImageWithLinks event={event} />
-            <EventLinks event={event} />
-            <MapWithLinks event={event} />
+            <ImageWithLinks event={event} amp={this.props.amp} />
+            <EventLinks event={event} amp={this.props.amp} />
+            <MapWithLinks event={event} amp={this.props.amp} />
           </div>
           <div className="col-sm-7">
             <Description event={event} />
