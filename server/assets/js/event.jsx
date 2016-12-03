@@ -15,10 +15,10 @@ import {
 import {
   defaultLocale,
   intl,
-} from 'dancedeets-common/intl';
+} from 'dancedeets-common/js/intl';
 import {
   formatStartEnd,
-} from 'dancedeets-common/dates';
+} from 'dancedeets-common/js/dates';
 
 /* intersperse: Return an array with the separator interspersed between
  * each element of the input array.

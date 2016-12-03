@@ -32,7 +32,7 @@ import type {
   Onebox,
   SearchResults,
 } from './search';
-import { Event } from './models';
+import { Event } from 'dancedeets-common/js/events/models';
 import {
   detectedLocation,
   performSearch,

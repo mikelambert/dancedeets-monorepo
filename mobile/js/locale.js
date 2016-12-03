@@ -8,7 +8,7 @@ import Locale from 'react-native-locale';
 import {
   supportedLocales,
   defaultLocale,
-} from 'dancedeets-common/intl';
+} from 'dancedeets-common/js/intl';
 
 export const getCurrentLocale = () => {
   const currentLocale = Locale.constants().localeIdentifier.split('_')[0];

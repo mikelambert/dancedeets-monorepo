@@ -6,7 +6,7 @@
 
 import type { ThunkAction, Dispatch } from './types';
 
-import { Event } from '../events/models';
+import { Event } from 'dancedeets-common/js/events/models';
 import { selectTab } from './mainTabs';
 import { navigatePop, navigatePush } from './navigation';
 import WebsiteUrl from '../websiteUrl';

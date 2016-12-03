@@ -9,7 +9,7 @@ import { Platform } from 'react-native';
 import { Provider } from 'react-redux';
 import Mixpanel from 'react-native-mixpanel';
 import ProcessInfo from 'react-native-processinfo';
-import { intl } from 'dancedeets-common/intl';
+import { intl } from 'dancedeets-common/js/intl';
 import App from './app';
 import configureStore from '../store/configureStore';
 import ScreenshotSlideshow from '../ScreenshotSlideshow';

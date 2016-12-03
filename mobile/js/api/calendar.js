@@ -12,7 +12,7 @@ import Permissions from 'react-native-permissions';
 import CalendarEventsIOS from 'react-native-calendar-events';
 import SendIntentAndroid from 'react-native-send-intent';
 import moment from 'moment';
-import { Event } from '../events/models';
+import { Event } from 'dancedeets-common/js/events/models';
 
 function OkAlert(title: string, message: string, cancel = false): Promise<void> {
   return new Promise((resolve, reject) => {

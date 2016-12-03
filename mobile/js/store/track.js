@@ -30,7 +30,7 @@ import { Crashlytics } from 'react-native-fabric';
 import { performRequest } from '../api/fb';
 
 import type { Action } from '../actions/types';
-import type { Event } from '../events/models';
+import type { Event } from 'dancedeets-common/js/events/models';
 
 let trackingEnabled = true;
 

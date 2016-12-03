@@ -11,7 +11,7 @@ import Locale from 'react-native-locale';
 import moment from 'moment';
 import type { TimePeriod } from '../events/search';
 import type { TokenRegistration } from '../store/track';
-import { Event } from '../events/models';
+import { Event } from 'dancedeets-common/js/events/models';
 import { timeout, retryWithBackoff } from './timeouts';
 import sort from '../util/sort';
 

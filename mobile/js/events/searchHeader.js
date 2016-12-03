@@ -26,7 +26,7 @@ import {
   defaultFont,
   HorizontalView,
 } from '../ui';
-import { Event } from '../events/models';
+import { Event } from 'dancedeets-common/js/events/models';
 import type { SearchQuery } from '../events/search';
 import {
   performSearch,

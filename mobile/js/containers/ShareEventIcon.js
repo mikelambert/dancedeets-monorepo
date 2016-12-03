@@ -12,7 +12,7 @@ import {
 } from 'react-native';
 import Share from 'react-native-share';
 import { trackWithEvent } from '../store/track';
-import { Event } from '../events/models';
+import { Event } from 'dancedeets-common/js/events/models';
 
 export default class ShareEventIcon extends React.Component {
   props: {

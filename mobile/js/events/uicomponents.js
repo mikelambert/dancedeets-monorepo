@@ -31,7 +31,7 @@ import _ from 'lodash/string';
 import querystring from 'querystring';
 import {
   formatStartEnd,
-} from 'dancedeets-common/dates';
+} from 'dancedeets-common/js/dates';
 import {
   Autolink,
   Button,
@@ -50,7 +50,7 @@ import type {
   ThunkAction,
   Dispatch,
 } from '../actions/types';
-import { Event, Venue } from './models';
+import { Event, Venue } from 'dancedeets-common/js/events/models';
 import { linkColor, yellowColors } from '../Colors';
 import { add as CalendarAdd } from '../api/calendar';
 import { performRequest } from '../api/fb';

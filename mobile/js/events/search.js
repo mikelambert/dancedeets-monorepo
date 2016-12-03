@@ -4,7 +4,7 @@
  * @flow
  */
 
-import { Event } from './models';
+import { Event } from 'dancedeets-common/js/events/models';
 
 export type TimePeriod = 'UPCOMING' | 'ONGOING' | 'PAST' | 'ALL_FUTURE';
 
