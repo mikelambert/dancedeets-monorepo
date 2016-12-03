@@ -294,7 +294,6 @@ export default class EventPage extends React.Component {
   }
 
   render() {
-    console.log(this.props.event);
     const event = new Event(this.props.event);
     return (
       <div className="container" itemScope itemType="http://schema.org/DanceEvent">
