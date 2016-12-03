@@ -73,7 +73,6 @@
     "node": ">=0.12"
   },
   "scripts": {
-    "start_local": "node node_server/render_server.js",
     "start": "node dist/js-server/render_server.js"
   },
   "private": true
