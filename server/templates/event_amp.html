@@ -113,6 +113,9 @@
 <!--=== End Header v6 ===-->
 
 <div class="body-contents margin-bottom-60">
+{% if react_event_html %}
+  {{ react_event_html|safe }}
+{% else %}
 <div class="container">
 
   <div class="row">
@@ -156,6 +159,7 @@ region= paramter cctld
 #}
 
 </div>
+{% endif %}
 </div>
 
 
