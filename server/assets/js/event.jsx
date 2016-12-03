@@ -47,7 +47,7 @@ class Card extends React.Component {
   }
 
   render() {
-    return (<div style={{ borderRadius: '15px', backgroundColor: '#4C4D81', padding: '10px', margin: '10px' }}>
+    return (<div className="card">
       {this.props.children}
     </div>);
   }
@@ -96,12 +96,12 @@ class ImagePrefix extends React.Component {
 
   render() {
     const { iconName, children, ...props } = this.props;
-    return (<div style={{ paddingLeft: '5px', paddingTop: '5px', display: 'table' }} {...props}>
+    return (<div className="image-prefix" {...props}>
       {iconName ?
-        <i className={`fa fa-${this.props.iconName} fa-lg`} style={{ paddingRight: '5px', width: '1.5em', display: 'table-cell', textAlign: 'center' }} /> :
+        <i className={`fa fa-${this.props.iconName} fa-lg image-prefix-icon`} /> :
         null
       }
-      <div style={{ display: 'table-cell' }}>
+      <div className="image-prefix-contents">
         {children}
       </div>
     </div>);
@@ -117,22 +117,19 @@ class ImageWithLinks extends React.Component {
     if (!this.props.event.picture) {
       return null;
     }
-    const url = `/events/image_proxy/${this.props.event.id}`;
+    const eventUrl = `/events/image_proxy/${this.props.event.id}`;
     return (
       <Card>
-        <a className="link-event-flyer" href={url}>
+        <a className="link-event-flyer" href={eventUrl}>
           <img
             role="presentation"
             src={this.props.event.picture.source}
-            style={{
-              width: '100%',
-              borderRadius: '5px',
-            }}
+            className="event-flyer"
           />
         </a>
         <br />
         <ImagePrefix iconName="picture-o">
-          <a className="link-event-flyer" href={url}>See Full Flyer</a>
+          <a className="link-event-flyer" href={eventUrl}>See Full Flyer</a>
         </ImagePrefix>
       </Card>
     );
@@ -278,7 +275,7 @@ class MapWithLinks extends React.Component {
     return (
       <div>
         { this.props.event.description ?
-          <div className="visible-xs" style={{ fontStyle: 'italic' }}>Event description is below the map.</div> :
+          <div className="visible-xs italics">Event description is below the map.</div> :
           null
         }
         <a className="link-event-map" href={mapUrl} rel="noopener noreferrer" target="_blank">
@@ -317,8 +314,8 @@ class Description extends React.Component {
   render() {
     return (
       <Card>
-        <div style={{ fontWeight: 'bold' }}>Description:</div>
-        <div style={{ height: '25px' }} id="google_translate_element" />
+        <div className="bold">Description:</div>
+        <div className="google-translate" id="google_translate_element" />
         <FormatText>{this.props.event.description}</FormatText>
       </Card>
     );
