@@ -37,8 +37,8 @@ type Result = {
 
 
 type Props = {
-  style: View.PropTypes.style, // style for ListView
-  styles: { [name: string]: View.PropTypes.style }, // styles for subcomponents
+  style?: View.PropTypes.style, // style for ListView
+  styles?: { [name: string]: View.PropTypes.style }, // styles for subcomponents
   onLocationSelected: (location: string) => (void | Promise<void>),
   minLength: number,
   fetchDetails: boolean,

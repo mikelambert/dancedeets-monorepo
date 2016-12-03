@@ -20,13 +20,13 @@ import {
   injectIntl,
   intlShape,
 } from 'react-intl';
+import { Event } from 'dancedeets-common/js/events/models';
 import {
   AutocompleteList,
   Button,
   defaultFont,
   HorizontalView,
 } from '../ui';
-import { Event } from 'dancedeets-common/js/events/models';
 import type { SearchQuery } from '../events/search';
 import {
   performSearch,
@@ -64,8 +64,8 @@ const messages = defineMessages({
 
 class SearchInput extends React.Component {
   props: {
-    onFocus: () => void;
-    onBlur: () => void;
+    onFocus?: () => void;
+    onBlur?: () => void;
     onSubmitEditing: () => void;
   }
   state: {

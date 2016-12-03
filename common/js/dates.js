@@ -6,11 +6,12 @@
 
 import _ from 'lodash/string';
 import moment from 'moment';
+import { intlShape } from 'react-intl';
 
 // TODO: combine this with mobile's formats.js
 export const weekdayDateTime = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: 'numeric' };
 
-export function formatStartEnd(startString, endString, intl) {
+export function formatStartEnd(startString: string, endString: string, intl: intlShape) {
   const textFields = [];
   const now = moment(intl.now());
   const start = moment(startString, moment.ISO_8601);

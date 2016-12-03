@@ -27,10 +27,10 @@ import Mixpanel from 'react-native-mixpanel';
 import { Analytics } from 'react-native-firebase3';
 import { AccessToken, AppEventsLogger } from 'react-native-fbsdk';
 import { Crashlytics } from 'react-native-fabric';
+import type { Event } from 'dancedeets-common/js/events/models';
 import { performRequest } from '../api/fb';
 
 import type { Action } from '../actions/types';
-import type { Event } from 'dancedeets-common/js/events/models';
 
 let trackingEnabled = true;
 

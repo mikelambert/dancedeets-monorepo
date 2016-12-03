@@ -4,9 +4,8 @@
  * @flow
  */
 
-import type { ThunkAction, Dispatch } from './types';
-
 import { Event } from 'dancedeets-common/js/events/models';
+import type { ThunkAction, Dispatch } from './types';
 import { selectTab } from './mainTabs';
 import { navigatePop, navigatePush } from './navigation';
 import WebsiteUrl from '../websiteUrl';

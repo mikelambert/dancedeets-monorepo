@@ -14,13 +14,13 @@ import {
   intlShape,
 } from 'react-intl';
 import { constructIntl } from 'dancedeets-common/js/intl';
+import type { Event } from 'dancedeets-common/js/events/models';
 import type { TokenRegistration } from '../store/track';
 import { setupMixpanelToken } from '../store/track';
 import {
   saveToken,
   event as fetchEvent,
 } from '../api/dancedeets';
-import type { Event } from 'dancedeets-common/js/events/models';
 import { purpleColors } from '../Colors';
 import {
   navigatePush,

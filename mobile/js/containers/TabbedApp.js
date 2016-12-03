@@ -40,7 +40,7 @@ import {
   selectTab,
   canGetValidLoginFor,
 } from '../actions';
-import { User } from '../actions/types';
+import type { User } from '../actions/types';
 import AddEvents from '../containers/AddEvents';
 import NotificationPreferences from '../containers/NotificationPreferences';
 import { track, trackWithEvent } from '../store/track';

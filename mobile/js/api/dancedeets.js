@@ -9,9 +9,9 @@ import { Platform } from 'react-native';
 import { AccessToken } from 'react-native-fbsdk';
 import Locale from 'react-native-locale';
 import moment from 'moment';
+import { Event } from 'dancedeets-common/js/events/models';
 import type { TimePeriod } from '../events/search';
 import type { TokenRegistration } from '../store/track';
-import { Event } from 'dancedeets-common/js/events/models';
 import { timeout, retryWithBackoff } from './timeouts';
 import sort from '../util/sort';
 

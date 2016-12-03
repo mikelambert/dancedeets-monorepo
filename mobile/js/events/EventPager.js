@@ -7,8 +7,8 @@
 import React from 'react';
 import ViewPager from 'react-native-viewpager';
 import { connect } from 'react-redux';
-import type { State } from '../reducers/search';
 import { Event } from 'dancedeets-common/js/events/models';
+import type { State } from '../reducers/search';
 import { FullEventView } from './uicomponents';
 import type { ThunkAction } from '../actions/types';
 import {

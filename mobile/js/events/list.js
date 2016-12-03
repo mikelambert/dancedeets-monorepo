@@ -23,6 +23,7 @@ import {
 import moment from 'moment';
 import { connect } from 'react-redux';
 import _ from 'lodash/string';
+import { Event } from 'dancedeets-common/js/events/models';
 import { EventRow } from './uicomponents';
 import SearchHeader from './searchHeader';
 import type {
@@ -32,7 +33,6 @@ import type {
   Onebox,
   SearchResults,
 } from './search';
-import { Event } from 'dancedeets-common/js/events/models';
 import {
   detectedLocation,
   performSearch,
