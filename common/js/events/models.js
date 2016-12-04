@@ -93,8 +93,8 @@ export class Event extends JsonDerivedObject {
     name: string,
   };
   rsvp: {
-    attendingCount: number,
-    maybeCount: number,
+    attending_count: number,
+    maybe_count: number,
   };
   picture: ?Cover;
   venue: Venue;
