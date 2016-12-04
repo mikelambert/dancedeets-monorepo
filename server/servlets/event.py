@@ -123,7 +123,7 @@ class ShowEventHandler(base_servlet.BaseRequestHandler):
             self.display['react_event_html'] = event_html
 
         if self.request.get('amp'):
-            if self.display['displayable_event'].largest_cover:
+            if self.display['displayable_event']:
                 # Because minification interferes with html-validity when producing:
                 # <meta name=viewport content=width=device-width,minimum-scale=1,initial-scale=1,maximum-scale=1,user-scalable=no>
                 self.allow_minify = False
