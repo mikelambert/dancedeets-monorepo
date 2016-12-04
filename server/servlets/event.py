@@ -41,7 +41,7 @@ PREFETCH_EVENTS_INTERVAL = 24 * 60 * 60
 
 @app.route('/events/rsvp_ajax')
 class RsvpAjaxHandler(base_servlet.BaseRequestHandler):
-    valid_rsvp = ['attending', 'maybe', 'declined']
+    valid_rsvp = ['attending', 'maybe', 'interested', 'declined']
 
     def post(self):
         self.finish_preload()
@@ -53,6 +53,9 @@ class RsvpAjaxHandler(base_servlet.BaseRequestHandler):
         self.errors_are_fatal()
 
         rsvp_status = self.request.get('rsvp')
+        # The FB API server only accepts POSTs to /maybe, so remap it here:
+        if rsvp_status == 'interested':
+            rsvp_status == 'maybe'
 
         rsvps = rsvp.RSVPManager(self.fbl)
         success = rsvps.set_rsvp_for_event(self.access_token, event_id, rsvp_status)
@@ -83,6 +86,7 @@ class ShowEventHandler(base_servlet.BaseRequestHandler):
         return False
 
     def get(self):
+        self.finish_preload()
         path_bits = self.request.path.split('/')
         event_id = urllib.unquote(path_bits[2])
         if not event_id:
@@ -107,22 +111,29 @@ class ShowEventHandler(base_servlet.BaseRequestHandler):
 
         self.display['email_suffix'] = '+event-%s' % db_event.id
 
+        rsvps = {}
+        if self.fb_uid:
+            rsvps = rsvp.get_rsvps(self.fbl)
+
         # Render React component for inclusion in our template:
         api_event = api.canonicalize_event_data(db_event, None, version=(1, 3))
+        props = dict(
+            amp=bool(self.request.get('amp')),
+            event=api_event,
+            loggedIn=bool(self.fb_uid),
+            userRsvp=rsvps.get(event_id),
+        )
         try:
             event_html = render_component(
                 path=os.path.abspath('dist/js-server/event.js'),
                 to_static_markup=True, # We don't need all the React data markup
-                props=dict(
-                    amp=bool(self.request.get('amp')),
-                    event=api_event,
-                ))
+                props=props)
         except (exceptions.RenderServerError, exceptions.ReactRenderingError):
             logging.exception('Error rendering React component')
             event_html = ''
             # self.abort(500)
         self.display['react_event_html'] = event_html
-        self.display['react_props'] = {'event': api_event}
+        self.display['react_props'] = props
 
         if self.request.get('amp'):
             if self.display['displayable_event']:

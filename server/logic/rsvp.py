@@ -4,19 +4,28 @@ from logic import backgrounder
 CHOOSE_RSVPS = ['attending', 'maybe', 'declined']
 
 
+def _map_rsvp(rsvp):
+    if rsvp == 'unsure':
+        return 'maybe'
+    else:
+        return rsvp
+
+def get_rsvps(fbl):
+    fb_user = fbl.fetched_data(fb_api.LookupUser, fbl.fb_uid)
+    if 'rsvp_for_future_events' in fb_user:
+        rsvps_list = fb_user['rsvp_for_future_events']['data']
+        return dict((x['id'], _map_rsvp(x['rsvp_status'])) for x in rsvps_list)
+    else:
+        return {}
+
 class RSVPManager(object):
     def __init__(self, fbl):
         self.fbl = fbl
-        fb_user = self.fbl.fetched_data(fb_api.LookupUser, self.fbl.fb_uid)
-        if 'rsvp_for_future_events' in fb_user:
-            rsvps_list = fb_user['rsvp_for_future_events']['data']
-            self.rsvps = dict((x['id'], x['rsvp_status']) for x in rsvps_list)
-        else:
-            self.rsvps = {}
+        self.rsvps = get_rsvps(self.fbl)
 
     def get_rsvp_for_event(self, event_id):
         rsvp = self.rsvps.get(event_id, 'none')
-        if rsvp == 'unsure':
+        if rsvp == 'interested':
             rsvp = 'maybe'
         return rsvp
 

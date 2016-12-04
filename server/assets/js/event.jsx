@@ -28,6 +28,7 @@ import type {
   JSONObject,
 } from 'dancedeets-common/js/events/models';
 import { RsvpComponent } from './event_common';
+import type { RsvpValue } from './event_common';
 
 /* intersperse: Return an array with the separator interspersed between
  * each element of the input array.
@@ -231,19 +232,25 @@ class _EventLinks extends React.Component {
   props: {
     event: Event;
     amp: boolean;
+    loggedIn: boolean;
+    userRsvp: RsvpValue;
+
     // Self-managed props
     intl: intlShape;
-
   }
 
   render() {
     const event = this.props.event;
     let rsvpElement = null;
     if (event.rsvp && (event.rsvp.attending_count || event.rsvp.maybe_count)) {
+      let rsvpAction = null;
+      if (this.props.loggedIn) {
+        rsvpAction = <div>RSVP: <RsvpComponent event={this.props.event} userRsvp={this.props.userRsvp} /></div>;
+      }
       rsvpElement = (
         <ImagePrefix iconName="users">
           {rsvpString(event)}
-          <div>RSVP: <RsvpComponent event={this.props.event} /></div>
+          {rsvpAction}
         </ImagePrefix>
       );
     }
@@ -411,7 +418,9 @@ class Description extends React.Component {
 class _EventPage extends React.Component {
   props: {
     event: JSONObject;
-    amp?: boolean;
+    amp: boolean;
+    loggedIn: boolean;
+    userRsvp: RsvpValue;
   }
 
   render() {
@@ -427,7 +436,12 @@ class _EventPage extends React.Component {
         <div className="row">
           <div className="col-sm-5">
             <ImageWithLinks event={event} amp={this.props.amp} />
-            <EventLinks event={event} amp={this.props.amp} />
+            <EventLinks
+              event={event}
+              amp={this.props.amp}
+              loggedIn={this.props.loggedIn}
+              userRsvp={this.props.userRsvp}
+            />
             <MapWithLinks event={event} amp={this.props.amp} />
           </div>
           <div className="col-sm-7">

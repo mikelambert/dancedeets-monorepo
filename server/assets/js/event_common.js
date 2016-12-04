@@ -16,7 +16,7 @@ const choiceStrings = [
   },
 ];
 
-type RsvpValue = 'attending' | 'interested' | 'declined' | 'none';
+export type RsvpValue = 'attending' | 'maybe' | 'declined' | 'none';
 
 
 export class RsvpComponent extends React.Component {
