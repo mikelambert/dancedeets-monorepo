@@ -305,6 +305,10 @@ class ClassSummary extends React.Component {
 }
 
 class StudioClass extends React.Component {
+  props: {
+    studio_class: StudioClassType;
+  }
+
   render() {
     return (
       <div>
