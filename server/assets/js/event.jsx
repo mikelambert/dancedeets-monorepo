@@ -213,7 +213,7 @@ class _EventLinks extends React.Component {
       );
     }
     let organizerElement = null;
-    if (event.admins) {
+    if (event.admins.length) {
       const admins = event.admins.map(admin => (
         <li><a
           key={admin.id}
