@@ -179,6 +179,9 @@ function getAddToCalendarLink(event) {
 }
 
 function rsvpString(event) {
+  if (!event.rsvp) {
+    return null;
+  }
   let rsvp = `${event.rsvp.attending_count} Attending`;
   if (event.rsvp.maybe_count) {
     rsvp += `, ${event.rsvp.maybe_count} Maybe`;
@@ -202,7 +205,7 @@ class _EventLinks extends React.Component {
   render() {
     const event = this.props.event;
     let rsvpElement = null;
-    if (event.rsvp.attending_count || event.rsvp.maybe_count) {
+    if (event.rsvp && (event.rsvp.attending_count || event.rsvp.maybe_count)) {
       rsvpElement = (
         <ImagePrefix iconName="users">
           {rsvpString(event)}

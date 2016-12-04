@@ -92,7 +92,7 @@ export class Event extends JsonDerivedObject {
     url: string,
     name: string,
   };
-  rsvp: {
+  rsvp: ?{
     attending_count: number,
     maybe_count: number,
   };
