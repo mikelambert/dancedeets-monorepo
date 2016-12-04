@@ -67,8 +67,9 @@ class Title extends React.Component {
       categoryLinks = <li>categorized as: {intersperse(categories, ', ')}.</li>;
     }
     let locationLinks = null;
-    if (event.venue.cityStateCountry()) {
-      locationLinks = <li>in <a href={`/?location=${event.venue.cityStateCountry()}`}>{event.venue.cityStateCountry()}</a>.</li>;
+    const cityStateCountry = event.venue.cityStateCountry();
+    if (cityStateCountry) {
+      locationLinks = <li>in <a href={`/?location=${cityStateCountry}`}>{cityStateCountry}</a>.</li>;
     }
     let moreLinks = null;
     if (categoryLinks || locationLinks) {
