@@ -39,6 +39,9 @@ app.get('/', (req, res) => {
 });
 
 app.post('/render', (req, res) => {
+  // We're constructing new objects everytime we readFile,
+  // so let's make sure we clear the cache so it doesn't blow up.
+  reactRender._components._cache = [];
   fs.readFile(req.body.path, { encoding: 'utf8' }, (err, data) => {
     if (err) {
       res.json({
