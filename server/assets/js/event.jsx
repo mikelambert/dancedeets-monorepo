@@ -27,6 +27,7 @@ import type {
   Cover,
   JSONObject,
 } from 'dancedeets-common/js/events/models';
+import { RsvpComponent } from './event_common';
 
 /* intersperse: Return an array with the separator interspersed between
  * each element of the input array.
@@ -242,6 +243,7 @@ class _EventLinks extends React.Component {
       rsvpElement = (
         <ImagePrefix iconName="users">
           {rsvpString(event)}
+          <div>RSVP: <RsvpComponent event={this.props.event} /></div>
         </ImagePrefix>
       );
     }
@@ -300,7 +302,6 @@ class _EventLinks extends React.Component {
         <ImagePrefix icon={require('../img/categories.png')}>
           Categories: {event.annotations.categories.join(', ')}
         </ImagePrefix>
-        {/* RSVP buttons! */}
         <ImagePrefix iconName="clock-o">
           <FormatText>{formattedStartEndText}</FormatText>
           <meta itemProp="startDate" content={schemaDateFormat(event.start_time)} />
