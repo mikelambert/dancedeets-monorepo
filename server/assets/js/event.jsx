@@ -92,16 +92,33 @@ class Title extends React.Component {
 
 class ImagePrefix extends React.Component {
   props: {
-    iconName: string;
+    icon?: string;
+    iconName?: string;
     className?: string;
     children?: Array<React.Element<*>>;
   }
 
   render() {
+    if (!this.props.icon && !this.props.iconName) {
+      console.error('Missing icon and iconName');
+      return null;
+    }
     const { iconName, children, className, ...props } = this.props;
-    const iconClass = iconName ? `fa-${this.props.iconName}` : '';
+    let icon = null;
+    if (this.props.icon) {
+      const picture = {
+        source: this.props.icon,
+        width: 18,
+        height: 18,
+      };
+      icon = (<span className="fa fa-lg image-prefix-icon">
+        <AmpImage picture={picture} width="18" />
+      </span>);
+    } else if (this.props.iconName) {
+      icon = <i className={`fa fa-${this.props.iconName} fa-lg image-prefix-icon`} />;
+    }
     return (<div className={`image-prefix ${className || ''}`} {...props}>
-      <i className={`fa ${iconClass} fa-lg image-prefix-icon`} />
+      {icon}
       <div className="image-prefix-contents">
         {children}
       </div>
@@ -113,27 +130,28 @@ class AmpImage extends React.Component {
   props: {
     picture: Cover;
     amp?: boolean;
-    className: string;
+    width?: string;
   }
 
   render() {
+    const { picture, amp, width, ...otherProps } = this.props;
     if (this.props.amp) {
       return (
         <amp-img
-          src={this.props.picture.source}
+          src={picture.source}
           layout="responsive"
-          width={this.props.picture.width}
-          height={this.props.picture.height}
-          className={this.props.className}
+          width={picture.width}
+          height={picture.height}
+          {...otherProps}
         />
       );
     } else {
       return (
         <img
           role="presentation"
-          src={this.props.picture.source}
-          width="100%"
-          className={this.props.className}
+          src={picture.source}
+          width={width}
+          {...otherProps}
         />
       );
     }
@@ -279,8 +297,7 @@ class _EventLinks extends React.Component {
     const formattedStartEndText = formatStartEnd(event.start_time, event.end_time, this.props.intl);
     return (
       <Card>
-        {/* categories */}
-        <ImagePrefix iconName="">
+        <ImagePrefix icon={require('../img/categories.png')}>
           Categories: {event.annotations.categories.join(', ')}
         </ImagePrefix>
         {/* RSVP buttons! */}

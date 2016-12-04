@@ -55,6 +55,13 @@ module.exports = {
         },
       },
       {
+        test: /\.png$/,
+        loaders: [
+          'url-loader?limit=10000&mimetype=application/font-woff&name=../img/[name].[ext]',
+          'image-webpack?bypassOnDebug&optimizationLevel=7&interlaced=false',
+        ],
+      },
+      {
         // This exposes React variable so Chrome React devtools work
         test: require.resolve('react'),
         loader: 'expose?React',
