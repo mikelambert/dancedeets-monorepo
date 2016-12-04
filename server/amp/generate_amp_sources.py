@@ -12,6 +12,7 @@ from webtest import TestApp
 
 from google.appengine.ext import testbed
 
+from events import event_updates
 import main
 from test_utils import fixtures
 from test_utils import unittest
@@ -30,10 +31,25 @@ class TestEvent(unittest.TestCase):
         event = fixtures.create_event()
         event.fb_event['info']['ticket_uri'] = 'http://www.eventbrite.com'
         event.fb_event['info']['attending_count'] = 10
+        event.fb_event['info']['admins'] = {
+          "data": [
+            {
+              "id": "admin_id",
+              "name": "admin"
+            }
+          ],
+          "paging": {
+            "cursors": {
+              "before": "",
+              "after": ""
+            }
+          }
+        }
+        event_updates.update_and_save_fb_events([(event, event.fb_event)])
         event.put()
         self.saveEvent(event)
 
-        event = fixtures.create_web_event()
+        event = fixtures.create_web_event(json_body={'photo': 'test:http://url'})
         event.put()
         self.saveEvent(event)
 

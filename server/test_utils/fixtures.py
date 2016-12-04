@@ -44,10 +44,10 @@ def create_event(event_id='1000001', start_time=None, location='NYC'):
     event = add_entities.add_update_event(fb_event, fbl, override_address=location)
     return event
 
-def create_web_event(event_id='tokyo-dance-life:1000001', start_time=None, location='NYC'):
+def create_web_event(event_id='tokyo-dance-life:1000001', json_body={}):
     event = eventdata.DBEvent(id=event_id)
     event.creating_method = eventdata.CM_WEB_SCRAPE
-    json_body = {
+    full_json_body = {
         'start_time': '2020-10-10T00:00:00Z',
         'end_time': '2020-10-10T12:00:00Z',
         'name': 'name',
@@ -55,7 +55,8 @@ def create_web_event(event_id='tokyo-dance-life:1000001', start_time=None, locat
         'photo': None,
         'location_address': 'Tokyo, Japan',
     }
-    event_updates.update_and_save_web_events([(event, json_body)])
+    full_json_body.update(json_body)
+    event_updates.update_and_save_web_events([(event, full_json_body)])
     return event
 
 def index_events(testbed_instance):
