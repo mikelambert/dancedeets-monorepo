@@ -25,6 +25,8 @@ def create_event(event_id='1000001', start_time=None, location='NYC'):
                     "name": "Event Title",
                     "start_time": start_time.strftime("%Y-%m-%dT%H:%M:%S-0400"),
                     "id": event_id,
+                    "ticket_uri": "http://www.eventbrite.com",
+                    "attending_count": 10,
                 }),
             '/v2.8/?fields=images%2Cwidth%2Cheight&ids=%7Bresult%3Dinfo%3A%24.cover.id%7D':
                 (400, {'error': {'message': 'Cannot specify an empty identifier', 'code': 2500, 'type': 'OAuthException'}}),
