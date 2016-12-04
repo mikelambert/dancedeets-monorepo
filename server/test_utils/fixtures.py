@@ -4,6 +4,8 @@ import pickle
 
 from google.appengine.ext import testbed
 
+from events import eventdata
+from events import event_updates
 from event_scraper import add_entities
 import fb_api
 from search import search
@@ -25,8 +27,6 @@ def create_event(event_id='1000001', start_time=None, location='NYC'):
                     "name": "Event Title",
                     "start_time": start_time.strftime("%Y-%m-%dT%H:%M:%S-0400"),
                     "id": event_id,
-                    "ticket_uri": "http://www.eventbrite.com",
-                    "attending_count": 10,
                 }),
             '/v2.8/?fields=images%2Cwidth%2Cheight&ids=%7Bresult%3Dinfo%3A%24.cover.id%7D':
                 (400, {'error': {'message': 'Cannot specify an empty identifier', 'code': 2500, 'type': 'OAuthException'}}),
@@ -42,6 +42,20 @@ def create_event(event_id='1000001', start_time=None, location='NYC'):
     fbl = fb_api.FBLookup(None, None)
     fb_event = fbl.get(fb_api.LookupEvent, event_id)
     event = add_entities.add_update_event(fb_event, fbl, override_address=location)
+    return event
+
+def create_web_event(event_id='tokyo-dance-life:1000001', start_time=None, location='NYC'):
+    event = eventdata.DBEvent(id=event_id)
+    event.creating_method = eventdata.CM_WEB_SCRAPE
+    json_body = {
+        'start_time': '2020-10-10T00:00:00Z',
+        'end_time': '2020-10-10T12:00:00Z',
+        'name': 'name',
+        'description': 'description',
+        'photo': None,
+        'location_address': 'Tokyo, Japan',
+    }
+    event_updates.update_and_save_web_events([(event, json_body)])
     return event
 
 def index_events(testbed_instance):

@@ -20,12 +20,22 @@ app = TestApp(main.application)
 
 
 class TestEvent(unittest.TestCase):
-    def runTest(self):
-        event = fixtures.create_event()
-        r = app.get('/events/%s?amp=1' % event.fb_event_id)
-        path = os.path.join(os.path.dirname(__file__), './generated/%s.html' % event.fb_event_id)
+    def saveEvent(self, event):
+        r = app.get('/events/%s?amp=1' % event.id)
+        path = os.path.join(os.path.dirname(__file__), './generated/%s.html' % event.id)
         f = open(path, 'w')
         f.write(r.unicode_normal_body)
+
+    def runTest(self):
+        event = fixtures.create_event()
+        event.fb_event['info']['ticket_uri'] = 'http://www.eventbrite.com'
+        event.fb_event['info']['attending_count'] = 10
+        event.put()
+        self.saveEvent(event)
+
+        event = fixtures.create_web_event()
+        event.put()
+        self.saveEvent(event)
 
 def generateAmpPages():
     test = TestEvent()
