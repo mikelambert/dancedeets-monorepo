@@ -24,6 +24,7 @@ import {
   Event,
 } from 'dancedeets-common/js/events/models';
 import type {
+  Cover,
   JSONObject,
 } from 'dancedeets-common/js/events/models';
 
@@ -98,15 +99,44 @@ class ImagePrefix extends React.Component {
 
   render() {
     const { iconName, children, className, ...props } = this.props;
+    const iconClass = iconName ? `fa-${this.props.iconName}` : '';
     return (<div className={`image-prefix ${className || ''}`} {...props}>
-      {iconName ?
-        <i className={`fa fa-${this.props.iconName} fa-lg image-prefix-icon`} /> :
-        null
-      }
+      <i className={`fa ${iconClass} fa-lg image-prefix-icon`} />
       <div className="image-prefix-contents">
         {children}
       </div>
     </div>);
+  }
+}
+
+class AmpImage extends React.Component {
+  props: {
+    picture: Cover;
+    amp?: boolean;
+    className: string;
+  }
+
+  render() {
+    if (this.props.amp) {
+      return (
+        <amp-img
+          src={this.props.picture.source}
+          layout="responsive"
+          width={this.props.picture.width}
+          height={this.props.picture.height}
+          className={this.props.className}
+        />
+      );
+    } else {
+      return (
+        <img
+          role="presentation"
+          src={this.props.picture.source}
+          width="100%"
+          className={this.props.className}
+        />
+      );
+    }
   }
 }
 
@@ -122,30 +152,15 @@ class ImageWithLinks extends React.Component {
       return null;
     }
     const eventUrl = picture.source;
-    let img = null;
-    if (this.props.amp) {
-      img = (
-        <amp-img
-          src={eventUrl}
-          layout="responsive"
-          width={picture.width}
-          height={picture.height}
-        />
-      );
-    } else {
-      img = (
-        <img
-          role="presentation"
-          src={picture.source}
-          className="event-flyer"
-        />
-      );
-    }
 
     return (
       <Card>
         <a className="link-event-flyer" href={eventUrl}>
-          {img}
+          <AmpImage
+            picture={picture}
+            amp={this.props.amp}
+            className="event-flyer"
+          />
         </a>
         <br />
         <ImagePrefix iconName="picture-o">
@@ -265,8 +280,10 @@ class _EventLinks extends React.Component {
     return (
       <Card>
         {/* categories */}
+        <ImagePrefix iconName="">
+          Categories: {event.annotations.categories.join(', ')}
+        </ImagePrefix>
         {/* RSVP buttons! */}
-        {shareLinks}
         <ImagePrefix iconName="clock-o">
           <FormatText>{formattedStartEndText}</FormatText>
           <meta itemProp="startDate" content={schemaDateFormat(event.start_time)} />
@@ -284,7 +301,7 @@ class _EventLinks extends React.Component {
         </ImagePrefix>
         {addedByElement}
         {organizerElement}
-        {/* maybe move 'share' buttons down here? */}
+        {shareLinks}
       </Card>
     );
   }
