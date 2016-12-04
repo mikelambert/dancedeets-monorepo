@@ -91,12 +91,13 @@ class Title extends React.Component {
 class ImagePrefix extends React.Component {
   props: {
     iconName: string;
+    className?: string;
     children?: Array<React.Element<*>>;
   }
 
   render() {
-    const { iconName, children, ...props } = this.props;
-    return (<div className="image-prefix" {...props}>
+    const { iconName, children, className, ...props } = this.props;
+    return (<div className={`image-prefix ${className || ''}`} {...props}>
       {iconName ?
         <i className={`fa fa-${this.props.iconName} fa-lg image-prefix-icon`} /> :
         null
