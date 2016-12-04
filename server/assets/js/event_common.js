@@ -48,11 +48,10 @@ export class RsvpComponent extends React.Component {
       <option
         key={internal}
         value={internal}
-        selected={this.props.userRsvp === internal}
       >{display}</option>
     ));
-    if (!this.props.userRsvp || this.props.userRsvp === 'none') {
-      choices.push(<option key="none" value="" selected>none</option>);
+    if (!this.props.userRsvp) {
+      choices.push(<option key="none" value="">none</option>);
     }
 
     return (
@@ -62,6 +61,7 @@ export class RsvpComponent extends React.Component {
           id={`rsvp_${id}`}
           name={`rsvp_${id}`}
           onChange={this.onChange}
+          defaultValue={this.props.userRsvp}
         >
           {choices}
         </select>

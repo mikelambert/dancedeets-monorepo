@@ -97,6 +97,7 @@ class ImagePrefix extends React.Component {
     icon?: string;
     iconName?: string;
     className?: string;
+    amp?: boolean;
     children?: Array<React.Element<*>>;
   }
 
@@ -105,22 +106,26 @@ class ImagePrefix extends React.Component {
       console.error('Missing icon and iconName');
       return null;
     }
-    const { iconName, children, className, ...props } = this.props;
-    let icon = null;
-    if (this.props.icon) {
+    const { icon, iconName, className, amp, children, ...otherProps } = this.props;
+    let iconHtml = null;
+    if (icon) {
       const picture = {
-        source: this.props.icon,
+        source: icon,
         width: 18,
         height: 18,
       };
-      icon = (<span className="fa fa-lg image-prefix-icon">
-        <AmpImage picture={picture} width="18" />
+      iconHtml = (<span className="fa fa-lg image-prefix-icon">
+        <AmpImage
+          picture={picture}
+          width="18"
+          amp={this.props.amp}
+        />
       </span>);
     } else if (this.props.iconName) {
-      icon = <i className={`fa fa-${this.props.iconName} fa-lg image-prefix-icon`} />;
+      iconHtml = <i className={`fa fa-${this.props.iconName} fa-lg image-prefix-icon`} />;
     }
-    return (<div className={`image-prefix ${className || ''}`} {...props}>
-      {icon}
+    return (<div className={`image-prefix ${className || ''}`} {...otherProps}>
+      {iconHtml}
       <div className="image-prefix-contents">
         {children}
       </div>
@@ -144,7 +149,6 @@ class AmpImage extends React.Component {
           layout="responsive"
           width={picture.width}
           height={picture.height}
-          {...otherProps}
         />
       );
     } else {
@@ -244,8 +248,16 @@ class _EventLinks extends React.Component {
     let rsvpElement = null;
     if (event.rsvp && (event.rsvp.attending_count || event.rsvp.maybe_count)) {
       let rsvpAction = null;
-      if (this.props.loggedIn) {
-        rsvpAction = <div>RSVP: <RsvpComponent event={this.props.event} userRsvp={this.props.userRsvp} /></div>;
+      if (this.props.loggedIn && !this.props.amp) {
+        rsvpAction = (
+          <div>
+            RSVP:
+            <RsvpComponent
+              event={this.props.event}
+              userRsvp={this.props.userRsvp}
+            />
+          </div>
+        );
       }
       rsvpElement = (
         <ImagePrefix iconName="users">
@@ -306,7 +318,10 @@ class _EventLinks extends React.Component {
     const formattedStartEndText = formatStartEnd(event.start_time, event.end_time, this.props.intl);
     return (
       <Card>
-        <ImagePrefix icon={require('../img/categories.png')}>
+        <ImagePrefix
+          icon={require('../img/categories.png')}
+          amp={this.props.amp}
+        >
           Categories: {event.annotations.categories.join(', ')}
         </ImagePrefix>
         <ImagePrefix iconName="clock-o">
