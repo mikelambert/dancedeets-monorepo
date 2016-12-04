@@ -25,6 +25,22 @@ export class RsvpComponent extends React.Component {
     userRsvp: RsvpValue;
   }
 
+  constructor(props) {
+    super(props);
+    (this: any).onChange = this.onChange.bind(this);
+  }
+
+  onChange(changeEvent) {
+    $.ajax({
+      type: 'POST',
+      url: '/events/rsvp_ajax',
+      data: {
+        rsvp: changeEvent.target.value,
+        event_id: this.props.event.id,
+      },
+    });
+  }
+
   render() {
     const id = this.props.event.id;
 
@@ -45,14 +61,7 @@ export class RsvpComponent extends React.Component {
           className="form-control"
           id={`rsvp_${id}`}
           name={`rsvp_${id}`}
-          onChange={`
-            console.log('hey', event.value);
-            $.ajax({
-              data: {rsvp: event.value, event_id: ${id}},
-              type: 'POST',
-              url: '/events/rsvp_ajax',
-            });
-          `}
+          onChange={this.onChange}
         >
           {choices}
         </select>

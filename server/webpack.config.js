@@ -23,6 +23,7 @@ module.exports = {
     'main': './assets/js/main.js',
     'calendar': './assets/js/calendar.js',
     'class-results-exec': './assets/js/class-results-exec.jsx',
+    'event-exec': './assets/js/event-exec.js',
   },
   output: {
     path: path.join(__dirname, 'dist/js'),
@@ -69,6 +70,10 @@ module.exports = {
             'transform-flow-strip-types',
           ],
         },
+      },
+      {
+        test: /\.json$/,
+        loader: 'json',
       },
       {
         test: /\.s?css$/,

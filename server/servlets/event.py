@@ -107,20 +107,22 @@ class ShowEventHandler(base_servlet.BaseRequestHandler):
 
         self.display['email_suffix'] = '+event-%s' % db_event.id
 
-        if self.request.get('new', 1):
-            api_event = api.canonicalize_event_data(db_event, None, version=(1, 3))
-            try:
-                event_html = render_component(
-                    path=os.path.abspath('dist/js-server/event.js'),
-                    to_static_markup=True, # We don't need all the React data markup
-                    props=dict(
-                        amp=bool(self.request.get('amp')),
-                        event=api_event,
-                    ))
-            except (exceptions.RenderServerError, exceptions.ReactRenderingError):
-                logging.exception('Error rendering React component')
-                event_html = ''
-            self.display['react_event_html'] = event_html
+        # Render React component for inclusion in our template:
+        api_event = api.canonicalize_event_data(db_event, None, version=(1, 3))
+        try:
+            event_html = render_component(
+                path=os.path.abspath('dist/js-server/event.js'),
+                to_static_markup=True, # We don't need all the React data markup
+                props=dict(
+                    amp=bool(self.request.get('amp')),
+                    event=api_event,
+                ))
+        except (exceptions.RenderServerError, exceptions.ReactRenderingError):
+            logging.exception('Error rendering React component')
+            event_html = ''
+            # self.abort(500)
+        self.display['react_event_html'] = event_html
+        self.display['react_props'] = {'event': api_event}
 
         if self.request.get('amp'):
             if self.display['displayable_event']:

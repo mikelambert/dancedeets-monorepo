@@ -57,7 +57,13 @@
 
 {% block body %}
 {% if react_event_html %}
-  {{ react_event_html|safe }}
+  <div id="react-parent">
+    {{ react_event_html|safe }}
+  </div>
+  <script type="text/javascript">
+    window._REACT_PROPS = {{ react_props|tojson }};
+    window._REACT_ID = 'react-parent';
+  </script>
 {% else %}
 <div class="container">
 <div itemscope itemtype="http://schema.org/DanceEvent">
@@ -201,5 +207,6 @@ function googleTranslateElementInit() {
 <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAvvrWfamjBD6LqCURkATAWEovAoBm1xNQ&amp;callback=load_map">
 </script>
 {% endif %}
+<script src="/dist-{{version}}/js/event-exec.js"></script>
 <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
 {% endblock %}
