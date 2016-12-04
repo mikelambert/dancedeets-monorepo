@@ -89,7 +89,7 @@ module.exports = {
   postcss: function() {
     return [
       uncss.postcssPlugin({
-        html: ['amp-demo.html'],
+        html: ['amp/generated/*.html'],
       }),
     ];
   },
