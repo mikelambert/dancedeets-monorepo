@@ -114,7 +114,7 @@ class ShowEventHandler(base_servlet.BaseRequestHandler):
                     path=os.path.abspath('dist/js-server/event.js'),
                     to_static_markup=True, # We don't need all the React data markup
                     props=dict(
-                        amp=True,
+                        amp=bool(self.request.get('amp')),
                         event=api_event,
                     ))
             except (exceptions.RenderServerError, exceptions.ReactRenderingError):
