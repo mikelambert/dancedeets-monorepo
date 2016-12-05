@@ -1,4 +1,5 @@
 
+import $ from 'jquery';
 import React from 'react';
 
 const choiceStrings = [

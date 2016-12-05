@@ -86,8 +86,8 @@ export class Event extends JsonDerivedObject {
   id: string;
   name: string;
   description: string;
-  start_time: string;
-  end_time: string;
+  start_time: string; // eslint-disable-line camelcase
+  end_time: string; // eslint-disable-line camelcase
   source: {
     url: string,
     name: string,
@@ -108,7 +108,7 @@ export class Event extends JsonDerivedObject {
     },
   };
   admins: Array<Admin>;
-  ticket_uri: string;
+  ticket_uri: string; // eslint-disable-line camelcase
 
   constructor(eventData: JSONObject) {
     super(eventData);

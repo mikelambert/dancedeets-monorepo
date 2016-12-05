@@ -326,7 +326,7 @@ class _EventLinks extends React.Component {
           View Original: <a className="link-event-source" href={event.source.url}>{event.source.name}</a>
         </ImagePrefix>
         <ImagePrefix
-          icon={require('../img/categories.png')}
+          icon={require('../img/categories.png')} // eslint-disable-line global-require
           amp={this.props.amp}
         >
           Categories: {event.annotations.categories.join(', ')}
