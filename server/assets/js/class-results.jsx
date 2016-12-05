@@ -17,10 +17,6 @@ class StudioImage extends React.Component {
     studioName: string;
   }
 
-  contextTypes: {
-    imagePath: string,
-  }
-
   render() {
     const imageSrc = `${this.context.imagePath + this.props.studioName.toLowerCase()}.png`;
     return (
@@ -28,6 +24,9 @@ class StudioImage extends React.Component {
     );
   }
 }
+StudioImage.contextTypes = {
+  imagePath: React.PropTypes.string,
+};
 
 class SelectButton extends React.Component {
   props: {
@@ -88,6 +87,11 @@ class MultiSelectList<T> extends React.Component {
   }
 
   _itemRefs: { [id: string]: SelectButton };
+
+  constructor(props) {
+    super(props);
+    this._itemRefs = {};
+  }
 
   getValues() {
     const values = [];
