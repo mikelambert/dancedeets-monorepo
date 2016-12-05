@@ -21,6 +21,7 @@ import fb_api
 import fb_api_util
 import keys
 from users import users
+from util import fb_events
 from util import fetch
 from util import text
 from util import urls
@@ -87,7 +88,7 @@ def _should_post_event(auth_token, db_event):
         if db_event.attendee_count > 600:
             logging.warning("Skipping event due to 600+ attendees: %s", db_event.attendee_count)
             return False
-        invited = fb_api.get_all_members_count(db_event.fb_event)
+        invited = fb_events.get_all_members_count(db_event.fb_event)
         if invited < 200:
             logging.warning("Skipping event due to <200 invitees: %s", invited)
             return False
