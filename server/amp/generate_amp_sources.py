@@ -6,6 +6,7 @@ sys.path.insert(0, '/Users/lambert/google-cloud-sdk/platform/google_appengine')
 sys.path.insert(0, '/Users/lambert/google-cloud-sdk/lib/third_party')
 
 import logging
+logging.getLogger().setLevel(logging.DEBUG)
 import os
 from unittest import result
 from webtest import TestApp
@@ -45,15 +46,17 @@ class TestEvent(unittest.TestCase):
             }
           }
         }
+        event.creating_fb_uid = 1
+        event.creating_name = 'Addy McAdderson'
         event_updates.update_and_save_fb_events([(event, event.fb_event)])
         event.put()
         self.saveEvent(event)
-
         event = fixtures.create_web_event(json_body={'photo': 'test:http://url'})
         event.put()
         self.saveEvent(event)
 
 def generateAmpPages():
+    os.makedirs('amp/generated/')
     test = TestEvent()
     test.testbed = testbed.Testbed()
     test.testbed.activate()
