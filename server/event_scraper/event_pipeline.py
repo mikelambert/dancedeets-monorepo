@@ -49,12 +49,12 @@ def process_discovered_events(fbl, full_discovered_list):
     orig_allow_cache = fbl.allow_cache
     try:
         fbl.allow_cache = True
-        fb_events = fbl.get_multi(fb_api.LookupEvent, [x.event_id for x in discovered_list], allow_fail=True)
+        discovered_fb_events = fbl.get_multi(fb_api.LookupEvent, [x.event_id for x in discovered_list], allow_fail=True)
     finally:
         fbl.allow_cache = orig_allow_cache
 
     potential_events_added = []
-    for fb_event, discovered in zip(fb_events, discovered_list):
+    for fb_event, discovered in zip(discovered_fb_events, discovered_list):
         if not fb_event or fb_event['empty']:
             continue
         event_id = fb_event['info']['id']
@@ -68,7 +68,7 @@ def process_discovered_events(fbl, full_discovered_list):
         potential_events_added.append(pe_event)
     # TODO: Create new sources, update source feed values, etc? done in make_potential_events_with_source, but need more that's not done there
 
-    fb_lookup = dict((x['info']['id'], x) for x in fb_events if x and not x['empty'])
+    fb_lookup = dict((x['info']['id'], x) for x in discovered_fb_events if x and not x['empty'])
     pe_lookup = dict((x.fb_event_id, x) for x in potential_events_added)
     potential_event_ids = pe_lookup.keys()
     logging.info("Going to classify the %s potential events", len(discovered_list))
