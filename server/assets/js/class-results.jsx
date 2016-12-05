@@ -460,7 +460,7 @@ type AppProps = {
   location: string;
 };
 
-class App extends React.Component {
+export default class App extends React.Component {
   props: AppProps;
 
   state: {
@@ -668,4 +668,3 @@ App.childContextTypes = {
   imagePath: React.PropTypes.string,
 };
 
-module.exports = App;
