@@ -14,6 +14,11 @@ import {
 } from 'react-intl';
 import url from 'url';
 import {
+  GoogleMapLoader,
+  GoogleMap,
+  Marker,
+} from 'react-google-maps';
+import {
   intl,
   Internationalize,
 } from 'dancedeets-common/js/intl';
@@ -347,6 +352,43 @@ class _EventLinks extends React.Component {
 }
 const EventLinks = injectIntl(_EventLinks);
 
+class SimpleMap extends React.Component {
+  props: {
+    name: string;
+    latitude: number;
+    longitude: number;
+  }
+  render() {
+    return (
+      <GoogleMapLoader
+        containerElement={
+          <div
+            style={{
+              height: '100%',
+            }}
+          />
+        }
+        googleMapElement={
+          <GoogleMap
+            ref={map => console.log(this.props.name, map)}
+            defaultZoom={13}
+            defaultCenter={{ lat: this.props.latitude, lng: this.props.longitude }}
+            /*
+            scrollwheel={false}
+            draggable={false}
+            */
+          >
+            <Marker
+              position={{ lat: this.props.latitude, lng: this.props.longitude }}
+              label={this.props.name}
+            />
+          </GoogleMap>
+        }
+      />
+    );
+  }
+}
+
 class MapWithLinks extends React.Component {
   props: {
     event: Event;
@@ -376,18 +418,23 @@ class MapWithLinks extends React.Component {
         />
       );
     } else {
-      mapContents = <div id="map-wrapper" className="responsive-map-wrapper" />;
+      mapContents = (<SimpleMap
+        name={this.props.event.venue.name}
+        latitude={geocode.latitude}
+        longitude={geocode.longitude}
+      />);
     }
 
     return (
       <div>
+        <p>Open in <a className="link-event-map" href={mapUrl} rel="noopener noreferrer" target="_blank">Google Maps</a>.</p>
         { this.props.event.description ?
           <div className="visible-xs italics">Event description is below the map.</div> :
           null
         }
-        <a className="link-event-map" href={mapUrl} rel="noopener noreferrer" target="_blank">
+        <div style={{ height: '300px' }}>
           {mapContents}
-        </a>
+        </div>
       </div>
     );
   }
