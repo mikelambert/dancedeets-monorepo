@@ -28,8 +28,8 @@ class BatchedMapperWorkerCallbackHandler(fixed_mappers.FixedMapperWorkerCallback
     return finished_shard
 
   def _process_datum(self, data, input_reader, ctx, transient_shard_state):
+    batch_size = ctx.mapreduce_spec.mapper.params.get("handle_batch_size", None)
     if data is not input_readers.ALLOW_CHECKPOINT:
-      batch_size = ctx.mapreduce_spec.mapper.params.get("handle_batch_size", None)
       if not batch_size:
         return super(BatchedMapperWorkerCallbackHandler, self)._process_datum(data, input_reader, ctx, transient_shard_state)
       else:
