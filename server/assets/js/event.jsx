@@ -14,8 +14,8 @@ import {
 } from 'react-intl';
 import url from 'url';
 import {
-  defaultLocale,
   intl,
+  Internationalize,
 } from 'dancedeets-common/js/intl';
 import {
   formatStartEnd,
@@ -317,6 +317,9 @@ class _EventLinks extends React.Component {
     const formattedStartEndText = formatStartEnd(event.start_time, event.end_time, this.props.intl);
     return (
       <Card>
+        <ImagePrefix iconName={event.source.name === 'Facebook Event' ? 'facebook-square' : 'external-link'}>
+          View Original: <a className="link-event-source" href={event.source.url}>{event.source.name}</a>
+        </ImagePrefix>
         <ImagePrefix
           icon={require('../img/categories.png')}
           amp={this.props.amp}
@@ -335,9 +338,6 @@ class _EventLinks extends React.Component {
         </ImagePrefix>
         {rsvpElement}
         {ticketElement}
-        <ImagePrefix iconName={event.source.name === 'Facebook Event' ? 'facebook-square' : 'external-link'}>
-          View Original: <a className="link-event-source" href={event.source.url}>{event.source.name}</a>
-        </ImagePrefix>
         {addedByElement}
         {organizerElement}
         {shareLinks}
@@ -429,7 +429,7 @@ class Description extends React.Component {
   }
 }
 
-class _EventPage extends React.Component {
+class EventPage extends React.Component {
   props: {
     event: JSONObject;
     amp: boolean;
@@ -466,9 +466,15 @@ class _EventPage extends React.Component {
     );
   }
 }
-export default intl(_EventPage, getCurrentLocale());
 
-function getCurrentLocale() {
-  // TODO: load the locale from the incoming request headers
-  return defaultLocale;
+class InternationalizedEventPage extends React.Component {
+  render() {
+    return (
+      <Internationalize {...this.props}>
+        <EventPage {...this.props} />
+      </Internationalize>
+    );
+  }
 }
+
+export default InternationalizedEventPage;
