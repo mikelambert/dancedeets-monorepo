@@ -56,7 +56,8 @@ class TestEvent(unittest.TestCase):
         self.saveEvent(event)
 
 def generateAmpPages():
-    os.makedirs('amp/generated/')
+    if not os.path.exists('amp/generated'):
+        os.makedirs('amp/generated/')
     test = TestEvent()
     test.testbed = testbed.Testbed()
     test.testbed.activate()

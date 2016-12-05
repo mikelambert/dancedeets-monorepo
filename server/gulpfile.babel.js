@@ -117,11 +117,13 @@ gulp.task('pagespeed', cb =>
 );
 
 gulp.task('compile-css-js', $.shell.task([
+  './amp/generate_amp_sources.py',
   'webpack --color --progress --config webpack.amp.config.js',
   'webpack --color --progress --config webpack.config.js',
   'webpack --color --progress --config webpack.server.config.js',
 ]));
 gulp.task('compile-amp', $.shell.task([
+  './amp/generate_amp_sources.py',
   'webpack --color --progress --watch --config webpack.amp.config.js',
 ]));
 gulp.task('compile-main', $.shell.task([
