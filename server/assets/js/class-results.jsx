@@ -38,6 +38,13 @@ class SelectButton extends React.Component {
 
   _button: React.Element<*>;
 
+  constructor(props) {
+    super(props);
+    (this: any).toggleState = this.toggleState.bind(this);
+    (this: any).manualToggleState = this.manualToggleState.bind(this);
+    (this: any).isActive = this.isActive.bind(this);
+  }
+
   toggleState(e) {
     this.manualToggleState();
     this.props.onChange();
@@ -91,6 +98,7 @@ class MultiSelectList<T> extends React.Component {
   constructor(props) {
     super(props);
     this._itemRefs = {};
+    (this: any).unsetAll = this.unsetAll.bind(this);
   }
 
   getValues() {
@@ -138,7 +146,13 @@ class MultiSelectList<T> extends React.Component {
     const options = [];
     const emptyList = (this.props.value.length === 0);
     options.push(
-      <SelectButton key="All" item="All" ref={(x) => { this._itemRefs['item-all'] = x; }} value={emptyList} onChange={this.setAll} />
+      <SelectButton
+        key="All"
+        item="All"
+        ref={(x) => { this._itemRefs['item-all'] = x; }}
+        value={emptyList}
+        onChange={this.setAll}
+      />
     );
     const thumbnails = this.props.thumbnails;
     const value = this.props.value;
@@ -157,7 +171,14 @@ class MultiSelectList<T> extends React.Component {
       });
 
       options.push(
-        <SelectButton key={realItem} item={realItem} ref={`item${i}`} value={selected} onChange={unsetAll} thumbnail={thumbnails} />
+        <SelectButton
+          key={realItem}
+          item={realItem}
+          ref={(x) => { this._itemRefs[`item${i}`] = x; }}
+          value={selected}
+          onChange={unsetAll}
+          thumbnail={thumbnails}
+        />
       );
     });
     return (
@@ -175,6 +196,11 @@ function getDayId(dayName) {
 class DayLink extends React.Component {
   props: {
     dayName: string;
+  }
+
+  constructor(props) {
+    super(props);
+    (this: any).onClick = this.onClick.bind(this);
   }
 
   onClick() {
@@ -234,6 +260,11 @@ class SearchBar extends React.Component {
   _styles: React.Element<MultiSelectList>;
   _studios: React.Element<MultiSelectList>;
   _teacher: React.Element<*>;
+
+  constructor(props) {
+    super(props);
+    (this: any).onChange = this.onChange.bind(this);
+  }
 
   onChange() {
     this.props.onUserInput(
