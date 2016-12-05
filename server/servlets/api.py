@@ -393,12 +393,18 @@ def canonicalize_event_data(db_event, event_keywords, version):
     # cover images
     if db_event.has_image:
         if version >= (1, 3):
-            cover = db_event.cover_images[0]
+            if db_event.json_props:
+                width = db_event.json_props['photo_width']
+                height = db_event.json_props['photo_height']
+            else:
+                cover = db_event.largest_cover
+                width = cover['width']
+                height = cover['height']
             # Used by new react builds
             event_api['picture'] = {
                 'source': urls.event_image_url(db_event.id),
-                'width': cover['width'],
-                'height': cover['height'],
+                'width': width,
+                'height': height,
             }
         else:
             if db_event.json_props:
