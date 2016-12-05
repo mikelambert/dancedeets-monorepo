@@ -3,14 +3,30 @@
  *
  * @flow
  */
-/* global $ */
 
-
+import $ from 'jquery';
 import React from 'react';
 import dateFormat from 'date-fns/format';
 
 type DateTime = any;
-type StudioClassType = any;
+type SerializedStudioClass = {
+  url: string;
+  name: string;
+  location: string;
+  startTime: string;
+  categories: Array<string>;
+  key: string;
+  sponsor?: string;
+};
+type StudioClassType = {
+  url: string;
+  name: string;
+  location: string;
+  startTime: Date;
+  categories: Array<string>;
+  key: string;
+  sponsor?: string;
+};
 
 class StudioImage extends React.Component {
   props: {
@@ -85,11 +101,11 @@ class SelectButton extends React.Component {
   }
 }
 
-class MultiSelectList<T> extends React.Component {
+class MultiSelectList extends React.Component {
   props: {
     onChange: () => void;
-    list: Array<T>;
-    value: T;
+    list: Array<string>;
+    value: Array<string>;
     thumbnails?: boolean;
   }
 
@@ -158,12 +174,8 @@ class MultiSelectList<T> extends React.Component {
     const value = this.props.value;
     const unsetAll = this.unsetAll;
     this.props.list.forEach((item, i) => {
-      let subItems = [item];
-      let realItem = item;
-      if (item.constructor === Array) {
-        subItems = item[1];
-        realItem = item[0];
-      }
+      const subItems = [item];
+      const realItem = item;
 
       let selected = true;
       subItems.forEach((subItem) => {
@@ -250,15 +262,15 @@ class DayNavMenu extends React.Component {
 
 class SearchBar extends React.Component {
   props: {
-    initialStudios: Array<any>;
-    initialStyles: Array<any>;
-    studios: Array<any>;
-    styles: Array<any>;
+    initialStudios: Array<string>;
+    initialStyles: Array<string>;
+    studios: Array<string>;
+    styles: Array<string>;
     teacher: string;
-    onUserInput: (styles: Array<any>, studios: Array<any>, teacher: string) => void;
+    onUserInput: (styles: Array<string>, studios: Array<string>, teacher: string) => void;
   }
-  _styles: React.Element<MultiSelectList>;
-  _studios: React.Element<MultiSelectList>;
+  _styles: React.Element<MultiSelectList<*>>;
+  _studios: React.Element<MultiSelectList<*>>;
   _teacher: React.Element<*>;
 
   constructor(props) {
@@ -410,6 +422,9 @@ class SponsoredSummary extends React.Component {
     const sponsoredStudios = {};
     this.props.classes.forEach((studioClass) => {
       const sponsor = studioClass.sponsor;
+      if (!sponsor) {
+        return;
+      }
       if (!(sponsor in sponsoredStudios)) {
         sponsoredStudios[sponsor] = {};
       }
@@ -442,7 +457,7 @@ class StudioClasses extends React.Component {
     let lastStudioClass = null;
     const goodClasses = this.props.filteredClasses;
     const aNamedDays = {};
-    goodClasses.forEach((studioClass) => {
+    goodClasses.forEach((studioClass: StudioClassType) => {
       // Section header rendering
       if (lastStudioClass === null || dateFormat(studioClass.startTime, 'YYYY-MM-DD') !== dateFormat(lastStudioClass.startTime, 'YYYY-MM-DD')) {
         const day = dateFormat(studioClass.startTime, 'dddd');
@@ -487,7 +502,7 @@ function parseISO(str) {
 
 type AppProps = {
   imagePath: string,
-  classes: Array<StudioClassType>;
+  classes: Array<SerializedStudioClass>;
   location: string;
 };
 
@@ -681,10 +696,6 @@ export default class App extends React.Component {
             filteredClasses={filteredClasses}
           />
           <StudioClasses
-            classes={this.state.initialClasses}
-            styles={this.state.styles}
-            studios={this.state.studios}
-            teacher={this.state.teacher}
             filteredClasses={filteredClasses}
           />
           <SponsoredSummary
