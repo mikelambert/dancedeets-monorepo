@@ -355,7 +355,7 @@ class MapWithLinks extends React.Component {
 
   map() {
     const geocode = this.props.event.venue.geocode;
-    if (!geocode.latitude) {
+    if (!geocode || !geocode.latitude) {
       return null;
     }
     const mapUrl = `http://maps.google.com/?daddr=${geocode.latitude},${geocode.longitude}`;
