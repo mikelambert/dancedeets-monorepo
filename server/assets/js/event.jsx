@@ -114,7 +114,7 @@ class ImagePrefix extends React.Component {
         width: 18,
         height: 18,
       };
-      iconHtml = (<span className="fa fa-lg image-prefix-icon">
+      iconHtml = (<span className="fa fa-lg image-prefix-icon image-prefix-dancer">
         <AmpImage
           picture={picture}
           width="18"
@@ -288,8 +288,7 @@ class _EventLinks extends React.Component {
       const hostname = url.parse(this.props.event.ticket_uri).hostname;
       ticketElement = (
         <ImagePrefix iconName="ticket">
-          Tickets:<br />
-          <a href={this.props.event.ticket_uri}>{hostname}</a>
+          Tickets: <a href={this.props.event.ticket_uri}>{hostname}</a>
         </ImagePrefix>
       );
     }
