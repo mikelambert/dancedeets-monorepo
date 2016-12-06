@@ -82,6 +82,8 @@ const FBSetup = (fbPermissions, fbAppId, baseHostname) => {
     }
 
     FB.init({ version: 'v2.8', appId: fbAppId, status: true, cookie: true, xfbml: true });
+    window.hasCalledFbInit = true;
+    jQuery(document).trigger('fb-load');
     FB.Event.subscribe('auth.statusChange', handleStatusChange);
     FB.getLoginStatus((response) => {
       handleStatusChange(response);

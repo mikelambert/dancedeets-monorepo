@@ -33,12 +33,33 @@ class _RsvpComponent extends React.Component {
 
   state: {
     rsvpValue: RsvpValue;
+    updated: boolean;
   }
 
   constructor(props) {
     super(props);
-    this.state = { rsvpValue: this.props.userRsvp };
+    this.state = {
+      rsvpValue: this.props.userRsvp,
+      updated: false,
+    };
     this.choiceBinds = choiceStrings.map(({ internal, messageName }) => this.onChange.bind(this, internal));
+    (this: any).loadRsvpsFor = this.loadRsvpsFor.bind(this);
+  }
+
+  componentDidMount() {
+    if (!window.hasCalledFbInit) {
+      $(document).bind('fb-load', () => {
+        this.componentDidMount();
+      });
+      return;
+    }
+    console.log('RsvpComponent.componentDidMount Running', window.FB);
+    window.FB.getLoginStatus((response) => {
+      console.log('getLoginStatus returned ', response.status);
+      if (response.status === 'connected') {
+        this.loadRsvpsFor(response.authResponse.userID);
+      }
+    });
   }
 
   async onChange(rsvpValue, changeEvent) {
@@ -53,7 +74,22 @@ class _RsvpComponent extends React.Component {
         event_id: this.props.event.id,
       },
     });
-    this.setState({ rsvpValue });
+    this.setState({
+      rsvpValue,
+      updated: true,
+    });
+  }
+
+  async loadRsvpsFor(userId) {
+    choiceStrings.forEach(({ internal, messageName }) => {
+      window.FB.api(`/${this.props.event.id}/${internal}/${userId}`, 'get', {}, (response) => {
+        if (response.data.length) {
+          if (!this.state.updated) {
+            this.setState({ rsvpValue: internal });
+          }
+        }
+      });
+    });
   }
 
   render() {
