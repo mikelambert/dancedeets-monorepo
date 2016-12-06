@@ -9,8 +9,10 @@ import FormatText from 'react-format-text';
 import querystring from 'querystring';
 import moment from 'moment';
 import {
+  defineMessages,
   injectIntl,
   intlShape,
+  FormattedMessage,
 } from 'react-intl';
 import url from 'url';
 import {
@@ -32,6 +34,12 @@ import type {
   Cover,
   JSONObject,
 } from 'dancedeets-common/js/events/models';
+import {
+  formatAttending,
+} from 'dancedeets-common/js/events/helpers';
+import {
+  messages,
+} from 'dancedeets-common/js/events/strings';
 import { RsvpComponent } from './event_common';
 import type { RsvpValue } from './event_common';
 
@@ -273,7 +281,7 @@ class _EventLinks extends React.Component {
       }
       rsvpElement = (
         <ImagePrefix iconName="users">
-          {rsvpString(event)}
+          {formatAttending(this.props.intl, event.rsvp)}
           {rsvpAction}
         </ImagePrefix>
       );
@@ -288,7 +296,7 @@ class _EventLinks extends React.Component {
         >{admin.name}</a></li>));
       organizerElement = (
         <ImagePrefix iconName="user">
-          Organizers:<br />
+          <FormattedMessage id={messages.organizer.id} /><br />
           <ul>
             {admins}
           </ul>
@@ -300,7 +308,7 @@ class _EventLinks extends React.Component {
       const hostname = url.parse(this.props.event.ticket_uri).hostname;
       ticketElement = (
         <ImagePrefix iconName="ticket">
-          Tickets: <a href={this.props.event.ticket_uri}>{hostname}</a>
+          <FormattedMessage id={messages.ticketsLink.id} /> <a href={this.props.event.ticket_uri}>{hostname}</a>
         </ImagePrefix>
       );
     }
@@ -309,7 +317,7 @@ class _EventLinks extends React.Component {
     if (this.props.event.annotations.creation && this.props.event.annotations.creation.creatorName) {
       addedByElement = (
         <ImagePrefix iconName="user-plus">
-          Added By: {this.props.event.annotations.creation.creatorName}
+          <FormattedMessage id={messages.addedBy.id} values={{ name: this.props.event.annotations.creation.creatorName }} />
         </ImagePrefix>
       );
     }
@@ -330,13 +338,13 @@ class _EventLinks extends React.Component {
     return (
       <Card>
         <ImagePrefix iconName={event.source.name === 'Facebook Event' ? 'facebook-square' : 'external-link'}>
-          View Original: <a className="link-event-source" href={event.source.url}>{event.source.name}</a>
+          <FormattedMessage id={messages.source.id} /> <a className="link-event-source" href={event.source.url}>{event.source.name}</a>
         </ImagePrefix>
         <ImagePrefix
           icon={require('../img/categories.png')} // eslint-disable-line global-require
           amp={this.props.amp}
         >
-          Categories: {event.annotations.categories.join(', ')}
+          {event.annotations.categories.join(', ')}
         </ImagePrefix>
         <ImagePrefix iconName="clock-o">
           <FormatText>{formattedStartEndText}</FormatText>
@@ -346,7 +354,7 @@ class _EventLinks extends React.Component {
             null}
         </ImagePrefix>
         <ImagePrefix iconName="calendar-plus-o">
-          <a href={getAddToCalendarLink(event)} className="link-event-add-to-calendar">Add to Google Calendar</a>
+          <a href={getAddToCalendarLink(event)} className="link-event-add-to-calendar"><FormattedMessage id={messages.addToCalendar.id} /></a>
         </ImagePrefix>
         {rsvpElement}
         {ticketElement}
