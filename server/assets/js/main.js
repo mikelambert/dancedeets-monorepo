@@ -1,3 +1,6 @@
+
+import './stackdriver-errors';
+
 require('trackjs');
 
 const $ = require('jquery');
