@@ -1,4 +1,3 @@
-
 import $ from 'jquery';
 import React from 'react';
 import {
@@ -44,8 +43,8 @@ class _RsvpComponent extends React.Component {
     this.state = { rsvpValue: this.props.userRsvp };
   }
 
-  onChange(rsvpValue, changeEvent) {
-    $.ajax({
+  async onChange(rsvpValue, changeEvent) {
+    const result = await $.ajax({
       type: 'POST',
       url: '/events/rsvp_ajax',
       data: {

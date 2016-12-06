@@ -1,5 +1,5 @@
 {
-  "presets": ["latest", "react"],
+  "presets": ["latest", "react", "stage-0"],
   "plugins": [
     "transform-object-rest-spread",
     "transform-flow-strip-types",
