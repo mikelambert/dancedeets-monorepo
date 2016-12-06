@@ -79,12 +79,12 @@ class Title extends React.Component {
     let categoryLinks = null;
     if (event.annotations.categories) {
       const categories = event.annotations.categories.map(x => <a href={`/?keywords=${x}`}>{x}</a>);
-      categoryLinks = <li>categorized as: {intersperse(categories, ', ')}.</li>;
+      categoryLinks = <li key="category">categorized as: {intersperse(categories, ', ')}.</li>;
     }
     let locationLinks = null;
     const cityStateCountry = event.venue.cityStateCountry();
     if (cityStateCountry) {
-      locationLinks = <li>in <a href={`/?location=${cityStateCountry}`}>{cityStateCountry}</a>.</li>;
+      locationLinks = <li key="location">in <a href={`/?location=${cityStateCountry}`}>{cityStateCountry}</a>.</li>;
     }
     let moreLinks = null;
     if (categoryLinks || locationLinks) {
