@@ -74,7 +74,6 @@ settings.configure(
 
 logging.info("Begin modules")
 import webapp2
-from google.appengine.ext import ereporter
 from google.appengine.ext.ndb import tasklets
 
 # We call this here to force loading _strptime module upfront,
@@ -89,9 +88,6 @@ import _strptime
 logging.info("Begin servlets")
 import all_servlets
 logging.info("Finished servlets")
-
-if prod_mode:
-    ereporter.register_logger()
 
 from app import app
 app.debug = True

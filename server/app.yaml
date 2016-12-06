@@ -62,9 +62,6 @@ handlers:
 - url: /tasks/.*
   script: main.application
   login: admin
-- url: /_ereporter
-  script: google.appengine.ext.ereporter.report_generator.application
-  login: admin
 - url: /mapreduce/worker_callback.*
   script: main.application
   login: admin
