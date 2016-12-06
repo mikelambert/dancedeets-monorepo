@@ -54,7 +54,24 @@ app.post('/render', (req, res) => {
       });
     } else {
       const body = req.body;
-      body.component = eval(data).default; // eslint-disable-line no-eval
+      // We list this here, so that it applies for the eval.
+      // But we don't list it at the top, because any attempt to inline this code
+      // will trigger runtime errors on the compiled JS.
+      require('babel-polyfill');
+      // Ensure this runs in a try-catch, so the server cannot die on eval()ing code.
+      try {
+        body.component = eval(data).default; // eslint-disable-line no-eval
+      } catch (e) {
+        res.json({
+          error: {
+            type: e.constructor.name,
+            message: e.message,
+            stack: e.stack,
+          },
+          markup: null,
+        });
+        return;
+      }
       reactRender(body, (err2, markup) => {
         if (err2) {
           res.json({
