@@ -35,41 +35,40 @@ class _RsvpComponent extends React.Component {
     intl: intlShape;
   }
 
-  constructor(props) {
-    super(props);
-    (this: any).onChange = this.onChange.bind(this);
+  state: {
+    rsvpValue: RsvpValue;
   }
 
-  onChange(changeEvent) {
+  constructor(props) {
+    super(props);
+    this.state = { rsvpValue: this.props.userRsvp };
+  }
+
+  onChange(rsvpValue, changeEvent) {
     $.ajax({
       type: 'POST',
       url: '/events/rsvp_ajax',
       data: {
-        rsvp: changeEvent.target.value,
+        rsvp: rsvpValue,
         event_id: this.props.event.id,
       },
     });
+    this.setState({ rsvpValue });
   }
 
   render() {
     const id = this.props.event.id;
 
-    const choices = choiceStrings.map(({ internal, messageName }) => (
-      <option
-        key={internal}
-        value={internal}
-      >{this.props.intl.formatMessage(messages[messageName])}</option>
-    ));
-
     const buttons = choiceStrings.map(({ internal, messageName }) => (
       <button
-        key={`rsvp_${id}_${messageName}`}
-        name={`rsvp_${id}`}
         type="button"
-        className={`btn btn-default ${internal === this.props.userRsvp ? 'active' : ''}`}
+        className={`btn btn-default ${this.state.rsvpValue === internal ? 'active' : ''}`}
+        id={`rsvp_${id}_${internal}`}
         value={internal}
-        onClick={this.onChange}
-      ><FormattedMessage id={messages[messageName].id} /></button>
+        onClick={this.onChange.bind(this, internal)}
+      >
+        <FormattedMessage id={messages[messageName].id} />
+      </button>
     ));
     return (
       <form style={{ margin: '0px', display: 'inline' }} className="form-inline">
