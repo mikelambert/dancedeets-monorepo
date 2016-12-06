@@ -385,7 +385,6 @@ class SimpleMap extends React.Component {
         }
         googleMapElement={
           <GoogleMap
-            ref={map => console.log(this.props.name, map)}
             defaultZoom={13}
             defaultCenter={{ lat: this.props.latitude, lng: this.props.longitude }}
             /*
