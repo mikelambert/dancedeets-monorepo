@@ -57,7 +57,7 @@ app.post('/render', (req, res) => {
       // We list this here, so that it applies for the eval.
       // But we don't list it at the top, because any attempt to inline this code
       // will trigger runtime errors on the compiled JS.
-      require('babel-polyfill');
+      require('babel-polyfill'); // eslint-disable-line global-require
       // Ensure this runs in a try-catch, so the server cannot die on eval()ing code.
       try {
         body.component = eval(data).default; // eslint-disable-line no-eval
