@@ -193,7 +193,7 @@ class _EventListContainer extends React.Component {
     dataSource: ListView.DataSource,
   };
 
-  _listView: React.Element<ListView>;
+  _listView: ListView;
 
   constructor(props) {
     super(props);

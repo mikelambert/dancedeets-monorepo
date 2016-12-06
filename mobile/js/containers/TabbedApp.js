@@ -289,10 +289,10 @@ class _TabbedAppView extends React.Component {
     eventSignupUserIds: Array<string>;
   }
 
-  _eventSignupsNavigator: React.Element<any>;
-  _eventNavigator: React.Element<any>;
-  _learnNavigator: React.Element<any>;
-  _aboutNavigator: React.Element<any>;
+  _eventSignupsNavigator: EventSignupsNavigator;
+  _eventNavigator: EventNavigator;
+  _learnNavigator: LearnNavigator;
+  _aboutNavigator: AboutNavigator;
 
   constructor(props) {
     super(props);

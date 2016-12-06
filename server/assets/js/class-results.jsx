@@ -51,7 +51,7 @@ class SelectButton extends React.Component {
     item: string;
   }
 
-  _button: React.Element<*>;
+  _button: HTMLButtonElement;
 
   constructor(props) {
     super(props);

@@ -72,7 +72,7 @@ class SearchInput extends React.Component {
     focused: boolean,
   }
 
-  _textInput: React.Element<TextInput>;
+  _textInput: TextInput;
 
   constructor(props) {
     super(props);
@@ -162,9 +162,9 @@ class _SearchHeader extends React.Component {
     height: number;
   }
 
-  _location: React.Element<TextInput>;
-  _keywords: React.Element<TextInput>;
-  _locationAutocomplete: React.Element<AutocompleteList>;
+  _location: SearchInput;
+  _keywords: SearchInput;
+  _locationAutocomplete: AutocompleteList;
 
   constructor(props) {
     super(props);

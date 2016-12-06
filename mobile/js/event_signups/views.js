@@ -183,7 +183,7 @@ class CategorySummaryView extends React.Component {
     onUnregister: (category: CompetitionCategory, team: Signup) => void;
   }
 
-  _root: React.Element<any>;
+  _root: View;
 
   setNativeProps(props) {
     this._root.setNativeProps(props);
