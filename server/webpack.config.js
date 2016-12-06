@@ -22,7 +22,7 @@ module.exports = {
   entry: {
     'main': './assets/js/main.js',
     'calendar': './assets/js/calendar.js',
-    'class-results-exec': './assets/js/class-results-exec.jsx',
+    'class-results-exec': './assets/js/class-results-exec.js',
     'event-exec': './assets/js/event-exec.js',
   },
   output: {

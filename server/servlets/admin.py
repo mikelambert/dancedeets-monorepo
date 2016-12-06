@@ -87,7 +87,7 @@ class TestHandler(base_servlet.webapp2.RequestHandler):
             }
         ]
         result = render_component(
-            path=os.path.abspath('assets/js/class-results.jsx'),
+            path=os.path.abspath('assets/js/class-results.js'),
             props=dict(
                 imagePath='imagePath',
                 location='searchLocation',
