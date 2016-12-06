@@ -29,9 +29,6 @@ class _RsvpComponent extends React.Component {
   props: {
     event: Event;
     userRsvp: RsvpValue;
-
-    // Self-managed props
-    intl: intlShape;
   }
 
   state: {
@@ -41,9 +38,13 @@ class _RsvpComponent extends React.Component {
   constructor(props) {
     super(props);
     this.state = { rsvpValue: this.props.userRsvp };
+    this.choiceBinds = choiceStrings.map(({ internal, messageName }) => this.onChange.bind(this, internal));
   }
 
   async onChange(rsvpValue, changeEvent) {
+    if (this.state.rsvpValue === rsvpValue) {
+      return;
+    }
     const result = await $.ajax({
       type: 'POST',
       url: '/events/rsvp_ajax',
@@ -58,13 +59,13 @@ class _RsvpComponent extends React.Component {
   render() {
     const id = this.props.event.id;
 
-    const buttons = choiceStrings.map(({ internal, messageName }) => (
+    const buttons = choiceStrings.map(({ internal, messageName }, index) => (
       <button
         type="button"
-        className={`btn btn-default ${this.state.rsvpValue === internal ? 'active' : ''}`}
+        className={`btn btn-default ${this.state.rsvpValue === internal ? 'active btn-no-focus' : ''}`}
         id={`rsvp_${id}_${internal}`}
         value={internal}
-        onClick={this.onChange.bind(this, internal)}
+        onClick={this.choiceBinds[index]}
       >
         <FormattedMessage id={messages[messageName].id} />
       </button>

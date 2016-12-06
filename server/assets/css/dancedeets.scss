@@ -140,33 +140,60 @@ h6 {
 
 // Gradient Buttons
 .btn-default {
-  background-image: linear-gradient(180deg, $purple-lighter, $purple-medium) !important;
+  background-image: linear-gradient(180deg, $purple-lighter, $purple-medium);
 
   &:focus,
   &.focus {
-    background-image: linear-gradient(180deg, $purple-medium, $purple-lighter) !important;
+    background-image: linear-gradient(180deg, $purple-lighter, $purple-medium);
+    &:active,
+    &.active {
+      border-color: $yellow-lightest;
+    }
+  }
+  &.hover {
+    background-image: linear-gradient(180deg, $purple-lighter, $purple-medium);
+  }
+
+  &:active,
+  &.active {
+    background-image: linear-gradient(180deg, $purple-lighter, $purple-medium);
+    border-color: $yellow-lightest;
+
+    &:hover,
+    &.hover {
+      border-color: $yellow-lightest;
+    }
   }
 }
+.btn-no-focus {
+  outline:0 !important;
+}
+
 .btn-primary {
-  background-image: linear-gradient(180deg, $purple-lighter, $purple-medium) !important;
+  background-image: linear-gradient(180deg, $purple-lighter, $purple-medium);
 
   &:focus,
   &.focus {
-    background-image: linear-gradient(180deg, $purple-medium, $purple-lighter) !important;
+    background-image: linear-gradient(180deg, $purple-lighter, $purple-medium);
+  }
+
+  &:active,
+  &.active {
+    border-color: $yellow-lightest;
   }
 }
 
 //FullCalendar buttons
 .fc-state-default {
-  background-color: $brand-primary !important;
-  color: white !important;
-  background-image: linear-gradient(180deg, $brand-primary, lighten($brand-primary, 10%)) !important;
+  background-color: $brand-primary;
+  color: white;
+  background-image: linear-gradient(180deg, $brand-primary, lighten($brand-primary, 10%));
 }
 .fc-state-hover {
-  background-color: lighten($brand-primary, 10%) !important;
+  background-color: lighten($brand-primary, 10%);
 }
 .fc-state-active {
-  background-color: darken($brand-primary, 10%) !important;
+  background-color: darken($brand-primary, 10%);
 }
 
 // Color the text of the tabs to not look like blue links
