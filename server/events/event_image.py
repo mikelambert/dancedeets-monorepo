@@ -68,12 +68,9 @@ def _clear_out_resize_caches(event_id):
 
 def cache_image_and_get_size(event):
     # For testing purposes:
-    logging.error('cache_image_and_get_size 1')
     if event.full_image_url.startswith('test:'):
-        logging.error('cache_image_and_get_size 2')
         return 100, 100
     else:
-        logging.error('cache_image_and_get_size 3')
         mimetype, response = _raw_get_image(event)
         gcs.put_object(EVENT_IMAGE_BUCKET, _event_image_filename(event.id), response)
         _clear_out_resize_caches(event.id)
