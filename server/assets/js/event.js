@@ -39,7 +39,7 @@ import {
 } from 'dancedeets-common/js/events/helpers';
 import {
   messages,
-} from 'dancedeets-common/js/events/strings';
+} from 'dancedeets-common/js/events/messages';
 import { RsvpComponent } from './event_common';
 import type { RsvpValue } from './event_common';
 

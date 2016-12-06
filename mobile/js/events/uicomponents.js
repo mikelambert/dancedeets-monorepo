@@ -35,7 +35,7 @@ import {
 import { Event, Venue } from 'dancedeets-common/js/events/models';
 import {
   messages,
-} from 'dancedeets-common/js/events/strings';
+} from 'dancedeets-common/js/events/messages';
 import {
   formatAttending,
 } from 'dancedeets-common/js/events/helpers';
