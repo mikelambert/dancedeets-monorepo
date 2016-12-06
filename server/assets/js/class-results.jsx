@@ -8,7 +8,6 @@ import $ from 'jquery';
 import React from 'react';
 import dateFormat from 'date-fns/format';
 
-type DateTime = any;
 type SerializedStudioClass = {
   url: string;
   name: string;
@@ -49,7 +48,7 @@ class SelectButton extends React.Component {
     onChange: () => void;
     value: boolean;
     thumbnail?: boolean;
-    item: any;
+    item: string;
   }
 
   _button: React.Element<*>;
@@ -269,9 +268,9 @@ class SearchBar extends React.Component {
     teacher: string;
     onUserInput: (styles: Array<string>, studios: Array<string>, teacher: string) => void;
   }
-  _styles: React.Element<MultiSelectList<*>>;
-  _studios: React.Element<MultiSelectList<*>>;
-  _teacher: React.Element<*>;
+  _styles: MultiSelectList;
+  _studios: MultiSelectList;
+  _teacher: HTMLInputElement;
 
   constructor(props) {
     super(props);
@@ -370,7 +369,7 @@ class StudioClass extends React.Component {
 
 class DayHeader extends React.Component {
   props: {
-    date: DateTime;
+    date: Date;
     useAnchor: boolean;
   }
 
@@ -391,7 +390,7 @@ class DayHeader extends React.Component {
 
 class TimeHeader extends React.Component {
   props: {
-    datetime: DateTime;
+    datetime: Date;
   }
 
   render() {
