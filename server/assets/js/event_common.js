@@ -1,29 +1,38 @@
 
 import $ from 'jquery';
 import React from 'react';
+import {
+  injectIntl,
+  intlShape,
+  FormattedMessage,
+} from 'react-intl';
+import { messages } from 'dancedeets-common/js/events/messages';
 
 const choiceStrings = [
   {
     internal: 'attending',
-    display: 'attending',
+    messageName: 'attending',
   },
   {
-    internal: 'interested',
-    display: 'interested',
+    internal: 'maybe',
+    messageName: 'maybe',
   },
   {
     internal: 'declined',
-    display: 'declined',
+    messageName: 'declined',
   },
 ];
 
 export type RsvpValue = 'attending' | 'maybe' | 'declined' | 'none';
 
 
-export class RsvpComponent extends React.Component {
+class _RsvpComponent extends React.Component {
   props: {
     event: Event;
     userRsvp: RsvpValue;
+
+    // Self-managed props
+    intl: intlShape;
   }
 
   constructor(props) {
@@ -45,28 +54,30 @@ export class RsvpComponent extends React.Component {
   render() {
     const id = this.props.event.id;
 
-    const choices = choiceStrings.map(({ internal, display }) => (
+    const choices = choiceStrings.map(({ internal, messageName }) => (
       <option
         key={internal}
         value={internal}
-      >{display}</option>
+      >{this.props.intl.formatMessage(messages[messageName])}</option>
     ));
-    if (!this.props.userRsvp) {
-      choices.push(<option key="none" value="">none</option>);
-    }
 
+    const buttons = choiceStrings.map(({ internal, messageName }) => (
+      <button
+        key={`rsvp_${id}_${messageName}`}
+        name={`rsvp_${id}`}
+        type="button"
+        className={`btn btn-default ${internal === this.props.userRsvp ? 'active' : ''}`}
+        value={internal}
+        onClick={this.onChange}
+      ><FormattedMessage id={messages[messageName].id} /></button>
+    ));
     return (
       <form style={{ margin: '0px', display: 'inline' }} className="form-inline">
-        <select
-          className="form-control"
-          id={`rsvp_${id}`}
-          name={`rsvp_${id}`}
-          onChange={this.onChange}
-          defaultValue={this.props.userRsvp}
-        >
-          {choices}
-        </select>
+        <div className="btn-group" role="group" aria-label="RSVPs">
+          {buttons}
+        </div>
       </form>
     );
   }
 }
+export const RsvpComponent = injectIntl(_RsvpComponent);

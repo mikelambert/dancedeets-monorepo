@@ -271,7 +271,7 @@ class _EventLinks extends React.Component {
       if (this.props.loggedIn && !this.props.amp) {
         rsvpAction = (
           <div>
-            RSVP:
+            RSVP:{' '}
             <RsvpComponent
               event={this.props.event}
               userRsvp={this.props.userRsvp}
