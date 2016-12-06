@@ -35,6 +35,13 @@ import type {
 import { RsvpComponent } from './event_common';
 import type { RsvpValue } from './event_common';
 
+type RequiredImage = {
+  source: number; // aka required package
+  width: number;
+  height: number;
+};
+type ClientCover = Cover | RequiredImage;
+
 /* intersperse: Return an array with the separator interspersed between
  * each element of the input array.
  *
@@ -99,7 +106,7 @@ class Title extends React.Component {
 
 class ImagePrefix extends React.Component {
   props: {
-    icon?: string;
+    icon?: number; // aka required package
     iconName?: string;
     className?: string;
     amp?: boolean;
@@ -114,7 +121,7 @@ class ImagePrefix extends React.Component {
     const { icon, iconName, className, amp, children, ...otherProps } = this.props;
     let iconHtml = null;
     if (icon) {
-      const picture = {
+      const picture: RequiredImage = {
         source: icon,
         width: 18,
         height: 18,
@@ -140,7 +147,7 @@ class ImagePrefix extends React.Component {
 
 class AmpImage extends React.Component {
   props: {
-    picture: Cover;
+    picture: ClientCover;
     amp?: boolean;
     width?: string;
   }

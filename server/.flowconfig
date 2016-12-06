@@ -14,7 +14,8 @@
 
 .*/CodePushHash.json
 
-.*/node_modules/fbjs/.*
+.*/common/node_modules/fbjs/.*
+.*/server/node_modules/fbjs/.*
 
 [include]
 ../common

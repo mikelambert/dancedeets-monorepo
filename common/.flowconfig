@@ -1,20 +1,5 @@
 [ignore]
 
-# We fork some components by platform.
-.*/*.android.js
-
-# Ignore templates with `@flow` in header
-.*/local-cli/generator.*
-
-# Ignore malformed json
-.*/node_modules/y18n/test/.*\.json
-
-# Ignore the website subdir
-<PROJECT_ROOT>/website/.*
-
-# Ignore BUCK generated dirs
-<PROJECT_ROOT>/\.buckd/
-
 # Ignore unexpected extra @providesModule
 .*/node_modules/commoner/test/source/widget/share.js
 
@@ -27,16 +12,14 @@
 .*/node_modules/config-chain/test/.*\.json
 .*/node_modules/npmconf/test/fixtures/.*\.json
 
-.*/common/node_modules/fbjs/.*
-
 .*/CodePushHash.json
 
+.*/node_modules/fbjs/.*
+
 [include]
-../common/
+../common
 
 [libs]
-node_modules/react-native/Libraries/react-native/react-native-interface.js
-node_modules/react-native/flow
 flow/
 js/flow-lib.js
 
