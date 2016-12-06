@@ -122,6 +122,7 @@ class ShowEventHandler(base_servlet.BaseRequestHandler):
             event=api_event,
             loggedIn=bool(self.fb_uid),
             userRsvp=rsvps.get(event_id),
+            currentLocale=self.locales[0],
         )
         try:
             event_html = render_component(
