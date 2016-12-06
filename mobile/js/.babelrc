@@ -2,7 +2,7 @@
   "presets": ["react-native"],
   "plugins": [
     ["react-intl", {
-        "messagesDir": "./build/messages/",
+        "messagesDir": "../build/messages/",
         "enforceDescriptions": true
     }]
   ]

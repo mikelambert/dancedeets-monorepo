@@ -12,8 +12,13 @@
     "url": "^0.11.0"
   },
   "devDependencies": {
+    "babel-core": "^6.18.2",
+    "babel-loader": "^6.2.8",
     "babel-preset-latest": "^6.16.0",
     "babel-preset-react": "^6.16.0",
-    "json-loader": "^0.5.4"
+    "eslint": "^3.11.1",
+    "eslint-loader": "^1.6.1",
+    "json-loader": "^0.5.4",
+    "webpack": "^1.13.3"
   }
 }

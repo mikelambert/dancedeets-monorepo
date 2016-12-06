@@ -82,6 +82,11 @@ export type Admin = {
   name: string;
 };
 
+export type EventRsvpList = {
+  attending_count: number,
+  maybe_count: number,
+};
+
 export class Event extends JsonDerivedObject {
   id: string;
   name: string;
@@ -92,10 +97,7 @@ export class Event extends JsonDerivedObject {
     url: string,
     name: string,
   };
-  rsvp: ?{
-    attending_count: number,
-    maybe_count: number,
-  };
+  rsvp: ?EventRsvpList;
   picture: ?Cover;
   venue: Venue;
   annotations: {

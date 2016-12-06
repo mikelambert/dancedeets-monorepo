@@ -34,6 +34,12 @@ import {
 } from 'dancedeets-common/js/dates';
 import { Event, Venue } from 'dancedeets-common/js/events/models';
 import {
+  messages,
+} from 'dancedeets-common/js/events/strings';
+import {
+  formatAttending,
+} from 'dancedeets-common/js/events/helpers';
+import {
   Autolink,
   Button,
   Card,
@@ -62,104 +68,6 @@ import {
   toggleEventTranslation,
   canGetValidLoginFor,
 } from '../actions';
-
-const messages = defineMessages({
-  addToCalendar: {
-    id: 'event.addToCalendar',
-    defaultMessage: 'Add to Calendar',
-    description: 'Button to add this event to the user\'s calendar',
-  },
-  addedToCalendar: {
-    id: 'event.addedToCalendar',
-    defaultMessage: 'Added to Calendar',
-    description: 'Confirmation message for iOS after adding to the OS calendar',
-  },
-  translate: {
-    id: 'event.translate',
-    defaultMessage: 'Translate',
-    description: 'Button to translate the event into the device\'s native language',
-  },
-  untranslate: {
-    id: 'event.untranslate',
-    defaultMessage: 'Original',
-    description: 'Button to show the event\'s original untranslated version',
-  },
-  addedBy: {
-    id: 'event.addedBy',
-    defaultMessage: 'Added By: {name}',
-    description: 'Describes who added this event to DanceDeets',
-  },
-  source: {
-    id: 'event.source',
-    defaultMessage: 'Source:',
-    description: 'The original website from which we discovered this event',
-  },
-  hideOrganizers: {
-    id: 'event.hideOrganizers',
-    defaultMessage: 'Hide Organizers',
-    description: 'Will hide the list of organizers for this event',
-  },
-  showOrganizers: {
-    id: 'event.showOrganizers',
-    defaultMessage: 'Show {count, number} Organizers', // Always 2-and-more, so don't need to deal with singular case
-    description: 'Will show the list of organizers for this event',
-  },
-  eventDetails: {
-    id: 'event.details',
-    defaultMessage: 'Event Details:',
-    description: 'Title for the event description card',
-  },
-  featureRSVP: {
-    id: 'feature.RSVP',
-    defaultMessage: 'RSVP',
-    description: 'The name of the RSVP feature when requesting permissions',
-  },
-  organizer: {
-    id: 'event.organizer',
-    defaultMessage: 'Organizer:',
-    description: 'Describes the one person who created this event',
-  },
-  ticketsLink: {
-    id: 'event.tickets',
-    defaultMessage: 'Tickets:',
-    description: 'Link to see/buy tickets for this event',
-  },
-  attendingCount: {
-    id: 'event.attendingCount',
-    defaultMessage: '{attendingCount, number} attending',
-    description: 'Count of people attending this event',
-  },
-  attendingMaybeCount: {
-    id: 'event.attendingMaybeCount',
-    defaultMessage: '{attendingCount, number} attending, {maybeCount, number} maybe',
-    description: 'Count of people maybe-attending this event',
-  },
-  attending: {
-    id: 'event.rsvp.attending',
-    defaultMessage: 'I\'ll be there!',
-    description: 'Clickable text for when a user wants to attend an event',
-  },
-  maybe: {
-    id: 'event.rsvp.maybe',
-    defaultMessage: 'I might flake…',
-    description: 'Clickable text for when a user wants to attend an event',
-  },
-  declined: {
-    id: 'event.rsvp.declined',
-    defaultMessage: 'No thanks.',
-    description: 'Clickable text for when a user wants to attend an event',
-  },
-  milesAway: {
-    id: 'distance.miles',
-    defaultMessage: '{miles, number} {miles, plural, one {mile} other {miles}} away',
-    description: 'Distance of something from the user',
-  },
-  kmAway: {
-    id: 'distance.km',
-    defaultMessage: '{km, number} km away',
-    description: 'Distance of something from the user',
-  },
-});
 
 class SubEventLine extends React.Component {
   props: {
@@ -610,17 +518,7 @@ class _EventRsvp extends React.Component {
 
   render() {
     if (this.props.event.rsvp) {
-      let counts = '';
-      if (this.props.event.rsvp.attending_count) {
-        if (this.props.event.rsvp.maybe_count) {
-          counts = this.props.intl.formatMessage(messages.attendingMaybeCount, {
-            attendingCount: this.props.event.rsvp.attending_count,
-            maybeCount: this.props.event.rsvp.maybe_count,
-          });
-        } else {
-          counts = this.props.intl.formatMessage(messages.attendingCount, { attendingCount: this.props.event.rsvp.maybe_count });
-        }
-      }
+      const counts = formatAttending(this.props.intl, this.props.event.rsvp);
       // TODO: Maybe make a pop-out to show the list-of-users-attending prepended by DD users
       const countsText = <Text style={eventStyles.detailText}>{counts}</Text>;
       const rsvpControl = (this.props.event.source.name === 'Facebook Event') ? <EventRsvpControl event={this.props.event} /> : null;

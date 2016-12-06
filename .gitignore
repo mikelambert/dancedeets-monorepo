@@ -1,4 +1,7 @@
 node_modules/
 npm-debug.log
 
+# Where we store the build/messages/ from react-intl's plugin processing
+build/
+
 *.swp
