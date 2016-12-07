@@ -41,8 +41,8 @@ import {
 import {
   messages,
 } from 'dancedeets-common/js/events/messages';
-import { RsvpComponent } from './event_common';
-import type { RsvpValue } from './event_common';
+import { RsvpComponent } from './eventRsvp';
+import type { RsvpValue } from './eventRsvp';
 
 type RequiredImage = {
   source: number; // aka required package
