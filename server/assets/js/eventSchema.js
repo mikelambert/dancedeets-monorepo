@@ -1,7 +1,7 @@
 import React from 'react';
 import moment from 'moment';
 import {
-  MiniEvent,
+  SearchEvent,
   Event,
 } from 'dancedeets-common/js/events/models';
 
@@ -9,7 +9,7 @@ function formatSchemaDate(dateTime) {
   return moment(dateTime).format('YYYY-MM-DD[T]HH:mm:ss');
 }
 
-function getDanceEventSchema(event: MiniEvent|Event) {
+function getDanceEventSchema(event: Event) {
   const schema = {
     '@context': 'http://schema.org/',
     '@type': 'DanceEvent',

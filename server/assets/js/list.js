@@ -18,7 +18,7 @@ import {
   formatAttending,
 } from 'dancedeets-common/js/events/helpers';
 
-type MiniEvent = {
+type SearchEvent = {
   id: string;
   picture: Cover;
   categories: Array<string>;
@@ -27,12 +27,12 @@ type MiniEvent = {
   end_time: Date;
 };
 type OneboxResult = any;
-type EventResult = MiniEvent;
+type EventResult = SearchEvent;
 type Result = OneboxResult | EventResult;
 
 class EventFlyer extends React.Component {
   props: {
-    event: MiniEvent;
+    event: SearchEvent;
   }
 
   generateCroppedCover(picture: Cover, width: number, height: number) {
@@ -93,7 +93,7 @@ class EventFlyer extends React.Component {
 
 class EventDescription extends React.Component {
   props: {
-    event: MiniEvent;
+    event: SearchEvent;
     indexingBot: boolean;
   }
 
@@ -135,7 +135,7 @@ class EventDescription extends React.Component {
 
 class HorizontalEvent extends React.Component {
   props: {
-    event: MiniEvent;
+    event: SearchEvent;
     lazyLoad: boolean;
   }
 
