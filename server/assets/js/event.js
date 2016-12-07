@@ -26,7 +26,6 @@ import {
 } from 'dancedeets-common/js/intl';
 import {
   formatStartEnd,
-  formatSchemaDate,
 } from 'dancedeets-common/js/dates';
 import {
   Event,
@@ -43,6 +42,7 @@ import {
 } from 'dancedeets-common/js/events/messages';
 import { RsvpComponent } from './eventRsvp';
 import type { RsvpValue } from './eventRsvp';
+import { getReactDanceEventSchema } from './eventSchema';
 
 type RequiredImage = {
   source: number; // aka required package
@@ -345,10 +345,6 @@ class _EventLinks extends React.Component {
         </ImagePrefix>
         <ImagePrefix iconName="clock-o">
           <FormatText>{formattedStartEndText}</FormatText>
-          <meta itemProp="startDate" content={formatSchemaDate(event.start_time)} />
-          {event.end_time ?
-            <meta itemProp="endDate" content={formatSchemaDate(event.end_time)} /> :
-            null}
         </ImagePrefix>
         <ImagePrefix iconName="calendar-plus-o">
           <a href={getAddToCalendarLink(event)} className="link-event-add-to-calendar"><FormattedMessage id={messages.addToCalendar.id} /></a>
@@ -498,8 +494,8 @@ class EventPage extends React.Component {
   render() {
     const event = new Event(this.props.event);
     return (
-      <div className="container" itemScope itemType="http://schema.org/DanceEvent">
-        <meta itemProp="url" content="canonical_url" />
+      <div className="container">
+        {this.props.amp ? null : getReactDanceEventSchema(event)}
         <div className="row">
           <div className="col-xs-12">
             <Title event={event} />

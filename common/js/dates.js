@@ -40,7 +40,3 @@ export function formatStartEnd(startString: string, endString: string, intl: int
   }
   return textFields.join('');
 }
-
-export function formatSchemaDate(dateTime) {
-  return moment(dateTime).format('%Y-%m-%dT%H:%M:%S');
-}
