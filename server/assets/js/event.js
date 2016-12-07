@@ -443,7 +443,7 @@ class MapWithLinks extends React.Component {
           <div className="visible-xs italics">Event description is below the map.</div> :
           null
         }
-        <div style={{ height: '300px' }}>
+        <div className="event-map-container">
           {mapContents}
         </div>
       </div>
