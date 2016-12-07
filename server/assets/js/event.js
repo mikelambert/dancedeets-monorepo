@@ -327,8 +327,8 @@ class _EventLinks extends React.Component {
       shareLinks = (
         <ImagePrefix iconName="share-square-o" className="product-social-links">
           <a className="link-event-share twitter-share-button" href="https://twitter.com/intent/tweet?hashtags=dancedeets" data-count="none">Tweet</a>
-          <div className="link-event-share fb-share-button" data-href="{{ canonical_url }}" data-layout="button" data-size="small" data-mobile-iframe="true">
-            <a className="fb-xfbml-parse-ignore" rel="noopener noreferrer" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u={{ canonical_url }}&amp;src=sdkpreparse">Share</a>
+          <div className="link-event-share fb-share-button" data-href={event.getUrl()} data-layout="button" data-size="small" data-mobile-iframe="true">
+            <a className="fb-xfbml-parse-ignore" rel="noopener noreferrer" target="_blank" href={`https://www.facebook.com/sharer/sharer.php?u=${event.getUrl()}&amp;src=sdkpreparse`}>Share</a>
           </div>
         </ImagePrefix>
       );
