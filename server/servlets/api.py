@@ -145,7 +145,7 @@ class SearchHandler(ApiHandler):
             else:
                 return "Events"
 
-    def get(self):
+    def _build_search_form_data(self):
         data = {
             'location': self.request.get('location'),
             'keywords': self.request.get('keywords'),
@@ -157,6 +157,10 @@ class SearchHandler(ApiHandler):
         else:
             time_period = self.request.get('time_period')
         data['time_period'] = time_period
+        return data
+
+    def get(self):
+        data = self._build_search_form()
         form = search_base.SearchForm(data=data)
 
         if not form.validate():
@@ -203,7 +207,8 @@ class SearchHandler(ApiHandler):
             searcher = search.Search(search_query)
             # TODO(lambert): Increase the size limit when our clients can handle it. And improve our result sorting to return the 'best' results.
             searcher.limit = 500
-            search_results = searcher.get_search_results(full_event=True)
+            need_full_event = self.version < (2, 0)
+            search_results = searcher.get_search_results(full_event=need_full_event)
 
             # Increase our search distance in the hopes of finding something
             distance_index += 1
@@ -217,7 +222,10 @@ class SearchHandler(ApiHandler):
         json_results = []
         for result in search_results:
             try:
-                json_result = canonicalize_event_data(result.db_event, result.event_keywords, self.version)
+                if need_full_event:
+                    json_result = canonicalize_event_data(result.db_event, result.event_keywords, self.version)
+                else:
+                    json_result = canonicalize_search_event_data(result, self.version)
                 json_results.append(json_result)
             except Exception as e:
                 logging.exception("Error processing event %s: %s" % (result.event_id, e))
@@ -373,6 +381,42 @@ class SettingsHandler(ApiHandler):
 
         self.write_json_success()
 
+def canonicalize_search_event_data(result, version):
+    event_api = {}
+    event_api['id'] = result.event_id
+    event_api['name'] = result.data['name']
+    event_api['start_time'] = result.data['start_time']
+    event_api['end_time'] = result.data['end_time']
+
+    geocode = None
+    if result.data['longitude'] and result.data['latitude']:
+        geocode = {
+            'longitude': result.data['lng'],
+            'latitude': result.data['lat'],
+        }
+    event_api['venue'] = {
+        'name': result.data['location'], # TODO!
+        'geocode': geocode,
+    }
+    event_api = result.data['attendee_count']
+    event_api['picture'] = {
+        'source': urls.event_image_url(result.event_id),
+        'width': None, # TODO!
+        'height': None, # TODO!
+    }
+
+    annotations = {}
+    annotations['dance_keywords'] = result.data['keywords']
+    annotations['categories'] = result.data['categories']
+    event_api['annotations'] = annotations
+    if result.data['attendee_count']:
+        event_api['rsvp'] = {
+            'attending_count': result.data['attendee_count'],
+            'maybe_count': 0, # TODO!
+        }
+    else:
+        event_api['rsvp'] = None
+    return event_api
 
 def canonicalize_event_data(db_event, event_keywords, version):
     event_api = {}
