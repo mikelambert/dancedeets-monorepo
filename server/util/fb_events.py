@@ -33,7 +33,7 @@ def is_public_ish(fb_event):
     if event_type:
         # event_type = {private, public, group, community}
         if event_type in ['private']:
-            logging.error('Event %s has %s type with %s members', fb_event['info']['id'], event_type, members_count)
+            logging.info('Event %s has %s type with %s members', fb_event['info']['id'], event_type, members_count)
             if members_count >= 200:
                 return True
         else:
