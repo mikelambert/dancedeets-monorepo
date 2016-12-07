@@ -30,7 +30,7 @@ export class JsonDerivedObject {
 }
 
 export class Venue extends JsonDerivedObject {
-  geocode: {
+  geocode: ?{
     latitude: number,
     longitude: number,
   };
@@ -41,8 +41,8 @@ export class Venue extends JsonDerivedObject {
     zip: string,
     country: string,
   };
-  name: string;
-  id: string;
+  name: ?string;
+  id: ?string;
 
   fullAddress(seperator: string = ', ') {
     if (this.address) {
