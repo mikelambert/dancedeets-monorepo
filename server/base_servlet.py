@@ -98,11 +98,28 @@ class BareBaseRequestHandler(webapp2.RequestHandler, FacebookMixinHandler):
 
     def initialize(self, request, response):
         super(BareBaseRequestHandler, self).initialize(request, response)
-        logging.info('%s: %s', self.request.method, self.request.url)
-        for arg in sorted(self.request.GET):
-            logging.info("GET %r = %r", arg, self.request.GET.getall(arg))
-        for arg in sorted(self.request.POST):
-            logging.info("POST %r = %r", arg, self.request.POST.getall(arg))
+        http_request = '%s %s' % (self.request.method, self.request.url)
+        logging.info(http_request)
+        # LogFormat "%h %l %u %t \"%r\" %>s %b \"%{Referer}i\" \"%{User-agent}i\"" combined
+        combined_log = '%(ip)s - %(user)s [%(timestamp)s] %(request)r %(referer)s %(user_agent)s' % {
+            'ip': self.request.headers.get('x-appengine-user-ip', 'NO_IP'),
+            'user': self.request.headers.get('x-appengine-user-nickname', 'NO_NICKNAME'),
+            'timestamp': datetime.datetime.now().strftime('%d/%b/%Y:%H:%M:%S %z'),
+            'request': http_request,
+            'referer': self.request.headers.get('referer', 'NO_REFERER'),
+            'user_agent': self.request.headers.get('user-agent', 'NO_USER_AGENT'),
+        }
+        logging.info(combined_log)
+        try:
+            for arg in sorted(self.request.GET):
+                logging.info("GET %r = %r", arg, self.request.GET.getall(arg))
+        except UnicodeDecodeError:
+            logging.info('Error processing GET due to UnicodeDecodeError: %s', http_request)
+        try:
+            for arg in sorted(self.request.POST):
+                logging.info("POST %r = %r", arg, self.request.POST.getall(arg))
+        except UnicodeDecodeError:
+            logging.info('Error processing POST due to UnicodeDecodeError: %s', http_request)
 
         user_agent = (self.request.user_agent or '').lower()
         self.indexing_bot = 'googlebot' in user_agent or 'bingbot' in user_agent
