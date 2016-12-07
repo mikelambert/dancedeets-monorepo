@@ -107,7 +107,7 @@ class ShowEventHandler(base_servlet.BaseRequestHandler):
         self.display['show_mobile_app_promo'] = True
         self.jinja_env.filters['make_category_link'] = lambda lst: [jinja2.Markup('<a href="/?keywords=%s">%s</a>') % (x, x) for x in lst]
 
-        self.display['canonical_url'] = 'http://%s/events/%s/%s' % (self._get_full_hostname(), db_event.id, slugify(db_event.name))
+        self.display['canonical_url'] = 'http://%s/events/%s/%s' % (self._get_full_hostname(), db_event.id, slugify(unicode(db_event.name)))
 
         self.display['email_suffix'] = '+event-%s' % db_event.id
 
