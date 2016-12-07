@@ -26,6 +26,7 @@ import {
 } from 'dancedeets-common/js/intl';
 import {
   formatStartEnd,
+  formatSchemaDate,
 } from 'dancedeets-common/js/dates';
 import {
   Event,
@@ -248,10 +249,6 @@ function rsvpString(event) {
   return rsvp;
 }
 
-function schemaDateFormat(dateTime) {
-  return moment(dateTime).format('%Y-%m-%dT%H:%M:%S');
-}
-
 class _EventLinks extends React.Component {
   props: {
     event: Event;
@@ -348,9 +345,9 @@ class _EventLinks extends React.Component {
         </ImagePrefix>
         <ImagePrefix iconName="clock-o">
           <FormatText>{formattedStartEndText}</FormatText>
-          <meta itemProp="startDate" content={schemaDateFormat(event.start_time)} />
+          <meta itemProp="startDate" content={formatSchemaDate(event.start_time)} />
           {event.end_time ?
-            <meta itemProp="endDate" content={schemaDateFormat(event.end_time)} /> :
+            <meta itemProp="endDate" content={formatSchemaDate(event.end_time)} /> :
             null}
         </ImagePrefix>
         <ImagePrefix iconName="calendar-plus-o">
