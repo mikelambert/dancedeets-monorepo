@@ -130,20 +130,57 @@ def retryable(func):
             raise
     return wrapped_func
 
+
+def _get_title(self, location, keywords):
+    if location:
+        if keywords:
+            return "Events near %s containing %s" % (location, keywords)
+        else:
+            return "Events near %s" % location
+    else:
+        if keywords:
+            return "Events containing %s" % keywords
+        else:
+            return "Events"
+
+def build_search_results_api(city_name, form, search_query, search_results, version, need_full_event, southwest, northeast):
+    onebox_links = onebox.get_links_for_query(search_query)
+
+    json_results = []
+    for result in search_results:
+        try:
+            if need_full_event:
+                json_result = canonicalize_event_data(result.db_event, result.event_keywords, version)
+            else:
+                json_result = canonicalize_search_event_data(result, version)
+            json_results.append(json_result)
+        except Exception as e:
+            logging.exception("Error processing event %s: %s" % (result.event_id, e))
+
+    title = _get_title(city_name, form.keywords.data)
+
+    json_response = {
+        'results': json_results,
+        'onebox_links': onebox_links,
+        'title': title,
+        'location': city_name,
+        'query': form.data,
+    }
+    if southwest and northeast:
+        json_response['location_box'] = {
+            'southwest': {
+                'latitude': southwest[0],
+                'longitude': southwest[1],
+            },
+            'northeast': {
+                'latitude': northeast[0],
+                'longitude': northeast[1],
+            },
+        }
+    return json_response
+
 @apiroute('/search')
 class SearchHandler(ApiHandler):
-
-    def _get_title(self, location, keywords):
-        if location:
-            if keywords:
-                return "Events near %s containing %s" % (location, keywords)
-            else:
-                return "Events near %s" % location
-        else:
-            if keywords:
-                return "Events containing %s" % keywords
-            else:
-                return "Events"
 
     def _build_search_form_data(self):
         data = {
@@ -217,40 +254,9 @@ class SearchHandler(ApiHandler):
                 break
 
         logging.info("Found %r events within %s %s of %s", form.keywords.data, form.distance.data, form.distance_units.data, form.location.data)
-        onebox_links = onebox.get_links_for_query(search_query)
 
-        json_results = []
-        for result in search_results:
-            try:
-                if need_full_event:
-                    json_result = canonicalize_event_data(result.db_event, result.event_keywords, self.version)
-                else:
-                    json_result = canonicalize_search_event_data(result, self.version)
-                json_results.append(json_result)
-            except Exception as e:
-                logging.exception("Error processing event %s: %s" % (result.event_id, e))
-
-        title = self._get_title(city_name, form.keywords.data)
-
-        json_response = {
-            'results': json_results,
-            'onebox_links': onebox_links,
-            'title': title,
-            'location': city_name,
-            'query': data,
-        }
-        if southwest and northeast:
-            json_response['location_box'] = {
-                'southwest': {
-                    'latitude': southwest[0],
-                    'longitude': southwest[1],
-                },
-                'northeast': {
-                    'latitude': northeast[0],
-                    'longitude': northeast[1],
-                },
-            }
-        self.write_json_success(json_response)
+        json_results = build_search_results_api(city_name, form, search_query, search_results, self.version, need_full_event, southwest, northeast)
+        self.write_json_success(json_results)
     post = get
 
 
