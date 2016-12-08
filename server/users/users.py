@@ -51,10 +51,10 @@ class User(ndb.Model):
     location_country = ndb.StringProperty(indexed=False)
 
     # Derived from fb_user
-    full_name = ndb.StringProperty(indexed=False)
+    full_name = ndb.StringProperty() # Indexed to make it easier for me to find a user for manual support
     first_name = ndb.StringProperty(indexed=False)
     last_name = ndb.StringProperty(indexed=False)
-    email = ndb.StringProperty(indexed=False)
+    email = ndb.StringProperty() # Indexed to make it easier for me to find a user for manual support
     locale = ndb.StringProperty(indexed=False)
     timezone_offset = ndb.FloatProperty()
 
