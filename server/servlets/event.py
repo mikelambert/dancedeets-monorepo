@@ -322,8 +322,11 @@ class AdminEditHandler(base_servlet.BaseRequestHandler):
 
         location_info = event_locations.LocationInfo(fb_event, db_event=e, debug=True)
         self.display['location_info'] = location_info
-        fb_geocode = gmaps_api.lookup_address(location_info.fb_address)
-        self.display['fb_geocoded_address'] = formatting.format_geocode(fb_geocode)
+        if location_info.fb_address:
+            fb_geocode = gmaps_api.lookup_address(location_info.fb_address)
+            self.display['fb_geocoded_address'] = formatting.format_geocode(fb_geocode)
+        else:
+            self.display['fb_geocoded_address'] = ''
 
         self.display['event'] = e
         self.display['event_id'] = event_id
