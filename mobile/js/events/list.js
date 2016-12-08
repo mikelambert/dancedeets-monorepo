@@ -24,15 +24,15 @@ import moment from 'moment';
 import { connect } from 'react-redux';
 import _ from 'lodash/string';
 import { Event } from 'dancedeets-common/js/events/models';
+import type {
+  Onebox,
+  SearchResults,
+} from 'dancedeets-common/js/events/search';
 import { EventRow } from './uicomponents';
 import SearchHeader from './searchHeader';
 import type {
   State,
 } from '../reducers/search';
-import type {
-  Onebox,
-  SearchResults,
-} from './search';
 import {
   detectedLocation,
   performSearch,

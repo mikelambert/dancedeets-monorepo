@@ -5,9 +5,8 @@
  */
 
 import { Dimensions } from 'react-native';
-
+import type { SearchQuery, SearchResults } from 'dancedeets-common/js/events/search';
 import type { Action } from '../actions/types';
-import type { SearchQuery, SearchResults } from '../events/search';
 
 export type State = {
   listLayout: boolean; // should show list view or expanded view

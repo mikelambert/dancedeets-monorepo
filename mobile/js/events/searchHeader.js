@@ -66,7 +66,7 @@ class SearchInput extends React.Component {
   props: {
     onFocus?: () => void;
     onBlur?: () => void;
-    onSubmitEditing: () => void;
+    onSubmitEditing: () => void | Promise<void>;
   }
   state: {
     focused: boolean,

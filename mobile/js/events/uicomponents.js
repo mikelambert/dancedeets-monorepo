@@ -540,7 +540,7 @@ class _EventDescription extends React.Component {
 
     // Self-managed props
     intl: intlShape;
-    translatedEvents: Array<TranslatedEvent>;
+    translatedEvents: { [id: string]: TranslatedEvent };
   }
 
   render() {
@@ -612,6 +612,9 @@ class EventMap extends React.Component {
 
   render() {
     if (!this.state.mapOk) {
+      return null;
+    }
+    if (!this.props.venue.geocode) {
       return null;
     }
     return (<MapView

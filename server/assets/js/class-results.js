@@ -21,10 +21,13 @@ type StudioClassType = {
   url: string;
   name: string;
   location: string;
+  // I think this eslint warning has a bug
+  /* eslint-disable react/no-unused-prop-types */
   startTime: Date;
   categories: Array<string>;
   key: string;
   sponsor?: string;
+  /* eslint-enable react/no-unused-prop-types */
 };
 
 class StudioImage extends React.Component {

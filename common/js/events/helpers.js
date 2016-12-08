@@ -16,7 +16,7 @@ export function formatAttending(intl: intlShape, rsvp: EventRsvpList) {
         maybeCount: rsvp.maybe_count,
       });
     } else {
-      return intl.formatMessage(messages.attendingCount, { attendingCount: rsvp.maybe_count });
+      return intl.formatMessage(messages.attendingCount, { attendingCount: rsvp.attending_count });
     }
   }
   return null;

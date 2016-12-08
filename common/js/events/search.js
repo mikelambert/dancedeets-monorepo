@@ -14,8 +14,8 @@ export type TimePeriod = 'UPCOMING' | 'ONGOING' | 'PAST' | 'ALL_FUTURE';
 export type SearchQuery = {
   location: string;
   keywords: string;
-  locale: string;
   timePeriod: TimePeriod;
+  locale?: string;
 };
 
 export type Onebox = {

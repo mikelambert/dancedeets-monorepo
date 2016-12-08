@@ -23,6 +23,7 @@ import FitImage from 'react-native-fit-image';
 import { GiftedForm } from 'react-native-gifted-form';
 import type {
   NavigationRoute,
+  NavigationScene,
   NavigationSceneRendererProps,
   NavigationState,
 } from 'react-native/Libraries/NavigationExperimental/NavigationTypeDefinition';
@@ -554,9 +555,26 @@ const RegistrationPage = connect(
   }),
 )(injectIntl(_RegistrationPage));
 
+type GiftedNavigationSceneRendererProps = NavigationSceneRendererProps & {
+  scene: GiftedNavigationScene,
+};
+type GiftedNavigationScene = NavigationScene & {
+  route: GiftedNavigationRoute,
+};
+type FakeNavigator = {
+  pop: () => void;
+};
+type GiftedNavigationRoute = NavigationRoute | {
+  key: string;
+  title: string;
+  categoryId: number;
+} | {
+  renderScene: (navigator: FakeNavigator) => React.Element<*>;
+};
+
 class _EventSignupsView extends React.Component {
   props: {
-    sceneProps: NavigationSceneRendererProps;
+    sceneProps: GiftedNavigationSceneRendererProps;
     navigatable: Navigatable;
 
     // Self-managed props
