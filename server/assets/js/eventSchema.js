@@ -60,6 +60,12 @@ export function getReactDanceEventSchema(event) {
 }
 
 export function getNewsArticleAmpSchema(event: Event) {
+  // NewsArticles require an image:
+  // https://developers.google.com/structured-data/rich-snippets/articles#article_markup_properties
+  if (!event.picture) {
+    return null;
+  }
+
   const schema = {
     '@context': 'http://schema.org',
     '@type': 'NewsArticle',
@@ -82,13 +88,11 @@ export function getNewsArticleAmpSchema(event: Event) {
       },
     },
   };
-  if (event.picture) {
-    schema.image = {
-      '@type': 'ImageObject',
-      url: event.picture.source,
-      height: event.picture.height,
-      width: event.picture.width,
-    };
-  }
+  schema.image = {
+    '@type': 'ImageObject',
+    url: event.picture.source,
+    height: event.picture.height,
+    width: event.picture.width,
+  };
   return schema;
 }
