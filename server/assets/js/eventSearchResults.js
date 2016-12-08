@@ -181,12 +181,12 @@ class _ResultsList extends React.Component {
       const eventStartTime = _.upperFirst(this.props.intl.formatDate(eventStart.toDate(), weekdayTime));
       let currentDate = null;
       let currentTime = null;
-      if (eventStartDate != currentDate) {
+      if (eventStartDate !== currentDate) {
         resultItems.push(<li className="wide-event day-header">{eventStartDate}</li>);
         currentDate = eventStartDate;
         currentTime = null;
       }
-      if (eventStartTime != currentTime) {
+      if (eventStartTime !== currentTime) {
         resultItems.push(<li><b>{eventStartTime}</b></li>);
         currentTime = eventStartTime;
       }
