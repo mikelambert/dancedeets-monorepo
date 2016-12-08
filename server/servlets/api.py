@@ -197,7 +197,7 @@ class SearchHandler(ApiHandler):
         return data
 
     def get(self):
-        data = self._build_search_form()
+        data = self._build_search_form_data()
         form = search_base.SearchForm(data=data)
 
         if not form.validate():
