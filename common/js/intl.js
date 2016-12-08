@@ -97,9 +97,7 @@ export class Internationalize extends React.Component {
   }
 
   render() {
-    console.log('hey');
     const locale = this.getLocale();
-    console.log(locale);
     configureMoment(locale);
     return (
       <IntlProvider
