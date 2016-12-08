@@ -24,6 +24,7 @@ module.exports = {
     'calendar': './assets/js/calendar.js',
     'class-results-exec': './assets/js/class-results-exec.js',
     'event-exec': './assets/js/event-exec.js',
+    'eventSearchResults-exec': './assets/js/eventSearchResults-exec.js',
   },
   output: {
     path: path.join(__dirname, 'dist/js'),

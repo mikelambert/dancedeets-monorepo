@@ -5,6 +5,7 @@ module.exports = {
   entry: {
     'class-results': './assets/js/class-results.js',
     'event': './assets/js/event.js',
+    'eventSearchResults': './assets/js/eventSearchResults.js',
     'render_server': './node_server/render_server.js',
   },
   output: {

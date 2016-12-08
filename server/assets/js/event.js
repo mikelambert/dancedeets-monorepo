@@ -21,7 +21,6 @@ import {
   Marker,
 } from 'react-google-maps';
 import {
-  intl,
   Internationalize,
 } from 'dancedeets-common/js/intl';
 import {

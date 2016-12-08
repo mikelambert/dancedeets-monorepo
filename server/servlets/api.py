@@ -131,7 +131,7 @@ def retryable(func):
     return wrapped_func
 
 
-def _get_title(self, location, keywords):
+def _get_title(location, keywords):
     if location:
         if keywords:
             return "Events near %s containing %s" % (location, keywords)
@@ -395,20 +395,19 @@ def canonicalize_search_event_data(result, version):
     event_api['end_time'] = result.data['end_time']
 
     geocode = None
-    if result.data['longitude'] and result.data['latitude']:
+    if result.data['lng'] and result.data['lat']:
         geocode = {
             'longitude': result.data['lng'],
             'latitude': result.data['lat'],
         }
     event_api['venue'] = {
-        'name': result.data['location'], # TODO!
+        'name': result.data['location'], # TODO: ReactResults
         'geocode': geocode,
     }
-    event_api = result.data['attendee_count']
     event_api['picture'] = {
         'source': urls.event_image_url(result.event_id),
-        'width': 10, # TODO!
-        'height': 10, # TODO!
+        'width': 10, # TODO: ReactResults
+        'height': 10, # TODO: ReactResults
     }
 
     annotations = {}
@@ -418,7 +417,7 @@ def canonicalize_search_event_data(result, version):
     if result.data['attendee_count']:
         event_api['rsvp'] = {
             'attending_count': result.data['attendee_count'],
-            'maybe_count': 0, # TODO!
+            'maybe_count': 0, # TODO: ReactResults
         }
     else:
         event_api['rsvp'] = None

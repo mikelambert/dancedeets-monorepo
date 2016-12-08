@@ -12,6 +12,7 @@ from . import onebox
 from . import search
 from . import search_base
 from . import search_pages
+from servlets import api
 
 class SearchHandler(base_servlet.BaseRequestHandler):
     def requires_login(self):
@@ -76,6 +77,19 @@ class RelevantHandler(SearchHandler):
                     search_results += class_results
                     search_results.sort(key=lambda x: (x.start_time, x.actual_city_name, x.name))
                 onebox_links = onebox.get_links_for_query(search_query)
+
+            # TODO: ReactResults
+            city_name = None
+            need_full_event = False
+            southwest = None
+            northeast = None
+            json_search_response = api.build_search_results_api(city_name, form, search_query, search_results, (2, 0), need_full_event, southwest, northeast)
+            props = dict(
+                results=json_search_response,
+                loggedIn=bool(self.fb_uid),
+                currentLocale=self.locales[0],
+            )
+            self.setup_react_template('eventSearchResults.js', props)
 
             # We can probably speed this up 2x by shrinking the size of the fb-event-attending objects. a list of {u'id': u'100001860311009', u'name': u'Dance InMinistry', u'rsvp_status': u'attending'} is 50% overkill.
             a = time.time()

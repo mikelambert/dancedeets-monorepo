@@ -11,11 +11,19 @@ import {
   injectIntl,
   intlShape,
 } from 'react-intl';
+import {
+  Internationalize,
+} from 'dancedeets-common/js/intl';
 import type {
   Cover,
-  SearchEvent,
   JSONObject,
 } from 'dancedeets-common/js/events/models';
+import {
+  SearchEvent,
+} from 'dancedeets-common/js/events/models';
+import type {
+  NewSearchResults,
+} from 'dancedeets-common/js/events/search';
 import {
   formatStartEnd,
 } from 'dancedeets-common/js/dates';
@@ -30,6 +38,7 @@ type Result = OneboxResult | EventResult;
 class EventFlyer extends React.Component {
   props: {
     event: SearchEvent;
+    lazyLoad: boolean;
   }
 
   generateCroppedCover(picture: Cover, width: number, height: number) {
@@ -55,36 +64,35 @@ class EventFlyer extends React.Component {
     const width = 180;
     const height = 180;
 
-    if (event.image) {
-      const croppedPicture = this.generateCroppedCover(picture, width, height);
-      const extraImageProps = {
-        width,
-        height,
-        border: 0,
-      };
-      const imageTag = (<img
+    const croppedPicture = this.generateCroppedCover(picture, width, height);
+    const extraImageProps = {
+      width,
+      height,
+      border: 0,
+    };
+    const imageTag = (<img
+      role="presentation"
+      src={croppedPicture.source}
+      {...extraImageProps}
+    />);
+    const lazyImageTag = (<span>
+      <img
         role="presentation"
-        src={croppedPicture.source}
+        className="lazy-wide"
+        src="/images/placeholder.gif"
+        data-original={croppedPicture.source}
         {...extraImageProps}
-      />);
-      const lazyImageTag = (<span>
-        <img
-          role="presentation"
-          className="lazy-wide"
-          src="/images/placeholder.gif"
-          data-original={croppedPicture.source}
-          {...extraImageProps}
-        />
-        <noscript>{imageTag}</noscript>
-      </span>);
+      />
+      <noscript>{imageTag}</noscript>
+    </span>);
 
-      return (
+    return (
+      <div className="event-image">
         <a className="link-event-flyer" href={eventImageUrl}>
           {this.props.lazyLoad ? lazyImageTag : imageTag }
         </a>
-      );
-    }
-    return null;
+      </div>
+    );
   }
 }
 
@@ -100,7 +108,7 @@ class _EventDescription extends React.Component {
   render() {
     const event = this.props.event;
     const keywords = [...event.annotations.categories];
-    if (self.props.indexingBot) {
+    if (this.props.indexingBot) {
       keywords.push(...event.annotations.keywords);
     }
 
@@ -144,10 +152,8 @@ class HorizontalEvent extends React.Component {
     const event = this.props.event;
     return (
       <li className="wide-event clearfix">
-        <div className="event-image">
-          <EventFlyer event={this.props.event} lazyLoad={this.props.lazyLoad} />
-          <EventDescription event={this.props.event} />
-        </div>
+        <EventFlyer event={this.props.event} lazyLoad={this.props.lazyLoad} />
+        <EventDescription event={this.props.event} />
       </li>
     );
   }
@@ -155,10 +161,13 @@ class HorizontalEvent extends React.Component {
 
 class ResultsList extends React.Component {
   props: {
-    results: Array<Result>;
+    results: NewSearchResults;
   }
   render() {
-    const results = this.props.results.map(x => x);
+    const resultEvents = this.props.results.results.map(eventData => new SearchEvent(eventData));
+    const results = resultEvents.map((event, index) =>
+      <HorizontalEvent event={event} lazyLoad={index > 8} />
+    );
     return (
       <ol className="events-list">
         {results}
@@ -166,6 +175,19 @@ class ResultsList extends React.Component {
     );
   }
 }
+
+
+class InternationalizedResultsList extends React.Component {
+  render() {
+    return (
+      <Internationalize {...this.props}>
+        <ResultsList {...this.props} />
+      </Internationalize>
+    );
+  }
+}
+
+export default InternationalizedResultsList;
 
 /*
 {% macro render_wide_results(results, use_rsvp_form=True) %}
