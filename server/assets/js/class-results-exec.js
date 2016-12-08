@@ -11,9 +11,7 @@ import App from './class-results';
 
 ReactDOM.render(
   <App
-    imagePath={window.imagePath}
-    location={window.searchLocation}
-    classes={window.classes}
+    {...window._REACT_PROPS}
   />,
-  document.getElementById('app')
+  document.getElementById(window._REACT_ID)
 );

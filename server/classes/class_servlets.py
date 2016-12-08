@@ -67,22 +67,14 @@ class RelevantHandler(base_servlet.BaseRequestHandler):
         search_results = class_index.ClassSearch(form.build_query(start_end_query=True)).get_search_results()
 
         classes = [self.make_class(i, x) for i, x in enumerate(search_results)]
-        try:
-            classes_html = render_component(
-                path=os.path.abspath('dist/js-server/class-results.js'),
-                props=dict(
-                    imagePath=image_path,
-                    location=full_location,
-                    classes=classes,
-                ))
-        except (exceptions.RenderServerError, exceptions.ReactRenderingError):
-            logging.exception('Error rendering React component')
-            classes_html = ''
 
-        self.display['imagePath'] = image_path
-        self.display['classes'] = classes
-        self.display['classesHtml'] = classes_html
-        self.display['location'] = location
+        props = dict(
+            imagePath=image_path,
+            location=full_location,
+            classes=classes,
+        )
+        self.setup_react_template('class-results.js', props)
+
         self.display['full_location'] = full_location
         self.render_template(self.template_name)
 
