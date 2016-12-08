@@ -42,6 +42,7 @@ import {
 import { RsvpComponent } from './eventRsvp';
 import type { RsvpValue } from './eventRsvp';
 import { getReactDanceEventSchema } from './eventSchema';
+import { Message } from './intl';
 
 type RequiredImage = {
   source: number; // aka required package
@@ -292,7 +293,7 @@ class _EventLinks extends React.Component {
         >{admin.name}</a></li>));
       organizerElement = (
         <ImagePrefix iconName="user">
-          <FormattedMessage id={messages.organizer.id} /><br />
+          <Message message={messages.organizer} /><br />
           <ul>
             {admins}
           </ul>
@@ -304,7 +305,7 @@ class _EventLinks extends React.Component {
       const hostname = url.parse(this.props.event.ticket_uri).hostname;
       ticketElement = (
         <ImagePrefix iconName="ticket">
-          <FormattedMessage id={messages.ticketsLink.id} /> <a href={this.props.event.ticket_uri}>{hostname}</a>
+          <Message message={messages.ticketsLink} /> <a href={this.props.event.ticket_uri}>{hostname}</a>
         </ImagePrefix>
       );
     }
@@ -313,7 +314,7 @@ class _EventLinks extends React.Component {
     if (this.props.event.annotations.creation && this.props.event.annotations.creation.creatorName) {
       addedByElement = (
         <ImagePrefix iconName="user-plus">
-          <FormattedMessage id={messages.addedBy.id} values={{ name: this.props.event.annotations.creation.creatorName }} />
+          <Message message={messages.addedBy} values={{ name: this.props.event.annotations.creation.creatorName }} />
         </ImagePrefix>
       );
     }
@@ -334,7 +335,7 @@ class _EventLinks extends React.Component {
     return (
       <Card>
         <ImagePrefix iconName={event.source.name === 'Facebook Event' ? 'facebook-square' : 'external-link'}>
-          <FormattedMessage id={messages.source.id} /> <a className="link-event-source" href={event.source.url}>{event.source.name}</a>
+          <Message message={messages.source} /> <a className="link-event-source" href={event.source.url}>{event.source.name}</a>
         </ImagePrefix>
         <ImagePrefix
           icon={require('../img/categories.png')} // eslint-disable-line global-require
@@ -346,7 +347,7 @@ class _EventLinks extends React.Component {
           <FormatText>{formattedStartEndText}</FormatText>
         </ImagePrefix>
         <ImagePrefix iconName="calendar-plus-o">
-          <a href={getAddToCalendarLink(event)} className="link-event-add-to-calendar"><FormattedMessage id={messages.addToCalendar.id} /></a>
+          <a href={getAddToCalendarLink(event)} className="link-event-add-to-calendar"><Message message={messages.addToCalendar} /></a>
         </ImagePrefix>
         {rsvpElement}
         {ticketElement}

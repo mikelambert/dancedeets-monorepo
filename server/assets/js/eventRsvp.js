@@ -6,6 +6,7 @@ import {
   FormattedMessage,
 } from 'react-intl';
 import { messages } from 'dancedeets-common/js/events/messages';
+import { Message } from './intl';
 
 const choiceStrings = [
   {
@@ -118,7 +119,7 @@ class _RsvpComponent extends React.Component {
         disabled={this.state.disableAll ? 'disabled' : ''}
         onClick={this.choiceBinds[index]}
       >
-        <FormattedMessage id={messages[messageName].id} />
+        <Message message={messages[messageName]} />
       </button>);
     });
     return (

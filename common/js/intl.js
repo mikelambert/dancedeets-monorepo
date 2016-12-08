@@ -85,18 +85,27 @@ export function constructIntl(currentLocale: string) {
 
 export class Internationalize extends React.Component {
   props: {
-    defaultLocale: string;
     currentLocale: string;
     children?: Array<React.Element<*>>;
   }
 
+  getLocale() {
+    const locale = this.props.currentLocale.split('_')[0];
+    return supportedLocales.indexOf(locale) !== -1
+      ? this.props.currentLocale
+      : defaultLocale;
+  }
+
   render() {
-    configureMoment(this.props.currentLocale);
+    console.log('hey');
+    const locale = this.getLocale();
+    console.log(locale);
+    configureMoment(locale);
     return (
       <IntlProvider
-        defaultLocale={this.props.defaultLocale}
-        key={this.props.currentLocale} // https://github.com/yahoo/react-intl/issues/234
-        locale={this.props.currentLocale}
+        defaultLocale={defaultLocale}
+        key={locale} // https://github.com/yahoo/react-intl/issues/234
+        locale={locale}
         messages={messages[this.props.currentLocale]}
       >
         {this.props.children}
