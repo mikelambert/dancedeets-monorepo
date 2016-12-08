@@ -27,7 +27,7 @@ import {
   defaultFont,
   HorizontalView,
 } from '../ui';
-import type { SearchQuery } from '../events/search';
+import type { SearchQuery } from 'dancedeets-common/js/events/search';
 import {
   performSearch,
   toggleLayout,

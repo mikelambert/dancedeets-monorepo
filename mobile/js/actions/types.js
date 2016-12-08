@@ -24,7 +24,7 @@
 
 import type { NavigationRoute } from 'react-native/Libraries/NavigationExperimental/NavigationTypeDefinition';
 import { AccessToken } from 'react-native-fbsdk';
-import type { SearchResults } from '../events/search';
+import type { SearchResults } from 'dancedeets-common/js/events/search';
 import type { AddEventList, SortOrder } from '../addEventsModels';
 
 export type User = {
