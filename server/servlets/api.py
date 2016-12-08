@@ -670,7 +670,7 @@ class EventHandler(ApiHandler):
         json_data = canonicalize_event_data(db_event, None, self.version)
 
         # Ten minute expiry on data we return
-        self.response.headers['Cache-Control'] = 'max-age=%s' % (60 * 10)
+        self.response.headers['Cache-Control'] = 'public, max-age=%s' % (10 * 60)
         self.write_json_success(json_data)
     post = get
 
