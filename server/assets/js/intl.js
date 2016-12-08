@@ -2,7 +2,7 @@ import React from 'react';
 import {
   injectIntl,
   intlShape,
-} from 'react-int';
+} from 'react-intl';
 
 class _Message extends React.Component {
   props: {

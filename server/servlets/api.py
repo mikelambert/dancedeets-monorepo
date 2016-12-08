@@ -406,6 +406,7 @@ def canonicalize_search_event_data(result, version):
     }
     event_api['picture'] = {
         'source': urls.event_image_url(result.event_id),
+        # TODO: ReactResults: Somehow communicate whether or not the image exists!
         'width': 10, # TODO: ReactResults
         'height': 10, # TODO: ReactResults
     }
