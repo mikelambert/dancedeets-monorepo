@@ -4,7 +4,10 @@
  * @flow
  */
 
-import { Event } from 'dancedeets-common/js/events/models';
+import {
+  Event,
+  SearchEvent,
+} from './models';
 
 export type TimePeriod = 'UPCOMING' | 'ONGOING' | 'PAST' | 'ALL_FUTURE';
 
@@ -22,5 +25,11 @@ export type Onebox = {
 export type SearchResults = {
   onebox_links: Array<Onebox>;
   results: Array<Event>;
+  query: SearchQuery;
+};
+
+export type NewSearchResults = {
+  onebox_links: Array<Onebox>;
+  results: Array<SearchEvent>;
   query: SearchQuery;
 };
