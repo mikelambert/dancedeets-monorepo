@@ -56,9 +56,9 @@
 {% endblock %}
 
 {% block body %}
-{% if react_event_html %}
+{% if react_html %}
   <div id="react-parent">
-    {{ react_event_html|safe }}
+    {{ react_html|safe }}
   </div>
   <script type="text/javascript">
     window._REACT_PROPS = {{ react_props|tojson }};
@@ -154,7 +154,7 @@ mixpanel.track_links(".link-event-venue", "View Event Venue");
 mixpanel.track_links(".link-event-map", "View on Map");
 //TODO: Implement and add RSVP tracking?
 
-{% if not react_event_html %}
+{% if not react_html %}
 {% if displayable_event.latitude %}
 function load_map() {
   if ($('.map-wrapper')) {
@@ -207,13 +207,13 @@ function googleTranslateElementInit() {
 </script>
 <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
 {% if displayable_event.latitude %}
-  {% if react_event_html %}
+  {% if react_html %}
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAjgNUFTnWeftZEz6fWXZTGuQBRNR03VWE"></script>
   {% else %}
     <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAvvrWfamjBD6LqCURkATAWEovAoBm1xNQ&amp;callback=load_map"></script>
   {% endif %}
 {% endif %}
-{% if react_event_html %}
+{% if react_html %}
   <script src="/dist-{{version}}/js/event-exec.js"></script>
 {% endif %}
 {% endblock %}

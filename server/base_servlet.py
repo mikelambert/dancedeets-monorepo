@@ -5,9 +5,11 @@ import Cookie
 import datetime
 import jinja2
 import json
+import hashlib
 import htmlmin
 import logging
-import hashlib
+from react import exceptions
+from react.render import render_component
 import os
 import traceback
 import urllib
@@ -181,6 +183,19 @@ class BareBaseRequestHandler(webapp2.RequestHandler, FacebookMixinHandler):
 
     def write_json_response(self, arg):
         self.response.out.write(json.dumps(arg))
+
+    def setup_react_template(self, template_name, props, static_html=False):
+        try:
+            html = render_component(
+                path=os.path.abspath(os.path.join('dist/js-server/', template_name)),
+                to_static_markup=static_html,
+                props=props)
+        except (exceptions.RenderServerError, exceptions.ReactRenderingError):
+            logging.exception('Error rendering React component')
+            html = ''
+            # self.abort(500)
+        self.display['react_html'] = html
+        self.display['react_props'] = props
 
     def render_template(self, name):
         jinja_template = self.jinja_env.get_template("%s.html" % name)

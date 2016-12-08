@@ -8,8 +8,6 @@ import pprint
 import re
 import urllib
 
-from react import exceptions
-from react.render import render_component
 from slugify import slugify
 
 from google.appengine.ext import deferred
@@ -117,26 +115,17 @@ class ShowEventHandler(base_servlet.BaseRequestHandler):
 
         # Render React component for inclusion in our template:
         api_event = api.canonicalize_event_data(db_event, None, version=(1, 3))
+        render_amp = bool(self.request.get('amp'))
         props = dict(
-            amp=bool(self.request.get('amp')),
+            amp=render_amp,
             event=api_event,
             loggedIn=bool(self.fb_uid),
             userRsvp=rsvps.get(event_id),
             currentLocale=self.locales[0],
         )
-        try:
-            event_html = render_component(
-                path=os.path.abspath('dist/js-server/event.js'),
-                to_static_markup=True, # We don't need all the React data markup
-                props=props)
-        except (exceptions.RenderServerError, exceptions.ReactRenderingError):
-            logging.exception('Error rendering React component')
-            event_html = ''
-            # self.abort(500)
-        self.display['react_event_html'] = event_html
-        self.display['react_props'] = props
+        self.setup_react_template('event.js', props, static_html=render_amp)
 
-        if self.request.get('amp'):
+        if render_amp:
             if self.display['displayable_event']:
                 # Because minification interferes with html-validity when producing:
                 # <meta name=viewport content=width=device-width,minimum-scale=1,initial-scale=1,maximum-scale=1,user-scalable=no>
