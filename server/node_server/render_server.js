@@ -32,7 +32,9 @@ const PORT = argv.port;
 const app = express();
 const server = new http.Server(app);
 
-app.use(bodyParser.json());
+app.use(bodyParser.json({
+  limit: '10mb', // This is an internal-only server, so we can really handle arbitrary amounts of data
+}));
 
 app.get('/', (req, res) => {
   res.end('React render server');
