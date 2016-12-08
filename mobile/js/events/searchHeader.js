@@ -21,13 +21,13 @@ import {
   intlShape,
 } from 'react-intl';
 import { Event } from 'dancedeets-common/js/events/models';
+import type { SearchQuery } from 'dancedeets-common/js/events/search';
 import {
   AutocompleteList,
   Button,
   defaultFont,
   HorizontalView,
 } from '../ui';
-import type { SearchQuery } from 'dancedeets-common/js/events/search';
 import {
   performSearch,
   toggleLayout,
