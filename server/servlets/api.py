@@ -412,7 +412,7 @@ def canonicalize_search_event_data(result, version):
 
     annotations = {}
     annotations['keywords'] = result.data['keywords']
-    annotations['categories'] = result.data['categories']
+    annotations['categories'] = event_types.humanize_categories(result.data['categories'])
     event_api['annotations'] = annotations
     if result.data['attendee_count']:
         event_api['rsvp'] = {
