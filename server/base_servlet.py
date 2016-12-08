@@ -126,6 +126,7 @@ class BareBaseRequestHandler(webapp2.RequestHandler, FacebookMixinHandler):
         user_agent = (self.request.user_agent or '').lower()
         self.indexing_bot = 'googlebot' in user_agent or 'bingbot' in user_agent
         self.display['indexing_bot'] = self.indexing_bot
+        self.display['needs_polyfill'] = 'fb_iab' in user_agent or 'ucbrowser' in user_agent
 
         self.display['mixpanel_api_key'] = 'f5d9d18ed1bbe3b190f9c7c7388df243' if self.request.app.prod_mode else '668941ad91e251d2ae9408b1ea80f67b'
 
@@ -592,6 +593,8 @@ class BaseRequestHandler(BareBaseRequestHandler):
 
         locales = self.request.headers.get('Accept-Language', '').split(',')
         self.locales = [x.split(';')[0] for x in locales]
+        if self.request.get('hl'):
+            self.locales = self.request.get('hl').split(',')
         self.display['request'] = request
         self.display['app_id'] = facebook.FACEBOOK_CONFIG['app_id']
         self.display['prod_mode'] = self.request.app.prod_mode
