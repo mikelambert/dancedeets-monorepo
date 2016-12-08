@@ -69,18 +69,23 @@ class _RsvpComponent extends React.Component {
     if (this.state.rsvpValue === rsvpValue) {
       return;
     }
-    const result = await $.ajax({
-      type: 'POST',
-      url: '/events/rsvp_ajax',
-      data: {
-        rsvp: rsvpValue,
-        event_id: this.props.event.id,
-      },
-    });
-    this.setState({
-      rsvpValue,
-      updated: true,
-    });
+    try {
+      const result = await $.ajax({
+        type: 'POST',
+        url: '/events/rsvp_ajax',
+        data: {
+          rsvp: rsvpValue,
+          event_id: this.props.event.id,
+        },
+      });
+      this.setState({
+        rsvpValue,
+        updated: true,
+      });
+    } catch (e) {
+      console.error(e);
+      console.error(`Error on rsvp_ajax: ${e.message}: ${e.stack}`);
+    }
   }
 
   disableAll() {
