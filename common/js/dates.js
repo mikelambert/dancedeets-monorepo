@@ -26,7 +26,7 @@ export function formatStartEnd(startString: string, endString: string, intl: int
       const formattedEndTime = intl.formatTime(end);
       textFields.push(`${formattedStart} - ${formattedEndTime}`);
     }
-    const relativeDuration = moment.duration(duration).humanize();
+    const relativeDuration = humanizeDuration(duration);
     textFields.push(` (${relativeDuration})`);
   } else {
     textFields.push(formattedStart);
@@ -39,4 +39,20 @@ export function formatStartEnd(startString: string, endString: string, intl: int
     textFields.push(relativeStartOffset);
   }
   return textFields.join('');
+}
+
+function humanizeDuration(eventDuration) {
+  const eventMDuration = moment.duration(eventDuration);
+  const eventDurationBits = [];
+  if (eventMDuration.days() > 0) {
+    eventDurationBits.push(moment.duration(eventMDuration.days(), 'days').humanize());
+  }
+  if (eventMDuration.hours() > 0) {
+    eventDurationBits.push(moment.duration(eventMDuration.hours(), 'hours').humanize());
+  }
+  if (eventMDuration.minutes() > 0) {
+    eventDurationBits.push(moment.duration(eventMDuration.minutes(), 'minutes').humanize());
+  }
+
+  return eventDurationBits.join(' ');
 }
