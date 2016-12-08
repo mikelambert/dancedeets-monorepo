@@ -113,6 +113,7 @@ class MultiSelectList extends React.Component {
   constructor(props) {
     super(props);
     this._itemRefs = {};
+    (this: any).setAll = this.setAll.bind(this);
     (this: any).unsetAll = this.unsetAll.bind(this);
   }
 
