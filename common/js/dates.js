@@ -9,6 +9,8 @@ import moment from 'moment';
 import { intlShape } from 'react-intl';
 
 // TODO: combine this with mobile's formats.js
+export const weekdayDate = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+export const weekdayTime = { hour: 'numeric', minute: 'numeric' };
 export const weekdayDateTime = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: 'numeric' };
 
 export function formatStartEnd(startString: string, endString: string, intl: intlShape) {

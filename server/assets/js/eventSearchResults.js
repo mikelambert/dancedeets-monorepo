@@ -7,10 +7,13 @@
 import React from 'react';
 import url from 'url';
 import FormatText from 'react-format-text';
+import moment from 'moment';
+import _ from 'lodash/string';
 import {
   injectIntl,
   intlShape,
 } from 'react-intl';
+import { StickyContainer, Sticky } from 'react-sticky';
 import {
   Internationalize,
 } from 'dancedeets-common/js/intl';
@@ -26,6 +29,8 @@ import type {
 } from 'dancedeets-common/js/events/search';
 import {
   formatStartEnd,
+  weekdayDate,
+  weekdayTime,
 } from 'dancedeets-common/js/dates';
 import {
   formatAttending,
@@ -159,22 +164,42 @@ class HorizontalEvent extends React.Component {
   }
 }
 
-class ResultsList extends React.Component {
+class _ResultsList extends React.Component {
   props: {
     results: NewSearchResults;
+
+    // Self-managed props
+    intl: intlShape;
   }
   render() {
     const resultEvents = this.props.results.results.map(eventData => new SearchEvent(eventData));
-    const results = resultEvents.map((event, index) =>
-      <HorizontalEvent event={event} lazyLoad={index > 8} />
-    );
+
+    const resultItems = [];
+    resultEvents.forEach((event, index) => {
+      const eventStart = moment(event.start_time);
+      const eventStartDate = _.upperFirst(this.props.intl.formatDate(eventStart.toDate(), weekdayDate));
+      const eventStartTime = _.upperFirst(this.props.intl.formatDate(eventStart.toDate(), weekdayTime));
+      let currentDate = null;
+      let currentTime = null;
+      if (eventStartDate != currentDate) {
+        resultItems.push(<li className="wide-event day-header">{eventStartDate}</li>);
+        currentDate = eventStartDate;
+        currentTime = null;
+      }
+      if (eventStartTime != currentTime) {
+        resultItems.push(<li><b>{eventStartTime}</b></li>);
+        currentTime = eventStartTime;
+      }
+      resultItems.push(<HorizontalEvent event={event} lazyLoad={index > 8} />);
+    });
     return (
       <ol className="events-list">
-        {results}
+        {resultItems}
       </ol>
     );
   }
 }
+const ResultsList = injectIntl(_ResultsList);
 
 
 class InternationalizedResultsList extends React.Component {
@@ -188,23 +213,3 @@ class InternationalizedResultsList extends React.Component {
 }
 
 export default InternationalizedResultsList;
-
-/*
-{% macro render_wide_results(results, use_rsvp_form=True) %}
-  {% set cur_date = None %}
-  {% set cur_time = None %}
-  <ol class="events-list">
-  {% for result in results %}
-    {% if cur_date != result.start_time.date() %}
-      {% set cur_date = result.start_time.date() %}
-      <li class="wide-event day-header">{{ cur_date|date_only_human_format }}</li>
-      {% set cur_time = None %}
-    {% endif %}
-    {% if cur_time != result.start_time.time() %}
-      {% set cur_time = result.start_time.time() %}
-      <li><b>{{ cur_time|time_human_format }}</b></li>
-    {% endif %}
-  {% endfor %}
-  </ol>
-{% endmacro %}
-*/
