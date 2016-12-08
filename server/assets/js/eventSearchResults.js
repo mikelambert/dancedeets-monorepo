@@ -14,6 +14,7 @@ import {
   intlShape,
 } from 'react-intl';
 import LazyLoad from 'react-lazyload';
+import { StickyContainer, Sticky } from 'react-sticky';
 import {
   Internationalize,
 } from 'dancedeets-common/js/intl';
@@ -75,7 +76,7 @@ class EventFlyer extends React.Component {
       src={croppedPicture.source}
       width={width}
       height={height}
-      border={0}
+      className="no-border"
     />);
     if (this.props.lazyLoad) {
       imageTag = <LazyLoad height={height} once>{imageTag}</LazyLoad>;
@@ -145,10 +146,10 @@ class HorizontalEvent extends React.Component {
   render() {
     const event = this.props.event;
     return (
-      <li className="wide-event clearfix">
+      <div className="wide-event clearfix">
         <EventFlyer event={this.props.event} lazyLoad={this.props.lazyLoad} />
         <EventDescription event={this.props.event} />
-      </li>
+      </div>
     );
   }
 }
@@ -171,20 +172,22 @@ class _ResultsList extends React.Component {
       let currentDate = null;
       let currentTime = null;
       if (eventStartDate !== currentDate) {
-        resultItems.push(<li className="wide-event day-header">{eventStartDate}</li>);
+        resultItems.push(<li key={eventStartDate} className="wide-event day-header"><Sticky className="opaque">{eventStartDate}</Sticky></li>);
         currentDate = eventStartDate;
         currentTime = null;
       }
       if (eventStartTime !== currentTime) {
-        resultItems.push(<li><b>{eventStartTime}</b></li>);
+        resultItems.push(<li key={`${eventStartDate} ${eventStartTime}`}><b>{eventStartTime}</b></li>);
         currentTime = eventStartTime;
       }
-      resultItems.push(<HorizontalEvent event={event} lazyLoad={index > 8} />);
+      resultItems.push(<li><HorizontalEvent key={event.id} event={event} lazyLoad={index > 8} /></li>);
     });
     return (
-      <ol className="events-list">
-        {resultItems}
-      </ol>
+      <StickyContainer>
+        <ol className="events-list">
+          {resultItems}
+        </ol>
+      </StickyContainer>
     );
   }
 }

@@ -211,6 +211,15 @@ h6 {
   }
 }
 
+.no-border {
+  border: 0;
+}
+
+.opaque {
+  // We set a background color so that the overlapping sticky headers are opaque
+  background-color: $body-bg;
+}
+
 // Pulled from the event.jsx page
 .card {
   border-radius: 15px;
