@@ -13,7 +13,7 @@ import {
   injectIntl,
   intlShape,
 } from 'react-intl';
-import { StickyContainer, Sticky } from 'react-sticky';
+import LazyLoad from 'react-lazyload';
 import {
   Internationalize,
 } from 'dancedeets-common/js/intl';
@@ -70,31 +70,20 @@ class EventFlyer extends React.Component {
     const height = 180;
 
     const croppedPicture = this.generateCroppedCover(picture, width, height);
-    const extraImageProps = {
-      width,
-      height,
-      border: 0,
-    };
-    const imageTag = (<img
+    let imageTag = (<img
       role="presentation"
       src={croppedPicture.source}
-      {...extraImageProps}
+      width={width}
+      height={height}
+      border={0}
     />);
-    const lazyImageTag = (<span>
-      <img
-        role="presentation"
-        className="lazy-wide"
-        src="/images/placeholder.gif"
-        data-original={croppedPicture.source}
-        {...extraImageProps}
-      />
-      <noscript>{imageTag}</noscript>
-    </span>);
-
+    if (this.props.lazyLoad) {
+      imageTag = <LazyLoad height={height} once>{imageTag}</LazyLoad>;
+    }
     return (
       <div className="event-image">
         <a className="link-event-flyer" href={eventImageUrl}>
-          {this.props.lazyLoad ? lazyImageTag : imageTag }
+          {imageTag}
         </a>
       </div>
     );

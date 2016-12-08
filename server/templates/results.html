@@ -310,5 +310,7 @@ $(document).ready(function() {
 });
 
 </script>
-{% endif %}
+{% if react_html %}
+  <script src="/dist-{{version}}/js/eventSearchResults-exec.js"></script>
+{% endif %}{% endif %}
 {% endblock %}
