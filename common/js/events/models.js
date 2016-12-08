@@ -87,8 +87,33 @@ export type EventRsvpList = {
   maybe_count: number,
 };
 
-export class Event extends JsonDerivedObject {
+class BaseEvent extends JsonDerivedObject {
   id: string;
+  venue: Venue;
+
+  constructor(eventData: JSONObject) {
+    super(eventData);
+    this.venue = new Venue(eventData.venue);
+  }
+
+  getUrl() {
+    return `http://www.dancedeets.com/events/${this.id}/`;
+  }
+}
+
+export class SearchEvent extends BaseEvent {
+  name: string;
+  start_time: string; // eslint-disable-line camelcase
+  end_time: string; // eslint-disable-line camelcase
+  rsvp: ?EventRsvpList;
+  picture: ?Cover;
+  annotations: {
+    categories: Array<string>,
+    keywords: Array<string>,
+  };
+}
+
+export class Event extends BaseEvent {
   name: string;
   description: string;
   start_time: string; // eslint-disable-line camelcase
@@ -112,11 +137,6 @@ export class Event extends JsonDerivedObject {
   admins: Array<Admin>;
   ticket_uri: string; // eslint-disable-line camelcase
 
-  constructor(eventData: JSONObject) {
-    super(eventData);
-    this.venue = new Venue(eventData.venue);
-  }
-
   getResponsiveFlyers() {
     if (!this.picture) {
       return [];
@@ -137,7 +157,4 @@ export class Event extends JsonDerivedObject {
     return results;
   }
 
-  getUrl() {
-    return `http://www.dancedeets.com/events/${this.id}/`;
-  }
 }

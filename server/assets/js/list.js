@@ -7,8 +7,13 @@
 import React from 'react';
 import url from 'url';
 import FormatText from 'react-format-text';
+import {
+  injectIntl,
+  intlShape,
+} from 'react-intl';
 import type {
   Cover,
+  SearchEvent,
   JSONObject,
 } from 'dancedeets-common/js/events/models';
 import {
@@ -18,14 +23,6 @@ import {
   formatAttending,
 } from 'dancedeets-common/js/events/helpers';
 
-type SearchEvent = {
-  id: string;
-  picture: Cover;
-  categories: Array<string>;
-  keywords: Array<string>;
-  start_time: Date;
-  end_time: Date;
-};
 type OneboxResult = any;
 type EventResult = SearchEvent;
 type Result = OneboxResult | EventResult;
@@ -91,17 +88,20 @@ class EventFlyer extends React.Component {
   }
 }
 
-class EventDescription extends React.Component {
+class _EventDescription extends React.Component {
   props: {
     event: SearchEvent;
     indexingBot: boolean;
+
+    // Self-managed props
+    intl: intlShape;
   }
 
   render() {
     const event = this.props.event;
-    const keywords = [...event.categories];
-    if (self.indexingBot) {
-      keywords.push(...event.keywords);
+    const keywords = [...event.annotations.categories];
+    if (self.props.indexingBot) {
+      keywords.push(...event.annotations.keywords);
     }
 
     let rsvpElement = null;
@@ -132,6 +132,7 @@ class EventDescription extends React.Component {
     );
   }
 }
+const EventDescription = injectIntl(_EventDescription);
 
 class HorizontalEvent extends React.Component {
   props: {
