@@ -401,8 +401,8 @@ def canonicalize_search_event_data(result, version):
     event_api = result.data['attendee_count']
     event_api['picture'] = {
         'source': urls.event_image_url(result.event_id),
-        'width': None, # TODO!
-        'height': None, # TODO!
+        'width': 10, # TODO!
+        'height': 10, # TODO!
     }
 
     annotations = {}
