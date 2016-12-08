@@ -74,23 +74,4 @@ class ShowNoOwnerEventsHandler(base_servlet.BaseRequestHandler):
 @app.route('/tools/test')
 class TestHandler(base_servlet.webapp2.RequestHandler):
     def get(self):
-        from react.render import render_component
-        import os.path
-        classes = [
-            {
-                'url': 'url',
-                'name': 'Link',
-                'location': 'EXPG',
-                'startTime': '2014-01-01T00:00:00',
-                'categories': ['Hip-Hop'],
-                'key': 'result-0',
-            }
-        ]
-        result = render_component(
-            path=os.path.abspath('assets/js/class-results.js'),
-            props=dict(
-                imagePath='imagePath',
-                location='searchLocation',
-                classes=classes,
-            ))
-        self.response.out.write(result.markup)
+        pass
