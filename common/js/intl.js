@@ -90,6 +90,9 @@ export class Internationalize extends React.Component {
   }
 
   getLocale() {
+    if (!this.props.currentLocale) {
+      return defaultLocale;
+    }
     const locale = this.props.currentLocale.split('_')[0];
     return supportedLocales.indexOf(locale) !== -1
       ? this.props.currentLocale
