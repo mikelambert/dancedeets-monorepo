@@ -492,9 +492,7 @@ def canonicalize_event_data(db_event, event_keywords, version):
     venue = db_event.venue
     if 'name' in venue and venue['name'] != venue_location_name:
         logging.error("For event %s, venue name %r is different from location name %r", db_event.fb_event_id, venue['name'], venue_location_name)
-    venue_id = None
-    if 'id' in venue:
-        venue_id = venue['id']
+    venue_id = db_event.venue_id
     address = None
     if 'country' in venue:
         address = {}

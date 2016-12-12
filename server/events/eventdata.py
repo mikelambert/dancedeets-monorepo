@@ -338,6 +338,13 @@ class DBEvent(ndb.Model):
             return event_locations.get_fb_place(self.fb_event)
 
     @property
+    def venue_id(self):
+        if self.web_event:
+            return None
+        else:
+            return event_locations.get_fb_place_id(self.fb_event)
+
+    @property
     def full_address(self):
         if self.web_event:
             return self.web_event.get('location_address')

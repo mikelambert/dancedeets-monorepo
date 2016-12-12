@@ -35,14 +35,23 @@ def city_for_fb_location(location):
 
 def get_fb_place(fb_event):
     event_info = fb_event['info']
-    # bwcompat:
-    place = event_info.get('venue', event_info.get('place', {}).get('location', {}))
+    place = event_info.get('place', {}).get('location',
+        # bwcompat:
+        event_info.get('venue', {}))
     return place
 
 def get_fb_place_name(fb_event):
     event_info = fb_event['info']
-    # bwcompat:
-    event_location = event_info.get('location', event_info.get('place', {}).get('name', ''))
+    event_location = event_info.get('place', {}).get('name',
+        # bwcompat:
+        event_info.get('location', ''))
+    return event_location
+
+def get_fb_place_id(fb_event):
+    event_info = fb_event['info']
+    event_location = event_info.get('place', {}).get('id',
+        # bwcompat:
+        event_info.get('venue', {}).get('id', None))
     return event_location
 
 def _get_latlng_from_event(fb_event):
