@@ -43,17 +43,32 @@ export function formatStartEnd(startString: string, endString: string, intl: int
   return textFields.join('');
 }
 
+function humanizeExactly(unitCount, unitName) {
+  const locale = moment.localeData();
+  const withoutSuffix = true;
+  const isFuture = true;
+  let possiblyPluralizedUnitName = unitName;
+  if (unitCount > 1) {
+    possiblyPluralizedUnitName = unitName + unitName; // double it up
+  }
+  return locale.relativeTime(unitCount, withoutSuffix, possiblyPluralizedUnitName, isFuture);
+}
+
 function humanizeDuration(eventDuration) {
+  // We don't use .humanize(), because 90 minutes => "2 hours"
+  // We also don't use piecemeal humanize() strings concatenation,
+  // because moment.duration(50, 'minutes').humanize() => "an hour"
+  // So instead we call the locale formatting functions directly, piecemeal.
   const eventMDuration = moment.duration(eventDuration);
   const eventDurationBits = [];
   if (eventMDuration.days() > 0) {
-    eventDurationBits.push(moment.duration(eventMDuration.days(), 'days').humanize());
+    eventDurationBits.push(humanizeExactly(eventMDuration.days(), 'd'));
   }
   if (eventMDuration.hours() > 0) {
-    eventDurationBits.push(moment.duration(eventMDuration.hours(), 'hours').humanize());
+    eventDurationBits.push(humanizeExactly(eventMDuration.hours(), 'h'));
   }
   if (eventMDuration.minutes() > 0) {
-    eventDurationBits.push(moment.duration(eventMDuration.minutes(), 'minutes').humanize());
+    eventDurationBits.push(humanizeExactly(eventMDuration.minutes(), 'm'));
   }
 
   return eventDurationBits.join(' ');
