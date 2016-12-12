@@ -233,6 +233,12 @@ class LookupEventMembers(LookupType):
         return (USERLESS_UID, object_id, 'OBJ_EVENT_MEMBERS')
 
 class LookupThingFeed(LookupType):
+    # TODO: We cannot upgrade to latest, until we specify a list of fields=
+    # Unfortunately, since different objects are different types (groups, pages, profiles, event?)
+    # It's hard to pass a singular "list of fields"
+    # We may need to store the type itself in our ThingFeed object, and use it when querying the FB data
+    version = "v2.3"
+
     @classmethod
     def track_lookup(cls):
         mr.increment('fb-lookups-source', 1)
@@ -242,7 +248,7 @@ class LookupThingFeed(LookupType):
         return [
             # Can't pass fields=OBJ_SOURCE_FIELDS, because we can't guarantee it has all these fields (groups vs pages vs profiles etc)
             ('info', cls.url('%s' % object_id)),
-            ('feed', cls.url('%s/feed' % object_id)),
+            ('feed', cls.url('%s/feed?fields=from,link,actions,message' % object_id)),
             ('events', cls.url('%s/events' % object_id)),
         ]
     @classmethod
