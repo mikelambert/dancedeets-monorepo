@@ -8,13 +8,13 @@ function isCommonModule(module) {
   if (typeof userRequest !== 'string') {
     return false;
   }
-
-  const common = ['jquery', 'bootstrap', 'trackjs'];
+  const common = ['jquery', 'bootstrap', 'trackjs', 'react', 'moment', 'lodash', 'babel-polyfill', 'intl-', 'url', 'fbjs', 'js/messages', 'source-map', 'font-awesome'];
   for (var elem of common) {
     if (userRequest.indexOf(elem) > -1) {
       return true;
     }
   }
+  console.log(userRequest);
   return false;
 }
 
@@ -33,7 +33,7 @@ module.exports = {
   devtool: 'source-map',
   plugins: [
     // Only import the english locale for moment.js:
-    new webpack.ContextReplacementPlugin(/moment[\/\\]locale$/, /en$/),
+    new webpack.ContextReplacementPlugin(/moment[/\\]locale$/, /en$/),
 
     new webpack.DefinePlugin({
       'process.env': { // eslint-disable-line quote-props
