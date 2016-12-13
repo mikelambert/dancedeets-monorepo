@@ -164,8 +164,12 @@ class _ResultsList extends React.Component {
   render() {
     const resultEvents = this.props.results.results.map(eventData => new SearchEvent(eventData));
 
+    const now = moment();
+    //const futureEvents = resultEvents.filter(event => moment(event.start_time) > now);
+    //const currentEvents = resultEvents.filter(event => moment(event.start_time) < now && moment(event.end_time) > now);
+    const nonPastEvents = resultEvents.filter(event => moment(event.end_time) > now);
     const resultItems = [];
-    resultEvents.forEach((event, index) => {
+    nonPastEvents.forEach((event, index) => {
       const eventStart = moment(event.start_time);
       const eventStartDate = _.upperFirst(this.props.intl.formatDate(eventStart.toDate(), weekdayDate));
       const eventStartTime = _.upperFirst(this.props.intl.formatDate(eventStart.toDate(), weekdayTime));
