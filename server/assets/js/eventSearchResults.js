@@ -157,6 +157,7 @@ class HorizontalEvent extends React.Component {
 class _ResultsList extends React.Component {
   props: {
     results: NewSearchResults;
+    past: boolean;
 
     // Self-managed props
     intl: intlShape;
@@ -165,11 +166,17 @@ class _ResultsList extends React.Component {
     const resultEvents = this.props.results.results.map(eventData => new SearchEvent(eventData));
 
     const now = moment();
+    let events = [];
+    if (this.props.past) {
+      events = resultEvents.filter(event => moment(event.start_time) < now);
+    } else {
+      events = resultEvents.filter(event => moment(event.end_time) > now);
+    }
     //const futureEvents = resultEvents.filter(event => moment(event.start_time) > now);
     //const currentEvents = resultEvents.filter(event => moment(event.start_time) < now && moment(event.end_time) > now);
-    const nonPastEvents = resultEvents.filter(event => moment(event.end_time) > now);
+    //const nonPastEvents = resultEvents.filter(event => moment(event.end_time) > now);
     const resultItems = [];
-    nonPastEvents.forEach((event, index) => {
+    events.forEach((event, index) => {
       const eventStart = moment(event.start_time);
       const eventStartDate = _.upperFirst(this.props.intl.formatDate(eventStart.toDate(), weekdayDate));
       const eventStartTime = _.upperFirst(this.props.intl.formatDate(eventStart.toDate(), weekdayTime));

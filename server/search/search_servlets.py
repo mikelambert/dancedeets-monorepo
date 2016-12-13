@@ -87,6 +87,7 @@ class RelevantHandler(SearchHandler):
                 json_search_response = api.build_search_results_api(city_name, form, search_query, search_results, (2, 0), need_full_event, southwest, northeast)
                 props = dict(
                     results=json_search_response,
+                    past=(form.time_period.data == search_base.TIME_PAST),
                     loggedIn=bool(self.fb_uid),
                     currentLocale=self.locales[0],
                 )
