@@ -14,7 +14,6 @@ function isCommonModule(module) {
       return true;
     }
   }
-  console.log(userRequest);
   return false;
 }
 
