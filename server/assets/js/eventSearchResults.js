@@ -172,9 +172,9 @@ class _ResultsList extends React.Component {
     } else {
       events = resultEvents.filter(event => moment(event.end_time) > now);
     }
-    //const futureEvents = resultEvents.filter(event => moment(event.start_time) > now);
-    //const currentEvents = resultEvents.filter(event => moment(event.start_time) < now && moment(event.end_time) > now);
-    //const nonPastEvents = resultEvents.filter(event => moment(event.end_time) > now);
+    // const futureEvents = resultEvents.filter(event => moment(event.start_time) > now);
+    // const currentEvents = resultEvents.filter(event => moment(event.start_time) < now && moment(event.end_time) > now);
+    // const nonPastEvents = resultEvents.filter(event => moment(event.end_time) > now);
     const resultItems = [];
     events.forEach((event, index) => {
       const eventStart = moment(event.start_time);
