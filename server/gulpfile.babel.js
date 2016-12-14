@@ -119,7 +119,7 @@ gulp.task('pagespeed', cb =>
 gulp.task('generate-amp-sources', $.shell.task(['./amp/generate_amp_sources.py']));
 
 function webpack(configName, dependencies = []) {
-  const webpackCommand = `webpack --color --progress --config webpack.${configName}.config.babel.js`;
+  const webpackCommand = `webpack --color --progress --config webpack.config.${configName}.babel.js`;
   gulp.task(`compile-webpack-${configName}`, dependencies, $.shell.task([webpackCommand]));
   gulp.task(`compile-webpack-${configName}-watch`, dependencies, $.shell.task([`${webpackCommand} --watch`]));
 }
