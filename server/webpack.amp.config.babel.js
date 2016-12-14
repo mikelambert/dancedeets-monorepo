@@ -1,7 +1,7 @@
-var webpack = require('webpack');
-var ExtractTextPlugin = require('extract-text-webpack-plugin');
-var path = require('path');
-var uncss = require('uncss');
+import webpack from 'webpack';
+import ExtractTextPlugin from 'extract-text-webpack-plugin';
+import path from 'path';
+import uncss from 'uncss';
 
 module.exports = {
   entry: {
@@ -15,7 +15,7 @@ module.exports = {
   plugins: [
     new webpack.DefinePlugin({
       'process.env': { // eslint-disable-line quote-props
-        'NODE_ENV': JSON.stringify('production'),
+        NODE_ENV: JSON.stringify('production'),
       },
     }),
     new webpack.optimize.DedupePlugin(),
@@ -86,11 +86,9 @@ module.exports = {
     minifier: false,
     browsers: ['> 2%'],
   },
-  postcss: function() {
-    return [
-      uncss.postcssPlugin({
-        html: ['amp/generated/*.html'],
-      }),
-    ];
-  },
+  postcss: () => [
+    uncss.postcssPlugin({
+      html: ['amp/generated/*.html'],
+    }),
+  ],
 };

@@ -1,7 +1,7 @@
-var webpack = require('webpack');
-var ExtractTextPlugin = require('extract-text-webpack-plugin');
-var path = require('path');
-var uncss = require('uncss');
+import webpack from 'webpack';
+import ExtractTextPlugin from 'extract-text-webpack-plugin';
+import path from 'path';
+import uncss from 'uncss';
 
 function isCommonModule(module) {
   const userRequest = module.userRequest;
@@ -9,7 +9,7 @@ function isCommonModule(module) {
     return false;
   }
   const common = ['jquery', 'bootstrap', 'trackjs', 'react', 'moment', 'lodash', 'babel-polyfill', 'intl-', 'url', 'fbjs', 'js/messages', 'source-map', 'font-awesome'];
-  for (var elem of common) {
+  for (const elem of common) {
     if (userRequest.indexOf(elem) > -1) {
       return true;
     }
@@ -37,7 +37,7 @@ module.exports = {
 
     new webpack.DefinePlugin({
       'process.env': { // eslint-disable-line quote-props
-        'NODE_ENV': JSON.stringify('production'),
+        NODE_ENV: JSON.stringify('production'),
       },
     }),
     new webpack.optimize.DedupePlugin(),
@@ -119,18 +119,16 @@ module.exports = {
     minifier: false,
     browsers: ['> 2%'],
   },
-  postcss: function() {
-    return [
-      /*uncss.postcssPlugin({
-        ignore: [
-          '.animated',
-          '.animated.flip',
-          new RegExp('\\.alert\w+\\b'),
-          new RegExp('\\.(in|open|collapsing)\\b'),
-          new RegExp('\\.header-v6(\\.header-dark-transparent)?\\.header-fixed-shrink'),
-        ],
-        html: ['example_html/new_homepage.html'],
-      }),*/
-    ];
-  },
+  postcss: () => [
+    /* uncss.postcssPlugin({
+      ignore: [
+        '.animated',
+        '.animated.flip',
+        new RegExp('\\.alert\w+\\b'),
+        new RegExp('\\.(in|open|collapsing)\\b'),
+        new RegExp('\\.header-v6(\\.header-dark-transparent)?\\.header-fixed-shrink'),
+      ],
+      html: ['example_html/new_homepage.html'],
+    }),*/
+  ],
 };

@@ -1,5 +1,5 @@
-var webpack = require('webpack');
-var path = require('path');
+import webpack from 'webpack';
+import path from 'path';
 
 module.exports = {
   entry: {
@@ -16,7 +16,7 @@ module.exports = {
   plugins: [
     new webpack.DefinePlugin({
       'process.env': { // eslint-disable-line quote-props
-        'NODE_ENV': JSON.stringify('production'),
+        NODE_ENV: JSON.stringify('production'),
       },
     }),
   ],
