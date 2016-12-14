@@ -14,10 +14,10 @@ install:
   - nvm install stable
   - nvm use stable
   # Set up and compile our project
-  - "./setup.sh"
+  - "cd server && ./setup.sh"
 
 # command to run tests
-script: "./nose.sh --coverage --gae-lib-root=google_appengine"
+script: "cd server && ./nose.sh --coverage --gae-lib-root=../google_appengine"
 
 after_success:
   - pip install coveralls
