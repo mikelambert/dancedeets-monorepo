@@ -3,10 +3,10 @@ import path from 'path';
 
 module.exports = {
   entry: {
-    'class-results': './assets/js/class-results.js',
-    'event': './assets/js/event.js',
-    'eventSearchResults': './assets/js/eventSearchResults.js',
-    'render_server': './node_server/render_server.js',
+    classResults: './assets/js/classResults.js',
+    event: './assets/js/event.js',
+    eventSearchResults: './assets/js/eventSearchResults.js',
+    renderServer: './node_server/renderServer.js',
   },
   output: {
     path: path.join(__dirname, 'dist/js-server'),

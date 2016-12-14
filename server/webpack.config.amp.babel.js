@@ -5,7 +5,7 @@ import uncss from 'uncss';
 
 module.exports = {
   entry: {
-    'event-amp': './assets/js/all-css.js',
+    eventAmp: './assets/js/all-css.js',
   },
   output: {
     path: path.join(__dirname, 'dist-includes/js'),
@@ -20,7 +20,7 @@ module.exports = {
     }),
     new webpack.optimize.DedupePlugin(),
     new webpack.optimize.UglifyJsPlugin(),
-    new ExtractTextPlugin('../css/event-amp.css'),
+    new ExtractTextPlugin('../css/eventAmp.css'),
   ],
   module: {
     preLoaders: [

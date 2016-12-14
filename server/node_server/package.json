@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "description": "",
   "scripts": {
-    "start": "node node_server/render_server.js"
+    "start": "node node_server/renderServer.js"
   },
   "dependencies": {
     "babel-core": "^6.1.20",

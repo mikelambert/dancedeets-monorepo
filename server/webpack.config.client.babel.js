@@ -19,11 +19,11 @@ function isCommonModule(module) {
 
 module.exports = {
   entry: {
-    'main': './assets/js/main.js',
-    'calendar': './assets/js/calendar.js',
-    'class-results-exec': './assets/js/class-results-exec.js',
-    'event-exec': './assets/js/event-exec.js',
-    'eventSearchResults-exec': './assets/js/eventSearchResults-exec.js',
+    main: './assets/js/main.js',
+    calendar: './assets/js/calendar.js',
+    classResultsExec: './assets/js/classResultsExec.js',
+    eventExec: './assets/js/eventExec.js',
+    eventSearchResultsExec: './assets/js/eventSearchResultsExec.js',
   },
   output: {
     path: path.join(__dirname, 'dist/js'),

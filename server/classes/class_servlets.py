@@ -73,7 +73,7 @@ class RelevantHandler(base_servlet.BaseRequestHandler):
             location=full_location,
             classes=classes,
         )
-        self.setup_react_template('class-results.js', props)
+        self.setup_react_template('classResults.js', props)
 
         self.display['full_location'] = full_location
         self.render_template(self.template_name)

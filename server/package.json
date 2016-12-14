@@ -79,8 +79,8 @@
     "node": ">=0.12"
   },
   "scripts": {
-    "start": "node dist/js-server/render_server.js",
-    "start_local": "../mobile/scripts/runNode.js ../../server/node_server/render_server.js "
+    "start": "node dist/js-server/renderServer.js",
+    "start_local": "../mobile/scripts/runNode.js ../../server/node_server/renderServer.js "
   },
   "private": true
 }

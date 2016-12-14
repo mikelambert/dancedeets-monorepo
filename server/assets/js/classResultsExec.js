@@ -7,7 +7,7 @@
 import 'babel-polyfill';
 import React from 'react';
 import ReactDOM from 'react-dom';
-import App from './class-results';
+import App from './classResults';
 
 ReactDOM.render(
   <App
