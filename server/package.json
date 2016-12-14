@@ -44,6 +44,8 @@
     "url-loader": "^0.5.7",
     "username": "^2.1.0",
     "webpack": "^1.14.0",
+    "webpack-dev-middleware": "^1.8.4",
+    "webpack-hot-middleware": "^2.13.2",
     "yargs": "^6.5.0"
   },
   "dependencies": {
@@ -69,6 +71,7 @@
     "react-dom": "^15.1.0",
     "react-format-text": "^1.1.0",
     "react-google-maps": "^4.11.0",
+    "react-hot-loader": "^3.0.0-beta.6",
     "react-intl": "^2.1.5",
     "react-lazyload": "^2.2.0",
     "react-sticky": "^5.0.5",
@@ -81,7 +84,8 @@
   },
   "scripts": {
     "start": "node dist/js-server/renderServer.js",
-    "start_local": "../mobile/scripts/runNode.js ../../server/node_server/renderServer.js "
+    "start_local": "../mobile/scripts/runNode.js ../../server/node_server/renderServer.js",
+    "start_hmr": "node ./server.js --inline --hot"
   },
   "private": true
 }

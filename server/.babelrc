@@ -1,6 +1,7 @@
 {
   "presets": ["latest", "react", "stage-0"],
   "plugins": [
+    "react-hot-loader/babel",
     "transform-object-rest-spread",
     "transform-flow-strip-types",
     ["react-intl", {

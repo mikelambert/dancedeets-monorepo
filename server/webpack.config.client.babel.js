@@ -35,11 +35,18 @@ module.exports = {
     calendar: './assets/js/calendar.js',
     classResultsExec: './assets/js/classResultsExec.js',
     eventExec: './assets/js/eventExec.js',
-    eventSearchResultsExec: './assets/js/eventSearchResultsExec.js',
+    // TODO: HOT
+    eventSearchResultsExec: [
+      'react-hot-loader/patch',
+      'webpack-hot-middleware/client',
+      './assets/js/eventSearchResultsExec.js',
+    ],
   },
   output: {
     path: path.join(__dirname, 'dist/js'),
     filename: '[name].js',
+    // TODO: HOT
+    publicPath: '/dist/js/',
   },
   devtool: prod ? 'source-map' : 'debug',
   plugins: [
@@ -51,6 +58,8 @@ module.exports = {
         NODE_ENV: JSON.stringify(prod ? 'production' : ''),
       },
     }),
+    // TODO: HOT
+    new webpack.HotModuleReplacementPlugin(),
     new ExtractTextPlugin('../css/[name].css'),
   ].concat(optimizePlugins),
   resolve: {

@@ -72,7 +72,9 @@ class BareBaseRequestHandler(webapp2.RequestHandler, FacebookMixinHandler):
         self.jinja_env.globals['zip'] = zip
         self.jinja_env.globals['len'] = len
 
+        # TODO: HOT
         self.display['static_dir'] = '/dist-%s' % self._get_static_version()
+        self.display['static_dir'] = '/dist'
         # We can safely do this since there are very few ways others can modify self._errors
         self.display['errors'] = self._errors
         # functions, add these to some base display setup
@@ -195,6 +197,8 @@ class BareBaseRequestHandler(webapp2.RequestHandler, FacebookMixinHandler):
             logging.exception('Error rendering React component')
             html = ''
             # self.abort(500)
+        # TODO: HOT
+        html = ' '
         self.display['react_html'] = html
         self.display['react_props'] = props
 
@@ -492,7 +496,12 @@ class BaseRequestHandler(BareBaseRequestHandler):
             return False
 
     def _get_full_hostname(self):
-        return 'www.dancedeets.com' if self.request.app.prod_mode else app_identity.get_default_version_hostname()
+        if self.request.app.prod_mode:
+            return 'www.dancedeets.com'
+        elif os.environ.get('SERVER_HOST_OVERRIDE'):
+            return os.environ['SERVER_HOST_OVERRIDE']
+        else:
+            return app_identity.get_default_version_hostname()
 
     def get_login_url(self):
         final_url = self.request.path + '?' + urls.urlencode(self.request.GET)

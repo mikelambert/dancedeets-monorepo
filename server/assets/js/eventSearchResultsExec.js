@@ -4,14 +4,14 @@
  * @flow
  */
 
-import 'babel-polyfill';
-import React from 'react';
-import ReactDOM from 'react-dom';
-import EventSearchResults from './eventSearchResults';
+import renderReact from './renderReact';
 
-ReactDOM.render(
-  <EventSearchResults
-    {...window._REACT_PROPS}
-  />,
-  document.getElementById(window._REACT_ID)
-);
+function render() {
+  renderReact(require('./eventSearchResults').default); // eslint-disable-line global-require
+}
+
+render();
+
+if (module.hot) {
+  module.hot.accept('./eventSearchResults', render);
+}
