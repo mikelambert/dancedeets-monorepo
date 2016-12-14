@@ -15,7 +15,7 @@ module.exports = {
   devtool: 'source-map',
   plugins: [
     new webpack.DefinePlugin({
-      'process.env': { // eslint-disable-line quote-props
+      'process.env': {
         NODE_ENV: JSON.stringify('production'),
       },
     }),

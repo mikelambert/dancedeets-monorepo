@@ -36,7 +36,7 @@ module.exports = {
     new webpack.ContextReplacementPlugin(/moment[/\\]locale$/, /en$/),
 
     new webpack.DefinePlugin({
-      'process.env': { // eslint-disable-line quote-props
+      'process.env': {
         NODE_ENV: JSON.stringify('production'),
       },
     }),
