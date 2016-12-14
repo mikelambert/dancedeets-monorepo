@@ -4,7 +4,7 @@
  * @flow
  */
 
-import _ from 'lodash/collection';
+import includes from 'lodash/includes';
 import {
   Alert,
 } from 'react-native';
@@ -166,9 +166,9 @@ async function refreshFullToken() {
     // NOTE: We intentionally use != instead of !== due to the need to protect against undefined:
     // described more in http://flowtype.org/docs/nullable-types.html
     // This != fixes Flow, but then flags with ESLint!
-    // Can remove _.includes when RN 0.27 is released:
+    // Can remove 'includes' when RN 0.27 is released:
     // https://github.com/facebook/react-native/commit/ed47efe4a17a6fa3f0a2a8a36600efdcd1c65b86
-    if (newAccessToken != null && !_.includes(newAccessToken.getPermissions(), 'user_events')) {
+    if (newAccessToken != null && !includes(newAccessToken.getPermissions(), 'user_events')) {
       await loginOrLogout();
     }
   } catch (e) {

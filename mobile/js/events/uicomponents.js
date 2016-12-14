@@ -27,7 +27,6 @@ import GoogleApiAvailability from 'react-native-google-api-availability';
 import moment from 'moment';
 import geolib from 'geolib';
 import url from 'url';
-import _ from 'lodash/string';
 import querystring from 'querystring';
 import {
   formatStartEnd,

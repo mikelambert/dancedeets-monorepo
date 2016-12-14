@@ -13,7 +13,6 @@ import {
   TouchableHighlight,
   View,
 } from 'react-native';
-import _ from 'lodash/string';
 import {
   injectIntl,
   defineMessages,

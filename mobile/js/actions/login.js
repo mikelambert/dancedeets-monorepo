@@ -17,7 +17,7 @@ import {
   defineMessages,
   intlShape,
 } from 'react-intl';
-import _ from 'lodash/array';
+import zip from 'lodash/zip';
 import { trackLogin, trackLogout } from '../store/track';
 import { performRequest } from '../api/fb';
 import {
@@ -90,7 +90,7 @@ export async function loadUserData(dispatch: Dispatch) {
   const values = await Promise.all(promises);
   // Now await each of them and stick them in our user Object
   const user: any = {};
-  _.zip(keys, values).forEach((kv) => {
+  zip(keys, values).forEach((kv) => {
     user[kv[0]] = kv[1];
   });
 

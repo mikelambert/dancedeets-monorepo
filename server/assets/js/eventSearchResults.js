@@ -8,7 +8,7 @@ import React from 'react';
 import url from 'url';
 import FormatText from 'react-format-text';
 import moment from 'moment';
-import _ from 'lodash/string';
+import upperFirst from 'lodash/upperFirst';
 import {
   injectIntl,
   intlShape,
@@ -178,8 +178,8 @@ class _ResultsList extends React.Component {
     const resultItems = [];
     events.forEach((event, index) => {
       const eventStart = moment(event.start_time);
-      const eventStartDate = _.upperFirst(this.props.intl.formatDate(eventStart.toDate(), weekdayDate));
-      const eventStartTime = _.upperFirst(this.props.intl.formatDate(eventStart.toDate(), weekdayTime));
+      const eventStartDate = upperFirst(this.props.intl.formatDate(eventStart.toDate(), weekdayDate));
+      const eventStartTime = upperFirst(this.props.intl.formatDate(eventStart.toDate(), weekdayTime));
       let currentDate = null;
       let currentTime = null;
       if (eventStartDate !== currentDate) {

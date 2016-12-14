@@ -4,7 +4,7 @@
  * @flow
  */
 
-import _ from 'lodash/string';
+import upperFirst from 'lodash/upperFirst';
 import moment from 'moment';
 import { intlShape } from 'react-intl';
 
@@ -17,12 +17,12 @@ export function formatStartEnd(startString: string, endString: string, intl: int
   const textFields = [];
   const now = moment(intl.now());
   const start = moment(startString, moment.ISO_8601);
-  const formattedStart = _.upperFirst(intl.formatDate(start.toDate(), weekdayDateTime));
+  const formattedStart = upperFirst(intl.formatDate(start.toDate(), weekdayDateTime));
   if (endString) {
     const end = moment(endString, moment.ISO_8601);
     const duration = end.diff(start);
     if (duration > moment.duration(1, 'days')) {
-      const formattedEnd = _.upperFirst(intl.formatDate(end, weekdayDateTime));
+      const formattedEnd = upperFirst(intl.formatDate(end, weekdayDateTime));
       textFields.push(`${formattedStart} - \n${formattedEnd}`);
     } else {
       const formattedEndTime = intl.formatTime(end);
@@ -36,7 +36,7 @@ export function formatStartEnd(startString: string, endString: string, intl: int
   // Ensure we do some sort of timer refresh update on this
   const relativeStart = start.diff(now);
   if (relativeStart > 0 && relativeStart < moment.duration(2, 'weeks')) {
-    const relativeStartOffset = _.upperFirst(moment.duration(relativeStart).humanize(true));
+    const relativeStartOffset = upperFirst(moment.duration(relativeStart).humanize(true));
     textFields.push('\n');
     textFields.push(relativeStartOffset);
   }

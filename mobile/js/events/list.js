@@ -22,7 +22,7 @@ import {
 } from 'react-intl';
 import moment from 'moment';
 import { connect } from 'react-redux';
-import _ from 'lodash/string';
+import upperFirst from 'lodash/upperFirst';
 import { Event } from 'dancedeets-common/js/events/models';
 import type {
   Onebox,
@@ -421,7 +421,7 @@ class _EventListContainer extends React.Component {
         }
         renderRow={this.renderRow}
         renderSectionHeader={(data, sectionID) =>
-          <SectionHeader title={_.upperFirst(sectionID)} />
+          <SectionHeader title={upperFirst(sectionID)} />
         }
         initialListSize={5}
         pageSize={1}
