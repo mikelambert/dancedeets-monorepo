@@ -44,7 +44,10 @@ touch $BASE_DIR/lib/ruamel/__init__.py
 # TODO: install node
 # TODO: install npm?
 echo "Copying over private configs"
-cp ~/Dropbox/dancedeets/private/*.yaml $BASE_DIR/
+if [ "$TRAVIS" == true ]; then
+else
+  cp ~/Dropbox/dancedeets/private/*.yaml $BASE_DIR/
+fi
 
 echo "Installing npm modules"
 cd $BASE_DIR
