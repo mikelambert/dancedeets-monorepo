@@ -48,7 +48,7 @@
           "name": "DanceDeets",
           "logo": {
             "@type": "ImageObject",
-            "url": "http://{{ full_hostname }}/dist-{{version}}/img/deets-head-and-title-on-black.png",
+            "url": "http://{{ full_hostname }}{{static_dir}}/img/deets-head-and-title-on-black.png",
             "width": 246,
             "height": 60
           }
@@ -98,9 +98,9 @@
                         ><amp-img layout="fixed" width="262" height="64"
                         class="default-logo"
                         srcset="
-/dist-{{version}}/img/deets-head-and-title-on-black.png 1x,
-/dist-{{version}}/img/deets-head-and-title-on-black@2x.png 2x"
-                        src="/dist-{{version}}/img/deets-head-and-title-on-black.png" alt="DanceDeets"
+{{static_dir}}/img/deets-head-and-title-on-black.png 1x,
+{{static_dir}}/img/deets-head-and-title-on-black@2x.png 2x"
+                        src="{{static_dir}}/img/deets-head-and-title-on-black.png" alt="DanceDeets"
                         ></span>
                     </a>
                 </div>
@@ -170,7 +170,7 @@ region= paramter cctld
             <div class="row">
                 <!-- About -->
                 <div class="col-md-4 md-margin-bottom-40">
-                    <a href="index.html"><amp-img layout="fixed" width="205" height="50" id="logo-footer" class="footer-logo" src="/dist-{{version}}/img/deets-head-and-title-on-black.png" alt=""></a>
+                    <a href="index.html"><amp-img layout="fixed" width="205" height="50" id="logo-footer" class="footer-logo" src="{{static_dir}}/img/deets-head-and-title-on-black.png" alt=""></a>
                     <p class="margin-bottom-20">DanceDeets is <em>the</em> source for street dance events worldwide.</p>
                     <div class="fb-like" data-href="https://www.facebook.com/dancedeets" data-layout="standard" data-width="280" data-action="like" data-show-faces="true" data-share="true"></div>
                 </div>

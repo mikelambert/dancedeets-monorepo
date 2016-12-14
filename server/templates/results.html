@@ -219,12 +219,13 @@ function share() {
 }
 
 </script>
-
+{#
 <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&amp;key=AIzaSyAvvrWfamjBD6LqCURkATAWEovAoBm1xNQ&amp;libraries=places&amp;callback=initializeLocationAutocomplete"></script>
+#}
 
 {% if selected_tab == 'calendar' %}
-<link rel="stylesheet" href="/dist-{{version}}/css/calendar.css">
-<script type="text/javascript" src="/dist-{{version}}/js/calendar.js"></script>
+<link rel="stylesheet" href="{{static_dir}}/css/calendar.css">
+<script type="text/javascript" src="{{static_dir}}/js/calendar.js"></script>
 
 <style type="text/css">
 /** We want to see the whole city and title, so let's ensure we override 'white-space: nowrap'.
@@ -274,12 +275,12 @@ $(document).ready(function() {
 });
 </script>
 {% else %}
+{#
 <script type="text/javascript">
 mixpanel.track("Search Events", {
   "Location": {{ form.location.data|tojson }},
   "Keywords": {{ form.keywords.data|tojson }}
 });
-
 {% if selected_tab == 'past' %}
   var num_results = {{ len(past_results) }};
   var tab = 'PAST';
@@ -324,8 +325,9 @@ $(document).ready(function() {
 });
 
 </script>
+#}
 {% if react_html %}
-  <script src="/dist-{{version}}/js/eventSearchResultsExec.js"></script>
+  <script src="{{static_dir}}/js/eventSearchResultsExec.js"></script>
 {% endif %}
 {% endif %}
 {% endblock %}
