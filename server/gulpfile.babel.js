@@ -116,22 +116,19 @@ gulp.task('pagespeed', cb =>
   }, cb)
 );
 
-gulp.task('compile-css-js', $.shell.task([
-  './amp/generate_amp_sources.py',
-  'webpack --color --progress --config webpack.amp.config.js',
-  'webpack --color --progress --config webpack.config.js',
-  'webpack --color --progress --config webpack.server.config.js',
-]));
-gulp.task('compile-amp', $.shell.task([
-  './amp/generate_amp_sources.py',
-  'webpack --color --progress --watch --config webpack.amp.config.js',
-]));
-gulp.task('compile-main', $.shell.task([
-  'webpack --color --progress --watch --config webpack.config.js',
-]));
-gulp.task('compile-server', $.shell.task([
-  'webpack --color --progress --watch --config webpack.server.config.js',
-]));
+gulp.task('generate-amp-sources', $.shell.task(['./amp/generate_amp_sources.py']));
+
+function webpack(configName, dependencies = []) {
+  const webpackCommand = `webpack --color --progress --config webpack.${configName}.config.js`;
+  gulp.task(`compile-webpack-${configName}`, dependencies, $.shell.task([webpackCommand]));
+  gulp.task(`compile-webpack-${configName}-watch`, dependencies, $.shell.task([`${webpackCommand} --watch`]));
+}
+// Generate rules for our three webpack configs
+webpack('amp', ['generate-amp-sources']);
+webpack('server');
+webpack('client');
+
+gulp.task('compile-css-js', ['compile-webpack-amp', 'compile-webpack-server', 'compile-webpack-client']);
 
 gulp.task('compile', ['compile-css-js', 'compile-images', 'compile-fonts']);
 
