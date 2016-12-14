@@ -10,7 +10,7 @@ import gutil from 'gutil';
 import gulp from 'gulp';
 import gulpLoadPlugins from 'gulp-load-plugins';
 import runSequence from 'run-sequence';
-import {output as pagespeed} from 'psi';
+import { output as pagespeed } from 'psi';
 import username from 'username';
 
 const $ = gulpLoadPlugins();
@@ -122,6 +122,8 @@ function webpack(configName, dependencies = []) {
   const webpackCommand = `webpack --color --progress --config webpack.config.${configName}.babel.js`;
   gulp.task(`compile-webpack-${configName}`, dependencies, $.shell.task([webpackCommand]));
   gulp.task(`compile-webpack-${configName}-watch`, dependencies, $.shell.task([`${webpackCommand} --watch`]));
+  gulp.task(`debug-webpack-${configName}`, dependencies, $.shell.task([`${webpackCommand} --debug`]));
+  gulp.task(`debug-webpack-${configName}-watch`, dependencies, $.shell.task([`${webpackCommand} --watch --debug`]));
 }
 // Generate rules for our three webpack configs
 webpack('amp', ['generate-amp-sources']);

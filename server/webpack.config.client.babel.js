@@ -2,6 +2,7 @@ import webpack from 'webpack';
 import ExtractTextPlugin from 'extract-text-webpack-plugin';
 import path from 'path';
 import uncss from 'uncss';
+import { argv as env } from 'yargs';
 
 function isCommonModule(module) {
   const userRequest = module.userRequest;
@@ -17,6 +18,17 @@ function isCommonModule(module) {
   return false;
 }
 
+const prod = !env.debug;
+
+const optimizePlugins = prod ? [
+  new webpack.optimize.DedupePlugin(),
+  new webpack.optimize.UglifyJsPlugin(),
+  new webpack.optimize.CommonsChunkPlugin({
+    name: 'common',
+    minChunks: isCommonModule,
+  }),
+] : [];
+
 module.exports = {
   entry: {
     main: './assets/js/main.js',
@@ -29,24 +41,18 @@ module.exports = {
     path: path.join(__dirname, 'dist/js'),
     filename: '[name].js',
   },
-  devtool: 'source-map',
+  devtool: prod ? 'source-map' : 'debug',
   plugins: [
     // Only import the english locale for moment.js:
     new webpack.ContextReplacementPlugin(/moment[/\\]locale$/, /en$/),
 
     new webpack.DefinePlugin({
       'process.env': {
-        NODE_ENV: JSON.stringify('production'),
+        NODE_ENV: JSON.stringify(prod ? 'production' : ''),
       },
     }),
-    new webpack.optimize.DedupePlugin(),
-    new webpack.optimize.UglifyJsPlugin(),
     new ExtractTextPlugin('../css/[name].css'),
-    new webpack.optimize.CommonsChunkPlugin({
-      name: 'common',
-      minChunks: isCommonModule,
-    }),
-  ],
+  ].concat(optimizePlugins),
   resolve: {
     extensions: ['', '.js', '.jsx'],
   },

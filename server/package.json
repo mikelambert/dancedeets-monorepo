@@ -43,7 +43,8 @@
     "uncss": "giakki/uncss",
     "url-loader": "^0.5.7",
     "username": "^2.1.0",
-    "webpack": "^1.12.13"
+    "webpack": "^1.14.0",
+    "yargs": "^6.5.0"
   },
   "dependencies": {
     "animate.css": "^3.5.1",

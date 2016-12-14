@@ -1,5 +1,8 @@
 import webpack from 'webpack';
 import path from 'path';
+import { argv as env } from 'yargs';
+
+const prod = !env.debug;
 
 module.exports = {
   entry: {
@@ -12,11 +15,11 @@ module.exports = {
     path: path.join(__dirname, 'dist/js-server'),
     filename: '[name].js',
   },
-  devtool: 'source-map',
+  devtool: prod ? 'source-map' : 'eval',
   plugins: [
     new webpack.DefinePlugin({
       'process.env': {
-        NODE_ENV: JSON.stringify('production'),
+        NODE_ENV: JSON.stringify(prod ? 'production' : ''),
       },
     }),
   ],
