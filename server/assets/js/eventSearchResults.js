@@ -191,7 +191,7 @@ class _ResultsList extends React.Component {
         resultItems.push(<li key={`${eventStartDate} ${eventStartTime}`}><b>{eventStartTime}</b></li>);
         currentTime = eventStartTime;
       }
-      resultItems.push(<li><HorizontalEvent key={event.id} event={event} lazyLoad={index > 8} /></li>);
+      resultItems.push(<li key={event.id}><HorizontalEvent key={event.id} event={event} lazyLoad={index > 8} /></li>);
     });
     return (
       <StickyContainer>
