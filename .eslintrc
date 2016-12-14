@@ -21,6 +21,26 @@
     'no-duplicate-imports': 0, // This breaks when we 'import' and 'import type' on the same module
     'generator-star-spacing': 0, // This breaks on async/await
 
+    // TODO: Remove this once https://github.com/airbnb/javascript/pull/1204 is merged and released to NPM
+    'import/no-extraneous-dependencies': ['error', {
+      devDependencies: [
+        'test/**', // tape, common npm pattern
+        'tests/**', // also common npm pattern
+        'spec/**', // mocha, rspec-like pattern
+        '**/__tests__/**', // jest pattern
+        'test.js', // repos with a single test file
+        'test-*.js', // repos with multiple top-level test files
+        '**/*.test.js', // tests where the extension denotes that it is a test
+        '**/webpack.config.js', // webpack config
+        '**/webpack.config.*.js', // webpack config
+        '**/rollup.config.js', // rollup config
+        '**/gulpfile.js', // gulp config
+        '**/gulpfile.babel.js', // gulp config
+        '**/Gruntfile', // grunt config
+       ],
+       optionalDependencies: false,
+    }],
+
     // Up our length limit to 150
     'max-len': ['error', 150, 2, {
       ignoreUrls: true,
