@@ -17,7 +17,7 @@ const $ = gulpLoadPlugins();
 
 const baseAssetsDir = `/Users/${username.sync()}/Dropbox/dancedeets/art/build-assets/`;
 
-gulp.task('compile-favicons', () => gulp
+gulp.task('compile:images:favicons', () => gulp
   .src('assets/img/deets-head.png')
   .pipe(favicons({
     appName: 'DanceDeets',
@@ -43,7 +43,7 @@ gulp.task('compile-favicons', () => gulp
   .pipe(gulp.dest('./dist/img/favicons/'))
 );
 
-gulp.task('compile-images-resize', () => gulp
+gulp.task('compile:images:resize', () => gulp
   .src(`${baseAssetsDir}img/**/*.{png,jpg}`)
   .pipe($.responsiveImages({
     'classes/*/*.*': [{
@@ -88,10 +88,8 @@ gulp.task('compile-images-resize', () => gulp
   .pipe(gulp.dest('dist/img'))
 );
 
-gulp.task('compile-images', ['compile-favicons', 'compile-images-resize', 'compile-svg']);
-
 // gets deets-activity svg files
-gulp.task('compile-svg', () => gulp
+gulp.task('compile:images:svg', () => gulp
   .src(`${baseAssetsDir}img/*.svg`)
   .pipe($.cache($.imagemin({
     progressive: true,
@@ -100,7 +98,9 @@ gulp.task('compile-svg', () => gulp
   .pipe(gulp.dest('dist/img'))
 );
 
-gulp.task('compile-fonts', () => gulp
+gulp.task('compile:images', ['compile:images:favicons', 'compile:images:resize', 'compile:images:svg']);
+
+gulp.task('compile:fonts', () => gulp
   .src('bower_components/font-awesome/fonts/*.*')
     .pipe(gulp.dest('dist/fonts/'))
 );
@@ -120,19 +120,19 @@ gulp.task('generate-amp-sources', $.shell.task(['./amp/generate_amp_sources.py']
 
 function webpack(configName, dependencies = []) {
   const webpackCommand = `node_modules/webpack/bin/webpack.js --color --progress --config webpack.config.${configName}.babel.js`;
-  gulp.task(`compile-webpack-${configName}`, dependencies, $.shell.task([webpackCommand]));
-  gulp.task(`compile-webpack-${configName}-watch`, dependencies, $.shell.task([`${webpackCommand} --watch`]));
-  gulp.task(`debug-webpack-${configName}`, dependencies, $.shell.task([`${webpackCommand} --debug`]));
-  gulp.task(`debug-webpack-${configName}-watch`, dependencies, $.shell.task([`${webpackCommand} --watch --debug`]));
+  gulp.task(`compile:webpack:${configName}`, dependencies, $.shell.task([webpackCommand]));
+  gulp.task(`compile:webpack:${configName}-watch`, dependencies, $.shell.task([`${webpackCommand} --watch`]));
+  gulp.task(`compile-debug:webpack:${configName}`, dependencies, $.shell.task([`${webpackCommand} --debug`]));
+  gulp.task(`compile-debug:webpack:${configName}-watch`, dependencies, $.shell.task([`${webpackCommand} --watch --debug`]));
 }
 // Generate rules for our three webpack configs
 webpack('amp', ['generate-amp-sources']);
 webpack('server');
 webpack('client');
 
-gulp.task('compile-css-js', ['compile-webpack-amp', 'compile-webpack-server', 'compile-webpack-client']);
+gulp.task('compile:code', ['compile:webpack:amp', 'compile:webpack:server', 'compile:webpack:client']);
 
-gulp.task('compile', ['compile-css-js', 'compile-images', 'compile-fonts']);
+gulp.task('compile', ['compile:code', 'compile:images', 'compile:fonts']);
 
 gulp.task('clean', () => del.sync('dist'));
 
@@ -142,33 +142,51 @@ gulp.task('clean-build-test', (callback) => {
   runSequence('clean', 'compile', 'test', callback);
 });
 
-// TODO: 'compile-webpack-amp' will probably fail, since it needs a server to run against.
+
+gulp.task('dev-appserver:create-yaml-hot', $.shell.task(['HOT=1 ./create_devserver_yaml.sh']));
+gulp.task('dev-appserver:create-yaml', $.shell.task(['./create_devserver_yaml.sh']));
+
+gulp.task('dev-appserver:wait-for-exit', $.shell.task(['./wait_for_dev_appserver_exit.sh']))
+
+function startDevAppServer() {
+  return gulp.src('app-devserver.yaml')
+    .pipe($.gaeImproved('dev_appserver.py', {
+      port: 8080,
+      storage_path: '~/Projects/dancedeets-storage/',
+      runtime: 'python-compat',
+    }));
+}
+gulp.task('dev-appserver',     ['dev-appserver:create-yaml',     'dev-appserver:wait-for-exit'], startDevAppServer);
+gulp.task('dev-appserver-hot', ['dev-appserver:create-yaml-hot', 'dev-appserver:wait-for-exit'], startDevAppServer);
+
+
+// TODO: 'compile:webpack:amp' will probably fail, since it needs a server to run against.
 //       We will need a server running alongside, for this deployment to work.
 // Someday we may want something more elaborate like:
 // https://github.com/gulpjs/gulp/blob/master/docs/recipes/automate-release-workflow.md
 gulp.task('deploy', ['clean-build-test'], $.shell.task(['./deploy.sh']));
 
-
+gulp.task('react-server', $.shell.task(['../runNode.js ./node_server/renderServer.js']));
 // Workable Dev Server (1): Hot reloading
 // Port 8090: Backend React Render server
-gulp.task('react-server', $.shell.task(['../runNode.js ./node_server/renderServer.js']));
+gulp.task('hot-server:react', ['react-server']);
 // Port 8080: Middle Python server.
-gulp.task('hot-py-server', $.shell.task(['HOT=1 ./server.sh'])); // Runs
+gulp.task('hot-server:python', ['dev-appserver-hot']);
 // Port 9090: Frontend Javascript Server (Handles Hot Reloads and proxies the rest to Middle Python)
-gulp.task('hot-js-server', $.shell.task(['../runNode.js ./hotServer.js --debug']));
+gulp.task('hot-server:javascript', $.shell.task(['../runNode.js ./hotServer.js --debug']));
 // Or we can run them all with:
-gulp.task('hot-server', ['react-server', 'hot-py-server', 'hot-js-server']);
+gulp.task('hot-server', ['hot-server:react', 'hot-server:python', 'hot-server:javascript']);
 
 
 // Workable Dev Server (2) Prod-like JS/CSS setup
 // Port 8090: Backend React Render server
-//   use 'react-server' defined above
+gulp.task('server:react', ['react-server']);
 // Port 8080: Frontend Python server
-gulp.task('py-server', $.shell.task(['./server.sh']));
+gulp.task('server:python', ['dev-appserver']);
 // Also need to run the three webpack servers:
-//    'compile-webpack-amp-watch'
-//    'compile-webpack-server-watch'
-//    'compile-webpack-client-watch'
+//    'compile:webpack:amp-watch'
+//    'compile:webpack:server-watch'
+//    'compile:webpack:client-watch'
 // Or we can run them all with:
-gulp.task('server', ['react-server', 'py-server', 'compile-webpack-server-watch', 'compile-webpack-client-watch']);
-// TODO: We ignore 'compile-webpack-amp-watch' because it will need a running server to run against, and timing that is hard.
+gulp.task('server', ['server:react', 'server:python', 'compile:webpack:server-watch', 'compile:webpack:client-watch']);
+// TODO: We ignore 'compile:webpack:amp-watch' because it will need a running server to run against, and timing that is hard.
