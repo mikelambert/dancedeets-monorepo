@@ -15,6 +15,7 @@ import username from 'username';
 import taskListing from 'gulp-task-listing';
 
 gulp.task('help', taskListing);
+gulp.task('default', taskListing);
 
 const $ = gulpLoadPlugins();
 
@@ -108,6 +109,8 @@ gulp.task('compile:fonts', () => gulp
     .pipe(gulp.dest('dist/fonts/'))
 );
 
+
+
 // Run PageSpeed Insights
 gulp.task('pagespeed', cb =>
   // Update the below URL to the public URL of your site
@@ -119,36 +122,45 @@ gulp.task('pagespeed', cb =>
   }, cb)
 );
 
+
+
 gulp.task('generate-amp-sources', $.shell.task(['./amp/generate_amp_sources.py']));
 
 function webpack(configName, dependencies = []) {
   const webpackCommand = `node_modules/webpack/bin/webpack.js --color --progress --config webpack.config.${configName}.babel.js`;
-  gulp.task(`compile:webpack:${configName}`, dependencies, $.shell.task([webpackCommand]));
-  gulp.task(`compile:webpack:${configName}-watch`, dependencies, $.shell.task([`${webpackCommand} --watch`]));
-  gulp.task(`compile-debug:webpack:${configName}`, dependencies, $.shell.task([`${webpackCommand} --debug`]));
-  gulp.task(`compile-debug:webpack:${configName}-watch`, dependencies, $.shell.task([`${webpackCommand} --watch --debug`]));
+  gulp.task(`compile:webpack:${configName}:prod:once`, dependencies, $.shell.task([webpackCommand]));
+  gulp.task(`compile:webpack:${configName}:prod:watch`, dependencies, $.shell.task([`${webpackCommand} --watch`]));
+  gulp.task(`compile:webpack:${configName}:debug:once`, dependencies, $.shell.task([`${webpackCommand} --debug`]));
+  gulp.task(`compile:webpack:${configName}:debug:watch`, dependencies, $.shell.task([`${webpackCommand} --watch --debug`]));
 }
 // Generate rules for our three webpack configs
 webpack('amp', ['generate-amp-sources']);
 webpack('server');
 webpack('client');
 
-gulp.task('compile:code', ['compile:webpack:amp', 'compile:webpack:server', 'compile:webpack:client']);
+const webpackConfigs = ['amp', 'server', 'client'];
 
-gulp.task('compile', ['compile:code', 'compile:images', 'compile:fonts']);
+const suffixes = ['prod:once', 'prod:watch', 'debug:once', 'debug:watch'];
+suffixes.forEach(suffix =>
+  gulp.task(`compile:webpack:all:${suffix}`, webpackConfigs.map(x => 'compile:webpack:${x}:${suffix}'))
+);
+
+gulp.task('compile', ['compile:webpack', 'compile:images', 'compile:fonts']);
 
 gulp.task('clean', () => del.sync('dist'));
 
 gulp.task('test', $.shell.task(['./nose.sh']));
 
-gulp.task('clean-build-test', (callback) => {
+gulp.task('rebuild', (callback) => {
   runSequence('clean', 'compile', 'test', callback);
 });
+
 
 
 gulp.task('datalab:start', $.shell.task(['gcloud app modules start datalab --version main']));
 gulp.task('datalab:stop',  $.shell.task(['gcloud app modules stop  datalab --version main']));
 gulp.task('datalab', ['datalab:start']);
+
 
 
 gulp.task('dev-appserver:create-yaml:hot', $.shell.task(['HOT=1 ./create_devserver_yaml.sh']));
@@ -168,7 +180,7 @@ gulp.task('dev-appserver:server:regular', ['dev-appserver:create-yaml:regular', 
 gulp.task('dev-appserver:server:hot',     ['dev-appserver:create-yaml:hot',     'dev-appserver:wait-for-exit'], startDevAppServer);
 
 
-// TODO: 'compile:webpack:amp' will probably fail, since it needs a server to run against.
+// TODO: 'compile:webpack:amp:prod:once' will probably fail, since it needs a server to run against.
 //       We will need a server running alongside, for this deployment to work.
 // Someday we may want something more elaborate like:
 // https://github.com/gulpjs/gulp/blob/master/docs/recipes/automate-release-workflow.md
@@ -176,15 +188,16 @@ gulp.task('deploy', ['clean-build-test'], $.shell.task(['./deploy.sh']));
 
 gulp.task('react-server', $.shell.task(['../runNode.js ./node_server/renderServer.js']));
 
+
 // Workable Dev Server (1): Hot reloading
 // Port 8090: Backend React Render server
-gulp.task('hot-server:react', ['react-server']);
+gulp.task('hotserver:react', ['react-server']);
 // Port 8080: Middle Python server.
-gulp.task('hot-server:python', ['dev-appserver:server:hot']);
+gulp.task('hotserver:python', ['dev-appserver:server:hot']);
 // Port 9090: Frontend Javascript Server (Handles Hot Reloads and proxies the rest to Middle Python)
-gulp.task('hot-server:javascript', $.shell.task(['../runNode.js ./hotServer.js --debug']));
+gulp.task('hotserver:javascript', $.shell.task(['../runNode.js ./hotServer.js --debug']));
 // Or we can run them all with:
-gulp.task('hot-server', ['hot-server:react', 'hot-server:python', 'hot-server:javascript']);
+gulp.task('hotserver', ['hot-server:react', 'hot-server:python', 'hot-server:javascript']);
 
 
 // Workable Dev Server (2) Prod-like JS/CSS setup
@@ -193,9 +206,9 @@ gulp.task('server:react', ['react-server']);
 // Port 8080: Frontend Python server
 gulp.task('server:python', ['dev-appserver:server:regular']);
 // Also need to run the three webpack servers:
-//    'compile:webpack:amp-watch'
-//    'compile:webpack:server-watch'
-//    'compile:webpack:client-watch'
+//    'compile:webpack:amp:prod:watch'
+//    'compile:webpack:server:prod:watch'
+//    'compile:webpack:client:prod:watch'
 // Or we can run them all with:
-gulp.task('server', ['server:react', 'server:python', 'compile:webpack:server-watch', 'compile:webpack:client-watch']);
-// TODO: We ignore 'compile:webpack:amp-watch' because it will need a running server to run against, and timing that is hard.
+gulp.task('server', ['server:react', 'server:python', 'compile:webpack:server:prod:watch', 'compile:webpack:client:prod:watch']);
+// TODO: We ignore 'compile:webpack:amp:prod:watch' because it will need a running server to run against, and timing that is hard.
