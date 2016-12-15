@@ -1,0 +1,24 @@
+{
+    "html_attributions": [], 
+    "results": [
+        {
+            "formatted_address": "Japan, \u3012150-0001 Tokyo, Shibuya, Jingumae, 2 Chome\u221218\u22127, \u5916\u82d1\u30d3\u30eb B1F", 
+            "geometry": {
+                "location": {
+                    "lat": 35.6724511, 
+                    "lng": 139.7098113
+                }
+            }, 
+            "icon": "https://maps.gstatic.com/mapfiles/place_api/icons/generic_business-71.png", 
+            "id": "4735d82480eb4361ad6fdc9b5fbd51ea75a774bf", 
+            "name": "\uff2a\uff49\uff4e\uff47\uff53\uff54\uff41", 
+            "place_id": "ChIJ71WAzaKMGGAR4YpQ-CGdUa0", 
+            "reference": "CmRSAAAAB9xdDXwuzs3h2m0yWc0a_Spg7LKn4-yauy9Hi0v6E0qeqYPcQHPsrMpEy5-mh6e_CUhFlZ5l0xejod4a-blOPSIUAlv06FgVVRrK0cJ831_9HAxyRP6F4FPbL4V4s4EsEhBZWfFP6KzMQvs31M_eKaMEGhQwXKjYSqrYH97psULPwmButVMizA", 
+            "types": [
+                "point_of_interest", 
+                "establishment"
+            ]
+        }
+    ], 
+    "status": "OK"
+}

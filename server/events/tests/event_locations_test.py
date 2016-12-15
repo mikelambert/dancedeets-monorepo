@@ -113,7 +113,7 @@ class TestNewEventPlaceAPI(TestEventLocations):
         location_info = event_locations.LocationInfo(fb_event, debug=True)
         self.assertEqual(location_info.overridden_address, None)
         self.assertEqual(location_info.remapped_address, None)
-        self.assertEqual(location_info.fb_address, u'\u795e\u5bae\u524d2-18-7\u5916\u82d1\u30d3\u30ebB1, Shibuya-ku, Tokyo, Japan')
+        self.assertEqual(location_info.fb_address, u'Jingsta, \u795e\u5bae\u524d2-18-7\u5916\u82d1\u30d3\u30ebB1, Shibuya-ku, Tokyo, Japan')
         self.assertEqual(location_info.final_city, u'18, Shibuya-ku, T\u014dky\u014d-to, Japan')
         self.assertEqual(location_info.is_online_event(), False)
         self.assertEqual(location_info.actual_city(), u'18, Shibuya-ku, T\u014dky\u014d-to, Japan')

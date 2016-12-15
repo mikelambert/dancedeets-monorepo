@@ -8,10 +8,16 @@ from event_scraper import thing_db
 from test_utils import unittest
 
 fields_str = '%2C'.join(fb_api.OBJ_SOURCE_FIELDS)
-URL_111 = '/v2.8/111'#?fields=%s' % fields_str
-URL_222 = '/v2.8/222'#?fields=%s' % fields_str
+VERSION = fb_api.LookupThingFeed.version
+URL_111 = '/%s/111' % VERSION # ?fields=%s' % fields_str
+URL_222 = '/%s/222' % VERSION # ?fields=%s' % fields_str
+URL_111_FEED = '/%s/111/feed?fields=from,link,actions,message' % VERSION
+URL_222_FEED = '/%s/222/feed?fields=from,link,actions,message' % VERSION
+URL_111_EVENTS = '/%s/111/events' % VERSION
+URL_222_EVENTS = '/%s/222/events' % VERSION
 
 class TestThingDBFixer(unittest.TestCase):
+
     def setUp(self):
         self.testbed.init_memcache_stub()
         self.testbed.init_datastore_v3_stub()
@@ -29,7 +35,7 @@ class TestThingDBFixer(unittest.TestCase):
         error = (400, {"error": {"message": "Page ID 111 was migrated to page ID 222.  Please update your API calls to the new ID", "code": 21, "type": "OAuthException"}})
         fb_api.FBAPI.results.update({
             URL_111: error,
-            '/v2.8/111/feed': error,
+            URL_111_FEED: error,
         })
         fbl.clear_local_cache()
 
@@ -56,11 +62,11 @@ class TestThingDBFixer(unittest.TestCase):
         # Set up our facebook backend
         fb_api.FBAPI.results = {
             URL_111: (200, {'id': '111', 'name': 'page 1', 'likes': 1}),
-            '/v2.8/111/feed': (200, {'data': []}),
-            '/v2.8/111/events': (200, {'data': []}),
+            URL_111_FEED: (200, {'data': []}),
+            URL_111_EVENTS: (200, {'data': []}),
             URL_222: (200, {'id': '222', 'name': 'page 2', 'likes': 1}),
-            '/v2.8/222/feed': (200, {'data': []}),
-            '/v2.8/222/events': (200, {'data': []}),
+            URL_222_FEED: (200, {'data': []}),
+            URL_222_EVENTS: (200, {'data': []}),
         }
 
         # Fetch it and construct a source
@@ -87,7 +93,7 @@ class TestThingDBFixer(unittest.TestCase):
         # Now let's create 111 again, to verify merge works
         fb_api.FBAPI.results.update({
             URL_111: (200, {'id': '111', 'name': 'page 1', 'likes': 1}),
-            '/v2.8/111/feed': (200, {'data': []}),
+            URL_111_FEED: (200, {'data': []}),
         })
         source = thing_db.create_source_for_id('111', result)
         source.num_all_events = 5

@@ -44,7 +44,7 @@ def get_fb_place_name(fb_event):
     event_info = fb_event['info']
     event_location = event_info.get('place', {}).get('name',
         # bwcompat:
-        event_info.get('location', ''))
+        event_info.get('location', None))
     return event_location
 
 def get_fb_place_id(fb_event):
