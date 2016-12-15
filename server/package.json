@@ -34,6 +34,7 @@
     "gulp-task-listing": "^1.0.1",
     "gutil": "^1.6.4",
     "image-webpack-loader": "^3.0.0",
+    "js-yaml": "^3.7.0",
     "json-loader": "^0.5.4",
     "node-sass": "^3.4.2",
     "pleeease-loader": "^1.0.0",

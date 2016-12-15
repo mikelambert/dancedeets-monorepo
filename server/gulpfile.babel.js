@@ -15,6 +15,7 @@ import runSequence from 'run-sequence';
 import { output as pagespeed } from 'psi';
 import username from 'username';
 import taskListing from 'gulp-task-listing';
+import yaml from 'js-yaml';
 
 gulp.task('help', taskListing);
 gulp.task('default', taskListing);
@@ -151,6 +152,24 @@ gulp.task('scrape:classes', cb => runSequence('scrape:classes:scrapy', ['scrape:
 gulp.task('scrapeWeb', ['scrape:web']);
 gulp.task('scrapeClasses', ['scrape:classes']);
 
+function getScrapyKey() {
+  const yamlDoc = yaml.safeLoad(fs.readFileSync('keys.yaml', 'utf8'))
+  return yamlDoc.scrapinghub_key
+}
+
+gulp.task('deploy:scrapy', $.shell.task([
+  `echo ${getScrapyKey()} | shub login`,
+  'shub deploy',
+]));
+gulp.task('deploy:cleanup-files', () => del.sync('lib/setuptools/script (dev).tmpl'))
+
+gulp.task('deploy:server:fast', $.shell.task(['time yes | gcloud app deploy app.yaml']));
+gulp.task('deploy:server', cb => runSequence('deploy:cleanup-files', 'compile', 'deploy:server:fast', cb));
+
+gulp.task('deploy', ['deploy:server', 'deploy:scrapy']);
+gulp.task('deployServer', ['deploy:server'])
+gulp.task('deployServerFast', ['deploy:server:fast'])
+gulp.task('deployScrapy', ['deploy:scrapy'])
 
 
 gulp.task('generate-amp-sources', $.shell.task(['./amp/generate_amp_sources.py']));
@@ -218,24 +237,27 @@ gulp.task('react-server', $.shell.task(['../runNode.js ./node_server/renderServe
 
 // Workable Dev Server (1): Hot reloading
 // Port 8090: Backend React Render server
-gulp.task('hotServer:react', ['react-server']);
+gulp.task('server:hot:react', ['react-server']);
 // Port 8080: Middle Python server.
-gulp.task('hotServer:python', ['dev-appserver:server:hot']);
+gulp.task('server:hot:python', ['dev-appserver:server:hot']);
 // Port 9090: Frontend Javascript Server (Handles Hot Reloads and proxies the rest to Middle Python)
-gulp.task('hotServer:javascript', $.shell.task(['../runNode.js ./hotServer.js --debug']));
+gulp.task('server:hot:javascript', $.shell.task(['../runNode.js ./hotServer.js --debug']));
 // Or we can run them all with:
-gulp.task('hotServer', ['hot-server:react', 'hot-server:python', 'hot-server:javascript']);
+gulp.task('server:hot', ['server:hot:react', 'server:hot:python', 'server:hot:javascript']);
 
 
 // Workable Dev Server (2) Prod-like JS/CSS setup
 // Port 8090: Backend React Render server
-gulp.task('server:react', ['react-server']);
+gulp.task('server:full:react', ['react-server']);
 // Port 8080: Frontend Python server
-gulp.task('server:python', ['dev-appserver:server:regular']);
+gulp.task('server:full:python', ['dev-appserver:server:regular']);
 // Also need to run the three webpack servers:
 //    'compile:webpack:amp:prod:watch'
 //    'compile:webpack:server:prod:watch'
 //    'compile:webpack:client:prod:watch'
 // Or we can run them all with:
-gulp.task('server', ['server:react', 'server:python', 'compile:webpack:server:prod:watch', 'compile:webpack:client:prod:watch']);
+gulp.task('server:full', ['server:full:react', 'server:full:python', 'compile:webpack:server:prod:watch', 'compile:webpack:client:prod:watch']);
 // TODO: We ignore 'compile:webpack:amp:prod:watch' because it will need a running server to run against, and timing that is hard.
+
+gulp.task('serverFull', ['server:full'])
+gulp.task('serverHot', ['server:hot'])
