@@ -5,12 +5,34 @@ var express = require('express');
 var proxyMiddleware = require('http-proxy-middleware');
 var devMiddleware = require('webpack-dev-middleware');
 var hotMiddleware = require('webpack-hot-middleware');
-require('babel-core/register');
-require('babel-polyfill');
 var config = require('./webpack.config.client.babel');
 
+const port = 9090;
+const pythonPort = 8080;
+
+function enableHotReloading(config) {
+  const newEntry = {};
+  Object.keys(config.entry).forEach(entryKey => {
+    newEntry[entryKey] = [
+      'react-hot-loader/patch',
+      'webpack-hot-middleware/client',
+      config.entry[entryKey],
+    ];
+  });
+  config = {
+    ...config,
+    entry: newEntry,
+    output: {
+      ...config.output,
+      publicPath: '/dist/js/',
+    },
+    plugins: config.plugins.concat([new webpack.HotModuleReplacementPlugin()]),
+  };
+  return config;
+}
+
 var app = express();
-var compiler = webpack(config);
+var compiler = webpack(enableHotReloading(config));
 
 app.use(devMiddleware(compiler, {
   publicPath: '/dist/js/',
@@ -19,7 +41,7 @@ app.use(devMiddleware(compiler, {
   contentBase: '',
   proxy: {
     '**': {
-      target: 'http://localhost:8080',
+      target: `http://localhost:${pythonPort}`,
     },
   },
   stats: {
@@ -30,18 +52,14 @@ app.use(devMiddleware(compiler, {
 app.use(hotMiddleware(compiler));
 
 app.use(proxyMiddleware(['**'], {
-  target: 'http://localhost:8080',
+  target: `http://localhost:${pythonPort}`,
   logLevel: 'error',
 }));
-/*
-app.get('*', function (req, res) {
-  res.sendFile(path.join(__dirname, 'index.html'));
-});
-*/
-app.listen(9090, function (err) {
+
+app.listen(port, function (err) {
   if (err) {
     return console.error(err);
   }
 
-  console.log('Listening at http://localhost:9090/');
+  console.log(`Listening at http://localhost:${port}/`);
 });

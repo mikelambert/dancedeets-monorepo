@@ -20,33 +20,19 @@ function isCommonModule(module) {
 
 const prod = !env.debug;
 
-const optimizePlugins = prod ? [
-  new webpack.optimize.DedupePlugin(),
-  new webpack.optimize.UglifyJsPlugin(),
-  new webpack.optimize.CommonsChunkPlugin({
-    name: 'common',
-    minChunks: isCommonModule,
-  }),
-] : [];
+const ifProd = plugin => (prod ? plugin : null);
 
-module.exports = {
+const config = {
   entry: {
     main: './assets/js/main.js',
     calendar: './assets/js/calendar.js',
     classResultsExec: './assets/js/classResultsExec.js',
     eventExec: './assets/js/eventExec.js',
-    // TODO: HOT
-    eventSearchResultsExec: [
-      'react-hot-loader/patch',
-      'webpack-hot-middleware/client',
-      './assets/js/eventSearchResultsExec.js',
-    ],
+    eventSearchResultsExec: './assets/js/eventSearchResultsExec.js',
   },
   output: {
     path: path.join(__dirname, 'dist/js'),
     filename: '[name].js',
-    // TODO: HOT
-    publicPath: '/dist/js/',
   },
   devtool: prod ? 'source-map' : 'debug',
   plugins: [
@@ -58,10 +44,14 @@ module.exports = {
         NODE_ENV: JSON.stringify(prod ? 'production' : ''),
       },
     }),
-    // TODO: HOT
-    new webpack.HotModuleReplacementPlugin(),
     new ExtractTextPlugin('../css/[name].css'),
-  ].concat(optimizePlugins),
+    ifProd(new webpack.optimize.DedupePlugin()),
+    ifProd(new webpack.optimize.UglifyJsPlugin()),
+    ifProd(new webpack.optimize.CommonsChunkPlugin({
+      name: 'common',
+      minChunks: isCommonModule,
+    })),
+  ].filter(x => x),
   resolve: {
     extensions: ['', '.js', '.jsx'],
   },
@@ -146,3 +136,4 @@ module.exports = {
     }),*/
   ],
 };
+module.exports = config;
