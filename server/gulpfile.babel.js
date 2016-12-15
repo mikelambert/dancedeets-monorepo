@@ -153,6 +153,9 @@ gulp.task('scrapeWeb', ['scrape:web']);
 gulp.task('scrapeClasses', ['scrape:classes']);
 
 function getScrapyKey() {
+  if (!fs.existsSync('keys.yaml')) {
+    return 'NO KEY';
+  }
   const yamlDoc = yaml.safeLoad(fs.readFileSync('keys.yaml', 'utf8'))
   return yamlDoc.scrapinghub_key
 }
