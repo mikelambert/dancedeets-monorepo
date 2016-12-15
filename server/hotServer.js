@@ -1,11 +1,11 @@
 
-var path = require('path');
-var webpack = require('webpack');
-var express = require('express');
-var proxyMiddleware = require('http-proxy-middleware');
-var devMiddleware = require('webpack-dev-middleware');
-var hotMiddleware = require('webpack-hot-middleware');
-var config = require('./webpack.config.client.babel');
+import path from 'path';
+import webpack from 'webpack';
+import express from 'express';
+import proxyMiddleware from 'http-proxy-middleware';
+import devMiddleware from 'webpack-dev-middleware';
+import hotMiddleware from 'webpack-hot-middleware';
+import config from './webpack.config.client.babel';
 
 const port = 9090;
 const pythonPort = 8080;
@@ -36,8 +36,8 @@ function enableHotReloading(config) {
   return config;
 }
 
-var app = express();
-var compiler = webpack(enableHotReloading(config));
+const app = express();
+const compiler = webpack(enableHotReloading(config));
 
 app.use(devMiddleware(compiler, {
   publicPath,
