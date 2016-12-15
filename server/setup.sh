@@ -62,7 +62,7 @@ npm install
 cd $BASE_DIR
 if [ "$TRAVIS" == true ]; then
   echo "Compiling CSS and JS and Icons"
-  gulp compile:webpack compile:favicons
+  gulp compile:webpack compile:images:favicons
 else
   echo "Installing necessary brew libraries"
   brew install homebrew/science/vips --with-webp --with-graphicsmagick
