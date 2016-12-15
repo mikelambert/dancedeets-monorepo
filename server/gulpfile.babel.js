@@ -142,7 +142,33 @@ gulp.task('clean-build-test', (callback) => {
   runSequence('clean', 'compile', 'test', callback);
 });
 
+// TODO: 'compile-webpack-amp' will probably fail, since it needs a server to run against.
+//       We will need a server running alongside, for this deployment to work.
 // Someday we may want something more elaborate like:
 // https://github.com/gulpjs/gulp/blob/master/docs/recipes/automate-release-workflow.md
 gulp.task('deploy', ['clean-build-test'], $.shell.task(['./deploy.sh']));
 
+
+// Workable Dev Server (1): Hot reloading
+// Port 8090: Backend React Render server
+gulp.task('react-server', $.shell.task(['../runNode.js ./node_server/renderServer.js']));
+// Port 8080: Middle Python server.
+gulp.task('hot-py-server', $.shell.task(['HOT=1 ./server.sh'])); // Runs
+// Port 9090: Frontend Javascript Server (Handles Hot Reloads and proxies the rest to Middle Python)
+gulp.task('hot-js-server', $.shell.task(['../runNode.js ./hotServer.js --debug']));
+// Or we can run them all with:
+gulp.task('hot-server', ['react-server', 'hot-py-server', 'hot-js-server']);
+
+
+// Workable Dev Server (2) Prod-like JS/CSS setup
+// Port 8090: Backend React Render server
+//   use 'react-server' defined above
+// Port 8080: Frontend Python server
+gulp.task('py-server', $.shell.task(['./server.sh']));
+// Also need to run the three webpack servers:
+//    'compile-webpack-amp-watch'
+//    'compile-webpack-server-watch'
+//    'compile-webpack-client-watch'
+// Or we can run them all with:
+gulp.task('server', ['react-server', 'py-server', 'compile-webpack-server-watch', 'compile-webpack-client-watch']);
+// TODO: We ignore 'compile-webpack-amp-watch' because it will need a running server to run against, and timing that is hard.

@@ -84,9 +84,7 @@
     "node": ">=0.12"
   },
   "scripts": {
-    "start": "node dist/js-server/renderServer.js",
-    "start_local": "../runNode.js ./node_server/renderServer.js",
-    "start_hmr": "../runNode.js ./hotServer.js --debug"
+    "start": "node dist/js-server/renderServer.js"
   },
   "private": true
 }
