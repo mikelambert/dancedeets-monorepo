@@ -36,6 +36,7 @@
     "js-yaml": "^3.7.0",
     "json-loader": "^0.5.4",
     "node-sass": "^3.4.2",
+    "os-homedir": "^1.0.2",
     "pleeease-loader": "^1.0.0",
     "postcss-import": "^8.0.2",
     "postcss-loader": "^1.1.1",

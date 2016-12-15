@@ -11,11 +11,23 @@ import glob from 'glob';
 import gutil from 'gutil';
 import gulp from 'gulp';
 import gulpLoadPlugins from 'gulp-load-plugins';
+import osHomedir from 'os-homedir';
 import runSequence from 'run-sequence';
 import { output as pagespeed } from 'psi';
 import username from 'username';
 import taskListing from 'gulp-task-listing';
 import yaml from 'js-yaml';
+import yargs from 'yargs';
+
+const argv = yargs
+  .option('d', {
+    alias: 'gae_dir',
+    description: 'The directory containing dev_appserver.py',
+    default: `${osHomedir()}/google-cloud-sdk/bin`,
+  })
+  .help('h').alias('h', 'help')
+  .strict()
+  .argv;
 
 gulp.task('help', taskListing);
 gulp.task('default', taskListing);
@@ -222,6 +234,7 @@ function startDevAppServer(port) {
   return () => gulp.src('app-devserver.yaml')
     .pipe($.gaeImproved('dev_appserver.py', {
       port: port,
+      gae_dir: argv.gae_dir,
       storage_path: '~/Projects/dancedeets-storage/',
       runtime: 'python-compat',
     }));
