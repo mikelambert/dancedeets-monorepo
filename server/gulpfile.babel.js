@@ -12,6 +12,9 @@ import gulpLoadPlugins from 'gulp-load-plugins';
 import runSequence from 'run-sequence';
 import { output as pagespeed } from 'psi';
 import username from 'username';
+import taskListing from 'gulp-task-listing';
+
+gulp.task('help', taskListing);
 
 const $ = gulpLoadPlugins();
 
@@ -143,10 +146,15 @@ gulp.task('clean-build-test', (callback) => {
 });
 
 
-gulp.task('dev-appserver:create-yaml-hot', $.shell.task(['HOT=1 ./create_devserver_yaml.sh']));
-gulp.task('dev-appserver:create-yaml', $.shell.task(['./create_devserver_yaml.sh']));
+gulp.task('datalab:start', $.shell.task(['gcloud app modules start datalab --version main']));
+gulp.task('datalab:stop',  $.shell.task(['gcloud app modules stop  datalab --version main']));
+gulp.task('datalab', ['datalab:start']);
 
-gulp.task('dev-appserver:wait-for-exit', $.shell.task(['./wait_for_dev_appserver_exit.sh']))
+
+gulp.task('dev-appserver:create-yaml:hot', $.shell.task(['HOT=1 ./create_devserver_yaml.sh']));
+gulp.task('dev-appserver:create-yaml:regular', $.shell.task(['./create_devserver_yaml.sh']));
+
+gulp.task('dev-appserver:wait-for-exit', $.shell.task(['./wait_for_dev_appserver_exit.sh']));
 
 function startDevAppServer() {
   return gulp.src('app-devserver.yaml')
@@ -156,8 +164,8 @@ function startDevAppServer() {
       runtime: 'python-compat',
     }));
 }
-gulp.task('dev-appserver',     ['dev-appserver:create-yaml',     'dev-appserver:wait-for-exit'], startDevAppServer);
-gulp.task('dev-appserver-hot', ['dev-appserver:create-yaml-hot', 'dev-appserver:wait-for-exit'], startDevAppServer);
+gulp.task('dev-appserver:server:regular', ['dev-appserver:create-yaml:regular', 'dev-appserver:wait-for-exit'], startDevAppServer);
+gulp.task('dev-appserver:server:hot',     ['dev-appserver:create-yaml:hot',     'dev-appserver:wait-for-exit'], startDevAppServer);
 
 
 // TODO: 'compile:webpack:amp' will probably fail, since it needs a server to run against.
@@ -167,11 +175,12 @@ gulp.task('dev-appserver-hot', ['dev-appserver:create-yaml-hot', 'dev-appserver:
 gulp.task('deploy', ['clean-build-test'], $.shell.task(['./deploy.sh']));
 
 gulp.task('react-server', $.shell.task(['../runNode.js ./node_server/renderServer.js']));
+
 // Workable Dev Server (1): Hot reloading
 // Port 8090: Backend React Render server
 gulp.task('hot-server:react', ['react-server']);
 // Port 8080: Middle Python server.
-gulp.task('hot-server:python', ['dev-appserver-hot']);
+gulp.task('hot-server:python', ['dev-appserver:server:hot']);
 // Port 9090: Frontend Javascript Server (Handles Hot Reloads and proxies the rest to Middle Python)
 gulp.task('hot-server:javascript', $.shell.task(['../runNode.js ./hotServer.js --debug']));
 // Or we can run them all with:
@@ -182,7 +191,7 @@ gulp.task('hot-server', ['hot-server:react', 'hot-server:python', 'hot-server:ja
 // Port 8090: Backend React Render server
 gulp.task('server:react', ['react-server']);
 // Port 8080: Frontend Python server
-gulp.task('server:python', ['dev-appserver']);
+gulp.task('server:python', ['dev-appserver:server:regular']);
 // Also need to run the three webpack servers:
 //    'compile:webpack:amp-watch'
 //    'compile:webpack:server-watch'
