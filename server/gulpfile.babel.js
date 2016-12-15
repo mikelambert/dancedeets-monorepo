@@ -6,6 +6,8 @@
 
 import del from 'del';
 import favicons from 'gulp-favicons';
+import fs from 'fs';
+import glob from 'glob';
 import gutil from 'gutil';
 import gulp from 'gulp';
 import gulpLoadPlugins from 'gulp-load-plugins';
@@ -123,6 +125,31 @@ gulp.task('pagespeed', cb =>
 );
 
 
+function getScrapyNames(pattern) {
+  return glob.sync(pattern).map(filename => {
+    const contents = fs.readFileSync(filename, 'utf8');
+    const match = contents.match(/name = ['"](.*)['"]/);
+    if (match) {
+      return match[1];
+    } else {
+      return null;
+    }
+  }).filter(x => x);
+}
+
+const webEventNames = getScrapyNames('web_events/scraper/spiders/*.py');
+const classesNames = getScrapyNames('classes/scraper/spiders/*.py');
+
+gulp.task('scrape:web:scrapy',     $.shell.task(webEventNames.map(x => `./scrapy.sh crawl ${x}`)))
+gulp.task('scrape:classes:scrapy', $.shell.task( classesNames.map(x => `./scrapy.sh crawl ${x}`)))
+gulp.task('scrape:classes:index:prod', $.shell.task(['curl http://www.dancedeets.com/classes/reindex']))
+gulp.task('scrape:classes:index:dev',  $.shell.task(['curl http://dev.dancedeets.com:8080/classes/reindex']))
+
+gulp.task('scrape:web', ['scrape:web:scrapy']);
+gulp.task('scrape:classes', cb => runSequence('scrape:classes:scrapy', ['scrape:classes:index:prod', 'scrape:classes:index:dev'], cb));
+gulp.task('scrapeWeb', ['scrape:web']);
+gulp.task('scrapeClasses', ['scrape:classes']);
+
 
 gulp.task('generate-amp-sources', $.shell.task(['./amp/generate_amp_sources.py']));
 
@@ -151,9 +178,7 @@ gulp.task('clean', () => del.sync('dist'));
 
 gulp.task('test', $.shell.task(['./nose.sh']));
 
-gulp.task('rebuild', (callback) => {
-  runSequence('clean', 'compile', 'test', callback);
-});
+gulp.task('rebuild', cb => runSequence('clean', 'compile', 'test', cb));
 
 
 
@@ -191,13 +216,13 @@ gulp.task('react-server', $.shell.task(['../runNode.js ./node_server/renderServe
 
 // Workable Dev Server (1): Hot reloading
 // Port 8090: Backend React Render server
-gulp.task('hotserver:react', ['react-server']);
+gulp.task('hotServer:react', ['react-server']);
 // Port 8080: Middle Python server.
-gulp.task('hotserver:python', ['dev-appserver:server:hot']);
+gulp.task('hotServer:python', ['dev-appserver:server:hot']);
 // Port 9090: Frontend Javascript Server (Handles Hot Reloads and proxies the rest to Middle Python)
-gulp.task('hotserver:javascript', $.shell.task(['../runNode.js ./hotServer.js --debug']));
+gulp.task('hotServer:javascript', $.shell.task(['../runNode.js ./hotServer.js --debug']));
 // Or we can run them all with:
-gulp.task('hotserver', ['hot-server:react', 'hot-server:python', 'hot-server:javascript']);
+gulp.task('hotServer', ['hot-server:react', 'hot-server:python', 'hot-server:javascript']);
 
 
 // Workable Dev Server (2) Prod-like JS/CSS setup
