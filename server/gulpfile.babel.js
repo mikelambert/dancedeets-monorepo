@@ -213,21 +213,21 @@ gulp.task('datalab', ['datalab:start']);
 
 
 
-gulp.task('dev-appserver:create-yaml:hot', $.shell.task(['HOT=1 ./create_devserver_yaml.sh']));
+gulp.task('dev-appserver:create-yaml:hot', $.shell.task(['HOT_SERVER_PORT=8080 ./create_devserver_yaml.sh']));
 gulp.task('dev-appserver:create-yaml:regular', $.shell.task(['./create_devserver_yaml.sh']));
 
 gulp.task('dev-appserver:wait-for-exit', $.shell.task(['./wait_for_dev_appserver_exit.sh']));
 
-function startDevAppServer() {
-  return gulp.src('app-devserver.yaml')
+function startDevAppServer(port) {
+  return () => gulp.src('app-devserver.yaml')
     .pipe($.gaeImproved('dev_appserver.py', {
-      port: 8080,
+      port: port,
       storage_path: '~/Projects/dancedeets-storage/',
       runtime: 'python-compat',
     }));
 }
-gulp.task('dev-appserver:server:regular', ['dev-appserver:create-yaml:regular', 'dev-appserver:wait-for-exit'], startDevAppServer);
-gulp.task('dev-appserver:server:hot',     ['dev-appserver:create-yaml:hot',     'dev-appserver:wait-for-exit'], startDevAppServer);
+gulp.task('dev-appserver:server:regular', ['dev-appserver:create-yaml:regular', 'dev-appserver:wait-for-exit'], startDevAppServer(8080));
+gulp.task('dev-appserver:server:hot',     ['dev-appserver:create-yaml:hot',     'dev-appserver:wait-for-exit'], startDevAppServer(8085));
 
 
 // TODO: 'compile:webpack:amp:prod:once' will probably fail, since it needs a server to run against.
@@ -236,16 +236,16 @@ gulp.task('dev-appserver:server:hot',     ['dev-appserver:create-yaml:hot',     
 // https://github.com/gulpjs/gulp/blob/master/docs/recipes/automate-release-workflow.md
 gulp.task('deploy', ['clean-build-test'], $.shell.task(['./deploy.sh']));
 
-gulp.task('react-server', $.shell.task(['../runNode.js ./node_server/renderServer.js']));
+gulp.task('react-server', $.shell.task(['../runNode.js ./node_server/renderServer.js --port 8090']));
 
 
 // Workable Dev Server (1): Hot reloading
 // Port 8090: Backend React Render server
 gulp.task('server:hot:react', ['react-server']);
-// Port 8080: Middle Python server.
+// Port 8085: Middle Python server.
 gulp.task('server:hot:python', ['dev-appserver:server:hot']);
-// Port 9090: Frontend Javascript Server (Handles Hot Reloads and proxies the rest to Middle Python)
-gulp.task('server:hot:javascript', $.shell.task(['../runNode.js ./hotServer.js --debug']));
+// Port 8080: Frontend Javascript Server (Handles Hot Reloads and proxies the rest to Middle Python)
+gulp.task('server:hot:javascript', $.shell.task(['../runNode.js ./hotServer.js --debug --port 8080 --backend 8085']));
 // Or we can run them all with:
 gulp.task('server:hot', ['server:hot:react', 'server:hot:python', 'server:hot:javascript']);
 
