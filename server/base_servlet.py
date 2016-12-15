@@ -72,9 +72,12 @@ class BareBaseRequestHandler(webapp2.RequestHandler, FacebookMixinHandler):
         self.jinja_env.globals['zip'] = zip
         self.jinja_env.globals['len'] = len
 
-        # TODO: HOT
-        self.display['static_dir'] = '/dist-%s' % self._get_static_version()
-        self.display['static_dir'] = '/dist'
+        # If we are running behind a 'hot' server, let's point the static_dir appropriately
+        if os.environ.get('HOT_SERVER_PORT'):
+            # This must match the value we use in hotServer.j's staticPath
+            self.display['static_dir'] = '/dist'
+        else:
+            self.display['static_dir'] = '/dist-%s' % self._get_static_version()
         # We can safely do this since there are very few ways others can modify self._errors
         self.display['errors'] = self._errors
         # functions, add these to some base display setup
@@ -188,17 +191,21 @@ class BareBaseRequestHandler(webapp2.RequestHandler, FacebookMixinHandler):
         self.response.out.write(json.dumps(arg))
 
     def setup_react_template(self, template_name, props, static_html=False):
-        try:
-            html = render_component(
-                path=os.path.abspath(os.path.join('dist/js-server/', template_name)),
-                to_static_markup=static_html,
-                props=props)
-        except (exceptions.RenderServerError, exceptions.ReactRenderingError):
-            logging.exception('Error rendering React component')
-            html = ''
-            # self.abort(500)
-        # TODO: HOT
-        html = ' '
+        # Disable server-side rendering (unnecessary) if we are running a hot server
+        if os.environ.get('HOT_SERVER_PORT'):
+            # Make it non-empty to trigger our template to not render the old code...
+            # And leave a message for the client browser, so they know what to expect.
+            html = 'Server-side React Rendering Disabled'
+        else:
+            try:
+                html = render_component(
+                    path=os.path.abspath(os.path.join('dist/js-server/', template_name)),
+                    to_static_markup=static_html,
+                    props=props)
+            except (exceptions.RenderServerError, exceptions.ReactRenderingError):
+                logging.exception('Error rendering React component')
+                html = ''
+                # self.abort(500)
         self.display['react_html'] = html
         self.display['react_props'] = props
 
@@ -498,8 +505,10 @@ class BaseRequestHandler(BareBaseRequestHandler):
     def _get_full_hostname(self):
         if self.request.app.prod_mode:
             return 'www.dancedeets.com'
-        elif os.environ.get('SERVER_HOST_OVERRIDE'):
-            return os.environ['SERVER_HOST_OVERRIDE']
+        elif os.environ.get('HOT_SERVER_PORT'):
+            host_port = app_identity.get_default_version_hostname()
+            host, port = host_port.split(':')
+            return '%s:%s' % (host, os.environ['HOT_SERVER_PORT'])
         else:
             return app_identity.get_default_version_hostname()
 

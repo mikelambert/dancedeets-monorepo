@@ -71,6 +71,8 @@ settings.configure(
     RENDER_URL='http://localhost:8090/render',
 )
 
+if os.environ.get('HOT_SERVER_PORT'):
+    logging.info('Using hot reloader!')
 
 logging.info("Begin modules")
 import webapp2

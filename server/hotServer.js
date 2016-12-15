@@ -10,6 +10,11 @@ var config = require('./webpack.config.client.babel');
 const port = 9090;
 const pythonPort = 8080;
 
+// This must match the value we use in base_servlet.py's static_dir
+const staticPath = '/dist';
+
+const publicPath = '${staticDir}/js/';
+
 function enableHotReloading(config) {
   const newEntry = {};
   Object.keys(config.entry).forEach(entryKey => {
@@ -24,7 +29,7 @@ function enableHotReloading(config) {
     entry: newEntry,
     output: {
       ...config.output,
-      publicPath: '/dist/js/',
+      publicPath,
     },
     plugins: config.plugins.concat([new webpack.HotModuleReplacementPlugin()]),
   };
@@ -35,7 +40,7 @@ var app = express();
 var compiler = webpack(enableHotReloading(config));
 
 app.use(devMiddleware(compiler, {
-  publicPath: '/dist/js/',
+  publicPath,
   hot: true,
   inline: true,
   contentBase: '',

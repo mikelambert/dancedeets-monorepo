@@ -33,10 +33,6 @@ vm_settings:
 inbound_services:
 - warmup
 
-# TODO: HOT
-env_variables:
-  SERVER_HOST_OVERRIDE: 'dev.dancedeets.com:9090'
-
 default_expiration: 10d
 handlers:
 - url: /_pipeline(/.*)?
