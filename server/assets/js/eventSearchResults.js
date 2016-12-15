@@ -176,12 +176,12 @@ class _ResultsList extends React.Component {
     // const currentEvents = resultEvents.filter(event => moment(event.start_time) < now && moment(event.end_time) > now);
     // const nonPastEvents = resultEvents.filter(event => moment(event.end_time) > now);
     const resultItems = [];
+    let currentDate = null;
+    let currentTime = null;
     events.forEach((event, index) => {
       const eventStart = moment(event.start_time);
       const eventStartDate = upperFirst(this.props.intl.formatDate(eventStart.toDate(), weekdayDate));
       const eventStartTime = upperFirst(this.props.intl.formatDate(eventStart.toDate(), weekdayTime));
-      let currentDate = null;
-      let currentTime = null;
       if (eventStartDate !== currentDate) {
         resultItems.push(<li key={eventStartDate} className="wide-event day-header"><Sticky className="opaque">{eventStartDate}</Sticky></li>);
         currentDate = eventStartDate;
