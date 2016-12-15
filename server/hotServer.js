@@ -13,7 +13,7 @@ const pythonPort = 8080;
 // This must match the value we use in base_servlet.py's static_dir
 const staticPath = '/dist';
 
-const publicPath = '${staticDir}/js/';
+const publicPath = `${staticPath}/js/`;
 
 function enableHotReloading(config) {
   const newEntry = {};
