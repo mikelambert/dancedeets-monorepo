@@ -190,9 +190,10 @@ const webpackConfigs = ['amp', 'server', 'client'];
 
 const suffixes = ['prod:once', 'prod:watch', 'debug:once', 'debug:watch'];
 suffixes.forEach(suffix =>
-  gulp.task(`compile:webpack:all:${suffix}`, webpackConfigs.map(x => 'compile:webpack:${x}:${suffix}'))
+  gulp.task(`compile:webpack:all:${suffix}`, webpackConfigs.map(x => `compile:webpack:${x}:${suffix}`))
 );
 
+gulp.task('compile:webpack', ['compile:webpack:all:prod:once'])
 gulp.task('compile', ['compile:webpack', 'compile:images', 'compile:fonts']);
 
 gulp.task('clean', () => del.sync('dist'));
