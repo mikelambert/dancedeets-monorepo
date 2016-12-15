@@ -84,8 +84,8 @@
   },
   "scripts": {
     "start": "node dist/js-server/renderServer.js",
-    "start_local": "../mobile/scripts/runNode.js ../../server/node_server/renderServer.js",
-    "start_hmr": "node ./server.js --inline --hot"
+    "start_local": "../runNode.js ./node_server/renderServer.js",
+    "start_hmr": "../runNode.js ./hotServer.js --debug"
   },
   "private": true
 }

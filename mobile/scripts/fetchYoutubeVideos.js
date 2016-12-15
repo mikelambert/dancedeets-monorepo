@@ -1,4 +1,4 @@
-#!/usr/bin/awk BEGIN{a=b=ARGV[1];sub(/[A-Za-z_.]+$/,"runNode.js",a);sub(/^.*\//,"./",b);system(a"\t"b)}
+#!/usr/bin/awk BEGIN{a=b=ARGV[1];sub(/[A-Za-z_.]+$/,"../../runNode.js",a);sub(/^.*\//,"./",b);system(a"\t"b)}
 
 /**
  * Copyright 2016 DanceDeets.
