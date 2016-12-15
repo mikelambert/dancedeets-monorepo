@@ -140,15 +140,17 @@ function getScrapyNames(pattern) {
 const webEventNames = getScrapyNames('web_events/scraper/spiders/*.py');
 const classesNames = getScrapyNames('classes/scraper/spiders/*.py');
 
-gulp.task('scrape:web:scrapy',     $.shell.task(webEventNames.map(x => `./scrapy.sh crawl ${x}`)))
-gulp.task('scrape:classes:scrapy', $.shell.task( classesNames.map(x => `./scrapy.sh crawl ${x}`)))
+webEventNames.concat(classesNames).forEach(x =>
+  gulp.task(`scrape:one:${x}`, $.shell.task(`PYTHONPATH=/Library/Python/2.7/site-packages:$PYTHONPATH scrapy crawl ${x}`)));
+gulp.task('scrape:web:scrapy',    webEventNames.map(x => `scrape:one:${x}`));
+gulp.task('scrape:classes:scrapy', classesNames.map(x => `scrape:one:${x}`));
 gulp.task('scrape:classes:index:prod', $.shell.task(['curl http://www.dancedeets.com/classes/reindex']))
 gulp.task('scrape:classes:index:dev',  $.shell.task(['curl http://dev.dancedeets.com:8080/classes/reindex']))
-
 gulp.task('scrape:web', ['scrape:web:scrapy']);
 gulp.task('scrape:classes', cb => runSequence('scrape:classes:scrapy', ['scrape:classes:index:prod', 'scrape:classes:index:dev'], cb));
 gulp.task('scrapeWeb', ['scrape:web']);
 gulp.task('scrapeClasses', ['scrape:classes']);
+
 
 
 gulp.task('generate-amp-sources', $.shell.task(['./amp/generate_amp_sources.py']));
