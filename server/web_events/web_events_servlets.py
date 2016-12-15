@@ -5,12 +5,11 @@ import keys
 import urllib
 import webapp2
 
-from google.appengine.ext import deferred
-
 import app
 from events import eventdata
 from events import event_updates
 from pubsub import pubsub
+from util import deferred
 
 
 class JsonDataHandler(webapp2.RequestHandler):

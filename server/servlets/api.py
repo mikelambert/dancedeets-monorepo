@@ -6,7 +6,6 @@ import time
 import urllib
 
 from google.appengine.api import memcache
-from google.appengine.api import taskqueue
 from googleapiclient.discovery import build
 
 import app
@@ -25,6 +24,7 @@ from search import search
 from search import search_base
 from users import user_creation
 from users import users
+from util import taskqueue
 from util import urls
 
 DATETIME_FORMAT = "%Y-%m-%dT%H:%M:%SZ"

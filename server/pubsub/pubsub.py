@@ -13,7 +13,6 @@ import urlparse
 
 from google.appengine.api import memcache
 from google.appengine.ext import ndb
-from google.appengine.api import taskqueue
 import twitter
 
 from events import eventdata
@@ -23,6 +22,7 @@ import keys
 from users import users
 from util import fb_events
 from util import fetch
+from util import taskqueue
 from util import text
 from util import urls
 

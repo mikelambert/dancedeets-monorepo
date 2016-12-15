@@ -2,13 +2,12 @@ import datetime
 from dateutil import parser
 import logging
 
-from google.appengine.api import taskqueue
-
 import app
 import base_servlet
 import fb_api
 from events import eventdata
 from users import users
+from util import taskqueue
 from util import urls
 from . import android
 

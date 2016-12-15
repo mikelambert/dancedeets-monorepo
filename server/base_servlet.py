@@ -19,7 +19,6 @@ import webapp2
 
 from google.appengine.api.app_identity import app_identity
 from google.appengine.ext import db
-from google.appengine.ext import deferred
 
 from users import users
 from events import eventdata
@@ -32,6 +31,7 @@ from rankings import rankings
 from users import user_creation
 from util import abbrev
 from util import dates
+from util import deferred
 from util import text
 from util import urls
 

@@ -1,11 +1,11 @@
 import logging
 
-from google.appengine.ext import deferred
 from mapreduce import context
 
 import app
 import base_servlet
 import fb_api
+from util import deferred
 from util import fb_mapreduce
 from users import users
 from . import eventdata

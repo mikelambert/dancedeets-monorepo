@@ -4,13 +4,12 @@ import logging
 import re
 import urlparse
 
-from google.appengine.ext import deferred
-
 import fb_api
 from mapreduce import context
 from mapreduce import control
 from mapreduce import operation
 
+from util import deferred
 from util import fb_mapreduce
 from . import event_pipeline
 from . import potential_events

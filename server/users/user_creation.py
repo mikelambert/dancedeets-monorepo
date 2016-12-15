@@ -1,9 +1,8 @@
 import datetime
 import logging
 
-from google.appengine.api import taskqueue
-
 from logic import backgrounder
+from util import taskqueue
 from util import urls
 from . import users
 

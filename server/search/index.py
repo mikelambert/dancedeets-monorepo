@@ -1,9 +1,10 @@
 import logging
 
 from google.appengine.ext import db
-from google.appengine.ext import deferred
 from google.appengine.ext import ndb
 from google.appengine.api import search
+
+from util import deferred
 
 MAX_OBJECTS = 100000
 

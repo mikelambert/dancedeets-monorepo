@@ -10,8 +10,6 @@ import urllib
 
 from slugify import slugify
 
-from google.appengine.ext import deferred
-
 import app
 import base_servlet
 from event_scraper import add_entities
@@ -31,6 +29,7 @@ from search import search
 from servlets import api
 from users import users
 from util import dates
+from util import deferred
 from util import fb_events
 from util import urls
 

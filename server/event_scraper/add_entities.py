@@ -1,13 +1,12 @@
 import logging
 
-from google.appengine.ext import deferred
-
 import fb_api
 from events import eventdata
 from events import event_locations
 from events import event_updates
 from pubsub import pubsub
 from nlp import event_classifier
+from util import deferred
 from util import fb_events
 from . import potential_events
 from . import thing_db
