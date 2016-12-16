@@ -1,3 +1,9 @@
+/**
+ * Copyright 2016 DanceDeets.
+ *
+ * @flow
+ */
+
 import $ from 'jquery';
 import React from 'react';
 import {
@@ -6,7 +12,11 @@ import {
   FormattedMessage,
 } from 'react-intl';
 import { messages } from 'dancedeets-common/js/events/messages';
+import {
+  Event,
+} from 'dancedeets-common/js/events/models';
 import { Message } from './intl';
+import fetch from './fetch';
 
 const choiceStrings = [
   {
@@ -38,6 +48,8 @@ class _RsvpComponent extends React.Component {
     disableAll: boolean;
   }
 
+  _choiceBinds: Array<() => Promise<void>>;
+
   constructor(props) {
     super(props);
     this.state = {
@@ -45,7 +57,7 @@ class _RsvpComponent extends React.Component {
       updated: false,
       disableAll: false,
     };
-    this.choiceBinds = choiceStrings.map(({ internal, messageName }) => this.onChange.bind(this, internal));
+    this._choiceBinds = choiceStrings.map(({ internal, messageName }) => this.onChange.bind(this, internal));
     (this: any).loadRsvpsFor = this.loadRsvpsFor.bind(this);
   }
 
@@ -70,13 +82,9 @@ class _RsvpComponent extends React.Component {
       return;
     }
     try {
-      const result = await $.ajax({
-        type: 'POST',
-        url: '/events/rsvp_ajax',
-        data: {
-          rsvp: rsvpValue,
-          event_id: this.props.event.id,
-        },
+      const result = fetch('/events/rsvp_ajax', {
+        rsvp: rsvpValue,
+        event_id: this.props.event.id,
       });
       this.setState({
         rsvpValue,
@@ -117,12 +125,13 @@ class _RsvpComponent extends React.Component {
     const buttons = choiceStrings.map(({ internal, messageName }, index) => {
       const activeClass = this.state.rsvpValue === internal ? 'active btn-no-focus' : '';
       return (<button
+        key={internal}
         type="button"
         className={`btn btn-default ${activeClass}`}
         id={`rsvp_${id}_${internal}`}
         value={internal}
         disabled={this.state.disableAll ? 'disabled' : ''}
-        onClick={this.choiceBinds[index]}
+        onClick={this._choiceBinds[index]}
       >
         <Message message={messages[messageName]} />
       </button>);

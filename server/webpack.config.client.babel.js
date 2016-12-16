@@ -37,6 +37,9 @@ const config = {
   },
   devtool: prod ? 'source-map' : 'debug',
   plugins: [
+    new webpack.ProvidePlugin({
+      fetch: 'imports?this=>global!exports?global.fetch!whatwg-fetch',
+    }),
     // Only import the english locale for moment.js:
     new webpack.ContextReplacementPlugin(/moment[/\\]locale$/, /en$/),
 
