@@ -1,6 +1,4 @@
 {% extends class_base_template %}
-{% import "_rsvp.html" as rsvp %}
-{% import "_results.html" as results %}
 
 {% block title %}
 {{ result_title }}
@@ -118,54 +116,25 @@
 	{% endif %}
 
   {% if selected_tab == 'past' %}
-    {% if react_html %}
-      <div class="cold-md-8 col-xs-12">
-        <div id="react-parent">
-          {{ react_html|safe }}
-        </div>
+    <div class="cold-md-8 col-xs-12">
+      <div id="react-parent">
+        {{ react_html|safe }}
       </div>
-      <script type="text/javascript">
-        window._REACT_PROPS = {{ react_props|tojson }};
-        window._REACT_ID = 'react-parent';
-      </script>
-    {% else %}
-      {{ results.render_wide_results(past_results) }}
-    {% endif %}
+    </div>
+    <script type="text/javascript">
+      window._REACT_PROPS = {{ react_props|tojson }};
+      window._REACT_ID = 'react-parent';
+    </script>
   {% elif selected_tab == 'present' %}
-    {% if react_html %}
-      <div class="cold-md-8 col-xs-12">
-        <div id="react-parent">
-          {{ react_html|safe }}
-        </div>
+    <div class="cold-md-8 col-xs-12">
+      <div id="react-parent">
+        {{ react_html|safe }}
       </div>
-      <script type="text/javascript">
-        window._REACT_PROPS = {{ react_props|tojson }};
-        window._REACT_ID = 'react-parent';
-      </script>
-    {% else %}
-      {% if num_upcoming_results %}
-        <div id="upcoming_events" class="col-md-8 col-xs-12">
-        {% for group in grouped_upcoming_results %}
-          {% if group.results %}
-            <h3 class="group-title">{{ group.name }}</h3>
-            {{ results.render_wide_results(group.results) }}
-          {% endif %}
-        {% endfor %}
-        {% if sponsored_studios['MINDBODY'] %}
-          <div style="margin: 1em 0em; font-style: italic">
-            Studios Powered by <a href="http://www.mindbodyonline.com">MINDBODY</a>:
-            {{ sponsored_studios['MINDBODY']|join(', ') }}
-          </div>
-        {% endif %}
-        </div>
-      {% endif %}
-      {% if ongoing_results %}
-        <div id="ongoing_events" class="col-md-4 col-xs-12">
-          <h3>Ongoing Events</h3>
-          {{ results.render_narrow_results(ongoing_results) }}
-        </div>
-      {% endif %}
-    {% endif %}
+    </div>
+    <script type="text/javascript">
+      window._REACT_PROPS = {{ react_props|tojson }};
+      window._REACT_ID = 'react-parent';
+    </script>
 	{% elif selected_tab == 'calendar' %}
 		<div id="calendar" style="margin-top: 10px"></div>
 	{% endif %}
@@ -326,8 +295,6 @@ $(document).ready(function() {
 
 </script>
 #}
-{% if react_html %}
-  <script src="{{static_dir}}/js/eventSearchResultsExec.js"></script>
-{% endif %}
+<script src="{{static_dir}}/js/eventSearchResultsExec.js"></script>
 {% endif %}
 {% endblock %}

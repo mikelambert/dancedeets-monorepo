@@ -1,5 +1,4 @@
 {% extends class_base_template %}
-{% import "_event_common.html" as event_common %}
 
 {% block title %}
 {{ displayable_event.name|e }}
@@ -56,85 +55,13 @@
 {% endblock %}
 
 {% block body %}
-{% if react_html %}
-  <div id="react-parent">
-    {{ react_html|safe }}
-  </div>
-  <script type="text/javascript">
-    window._REACT_PROPS = {{ react_props|tojson }};
-    window._REACT_ID = 'react-parent';
-  </script>
-{% else %}
-<div class="container">
-<div itemscope itemtype="http://schema.org/DanceEvent">
-
-  <span itemprop="url" content="http://{{ full_hostname }}/events/{{ displayable_event.id }}/"></span>
-
-  <div class="row">
-    <div class="col-xs-12">
-      {% if displayable_event.city_state_country or displayable_event.categories %}
-        See more events:
-        <ul>
-          {% if displayable_event.city_state_country %}
-            <li>in <a href="/?location={{ displayable_event.city_state_country }}">{{ displayable_event.city_state_country }}</a>.
-          {% endif %}
-          {% if displayable_event.categories %}
-            <li>categorized as:
-            {{ displayable_event.categories|make_category_link|join(', ') }}
-          {% endif %}
-        </ul>
-      {% endif %}
-
-      <h1 class="event-page-title" itemprop="name">{{ displayable_event.name }}</h1>
-    </div>
-  </div>
-
-  <div class="row">
-    <div class="col-sm-5">
-      {% if displayable_event.has_image %}
-        <div style="position: relative; margin-bottom: 1em"><a class="link-event-flyer" href="/events/image_proxy/{{ displayable_event.id }}">
-            <img src="/events/image_proxy/{{ displayable_event.id }}" style="width: 100%" itemprop="image">
-        </a></div>
-      {% endif %}
-
-      {{ event_common.event_info_as_icon_list(displayable_event, canonical_url) }}
-      <meta itemprop="startDate" content="{{ displayable_event.start_time|datetime_format }}" />
-      {% if displayable_event.end_time %}
-        <meta itemprop="endDate" content="{{ displayable_event.end_time|datetime_format }}" />
-      {% endif %}
-      {# not worth showing maps embed if there is no street_address #}
-      {% if displayable_event.latitude %}
-        <p>Open in <a class="link-event-map" href="http://maps.google.com/?daddr={{ displayable_event.latitude }},{{ displayable_event.longitude }}" target="_blank">Google Maps</a>.
-        {% if displayable_event.description %}
-          <div class="visible-xs" style="font-style: italic">Event description is below the map.</div>
-        {% endif %}
-        <div id="map-wrapper" class="responsive-map-wrapper">
-        </div>
-      {% endif %}
-    </div>
-
-    {% if displayable_event.description %}
-    <div class="col-sm-7">
-      <h1 class="event-page-title visible-xs-block">{{ displayable_event.name }}</h1>
-      <div><b>Description:</b></div>
-      <div style="height: 25px" id="google_translate_element"></div>
-      <span itemprop="description">
-        {{ displayable_event.description|format_html|linkify }}
-      </span>
-    </div>
-    {% endif %}
-  </div>
-
-{#
-can add these to google-maps embed:
-language= parameter
-region= paramter cctld
-#}
-
-</div>{# itemscope #}
+<div id="react-parent">
+  {{ react_html|safe }}
 </div>
-{% endif %}
-
+<script type="text/javascript">
+  window._REACT_PROPS = {{ react_props|tojson }};
+  window._REACT_ID = 'react-parent';
+</script>
 {% endblock %}
 
 {% block bottom_javascript %}
@@ -153,31 +80,6 @@ mixpanel.track_links(".link-event-admin", "View Event Admin");
 mixpanel.track_links(".link-event-venue", "View Event Venue");
 mixpanel.track_links(".link-event-map", "View on Map");
 //TODO: Implement and add RSVP tracking?
-
-{% if not react_html %}
-{% if displayable_event.latitude %}
-function load_map() {
-  if ($('.map-wrapper')) {
-    {# TODO(lambert): We can do a better job, checking on the server if google maps can geocode our place query q=venue/street into a place thats near the lat/long that facebook has, and if so, to point at that here instead of just a raw lat/long location.
-    #}
-    var myLatlng = new google.maps.LatLng({{ displayable_event.latitude }}, {{ displayable_event.longitude }});
-    var mapOptions = {
-      zoom: 13,
-      scrollwheel: false,
-      draggable: false,
-      center: myLatlng
-    }
-    var map = new google.maps.Map(document.getElementById('map-wrapper'), mapOptions);
-
-    var marker = new google.maps.Marker({
-      position: myLatlng,
-      map: map,
-      title: "{{ displayable_event.location_name|e }}",
-    });
-  }
-}
-{% endif %}
-{% endif %}
 
 window.twttr = (function(d, s, id) {
   var js, fjs = d.getElementsByTagName(s)[0],
@@ -207,13 +109,7 @@ function googleTranslateElementInit() {
 </script>
 <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
 {% if displayable_event.latitude %}
-  {% if react_html %}
-    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAjgNUFTnWeftZEz6fWXZTGuQBRNR03VWE"></script>
-  {% else %}
-    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAvvrWfamjBD6LqCURkATAWEovAoBm1xNQ&amp;callback=load_map"></script>
-  {% endif %}
+  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAjgNUFTnWeftZEz6fWXZTGuQBRNR03VWE"></script>
 {% endif %}
-{% if react_html %}
-  <script src="{{static_dir}}/js/eventExec.js"></script>
-{% endif %}
+<script src="{{static_dir}}/js/eventExec.js"></script>
 {% endblock %}

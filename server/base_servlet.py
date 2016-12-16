@@ -204,6 +204,8 @@ class BareBaseRequestHandler(webapp2.RequestHandler, FacebookMixinHandler):
                     props=props)
             except (exceptions.RenderServerError, exceptions.ReactRenderingError):
                 logging.exception('Error rendering React component')
+                # Hope that client-side rendering works and picks up the pieces?
+                # We should have error-reporting via the logging.exception above.
                 html = ''
                 # self.abort(500)
         self.display['react_html'] = html

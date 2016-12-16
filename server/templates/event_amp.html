@@ -1,4 +1,3 @@
-{% import "_event_common.html" as event_common -%}
 <!doctype html>
 <html amp lang="en">
   <head>
@@ -113,53 +112,7 @@
 <!--=== End Header v6 ===-->
 
 <div class="body-contents margin-bottom-60">
-{% if react_html %}
-  {{ react_html|safe }}
-{% else %}
-<div class="container">
-
-  <div class="row">
-    <h1 class="event-page-title">{{ displayable_event.name }}</h1>
-  </div>
-
-  <div class="row">
-    <div class="col-sm-5">
-      {% if displayable_event.has_image %}
-        <div class="event-flyer"><a class="link-event-flyer" href="/events/image_proxy/{{ displayable_event.id }}">
-            <amp-img src="/events/image_proxy/{{ displayable_event.id }}" layout="responsive" width="{{ displayable_event.largest_cover.width }}" height="{{ displayable_event.largest_cover.height }}">
-        </a></div>
-      {% endif %}
-
-      {{ event_common.event_info_as_icon_list(displayable_event, canonical_url, social_links=False) }}
-      {# not worth showing maps embed if there is no street_address #}
-      {% if displayable_event.latitude %}
-        <p>Open in <a class="link-event-map" href="http://maps.google.com/?daddr={{ displayable_event.latitude }},{{ displayable_event.longitude }}" target="_blank">Google Maps</a>.
-        <a class="link-event-map" href="http://maps.google.com/?daddr={{ displayable_event.latitude }},{{ displayable_event.longitude }}" target="_blank">
-          <amp-img src="http://www.google.com/maps/api/staticmap?key=AIzaSyAvvrWfamjBD6LqCURkATAWEovAoBm1xNQ&amp;size=450x450&amp;scale=2&amp;zoom=13&amp;center={{ displayable_event.latitude }},{{ displayable_event.longitude }}&amp;markers=color:blue%7C{{ displayable_event.latitude }},{{ displayable_event.longitude }}" layout="responsive" width="300" height="300">
-          </amp-img>
-        </a>
-      {% endif %}
-    </div>
-
-    {% if displayable_event.description %}
-    <div class="col-sm-7">
-      <h1 class="event-page-title visible-xs-block">{{ displayable_event.name }}</h1>
-      <div><b>Description:</b></div>
-      <span>
-        {{ displayable_event.description|format_html|linkify }}
-      </span>
-    </div>
-    {% endif %}
-  </div>
-
-{#
-can add these to google-maps embed:
-language= parameter
-region= paramter cctld
-#}
-
-</div>
-{% endif %}
+{{ react_html|safe }}
 </div>
 
 
