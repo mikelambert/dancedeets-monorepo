@@ -169,7 +169,17 @@ class SearchResult(object):
         self.attending_friends = []
 
     name = property(lambda x: x.data['name'])
-    actual_city_name = property(lambda x: x.data['location'])
+
+    @property
+    def actual_city_name(self):
+        # Semi backwards-compatible support for people who aren't upgrading to use the data directly
+        address = self.data.get('venue', {}).get('address')
+        if address:
+            city_parts = [address[x] for x in ['city', 'state', 'country'] if x in address]
+            return ', '.join(city_parts)
+        else:
+            return None
+
     latitude = property(lambda x: x.data['lat'])
     longitude = property(lambda x: x.data['lng'])
     event_keywords = property(lambda x: x.data['keywords'])
