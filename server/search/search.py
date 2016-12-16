@@ -96,7 +96,6 @@ class DisplayEvent(ndb.Model):
 
             display_event.data = {
                 'name': db_event.name,
-                'cover': db_event.largest_cover,
                 'start_time': db_event.start_time_string,
                 'end_time': db_event.end_time_string,
                 'lat': db_event.latitude, # used for de-duping events
