@@ -172,13 +172,18 @@ class SearchResult(object):
 
     @property
     def actual_city_name(self):
-        # Semi backwards-compatible support for people who aren't upgrading to use the data directly
-        address = self.data.get('venue', {}).get('address')
-        if address:
-            city_parts = [address[x] for x in ['city', 'state', 'country'] if x in address]
-            return ', '.join(city_parts)
+        # If it's a "Class" result, then use that stored data
+        if 'location' in self.data:
+            return self.data['location']
+        # otherwise it's an "Event" rseult, so reconstruct the city from our good data
         else:
-            return None
+            # Semi backwards-compatible support for people who aren't upgrading to use the data directly
+            address = self.data.get('venue', {}).get('address')
+            if address:
+                city_parts = [address[x] for x in ['city', 'state', 'country'] if x in address]
+                return ', '.join(city_parts)
+            else:
+                return None
 
     latitude = property(lambda x: x.data['lat'])
     longitude = property(lambda x: x.data['lng'])
