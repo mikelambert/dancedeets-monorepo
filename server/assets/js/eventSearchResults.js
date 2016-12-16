@@ -37,7 +37,10 @@ import {
 import {
   formatAttending,
 } from 'dancedeets-common/js/events/helpers';
-import { Card } from './ui';
+import {
+  Card,
+  ImagePrefix,
+} from './ui';
 
 type OneboxResult = any;
 type EventResult = SearchEvent;
@@ -107,7 +110,11 @@ class _EventDescription extends React.Component {
 
     let rsvpElement = null;
     if (event.rsvp && (event.rsvp.attending_count || event.rsvp.maybe_count)) {
-      rsvpElement = <div className="event-attending">{formatAttending(this.props.intl, event.rsvp)}</div>;
+      rsvpElement = (
+        <ImagePrefix iconName="users">
+          {formatAttending(this.props.intl, event.rsvp)}
+        </ImagePrefix>
+      );
     }
 
     // TODO: fix up event venue display
@@ -118,16 +125,18 @@ class _EventDescription extends React.Component {
             <span>{event.name}</span>
           </a>
         </h3>
-        <div className="event-types">
+        <ImagePrefix
+          icon={require('../img/categories.png')} // eslint-disable-line global-require
+        >
           ({keywords.join(', ')})
-        </div>
-        <div className="event-date">
+        </ImagePrefix>
+        <ImagePrefix iconName="clock-o">
           {formatStartEnd(event.start_time, event.end_time, this.props.intl)}
-        </div>
-        <div className="event-city">
+        </ImagePrefix>
+        <ImagePrefix iconName="map-marker">
           <div>{event.venue.name}</div>
           <FormatText>{event.venue.streetCityStateCountry('\n')}</FormatText>
-        </div>
+        </ImagePrefix>
         {rsvpElement}
       </div>
     );

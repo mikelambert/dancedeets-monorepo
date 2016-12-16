@@ -127,13 +127,13 @@
 			{{ result.name|e }}
 			</a>
 			</h3>
-			<div class="event-date">
+			<div>
 				{{ result.start_time|date_only_human_format }}
 				{% if result.multi_day_event() and result.end_time %}
 					<br>to {{ result.end_time|date_only_human_format }}
 				{% endif %}
 			</div>
-			<div class="event-city">
+			<div>
 				{% if result.location %}
 					result.location,
 				{% endif %}
