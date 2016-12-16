@@ -46,7 +46,9 @@ const config = {
       },
     }),
     new ExtractTextPlugin('../css/[name].css'),
-    ifProd(new webpack.optimize.DedupePlugin()),
+    // Sometimes we get duplicate modules (react-intl, moment)
+    // that come from both server/ and common/, and we want to de-dupe them.
+    new webpack.optimize.DedupePlugin(),
     ifProd(new webpack.optimize.UglifyJsPlugin()),
     // We need to have commons-chunk enabled in dev, too:
     // Sometimes we have two code files both depending on jquery,
