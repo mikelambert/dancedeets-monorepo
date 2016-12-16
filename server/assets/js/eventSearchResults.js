@@ -117,7 +117,6 @@ class _EventDescription extends React.Component {
       );
     }
 
-    // TODO: fix up event venue display
     return (
       <div>
         <h3 className="event-title">
