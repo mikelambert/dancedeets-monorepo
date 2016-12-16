@@ -36,6 +36,7 @@ import {
 import {
   formatAttending,
 } from 'dancedeets-common/js/events/helpers';
+import MasonryLayout from 'react-masonry-layout';
 
 type OneboxResult = any;
 type EventResult = SearchEvent;
@@ -80,11 +81,9 @@ class EventFlyer extends React.Component {
       imageTag = <LazyLoad height={height} once>{imageTag}</LazyLoad>;
     }
     return (
-      <div className="event-image">
-        <a className="link-event-flyer" href={event.getUrl()}>
-          {imageTag}
-        </a>
-      </div>
+      <a className="link-event-flyer" href={event.getUrl()}>
+        {imageTag}
+      </a>
     );
   }
 }
@@ -112,7 +111,7 @@ class _EventDescription extends React.Component {
 
     // TODO: fix up event venue display
     return (
-      <div className="event-description">
+      <div>
         <h3 className="event-title">
           <a href={event.getUrl()}>
             <span>{event.name}</span>
@@ -145,8 +144,12 @@ class HorizontalEvent extends React.Component {
     const event = this.props.event;
     return (
       <div className="wide-event clearfix">
-        <EventFlyer event={this.props.event} lazyLoad={this.props.lazyLoad} />
-        <EventDescription event={this.props.event} />
+        <div className="event-image">
+          <EventFlyer event={this.props.event} lazyLoad={this.props.lazyLoad} />
+        </div>
+        <div className="event-description">
+          <EventDescription event={this.props.event} />
+        </div>
       </div>
     );
   }
@@ -158,9 +161,26 @@ class VerticalEvent extends React.Component {
   }
 
   render() {
-    return (<div>
-      <EventFlyer event={this.props.event} />
-      <EventDescription event={this.props.event} />
+    const event = this.props.event;
+    return (<div
+      style={{
+        display: 'inline-block',
+        width: 180,
+        margin: 10,
+        verticalAlign: 'top',
+      }}
+    >
+      <EventFlyer event={event} />
+      <h3 className="event-title" style={{ marginTop: 10 }}>
+        <a href={event.getUrl()}>
+          <span>{event.name}</span>
+        </a>
+      </h3>
+      <div className="event-city">
+        <div>{event.venue.name}</div>
+        <FormatText>{event.venue.streetCityStateCountry('\n')}</FormatText>
+      </div>
+      <hr />
     </div>);
   }
 }
@@ -173,11 +193,28 @@ class CurrentEvents extends React.Component {
   render() {
     const resultItems = [];
     this.props.events.forEach((event, index) => {
-      resultItems.push(<HorizontalEvent key={event.id} event={event} />);
+      resultItems.push(<VerticalEvent key={event.id} event={event} />);
     });
 
+    const boxWidth = 180 + (10 * 2);
+    const edges = 15 * 2;
+    const threeBoxes = (boxWidth * 3) + edges;
+    const sizes = [
+      { columns: 2, gutter: 20 },
+      { mq: `${threeBoxes}px`, columns: 3, gutter: 20 },
+      { mq: '1200px', columns: 4, gutter: 20 },
+    ];
     return (<div>
-      {resultItems}
+      <div>Events Happening Now:</div>
+      <div style={{ width: '100%' }}>
+        <MasonryLayout
+          id="current-events"
+          infiniteScroll={() => {}}
+          sizes={sizes}
+        >
+          {resultItems}
+        </MasonryLayout>
+      </div>
     </div>);
   }
 }
@@ -234,7 +271,8 @@ class ResultsList extends React.Component {
       const pastEvents = resultEvents.filter(event => moment(event.start_time) < now);
       return <EventsList events={pastEvents} />;
     } else {
-      // DEBUG CODE: const currentEvents = resultEvents;
+      // DEBUG CODE:
+      // const currentEvents = resultEvents.filter(event => moment(event.start_time) > now);
       const currentEvents = resultEvents.filter(event => moment(event.start_time) < now && moment(event.end_time) > now);
       const futureEvents = resultEvents.filter(event => moment(event.start_time) > now);
       return (<div>
