@@ -91,52 +91,58 @@ class SelectButton extends React.Component {
   }
 }
 
+type MultiSelectState = { [item: string]: boolean };
+
+function generateUniformState(list: Array<string>, value: boolean) {
+  const newState = {};
+  list.forEach((x) => {
+    newState[x] = value;
+  });
+  return newState;
+}
+
+function caseInsensitiveSort(a, b) {
+  return a.toLowerCase().localeCompare(b.toLowerCase());
+}
+
+function getSelected(state: { [item: string]: boolean }) {
+  return Object.keys(state).filter(x => state[x]).sort(caseInsensitiveSort);
+}
+
 class MultiSelectList extends React.Component {
   props: {
     list: Array<string>;
+    selected: MultiSelectState;
     thumbnails?: boolean;
-    onChange: () => void;
+    onChange: (state: MultiSelectState) => void;
   }
-
-  state: Object;
 
   constructor(props) {
     super(props);
     (this: any).toggleItem = this.toggleItem.bind(this);
     (this: any).setAll = this.setAll.bind(this);
-    this.state = this.generateUniformState(true);
-  }
-
-  getSelected() {
-    return Object.keys(this.state).filter(x => this.state[x]);
   }
 
   setAll(item) {
-    this.setState(this.generateUniformState(true));
-    this.props.onChange();
+    this.changedState(generateUniformState(this.props.list, true));
   }
 
   isAllSelected() {
-    return this.getSelected().length === this.props.list.length;
+    return getSelected(this.props.selected).length === this.props.list.length;
+  }
+
+  changedState(newState) {
+    this.props.onChange(newState);
   }
 
   toggleItem(item) {
     if (this.isAllSelected()) {
-      const newState = this.generateUniformState(false);
+      const newState = generateUniformState(this.props.list, false);
       newState[item] = true;
-      this.setState(newState);
+      this.changedState(newState);
     } else {
-      this.setState({ [item]: !this.state[item] });
+      this.changedState({ ...this.props.selected, [item]: !this.props.selected[item] });
     }
-    this.props.onChange();
-  }
-
-  generateUniformState(value: boolean) {
-    const newState = {};
-    this.props.list.forEach((x) => {
-      newState[x] = value;
-    });
-    return newState;
   }
 
   render() {
@@ -151,7 +157,7 @@ class MultiSelectList extends React.Component {
       />
     );
     const thumbnails = this.props.thumbnails;
-    const value = this.getSelected();
+    const value = getSelected(this.props.selected);
     this.props.list.forEach((item, i) => {
       const selected = !allSelected && value.indexOf(item) !== -1;
       options.push(
@@ -235,27 +241,14 @@ class SearchBar extends React.Component {
   props: {
     initialStudios: Array<string>;
     initialStyles: Array<string>;
-    studios: Array<string>;
-    styles: Array<string>;
+    studios: MultiSelectState;
+    styles: MultiSelectState;
     teacher: string;
-    onUserInput: (styles: Array<string>, studios: Array<string>, teacher: string) => void;
+    onChange: (key: ValidKey, newState: any) => void;
   }
   _styles: MultiSelectList;
   _studios: MultiSelectList;
   _teacher: HTMLInputElement;
-
-  constructor(props) {
-    super(props);
-    (this: any).onChange = this.onChange.bind(this);
-  }
-
-  onChange() {
-    this.props.onUserInput(
-      this._styles.getSelected(),
-      this._studios.getSelected(),
-      this._teacher.value
-    );
-  }
 
   render() {
     return (
@@ -264,18 +257,18 @@ class SearchBar extends React.Component {
           Styles:{' '}
           <MultiSelectList
             list={this.props.initialStyles}
-            value={this.props.styles}
+            selected={this.props.styles}
             ref={(x) => { this._styles = x; }}
-            onChange={this.onChange}
+            onChange={state => this.props.onChange('styles', state)}
           />
         </div>
         <div>
           Studios:{' '}
           <MultiSelectList
             list={this.props.initialStudios}
-            value={this.props.studios}
+            selected={this.props.studios}
             ref={(x) => { this._studios = x; }}
-            onChange={this.onChange}
+            onChange={state => this.props.onChange('studios', state)}
             thumbnails
           />
         </div>
@@ -285,7 +278,7 @@ class SearchBar extends React.Component {
             type="text"
             value={this.props.teacher}
             ref={(x) => { this._teacher = x; }}
-            onChange={this.onChange}
+            onChange={state => this.props.onChange('teacher', this._teacher.value)}
           />
         </div>
       </form>
@@ -477,12 +470,15 @@ type AppProps = {
   location: string;
 };
 
+
+type ValidKey = 'styles' | 'studios' | 'teacher';
+
 export default class App extends React.Component {
   props: AppProps;
 
   state: {
-    styles: Array<string>;
-    studios: Array<string>;
+    styles: MultiSelectState;
+    studios: MultiSelectState;
     teacher: string;
     initialClasses: Array<StudioClassType>;
     initialStudios: Array<string>;
@@ -505,20 +501,20 @@ export default class App extends React.Component {
       const { startTime, ...rest } = studioClass;
       return { startTime: parseISO(startTime), ...rest };
     });
-    function caseInsensitiveSort(a, b) {
-      return a.toLowerCase().localeCompare(b.toLowerCase());
-    }
+
+    const studios = Object.keys(studiosSet).sort(caseInsensitiveSort);
+    const styles = Object.keys(stylesSet).sort(caseInsensitiveSort);
 
     this.state = {
-      styles: [],
-      studios: [],
+      studios: generateUniformState(studios, true),
+      styles: generateUniformState(styles, true),
       teacher: '',
       initialClasses: newClasses,
-      initialStudios: Object.keys(studiosSet).sort(caseInsensitiveSort),
-      initialStyles: Object.keys(stylesSet).sort(caseInsensitiveSort),
+      initialStudios: studios,
+      initialStyles: styles,
     };
 
-    (this: any).handleUserInput = this.handleUserInput.bind(this);
+    (this: any).onChange = this.onChange.bind(this);
   }
 
   getChildContext() {
@@ -579,6 +575,11 @@ export default class App extends React.Component {
     }
   }
 
+  onChange(key: ValidKey, state: any) {
+    console.log(key, state);
+    this.setState({ [key]: state });
+  }
+
   filteredClasses() {
     const goodClasses = [];
     const state = this.state;
@@ -589,30 +590,18 @@ export default class App extends React.Component {
           return;
         }
       }
-      if (state.studios.length) {
-        if (state.studios.filter(studio => studio === studioClass.location).length === 0) {
-          return;
-        }
+      if (getSelected(state.studios).filter(studio => studio === studioClass.location).length === 0) {
+        return;
       }
-      if (state.styles.length) {
-        if (state.styles.filter((searchStyle) => {
-          const classHasStyle = studioClass.categories.filter(classStyle => searchStyle === classStyle);
-          return classHasStyle.length > 0;
-        }).length === 0) {
-          return;
-        }
+      if (getSelected(state.styles).filter((searchStyle) => {
+        const classHasStyle = studioClass.categories.filter(classStyle => searchStyle === classStyle);
+        return classHasStyle.length > 0;
+      }).length === 0) {
+        return;
       }
       goodClasses.push(studioClass);
     });
     return goodClasses;
-  }
-
-  handleUserInput(styles: Array<string>, studios: Array<string>, teacher: string) {
-    this.setState({
-      styles,
-      studios,
-      teacher,
-    });
   }
 
   render() {
@@ -642,13 +631,13 @@ export default class App extends React.Component {
                   styles={this.state.styles}
                   studios={this.state.studios}
                   teacher={this.state.teacher}
-                  onUserInput={this.handleUserInput}
+                  onChange={this.onChange}
                 />
               </div>
               <div id="navbar-collapsed-summary">
                 <ClassSummary
-                  styles={this.state.styles}
-                  studios={this.state.studios}
+                  styles={getSelected(this.state.styles)}
+                  studios={getSelected(this.state.studios)}
                   teacher={this.state.teacher}
                 />
               </div>
