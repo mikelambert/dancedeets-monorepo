@@ -460,11 +460,6 @@ def canonicalize_event_data(db_event, event_keywords, version):
     # location data
     if db_event.location_name:
         venue_location_name = db_event.location_name
-    # We could do something like this...
-    # elif db_event and db_event.actual_city_name:
-    #    venue_location_name = db_event.actual_city_name
-    # ...but really, this would return the overridden/remapped address name, which would likely just be a "City" anyway.
-    # A city isn't particularly useful for our clients trying to display the event on a map.
     else:
         # In these very rare cases (where we've manually set the location on a location-less event), return ''
         # TODO: We'd ideally like to return None, but unfortunately Android expects this to be non-null in 1.0.3 and earlier.
