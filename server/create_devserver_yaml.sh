@@ -1,6 +1,6 @@
 #!/bin/bash
 
-cat app.yaml | sed 's/GAE_USE_SOCKETS_HTTPLIB/x_disabled_GAE_USE_SOCKETS_HTTPLIB/' > app-devserver.yaml
+cat app.yaml > app-devserver.yaml
 if [ "$HOT_SERVER_PORT" != "" ]; then
   echo 'Enabling hot reloader!'
   cat <<EOF >> app-devserver.yaml

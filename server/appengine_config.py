@@ -3,7 +3,12 @@ import os
 import sys
 sys.path = [os.path.join(os.path.dirname(__file__), 'lib')] + sys.path
 
-os.environ['GAE_USE_SOCKETS_HTTPLIB'] = '1'
+def is_local_appengine():
+    return ('APPENGINE_RUNTIME' in os.environ and
+            'Development/' in os.environ['SERVER_SOFTWARE'])
+
+if not is_local_appengine():
+    os.environ['GAE_USE_SOCKETS_HTTPLIB'] = '1'
 
 # We don't need such real-time statistics (normally 1 second) on the mapreduce job.
 # More of an optimization to save on the associated database Get/Put every second.
