@@ -77,18 +77,35 @@ class DisplayEvent(ndb.Model):
             # So they fail json serialization, and must be converted manually here.
             keywords = [unicode(x) for x in db_event.event_keywords]
             categories = [unicode(x) for x in db_event.auto_categories]
-            image_width = db_event.json_props['photo_width'] if db_event.has_image else None
-            image_height = db_event.json_props['photo_height'] if db_event.has_image else None
+
+            if db_event.has_image:
+                picture = {
+                    'width': db_event.json_props['photo_width'],
+                    'height': db_event.json_props['photo_height'],
+                }
+            else:
+                picture = None
+
+            venue = db_event.venue
+            address = None
+            if 'country' in venue:
+                address = {}
+                for key in ['street', 'city', 'state', 'zip', 'country']:
+                    if key in venue:
+                        address[key] = venue.get(key)
+
             display_event.data = {
                 'name': db_event.name,
                 'cover': db_event.largest_cover,
                 'start_time': db_event.start_time_string,
                 'end_time': db_event.end_time_string,
-                'location': db_event.actual_city_name,
                 'lat': db_event.latitude, # used for de-duping events
                 'lng': db_event.longitude, # used for de-duping events
-                'image_width': image_width,
-                'image_height': image_height,
+                'venue': {
+                    'name': db_event.location_name,
+                    'address': address,
+                },
+                'picture': picture,
                 'attendee_count': db_event.attendee_count,
                 'maybe_count': db_event.maybe_count,
                 'categories': categories,
