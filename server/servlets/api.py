@@ -128,7 +128,9 @@ def retryable(func):
     return wrapped_func
 
 def build_search_results_api(city_name, form, search_query, search_results, version, need_full_event, southwest, northeast):
-    onebox_links = onebox.get_links_for_query(search_query)
+    onebox_links = []
+    if search_query:
+        onebox_links = onebox.get_links_for_query(search_query)
 
     json_results = []
     for result in search_results:
