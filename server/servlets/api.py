@@ -130,19 +130,6 @@ def retryable(func):
             raise
     return wrapped_func
 
-
-def _get_title(location, keywords):
-    if location:
-        if keywords:
-            return "Events near %s containing %s" % (location, keywords)
-        else:
-            return "Events near %s" % location
-    else:
-        if keywords:
-            return "Events containing %s" % keywords
-        else:
-            return "Events"
-
 def build_search_results_api(city_name, form, search_query, search_results, version, need_full_event, southwest, northeast):
     onebox_links = onebox.get_links_for_query(search_query)
 
@@ -157,12 +144,9 @@ def build_search_results_api(city_name, form, search_query, search_results, vers
         except Exception as e:
             logging.exception("Error processing event %s: %s" % (result.event_id, e))
 
-    title = _get_title(city_name, form.keywords.data)
-
     json_response = {
         'results': json_results,
         'onebox_links': onebox_links,
-        'title': title,
         'location': city_name,
         'query': form.data,
     }
@@ -219,13 +203,9 @@ class SearchHandler(ApiHandler):
                 else:
                     self.add_error('Please enter a location or keywords')
         else:
-            place = gmaps_api.fetch_place_as_json(query=form.location.data, language=form.locale.data)
-            if place['status'] == 'OK' and place['results']:
-                geocode = gmaps_api.GMapsGeocode(place['results'][0])
-                southwest, northeast = math.expand_bounds(geocode.latlng_bounds(), form.distance_in_km())
-                city_name = place['results'][0]['formatted_address']
-                # This will fail on a bad location, so let's verify the location is geocodable above first.
-            else:
+            try:
+                city_name, southwest, northeast = normalize_location(form)
+            except:
                 if self.version == (1, 0):
                     self.write_json_success({'results': []})
                     return
@@ -404,12 +384,14 @@ def canonicalize_search_event_data(result, version):
         'name': result.data['location'], # TODO: ReactResults
         'geocode': geocode,
     }
-    event_api['picture'] = {
-        'source': urls.event_image_url(result.event_id),
-        # TODO: ReactResults: Somehow communicate whether or not the image exists!
-        'width': 10, # TODO: ReactResults
-        'height': 10, # TODO: ReactResults
-    }
+    if True: #result.data.get('image_width'):
+        event_api['picture'] = {
+            'source': urls.event_image_url(result.event_id),
+            'width': result.data.get('image_width', 1),
+            'height': result.data.get('image_height', 1),
+        }
+    else:
+        event_api['picture'] = None
 
     annotations = {}
     annotations['keywords'] = result.data['keywords']
@@ -418,7 +400,7 @@ def canonicalize_search_event_data(result, version):
     if result.data['attendee_count']:
         event_api['rsvp'] = {
             'attending_count': result.data['attendee_count'],
-            'maybe_count': 0, # TODO: ReactResults
+            'maybe_count': result.data.get('maybe_count', 0),
         }
     else:
         event_api['rsvp'] = None

@@ -22,14 +22,14 @@ FUTURE_INDEX_TIMES = [TIME_ONGOING, TIME_UPCOMING, TIME_ALL_FUTURE]
 TIME_LIST = [TIME_PAST, TIME_ONGOING, TIME_UPCOMING, TIME_ALL_FUTURE]
 
 
-def no_wiki_or_html(form, field):
+def _no_wiki_or_html(form, field):
     if '[/url]' in field.data:
         raise wtforms.ValidationError('Cannot search with wiki markup')
     if '</a>' in field.data:
         raise wtforms.ValidationError('Cannot search with html markup')
 
 
-def valid_query(form, field):
+def _valid_query(form, field):
     keywords = _get_parsed_keywords(field.data)
     try:
         search.search._CheckQuery(keywords)
@@ -37,7 +37,7 @@ def valid_query(form, field):
         raise wtforms.ValidationError(unicode(e))
 
 
-def geocodable_location(form, field):
+def _geocodable_location(form, field):
     if field.data:
         geocode = gmaps_api.lookup_address(field.data)
         if not geocode:
@@ -58,8 +58,8 @@ class SearchException(Exception):
 
 
 class SearchForm(wtforms.Form):
-    location = wtforms.StringField(default='', validators=[no_wiki_or_html, geocodable_location])
-    keywords = wtforms.StringField(default='', validators=[no_wiki_or_html, valid_query])
+    location = wtforms.StringField(default='', validators=[_no_wiki_or_html, _geocodable_location])
+    keywords = wtforms.StringField(default='', validators=[_no_wiki_or_html, _valid_query])
     distance = wtforms.IntegerField(default=50)
     distance_units = wtforms.SelectField(choices=[('miles', 'Miles'), ('km', 'KM')], default='km')
     locale = wtforms.StringField(default='')
@@ -104,7 +104,7 @@ class SearchForm(wtforms.Form):
                 success = False
         return success
 
-    def get_bounds(self):
+    def _get_bounds(self):
         bounds = None
         if self.location.data:
             geocode = gmaps_api.lookup_address(self.location.data, language=self.locale.data)
@@ -112,7 +112,7 @@ class SearchForm(wtforms.Form):
         return bounds
 
     def build_query(self, start_end_query=False):
-        bounds = self.get_bounds()
+        bounds = self._get_bounds()
         keywords = _get_parsed_keywords(self.keywords.data)
         common_fields = dict(bounds=bounds, min_attendees=self.min_attendees.data, keywords=keywords)
         if start_end_query:
@@ -120,6 +120,18 @@ class SearchForm(wtforms.Form):
         else:
             query = SearchQuery(time_period=self.time_period.data, **common_fields)
         return query
+
+def normalize_location(form):
+    place = gmaps_api.fetch_place_as_json(query=form.location.data, language=form.locale.data)
+    if place['status'] == 'OK' and place['results']:
+        geocode = gmaps_api.GMapsGeocode(place['results'][0])
+        southwest, northeast = math.expand_bounds(geocode.latlng_bounds(), form.distance_in_km())
+        city_name = place['results'][0]['formatted_address']
+        # This will fail on a bad location, so let's verify the location is geocodable above first.
+        return city_name, southwest, northeast
+    else:
+        raise Exception('Error geocoding search address')
+
 
 
 class HtmlSearchForm(SearchForm):
