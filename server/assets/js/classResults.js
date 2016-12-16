@@ -48,8 +48,8 @@ StudioImage.contextTypes = {
 
 class SelectButton extends React.Component {
   props: {
-    onChange: () => void;
-    value: boolean;
+    toggleState: () => void;
+    active: boolean;
     thumbnail?: boolean;
     item: string;
   }
@@ -59,34 +59,22 @@ class SelectButton extends React.Component {
   constructor(props) {
     super(props);
     (this: any).toggleState = this.toggleState.bind(this);
-    (this: any).manualToggleState = this.manualToggleState.bind(this);
-    (this: any).isActive = this.isActive.bind(this);
   }
 
   toggleState(e) {
-    this.manualToggleState();
-    this.props.onChange();
+    this.props.toggleState();
+    this._button.blur();
     e.preventDefault();
-  }
-
-  manualToggleState() {
-    const button = $(this._button);
-    button.toggleClass('active');
-    button.blur();
-  }
-
-  isActive() {
-    return $(this._button).hasClass('active');
   }
 
   render() {
     let extraClass = '';
-    if (this.props.value) {
+    if (this.props.active) {
       extraClass = 'active';
     }
     const contents = [];
     if (this.props.thumbnail) {
-      contents.push(<StudioImage studioName={this.props.item} />);
+      contents.push(<StudioImage key="image" studioName={this.props.item} />);
     }
     contents.push(this.props.item);
 
@@ -105,93 +93,73 @@ class SelectButton extends React.Component {
 
 class MultiSelectList extends React.Component {
   props: {
-    onChange: () => void;
     list: Array<string>;
-    value: Array<string>;
     thumbnails?: boolean;
+    onChange: () => void;
   }
 
-  _itemRefs: { [id: string]: SelectButton };
+  state: Object;
 
   constructor(props) {
     super(props);
-    this._itemRefs = {};
+    (this: any).toggleItem = this.toggleItem.bind(this);
     (this: any).setAll = this.setAll.bind(this);
-    (this: any).unsetAll = this.unsetAll.bind(this);
+    this.state = this.generateUniformState(true);
   }
 
-  getValues() {
-    const values = [];
-    this.props.list.forEach((item, i) => {
-      if (this._itemRefs[`item${i}`].isActive()) {
-        values.push(item);
-      }
-    });
-    return values;
+  getSelected() {
+    return Object.keys(this.state).filter(x => this.state[x]);
   }
 
-  setAll() {
-    this.props.list.forEach((item, i) => {
-      if (this._itemRefs[`item${i}`].isActive()) {
-        this._itemRefs[`item${i}`].manualToggleState();
-      }
-    });
-    // Ensure we leave it active
-    if (!this._itemRefs['item-all'].isActive()) {
-      this._itemRefs['item-all'].manualToggleState();
+  setAll(item) {
+    this.setState(this.generateUniformState(true));
+    this.props.onChange();
+  }
+
+  isAllSelected() {
+    return this.getSelected().length === this.props.list.length;
+  }
+
+  toggleItem(item) {
+    if (this.isAllSelected()) {
+      const newState = this.generateUniformState(false);
+      newState[item] = true;
+      this.setState(newState);
+    } else {
+      this.setState({ [item]: !this.state[item] });
     }
     this.props.onChange();
   }
 
-  unsetAll() {
-    if (this._itemRefs['item-all'].isActive()) {
-      this._itemRefs['item-all'].manualToggleState();
-    }
-
-    let anySet = false;
-    this.props.list.forEach((item, i) => {
-      if (this._itemRefs[`item${i}`].isActive()) {
-        anySet = true;
-      }
+  generateUniformState(value: boolean) {
+    const newState = {};
+    this.props.list.forEach((x) => {
+      newState[x] = value;
     });
-    if (!anySet) {
-      this._itemRefs['item-all'].manualToggleState();
-    }
-
-    this.props.onChange();
+    return newState;
   }
 
   render() {
     const options = [];
-    const emptyList = (this.props.value.length === 0);
+    const allSelected = this.isAllSelected();
     options.push(
       <SelectButton
         key="All"
         item="All"
-        ref={(x) => { this._itemRefs['item-all'] = x; }}
-        value={emptyList}
-        onChange={this.setAll}
+        active={allSelected}
+        toggleState={this.setAll}
       />
     );
     const thumbnails = this.props.thumbnails;
-    const value = this.props.value;
-    const unsetAll = this.unsetAll;
+    const value = this.getSelected();
     this.props.list.forEach((item, i) => {
-      const subItems = [item];
-      const realItem = item;
-
-      let selected = true;
-      subItems.forEach((subItem) => {
-        selected = selected && (value.indexOf(subItem) !== -1);
-      });
-
+      const selected = !allSelected && value.indexOf(item) !== -1;
       options.push(
         <SelectButton
-          key={realItem}
-          item={realItem}
-          ref={(x) => { this._itemRefs[`item${i}`] = x; }}
-          value={selected}
-          onChange={unsetAll}
+          key={item}
+          item={item}
+          active={selected}
+          toggleState={() => this.toggleItem(item)}
           thumbnail={thumbnails}
         />
       );
@@ -283,8 +251,8 @@ class SearchBar extends React.Component {
 
   onChange() {
     this.props.onUserInput(
-      this._styles.getValues(),
-      this._studios.getValues(),
+      this._styles.getSelected(),
+      this._studios.getSelected(),
       this._teacher.value
     );
   }
