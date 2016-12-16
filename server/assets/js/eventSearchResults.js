@@ -65,8 +65,6 @@ class EventFlyer extends React.Component {
     if (!picture) {
       return null;
     }
-    const eventImageUrl = picture.source;
-
     const width = 180;
     const height = 180;
 
@@ -83,7 +81,7 @@ class EventFlyer extends React.Component {
     }
     return (
       <div className="event-image">
-        <a className="link-event-flyer" href={eventImageUrl}>
+        <a className="link-event-flyer" href={event.getUrl()}>
           {imageTag}
         </a>
       </div>
@@ -154,6 +152,19 @@ class HorizontalEvent extends React.Component {
   }
 }
 
+class VerticalEvent extends React.Component {
+  props: {
+    event: SearchEvent;
+  }
+
+  render() {
+    return (<div>
+      <EventFlyer event={this.props.event} />
+      <EventDescription event={this.props.event} />
+    </div>);
+  }
+}
+
 class CurrentEvents extends React.Component {
   props: {
     events: Array<SearchEvent>;
@@ -162,14 +173,12 @@ class CurrentEvents extends React.Component {
   render() {
     const resultItems = [];
     this.props.events.forEach((event, index) => {
-      resultItems.push(<li key={event.id}><HorizontalEvent key={event.id} event={event} lazyLoad={index > 8} /></li>);
+      resultItems.push(<HorizontalEvent key={event.id} event={event} />);
     });
 
-    return (
-      <ol className="events-list">
-        {resultItems}
-      </ol>
-    );
+    return (<div>
+      {resultItems}
+    </div>);
   }
 }
 
@@ -225,12 +234,13 @@ class ResultsList extends React.Component {
       const pastEvents = resultEvents.filter(event => moment(event.start_time) < now);
       return <EventsList events={pastEvents} />;
     } else {
+      // DEBUG CODE: const currentEvents = resultEvents;
       const currentEvents = resultEvents.filter(event => moment(event.start_time) < now && moment(event.end_time) > now);
       const futureEvents = resultEvents.filter(event => moment(event.start_time) > now);
       return (<div>
-        <CurrentEvents
+        {currentEvents.length ? <CurrentEvents
           events={currentEvents}
-        />
+        /> : null}
         <EventsList
           events={futureEvents}
         />
