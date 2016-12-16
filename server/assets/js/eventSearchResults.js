@@ -15,6 +15,7 @@ import {
 } from 'react-intl';
 import LazyLoad from 'react-lazyload';
 import { StickyContainer, Sticky } from 'react-sticky';
+import MasonryLayout from 'react-masonry-layout';
 import {
   Internationalize,
 } from 'dancedeets-common/js/intl';
@@ -36,7 +37,7 @@ import {
 import {
   formatAttending,
 } from 'dancedeets-common/js/events/helpers';
-import MasonryLayout from 'react-masonry-layout';
+import { Card } from './ui';
 
 type OneboxResult = any;
 type EventResult = SearchEvent;
@@ -143,14 +144,14 @@ class HorizontalEvent extends React.Component {
   render() {
     const event = this.props.event;
     return (
-      <div className="wide-event clearfix">
+      <Card className="wide-event clearfix">
         <div className="event-image">
           <EventFlyer event={this.props.event} lazyLoad={this.props.lazyLoad} />
         </div>
         <div className="event-description">
           <EventDescription event={this.props.event} />
         </div>
-      </div>
+      </Card>
     );
   }
 }
@@ -162,11 +163,10 @@ class VerticalEvent extends React.Component {
 
   render() {
     const event = this.props.event;
-    return (<div
+    return (<Card
       style={{
         display: 'inline-block',
-        width: 180,
-        margin: 10,
+        width: 200,
         verticalAlign: 'top',
       }}
     >
@@ -180,8 +180,7 @@ class VerticalEvent extends React.Component {
         <div>{event.venue.name}</div>
         <FormatText>{event.venue.streetCityStateCountry('\n')}</FormatText>
       </div>
-      <hr />
-    </div>);
+    </Card>);
   }
 }
 

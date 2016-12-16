@@ -43,6 +43,7 @@ import { RsvpComponent } from './eventRsvp';
 import type { RsvpValue } from './eventRsvp';
 import { getReactDanceEventSchema } from './eventSchema';
 import { Message } from './intl';
+import { Card } from './ui';
 
 type RequiredImage = {
   source: number; // aka required package
@@ -63,18 +64,6 @@ function intersperse(arr: Array<any>, sep: string) {
   }
 
   return arr.slice(1).reduce((xs, x) => xs.concat([sep, x]), [arr[0]]);
-}
-
-class Card extends React.Component {
-  props: {
-    children?: Array<React.Element<*>>;
-  }
-
-  render() {
-    return (<div className="card">
-      {this.props.children}
-    </div>);
-  }
 }
 
 class Title extends React.Component {
