@@ -50,6 +50,10 @@ def update_and_save_web_events(events_to_update, update_geodata=True):
     _save_events(db_events)
 
 
+def resave_display_events(db_events):
+    display_events = [search.DisplayEvent.build(x) for x in db_events]
+    ndb.put_multi([x for x in display_events if x])
+
 def _save_events(db_events):
     objects_to_put = list(db_events)
     objects_to_put += [search.DisplayEvent.build(x) for x in db_events]
