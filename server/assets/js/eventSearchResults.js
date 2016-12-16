@@ -154,31 +154,38 @@ class HorizontalEvent extends React.Component {
   }
 }
 
-class _ResultsList extends React.Component {
+class CurrentEvents extends React.Component {
   props: {
-    results: NewSearchResults;
-    past: boolean;
+    events: Array<SearchEvent>;
+  }
+
+  render() {
+    const resultItems = [];
+    this.props.events.forEach((event, index) => {
+      resultItems.push(<li key={event.id}><HorizontalEvent key={event.id} event={event} lazyLoad={index > 8} /></li>);
+    });
+
+    return (
+      <ol className="events-list">
+        {resultItems}
+      </ol>
+    );
+  }
+}
+
+class _EventsList extends React.Component {
+  props: {
+    events: Array<SearchEvent>;
 
     // Self-managed props
     intl: intlShape;
   }
-  render() {
-    const resultEvents = this.props.results.results.map(eventData => new SearchEvent(eventData));
 
-    const now = moment();
-    let events = [];
-    if (this.props.past) {
-      events = resultEvents.filter(event => moment(event.start_time) < now);
-    } else {
-      events = resultEvents.filter(event => moment(event.end_time) > now);
-    }
-    // const futureEvents = resultEvents.filter(event => moment(event.start_time) > now);
-    // const currentEvents = resultEvents.filter(event => moment(event.start_time) < now && moment(event.end_time) > now);
-    // const nonPastEvents = resultEvents.filter(event => moment(event.end_time) > now);
+  render() {
     const resultItems = [];
     let currentDate = null;
     let currentTime = null;
-    events.forEach((event, index) => {
+    this.props.events.forEach((event, index) => {
       const eventStart = moment(event.start_time);
       const eventStartDate = upperFirst(this.props.intl.formatDate(eventStart.toDate(), weekdayDate));
       const eventStartTime = upperFirst(this.props.intl.formatDate(eventStart.toDate(), weekdayTime));
@@ -193,6 +200,7 @@ class _ResultsList extends React.Component {
       }
       resultItems.push(<li key={event.id}><HorizontalEvent key={event.id} event={event} lazyLoad={index > 8} /></li>);
     });
+
     return (
       <StickyContainer>
         <ol className="events-list">
@@ -202,7 +210,34 @@ class _ResultsList extends React.Component {
     );
   }
 }
-const ResultsList = injectIntl(_ResultsList);
+const EventsList = injectIntl(_EventsList);
+
+class ResultsList extends React.Component {
+  props: {
+    results: NewSearchResults;
+    past: boolean;
+  }
+  render() {
+    const resultEvents = this.props.results.results.map(eventData => new SearchEvent(eventData));
+
+    const now = moment();
+    if (this.props.past) {
+      const pastEvents = resultEvents.filter(event => moment(event.start_time) < now);
+      return <EventsList events={pastEvents} />;
+    } else {
+      const currentEvents = resultEvents.filter(event => moment(event.start_time) < now && moment(event.end_time) > now);
+      const futureEvents = resultEvents.filter(event => moment(event.start_time) > now);
+      return (<div>
+        <CurrentEvents
+          events={currentEvents}
+        />
+        <EventsList
+          events={futureEvents}
+        />
+      </div>);
+    }
+  }
+}
 
 
 class InternationalizedResultsList extends React.Component {
