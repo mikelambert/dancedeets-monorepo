@@ -4,14 +4,14 @@
  * @flow
  */
 
-import 'babel-polyfill';
-import React from 'react';
-import ReactDOM from 'react-dom';
-import App from './classResults';
+import renderReact from './renderReact';
 
-ReactDOM.render(
-  <App
-    {...window._REACT_PROPS}
-  />,
-  document.getElementById(window._REACT_ID)
-);
+function render() {
+  renderReact(require('./classResults').default); // eslint-disable-line global-require
+}
+
+render();
+
+if (module.hot) {
+  module.hot.accept('./classResults', render);
+}
