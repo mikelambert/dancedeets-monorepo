@@ -4,14 +4,14 @@
  * @flow
  */
 
-import 'babel-polyfill';
-import React from 'react';
-import ReactDOM from 'react-dom';
-import EventPage from './event';
+import renderReact from './renderReact';
 
-ReactDOM.render(
-  <EventPage
-    {...window._REACT_PROPS}
-  />,
-  document.getElementById(window._REACT_ID)
-);
+function render() {
+  renderReact(require('./event').default); // eslint-disable-line global-require
+}
+
+render();
+
+if (module.hot) {
+  module.hot.accept('./event', render);
+}

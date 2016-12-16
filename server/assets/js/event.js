@@ -72,7 +72,7 @@ class Title extends React.Component {
 
     let categoryLinks = null;
     if (event.annotations.categories) {
-      const categories = event.annotations.categories.map(x => <a href={`/?keywords=${x}`}>{x}</a>);
+      const categories = event.annotations.categories.map(x => <a key={x} href={`/?keywords=${x}`}>{x}</a>);
       categoryLinks = <li key="category">categorized as: {intersperse(categories, ', ')}.</li>;
     }
     let locationLinks = null;
@@ -199,8 +199,7 @@ class _EventLinks extends React.Component {
     let organizerElement = null;
     if (event.admins.length) {
       const admins = event.admins.map(admin => (
-        <li><a
-          key={admin.id}
+        <li key={admin.id}><a
           className="link-event-admin"
           href={`https://www.facebook.com/${admin.id}`}
         >{admin.name}</a></li>));
