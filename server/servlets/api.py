@@ -16,9 +16,6 @@ from events import add_events
 from events import eventdata
 import fb_api
 import keys
-from loc import formatting
-from loc import gmaps_api
-from loc import math
 from search import onebox
 from search import search
 from search import search_base
@@ -204,7 +201,7 @@ class SearchHandler(ApiHandler):
                     self.add_error('Please enter a location or keywords')
         else:
             try:
-                city_name, southwest, northeast = normalize_location(form)
+                city_name, southwest, northeast = search_base.normalize_location(form)
             except:
                 if self.version == (1, 0):
                     self.write_json_success({'results': []})
@@ -381,14 +378,15 @@ def canonicalize_search_event_data(result, version):
             'latitude': result.data['lat'],
         }
     event_api['venue'] = {
-        'name': result.data['location'], # TODO: ReactResults
+        'name': result.data.get('venue', {}).get('name', None),
         'geocode': geocode,
+        'address': result.data.get('venue', {}).get('address', None),
     }
-    if True: #result.data.get('image_width'):
+    if result.data.get('picture'):
         event_api['picture'] = {
             'source': urls.event_image_url(result.event_id),
-            'width': result.data.get('image_width', 1),
-            'height': result.data.get('image_height', 1),
+            'width': result.data.get('picture', {}).get('width', 1),
+            'height': result.data.get('picture', {}).get('height', 1),
         }
     else:
         event_api['picture'] = None
