@@ -254,6 +254,7 @@ gulp.task('react-server', $.shell.task(['../runNode.js ./node_server/renderServe
 
 // Workable Dev Server (1): Hot reloading
 // Port 8090: Backend React Render server
+// (We don't really use this, but it's there in case our generate_amp_sources/compilation tasks want it)
 gulp.task('server:hot:react', ['react-server']);
 // Port 8085: Middle Python server.
 gulp.task('server:hot:python', ['dev-appserver:server:hot']);
