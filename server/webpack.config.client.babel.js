@@ -47,10 +47,13 @@ const config = {
     new ExtractTextPlugin('../css/[name].css'),
     ifProd(new webpack.optimize.DedupePlugin()),
     ifProd(new webpack.optimize.UglifyJsPlugin()),
-    ifProd(new webpack.optimize.CommonsChunkPlugin({
+    // We need to have commons-chunk enabled in dev, too:
+    // Sometimes we have two code files both depending on jquery,
+    // but loading two jquerys causes things to break in strange ways.
+    new webpack.optimize.CommonsChunkPlugin({
       name: 'common',
       minChunks: isCommonModule,
-    })),
+    }),
   ].filter(x => x),
   resolve: {
     extensions: ['', '.js', '.jsx'],
