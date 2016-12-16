@@ -81,10 +81,11 @@ class RelevantHandler(SearchHandler):
             city_name = None
             southwest = None
             northeast = None
-            try:
-                city_name, southwest, northeast = search_base.normalize_location(form)
-            except:
-                self.add_error('Unknown location: %s' % form.location.data)
+            if form.location.data:
+                try:
+                    city_name, southwest, northeast = search_base.normalize_location(form)
+                except:
+                    self.add_error('Unknown location: %s' % form.location.data)
 
             need_full_event = False
             if self.request.get('new', '1') == '1':
