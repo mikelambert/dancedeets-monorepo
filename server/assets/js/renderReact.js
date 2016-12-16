@@ -7,7 +7,7 @@
 import 'babel-polyfill';
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { ReactClass } from 'react/lib/ReactClass';
+import type { ReactClass } from 'react/lib/ReactClass';
 import { AppContainer } from 'react-hot-loader';
 
 export default function (Component: ReactClass) {
