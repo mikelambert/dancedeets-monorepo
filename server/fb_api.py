@@ -248,7 +248,7 @@ class LookupThingFeed(LookupType):
         return [
             # Can't pass fields=OBJ_SOURCE_FIELDS, because we can't guarantee it has all these fields (groups vs pages vs profiles etc)
             ('info', cls.url('%s' % object_id)),
-            ('feed', cls.url('%s/feed?fields=from,link,actions,message' % object_id)),
+            ('feed', cls.url('%s/feed?fields=created_time,from,link,actions,message' % object_id)),
             ('events', cls.url('%s/events' % object_id)),
         ]
     @classmethod
