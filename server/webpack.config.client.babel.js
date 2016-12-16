@@ -3,6 +3,7 @@ import ExtractTextPlugin from 'extract-text-webpack-plugin';
 import path from 'path';
 import uncss from 'uncss';
 import { argv as env } from 'yargs';
+import combineLoaders from 'webpack-combine-loaders';
 
 function isCommonModule(module) {
   const userRequest = module.userRequest;
@@ -70,14 +71,18 @@ const config = {
       {
         test: /\.jsx?$/,
         exclude: /(node_modules|bower_components)/,
-        loader: 'babel',
-        query: {
-          presets: ['latest', 'react'],
-          plugins: [
-            'transform-object-rest-spread',
-            'transform-flow-strip-types',
-          ],
-        },
+        loader: combineLoaders([
+          {
+            loader: 'babel',
+            query: {
+              presets: ['latest', 'react'],
+              plugins: [
+                'transform-object-rest-spread',
+                'transform-flow-strip-types',
+              ],
+            },
+          },
+        ]),
       },
       {
         test: /\.json$/,
@@ -89,10 +94,24 @@ const config = {
       },
       {
         test: /\.png$/,
-        loaders: [
-          'url-loader?limit=10000&mimetype=application/font-woff&name=../img/[name].[ext]',
-          'image-webpack?bypassOnDebug&optimizationLevel=7&interlaced=false',
-        ],
+        loader: combineLoaders([
+          {
+            loader: 'url',
+            query: {
+              limit: 10000,
+              mimetype: 'application/font-woff',
+              name: '../img/[name].[ext]',
+            },
+          },
+          {
+            loader: 'image-webpack',
+            query: {
+              bypassOnDebug: true,
+              optimizationLevel: 7,
+              interlaced: false,
+            },
+          }
+        ]),
       },
       {
         test: /\.jpg$/,

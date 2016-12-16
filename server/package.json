@@ -49,6 +49,7 @@
     "url-loader": "^0.5.7",
     "username": "^2.1.0",
     "webpack": "^1.14.0",
+    "webpack-combine-loaders": "^2.0.3",
     "webpack-dev-middleware": "^1.8.4",
     "webpack-hot-middleware": "^2.13.2",
     "yargs": "^6.5.0"
