@@ -87,7 +87,7 @@ class RelevantHandler(SearchHandler):
                 self.add_error('Unknown location: %s', form.location.data)
 
             need_full_event = False
-            if self.request.get('new') == '1':
+            if self.request.get('new', '1') == '1':
                 json_search_response = api.build_search_results_api(city_name, form, search_query, search_results, (2, 0), need_full_event, southwest, northeast)
                 props = dict(
                     results=json_search_response,
