@@ -4,12 +4,12 @@
  * @flow
  */
 
-require('trackjs');
-require('jquery.backstretch');
-require('jquery.smartbanner');
-require('bootstrap');
-require('./all-css');
+import 'trackjs';
+import 'jquery.backstretch';
+import 'jquery.smartbanner';
+import 'bootstrap';
 import jQuery from 'jquery';
+import './all-css';
 import './stackdriver-errors';
 import fbSetup from './fb';
 import fixStickyTouch from './sticky-touch';
