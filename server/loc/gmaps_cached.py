@@ -38,7 +38,7 @@ class CachedBackend(gmaps_backends.GMapsBackend):
             json_data = geocode.json_data
         else:
             json_data = self.backend.get_json(**kwargs)
-            if json_data['status'] in ['OK', 'ZERO_RESULTS']:
+            if json_data['status'] in ['OK', 'ZERO_RESULTS', 'INVALID_REQUEST']:
                 geocode = CachedGeoCode(id=geocode_key, json_data=json_data)
                 geocode.put()
         return json_data
