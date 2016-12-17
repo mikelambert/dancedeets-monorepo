@@ -8,8 +8,6 @@ const $ = require('jquery');
 global.$ = global.jQuery = $;
 
 require('jquery.backstretch');
-// TODO: Remove this once we are fully live with the React templates for list views
-require('jquery-lazyload');
 
 require('jquery.smartbanner');
 

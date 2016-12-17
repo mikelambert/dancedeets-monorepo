@@ -69,7 +69,6 @@
     "intl": "^1.2.5",
     "intl-locales-supported": "^1.0.0",
     "jquery": "^3.0.0",
-    "jquery-lazyload": "^1.9.7",
     "jquery.backstretch": "^2.1.1",
     "jquery.smartbanner": "^0.1.0",
     "lodash": "^4.17.2",

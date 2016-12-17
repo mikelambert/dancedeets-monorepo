@@ -155,20 +155,6 @@
 <script src="//cdn.jsdelivr.net/jquery.lazyload/1.9.3/jquery.lazyload.min.js" crossorigin="anonymous"></script>
 <script src="//cdn.jsdelivr.net/masonry/3.1.5/masonry.min.js" crossorigin="anonymous"></script>
 
-<script type="text/javascript">
-$(document).ready(function() {
-
-	$("img.lazy-narrow").show().lazyload({threshold : 500});
-	$("img.lazy-wide").show().lazyload({threshold : 500});
-
-	var container = $('#event-container');
-	// initialize
-	container.masonry({
-	  columnWidth: 200,
-	  itemSelector: '.event-item'
-	});
-});
-</script>
 </script>
 
 {% endblock %}
