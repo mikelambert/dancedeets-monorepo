@@ -1,0 +1,44 @@
+{
+    "html_attributions": [], 
+    "results": [
+        {
+            "formatted_address": "New York, NY, USA", 
+            "geometry": {
+                "location": {
+                    "lat": 40.7127837, 
+                    "lng": -74.0059413
+                }, 
+                "viewport": {
+                    "northeast": {
+                        "lat": 40.9152555, 
+                        "lng": -73.70027209999999
+                    }, 
+                    "southwest": {
+                        "lat": 40.4960439, 
+                        "lng": -74.2557349
+                    }
+                }
+            }, 
+            "icon": "https://maps.gstatic.com/mapfiles/place_api/icons/geocode-71.png", 
+            "id": "7eae6a016a9c6f58e2044573fb8f14227b6e1f96", 
+            "name": "New York", 
+            "photos": [
+                {
+                    "height": 2988, 
+                    "html_attributions": [
+                        "<a href=\"https://maps.google.com/maps/contrib/100960515049678892561/photos\">Paul Got</a>"
+                    ], 
+                    "photo_reference": "CoQBdwAAAAf9UVFP-BiRbtz3qBrK8Yzlts3DrkopHfXSyfBuLfRbKdg01Aln2-NhMuPBniJdpWwyQIVIQxkomfGD3jM1UXKWlx8vSImY4AYum5y-HGE-euOqjn4wx3V2fmRbyeFZOpfMLvWgUWaaF528WRoQ4k4n5sYbTBRgie1T8b-mGZSaEhCYK9COTjCHJpoVgkZv2YDZGhRHRtkmXck-gdqTmYbYkRejXAYPfw", 
+                    "width": 5312
+                }
+            ], 
+            "place_id": "ChIJOwg_06VPwokRYv534QaPC8g", 
+            "reference": "CmRbAAAAZWe8xM5vsO8K6NMpjtwlFdu590p-9gE50---PQxE2qw8UV5RV6hmhV2VQkqhus3uxZt9x6MzZYlSrzyn_tfvAYZWY77naNpB9EKcMyXvSJaYRQB51CsNRXZMsixyqZZiEhBK8bL6tNP_QK6bDzooauMZGhT-50l_2R55CtlZJO0QRk5nuiTOCA", 
+            "types": [
+                "locality", 
+                "political"
+            ]
+        }
+    ], 
+    "status": "OK"
+}
