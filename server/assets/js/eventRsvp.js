@@ -4,7 +4,6 @@
  * @flow
  */
 
-import $ from 'jquery';
 import React from 'react';
 import {
   injectIntl,
@@ -17,6 +16,7 @@ import {
 } from 'dancedeets-common/js/events/models';
 import { Message } from './intl';
 import fetch from './fetch';
+import { fbLoadEmitter } from './fb';
 
 const choiceStrings = [
   {
@@ -63,7 +63,7 @@ class _RsvpComponent extends React.Component {
 
   componentDidMount() {
     if (!window.hasCalledFbInit) {
-      $(document).bind('fb-load', () => {
+      fbLoadEmitter.once('fb-load', () => {
         this.componentDidMount();
       });
       return;

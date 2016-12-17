@@ -1,5 +1,9 @@
-const jQuery = require('jquery');
+import EventEmitter from 'eventemitter3';
+import jQuery from 'jquery';
+
 require('jquery.cookie');
+
+export const fbLoadEmitter = new EventEmitter();
 
 const FBSetup = (fbPermissions, fbAppId, baseHostname) => {
   let loginPressed = false;
@@ -83,7 +87,7 @@ const FBSetup = (fbPermissions, fbAppId, baseHostname) => {
 
     FB.init({ version: 'v2.8', appId: fbAppId, status: true, cookie: true, xfbml: true });
     window.hasCalledFbInit = true;
-    jQuery(document).trigger('fb-load');
+    fbLoadEmitter.emit('fb-load');
     FB.Event.subscribe('auth.statusChange', handleStatusChange);
     FB.getLoginStatus((response) => {
       handleStatusChange(response);
