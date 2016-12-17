@@ -1,7 +1,6 @@
 import EventEmitter from 'eventemitter3';
 import jQuery from 'jquery';
-
-require('jquery.cookie');
+import cookie from 'react-cookie';
 
 export const fbLoadEmitter = new EventEmitter();
 
@@ -13,8 +12,8 @@ const FBSetup = (fbPermissions, fbAppId, baseHostname) => {
       domain: `.${baseHostname}`,
       path: '/',
     };
-    jQuery.removeCookie(`fbsr_${fbAppId}`, cookieOptions);
-    jQuery.removeCookie(`user_login_${fbAppId}`, cookieOptions);
+    cookie.remove(`fbsr_${fbAppId}`, cookieOptions);
+    cookie.remove(`user_login_${fbAppId}`, cookieOptions);
   }
 
   function reloadWithNewToken() {
@@ -26,9 +25,9 @@ const FBSetup = (fbPermissions, fbAppId, baseHostname) => {
   }
 
   function currentUser() {
-    const userLogin = jQuery.cookie(`user_login_${fbAppId}`);
+    const userLogin = cookie.load(`user_login_${fbAppId}`);
     if (userLogin) {
-      return JSON.parse(userLogin).uid;
+      return userLogin.uid;
     }
     return null;
   }
