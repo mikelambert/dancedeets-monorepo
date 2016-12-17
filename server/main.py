@@ -59,11 +59,6 @@ def webapp_add_wsgi_middleware(app):
 
     return app
 
-
-def is_local_appengine():
-    return ('APPENGINE_RUNTIME' in os.environ and
-            'Development/' in os.environ['SERVER_SOFTWARE'])
-
 from react.conf import settings
 settings.configure(
     # We want to always use the render server, since we may be rendering things that we aren't sending clientside code to render
