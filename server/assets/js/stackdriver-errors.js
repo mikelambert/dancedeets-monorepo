@@ -1,3 +1,9 @@
+/**
+ * Copyright 2016 DanceDeets.
+ *
+ * @flow
+ */
+
 import StackTrace from 'stacktrace-js';
 import { StackdriverErrorReporter } from 'stackdriver-errors-js';
 

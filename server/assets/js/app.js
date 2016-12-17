@@ -4,7 +4,7 @@
 * Author: @htmlstream
 * Website: http://htmlstream.com
 */
-const jQuery = require('jquery');
+import jQuery from 'jquery';
 
 const App = (() => {
   // Fixed Header

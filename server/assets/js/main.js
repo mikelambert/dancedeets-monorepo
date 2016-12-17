@@ -1,42 +1,39 @@
-
-import './stackdriver-errors';
+/**
+ * Copyright 2016 DanceDeets.
+ *
+ * @flow
+ */
 
 require('trackjs');
-
-const $ = require('jquery');
-
-global.$ = global.jQuery = $;
-
 require('jquery.backstretch');
-
 require('jquery.smartbanner');
-
 require('bootstrap');
-
 require('./all-css');
+import jQuery from 'jquery';
+import './stackdriver-errors';
+import fbSetup from './fb';
+import fixStickyTouch from './sticky-touch';
+import appInstallPromos from './app-install-promo';
 
-const App = require('./app');
-
-const fbSetup = require('./fb');
-
-const fixStickyTouch = require('./sticky-touch');
-
-const appInstallPromos = require('./app-install-promo');
+global.$ = global.jQuery = jQuery;
 
 fbSetup(window.fbPermissions, window.fbAppId, window.baseHostname);
 
 if (window.showSmartBanner) {
-  $.smartbanner({
+  jQuery.smartbanner({
     title: 'DanceDeets',
     author: 'DanceDeets',
     icon: '/images/ic_launcher_dancedeets.png',
   });
 }
 
-$(document).ready(() => {
-  App.init($);
-  fixStickyTouch(window);
-  appInstallPromos(window);
+jQuery(document).ready(() => {
+  jQuery(document).on('click', '.mega-menu .dropdown-menu', (e) => {
+    e.stopPropagation();
+  });
+
+  fixStickyTouch();
+  appInstallPromos();
 
   // background-image rotation
   let images = [
@@ -52,20 +49,20 @@ $(document).ready(() => {
     'dist/img/background-show-dj.jpg', // slim
 //    'dist/img/background-club-headspin.jpg',
   ];
-  if ($(document).width() > 900) {
+  if (jQuery(document).width() > 900) {
     images = images.map(x => x.replace('.jpg', '@2x.jpg'));
   }
-  $('.fullscreen-static-image').backstretch(images, { duration: 8000, fade: 1500 });
+  jQuery('.fullscreen-static-image').backstretch(images, { duration: 8000, fade: 1500 });
 
   // animate-on-hover
-  $('.animate-on-hover').hover(() => {
-    const action = $(this).data('action');
-    $(this).addClass(`animated ${action}`);
+  jQuery('.animate-on-hover').hover(() => {
+    const action = jQuery(this).data('action');
+    jQuery(this).addClass(`animated ${action}`);
   });
-  $('.animate-on-hover').bind('animationend webkitAnimationEnd oAnimationEnd MSAnimationEnd', () => {
-    const action = $(this).data('action');
-    $(this).removeClass(`animated ${action}`);
+  jQuery('.animate-on-hover').bind('animationend webkitAnimationEnd oAnimationEnd MSAnimationEnd', () => {
+    const action = jQuery(this).data('action');
+    jQuery(this).removeClass(`animated ${action}`);
   });
 
-  $('#location_submit').click(() => Boolean($('#location').val()));
+  jQuery('#location_submit').click(() => Boolean(jQuery('#location').val()));
 });

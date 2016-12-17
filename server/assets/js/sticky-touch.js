@@ -1,3 +1,9 @@
+/**
+ * Copyright 2016 DanceDeets.
+ *
+ * @flow
+ */
+
 // This is because of sticky touch CSS on mobile devices:
 // https://github.com/twbs/bootstrap/issues/12832
 // With bootstrap v4, we can replace this with:
@@ -5,7 +11,7 @@
 // For other solutions, see:
 // http://stackoverflow.com/questions/17233804/how-to-prevent-sticky-hover-effects-for-buttons-on-touch-devices
 // http://stackoverflow.com/questions/23885255/how-to-remove-ignore-hover-css-style-on-touch-devices?lq=1
-function fixStickyTouch(window) {
+function fixStickyTouch() {
   const touch = 'ontouchstart' in window ||
           window.navigator.MaxTouchPoints > 0 ||
           window.navigator.msMaxTouchPoints > 0;

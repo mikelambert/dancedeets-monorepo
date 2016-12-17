@@ -4,7 +4,7 @@
  * @flow
  */
 
-import $ from 'jquery';
+import jQuery from 'jquery';
 import React from 'react';
 import Scroll from 'react-scroll';
 import dateFormat from 'date-fns/format';
@@ -198,7 +198,7 @@ class DayLink extends React.Component {
       smooth: true,
       delay: 100,
       duration: 500,
-      offset: -($('#navbar').outerHeight() + 20),
+      offset: -(jQuery('#navbar').outerHeight() + 20),
     });
   }
 
@@ -446,16 +446,16 @@ class StudioClasses extends React.Component {
 }
 
 function toggleSearchBar() {
-  $('#navbar-collapsable').slideToggle('fast');
-  const icon = $('#navbar-collapse-button-icon');
+  jQuery('#navbar-collapsable').slideToggle('fast');
+  const icon = jQuery('#navbar-collapse-button-icon');
   if (icon.hasClass('fa-caret-square-o-up')) {
     icon.removeClass('fa-caret-square-o-up');
     icon.addClass('fa-caret-square-o-down');
-    $('#navbar-collapsed-summary').show();
+    jQuery('#navbar-collapsed-summary').show();
   } else {
     icon.removeClass('fa-caret-square-o-down');
     icon.addClass('fa-caret-square-o-up');
-    $('#navbar-collapsed-summary').hide();
+    jQuery('#navbar-collapsed-summary').hide();
   }
 }
 
@@ -528,7 +528,7 @@ export default class App extends React.Component {
     let startTime;
     let skipScroll = false;
 
-    $('#navbar').on({
+    jQuery('#navbar').on({
       touchstart(jqueryEvent) {
         const e = jqueryEvent.originalEvent;
         if (!e.changedTouches) {
@@ -553,11 +553,11 @@ export default class App extends React.Component {
         const elapsedTime = new Date().getTime() - startTime; // get time elapsed
         const validSwipe = elapsedTime <= allowedTime && Math.abs(touchobj.pageY - startY) > 50 && Math.abs(touchobj.pageX - startX) <= 100;
         if (validSwipe) {
-          if ($('#navbar-collapsable').is(':visible') && touchobj.pageY < startY) {
+          if (jQuery('#navbar-collapsable').is(':visible') && touchobj.pageY < startY) {
             toggleSearchBar();
             e.preventDefault();
           }
-          if (!$('#navbar-collapsable').is(':visible') && touchobj.pageY > startY) {
+          if (!jQuery('#navbar-collapsable').is(':visible') && touchobj.pageY > startY) {
             toggleSearchBar();
             e.preventDefault();
           }
@@ -569,8 +569,8 @@ export default class App extends React.Component {
   componentDidUpdate() {
     // Now scroll back so the navbar is directly at the top of the screen
     // and all of the results start fresh, beneath it
-    const normalAffixedTop = $('#navbar-container').offset().top;
-    if ($(document).scrollTop() > normalAffixedTop) {
+    const normalAffixedTop = jQuery('#navbar-container').offset().top;
+    if (jQuery(document).scrollTop() > normalAffixedTop) {
       window.scroll(0, normalAffixedTop);
     }
   }

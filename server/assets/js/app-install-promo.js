@@ -1,24 +1,30 @@
+/**
+ * Copyright 2016 DanceDeets.
+ *
+ * @flow
+ */
+
 import cookie from 'react-cookie';
-import $ from 'jquery';
+import jQuery from 'jquery';
+
+function hideAppPromo() {
+  cookie.save('ap-closed', '1', { expires: 4 });
+}
 
 /* center modal */
-function initAppPromos(window) {
-  function hideAppPromo() {
-    cookie.save('ap-closed', '1', { expires: 4 });
-  }
-
+function initAppPromos() {
   // Only show the promo if it's the second time the user is using the app
-  if ($('#app-install')) {
+  if (document.getElementById('app-install')) {
     const appUsed = cookie.load('ap-used');
     if (appUsed) {
       const appPromoClosed = cookie.load('ap-closed');
       if (!appPromoClosed) {
-        $('#app-install').modal({});
+        jQuery('#app-install').modal({});
       }
     }
     cookie.save('ap-used', '1', { expires: 60 });
 
-    $('.onclick-hide-app-promo').on('click', hideAppPromo);
+    document.getElementsByName('onclick-hide-app-promo')[0].addEventListener('click', hideAppPromo);
   }
 }
 
