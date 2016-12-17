@@ -95,9 +95,6 @@ public class MainApplication extends Application implements ReactApplication {
     @Override
     public void onCreate() {
         super.onCreate();
-        // Initialize the SDK before executing any other operations,
-        FacebookSdk.sdkInitialize(getApplicationContext());
-        AppEventsLogger.activateApp(this);
         // If we want to have Crashlytics report the version of our JS (and not our app),
         // because we are using CodePush or AppHub, then we need to pass in a stubbed Context.
         // It will wrap-and-delegate-to-"this", except for:
@@ -106,6 +103,10 @@ public class MainApplication extends Application implements ReactApplication {
         //   this.versionCode = Integer.toString(packageInfo.versionCode);
         //   this.versionName = (packageInfo.versionName == null ? "0.0" : packageInfo.versionName);
         Fabric.with(this, new Crashlytics());
+
+        // Initialize the SDK before executing any other operations,
+        FacebookSdk.sdkInitialize(getApplicationContext());
+        AppEventsLogger.activateApp(this);
         CodePush.setReactInstanceHolder(mReactNativeHost);
     }
 
