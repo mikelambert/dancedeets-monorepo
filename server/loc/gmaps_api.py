@@ -1,23 +1,32 @@
 import copy
 import logging
 
+from util import runtime
 from . import gmaps
+from . import gmaps_prod_cache
 
 USE_PRIVATE_KEY = False
 
 live_places_api = gmaps.LiveBackend('https://maps.googleapis.com', '/maps/api/place/textsearch/json', use_private_key=False)
 live_geocode_api = gmaps.LiveBackend('https://maps.google.com', '/maps/api/geocode/json', use_private_key=USE_PRIVATE_KEY)
 
+if runtime.is_local_appengine():
+    remote_places_api = gmaps_prod_cache.ProdServerBackend('places', live_places_api)
+    remote_geocode_api = gmaps_prod_cache.ProdServerBackend('geocode', live_places_api)
+else:
+    remote_places_api = live_places_api
+    remote_geocode_api = live_geocode_api
+
 try:
     from . import gmaps_cached
     from . import gmaps_bwcompat
-    places_api = gmaps_cached.CachedBackend(live_places_api)
+    places_api = gmaps_cached.CachedBackend(remote_places_api)
     # No point to checking the Cached backend on this one
-    geocode_api = gmaps_bwcompat.BwCachedBackend(gmaps_cached.CachedBackend(live_geocode_api))
+    geocode_api = gmaps_bwcompat.BwCachedBackend(gmaps_cached.CachedBackend(remote_geocode_api))
 except:
     logging.error("Failed to import caching backends, defaulting to raw gmaps backend")
-    places_api = live_places_api
-    geocode_api = live_geocode_api
+    places_api = remote_places_api
+    geocode_api = remote_geocode_api
 
 
 class GeocodeException(Exception):
