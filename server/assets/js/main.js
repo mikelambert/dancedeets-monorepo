@@ -67,13 +67,13 @@ jQuery(document).ready(() => {
   jQuery('.fullscreen-static-image').backstretch(images, { duration: 8000, fade: 1500 });
 
   // animate-on-hover
-  jQuery('.animate-on-hover').hover(() => {
-    const action = jQuery(this).data('action');
-    jQuery(this).addClass(`animated ${action}`);
+  jQuery('.animate-on-hover').hover((e) => {
+    const action = e.currentTarget.dataset.action;
+    jQuery(e.currentTarget).addClass(`animated ${action}`);
   });
-  jQuery('.animate-on-hover').bind('animationend webkitAnimationEnd oAnimationEnd MSAnimationEnd', () => {
-    const action = jQuery(this).data('action');
-    jQuery(this).removeClass(`animated ${action}`);
+  jQuery('.animate-on-hover').bind('animationend webkitAnimationEnd oAnimationEnd MSAnimationEnd', (e) => {
+    const action = e.currentTarget.dataset.action;
+    jQuery(e.currentTarget).removeClass(`animated ${action}`);
   });
 
   jQuery('#location_submit').click(() => Boolean(jQuery('#location').val()));
