@@ -26,6 +26,7 @@ import './all-css';
 import './stackdriver-errors';
 import { fbSetup } from './fb';
 import appInstallPromos from './app-install-promo';
+import { queryOn } from './dom';
 /* eslint-enable import/first */
 
 fbSetup(window.fbPermissions, window.fbAppId, window.baseHostname);
@@ -39,7 +40,7 @@ if (window.showSmartBanner) {
 }
 
 jQuery(document).ready(() => {
-  jQuery(document).on('click', '.mega-menu .dropdown-menu', (e) => {
+  queryOn('.mega-menu .dropdown-menu', 'click', (e) => {
     e.stopPropagation();
   });
 

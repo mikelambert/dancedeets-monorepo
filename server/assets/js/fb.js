@@ -1,6 +1,12 @@
+/**
+ * Copyright 2016 DanceDeets.
+ *
+ * @flow
+ */
+
 import EventEmitter from 'eventemitter3';
-import jQuery from 'jquery';
 import cookie from 'react-cookie';
+import { queryOn } from './dom';
 
 export const fbLoadEmitter = new EventEmitter();
 
@@ -92,8 +98,8 @@ export function fbSetup(fbPermissions, fbAppId, baseHostname) {
       handleStatusChange(response);
     });
 
-    jQuery('.onclick-login').on('click', login);
-    jQuery('.onclick-logout').on('click', logout);
+    queryOn('.onclick-login', 'click', login);
+    queryOn('.onclick-logout', 'click', logout);
   }
 
   window.fbAsyncInit = () => {

@@ -6,6 +6,7 @@
 
 import cookie from 'react-cookie';
 import jQuery from 'jquery';
+import { queryOn } from './dom';
 
 function hideAppPromo() {
   cookie.save('ap-closed', '1', { expires: 4 });
@@ -24,7 +25,7 @@ function initAppPromos() {
     }
     cookie.save('ap-used', '1', { expires: 60 });
 
-    document.getElementsByName('onclick-hide-app-promo')[0].addEventListener('click', hideAppPromo);
+    queryOn('.onclick-hide-app-promo', 'click', hideAppPromo);
   }
 }
 
