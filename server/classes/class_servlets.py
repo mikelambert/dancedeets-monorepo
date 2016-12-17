@@ -78,18 +78,6 @@ class RelevantHandler(base_servlet.BaseRequestHandler):
         self.display['full_location'] = full_location
         self.render_template(self.template_name)
 
-
-class JsonDataHandler(webapp2.RequestHandler):
-    def initialize(self, request, response):
-        super(JsonDataHandler, self).initialize(request, response)
-
-        if self.request.body:
-            escaped_body = urllib.unquote_plus(self.request.body.strip('='))
-            self.json_body = json.loads(escaped_body)
-        else:
-            self.json_body = None
-
-
 def process_uploaded_item(json_body):
     #TODO: And maybe only save/reindex if there were legit changes?
     for key, value in json_body.iteritems():
@@ -137,7 +125,7 @@ def process_upload_finalization(studio_name):
 
 
 @app.route('/classes/upload_multi')
-class ClassMultiUploadHandler(JsonDataHandler):
+class ClassMultiUploadHandler(base_servlet.JsonDataHandler):
     def post(self):
         if self.json_body['scrapinghub_key'] != keys.get('scrapinghub_key'):
             self.response.status = 403
@@ -180,7 +168,7 @@ def dedupe_classes(most_recent_scrape_time, classes):
 
 
 @app.route('/classes/reindex')
-class ClassReIndexHandler(JsonDataHandler):
+class ClassReIndexHandler(base_servlet.JsonDataHandler):
     def post(self):
         class_index.StudioClassIndex.rebuild_from_query(force=True)
         self.response.status = 200
@@ -188,7 +176,7 @@ class ClassReIndexHandler(JsonDataHandler):
 
 
 @app.route('/classes/finish_upload')
-class ClassFinishUploadhandler(JsonDataHandler):
+class ClassFinishUploadhandler(base_servlet.JsonDataHandler):
     def post(self):
         studio_name = self.request.get('studio_name') or self.json_body['studio_name']
         if not studio_name:

@@ -757,6 +757,17 @@ def update_last_login_time(user_id, login_time):
     db.run_in_transaction(_update_last_login_time)
 
 
+class JsonDataHandler(webapp2.RequestHandler):
+    def initialize(self, request, response):
+        super(JsonDataHandler, self).initialize(request, response)
+
+        if self.request.body:
+            escaped_body = urllib.unquote_plus(self.request.body.strip('='))
+            self.json_body = json.loads(escaped_body)
+        else:
+            self.json_body = None
+
+
 class BaseTaskRequestHandler(webapp2.RequestHandler):
     pass
 
