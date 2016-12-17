@@ -4,7 +4,7 @@ import cookie from 'react-cookie';
 
 export const fbLoadEmitter = new EventEmitter();
 
-const FBSetup = (fbPermissions, fbAppId, baseHostname) => {
+export function fbSetup(fbPermissions, fbAppId, baseHostname) {
   let loginPressed = false;
 
   function deleteLoginCookies() {
@@ -118,7 +118,4 @@ const FBSetup = (fbPermissions, fbAppId, baseHostname) => {
     js.src = 'https://connect.facebook.net/en_US/sdk.js';
     fjs.parentNode.insertBefore(js, fjs);
   })(document, 'script', 'facebook-jssdk');
-};
-
-module.exports = FBSetup;
-
+}

@@ -4,18 +4,29 @@
  * @flow
  */
 
+/* eslint-disable import/first */
+// We need to import the two error handlers first
 import 'trackjs';
-import 'jquery.backstretch';
-import 'jquery.smartbanner';
-import 'bootstrap';
-import jQuery from 'jquery';
-import './all-css';
-import './stackdriver-errors';
-import fbSetup from './fb';
 import fixStickyTouch from './sticky-touch';
-import appInstallPromos from './app-install-promo';
+
+// Then we need to import jQuery and set it up,
+// before we important any jquery-dependent libraries.
+import jQuery from 'jquery';
 
 global.$ = global.jQuery = jQuery;
+
+// These depend on a jQuery being implicitly in scope,
+// so we need to require them instead of importing them.
+require('jquery.backstretch');
+require('jquery.smartbanner');
+require('bootstrap');
+
+// Now let's import the rest normally.
+import './all-css';
+import './stackdriver-errors';
+import { fbSetup } from './fb';
+import appInstallPromos from './app-install-promo';
+/* eslint-enable import/first */
 
 fbSetup(window.fbPermissions, window.fbAppId, window.baseHostname);
 
