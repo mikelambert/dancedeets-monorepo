@@ -6,6 +6,7 @@
 
 import $ from 'jquery';
 import React from 'react';
+import Scroll from 'react-scroll';
 import dateFormat from 'date-fns/format';
 
 type SerializedStudioClass = {
@@ -193,14 +194,12 @@ class DayLink extends React.Component {
   }
 
   onClick() {
-    const id = getDayId(this.props.dayName);
-    if ($(`#${id}`).length === 0) {
-      return;
-    }
-    const scrollOffset = $('#navbar').outerHeight();
-    const nudgeOffset = 5;
-    $('html, body').animate({ scrollTop: $(`#${id}`).offset().top - scrollOffset - nudgeOffset }, 300);
-    // return false; // React does not require that onClick handlers return false
+    Scroll.scroller.scrollTo(this.props.dayName, {
+      smooth: true,
+      delay: 100,
+      duration: 500,
+      offset: -($('#navbar').outerHeight() + 20),
+    });
   }
 
   render() {
@@ -344,7 +343,8 @@ class DayHeader extends React.Component {
     );
     if (this.props.useAnchor) {
       contents = (
-        <div id={getDayId(dateFormat(this.props.date, 'dddd'))}>
+        <div>
+          <Scroll.Element name={getDayId(dateFormat(this.props.date, 'dddd'))} />
           {contents}
         </div>
       );
