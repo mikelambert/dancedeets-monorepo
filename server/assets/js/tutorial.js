@@ -87,6 +87,8 @@ class _TutorialView extends React.Component {
 
   state: {
     video: Video;
+    windowWidth: number;
+    windowHeight: number;
   }
 
   _youtube: YouTube;
@@ -94,12 +96,37 @@ class _TutorialView extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      ...this.getWindowState(),
       video: this.props.tutorial.sections[0].videos[0],
     };
+    (this: any).updateDimensions = this.updateDimensions.bind(this);
+  }
+
+
+  componentWillMount() {
+    this.updateDimensions();
+  }
+
+  componentDidMount() {
+    window.addEventListener('resize', this.updateDimensions);
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener('resize', this.updateDimensions);
   }
 
   onVideoClick(video) {
     this.setState({ video });
+  }
+
+  getWindowState() {
+    const windowHeight = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight;
+    const windowWidth = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
+    return { windowWidth, windowHeight };
+  }
+
+  updateDimensions() {
+    this.setState(this.getWindowState());
   }
 
   renderVideoLine(video) {
@@ -173,9 +200,7 @@ class _TutorialView extends React.Component {
   render() {
     const tutorial = this.props.tutorial;
     const video = this.state.video;
-    const windowHeight = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight;
-    const windowWidth = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
-    const flexDirection = windowWidth > 1024 ? 'row' : 'column';
+    const flexDirection = this.state.windowWidth > 1024 ? 'row' : 'column';
     return (
       <div
         style={{
@@ -188,8 +213,8 @@ class _TutorialView extends React.Component {
           style={{
             flex: 2,
             width: '100%',
-            maxWidth: (windowHeight * video.width) / video.height,
-            maxHeight: (windowWidth * video.height) / video.width,
+            maxWidth: (this.state.windowHeight * video.width) / video.height,
+            maxHeight: (this.state.windowWidth * video.height) / video.width,
           }}
         >
           <YouTube
