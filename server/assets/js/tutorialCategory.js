@@ -28,21 +28,6 @@ import {
   Card,
 } from './ui';
 
-
-// De-Dupe
-function formatDuration(formatMessage: (message: Object, timeData: Object) => string, durationSeconds: number) {
-  const hours = Math.floor(durationSeconds / 60 / 60);
-  const minutes = Math.floor(durationSeconds / 60) % 60;
-  if (durationSeconds > 60 * 60) {
-    return formatMessage(messages.timeHoursMinutes, { hours, minutes });
-  } else if (durationSeconds > 60) {
-    return formatMessage(messages.timeMinutes, { minutes });
-  } else {
-    const seconds = durationSeconds;
-    return formatMessage(messages.timeSeconds, { seconds });
-  }
-}
-
 class _Tutorial extends React.Component {
   props: {
     tutorial: Playlist;

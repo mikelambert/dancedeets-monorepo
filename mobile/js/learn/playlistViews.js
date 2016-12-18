@@ -30,6 +30,9 @@ import { Playlist, Video } from 'dancedeets-common/js/tutorials/models';
 import styleIcons from 'dancedeets-common/js/styles/icons';
 import { getTutorials } from 'dancedeets-common/js/tutorials/playlistConfig';
 import messages from 'dancedeets-common/js/tutorials/messages';
+import {
+  formatDuration,
+} from 'dancedeets-common/js/tutorials/format';
 import { track } from '../store/track';
 import { FeedListView } from './BlogList';
 import {
@@ -265,19 +268,6 @@ class _PlaylistListView extends React.Component {
   }
 }
 export const PlaylistListView = injectIntl(_PlaylistListView);
-
-function formatDuration(formatMessage: (message: Object, timeData: Object) => string, durationSeconds: number) {
-  const hours = Math.floor(durationSeconds / 60 / 60);
-  const minutes = Math.floor(durationSeconds / 60) % 60;
-  if (durationSeconds > 60 * 60) {
-    return formatMessage(messages.timeHoursMinutes, { hours, minutes });
-  } else if (durationSeconds > 60) {
-    return formatMessage(messages.timeMinutes, { minutes });
-  } else {
-    const seconds = durationSeconds;
-    return formatMessage(messages.timeSeconds, { seconds });
-  }
-}
 
 type SectionedListViewProps = {
   items: {[key: any]: any};
