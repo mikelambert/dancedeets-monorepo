@@ -6,10 +6,14 @@
 
 import cookie from 'react-cookie';
 import jQuery from 'jquery';
+import moment from 'moment';
 import { queryOn } from './dom';
 
 function hideAppPromo() {
-  cookie.save('ap-closed', '1', { expires: 4 });
+  cookie.save('ap-closed', '1', {
+    expires: moment().add(4, 'days').toDate(),
+    path: '/',
+  });
 }
 
 /* center modal */
@@ -23,7 +27,10 @@ function initAppPromos() {
         jQuery('#app-install').modal({});
       }
     }
-    cookie.save('ap-used', '1', { expires: 60 });
+    cookie.save('ap-used', '1', {
+      expires: moment().add(60, 'days').toDate(),
+      path: '/',
+    });
 
     queryOn('.onclick-hide-app-promo', 'click', hideAppPromo);
   }
