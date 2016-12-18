@@ -26,6 +26,7 @@ import YouTube from 'react-native-youtube';
 import shallowEqual from 'fbjs/lib/shallowEqual';
 import styleEqual from 'style-equal';
 import upperFirst from 'lodash/upperFirst';
+import type { Style } from 'dancedeets-common/js/styles';
 import { track } from '../store/track';
 import { FeedListView } from './BlogList';
 import {
@@ -46,7 +47,6 @@ import {
   setTutorialVideoIndex,
 } from '../actions';
 import { googleKey } from '../keys';
-import type { Style } from '../styles';
 
 const Mailer = NativeModules.RNMail;
 

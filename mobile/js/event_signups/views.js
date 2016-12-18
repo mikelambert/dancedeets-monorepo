@@ -26,6 +26,7 @@ import type {
   NavigationSceneRendererProps,
   NavigationState,
 } from 'react-native/Libraries/NavigationExperimental/NavigationTypeDefinition';
+import danceStyles from 'dancedeets-common/js/styles';
 import { track } from '../store/track';
 import { FeedListView } from '../learn/BlogList';
 import {
@@ -65,7 +66,6 @@ import {
   eventRegister,
   eventUnregister,
 } from '../api/dancedeets';
-import danceStyles from '../styles';
 import { TrackFirebase } from '../firestack';
 
 // Try to make our boxes as wide as we can...

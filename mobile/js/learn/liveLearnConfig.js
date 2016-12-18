@@ -8,7 +8,7 @@ import { RemoteConfig } from 'react-native-firebase3';
 import {
   defaultTutorials,
   defaultBlogs,
-} from './learnConfig';
+} from 'dancedeets-common/js/tutorials/playlistConfig';
 
 async function loadConfig() {
   if (__DEV__) {
