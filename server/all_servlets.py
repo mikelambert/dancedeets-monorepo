@@ -35,6 +35,7 @@ from servlets import tools
 from servlets import warmup
 from servlets import youtube_simple_api
 from topics import topic_servlets
+from tutorials import servlets
 from users import user_event_tasks
 from users import user_servlets
 from users import user_tasks

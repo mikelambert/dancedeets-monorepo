@@ -30,6 +30,8 @@ const config = {
     classResultsExec: './assets/js/classResultsExec.js',
     eventExec: './assets/js/eventExec.js',
     eventSearchResultsExec: './assets/js/eventSearchResultsExec.js',
+    tutorialExec: './assets/js/tutorialExec.js',
+    tutorialCategoryExec: './assets/js/tutorialCategoryExec.js',
   },
   output: {
     path: path.join(__dirname, 'dist/js'),

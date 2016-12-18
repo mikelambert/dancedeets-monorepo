@@ -1,0 +1,23 @@
+{% extends class_base_template %}
+
+{% block title %}
+{{ style|e }}
+{% endblock %}
+
+{% block head_metatags %}
+<link rel="canonical" href="{{ canonical_url }}" />
+{% endblock %}
+
+{% block body %}
+<div id="react-parent">
+  {{ react_html|safe }}
+</div>
+<script type="text/javascript">
+  window._REACT_PROPS = {{ react_props|tojson }};
+  window._REACT_ID = 'react-parent';
+</script>
+{% endblock %}
+
+{% block bottom_javascript %}
+<script src="{{static_dir}}/js/tutorialCategoryExec.js"></script>
+{% endblock %}
