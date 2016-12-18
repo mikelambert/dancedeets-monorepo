@@ -27,6 +27,7 @@ import shallowEqual from 'fbjs/lib/shallowEqual';
 import styleEqual from 'style-equal';
 import upperFirst from 'lodash/upperFirst';
 import type { Style } from 'dancedeets-common/js/styles';
+import { Playlist, Video } from 'dancedeets-common/js/tutorials/models';
 import { track } from '../store/track';
 import { FeedListView } from './BlogList';
 import {
@@ -35,7 +36,6 @@ import {
   Text,
 } from '../ui';
 import { getRemoteTutorials } from './liveLearnConfig';
-import { Playlist, Video } from './playlistModels';
 import { purpleColors } from '../Colors';
 import languages from '../languages';
 import {
