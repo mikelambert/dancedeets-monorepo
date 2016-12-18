@@ -35,6 +35,7 @@ class StaticHandler(base_servlet.webapp2.RequestHandler):
                     # Only do this on prod, let dev remain uncached
                     if self.request.app.prod_mode:
                         self.response.headers['Cache-Control'] = 'public, max-age=%s' % (7 * 24 * 60 * 60)
+                        self.response.headers['Vary'] = 'Accept-Encoding'
                     self.response.out.write(open(full_path).read())
                 else:
                     self.response.set_status(404)
