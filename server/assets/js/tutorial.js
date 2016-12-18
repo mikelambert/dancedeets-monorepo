@@ -17,6 +17,9 @@ import {
   getTutorials,
 } from 'dancedeets-common/js/tutorials/playlistConfig';
 import {
+  Video,
+} from 'dancedeets-common/js/tutorials/models';
+import {
   formatDuration,
 } from 'dancedeets-common/js/tutorials/format';
 import {
@@ -83,7 +86,7 @@ class _TutorialView extends React.Component {
   };
 
   state: {
-    videoId: string;
+    video: Video;
   }
 
   _youtube: YouTube;
@@ -91,16 +94,16 @@ class _TutorialView extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      videoId: this.props.tutorial.sections[0].videos[0].youtubeId,
+      video: this.props.tutorial.sections[0].videos[0],
     };
   }
 
   onVideoClick(video) {
-    this.setState({ videoId: video.youtubeId });
+    this.setState({ video });
   }
 
   renderVideoLine(video) {
-    const activeRow = this.state.videoId === video.youtubeId;
+    const activeRow = this.state.video.youtubeId === video.youtubeId;
     const backgroundColor = activeRow ? purpleColors[0] : purpleColors[3];
     const imageSize = 30;
     const playIcon = require('../img/play.png'); // eslint-disable-line global-require
@@ -169,25 +172,47 @@ class _TutorialView extends React.Component {
 
   render() {
     const tutorial = this.props.tutorial;
+    const width = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
+    const flexDirection = width > 1024 ? 'row' : 'column';
     return (
-      <Card style={{ maxWidth: 660 }}>
-        <YouTube
-          ref={(x) => { this._youtube = x; }}
-          opts={{
+      <div
+        style={{
+          height: '100vh',
+          display: 'flex',
+          flexDirection,
+        }}
+      >
+        <div
+          style={{
+            flex: 2,
             width: '100%',
-            playerVars: {
-              autoplay: 1,
-            },
+            maxWidth: 1024,
           }}
-          videoId={this.state.videoId}
-        />
-        <div>
+        >
+          <YouTube
+            ref={(x) => { this._youtube = x; }}
+            opts={{
+              width: '100%',
+              height: '100%',
+              playerVars: {
+                autoplay: 1,
+              },
+            }}
+            videoId={this.state.video.youtubeId}
+          />
+        </div>
+        <div
+          style={{
+            flex: 1,
+            overflow: 'scroll',
+          }}
+        >
           {this.renderHeader()}
           {this.props.tutorial.sections.map((section, index) =>
             <div key={index}>{this.renderWholeSection(section)}</div>
           )}
         </div>
-      </Card>
+      </div>
     );
   }
 }
@@ -207,7 +232,6 @@ class _TutorialPage extends React.Component {
 
     if (matching.length) {
       const category = matching[0];
-      console.log(this.props.tutorial);
       const tutorial = category.tutorials[parseInt(this.props.tutorial, 10)];
       return <TutorialView style={this.props.style} tutorial={tutorial} />;
     } else {
