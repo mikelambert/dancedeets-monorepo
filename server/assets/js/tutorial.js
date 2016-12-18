@@ -77,22 +77,30 @@ class _TutorialView extends React.Component {
   renderVideoLine(video) {
     const duration = formatDuration(this.props.intl.formatMessage, video.getDurationSeconds());
     const backgroundColor = this.state.videoId === video.youtubeId ? purpleColors[0] : purpleColors[3];
+    const imageSize = 30;
     return (
-      <div style={{ backgroundColor }}>
-        <Link onClick={() => this.onVideoClick(video)}>
+      <Link
+        onClick={() => this.onVideoClick(video)}
+        style={{
+          backgroundColor,
+          display: 'flex',
+          alignItems: 'center',
+        }}
+      >
+        <div >
           <img
             style={{
               float: 'left',
               verticalAlign: 'baseline',
             }}
-            width={30} height={30} src="play" alt="Play"
+            width={imageSize} height={imageSize} src="play" alt="Play"
           />
-          <div>
-            <div>{video.title}</div>
-            <div>{duration}</div>
-          </div>
-        </Link>
-      </div>
+        </div>
+        <div style={{ marginLeft: 10 }}>
+          <div>{video.title}</div>
+          <div>{duration}</div>
+        </div>
+      </Link>
     );
   }
 
