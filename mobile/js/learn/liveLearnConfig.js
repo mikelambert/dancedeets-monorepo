@@ -6,7 +6,6 @@
 
 import { RemoteConfig } from 'react-native-firebase3';
 import {
-  defaultTutorials,
   defaultBlogs,
 } from 'dancedeets-common/js/tutorials/playlistConfig';
 
@@ -25,7 +24,4 @@ async function loadConfig() {
 
 export async function getRemoteBlogs() {
   return JSON.parse(await RemoteConfig.getNamespacedString('blogs', 'Learn'));
-}
-export function getRemoteTutorials() {
-  return defaultTutorials;
 }

@@ -35,7 +35,7 @@ import {
   HorizontalView,
   Text,
 } from '../ui';
-import { getRemoteTutorials } from './liveLearnConfig';
+import { getTutorials } from 'dancedeets-common/js/tutorials/playlistConfig';
 import { purpleColors } from '../Colors';
 import languages from '../languages';
 import {
@@ -131,19 +131,6 @@ function listViewWidth() {
   return Math.floor((Dimensions.get('window').width / fullBox) * fullBox) - 10;
 }
 
-function sortedTutorials(tutorials, language) {
-  const nativeTutorials = [];
-  const foreignTutorials = [];
-  tutorials.forEach((tut) => {
-    if (tut.language === language) {
-      nativeTutorials.push(tut);
-    } else {
-      foreignTutorials.push(tut);
-    }
-  });
-  return [].concat(nativeTutorials, foreignTutorials);
-}
-
 class _PlaylistStylesView extends React.Component {
   props: {
     onSelected: (style: Style, playlists: Array<Playlist>) => void;
@@ -161,18 +148,8 @@ class _PlaylistStylesView extends React.Component {
     (this: any).renderRow = this.renderRow.bind(this);
     (this: any).renderHeader = this.renderHeader.bind(this);
     this.state = {
-      stylePlaylists: this.constructPlaylists(),
+      stylePlaylists: getTutorials(),
     };
-  }
-
-  constructPlaylists() {
-    const playlistsJson = getRemoteTutorials();
-
-    const constructedPlaylists = playlistsJson.map(style => ({
-      ...style,
-      tutorials: sortedTutorials(style.tutorials, this.props.intl.locale).map(x => new Playlist(x)),
-    }));
-    return constructedPlaylists;
   }
 
   renderRow(style: any) {

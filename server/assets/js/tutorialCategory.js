@@ -9,7 +9,7 @@ import {
   intlWeb,
 } from 'dancedeets-common/js/intl';
 import {
-  defaultTutorials
+  getTutorials
 } from 'dancedeets-common/js/tutorials/playlistConfig';
 
 class TutorialCategory extends React.Component {
@@ -17,13 +17,27 @@ class TutorialCategory extends React.Component {
     style: string;
   }
 
+  state: {
+    tutorials: Array<{
+      style: Object,
+      tutorials: Array<Object>,
+    }>;
+  }
+
+  constructor(props) {
+    super(props);
+    this.state = {
+      tutorials: getTutorials(),
+    };
+  }
+
   render() {
-    const matching = defaultTutorials.filter(category => category.style.id == this.props.style);
+    const matching = this.state.tutorials.filter(category => category.style.id == this.props.style);
 
     if (matching) {
       const category = matching[0];
 
-      return <div><img src={category.style.} /></div>;
+      return <div>{category.style.title}</div>;
     }
     return <div>Nope</div>;
   }

@@ -5,8 +5,10 @@
  */
 
 import styles from '../styles';
+import { Playlist } from './models';
 
-export const defaultTutorials = [
+/* eslint-disable global-require */
+const defaultTutorials = [
   {
     style: styles.break,
     tutorials: [
@@ -158,7 +160,29 @@ export const defaultTutorials = [
     ],
   },
 ];
+/* eslint-enable global-require */
 
+
+function sortedTutorials(tutorials, language) {
+  const nativeTutorials = [];
+  const foreignTutorials = [];
+  tutorials.forEach((tut) => {
+    if (tut.language === language) {
+      nativeTutorials.push(tut);
+    } else {
+      foreignTutorials.push(tut);
+    }
+  });
+  return [].concat(nativeTutorials, foreignTutorials);
+}
+
+export function getTutorials() {
+  const constructedPlaylists = defaultTutorials.map(style => ({
+    ...style,
+    tutorials: sortedTutorials(style.tutorials, this.props.intl.locale).map(x => new Playlist(x)),
+  }));
+  return constructedPlaylists;
+}
 /*
 Locking:
 // skeeter and flomaster
