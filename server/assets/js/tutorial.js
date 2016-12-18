@@ -40,8 +40,8 @@ const lightPurpleColors = [
 
 class Link extends React.Component {
   props: {
-    children: any;
-    style: any;
+    children?: any;
+    style?: any;
   }
   render() {
     const { children, style, ...otherProps } = this.props;
@@ -49,6 +49,30 @@ class Link extends React.Component {
     return <div style={fullStyle} {...otherProps}>{children}</div>;
   }
 }
+
+class _Duration extends React.Component {
+  props: {
+    duration: number;
+
+    // Self-managed props:
+    intl: intlShape;
+  }
+
+  render() {
+    const duration = formatDuration(this.props.intl.formatMessage, this.props.duration);
+    return (
+      <div
+        style={{
+          color: '#ccc',
+          fontSize: '80%',
+        }}
+      >
+        {duration}
+      </div>
+    );
+  }
+}
+const Duration = injectIntl(_Duration);
 
 class _TutorialView extends React.Component {
   props: {
@@ -76,7 +100,6 @@ class _TutorialView extends React.Component {
   }
 
   renderVideoLine(video) {
-    const duration = formatDuration(this.props.intl.formatMessage, video.getDurationSeconds());
     const activeRow = this.state.videoId === video.youtubeId;
     const backgroundColor = activeRow ? purpleColors[0] : purpleColors[3];
     const imageSize = 30;
@@ -109,18 +132,17 @@ class _TutorialView extends React.Component {
         </div>
         <div style={{ marginLeft: 10 }}>
           <div style={{ fontWeight: 'bold' }}>{video.title}</div>
-          <div style={{ color: '#ccc' }}>{duration}</div>
+          <Duration duration={video.getDurationSeconds()} />
         </div>
       </Link>
     );
   }
 
   renderSectionHeader(section) {
-    const duration = formatDuration(this.props.intl.formatMessage, section.getDurationSeconds());
     return (
       <div style={{ padding: 7, backgroundColor: purpleColors[4] }}>
         <div>{section.title}</div>
-        <div style={{ color: '#ccc' }}>{duration}</div>
+        <Duration duration={section.getDurationSeconds()} />
       </div>
     );
   }
