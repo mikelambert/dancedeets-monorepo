@@ -3,7 +3,7 @@ import app
 import base_servlet
 
 
-@app.route('/tutorials/([^/]+)/([^/]+)/$')
+@app.route('/tutorials/([^/]+)/([^/]+)/?$')
 class TutorialHandler(base_servlet.BaseRequestHandler):
     def get(self, style, tutorial):
         self.finish_preload()
