@@ -77,8 +77,10 @@ class _TutorialView extends React.Component {
 
   state: {
     video: Video;
-    windowWidth: number;
-    windowHeight: number;
+    window: ?{
+      width: number;
+      height: number;
+    };
   }
 
   _youtube: YouTube;
@@ -110,9 +112,13 @@ class _TutorialView extends React.Component {
   }
 
   getWindowState() {
-    const windowHeight = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight;
-    const windowWidth = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
-    return { windowWidth, windowHeight };
+    if (global.window != null) {
+      const width = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
+      const height = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight;
+      return { window: { width, height } };
+    } else {
+      return { window: null };
+    }
   }
 
   updateDimensions() {
@@ -187,10 +193,42 @@ class _TutorialView extends React.Component {
     </div>);
   }
 
+  renderPlayer() {
+    let extraStyles = {};
+    const video = this.state.video;
+    if (this.state.window) {
+      extraStyles = {
+        maxWidth: (this.state.window.height * video.width) / video.height,
+        maxHeight: (this.state.window.width * video.height) / video.width,
+      };
+    }
+    return (
+      <div
+        style={{
+          flex: 2,
+          width: '100%',
+          ...extraStyles,
+        }}
+      >
+        <YouTube
+          ref={(x) => { this._youtube = x; }}
+          opts={{
+            width: '100%',
+            height: '100%',
+            playerVars: {
+              autoplay: 1,
+            },
+          }}
+          videoId={video.youtubeId}
+        />
+      </div>
+    );
+  }
+
   render() {
     const tutorial = this.props.tutorial;
     const video = this.state.video;
-    const flexDirection = this.state.windowWidth > 1024 ? 'row' : 'column';
+    const flexDirection = this.state.window && this.state.window.width > 1024 ? 'row' : 'column';
     return (
       <div
         style={{
@@ -199,26 +237,7 @@ class _TutorialView extends React.Component {
           flexDirection,
         }}
       >
-        <div
-          style={{
-            flex: 2,
-            width: '100%',
-            maxWidth: (this.state.windowHeight * video.width) / video.height,
-            maxHeight: (this.state.windowWidth * video.height) / video.width,
-          }}
-        >
-          <YouTube
-            ref={(x) => { this._youtube = x; }}
-            opts={{
-              width: '100%',
-              height: '100%',
-              playerVars: {
-                autoplay: 1,
-              },
-            }}
-            videoId={video.youtubeId}
-          />
-        </div>
+        {this.renderPlayer()}
         <div
           style={{
             flex: 1,
