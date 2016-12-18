@@ -17,8 +17,9 @@ const messages = defineMessages({
 });
 
 export type Style = {
+  id: string;
   title: string;
-  thumbnail: any;
+  imageName: string;
   width: number;
   height: number;
 };
@@ -27,42 +28,42 @@ export default {
   break: {
     id: 'break',
     title: 'Bboy / Bgirl',
-    thumbnail: require('./images/break.png'),
+    imageName: 'break.png',
     width: 505,
     height: 512,
   },
   hiphop: {
     id: 'hiphop',
     title: 'Hip-Hop',
-    thumbnail: require('./images/hiphop.png'),
+    imageName: 'hiphop.png',
     width: 278,
     height: 512,
   },
   pop: {
     id: 'pop',
     title: 'Popping',
-    thumbnail: require('./images/pop.png'),
+    imageName: 'pop.png',
     width: 283,
     height: 512,
   },
   lock: {
     id: 'lock',
     title: 'Locking',
-    thumbnail: require('./images/lock.png'),
+    imageName: 'lock.png',
     width: 339,
     height: 512,
   },
   house: {
     id: 'house',
     title: 'House Dance',
-    thumbnail: require('./images/house.png'),
+    imageName: 'house.png',
     width: 381,
     height: 512,
   },
   krump: {
     id: 'krump',
     title: 'Krump',
-    thumbnail: require('./images/krump.png'),
+    imageName: 'krump.png',
     width: 420,
     height: 512,
   },
@@ -70,7 +71,7 @@ export default {
     id: 'other',
     title: 'Other Styles',
     titleMessage: messages.otherStylesTitle,
-    thumbnail: require('./images/other.png'),
+    imageName: 'other.png',
     width: 312,
     height: 512,
   },

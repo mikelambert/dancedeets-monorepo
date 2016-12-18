@@ -28,6 +28,8 @@ import styleEqual from 'style-equal';
 import upperFirst from 'lodash/upperFirst';
 import type { Style } from 'dancedeets-common/js/styles';
 import { Playlist, Video } from 'dancedeets-common/js/tutorials/models';
+import styleIcons from 'dancedeets-common/js/styles/icons';
+import { getTutorials } from 'dancedeets-common/js/tutorials/playlistConfig';
 import { track } from '../store/track';
 import { FeedListView } from './BlogList';
 import {
@@ -35,7 +37,6 @@ import {
   HorizontalView,
   Text,
 } from '../ui';
-import { getTutorials } from 'dancedeets-common/js/tutorials/playlistConfig';
 import { purpleColors } from '../Colors';
 import languages from '../languages';
 import {
@@ -148,7 +149,7 @@ class _PlaylistStylesView extends React.Component {
     (this: any).renderRow = this.renderRow.bind(this);
     (this: any).renderHeader = this.renderHeader.bind(this);
     this.state = {
-      stylePlaylists: getTutorials(),
+      stylePlaylists: getTutorials(this.props.intl.locale),
     };
   }
 
@@ -178,7 +179,7 @@ class _PlaylistStylesView extends React.Component {
           alignItems: 'center',
         }}
       >
-        <Image source={style.style.thumbnail} resizeMode="contain" style={{ width: imageWidth, height: imageWidth }} />
+        <Image source={styleIcons[style.id]} resizeMode="contain" style={{ width: imageWidth, height: imageWidth }} />
         <Text style={[styles.boxTitle, styles.boxText]}>{styleTitle}</Text>
         <Text style={styles.boxText}>{this.props.intl.formatMessage(messages.numTutorials, { count: style.tutorials.length })}</Text>
         <Text style={styles.boxText}>{this.props.intl.formatMessage(messages.totalTime, { time: length })}</Text>

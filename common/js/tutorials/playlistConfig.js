@@ -163,11 +163,11 @@ const defaultTutorials = [
 /* eslint-enable global-require */
 
 
-function sortedTutorials(tutorials, language) {
+function sortedTutorials(tutorials, locale) {
   const nativeTutorials = [];
   const foreignTutorials = [];
   tutorials.forEach((tut) => {
-    if (tut.language === language) {
+    if (tut.language === locale) {
       nativeTutorials.push(tut);
     } else {
       foreignTutorials.push(tut);
@@ -176,10 +176,10 @@ function sortedTutorials(tutorials, language) {
   return [].concat(nativeTutorials, foreignTutorials);
 }
 
-export function getTutorials() {
+export function getTutorials(locale: string) {
   const constructedPlaylists = defaultTutorials.map(style => ({
     ...style,
-    tutorials: sortedTutorials(style.tutorials, this.props.intl.locale).map(x => new Playlist(x)),
+    tutorials: sortedTutorials(style.tutorials, locale).map(x => new Playlist(x)),
   }));
   return constructedPlaylists;
 }
