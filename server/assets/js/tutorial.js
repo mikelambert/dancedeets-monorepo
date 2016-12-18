@@ -41,11 +41,12 @@ const lightPurpleColors = [
 class Link extends React.Component {
   props: {
     children: any;
+    style: any;
   }
-
   render() {
-    const { children, ...otherProps } = this.props;
-    return <div {...otherProps}>{children}</div>;
+    const { children, style, ...otherProps } = this.props;
+    const fullStyle = { cursor: 'pointer', ...style };
+    return <div style={fullStyle} {...otherProps}>{children}</div>;
   }
 }
 
@@ -76,15 +77,25 @@ class _TutorialView extends React.Component {
 
   renderVideoLine(video) {
     const duration = formatDuration(this.props.intl.formatMessage, video.getDurationSeconds());
-    const backgroundColor = this.state.videoId === video.youtubeId ? purpleColors[0] : purpleColors[3];
+    const activeRow = this.state.videoId === video.youtubeId;
+    const backgroundColor = activeRow ? purpleColors[0] : purpleColors[3];
     const imageSize = 30;
+    const playIcon = require('../img/play.png'); // eslint-disable-line global-require
     return (
       <Link
         onClick={() => this.onVideoClick(video)}
         style={{
           backgroundColor,
+
+          // Do left-to-right with vertical centering
           display: 'flex',
           alignItems: 'center',
+
+          padding: 7,
+
+          borderBottomWidth: 0.5,
+          borderBottomStyle: 'solid',
+          borderBottomColor: purpleColors[4],
         }}
       >
         <div >
@@ -93,12 +104,12 @@ class _TutorialView extends React.Component {
               float: 'left',
               verticalAlign: 'baseline',
             }}
-            width={imageSize} height={imageSize} src="play" alt="Play"
+            width={imageSize} height={imageSize} src={playIcon} alt="Play"
           />
         </div>
         <div style={{ marginLeft: 10 }}>
-          <div>{video.title}</div>
-          <div>{duration}</div>
+          <div style={{ fontWeight: 'bold' }}>{video.title}</div>
+          <div style={{ color: '#ccc' }}>{duration}</div>
         </div>
       </Link>
     );
@@ -107,9 +118,9 @@ class _TutorialView extends React.Component {
   renderSectionHeader(section) {
     const duration = formatDuration(this.props.intl.formatMessage, section.getDurationSeconds());
     return (
-      <div style={{ backgroundColor: purpleColors[4] }}>
+      <div style={{ padding: 7, backgroundColor: purpleColors[4] }}>
         <div>{section.title}</div>
-        <div>{duration}</div>
+        <div style={{ color: '#ccc' }}>{duration}</div>
       </div>
     );
   }
@@ -127,7 +138,7 @@ class _TutorialView extends React.Component {
     const tutorial = this.props.tutorial;
     const subtitle = tutorial.subtitle ? <div>{tutorial.subtitle}</div> : null;
     const duration = formatDuration(this.props.intl.formatMessage, tutorial.getDurationSeconds());
-    return (<div style={{ backgroundColor: purpleColors[4] }}>
+    return (<div style={{ padding: 7, backgroundColor: purpleColors[4] }}>
       <h3 style={{ marginTop: 0 }}>{tutorial.title}</h3>
       {subtitle}
       <div>{tutorial.author} - {duration}</div>
@@ -142,6 +153,9 @@ class _TutorialView extends React.Component {
           ref={(x) => { this._youtube = x; }}
           opts={{
             width: '100%',
+            playerVars: {
+              autoplay: 1,
+            },
           }}
           videoId={this.state.videoId}
         />

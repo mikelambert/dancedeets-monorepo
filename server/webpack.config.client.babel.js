@@ -106,7 +106,6 @@ const config = {
             loader: 'url',
             query: {
               limit: 10000,
-              mimetype: 'application/font-woff',
               name: '../img/[name].[ext]',
             },
           },
