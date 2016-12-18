@@ -46,6 +46,19 @@ class _TutorialView extends React.Component {
     intl: intlShape;
   };
 
+  state: {
+    videoId: string;
+  }
+
+  _youtube: YouTube;
+
+  constructor(props) {
+    super(props);
+    this.state = {
+      videoId: this.props.tutorial.sections[0].videos[0].youtubeId,
+    };
+  }
+
   renderVideoLine(video) {
     const duration = formatDuration(this.props.intl.formatMessage, video.getDurationSeconds());
     return (
@@ -100,17 +113,13 @@ class _TutorialView extends React.Component {
     return (
       <Card style={{ maxWidth: 660 }}>
         <YouTube
+          ref={(x) => { this._youtube = x; }}
           opts={{
             width: '100%',
           }}
+          videoId={this.state.videoId}
         />
-        <div
-          style={{
-            borderWidth: 1,
-            borderStyle: 'solid',
-            borderColor: lightPurpleColors[2],
-          }}
-        >
+        <div>
           {this.renderHeader()}
           {this.props.tutorial.sections.map((section, index) =>
             <div key={index}>{this.renderWholeSection(section)}</div>
