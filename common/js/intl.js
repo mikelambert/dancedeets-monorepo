@@ -115,6 +115,12 @@ export class Internationalize extends React.Component {
   }
 }
 
+export function intlWeb(Wrapped: any) {
+  return (props: Object) => <Internationalize {...props}>
+    <Wrapped {...props} />
+  </Internationalize>;
+}
+
 export function intl(Wrapped: any, currentLocale: string) {
   return () => <Internationalize
     currentLocale={currentLocale}

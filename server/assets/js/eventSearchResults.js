@@ -17,7 +17,7 @@ import LazyLoad from 'react-lazyload';
 import { StickyContainer, Sticky } from 'react-sticky';
 import MasonryLayout from 'react-masonry-layout';
 import {
-  Internationalize,
+  intlWeb,
 } from 'dancedeets-common/js/intl';
 import type {
   Cover,
@@ -294,15 +294,4 @@ class ResultsList extends React.Component {
   }
 }
 
-
-class InternationalizedResultsList extends React.Component {
-  render() {
-    return (
-      <Internationalize {...this.props}>
-        <ResultsList {...this.props} />
-      </Internationalize>
-    );
-  }
-}
-
-export default InternationalizedResultsList;
+export default intlWeb(ResultsList);

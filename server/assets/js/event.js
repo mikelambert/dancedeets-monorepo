@@ -21,7 +21,7 @@ import {
   Marker,
 } from 'react-google-maps';
 import {
-  Internationalize,
+  intlWeb,
 } from 'dancedeets-common/js/intl';
 import {
   formatStartEnd,
@@ -433,14 +433,4 @@ class EventPage extends React.Component {
   }
 }
 
-class InternationalizedEventPage extends React.Component {
-  render() {
-    return (
-      <Internationalize {...this.props}>
-        <EventPage {...this.props} />
-      </Internationalize>
-    );
-  }
-}
-
-export default InternationalizedEventPage;
+export default intlWeb(EventPage);

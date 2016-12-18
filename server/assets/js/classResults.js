@@ -8,6 +8,9 @@ import jQuery from 'jquery';
 import React from 'react';
 import Scroll from 'react-scroll';
 import dateFormat from 'date-fns/format';
+import {
+  intlWeb,
+} from 'dancedeets-common/js/intl';
 
 type SerializedStudioClass = {
   url: string;
@@ -473,7 +476,7 @@ type AppProps = {
 
 type ValidKey = 'styles' | 'studios' | 'teacher';
 
-export default class App extends React.Component {
+class App extends React.Component {
   props: AppProps;
 
   state: {
@@ -670,3 +673,4 @@ App.childContextTypes = {
   imagePath: React.PropTypes.string,
 };
 
+export default intlWeb(App);
