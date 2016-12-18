@@ -21,32 +21,13 @@ import {
   Playlist,
 } from 'dancedeets-common/js/tutorials/models';
 import {
+  formatDuration,
+} from 'dancedeets-common/js/tutorials/format';
+import messages from 'dancedeets-common/js/tutorials/messages';
+import {
   Card,
 } from './ui';
 
-// De-Dupe
-const messages = defineMessages({
-  numVideosWithDuration: {
-    id: 'tutorialVideos.numVideosWithDuration',
-    defaultMessage: '{count,number} videos: {duration}',
-    description: 'Total for all videos in a tutorial',
-  },
-  timeHoursMinutes: {
-    id: 'tutorialVideos.timeHoursMinutes',
-    defaultMessage: '{hours,number}h {minutes,number}m',
-    description: 'Time formatting',
-  },
-  timeMinutes: {
-    id: 'tutorialVideos.timeMinutes',
-    defaultMessage: '{minutes,number}m',
-    description: 'Time formatting',
-  },
-  timeSeconds: {
-    id: 'tutorialVideos.timeSeconds',
-    defaultMessage: '{seconds,number}s',
-    description: 'Time formatting',
-  },
-});
 
 // De-Dupe
 function formatDuration(formatMessage: (message: Object, timeData: Object) => string, durationSeconds: number) {

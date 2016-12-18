@@ -32,9 +32,7 @@ import {
   formatStartEnd,
 } from 'dancedeets-common/js/dates';
 import { Event, Venue } from 'dancedeets-common/js/events/models';
-import {
-  messages,
-} from 'dancedeets-common/js/events/messages';
+import messages from 'dancedeets-common/js/events/messages';
 import {
   formatAttending,
 } from 'dancedeets-common/js/events/helpers';

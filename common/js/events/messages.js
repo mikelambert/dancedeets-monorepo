@@ -8,7 +8,7 @@ import {
   defineMessages,
 } from 'react-intl';
 
-export const messages = defineMessages({
+export default defineMessages({
   addToCalendar: {
     id: 'event.addToCalendar',
     defaultMessage: 'Add to Calendar',

@@ -19,7 +19,6 @@ import {
 import {
   injectIntl,
   intlShape,
-  defineMessages,
 } from 'react-intl';
 import { connect } from 'react-redux';
 import YouTube from 'react-native-youtube';
@@ -30,6 +29,7 @@ import type { Style } from 'dancedeets-common/js/styles';
 import { Playlist, Video } from 'dancedeets-common/js/tutorials/models';
 import styleIcons from 'dancedeets-common/js/styles/icons';
 import { getTutorials } from 'dancedeets-common/js/tutorials/playlistConfig';
+import messages from 'dancedeets-common/js/tutorials/messages';
 import { track } from '../store/track';
 import { FeedListView } from './BlogList';
 import {
@@ -54,69 +54,6 @@ const Mailer = NativeModules.RNMail;
 type PlaylistStylesViewProps = {
   onSelected: (playlist: Playlist) => void;
 };
-
-const messages = defineMessages({
-  numTutorials: {
-    id: 'tutorialVideos.numTutorials',
-    defaultMessage: '{count,number} Tutorials',
-    description: 'How many tutorials there are',
-  },
-  totalTime: {
-    id: 'tutorialVideos.totalTime',
-    defaultMessage: 'Total: {time}',
-    description: 'Total time for all tutorials',
-  },
-  chooseStyle: {
-    id: 'tutorialVideos.styleHeader',
-    defaultMessage: 'Choose a style you\'d like to learn:',
-    description: 'Header for styles list',
-  },
-  chooseTutorial: {
-    id: 'tutorialVideos.tutorialHeader',
-    defaultMessage: 'Choose a tutorial:',
-    description: 'Header for tutorials list',
-  },
-  numVideosWithDuration: {
-    id: 'tutorialVideos.numVideosWithDuration',
-    defaultMessage: '{count,number} videos: {duration}',
-    description: 'Total for all videos in a tutorial',
-  },
-  tutorialFooter: {
-    id: 'tutorialVideos.turorialFooter',
-    defaultMessage: 'Want to put your tutorials, DVD, or classes here?\nWant lessons from the world\'s best teachers?\n',
-    description: 'Footer for tutorials list, inviting participation',
-  },
-  contact: {
-    id: 'tutorialVideos.contact',
-    defaultMessage: 'Contact Us',
-    description: '"Contact Us" button for asking about tutorials',
-  },
-  contactSuffix: {
-    id: 'tutorialVideos.contactSuffix',
-    defaultMessage: ' and let us know!',
-    description: 'Suffix to display after the "Contact Us" button',
-  },
-  languagePrefixedTitle: {
-    id: 'tutorialVideos.languagePrefixedTitle',
-    defaultMessage: '{language}: {title}',
-    description: 'When we have a foreign language tutorial, we prefix that language to the title',
-  },
-  timeHoursMinutes: {
-    id: 'tutorialVideos.timeHoursMinutes',
-    defaultMessage: '{hours,number}h {minutes,number}m',
-    description: 'Time formatting',
-  },
-  timeMinutes: {
-    id: 'tutorialVideos.timeMinutes',
-    defaultMessage: '{minutes,number}m',
-    description: 'Time formatting',
-  },
-  timeSeconds: {
-    id: 'tutorialVideos.timeSeconds',
-    defaultMessage: '{seconds,number}s',
-    description: 'Time formatting',
-  },
-});
 
 // Try to make our boxes as wide as we can...
 let boxWidth = normalize(170);

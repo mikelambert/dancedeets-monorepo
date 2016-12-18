@@ -6,7 +6,7 @@
 
 import { intlShape } from 'react-intl';
 import type { EventRsvpList } from './models';
-import { messages } from './messages';
+import messages from './messages';
 
 export function formatAttending(intl: intlShape, rsvp: EventRsvpList) {
   if (rsvp.attending_count) {

@@ -35,9 +35,7 @@ import type {
 import {
   formatAttending,
 } from 'dancedeets-common/js/events/helpers';
-import {
-  messages,
-} from 'dancedeets-common/js/events/messages';
+import messages from 'dancedeets-common/js/events/messages';
 import { RsvpComponent } from './eventRsvp';
 import type { RsvpValue } from './eventRsvp';
 import { getReactDanceEventSchema } from './eventSchema';
