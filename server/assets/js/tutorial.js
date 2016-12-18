@@ -24,6 +24,7 @@ import {
 } from 'dancedeets-common/js/tutorials/format';
 import {
   Card,
+  Link,
 } from './ui';
 
 // De-Dupe
@@ -41,17 +42,6 @@ const lightPurpleColors = [
   '#C0C0D0',
 ];
 
-class Link extends React.Component {
-  props: {
-    children?: any;
-    style?: any;
-  }
-  render() {
-    const { children, style, ...otherProps } = this.props;
-    const fullStyle = { cursor: 'pointer', ...style };
-    return <div style={fullStyle} {...otherProps}>{children}</div>;
-  }
-}
 
 class _Duration extends React.Component {
   props: {

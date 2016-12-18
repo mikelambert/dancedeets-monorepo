@@ -26,6 +26,7 @@ import {
 import messages from 'dancedeets-common/js/tutorials/messages';
 import {
   Card,
+  Link,
 } from './ui';
 
 class _Tutorial extends React.Component {
@@ -74,13 +75,14 @@ class _TutorialCategory extends React.Component {
     if (matching.length) {
       const category = matching[0];
 
-      const tutorials = category.tutorials.map(tutorial => (
-        <div
+      const tutorials = category.tutorials.map((tutorial, index) => (
+        <a
           key={tutorial.title}
           style={{ float: 'left' }}
+          href={`${index}/`}
         >
           <Tutorial tutorial={tutorial} />
-        </div>
+        </a>
       ));
       return (
         <div>

@@ -102,3 +102,15 @@ export class AmpImage extends React.Component {
     }
   }
 }
+
+export class Link extends React.Component {
+  props: {
+    children?: any;
+    style?: any;
+  }
+  render() {
+    const { children, style, ...otherProps } = this.props;
+    const fullStyle = { cursor: 'pointer', ...style };
+    return <div style={fullStyle} {...otherProps}>{children}</div>;
+  }
+}
