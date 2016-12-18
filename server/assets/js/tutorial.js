@@ -19,6 +19,24 @@ import {
 import {
   formatDuration,
 } from 'dancedeets-common/js/tutorials/format';
+import {
+  Card,
+} from './ui';
+
+// De-Dupe
+const purpleColors = [
+  '#8283A9',
+  '#656595',
+  '#4C4D81',
+  '#333452',
+  '#222238',
+  '#171728',
+];
+const lightPurpleColors = [
+  '#E0E0F5',
+  '#D0D0F0',
+  '#C0C0D0',
+];
 
 class _TutorialView extends React.Component {
   props: {
@@ -26,32 +44,38 @@ class _TutorialView extends React.Component {
 
     // Self-managed props
     intl: intlShape;
+  };
+
+  renderVideoLine(video) {
+    const duration = formatDuration(this.props.intl.formatMessage, video.getDurationSeconds());
+    return (
+      <div style={{ backgroundColor: purpleColors[3] }}>
+        <img
+          style={{
+            float: 'left',
+            verticalAlign: 'baseline',
+          }}
+          width={30} height={30} src="play" alt="Play"
+        />
+        <div>
+          <div>{video.title}</div>
+          <div>{duration}</div>
+        </div>
+      </div>
+    );
   }
 
   renderSectionHeader(section) {
     const duration = formatDuration(this.props.intl.formatMessage, section.getDurationSeconds());
     return (
-      <div>
+      <div style={{ backgroundColor: purpleColors[4] }}>
         <div>{section.title}</div>
         <div>{duration}</div>
       </div>
     );
   }
 
-  renderVideoLine(video) {
-    const duration = formatDuration(this.props.intl.formatMessage, video.getDurationSeconds());
-    return (
-      <div>
-        <img src="play" alt="Play" />
-        <span>
-          <span>{video.title}</span>
-          <span>{duration}</span>
-        </span>
-      </div>
-    );
-  }
-
-  renderSection(section) {
+  renderWholeSection(section) {
     return (<div>
       {this.renderSectionHeader(section)}
       {section.videos.map((video, index) =>
@@ -64,8 +88,8 @@ class _TutorialView extends React.Component {
     const tutorial = this.props.tutorial;
     const subtitle = tutorial.subtitle ? <div>{tutorial.subtitle}</div> : null;
     const duration = formatDuration(this.props.intl.formatMessage, tutorial.getDurationSeconds());
-    return (<div>
-      <div>{tutorial.title}</div>
+    return (<div style={{ backgroundColor: purpleColors[4] }}>
+      <h3 style={{ marginTop: 0 }}>{tutorial.title}</h3>
       {subtitle}
       <div>{tutorial.author} - {duration}</div>
     </div>);
@@ -74,13 +98,25 @@ class _TutorialView extends React.Component {
   render() {
     const tutorial = this.props.tutorial;
     return (
-      <div>
-        <YouTube />
-        {this.renderHeader()}
-        {this.props.tutorial.sections.map((section, index) =>
-          <div key={index}>{this.renderSection(section)}</div>
-        )}
-      </div>
+      <Card style={{ maxWidth: 660 }}>
+        <YouTube
+          opts={{
+            width: '100%',
+          }}
+        />
+        <div
+          style={{
+            borderWidth: 1,
+            borderStyle: 'solid',
+            borderColor: lightPurpleColors[2],
+          }}
+        >
+          {this.renderHeader()}
+          {this.props.tutorial.sections.map((section, index) =>
+            <div key={index}>{this.renderWholeSection(section)}</div>
+          )}
+        </div>
+      </Card>
     );
   }
 }
@@ -93,7 +129,7 @@ class _TutorialPage extends React.Component {
 
     // Self-managed props
     intl: intlShape;
-  }
+  };
 
   render() {
     const matching = getTutorials(this.props.intl.locale).filter(category => category.style.id === this.props.style);
