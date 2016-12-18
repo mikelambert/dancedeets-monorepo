@@ -172,8 +172,10 @@ class _TutorialView extends React.Component {
 
   render() {
     const tutorial = this.props.tutorial;
-    const width = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
-    const flexDirection = width > 1024 ? 'row' : 'column';
+    const video = this.state.video;
+    const windowHeight = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight;
+    const windowWidth = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
+    const flexDirection = windowWidth > 1024 ? 'row' : 'column';
     return (
       <div
         style={{
@@ -186,7 +188,8 @@ class _TutorialView extends React.Component {
           style={{
             flex: 2,
             width: '100%',
-            maxWidth: 1024,
+            maxWidth: (windowHeight * video.width) / video.height,
+            maxHeight: (windowWidth * video.height) / video.width,
           }}
         >
           <YouTube
@@ -198,7 +201,7 @@ class _TutorialView extends React.Component {
                 autoplay: 1,
               },
             }}
-            videoId={this.state.video.youtubeId}
+            videoId={video.youtubeId}
           />
         </div>
         <div
