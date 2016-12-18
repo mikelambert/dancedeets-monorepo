@@ -118,7 +118,7 @@ class _TutorialCategory extends React.Component {
   render() {
     const matching = this.state.tutorials.filter(category => category.style.id === this.props.style);
 
-    if (matching) {
+    if (matching.length) {
       const category = matching[0];
 
       const tutorials = category.tutorials.map(tutorial => (
