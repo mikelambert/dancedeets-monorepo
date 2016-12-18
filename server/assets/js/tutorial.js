@@ -38,6 +38,17 @@ const lightPurpleColors = [
   '#C0C0D0',
 ];
 
+class Link extends React.Component {
+  props: {
+    children: any;
+  }
+
+  render() {
+    const { children, ...otherProps } = this.props;
+    return <div {...otherProps}>{children}</div>;
+  }
+}
+
 class _TutorialView extends React.Component {
   props: {
     tutorial: any;
@@ -59,21 +70,28 @@ class _TutorialView extends React.Component {
     };
   }
 
+  onVideoClick(video) {
+    this.setState({ videoId: video.youtubeId });
+  }
+
   renderVideoLine(video) {
     const duration = formatDuration(this.props.intl.formatMessage, video.getDurationSeconds());
+    const backgroundColor = this.state.videoId === video.youtubeId ? purpleColors[0] : purpleColors[3];
     return (
-      <div style={{ backgroundColor: purpleColors[3] }}>
-        <img
-          style={{
-            float: 'left',
-            verticalAlign: 'baseline',
-          }}
-          width={30} height={30} src="play" alt="Play"
-        />
-        <div>
-          <div>{video.title}</div>
-          <div>{duration}</div>
-        </div>
+      <div style={{ backgroundColor }}>
+        <Link onClick={() => this.onVideoClick(video)}>
+          <img
+            style={{
+              float: 'left',
+              verticalAlign: 'baseline',
+            }}
+            width={30} height={30} src="play" alt="Play"
+          />
+          <div>
+            <div>{video.title}</div>
+            <div>{duration}</div>
+          </div>
+        </Link>
       </div>
     );
   }
