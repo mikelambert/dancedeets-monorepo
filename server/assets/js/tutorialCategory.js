@@ -59,6 +59,7 @@ class _Tutorial extends React.Component {
 }
 const Tutorial = injectIntl(_Tutorial);
 
+
 class _TutorialCategory extends React.Component {
   props: {
     style: string;
@@ -67,22 +68,8 @@ class _TutorialCategory extends React.Component {
     intl: intlShape;
   }
 
-  state: {
-    tutorials: Array<{
-      style: Object,
-      tutorials: Array<Object>,
-    }>;
-  }
-
-  constructor(props) {
-    super(props);
-    this.state = {
-      tutorials: getTutorials(this.props.intl.locale),
-    };
-  }
-
   render() {
-    const matching = this.state.tutorials.filter(category => category.style.id === this.props.style);
+    const matching = getTutorials(this.props.intl.locale).filter(category => category.style.id === this.props.style);
 
     if (matching.length) {
       const category = matching[0];

@@ -2,23 +2,25 @@
 import app
 import base_servlet
 
-@app.route('/tutorial/([^/]+)')
+
+@app.route('/tutorials/([^/]+)/([^/]+)/?$')
 class TutorialHandler(base_servlet.BaseRequestHandler):
-    def get(self, tutorial_name):
+    def get(self, style, tutorial):
         self.finish_preload()
 
         props = dict(
-            tutorialName=tutorial_name,
+            style=style,
+            tutorial=tutorial,
             loggedIn=bool(self.fb_uid),
             currentLocale=self.locales[0],
         )
         self.setup_react_template('tutorial.js', props)
 
-        self.display['tutorial'] = tutorial_name
+        self.display['tutorial'] = tutorial
 
         self.render_template('tutorial')
 
-@app.route('/tutorial-styles/([^/]+)')
+@app.route('/tutorials/([^/]+)/?$')
 class TutorialCategoryHandler(base_servlet.BaseRequestHandler):
     def get(self, style):
         self.finish_preload()
