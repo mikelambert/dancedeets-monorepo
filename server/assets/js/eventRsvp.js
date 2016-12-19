@@ -10,7 +10,7 @@ import {
   intlShape,
   FormattedMessage,
 } from 'react-intl';
-import { messages } from 'dancedeets-common/js/events/messages';
+import messages from 'dancedeets-common/js/events/messages';
 import {
   Event,
 } from 'dancedeets-common/js/events/models';
