@@ -28,8 +28,13 @@ export class Playlist {
     this.thumbnail = json.thumbnail;
     this.sections = json.sections.map(x => new Section(x));
   }
+
   getDurationSeconds(): number {
     return this.sections.reduce((reduced, item) => reduced + item.getDurationSeconds(), 0);
+  }
+
+  getId() {
+    return `${this.style}/${this.id}`;
   }
 
   getItems(selectedIndex: number) {

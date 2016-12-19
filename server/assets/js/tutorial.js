@@ -278,8 +278,7 @@ function findTutorialById(config, id) {
   let foundTutorial = null;
   config.forEach((style) => {
     style.tutorials.forEach((tutorial) => {
-      const tutorialId = `${tutorial.style}/${tutorial.id}`;
-      if (tutorialId === id) {
+      if (tutorial.getId() === id) {
         foundTutorial = tutorial;
       }
     });

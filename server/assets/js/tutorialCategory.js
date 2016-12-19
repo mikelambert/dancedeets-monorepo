@@ -75,11 +75,11 @@ class _TutorialCategory extends React.Component {
     if (matching.length) {
       const category = matching[0];
 
-      const tutorials = category.tutorials.map((tutorial, index) => (
+      const tutorials = category.tutorials.map(tutorial => (
         <a
           key={tutorial.title}
           style={{ float: 'left' }}
-          href={`${index}/`}
+          href={`/tutorials/${tutorial.getId()}/`}
         >
           <Tutorial tutorial={tutorial} />
         </a>
