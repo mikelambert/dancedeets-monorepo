@@ -22,7 +22,7 @@
 
 [libs]
 flow/
-js/flow-lib.js
+assets/js/util/flow/lib.js
 
 [options]
 module.system=haste
@@ -48,4 +48,4 @@ suppress_comment=\\(.\\|\n\\)*\\$FlowFixedInNextDeploy
 unsafe.enable_getters_and_setters=true
 
 [version]
-^0.32.0
+^0.37.1
