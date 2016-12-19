@@ -17,6 +17,7 @@ import {
   getTutorials,
 } from 'dancedeets-common/js/tutorials/playlistConfig';
 import {
+  Playlist,
   Video,
 } from 'dancedeets-common/js/tutorials/models';
 import {
@@ -69,7 +70,7 @@ const Duration = injectIntl(_Duration);
 
 class _TutorialView extends React.Component {
   props: {
-    tutorial: any;
+    tutorial: Playlist;
 
     // Self-managed props
     intl: intlShape;
@@ -92,6 +93,7 @@ class _TutorialView extends React.Component {
       video: this.props.tutorial.sections[0].videos[0],
     };
     (this: any).updateDimensions = this.updateDimensions.bind(this);
+    (this: any).onVideoEnd = this.onVideoEnd.bind(this);
   }
 
 
@@ -108,6 +110,12 @@ class _TutorialView extends React.Component {
   }
 
   onVideoClick(video) {
+    this.setState({ video });
+  }
+
+  onVideoEnd() {
+    const videoIndex = this.props.tutorial.getVideoIndex(this.state.video);
+    const video = this.props.tutorial.getVideo(videoIndex + 1);
     this.setState({ video });
   }
 
@@ -220,6 +228,7 @@ class _TutorialView extends React.Component {
             },
           }}
           videoId={video.youtubeId}
+          onEnd={this.onVideoEnd}
         />
       </div>
     );
