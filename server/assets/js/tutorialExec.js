@@ -7,10 +7,14 @@
 import renderReact from './renderReact';
 
 function render() {
-  renderReact(require('./tutorial').default); // eslint-disable-line global-require
+  const locationComponents = window.location.hash.replace(/^#\/?|\/$/g, '').split('/');
+  const props = { locationComponents };
+  renderReact(require('./tutorial').default, props); // eslint-disable-line global-require
 }
 
 render();
+
+window.addEventListener('hashchange', render, false);
 
 if (module.hot) {
   module.hot.accept('./tutorial', render);

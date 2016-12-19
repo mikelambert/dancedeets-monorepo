@@ -61,7 +61,7 @@ export class Playlist {
     let index = 0;
     for (let i = 0; i < this.sections.length; i += 1) {
       const videos = this.sections[i].videos;
-      const sectionIndex = videos.indexOf(video);
+      const sectionIndex = videos.findIndex(thisVideo => thisVideo.youtubeId === video.youtubeId);
       if (sectionIndex > -1) {
         return index + sectionIndex;
       } else {

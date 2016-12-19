@@ -71,6 +71,7 @@ const Duration = injectIntl(_Duration);
 class _TutorialView extends React.Component {
   props: {
     tutorial: Playlist;
+    videoIndex: ?number;
 
     // Self-managed props
     intl: intlShape;
@@ -90,7 +91,7 @@ class _TutorialView extends React.Component {
     super(props);
     this.state = {
       ...this.getWindowState(),
-      video: this.props.tutorial.sections[0].videos[0],
+      video: this.props.tutorial.getVideo(this.props.videoIndex || 0),
     };
     (this: any).updateDimensions = this.updateDimensions.bind(this);
     (this: any).onVideoEnd = this.onVideoEnd.bind(this);
@@ -105,6 +106,13 @@ class _TutorialView extends React.Component {
     window.addEventListener('resize', this.updateDimensions);
   }
 
+  componentDidUpdate(prevProps, prevState) {
+    if (prevState.video !== this.state.video) {
+      const videoIndex = this.props.tutorial.getVideoIndex(this.state.video);
+      window.location.hash = `#${videoIndex}`;
+    }
+  }
+
   componentWillUnmount() {
     window.removeEventListener('resize', this.updateDimensions);
   }
@@ -116,7 +124,9 @@ class _TutorialView extends React.Component {
   onVideoEnd() {
     const videoIndex = this.props.tutorial.getVideoIndex(this.state.video);
     const video = this.props.tutorial.getVideo(videoIndex + 1);
-    this.setState({ video });
+    if (video) {
+      this.setState({ video });
+    }
   }
 
   getWindowState() {
@@ -229,6 +239,7 @@ class _TutorialView extends React.Component {
           }}
           videoId={video.youtubeId}
           onEnd={this.onVideoEnd}
+          onPlay={this.onVideoPlay}
         />
       </div>
     );
@@ -268,6 +279,7 @@ class _TutorialPage extends React.Component {
   props: {
     style: string;
     tutorial: string;
+    locationComponents: Array<string>;
 
     // Self-managed props
     intl: intlShape;
@@ -279,7 +291,12 @@ class _TutorialPage extends React.Component {
     if (matching.length) {
       const category = matching[0];
       const tutorial = category.tutorials[parseInt(this.props.tutorial, 10)];
-      return <TutorialView style={this.props.style} tutorial={tutorial} />;
+      const videoIndex = this.props.locationComponents.length ? this.props.locationComponents[0] : null;
+      return (<TutorialView
+        style={this.props.style}
+        tutorial={tutorial}
+        videoIndex={videoIndex}
+      />);
     } else {
       return <div>Unknown style!</div>;
     }
