@@ -16,6 +16,9 @@ type RequiredImage = {
 };
 type ClientCover = Cover | RequiredImage;
 
+export function HorizontalCenter(props: { children?: React.Element<*> }) {
+  return <div style={{ display: 'block', marginLeft: 'auto', marginRight: 'auto' }}>{props.children}</div>;
+}
 
 export class Card extends React.Component {
   props: {
