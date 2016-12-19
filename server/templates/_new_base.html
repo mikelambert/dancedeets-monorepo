@@ -304,8 +304,9 @@ var google_remarketing_only = false;
 /* ]]> */
 </script>
 
+{% if not hot_reloading %}
 <script type="text/javascript" src="{{static_dir}}/js/common.js"></script>
-<script type="text/javascript" src="{{static_dir}}/js/main.js"></script>
+{% endif %}
 
 {% block bottom_javascript %}{% endblock %}
 

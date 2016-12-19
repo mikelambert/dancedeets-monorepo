@@ -1,6 +1,6 @@
-/* var moment = */
-require('moment');
-/* var calendar = */
-require('fullcalendar');
-// css code
-require('fullcalendar/dist/fullcalendar.css');
+/* eslint-disable import/first */
+import './common';
+import 'moment';
+import 'fullcalendar';
+import 'fullcalendar/dist/fullcalendar.css';
+/* eslint-enable import/first */

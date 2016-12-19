@@ -46,6 +46,11 @@ function enableHotReloading(config) {
       config.entry[entryKey],
     ];
   });
+  const newPlugins = config.plugins
+    .concat([new webpack.HotModuleReplacementPlugin()])
+    .filter(plugin => (
+      Object.getPrototypeOf(plugin) !== webpack.optimize.CommonsChunkPlugin.prototype
+    ));
   config = {
     ...config,
     entry: newEntry,
@@ -53,7 +58,7 @@ function enableHotReloading(config) {
       ...config.output,
       publicPath,
     },
-    plugins: config.plugins.concat([new webpack.HotModuleReplacementPlugin()]),
+    plugins: newPlugins,
   };
   return config;
 }

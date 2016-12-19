@@ -76,8 +76,10 @@ class BareBaseRequestHandler(webapp2.RequestHandler, FacebookMixinHandler):
         if os.environ.get('HOT_SERVER_PORT'):
             # This must match the value we use in hotServer.j's staticPath
             self.display['static_dir'] = '/dist'
+            self.display['hot_reloading'] = True
         else:
             self.display['static_dir'] = '/dist-%s' % self._get_static_version()
+            self.display['hot_reloading'] = False
         # We can safely do this since there are very few ways others can modify self._errors
         self.display['errors'] = self._errors
         # functions, add these to some base display setup

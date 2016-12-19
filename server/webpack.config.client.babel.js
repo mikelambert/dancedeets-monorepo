@@ -25,8 +25,8 @@ const ifProd = plugin => (prod ? plugin : null);
 
 const config = {
   entry: {
-    main: './assets/js/main.js',
     calendar: './assets/js/calendar.js',
+    homepage: './assets/js/homepage.js',
     classResultsExec: './assets/js/classResultsExec.js',
     eventExec: './assets/js/eventExec.js',
     eventSearchResultsExec: './assets/js/eventSearchResultsExec.js',
@@ -55,9 +55,6 @@ const config = {
     // that come from both server/ and common/, and we want to de-dupe them.
     new webpack.optimize.DedupePlugin(),
     ifProd(new webpack.optimize.UglifyJsPlugin()),
-    // We need to have commons-chunk enabled in dev, too:
-    // Sometimes we have two code files both depending on jquery,
-    // but loading two jquerys causes things to break in strange ways.
     new webpack.optimize.CommonsChunkPlugin({
       name: 'common',
       minChunks: isCommonModule,

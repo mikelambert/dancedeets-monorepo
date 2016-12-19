@@ -4,6 +4,7 @@
  * @flow
  */
 
+import './common';
 import renderReact from './renderReact';
 
 function render() {
