@@ -10,7 +10,7 @@ function isCommonModule(module) {
   if (typeof userRequest !== 'string') {
     return false;
   }
-  const common = ['jquery', 'bootstrap', 'trackjs', 'react', 'moment', 'lodash', 'babel-polyfill', 'intl-', 'url', 'fbjs', 'js/messages', 'source-map', 'font-awesome'];
+  const common = ['jquery', 'bootstrap', 'trackjs', '/react/', 'react-dom', 'moment', 'lodash', 'babel-polyfill', '/intl/', 'intl-', 'url', 'fbjs', 'js/messages', 'source-map', 'font-awesome'];
   for (const elem of common) {
     if (userRequest.indexOf(elem) > -1) {
       return true;
