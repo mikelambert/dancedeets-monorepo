@@ -26,7 +26,6 @@ import {
 import messages from 'dancedeets-common/js/tutorials/messages';
 import {
   Card,
-  HorizontalCenter,
   Link,
 } from './ui';
 
@@ -52,9 +51,11 @@ class _Tutorial extends React.Component {
 
     return (
       <Card>
-        <HorizontalCenter>
-          <img width="320" height="180" src={tutorial.thumbnail} role="presentation" />
-        </HorizontalCenter>
+        <img
+          width="320" height="180"
+          src={tutorial.thumbnail} role="presentation"
+          style={{ display: 'block', marginLeft: 'auto', marginRight: 'auto' }}
+        />
         <div>{tutorial.title}</div>
         <div>{numVideosDuration}</div>
       </Card>
