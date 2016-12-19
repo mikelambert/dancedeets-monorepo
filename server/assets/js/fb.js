@@ -10,7 +10,7 @@ import { queryOn } from './dom';
 
 export const fbLoadEmitter = new EventEmitter();
 
-export function fbSetup(fbPermissions, fbAppId, baseHostname) {
+export function fbSetup(fbPermissions: string, fbAppId: string, baseHostname: string) {
   let loginPressed = false;
 
   function deleteLoginCookies() {
