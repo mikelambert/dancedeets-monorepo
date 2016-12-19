@@ -106,10 +106,22 @@ class _TutorialView extends React.Component {
     window.addEventListener('resize', this.updateDimensions);
   }
 
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.videoIndex !== this.props.videoIndex) {
+      const video = this.props.tutorial.getVideo(nextProps.videoIndex || 0);
+      this.setState({ video });
+    }
+  }
+
   componentDidUpdate(prevProps, prevState) {
+    console.log(prevState.video, this.state.video);
     if (prevState.video !== this.state.video) {
       const videoIndex = this.props.tutorial.getVideoIndex(this.state.video);
-      window.location.hash = `#${videoIndex}`;
+      const oldHash = window.location.hash || '#0';
+      const newHash = `#${videoIndex}`;
+      if (oldHash !== newHash) {
+        window.location.hash = newHash;
+      }
     }
   }
 
