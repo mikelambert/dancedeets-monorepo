@@ -239,7 +239,6 @@ class _TutorialView extends React.Component {
           }}
           videoId={video.youtubeId}
           onEnd={this.onVideoEnd}
-          onPlay={this.onVideoPlay}
         />
       </div>
     );
@@ -275,6 +274,19 @@ class _TutorialView extends React.Component {
 }
 const TutorialView = injectIntl(_TutorialView);
 
+function findTutorialById(config, id) {
+  let foundTutorial = null;
+  config.forEach((style) => {
+    style.tutorials.forEach((tutorial) => {
+      const tutorialId = `${tutorial.style}/${tutorial.id}`;
+      if (tutorialId === id) {
+        foundTutorial = tutorial;
+      }
+    });
+  });
+  return foundTutorial;
+}
+
 class _TutorialPage extends React.Component {
   props: {
     style: string;
@@ -286,11 +298,10 @@ class _TutorialPage extends React.Component {
   };
 
   render() {
-    const matching = getTutorials(this.props.intl.locale).filter(category => category.style.id === this.props.style);
+    const config = getTutorials(this.props.intl.locale);
+    const tutorial = findTutorialById(config, this.props.tutorial);
 
-    if (matching.length) {
-      const category = matching[0];
-      const tutorial = category.tutorials[parseInt(this.props.tutorial, 10)];
+    if (tutorial) {
       const videoIndex = this.props.locationComponents.length ? this.props.locationComponents[0] : null;
       return (<TutorialView
         style={this.props.style}
@@ -298,7 +309,7 @@ class _TutorialPage extends React.Component {
         videoIndex={videoIndex}
       />);
     } else {
-      return <div>Unknown style!</div>;
+      return <div>Unknown tutorial!</div>;
     }
   }
 }

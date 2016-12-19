@@ -3,20 +3,19 @@ import app
 import base_servlet
 
 
-@app.route('/tutorials/([^/]+)/([^/]+)/?$')
+@app.route('/tutorials/([^/]+/[^/]+)/?$')
 class TutorialHandler(base_servlet.BaseRequestHandler):
-    def get(self, style, tutorial):
+    def get(self, tutorial_name):
         self.finish_preload()
 
         props = dict(
-            style=style,
-            tutorial=tutorial,
+            tutorial=tutorial_name,
             loggedIn=bool(self.fb_uid),
             currentLocale=self.locales[0],
         )
         self.setup_react_template('tutorial.js', props)
 
-        self.display['tutorial'] = tutorial
+        self.display['tutorial'] = tutorial_name
 
         self.render_template('tutorial')
 

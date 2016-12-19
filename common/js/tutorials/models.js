@@ -7,6 +7,7 @@
 import moment from 'moment';
 
 export class Playlist {
+  id: string;
   title: string;
   titleMessage: ?{id: string};
   subtitle: string;
@@ -17,6 +18,7 @@ export class Playlist {
   sections: Section[];
 
   constructor(json: any) {
+    this.id = json.id;
     this.title = json.title;
     this.titleMessage = json.titleMessage;
     this.subtitle = json.subtitle;
