@@ -49,7 +49,7 @@ type Result = OneboxResult | EventResult;
 class EventFlyer extends React.Component {
   props: {
     event: SearchEvent;
-    lazyLoad: boolean;
+    lazyLoad?: boolean;
   }
 
   generateCroppedCover(picture: Cover, width: number, height: number) {

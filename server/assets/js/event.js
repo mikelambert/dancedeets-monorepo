@@ -136,12 +136,13 @@ function googleCalendarStartEndFormat(event) {
 }
 
 function getAddToCalendarLink(event) {
+  const address = event.venue.fullAddress();
   const args = {
     action: 'TEMPLATE',
     text: event.name,
     dates: googleCalendarStartEndFormat(event),
     details: `Event Details:\n${event.getUrl()}`,
-    location: event.venue.fullAddress().replace('\n', ', '),
+    location: address ? address.replace('\n', ', ') : '',
     sf: true,
     output: 'xml',
   };
@@ -313,6 +314,10 @@ class MapWithLinks extends React.Component {
   }
 
   map() {
+    const venueName = this.props.event.venue.name;
+    if (!venueName) {
+      return null;
+    }
     const geocode = this.props.event.venue.geocode;
     if (!geocode || !geocode.latitude) {
       return null;
@@ -336,7 +341,7 @@ class MapWithLinks extends React.Component {
       );
     } else {
       mapContents = (<SimpleMap
-        name={this.props.event.venue.name}
+        name={venueName}
         latitude={geocode.latitude}
         longitude={geocode.longitude}
       />);
@@ -358,7 +363,7 @@ class MapWithLinks extends React.Component {
 
   render() {
     const venue = this.props.event.venue;
-    if (venue) {
+    if (venue && venue.name) {
       let locationName = <FormatText>{venue.name}</FormatText>;
       if (venue.id) {
         locationName = <a href={`https://www.facebook.com/${venue.id}`}>{locationName}</a>;
