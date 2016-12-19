@@ -4,7 +4,7 @@
  * @flow
  */
 
-export default const styleImages = {
+export default {
   break: require('./images/break.png'),
   hiphop: require('./images/hiphop.png'),
   pop: require('./images/pop.png'),
