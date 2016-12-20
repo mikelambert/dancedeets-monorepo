@@ -456,7 +456,6 @@ class App extends React.Component {
   }
 
   onChange(key: ValidKey, state: any) {
-    console.log(key, state);
     this.setState({ [key]: state });
   }
 
