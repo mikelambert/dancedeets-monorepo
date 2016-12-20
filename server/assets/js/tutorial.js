@@ -320,7 +320,7 @@ class _TutorialPage extends React.Component {
   props: {
     style: string;
     tutorial: string;
-    locationComponents: Array<string>;
+    locationComponents?: Array<string>;
 
     // Self-managed props
     intl: intlShape;
@@ -331,7 +331,7 @@ class _TutorialPage extends React.Component {
     const tutorial = findTutorialById(config, this.props.tutorial);
 
     if (tutorial) {
-      const videoIndex = this.props.locationComponents.length ? this.props.locationComponents[0] : null;
+      const videoIndex = this.props.locationComponents && this.props.locationComponents.length ? this.props.locationComponents[0] : null;
       return (<TutorialView
         style={this.props.style}
         tutorial={tutorial}
