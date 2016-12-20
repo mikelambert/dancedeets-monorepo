@@ -12,6 +12,8 @@
 
 {% if react_head %}
   {{ react_head.title|safe }}
+  {{ react_head.meta|safe }}
+  {{ react_head.link|safe }}
 {% else %}
   <title>{% block title %}{% endblock %}</title>
 {% endif %}
