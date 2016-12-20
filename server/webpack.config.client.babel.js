@@ -53,7 +53,7 @@ const config = {
     new ExtractTextPlugin('../css/[name].css'),
     // Sometimes we get duplicate modules (react-intl, moment)
     // that come from both server/ and common/, and we want to de-dupe them.
-    new webpack.optimize.DedupePlugin(),
+    ifProd(new webpack.optimize.DedupePlugin()),
     ifProd(new webpack.optimize.UglifyJsPlugin()),
     new webpack.optimize.CommonsChunkPlugin({
       name: 'common',
