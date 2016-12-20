@@ -5,6 +5,8 @@
  */
 
 import React from 'react';
+import uniq from 'lodash/uniq';
+import countBy from 'lodash/countBy';
 import {
   defineMessages,
   injectIntl,
@@ -28,6 +30,7 @@ import {
   formatDuration,
 } from 'dancedeets-common/js/tutorials/format';
 import messages from 'dancedeets-common/js/tutorials/messages';
+import { sortNumber } from 'dancedeets-common/js/util/sort';
 import {
   Card,
   Link,
@@ -74,6 +77,34 @@ class _Tutorial extends React.Component {
 }
 const Tutorial = injectIntl(_Tutorial);
 
+class FilterBar extends React.Component {
+  props: {
+    tutorials: Array<Playlist>;
+  }
+
+  generateOrderedList(getProperty: (tutorial: Playlist) => any) {
+    const frequencies = countBy(this.props.tutorials.map(x => getProperty(x)));
+    const dataList = Object.keys(frequencies).map(name => ({ name, count: frequencies[name] }));
+    return sortNumber(dataList, x => -x.count);
+  }
+
+  render() {
+    const tutorials = this.props.tutorials;
+    const languages = this.generateOrderedList(x => x.language);
+    const styles = this.generateOrderedList(x => x.style);
+    return (
+      <div>
+        <div>
+          Language: {languages.map(x => <span>{x.name} ({x.count})</span>)}
+        </div>
+        <div>
+          Styles: {styles.map(x => <span>{x.name} ({x.count})</span>)}
+        </div>
+      </div>
+    );
+  }
+}
+
 class TutorialLayout extends React.Component {
   props: {
     categories: Array<Category>;
@@ -86,6 +117,7 @@ class TutorialLayout extends React.Component {
     return (
       <div>
         <Helmet title={title} />
+        <FilterBar tutorials={tutorials} />
         <h2>{title}</h2>
         {tutorialComponents}
         <div style={{ clear: 'both' }} />
