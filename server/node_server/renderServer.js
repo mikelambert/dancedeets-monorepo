@@ -1,3 +1,9 @@
+/**
+ * Copyright 2016 DanceDeets.
+ *
+ * @flow
+ */
+
 import fs from 'fs';
 import http from 'http';
 import express from 'express';
@@ -40,8 +46,11 @@ app.get('/', (req, res) => {
   res.end('React render server');
 });
 
-function serializedHead(helmetRewind) {
-  const head = helmetRewind();
+function serializedHead(component) {
+  if (!component || !component.HelmetRewind) {
+    return null;
+  }
+  const head = component.HelmetRewind();
   const serialized = {};
   Object.keys(head).forEach((key) => {
     serialized[key] = head[key].toString();
@@ -89,7 +98,7 @@ app.post('/render', (req, res) => {
         return;
       }
       reactRender(body, (err2, markup) => {
-        const head = component ? serializedHead(component.HelmetRewind) : null;
+        const head = serializedHead(component);
         if (err2) {
           console.error(err2);
           res.json({
