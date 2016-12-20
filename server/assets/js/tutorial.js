@@ -11,6 +11,7 @@ import {
 } from 'react-intl';
 import YouTube from 'react-youtube';
 import { Share as TwitterShare } from 'react-twitter-widgets';
+import Helmet from 'react-helmet';
 import {
   intlWeb,
 } from 'dancedeets-common/js/intl';
@@ -329,6 +330,17 @@ function findTutorialById(config, id) {
   return foundTutorial;
 }
 
+class HtmlHead extends React.Component {
+  props: {
+    tutorial: ?Playlist;
+  }
+
+  render() {
+    const tutorial = this.props.tutorial;
+    return <Helmet title={tutorial ? tutorial.title : 'Unknown tutorial'} />;
+  }
+}
+
 class _TutorialPage extends React.Component {
   props: {
     style: string;
@@ -343,18 +355,22 @@ class _TutorialPage extends React.Component {
     const config = getTutorials(this.props.intl.locale);
     const tutorial = findTutorialById(config, this.props.tutorial);
 
+    let result = null;
     if (tutorial) {
       const videoIndex = this.props.locationComponents && this.props.locationComponents.length ? this.props.locationComponents[0] : null;
-      return (<TutorialView
+      result = (<TutorialView
         style={this.props.style}
         tutorial={tutorial}
         videoIndex={videoIndex}
       />);
     } else {
-      return <div>Unknown tutorial!</div>;
+      result = <div>Unknown tutorial!</div>;
     }
+    return <div><HtmlHead tutorial={tutorial} />{result}</div>;
   }
 }
+
 const TutorialPage = injectIntl(_TutorialPage);
 
+export const HelmetRewind = Helmet.rewind;
 export default intlWeb(TutorialPage);

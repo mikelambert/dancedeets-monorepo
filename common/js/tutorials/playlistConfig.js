@@ -6,6 +6,12 @@
 
 import styles from '../styles';
 import { Playlist } from './models';
+import type { Style } from '../styles';
+
+export type Category = {
+  style: Style,
+  tutorials: Array<Playlist>;
+};
 
 /* eslint-disable global-require */
 const defaultTutorials = [

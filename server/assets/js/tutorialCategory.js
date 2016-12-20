@@ -10,12 +10,16 @@ import {
   injectIntl,
   intlShape,
 } from 'react-intl';
+import Helmet from 'react-helmet';
 import upperFirst from 'lodash/upperFirst';
 import {
   intlWeb,
 } from 'dancedeets-common/js/intl';
 import {
   getTutorials,
+} from 'dancedeets-common/js/tutorials/playlistConfig';
+import type {
+  Category,
 } from 'dancedeets-common/js/tutorials/playlistConfig';
 import {
   Playlist,
@@ -64,6 +68,16 @@ class _Tutorial extends React.Component {
 }
 const Tutorial = injectIntl(_Tutorial);
 
+class HtmlHead extends React.Component {
+  props: {
+    category: ?Category;
+  }
+
+  render() {
+    const category = this.props.category;
+    return <Helmet title={category ? `${category.style.title} Tutorials` : 'Unknown Style'} />;
+  }
+}
 
 class _TutorialCategory extends React.Component {
   props: {
@@ -75,10 +89,9 @@ class _TutorialCategory extends React.Component {
 
   render() {
     const matching = getTutorials(this.props.intl.locale).filter(category => category.style.id === this.props.style);
-
-    if (matching.length) {
-      const category = matching[0];
-
+    let result = null;
+    const category = matching.length ? matching[0] : null;
+    if (category) {
       const tutorials = category.tutorials.map(tutorial => (
         <a
           key={tutorial.title}
@@ -88,17 +101,20 @@ class _TutorialCategory extends React.Component {
           <Tutorial tutorial={tutorial} />
         </a>
       ));
-      return (
+      result = (
         <div>
           <h2>{category.style.title}</h2>
           {tutorials}
           <div style={{ clear: 'both' }} />
         </div>
       );
+    } else {
+      result = <div>Unknown Style!</div>;
     }
-    return <div>Unknown Style!</div>;
+    return <div><HtmlHead category={category} />{result}</div>;
   }
 }
 const TutorialCategory = injectIntl(_TutorialCategory);
 
+export const HelmetRewind = Helmet.rewind;
 export default intlWeb(TutorialCategory);

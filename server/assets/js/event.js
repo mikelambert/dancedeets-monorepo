@@ -450,5 +450,4 @@ class EventPage extends React.Component {
 }
 
 export const HelmetRewind = Helmet.rewind;
-
 export default intlWeb(EventPage);
