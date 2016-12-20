@@ -26,9 +26,12 @@ import './stackdriver-errors';
 import { fbSetup } from './fb';
 import appInstallPromos from './app-install-promo';
 import { queryOn } from './dom';
+import setupTwitter from './setupTwitter';
 /* eslint-enable import/first */
 
 fbSetup(window.fbPermissions, window.fbAppId, window.baseHostname);
+
+setupTwitter();
 
 if (window.showSmartBanner) {
   jQuery.smartbanner({
