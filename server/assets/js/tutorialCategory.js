@@ -38,6 +38,7 @@ import {
   Link,
 } from './ui';
 import {
+  getSelected,
   generateUniformState,
   MultiSelectList,
   MultiSelectState,
@@ -86,21 +87,15 @@ const Tutorial = injectIntl(_Tutorial);
 
 type ValidKey = 'languages' | 'styles';
 
-type StringWithFrequency = {
-  name: string;
-  count: string;
-};
+type StringWithFrequency = string;
 
-class _FilterBar extends React.Component {
+class FilterBar extends React.Component {
   props: {
     initialLanguages: Array<StringWithFrequency>;
     initialStyles: Array<StringWithFrequency>;
     languages: MultiSelectState;
     styles: MultiSelectState;
     onChange: (key: ValidKey, newState: any) => void;
-
-    // Self-managed props
-    intl: intlShape;
   }
 
   render() {
@@ -109,7 +104,7 @@ class _FilterBar extends React.Component {
         <div>
           Language:
           <MultiSelectList
-            list={this.props.initialLanguages.map(x => `${languages[this.props.intl.locale][x.name]} (${x.count})`)}
+            list={this.props.initialLanguages}
             selected={this.props.languages}
             // ref={(x) => { this._styles = x; }}
             onChange={state => this.props.onChange('languages', state)}
@@ -118,7 +113,7 @@ class _FilterBar extends React.Component {
         <div>
           Styles:
           <MultiSelectList
-            list={this.props.initialStyles.map(x => `${x.name} (${x.count})`)}
+            list={this.props.initialStyles}
             selected={this.props.styles}
             // ref={(x) => { this._styles = x; }}
             onChange={state => this.props.onChange('styles', state)}
@@ -128,11 +123,13 @@ class _FilterBar extends React.Component {
     );
   }
 }
-const FilterBar = injectIntl(_FilterBar);
 
-class TutorialLayout extends React.Component {
+class _TutorialLayout extends React.Component {
   props: {
     categories: Array<Category>;
+
+    // Self-managed props
+    intl: intlShape;
   }
 
   state: {
@@ -149,8 +146,8 @@ class TutorialLayout extends React.Component {
     super(props);
 
     this._tutorials = [].concat(...this.props.categories.map(x => x.tutorials));
-    this._languages = this.generateOrderedList(x => x.language);
-    this._styles = this.generateOrderedList(x => x.style);
+    this._languages = this.generateOrderedList(x => x.language).map(x => `${languages[this.props.intl.locale][x.name]} (${x.count})`);
+    this._styles = this.generateOrderedList(x => x.style).map(x => `${x.name} (${x.count})`);
 
     this.state = {
       languages: generateUniformState(this._languages, true),
@@ -172,7 +169,16 @@ class TutorialLayout extends React.Component {
   }
 
   render() {
-    const tutorialComponents = this._tutorials.map(tutorial => <Tutorial key={tutorial.getId()} tutorial={tutorial} />);
+    const filteredTutorials = this._tutorials.filter((tutorial) => {
+      if (getSelected(this.state.languages).filter(language => language.split(' ')[0] === languages[this.props.intl.locale][tutorial.language]).length === 0) {
+        return false;
+      }
+      if (getSelected(this.state.styles).filter(style => style.split(' ')[0] === tutorial.style).length === 0) {
+        return false;
+      }
+      return true;
+    });
+    const tutorialComponents = filteredTutorials.map(tutorial => <Tutorial key={tutorial.getId()} tutorial={tutorial} />);
     const title = this.props.categories.length === 1 ? `${this.props.categories[0].style.title} Tutorials` : 'Tutorials';
 
     return (
@@ -190,6 +196,7 @@ class TutorialLayout extends React.Component {
     );
   }
 }
+const TutorialLayout = injectIntl(_TutorialLayout);
 
 class _TutorialOverview extends React.Component {
   props: {
