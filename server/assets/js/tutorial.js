@@ -74,13 +74,17 @@ class ShareLinks extends React.Component {
     url: string;
   }
 
+  componentDidMount() {
+    if (window.FB) {
+      window.FB.XFBML.parse();
+    }
+  }
+
   render() {
     return (
       <div style={{ height: 20 }}>
         <div style={{ display: 'inline-block' }}><TwitterShare url={this.props.url} /></div>
-        <span style={{ verticalAlign: 'top' }} className="link-event-share fb-share-button" data-href={this.props.url} data-layout="button" data-size="small" data-mobile-iframe="true">
-          <a className="fb-xfbml-parse-ignore" rel="noopener noreferrer" target="_blank" href={`https://www.facebook.com/sharer/sharer.php?u=${this.props.url}&amp;src=sdkpreparse`}>Share</a>
-        </span>
+        <span style={{ verticalAlign: 'top' }} className="link-event-share fb-share-button" data-href={this.props.url} data-layout="button" data-size="small" data-mobile-iframe="true" />
       </div>
     );
   }
