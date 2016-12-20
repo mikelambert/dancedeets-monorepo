@@ -1,4 +1,5 @@
-[
+/* eslint-disable */
+export default [
 { type: "language", iso: "aa",
 countries: [
 {_reference: "DJ"},

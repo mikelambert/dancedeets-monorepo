@@ -30,6 +30,7 @@ import { Playlist, Video } from 'dancedeets-common/js/tutorials/models';
 import styleIcons from 'dancedeets-common/js/styles/icons';
 import { getTutorials } from 'dancedeets-common/js/tutorials/playlistConfig';
 import messages from 'dancedeets-common/js/tutorials/messages';
+import languages from 'dancedeets-common/js/languages';
 import {
   formatDuration,
 } from 'dancedeets-common/js/tutorials/format';
@@ -41,7 +42,6 @@ import {
   Text,
 } from '../ui';
 import { purpleColors } from '../Colors';
-import languages from '../languages';
 import {
   semiNormalize,
   normalize,

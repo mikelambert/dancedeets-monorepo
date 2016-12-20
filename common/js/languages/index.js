@@ -4,7 +4,7 @@
  * @flow
  */
 
-import languages from './languagesData.json';
+import languages from './data';
 
 const languageMap = {};
 languages.forEach((x) => {
