@@ -11,9 +11,9 @@ import Locale from 'react-native-locale';
 import moment from 'moment';
 import { Event } from 'dancedeets-common/js/events/models';
 import type { TimePeriod } from 'dancedeets-common/js/events/search';
+import { sortString } from 'dancedeets-common/js/util/sort';
 import type { TokenRegistration } from '../store/track';
 import { timeout, retryWithBackoff } from './timeouts';
-import sort from '../util/sort';
 
 const DEV_SERVER = false;
 
@@ -136,7 +136,7 @@ export async function search(location: string, keywords: string, timePeriod: Tim
     time_period: timePeriod,
   }));
   results.results = results.results.map(x => new Event(x));
-  results.results = sort(results.results, resultEvent => moment(resultEvent.start_time).toISOString());
+  results.results = sortString(results.results, resultEvent => moment(resultEvent.start_time).toISOString());
   return results;
 }
 
