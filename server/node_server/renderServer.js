@@ -83,8 +83,8 @@ app.post('/render', (req, res) => {
       }
       // Ensure this runs in a try-catch, so the server cannot die on eval()ing code.
       try {
-        component = eval(data)
-        body.component = component.default; // eslint-disable-line no-eval
+        component = eval(data); // eslint-disable-line no-eval
+        body.component = component.default;
       } catch (e) {
         console.error(e);
         res.json({
