@@ -35,6 +35,9 @@ import {
   Card,
   Link,
 } from './ui';
+import {
+  MultiSelectList,
+} from './MultiSelectList';
 
 class _Tutorial extends React.Component {
   props: {
@@ -95,10 +98,22 @@ class FilterBar extends React.Component {
     return (
       <div>
         <div>
-          Language: {languages.map(x => <span key={x.name}>{x.name} ({x.count})</span>)}
+          Language:
+          <MultiSelectList
+            list={languages.map(x => `${x.name} (${x.count})`)}
+            selected={[]}
+            // ref={(x) => { this._styles = x; }}
+            // onChange={state => this.props.onChange('styles', state)}
+          />
         </div>
         <div>
-          Styles: {styles.map(x => <span key={x.name}>{x.name} ({x.count})</span>)}
+          Styles:
+          <MultiSelectList
+            list={styles.map(x => `${x.name} (${x.count})`)}
+            selected={[]}
+            // ref={(x) => { this._styles = x; }}
+            // onChange={state => this.props.onChange('styles', state)}
+          />
         </div>
       </div>
     );
