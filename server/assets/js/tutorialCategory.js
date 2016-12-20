@@ -54,14 +54,20 @@ class _Tutorial extends React.Component {
     const numVideosDuration = this.props.intl.formatMessage(messages.numVideosWithDuration, { count: tutorial.getVideoCount(), duration });
 
     return (
-      <Card>
-        <img
-          width="320" height="180"
-          src={tutorial.thumbnail} role="presentation"
-          style={{ display: 'block', marginLeft: 'auto', marginRight: 'auto' }}
-        />
-        <div>{tutorial.title}</div>
-        <div>{numVideosDuration}</div>
+      <Card
+        style={{ float: 'left' }}
+      >
+        <a
+          href={`/tutorials/${tutorial.getId()}/`}
+        >
+          <img
+            width="320" height="180"
+            src={tutorial.thumbnail} role="presentation"
+            style={{ display: 'block', marginLeft: 'auto', marginRight: 'auto' }}
+          />
+          <div>{tutorial.title}</div>
+          <div>{numVideosDuration}</div>
+        </a>
       </Card>
     );
   }
@@ -79,7 +85,27 @@ class HtmlHead extends React.Component {
   }
 }
 
-class _TutorialCategory extends React.Component {
+class TutorialLayout extends React.Component {
+  props: {
+    categories: Array<Category>;
+  }
+
+  render() {
+    const tutorials = [].concat(...this.props.categories.map(x => x.tutorials));
+    const tutorialComponents = tutorials.map(tutorial => <Tutorial key={tutorial.title} tutorial={tutorial} />);
+    const title = this.props.categories.length === 1 ? `${this.props.categories[0].style.title} Tutorials` : 'Tutorials';
+    return (
+      <div>
+        <Helmet title={title} />
+        <h2>{title}</h2>
+        {tutorialComponents}
+        <div style={{ clear: 'both' }} />
+      </div>
+    );
+  }
+}
+
+class _TutorialOverview extends React.Component {
   props: {
     style: string;
 
@@ -88,33 +114,23 @@ class _TutorialCategory extends React.Component {
   }
 
   render() {
-    const matching = getTutorials(this.props.intl.locale).filter(category => category.style.id === this.props.style);
-    let result = null;
-    const category = matching.length ? matching[0] : null;
-    if (category) {
-      const tutorials = category.tutorials.map(tutorial => (
-        <a
-          key={tutorial.title}
-          style={{ float: 'left' }}
-          href={`/tutorials/${tutorial.getId()}/`}
-        >
-          <Tutorial tutorial={tutorial} />
-        </a>
-      ));
-      result = (
-        <div>
-          <h2>{category.style.title}</h2>
-          {tutorials}
-          <div style={{ clear: 'both' }} />
-        </div>
-      );
+    const categories = getTutorials(this.props.intl.locale);
+    if (this.props.style) {
+      const matching = categories.filter(category => category.style.id === this.props.style);
+      const category = matching.length ? matching[0] : null;
+      if (category) {
+        return <TutorialLayout categories={[category]} />;
+      } else {
+        // 404 not found
+        return <div><HtmlHead title="Unknown Tutorial Category" />Unknown Style!</div>;
+      }
     } else {
-      result = <div>Unknown Style!</div>;
+      // Super overiew
+      return <TutorialLayout categories={categories} />;
     }
-    return <div><HtmlHead category={category} />{result}</div>;
   }
 }
-const TutorialCategory = injectIntl(_TutorialCategory);
+const TutorialOverview = injectIntl(_TutorialOverview);
 
 export const HelmetRewind = Helmet.rewind;
-export default intlWeb(TutorialCategory);
+export default intlWeb(TutorialOverview);
