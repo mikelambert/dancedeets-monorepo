@@ -31,6 +31,8 @@ import {
 } from 'dancedeets-common/js/tutorials/format';
 import messages from 'dancedeets-common/js/tutorials/messages';
 import { sortNumber } from 'dancedeets-common/js/util/sort';
+// TODO: Can/should we trim this file? It is 150KB, and we probably only need 10KB of it...
+import languages from 'dancedeets-common/js/languages';
 import {
   Card,
   Link,
@@ -80,9 +82,12 @@ class _Tutorial extends React.Component {
 }
 const Tutorial = injectIntl(_Tutorial);
 
-class FilterBar extends React.Component {
+class _FilterBar extends React.Component {
   props: {
     tutorials: Array<Playlist>;
+
+    // Self-managed props
+    intl: intlShape;
   }
 
   generateOrderedList(getProperty: (tutorial: Playlist) => any) {
@@ -93,14 +98,14 @@ class FilterBar extends React.Component {
 
   render() {
     const tutorials = this.props.tutorials;
-    const languages = this.generateOrderedList(x => x.language);
+    const tutLanguages = this.generateOrderedList(x => x.language);
     const styles = this.generateOrderedList(x => x.style);
     return (
       <div>
         <div>
           Language:
           <MultiSelectList
-            list={languages.map(x => `${x.name} (${x.count})`)}
+            list={tutLanguages.map(x => `${languages[this.props.intl.locale][x.name]} (${x.count})`)}
             selected={[]}
             // ref={(x) => { this._styles = x; }}
             // onChange={state => this.props.onChange('styles', state)}
@@ -119,6 +124,7 @@ class FilterBar extends React.Component {
     );
   }
 }
+const FilterBar = injectIntl(_FilterBar);
 
 class TutorialLayout extends React.Component {
   props: {
