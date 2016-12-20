@@ -172,8 +172,9 @@ const defaultTutorials = [
 function sortedTutorials(tutorials, locale) {
   const nativeTutorials = [];
   const foreignTutorials = [];
+  const language = locale.split('-')[0];
   tutorials.forEach((tut) => {
-    if (tut.language === locale) {
+    if (tut.language === language) {
       nativeTutorials.push(tut);
     } else {
       foreignTutorials.push(tut);
