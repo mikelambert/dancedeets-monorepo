@@ -111,17 +111,25 @@ class _TutorialView extends React.Component {
 
   constructor(props) {
     super(props);
+
+    // Unfortunately, sticking this code into the constructor directly,
+    // triggers a different initial render() than on the server,
+    // which triggers invalid checksums and a full react clientside re-render.
+    //
+    // I can try to avoid it, by doing it on a subsequent render,
+    // but I have the same problem with the selected-videoIndex,
+    // which triggers a different row highlight than was presupposed by the server.
+    //
+    // But I'd prefer to have a fast-loading initial page, so instead,
+    // I give up and just accept these dev-mode-only warnings:
+    // 'React attempted to reuse markup in a container but the checksum was invalid.''
+
     this.state = {
       ...this.getWindowState(),
       video: this.props.tutorial.getVideo(this.props.videoIndex || 0),
     };
     (this: any).updateDimensions = this.updateDimensions.bind(this);
     (this: any).onVideoEnd = this.onVideoEnd.bind(this);
-  }
-
-
-  componentWillMount() {
-    this.updateDimensions();
   }
 
   componentDidMount() {
@@ -237,10 +245,11 @@ class _TutorialView extends React.Component {
     const tutorial = this.props.tutorial;
     const subtitle = tutorial.subtitle ? <div>{tutorial.subtitle}</div> : null;
     const duration = formatDuration(this.props.intl.formatMessage, tutorial.getDurationSeconds());
+    const subline = `${tutorial.author} - ${duration}`;
     return (<div style={{ padding: 7, backgroundColor: purpleColors[4] }}>
       <h3 style={{ marginTop: 0 }}>{tutorial.title}</h3>
       {subtitle}
-      <div>{tutorial.author} - {duration}</div>
+      <div>{subline}</div>
       <ShareLinks url={tutorial.getUrl()} />
     </div>);
   }

@@ -20,6 +20,7 @@ import {
   GoogleMap,
   Marker,
 } from 'react-google-maps';
+import Helmet from 'react-helmet';
 import { Share as TwitterShare } from 'react-twitter-widgets';
 import {
   intlWeb,
@@ -399,6 +400,12 @@ class Description extends React.Component {
   }
 }
 
+class HtmlHead extends React.Component {
+  render() {
+    return <Helmet title="My Title" />;
+  }
+}
+
 class EventPage extends React.Component {
   props: {
     event: JSONObject;
@@ -411,6 +418,7 @@ class EventPage extends React.Component {
     const event = new Event(this.props.event);
     return (
       <div className="container">
+        <HtmlHead event={event} />
         {this.props.amp ? null : getReactDanceEventSchema(event)}
         <div className="row">
           <div className="col-xs-12">
