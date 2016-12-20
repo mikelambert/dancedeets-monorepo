@@ -58,7 +58,7 @@ class _Tutorial extends React.Component {
         style={{ float: 'left' }}
       >
         <a
-          href={`/tutorials/${tutorial.getId()}/`}
+          href={`/tutorials/${tutorial.getId()}`}
         >
           <img
             width="320" height="180"
@@ -73,17 +73,6 @@ class _Tutorial extends React.Component {
   }
 }
 const Tutorial = injectIntl(_Tutorial);
-
-class HtmlHead extends React.Component {
-  props: {
-    category: ?Category;
-  }
-
-  render() {
-    const category = this.props.category;
-    return <Helmet title={category ? `${category.style.title} Tutorials` : 'Unknown Style'} />;
-  }
-}
 
 class TutorialLayout extends React.Component {
   props: {
@@ -122,7 +111,7 @@ class _TutorialOverview extends React.Component {
         return <TutorialLayout categories={[category]} />;
       } else {
         // 404 not found
-        return <div><HtmlHead title="Unknown Tutorial Category" />Unknown Style!</div>;
+        return <div><Helmet title="Unknown Tutorial Category" />Unknown Style!</div>;
       }
     } else {
       // Super overiew
