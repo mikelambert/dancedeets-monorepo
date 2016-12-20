@@ -11,6 +11,15 @@ import dateFormat from 'date-fns/format';
 import {
   intlWeb,
 } from 'dancedeets-common/js/intl';
+import {
+  MultiSelectList,
+  generateUniformState,
+  caseInsensitiveSort,
+  getSelected,
+} from './MultiSelectList';
+import type {
+  MultiSelectState,
+} from './MultiSelectList';
 
 type SerializedStudioClass = {
   url: string;
@@ -49,138 +58,6 @@ class StudioImage extends React.Component {
 StudioImage.contextTypes = {
   imagePath: React.PropTypes.string,
 };
-
-class SelectButton extends React.Component {
-  props: {
-    toggleState: () => void;
-    active: boolean;
-    thumbnail?: boolean;
-    item: string;
-  }
-
-  _button: HTMLButtonElement;
-
-  constructor(props) {
-    super(props);
-    (this: any).toggleState = this.toggleState.bind(this);
-  }
-
-  toggleState(e) {
-    this.props.toggleState();
-    this._button.blur();
-    e.preventDefault();
-  }
-
-  render() {
-    let extraClass = '';
-    if (this.props.active) {
-      extraClass = 'active';
-    }
-    const contents = [];
-    if (this.props.thumbnail) {
-      contents.push(<StudioImage key="image" studioName={this.props.item} />);
-    }
-    contents.push(this.props.item);
-
-    return (
-      <button
-        type="button"
-        className={`btn btn-default btn-sm ${extraClass}`}
-        ref={(x) => { this._button = x; }}
-        onClick={this.toggleState}
-      >
-        {contents}
-      </button>
-    );
-  }
-}
-
-type MultiSelectState = { [item: string]: boolean };
-
-function generateUniformState(list: Array<string>, value: boolean) {
-  const newState = {};
-  list.forEach((x) => {
-    newState[x] = value;
-  });
-  return newState;
-}
-
-function caseInsensitiveSort(a, b) {
-  return a.toLowerCase().localeCompare(b.toLowerCase());
-}
-
-function getSelected(state: { [item: string]: boolean }) {
-  return Object.keys(state).filter(x => state[x]).sort(caseInsensitiveSort);
-}
-
-class MultiSelectList extends React.Component {
-  props: {
-    list: Array<string>;
-    selected: MultiSelectState;
-    thumbnails?: boolean;
-    onChange: (state: MultiSelectState) => void;
-  }
-
-  constructor(props) {
-    super(props);
-    (this: any).toggleItem = this.toggleItem.bind(this);
-    (this: any).setAll = this.setAll.bind(this);
-  }
-
-  setAll(item) {
-    this.changedState(generateUniformState(this.props.list, true));
-  }
-
-  isAllSelected() {
-    return getSelected(this.props.selected).length === this.props.list.length;
-  }
-
-  changedState(newState) {
-    this.props.onChange(newState);
-  }
-
-  toggleItem(item) {
-    if (this.isAllSelected()) {
-      const newState = generateUniformState(this.props.list, false);
-      newState[item] = true;
-      this.changedState(newState);
-    } else {
-      this.changedState({ ...this.props.selected, [item]: !this.props.selected[item] });
-    }
-  }
-
-  render() {
-    const options = [];
-    const allSelected = this.isAllSelected();
-    options.push(
-      <SelectButton
-        key="All"
-        item="All"
-        active={allSelected}
-        toggleState={this.setAll}
-      />
-    );
-    const thumbnails = this.props.thumbnails;
-    const value = getSelected(this.props.selected);
-    this.props.list.forEach((item, i) => {
-      const selected = !allSelected && value.indexOf(item) !== -1;
-      options.push(
-        <SelectButton
-          key={item}
-          item={item}
-          active={selected}
-          toggleState={() => this.toggleItem(item)}
-          thumbnail={thumbnails}
-        />
-      );
-    });
-    return (
-      <div className="btn-group" role="group">
-        {options}
-      </div>
-    );
-  }
-}
 
 function getDayId(dayName) {
   return dayName;
@@ -271,7 +148,7 @@ class SearchBar extends React.Component {
             selected={this.props.studios}
             ref={(x) => { this._studios = x; }}
             onChange={state => this.props.onChange('studios', state)}
-            thumbnails
+            itemRenderer={item => <span><StudioImage key="image" studioName={item} />{item}</span>}
           />
         </div>
         <div>

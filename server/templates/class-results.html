@@ -60,6 +60,13 @@
 {% block bottom_javascript %}
 
 <script type="text/javascript">
+window._REACT_PROPS = {{ react_props|safe }};
+window._REACT_ID = 'react-parent';
+</script>
+
+<script src="{{static_dir}}/js/classResultsExec.js"></script>
+
+<script type="text/javascript">
 
 function share() {
   FB.ui({
@@ -102,11 +109,5 @@ $(function() {
 $(window).resize(function() {
   resetAffixedOffset();
 });
-
-window._REACT_PROPS = {{ react_props|safe }};
-window._REACT_ID = 'react-parent';
 </script>
-
-<script src="{{static_dir}}/js/classResultsExec.js"></script>
-
 {% endblock %}
