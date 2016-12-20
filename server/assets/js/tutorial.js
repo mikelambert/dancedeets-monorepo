@@ -10,6 +10,7 @@ import {
   intlShape,
 } from 'react-intl';
 import YouTube from 'react-youtube';
+import { Share as TwitterShare } from 'react-twitter-widgets';
 import {
   intlWeb,
 } from 'dancedeets-common/js/intl';
@@ -75,10 +76,8 @@ class ShareLinks extends React.Component {
 
   render() {
     return (
-      <div style={{ display: 'table-cell', height: 20 }}>s
-        <span style={{ verticalAlign: 'top' }}>
-          <a className="link-event-share twitter-share-button" href="https://twitter.com/intent/tweet?hashtags=dancedeets" data-count="none">Tweet</a>
-        </span>
+      <div style={{ height: 20 }}>
+        <div style={{ display: 'inline-block' }}><TwitterShare url={this.props.url} /></div>
         <span style={{ verticalAlign: 'top' }} className="link-event-share fb-share-button" data-href={this.props.url} data-layout="button" data-size="small" data-mobile-iframe="true">
           <a className="fb-xfbml-parse-ignore" rel="noopener noreferrer" target="_blank" href={`https://www.facebook.com/sharer/sharer.php?u=${this.props.url}&amp;src=sdkpreparse`}>Share</a>
         </span>
