@@ -91,7 +91,12 @@ export class MultiSelectList extends React.Component {
       newState[item] = true;
       this.changedState(newState);
     } else {
-      this.changedState({ ...this.props.selected, [item]: !this.props.selected[item] });
+      const newState = { ...this.props.selected, [item]: !this.props.selected[item] };
+      if (getSelected(newState).length) {
+        this.changedState(newState);
+      } else {
+        this.changedState(generateUniformState(this.props.list, true));
+      }
     }
   }
 
