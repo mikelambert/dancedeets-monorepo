@@ -85,7 +85,7 @@
     "react-masonry-layout": "^0.2.3",
     "react-scroll": "^1.4.4",
     "react-sticky": "^5.0.5",
-    "react-twitter-widgets": "^1.0.0",
+    "react-twitter-widgets": "git+https://github.com/mikelambert/react-twitter-widgets",
     "react-youtube": "^7.3.0",
     "stackdriver-errors-js": "git+https://github.com/mikelambert/stackdriver-errors-js.git",
     "stacktrace-js": "^1.3.1",
