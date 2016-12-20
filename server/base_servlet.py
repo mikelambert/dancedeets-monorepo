@@ -215,7 +215,9 @@ class BareBaseRequestHandler(webapp2.RequestHandler, FacebookMixinHandler):
         if self.allow_minify and 'clean' not in self.debug_list:
             rendered = htmlmin.minify(
                 rendered,
-                remove_comments=True,
+                # We can't enable this, since it breaks React isomorphism.
+                # Turns out React sends important comments needed by the client.
+                remove_comments=False,
                 remove_empty_space=True,
                 reduce_boolean_attributes=True,
             )
