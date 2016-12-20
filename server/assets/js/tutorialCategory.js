@@ -95,10 +95,10 @@ class FilterBar extends React.Component {
     return (
       <div>
         <div>
-          Language: {languages.map(x => <span>{x.name} ({x.count})</span>)}
+          Language: {languages.map(x => <span key={x.name}>{x.name} ({x.count})</span>)}
         </div>
         <div>
-          Styles: {styles.map(x => <span>{x.name} ({x.count})</span>)}
+          Styles: {styles.map(x => <span key={x.name}>{x.name} ({x.count})</span>)}
         </div>
       </div>
     );
@@ -112,7 +112,7 @@ class TutorialLayout extends React.Component {
 
   render() {
     const tutorials = [].concat(...this.props.categories.map(x => x.tutorials));
-    const tutorialComponents = tutorials.map(tutorial => <Tutorial key={tutorial.title} tutorial={tutorial} />);
+    const tutorialComponents = tutorials.map(tutorial => <Tutorial key={tutorial.getId()} tutorial={tutorial} />);
     const title = this.props.categories.length === 1 ? `${this.props.categories[0].style.title} Tutorials` : 'Tutorials';
     return (
       <div>
