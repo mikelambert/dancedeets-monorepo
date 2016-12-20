@@ -151,9 +151,9 @@ class _TutorialView extends React.Component {
   }
 
   onVideoEnd() {
-    const videoIndex = this.props.tutorial.getVideoIndex(this.state.video);
-    const video = this.props.tutorial.getVideo(videoIndex + 1);
-    if (video) {
+    const videoIndex = this.props.tutorial.getVideoIndex(this.state.video) + 1;
+    if (videoIndex < this.props.tutorial.getVideoCount()) {
+      const video = this.props.tutorial.getVideo(videoIndex);
       this.setState({ video });
     }
   }
