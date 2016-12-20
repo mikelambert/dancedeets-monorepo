@@ -205,6 +205,7 @@ class BareBaseRequestHandler(webapp2.RequestHandler, FacebookMixinHandler):
         if result.error:
             logging.exception('Error rendering React component: %s', result.error)
         # Hope that client-side rendering works and picks up the pieces of a failed server render
+        self.display['react_head'] = result.head
         self.display['react_html'] = result.markup
         self.display['react_props'] = result.props
 

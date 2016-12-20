@@ -401,8 +401,12 @@ class Description extends React.Component {
 }
 
 class HtmlHead extends React.Component {
+  props: {
+    event: Event;
+  }
+
   render() {
-    return <Helmet title="My Title" />;
+    return <Helmet title={this.props.event.name} />;
   }
 }
 
@@ -444,5 +448,7 @@ class EventPage extends React.Component {
     );
   }
 }
+
+export const HelmetRewind = Helmet.rewind;
 
 export default intlWeb(EventPage);

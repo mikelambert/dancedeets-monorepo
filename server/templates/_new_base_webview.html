@@ -9,7 +9,12 @@
 <link rel="stylesheet" href="{{static_dir}}/css/common.css">
 <link rel="stylesheet" href="{{static_dir}}/css/homepage.css">
 
-<title>{% block title %}{% endblock %}</title>
+
+{% if react_head %}
+  {{ react_head.title|safe }}
+{% else %}
+  <title>{% block title %}{% endblock %}</title>
+{% endif %}
 
 {% block head_metatags %}{% endblock %}
 {% block head_stylesheet %}{% endblock %}

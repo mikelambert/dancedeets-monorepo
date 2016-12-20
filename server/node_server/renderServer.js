@@ -4,7 +4,6 @@ import express from 'express';
 import bodyParser from 'body-parser';
 import reactRender from 'react-render';
 import yargs from 'yargs';
-import Helmet from 'react-helmet';
 
 const argv = yargs
   .option('p', {
@@ -41,8 +40,8 @@ app.get('/', (req, res) => {
   res.end('React render server');
 });
 
-function serializedHead() {
-  const head = Helmet.rewind();
+function serializedHead(helmetRewind) {
+  const head = helmetRewind();
   const serialized = {};
   Object.keys(head).forEach((key) => {
     serialized[key] = head[key].toString();
@@ -66,6 +65,7 @@ app.post('/render', (req, res) => {
       });
     } else {
       const body = req.body;
+      let component = null;
       // We list this here, so that it applies for the eval.
       // But we don't list it at the top, because any attempt to inline this code
       // will trigger runtime errors on the compiled JS.
@@ -74,7 +74,8 @@ app.post('/render', (req, res) => {
       }
       // Ensure this runs in a try-catch, so the server cannot die on eval()ing code.
       try {
-        body.component = eval(data).default; // eslint-disable-line no-eval
+        component = eval(data)
+        body.component = component.default; // eslint-disable-line no-eval
       } catch (e) {
         console.error(e);
         res.json({
@@ -88,7 +89,7 @@ app.post('/render', (req, res) => {
         return;
       }
       reactRender(body, (err2, markup) => {
-        const head = serializedHead();
+        const head = component ? serializedHead(component.HelmetRewind) : null;
         if (err2) {
           console.error(err2);
           res.json({

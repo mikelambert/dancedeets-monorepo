@@ -6,14 +6,16 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
-{% if not hot_reloading %}
 <link rel="stylesheet" href="{{static_dir}}/css/common.css">
-{% endif %}
 <link rel="stylesheet" href="{{static_dir}}/css/homepage.css">
 
 {% include "favicon_tags.html" %}
 
-<title>{% block title %}{% endblock %}</title>
+{% if react_head %}
+  {{ react_head.title|safe }}
+{% else %}
+  <title>{% block title %}{% endblock %}</title>
+{% endif %}
 
 <meta name="google-play-app" content="app-id=com.dancedeets.android">
 <meta name="apple-itunes-app" content="app-id=955212002">
