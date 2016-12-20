@@ -33,6 +33,7 @@ import messages from 'dancedeets-common/js/tutorials/messages';
 import { sortNumber } from 'dancedeets-common/js/util/sort';
 // TODO: Can/should we trim this file? It is 150KB, and we probably only need 10KB of it...
 import languages from 'dancedeets-common/js/languages';
+import { messages as styleMessages } from 'dancedeets-common/js/styles';
 import {
   Card,
   Link,
@@ -89,13 +90,16 @@ type ValidKey = 'languages' | 'styles';
 
 type StringWithFrequency = string;
 
-class FilterBar extends React.Component {
+class _FilterBar extends React.Component {
   props: {
     initialLanguages: Array<StringWithFrequency>;
     initialStyles: Array<StringWithFrequency>;
     languages: MultiSelectState;
     styles: MultiSelectState;
     onChange: (key: ValidKey, newState: any) => void;
+
+    // Self-managed props
+    intl: intlShape;
   }
 
   render() {
@@ -108,6 +112,10 @@ class FilterBar extends React.Component {
             selected={this.props.languages}
             // ref={(x) => { this._styles = x; }}
             onChange={state => this.props.onChange('languages', state)}
+            itemRenderer={(data) => {
+              const x = JSON.parse(data);
+              return `${languages[this.props.intl.locale][x.name]} (${x.count})`;
+            }}
           />
         </div>
         <div>
@@ -117,19 +125,21 @@ class FilterBar extends React.Component {
             selected={this.props.styles}
             // ref={(x) => { this._styles = x; }}
             onChange={state => this.props.onChange('styles', state)}
+            itemRenderer={(data) => {
+              const x = JSON.parse(data);
+              return `${this.props.intl.formatMessage(styleMessages[x.name])} (${x.count})`;
+            }}
           />
         </div>
       </div>
     );
   }
 }
+const FilterBar = injectIntl(_FilterBar);
 
-class _TutorialLayout extends React.Component {
+class TutorialLayout extends React.Component {
   props: {
     categories: Array<Category>;
-
-    // Self-managed props
-    intl: intlShape;
   }
 
   state: {
@@ -146,8 +156,8 @@ class _TutorialLayout extends React.Component {
     super(props);
 
     this._tutorials = [].concat(...this.props.categories.map(x => x.tutorials));
-    this._languages = this.generateOrderedList(x => x.language).map(x => `${languages[this.props.intl.locale][x.name]} (${x.count})`);
-    this._styles = this.generateOrderedList(x => x.style).map(x => `${x.name} (${x.count})`);
+    this._languages = this.generateOrderedList(x => x.language).map(x => JSON.stringify(x));
+    this._styles = this.generateOrderedList(x => x.style).map(x => JSON.stringify(x));
 
     this.state = {
       languages: generateUniformState(this._languages, true),
@@ -170,10 +180,10 @@ class _TutorialLayout extends React.Component {
 
   render() {
     const filteredTutorials = this._tutorials.filter((tutorial) => {
-      if (getSelected(this.state.languages).filter(language => language.split(' ')[0] === languages[this.props.intl.locale][tutorial.language]).length === 0) {
+      if (getSelected(this.state.languages).filter(language => JSON.parse(language).name === tutorial.language).length === 0) {
         return false;
       }
-      if (getSelected(this.state.styles).filter(style => style.split(' ')[0] === tutorial.style).length === 0) {
+      if (getSelected(this.state.styles).filter(style => JSON.parse(style).name === tutorial.style).length === 0) {
         return false;
       }
       return true;
@@ -196,7 +206,6 @@ class _TutorialLayout extends React.Component {
     );
   }
 }
-const TutorialLayout = injectIntl(_TutorialLayout);
 
 class _TutorialOverview extends React.Component {
   props: {
