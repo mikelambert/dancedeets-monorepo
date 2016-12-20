@@ -68,6 +68,25 @@ class _Duration extends React.Component {
 }
 const Duration = injectIntl(_Duration);
 
+class ShareLinks extends React.Component {
+  props: {
+    url: string;
+  }
+
+  render() {
+    return (
+      <div style={{ display: 'table-cell', height: 20 }}>s
+        <span style={{ verticalAlign: 'top' }}>
+          <a className="link-event-share twitter-share-button" href="https://twitter.com/intent/tweet?hashtags=dancedeets" data-count="none">Tweet</a>
+        </span>
+        <span style={{ verticalAlign: 'top' }} className="link-event-share fb-share-button" data-href={this.props.url} data-layout="button" data-size="small" data-mobile-iframe="true">
+          <a className="fb-xfbml-parse-ignore" rel="noopener noreferrer" target="_blank" href={`https://www.facebook.com/sharer/sharer.php?u=${this.props.url}&amp;src=sdkpreparse`}>Share</a>
+        </span>
+      </div>
+    );
+  }
+}
+
 class _TutorialView extends React.Component {
   props: {
     tutorial: Playlist;
@@ -114,7 +133,6 @@ class _TutorialView extends React.Component {
   }
 
   componentDidUpdate(prevProps, prevState) {
-    console.log(prevState.video, this.state.video);
     if (prevState.video !== this.state.video) {
       const videoIndex = this.props.tutorial.getVideoIndex(this.state.video);
       const oldHash = window.location.hash || '#0';
@@ -220,6 +238,7 @@ class _TutorialView extends React.Component {
       <h3 style={{ marginTop: 0 }}>{tutorial.title}</h3>
       {subtitle}
       <div>{tutorial.author} - {duration}</div>
+      <ShareLinks url={tutorial.getUrl()} />
     </div>);
   }
 

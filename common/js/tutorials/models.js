@@ -37,6 +37,10 @@ export class Playlist {
     return `${this.style}/${this.id}`;
   }
 
+  getUrl() {
+    return `http://www.dancedeets.com/tutorials/${this.getId()}`;
+  }
+
   getItems(selectedIndex: number) {
     const selectedVideo = this.getVideo(selectedIndex);
     const items = {};
