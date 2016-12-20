@@ -8,11 +8,91 @@ import {
   defineMessages,
 } from 'react-intl';
 
-const messages = defineMessages({
+export const messages = defineMessages({
   otherStylesTitle: {
     id: 'tutorialVideos.otherStylesTitle',
     defaultMessage: 'Other Styles',
     description: 'Name of the tutorial category for miscellaneous dance styles',
+  },
+  pop: {
+    id: 'styles.pop',
+    defaultMessage: 'Popping',
+    description: 'Dance style',
+  },
+  break: {
+    id: 'styles.break',
+    defaultMessage: 'Bboy / Bgirl',
+    description: 'Dance style',
+  },
+  house: {
+    id: 'styles.house',
+    defaultMessage: 'House',
+    description: 'Dance style',
+  },
+  hiphop: {
+    id: 'styles.hiphop',
+    defaultMessage: 'Hip-Hop',
+    description: 'Dance style',
+  },
+  lock: {
+    id: 'styles.lock',
+    defaultMessage: 'Locking',
+    description: 'Dance style',
+  },
+  krump: {
+    id: 'styles.krump',
+    defaultMessage: 'Krump',
+    description: 'Dance style',
+  },
+  soul: {
+    id: 'styles.soul',
+    defaultMessage: 'Soul Dance',
+    description: 'Dance style',
+  },
+  waack: {
+    id: 'styles.waack',
+    defaultMessage: 'Waacking',
+    description: 'Dance style',
+  },
+  bebop: {
+    id: 'styles.bebop',
+    defaultMessage: 'Bebop / Jazz Fusion',
+    description: 'Dance style',
+  },
+  dougie: {
+    id: 'styles.dougie',
+    defaultMessage: 'Dougie',
+    description: 'Dance style',
+  },
+  dance: {
+    id: 'styles.dance',
+    defaultMessage: 'Basic Dance',
+    description: 'Dance style',
+  },
+  misc: {
+    id: 'styles.misc',
+    defaultMessage: 'Miscellaneous',
+    description: 'Dance style',
+  },
+  streetjazz: {
+    id: 'styles.streetjazz',
+    defaultMessage: 'Street Jazz',
+    description: 'Dance style',
+  },
+  dancehall: {
+    id: 'styles.dancehall',
+    defaultMessage: 'Dancehall',
+    description: 'Dance style',
+  },
+  electro: {
+    id: 'styles.electro',
+    defaultMessage: 'Electro Dance',
+    description: 'Dance style',
+  },
+  flex: {
+    id: 'styles.flex',
+    defaultMessage: 'Flexing',
+    description: 'Dance style',
   },
 });
 
