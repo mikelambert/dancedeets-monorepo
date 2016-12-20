@@ -4,6 +4,7 @@ import express from 'express';
 import bodyParser from 'body-parser';
 import reactRender from 'react-render';
 import yargs from 'yargs';
+import Helmet from 'react-helmet';
 
 const argv = yargs
   .option('p', {
@@ -40,6 +41,15 @@ app.get('/', (req, res) => {
   res.end('React render server');
 });
 
+function serializedHead() {
+  const head = Helmet.rewind();
+  const serialized = {};
+  Object.keys(head).forEach((key) => {
+    serialized[key] = head[key].toString();
+  });
+  return serialized;
+}
+
 app.post('/render', (req, res) => {
   // We're constructing new objects everytime we readFile,
   // so let's make sure we clear the cache so it doesn't blow up.
@@ -66,6 +76,7 @@ app.post('/render', (req, res) => {
       try {
         body.component = eval(data).default; // eslint-disable-line no-eval
       } catch (e) {
+        console.error(e);
         res.json({
           error: {
             type: e.constructor.name,
@@ -77,7 +88,9 @@ app.post('/render', (req, res) => {
         return;
       }
       reactRender(body, (err2, markup) => {
+        const head = serializedHead();
         if (err2) {
+          console.error(err2);
           res.json({
             error: {
               type: err2.constructor.name,
@@ -90,6 +103,7 @@ app.post('/render', (req, res) => {
           res.json({
             error: null,
             markup,
+            head,
           });
         }
       });

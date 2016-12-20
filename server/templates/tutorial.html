@@ -13,7 +13,7 @@
   {{ react_html|safe }}
 </div>
 <script type="text/javascript">
-  window._REACT_PROPS = {{ react_props|tojson }};
+  window._REACT_PROPS = {{ react_props|safe }};
   window._REACT_ID = 'react-parent';
 </script>
 {% endblock %}

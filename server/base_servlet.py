@@ -8,8 +8,8 @@ import json
 import hashlib
 import htmlmin
 import logging
-from react import exceptions
 from react.render import render_component
+from react.conf import settings
 import os
 import traceback
 import urllib
@@ -28,6 +28,7 @@ import fb_api
 from logic import backgrounder
 from logic import mobile
 from rankings import rankings
+from render_server import render_server
 from users import user_creation
 from util import abbrev
 from util import dates
@@ -193,25 +194,19 @@ class BareBaseRequestHandler(webapp2.RequestHandler, FacebookMixinHandler):
         self.response.out.write(json.dumps(arg))
 
     def setup_react_template(self, template_name, props, static_html=False):
-        # Disable server-side rendering (unnecessary) if we are running a hot server
-        if os.environ.get('HOT_SERVER_PORT'):
-            # Make it non-empty to trigger our template to not render the old code...
-            # And leave a message for the client browser, so they know what to expect.
-            html = 'Server-side React Rendering Disabled'
-        else:
-            try:
-                html = render_component(
-                    path=os.path.abspath(os.path.join('dist/js-server/', template_name)),
-                    to_static_markup=static_html,
-                    props=props)
-            except (exceptions.RenderServerError, exceptions.ReactRenderingError):
-                logging.exception('Error rendering React component')
-                # Hope that client-side rendering works and picks up the pieces?
-                # We should have error-reporting via the logging.exception above.
-                html = ''
-                # self.abort(500)
-        self.display['react_html'] = html
-        self.display['react_props'] = props
+        # We could disable server-side rendering in dev...
+        # but it's useful to verify that everything is working properly.
+        settings.configure(RENDER=True)
+        result = render_component(
+            renderer=render_server,
+            path=os.path.abspath(os.path.join('dist/js-server/', template_name)),
+            to_static_markup=static_html,
+            props=props)
+        if result.error:
+            logging.exception('Error rendering React component: %s', result.error)
+        # Hope that client-side rendering works and picks up the pieces of a failed server render
+        self.display['react_html'] = result.markup
+        self.display['react_props'] = result.props
 
     def render_template(self, name):
         jinja_template = self.jinja_env.get_template("%s.html" % name)
