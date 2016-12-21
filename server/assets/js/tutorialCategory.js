@@ -26,6 +26,8 @@ import type {
 } from 'dancedeets-common/js/tutorials/playlistConfig';
 import {
   Playlist,
+  Section,
+  Video,
 } from 'dancedeets-common/js/tutorials/models';
 import {
   formatDuration,
@@ -46,6 +48,40 @@ import {
   MultiSelectState,
 } from './MultiSelectList';
 
+class MatchedVideo extends React.Component {
+  props: {
+    tutorial: Playlist;
+    video: Video;
+  }
+
+  render() {
+    const tutorialUrl = this.props.tutorial.getUrl();
+    const videoIndex = this.props.tutorial.getVideoIndex(this.props.video);
+    const url = `${tutorialUrl}#${videoIndex}`;
+    return <div style={{ marginLeft: 10 }}><a href={url}>{this.props.video.title}</a></div>;
+  }
+}
+
+class MatchedSection extends React.Component {
+  props: {
+    tutorial: Playlist;
+    section: Section;
+    children?: React.Element<*>;
+  }
+
+  render() {
+    const tutorialUrl = this.props.tutorial.getUrl();
+    const videoIndex = this.props.tutorial.getVideoIndex(this.props.section.videos[0]);
+    const url = `${tutorialUrl}#${videoIndex}`;
+    return (
+      <div>
+        <div><a href={url}>{this.props.section.title}</a></div>
+        {this.props.children}
+      </div>
+    );
+  }
+}
+
 class _Tutorial extends React.Component {
   props: {
     tutorial: Playlist;
@@ -55,24 +91,28 @@ class _Tutorial extends React.Component {
     intl: intlShape;
   }
 
-  getMatchingVideos() {
-    const videos = [];
-    this.props.tutorial.sections.forEach((section) => {
-      section.videos.forEach((video) => {
-        if (this.props.searchKeywords.filter(x => video.getSearchText().indexOf(x) !== -1).length) {
-          videos.push(video);
-        }
-      });
-    });
-    return videos;
+  matchesKeywords(obj: Video | Section) {
+    const text = obj.getSearchText();
+    return this.props.searchKeywords.filter(x => text.indexOf(x) !== -1).length > 0;
   }
 
   renderMatchingVideos() {
-    if (this.props.searchKeywords.length) {
-      const videos = this.getMatchingVideos();
-      return videos.map(video => <div>{video.title}</div>);
+    if (!this.props.searchKeywords.length) {
+      return null;
     }
-    return null;
+    const sections = [];
+    this.props.tutorial.sections.forEach((section) => {
+      const sectionVideos = [];
+      section.videos.forEach((video) => {
+        if (this.matchesKeywords(video)) {
+          sectionVideos.push(<MatchedVideo tutorial={this.props.tutorial} video={video} />);
+        }
+      });
+      if (sectionVideos.length || this.matchesKeywords(section)) {
+        sections.push(<MatchedSection tutorial={this.props.tutorial} section={section}>{sectionVideos}</MatchedSection>);
+      }
+    });
+    return sections;
   }
 
   render() {
@@ -103,8 +143,8 @@ class _Tutorial extends React.Component {
           />
           <div>{tutorial.title}</div>
           <div>{numVideosDuration}</div>
-          {matchingVideos}
         </a>
+        {matchingVideos}
       </Card>
     );
   }

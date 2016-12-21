@@ -119,7 +119,7 @@ export class Playlist {
     textBits.push(this.style);
     textBits.push(this.style);
     this.sections.forEach((section) => {
-      textBits.push(section.title);
+      textBits.push(section.getSearchText());
       section.videos.forEach((video) => {
         textBits.push(video.getSearchText());
       });
@@ -144,6 +144,12 @@ export class Section {
 
   getDurationSeconds(): number {
     return this.videos.reduce((reduced, item) => reduced + item.getDurationSeconds(), 0);
+  }
+
+  getSearchText() {
+    const textBits = [];
+    textBits.push(this.title);
+    return textBits.join(' ').toLowerCase();
   }
 
   key(index: number) {
