@@ -14,6 +14,11 @@ export const messages = defineMessages({
     defaultMessage: 'Other Styles',
     description: 'Name of the tutorial category for miscellaneous dance styles',
   },
+  other: {
+    id: 'styles.other',
+    defaultMessage: 'Other Styles',
+    description: 'Name of the tutorial category for miscellaneous dance styles',
+  },
   pop: {
     id: 'styles.pop',
     defaultMessage: 'Popping',

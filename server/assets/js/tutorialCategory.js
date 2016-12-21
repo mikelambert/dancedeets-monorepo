@@ -7,6 +7,7 @@
 import React from 'react';
 import uniq from 'lodash/uniq';
 import countBy from 'lodash/countBy';
+import includes from 'lodash/includes';
 import {
   defineMessages,
   injectIntl,
@@ -86,16 +87,16 @@ class _Tutorial extends React.Component {
 }
 const Tutorial = injectIntl(_Tutorial);
 
-type ValidKey = 'languages' | 'styles';
+type ValidKey = 'languages' | 'categories';
 
 type StringWithFrequency = string;
 
 class _FilterBar extends React.Component {
   props: {
     initialLanguages: Array<StringWithFrequency>;
-    initialStyles: Array<StringWithFrequency>;
+    initialCategories: Array<StringWithFrequency>;
     languages: MultiSelectState;
-    styles: MultiSelectState;
+    categories: MultiSelectState;
     onChange: (key: ValidKey, newState: any) => void;
 
     // Self-managed props
@@ -121,10 +122,10 @@ class _FilterBar extends React.Component {
         <div>
           Styles:
           <MultiSelectList
-            list={this.props.initialStyles}
-            selected={this.props.styles}
+            list={this.props.initialCategories}
+            selected={this.props.categories}
             // ref={(x) => { this._styles = x; }}
-            onChange={state => this.props.onChange('styles', state)}
+            onChange={state => this.props.onChange('categories', state)}
             itemRenderer={(data) => {
               const x = JSON.parse(data);
               return `${this.props.intl.formatMessage(styleMessages[x.name])} (${x.count})`;
@@ -144,24 +145,26 @@ class TutorialLayout extends React.Component {
 
   state: {
     languages: MultiSelectState;
-    styles: MultiSelectState;
+    categories: MultiSelectState;
     keywords: string;
   }
 
   _tutorials: Array<Playlist>;
   _languages: Array<StringWithFrequency>;
-  _styles: Array<StringWithFrequency>;
+  _categories: Array<StringWithFrequency>;
 
   constructor(props) {
     super(props);
 
-    this._tutorials = [].concat(...this.props.categories.map(x => x.tutorials));
     this._languages = this.generateOrderedList(x => x.language).map(x => JSON.stringify(x));
-    this._styles = this.generateOrderedList(x => x.style).map(x => JSON.stringify(x));
+    this._categories = this.props.categories.map(x => ({
+      name: x.style.id,
+      count: x.tutorials.length,
+    })).map(x => JSON.stringify(x));
 
     this.state = {
       languages: generateUniformState(this._languages, true),
-      styles: generateUniformState(this._styles, true),
+      categories: generateUniformState(this._categories, true),
       keywords: '',
     };
 
@@ -173,21 +176,27 @@ class TutorialLayout extends React.Component {
   }
 
   generateOrderedList(getProperty: (tutorial: Playlist) => any) {
-    const frequencies = countBy(this._tutorials.map(x => getProperty(x)));
+    const tutorials = [].concat(...this.props.categories.map(x => x.tutorials));
+    const frequencies = countBy(tutorials.map(x => getProperty(x)));
     const dataList = Object.keys(frequencies).map(name => ({ name, count: frequencies[name] }));
     return sortNumber(dataList, x => -x.count);
   }
 
   render() {
-    const filteredTutorials = this._tutorials.filter((tutorial) => {
+    // Filter based on the 'categories'
+    const selectedCategoryNames = getSelected(this.state.categories).map(x => JSON.parse(x).name);
+    const selectedCategories = this.props.categories.filter(x => includes(selectedCategoryNames, x.style.id));
+    const tutorials = [].concat(...selectedCategories.map(x => x.tutorials));
+
+    // Filter based on the 'languages'
+    const filteredTutorials = tutorials.filter((tutorial) => {
       if (getSelected(this.state.languages).filter(language => JSON.parse(language).name === tutorial.language).length === 0) {
-        return false;
-      }
-      if (getSelected(this.state.styles).filter(style => JSON.parse(style).name === tutorial.style).length === 0) {
         return false;
       }
       return true;
     });
+
+    // Now let's render them
     const tutorialComponents = filteredTutorials.map(tutorial => <Tutorial key={tutorial.getId()} tutorial={tutorial} />);
     const title = this.props.categories.length === 1 ? `${this.props.categories[0].style.title} Tutorials` : 'Tutorials';
 
@@ -196,7 +205,7 @@ class TutorialLayout extends React.Component {
         <Helmet title={title} />
         <FilterBar
           initialLanguages={this._languages} languages={this.state.languages}
-          initialStyles={this._styles} styles={this.state.styles}
+          initialCategories={this._categories} categories={this.state.categories}
           onChange={this.onChange}
         />
         <h2>{title}</h2>
