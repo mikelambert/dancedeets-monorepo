@@ -87,7 +87,7 @@ class _Tutorial extends React.Component {
 }
 const Tutorial = injectIntl(_Tutorial);
 
-type ValidKey = 'languages' | 'categories';
+type ValidKey = 'languages' | 'categories' | 'query';
 
 type StringWithFrequency = string;
 
@@ -97,11 +97,15 @@ class _FilterBar extends React.Component {
     initialCategories: Array<StringWithFrequency>;
     languages: MultiSelectState;
     categories: MultiSelectState;
+    query: string;
+
     onChange: (key: ValidKey, newState: any) => void;
 
     // Self-managed props
     intl: intlShape;
   }
+
+  _query: HTMLInputElement;
 
   render() {
     return (
@@ -132,6 +136,15 @@ class _FilterBar extends React.Component {
             }}
           />
         </div>
+        <div>
+          Keywords:{' '}
+          <input
+            type="text"
+            value={this.props.query}
+            ref={(x) => { this._query = x; }}
+            onChange={state => this.props.onChange('query', this._query.value)}
+          />
+        </div>
       </div>
     );
   }
@@ -149,7 +162,7 @@ class _TutorialLayout extends React.Component {
   state: {
     languages: MultiSelectState;
     categories: MultiSelectState;
-    keywords: string;
+    query: string;
   }
 
   _tutorials: Array<Playlist>;
@@ -173,7 +186,7 @@ class _TutorialLayout extends React.Component {
     this.state = {
       languages: generateUniformState(this._languages, true),
       categories: generateUniformState(this._categories, true),
-      keywords: '',
+      query: '',
     };
 
     (this: any).onChange = this.onChange.bind(this);
@@ -192,13 +205,23 @@ class _TutorialLayout extends React.Component {
     const selectedCategories = this.props.categories.filter(x => includes(selectedCategoryNames, x.style.id));
     const tutorials = [].concat(...selectedCategories.map(x => x.tutorials));
 
+    const keywords = this.state.query.toLowerCase().split(' ').filter(x => x);
+
     // Filter based on the 'languages'
     const filteredTutorials = tutorials.filter((tutorial) => {
       if (getSelected(this.state.languages).filter(language => JSON.parse(language).language === tutorial.language).length === 0) {
         return false;
       }
+      if (keywords.length) {
+        const tutorialText = tutorial.getFullText().toLowerCase();
+        const missingKeywords = keywords.filter(keyword => tutorialText.indexOf(keyword) === -1);
+        if (missingKeywords.length) {
+          return false;
+        }
+      }
       return true;
     });
+
 
     // Now let's render them
     const tutorialComponents = filteredTutorials.map(tutorial => <Tutorial key={tutorial.getId()} tutorial={tutorial} />);
@@ -210,6 +233,7 @@ class _TutorialLayout extends React.Component {
         <FilterBar
           initialLanguages={this._languages} languages={this.state.languages}
           initialCategories={this._categories} categories={this.state.categories}
+          query={this.state.query}
           onChange={this.onChange}
         />
         <h2>{title}</h2>

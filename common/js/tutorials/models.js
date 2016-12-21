@@ -6,10 +6,14 @@
 
 import moment from 'moment';
 
+import type {
+  messageDescriptorPropTypes,
+} from 'react-intl/src/types';
+
+
 export class Playlist {
   id: string;
   title: string;
-  titleMessage: ?{id: string};
   subtitle: string;
   author: string;
   style: string;
@@ -20,7 +24,6 @@ export class Playlist {
   constructor(json: any) {
     this.id = json.id;
     this.title = json.title;
-    this.titleMessage = json.titleMessage;
     this.subtitle = json.subtitle;
     this.author = json.author;
     this.style = json.style;
@@ -102,6 +105,23 @@ export class Playlist {
       count += this.sections[i].videos.length;
     }
     return count;
+  }
+
+  // Generate a bunch of text contained by this tutorial, for searching purposes
+  getFullText() {
+    const textBits = [];
+    textBits.push(this.title);
+    textBits.push(this.subtitle);
+    textBits.push(this.author);
+    textBits.push(this.style);
+    textBits.push(this.style);
+    this.sections.forEach((section) => {
+      textBits.push(section.title);
+      section.videos.forEach((video) => {
+        textBits.push(video.title);
+      });
+    });
+    return textBits.join(' ');
   }
 }
 
