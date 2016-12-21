@@ -8,8 +8,8 @@ import './common';
 import renderReact from './renderReact';
 
 function render() {
-  const locationComponents = window.location.hash.replace(/^#\/?|\/$/g, '').split('/');
-  const props = { locationComponents };
+  const hashLocation = window.location.hash.replace(/^#\/?|\/$/g, '');
+  const props = { hashLocation };
   renderReact(require('./tutorial').default, props); // eslint-disable-line global-require
 }
 

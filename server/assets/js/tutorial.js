@@ -333,11 +333,20 @@ function findTutorialById(config, id) {
 class HtmlHead extends React.Component {
   props: {
     tutorial: ?Playlist;
+    videoIndex: ?number;
   }
 
   render() {
     const tutorial = this.props.tutorial;
-    return <Helmet title={tutorial ? tutorial.title : 'Unknown tutorial'} />;
+    let title = 'Unknown tutorial';
+    if (tutorial) {
+      title = tutorial.title;
+      if (this.props.videoIndex != null) {
+        const video = tutorial.getVideo(this.props.videoIndex);
+        title += `: ${video.title}`;
+      }
+    }
+    return <Helmet title={title} />;
   }
 }
 
@@ -345,7 +354,7 @@ class _TutorialPage extends React.Component {
   props: {
     style: string;
     tutorial: string;
-    locationComponents?: Array<string>;
+    hashLocation: string;
 
     // Self-managed props
     intl: intlShape;
@@ -356,8 +365,8 @@ class _TutorialPage extends React.Component {
     const tutorial = findTutorialById(config, this.props.tutorial);
 
     let result = null;
+    const videoIndex = this.props.hashLocation ? parseInt(this.props.hashLocation, 10) : null;
     if (tutorial) {
-      const videoIndex = this.props.locationComponents && this.props.locationComponents.length ? this.props.locationComponents[0] : null;
       result = (<TutorialView
         style={this.props.style}
         tutorial={tutorial}
@@ -366,7 +375,7 @@ class _TutorialPage extends React.Component {
     } else {
       result = <div>Unknown tutorial!</div>;
     }
-    return <div><HtmlHead tutorial={tutorial} />{result}</div>;
+    return <div><HtmlHead tutorial={tutorial} videoIndex={videoIndex} />{result}</div>;
   }
 }
 
