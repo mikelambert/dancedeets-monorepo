@@ -161,15 +161,14 @@ class _Tutorial extends React.Component {
 
     return (
       <Card
-        style={{ float: 'left' }}
+        style={{ float: 'left', maxWidth: '100%' }}
       >
         <a
           href={`/tutorials/${tutorial.getId()}`}
         >
           <img
-            width="320" height="180"
             src={tutorial.thumbnail} role="presentation"
-            style={{ display: 'block', marginLeft: 'auto', marginRight: 'auto' }}
+            style={{ width: 320, maxWidth: '100%', display: 'block', marginLeft: 'auto', marginRight: 'auto' }}
           />
           <div style={{ backgroundColor: purpleColors[2] }}>
             <div>{tutorial.title}</div>
