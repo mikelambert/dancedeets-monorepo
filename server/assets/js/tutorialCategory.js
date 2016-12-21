@@ -48,6 +48,21 @@ import {
   MultiSelectState,
 } from './MultiSelectList';
 
+// De-Dupe
+const purpleColors = [
+  '#8283A9',
+  '#656595',
+  '#4C4D81',
+  '#333452',
+  '#222238',
+  '#171728',
+];
+const lightPurpleColors = [
+  '#E0E0F5',
+  '#D0D0F0',
+  '#C0C0D0',
+];
+
 class MatchedVideo extends React.Component {
   props: {
     tutorial: Playlist;
@@ -58,7 +73,22 @@ class MatchedVideo extends React.Component {
     const tutorialUrl = this.props.tutorial.getUrl();
     const videoIndex = this.props.tutorial.getVideoIndex(this.props.video);
     const url = `${tutorialUrl}#${videoIndex}`;
-    return <div style={{ marginLeft: 10 }}><a href={url}>{this.props.video.title}</a></div>;
+    return (
+      <div
+        style={{
+          backgroundColor: purpleColors[1],
+
+          paddingLeft: 15,
+          borderBottomWidth: 0.5,
+          borderBottomStyle: 'solid',
+          borderBottomColor: purpleColors[0],
+        }}
+      >
+        <a href={url}>
+          <div style={{ fontWeight: 'bold' }}>{this.props.video.title}</div>
+        </a>
+      </div>
+    );
   }
 }
 
@@ -74,7 +104,7 @@ class MatchedSection extends React.Component {
     const videoIndex = this.props.tutorial.getVideoIndex(this.props.section.videos[0]);
     const url = `${tutorialUrl}#${videoIndex}`;
     return (
-      <div>
+      <div style={{ backgroundColor: purpleColors[2] }}>
         <div><a href={url}>{this.props.section.title}</a></div>
         {this.props.children}
       </div>
@@ -141,8 +171,10 @@ class _Tutorial extends React.Component {
             src={tutorial.thumbnail} role="presentation"
             style={{ display: 'block', marginLeft: 'auto', marginRight: 'auto' }}
           />
-          <div>{tutorial.title}</div>
-          <div>{numVideosDuration}</div>
+          <div style={{ backgroundColor: purpleColors[2] }}>
+            <div>{tutorial.title}</div>
+            <div>{numVideosDuration}</div>
+          </div>
         </a>
         {matchingVideos}
       </Card>
@@ -274,7 +306,7 @@ class _TutorialFilteredLayout extends React.Component {
     const selectedCategories = this.props.categories.filter(x => includes(selectedCategoryNames, x.style.id));
     const tutorials = [].concat(...selectedCategories.map(x => x.tutorials));
 
-    const keywords = this.state.query.toLowerCase().split(' ').filter(x => x);
+    const keywords = this.state.query.toLowerCase().split(' ').filter(x => x && x.length >= 2);
 
     // Filter based on the 'languages'
     const filteredTutorials = tutorials.filter((tutorial) => {
