@@ -164,13 +164,11 @@ class _TutorialLayout extends React.Component {
     const dataList = Object.keys(languages).map(language => ({ language, count: languages[language] }));
     this._languages = sortNumber(dataList, x => -x.count).map(x => JSON.stringify(x));
 
-    console.log(this.props.categories);
     this._categories = this.props.categories.map(x => ({
       categoryId: x.style.id,
       title: x.style.titleMessage ? this.props.intl.formatMessage(x.style.titleMessage) : x.style.title,
       count: x.tutorials.length,
     })).map(x => JSON.stringify(x));
-    console.log(this._categories);
 
     this.state = {
       languages: generateUniformState(this._languages, true),

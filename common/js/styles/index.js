@@ -7,15 +7,13 @@
 import {
   defineMessages,
 } from 'react-intl';
+import type {
+  messageDescriptorPropTypes,
+} from 'react-intl/src/types';
 
 export const messages = defineMessages({
   otherStylesTitle: {
     id: 'tutorialVideos.otherStylesTitle',
-    defaultMessage: 'Other Styles',
-    description: 'Name of the tutorial category for miscellaneous dance styles',
-  },
-  other: {
-    id: 'styles.other',
     defaultMessage: 'Other Styles',
     description: 'Name of the tutorial category for miscellaneous dance styles',
   },
@@ -104,6 +102,7 @@ export const messages = defineMessages({
 export type Style = {
   id: string;
   title: string;
+  titleMessage?: messageDescriptorPropTypes;
   imageName: string;
   width: number;
   height: number;
@@ -113,6 +112,7 @@ export default {
   break: {
     id: 'break',
     title: 'Bboy / Bgirl',
+    titleMessage: messages.break,
     imageName: 'break.png',
     width: 505,
     height: 512,
@@ -120,6 +120,7 @@ export default {
   hiphop: {
     id: 'hiphop',
     title: 'Hip-Hop',
+    titleMessage: messages.hiphop,
     imageName: 'hiphop.png',
     width: 278,
     height: 512,
@@ -127,6 +128,7 @@ export default {
   pop: {
     id: 'pop',
     title: 'Popping',
+    titleMessage: messages.pop,
     imageName: 'pop.png',
     width: 283,
     height: 512,
@@ -134,6 +136,7 @@ export default {
   lock: {
     id: 'lock',
     title: 'Locking',
+    titleMessage: messages.lock,
     imageName: 'lock.png',
     width: 339,
     height: 512,
@@ -141,6 +144,7 @@ export default {
   house: {
     id: 'house',
     title: 'House Dance',
+    titleMessage: messages.house,
     imageName: 'house.png',
     width: 381,
     height: 512,
@@ -149,6 +153,7 @@ export default {
     id: 'krump',
     title: 'Krump',
     imageName: 'krump.png',
+    titleMessage: messages.krump,
     width: 420,
     height: 512,
   },
