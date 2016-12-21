@@ -131,7 +131,7 @@ class SearchBar extends React.Component {
 
   render() {
     return (
-      <form>
+      <form className="form-inline">
         <div>
           Styles:{' '}
           <MultiSelectList
@@ -154,6 +154,7 @@ class SearchBar extends React.Component {
         <div>
           Teacher:{' '}
           <input
+            className="form-control"
             type="text"
             value={this.props.teacher}
             ref={(x) => { this._teacher = x; }}

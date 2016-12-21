@@ -109,43 +109,47 @@ class _FilterBar extends React.Component {
 
   render() {
     return (
-      <div>
-        <div>
-          Language:
-          <MultiSelectList
-            list={this.props.initialLanguages}
-            selected={this.props.languages}
-            // ref={(x) => { this._styles = x; }}
-            onChange={state => this.props.onChange('languages', state)}
-            itemRenderer={(data) => {
-              const x = JSON.parse(data);
-              return `${languageData[this.props.intl.locale][x.language]} (${x.count})`;
-            }}
-          />
-        </div>
-        <div>
-          Styles:
-          <MultiSelectList
-            list={this.props.initialCategories}
-            selected={this.props.categories}
-            // ref={(x) => { this._styles = x; }}
-            onChange={state => this.props.onChange('categories', state)}
-            itemRenderer={(data) => {
-              const x = JSON.parse(data);
-              return `${x.title} (${x.count})`;
-            }}
-          />
-        </div>
-        <div>
-          Keywords:{' '}
-          <input
-            type="text"
-            value={this.props.query}
-            ref={(x) => { this._query = x; }}
-            onChange={state => this.props.onChange('query', this._query.value)}
-          />
-        </div>
-      </div>
+      <Card>
+        <form className="form-inline">
+          <div style={{ marginBottom: 10 }}>
+            Language:{' '}
+            <MultiSelectList
+              list={this.props.initialLanguages}
+              selected={this.props.languages}
+              // ref={(x) => { this._styles = x; }}
+              onChange={state => this.props.onChange('languages', state)}
+              itemRenderer={(data) => {
+                const x = JSON.parse(data);
+                return `${languageData[this.props.intl.locale][x.language]} (${x.count})`;
+              }}
+            />
+          </div>
+          <div style={{ marginBottom: 10 }}>
+            Styles:{' '}
+            <MultiSelectList
+              list={this.props.initialCategories}
+              selected={this.props.categories}
+              // ref={(x) => { this._styles = x; }}
+              onChange={state => this.props.onChange('categories', state)}
+              itemRenderer={(data) => {
+                const x = JSON.parse(data);
+                return `${x.title} (${x.count})`;
+              }}
+            />
+          </div>
+          <div>
+            Keywords:{' '}
+            <input
+              className="form-control"
+              // style={{ width: '100%' }}
+              type="text"
+              value={this.props.query}
+              ref={(x) => { this._query = x; }}
+              onChange={state => this.props.onChange('query', this._query.value)}
+            />
+          </div>
+        </form>
+      </Card>
     );
   }
 }
