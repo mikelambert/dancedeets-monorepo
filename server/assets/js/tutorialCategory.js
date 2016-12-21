@@ -33,7 +33,7 @@ import {
 import messages from 'dancedeets-common/js/tutorials/messages';
 import { sortNumber } from 'dancedeets-common/js/util/sort';
 // TODO: Can/should we trim this file? It is 150KB, and we probably only need 10KB of it...
-import languages from 'dancedeets-common/js/languages';
+import languageData from 'dancedeets-common/js/languages';
 import { messages as styleMessages } from 'dancedeets-common/js/styles';
 import {
   Card,
@@ -115,7 +115,7 @@ class _FilterBar extends React.Component {
             onChange={state => this.props.onChange('languages', state)}
             itemRenderer={(data) => {
               const x = JSON.parse(data);
-              return `${languages[this.props.intl.locale][x.name]} (${x.count})`;
+              return `${languageData[this.props.intl.locale][x.language]} (${x.count})`;
             }}
           />
         </div>
@@ -128,7 +128,7 @@ class _FilterBar extends React.Component {
             onChange={state => this.props.onChange('categories', state)}
             itemRenderer={(data) => {
               const x = JSON.parse(data);
-              return `${this.props.intl.formatMessage(styleMessages[x.name])} (${x.count})`;
+              return `${x.title} (${x.count})`;
             }}
           />
         </div>
@@ -138,9 +138,12 @@ class _FilterBar extends React.Component {
 }
 const FilterBar = injectIntl(_FilterBar);
 
-class TutorialLayout extends React.Component {
+class _TutorialLayout extends React.Component {
   props: {
     categories: Array<Category>;
+
+    // Self-managed props
+    intl: intlShape;
   }
 
   state: {
@@ -156,11 +159,18 @@ class TutorialLayout extends React.Component {
   constructor(props) {
     super(props);
 
-    this._languages = this.generateOrderedList(x => x.language).map(x => JSON.stringify(x));
+    const tutorials = [].concat(...this.props.categories.map(x => x.tutorials));
+    const languages = countBy(tutorials.map(x => x.language));
+    const dataList = Object.keys(languages).map(language => ({ language, count: languages[language] }));
+    this._languages = sortNumber(dataList, x => -x.count).map(x => JSON.stringify(x));
+
+    console.log(this.props.categories);
     this._categories = this.props.categories.map(x => ({
-      name: x.style.id,
+      categoryId: x.style.id,
+      title: x.style.titleMessage ? this.props.intl.formatMessage(x.style.titleMessage) : x.style.title,
       count: x.tutorials.length,
     })).map(x => JSON.stringify(x));
+    console.log(this._categories);
 
     this.state = {
       languages: generateUniformState(this._languages, true),
@@ -176,21 +186,17 @@ class TutorialLayout extends React.Component {
   }
 
   generateOrderedList(getProperty: (tutorial: Playlist) => any) {
-    const tutorials = [].concat(...this.props.categories.map(x => x.tutorials));
-    const frequencies = countBy(tutorials.map(x => getProperty(x)));
-    const dataList = Object.keys(frequencies).map(name => ({ name, count: frequencies[name] }));
-    return sortNumber(dataList, x => -x.count);
   }
 
   render() {
     // Filter based on the 'categories'
-    const selectedCategoryNames = getSelected(this.state.categories).map(x => JSON.parse(x).name);
+    const selectedCategoryNames = getSelected(this.state.categories).map(x => JSON.parse(x).categoryId);
     const selectedCategories = this.props.categories.filter(x => includes(selectedCategoryNames, x.style.id));
     const tutorials = [].concat(...selectedCategories.map(x => x.tutorials));
 
     // Filter based on the 'languages'
     const filteredTutorials = tutorials.filter((tutorial) => {
-      if (getSelected(this.state.languages).filter(language => JSON.parse(language).name === tutorial.language).length === 0) {
+      if (getSelected(this.state.languages).filter(language => JSON.parse(language).language === tutorial.language).length === 0) {
         return false;
       }
       return true;
@@ -215,6 +221,7 @@ class TutorialLayout extends React.Component {
     );
   }
 }
+const TutorialLayout = injectIntl(_TutorialLayout);
 
 class _TutorialOverview extends React.Component {
   props: {
