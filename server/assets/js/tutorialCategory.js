@@ -49,9 +49,30 @@ import {
 class _Tutorial extends React.Component {
   props: {
     tutorial: Playlist;
+    searchKeywords: Array<string>;
 
     // Self-managed-props
     intl: intlShape;
+  }
+
+  getMatchingVideos() {
+    const videos = [];
+    this.props.tutorial.sections.forEach((section) => {
+      section.videos.forEach((video) => {
+        if (this.props.searchKeywords.filter(x => video.title.toLowerCase().indexOf(x) !== -1).length) {
+          videos.push(video);
+        }
+      });
+    });
+    return videos;
+  }
+
+  renderMatchingVideos() {
+    if (this.props.searchKeywords.length) {
+      const videos = this.getMatchingVideos();
+      return videos.map(video => <div>{video.title}</div>);
+    }
+    return null;
   }
 
   render() {
@@ -65,6 +86,8 @@ class _Tutorial extends React.Component {
       // title = this.props.intl.formatMessage(messages.languagePrefixedTitle, { language: upperFirst(localizedLanguage), title: tutorial.title });
     }
     const numVideosDuration = this.props.intl.formatMessage(messages.numVideosWithDuration, { count: tutorial.getVideoCount(), duration });
+
+    const matchingVideos = this.renderMatchingVideos();
 
     return (
       <Card
@@ -80,6 +103,7 @@ class _Tutorial extends React.Component {
           />
           <div>{tutorial.title}</div>
           <div>{numVideosDuration}</div>
+          {matchingVideos}
         </a>
       </Card>
     );
@@ -146,7 +170,8 @@ class _FilterBar extends React.Component {
               value={this.props.query}
               ref={(x) => { this._query = x; }}
               onChange={state => this.props.onChange('query', this._query.value)}
-            />
+              placeholder="teacher or dance move"
+            />{' '}
           </div>
         </form>
       </Card>
@@ -155,7 +180,7 @@ class _FilterBar extends React.Component {
 }
 const FilterBar = injectIntl(_FilterBar);
 
-class _TutorialLayout extends React.Component {
+class _TutorialFilteredLayout extends React.Component {
   props: {
     categories: Array<Category>;
 
@@ -228,7 +253,8 @@ class _TutorialLayout extends React.Component {
 
 
     // Now let's render them
-    const tutorialComponents = filteredTutorials.map(tutorial => <Tutorial key={tutorial.getId()} tutorial={tutorial} />);
+    const tutorialComponents = filteredTutorials.map(tutorial =>
+      <Tutorial key={tutorial.getId()} tutorial={tutorial} searchKeywords={keywords} />);
     const title = this.props.categories.length === 1 ? `${this.props.categories[0].style.title} Tutorials` : 'Tutorials';
 
     return (
@@ -247,7 +273,7 @@ class _TutorialLayout extends React.Component {
     );
   }
 }
-const TutorialLayout = injectIntl(_TutorialLayout);
+const TutorialFilteredLayout = injectIntl(_TutorialFilteredLayout);
 
 class _TutorialOverview extends React.Component {
   props: {
@@ -263,14 +289,14 @@ class _TutorialOverview extends React.Component {
       const matching = categories.filter(category => category.style.id === this.props.style);
       const category = matching.length ? matching[0] : null;
       if (category) {
-        return <TutorialLayout categories={[category]} />;
+        return <TutorialFilteredLayout categories={[category]} />;
       } else {
         // 404 not found
         return <div><Helmet title="Unknown Tutorial Category" />Unknown Style!</div>;
       }
     } else {
       // Super overiew
-      return <TutorialLayout categories={categories} />;
+      return <TutorialFilteredLayout categories={categories} />;
     }
   }
 }
