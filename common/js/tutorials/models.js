@@ -15,6 +15,7 @@ export class Playlist {
   id: string;
   title: string;
   subtitle: string;
+  keywords: string;
   author: string;
   style: string;
   language: string;
@@ -25,6 +26,7 @@ export class Playlist {
     this.id = json.id;
     this.title = json.title;
     this.subtitle = json.subtitle;
+    this.keywords = json.keywords;
     this.author = json.author;
     this.style = json.style;
     this.language = json.language;
@@ -108,20 +110,21 @@ export class Playlist {
   }
 
   // Generate a bunch of text contained by this tutorial, for searching purposes
-  getFullText() {
+  getSearchText() {
     const textBits = [];
     textBits.push(this.title);
     textBits.push(this.subtitle);
+    textBits.push(this.keywords);
     textBits.push(this.author);
     textBits.push(this.style);
     textBits.push(this.style);
     this.sections.forEach((section) => {
       textBits.push(section.title);
       section.videos.forEach((video) => {
-        textBits.push(video.title);
+        textBits.push(video.getSearchText());
       });
     });
-    return textBits.join(' ');
+    return textBits.join(' ').toLowerCase();
   }
 }
 
@@ -159,6 +162,7 @@ export class Video {
   youtubeId: string;
   width: number;
   height: number;
+  keywords: Array<string>;
 
   constructor(json: any) {
     try {
@@ -167,10 +171,18 @@ export class Video {
       this.youtubeId = json.youtubeId;
       this.width = json.width;
       this.height = json.height;
+      this.keywords = json.keywords || [];
     } catch (e) {
       console.log('Error on video: ', json);
       throw e;
     }
+  }
+
+  getSearchText() {
+    const textBits = [];
+    textBits.push(this.title);
+    textBits.push(...this.keywords);
+    return textBits.join(' ').toLowerCase();
   }
 
   getDurationSeconds(): number {

@@ -59,7 +59,7 @@ class _Tutorial extends React.Component {
     const videos = [];
     this.props.tutorial.sections.forEach((section) => {
       section.videos.forEach((video) => {
-        if (this.props.searchKeywords.filter(x => video.title.toLowerCase().indexOf(x) !== -1).length) {
+        if (this.props.searchKeywords.filter(x => video.getSearchText().indexOf(x) !== -1).length) {
           videos.push(video);
         }
       });
@@ -242,7 +242,7 @@ class _TutorialFilteredLayout extends React.Component {
         return false;
       }
       if (keywords.length) {
-        const tutorialText = tutorial.getFullText().toLowerCase();
+        const tutorialText = tutorial.getSearchText();
         const missingKeywords = keywords.filter(keyword => tutorialText.indexOf(keyword) === -1);
         if (missingKeywords.length) {
           return false;
