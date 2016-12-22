@@ -40,6 +40,8 @@ import { messages as styleMessages } from 'dancedeets-common/js/styles';
 import {
   Card,
   Link,
+  wantsWindowSizes,
+  windowProps,
 } from './ui';
 import {
   getSelected,
@@ -119,6 +121,7 @@ class _Tutorial extends React.Component {
 
     // Self-managed-props
     intl: intlShape;
+    window: windowProps;
   }
 
   matchesKeywords(obj: Video | Section) {
@@ -159,16 +162,18 @@ class _Tutorial extends React.Component {
 
     const matchingVideos = this.renderMatchingVideos();
 
+    const margin = 2 * 10;
+    let cardSize = 320 + margin;
+    if (this.props.window) {
+      cardSize = (this.props.window.width / Math.floor(this.props.window.width / cardSize)) - margin;
+    }
+
     return (
-      <Card
-        style={{ float: 'left', maxWidth: '100%' }}
-      >
-        <a
-          href={`/tutorials/${tutorial.getId()}`}
-        >
+      <Card style={{ width: cardSize, float: 'left', maxWidth: '100%' }}>
+        <a href={`/tutorials/${tutorial.getId()}`}>
           <img
             src={tutorial.thumbnail} role="presentation"
-            style={{ width: 320, maxWidth: '100%', display: 'block', marginLeft: 'auto', marginRight: 'auto' }}
+            style={{ width: '100%', display: 'block', marginLeft: 'auto', marginRight: 'auto' }}
           />
           <div style={{ backgroundColor: purpleColors[2] }}>
             <div>{tutorial.title}</div>
@@ -180,7 +185,7 @@ class _Tutorial extends React.Component {
     );
   }
 }
-const Tutorial = injectIntl(_Tutorial);
+const Tutorial = wantsWindowSizes(injectIntl(_Tutorial));
 
 type ValidKey = 'languages' | 'categories' | 'query';
 
