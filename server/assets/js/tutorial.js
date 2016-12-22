@@ -28,6 +28,11 @@ import {
 import {
   Card,
   Link,
+  wantsWindowSizes,
+} from './ui';
+
+import type {
+  windowProps,
 } from './ui';
 
 // De-Dupe
@@ -98,14 +103,11 @@ class _TutorialView extends React.Component {
 
     // Self-managed props
     intl: intlShape;
+    window: windowProps;
   };
 
   state: {
     video: Video;
-    window: ?{
-      width: number;
-      height: number;
-    };
   }
 
   _youtube: YouTube;
@@ -126,15 +128,9 @@ class _TutorialView extends React.Component {
     // 'React attempted to reuse markup in a container but the checksum was invalid.''
 
     this.state = {
-      ...this.getWindowState(),
       video: this.props.tutorial.getVideo(this.props.videoIndex || 0),
     };
-    (this: any).updateDimensions = this.updateDimensions.bind(this);
     (this: any).onVideoEnd = this.onVideoEnd.bind(this);
-  }
-
-  componentDidMount() {
-    window.addEventListener('resize', this.updateDimensions);
   }
 
   componentWillReceiveProps(nextProps) {
@@ -155,10 +151,6 @@ class _TutorialView extends React.Component {
     }
   }
 
-  componentWillUnmount() {
-    window.removeEventListener('resize', this.updateDimensions);
-  }
-
   onVideoClick(video) {
     this.setState({ video });
   }
@@ -169,20 +161,6 @@ class _TutorialView extends React.Component {
       const video = this.props.tutorial.getVideo(videoIndex);
       this.setState({ video });
     }
-  }
-
-  getWindowState() {
-    if (global.window != null) {
-      const width = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
-      const height = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight;
-      return { window: { width, height } };
-    } else {
-      return { window: null };
-    }
-  }
-
-  updateDimensions() {
-    this.setState(this.getWindowState());
   }
 
   renderVideoLine(video) {
@@ -258,10 +236,10 @@ class _TutorialView extends React.Component {
   renderPlayer() {
     let extraStyles = {};
     const video = this.state.video;
-    if (this.state.window) {
+    if (this.props.window) {
       extraStyles = {
-        maxWidth: (this.state.window.height * video.width) / video.height,
-        maxHeight: (this.state.window.width * video.height) / video.width,
+        maxWidth: (this.props.window.height * video.width) / video.height,
+        maxHeight: (this.props.window.width * video.height) / video.width,
       };
     }
     return (
@@ -291,7 +269,7 @@ class _TutorialView extends React.Component {
   render() {
     const tutorial = this.props.tutorial;
     const video = this.state.video;
-    const flexDirection = this.state.window && this.state.window.width > 1024 ? 'row' : 'column';
+    const flexDirection = this.props.window && this.props.window.width > 1024 ? 'row' : 'column';
     return (
       <div
         style={{
@@ -316,7 +294,7 @@ class _TutorialView extends React.Component {
     );
   }
 }
-const TutorialView = injectIntl(_TutorialView);
+const TutorialView = wantsWindowSizes(injectIntl(_TutorialView));
 
 function findTutorialById(config, id) {
   let foundTutorial = null;

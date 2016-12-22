@@ -113,3 +113,68 @@ export class Link extends React.Component {
     return <div style={fullStyle} {...otherProps}>{children}</div>;
   }
 }
+
+export function wantsWindowSizes(WrappedComponent: Object) {
+  class WindowSizes extends React.Component {
+    state: {
+      window: ?{
+        width: number;
+        height: number;
+      };
+    }
+
+    constructor(props) {
+      super(props);
+
+      // Unfortunately, sticking this code into the constructor directly,
+      // triggers a different initial render() than on the server,
+      // which triggers invalid checksums and a full react clientside re-render.
+      //
+      // I can try to avoid it, by doing it on a subsequent render,
+      // but I have the same problem with the selected-videoIndex,
+      // which triggers a different row highlight than was presupposed by the server.
+      //
+      // But I'd prefer to have a fast-loading initial page, so instead,
+      // I give up and just accept these dev-mode-only warnings:
+      // 'React attempted to reuse markup in a container but the checksum was invalid.''
+
+      this.state = {
+        ...this.getWindowState(),
+      };
+
+      (this: any).updateDimensions = this.updateDimensions.bind(this);
+    }
+
+    componentDidMount() {
+      window.addEventListener('resize', this.updateDimensions);
+    }
+
+    componentWillUnmount() {
+      window.removeEventListener('resize', this.updateDimensions);
+    }
+
+    getWindowState() {
+      if (global.window != null) {
+        const width = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
+        const height = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight;
+        return { window: { width, height } };
+      } else {
+        return { window: null };
+      }
+    }
+
+    updateDimensions() {
+      this.setState(this.getWindowState());
+    }
+
+    render() {
+      return <WrappedComponent {...this.props} window={this.state.window} />;
+    }
+  }
+  return WindowSizes;
+}
+
+export type windowProps = {
+  width: number,
+  height: number,
+};
