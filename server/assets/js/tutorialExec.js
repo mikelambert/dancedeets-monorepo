@@ -15,7 +15,9 @@ function render() {
 
 render();
 
-window.addEventListener('hashchange', render, false);
+// We don't need to listen, since we update the state internally and reflect it in the hash.
+// Changes to the hash itself shouldn't be triggering anything ourselves.
+// window.addEventListener('hashchange', render, false);
 
 if (module.hot) {
   module.hot.accept('./tutorial', render);

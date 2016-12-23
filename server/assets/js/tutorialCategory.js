@@ -15,6 +15,7 @@ import {
 } from 'react-intl';
 import Helmet from 'react-helmet';
 import upperFirst from 'lodash/upperFirst';
+import querystring from 'querystring';
 import {
   intlWeb,
 } from 'dancedeets-common/js/intl';
@@ -49,6 +50,7 @@ import type {
 import {
   getSelected,
   generateUniformState,
+  isAllSelected,
   MultiSelectList,
   MultiSelectState,
 } from './MultiSelectList';
@@ -264,6 +266,7 @@ const FilterBar = injectIntl(_FilterBar);
 class _TutorialFilteredLayout extends React.Component {
   props: {
     categories: Array<Category>;
+    hashLocation: string;
 
     // Self-managed props
     intl: intlShape;
@@ -299,14 +302,70 @@ class _TutorialFilteredLayout extends React.Component {
       query: '',
     };
 
+
+    // Parse incoming querystring state
+    if (this.props.hashLocation) {
+      this.state = {
+        ...this.state,
+        ...this.parseHash(this.state, this.props.hashLocation),
+      };
+    }
     (this: any).onChange = this.onChange.bind(this);
+  }
+
+  componentWillUpdate(newProps, newState) {
+    if (newState !== this.state) {
+      this.updateHash(newState);
+    }
   }
 
   onChange(key: ValidKey, state: any) {
     this.setState({ [key]: state });
   }
 
-  generateOrderedList(getProperty: (tutorial: Playlist) => any) {
+  parseHash(fullState, hashLocation: string) {
+    const newState = {
+    };
+    const incomingState = querystring.parse(hashLocation);
+    if (incomingState.languages) {
+      const incomingLanguages = incomingState.languages.split(',');
+      newState.languages = {};
+      Object.keys(fullState.languages).forEach((key) => {
+        const data = JSON.parse(key);
+        newState.languages[key] = incomingLanguages.includes(data.language);
+      });
+    }
+    if (incomingState.categories) {
+      const incomingCategories = incomingState.categories.split(',');
+      newState.categories = {};
+      Object.keys(fullState.categories).forEach((key) => {
+        const data = JSON.parse(key);
+        newState.categories[key] = incomingCategories.includes(data.categoryId);
+      });
+    }
+    if (incomingState.query) {
+      newState.query = incomingState.query;
+    }
+    return newState;
+  }
+
+  updateHash(newState) {
+    const params = {};
+    if (!isAllSelected(newState.languages)) {
+      params.languages = getSelected(newState.languages).map(x => JSON.parse(x).language).join(',');
+    }
+    if (!isAllSelected(newState.categories)) {
+      params.categories = getSelected(newState.categories).map(x => JSON.parse(x).categoryId).join(',');
+    }
+    if (newState.query) {
+      params.query = newState.query;
+    }
+    const contents = querystring.stringify(params);
+    const oldHash = window.location.hash || '#';
+    const newHash = `#${contents}`;
+    if (oldHash !== newHash) {
+      history.replaceState(undefined, '', newHash);
+    }
   }
 
   render() {
@@ -358,6 +417,7 @@ const TutorialFilteredLayout = injectIntl(_TutorialFilteredLayout);
 class _TutorialOverview extends React.Component {
   props: {
     style: string;
+    hashLocation: string;
 
     // Self-managed props
     intl: intlShape;
@@ -369,14 +429,14 @@ class _TutorialOverview extends React.Component {
       const matching = categories.filter(category => category.style.id === this.props.style);
       const category = matching.length ? matching[0] : null;
       if (category) {
-        return <TutorialFilteredLayout categories={[category]} />;
+        return <TutorialFilteredLayout hasLocation={this.props.hashLocation} categories={[category]} />;
       } else {
         // 404 not found
         return <div><Helmet title="Unknown Tutorial Category" />Unknown Style!</div>;
       }
     } else {
       // Super overiew
-      return <TutorialFilteredLayout categories={categories} />;
+      return <TutorialFilteredLayout hashLocation={this.props.hashLocation} categories={categories} />;
     }
   }
 }

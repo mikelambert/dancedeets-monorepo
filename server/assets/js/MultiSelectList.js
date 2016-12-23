@@ -59,6 +59,10 @@ export function getSelected(state: { [item: string]: boolean }) {
   return Object.keys(state).filter(x => state[x]).sort(caseInsensitiveSort);
 }
 
+export function isAllSelected(state) {
+  return getSelected(state).length === Object.keys(state).length;
+}
+
 export class MultiSelectList extends React.Component {
   props: {
     list: Array<string>;
@@ -77,16 +81,12 @@ export class MultiSelectList extends React.Component {
     this.changedState(generateUniformState(this.props.list, true));
   }
 
-  isAllSelected() {
-    return getSelected(this.props.selected).length === this.props.list.length;
-  }
-
   changedState(newState) {
     this.props.onChange(newState);
   }
 
   toggleItem(item) {
-    if (this.isAllSelected()) {
+    if (isAllSelected(this.props.selected)) {
       const newState = generateUniformState(this.props.list, false);
       newState[item] = true;
       this.changedState(newState);
@@ -102,7 +102,7 @@ export class MultiSelectList extends React.Component {
 
   render() {
     const options = [];
-    const allSelected = this.isAllSelected();
+    const allSelected = isAllSelected(this.props.selected);
     options.push(
       <SelectButton
         key="All"
