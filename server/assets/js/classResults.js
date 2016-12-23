@@ -202,7 +202,7 @@ class StudioClass extends React.Component {
 
   render() {
     return (
-      <div>
+      <div style={{ marginLeft: 40, marginBottom: 2 }}>
         <a href={this.props.studio_class.url}>
           <StudioImage studioName={this.props.studio_class.location} />
         </a>
