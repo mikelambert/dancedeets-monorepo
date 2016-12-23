@@ -1,5 +1,6 @@
 {% extends class_base_template %}
 
+
 {% block body %}
 <div class="container">
 <div class="row">
@@ -8,4 +9,8 @@
 </div>
 </div>
 </div> {# /container #}
+{% endblock %}
+
+{% block bottom_javascript %}
+<script type="text/javascript" src="{{static_dir}}/js/normalPage.js"></script>
 {% endblock %}

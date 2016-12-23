@@ -27,6 +27,7 @@ const config = {
   entry: {
     calendar: './assets/js/calendar.js',
     homepage: './assets/js/homepage.js',
+    normalPage: './assets/js/normalPage.js',
     classResultsExec: './assets/js/classResultsExec.js',
     eventExec: './assets/js/eventExec.js',
     eventSearchResultsExec: './assets/js/eventSearchResultsExec.js',

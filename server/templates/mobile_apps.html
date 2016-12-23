@@ -95,6 +95,7 @@ Keep up with the latest dance events when you're on the go!
 {% endblock %}
 
 {% block bottom_javascript %}
+<script type="text/javascript" src="{{static_dir}}/js/normalPage.js"></script>
 <script type="text/javascript">
 function walkOut() {
 	$('#penguin').css('webkitAnimation', 'bounce 0.5s infinite 0s, walkOut {{ total_time }}s');
