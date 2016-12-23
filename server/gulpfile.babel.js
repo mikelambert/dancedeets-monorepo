@@ -107,6 +107,22 @@ gulp.task('compile:images:resize', () => gulp
   .pipe(gulp.dest('dist/img'))
 );
 
+
+gulp.task('compile:images:shared-resize', () => gulp
+  .src(`../common/js/**/*.{png,jpg}`)
+  .pipe($.responsiveImages({
+    'styles/images/*.png': [{
+      width: 100,
+      height: 100,
+      format: 'png',
+      }],
+  }))
+  .pipe($.imagemin({
+    progressive: true,
+    interlaced: true,
+  }))
+  .pipe(gulp.dest('dist/img'))
+);
 // gets deets-activity svg files
 gulp.task('compile:images:svg', () => gulp
   .src(`${baseAssetsDir}img/*.svg`)
@@ -117,7 +133,7 @@ gulp.task('compile:images:svg', () => gulp
   .pipe(gulp.dest('dist/img'))
 );
 
-gulp.task('compile:images', ['compile:images:favicons', 'compile:images:resize', 'compile:images:svg']);
+gulp.task('compile:images', ['compile:images:favicons', 'compile:images:resize', 'compile:images:shared-resize', 'compile:images:svg']);
 
 gulp.task('compile:fonts', () => gulp
   .src('bower_components/font-awesome/fonts/*.*')
