@@ -127,6 +127,12 @@ class _TutorialView extends React.Component {
       if (oldHash !== newHash) {
         window.location.hash = newHash;
       }
+
+      window.mixpanel.track('Tutorial Video Selected', {
+        tutorialName: this.props.tutorial.title,
+        tutorialStyle: this.props.tutorial.style,
+        tutorialVideoIndex: videoIndex,
+      });
     }
   }
 
@@ -322,6 +328,16 @@ class _TutorialPage extends React.Component {
     intl: intlShape;
   };
 
+  trackTutorial(tutorial) {
+    if (!window.sentMixpanelPing) {
+      window.sentMixpanelPing = true;
+      window.mixpanel.track('Tutorial Selected', {
+        tutorialName: tutorial.title,
+        tutorialStyle: tutorial.style,
+      });
+    }
+  }
+
   render() {
     const config = getTutorials(this.props.intl.locale);
     const tutorial = findTutorialById(config, this.props.tutorial);
@@ -329,6 +345,7 @@ class _TutorialPage extends React.Component {
     let result = null;
     const videoIndex = this.props.hashLocation ? parseInt(this.props.hashLocation, 10) : null;
     if (tutorial) {
+      this.trackTutorial(tutorial);
       result = (<TutorialView
         style={this.props.style}
         tutorial={tutorial}

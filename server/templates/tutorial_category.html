@@ -4,6 +4,10 @@
 {{ style|e }}
 {% endblock %}
 
+{% block head_javascript %}
+{{ enable_mixpanel() }}
+{% endblock %}
+
 {% block head_metatags %}
 <link rel="canonical" href="{{ canonical_url }}" />
 {% endblock %}
