@@ -232,6 +232,7 @@ class _TutorialView extends React.Component {
         style={{
           flex: 2,
           width: '100%',
+          height: '100%',
           ...extraStyles,
         }}
       >
