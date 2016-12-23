@@ -397,7 +397,7 @@ class _TutorialFilteredLayout extends React.Component {
     const tutorialComponents = filteredTutorials.map(tutorial =>
       <Tutorial key={tutorial.getId()} tutorial={tutorial} searchKeywords={keywords} />);
     const title = 'Dance Tutorials';
-    const meta = generateMetaTags(title, 'http://www.dancedeets.com/tutorials/', 'http://www.dancedeets.com/dist/img/tutorial-screenshot.jpg');
+    const meta = generateMetaTags(title, 'http://www.dancedeets.com/tutorials/', 'http://www.dancedeets.com/dist/img/screenshot-tutorial.jpg');
     return (
       <div>
         <Helmet title={title} meta={meta} />
