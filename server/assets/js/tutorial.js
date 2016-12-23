@@ -329,7 +329,7 @@ class _TutorialPage extends React.Component {
   };
 
   trackTutorial(tutorial) {
-    if (!window.sentMixpanelPing) {
+    if (window && !window.sentMixpanelPing) {
       window.sentMixpanelPing = true;
       window.mixpanel.track('Tutorial Selected', {
         tutorialName: tutorial.title,
