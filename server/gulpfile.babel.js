@@ -87,6 +87,10 @@ gulp.task('compile:images:resize', () => gulp
       width: 600,
       quality: 60,
     }],
+    'screenshot-*.jpg': [{
+      format: 'jpg',
+      quality: 60,
+    }],
     'deets-head-and-title-on-black.png': [{
       height: 64 * 2,
       suffix: '@2x',

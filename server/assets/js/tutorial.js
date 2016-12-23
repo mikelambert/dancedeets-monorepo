@@ -33,6 +33,7 @@ import {
 import type {
   windowProps,
 } from './ui';
+import { generateMetaTags } from './meta';
 
 // De-Dupe
 const purpleColors = [
@@ -295,14 +296,19 @@ class HtmlHead extends React.Component {
   render() {
     const tutorial = this.props.tutorial;
     let title = 'Unknown tutorial';
+    let metaTags = [];
     if (tutorial) {
       title = tutorial.title;
       if (this.props.videoIndex != null) {
         const video = tutorial.getVideo(this.props.videoIndex);
         title += `: ${video.title}`;
       }
+      title += ' | DanceDeets Tutorial';
+
+      metaTags = generateMetaTags(title, tutorial.getUrl(), tutorial.thumbnail);
     }
-    return <Helmet title={title} />;
+
+    return <Helmet title={title} meta={metaTags} />;
   }
 }
 

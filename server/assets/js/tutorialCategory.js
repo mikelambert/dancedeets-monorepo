@@ -47,6 +47,7 @@ import {
 import type {
   windowProps,
 } from './ui';
+import { generateMetaTags } from './meta';
 import {
   getSelected,
   generateUniformState,
@@ -396,10 +397,10 @@ class _TutorialFilteredLayout extends React.Component {
     const tutorialComponents = filteredTutorials.map(tutorial =>
       <Tutorial key={tutorial.getId()} tutorial={tutorial} searchKeywords={keywords} />);
     const title = 'Dance Tutorials';
-
+    const meta = generateMetaTags(title, 'http://www.dancedeets.com/tutorials/', 'http://www.dancedeets.com/dist/img/tutorial-screenshot.jpg');
     return (
       <div>
-        <Helmet title={title} />
+        <Helmet title={title} meta={meta} />
         <FilterBar
           initialLanguages={this._languages} languages={this.state.languages}
           initialCategories={this._categories} categories={this.state.categories}
