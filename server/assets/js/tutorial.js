@@ -10,7 +10,6 @@ import {
   intlShape,
 } from 'react-intl';
 import YouTube from 'react-youtube';
-import { Share as TwitterShare } from 'react-twitter-widgets';
 import Helmet from 'react-helmet';
 import {
   intlWeb,
@@ -28,9 +27,9 @@ import {
 import {
   Card,
   Link,
+  ShareLinks,
   wantsWindowSizes,
 } from './ui';
-
 import type {
   windowProps,
 } from './ui';
@@ -74,27 +73,6 @@ class _Duration extends React.Component {
   }
 }
 const Duration = injectIntl(_Duration);
-
-class ShareLinks extends React.Component {
-  props: {
-    url: string;
-  }
-
-  componentDidMount() {
-    if (window.FB) {
-      window.FB.XFBML.parse();
-    }
-  }
-
-  render() {
-    return (
-      <div style={{ height: 20 }}>
-        <div style={{ display: 'inline-block' }}><TwitterShare url={this.props.url} /></div>
-        <span style={{ verticalAlign: 'top' }} className="link-event-share fb-share-button" data-href={this.props.url} data-layout="button" data-size="small" data-mobile-iframe="true" />
-      </div>
-    );
-  }
-}
 
 class _TutorialView extends React.Component {
   props: {
