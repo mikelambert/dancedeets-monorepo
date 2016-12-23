@@ -123,7 +123,7 @@ export function wantsWindowSizes(WrappedComponent: Object) {
       };
     }
 
-    constructor(props) {
+    constructor(props: Object) {
       super(props);
 
       // Unfortunately, sticking this code into the constructor directly,
