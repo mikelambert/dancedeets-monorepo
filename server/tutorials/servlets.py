@@ -5,6 +5,9 @@ import base_servlet
 
 @app.route('/tutorials/([^/]+/[^/]+)$')
 class TutorialHandler(base_servlet.BaseRequestHandler):
+    def requires_login(self):
+        return False
+
     def get(self, tutorial_name):
         self.finish_preload()
 
@@ -21,12 +24,18 @@ class TutorialHandler(base_servlet.BaseRequestHandler):
 
 @app.route('/tutorials$')
 class TutorialRedirectHandler(base_servlet.BaseRequestHandler):
+    def requires_login(self):
+        return False
+
     def get(self):
         self.finish_preload()
         self.redirect('/tutorials/')
 
 @app.route('/tutorials/(?:([^/]+)/?)?$')
 class TutorialCategoryHandler(base_servlet.BaseRequestHandler):
+    def requires_login(self):
+        return False
+
     def get(self, style):
         self.finish_preload()
 
