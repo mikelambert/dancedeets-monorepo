@@ -156,6 +156,7 @@
 {% endblock %}
 
 {% block bottom_javascript %}
+<script src="{{static_dir}}/js/eventSearchResultsExec.js"></script>
 
 <script type="text/javascript">
 $(document).ready(function(event) {
@@ -293,6 +294,5 @@ $(document).ready(function() {
 
 </script>
 #}
-<script src="{{static_dir}}/js/eventSearchResultsExec.js"></script>
 {% endif %}
 {% endblock %}
