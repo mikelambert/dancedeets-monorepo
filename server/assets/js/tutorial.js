@@ -211,7 +211,7 @@ class _TutorialView extends React.Component {
     const duration = formatDuration(this.props.intl.formatMessage, tutorial.getDurationSeconds());
     const subline = `${tutorial.author} - ${duration}`;
     return (<div style={{ padding: 7, backgroundColor: purpleColors[4] }}>
-      <h3 style={{ marginTop: 0 }}>{tutorial.title}</h3>
+      <h3 style={{ marginTop: 0 }}>{tutorial.title} - <a href="/tutorials">See All Tutorials</a></h3>
       {subtitle}
       <div>{subline}</div>
       <ShareLinks url={tutorial.getUrl()} />
