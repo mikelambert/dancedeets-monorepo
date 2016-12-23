@@ -176,6 +176,8 @@ class VerticalEvent extends React.Component {
         display: 'inline-block',
         width: 200,
         verticalAlign: 'top',
+        // turn off margins, since Masonry computes the 'height' incorrectly on components containing them
+        margin: 0,
       }}
     >
       <EventFlyer event={event} />
@@ -213,7 +215,7 @@ class CurrentEvents extends React.Component {
     ];
     return (<div>
       <div>Events Happening Now:</div>
-      <div style={{ width: '100%' }}>
+      <div style={{ width: '100%', padding: 10 }}>
         <MasonryLayout
           id="current-events"
           infiniteScroll={() => {}}
