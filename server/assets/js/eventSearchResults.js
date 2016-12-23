@@ -127,7 +127,7 @@ class _EventDescription extends React.Component {
         <ImagePrefix
           icon={require('../img/categories.png')} // eslint-disable-line global-require
         >
-          ({keywords.join(', ')})
+          {keywords.join(', ')}
         </ImagePrefix>
         <ImagePrefix iconName="clock-o">
           {formatStartEnd(event.start_time, event.end_time, this.props.intl)}
