@@ -156,7 +156,7 @@ h6 {
 
   &:active,
   &.active {
-    background-image: linear-gradient(180deg, $purple-lighter, $purple-medium);
+    background-image: linear-gradient(180deg, $purple-medium, $purple-lighter);
     border-color: $yellow-lightest;
 
     &:hover,
@@ -179,6 +179,7 @@ h6 {
 
   &:active,
   &.active {
+    background-image: linear-gradient(180deg, $purple-medium, $purple-lighter);
     border-color: $yellow-lightest;
   }
 }
