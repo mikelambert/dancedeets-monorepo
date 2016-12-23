@@ -203,6 +203,8 @@ class _EventLinks extends React.Component {
         <li key={admin.id}><a
           className="link-event-admin"
           href={`https://www.facebook.com/${admin.id}`}
+          rel="noopener noreferrer"
+          target="_blank"
         >{admin.name}</a></li>));
       organizerElement = (
         <ImagePrefix iconName="user">
@@ -218,7 +220,7 @@ class _EventLinks extends React.Component {
       const hostname = url.parse(this.props.event.ticket_uri).hostname;
       ticketElement = (
         <ImagePrefix iconName="ticket">
-          <Message message={messages.ticketsLink} /> <a href={this.props.event.ticket_uri}>{hostname}</a>
+          <Message message={messages.ticketsLink} /> <a href={this.props.event.ticket_uri} rel="noopener noreferrer" target="_blank">{hostname}</a>
         </ImagePrefix>
       );
     }
@@ -248,7 +250,7 @@ class _EventLinks extends React.Component {
     return (
       <Card>
         <ImagePrefix iconName={event.source.name === 'Facebook Event' ? 'facebook-square' : 'external-link'}>
-          <Message message={messages.source} /> <a className="link-event-source" href={event.source.url}>{event.source.name}</a>
+          <Message message={messages.source} /> <a className="link-event-source" href={event.source.url} rel="noopener noreferrer" target="_blank">{event.source.name}</a>
         </ImagePrefix>
         <ImagePrefix
           icon={require('../img/categories.png')} // eslint-disable-line global-require
@@ -260,7 +262,7 @@ class _EventLinks extends React.Component {
           <FormatText>{formattedStartEndText}</FormatText>
         </ImagePrefix>
         <ImagePrefix iconName="calendar-plus-o">
-          <a href={getAddToCalendarLink(event)} className="link-event-add-to-calendar"><Message message={messages.addToCalendar} /></a>
+          <a href={getAddToCalendarLink(event)} rel="noopener noreferrer" target="_blank" className="link-event-add-to-calendar"><Message message={messages.addToCalendar} /></a>
         </ImagePrefix>
         {rsvpElement}
         {ticketElement}
