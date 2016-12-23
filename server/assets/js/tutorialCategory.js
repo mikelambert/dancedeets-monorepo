@@ -40,6 +40,7 @@ import { messages as styleMessages } from 'dancedeets-common/js/styles';
 import {
   Card,
   Link,
+  ShareLinks,
   wantsWindowSizes,
 } from './ui';
 import type {
@@ -214,19 +215,6 @@ class _FilterBar extends React.Component {
       <Card>
         <form className="form-inline">
           <div style={{ marginBottom: 10 }}>
-            Language:{' '}
-            <MultiSelectList
-              list={this.props.initialLanguages}
-              selected={this.props.languages}
-              // ref={(x) => { this._styles = x; }}
-              onChange={state => this.props.onChange('languages', state)}
-              itemRenderer={(data) => {
-                const x = JSON.parse(data);
-                return `${languageData[this.props.intl.locale][x.language]} (${x.count})`;
-              }}
-            />
-          </div>
-          <div style={{ marginBottom: 10 }}>
             Styles:{' '}
             <MultiSelectList
               list={this.props.initialCategories}
@@ -236,6 +224,19 @@ class _FilterBar extends React.Component {
               itemRenderer={(data) => {
                 const x = JSON.parse(data);
                 return `${x.title} (${x.count})`;
+              }}
+            />
+          </div>
+          <div style={{ marginBottom: 10 }}>
+            Language:{' '}
+            <MultiSelectList
+              list={this.props.initialLanguages}
+              selected={this.props.languages}
+              // ref={(x) => { this._styles = x; }}
+              onChange={state => this.props.onChange('languages', state)}
+              itemRenderer={(data) => {
+                const x = JSON.parse(data);
+                return `${languageData[this.props.intl.locale][x.language]} (${x.count})`;
               }}
             />
           </div>
@@ -252,6 +253,8 @@ class _FilterBar extends React.Component {
             />{' '}
           </div>
         </form>
+        <div style={{ float: 'right' }}><ShareLinks url={'http://www.dancedeets.com/tutorials'} /></div>
+        <div style={{ clear: 'both' }} />
       </Card>
     );
   }
