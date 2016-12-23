@@ -19,7 +19,13 @@ class TutorialHandler(base_servlet.BaseRequestHandler):
 
         self.render_template('tutorial')
 
-@app.route('/tutorials/(?:([^/]+)/)?$')
+@app.route('/tutorials$')
+class TutorialRedirectHandler(base_servlet.BaseRequestHandler):
+    def get(self):
+        self.finish_preload()
+        self.redirect('/tutorials/')
+
+@app.route('/tutorials/(?:([^/]+)/?)?$')
 class TutorialCategoryHandler(base_servlet.BaseRequestHandler):
     def get(self, style):
         self.finish_preload()
