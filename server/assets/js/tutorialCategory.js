@@ -333,7 +333,7 @@ class _TutorialFilteredLayout extends React.Component {
     // Now let's render them
     const tutorialComponents = filteredTutorials.map(tutorial =>
       <Tutorial key={tutorial.getId()} tutorial={tutorial} searchKeywords={keywords} />);
-    const title = this.props.categories.length === 1 ? `${this.props.categories[0].style.title} Tutorials` : 'Tutorials';
+    const title = 'Dance Tutorials';
 
     return (
       <div>
@@ -344,7 +344,6 @@ class _TutorialFilteredLayout extends React.Component {
           query={this.state.query}
           onChange={this.onChange}
         />
-        <h2>{title}</h2>
         {tutorialComponents}
         <div style={{ clear: 'both' }} />
       </div>
