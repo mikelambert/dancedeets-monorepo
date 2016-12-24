@@ -186,9 +186,6 @@ class _PlaylistListView extends React.Component {
     const duration = formatDuration(this.props.intl.formatMessage, playlist.getDurationSeconds());
     let title = playlist.title;
     if (this.props.intl.locale !== playlist.language) {
-      console.log(this.props.intl.locale, playlist.language);
-      console.log(languages);
-      console.log(languages[this.props.intl.locale]);
       const localizedLanguage = languages[this.props.intl.locale][playlist.language];
       title = this.props.intl.formatMessage(messages.languagePrefixedTitle, { language: upperFirst(localizedLanguage), title: playlist.title });
     }
