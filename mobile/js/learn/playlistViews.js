@@ -239,7 +239,7 @@ class _PlaylistListView extends React.Component {
           size="small"
           caption={this.props.intl.formatMessage(messages.contact)}
           onPress={this.sendTutorialContactEmail}
-        >Contact Us</Button>
+        >Contact Us</Button>{' '}
         <Text>{this.props.intl.formatMessage(messages.contactSuffix)}</Text>
       </HorizontalView>
     </View>);

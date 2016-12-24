@@ -45,7 +45,7 @@
   "login.message": "\"{feature}\" requires logging in. Would you like to login?",
   "login.title": "Login Required",
   "navigator.addEvent": "Add Event",
-  "navigator.eventsTitle": "DanceDeets: Events",
+  "navigator.eventsTitle": "Events",
   "navigator.notificationsTitle": "Notification Settings",
   "navigator.viewFlyer": "View Flyer",
   "notifications.header": "Notifications:",

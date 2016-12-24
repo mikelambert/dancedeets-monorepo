@@ -45,7 +45,7 @@
   "login.message": "「{feature}」はログイン必要です. ログインしたいですか？",
   "login.title": "ログイン必要",
   "navigator.addEvent": "イベントを追加",
-  "navigator.eventsTitle": "DanceDeets: イベント",
+  "navigator.eventsTitle": "イベント",
   "navigator.notificationsTitle": "通知設定",
   "navigator.viewFlyer": "フライヤー",
   "notifications.header": "通知:",

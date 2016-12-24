@@ -83,7 +83,7 @@ const messages = defineMessages({
   },
   eventsTitle: {
     id: 'navigator.eventsTitle',
-    defaultMessage: 'DanceDeets: Events',
+    defaultMessage: 'Events',
     description: 'Initial title bar for Events tab',
   },
   learnTitle: {

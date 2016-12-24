@@ -74,7 +74,7 @@ const messages = defineMessages({
   },
   shareGeneric: {
     id: 'share.generic',
-    defaultMessage: 'Send Message',
+    defaultMessage: 'Share...',
     description: 'Share this using the native mobile share experience',
   },
   friendsUsing: {
@@ -199,16 +199,6 @@ class _ShareButtons extends React.Component {
           onPress={() => {
             track('Share DanceDeets', { Button: 'Share FB Post' });
             ShareDialog.show(this.getShareLinkContent());
-          }}
-          style={styles.noFlexButton}
-        />
-        <Button
-          size="small"
-          caption={this.props.intl.formatMessage(messages.shareFacebookMessenger)}
-          icon={require('../login/icons/facebook-messenger.png')}
-          onPress={() => {
-            track('Share DanceDeets', { Button: 'Send FB Message' });
-            MessageDialog.show(this.getShareLinkContent());
           }}
           style={styles.noFlexButton}
         />
