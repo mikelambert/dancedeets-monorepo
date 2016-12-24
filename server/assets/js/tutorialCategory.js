@@ -15,6 +15,7 @@ import {
 } from 'react-intl';
 import Helmet from 'react-helmet';
 import Masonry from 'react-masonry-component';
+import LazyLoad from 'react-lazyload';
 import upperFirst from 'lodash/upperFirst';
 import querystring from 'querystring';
 import {
@@ -125,6 +126,7 @@ class _Tutorial extends React.Component {
   props: {
     tutorial: Playlist;
     searchKeywords: Array<string>;
+    lazyLoad: boolean;
 
     // Self-managed-props
     intl: intlShape;
@@ -175,13 +177,22 @@ class _Tutorial extends React.Component {
       cardSize = (this.props.window.width / Math.floor(this.props.window.width / cardSize)) - margin;
     }
 
+    const youtubeThumbnailsRatio = 320 / 180;
+    const padding = 2 * 10;
+    const imageWidth = cardSize - padding;
+    const imageHeight = imageWidth / youtubeThumbnailsRatio;
+
+    let imageTag = (<img
+      src={tutorial.thumbnail} role="presentation"
+      style={{ width: '100%', display: 'block', marginLeft: 'auto', marginRight: 'auto' }}
+    />);
+    if (this.props.lazyLoad) {
+      imageTag = <LazyLoad height={imageHeight} once offset={300}>{imageTag}</LazyLoad>;
+    }
     return (
       <Card style={{ width: cardSize }}>
         <a href={`/tutorials/${tutorial.getId()}`}>
-          <img
-            src={tutorial.thumbnail} role="presentation"
-            style={{ width: '100%', display: 'block', marginLeft: 'auto', marginRight: 'auto' }}
-          />
+          {imageTag}
           <div style={{ backgroundColor: purpleColors[2] }}>
             <div>{tutorial.title}</div>
             <div>{numVideosDuration}</div>
@@ -395,8 +406,8 @@ class _TutorialFilteredLayout extends React.Component {
 
 
     // Now let's render them
-    const tutorialComponents = filteredTutorials.map(tutorial =>
-      <Tutorial key={tutorial.getId()} tutorial={tutorial} searchKeywords={keywords} />);
+    const tutorialComponents = filteredTutorials.map((tutorial, index) =>
+      <Tutorial key={tutorial.getId()} tutorial={tutorial} searchKeywords={keywords} lazyLoad={index > 30} />);
     const title = 'Dance Tutorials';
     const meta = generateMetaTags(title, 'http://www.dancedeets.com/tutorials/', 'http://www.dancedeets.com/dist/img/screenshot-tutorial.jpg');
     return (
