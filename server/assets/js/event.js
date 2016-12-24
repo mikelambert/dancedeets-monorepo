@@ -344,11 +344,12 @@ class MapWithLinks extends React.Component {
         />
       );
     } else {
-      mapContents = (<SimpleMap
-        name={venueName}
-        latitude={geocode.latitude}
-        longitude={geocode.longitude}
-      />);
+      const staticMapImageUrl = (
+        'http://www.google.com/maps/api/staticmap?key=AIzaSyAvvrWfamjBD6LqCURkATAWEovAoBm1xNQ&size=450x450&scale=2&zoom=13&' +
+        `center=${geocode.latitude},${geocode.longitude}&` +
+        `markers=color:blue%7C${geocode.latitude},${geocode.longitude}`
+      );
+      mapContents = <img src={staticMapImageUrl} style={{ width: '100%' }} role="presentation" />;
     }
 
     return (
