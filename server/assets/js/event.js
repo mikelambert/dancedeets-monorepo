@@ -15,11 +15,6 @@ import {
   FormattedMessage,
 } from 'react-intl';
 import url from 'url';
-import {
-  GoogleMapLoader,
-  GoogleMap,
-  Marker,
-} from 'react-google-maps';
 import Helmet from 'react-helmet';
 import { Share as TwitterShare } from 'react-twitter-widgets';
 import {
@@ -275,42 +270,6 @@ class _EventLinks extends React.Component {
 }
 const EventLinks = injectIntl(_EventLinks);
 
-class SimpleMap extends React.Component {
-  props: {
-    name: string;
-    latitude: number;
-    longitude: number;
-  }
-  render() {
-    return (
-      <GoogleMapLoader
-        containerElement={
-          <div
-            style={{
-              height: '100%',
-            }}
-          />
-        }
-        googleMapElement={
-          <GoogleMap
-            defaultZoom={13}
-            defaultCenter={{ lat: this.props.latitude, lng: this.props.longitude }}
-            /*
-            scrollwheel={false}
-            draggable={false}
-            */
-          >
-            <Marker
-              position={{ lat: this.props.latitude, lng: this.props.longitude }}
-              label={this.props.name}
-            />
-          </GoogleMap>
-        }
-      />
-    );
-  }
-}
-
 class MapWithLinks extends React.Component {
   props: {
     event: Event;
@@ -349,7 +308,11 @@ class MapWithLinks extends React.Component {
         `center=${geocode.latitude},${geocode.longitude}&` +
         `markers=color:blue%7C${geocode.latitude},${geocode.longitude}`
       );
-      mapContents = <img src={staticMapImageUrl} style={{ width: '100%' }} role="presentation" />;
+      mapContents = (
+        <a className="link-event-map" href={mapUrl} rel="noopener noreferrer" target="_blank">
+          <img src={staticMapImageUrl} style={{ width: '100%' }} role="presentation" />
+        </a>
+      );
     }
 
     return (
