@@ -64,11 +64,12 @@ class MindBodyBrowserScraper(BrowserScraper):
         return self._main_mindbody_url()
 
     def start_requests(self):
-        yield self._generate_request()
-        yield self._generate_request("""
-            splash:runjs("autoSubmitDateTo(false, true)")
-            splash:wait(3)
-        """)
+        num_weeks = 3
+        for i in range(num_weeks):
+            yield self._generate_request("""
+                splash:runjs("autoSubmitDateTo(false, true)")
+                splash:wait(3)
+            """ * i)
 
     def _valid_item(self, item, row):
         return True
