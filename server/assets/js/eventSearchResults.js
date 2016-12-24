@@ -82,7 +82,7 @@ class EventFlyer extends React.Component {
       className="no-border"
     />);
     if (this.props.lazyLoad) {
-      imageTag = <LazyLoad height={height} once>{imageTag}</LazyLoad>;
+      imageTag = <LazyLoad height={height} once offset={300}>{imageTag}</LazyLoad>;
     }
     return (
       <a className="link-event-flyer" href={event.getUrl()}>
