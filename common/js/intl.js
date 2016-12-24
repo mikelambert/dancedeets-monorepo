@@ -20,14 +20,14 @@ import ja from './messages/ja.json';
 import zh from './messages/zh.json';
 
 export const defaultLocale = 'en';
-export const supportedLocales = ['en', 'ja', 'fr', 'zh-Hant'];
 
 const messages = {
   en: null, // use built-ins...but ensure we have an entry so we don't have undefined flow errors
   fr,
   ja,
-  'zh-Hant': zh,
+  'zh-tw': zh,
 };
+const supportedLocales = Object.keys(messages);
 
 /* eslint-disable global-require, import/no-extraneous-dependencies */
 // https://github.com/yahoo/intl-locales-supported#usage
@@ -61,53 +61,48 @@ addLocaleData(require('react-intl/locale-data/fr'));
 addLocaleData(require('react-intl/locale-data/ja'));
 addLocaleData(require('react-intl/locale-data/zh'));
 
-function configureMoment(currentLocale: string) {
-  // Our Locale.constants().localeIdentifier returns zh-Hant_US.
+function intlProviderArgs(currentLocale) {
+  // Our Locale.constants().localeIdentifier returns zh-Hant_US (converted to zh-Hant-US).
   // But moment locales are zh-tw (traditional) and zh-cn (simplified).
-  // So manually convert the getCurrentLocale() 'zh' to the 'zh-tw' moment needs:
-  let momentLocale = currentLocale;
-  if (momentLocale === 'zh-Hant') {
-    momentLocale = 'zh-tw';
+  // So manually convert the currentLocale to the 'zh-tw' moment needs:
+  let locale = currentLocale.toLowerCase();
+  if (locale.includes('zh-hant')) {
+    locale = 'zh-tw';
   }
-  moment.locale(momentLocale);
+
+  let finalLocale = locale;
+  if (!messages[finalLocale]) {
+    finalLocale = locale.split('-')[0];
+  }
+  if (!messages[finalLocale]) {
+    finalLocale = defaultLocale;
+  }
+
+  console.log(`Configure requested with locale ${currentLocale}, using locale: ${finalLocale}`);
+  moment.locale(finalLocale);
+  return {
+    defaultLocale,
+    key: finalLocale, // https://github.com/yahoo/react-intl/issues/234
+    locale: finalLocale,
+    messages: messages[finalLocale],
+  };
 }
 
 export function constructIntl(currentLocale: string) {
-  configureMoment(currentLocale);
-  return new IntlProvider({
-    defaultLocale,
-    key: currentLocale, // https://github.com/yahoo/react-intl/issues/234
-    locale: currentLocale,
-    messages: messages[currentLocale],
-  }, {
-  }).getChildContext().intl;
+  return new IntlProvider(intlProviderArgs(currentLocale), {}).getChildContext().intl;
 }
 
-export class Internationalize extends React.Component {
+
+class Internationalize extends React.Component {
   props: {
     currentLocale: string;
     children?: Array<React.Element<*>>;
   }
 
-  getLocale() {
-    if (!this.props.currentLocale) {
-      return defaultLocale;
-    }
-    const locale = this.props.currentLocale.split('_')[0];
-    return supportedLocales.indexOf(locale) !== -1
-      ? this.props.currentLocale
-      : defaultLocale;
-  }
-
   render() {
-    const locale = this.getLocale();
-    configureMoment(locale);
     return (
       <IntlProvider
-        defaultLocale={defaultLocale}
-        key={locale} // https://github.com/yahoo/react-intl/issues/234
-        locale={locale}
-        messages={messages[this.props.currentLocale]}
+        {...intlProviderArgs(this.props.currentLocale)}
       >
         {this.props.children}
       </IntlProvider>
@@ -115,17 +110,27 @@ export class Internationalize extends React.Component {
   }
 }
 
+// props.currentLocale here is of the form:
+// en-US
+// fr-FR
+// zh-TW
+// etc
 export function intlWeb(Wrapped: any) {
   return (props: Object) => <Internationalize {...props}>
     <Wrapped {...props} />
   </Internationalize>;
 }
 
+// currentLocale here is of the form:
+// en-US
+// fr-FR
+// zh-Hant-US
+// etc
 export function intl(Wrapped: any, currentLocale: string) {
-  return () => <Internationalize
+  return (props: Object) => <Internationalize
     currentLocale={currentLocale}
     defaultLocale={defaultLocale}
   >
-    <Wrapped {...this.props} />
+    <Wrapped {...props} />
   </Internationalize>;
 }
