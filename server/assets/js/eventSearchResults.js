@@ -15,7 +15,7 @@ import {
 } from 'react-intl';
 import LazyLoad from 'react-lazyload';
 import { StickyContainer, Sticky } from 'react-sticky';
-import MasonryLayout from 'react-masonry-layout';
+import Masonry from 'react-masonry-component';
 import {
   intlWeb,
 } from 'dancedeets-common/js/intl';
@@ -176,8 +176,6 @@ class VerticalEvent extends React.Component {
         display: 'inline-block',
         width: 200,
         verticalAlign: 'top',
-        // turn off margins, since Masonry computes the 'height' incorrectly on components containing them
-        margin: 0,
       }}
     >
       <EventFlyer event={event} />
@@ -205,24 +203,12 @@ class CurrentEvents extends React.Component {
       resultItems.push(<VerticalEvent key={event.id} event={event} />);
     });
 
-    const boxWidth = 180 + (10 * 2);
-    const edges = 15 * 2;
-    const threeBoxes = (boxWidth * 3) + edges;
-    const sizes = [
-      { columns: 2, gutter: 20 },
-      { mq: `${threeBoxes}px`, columns: 3, gutter: 20 },
-      { mq: '1200px', columns: 4, gutter: 20 },
-    ];
     return (<div>
       <div>Events Happening Now:</div>
       <div style={{ width: '100%', padding: 10 }}>
-        <MasonryLayout
-          id="current-events"
-          infiniteScroll={() => {}}
-          sizes={sizes}
-        >
+        <Masonry>
           {resultItems}
-        </MasonryLayout>
+        </Masonry>
       </div>
     </div>);
   }
