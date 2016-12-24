@@ -221,11 +221,11 @@ class _LearnView extends React.Component {
     switch (route.key) {
       case 'TutorialStyles':
         return (<PlaylistStylesView
-          onSelected={(style) => {
+          onSelected={(category) => {
             track('Tutorial Style Selected', {
-              tutorialStyle: style.title,
+              tutorialStyle: category.style.title,
             });
-            this.props.navigatable.onNavigate({ key: 'TutorialList', title: this.props.intl.formatMessage(messages.styleTutorialTitle, { style: style.title }), tutorials: style.tutorials });
+            this.props.navigatable.onNavigate({ key: 'TutorialList', title: this.props.intl.formatMessage(messages.styleTutorialTitle, { style: category.style.title }), tutorials: category.tutorials });
           }}
         />);
       case 'TutorialList':
