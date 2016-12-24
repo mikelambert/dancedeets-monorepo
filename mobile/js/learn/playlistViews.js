@@ -93,17 +93,17 @@ class _PlaylistStylesView extends React.Component {
     };
   }
 
-  renderRow(style: any) {
+  renderRow(category: any) {
     const imageWidth = boxWidth - 30;
-    const durationSeconds = style.tutorials.reduce((prev, current) => prev + current.getDurationSeconds(), 0);
+    const durationSeconds = category.tutorials.reduce((prev, current) => prev + current.getDurationSeconds(), 0);
     const length = formatDuration(this.props.intl.formatMessage, durationSeconds);
-    let styleTitle = style.style.title;
-    if (style.style.titleMessage) {
-      styleTitle = this.props.intl.formatMessage(style.style.titleMessage);
+    let styleTitle = category.style.title;
+    if (category.style.titleMessage) {
+      styleTitle = this.props.intl.formatMessage(category.style.titleMessage);
     }
     return (<TouchableHighlight
       onPress={() => {
-        this.props.onSelected(style, this.state.stylePlaylists[style]);
+        this.props.onSelected(category, this.state.stylePlaylists[category]);
       }}
       style={{
         margin: boxMargin,
@@ -119,9 +119,9 @@ class _PlaylistStylesView extends React.Component {
           alignItems: 'center',
         }}
       >
-        <Image source={styleIcons[style.id]} resizeMode="contain" style={{ width: imageWidth, height: imageWidth }} />
+        <Image source={styleIcons[category.style.id]} resizeMode="contain" style={{ width: imageWidth, height: imageWidth }} />
         <Text style={[styles.boxTitle, styles.boxText]}>{styleTitle}</Text>
-        <Text style={styles.boxText}>{this.props.intl.formatMessage(messages.numTutorials, { count: style.tutorials.length })}</Text>
+        <Text style={styles.boxText}>{this.props.intl.formatMessage(messages.numTutorials, { count: category.tutorials.length })}</Text>
         <Text style={styles.boxText}>{this.props.intl.formatMessage(messages.totalTime, { time: length })}</Text>
       </View>
     </TouchableHighlight>);
@@ -192,6 +192,9 @@ class _PlaylistListView extends React.Component {
     const duration = formatDuration(this.props.intl.formatMessage, playlist.getDurationSeconds());
     let title = playlist.title;
     if (this.props.intl.locale !== playlist.language) {
+      console.log(this.props.intl.locale, playlist.language);
+      console.log(languages);
+      console.log(languages[this.props.intl.locale]);
       const localizedLanguage = languages[this.props.intl.locale][playlist.language];
       title = this.props.intl.formatMessage(messages.languagePrefixedTitle, { language: upperFirst(localizedLanguage), title: playlist.title });
     }
