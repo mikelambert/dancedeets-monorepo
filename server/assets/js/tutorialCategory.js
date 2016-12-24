@@ -14,6 +14,7 @@ import {
   intlShape,
 } from 'react-intl';
 import Helmet from 'react-helmet';
+import Masonry from 'react-masonry-component';
 import upperFirst from 'lodash/upperFirst';
 import querystring from 'querystring';
 import {
@@ -144,11 +145,11 @@ class _Tutorial extends React.Component {
       const sectionVideos = [];
       section.videos.forEach((video) => {
         if (this.matchesKeywords(video)) {
-          sectionVideos.push(<MatchedVideo tutorial={this.props.tutorial} video={video} />);
+          sectionVideos.push(<MatchedVideo key={video.youtubeId} tutorial={this.props.tutorial} video={video} />);
         }
       });
       if (sectionVideos.length || this.matchesKeywords(section)) {
-        sections.push(<MatchedSection tutorial={this.props.tutorial} section={section}>{sectionVideos}</MatchedSection>);
+        sections.push(<MatchedSection key={section.title} tutorial={this.props.tutorial} section={section}>{sectionVideos}</MatchedSection>);
       }
     });
     return sections;
@@ -175,7 +176,7 @@ class _Tutorial extends React.Component {
     }
 
     return (
-      <Card style={{ width: cardSize, float: 'left', maxWidth: '100%' }}>
+      <Card style={{ width: cardSize }}>
         <a href={`/tutorials/${tutorial.getId()}`}>
           <img
             src={tutorial.thumbnail} role="presentation"
@@ -407,8 +408,9 @@ class _TutorialFilteredLayout extends React.Component {
           query={this.state.query}
           onChange={this.onChange}
         />
-        {tutorialComponents}
-        <div style={{ clear: 'both' }} />
+        <Masonry>
+          {tutorialComponents}
+        </Masonry>
       </div>
     );
   }
