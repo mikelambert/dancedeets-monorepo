@@ -10,7 +10,6 @@ import {
   Dimensions,
   Image,
   ListView,
-  NativeModules,
   Platform,
   StyleSheet,
   TouchableHighlight,
@@ -51,8 +50,7 @@ import {
   setTutorialVideoIndex,
 } from '../actions';
 import { googleKey } from '../keys';
-
-const Mailer = NativeModules.RNMail;
+import sendMail from '../util/sendMail';
 
 type PlaylistStylesViewProps = {
   onSelected: (playlist: Playlist) => void;
@@ -177,14 +175,10 @@ class _PlaylistListView extends React.Component {
 
   sendTutorialContactEmail() {
     track('Contact Tutorials');
-    Mailer.mail({
+    sendMail({
       subject: 'More Tutorials',
-      recipients: ['advertising@dancedeets.com'],
+      to: 'advertising@dancedeets.com',
       body: '',
-    }, (error, event) => {
-      if (error) {
-        AlertIOS.alert('Error', 'Please email us at feedback@dancedeets.com');
-      }
     });
   }
 

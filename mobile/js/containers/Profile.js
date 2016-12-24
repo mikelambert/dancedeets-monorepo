@@ -8,7 +8,6 @@ import React from 'react';
 import {
   AlertIOS,
   Image,
-  NativeModules,
   Platform,
   ScrollView,
   StyleSheet,
@@ -43,8 +42,7 @@ import type {
   Dispatch,
   User,
 } from '../actions/types';
-
-const Mailer = NativeModules.RNMail;
+import sendMail from '../util/sendMail';
 
 const STATUSBAR_HEIGHT = Platform.OS === 'ios' ? 20 : 0;
 
@@ -239,27 +237,19 @@ const ShareButtons = injectIntl(_ShareButtons);
 
 function sendEmail() {
   track('Send Feedback');
-  Mailer.mail({
+  sendMail({
     subject: 'DanceDeets Feeback',
-    recipients: [`feedback+${Platform.OS}@dancedeets.com`],
+    to: `feedback+${Platform.OS}@dancedeets.com`,
     body: '',
-  }, (error, event) => {
-    if (error) {
-      AlertIOS.alert('Error', 'Please email us at feedback@dancedeets.com');
-    }
   });
 }
 
 function sendAdvertisingEmail() {
   track('Advertising');
-  Mailer.mail({
+  sendMail({
     subject: 'Advertising/Promotion Interest',
-    recipients: ['advertising@dancedeets.com'],
+    to: 'advertising@dancedeets.com',
     body: '',
-  }, (error, event) => {
-    if (error) {
-      AlertIOS.alert('Error', 'Please email us at feedback@dancedeets.com');
-    }
   });
 }
 

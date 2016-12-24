@@ -61,6 +61,7 @@
 	<string>DanceDeets</string>
 	<key>LSApplicationQueriesSchemes</key>
 	<array>
+		<string>googlemail</string>
 		<string>comgooglemaps</string>
 		<string>comgooglemaps-x-callback</string>
 		<string>fb</string>
