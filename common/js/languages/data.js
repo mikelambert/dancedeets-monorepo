@@ -6844,7 +6844,7 @@ countries: [
 {_reference: "NG"},
 ],
 },
-{ type: "language", iso: "zh-Hans",
+{ type: "language", iso: "zh-cn",
 countries: [
 {_reference: "CN"},
 {_reference: "MO"},
@@ -7036,7 +7036,7 @@ name: "中文",
 "zh": "中文",
 "zu": "祖鲁文",
 },
-{ type: "language", iso: "zh-Hant",
+{ type: "language", iso: "zh-tw",
 countries: [
 {_reference: "HK"},
 {_reference: "TW"},

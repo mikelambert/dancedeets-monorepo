@@ -87,6 +87,11 @@ function intlProviderArgs(currentLocale) {
     messages: messages[finalLocale],
   };
 }
+// For unit tests:
+// intlProviderArgs('zh-Hant-US').locale == 'zh-tw'
+// intlProviderArgs('en-US').locale == 'en'
+// intlProviderArgs('fr-FR').locale == 'fr'
+// intlProviderArgs('de-XX').locale == 'en' // fallback
 
 export function constructIntl(currentLocale: string) {
   return new IntlProvider(intlProviderArgs(currentLocale), {}).getChildContext().intl;
