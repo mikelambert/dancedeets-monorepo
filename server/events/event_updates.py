@@ -10,6 +10,7 @@ from search import search
 from nlp import categories
 from nlp import event_classifier
 from util import dates
+from util import language
 from . import event_image
 from . import event_locations
 
@@ -125,14 +126,13 @@ def _inner_make_event_findable_for_fb_event(db_event, fb_dict, update_geodata):
     db_event.event_keywords = event_classifier.relevant_keywords(fb_dict)
     db_event.auto_categories = [x.index_name for x in categories.find_styles(fb_dict) + categories.find_event_types(fb_dict)]
 
-    _inner_cache_photo(db_event)
+    _inner_common_setup(db_event)
 
     if update_geodata:
         # Don't use cached/stale geocode when constructing the LocationInfo here
         db_event.location_geocode = None
         location_info = event_locations.LocationInfo(fb_dict, db_event=db_event)
         _update_geodata(db_event, location_info)
-
 
 def _inner_make_event_findable_for_web_event(db_event, web_event, update_geodata):
     logging.info("Making web_event %s findable." % db_event.id)
@@ -187,13 +187,20 @@ def _inner_make_event_findable_for_web_event(db_event, web_event, update_geodata
 
     db_event.address = web_event.get('location_address')
 
-    _inner_cache_photo(db_event)
+    _inner_common_setup(db_event)
 
     if update_geodata:
         # Don't use cached/stale geocode when constructing the LocationInfo here
         db_event.location_geocode = geocode
         location_info = event_locations.LocationInfo(db_event=db_event)
         _update_geodata(db_event, location_info)
+
+
+def _inner_common_setup(db_event):
+    _inner_cache_photo(db_event)
+
+    text = '%s. %s' % (db_event.name, db_event.description)
+    db_event.json_props['language'] = language.detect(text)
 
 
 def _update_geodata(db_event, location_info):

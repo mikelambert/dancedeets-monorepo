@@ -22,6 +22,7 @@ from search import search_base
 from users import user_creation
 from users import users
 from util import taskqueue
+from util import language
 from util import urls
 
 DATETIME_FORMAT = "%Y-%m-%dT%H:%M:%SZ"
@@ -458,6 +459,13 @@ def canonicalize_event_data(db_event, event_keywords, version):
     else:
         event_api['picture'] = None
         event_api['cover'] = None
+
+    if 'language' in db_event.json_props:
+        event_api['language'] = db_event.json_props['language']
+    else:
+        # bwcompat that let's this work without the need to re-save
+        text = '%s. %s' % (event_api['name'], event_api['description'])
+        event_api['language'] = language.detect(text)
 
     # location data
     if db_event.location_name:
