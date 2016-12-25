@@ -461,11 +461,16 @@ class _EventRsvpControl extends React.Component {
     trackWithEvent('RSVP', this.props.event, { 'RSVP Value': rsvp });
     // We await on this, so exceptions are propagated up (and segmentedControl can undo actions)
     this.setState({ ...this.state, loading: true });
-    await new RsvpOnFB().send(this.props.event.id, rsvp);
-    console.log(`Successfully RSVPed as ${rsvp} to event ${this.props.event.id}`);
-    // Now while the state is still 'loading', let's reload the latest RSVP from the server.
-    // And when we receive it, we'll unset state.loading, re-render this component.
-    await this.loadRsvp();
+    try {
+      await new RsvpOnFB().send(this.props.event.id, rsvp);
+      console.log(`Successfully RSVPed as ${rsvp} to event ${this.props.event.id}`);
+      // Now while the state is still 'loading', let's reload the latest RSVP from the server.
+      // And when we receive it, we'll unset state.loading, re-render this component.
+      await this.loadRsvp();
+    } catch (e) {
+      this.setState({ loading: false });
+      throw new Error(`Error sending rsvp ${rsvp} for event ${this.props.event.id}: ${e}`);
+    }
   }
 
   async loadRsvp() {
