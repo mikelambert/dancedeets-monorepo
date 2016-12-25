@@ -59,7 +59,7 @@
   "prompt.ok": "OK",
   "search.autocompleteCurrentLocation": "Current Location",
   "search.autocompleteLocations": "New York City, United States\nLos Angeles, United States\nSan Francisco, United States\nWashington DC, United States\nLondon, United Kingdom\nParis, France\nTokyo, Japan\nTaipei, Taiwan\nSeoul, South Korea",
-  "search.eventsWithKeywords": "Events near %1$s with keywords \"{keywords}\"",
+  "search.eventsWithKeywords": "Events with keywords \"{keywords}\"",
   "search.eventsWithLocation": "Events near {location}",
   "search.eventsWithLocationKeywords": "Events near {location} with keywords \"{keywords}\"",
   "search.keywordsPlaceholder": "Keywords",

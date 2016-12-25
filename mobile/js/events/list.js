@@ -95,7 +95,7 @@ const messages = defineMessages({
   },
   eventsWithKeywords: {
     id: 'search.eventsWithKeywords',
-    defaultMessage: 'Events near %1$s with keywords "{keywords}"',
+    defaultMessage: 'Events with keywords "{keywords}"',
     description: 'Header to show with search results',
   },
   eventsWithLocationKeywords: {
