@@ -134,6 +134,7 @@ export class Event extends BaseEvent {
       time: string,
     },
   };
+  language: string;
   admins: Array<Admin>;
   ticket_uri: string; // eslint-disable-line camelcase
 

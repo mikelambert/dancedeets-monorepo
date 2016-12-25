@@ -552,6 +552,11 @@ class _EventDescription extends React.Component {
       description = translatedEvent.translation.description;
     }
 
+    let translation = null;
+    if (this.props.event.language != this.props.intl.locale) {
+      translation = <EventTranslate event={this.props.event} />;
+    }
+
     return (<Card
       title={
         <HorizontalView
@@ -561,7 +566,7 @@ class _EventDescription extends React.Component {
           }]}
         >
           <Text style={eventStyles.rowTitle}>{this.props.intl.formatMessage(messages.eventDetails)}</Text>
-          <EventTranslate event={this.props.event} />
+          {translation}
         </HorizontalView>
     }
     >
