@@ -21,12 +21,12 @@ export default defineMessages({
   },
   chooseStyle: {
     id: 'tutorialVideos.styleHeader',
-    defaultMessage: 'Choose a style you\'d like to learn:',
+    defaultMessage: 'What style do you want to learn today?',
     description: 'Header for styles list',
   },
   chooseTutorial: {
     id: 'tutorialVideos.tutorialHeader',
-    defaultMessage: 'Choose a tutorial:',
+    defaultMessage: 'What do you want to learn today?',
     description: 'Header for tutorials list',
   },
   numVideosWithDuration: {
