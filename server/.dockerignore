@@ -19,3 +19,14 @@ lib/lxml
 lib/scrapy
 lib/twisted
 lib/zope
+
+# These are C modules, which we need in the GAE sandbox to run locally.
+# But on GAE/GCE, these should be provided built directly for the GCE platform
+# (instead of my local dev box), and will be provided by requirements.txt
+lib/PIL
+lib/Pillow*
+lib/cld2
+lib/cld2_cffi*
+lib/cld2full
+lib/cffi
+lib/_cffi*
