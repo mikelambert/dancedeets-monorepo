@@ -715,10 +715,10 @@ class _EventRow extends React.Component {
             >{this.props.event.name}</Text>
             <HorizontalView>
               <View style={{ width: 100 }}>
-                {imageProps.length ? <Image
+                {imageProps.length ? <ProportionalImage
                   source={imageProps}
-                  originalWidth={imageProps[0].width}
-                  originalHeight={imageProps[0].height}
+                  originalWidth={imageProps[imageProps.length - 1].width}
+                  originalHeight={imageProps[imageProps.length - 1].height}
                   style={eventStyles.thumbnail}
                 /> : null}
               </View>
@@ -737,8 +737,8 @@ class _EventRow extends React.Component {
           <TouchableOpacity onPress={() => this.props.onEventSelected(this.props.event)} activeOpacity={0.5}>
             {imageProps.length ? <ProportionalImage
               source={imageProps}
-              originalWidth={imageProps[0].width}
-              originalHeight={imageProps[0].height}
+              originalWidth={imageProps[imageProps.length - 1].width}
+              originalHeight={imageProps[imageProps.length - 1].height}
               style={eventStyles.thumbnail}
             /> : null}
             <Text
