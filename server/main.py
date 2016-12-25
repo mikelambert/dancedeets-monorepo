@@ -8,11 +8,19 @@ sys.path.append(os.path.join(os.path.dirname(__file__), 'lib'))
 
 prod_mode = 'SERVER_SOFTWARE' in os.environ and not os.environ['SERVER_SOFTWARE'].startswith('Dev')
 
-# Make python-twitter work in the sandbox (not yet sure about prod...)
 if not prod_mode:
+    # Make python-twitter work in the sandbox (not yet sure about prod...)
     from google.appengine.tools.devappserver2.python import sandbox
     sandbox._WHITE_LIST_C_MODULES += ['_ssl']
 
+    # Remove the import hooks that disable C modules and built-in modules (popen et al)
+    new_path = []
+    for path in sys.meta_path:
+        name = path.__class__.__name__
+        if name not in ['StubModuleImportHook', 'CModuleImportHook']:
+            new_path.append(path)
+    logging.info('Trimmed sys.meta_path from %s to %s entries', len(sys.meta_path), len(new_path))
+    sys.meta_path = new_path
 
 from hacks import fixed_jinja2  # noqa: ignore=E402
 from hacks import fixed_ndb  # noqa: ignore=E402
