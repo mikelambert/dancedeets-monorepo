@@ -46,9 +46,11 @@ import AddEvents from '../containers/AddEvents';
 import NotificationPreferences from '../containers/NotificationPreferences';
 import {
   track,
-  trackStart,
   trackWithEvent,
 } from '../store/track';
+import {
+  TimeTracker,
+} from '../util/timeTracker';
 import { setDefaultState } from '../reducers/navigation';
 import {
   PlaylistListView,
@@ -306,35 +308,6 @@ class _TabbedAppView extends React.Component {
 
   componentWillMount() {
     this.loadWhitelist();
-
-    trackStart(this._formatEvent());
-    AppState.addEventListener('change', this._handleAppStateChange);
-  }
-
-  componentWillReceiveProps(nextProps) {
-    if (this.props.selectedTab != nextProps.selectedTab) {
-      track(this._formatEvent()); // Can't use track properties()
-      trackStart(this._formatEvent(nextProps.selectedTab));
-    }
-  }
-
-  componentWillUnmount() {
-    track(this._formatEvent()); // Track against old tab
-    AppState.removeEventListener('change', this._handleAppStateChange);
-  }
-
-  _formatEvent(tab: ?string = null) {
-    const trackTab = tab || this.props.selectedTab;
-    return `Tab Time: ${trackTab}`;
-  }
-
-  _handleAppStateChange(currentAppState) {
-    if (currentAppState === 'active') {
-      trackStart(this._formatEvent());
-    }
-    if (currentAppState === 'inactive') {
-      track(this._formatEvent());
-    }
   }
 
   async loadWhitelist() {
@@ -346,7 +319,7 @@ class _TabbedAppView extends React.Component {
     return <Image source={source} style={styles.icon} />;
   }
 
-  render() {
+  renderTabNavigator() {
     let extraTabs = null;
     if (this.props.user && this.state.eventSignupUserIds.includes(this.props.user.profile.id)) {
       extraTabs = (<TabNavigator.Item
@@ -448,6 +421,14 @@ class _TabbedAppView extends React.Component {
       </TabNavigator.Item>
       {extraTabs}
     </TabNavigator>);
+  }
+
+  render() {
+    return (
+      <TimeTracker eventName='Tab Time' eventValue={this.props.selectedTab}>
+        {this.renderTabNavigator()}
+      </TimeTracker>
+    );
   }
 }
 export default connect(
