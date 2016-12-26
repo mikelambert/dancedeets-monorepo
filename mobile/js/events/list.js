@@ -162,6 +162,7 @@ class _AddEventButton extends React.Component {
 
   render() {
     return (<Button
+      icon={require('./images/add_calendar.png')}
       caption={this.props.intl.formatMessage(messages.addEvent)}
       color="red"
       textStyle={{ fontWeight: 'bold' }}
