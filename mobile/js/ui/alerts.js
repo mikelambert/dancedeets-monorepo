@@ -9,7 +9,7 @@ import {
   Platform,
 } from 'react-native';
 
-export function OkAlert(title: string, message: string, cancel = false): Promise<void> {
+export function OkAlert(title: string, message: string, cancel: boolean = false): Promise<void> {
   return new Promise((resolve, reject) => {
     const buttons = [];
     if (cancel) {

@@ -478,7 +478,7 @@ class _EventRsvpControl extends React.Component {
     // We await on this, so exceptions are propagated up (and segmentedControl can undo actions)
     this.setState({ ...this.state, loading: true });
     try {
-      await new RsvpOnFB().send(this.props.event.id, rsvp);
+      await RsvpOnFB.send(this.props.event.id, rsvp);
       console.log(`Successfully RSVPed as ${rsvp} to event ${this.props.event.id}`);
       // Now while the state is still 'loading', let's reload the latest RSVP from the server.
       // And when we receive it, we'll unset state.loading, re-render this component.
@@ -493,7 +493,7 @@ class _EventRsvpControl extends React.Component {
     // We don't check this.props.user here, since there may be a delay before it gets set,
     // relative to the code flow that calls this from onRsvpChange.
     this.setState({ loading: true });
-    const rsvpIndex = await new RsvpOnFB().getRsvpIndex(this.props.event.id);
+    const rsvpIndex = await RsvpOnFB.getRsvpIndex(this.props.event.id);
     this.setState({ defaultRsvp: rsvpIndex, loading: false });
   }
 

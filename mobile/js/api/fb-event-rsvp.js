@@ -11,31 +11,41 @@ import {
   LoginManager,
 } from 'react-native-fbsdk';
 import { performRequest } from './fb';
+import {
+  OkCancelAlert,
+} from '../ui';
 
 export default class RsvpOnFB {
   static RSVPs = ['attending', 'maybe', 'declined'];
 
-  async send(eventId: string, rsvpApiValue: string) {
+  static async getPermissionsAndTryAgain(eventId, rsvpApiValue) {
+    // Need to prime the user before switching apps and asking for "more" permissions
+    await OkCancelAlert('RSVP Permissions', 'To RSVP to this event, you need to give DanceDeets access to your Facebook event RSVPs.');
+
+    const result = await LoginManager.logInWithPublishPermissions(['rsvp_event']);
+    if (result.isCancelled) {
+      throw new Error('Request for RSVP Permission was Cancelled');
+    } else {
+      // try again!
+      return RsvpOnFB.send(eventId, rsvpApiValue);
+    }
+  }
+
+  static async send(eventId: string, rsvpApiValue: string) {
     try {
       const path = `${eventId}/${rsvpApiValue}`;
       const result = await performRequest('POST', path);
       return result;
     } catch (error) {
       if (error.code === '403' || error.code === 'ECOM.FACEBOOK.SDK.CORE8') {
-        const result = await LoginManager.logInWithPublishPermissions(['rsvp_event']);
-        if (result.isCancelled) {
-          throw new Error('Request for RSVP Permission was Cancelled');
-        } else {
-          // try again!
-          return this.send(eventId, rsvpApiValue);
-        }
+        await RsvpOnFB.getPermissionsAndTryAgain(eventId, rsvpApiValue);
       } else {
         throw error;
       }
     }
   }
 
-  getRsvpIndex(eventId: string) {
+  static getRsvpIndex(eventId: string) {
     return new Promise(async (resolve, reject) => {
       const accessToken = await AccessToken.getCurrentAccessToken();
       if (accessToken == null) {
