@@ -6,6 +6,7 @@
 
 import React from 'react';
 import {
+  AppState,
   Image,
   StyleSheet,
   View,
@@ -43,7 +44,11 @@ import {
 import type { User } from '../actions/types';
 import AddEvents from '../containers/AddEvents';
 import NotificationPreferences from '../containers/NotificationPreferences';
-import { track, trackWithEvent } from '../store/track';
+import {
+  track,
+  trackStart,
+  trackWithEvent,
+} from '../store/track';
 import { setDefaultState } from '../reducers/navigation';
 import {
   PlaylistListView,
@@ -301,6 +306,35 @@ class _TabbedAppView extends React.Component {
 
   componentWillMount() {
     this.loadWhitelist();
+
+    trackStart(this._formatEvent());
+    AppState.addEventListener('change', this._handleAppStateChange);
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (this.props.selectedTab != nextProps.selectedTab) {
+      track(this._formatEvent()); // Can't use track properties()
+      trackStart(this._formatEvent(nextProps.selectedTab));
+    }
+  }
+
+  componentWillUnmount() {
+    track(this._formatEvent()); // Track against old tab
+    AppState.removeEventListener('change', this._handleAppStateChange);
+  }
+
+  _formatEvent(tab: ?string = null) {
+    const trackTab = tab || this.props.selectedTab;
+    return `Tab Time: ${trackTab}`;
+  }
+
+  _handleAppStateChange(currentAppState) {
+    if (currentAppState === 'active') {
+      trackStart(this._formatEvent());
+    }
+    if (currentAppState === 'inactive') {
+      track(this._formatEvent());
+    }
   }
 
   async loadWhitelist() {

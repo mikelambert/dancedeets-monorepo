@@ -174,3 +174,7 @@ export function trackLogout() {
 
 export function trackDispatches(action: Action): void {
 }
+
+export function trackStart(eventName: string) {
+  Mixpanel.timeEvent(eventName);
+}
