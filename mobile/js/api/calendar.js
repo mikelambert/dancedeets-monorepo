@@ -13,23 +13,10 @@ import CalendarEventsIOS from 'react-native-calendar-events';
 import SendIntentAndroid from 'react-native-send-intent';
 import moment from 'moment';
 import { Event } from 'dancedeets-common/js/events/models';
-
-function OkAlert(title: string, message: string, cancel = false): Promise<void> {
-  return new Promise((resolve, reject) => {
-    const buttons = [];
-    if (cancel) {
-      // TODO(localization)
-      buttons.push({ text: 'Cancel', onPress: () => reject(), style: 'cancel' });
-    }
-    // TODO(localization)
-    buttons.push({ text: 'OK', onPress: () => resolve() });
-    Alert.alert(title, message, buttons);
-  });
-}
-
-function OkCancelAlert(title: string, message: string): Promise<void> {
-  return OkAlert(title, message, true);
-}
+import {
+  OkAlert,
+  OkCancelAlert,
+} from '../ui';
 
 function getDescription(event: Event): string {
   return `${event.getUrl()}\n\n${event.description}`;

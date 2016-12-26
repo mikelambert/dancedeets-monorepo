@@ -11,6 +11,7 @@ import ProgressiveLayout from './ProgressiveLayout';
 import ProportionalImage from './ProportionalImage';
 import SegmentedControl from './SegmentedControl';
 import ZoomableImage from './ZoomableImage';
+import * as Alerts from './alerts';
 import * as DDText from './DDText';
 import * as GiftedForm from './GiftedForm';
 import * as Misc from './Misc';
@@ -25,6 +26,7 @@ module.exports = {
   ProportionalImage,
   SegmentedControl,
   ZoomableImage,
+  ...Alerts,
   ...DDText,
   ...FBButtons,
   ...GiftedForm,
