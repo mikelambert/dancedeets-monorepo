@@ -223,6 +223,7 @@ class _SearchHeader extends React.Component {
         />
         <Button
           size="small"
+          color="green"
           style={styles.toggleButton}
           icon={require('./images/add_calendar.png')}
           onPress={this.props.onAddEvent}

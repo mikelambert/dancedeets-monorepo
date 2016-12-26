@@ -13,7 +13,12 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import { purpleColors, yellowColors, redColors } from '../Colors';
+import {
+  purpleColors,
+  yellowColors,
+  redColors,
+  greenColors,
+} from '../Colors';
 import { HorizontalView } from './Misc';
 import { Text } from './DDText';
 import {
@@ -27,7 +32,7 @@ type Props = {
   onPress: () => (Promise<void> | void);
   size: 'small' | 'large';
   textStyle: any;
-  color: 'purple' | 'yellow' | 'red';
+  color: 'purple' | 'yellow' | 'red' | 'green';
   testID: ?string;
   isLoading: boolean;
   enabled: ?boolean;
@@ -101,6 +106,8 @@ class Button extends React.Component {
       colors = [yellowColors[1], yellowColors[4], yellowColors[4]];
     } else if (this.props.color === 'red') {
       colors = [redColors[0], redColors[1], redColors[1]];
+    } else if (this.props.color === 'green') {
+      colors = [greenColors[0], greenColors[1], greenColors[1]];
     }
     const buttonContents = (<LinearGradient
       start={[0, 0]} end={[0, 1]}

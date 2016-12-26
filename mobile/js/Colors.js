@@ -33,6 +33,11 @@ export const redColors = [
   '#900000',
 ];
 
+export const greenColors = [
+  '#449B37',
+  '#005000',
+];
+
 const fbBlueColor = '#415DAE';
 const blueColor = '#70C0FF';
 
