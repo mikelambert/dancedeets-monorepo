@@ -351,7 +351,7 @@ class _EventOrganizers extends React.Component {
         // This should work, but doesn't...
         // adminUrl = 'fb://profile/' + adminId;
         // So let's send them to the URL directly:
-        adminUrl = `https://www.facebook.com/${adminId}`;
+        adminUrl = `https://www.facebook.com/app_scoped_user_id/${adminId}`;
       } else if (idType === 'page') {
         adminUrl = `fb://page/?id=${adminId}`;
       } else {
