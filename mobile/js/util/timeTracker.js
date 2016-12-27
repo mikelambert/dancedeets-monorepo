@@ -9,7 +9,7 @@ import {
   AppState,
 } from 'react-native';
 import {
-  track,
+  trackEnd,
   trackStart,
 } from '../store/track';
 
@@ -35,13 +35,13 @@ export class TimeTracker extends React.Component {
 
   componentWillReceiveProps(nextProps: TimeTrackerProps) {
     if (this.props.eventValue != nextProps.eventValue) {
-      track(this._formatEvent()); // Can't use track properties()
+      trackEnd(this._formatEvent()); // Can't use track properties()
       trackStart(this._formatEvent(nextProps.eventValue));
     }
   }
 
   componentWillUnmount() {
-    track(this._formatEvent()); // Track against old tab
+    trackEnd(this._formatEvent()); // Track against old tab
     AppState.removeEventListener('change', this._handleAppStateChange);
   }
 
@@ -55,7 +55,7 @@ export class TimeTracker extends React.Component {
       trackStart(this._formatEvent());
     }
     if (currentAppState === 'inactive') {
-      track(this._formatEvent());
+      trackEnd(this._formatEvent());
     }
   }
 

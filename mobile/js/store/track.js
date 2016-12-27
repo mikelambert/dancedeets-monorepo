@@ -178,3 +178,9 @@ export function trackDispatches(action: Action): void {
 export function trackStart(eventName: string) {
   Mixpanel.timeEvent(eventName);
 }
+
+export function trackEnd(eventName: string) {
+  // We don't use track.track(), because we only want to log these to MixPanel
+  // (Since Google/Facebook don't support start/end in the same way)
+  Mixpanel.track(eventName);
+}
