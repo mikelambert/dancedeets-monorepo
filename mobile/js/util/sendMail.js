@@ -22,7 +22,7 @@ async function sendGmail(subject, to, body) {
       to,
       body,
     });
-    const gmailUrl = `comgooglemaps:///co?${qs}`;
+    const gmailUrl = `googlegmail:///co?${qs}`;
     if (await Linking.canOpenURL(gmailUrl)) {
       try {
         Linking.openURL(gmailUrl);
