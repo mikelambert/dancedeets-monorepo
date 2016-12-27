@@ -225,14 +225,14 @@ class _EventSource extends React.Component {
   onPress() {
     trackWithEvent('Open Source', this.props.event);
     // Try opening the event in the facebook app
-    if (this.props.event.source.name == 'Facebook') {
+    if (this.props.event.source.name == 'Facebook Event') {
       if (Platform.OS == 'ios') {
         if (Linking.canOpenURL('fb://')) {
           // This URL format is supposedly current as of May 2016:
           // http://stackoverflow.com/questions/34875501/opening-facebook-event-pages-in-the-facebook-app-using-swift
           const sourceUrl = `fb://event?id=${this.props.event.id}`;
           try {
-            Linking.openUrl(sourceUrl);
+            Linking.openURL(sourceUrl);
           } catch (err) {
             console.error('Error opening:', sourceUrl, ', with Error:', err);
           }
