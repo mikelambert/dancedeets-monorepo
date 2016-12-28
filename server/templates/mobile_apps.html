@@ -98,10 +98,10 @@ Keep up with the latest dance events when you're on the go!
 <script type="text/javascript" src="{{static_dir}}/js/normalPage.js"></script>
 <script type="text/javascript">
 function walkOut() {
-	$('#penguin').css('webkitAnimation', 'bounce 0.5s infinite 0s, walkOut {{ total_time }}s');
-	$('#penguin').css('animation', 'bounce 0.5s infinite 0s, walkOut {{ total_time }}s');
-	$('#penguin').bind("animationend webkitAnimationEnd oAnimationEnd MSAnimationEnd", function(){
-		$('#penguin').hide();
+	jQuery('#penguin').css('webkitAnimation', 'bounce 0.5s infinite 0s, walkOut {{ total_time }}s');
+	jQuery('#penguin').css('animation', 'bounce 0.5s infinite 0s, walkOut {{ total_time }}s');
+	jQuery('#penguin').bind("animationend webkitAnimationEnd oAnimationEnd MSAnimationEnd", function(){
+		jQuery('#penguin').hide();
 	});
 
 }

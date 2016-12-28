@@ -80,33 +80,33 @@ function share() {
 
 function resetAffixedOffset() {
   var height = 0;
-  $('.navmenu-height').each(function(elem) {
-    height += $(this).height();
+  jQuery('.navmenu-height').each(function(elem) {
+    height += jQuery(this).height();
   });
-  $('#navbar-container').height(height);
-  $('#navbar').affix({
-      offset: { top: $('#navbar').offset().top }
+  jQuery('#navbar-container').height(height);
+  jQuery('#navbar').affix({
+      offset: { top: jQuery('#navbar').offset().top }
   });
   // When we scroll up to the top of the page,
   // make sure we un-collapse the navbar if necessary
-  $('#navbar').bind('affixed-top.bs.affix', function() {
-    if (!$('#navbar-collapsable').is(":visible")) {
+  jQuery('#navbar').bind('affixed-top.bs.affix', function() {
+    if (!jQuery('#navbar-collapsable').is(":visible")) {
       toggleSearchBar();
     }
   });
 
-  var width = $('#navbar-container').width() - parseInt($('#navbar-container').css('paddingLeft')) - parseInt($('#navbar-container').css('paddingRight'));
-  $('#navbar').css('width', width);
+  var width = jQuery('#navbar-container').width() - parseInt(jQuery('#navbar-container').css('paddingLeft')) - parseInt(jQuery('#navbar-container').css('paddingRight'));
+  jQuery('#navbar').css('width', width);
 }
-$(function() {
+jQuery(function() {
   resetAffixedOffset();
 
-  $(document).on("keypress", "form", function(event) {
+  jQuery(document).on("keypress", "form", function(event) {
     return event.keyCode != 13;
   });
 });
 
-$(window).resize(function() {
+jQuery(window).resize(function() {
   resetAffixedOffset();
 });
 </script>

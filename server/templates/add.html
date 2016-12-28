@@ -58,15 +58,15 @@ Add Dance Event
 {% block bottom_javascript %}
 <script type="text/javascript">
 	function addEvent() {
-		var element = $(this);
+		var element = jQuery(this);
 		var id = element.attr('id').replace('button-', '');
 
 		element.text('Adding...');
-		$.ajax({
+		jQuery.ajax({
 			method: 'POST',
 			url: '/events_add?ajax=1&event_id=' + id,
 		}).done(function() {
-			var liEvent = $('#event-' + id);
+			var liEvent = jQuery('#event-' + id);
 			liEvent.addClass('ui-disabled');
 			liEvent.removeClass('ui-selectable').removeClass('ui-selected');
 		}).done(function () {
@@ -74,28 +74,28 @@ Add Dance Event
 		})
 		return false;
 	}
-	$(document).ready(function() {
-		$("#add-events").click(function(event) {
-			var selectees = $(".ui-selectable", "#add-events");
+	jQuery(document).ready(function() {
+		jQuery("#add-events").click(function(event) {
+			var selectees = jQuery(".ui-selectable", "#add-events");
 			selectees.filter('.ui-selected').each(function() {
-				$(this).removeClass('ui-selected');
+				jQuery(this).removeClass('ui-selected');
 			});
-			$(event.target).parents().addBack().filter('.ui-selectable').each(function() {
-				$(this).addClass('ui-selected');
-				$('#event_id_form').val($(this).data('id'));
+			jQuery(event.target).parents().addBack().filter('.ui-selectable').each(function() {
+				jQuery(this).addClass('ui-selected');
+				jQuery('#event_id_form').val(jQuery(this).data('id'));
 			});
 		});
-        $("#add-events li").each(function () {
-			var outerDiv = $('<div class="add-button">');
-			outerDiv.append($('<div class="whiten"></div>'));
-			outerDiv.append($('<button type="button" class="btn btn-primary" style="margin-left:60px; margin-top: 0.75em">Add Event</button>')
-				.attr('id', 'button-' + $(this).data('id'))
+        jQuery("#add-events li").each(function () {
+			var outerDiv = jQuery('<div class="add-button">');
+			outerDiv.append(jQuery('<div class="whiten"></div>'));
+			outerDiv.append(jQuery('<button type="button" class="btn btn-primary" style="margin-left:60px; margin-top: 0.75em">Add Event</button>')
+				.attr('id', 'button-' + jQuery(this).data('id'))
 				.on('click', addEvent));
-			$(this).append(outerDiv);
+			jQuery(this).append(outerDiv);
 			});
 		});
 	function validateAdd() {
-		if ($('#event_id_form').val() || $('#event_url_form').val()) {
+		if (jQuery('#event_id_form').val() || jQuery('#event_url_form').val()) {
 			return true;
 		} else {
 			alert("Please select one of your events to add, or enter the URL of the event you wish to add.");

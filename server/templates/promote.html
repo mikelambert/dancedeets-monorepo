@@ -108,16 +108,16 @@ The event "{{ event.info.name|e }}" has the following problems:
 
 {% block bottom_javascript %}
 <script type="text/javascript">
-	$(document).ready(function() {
-		$("#add-events").click(function(event) {
-			var selectees = $(".ui-selectable", "#add-events");
+	jQuery(document).ready(function() {
+		jQuery("#add-events").click(function(event) {
+			var selectees = jQuery(".ui-selectable", "#add-events");
 			selectees.filter('.ui-selected').each(function() {
-				$(this).removeClass('ui-selected');
+				jQuery(this).removeClass('ui-selected');
 			});
-			$(event.target).parents().andSelf().filter('.ui-selectable').each(function() {
-				$(this).addClass('ui-selected');
-				$('#event_url').val('https://www.facebook.com/events/' + $(this).data('id'));
-				$("#events-form").submit();
+			jQuery(event.target).parents().andSelf().filter('.ui-selectable').each(function() {
+				jQuery(this).addClass('ui-selected');
+				jQuery('#event_url').val('https://www.facebook.com/events/' + jQuery(this).data('id'));
+				jQuery("#events-form").submit();
 			});
 		});
 	});

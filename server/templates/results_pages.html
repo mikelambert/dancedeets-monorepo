@@ -45,7 +45,7 @@
       Search Events
     </button>
   {# maybe make a small hourglass icon search box ?
-   # $("#search-button").click(function(e){ if ($("#location_input").val()) $("#search-form").submit(); });
+   # jQuery("#search-button").click(function(e){ if (jQuery("#location_input").val()) jQuery("#search-form").submit(); });
    #}
   </form>
   </td></tr></table>
@@ -140,15 +140,15 @@
 <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&amp;key=AIzaSyAvvrWfamjBD6LqCURkATAWEovAoBm1xNQ&amp;libraries=places&amp;callback=initializeLocationAutocomplete"></script>
 
 <script type="text/javascript">
-$(document).ready(function(event) {
-  $("body").delegate("#location_input", "click", function() { return false; });
-  $('#keywords_input').keydown(function(event) {
+jQuery(document).ready(function(event) {
+  jQuery("body").delegate("#location_input", "click", function() { return false; });
+  jQuery('#keywords_input').keydown(function(event) {
       if (event.keyCode == 13) {
           this.form.submit();
           return false;
        }
   });
-  $('#location_input').keydown(function(event) {
+  jQuery('#location_input').keydown(function(event) {
       if (event.keyCode == 13) {
           this.form.submit();
           return false;
@@ -157,7 +157,7 @@ $(document).ready(function(event) {
 });
 
 function initializeLocationAutocomplete() {
-  var autocomplete = new google.maps.places.Autocomplete($('#location_input').get(0));
+  var autocomplete = new google.maps.places.Autocomplete(jQuery('#location_input').get(0));
   autocomplete.setTypes(['(regions)'])
 }
 </script>

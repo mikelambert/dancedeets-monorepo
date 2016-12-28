@@ -45,7 +45,7 @@
       Search our {{ total_events }} Events
     </button>
   {# maybe make a small hourglass icon search box ?
-   # $("#search-button").click(function(e){ if ($("#location_input").val()) $("#search-form").submit(); });
+   # jQuery("#search-button").click(function(e){ if (jQuery("#location_input").val()) jQuery("#search-form").submit(); });
    #}
   </form>
   </td></tr></table>
@@ -159,15 +159,15 @@
 <script src="{{static_dir}}/js/eventSearchResultsExec.js"></script>
 
 <script type="text/javascript">
-$(document).ready(function(event) {
-  $("body").delegate("#location_input", "click", function() { return false; });
-  $('#keywords_input').keydown(function(event) {
+jQuery(document).ready(function(event) {
+  jQuery("body").delegate("#location_input", "click", function() { return false; });
+  jQuery('#keywords_input').keydown(function(event) {
       if (event.keyCode == 13) {
           this.form.submit();
           return false;
        }
   });
-  $('#location_input').keydown(function(event) {
+  jQuery('#location_input').keydown(function(event) {
       if (event.keyCode == 13) {
           this.form.submit();
           return false;
@@ -176,7 +176,7 @@ $(document).ready(function(event) {
 });
 
 function initializeLocationAutocomplete() {
-  var autocomplete = new google.maps.places.Autocomplete($('#location_input').get(0));
+  var autocomplete = new google.maps.places.Autocomplete(jQuery('#location_input').get(0));
   autocomplete.setTypes(['(regions)'])
 }
 
@@ -219,8 +219,8 @@ mixpanel.track("Searched Results", {
   "Tab": "CALENDAR"
 });
 
-$(document).ready(function() {
-	$('#calendar').fullCalendar({
+jQuery(document).ready(function() {
+	jQuery('#calendar').fullCalendar({
 		aspectRatio: 1.8,
 		header: {
 			left: 'prev,next today',
@@ -276,7 +276,7 @@ mixpanel.track_links(".link-onebox", "Onebox");
 {{ rsvp.rsvp_script() }}
 
 <script type="text/javascript">
-$(document).ready(function() {
+jQuery(document).ready(function() {
 
 /*
 {% if selected_tab == 'past' %}

@@ -49,7 +49,7 @@ with
 {% block bottom_javascript %}
 <script type="text/javascript">
 function initializeLocationAutocomplete() {
-  var autocomplete = new google.maps.places.Autocomplete($('#location_input').get(0));
+  var autocomplete = new google.maps.places.Autocomplete(jQuery('#location_input').get(0));
   autocomplete.setTypes(['(regions)'])
 }
 </script>
