@@ -17,6 +17,7 @@ import {
 import url from 'url';
 import Helmet from 'react-helmet';
 import { Share as TwitterShare } from 'react-twitter-widgets';
+import ExecutionEnvironment from 'exenv';
 import {
   intlWeb,
 } from 'dancedeets-common/js/intl';
@@ -242,10 +243,19 @@ class _EventLinks extends React.Component {
     }
 
     const formattedStartEndText = formatStartEnd(event.start_time, event.end_time, this.props.intl);
+    let sourceName = event.source.name;
+    // Only add the a-href on the client, not the server.
+    // This makes it mildly harder for scrapers to scrape us.
+    // This may also help Google not discover the original FB event,
+    // which may help our rankings on such events.
+    if (ExecutionEnvironment.canUseDOM) {
+      sourceName = <a className="link-event-source" href={event.source.url} rel="noopener noreferrer" target="_blank">{sourceName}</a>;
+    }
     return (
       <Card>
         <ImagePrefix iconName={event.source.name === 'Facebook Event' ? 'facebook-square' : 'external-link'}>
-          <Message message={messages.source} /> <a className="link-event-source" href={event.source.url} rel="noopener noreferrer" target="_blank">{event.source.name}</a>
+          <Message message={messages.source} />{' '}
+          {sourceName}
         </ImagePrefix>
         <ImagePrefix
           icon={require('../img/categories.png')} // eslint-disable-line global-require
