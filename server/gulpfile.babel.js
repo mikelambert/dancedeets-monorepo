@@ -264,8 +264,8 @@ gulp.task('dev-appserver:kill', $.shell.task(['./force_kill_server.sh']));
 
 gulp.task('dev-appserver:server:regular', ['dev-appserver:create-yaml:regular', 'dev-appserver:wait-for-exit'], startDevAppServer(8080));
 gulp.task('dev-appserver:server:hot',     ['dev-appserver:create-yaml:hot',     'dev-appserver:wait-for-exit'], startDevAppServer(8085));
-gulp.task('dev-appserver:server:regular:force', runSequence('dev-appserver:kill', 'dev-appserver:server:regular'));
-gulp.task('dev-appserver:server:hot:force',     runSequence('dev-appserver:kill', 'dev-appserver:server:hot'));
+gulp.task('dev-appserver:server:regular:force', cb => runSequence('dev-appserver:kill', 'dev-appserver:server:regular', cb));
+gulp.task('dev-appserver:server:hot:force',     cb => runSequence('dev-appserver:kill', 'dev-appserver:server:hot', cb));
 
 gulp.task('react-server', $.shell.task(['../runNode.js ./node_server/renderServer.js --port 8090']));
 
