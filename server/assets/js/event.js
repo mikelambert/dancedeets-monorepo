@@ -248,7 +248,7 @@ class _EventLinks extends React.Component {
     // This makes it mildly harder for scrapers to scrape us.
     // This may also help Google not discover the original FB event,
     // which may help our rankings on such events.
-    if (ExecutionEnvironment.canUseDOM) {
+    if (sourceName !== 'Facebook Event' || ExecutionEnvironment.canUseDOM) {
       sourceName = <a className="link-event-source" href={event.source.url} rel="noopener noreferrer" target="_blank">{sourceName}</a>;
     }
     return (
