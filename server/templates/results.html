@@ -156,7 +156,12 @@
 {% endblock %}
 
 {% block bottom_javascript %}
+{% if selected_tab == 'calendar' %}
+<link rel="stylesheet" href="{{static_dir}}/css/calendar.css">
+<script type="text/javascript" src="{{static_dir}}/js/calendar.js"></script>
+{% else %}
 <script src="{{static_dir}}/js/eventSearchResultsExec.js"></script>
+{% endif %}
 
 <script type="text/javascript">
 jQuery(document).ready(function(event) {
@@ -194,8 +199,6 @@ function share() {
 #}
 
 {% if selected_tab == 'calendar' %}
-<link rel="stylesheet" href="{{static_dir}}/css/calendar.css">
-<script type="text/javascript" src="{{static_dir}}/js/calendar.js"></script>
 
 <style type="text/css">
 /** We want to see the whole city and title, so let's ensure we override 'white-space: nowrap'.
