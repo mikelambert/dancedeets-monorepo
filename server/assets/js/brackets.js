@@ -25,7 +25,7 @@ class Bracket {
 
   constructor() {
     this.MatchWidth = 100;
-    this.MatchHeight = 40;
+    this.MatchHeight = 38;
     this.MatchGutterWidth = 30;
     this.MatchGutterHeight = 20;
   }
@@ -44,36 +44,38 @@ class Bracket {
 
   getTotalSize() {
     const columns = this.getTotalColumns();
-    const width = (this.MatchWidth * columns) + (this.MatchGutterWidth * (columns - 1));
+    const width = this.MatchWidth * columns + this.MatchGutterWidth * (columns - 1);
     const rows = this.getRowsInColumn(columns - 1);
-    const height = (this.MatchHeight * rows) + (this.MatchGutterHeight * (rows - 1));
+    const height = this.MatchHeight * rows + this.MatchGutterHeight * (rows - 1);
     return { width, height };
   }
 
-  getPositionFromIndex(index) {
+  getPositionForMatchIndex(index) {
     const totalSize = this.getTotalSize();
     const totalColumns = this.getTotalColumns();
     const column = this.getColumnForMatchIndex(index);
-    console.log({ index, column, temp: Math.log2(index + 1), temp2: Math.ceil(Math.log2(index + 1)) });
-    const x = (totalSize.width - (this.MatchWidth * (column + 1))) - (this.MatchGutterWidth * (column - 1));
+    const x = totalSize.width - (this.MatchWidth * (column + 1) + this.MatchGutterWidth * column);
     const matchHeightWithMargin = totalSize.height / this.getRowsInColumn(column);
     const totalMatchesInEarlierColumns = this.getRowsInColumn(column) - 1;
     const rowIndex = index - totalMatchesInEarlierColumns;
-    const y = (matchHeightWithMargin * rowIndex) + (matchHeightWithMargin / 2);
-    console.log({ index, column, rowIndex, x, y });
+    const y = matchHeightWithMargin * rowIndex + matchHeightWithMargin / 2 - this.MatchHeight / 2;
+    // This results in a small bit of gutter at the top and bottom of each column,
+    // due to how it spaces everything out. This looks fine for most columns,
+    // but feels a bit off on the first column. Too bad...it's all margin anyway.
     return { x, y };
   }
 
   getMatchAndPositions() {
     return this.matches.map((match, index) => ({
       match,
-      position: this.getPositionFromIndex(index),
+      position: this.getPositionForMatchIndex(index),
     }));
   }
 }
 
 class MatchReact extends React.Component {
   props: {
+    bracket: Bracket;
     match: Match;
     position: Position;
   }
@@ -84,7 +86,15 @@ class MatchReact extends React.Component {
       backgroundColor: '#777',
     };
 
-    return (<div style={{ position: 'absolute', left: this.props.position.x, top: this.props.position.y }}>
+    const divStyle = {
+      position: 'absolute',
+      left: this.props.position.x,
+      top: this.props.position.y,
+      width: this.props.bracket.MatchWidth,
+      height: this.props.bracket.MatchHeight,
+      backgroundColor: 'white',
+    };
+    return (<div style={divStyle}>
       <div style={contestantStyle}>{this.props.match.first.name} ({this.props.match.videoId})</div>
       <div style={contestantStyle}>{this.props.match.second.name}</div>
     </div>);
@@ -122,7 +132,7 @@ class BracketReact extends React.Component {
     ];
     const totalSize = bracket.getTotalSize();
     const matches = bracket.getMatchAndPositions().map(({ match, position }, index) =>
-      <MatchReact key={index} match={match} position={position} />);
+      <MatchReact key={index} bracket={bracket} match={match} position={position} />);
     return (
       <div style={{ position: 'relative', width: totalSize.width, height: totalSize.height }}>
         {matches}
