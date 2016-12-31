@@ -460,12 +460,16 @@ def canonicalize_event_data(db_event, event_keywords, version):
         event_api['picture'] = None
         event_api['cover'] = None
 
-    if 'language' in db_event.json_props:
+    if db_event.json_props and 'language' in db_event.json_props:
         event_api['language'] = db_event.json_props['language']
     else:
         # bwcompat that let's this work without the need to re-save
         text = '%s. %s' % (event_api['name'], event_api['description'])
-        event_api['language'] = language.detect(text)
+        try:
+            event_api['language'] = language.detect(text.encode('utf-8'))
+        except ValueError:
+            logging.exception('Error detecting language on event %s with text %r', db_event.id, text)
+            event_api['language'] = None
 
     # location data
     if db_event.location_name:
