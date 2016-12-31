@@ -78,7 +78,7 @@ def _inner_cache_photo(db_event):
             width, height = event_image.cache_image_and_get_size(db_event)
             db_event.json_props['photo_width'] = width
             db_event.json_props['photo_height'] = height
-        except (event_image.DownloadError, event_image.NotFoundError):
+        except (event_image.DownloadError, event_image.NotFoundError, Exception):
             logging.exception('Error downloading flyer for event: %s', db_event.id)
     else:
         if 'photo_width' in db_event.json_props:
