@@ -9,7 +9,7 @@ import scrapy
 from .. import items
 
 
-def parse_times(date, times):
+def parse_times(times):
     start_time_string, end_time_string = re.split(r' - ', times)
     start_time = dateparser.parse(start_time_string).time()
     end_time = dateparser.parse(end_time_string).time()
@@ -52,11 +52,16 @@ class BdcDay(items.StudioScraper):
             date = dateparser.parse(date_string).date()
 
             for class_row in table.xpath('./tbody/tr'):
-                times_string = class_row.xpath('./td[0]/text()').extract()[0]
-                class_name = class_row.xpath('./td[1]/text()').extract()[0]
-                teacher_name = class_row.xpath('./td[1]/div//text()').extract()[0]
-                teacher_rel_link = class_row.xpath('./td[1]/div//@href').extract()[0]
-                class_level = class_row.xpath('./td[2]/text()').extract()[0]
+                cells = class_row.xpath('.//td')
+                times_string = cells[0].xpath('./text()').extract()[0].strip()
+                class_name = cells[1].xpath('.//text()').extract()[0].strip()
+                teacher_name = cells[1].xpath('./div//text()').extract()[0].strip()
+                href = cells[1].xpath('./div//@href')
+                if href:
+                    teacher_rel_link = href.extract()[0]
+                else:
+                    teacher_rel_link = None
+                class_level = cells[2].xpath('./text()').extract()[0].strip()
 
                 if not self._street_style(class_name):
                     continue
