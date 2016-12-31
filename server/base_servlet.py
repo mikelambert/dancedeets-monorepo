@@ -8,7 +8,7 @@ import json
 import hashlib
 import htmlmin
 import logging
-from react.render import render_component
+from react import render
 from react.conf import settings
 import os
 import traceback
@@ -197,11 +197,17 @@ class BareBaseRequestHandler(webapp2.RequestHandler, FacebookMixinHandler):
         # We could disable server-side rendering in dev...
         # but it's useful to verify that everything is working properly.
         settings.configure(RENDER=True)
-        result = render_component(
-            renderer=render_server,
-            path=os.path.abspath(os.path.join('dist/js-server/', template_name)),
-            to_static_markup=static_html,
-            props=props)
+        try:
+            result = render.render_component(
+                renderer=render_server,
+                path=os.path.abspath(os.path.join('dist/js-server/', template_name)),
+                to_static_markup=static_html,
+                props=props)
+        except render.ComponentSourceFileNotFound as e:
+            self.display['react_props'] = props
+            logging.exception('Error rendering React component: %s', e)
+            return
+
         if result.error:
             logging.exception('Error rendering React component: %s', result.error)
         # Hope that client-side rendering works and picks up the pieces of a failed server render
