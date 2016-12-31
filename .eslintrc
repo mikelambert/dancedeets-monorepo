@@ -20,6 +20,7 @@
     'no-underscore-dangle': 0, // There's enough code I've written and uses this, it's not worth warning on    
     'no-duplicate-imports': 0, // This breaks when we 'import' and 'import type' on the same module
     'generator-star-spacing': 0, // This breaks on async/await
+    'no-mixed-operators': 0, // Order of operations isn't that hard to internalize, and lisp toenails get extremely busy
 
     // TODO: Remove this once https://github.com/airbnb/javascript/pull/1204 is merged and released to NPM
     'import/no-extraneous-dependencies': ['error', {
