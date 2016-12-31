@@ -197,6 +197,11 @@ class BareBaseRequestHandler(webapp2.RequestHandler, FacebookMixinHandler):
         # We could disable server-side rendering in dev...
         # but it's useful to verify that everything is working properly.
         settings.configure(RENDER=True)
+        props = props.copy()
+        props.update(dict(
+            loggedIn=bool(self.fb_uid),
+            currentLocale=self.locales[0],
+        ))
         try:
             result = render.render_component(
                 renderer=render_server,
@@ -621,6 +626,7 @@ class BaseRequestHandler(BareBaseRequestHandler):
         self.locales = [x.split(';')[0] for x in locales]
         if self.request.get('hl'):
             self.locales = self.request.get('hl').split(',')
+        logging.info('Accept-Language is %s, final locales are %s', self.request.headers.get('Accept-Language', ''), self.locales)
         self.display['request'] = request
         self.display['app_id'] = facebook.FACEBOOK_CONFIG['app_id']
         self.display['prod_mode'] = self.request.app.prod_mode

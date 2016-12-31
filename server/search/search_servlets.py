@@ -93,8 +93,6 @@ class RelevantHandler(SearchHandler):
                 props = dict(
                     results=json_search_response,
                     past=(form.time_period.data == search_base.TIME_PAST),
-                    loggedIn=bool(self.fb_uid),
-                    currentLocale=self.locales[0],
                 )
                 self.setup_react_template('eventSearchResults.js', props)
 

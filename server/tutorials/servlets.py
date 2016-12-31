@@ -13,8 +13,6 @@ class TutorialHandler(base_servlet.BaseRequestHandler):
 
         props = dict(
             tutorial=tutorial_name,
-            loggedIn=bool(self.fb_uid),
-            currentLocale=self.locales[0],
         )
         self.setup_react_template('tutorial.js', props)
 
@@ -41,8 +39,6 @@ class TutorialCategoryHandler(base_servlet.BaseRequestHandler):
 
         props = dict(
             style=style,
-            loggedIn=bool(self.fb_uid),
-            currentLocale=self.locales[0],
         )
         self.setup_react_template('tutorialCategory.js', props)
 

@@ -118,9 +118,7 @@ class ShowEventHandler(base_servlet.BaseRequestHandler):
         props = dict(
             amp=render_amp,
             event=api_event,
-            loggedIn=bool(self.fb_uid),
             userRsvp=rsvps.get(event_id),
-            currentLocale=self.locales[0],
         )
         self.setup_react_template('event.js', props, static_html=render_amp)
 
