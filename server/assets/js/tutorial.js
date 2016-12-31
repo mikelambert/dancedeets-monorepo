@@ -11,6 +11,7 @@ import {
 } from 'react-intl';
 import YouTube from 'react-youtube';
 import Helmet from 'react-helmet';
+import ExecutionEnvironment from 'exenv';
 import {
   intlWeb,
 } from 'dancedeets-common/js/intl';
@@ -330,7 +331,10 @@ class _TutorialPage extends React.Component {
   };
 
   trackTutorial(tutorial) {
-    if (window && !window.sentMixpanelPing) {
+    if (!ExecutionEnvironment.canUseDOM) {
+      return;
+    }
+    if (!global.window.sentMixpanelPing) {
       window.sentMixpanelPing = true;
       window.mixpanel.track('Tutorial Selected', {
         tutorialName: tutorial.title,
