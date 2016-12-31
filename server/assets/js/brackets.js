@@ -1,4 +1,5 @@
 import React from 'react';
+import { sortNumber } from 'dancedeets-common/js/util/sort';
 
 type Contestant = {
   name: string;
@@ -66,10 +67,13 @@ class Bracket {
   }
 
   getMatchAndPositions() {
-    return this.matches.map((match, index) => ({
+    const results = this.matches.map((match, index) => ({
       match,
+      sortKey: -this.getColumnForMatchIndex(index) * this.matches.length + index,
       position: this.getPositionForMatchIndex(index),
     }));
+    // sort by sortKey, and then remove it from the results we return
+    return sortNumber(results, x => x.sortKey).map(({ match, position }) => ({ match, position }));
   }
 }
 
@@ -175,7 +179,6 @@ class BracketReact extends React.Component {
         const topIndex = matchIndex + j;
         const upper = bracket.getPositionForMatchIndex(topIndex);
         const lower = bracket.getPositionForMatchIndex(topIndex + 1);
-        console.log({ matchIndex, i, j, topIndex, upper, lower });
         const right = upper.x + bracket.MatchWidth + bracket.MatchGutterWidth;
         lines.push(<BracketLines
           key={topIndex}
