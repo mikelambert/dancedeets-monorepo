@@ -25,12 +25,15 @@ function getDanceEventSchema(event: Event) {
   if (event.picture) {
     schema.image = event.picture.source;
   }
-  schema.location = {};
+  schema.location = {
+    '@type': 'Place',
+  };
   if (event.venue.id) {
     schema.location.sameAs = `https://www.facebook.com/${event.venue.id}`;
   }
   if (event.venue.geocode) {
     schema.location.geo = {
+      '@type': 'GeoCoordinates',
       latitude: event.venue.geocode.latitude,
       longitude: event.venue.geocode.longitude,
     };
