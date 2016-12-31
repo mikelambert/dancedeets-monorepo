@@ -1,6 +1,11 @@
 import cld2
+import re
+
+illegalChars = re.compile(u'[\x00-\x08\x0b\x0c\x0e-\x1F\uD800-\uDFFF\uFFFE\uFFFF]')
 
 def detect(text):
+    text = illegalChars.sub('', text)
+
     text = text.encode('utf-8')
     isReliable, textBytesFound, details = cld2.detect(text)
     if isReliable:
