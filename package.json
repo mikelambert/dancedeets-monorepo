@@ -1,6 +1,7 @@
 {
   "name": "dancedeets-monorepo",
   "devDependencies": {
+    "babel-core": "^6.21.0",
     "babel-eslint": "^7.1.1",
     "babel-plugin-react-intl": "^2.2.0",
     "babel-preset-latest": "^6.16.0",
@@ -10,6 +11,7 @@
     "eslint-config-airbnb": "^13.0.0",
     "eslint-plugin-import": "^2.2.0",
     "eslint-plugin-jsx-a11y": "^2.2.3",
-    "eslint-plugin-react": "^6.7.1"
+    "eslint-plugin-react": "^6.7.1",
+    "fs-promise": "^1.0.0"
   }
 }

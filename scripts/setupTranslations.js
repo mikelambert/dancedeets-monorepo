@@ -1,4 +1,4 @@
-#!/usr/bin/awk BEGIN{a=b=ARGV[1];sub(/[A-Za-z_.]+$/,"../../runNode.js",a);sub(/^.*\//,"./",b);system(a"\t"b)}
+#!/usr/bin/awk BEGIN{a=b=ARGV[1];sub(/[A-Za-z_.]+$/,"../runNode.js",a);sub(/^.*\//,"./",b);system(a"\t"b)}
 
 /**
  * Copyright 2016 DanceDeets.
@@ -8,12 +8,8 @@
 
 
 import * as path from 'path';
-import * as fs from 'fs';
 import stableJsonStringify from 'json-stable-stringify';
-import {
-  walk,
-  writeFile,
-} from './_fsPromises';
+import fs from 'fs-promise';
 
 function generateJsonFile(translations) {
   return stableJsonStringify(translations, { space: 2 });
@@ -27,7 +23,7 @@ function loadJsonFile(filename) {
 
 async function updateWithTranslations(englishTranslation) {
   const promises = locales.map((locale) => {
-    const filename = path.resolve(`./js/messages/${locale}.json`);
+    const filename = path.resolve(`../common/js/messages/${locale}.json`);
     const localeTranslation = locale === 'en' ? {} : loadJsonFile(filename);
     Object.keys(englishTranslation).forEach((key) => {
       if (!localeTranslation[key]) {
@@ -35,14 +31,14 @@ async function updateWithTranslations(englishTranslation) {
       }
     });
     console.log('Writing ', filename);
-    return writeFile(filename, generateJsonFile(localeTranslation));
+    return fs.writeFile(filename, generateJsonFile(localeTranslation));
   });
   // Write out all files
   await Promise.all(promises);
 }
 
 async function run() {
-  const filenames = await walk('build/messages');
+  const filenames = fs.walkSync('../build/messages');
   // $FlowFixMe: This is a dev script, and so can use dynamic includes
   const jsons = filenames.map(file => require(file));
   const json = jsons.reduce((result, jsList) => result.concat(jsList), []);
@@ -53,8 +49,4 @@ async function run() {
   await updateWithTranslations(translationLookup);
 }
 
-try {
-  run();
-} catch (e) {
-  console.warn(e);
-}
+run();
