@@ -1,7 +1,12 @@
+/**
+ * Copyright 2016 DanceDeets.
+ *
+ * @flow
+ */
 
-export type Contestant = {
-  name: string;
-};
+import { sortNumber } from 'dancedeets-common/js/util/sort';
+
+export type Contestant = string;
 
 export type Match = {
   first: Contestant;
@@ -15,9 +20,7 @@ export type Position = {
 };
 
 export type Bracket = {
-  match: Match;
-  firstSubBracket: ?Bracket;
-  secondSubBracket: ?Bracket;
+  matches: Array<Match>;
 };
 
 export class BracketRenderer {
@@ -28,25 +31,17 @@ export class BracketRenderer {
   // 3, 4, 5, 6: quarter-finals
   // etc
 
-  constructor(bracket) {
-    this.matches = getMatchesList(bracket);
-    this.MatchWidth = 100;
-    this.MatchHeight = 38;
+  MatchWidth: number;
+  MatchHeight: number;
+  MatchGutterWidth: number;
+  MatchGutterHeight: number;
+
+  constructor(bracket: Bracket) {
+    this.matches = bracket.matches;
+    this.MatchWidth = 300;
+    this.MatchHeight = 48;
     this.MatchGutterWidth = 30;
     this.MatchGutterHeight = 20;
-  }
-
-  getMatchesList(bracket) {
-    matches = [];
-    const bracketsToAdd = [bracket];
-    while (bracketsToAdd.length) {
-      const currentBracket = bracketsToAdd.splice(0, 1);
-      matches.push(currentBracket.bracket);
-      bracketsToAdd.push(currentBracket.firstSubBracket);
-      bracketsToAdd.push(currentBracket.secondSubBracket);
-      // TODO: do a better job handling byes and uneven brackets
-    }
-    return matches;
   }
 
   getMatch(column: number, row: number) {
@@ -58,11 +53,11 @@ export class BracketRenderer {
     return Math.ceil(Math.log2(this.matches.length + 1));
   }
 
-  getColumnForMatchIndex(matchCount) {
+  getColumnForMatchIndex(matchCount: number) {
     return Math.floor(Math.log2(matchCount + 1));
   }
 
-  getRowsInColumn(index) {
+  getRowsInColumn(index: number) {
     return 2 ** index;
   }
 
@@ -74,7 +69,7 @@ export class BracketRenderer {
     return { width, height };
   }
 
-  getPositionForMatchIndex(index) {
+  getPositionForMatchIndex(index: number) {
     const totalSize = this.getTotalSize();
     const totalColumns = this.getTotalColumns();
     const column = this.getColumnForMatchIndex(index);

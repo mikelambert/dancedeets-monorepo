@@ -58,7 +58,7 @@ function getUniqueMatchesForRound(battleVideos, roundRegex, index): Array<Match>
     console.error('Found too many videos for round!', roundVideos);
   }
   const seenContestants = [];
-  const roundMatches = [];
+  const roundMatches: Array<Match> = [];
   roundVideos.forEach(video => {
     const contestants = getContestants(video);
     if (seenContestants.includes(contestants[0]) || seenContestants.includes(contestants[1])) {
@@ -67,7 +67,7 @@ function getUniqueMatchesForRound(battleVideos, roundRegex, index): Array<Match>
     seenContestants.push(contestants[0]);
     seenContestants.push(contestants[1]);
     roundMatches.push({
-      youtubeId: video.videoId,
+      videoId: video.videoId,
       first: contestants[0],
       second: contestants[1],
     });
@@ -75,14 +75,16 @@ function getUniqueMatchesForRound(battleVideos, roundRegex, index): Array<Match>
   return roundMatches;
 }
 
-async function run() {
-  const result = await getPlaylistVideos('PL02EtzYP5EDOsZyptcmO8G-aPwsOAu9pO');
+async function buildBracketFromPlaylist(playlistId) {
+  const result = await getPlaylistVideos(playlistId);
   const battleVideos = result.items.map(x => ({
     title: x.snippet.title,
     videoId: x.snippet.resourceId.videoId,
   }));
 
-  const bracket: Bracket = {};
+  const bracket: Bracket = {
+    matches: []
+  };
   const order = [roundRegexes.final, roundRegexes.top4, roundRegexes.top8, roundRegexes.top16];
 
   let parentRoundContestantOrder = [];
@@ -101,8 +103,15 @@ async function run() {
     }
     console.log('round ', index);
     console.log(sortedMatches);
+    bracket.matches.push(...sortedMatches);
     parentRoundContestantOrder = [].concat(...sortedMatches.map(x => [x.first, x.second]));
   });
+  return bracket;
+}
+
+async function run() {
+  const bracket = await buildBracketFromPlaylist('PL02EtzYP5EDOsZyptcmO8G-aPwsOAu9pO');
+  console.log(bracket);
 }
 
 run();

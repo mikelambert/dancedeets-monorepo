@@ -1,12 +1,19 @@
-import React from 'react';
-import { sortNumber } from 'dancedeets-common/js/util/sort';
+/**
+ * Copyright 2016 DanceDeets.
+ *
+ * @flow
+ */
 
-import {
+import React from 'react';
+
+import type {
   Bracket,
-  BracketRenderer,
   Match,
-  Position
-} from './bracketsModels';
+  Position,
+} from './bracketModels';
+import {
+  BracketRenderer,
+} from './bracketModels';
 
 class MatchReact extends React.Component {
   props: {
@@ -19,6 +26,7 @@ class MatchReact extends React.Component {
     const contestantStyle = {
       border: 1,
       backgroundColor: '#777',
+      flex: 1,
     };
 
     const divStyle = {
@@ -28,10 +36,37 @@ class MatchReact extends React.Component {
       width: this.props.bracketRenderer.MatchWidth,
       height: this.props.bracketRenderer.MatchHeight,
       backgroundColor: 'white',
+      display: 'flex',
+      flexDirection: 'row',
     };
+    let img = null;
+    if (this.props.match.videoId) {
+      img = (
+        <a href={`https://www.youtube.com/watch?v=${this.props.match.videoId}`}>
+          <img
+            style={{
+              width: 64,
+              height: 48,
+            }}
+            src={`https://i.ytimg.com/vi/${this.props.match.videoId}/sddefault.jpg`}
+            alt="video"
+          />
+        </a>
+      );
+    }
+
     return (<div style={divStyle}>
-      <div style={contestantStyle}>{this.props.match.first.name} ({this.props.match.videoId})</div>
-      <div style={contestantStyle}>{this.props.match.second.name}</div>
+      {img}
+      <div
+        style={{
+          flex: 1,
+          display: 'flex',
+          flexDirection: 'column',
+        }}
+      >
+        <div style={contestantStyle}>{this.props.match.first}</div>
+        <div style={contestantStyle}>{this.props.match.second}</div>
+      </div>
     </div>);
   }
 }
@@ -71,29 +106,50 @@ class BracketReact extends React.Component {
   }
 
   render() {
-    const bracketRenderer = new BracketRenderer();
-    bracketRenderer.matches = [
-      { first: { name: 'Mike' }, second: { name: 'Mary' } },
-
-      { first: { name: 'Mike' }, second: { name: 'Mary' } },
-      { first: { name: 'Mike' }, second: { name: 'Mary' } },
-
-      { first: { name: 'Mike' }, second: { name: 'Mary' } },
-      { first: { name: 'Mike' }, second: { name: 'Mary' } },
-      { first: { name: 'Mike' }, second: { name: 'Mary' } },
-      { first: { name: 'Mike' }, second: { name: 'Mary' } },
-
-      { first: { name: 'Mike' }, second: { name: 'Mary' } },
-      { first: { name: 'Mike' }, second: { name: 'Mary' } },
-      { first: { name: 'Mike' }, second: { name: 'Mary' } },
-      { first: { name: 'Mike' }, second: { name: 'Mary' } },
-      { first: { name: 'Mike' }, second: { name: 'Mary' } },
-      { first: { name: 'Mike' }, second: { name: 'Mary' } },
-      { first: { name: 'Mike' }, second: { name: 'Mary' } },
-      { first: { name: 'Mike' }, second: { name: 'Mary' } },
-
-      { first: { name: 'Mike' }, second: { name: 'Mary' } },
-    ];
+    const bracket = {
+      matches: [
+        { videoId: 'xGkCztkRmO8',
+          first: '喜多パン粉愛好会',
+          second: 'FUNBARE☆89\'s' },
+        { videoId: 'pQAbUKur6-4',
+          first: '最恐最悪反則crew',
+          second: '喜多パン粉愛好会' },
+        { videoId: '5swR67R8AaA',
+          first: 'SST',
+          second: 'FUNBARE☆89\'s' },
+        { videoId: 'ukFPfbHOZMU',
+          first: '最恐最悪反則crew',
+          second: 'K uve doble' },
+        { videoId: 'd8YGVRQ1DSQ',
+          first: '隣の家の山田はアイアンマン',
+          second: '喜多パン粉愛好会' },
+        { videoId: 'Aw1lKvMfdm4', first: 'まこきん', second: 'SST' },
+        { videoId: 'jOi1rfXc5U8',
+          first: 'disclose',
+          second: 'FUNBARE☆89\'s' },
+        { videoId: 'iM-8154m3Fk', first: 'コダック', second: '最恐最悪反則crew' },
+        { videoId: 'GlzVqUh1clc',
+          first: 'ゆうきるか',
+          second: 'K uve doble' },
+        { videoId: 'wwn9cz80Y0o',
+          first: 'Eden of The East',
+          second: '隣の家の山田はアイアンマン' },
+        { videoId: 'XHumrHZNU2g',
+          first: '喜多パン粉愛好会',
+          second: 'ちぇけらWALLY' },
+        { videoId: 'M6_OJYGP4kI',
+          first: 'あすてぃーとさらでぃー',
+          second: 'まこきん' },
+        { videoId: 'xbaqqwVEBR4', first: 'SST', second: 'パブリックエネミー' },
+        { videoId: '1R-UW8IyXqY',
+          first: 'シベリアン・ハスキー',
+          second: 'disclose' },
+        { videoId: 'Cb26mOaVVaM',
+          first: 'Hectic',
+          second: 'FUNBARE☆89\'s' },
+      ],
+    };
+    const bracketRenderer = new BracketRenderer(bracket);
     const totalSize = bracketRenderer.getTotalSize();
     const matches = bracketRenderer.getMatchAndPositions().map(({ match, position }, index) =>
       <MatchReact key={index} bracketRenderer={bracketRenderer} match={match} position={position} />);
