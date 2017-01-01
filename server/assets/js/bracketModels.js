@@ -14,7 +14,13 @@ export type Position = {
   y: number;
 };
 
-export class Bracket {
+export type Bracket = {
+  match: Match;
+  firstSubBracket: ?Bracket;
+  secondSubBracket: ?Bracket;
+};
+
+export class BracketRenderer {
   matches: Array<Match>;
 
   // 0 : finals
@@ -22,12 +28,25 @@ export class Bracket {
   // 3, 4, 5, 6: quarter-finals
   // etc
 
-  constructor() {
-    this.matches = [];
+  constructor(bracket) {
+    this.matches = getMatchesList(bracket);
     this.MatchWidth = 100;
     this.MatchHeight = 38;
     this.MatchGutterWidth = 30;
     this.MatchGutterHeight = 20;
+  }
+
+  getMatchesList(bracket) {
+    matches = [];
+    const bracketsToAdd = [bracket];
+    while (bracketsToAdd.length) {
+      const currentBracket = bracketsToAdd.splice(0, 1);
+      matches.push(currentBracket.bracket);
+      bracketsToAdd.push(currentBracket.firstSubBracket);
+      bracketsToAdd.push(currentBracket.secondSubBracket);
+      // TODO: do a better job handling byes and uneven brackets
+    }
+    return matches;
   }
 
   getMatch(column: number, row: number) {
