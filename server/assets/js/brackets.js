@@ -18,7 +18,7 @@ import {
 class MatchReact extends React.Component {
   props: {
     bracketRenderer: BracketRenderer;
-    match: Match;
+    match: ?Match;
     position: Position;
   }
 
@@ -40,21 +40,29 @@ class MatchReact extends React.Component {
       flexDirection: 'row',
     };
     let img = null;
-    if (this.props.match.videoId) {
-      img = (
-        <a href={`https://www.youtube.com/watch?v=${this.props.match.videoId}`}>
-          <img
-            style={{
-              width: 64,
-              height: 48,
-            }}
-            src={`https://i.ytimg.com/vi/${this.props.match.videoId}/sddefault.jpg`}
-            alt="video"
-          />
-        </a>
-      );
-    }
+    let contestants = null;
+    if (this.props.match) {
+      if (this.props.match.videoId) {
+        img = (
+          <a href={`https://www.youtube.com/watch?v=${this.props.match.videoId}`}>
+            <img
+              style={{
+                width: 64,
+                height: 48,
+              }}
+              src={`https://i.ytimg.com/vi/${this.props.match.videoId}/sddefault.jpg`}
+              alt="video"
+            />
+          </a>
+        );
+      }
 
+      contestants = [this.props.match.first, this.props.match.second];
+      if (this.props.match && this.props.match.winner != null) {
+        contestants[this.props.match.winner] = <b>{contestants[this.props.match.winner]}</b>;
+      }
+      contestants = contestants.map(x => <div style={contestantStyle}>{x}</div>);
+    }
     return (<div style={divStyle}>
       {img}
       <div
@@ -64,8 +72,7 @@ class MatchReact extends React.Component {
           flexDirection: 'column',
         }}
       >
-        <div style={contestantStyle}>{this.props.match.first}</div>
-        <div style={contestantStyle}>{this.props.match.second}</div>
+        {contestants}
       </div>
     </div>);
   }
@@ -108,45 +115,60 @@ class BracketReact extends React.Component {
   render() {
     const bracket = {
       matches: [
-        { videoId: 'xGkCztkRmO8',
-          first: '喜多パン粉愛好会',
-          second: 'FUNBARE☆89\'s' },
-        { videoId: 'pQAbUKur6-4',
-          first: '最恐最悪反則crew',
-          second: '喜多パン粉愛好会' },
-        { videoId: '5swR67R8AaA',
-          first: 'SST',
-          second: 'FUNBARE☆89\'s' },
-        { videoId: 'ukFPfbHOZMU',
-          first: '最恐最悪反則crew',
-          second: 'K uve doble' },
-        { videoId: 'd8YGVRQ1DSQ',
-          first: '隣の家の山田はアイアンマン',
-          second: '喜多パン粉愛好会' },
-        { videoId: 'Aw1lKvMfdm4', first: 'まこきん', second: 'SST' },
-        { videoId: 'jOi1rfXc5U8',
-          first: 'disclose',
-          second: 'FUNBARE☆89\'s' },
-        { videoId: 'iM-8154m3Fk', first: 'コダック', second: '最恐最悪反則crew' },
-        { videoId: 'GlzVqUh1clc',
-          first: 'ゆうきるか',
-          second: 'K uve doble' },
-        { videoId: 'wwn9cz80Y0o',
-          first: 'Eden of The East',
-          second: '隣の家の山田はアイアンマン' },
-        { videoId: 'XHumrHZNU2g',
-          first: '喜多パン粉愛好会',
-          second: 'ちぇけらWALLY' },
-        { videoId: 'M6_OJYGP4kI',
-          first: 'あすてぃーとさらでぃー',
-          second: 'まこきん' },
-        { videoId: 'xbaqqwVEBR4', first: 'SST', second: 'パブリックエネミー' },
-        { videoId: '1R-UW8IyXqY',
-          first: 'シベリアン・ハスキー',
-          second: 'disclose' },
-        { videoId: 'Cb26mOaVVaM',
-          first: 'Hectic',
-          second: 'FUNBARE☆89\'s' },
+        { videoId: '5Xu_S_SpR0g', first: 'すずきゆうすけ', second: 'Hinoken' },
+        { videoId: 'a-bZXFs-Z0U',
+          first: 'ちっひー',
+          second: 'すずきゆうすけ',
+          winner: 1 },
+        { videoId: 'zr6NOjIOB_8',
+          first: 'Hinoken',
+          second: 'YAMATO',
+          winner: 0 },
+        { videoId: 'Sl0-GQzOzvM',
+          first: 'ちっひー',
+          second: 'Hammer',
+          winner: 0 },
+        { videoId: '9P-UuCswG_4',
+          first: 'すずきゆうすけ',
+          second: 'ICHI',
+          winner: 0 },
+        { videoId: 'GX4FQ0ThAY4',
+          first: 'ロケット',
+          second: 'Hinoken',
+          winner: 1 },
+        { videoId: 'QpM1EjMLavc',
+          first: 'YAMATO',
+          second: 'Mao',
+          winner: 0 },
+        { videoId: 'e7jDEeksGy4',
+          first: 'ちっひー',
+          second: 'TAKUMA',
+          winner: 0 },
+        { videoId: 'FPtcEcMoeuc',
+          first: 'Hammer',
+          second: 'YASUHA',
+          winner: 0 },
+        { videoId: 'XzAhJYw8i2o',
+          first: 'すずきゆうすけ',
+          second: 'あおきま',
+          winner: 0 },
+        { videoId: 'RHHX8eNte40',
+          first: 'Dunga D Doo',
+          second: 'ICHI',
+          winner: 1 },
+        { videoId: '1n8qq4fsDck',
+          first: 'KO-TA',
+          second: 'ロケット',
+          winner: 1 },
+        { videoId: '7782ULGM8Qk',
+          first: 'Hinoken',
+          second: 'Masaaki',
+          winner: 0 },
+        { videoId: 'zg5XaK7-I8A',
+          first: 'KAEDE',
+          second: 'YAMATO',
+          winner: 1 },
+        { videoId: '78pGbGKRBjA', first: 'Mao', second: 'セル', winner: 0 },
       ],
     };
     const bracketRenderer = new BracketRenderer(bracket);

@@ -105,7 +105,14 @@ async function buildBracketFromPlaylist(playlistId) {
         const result = foundMatches.find(match => (
           match.first === contestant || match.second === contestant
         ));
-        return result;
+        if (result) {
+          return {
+            ...result,
+            winner: result.first === contestant ? 0 : result.second === contestant ? 1 : null,
+          };
+        } else {
+          return result;
+        }
       });
     } else {
       sortedMatches = foundMatches;
@@ -132,8 +139,9 @@ async function buildBracketFromPlaylist(playlistId) {
 // PL02EtzYP5EDNvxRLDTrv1gGq0VuCVetiH works
 // PL02EtzYP5EDPo8t0XnbIjKJsc-xajp9p_ works
 // PL02EtzYP5EDMXAyDtNBh-waUjty8Kc4jX works
-// PL02EtzYP5EDPTN3fd1fclx6S23TizWiKT works
 // PL02EtzYP5EDMe6_JOcNn-h8wED4AI8kP7 works
+
+// PL02EtzYP5EDPTN3fd1fclx6S23TizWiKT stange....
 
 // PL02EtzYP5EDPmjF2qXLnvxNdgDGMDZmUW unfortunately contains the a 1v1 and 2v2 on the same playlist with no differentiation besides contestant names
 // PL02EtzYP5EDO-McJJ-3zywQpKQUkbGlOH also seems to contain two parallel battles?
@@ -155,7 +163,7 @@ async function buildBracketFromPlaylist(playlistId) {
 // PL02EtzYP5EDONwwNOaDzh7zpCEgsKK8Pn best16 is sometimes multi-way, sometimes 1v1
 
 async function run() {
-  const bracket = await buildBracketFromPlaylist('PL02EtzYP5EDMe6_JOcNn-h8wED4AI8kP7');
+  const bracket = await buildBracketFromPlaylist('PL02EtzYP5EDMXAyDtNBh-waUjty8Kc4jX');
   console.log(bracket);
 }
 

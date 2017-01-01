@@ -11,6 +11,7 @@ export type Contestant = string;
 export type Match = {
   first: Contestant;
   second: Contestant;
+  winner?: 0 | 1 | null;
   videoId?: string;
 };
 
@@ -20,11 +21,11 @@ export type Position = {
 };
 
 export type Bracket = {
-  matches: Array<Match>;
+  matches: Array<?Match>;
 };
 
 export class BracketRenderer {
-  matches: Array<Match>;
+  matches: Array<?Match>;
 
   // 0 : finals
   // 1, 2: semi-finals
