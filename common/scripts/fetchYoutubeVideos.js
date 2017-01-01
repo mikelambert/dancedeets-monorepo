@@ -8,17 +8,11 @@
 import _ from 'underscore';
 import fetch from 'node-fetch';
 import querystring from 'querystring';
-
-export const YoutubeKey = 'AIzaSyCV8QCRxSwv1vVk017qI3EZ9zlC8TefUjY';
-
-export function getUrl(path: string, args: Object) {
-  const formattedArgs = querystring.stringify(args);
-  let fullPath = path;
-  if (formattedArgs) {
-    fullPath += `?${formattedArgs}`;
-  }
-  return fullPath;
-}
+import {
+  fetchAll,
+  getUrl,
+  YoutubeKey,
+} from './_youtube';
 
 async function getTimes(playlistItemsJson) {
   const videoIds = playlistItemsJson.items.map(x => (
@@ -69,16 +63,6 @@ export async function loadPlaylist(playlistId: string) {
 
 async function printPlaylist(playlistId) {
   printResult(await loadPlaylist(playlistId));
-}
-
-async function fetchAll(pageUrl, pageToken) {
-  const newUrl = pageUrl + (pageToken ? `&pageToken=${pageToken}` : '');
-  const pageJson = await (await fetch(newUrl)).json();
-  if (pageJson.nextPageToken) {
-    const pageJson2 = await fetchAll(pageUrl, pageJson.nextPageToken);
-    Array.prototype.push.apply(pageJson.items, pageJson2.items);
-  }
-  return pageJson;
 }
 
 async function loadChannel(channelName, searchQuery) {
@@ -140,9 +124,9 @@ function printResult(videos) {
 }
 
 const args = process.argv.slice(2);
-const type = args[0];
+const type = args[1];
 if (type === 'pl') {
-  printPlaylist(args[1]);
+  printPlaylist(args[2]);
 } else if (type === 'ch') {
-  printChannel(args[1], args[2] || '');
+  printChannel(args[3], args[4] || '');
 }

@@ -11,19 +11,10 @@ import parseJson from 'parse-json';
 import areEqual from 'fbjs/lib/areEqual';
 import fs from 'fs-promise';
 import {
-  findVideoDimensions
+  findVideoDimensions,
+  getUrl,
+  YoutubeKey,
 } from './_youtube';
-
-export const YoutubeKey = 'AIzaSyCV8QCRxSwv1vVk017qI3EZ9zlC8TefUjY';
-
-export function getUrl(path: string, args: Object) {
-  const formattedArgs = querystring.stringify(args);
-  let fullPath = path;
-  if (formattedArgs) {
-    fullPath += `?${formattedArgs}`;
-  }
-  return fullPath;
-}
 
 async function findVideoItems(inVideoIds): Promise<Object[]> {
   const items = [];
