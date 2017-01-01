@@ -10,6 +10,9 @@ import querystring from 'querystring';
 import parseJson from 'parse-json';
 import areEqual from 'fbjs/lib/areEqual';
 import fs from 'fs-promise';
+import {
+  findVideoDimensions
+} from './_youtube';
 
 export const YoutubeKey = 'AIzaSyCV8QCRxSwv1vVk017qI3EZ9zlC8TefUjY';
 
@@ -43,20 +46,6 @@ async function findVideoItems(inVideoIds): Promise<Object[]> {
     }
   }
   return items;
-}
-
-async function findVideoDimensions(videoIds) {
-  const dimensions = {};
-  for (const videoId of videoIds) {
-    const oEmbedUrl = `https://www.youtube.com/oembed?url=https://www.youtube.com/watch?v=${videoId}&format=json`;
-    try {
-      const results = await (await fetch(oEmbedUrl)).json();
-      dimensions[videoId] = {width: results.width, height: results.height};
-    } catch (err) {
-      console.error(oEmbedUrl, err);
-    }
-  }
-  return dimensions;
 }
 
 async function checkTutorial(tutorialJson) {

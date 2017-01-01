@@ -7,11 +7,15 @@
  */
 import fetch from 'node-fetch';
 import * as fs from 'fs';
+import zip from 'lodash/zip';
 import {
   YoutubeKey,
   getUrl,
   loadPlaylist,
 } from './fetchYoutubeVideos';
+import {
+  findVideoDimensions
+} from './_youtube';
 
 async function loadPlaylistData(playlistIds) {
   const playlistUrl = getUrl('https://www.googleapis.com/youtube/v3/playlists',
@@ -43,46 +47,106 @@ function transformTitle(title) {
   return newTitle;
 }
 
-async function reloadPlaylists(playlistIds) {
-  const playlistsJson = await loadPlaylistData(playlistIds);
+type PlaylistInfo = {
+  id: string;
+  name: string;
+  playlist: string;
+};
+
+async function reloadPlaylists(playlistInfos: Array<PlaylistInfo>) {
+  const playlistsJson = await loadPlaylistData(playlistInfos.map(x => x.playlist));
   for (const playlist of playlistsJson.items) {
-    const playlistTitle = playlist.snippet.title.replace('How to Breakdance | ', '');
-    console.log(playlistTitle);
+    const playlistInfo = playlistInfos.filter(x => x.playlist === playlist.id)[0];
+
+    console.log(playlistInfo.name);
+
     const tutorialItemsJson = await loadPlaylist(playlist.id);
-    tutorialItemsJson.forEach((x) => {
-      x.title = transformTitle(x.title);
-    });
+    const videoDimensions = await findVideoDimensions(tutorialItemsJson.map(x => x.youtubeId));
+    const finalTutorialItems = tutorialItemsJson.map((x) => ({
+      ...x,
+      title: transformTitle(x.title),
+      ...videoDimensions[x.youtubeId],
+    }));
     const tutorial = {
-      title: `VincaniTV - ${playlistTitle}`,
+      id: playlistInfo.id,
+      title: `VincaniTV: ${playlistInfo.name}`,
       author: 'VincaniTV Teachers',
       style: 'break',
       language: 'en',
-      thumbnail: playlist.snippet.thumbnails.standard.url,
+      thumbnail: playlist.snippet.thumbnails.standard.url.replace('sddefault', 'mqdefault'),
       sections: [
         {
           title: 'Tutorials',
-          videos: tutorialItemsJson,
+          videos: finalTutorialItems,
         },
       ],
     };
-    const filename = `./js/learn/break/vincanitv_${playlistTitle.replace(' ', '').toLowerCase()}.json`;
+    const filename = `../js/tutorials/playlists/break/${playlistInfo.id.replace('-', '_')}.json`;
     fs.writeFile(filename, JSON.stringify(tutorial, null, '  '));
   }
 }
 
-const playlists = {
-  'Beginner Tutorials': 'PLXNyOoexGdSfSCuOyqNGmvbFC4BhtuB2s',
-  'Intermediate Tutorials': 'PLXNyOoexGdSdNRVaw6Mxiw2TuW6a3qsIW',
-  'Toprock Basics': 'PL57E01028C82367BD',
-  'Power Moves': 'PL0498871864379CC0',
-  'Footwork 101': 'PLC03D627286ADDD94',
-  'Flow Basics': 'PLAC0D471C896905D0',
-  'Get Downs': 'PL0DEB8E2F99580688',
-  'Freeze Basics': 'PL667C395494400FC0',
-  'Stalks': 'PLXNyOoexGdSfQO1D9jDK7c1PdfcfX5QgM',
-  'Advanced Tutorials': 'PLXNyOoexGdScpZm5Lz34vqXPCFAtgYGtH',
-  'Threads': 'PLXNyOoexGdSdcDfwiWDvuDygzaOyPws_1',
-  'Flip Basics': 'PL8241BE901CCB9802',
-};
+const playlists = [
+  {
+    id: 'vincanitv-beginner',
+    name: 'Beginner',
+    playlist: 'PLXNyOoexGdSfSCuOyqNGmvbFC4BhtuB2s',
+  },
+  {
+    id: 'vincanitv-intermediate',
+    name: 'Intermediate',
+    playlist: 'PLXNyOoexGdSdNRVaw6Mxiw2TuW6a3qsIW',
+  },
+  {
+    id: 'vincanitv-toprock',
+    name: 'Toprock',
+    playlist: 'PL57E01028C82367BD',
+  },
+  {
+    id: 'vincanitv-power',
+    name: 'Power Moves',
+    playlist: 'PL0498871864379CC0',
+  },
+  {
+    id: 'vincanitv-footwork',
+    name: 'Footwork',
+    playlist: 'PLC03D627286ADDD94',
+  },
+  {
+    id: 'vincanitv-flow',
+    name: 'Flow',
+    playlist: 'PLAC0D471C896905D0',
+  },
+  {
+    id: 'vincanitv-getdowns',
+    name: 'Getdowns',
+    playlist: 'PL0DEB8E2F99580688',
+  },
+  {
+    id: 'vincanitv-freezes',
+    name: 'Freezes',
+    playlist: 'PL667C395494400FC0',
+  },
+  {
+    id: 'vincanitv-stalks',
+    name: 'Stalks',
+    playlist: 'PLXNyOoexGdSfQO1D9jDK7c1PdfcfX5QgM',
+  },
+  {
+    id: 'vincanitv-advanced',
+    name: 'Advanced',
+    playlist: 'PLXNyOoexGdScpZm5Lz34vqXPCFAtgYGtH',
+  },
+  {
+    id: 'vincanitv-threads',
+    name: 'Threads',
+    playlist: 'PLXNyOoexGdSdcDfwiWDvuDygzaOyPws_1',
+  },
+  {
+    id: 'vincanitv-flips',
+    name: 'Flips',
+    playlist: 'PL8241BE901CCB9802',
+  },
+];
 
-reloadPlaylists(Object.values(playlists));
+reloadPlaylists(playlists);
