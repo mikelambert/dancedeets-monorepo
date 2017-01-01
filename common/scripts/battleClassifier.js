@@ -61,7 +61,7 @@ function getUniqueMatchesForRound(battleVideos, roundRegex, index): Array<Match>
     return [];
   }
   if (roundVideos.length > roundMatchCount) {
-    console.error('Found too many videos for round!', roundVideos);
+    console.error(`Found ${roundVideos.length} videos for round, expecting ${roundMatchCount}!`);
   }
   const seenContestants = [];
   const roundMatches: Array<Match> = [];
@@ -162,9 +162,16 @@ async function buildBracketFromPlaylist(playlistId) {
 // PL02EtzYP5EDN9B55sxhyGEg8z8MbJQeZa best16 is a four-way
 // PL02EtzYP5EDONwwNOaDzh7zpCEgsKK8Pn best16 is sometimes multi-way, sometimes 1v1
 
+// PL02EtzYP5EDP6dx95KqJ85RMXSFml3D49 top-16 has 16 matches...must include some top-32, but mislabelled?
+
+
+
 async function run() {
-  const bracket = await buildBracketFromPlaylist('PL02EtzYP5EDMXAyDtNBh-waUjty8Kc4jX');
-  console.log(bracket);
+  const args = process.argv.slice(2);
+  const pl = args[1];
+  const bracket = await buildBracketFromPlaylist(pl);
+  console.log('final bracket matches');
+  console.log(bracket.matches);
 }
 
 run();
