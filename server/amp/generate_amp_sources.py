@@ -32,6 +32,14 @@ class TestEvent(unittest.TestCase):
         event = fixtures.create_event()
         event.fb_event['info']['ticket_uri'] = 'http://www.eventbrite.com'
         event.fb_event['info']['attending_count'] = 10
+        event.fb_event['info']['place'] = {
+            'name': 'place name',
+            'location': {
+                'city': 'San Francisco',
+                'state': 'CA',
+                'country': 'United States',
+            }
+        }
         event.fb_event['info']['admins'] = {
           "data": [
             {
