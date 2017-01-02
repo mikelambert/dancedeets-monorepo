@@ -206,9 +206,8 @@ gulp.task('deployServer', ['deploy:server'])
 gulp.task('deployServerFast', ['deploy:server:fast'])
 gulp.task('deployScrapy', ['deploy:scrapy'])
 
-// TODO: This was erroring out due to a mysterious 'google' module that I can't eliminate.
-// So I'm silencing it with '|| true' for now, so I can continue to push.
-gulp.task('generate-amp-sources', $.shell.task(['./amp/generate_amp_sources.py || true']));
+// If this fails due to google imports, make sure to delete site-packages/.../proto* modules
+gulp.task('generate-amp-sources', $.shell.task(['./amp/generate_amp_sources.py']));
 
 function webpack(configName, dependencies = []) {
   const webpackCommand = `node_modules/webpack/bin/webpack.js --color --progress --config webpack.config.${configName}.babel.js`;
