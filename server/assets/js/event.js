@@ -248,7 +248,12 @@ class _EventLinks extends React.Component {
     // This makes it mildly harder for scrapers to scrape us.
     // This may also help Google not discover the original FB event,
     // which may help our rankings on such events.
-    if (sourceName !== 'Facebook Event' || ExecutionEnvironment.canUseDOM) {
+
+    // We want to run this:
+    // - For non-fb events
+    // - On the client
+    // - For amp pages (since there is no client JS)
+    if (sourceName !== 'Facebook Event' || ExecutionEnvironment.canUseDOM || this.props.amp) {
       sourceName = <a className="link-event-source" href={event.source.url} rel="noopener noreferrer" target="_blank">{sourceName}</a>;
     }
     return (
@@ -297,33 +302,27 @@ class MapWithLinks extends React.Component {
     }
     const mapUrl = `http://maps.google.com/?daddr=${geocode.latitude},${geocode.longitude}`;
 
-    let mapContents = null;
-    if (this.props.amp) {
-      const staticMapImageUrl = (
-        'http://www.google.com/maps/api/staticmap?key=AIzaSyAvvrWfamjBD6LqCURkATAWEovAoBm1xNQ&size=450x450&scale=2&zoom=13&' +
-        `center=${geocode.latitude},${geocode.longitude}&` +
-        `markers=color:blue%7C${geocode.latitude},${geocode.longitude}`
-      );
-      mapContents = (
-        <amp-img
-          src={staticMapImageUrl}
+    const size = 450;
+    const staticMapImageUrl = (
+      `http://www.google.com/maps/api/staticmap?key=AIzaSyAvvrWfamjBD6LqCURkATAWEovAoBm1xNQ&size=${size}x${size}&scale=2&zoom=13&` +
+      `center=${geocode.latitude},${geocode.longitude}&` +
+      `markers=color:blue%7C${geocode.latitude},${geocode.longitude}`
+    );
+
+    const mapContents = (
+      <a className="link-event-map" href={mapUrl} rel="noopener noreferrer" target="_blank">
+        <AmpImage
+          amp={this.props.amp}
           layout="responsive"
-          width="300"
-          height="300"
+          picture={{
+            source: staticMapImageUrl,
+            width: size,
+            height: size,
+          }}
+          style={{ width: '100%' }}
         />
-      );
-    } else {
-      const staticMapImageUrl = (
-        'http://www.google.com/maps/api/staticmap?key=AIzaSyAvvrWfamjBD6LqCURkATAWEovAoBm1xNQ&size=450x450&scale=2&zoom=13&' +
-        `center=${geocode.latitude},${geocode.longitude}&` +
-        `markers=color:blue%7C${geocode.latitude},${geocode.longitude}`
-      );
-      mapContents = (
-        <a className="link-event-map" href={mapUrl} rel="noopener noreferrer" target="_blank">
-          <img src={staticMapImageUrl} style={{ width: '100%' }} role="presentation" />
-        </a>
-      );
-    }
+      </a>
+    );
 
     return (
       <div>
@@ -332,7 +331,7 @@ class MapWithLinks extends React.Component {
           <div className="visible-xs italics">Event description is below the map.</div> :
           null
         }
-        <div className="event-map-container">
+        <div>
           {mapContents}
         </div>
       </div>
