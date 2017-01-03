@@ -125,6 +125,14 @@ async function buildBracketFromPlaylist(playlistId) {
   return bracket;
 }
 
+// Try two:
+// 1) Find longest ngram common to all. Remove, mark as battle title name, etc.
+// https://github.com/nlp-compromise/nlp-ngram
+// Find other common ngrams, best-N, etc. trim these out, but keep them as 'hints'
+// Now split as A vs B. What else is left?
+// Can we use those A and B and find them in prelims too? Or N-way?
+// When matching A vs B, try to use something like https://www.npmjs.com/package/wuzzy ?
+
 // Should we handle prelims/preliminaries/circle A/B/C/D/etc videos?
 // Should we handle judge demos too?
 // We should do a better job of handling EX extra rounds
@@ -140,6 +148,7 @@ async function buildBracketFromPlaylist(playlistId) {
 // PL02EtzYP5EDPo8t0XnbIjKJsc-xajp9p_ works
 // PL02EtzYP5EDMXAyDtNBh-waUjty8Kc4jX works
 // PL02EtzYP5EDMe6_JOcNn-h8wED4AI8kP7 works
+// PL02EtzYP5EDMKoGxGlXXmbdBaXR0tX2j_ works
 
 // PL02EtzYP5EDPTN3fd1fclx6S23TizWiKT stange....
 
@@ -164,6 +173,7 @@ async function buildBracketFromPlaylist(playlistId) {
 
 // PL02EtzYP5EDP6dx95KqJ85RMXSFml3D49 top-16 has 16 matches...must include some top-32, but mislabelled?
 
+// PL02EtzYP5EDOh0QViYMiwCNhpDu-IbKsv best16 doesn't exist...need to use A vs B metrics
 
 
 async function run() {
