@@ -38,9 +38,10 @@ class MatchReact extends React.Component {
   }
 
   onMouseEnterHandler() {
-    this.setState({ imageCounter: 0 });
+    this.setState({ imageCounter: 1 });
     this._intervalId = window.setInterval(() => {
-      this.setState({ imageCounter: (this.state.imageCounter + 1) % 4 });
+      const nextCounter = (this.state.imageCounter + 1) % 3 + 1;
+      this.setState({ imageCounter: nextCounter });
     }, 300);
   }
 
@@ -54,6 +55,9 @@ class MatchReact extends React.Component {
   }
 
   render() {
+    const hoverStyle = {
+      boxShadow: '0px 0px 15px #fff',
+    };
     const divStyle = {
       position: 'absolute',
       left: this.props.position.x,
@@ -64,14 +68,13 @@ class MatchReact extends React.Component {
       borderColor: 'white',
       borderWidth: 1,
       borderStyle: 'solid',
-      ...(this.isHover() ? {
-        boxShadow: '0px 0px 15px #fff',
-      } : {}),
+      ...(this.isHover() ? hoverStyle : {}),
     };
 
     if (this.props.match) {
       let img = null;
       if (this.props.match.videoId) {
+        const videoId = this.props.match.videoId;
         const imageName = this.isHover() ? this.state.imageCounter : 'sddefault';
         img = (
           <div
@@ -87,7 +90,7 @@ class MatchReact extends React.Component {
                 width: '100%',
                 height: '100%',
               }}
-              src={`https://i.ytimg.com/vi/${this.props.match.videoId}/${imageName}.jpg`}
+              src={`https://i.ytimg.com/vi/${videoId}/${imageName}.jpg`}
               alt="video"
             />
             <div
