@@ -39,8 +39,8 @@ export class BracketRenderer {
 
   constructor(bracket: Bracket) {
     this.matches = bracket.matches;
-    this.MatchWidth = 300;
-    this.MatchHeight = 48;
+    this.MatchWidth = 320;
+    this.MatchHeight = 240;
     this.MatchGutterWidth = 30;
     this.MatchGutterHeight = 20;
   }

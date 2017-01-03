@@ -23,32 +23,26 @@ class MatchReact extends React.Component {
   }
 
   render() {
-    const contestantStyle = {
-      border: 1,
-      backgroundColor: '#777',
-      flex: 1,
-    };
-
     const divStyle = {
       position: 'absolute',
       left: this.props.position.x,
       top: this.props.position.y,
       width: this.props.bracketRenderer.MatchWidth,
       height: this.props.bracketRenderer.MatchHeight,
-      backgroundColor: 'white',
-      display: 'flex',
-      flexDirection: 'row',
+      backgroundColor: 'black',
     };
-    let img = null;
-    let contestants = null;
     if (this.props.match) {
+      let img = null;
       if (this.props.match.videoId) {
         img = (
-          <a href={`https://www.youtube.com/watch?v=${this.props.match.videoId}`}>
+          <a
+            style={{ position: 'absolute' }}
+            href={`https://www.youtube.com/watch?v=${this.props.match.videoId}`}
+          >
             <img
               style={{
-                width: 64,
-                height: 48,
+                width: '100%',
+                height: '100%',
               }}
               src={`https://i.ytimg.com/vi/${this.props.match.videoId}/sddefault.jpg`}
               alt="video"
@@ -57,24 +51,57 @@ class MatchReact extends React.Component {
         );
       }
 
-      contestants = [this.props.match.first, this.props.match.second];
+      const contestants = [this.props.match.first, this.props.match.second];
       if (this.props.match && this.props.match.winner != null) {
-        contestants[this.props.match.winner] = <b>{contestants[this.props.match.winner]}</b>;
+        contestants[this.props.match.winner] = <span style={{ fontWeight: 'bold', fontSize: '20' }}>{contestants[this.props.match.winner]}</span>;
       }
-      contestants = contestants.map(x => <div style={contestantStyle}>{x}</div>);
+      return (
+        <div style={divStyle}>
+          <div
+            style={{
+              position: 'absolute',
+              width: '100%',
+              height: '100%',
+            }}
+          >
+            {img}
+            <div
+              style={{
+                position: 'absolute',
+                width: '100%',
+                height: '100%',
+                backgroundColor: 'rgba(0, 0, 0, 0.3)',
+                pointerEvents: 'none',
+              }}
+            />
+          </div>
+          <div
+            style={{
+              position: 'absolute',
+              width: '100%',
+              height: '100%',
+
+              display: 'flex',
+              flexDirection: 'column',
+              justifyContent: 'center',
+              alignItems: 'center',
+            }}
+          >
+            <div
+              style={{
+                textAlign: 'center',
+              }}
+            >
+              {contestants[0]}<br />
+                vs<br />
+              {contestants[1]}
+            </div>
+          </div>
+        </div>
+      );
+    } else {
+      return <div style={divStyle} />;
     }
-    return (<div style={divStyle}>
-      {img}
-      <div
-        style={{
-          flex: 1,
-          display: 'flex',
-          flexDirection: 'column',
-        }}
-      >
-        {contestants}
-      </div>
-    </div>);
   }
 }
 
