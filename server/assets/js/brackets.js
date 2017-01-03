@@ -22,6 +22,37 @@ class MatchReact extends React.Component {
     position: Position;
   }
 
+  state: {
+    imageCounter: number;
+  };
+
+  _intervalId: number;
+
+  constructor(props) {
+    super(props);
+    (this: any).onMouseEnterHandler = this.onMouseEnterHandler.bind(this);
+    (this: any).onMouseLeaveHandler = this.onMouseLeaveHandler.bind(this);
+    this.state = {
+      imageCounter: -1,
+    };
+  }
+
+  onMouseEnterHandler() {
+    this.setState({ imageCounter: 0 });
+    this._intervalId = window.setInterval(() => {
+      this.setState({ imageCounter: (this.state.imageCounter + 1) % 4 });
+    }, 300);
+  }
+
+  onMouseLeaveHandler() {
+    window.clearInterval(this._intervalId);
+    this.setState({ imageCounter: -1 });
+  }
+
+  isHover() {
+    return this.state.imageCounter > -1;
+  }
+
   render() {
     const divStyle = {
       position: 'absolute',
@@ -30,10 +61,18 @@ class MatchReact extends React.Component {
       width: this.props.bracketRenderer.MatchWidth,
       height: this.props.bracketRenderer.MatchHeight,
       backgroundColor: 'black',
+      borderColor: 'white',
+      borderWidth: 1,
+      borderStyle: 'solid',
+      ...(this.isHover() ? {
+        boxShadow: '0px 0px 15px #fff',
+      } : {}),
     };
+
     if (this.props.match) {
       let img = null;
       if (this.props.match.videoId) {
+        const imageName = this.isHover() ? this.state.imageCounter : 'sddefault';
         img = (
           <div
             style={{
@@ -48,7 +87,7 @@ class MatchReact extends React.Component {
                 width: '100%',
                 height: '100%',
               }}
-              src={`https://i.ytimg.com/vi/${this.props.match.videoId}/sddefault.jpg`}
+              src={`https://i.ytimg.com/vi/${this.props.match.videoId}/${imageName}.jpg`}
               alt="video"
             />
             <div
@@ -101,6 +140,8 @@ class MatchReact extends React.Component {
               width: '100%',
               height: '100%',
             }}
+            onMouseEnter={this.onMouseEnterHandler}
+            onMouseLeave={this.onMouseLeaveHandler}
             href={`https://www.youtube.com/watch?v=${this.props.match.videoId}`}
           >{textOverlay}</a>
         );
