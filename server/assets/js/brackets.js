@@ -35,19 +35,31 @@ class MatchReact extends React.Component {
       let img = null;
       if (this.props.match.videoId) {
         img = (
-          <a
-            style={{ position: 'absolute' }}
-            href={`https://www.youtube.com/watch?v=${this.props.match.videoId}`}
+          <div
+            style={{
+              position: 'absolute',
+              width: '100%',
+              height: '100%',
+            }}
           >
             <img
               style={{
+                position: 'absolute',
                 width: '100%',
                 height: '100%',
               }}
               src={`https://i.ytimg.com/vi/${this.props.match.videoId}/sddefault.jpg`}
               alt="video"
             />
-          </a>
+            <div
+              style={{
+                position: 'absolute',
+                width: '100%',
+                height: '100%',
+                backgroundColor: 'rgba(0, 0, 0, 0.3)',
+              }}
+            />
+          </div>
         );
       }
 
@@ -55,48 +67,49 @@ class MatchReact extends React.Component {
       if (this.props.match && this.props.match.winner != null) {
         contestants[this.props.match.winner] = <span style={{ fontWeight: 'bold', fontSize: '20' }}>{contestants[this.props.match.winner]}</span>;
       }
+
+      let textOverlay = (
+        <div
+          style={{
+            position: 'absolute',
+            width: '100%',
+            height: '100%',
+
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}
+        >
+          <div
+            style={{
+              textAlign: 'center',
+            }}
+          >
+            {contestants[0]}<br />
+              vs<br />
+            {contestants[1]}
+          </div>
+        </div>
+      );
+
+      if (this.props.match.videoId) {
+        textOverlay = (
+          <a
+            style={{
+              position: 'absolute',
+              width: '100%',
+              height: '100%',
+            }}
+            href={`https://www.youtube.com/watch?v=${this.props.match.videoId}`}
+          >{textOverlay}</a>
+        );
+      }
+
       return (
         <div style={divStyle}>
-          <div
-            style={{
-              position: 'absolute',
-              width: '100%',
-              height: '100%',
-            }}
-          >
-            {img}
-            <div
-              style={{
-                position: 'absolute',
-                width: '100%',
-                height: '100%',
-                backgroundColor: 'rgba(0, 0, 0, 0.3)',
-                pointerEvents: 'none',
-              }}
-            />
-          </div>
-          <div
-            style={{
-              position: 'absolute',
-              width: '100%',
-              height: '100%',
-
-              display: 'flex',
-              flexDirection: 'column',
-              justifyContent: 'center',
-              alignItems: 'center',
-            }}
-          >
-            <div
-              style={{
-                textAlign: 'center',
-              }}
-            >
-              {contestants[0]}<br />
-                vs<br />
-              {contestants[1]}
-            </div>
-          </div>
+          {img}
+          {textOverlay}
         </div>
       );
     } else {
