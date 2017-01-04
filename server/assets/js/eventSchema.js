@@ -12,7 +12,7 @@ function formatSchemaDate(dateTime) {
 function getDanceEventSchema(event: Event) {
   const schema = {
     '@context': 'http://schema.org/',
-    '@type': 'DanceEvent',
+    '@type': 'Event',
     name: event.name,
     mainEntityOfPage: event.getUrl(),
     url: event.getUrl(),
