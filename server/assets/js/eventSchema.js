@@ -9,7 +9,7 @@ function formatSchemaDate(dateTime) {
   return moment(dateTime).format('YYYY-MM-DD[T]HH:mm:ss');
 }
 
-function getDanceEventSchema(event: Event) {
+function getEventSchema(event: Event) {
   const schema = {
     '@context': 'http://schema.org/',
     '@type': 'Event',
@@ -52,8 +52,8 @@ function getDanceEventSchema(event: Event) {
   return schema;
 }
 
-export function getReactDanceEventSchema(event) {
-  const jsonMetadata = getDanceEventSchema(event);
+export function getReactEventSchema(event) {
+  const jsonMetadata = getEventSchema(event);
   return (
     <script
       type="application/ld+json"
@@ -62,7 +62,7 @@ export function getReactDanceEventSchema(event) {
   );
 }
 
-export function getNewsArticleAmpSchema(event: Event) {
+function getArticleSchema(event: Event) {
   // NewsArticles require an image:
   // https://developers.google.com/structured-data/rich-snippets/articles#article_markup_properties
   if (!event.picture) {
@@ -71,14 +71,14 @@ export function getNewsArticleAmpSchema(event: Event) {
 
   const schema = {
     '@context': 'http://schema.org',
-    '@type': 'NewsArticle',
+    '@type': 'Article',
     mainEntityOfPage: event.getUrl(),
     headline: event.name,
-    datePublished: formatSchemaDate(event.annotations.creation.time),
-    description: event.description,
-    author: {
-      '@type': 'Organization',
-      name: 'DanceDeets',
+    image: {
+      '@type': 'ImageObject',
+      url: event.picture.source,
+      height: event.picture.height,
+      width: event.picture.width,
     },
     publisher: {
       '@type': 'Organization',
@@ -90,12 +90,22 @@ export function getNewsArticleAmpSchema(event: Event) {
         height: 60,
       },
     },
-  };
-  schema.image = {
-    '@type': 'ImageObject',
-    url: event.picture.source,
-    height: event.picture.height,
-    width: event.picture.width,
+    datePublished: formatSchemaDate(event.annotations.creation.time),
+    author: {
+      '@type': 'Organization',
+      name: 'DanceDeets',
+    },
+    description: event.description,
   };
   return schema;
+}
+
+export function getReactArticleSchema(event) {
+  const jsonMetadata = getArticleSchema(event);
+  return (
+    <script
+      type="application/ld+json"
+      dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonMetadata) }} // eslint-disable-line react/no-danger
+    />
+  );
 }

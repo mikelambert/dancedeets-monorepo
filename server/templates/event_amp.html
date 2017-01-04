@@ -10,56 +10,6 @@
     <style amp-custom>
     {{ event_amp_stylesheet|safe }}
     </style>
-    <script type="application/ld+json">
-    {#
-        //
-        // The document referenced in mainEntityOfPage should be the same as the
-        // canonical link above.
-        //
-        // Also, please be aware that some platforms that use AMP HTML have
-        // further restrictions with regards to some schema components.
-        //
-        // For example:
-        //
-        //   * The leader "image" referenced in the markup below must appear
-        //   somewhere on the AMP HTML document itself.
-        //
-        //   * The URL for that "image" must precisely match the src of the
-        //   amp-img tag.
-        //
-        //   * All marked-up URLs should be absolute.
-        //
-        //   * The "logo" dimensions must not exceed 600x60.
-    #}
-      {
-        "@context": "http://schema.org",
-        "@type": "NewsArticle",
-        "mainEntityOfPage": "{{ canonical_url }}",
-        "headline": "{{ displayable_event.name|e }}",
-        "datePublished": "{{ date_format('%Y-%m-%dT%H:%M:00Z', displayable_event.creation_time) }}",
-        "description": "{{ displayable_event.description|e }}",
-        "author": {
-          "@type": "Organization",
-          "name": "DanceDeets"
-        },
-        "publisher": {
-          "@type": "Organization",
-          "name": "DanceDeets",
-          "logo": {
-            "@type": "ImageObject",
-            "url": "http://{{ full_hostname }}{{static_dir}}/img/deets-head-and-title-on-black.png",
-            "width": 246,
-            "height": 60
-          }
-        },
-        "image": {
-          "@type": "ImageObject",
-          "url": "{{ displayable_event.largest_cover.source }}",
-          "height": {{ displayable_event.largest_cover.height }},
-          "width": {{ displayable_event.largest_cover.width }}
-        }
-      }
-    </script>
     <script async src="https://cdn.ampproject.org/v0.js"></script>
     <script async custom-element="amp-analytics"
         src="https://cdn.ampproject.org/v0/amp-analytics-0.1.js"></script>

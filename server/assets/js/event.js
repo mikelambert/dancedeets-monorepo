@@ -36,7 +36,10 @@ import {
 import messages from 'dancedeets-common/js/events/messages';
 import { RsvpComponent } from './eventRsvp';
 import type { RsvpValue } from './eventRsvp';
-import { getReactDanceEventSchema } from './eventSchema';
+import {
+  getReactEventSchema,
+  getReactArticleSchema,
+} from './eventSchema';
 import { Message } from './intl';
 import {
   AmpImage,
@@ -313,7 +316,6 @@ class MapWithLinks extends React.Component {
       <a className="link-event-map" href={mapUrl} rel="noopener noreferrer" target="_blank">
         <AmpImage
           amp={this.props.amp}
-          layout="responsive"
           picture={{
             source: staticMapImageUrl,
             width: size,
@@ -398,7 +400,7 @@ class EventPage extends React.Component {
     return (
       <div className="container">
         <HtmlHead event={event} />
-        {this.props.amp ? null : getReactDanceEventSchema(event)}
+        {this.props.amp ? getReactArticleSchema(event) : getReactEventSchema(event)}
         <div className="row">
           <div className="col-xs-12">
             <Title event={event} />
