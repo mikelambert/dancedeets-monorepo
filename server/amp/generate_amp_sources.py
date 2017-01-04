@@ -25,6 +25,11 @@ class TestEvent(unittest.TestCase):
     def saveEvent(self, event):
         r = app.get('/events/%s?amp=1' % event.id)
         path = os.path.join(os.path.dirname(__file__), './generated/%s.html' % event.id)
+        # All events should have this, if they don't then maybe the React server is broken
+        # *Don't* overwrite these pages with broken React server results,
+        # or it will destroy the CSS we produce for our AMP pages. :(
+        if 'Add to Calendar' not in path:
+            return
         f = open(path, 'w')
         f.write(r.unicode_normal_body)
 
