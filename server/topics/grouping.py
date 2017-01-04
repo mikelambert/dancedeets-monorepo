@@ -19,7 +19,7 @@ def group_results_by_date(results):
 
 def group_results_by_location(results):
     location_map = collections.defaultdict(lambda: [])
-    addresses = [x.actual_city_name.split(', ')[-1] for x in results]
+    addresses = [x.actual_city_name.split(', ')[-1] for x in results if x.actual_city_name]
     #formatting.format_geocodes(geocodes)
     for address, result in zip(addresses, results):
         location_map[address].append(result)
