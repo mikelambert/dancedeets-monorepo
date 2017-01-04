@@ -14,6 +14,7 @@ from google.appengine.api import images
 
 from util import fetch
 from util import gcs
+from util import runtime
 
 EVENT_IMAGE_BUCKET = 'dancedeets-event-flyers-full'
 EVENT_IMAGE_CACHE_BUCKET = 'dancedeets-event-flyers-%s-by-%s'
@@ -72,8 +73,14 @@ def cache_image_and_get_size(event):
         return 100, 100
     else:
         mimetype, response = _raw_get_image(event)
-        gcs.put_object(EVENT_IMAGE_BUCKET, _event_image_filename(event.id), response)
-        _clear_out_resize_caches(event.id)
+        try:
+            gcs.put_object(EVENT_IMAGE_BUCKET, _event_image_filename(event.id), response)
+            _clear_out_resize_caches(event.id)
+        except:
+            if runtime.is_local_appengine():
+                logging.exception('Error saving event image: %s', event.id)
+            else:
+                raise
         img = images.Image(response)
         return img.width, img.height
 
