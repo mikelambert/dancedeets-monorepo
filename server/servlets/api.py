@@ -148,7 +148,7 @@ def build_search_results_api(city_name, form, search_query, search_results, vers
         'results': json_results,
         'onebox_links': onebox_links,
         'location': city_name,
-        'query': form.data,
+        'query': form.data if form else None,
     }
     if southwest and northeast:
         json_response['location_box'] = {

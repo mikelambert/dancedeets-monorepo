@@ -8,6 +8,7 @@ from topics import grouping
 from topics import topic_db
 from search import search
 from search import search_base
+from servlets import api
 
 @app.route('/topic/?')
 class TopicListHandler(base_servlet.BaseRequestHandler):
@@ -83,6 +84,12 @@ class TopicHandler(base_servlet.BaseRequestHandler):
         self.display['topic_image'] = topic.override_image or (fb_source and fb_source['picture']['data']['url'])
         self.display['topic_description'] = topic.override_description or (fb_source and fb_source['info'].get('about')) or ''
 
+        json_search_response = api.build_search_results_api(None, None, search_query, search_results, (2, 0), need_full_event=False, southwest=None, northeast=None)
+        props = dict(
+            results=json_search_response,
+        )
+
+        self.setup_react_template('topic', props)
         self.display['all_results'] = search_results
 
         by_year = []

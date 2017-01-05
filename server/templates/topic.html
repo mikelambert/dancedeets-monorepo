@@ -102,60 +102,23 @@
 </div>
 
 <div class="row">
-<div class="col-md-12">
-<div id="event-container">
+  <div class="col-md-12">
+    <div id="react-parent">
+      {{ react_html|safe }}
+    </div>
+  </div>
+</div>
+<script type="text/javascript">
+  window._REACT_PROPS = {{ react_props|safe }};
+  window._REACT_ID = 'react-parent';
+</script>
 
-{% for result in all_results %}
-	{# widths here are set to sum to 700px-50px = 650px #}
-	<div class="event-item">
-		<div class="event-image">
-{% if result.image %}
-		<a href="{{ dd_event_url(result.event_id) }}">
-{# preload first five images #}
-{% if loop.index < 20 %}
-			<img src="{{ result.image }}" width="180" border="0">
-{% else %}
-			<img class="lazy-wide" src="/images/placeholder.gif" data-original="{{ result.image }}" width="180" border="0">
-			<noscript><img src="{{ result.image }}" width="180" border="0"></noscript>
-{% endif %}
-		</a>
-{% endif %}
-		</div>
-		<div class="event-description">
-			<h3 class="event-title">
-			<a href="{{ dd_event_url(result.event_id) }}">
-			{{ result.name|e }}
-			</a>
-			</h3>
-			<div>
-				{{ result.start_time|date_only_human_format }}
-				{% if result.multi_day_event() and result.end_time %}
-					<br>to {{ result.end_time|date_only_human_format }}
-				{% endif %}
-			</div>
-			<div>
-				{% if result.location %}
-					result.location,
-				{% endif %}
-				{{ result.actual_city_name }}
-			</div>
-		</div>
-	</div>
-{% endfor %}
-</div> {# event-container #}
-</div> {# col-md-12 #}
-</div> {# row #}
 </div> {# container #}
 {% endblock %}
 
 
 
 {% block bottom_javascript %}
-<script type="text/javascript" src="{{static_dir}}/js/normalPage.js"></script>
-
-<script src="//cdn.jsdelivr.net/jquery.lazyload/1.9.3/jquery.lazyload.min.js" crossorigin="anonymous"></script>
-<script src="//cdn.jsdelivr.net/masonry/3.1.5/masonry.min.js" crossorigin="anonymous"></script>
-
-</script>
+<script type="text/javascript" src="{{static_dir}}/js/topicExec.js"></script>
 
 {% endblock %}

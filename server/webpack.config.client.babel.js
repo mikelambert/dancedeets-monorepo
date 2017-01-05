@@ -32,6 +32,7 @@ const config = {
     classResultsExec: './assets/js/classResultsExec.js',
     eventExec: './assets/js/eventExec.js',
     eventSearchResultsExec: './assets/js/eventSearchResultsExec.js',
+    topicExec: './assets/js/topicExec.js',
     tutorialExec: './assets/js/tutorialExec.js',
     tutorialCategoryExec: './assets/js/tutorialCategoryExec.js',
   },

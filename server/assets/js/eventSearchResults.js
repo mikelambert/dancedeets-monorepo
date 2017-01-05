@@ -164,7 +164,7 @@ class HorizontalEvent extends React.Component {
   }
 }
 
-class VerticalEvent extends React.Component {
+export class VerticalEvent extends React.Component {
   props: {
     event: SearchEvent;
   }

@@ -11,6 +11,7 @@ module.exports = {
     event: './assets/js/event.js',
     eventSearchResults: './assets/js/eventSearchResults.js',
     renderServer: './node_server/renderServer.js',
+    topic: './assets/js/topic.js',
     tutorial: './assets/js/tutorial.js',
     tutorialCategory: './assets/js/tutorialCategory.js',
   },
