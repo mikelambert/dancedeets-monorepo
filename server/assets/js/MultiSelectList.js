@@ -1,6 +1,6 @@
 import React from 'react';
 
-class SelectButton extends React.Component {
+export class SelectButton extends React.Component {
   props: {
     toggleState: () => void;
     active: boolean;
