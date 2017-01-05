@@ -77,8 +77,9 @@ export class EventFlyer extends React.Component {
     let imageTag = (<img
       role="presentation"
       src={croppedPicture.source}
-      width={width}
-      height={height}
+      style={{
+        width: '100%',
+      }}
       className="no-border"
     />);
     if (this.props.lazyLoad) {

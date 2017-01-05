@@ -99,20 +99,16 @@
 </div>
 
 </div>
+</div> {# container #}
 
-<div class="row">
-  <div class="col-md-12">
-    <div id="react-parent">
-      {{ react_html|safe }}
-    </div>
-  </div>
+<div id="react-parent">
+  {{ react_html|safe }}
 </div>
 <script type="text/javascript">
   window._REACT_PROPS = {{ react_props|safe }};
   window._REACT_ID = 'react-parent';
 </script>
 
-</div> {# container #}
 {% endblock %}
 
 

@@ -30,6 +30,10 @@ import {
 import {
   Card,
   ImagePrefix,
+  wantsWindowSizes,
+} from './ui';
+import type {
+  windowProps,
 } from './ui';
 import {
   SelectButton,
@@ -40,6 +44,7 @@ export class _TopicEvent extends React.Component {
   props: {
     event: SearchEvent;
     lazyLoad: boolean;
+    width: number;
 
     // Self-managed props
     intl: intlShape,
@@ -53,7 +58,7 @@ export class _TopicEvent extends React.Component {
 
     return (<div
       className="grid-item"
-      style={{ width: '20%' }}
+      style={{ width: this.props.width }}
     >
       <Card>
         <EventFlyer event={event} lazyLoad={this.props.lazyLoad} />
@@ -79,12 +84,13 @@ type VideoData = Object;
 class Video extends React.Component {
   props: {
     video: VideoData;
+    width: number;
   };
 
   render() {
     return (<div
       className="grid-item"
-      style={{ width: '40%' }}
+      style={{ width: this.props.width * 2 }}
     >
       <Card>
         <a href={`https://www.youtube.com/watch?v=${this.props.video.id.videoId}`}>
@@ -95,19 +101,22 @@ class Video extends React.Component {
               width: '100%',
             }}
           />
-          <div>
+          <h3 className="event-title" style={{ marginTop: 10 }}>
             {this.props.video.snippet.title}
-          </div>
+          </h3>
         </a>
       </Card>
     </div>);
   }
 }
 
-class EventList extends React.Component {
+class _EventList extends React.Component {
   props: {
     results: NewSearchResults;
     videos: Object;
+
+    // Self-managed props
+    window: windowProps;
   };
 
   state: {
@@ -140,13 +149,18 @@ class EventList extends React.Component {
       });
     }
 
+    let width = 200;
+    if (this.props.window) {
+      width = (this.props.window.width / Math.floor(this.props.window.width / width));
+    }
+
     const dates = Object.keys(dateMap).sort().reverse();
     const resultItems = dates.map((x, index) => {
       const item = dateMap[x];
       if (item.event) {
-        return <TopicEvent key={item.event.id} event={item.event} lazyLoad={index > 50} />;
+        return <TopicEvent key={item.event.id} event={item.event} lazyLoad={index > 50} width={width} />;
       } else if (item.video) {
-        return <Video key={item.video.id.videoId} video={item.video} lazyLoad={index < 50} />;
+        return <Video key={item.video.id.videoId} video={item.video} lazyLoad={index < 50} width={width} />;
       } else {
         console.log('Error unknown item:', item);
         return null;
@@ -155,39 +169,32 @@ class EventList extends React.Component {
 
     return (<div style={{ display: 'flex' }}>
       <div style={{ flex: 1, padding: 10 }}>
-        Show:{' '}
-        <div className="btn-group" role="group">
-          <SelectButton
-            toggleState={() => {
-              this.setState({ showEvents: !this.state.showEvents });
-            }}
-            active={this.state.showEvents}
-            item={`${resultEvents.length} Events`}
-          />
-          <SelectButton
-            toggleState={() => {
-              this.setState({ showVideos: !this.state.showVideos });
-            }}
-            active={this.state.showVideos}
-            item={`${resultVideos.length} Videos`}
-          />
-        </div>
-        <Masonry
-          options={{
-            // set itemSelector so .grid-sizer is not used in layout
-            itemSelector: '.grid-item',
-            // use element for option
-            columnWidth: '.grid-sizer',
-            percentPosition: true,
-          }}
-        >
-          <div className="grid-sizer" style={{ width: '20%' }} >&nbsp;</div>
-
+        <Card>
+          Show:{' '}
+          <div className="btn-group" role="group">
+            <SelectButton
+              toggleState={() => {
+                this.setState({ showEvents: !this.state.showEvents });
+              }}
+              active={this.state.showEvents}
+              item={`${resultEvents.length} Events`}
+            />
+            <SelectButton
+              toggleState={() => {
+                this.setState({ showVideos: !this.state.showVideos });
+              }}
+              active={this.state.showVideos}
+              item={`${resultVideos.length} Videos`}
+            />
+          </div>
+        </Card>
+        <Masonry>
           {resultItems}
         </Masonry>
       </div>
     </div>);
   }
 }
+const EventList = wantsWindowSizes(_EventList);
 
 export default intlWeb(EventList);
