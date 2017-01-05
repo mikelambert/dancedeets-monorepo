@@ -14,6 +14,9 @@ tmp
 build
 .git
 
+# We don't need this on the server, this is just for our replacement dev_appserver
+frankenserver
+
 # We don't need these on the server, this is only used for scrapy:
 lib/lxml
 lib/scrapy

@@ -23,7 +23,7 @@ const argv = yargs
   .option('d', {
     alias: 'gae_dir',
     description: 'The directory containing dev_appserver.py',
-    default: `${osHomedir()}/google-cloud-sdk/bin`,
+    default: './frankenserver/python',
   })
   .help('h').alias('h', 'help')
   .strict()

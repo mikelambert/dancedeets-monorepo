@@ -59,6 +59,11 @@ ln -s ../../common node_modules/dancedeets-common
 cd $BASE_DIR/node_server
 npm install
 
+# Our replacement dev_appserver
+git clone https://github.com/Khan/frankenserver
+# Install the modules that make frankenserver amazing
+cd $BASE_DIR/frankenserver && pip install -r requirements.txt --user
+
 cd $BASE_DIR
 if [ "$TRAVIS" == true ]; then
   echo "Compiling CSS and JS and Icons"
