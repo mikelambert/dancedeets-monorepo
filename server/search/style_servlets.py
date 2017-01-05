@@ -12,7 +12,7 @@ class ShowStyleHandler(search_servlets.RelevantHandler):
     def handle(self, style):
         self.fbl.batch_fetch()
         data = {'keywords': style}
-        if not re.search('bot|crawl|spider', self.request.user_agent.lower()):
+        if not re.search('bot|crawl|spider', (self.request.user_agent or '').lower()):
             data['location'] = self.get_location_from_headers(city=False)
         form = search_base.SearchForm(data=data)
         self.handle_search(form)

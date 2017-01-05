@@ -90,7 +90,7 @@ function getArticleSchema(event: Event) {
         height: 60,
       },
     },
-    datePublished: formatSchemaDate(event.annotations.creation.time),
+    datePublished: formatSchemaDate(event.annotations.creation.time || event.start_time),
     author: {
       '@type': 'Organization',
       name: 'DanceDeets',
