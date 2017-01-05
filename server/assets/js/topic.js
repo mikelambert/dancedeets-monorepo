@@ -48,26 +48,25 @@ export class _TopicEvent extends React.Component {
     const eventStart = moment(event.start_time);
     const eventStartDate = upperFirst(this.props.intl.formatDate(eventStart.toDate(), weekdayDate));
 
-    return (<Card
-      style={{
-        display: 'inline-block',
-        width: 200,
-        verticalAlign: 'top',
-      }}
+    return (<div
+      className="grid-item"
+      style={{ width: '20%' }}
     >
-      <EventFlyer event={event} lazyLoad={this.props.lazyLoad} />
-      <h3 className="event-title" style={{ marginTop: 10 }}>
-        <a href={event.getUrl()}>
-          <span>{event.name}</span>
-        </a>
-      </h3>
-      <div className="event-city">
-        {eventStartDate}
-      </div>
-      <div className="event-city">
-        {event.venue.cityStateCountry('\n')}
-      </div>
-    </Card>);
+      <Card>
+        <EventFlyer event={event} lazyLoad={this.props.lazyLoad} />
+        <h3 className="event-title" style={{ marginTop: 10 }}>
+          <a href={event.getUrl()}>
+            <span>{event.name}</span>
+          </a>
+        </h3>
+        <div className="event-city">
+          {eventStartDate}
+        </div>
+        <div className="event-city">
+          {event.venue.cityStateCountry('\n')}
+        </div>
+      </Card>
+    </div>);
   }
 }
 const TopicEvent = injectIntl(_TopicEvent);
@@ -80,33 +79,24 @@ class Video extends React.Component {
   };
 
   render() {
-    return (<Card>
-      <a href={`https://www.youtube.com/watch?v=${this.props.video.id.videoId}`}>
-        <img
-          src={this.props.video.snippet.thumbnails.high.url}
-          role="presentation"
-          style={{
-            width: '100%',
-          }}
-        />
-        <div>
-          {this.props.video.snippet.title}
-        </div>
-      </a>
-    </Card>);
-  }
-}
-
-class VideoList extends React.Component {
-  props: {
-    videos: {
-      items: Array<VideoData>;
-    };
-  }
-  render() {
-    const actualVideos = this.props.videos.items.filter(x => x.id.videoId);
-    return (<div>
-      {actualVideos.map(x => <Video key={x.id.videoId} video={x} />)}
+    return (<div
+      className="grid-item"
+      style={{ width: '40%' }}
+    >
+      <Card>
+        <a href={`https://www.youtube.com/watch?v=${this.props.video.id.videoId}`}>
+          <img
+            src={this.props.video.snippet.thumbnails.high.url}
+            role="presentation"
+            style={{
+              width: '100%',
+            }}
+          />
+          <div>
+            {this.props.video.snippet.title}
+          </div>
+        </a>
+      </Card>
     </div>);
   }
 }
@@ -120,21 +110,45 @@ class EventList extends React.Component {
   render() {
     const resultEvents = this.props.results.results.map(eventData => new SearchEvent(eventData)).reverse();
 
-    const resultItems = [];
-    resultEvents.forEach((event, index) => {
-      resultItems.push(<TopicEvent key={event.id} event={event} lazyLoad={index > 50} />);
+    const resultVideos = this.props.videos.items.filter(x => x.id.videoId);
+
+    const dateMap = {};
+    resultEvents.forEach((event) => {
+      dateMap[`${event.start_time}event${event.id}`] = { event };
+    });
+    resultVideos.forEach((video) => {
+      dateMap[`${video.snippet.publishedAt}video${video.id.videoId}`] = { video };
+    });
+
+    const dates = Object.keys(dateMap).sort().reverse();
+    const resultItems = dates.map((x, index) => {
+      const item = dateMap[x];
+      if (item.event) {
+        return <TopicEvent key={item.event.id} event={item.event} lazyLoad={index > 50} />;
+      } else if (item.video) {
+        return <Video key={item.video.id.videoId} video={item.video} lazyLoad={index < 50} />;
+      } else {
+        console.log('Error unknown item:', item);
+        return null;
+      }
     });
 
     return (<div style={{ display: 'flex' }}>
-      <div style={{ flex: 2, padding: 10 }}>
-        <div>{resultItems.length} Related Events:</div>
-        <Masonry>
+      <div style={{ flex: 1, padding: 10 }}>
+        <div>{resultItems.length} Related Events and Videos:</div>
+        <Masonry
+          options={{
+            // set itemSelector so .grid-sizer is not used in layout
+            itemSelector: '.grid-item',
+            // use element for option
+            columnWidth: '.grid-sizer',
+            percentPosition: true,
+          }}
+        >
+          <div className="grid-sizer" style={{ width: '20%' }} >&nbsp;</div>
+
           {resultItems}
         </Masonry>
-      </div>
-      <div style={{ flex: 1, padding: 10 }}>
-        <div>Recent Videos:</div>
-        <VideoList videos={this.props.videos} />
       </div>
     </div>);
   }
