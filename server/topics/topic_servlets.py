@@ -40,7 +40,7 @@ def get_videos_for(keyword, recent=False):
     search_response = youtube.search().list(
         q=keyword,
         part="id,snippet",
-        maxResults=5
+        maxResults=50,
     ).execute()
     return search_response
 
@@ -110,7 +110,6 @@ class TopicHandler(base_servlet.BaseRequestHandler):
         json_search_response = api.build_search_results_api(None, None, search_query, search_results, (2, 0), need_full_event=False, southwest=None, northeast=None)
 
         videos = get_videos_for(topic.youtube_query)
-        logging.info(videos)
 
         props = dict(
             results=json_search_response,

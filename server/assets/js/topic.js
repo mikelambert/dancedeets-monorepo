@@ -104,8 +104,9 @@ class VideoList extends React.Component {
     };
   }
   render() {
+    const actualVideos = this.props.videos.items.filter(x => x.id.videoId);
     return (<div>
-      {this.props.videos.items.map(x => <Video key={x.id.videoId} video={x} />)}
+      {actualVideos.map(x => <Video key={x.id.videoId} video={x} />)}
     </div>);
   }
 }
@@ -117,7 +118,6 @@ class EventList extends React.Component {
   }
 
   render() {
-    console.log(this.props.videos);
     const resultEvents = this.props.results.results.map(eventData => new SearchEvent(eventData)).reverse();
 
     const resultItems = [];
@@ -127,7 +127,7 @@ class EventList extends React.Component {
 
     return (<div style={{ display: 'flex' }}>
       <div style={{ flex: 2, padding: 10 }}>
-        <div>Related Events:</div>
+        <div>{resultItems.length} Related Events:</div>
         <Masonry>
           {resultItems}
         </Masonry>
