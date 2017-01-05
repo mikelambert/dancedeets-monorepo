@@ -6,6 +6,12 @@
 
 import React from 'react';
 import Masonry from 'react-masonry-component';
+import moment from 'moment';
+import upperFirst from 'lodash/upperFirst';
+import {
+  injectIntl,
+  intlShape,
+} from 'react-intl';
 import {
   SearchEvent,
 } from 'dancedeets-common/js/events/models';
@@ -13,8 +19,58 @@ import type {
   NewSearchResults,
 } from 'dancedeets-common/js/events/search';
 import {
-  VerticalEvent,
+  weekdayDate,
+} from 'dancedeets-common/js/dates';
+import {
+  intlWeb,
+} from 'dancedeets-common/js/intl';
+import {
+  EventFlyer,
 } from './eventSearchResults';
+import {
+  Card,
+  ImagePrefix,
+} from './ui';
+
+
+export class _TopicEvent extends React.Component {
+  props: {
+    event: SearchEvent;
+    lazyLoad: boolean;
+
+    // Self-managed props
+    intl: intlShape,
+  }
+
+  render() {
+    const event = this.props.event;
+
+    const eventStart = moment(event.start_time);
+    const eventStartDate = upperFirst(this.props.intl.formatDate(eventStart.toDate(), weekdayDate));
+
+    return (<Card
+      style={{
+        display: 'inline-block',
+        width: 200,
+        verticalAlign: 'top',
+      }}
+    >
+      <EventFlyer event={event} lazyLoad={this.props.lazyLoad} />
+      <h3 className="event-title" style={{ marginTop: 10 }}>
+        <a href={event.getUrl()}>
+          <span>{event.name}</span>
+        </a>
+      </h3>
+      <div className="event-city">
+        {eventStartDate}
+      </div>
+      <div className="event-city">
+        {event.venue.cityStateCountry('\n')}
+      </div>
+    </Card>);
+  }
+}
+const TopicEvent = injectIntl(_TopicEvent);
 
 class EventList extends React.Component {
   props: {
@@ -22,11 +78,11 @@ class EventList extends React.Component {
   }
 
   render() {
-    const resultEvents = this.props.results.results.map(eventData => new SearchEvent(eventData));
+    const resultEvents = this.props.results.results.map(eventData => new SearchEvent(eventData)).reverse();
 
     const resultItems = [];
     resultEvents.forEach((event, index) => {
-      resultItems.push(<VerticalEvent key={event.id} event={event} />);
+      resultItems.push(<TopicEvent key={event.id} event={event} lazyLoad={index > 50} />);
     });
 
     return (<div>
@@ -39,4 +95,4 @@ class EventList extends React.Component {
   }
 }
 
-export default EventList;
+export default intlWeb(EventList);

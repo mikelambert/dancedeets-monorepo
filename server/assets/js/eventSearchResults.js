@@ -46,7 +46,7 @@ type OneboxResult = any;
 type EventResult = SearchEvent;
 type Result = OneboxResult | EventResult;
 
-class EventFlyer extends React.Component {
+export class EventFlyer extends React.Component {
   props: {
     event: SearchEvent;
     lazyLoad?: boolean;
@@ -164,7 +164,7 @@ class HorizontalEvent extends React.Component {
   }
 }
 
-export class VerticalEvent extends React.Component {
+class VerticalEvent extends React.Component {
   props: {
     event: SearchEvent;
   }
