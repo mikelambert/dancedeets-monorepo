@@ -24,7 +24,7 @@ class PromoteHandler(base_servlet.BaseRequestHandler):
 
         try:
             user_events = self.fbl.get(fb_api.LookupUserEvents, self.fb_uid, allow_cache=False)
-            results_json = user_events['attending']['data']
+            results_json = user_events['events']['data']
             events = list(reversed(sorted(results_json, key=lambda x: x.get('start_time'))))
         except fb_api.NoFetchedDataException, e:
             logging.error("Could not load event info for user: %s", e)
