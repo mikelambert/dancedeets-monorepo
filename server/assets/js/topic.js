@@ -72,12 +72,52 @@ export class _TopicEvent extends React.Component {
 }
 const TopicEvent = injectIntl(_TopicEvent);
 
+type VideoData = Object;
+
+class Video extends React.Component {
+  props: {
+    video: VideoData;
+  };
+
+  render() {
+    return (<Card>
+      <a href={`https://www.youtube.com/watch?v=${this.props.video.id.videoId}`}>
+        <img
+          src={this.props.video.snippet.thumbnails.high.url}
+          role="presentation"
+          style={{
+            width: '100%',
+          }}
+        />
+        <div>
+          {this.props.video.snippet.title}
+        </div>
+      </a>
+    </Card>);
+  }
+}
+
+class VideoList extends React.Component {
+  props: {
+    videos: {
+      items: Array<VideoData>;
+    };
+  }
+  render() {
+    return (<div>
+      {this.props.videos.items.map(x => <Video key={x.id.videoId} video={x} />)}
+    </div>);
+  }
+}
+
 class EventList extends React.Component {
   props: {
     results: NewSearchResults;
+    videos: Object;
   }
 
   render() {
+    console.log(this.props.videos);
     const resultEvents = this.props.results.results.map(eventData => new SearchEvent(eventData)).reverse();
 
     const resultItems = [];
@@ -85,11 +125,16 @@ class EventList extends React.Component {
       resultItems.push(<TopicEvent key={event.id} event={event} lazyLoad={index > 50} />);
     });
 
-    return (<div>
-      <div style={{ width: '100%', padding: 10 }}>
+    return (<div style={{ display: 'flex' }}>
+      <div style={{ flex: 2, padding: 10 }}>
+        <div>Related Events:</div>
         <Masonry>
           {resultItems}
         </Masonry>
+      </div>
+      <div style={{ flex: 1, padding: 10 }}>
+        <div>Recent Videos:</div>
+        <VideoList videos={this.props.videos} />
       </div>
     </div>);
   }

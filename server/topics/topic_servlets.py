@@ -10,6 +10,17 @@ from search import search
 from search import search_base
 from servlets import api
 
+import keys
+from apiclient.discovery import build
+
+# Set DEVELOPER_KEY to the "API key" value from the Google Developers Console:
+# https://console.developers.google.com/project/_/apiui/credential
+# Please ensure that you have enabled the YouTube Data API for your project.
+DEVELOPER_KEY = keys.get('google_server_key')
+YOUTUBE_API_SERVICE_NAME = 'youtube'
+YOUTUBE_API_VERSION = 'v3'
+
+
 @app.route('/topic/?')
 class TopicListHandler(base_servlet.BaseRequestHandler):
     def requires_login(self):
@@ -20,6 +31,18 @@ class TopicListHandler(base_servlet.BaseRequestHandler):
         self.display['topics'] = sorted(topics, key=lambda x: x.url_path)
 
         self.render_template('topic_list')
+
+def get_videos_for(keyword, recent=False):
+    youtube = build(
+        YOUTUBE_API_SERVICE_NAME,
+        YOUTUBE_API_VERSION,
+        developerKey=DEVELOPER_KEY)
+    search_response = youtube.search().list(
+        q=keyword,
+        part="id,snippet",
+        maxResults=5
+    ).execute()
+    return search_response
 
 @app.route('/topic/([^/]+)/?')
 class TopicHandler(base_servlet.BaseRequestHandler):
@@ -85,8 +108,13 @@ class TopicHandler(base_servlet.BaseRequestHandler):
         self.display['topic_description'] = topic.override_description or (fb_source and fb_source['info'].get('about')) or ''
 
         json_search_response = api.build_search_results_api(None, None, search_query, search_results, (2, 0), need_full_event=False, southwest=None, northeast=None)
+
+        videos = get_videos_for(topic.youtube_query)
+        logging.info(videos)
+
         props = dict(
             results=json_search_response,
+            videos=videos,
         )
 
         self.setup_react_template('topic', props)
