@@ -1,6 +1,7 @@
 package com.dancedeets.android;
 
 import android.app.Application;
+import android.support.multidex.MultiDexApplication;
 
 import com.BV.LinearGradient.LinearGradientPackage;
 import com.airbnb.android.react.maps.MapsPackage;
@@ -55,7 +56,7 @@ class MyReactNativeHost extends ReactNativeHost implements ReactInstanceHolder {
     protected List<ReactPackage> getPackages() {
         return Arrays.<ReactPackage>asList(
             new MainReactPackage(),
-            new FirestackPackage(getApplication()),
+            new FirestackPackage(),
             new ReactNativeYouTube(),
             new GoogleApiAvailabilityPackage(),
             new ReactNativePushNotificationPackage(),
@@ -85,7 +86,7 @@ class MyReactNativeHost extends ReactNativeHost implements ReactInstanceHolder {
     }
 }
 
-public class MainApplication extends Application implements ReactApplication {
+public class MainApplication extends MultiDexApplication implements ReactApplication {
     private final MyReactNativeHost mReactNativeHost = new MyReactNativeHost(this);
 
     protected static CallbackManager getCallbackManager() {

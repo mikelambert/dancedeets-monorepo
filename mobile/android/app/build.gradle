@@ -122,6 +122,9 @@ android {
             keyPassword DANCEDEETS_RELEASE_KEY_PASSWORD
         }
     }
+    dexOptions {
+        javaMaxHeapSize "4g"
+    }
     buildTypes {
         release {
             minifyEnabled enableProguardInReleaseBuilds
@@ -202,6 +205,9 @@ dependencies {
     compile('com.crashlytics.sdk.android:crashlytics:2.+@aar') {
         transitive = true;
     }
+
+    // We need this for multidex support, or it may break crash reporting on samsung devices
+    compile 'com.android.support:multidex:'
 
     // React-Native-Compile:
     // compile project(':ReactAndroid')
