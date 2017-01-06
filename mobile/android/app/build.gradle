@@ -94,8 +94,8 @@ def enableSeparateBuildPerCPUArchitecture = false
 def enableProguardInReleaseBuilds = false
 
 android {
-    compileSdkVersion 23
-    buildToolsVersion "23.0.3"
+    compileSdkVersion 25
+    buildToolsVersion "25.0.2"
 
     defaultConfig {
         applicationId "com.dancedeets.android"
@@ -170,6 +170,7 @@ configurations.all {
         force 'com.google.firebase:firebase-database:9.6.0+'
         force 'com.google.firebase:firebase-storage:9.6.0+'
         force 'com.google.firebase:firebase-messaging:9.6.0+'
+        force 'com.android.support:appcompat-v7:25.0.+'
     }
 }
 
@@ -197,7 +198,6 @@ dependencies {
     compile project(':RNSendIntentModule')
     //compile "com.mixpanel.android:mixpanel-android:4.+"
     compile fileTree(dir: "libs", include: ["*.jar"])
-    compile 'com.android.support:appcompat-v7:23.4.0'
     compile 'com.facebook.android:facebook-android-sdk:4.+'
     compile('com.crashlytics.sdk.android:crashlytics:2.+@aar') {
         transitive = true;
