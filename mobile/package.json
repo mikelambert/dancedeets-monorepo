@@ -40,7 +40,7 @@
     "react-native-maps": "github:mikelambert/react-native-maps#v11",
     "react-native-mixpanel": "github:mikelambert/react-native-mixpanel",
     "react-native-native-env": "0.0.4",
-    "react-native-permissions": "github:yonahforst/react-native-permissions",
+    "react-native-permissions": "github:mikelambert/react-native-permissions",
     "react-native-photo-view": "github:alwx/react-native-photo-view",
     "react-native-processinfo": "0.0.2",
     "react-native-push-notification": "github:mikelambert/react-native-push-notification#service-js",
