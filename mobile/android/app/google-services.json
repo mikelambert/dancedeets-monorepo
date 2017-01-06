@@ -15,13 +15,21 @@
       },
       "oauth_client": [
         {
+          "client_id": "911140565156-ql8f9q5o7qd3tmck26ibdkdfqk9lsrvk.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.dancedeets.android",
+            "certificate_hash": "1CC636FCD0ACAA7ABEBE9F678C8456A0C36980E4"
+          }
+        },
+        {
           "client_id": "911140565156-rcui7jcutpod3ukacuq9ssh0jtmuedcg.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": ""
+          "current_key": "AIzaSyBUaeFQX1mhOieyoP5R5qB5-iqD2bNhBWg"
         }
       ],
       "services": {
@@ -49,13 +57,21 @@
       },
       "oauth_client": [
         {
+          "client_id": "911140565156-ql8f9q5o7qd3tmck26ibdkdfqk9lsrvk.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.dancedeets.android.debug",
+            "certificate_hash": "1CC636FCD0ACAA7ABEBE9F678C8456A0C36980E4"
+          }
+        },
+        {
           "client_id": "911140565156-rcui7jcutpod3ukacuq9ssh0jtmuedcg.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": ""
+          "current_key": "AIzaSyBUaeFQX1mhOieyoP5R5qB5-iqD2bNhBWg"
         }
       ],
       "services": {
