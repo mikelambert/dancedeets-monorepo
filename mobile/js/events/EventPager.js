@@ -5,6 +5,9 @@
  */
 
 import React from 'react';
+import {
+  InteractionManager
+} from 'react-native';
 import ViewPager from 'react-native-viewpager';
 import { connect } from 'react-redux';
 import { Event } from 'dancedeets-common/js/events/models';
@@ -26,6 +29,7 @@ class EventPager extends React.Component {
   state: {
     dataSource: ViewPager.DataSource,
     position: ?Object,
+    loadInProgress: boolean;
   }
 
   constructor(props) {
@@ -36,6 +40,7 @@ class EventPager extends React.Component {
     this.state = {
       position: null,
       dataSource,
+      loadInProgress: true,
     };
     this.state = this.getNewState(this.props, null);
     (this: any).renderEvent = this.renderEvent.bind(this);
@@ -86,6 +91,14 @@ class EventPager extends React.Component {
   }
 
   renderEvent(eventData: Object, pageID: number | string) {
+    // This can happen when we're animating in,
+    // and have passed in some almost-entirely-empty dataSource.
+    // We don't want to render anything for the hidden pages
+    // until after the animation has completed
+    // (and the user won't notice any jank)
+    if (eventData == null) {
+      return null;
+    }
     return (<FullEventView
       onFlyerSelected={this.props.onFlyerSelected}
       event={eventData.event}
@@ -93,12 +106,32 @@ class EventPager extends React.Component {
     />);
   }
 
+  componentDidMount() {
+    InteractionManager.runAfterInteractions(() => {
+      this.setState({loadInProgress: false});
+    });
+  }
+
   render() {
+    // We only show the "first" element in the dataSource, until we've finished our animation in
+    // This should help speed up the event-view transition.
+    let dataSource = this.state.dataSource;
+    if (this.state.loadInProgress) {
+      const selectedIndex = this.getSelectedPage();
+      if (selectedIndex == null) {
+        return null;
+      }
+      const selectedPage = dataSource.getPageData(selectedIndex);
+      const tempData = Array.from(new Array(dataSource.getPageCount()));
+      tempData[selectedIndex] = selectedPage;
+      dataSource = this.state.dataSource.cloneWithPages(tempData);
+    }
+
     // We use react-native-viewpager instead of react-native-carousel,
     // because we only want to render a few pages in the big list
     // (as opposed to a fully rendered pageable/scrollable view, which will scale poorly)
     return (<ViewPager
-      dataSource={this.state.dataSource}
+      dataSource={dataSource}
       renderPage={this.renderEvent}
       renderPageIndicator={false}
       onChangePage={i => this.props.onEventNavigated(this.state.dataSource.getPageData(i).event)}
