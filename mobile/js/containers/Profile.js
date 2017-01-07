@@ -366,6 +366,10 @@ const styles = StyleSheet.create({
   },
   profileLeft: {
     position: 'absolute',
+    // We have to re-encode the top/left margins explicitly,
+    // since otherwise this element is placed differently ios-vs-android
+    top: 10,
+    left: 10,
     borderWidth: 1,
     borderColor: purpleColors[0],
   },
