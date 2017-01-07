@@ -55,6 +55,7 @@ export default class ProportionalImage extends React.Component {
       if (measuredWidth !== currentWidth) {
         this.setState({
           ...this.state,
+          height: layout.height,
           width: measuredWidth,
         });
       }
@@ -65,6 +66,7 @@ export default class ProportionalImage extends React.Component {
       if (measuredHeight !== currentHeight) {
         this.setState({
           ...this.state,
+          width: layout.width,
           height: measuredHeight,
         });
       }
