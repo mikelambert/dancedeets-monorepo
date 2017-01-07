@@ -149,9 +149,10 @@ class _EventList extends React.Component {
       });
     }
 
-    let width = 200;
+    const margin = 2 * 10;
+    let width = 200 + margin;
     if (this.props.window) {
-      width = (this.props.window.width / Math.floor(this.props.window.width / width));
+      width = (this.props.window.width / Math.floor(this.props.window.width / width)) - margin;
     }
 
     const dates = Object.keys(dateMap).sort().reverse();
