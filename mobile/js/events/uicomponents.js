@@ -942,22 +942,24 @@ class _FullEventView extends React.Component {
             >{name}</Text>
           }
         >
-          <EventCategories categories={this.props.event.annotations.categories} />
-          <EventRsvp event={this.props.event} />
-          <EventDateTime start={this.props.event.start_time} end={this.props.event.end_time} >
-            <AddToCalendarButton event={this.props.event} style={{ marginTop: 5 }} />
-          </EventDateTime>
-          <TouchableOpacity onPress={this.onLocationClicked} activeOpacity={0.5}>
-            <EventVenue style={eventStyles.rowLink} venue={this.props.event.venue} currentPosition={this.props.currentPosition} />
-            {map}
-          </TouchableOpacity>
-          <EventTickets event={this.props.event} />
-          <EventSource event={this.props.event} />
-          <EventAddedBy event={this.props.event} />
-          <EventOrganizers event={this.props.event} />
-          <HorizontalView style={eventStyles.splitButtons}>
-            <EventShare event={this.props.event} />
-          </HorizontalView>
+          <ProgressiveLayout>
+            <EventCategories categories={this.props.event.annotations.categories} />
+            <EventRsvp event={this.props.event} />
+            <EventDateTime start={this.props.event.start_time} end={this.props.event.end_time} >
+              <AddToCalendarButton event={this.props.event} style={{ marginTop: 5 }} />
+            </EventDateTime>
+            <TouchableOpacity onPress={this.onLocationClicked} activeOpacity={0.5}>
+              <EventVenue style={eventStyles.rowLink} venue={this.props.event.venue} currentPosition={this.props.currentPosition} />
+              {map}
+            </TouchableOpacity>
+            <EventTickets event={this.props.event} />
+            <EventSource event={this.props.event} />
+            <EventAddedBy event={this.props.event} />
+            <EventOrganizers event={this.props.event} />
+            <HorizontalView style={eventStyles.splitButtons}>
+              <EventShare event={this.props.event} />
+            </HorizontalView>
+          </ProgressiveLayout>
         </Card>
         <EventDescription event={this.props.event} />
       </ProgressiveLayout>
