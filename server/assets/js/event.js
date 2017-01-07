@@ -18,6 +18,7 @@ import url from 'url';
 import Helmet from 'react-helmet';
 import { Share as TwitterShare } from 'react-twitter-widgets';
 import ExecutionEnvironment from 'exenv';
+import Lightbox from 'react-image-lightbox';
 import {
   intlWeb,
 } from 'dancedeets-common/js/intl';
@@ -103,25 +104,47 @@ class ImageWithLinks extends React.Component {
     amp: boolean;
   }
 
+  state: {
+    lightbox: boolean;
+  };
+
+  constructor(props) {
+    super(props);
+    (this: any).onClick = this.onClick.bind(this);
+    this.state = { lightbox: false };
+  }
+
+  onClick() {
+    this.setState({ lightbox: true });
+    return false;
+  }
+
   render() {
     const picture = this.props.event.picture;
     if (!picture) {
       return null;
     }
-    const eventUrl = picture.source;
+    const imageUrl = (this.props.amp || !ExecutionEnvironment.canUseDOM) ? picture.source : '#';
+
+    const image = <AmpImage picture={picture} amp={this.props.amp} className="event-flyer" />;
+
+    const link = <a className="link-event-flyer" href={imageUrl} onClick={this.onClick}>{image}</a>;
+
+    let lightbox = null;
+    if (this.state.lightbox) {
+      lightbox = (<Lightbox
+        mainSrc={picture.source}
+        onCloseRequest={() => this.setState({ lightbox: false })}
+      />);
+    }
 
     return (
       <Card>
-        <a className="link-event-flyer" href={eventUrl}>
-          <AmpImage
-            picture={picture}
-            amp={this.props.amp}
-            className="event-flyer"
-          />
-        </a>
+        {link}
+        {lightbox}
         <br />
         <ImagePrefix iconName="picture-o">
-          <a className="link-event-flyer" href={eventUrl}>See Full Flyer</a>
+          <a className="link-event-flyer" href={imageUrl} onClick={this.onClick}>See Full Flyer</a>
         </ImagePrefix>
       </Card>
     );

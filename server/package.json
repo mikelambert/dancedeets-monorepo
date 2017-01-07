@@ -77,6 +77,7 @@
     "react-format-text": "^1.1.0",
     "react-helmet": "^3.2.3",
     "react-hot-loader": "^3.0.0-beta.6",
+    "react-image-lightbox": "^3.4.1",
     "react-intl": "^2.1.5",
     "react-lazyload": "^2.2.0",
     "react-masonry-component": "^5.0.1",
