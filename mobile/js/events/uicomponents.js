@@ -507,7 +507,7 @@ class _EventRsvpControl extends React.Component {
       values={RsvpOnFB.RSVPs.map(x => this.props.intl.formatMessage(messages[x]))}
       defaultIndex={this.state.defaultRsvp}
       tintColor={yellowColors[0]}
-      style={{ marginTop: 5, flex: 1 }}
+      style={{ marginTop: 5, flexGrow: 1 }}
       tryOnChange={this.onRsvpChange}
     />);
   }
@@ -974,7 +974,7 @@ const detailHeight = 15;
 
 const eventStyles = StyleSheet.create({
   thumbnail: {
-    flex: 1,
+    flexGrow: 1,
     borderRadius: 5,
   },
   container: {
@@ -1029,7 +1029,7 @@ const eventStyles = StyleSheet.create({
     marginRight: 5,
   },
   eventMap: {
-    flex: 1,
+    flexGrow: 1,
     paddingHorizontal: 10,
     height: normalize(150),
     marginLeft: 25,
