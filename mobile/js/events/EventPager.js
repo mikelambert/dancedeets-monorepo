@@ -6,7 +6,9 @@
 
 import React from 'react';
 import {
-  InteractionManager
+  Dimensions,
+  InteractionManager,
+  View,
 } from 'react-native';
 import ViewPager from 'react-native-viewpager';
 import { connect } from 'react-redux';
@@ -97,7 +99,12 @@ class EventPager extends React.Component {
     // until after the animation has completed
     // (and the user won't notice any jank)
     if (eventData == null) {
-      return null;
+      // We don't return null, because we need an element which will
+      // take up exactly the same amount of space as the full element.
+      // This ensures the one *actually* rendered element in the ViewPager
+      // gets allocated the correct sized layout (and not 2-3x larger).
+      const width = Dimensions.get('window').width;
+      return <View style={{ width }} />;
     }
     return (<FullEventView
       onFlyerSelected={this.props.onFlyerSelected}
