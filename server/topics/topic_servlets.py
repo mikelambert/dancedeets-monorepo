@@ -42,7 +42,30 @@ def get_videos_for(keyword, recent=False):
         part="id,snippet",
         maxResults=50,
     ).execute()
+    return decorate_with_topic_details(search_response)
+
+def decorate_with_topic_details(search_response):
+    topic_response = get_topic_details_for(search_response)
+    topic_lookup = dict((x['id'], x) for x in topic_response['items'])
+    full_response = search_response.copy()
+    for video in full_response['items']:
+        if video['id']['kind'] == 'youtube#video':
+            video['topicDetails'] = topic_lookup[video['id']['videoId']]['topicDetails']
+    return full_response
+
+def get_topic_details_for(search_response):
+    videoIds = [x['id']['videoId'] for x in search_response['items'] if x['id']['kind'] == 'youtube#video']
+    youtube = build(
+        YOUTUBE_API_SERVICE_NAME,
+        YOUTUBE_API_VERSION,
+        developerKey=DEVELOPER_KEY)
+    search_response = youtube.videos().list(
+        id=','.join(videoIds),
+        part="topicDetails",
+        maxResults=50,
+    ).execute()
     return search_response
+
 
 @app.route('/topic/([^/]+)/?')
 class TopicHandler(base_servlet.BaseRequestHandler):
