@@ -5,14 +5,15 @@
  */
 
 import { Dimensions } from 'react-native';
-import type { SearchQuery, SearchResults } from 'dancedeets-common/js/events/search';
+import type { SearchQuery, SearchResponse } from 'dancedeets-common/js/events/search';
 import type { Action } from '../actions/types';
+
 
 export type State = {
   listLayout: boolean; // should show list view or expanded view
   loading: boolean; // loading indicator
   searchQuery: SearchQuery; // our current search query
-  results: ?SearchResults; // our last-searched results
+  response: ?SearchResponse; // our last-searched response
   error: boolean; // whether there was an error fetching the current results
 };
 
@@ -26,7 +27,7 @@ const initialState = {
     keywords: '',
     timePeriod: 'UPCOMING',
   },
-  results: null,
+  response: null,
   error: false,
 };
 
@@ -73,14 +74,14 @@ export function search(state: State = initialState, action: Action): State {
     return {
       ...state,
       loading: false,
-      results: action.results,
+      response: action.response,
     };
   }
   if (action.type === 'SEARCH_FAILED') {
     return {
       ...state,
       loading: false,
-      results: null,
+      response: null,
       error: true,
     };
   }

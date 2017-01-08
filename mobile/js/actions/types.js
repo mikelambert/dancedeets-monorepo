@@ -24,7 +24,7 @@
 
 import type { NavigationRoute } from 'react-native/Libraries/NavigationExperimental/NavigationTypeDefinition';
 import { AccessToken } from 'react-native-fbsdk';
-import type { SearchResults } from 'dancedeets-common/js/events/search';
+import type { SearchResponse } from 'dancedeets-common/js/events/search';
 import type { AddEventList, SortOrder } from '../addEventsModels';
 
 export type User = {
@@ -51,7 +51,7 @@ export type Action =
   | { type: 'UPDATE_LOCATION', location: string }
   | { type: 'UPDATE_KEYWORDS', keywords: string }
   | { type: 'START_SEARCH' }
-  | { type: 'SEARCH_COMPLETE', results: SearchResults }
+  | { type: 'SEARCH_COMPLETE', response: SearchResponse }
   | { type: 'SEARCH_FAILED' }
   | { type: 'ADD_EVENTS_RELOAD' }
   | { type: 'ADD_EVENTS_RELOAD_COMPLETE', results: AddEventList }

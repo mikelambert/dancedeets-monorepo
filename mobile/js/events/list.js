@@ -26,7 +26,7 @@ import upperFirst from 'lodash/upperFirst';
 import { Event } from 'dancedeets-common/js/events/models';
 import type {
   Onebox,
-  SearchResults,
+  SearchResponse,
 } from 'dancedeets-common/js/events/search';
 import { EventRow } from './uicomponents';
 import SearchHeader from './searchHeader';
@@ -222,13 +222,13 @@ class _EventListContainer extends React.Component {
 
   componentWillReceiveProps(nextProps) {
     this.setState(this.getNewState(nextProps));
-    if (nextProps.search.results !== this.props.search.results) {
+    if (nextProps.search.response !== this.props.search.response) {
       this._listView.scrollTo({ x: 0, y: 0, animated: false });
     }
   }
 
   getNewState(props) {
-    const { dataBlob, sectionHeaders } = this.buildDataBlobAndHeaders(props.search.results);
+    const { dataBlob, sectionHeaders } = this.buildDataBlobAndHeaders(props.search.response);
     const state = {
       ...this.state,
       dataSource: this.state.dataSource.cloneWithRowsAndSections(dataBlob, sectionHeaders),
@@ -259,7 +259,7 @@ class _EventListContainer extends React.Component {
     }
   }
 
-  buildDataBlobAndHeaders(results: ?SearchResults) {
+  buildDataBlobAndHeaders(results: ?SearchResponse) {
     const dataBlob = {};
     const sectionHeaders = [];
 
@@ -370,7 +370,7 @@ class _EventListContainer extends React.Component {
 
   renderSummaryView() {
     let message = null;
-    const query = this.props.search.results && this.props.search.results.query;
+    const query = this.props.search.response && this.props.search.response.query;
     if (!query) {
       return null;
     }

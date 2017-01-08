@@ -29,18 +29,18 @@ type LatLong = {
 };
 
 // API Requests 1.x
-export type SearchResults = {
+export type SearchResponse = {
   onebox_links: Array<Onebox>;
   results: Array<Event>;
   query: SearchQuery;
 };
 
 // API Requests 2.0+
-export type NewSearchResults = {
+export type NewSearchResponse = {
   onebox_links: Array<Onebox>;
   results: Array<SearchEvent>;
   query: SearchQuery;
-  // These are technically in SearchResults too, but they weren't necessary there.
+  // These are technically in SearchResponse too, but they weren't necessary there.
   // They aren't necessary here (yet), but this helps document the schema.
   title: string;
   location: string;

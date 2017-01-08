@@ -4,7 +4,7 @@
  * @flow
  */
 
-import type { SearchResults } from 'dancedeets-common/js/events/search';
+import type { SearchResponse } from 'dancedeets-common/js/events/search';
 import type { Action, ThunkAction, Dispatch } from './types';
 
 import { search } from '../api/dancedeets';
@@ -75,10 +75,10 @@ function searchStart(): Action {
   };
 }
 
-function searchComplete(results: SearchResults): Action {
+function searchComplete(response: SearchResponse): Action {
   return {
     type: 'SEARCH_COMPLETE',
-    results,
+    response,
   };
 }
 

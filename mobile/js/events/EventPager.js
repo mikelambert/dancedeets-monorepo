@@ -57,7 +57,7 @@ class EventPager extends React.Component {
   }
 
   getNewState(props, position) {
-    const results = props.search.results;
+    const results = props.search.response;
     let finalResults = [];
     const newPosition = position || this.state.position;
 
@@ -81,8 +81,8 @@ class EventPager extends React.Component {
 
   getSelectedPage() {
     let initialPage = null;
-    if (this.props.search.results && this.props.search.results.results) {
-      initialPage = this.props.search.results.results.findIndex(x => x.id === this.props.selectedEvent.id);
+    if (this.props.search.response && this.props.search.response.results) {
+      initialPage = this.props.search.response.results.findIndex(x => x.id === this.props.selectedEvent.id);
     }
     return initialPage;
   }

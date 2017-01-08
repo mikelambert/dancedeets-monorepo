@@ -121,23 +121,23 @@ export async function auth(data: ?Object) {
 }
 
 export async function feed(url: string) {
-  const results = await timeout(10000, performRequest('feed', {
+  const response = await timeout(10000, performRequest('feed', {
     url,
   }, {
     url,
   }));
-  return results;
+  return response;
 }
 
 export async function search(location: string, keywords: string, timePeriod: TimePeriod) {
-  const results = await timeout(10000, performRequest('search', {
+  const response = await timeout(10000, performRequest('search', {
     location,
     keywords,
     time_period: timePeriod,
   }));
-  results.results = results.results.map(x => new Event(x));
-  results.results = sortString(results.results, resultEvent => moment(resultEvent.start_time).toISOString());
-  return results;
+  response.results = response.results.map(x => new Event(x));
+  response.results = sortString(response.results, resultEvent => moment(resultEvent.start_time).toISOString());
+  return response;
 }
 
 export async function event(id: string) {
