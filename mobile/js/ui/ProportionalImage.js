@@ -3,9 +3,6 @@
  *
  * @flow
  */
-import React, {
-  Element,
-} from 'react';
 import {
   Animated,
   View,
@@ -84,7 +81,7 @@ export default class ProportionalImage extends React.Component {
     this.view.setNativeProps(nativeProps);
   }
 
-  view: Element<View>;
+  view: View;
 
   render() {
     // We catch the onLayout in the view, find the size, then resize the child (before it is laid out?)

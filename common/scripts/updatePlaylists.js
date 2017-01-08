@@ -9,12 +9,12 @@ import fetch from 'node-fetch';
 import * as fs from 'fs';
 import zip from 'lodash/zip';
 import {
-  YoutubeKey,
-  getUrl,
   loadPlaylist,
 } from './fetchYoutubeVideos';
 import {
-  findVideoDimensions
+  findVideoDimensions,
+  getUrl,
+  YoutubeKey,
 } from './_youtube';
 
 async function loadPlaylistData(playlistIds) {

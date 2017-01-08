@@ -11,6 +11,10 @@ declare var describe: (name: string, callback: () => void) => void;
 declare var it: (name: string, callback: () => void) => void;
 declare var expect: any;
 
+declare module 'react-native-firestack' {
+  declare var exports: any;
+}
+
 declare module 'react-native-calendar-events' {
   declare var exports: any;
 }

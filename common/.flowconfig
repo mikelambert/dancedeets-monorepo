@@ -16,9 +16,6 @@
 
 .*/node_modules/fbjs/.*
 
-[include]
-../common
-
 [libs]
 flow/
 js/flow-lib.js

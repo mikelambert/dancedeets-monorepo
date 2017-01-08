@@ -46,7 +46,7 @@ export default class ZoomableImage extends React.Component {
     isZoomed: boolean;
   };
 
-  _zoomableScroll: Element<ScrollView>;
+  _zoomableScroll: ScrollView;
 
   constructor() {
     super();
