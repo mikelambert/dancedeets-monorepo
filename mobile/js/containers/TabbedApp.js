@@ -311,7 +311,7 @@ class _TabbedAppView extends React.Component {
   }
 
   async loadWhitelist() {
-    const eventSignupUserIds = await RemoteConfig.get('event_signup_user_ids');
+    const eventSignupUserIds = await RemoteConfig.get('event_signup_user_ids') || [];
     this.setState({ eventSignupUserIds });
   }
 
