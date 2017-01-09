@@ -239,9 +239,7 @@ gulp.task('rebuild', cb => runSequence('clean', 'compile', 'test', cb));
 
 
 
-gulp.task('datalab:start', $.shell.task(['gcloud app modules start datalab --version main']));
-gulp.task('datalab:stop',  $.shell.task(['gcloud app modules stop  datalab --version main']));
-gulp.task('datalab', ['datalab:start']);
+gulp.task('datalab', $.shell.task(['docker run -it -p "127.0.0.1:8081" -v "${HOME}:/content" -e "PROJECT_ID=dancedeets-hrd" gcr.io/cloud-datalab/datalab:local']));
 
 
 
