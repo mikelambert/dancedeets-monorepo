@@ -1,3 +1,6 @@
+# -*-*- encoding: utf-8 -*-*-
+#
+
 import datetime
 import jinja2
 import re
@@ -45,7 +48,7 @@ def _geocodable_location(form, field):
 
 
 def _get_parsed_keywords(keywords):
-    cleaned_keywords = re.sub(r'[<=>:(),]', ' ', keywords).replace(' - ', ' ')
+    cleaned_keywords = re.sub(ur'[<=>:(),|&/\\-~?!.•]', ' ', keywords).replace(' - ', ' ')
     unquoted_quoted_keywords = cleaned_keywords.split('"')
     for i in range(0, len(unquoted_quoted_keywords), 2):
         unquoted_quoted_keywords[i] = categories.format_as_search_query(unquoted_quoted_keywords[i])
