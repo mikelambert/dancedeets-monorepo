@@ -18,7 +18,8 @@ import url from 'url';
 import Helmet from 'react-helmet';
 import { Share as TwitterShare } from 'react-twitter-widgets';
 import ExecutionEnvironment from 'exenv';
-import Lightbox from 'react-image-lightbox';
+// TODO: Lightbox
+// import Lightbox from 'react-image-lightbox';
 import {
   intlWeb,
 } from 'dancedeets-common/js/intl';
@@ -124,12 +125,17 @@ class ImageWithLinks extends React.Component {
     if (!picture) {
       return null;
     }
-    const imageUrl = (this.props.amp || !ExecutionEnvironment.canUseDOM) ? picture.source : '#';
+    // TODO: Lightbox
+    // const imageUrl = (this.props.amp || !ExecutionEnvironment.canUseDOM) ? picture.source : '#';
+    const imageUrl = picture.source; // (this.props.amp || !ExecutionEnvironment.canUseDOM) ? picture.source : '#';
 
     const image = <AmpImage picture={picture} amp={this.props.amp} className="event-flyer" />;
 
     const link = <a className="link-event-flyer" href={imageUrl} onClick={this.onClick}>{image}</a>;
 
+    const lightbox = null;
+    /*
+    // TODO: Lightbox
     let lightbox = null;
     if (this.state.lightbox) {
       lightbox = (<Lightbox
@@ -137,6 +143,7 @@ class ImageWithLinks extends React.Component {
         onCloseRequest={() => this.setState({ lightbox: false })}
       />);
     }
+    */
 
     return (
       <Card>
