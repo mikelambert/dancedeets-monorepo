@@ -74,7 +74,7 @@
     "react": "^15.4.1",
     "react-cookie": "^1.0.4",
     "react-dom": "^15.4.1",
-    "react-format-text": "github:mikelambert/react-format-text",
+    "react-format-text": "^1.1.0",
     "react-helmet": "^3.2.3",
     "react-hot-loader": "^3.0.0-beta.6",
     "react-image-lightbox": "^3.4.1",
