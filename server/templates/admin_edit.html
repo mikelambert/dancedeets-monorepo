@@ -25,7 +25,9 @@ Edit Event
 					Original Address:
 				</td><td>
 					<table style="display:inline"><tr><td>
-					<a href="http://www.google.com/search?q={{ location_info.fb_address|urlencode }}">{{ location_info.fb_address|format_html }}</a>
+					{% if location_info.fb_address %}
+						<a href="http://www.google.com/search?q={{ location_info.fb_address|urlencode }}">{{ location_info.fb_address|format_html }}</a>
+					{% endif %}
 					</td></tr>
 					</table>
 				</td></tr>
@@ -107,18 +109,18 @@ Edit Event
 			<input type="hidden" name="event_id" value="{{ fb_event.info.id }}">
 
 		</form>
-  </body>
+	</body>
 {% endblock %}
 
 {% block bottom_javascript %}
 <script type="text/javascript">
 function googleTranslateElementInit() {
-  new google.translate.TranslateElement({
-    layout: google.translate.TranslateElement.InlineLayout.SIMPLE,
-    multilanguagePage: true,
-    gaTrack: true,
-    gaId: 'UA-18831479-1',
-  }, 'google_translate_element');
+	new google.translate.TranslateElement({
+		layout: google.translate.TranslateElement.InlineLayout.SIMPLE,
+		multilanguagePage: true,
+		gaTrack: true,
+		gaId: 'UA-18831479-1',
+	}, 'google_translate_element');
 }
 </script>
 <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
