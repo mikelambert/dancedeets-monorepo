@@ -48,7 +48,9 @@ def _geocodable_location(form, field):
 
 
 def _get_parsed_keywords(keywords):
-    cleaned_keywords = re.sub(ur'[<=>:(),|&/\\-~?!.•]', ' ', keywords).replace(' - ', ' ')
+    print keywords
+    cleaned_keywords = re.sub(ur'[<=>:(),|&/\\~?!.•\-]', ' ', keywords).replace(' - ', ' ')
+    print cleaned_keywords
     unquoted_quoted_keywords = cleaned_keywords.split('"')
     for i in range(0, len(unquoted_quoted_keywords), 2):
         unquoted_quoted_keywords[i] = categories.format_as_search_query(unquoted_quoted_keywords[i])
