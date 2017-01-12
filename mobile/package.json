@@ -24,7 +24,7 @@
     "react-native-autolink": "^0.7.0",
     "react-native-calendar-events": "github:mikelambert/react-native-calendar-events",
     "react-native-carousel": "^0.10.0",
-    "react-native-code-push": "^1.14.6-beta",
+    "react-native-code-push": "^1.16.1-beta",
     "react-native-fabric": "github:corymsmith/react-native-fabric",
     "react-native-fabric-crashlytics": "^0.1.5",
     "react-native-fbsdk": "github:mikelambert/react-native-fbsdk#patch-1",
