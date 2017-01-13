@@ -1,0 +1,40 @@
+{
+    "html_attributions": [], 
+    "results": [
+        {
+            "formatted_address": "115 Haas Pavilion, Berkeley, CA 94720, United States", 
+            "geometry": {
+                "location": {
+                    "lat": 37.8693878, 
+                    "lng": -122.2623099
+                }
+            }, 
+            "icon": "https://maps.gstatic.com/mapfiles/place_api/icons/generic_business-71.png", 
+            "id": "18d6230fc7f5702eca05992f21292e41d4bea56f", 
+            "name": "Haas Pavilion", 
+            "opening_hours": {
+                "open_now": false, 
+                "weekday_text": []
+            }, 
+            "photos": [
+                {
+                    "height": 1152, 
+                    "html_attributions": [
+                        "<a href=\"https://maps.google.com/maps/contrib/114258357896879247396/photos\">Bryan Cabanas</a>"
+                    ], 
+                    "photo_reference": "CoQBdwAAAMrfSe6d2D3dNo7IfBXZ_jMkEVS2yaMkEU6_Whx9EgKjXq5J1crfasXEeo6CYc30EW3b0g11gAVq7vExiP3DmvVGf4KaJOKBCGb6pogYoIci_Zvw0HmzIobfBOD0odXFzheXi4zL9hMUvcbE5YZ3GTncDwn6IWvAjqitP-zikTo7EhAOtd6AHzR6H6i01dY7uScEGhTkQJkN1i8II1h_Nwu4PHE2InQcYg", 
+                    "width": 2048
+                }
+            ], 
+            "place_id": "ChIJTVFfSSZ8hYARob3mDabCwQM", 
+            "rating": 4.4, 
+            "reference": "CmRRAAAAgMS1xInbBhD4hL4FyGNsucpfG74bRIyaeWSxlF5V-Sd3Rg7zu8frLu4z86CQ_GeZ4y9Qz-QQKDEM9wVjjJexRXkzuHhDZ9ujwojYiYnoAKQ5pt5TmocZ7IcAhY3m_AfvEhD8X8AWoVpPbmWslOFfAisGGhQMAsgbtNKgoM7zs6t9LTWZo4O0PQ", 
+            "types": [
+                "university", 
+                "point_of_interest", 
+                "establishment"
+            ]
+        }
+    ], 
+    "status": "OK"
+}

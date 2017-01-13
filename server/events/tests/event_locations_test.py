@@ -1,4 +1,5 @@
 #!/usr/bin/python
+# -*-*- encoding: utf-8 -*-*-
 
 from events import eventdata
 from events import event_locations
@@ -171,4 +172,19 @@ class TestEasyLatLong(TestEventLocations):
         self.assertEqual(location_info.final_city, 'San Francisco, CA, United States')
         self.assertNearEqual(location_info.latlong(), (37.774929499999999, -122.4194155))
 
+def gen_event_with_location(loc):
+    return {
+        "empty": False,
+        "info": {
+            "name": "event with configured place name",
+            "place": {
+                "name": loc,
+            }
+        }
+    }
 
+class TestGetString(unittest.TestCase):
+    def runTest(self):
+
+        self.assertEqual('New Taipei City, Taiwan', event_locations.LocationInfo(gen_event_with_location(u'捷運板橋站練舞')).final_city)
+        self.assertEqual((37.8693878, -122.2623099), event_locations.LocationInfo(gen_event_with_location(u'   Haas Pavilion, Berkeley, CA 94720, United States')).geocode.latlng())

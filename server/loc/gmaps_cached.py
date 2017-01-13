@@ -35,6 +35,7 @@ class CachedBackend(gmaps_backends.GMapsBackend):
         geocode_key = self._geocode_key(**kwargs)
         geocode = CachedGeoCode.get_by_id(geocode_key)
         if geocode:
+            logging.info('Returning info from CachedGeoCode: %s', geocode_key)
             json_data = geocode.json_data
         else:
             json_data = self.backend.get_json(**kwargs)

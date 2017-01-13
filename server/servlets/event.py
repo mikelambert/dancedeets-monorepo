@@ -25,6 +25,7 @@ from logic import rsvp
 from nlp import categories
 from nlp import event_auto_classifier
 from nlp import event_classifier
+from rankings import rankings
 from search import search
 from servlets import api
 from users import users
@@ -324,6 +325,7 @@ class AdminEditHandler(base_servlet.BaseRequestHandler):
             self.display['fb_geocoded_address'] = formatting.format_geocode(fb_geocode)
         else:
             self.display['fb_geocoded_address'] = ''
+        self.display['ranking_city_name'] = rankings.get_ranking_location_latlng(location_info.geocode.latlng())
 
         self.display['event'] = e
         self.display['event_id'] = event_id

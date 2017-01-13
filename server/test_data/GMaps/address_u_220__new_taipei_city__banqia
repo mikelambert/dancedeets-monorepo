@@ -1,0 +1,75 @@
+{
+    "results": [
+        {
+            "address_components": [
+                {
+                    "long_name": "\u6377\u904b\u677f\u6a4b\u7ad9",
+                    "short_name": "\u6377\u904b\u677f\u6a4b\u7ad9",
+                    "types": [
+                        "establishment",
+                        "point_of_interest",
+                        "subway_station",
+                        "transit_station"
+                    ]
+                },
+                {
+                    "long_name": "Banqiao District",
+                    "short_name": "Banqiao District",
+                    "types": [
+                        "administrative_area_level_3",
+                        "political"
+                    ]
+                },
+                {
+                    "long_name": "New Taipei City",
+                    "short_name": "New Taipei City",
+                    "types": [
+                        "administrative_area_level_1",
+                        "political"
+                    ]
+                },
+                {
+                    "long_name": "Taiwan",
+                    "short_name": "TW",
+                    "types": [
+                        "country",
+                        "political"
+                    ]
+                },
+                {
+                    "long_name": "220",
+                    "short_name": "220",
+                    "types": [
+                        "postal_code"
+                    ]
+                }
+            ],
+            "formatted_address": "220, New Taipei City, Banqiao District, \u6377\u904b\u677f\u6a4b\u7ad9",
+            "geometry": {
+                "location": {
+                    "lat": 25.0145999,
+                    "lng": 121.4625299
+                },
+                "location_type": "APPROXIMATE",
+                "viewport": {
+                    "northeast": {
+                        "lat": 25.0159488802915,
+                        "lng": 121.4638788802915
+                    },
+                    "southwest": {
+                        "lat": 25.0132509197085,
+                        "lng": 121.4611809197085
+                    }
+                }
+            },
+            "place_id": "ChIJw2TA-xuoQjQR8tm_mW_VDUk",
+            "types": [
+                "establishment",
+                "point_of_interest",
+                "subway_station",
+                "transit_station"
+            ]
+        }
+    ],
+    "status": "OK"
+}

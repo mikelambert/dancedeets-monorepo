@@ -1,0 +1,44 @@
+{
+    "html_attributions": [], 
+    "results": [
+        {
+            "formatted_address": "San Jose, CA, USA", 
+            "geometry": {
+                "location": {
+                    "lat": 37.3382082, 
+                    "lng": -121.8863286
+                }, 
+                "viewport": {
+                    "northeast": {
+                        "lat": 37.4695381, 
+                        "lng": -121.589154
+                    }, 
+                    "southwest": {
+                        "lat": 37.124493, 
+                        "lng": -122.0456679
+                    }
+                }
+            }, 
+            "icon": "https://maps.gstatic.com/mapfiles/place_api/icons/geocode-71.png", 
+            "id": "c00d0e6ed23a5a6b418841457b33c47430a93a4c", 
+            "name": "San Jose", 
+            "photos": [
+                {
+                    "height": 2250, 
+                    "html_attributions": [
+                        "<a href=\"https://maps.google.com/maps/contrib/109052318400333513983/photos\">mark burch</a>"
+                    ], 
+                    "photo_reference": "CoQBdwAAAMDRVnIxnUkRduytv7C-0mQHJUq0U02MpXCd6clj4H2ICc4xHsncQS0oNVonPdF7nALu8hAOHCTGA4Kl3g9Gwg3FhqA0IqWCKsEzbPxHK-1Plwqj_-oUeI9s_uwoOYLo-jIGtMz5MU-drTF1O-6VDT3xhjxKjoPQYwM7sTdFldh8EhC48ITdfVmSGo7fJ3h6w9JFGhSLdeQcL_KEHRxuT9cH1j7GFnIN8g", 
+                    "width": 4000
+                }
+            ], 
+            "place_id": "ChIJ9T_5iuTKj4ARe3GfygqMnbk", 
+            "reference": "CmRbAAAAxVs3t8LOhgN9pcUUmYldiRfWXj7I6RvO-5-YHJhSzAxLApsEMa0e1EApFG7OyjIU4Lb_m2osdZvFGt6HQ2CTDiPtdoG7QboeNwUD_7sARNOb1KDhvqiiYRxdb4HPvXNtEhDwBsHa0NhRC9fg4f4PsRtBGhTCn_uHdz1o_69T6PevssYTOVTltQ", 
+            "types": [
+                "locality", 
+                "political"
+            ]
+        }
+    ], 
+    "status": "OK"
+}

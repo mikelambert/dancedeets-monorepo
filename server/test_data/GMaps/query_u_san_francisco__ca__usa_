@@ -1,0 +1,44 @@
+{
+    "html_attributions": [], 
+    "results": [
+        {
+            "formatted_address": "San Francisco, CA, USA", 
+            "geometry": {
+                "location": {
+                    "lat": 37.7749295, 
+                    "lng": -122.4194155
+                }, 
+                "viewport": {
+                    "northeast": {
+                        "lat": 37.812, 
+                        "lng": -122.3482
+                    }, 
+                    "southwest": {
+                        "lat": 37.70339999999999, 
+                        "lng": -122.527
+                    }
+                }
+            }, 
+            "icon": "https://maps.gstatic.com/mapfiles/place_api/icons/geocode-71.png", 
+            "id": "1b9ea3c094d3ac23c9a3afa8cd4d8a41f05de50a", 
+            "name": "San Francisco", 
+            "photos": [
+                {
+                    "height": 3000, 
+                    "html_attributions": [
+                        "<a href=\"https://maps.google.com/maps/contrib/112311730646477194456/photos\">Panupong Yokyongsakul</a>"
+                    ], 
+                    "photo_reference": "CoQBdwAAAHETa5X8j6hTwJIrwvohgpmbv10myNRJ2gZlVL4qH_a1GC09dJvPV_EIaDdCNz1sQeCY_wwbdJEMnLgEOTH7RK6-3OYHao7HCzsg_je2vIuHVqMsOY36kI2jUU_a8ml1Hb0N2d8eGeru3ZKNbXyJKQ4FMGK-xLYj6DbOYGB6rczBEhA9Q0LDLhQ-EQLybOymuXpUGhSKxEW_BCzxAXk0uDD9eFUHOrvFlw", 
+                    "width": 4000
+                }
+            ], 
+            "place_id": "ChIJIQBpAG2ahYAR_6128GcTUEo", 
+            "reference": "CmRbAAAA9Vxn4xVQ9_7PR-2yJTO8jD3Hc0gmb0ulsCgyAGK20qzJ05ahGfOYZ4_nS8mIFkY_peHE05uzN_gZ-0vd6ZglbPbLwSxgxe9mnOGQiLhEgiANCZaJ_BI7l8c2gWPyChWUEhB_SHJGhLdDixCt7XQ4dwwaGhTLNxksLdACfItNdVRR8GmJKNpwEA", 
+            "types": [
+                "locality", 
+                "political"
+            ]
+        }
+    ], 
+    "status": "OK"
+}

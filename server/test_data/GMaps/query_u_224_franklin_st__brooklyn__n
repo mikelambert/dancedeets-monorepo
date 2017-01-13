@@ -1,0 +1,33 @@
+{
+    "html_attributions": [], 
+    "results": [
+        {
+            "formatted_address": "224 Franklin St, Brooklyn, NY 11222, USA", 
+            "geometry": {
+                "location": {
+                    "lat": 40.7333365, 
+                    "lng": -73.9580029
+                }, 
+                "viewport": {
+                    "northeast": {
+                        "lat": 40.7333425, 
+                        "lng": -73.95792355
+                    }, 
+                    "southwest": {
+                        "lat": 40.73331849999999, 
+                        "lng": -73.95824095
+                    }
+                }
+            }, 
+            "icon": "https://maps.gstatic.com/mapfiles/place_api/icons/geocode-71.png", 
+            "id": "b23f22813396c5c940389e4ccfbc4dcf63b0b936", 
+            "name": "224 Franklin St", 
+            "place_id": "ChIJd9Nbvz9ZwokR-dChxdfCfqY", 
+            "reference": "CmRbAAAArZh94PcqqweAqyo3gUriTvj9ugaj_pjboVx1GZZWv0Lyud29wqLkjCIwcwh3PETa_3xpuD0NmwW2YGIFy3M6oCsp0si6v1pdJYfVpjKW7HqCGMHAfCb0D3bzeDeKyQGGEhCCFnmVuhYGbGoGiW7WvTgoGhQqu0hg80FkLbWGPEAVg6nHzdp8Xw", 
+            "types": [
+                "street_address"
+            ]
+        }
+    ], 
+    "status": "OK"
+}

@@ -1,9 +1,11 @@
 import copy
+import json
 import logging
 
 from util import runtime
 from . import gmaps
 from . import gmaps_prod_cache
+from . import math
 
 USE_PRIVATE_KEY = False
 
@@ -19,10 +21,9 @@ else:
 
 try:
     from . import gmaps_cached
-    from . import gmaps_bwcompat
     places_api = gmaps_cached.CachedBackend(remote_places_api)
     # No point to checking the Cached backend on this one
-    geocode_api = gmaps_bwcompat.BwCachedBackend(gmaps_cached.CachedBackend(remote_geocode_api))
+    geocode_api = gmaps_cached.CachedBackend(remote_geocode_api)
 except:
     logging.error("Failed to import caching backends, defaulting to raw gmaps backend")
     places_api = remote_places_api
@@ -46,7 +47,7 @@ class _GMapsResult(object):
         return self.json['formatted_address']
 
     def __repr__(self):
-        return '%s(dict(%r))' % (self.__class__, self.__dict__)
+        return '%s(dict(%s))' % (self.__class__, json.dumps(self.__dict__, indent=2))
 
 
 class GMapsGeocode(_GMapsResult):
@@ -144,6 +145,64 @@ def lookup_address(address, language=None):
             geocode = _build_geocode_from_json(json)
     return geocode
 
+
+def _get_size(geocode):
+    try:
+        ne, sw = geocode.latlng_bounds()
+        return math.get_distance(ne, sw)
+    except:
+        return None
+
+def _choose_best_geocode(g1, g2):
+    g1_size = _get_size(g1)
+    g2_size = _get_size(g2)
+    if g1_size is not None and g2_size is not None:
+        if g1_size > g2_size:
+            return g2
+        else:
+            return g1
+    else:
+        g1_size = g1.formatted_address()
+        g2_size = g1.formatted_address()
+        if g1_size > g2_size:
+            return g2
+        else:
+            return g1
+
+def _find_best_geocode(s, language=None):
+    """A more versatile lookup function that uses two google apis,
+    though returns unknown-type data that may or may not have viewports or address_components."""
+    location_geocode = lookup_location(s, language=language)
+    address_geocode = lookup_address(s, language=language)
+    logging.info('location lookup: %s', location_geocode)
+    logging.info('address lookup: %s', address_geocode)
+    if location_geocode:
+        if address_geocode:
+            return _choose_best_geocode(location_geocode, address_geocode)
+        else:
+            return location_geocode
+    else:
+        if address_geocode:
+            return address_geocode
+        else:
+            return None
+
+def lookup_string(s, language=None):
+    geocode = _find_best_geocode(s, language=language)
+    if geocode:
+        if 'address_components' in geocode.json_data and 'geometry' in geocode.json_data:
+            return geocode
+        else:
+            logging.info('lookup_string result does not have address or geomtry, doing geocode address lookup on: %s', geocode.formatted_address())
+            new_geocode = lookup_address(geocode.formatted_address())
+            if new_geocode:
+                return new_geocode
+            else:
+                logging.info('Faking an empty address_components for now, since at least the latlong is correct')
+                geocode.json_data['address_components'] = []
+                return geocode
+    else:
+        return None
 
 def lookup_latlng(latlng):
     json = geocode_api.get_json(latlng='%s,%s' % latlng)

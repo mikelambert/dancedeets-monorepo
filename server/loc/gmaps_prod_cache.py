@@ -1,4 +1,5 @@
 import json
+import logging
 import urllib
 
 import keys
@@ -22,6 +23,7 @@ class ProdServerBackend(gmaps_backends.GMapsBackend):
         finally:
             file.close()
         if file.getcode() == 200:
+            logging.info('Returning result from prod server: %s', post_data)
             return json.loads(response)
         else:
             return self.backend.get_json(**kwargs)

@@ -122,10 +122,6 @@ def update_remapped_address(fb_event, new_remapped_address):
     if location_info.remapped_address != new_remapped_address:
         _save_remapped_address_for(location_info.fb_address, new_remapped_address)
 
-def clean_address(address):
-    address = re.sub(r'B?\d+F$', '', address)
-    return address
-
 class LocationInfo(object):
     def __init__(self, fb_event=None, db_event=None, debug=False):
         self.overridden_address = None
@@ -141,15 +137,15 @@ class LocationInfo(object):
             # We try to trust the address *over* the latlong,
             # because fb uses bing which has less accuracy on some addresses (ie a jingsta address)
             self.fb_address = get_address_for_fb_event(fb_event)
+            logging.info('fb address is %s', self.fb_address)
             self.remapped_address = _get_remapped_address_for(self.fb_address)
             if self.remapped_address:
                 logging.info("Checking remapped address, which is %r", self.remapped_address)
             lookup_address = self.remapped_address or self.fb_address
             if lookup_address:
-                location_geocode = gmaps_api.lookup_location(lookup_address)
+                location_geocode = gmaps_api.lookup_string(lookup_address)
                 if location_geocode:
-                    address = clean_address(location_geocode.formatted_address())
-                    self.geocode = gmaps_api.lookup_address(address)
+                    self.geocode = location_geocode
                     self.final_address = location_geocode.formatted_address()
             if not self.geocode:
                 self.final_latlng = _get_latlng_from_event(fb_event)
@@ -163,7 +159,7 @@ class LocationInfo(object):
             self.overridden_address = db_event.address
             self.final_address = self.overridden_address
             if self.final_address != ONLINE_ADDRESS:
-                self.geocode = gmaps_api.lookup_address(self.final_address)
+                self.geocode = gmaps_api.lookup_string(self.final_address)
 
         logging.info("Final address is %r", self.final_address)
 

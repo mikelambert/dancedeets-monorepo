@@ -1,0 +1,47 @@
+{
+    "html_attributions": [], 
+    "results": [
+        {
+            "formatted_address": "Taiwan", 
+            "geometry": {
+                "location": {
+                    "lat": 25.0145999, 
+                    "lng": 121.4625299
+                }, 
+                "viewport": {
+                    "northeast": {
+                        "lat": 25.0154302, 
+                        "lng": 121.46383355
+                    }, 
+                    "southwest": {
+                        "lat": 25.01250820000001, 
+                        "lng": 121.46119615
+                    }
+                }
+            }, 
+            "icon": "https://maps.gstatic.com/mapfiles/place_api/icons/generic_business-71.png", 
+            "id": "636330af431849cc3526e159d98baf03a06685a3", 
+            "name": "\u6377\u904b\u677f\u6a4b\u7ad9", 
+            "photos": [
+                {
+                    "height": 1859, 
+                    "html_attributions": [
+                        "<a href=\"https://maps.google.com/maps/contrib/113445297227490005356/photos\">Chang Tony</a>"
+                    ], 
+                    "photo_reference": "CoQBdwAAAPTPVeFzd72YYymTi0pQbAnZ1IX0g_oXZLFDYbBg57kPUSTnyXb6B3OdWIwC_bHz77c74txSPkJcKo7lmDWu5g1oVyxOZxc4Y9EU8Mq7dHP2yreFZDuKjEPKHR1VCHr6i1x38Qwd3eRencj7dFrfuWdX8pnpu4rMbdyu8QLeMgmTEhCWsEEh3-cWZd5HP6uAr0BlGhTLe4X91JB798PVGWu9PNM4WjGZ7g", 
+                    "width": 2561
+                }
+            ], 
+            "place_id": "ChIJw2TA-xuoQjQR8tm_mW_VDUk", 
+            "rating": 4.4, 
+            "reference": "CmRRAAAAF5jiwlvBe7fI642lr8qq-AGVHScqUZC1-Z9bXJq8qR7plT1WK-eZHEaRX5YvtB2MllZjingc6rnFSxygh_voBGQoJu5X1RN-M7Gio-MUbWXNeHzvGp3_Z5-zKUFuVwXAEhCWPOCErWe7mkpYXkIJm6uaGhTnFZyMBOrGVtaeiW9rQ1hmHbz01w", 
+            "types": [
+                "subway_station", 
+                "transit_station", 
+                "point_of_interest", 
+                "establishment"
+            ]
+        }
+    ], 
+    "status": "OK"
+}

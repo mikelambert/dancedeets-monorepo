@@ -1,0 +1,47 @@
+{
+    "html_attributions": [], 
+    "results": [
+        {
+            "formatted_address": "", 
+            "geometry": {
+                "location": {
+                    "lat": 25.0145999, 
+                    "lng": 121.4625299
+                }, 
+                "viewport": {
+                    "northeast": {
+                        "lat": 25.0154302, 
+                        "lng": 121.46383355
+                    }, 
+                    "southwest": {
+                        "lat": 25.01250820000001, 
+                        "lng": 121.46119615
+                    }
+                }
+            }, 
+            "icon": "https://maps.gstatic.com/mapfiles/place_api/icons/geocode-71.png", 
+            "id": "636330af431849cc3526e159d98baf03a06685a3", 
+            "name": "Banqiao Station", 
+            "photos": [
+                {
+                    "height": 1859, 
+                    "html_attributions": [
+                        "<a href=\"https://maps.google.com/maps/contrib/113445297227490005356/photos\">Chang Tony</a>"
+                    ], 
+                    "photo_reference": "CoQBdwAAAO3Xwx8EZenO2dQIPLs9ewFpV22Vekai8L3cy1faYEYbFKdvkMGqtO4mU7g1BfsWhDG4OBvSFeCxkYb1PXVz2mxFTXwO4Ygj6lwjhWvnN4nl-80wdiiFJusM2f1oMxUkqVVZp1FloKANKchSanhvnRHVwE4QFawhGyfzXSIkNTJKEhDx3qpnpxu61aD2CrURdg9dGhSyIkx3XXL3zpRVFvUwG5EWLhOMWw", 
+                    "width": 2561
+                }
+            ], 
+            "place_id": "ChIJw2TA-xuoQjQR8tm_mW_VDUk", 
+            "rating": 4.4, 
+            "reference": "CmRbAAAA5yK5y3QKS4VXf98Irg2l3P0xPxnTZpGKEOJ-aAC7hub5fC0yU3dYQbBYlorW2xpNe4X0XQUGqGZh8Gp1djNCi8Np3DmrrZpeCAP8RWYOXfVOV-fZOLnDQC6xx0PdRtBQEhBjYdY6G570vF6tQSopIzV0GhR4S2SFYbCqZU23Utp1YFfmoFO4Rw", 
+            "types": [
+                "subway_station", 
+                "transit_station", 
+                "point_of_interest", 
+                "establishment"
+            ]
+        }
+    ], 
+    "status": "OK"
+}
