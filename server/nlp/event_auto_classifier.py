@@ -397,37 +397,50 @@ def is_intentional(classified_event):
 
 
 def is_auto_add_event(classified_event):
-    result = is_intentional(classified_event)
-    if result[0]:
-        return result
-    result = is_battle(classified_event)
-    if result[0]:
-        return result
-    result = is_audition(classified_event)
-    if result[0]:
-        return result
-    result = is_workshop(classified_event)
-    if result[0]:
-        return result
-    result = has_list_of_good_classes(classified_event)
-    if result[0]:
-        return result
-    result = is_vogue_event(classified_event)
-    if result[0]:
-        return result
-    result = has_standalone_keywords(classified_event)
-    if result[0]:
-        return result
-    result = has_good_event_title(classified_event)
-    if result[0]:
-        return result
-    result = is_performance_or_practice(classified_event)
-    if result[0]:
-        return result
-    result = has_many_street_styles(classified_event)
-    if result[0]:
-        return result
-    return (False, 'nothing')
+    c = AutoClassifier(classified_event)
+    c.classify()
+    return c.result
+
+class AutoClassifier(object):
+    def __init__(self, classified_event):
+        self.classified_event = classified_event
+        self.result = None
+
+    def _run_classify(self):
+        result = is_intentional(self.classified_event)
+        if result[0]:
+            return result
+        result = is_battle(self.classified_event)
+        if result[0]:
+            return result
+        result = is_audition(self.classified_event)
+        if result[0]:
+            return result
+        result = is_workshop(self.classified_event)
+        if result[0]:
+            return result
+        result = has_list_of_good_classes(self.classified_event)
+        if result[0]:
+            return result
+        result = is_vogue_event(self.classified_event)
+        if result[0]:
+            return result
+        result = has_standalone_keywords(self.classified_event)
+        if result[0]:
+            return result
+        result = has_good_event_title(self.classified_event)
+        if result[0]:
+            return result
+        result = is_performance_or_practice(self.classified_event)
+        if result[0]:
+            return result
+        result = has_many_street_styles(self.classified_event)
+        if result[0]:
+            return result
+        return (False, 'nothing')
+
+    def classify(self):
+        self.result = self._run_classify()
 
 
 def is_bad_club(classified_event):

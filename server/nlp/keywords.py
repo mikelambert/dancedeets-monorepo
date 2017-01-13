@@ -734,6 +734,7 @@ CLASS = Name('CLASS', Any(
     'workshoppien', # finnish workshops
     'intensives?',
     'intensivo', # spanish intensive
+    'open class.?',
     'class with', 'master\W?class(?:es)?',
     'company class',
     u'мастер-класса?', # russian master class
