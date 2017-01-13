@@ -146,6 +146,7 @@ def build_search_results_api(city_name, form, search_query, search_results, vers
 
     json_response = {
         'results': json_results,
+        'featured': [],
         'onebox_links': onebox_links,
         'location': city_name,
         'query': form.data if form else None,
