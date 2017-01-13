@@ -39,7 +39,7 @@ Edit Event
 				<tr><td>
 					Remapped Address:
 				</td><td>
-					<input type="text" size=40 name="remapped_address" value="{{ location_info.remapped_address or "" }}">
+					<input class="form-control" type="text" size=40 name="remapped_address" value="{{ location_info.remapped_address or "" }}">
 				</td></tr>
 				<tr><td>
 					Override Address:
@@ -47,7 +47,7 @@ Edit Event
 						(Required!)
 					{% endif %}
 				</td><td>
-					<input type="text" size=40 name="override_address" value="{{ location_info.overridden_address or "" }}">
+					<input class="form-control" type="text" size=40 name="override_address" value="{{ location_info.overridden_address or "" }}">
 				</td></tr>
 				<tr><td>
 					Final Address:
