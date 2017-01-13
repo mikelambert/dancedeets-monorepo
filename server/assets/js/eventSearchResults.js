@@ -73,15 +73,25 @@ export class EventFlyer extends React.Component {
     const width = 180;
     const height = 180;
 
+    const scaledHeight = '100'; // height == width
+
     const croppedPicture = this.generateCroppedCover(picture, width, height);
-    let imageTag = (<img
-      role="presentation"
-      src={croppedPicture.source}
+    let imageTag = (<div
       style={{
-        width: '100%',
+        height: 0,
+        paddingBottom: `${scaledHeight}%`,
       }}
-      className="no-border"
-    />);
+    >
+      <img
+        role="presentation"
+        src={croppedPicture.source}
+        style={{
+          width: '100%',
+        }}
+        className="no-border"
+      />
+    </div>
+    );
     if (this.props.lazyLoad) {
       imageTag = <LazyLoad height={height} once offset={300}>{imageTag}</LazyLoad>;
     }

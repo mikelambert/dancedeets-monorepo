@@ -88,19 +88,27 @@ class Video extends React.Component {
   };
 
   render() {
+    const scaledHeight = Math.floor(360 / 480 * 100);
     return (<div
       className="grid-item"
       style={{ width: this.props.width * 2 }}
     >
       <Card>
         <a href={`https://www.youtube.com/watch?v=${this.props.video.id.videoId}`}>
-          <img
-            src={this.props.video.snippet.thumbnails.high.url}
-            role="presentation"
+          <div
             style={{
-              width: '100%',
+              height: 0,
+              paddingBottom: `${scaledHeight}%`,
             }}
-          />
+          >
+            <img
+              src={this.props.video.snippet.thumbnails.high.url}
+              role="presentation"
+              style={{
+                width: '100%',
+              }}
+            />
+          </div>
           <h3 className="event-title" style={{ marginTop: 10 }}>
             {this.props.video.snippet.title}
           </h3>
