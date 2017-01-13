@@ -7,6 +7,7 @@ import re
 import wtforms
 
 from google.appengine.api import search
+from google.appengine.api.search import search as inner_search
 
 import event_types
 from loc import gmaps_api
@@ -33,9 +34,9 @@ def _no_wiki_or_html(form, field):
 
 
 def _valid_query(form, field):
-    keywords = _get_parsed_keywords(field.data)
+    keywords = _get_parsed_keywords(field.data.encode('utf-8'))
     try:
-        search.search._CheckQuery(keywords)
+        inner_search._CheckQuery(keywords.decode('utf-8'))
     except search.QueryError as e:
         raise wtforms.ValidationError(unicode(e))
 
@@ -48,9 +49,7 @@ def _geocodable_location(form, field):
 
 
 def _get_parsed_keywords(keywords):
-    print keywords
     cleaned_keywords = re.sub(ur'[<=>:(),|&/\\~?!.•\-]', ' ', keywords).replace(' - ', ' ')
-    print cleaned_keywords
     unquoted_quoted_keywords = cleaned_keywords.split('"')
     for i in range(0, len(unquoted_quoted_keywords), 2):
         unquoted_quoted_keywords[i] = categories.format_as_search_query(unquoted_quoted_keywords[i])
