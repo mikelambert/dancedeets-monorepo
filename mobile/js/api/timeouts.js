@@ -17,6 +17,7 @@ export async function retryWithBackoff<T>(startTimeoutMs: number, backoffFactor:
   try {
     return await timeout(startTimeoutMs, getPromise());
   } catch (e) {
+    console.log(`Error on request, ${retries} retries remaining: ${e}`);
     if (retries > 0) {
       return retryWithBackoff(startTimeoutMs * backoffFactor, backoffFactor, retries - 1, getPromise);
     }
