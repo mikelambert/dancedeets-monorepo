@@ -332,7 +332,7 @@ class _EventListContainer extends React.Component {
       const position = await getPosition();
       this.setState({ position });
     } catch (e) {
-      console.log(`Error fetching user location for finding distance-to-event: ${e}`);
+      console.log('Error fetching user location for finding distance-to-event:', e);
     }
   }
 
