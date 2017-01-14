@@ -89,6 +89,7 @@ class ApiHandler(base_servlet.BareBaseRequestHandler):
                 self.add_error("Needs access_token parameter")
 
     def dispatch(self):
+        self.response.headers['Access-Control-Allow-Origin'] = '*'
         try:
             major_version, minor_version = self.request.route_args[0:2]
             self.request.route_args = self.request.route_args[2:]
