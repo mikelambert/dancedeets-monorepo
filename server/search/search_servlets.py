@@ -91,7 +91,7 @@ class RelevantHandler(SearchHandler):
             if self.request.get('new', '1') == '1':
                 json_search_response = api.build_search_results_api(city_name, form, search_query, search_results, (2, 0), need_full_event, southwest, northeast)
                 props = dict(
-                    results=json_search_response,
+                    response=json_search_response,
                     past=(form.time_period.data == search_base.TIME_PAST),
                 )
                 self.setup_react_template('eventSearchResults.js', props)

@@ -27,7 +27,7 @@ import {
   SearchEvent,
 } from 'dancedeets-common/js/events/models';
 import type {
-  NewSearchResults,
+  NewSearchResponse,
 } from 'dancedeets-common/js/events/search';
 import {
   formatStartEnd,
@@ -266,11 +266,11 @@ const EventsList = injectIntl(_EventsList);
 
 class ResultsList extends React.Component {
   props: {
-    results: NewSearchResults;
+    response: NewSearchResponse;
     past: boolean;
   }
   render() {
-    const resultEvents = this.props.results.results.map(eventData => new SearchEvent(eventData));
+    const resultEvents = this.props.response.results.map(eventData => new SearchEvent(eventData));
 
     const now = moment();
     if (this.props.past) {

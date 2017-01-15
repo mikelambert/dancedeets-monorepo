@@ -259,18 +259,18 @@ class _EventListContainer extends React.Component {
     }
   }
 
-  buildDataBlobAndHeaders(results: ?SearchResponse) {
+  buildDataBlobAndHeaders(response: ?SearchResponse) {
     const dataBlob = {};
     const sectionHeaders = [];
 
-    if (results) {
-      if (results.onebox_links != null && results.onebox_links.length > 0) {
+    if (response) {
+      if (response.onebox_links != null && response.onebox_links.length > 0) {
         const oneboxKey = this.props.intl.formatMessage(messages.specialLinks);
-        dataBlob[oneboxKey] = results.onebox_links.map(x => x);
+        dataBlob[oneboxKey] = response.onebox_links.map(x => x);
         sectionHeaders.push(oneboxKey);
       }
-      if (results.results != null && results.results.length > 0) {
-        for (const e of results.results) {
+      if (response.results != null && response.results.length > 0) {
+        for (const e of response.results) {
           const start = moment(e.start_time, moment.ISO_8601);
           const formattedStart = this.props.intl.formatDate(start.toDate(), weekdayDate);
           if (!(formattedStart in dataBlob)) {

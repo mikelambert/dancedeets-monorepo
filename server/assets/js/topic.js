@@ -16,7 +16,7 @@ import {
   SearchEvent,
 } from 'dancedeets-common/js/events/models';
 import type {
-  NewSearchResults,
+  NewSearchResponse,
 } from 'dancedeets-common/js/events/search';
 import {
   weekdayDate,
@@ -120,7 +120,7 @@ class Video extends React.Component {
 
 class _EventList extends React.Component {
   props: {
-    results: NewSearchResults;
+    response: NewSearchResponse;
     videos: Object;
 
     // Self-managed props
@@ -141,7 +141,7 @@ class _EventList extends React.Component {
   }
 
   render() {
-    const resultEvents = this.props.results.results.map(eventData => new SearchEvent(eventData)).reverse();
+    const resultEvents = this.props.response.results.map(eventData => new SearchEvent(eventData)).reverse();
 
     const resultVideos = this.props.videos.items.filter(x => x.id.videoId);
 
