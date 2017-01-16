@@ -16,7 +16,7 @@
     "exports-loader": "^0.6.3",
     "expose-loader": "^0.7.1",
     "extract-text-webpack-plugin": "^1.0.1",
-    "favicons": "github:mikelambert/favicons#patch-1",
+    "favicons": "github:haydenbleasel/favicons",
     "file-loader": "^0.9.0",
     "gulp": "^3.9.0",
     "gulp-babel": "^6.1.2",
