@@ -573,11 +573,15 @@ type GiftedNavigationScene = NavigationScene & {
 type FakeNavigator = {
   pop: () => void;
 };
-type GiftedNavigationRoute = NavigationRoute
-  | { key: 'BattleSelector', title: string }
+type BattleNavigationRoute =
+    { key: 'BattleSelector', title: string }
   | { key: 'BattleSignups', title: string, battleId: string }
   | { key: 'Category', title: string, categoryId: number }
-  | { key: 'Register', title: string, categoryId: number }
+  | { key: 'Register', title: string, categoryId: number };
+
+type GiftedNavigationRoute =
+    NavigationRoute
+  | BattleNavigationRoute
   | {
     renderScene: (navigator: FakeNavigator) => React.Element<*>,
   };
@@ -607,7 +611,7 @@ const BattleSelector = connect(
 class SelectedBattleBrackets extends React.Component {
   props: {
     battleEvent: BattleEvent;
-    route: GiftedNavigationRoute;
+    route: BattleNavigationRoute;
     navigatable: Navigatable;
   };
 
@@ -635,7 +639,7 @@ class SelectedBattleBrackets extends React.Component {
     const battleEvent = this.props.battleEvent;
 
     console.log('a', this.props.route);
-    console.log(battleEvent);
+    console.log('b', battleEvent);
     let category = null;
     switch (this.props.route.key) {
       case 'BattleSignups':
