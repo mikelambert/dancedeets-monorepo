@@ -58,7 +58,7 @@ type BattleRules = {
 };
 
 export type BattleCategory = {
-  // Used for modifications through the server API
+  // Internal id
   id: string;
 
   display: BattleDisplay;
@@ -83,7 +83,13 @@ export type BattleCategory = {
 };
 
 export type BattleEvent = {
+  // Internal id
+  id: string;
+
+  // Public name
   name: string;
+
+  // And image
   headerImageUrl: string;
 
   categories: Array<BattleCategory>;

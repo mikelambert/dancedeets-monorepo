@@ -26,7 +26,7 @@ import type {
   NavigationSceneRendererProps,
   NavigationState,
 } from 'react-native/Libraries/NavigationExperimental/NavigationTypeDefinition';
-import danceStyles from 'dancedeets-common/js/styles';
+import danceStyles from 'dancedeets-common/js/styles/icons';
 import { track } from '../store/track';
 import { FeedListView } from '../learn/BlogList';
 import {
@@ -57,6 +57,7 @@ import {
 } from './models';
 import type {
   BattleCategory,
+  BattleEvent,
   Signup,
 } from './models';
 import type {
@@ -240,6 +241,14 @@ class CategorySummaryView extends React.Component {
 }
 
 class _BattleView extends React.Component {
+  props: {
+    battleId: string;
+    battleEvent: BattleEvent;
+    onSelected: (category: Category) => void;
+    onRegister: (category: BattleCategory) => void;
+    onUnregister: (category: BattleCategory, team: Signup) => void;
+  };
+
   constructor(props: any) {
     super(props);
     (this: any).renderHeader = this.renderHeader.bind(this);
@@ -248,7 +257,7 @@ class _BattleView extends React.Component {
 
   renderHeader() {
     return (<FitImage
-      source={{ uri: this.props.battleEvent.headerLogoUrl }}
+      source={{ uri: this.props.battleEvent.headerImageUrl }}
       // TODO: set this height dynamically, perhaps from the json data
       style={{ flex: 1, width: Dimensions.get('window').width, height: 200 }}
     />);
@@ -287,7 +296,7 @@ class _BattleView extends React.Component {
       />);
     }
     return (<TrackFirebase
-      path="events/justeDebout"
+      path={`events/${this.props.battleId}`}
       storageKey="battleEvent"
     >{view}</TrackFirebase>);
   }
@@ -359,6 +368,7 @@ const Category = injectIntl(_Category);
 class _RegistrationPage extends React.Component {
   props: {
     user: ?User;
+    battle: BattleEvent;
     category: BattleCategory;
 
     // Self-managed props
@@ -529,7 +539,7 @@ class _RegistrationPage extends React.Component {
             if (!newValues.team_name) {
               newValues.team_name = this.computeDefaultTeamName();
             }
-            const result = await eventRegister('justeDebout', this.props.category.id, { team: newValues });
+            const result = await eventRegister(this.props.battle.id, this.props.category.id, { team: newValues });
             if (postSubmit) {
               postSubmit();
             }
@@ -578,9 +588,7 @@ class _EventSignupsView extends React.Component {
     navigatable: Navigatable;
 
     // Self-managed props
-    battleEvent: {
-      categories: Array<BattleCategory>;
-    };
+    battleEvent: BattleEvent;
     navigatePop: () => void;
   }
 
@@ -597,7 +605,7 @@ class _EventSignupsView extends React.Component {
 
   async onUnregister(category, teamToDelete) {
     const [teamKey] = Object.entries(category.signups || {}).filter(([key, team]) => team === teamToDelete)[0];
-    await eventUnregister('justeDebout', category.id, teamKey);
+    await eventUnregister(this.props.battleEvent.id, category.id, teamKey);
   }
 
   fakeNavigator() {
@@ -619,6 +627,7 @@ class _EventSignupsView extends React.Component {
     switch (route.key) {
       case 'EventSignups':
         return (<BattleView
+          battleId="justeDebout"
           onSelected={(selectedCategory) => {
           // trackWithEvent('View Event', event);
             const displayName = categoryDisplayName(selectedCategory);
@@ -637,6 +646,7 @@ class _EventSignupsView extends React.Component {
       case 'Register':
         category = this.props.battleEvent.categories.find(x => x.id === route.categoryId);
         return (<RegistrationPage
+          battle={this.props.battleEvent}
           category={category}
         />);
       default:
