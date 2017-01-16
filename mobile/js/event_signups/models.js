@@ -13,12 +13,6 @@ export type Signup = {
   dancers: ?{[uid: string]: Dancer};
 };
 
-export type SignupRequirements = {
-  needsTeamName: boolean;
-  minTeamSize: number;
-  maxTeamSize: number;
-};
-
 // Currently this is of the form "<timestamp>_<random>"
 type SignupKey = string;
 
@@ -38,27 +32,38 @@ export type BracketProgress = {
   wins: number;
 };
 
-export type CompetitionCategory = {
-  // Used for modifications through the server API
-  id: string;
-
-  // Display Info:
+type BattleDisplay = {
   // Used for Category display
   name: string;
   // Dance Style named, used for icon lookup
   styleIcon: string;
-  // 0 means team size is irrelevant.
-  // Non-0 means 1v1 or 2v2
+
+  styleImageUrl: string;
+};
+
+type BattleRules = {
+  // The signup requirements, used locally and remotely, to check signups
+
+  // Probably want to turn this off for 1v1s
+  needsTeamName: boolean;
+
+  // Usually these will be set to the same value
   teamSize: number;
 
-  // Event Logic Info:
-  // The signup requirements, used locally and remotely, to check signups
-  signupRequirements: SignupRequirements;
   // At what point do we cut off new signups
   maxSignupsAllowed: number;
+
   // How many dancers are we choosing for the top-N?
   bracketSize: number;
+};
 
+export type BattleCategory = {
+  // Used for modifications through the server API
+  id: string;
+
+  display: BattleDisplay;
+
+  rules: BattleRules;
   // This tracks the state of the competition.
   // It also controls the mobile app UI views.
   currentState: CompetitionState;
@@ -81,11 +86,11 @@ export type BattleEvent = {
   name: string;
   headerImageUrl: string;
 
-  categories: Array<CompetitionCategory>;
+  categories: Array<BattleCategory>;
 };
 
-export function categoryDisplayName(category: CompetitionCategory) {
-  const nxn = category.teamSize ? `${category.teamSize}×${category.teamSize}` : '';
-  const displayName = nxn ? `${nxn} ${category.name}` : category.name; // TODO: backup to some variant of 'style'
+export function categoryDisplayName(category: BattleCategory) {
+  const nxn = category.teamSize ? `${category.rules.teamSize}×${category.rules.teamSize}` : '';
+  const displayName = nxn ? `${nxn} ${category.display.name}` : category.display.name; // TODO: backup to some variant of 'style'
   return displayName;
 }

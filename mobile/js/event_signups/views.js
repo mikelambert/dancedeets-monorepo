@@ -56,7 +56,7 @@ import {
   categoryDisplayName,
 } from './models';
 import type {
-  CompetitionCategory,
+  BattleCategory,
   Signup,
 } from './models';
 import type {
@@ -89,15 +89,15 @@ class CompactTeam extends React.Component {
 }
 
 function getCategorySignups(category: Category): Array<Signup> {
-  const result: Array<any> = Object.entries(category.signups || {}).sort().map(x => x[1]);
+  const result: Array<Signup> = Object.keys(category.signups || []).sort().map(x => category.signups[x]);
   return result;
 }
 
 class _UserRegistrationStatus extends React.Component {
   props: {
-    category: CompetitionCategory;
-    onRegister: (category: CompetitionCategory) => void;
-    onUnregister: (category: CompetitionCategory, team: Signup) => void;
+    category: BattleCategory;
+    onRegister: (category: BattleCategory) => void;
+    onUnregister: (category: BattleCategory, team: Signup) => void;
 
     // Self-managed props
     user: ?User;
@@ -178,9 +178,9 @@ const UserRegistrationStatus = connect(
 
 class CategorySummaryView extends React.Component {
   props: {
-    category: CompetitionCategory;
-    onRegister: (category: CompetitionCategory) => void;
-    onUnregister: (category: CompetitionCategory, team: Signup) => void;
+    category: BattleCategory;
+    onRegister: (category: BattleCategory) => void;
+    onUnregister: (category: BattleCategory, team: Signup) => void;
   }
 
   _root: View;
@@ -189,8 +189,9 @@ class CategorySummaryView extends React.Component {
     this._root.setNativeProps(props);
   }
 
-  dancerIcons(category: any) {
-    const teamSize = Math.max(category.teamSize, 1);
+  dancerIcons(category: BattleCategory) {
+    const display = category.display;
+    const teamSize = Math.max(category.rules.teamSize, 1);
 
     const images = [];
     const imageWidth = (boxWidth - 20) / (2 * Math.max(teamSize, 2));
@@ -198,9 +199,9 @@ class CategorySummaryView extends React.Component {
       images.push(<ProportionalImage
         key={i}
         resizeDirection="width"
-        source={danceStyles[category.styleIcon].thumbnail}
-        originalWidth={danceStyles[category.styleIcon].width}
-        originalHeight={danceStyles[category.styleIcon].height}
+        source={danceStyles[display.styleIcon].thumbnail}
+        originalWidth={danceStyles[display.styleIcon].width}
+        originalHeight={danceStyles[display.styleIcon].height}
         resizeMode="contain"
         style={{
           height: imageWidth,
@@ -253,7 +254,7 @@ class _BattleView extends React.Component {
     />);
   }
 
-  renderRow(category: any) {
+  renderRow(category: BattleCategory) {
     return (<TouchableHighlight
       onPress={() => {
         this.props.onSelected(category);
@@ -327,9 +328,9 @@ const TeamList = injectIntl(_TeamList);
 
 class _Category extends React.Component {
   props: {
-    category: CompetitionCategory;
-    onRegister: (category: CompetitionCategory) => void;
-    onUnregister: (category: CompetitionCategory, team: Signup) => void;
+    category: BattleCategory;
+    onRegister: (category: BattleCategory) => void;
+    onUnregister: (category: BattleCategory, team: Signup) => void;
   }
 
   render() {
@@ -358,7 +359,7 @@ const Category = injectIntl(_Category);
 class _RegistrationPage extends React.Component {
   props: {
     user: ?User;
-    category: CompetitionCategory;
+    category: BattleCategory;
 
     // Self-managed props
     navigatePush: (route: NavigationRoute) => void;
@@ -366,7 +367,7 @@ class _RegistrationPage extends React.Component {
   }
 
   state: {
-    values: any;
+    values: Object;
   }
 
   constructor(props) {
@@ -393,8 +394,8 @@ class _RegistrationPage extends React.Component {
   }
 
   teamIndices() {
-    const requirements = this.props.category.signupRequirements;
-    const zeroToN = Array.from(Array(requirements.maxTeamSize).keys());
+    const rules = this.props.category.rules;
+    const zeroToN = Array.from(Array(rules.teamSize).keys());
     return zeroToN;
   }
 
@@ -453,10 +454,10 @@ class _RegistrationPage extends React.Component {
   }
 
   render() {
-    const requirements = this.props.category.signupRequirements;
+    const rules = this.props.category.rules;
 
     let teamMember1 = [];
-    let teamMembers = requirements.minTeamSize ? this.teamWidgets() : null;
+    let teamMembers = rules.teamSize ? this.teamWidgets() : null;
     if (this.props.user) {
       teamMember1 = [
         <GiftedForm.HiddenWidget key="hidden_0" name="dancer_id_1" value={this.props.user.profile.id} />,
@@ -473,7 +474,7 @@ class _RegistrationPage extends React.Component {
     }
 
     let teamName = null;
-    if (requirements.needsTeamName) {
+    if (rules.needsTeamName) {
       teamName = (<GiftedForm.TextInputWidget
         name="team_name" // mandatory
         title="Team Name"
@@ -578,7 +579,7 @@ class _EventSignupsView extends React.Component {
 
     // Self-managed props
     battleEvent: {
-      categories: Array<CompetitionCategory>;
+      categories: Array<BattleCategory>;
     };
     navigatePop: () => void;
   }
