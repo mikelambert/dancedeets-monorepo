@@ -325,7 +325,7 @@ class AdminEditHandler(base_servlet.BaseRequestHandler):
             self.display['fb_geocoded_address'] = formatting.format_geocode(fb_geocode)
         else:
             self.display['fb_geocoded_address'] = ''
-        self.display['ranking_city_name'] = rankings.get_ranking_location_latlng(location_info.geocode.latlng())
+        self.display['ranking_city_name'] = rankings.get_ranking_location_latlng(location_info.geocode.latlng()) if location_info.geocode else 'None'
 
         self.display['event'] = e
         self.display['event_id'] = event_id
