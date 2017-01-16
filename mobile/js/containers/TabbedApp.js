@@ -58,7 +58,7 @@ import {
   PlaylistView,
 } from '../learn/playlistViews';
 import {
-  EventSignupsView,
+  BattleBrackets,
 } from '../event_signups/views';
 import * as RemoteConfig from '../remoteConfig';
 
@@ -124,8 +124,8 @@ setDefaultState('LEARN_NAV', { key: 'TutorialStyles', message: messages.learnTit
 const AboutNavigator = generateNavigator('ABOUT_NAV');
 setDefaultState('ABOUT_NAV', { key: 'About', message: messages.about });
 
-const EventSignupsNavigator = generateNavigator('EVENT_SIGNUPS_NAV');
-setDefaultState('EVENT_SIGNUPS_NAV', { key: 'EventSignups', title: 'Battle Signups' });
+const BattleSignupsNavigator = generateNavigator('EVENT_SIGNUPS_NAV');
+setDefaultState('EVENT_SIGNUPS_NAV', { key: 'BattleSelector', title: 'Battle Signups' });
 
 
 class GradientTabBar extends React.Component {
@@ -296,7 +296,7 @@ class _TabbedAppView extends React.Component {
     eventSignupUserIds: Array<string>;
   }
 
-  _eventSignupsNavigator: EventSignupsNavigator;
+  _eventSignupsNavigator: BattleSignupsNavigator;
   _eventNavigator: EventNavigator;
   _learnNavigator: LearnNavigator;
   _aboutNavigator: AboutNavigator;
@@ -338,10 +338,10 @@ class _TabbedAppView extends React.Component {
           }
         }}
       >
-        <EventSignupsNavigator
+        <BattleSignupsNavigator
           ref={(x) => { this._eventSignupsNavigator = x; }}
           renderScene={(sceneProps: NavigationSceneRendererProps, nav: Navigatable) =>
-            <EventSignupsView sceneProps={sceneProps} navigatable={nav} />
+            <BattleBrackets sceneProps={sceneProps} navigatable={nav} />
           }
         />
       </TabNavigator.Item>);

@@ -67,7 +67,9 @@ import {
   eventRegister,
   eventUnregister,
 } from '../api/dancedeets';
-import { TrackFirebase } from '../firestack';
+import {
+  FirebaseRender,
+} from '../firestack';
 
 // Try to make our boxes as wide as we can...
 let boxWidth = normalize(350);
@@ -295,10 +297,7 @@ class _BattleView extends React.Component {
         }}
       />);
     }
-    return (<TrackFirebase
-      path={`events/${this.props.battleId}`}
-      storageKey="battleEvent"
-    >{view}</TrackFirebase>);
+    return view;
   }
 }
 const BattleView = connect(
@@ -574,23 +573,43 @@ type GiftedNavigationScene = NavigationScene & {
 type FakeNavigator = {
   pop: () => void;
 };
-type GiftedNavigationRoute = NavigationRoute | {
-  key: string;
-  title: string;
-  categoryId: number;
-} | {
-  renderScene: (navigator: FakeNavigator) => React.Element<*>;
-};
+type GiftedNavigationRoute = NavigationRoute
+  | { key: 'BattleSelector', title: string }
+  | { key: 'BattleSignups', title: string, battleId: string }
+  | { key: 'Category', title: string, categoryId: number }
+  | { key: 'Register', title: string, categoryId: number }
+  | {
+    renderScene: (navigator: FakeNavigator) => React.Element<*>,
+  };
 
-class _EventSignupsView extends React.Component {
+class _BattleSelector extends React.Component {
   props: {
-    sceneProps: GiftedNavigationSceneRendererProps;
-    navigatable: Navigatable;
-
-    // Self-managed props
-    battleEvent: BattleEvent;
-    navigatePop: () => void;
+    navigatable: Navigatable;    
   }
+
+  onBattleSelected(battleId: string) {
+    this.props.navigatable.onNavigate({ key: 'BattleSignups', title: `${battleId} Registration`, battleId });
+  }
+
+  render() {
+    const battleId = 'justeDebout';
+    return <Button onPress={() => this.onBattleSelected(battleId)}>{battleId}</Button>;
+  }
+}
+const BattleSelector = connect(
+  state => ({
+  }),
+  (dispatch: Dispatch, props) => ({
+    navigatePop: route => dispatch(navigatePop('EVENT_SIGNUPS_NAV')),
+  }),
+)(injectIntl(_BattleSelector));
+
+class SelectedBattleBrackets extends React.Component {
+  props: {
+    battleEvent: BattleEvent;
+    route: GiftedNavigationRoute;
+    navigatable: Navigatable;
+  };
 
   constructor(props) {
     super(props);
@@ -608,26 +627,20 @@ class _EventSignupsView extends React.Component {
     await eventUnregister(this.props.battleEvent.id, category.id, teamKey);
   }
 
-  fakeNavigator() {
-    return {
-      pop: () => this.props.navigatePop(),
-    };
-  }
-
   render() {
-    const { scene } = this.props.sceneProps;
-    const { route } = scene;
-    // Handle Gifted Form navigation
-    if (route.renderScene) {
-      return route.renderScene(this.fakeNavigator());
+    if (!this.props.battleEvent) {
+      return <Text>Loading Battle Info...</Text>;
     }
+    const route = this.props.route;
+    const battleEvent = this.props.battleEvent;
 
+    console.log('a', this.props.route);
+    console.log(battleEvent);
     let category = null;
-
-    switch (route.key) {
-      case 'EventSignups':
+    switch (this.props.route.key) {
+      case 'BattleSignups':
         return (<BattleView
-          battleId="justeDebout"
+          battleEvent={battleEvent}
           onSelected={(selectedCategory) => {
           // trackWithEvent('View Event', event);
             const displayName = categoryDisplayName(selectedCategory);
@@ -654,14 +667,57 @@ class _EventSignupsView extends React.Component {
     }
   }
 }
-export const EventSignupsView = connect(
+
+class _BattleBrackets extends React.Component {
+  props: {
+    sceneProps: GiftedNavigationSceneRendererProps;
+    navigatable: Navigatable;
+
+    // Self-managed props
+    navigatePop: () => void;
+  }
+
+  fakeNavigator() {
+    return {
+      pop: () => this.props.navigatePop(),
+    };
+  }
+
+  render() {
+    const { scene } = this.props.sceneProps;
+    const { route } = scene;
+    // Handle Gifted Form navigation
+    if (route.renderScene) {
+      return route.renderScene(this.fakeNavigator());
+    }
+
+    let category = null;
+
+    console.log({route});
+    switch (route.key) {
+      case 'BattleSelector':
+        return <BattleSelector navigatable={this.props.navigatable} />;
+      default:
+        return <FirebaseRender
+          path={`events/${route.battleId}`}
+          renderContents={(battleEvent) => (
+            <SelectedBattleBrackets
+              battleEvent={battleEvent}
+              route={route}
+              navigatable={this.props.navigatable}
+            />)
+          }
+        />;
+    }
+  }
+}
+export const BattleBrackets = connect(
   state => ({
-    battleEvent: state.firebase.battleEvent,
   }),
   (dispatch: Dispatch, props) => ({
     navigatePop: route => dispatch(navigatePop('EVENT_SIGNUPS_NAV')),
   }),
-)(injectIntl(_EventSignupsView));
+)(injectIntl(_BattleBrackets));
 
 const checkSize = 20;
 const checkMargin = 10;
