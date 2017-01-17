@@ -71,6 +71,7 @@ import {
 import CategorySignupScreen from './categorySignupScreen';
 import CategoryView from './categoryView';
 import BattleEventView from './battleEventView';
+import BattleEventHostView from './battleEventHostView';
 
 type GiftedNavigationSceneRendererProps = NavigationSceneRendererProps & {
   scene: GiftedNavigationScene,
@@ -107,9 +108,17 @@ class _BattleSelector extends React.Component {
     this.props.navigatable.onNavigate({ key: 'BattleSignups', title: `${battleId} Registration`, battleId });
   }
 
+  onBattleHostSelected(battleId: string) {
+    this.props.navigatable.onNavigate({ key: 'BattleHostView', title: `${battleId} MC Host View`, battleId });
+  }
+
   render() {
     const battleId = 'justeDebout';
-    return <Button onPress={() => this.onBattleSelected(battleId)}>{battleId}</Button>;
+    return <HorizontalView style={{alignItems: 'center'}}>
+      <Text>{battleId}</Text>
+      <Button onPress={() => this.onBattleSelected(battleId)} caption="Dancer" />
+      <Button onPress={() => this.onBattleHostSelected(battleId)} caption="Host" />
+    </HorizontalView>;
   }
 }
 const BattleSelector = connect(
@@ -152,6 +161,18 @@ class SelectedBattleBrackets extends React.Component {
 
     let category = null;
     switch (route.key) {
+      // Host Views
+      case 'BattleHostView':
+        return <BattleEventHostView
+          battleEvent={battleEvent}
+          onSelected={(selectedCategory) => {
+          // trackWithEvent('View Event', event);
+            const displayName = categoryDisplayName(selectedCategory);
+            this.props.navigatable.onNavigate({ key: 'Category', title: displayName, battleId: this.props.battleEvent.id, categoryId: selectedCategory.id });
+          }}
+          />;
+        // return <BattleHostView />;
+      // Dancer Views
       case 'BattleSignups':
         return (<BattleEventView
           battleEvent={battleEvent}
