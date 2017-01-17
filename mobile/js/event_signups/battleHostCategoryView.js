@@ -19,6 +19,7 @@ import { FeedListView } from '../learn/BlogList';
 import {
   Card,
   defaultFont,
+  HorizontalView,
   Text,
 } from '../ui';
 import type {
@@ -45,18 +46,35 @@ class _TeamList extends React.Component {
     (this: any).renderQuickActions = this.renderQuickActions.bind(this);
 
     var ds = new SwipeableListView.getNewDataSource()
+    // TODO: We need to "close off" signups and copy them to prelims at some point.
+    // Then the numerical indices will be stable.
     this.state = {
       dataSource: ds.cloneWithRowsAndSections({s1: this.props.signups}, null, null)
     }
   }
 
-  renderRow(signup: Signup) {
+  renderSignup(signup: Signup) {
     const dancers = Object.keys(signup.dancers || {}).map(x =>
       <Text key={x} style={{ marginLeft: 20 }}>{signup.dancers ? signup.dancers[x].name : ''}</Text>
     );
+    return <View>
+      <Text>Team: {signup.teamName}</Text>
+      <HorizontalView>
+        <Text>Dancers:</Text>
+        <View>
+          {dancers}
+        </View>
+      </HorizontalView>
+    </View>;
+  }
+
+  renderRow(signup: Signup, sectionId: string, rowId: string) {
+    const rowIndex = parseInt(rowId, 10) + 1;
     return (<Card>
-      <Text>{signup.teamName}:</Text>
-      {dancers}
+      <HorizontalView>
+        <Text style={{ marginRight: 10 }}>{rowIndex}:</Text>
+        {this.renderSignup(signup)}
+      </HorizontalView>
     </Card>);
   }
 
