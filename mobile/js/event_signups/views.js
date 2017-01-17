@@ -26,7 +26,8 @@ import type {
   NavigationSceneRendererProps,
   NavigationState,
 } from 'react-native/Libraries/NavigationExperimental/NavigationTypeDefinition';
-import danceStyles from 'dancedeets-common/js/styles/icons';
+import danceStyles from 'dancedeets-common/js/styles';
+import danceStyleIcons from 'dancedeets-common/js/styles/icons';
 import { track } from '../store/track';
 import { FeedListView } from '../learn/BlogList';
 import {
@@ -202,7 +203,7 @@ class CategorySummaryView extends React.Component {
       images.push(<ProportionalImage
         key={i}
         resizeDirection="width"
-        source={danceStyles[display.styleIcon].thumbnail}
+        source={danceStyleIcons[display.styleIcon]}
         originalWidth={danceStyles[display.styleIcon].width}
         originalHeight={danceStyles[display.styleIcon].height}
         resizeMode="contain"
