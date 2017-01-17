@@ -12,9 +12,13 @@ import {
   injectIntl,
   defineMessages,
 } from 'react-intl';
+import SwipeableListView from 'SwipeableListView';
+import SwipeableQuickActions from 'SwipeableQuickActions';
+import SwipeableQuickActionButton from 'SwipeableQuickActionButton';
 import { FeedListView } from '../learn/BlogList';
 import {
   Card,
+  defaultFont,
   Text,
 } from '../ui';
 import type {
@@ -27,9 +31,23 @@ import {
 import CategorySummaryCard from './categorySummaryCard';
 
 class _TeamList extends React.Component {
+  props: {
+    signups: Array<Signup>,
+  };
+
+  state: {
+    dataSource: any;
+  };
+
   constructor(props: any) {
     super(props);
     (this: any).renderRow = this.renderRow.bind(this);
+    (this: any).renderQuickActions = this.renderQuickActions.bind(this);
+
+    var ds = new SwipeableListView.getNewDataSource()
+    this.state = {
+      dataSource: ds.cloneWithRowsAndSections({s1: this.props.signups}, null, null)
+    }
   }
 
   renderRow(signup: Signup) {
@@ -42,12 +60,34 @@ class _TeamList extends React.Component {
     </Card>);
   }
 
+  renderQuickActions() {
+    return <SwipeableQuickActions style={{
+      alignItems: 'center',
+      padding: 10,
+    }}>
+      <SwipeableQuickActionButton
+        text="Called!"
+        imageSource={require('../ui/FBButtons/images/facebook.png')}
+        textStyle={defaultFont}
+        onPress={() => console.log('1')}
+      />
+      <SwipeableQuickActionButton
+        text="Danced!"
+        imageSource={require('../ui/FBButtons/images/facebook.png')}
+        textStyle={defaultFont}
+        onPress={() => console.log('2')}
+      />
+    </SwipeableQuickActions>;
+  }
+
   render() {
-    return (<FeedListView
-      items={this.props.signups}
+     return <SwipeableListView
+      maxSwipeDistance={120}
       renderRow={this.renderRow}
-      renderHeader={this.props.renderHeader}
-    />);
+      renderQuickActions={this.renderQuickActions}
+      dataSource={this.state.dataSource}
+      onScroll={(e) => {}}
+    />;
   }
 }
 const TeamList = injectIntl(_TeamList);
