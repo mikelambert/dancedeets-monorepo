@@ -100,3 +100,13 @@ export function categoryDisplayName(category: BattleCategory) {
   const displayName = nxn ? `${nxn} ${category.display.name}` : category.display.name; // TODO: backup to some variant of 'style'
   return displayName;
 }
+
+
+export function getCategorySignups(category: BattleCategory): Array<Signup> {
+  if (!category.signups) {
+    return [];
+  } else {
+    const result: Array<Signup> = Object.keys(category.signups).sort().map(x => category.signups[x]);
+    return result;
+  }
+}
