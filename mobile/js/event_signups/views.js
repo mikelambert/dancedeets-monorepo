@@ -68,7 +68,7 @@ import {
   eventUnregister,
 } from '../api/dancedeets';
 import {
-  FirebaseRender,
+  TrackFirebase,
 } from '../firestack';
 
 // Try to make our boxes as wide as we can...
@@ -300,13 +300,7 @@ class _BattleView extends React.Component {
     return view;
   }
 }
-const BattleView = connect(
-  state => ({
-    battleEvent: state.firebase.battleEvent,
-  }),
-  (dispatch: Dispatch, props) => ({
-  }),
-)(injectIntl(_BattleView));
+const BattleView = injectIntl(_BattleView);
 
 class _TeamList extends React.Component {
   constructor(props: any) {
@@ -574,10 +568,14 @@ type FakeNavigator = {
   pop: () => void;
 };
 type BattleNavigationRoute =
+  // Choose which battle you are dealing with
     { key: 'BattleSelector', title: string }
+  // Show the list of categories at the event
   | { key: 'BattleSignups', title: string, battleId: string }
-  | { key: 'Category', title: string, categoryId: number }
-  | { key: 'Register', title: string, categoryId: number };
+  // Show the category and its contestants
+  | { key: 'Category', title: string, battleId: string, categoryId: number }
+  // Show the registration screen for the category
+  | { key: 'Register', title: string, battleId: string, categoryId: number };
 
 type GiftedNavigationRoute =
     NavigationRoute
@@ -623,7 +621,7 @@ class SelectedBattleBrackets extends React.Component {
 
   onRegister(category) {
     const displayName = categoryDisplayName(category);
-    this.props.navigatable.onNavigate({ key: 'Register', title: `${displayName} Registration`, categoryId: category.id });
+    this.props.navigatable.onNavigate({ key: 'Register', title: `${displayName} Registration`, battleId: this.props.battleEvent.id, categoryId: category.id });
   }
 
   async onUnregister(category, teamToDelete) {
@@ -638,17 +636,15 @@ class SelectedBattleBrackets extends React.Component {
     const route = this.props.route;
     const battleEvent = this.props.battleEvent;
 
-    console.log('a', this.props.route);
-    console.log('b', battleEvent);
     let category = null;
-    switch (this.props.route.key) {
+    switch (route.key) {
       case 'BattleSignups':
         return (<BattleView
           battleEvent={battleEvent}
           onSelected={(selectedCategory) => {
           // trackWithEvent('View Event', event);
             const displayName = categoryDisplayName(selectedCategory);
-            this.props.navigatable.onNavigate({ key: 'Category', title: displayName, categoryId: selectedCategory.id });
+            this.props.navigatable.onNavigate({ key: 'Category', title: displayName, battleId: this.props.battleEvent.id, categoryId: selectedCategory.id });
           }}
           onRegister={this.onRegister}
           onUnregister={this.onUnregister}
@@ -697,12 +693,11 @@ class _BattleBrackets extends React.Component {
 
     let category = null;
 
-    console.log({route});
     switch (route.key) {
       case 'BattleSelector':
         return <BattleSelector navigatable={this.props.navigatable} />;
       default:
-        return <FirebaseRender
+        return <TrackFirebase
           path={`events/${route.battleId}`}
           renderContents={(battleEvent) => (
             <SelectedBattleBrackets

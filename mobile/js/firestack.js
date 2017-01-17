@@ -17,47 +17,16 @@ const firestack = new Firestack(configurationOptions);
 firestack.on('debug', msg => console.log('Received debug message', msg));
 firestack.database.setPersistence(true);
 
-export class FirebaseRender extends React.Component {
-  props: {
-    path: string;
-    renderContents: (contents: any) => React.Element<*>;
-  };
-
-  state: {
-    value: any;
-  }
-
-  constructor(props: any) {
-    super(props);
-    (this: any).handleValueChange = this.handleValueChange.bind(this);
-    this.state = { value: null };
-  }
-
-  componentWillMount() {
-    firestack.database.ref(this.props.path).on('value', this.handleValueChange);
-  }
-
-  componentWillUnmount() {
-    firestack.database.ref(this.props.path).off('value', this.handleValueChange);
-  }
-
-  handleValueChange(snapshot: any) {
-    if (snapshot.val()) {
-      this.setState({ value: snapshot.val() });
-    }
-  }
-
-  render() {
-    return this.props.renderContents(this.state.value);
-  }
-}
-
 class _TrackFirebase extends React.Component {
   props: {
     path: string;
-    storageKey: string;
-    setFirebaseState: (key: string, value: any) => void;
     children?: React.Element<*>;
+    // If set, render passing in the state, instead of just rendering children
+    renderContents?: (contents: any) => React.Element<*>;
+
+    // Self-managed props
+    setFirebaseState: (key: string, value: any) => void;
+    firebaseData: Object;
   };
 
   constructor(props: any) {
@@ -75,16 +44,21 @@ class _TrackFirebase extends React.Component {
 
   handleValueChange(snapshot) {
     if (snapshot.val()) {
-      this.props.setFirebaseState(this.props.storageKey, snapshot.val());
+      this.props.setFirebaseState(this.props.path, snapshot.val());
     }
   }
 
   render() {
-    return this.props.children;
+    if (this.props.renderContents) {
+      return this.props.renderContents(this.props.firebaseData[this.props.path]);
+    } else {
+      return this.props.children;
+    }
   }
 }
 export const TrackFirebase = connect(
   state => ({
+    firebaseData: state.firebase,
   }),
   (dispatch: Dispatch) => ({
     setFirebaseState: (key, value) => dispatch(setFirebaseState(key, value)),
