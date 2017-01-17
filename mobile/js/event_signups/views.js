@@ -72,6 +72,7 @@ import CategorySignupScreen from './categorySignupScreen';
 import CategoryView from './categoryView';
 import BattleEventView from './battleEventView';
 import BattleEventHostView from './battleEventHostView';
+import BattleHostCategoryView from './battleHostCategoryView';
 
 type GiftedNavigationSceneRendererProps = NavigationSceneRendererProps & {
   scene: GiftedNavigationScene,
@@ -168,10 +169,14 @@ class SelectedBattleBrackets extends React.Component {
           onSelected={(selectedCategory) => {
           // trackWithEvent('View Event', event);
             const displayName = categoryDisplayName(selectedCategory);
-            this.props.navigatable.onNavigate({ key: 'Category', title: displayName, battleId: this.props.battleEvent.id, categoryId: selectedCategory.id });
+            this.props.navigatable.onNavigate({ key: 'BattleHostCategory', title: displayName, battleId: this.props.battleEvent.id, categoryId: selectedCategory.id });
           }}
           />;
-        // return <BattleHostView />;
+      case 'BattleHostCategory':
+        category = this.props.battleEvent.categories.find(x => x.id === route.categoryId);
+        return (<BattleHostCategoryView
+          category={category}
+        />);
       // Dancer Views
       case 'BattleSignups':
         return (<BattleEventView
