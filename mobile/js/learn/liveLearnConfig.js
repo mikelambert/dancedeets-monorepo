@@ -16,7 +16,7 @@ async function loadConfig() {
   RemoteConfig.setNamespacedDefaults({
     blogs: JSON.stringify(defaultBlogs),
   }, 'Learn');
-  await RemoteConfig.fetchWithExpirationDuration(30 * 15);
+  await RemoteConfig.fetchWithExpirationDuration(60 * 10);
   await RemoteConfig.activateFetched();
 }
 

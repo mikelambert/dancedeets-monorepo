@@ -10,7 +10,7 @@ async function loadConfig() {
   if (__DEV__) {
     RemoteConfig.setDeveloperMode(true);
   }
-  await RemoteConfig.fetchWithExpirationDuration(30 * 15);
+  await RemoteConfig.fetchWithExpirationDuration(60 * 10); // 10 minutes
   await RemoteConfig.activateFetched();
 }
 
