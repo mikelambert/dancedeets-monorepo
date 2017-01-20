@@ -13,7 +13,13 @@ export const weekdayDate = { weekday: 'long', year: 'numeric', month: 'long', da
 export const weekdayTime = { hour: 'numeric', minute: 'numeric' };
 export const weekdayDateTime = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: 'numeric' };
 
-export function formatStartEnd(startString: string, endString: string, intl: intlShape) {
+export function formatStartDateOnly(startString: string, intl: intlShape) {
+  const now = moment(intl.now());
+  const start = moment(startString, moment.ISO_8601);
+  return upperFirst(intl.formatDate(start.toDate(), weekdayDate));
+}
+
+export function formatStartEnd(startString: string, endString: ?string, intl: intlShape) {
   const textFields = [];
   const now = moment(intl.now());
   const start = moment(startString, moment.ISO_8601);

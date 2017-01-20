@@ -30,6 +30,7 @@ import url from 'url';
 import querystring from 'querystring';
 import {
   formatStartEnd,
+  formatStartDateOnly,
 } from 'dancedeets-common/js/dates';
 import { Event, Venue } from 'dancedeets-common/js/events/models';
 import messages from 'dancedeets-common/js/events/messages';
@@ -161,6 +162,40 @@ class _EventDateTime extends React.Component {
 }
 const EventDateTime = injectIntl(_EventDateTime);
 
+class _EventDateTimeShort extends React.Component {
+  props: {
+    start: string;
+    end: string;
+
+    // Self-managed props
+    intl: intlShape;
+    children: Array<React.Element<*>>;
+  }
+
+  _interval: number;
+
+  componentDidMount() {
+    // refresh our 'relative start offset' every minute
+    this._interval = setInterval(() => this.forceUpdate(), 60 * 1000);
+  }
+
+  componentWillUnmount() {
+    clearInterval(this._interval);
+  }
+
+  render() {
+    // Explicitly ignore the endtime in calling formatStartTime.
+    const formattedText = formatStartDateOnly(this.props.start, this.props.intl);
+    return (<SubEventLine icon={require('./images/datetime.png')}>
+      <View style={{ alignItems: 'flex-start' }}>
+        <Text style={[eventStyles.detailText, eventStyles.rowDateTime]}>{formattedText}</Text>
+        {this.props.children}
+      </View>
+    </SubEventLine>);
+  }
+}
+const EventDateTimeShort = injectIntl(_EventDateTimeShort);
+
 function formatDistance(intl, distanceKm) {
   const useKm = Locale.constants().usesMetricSystem;
   if (useKm) {
@@ -215,6 +250,30 @@ class _EventVenue extends React.Component {
   }
 }
 const EventVenue = injectIntl(_EventVenue);
+
+class _EventVenueShort extends React.Component {
+  props: {
+    venue: Venue;
+    style: View.propTypes.style;
+
+    currentPosition: ?Object;
+
+    // Self-managed props
+    intl: intlShape;
+  }
+
+  render() {
+    if (!this.props.venue.address) {
+      return null;
+    }
+    return (<SubEventLine icon={require('./images/location.png')}>
+      <Text
+        style={[eventStyles.detailText, this.props.style]}
+      >{this.props.venue.cityState()}</Text>
+    </SubEventLine>);
+  }
+}
+const EventVenueShort = injectIntl(_EventVenueShort);
 
 class _EventSource extends React.Component {
   constructor(props: Object) {
@@ -750,8 +809,8 @@ class _EventRow extends React.Component {
               </View>
               <View style={{ flex: 1 }}>
                 <EventCategories categories={this.props.event.annotations.categories} />
-                <EventDateTime start={this.props.event.start_time} end={this.props.event.end_time} />
-                <EventVenue venue={this.props.event.venue} currentPosition={this.props.currentPosition} />
+                <EventDateTimeShort start={this.props.event.start_time} end={this.props.event.end_time} />
+                <EventVenueShort venue={this.props.event.venue} currentPosition={this.props.currentPosition} />
               </View>
             </HorizontalView>
           </TouchableOpacity>
@@ -772,8 +831,8 @@ class _EventRow extends React.Component {
               style={[eventStyles.rowTitle, eventStyles.rowLink]}
             >{this.props.event.name}</Text>
             <EventCategories categories={this.props.event.annotations.categories} />
-            <EventDateTime start={this.props.event.start_time} end={this.props.event.end_time} />
-            <EventVenue venue={this.props.event.venue} currentPosition={this.props.currentPosition} />
+            <EventDateTimeShort start={this.props.event.start_time} end={this.props.event.end_time} />
+            <EventVenueShort venue={this.props.event.venue} currentPosition={this.props.currentPosition} />
           </TouchableOpacity>
         </Card>
       );
