@@ -16,6 +16,7 @@ import {
 import LazyLoad from 'react-lazyload';
 import { StickyContainer, Sticky } from 'react-sticky';
 import Masonry from 'react-masonry-component';
+import Slider from 'react-slick';
 import {
   intlWeb,
 } from 'dancedeets-common/js/intl';
@@ -41,6 +42,9 @@ import {
   Card,
   ImagePrefix,
 } from './ui';
+
+require('slick-carousel/slick/slick.css');
+require('slick-carousel/slick/slick-theme.css');
 
 type OneboxResult = any;
 type EventResult = SearchEvent;
@@ -203,12 +207,43 @@ class VerticalEvent extends React.Component {
   }
 }
 
+class FeaturedEvents extends React.Component {
+  props: {
+    events: Array<SearchEvent>;
+  }
+
+  render() {
+    if (!this.props.events.length) {
+      return null;
+    }
+
+    const resultItems = [];
+    this.props.events.forEach((event, index) => {
+      // Slider requires children to be actual HTML elements.
+      resultItems.push(<div key={event.id}><VerticalEvent event={event} /></div>);
+    });
+
+    return (<div>
+      <div>Featured Events:</div>
+      <div style={{ width: '100%', padding: 10 }}>
+        <Slider>
+          {resultItems}
+        </Slider>
+      </div>
+    </div>);
+  }
+}
+
 class CurrentEvents extends React.Component {
   props: {
     events: Array<SearchEvent>;
   }
 
   render() {
+    if (!this.props.events.length) {
+      return null;
+    }
+
     const resultItems = [];
     this.props.events.forEach((event, index) => {
       resultItems.push(<VerticalEvent key={event.id} event={event} />);
@@ -271,6 +306,7 @@ class ResultsList extends React.Component {
   }
   render() {
     const resultEvents = this.props.response.results.map(eventData => new SearchEvent(eventData));
+    const featuredEvents = this.props.response.featured.map(eventData => new SearchEvent(eventData));
 
     const now = moment();
     if (this.props.past) {
@@ -282,9 +318,8 @@ class ResultsList extends React.Component {
       const currentEvents = resultEvents.filter(event => moment(event.start_time) < now && moment(event.end_time) > now);
       const futureEvents = resultEvents.filter(event => moment(event.start_time) > now);
       return (<div>
-        {currentEvents.length ? <CurrentEvents
-          events={currentEvents}
-        /> : null}
+        <FeaturedEvents events={featuredEvents} />
+        <CurrentEvents events={currentEvents} />
         <EventsList
           events={futureEvents}
         />

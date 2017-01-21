@@ -63,7 +63,7 @@ module.exports = {
         },
       },
       {
-        test: /\.png$/,
+        test: /\.(png|gif)$/,
         loaders: [
           'url-loader?limit=10000&mimetype=application/font-woff&name=../img/[name].[ext]',
           'image-webpack?bypassOnDebug&optimizationLevel=7&interlaced=false',
@@ -73,6 +73,15 @@ module.exports = {
         // This exposes React variable so Chrome React devtools work
         test: require.resolve('react'),
         loader: 'expose?React',
+      },
+      // We don't care about these on the server too much, but we would like them to avoid erroring-out:
+      {
+        test: /\.s?css$/,
+        loaders: ['css-loader?sourceMap', 'pleeease-loader', 'postcss-loader', 'sass-loader?sourceMap'],
+      },
+      {
+        test: /\.(ttf|otf|eot|svg|woff(2)?)(\?[a-z0-9=.]+)?$/,
+        loader: 'file-loader?name=../fonts/[name].[ext]',
       },
     ],
   },
