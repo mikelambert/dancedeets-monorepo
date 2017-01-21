@@ -221,7 +221,7 @@ def _update_geodata(db_event, location_info):
             db_event.city_name = "Unknown"
     db_event.anywhere = location_info.is_online_event()
     db_event.actual_city_name = location_info.actual_city()
-    if db_event.actual_city_name:
+    if location_info.latlong():
         db_event.latitude, db_event.longitude = location_info.latlong()
     else:
         db_event.latitude = None
