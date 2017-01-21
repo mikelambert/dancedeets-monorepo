@@ -226,7 +226,10 @@ class FeaturedEvents extends React.Component {
     return (<div>
       <div>Featured Events:</div>
       <div style={{ width: '100%', padding: 10 }}>
-        <Slider>
+        <Slider
+          autoplay
+          dots
+        >
           {resultItems}
         </Slider>
       </div>

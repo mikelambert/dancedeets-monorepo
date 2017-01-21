@@ -267,3 +267,12 @@ h6 {
 .google-translate {
   height: 25px;
 }
+
+// For the Featured Events Slider:
+.slick-dots li button:before {
+  color: 'white';
+}
+
+.slick-dots li.slick-active button:before {
+    opacity: 1.0;
+}
