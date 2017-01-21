@@ -6,6 +6,8 @@
 
 import React from 'react';
 import {
+  Dimensions,
+  Image,
   Linking,
   ListView,
   Platform,
@@ -22,6 +24,7 @@ import {
 } from 'react-intl';
 import moment from 'moment';
 import { connect } from 'react-redux';
+import Carousel from 'react-native-carousel';
 import upperFirst from 'lodash/upperFirst';
 import { Event } from 'dancedeets-common/js/events/models';
 import type {
@@ -51,6 +54,7 @@ import {
 import {
   Button,
   normalize,
+  ProportionalImage,
   semiNormalize,
   Text,
 } from '../ui';
@@ -113,6 +117,64 @@ class SectionHeader extends React.Component {
   render() {
     return (<View style={styles.sectionHeader}>
       <Text style={styles.sectionHeaderText}>{this.props.title}</Text>
+    </View>);
+  }
+}
+
+class FeaturedEvent extends React.Component {
+  props: {
+    event: Event;
+  }
+
+  render() {
+    const imageProps = this.props.event.getResponsiveFlyers();
+    if (!imageProps) {
+      return null;
+    }
+    return <Image
+      source={imageProps}
+      style={{
+        height: 200,
+      }}
+    />;
+  }
+}
+
+class FeaturedEvents extends React.Component {
+  props: {
+    featured: Array<Event>;
+  }
+
+  renderPage(index: number) {
+    return <View key={index} style={{
+      width: Dimensions.get('window').width,
+    }}>
+      <FeaturedEvent event={this.props.featured[index]} />
+    </View>;
+  }
+
+  shouldComponentUpdate(nextProps, nextState) {
+    console.log(this.props, nextProps);
+    console.log(this.props.featured != nextProps.featured);//, super.shouldComponentUpdate(nextProps, nextState));
+    return this.props.featured != nextProps.featured;
+  }
+
+  render() {
+    if (!this.props.featured) {
+      return null;
+    }
+    return (<View style={{ height: 200 }}>
+      <Carousel
+        indicatorOffset={0}
+        indicatorColor="#FFFFFF"
+        indicatorSize={25}
+        indicatorSpace={15}
+        animate={true}
+        loop={true}
+        delay={4000}
+      >
+        {this.props.featured.map((event, i) => this.renderPage(i))}
+      </Carousel>
     </View>);
   }
 }
@@ -369,23 +431,34 @@ class _EventListContainer extends React.Component {
   }
 
   renderSummaryView() {
-    let message = null;
-    const query = this.props.search.response && this.props.search.response.query;
-    if (!query) {
+    console.log('render summary');
+    const response = this.props.search.response;
+    if (!response) {
       return null;
     }
-    if (query.location && query.keywords) {
-      message = messages.eventsWithLocationKeywords;
-    } else if (query.location) {
-      message = messages.eventsWithLocation;
-    } else if (query.keywords) {
-      message = messages.eventsWithKeywords;
-    } else {
-      // Don't show any header for non-existent search queries/results
-      return null;
+    const query = response.query;
+    let header = null;
+    if (query) {
+      let message = null;
+      if (query.location && query.keywords) {
+        message = messages.eventsWithLocationKeywords;
+      } else if (query.location) {
+        message = messages.eventsWithLocation;
+      } else if (query.keywords) {
+        message = messages.eventsWithKeywords;
+      } else {
+        // Don't show any header for non-existent search queries/results
+      }
+      if (message) {
+        header = <Text style={styles.listHeader}>
+          {this.props.intl.formatMessage(message, { location: query.location, keywords: query.keywords })}
+        </Text>;
+      }
     }
-    const header = this.props.intl.formatMessage(message, { location: query.location, keywords: query.keywords });
-    return <Text style={styles.listHeader}>{header}</Text>;
+    return <View>
+      <FeaturedEvents featured={response.featured} />
+      {header}
+    </View>;
   }
 
   renderAd() {
