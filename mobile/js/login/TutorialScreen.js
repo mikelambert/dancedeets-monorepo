@@ -21,6 +21,7 @@ import {
 import LaunchScreen from './LaunchScreen';
 import LoginButtonWithAlternate from './LoginButtonWithAlternate';
 import {
+  BottomFade,
   normalize,
   Text,
 } from '../ui';
@@ -123,12 +124,7 @@ class _TutorialScreen extends React.Component {
     // We manually insert a bottomFade into each page below,
     // so that we can stick buttons/links/text on top of the fade.
 
-    const bottomFade = (<LinearGradient
-      start={[0.0, 0.0]} end={[0.0, 1.0]}
-      locations={[0.0, 0.8, 1.0]}
-      colors={['#00000000', '#000000CC', '#000000CC']}
-      style={styles.bottomFade}
-    />);
+    const bottomFade = <BottomFade />;
 
     if (pageID === 0) {
       return <LaunchScreen>{bottomFade}</LaunchScreen>;

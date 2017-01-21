@@ -5,6 +5,7 @@
  */
 
 import AutocompleteList from './AutocompleteList';
+import BottomFade from './bottomFade';
 import Button from './Button';
 import Card from './Card';
 import ProgressiveLayout from './ProgressiveLayout';
@@ -20,6 +21,7 @@ import * as normalize from './normalize';
 
 module.exports = {
   AutocompleteList,
+  BottomFade,
   Button,
   Card,
   ProgressiveLayout,

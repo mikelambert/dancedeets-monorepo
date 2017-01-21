@@ -52,6 +52,7 @@ import {
   isAuthenticated,
 } from '../api/dancedeets';
 import {
+  BottomFade,
   Button,
   normalize,
   ProportionalImage,
@@ -150,17 +151,16 @@ class FeaturedEvents extends React.Component {
       width: Dimensions.get('window').width,
     }}>
       <FeaturedEvent event={this.props.featured[index]} />
+      <BottomFade />
     </View>;
   }
 
   shouldComponentUpdate(nextProps, nextState) {
-    console.log(this.props, nextProps);
-    console.log(this.props.featured != nextProps.featured);//, super.shouldComponentUpdate(nextProps, nextState));
     return this.props.featured != nextProps.featured;
   }
 
   render() {
-    if (!this.props.featured) {
+    if (!this.props.featured.length) {
       return null;
     }
     return (<View style={{ height: 200 }}>

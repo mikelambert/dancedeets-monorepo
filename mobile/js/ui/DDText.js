@@ -4,7 +4,7 @@
  * @flow
  */
 
-import React, { Element } from 'react';
+import React from 'react';
 import {
   Platform,
   Text as RealText,
@@ -16,23 +16,23 @@ import {
   semiNormalize,
 } from '../ui/normalize';
 
-export function Text({ style, ...props }: Object): Element<RealText> {
+export function Text({ style, ...props }: Object): RealText {
   return <RealText style={[styles.font, styles.text, style]} {...props} />;
 }
 
-export function Heading1({ style, ...props }: Object): Element<RealText> {
+export function Heading1({ style, ...props }: Object): RealText {
   return <RealText style={[styles.font, styles.h1, style]} {...props} />;
 }
 
-export function Paragraph({ style, ...props }: Object): Element<RealText> {
+export function Paragraph({ style, ...props }: Object): RealText {
   return <RealText style={[styles.font, styles.p, style]} {...props} />;
 }
 
-export function Autolink({ style, ...props }: Object): Element<RealAutolink> {
+export function Autolink({ style, ...props }: Object): RealAutolink {
   return <RealAutolink style={[styles.font, style]} {...props} />;
 }
 
-export function TextInput({ style, ...props }: Object): Element<TextInput> {
+export function TextInput({ style, ...props }: Object): TextInput {
   return (
     <RealTextInput
       {...props}
