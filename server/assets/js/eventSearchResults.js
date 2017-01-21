@@ -45,12 +45,13 @@ import {
 
 require('slick-carousel/slick/slick.css');
 require('slick-carousel/slick/slick-theme.css');
+require('../css/slick.scss');
 
 type OneboxResult = any;
 type EventResult = SearchEvent;
 type Result = OneboxResult | EventResult;
 
-export class EventFlyer extends React.Component {
+export class SquareEventFlyer extends React.Component {
   props: {
     event: SearchEvent;
     lazyLoad?: boolean;
@@ -99,6 +100,59 @@ export class EventFlyer extends React.Component {
     if (this.props.lazyLoad) {
       imageTag = <LazyLoad height={height} once offset={300}>{imageTag}</LazyLoad>;
     }
+    return (
+      <a className="link-event-flyer" href={event.getUrl()}>
+        {imageTag}
+      </a>
+    );
+  }
+}
+
+export class HorizontalEventFlyer extends React.Component {
+  props: {
+    event: SearchEvent;
+  }
+
+  generateCroppedCover(picture: Cover, width: number, height: number) {
+    const parsedSource = url.parse(picture.source, true);
+    parsedSource.query = { ...parsedSource.query, width, height };
+    const newSourceUrl = url.format(parsedSource);
+
+    return {
+      source: newSourceUrl,
+      width,
+      height,
+    };
+  }
+
+  render() {
+    const event = this.props.event;
+    const picture = event.picture;
+    if (!picture) {
+      return null;
+    }
+    const width = 800;
+    const height = 400;
+
+    const scaledHeight = '50'; // height == width * 50%
+
+    const croppedPicture = this.generateCroppedCover(picture, width, height);
+    const imageTag = (<div
+      style={{
+        height: 0,
+        paddingBottom: `${scaledHeight}%`,
+      }}
+    >
+      <img
+        role="presentation"
+        src={croppedPicture.source}
+        style={{
+          width: '100%',
+        }}
+        className="no-border"
+      />
+    </div>
+    );
     return (
       <a className="link-event-flyer" href={event.getUrl()}>
         {imageTag}
@@ -169,7 +223,7 @@ class HorizontalEvent extends React.Component {
     return (
       <Card className="wide-event clearfix">
         <div className="event-image">
-          <EventFlyer event={this.props.event} lazyLoad={this.props.lazyLoad} />
+          <SquareEventFlyer event={this.props.event} lazyLoad={this.props.lazyLoad} />
         </div>
         <div className="event-description">
           <EventDescription event={this.props.event} />
@@ -193,7 +247,7 @@ class VerticalEvent extends React.Component {
         verticalAlign: 'top',
       }}
     >
-      <EventFlyer event={event} />
+      <SquareEventFlyer event={event} />
       <h3 className="event-title" style={{ marginTop: 10 }}>
         <a href={event.getUrl()}>
           <span>{event.name}</span>
@@ -207,6 +261,25 @@ class VerticalEvent extends React.Component {
   }
 }
 
+class FeaturedEvent extends React.Component {
+  props: {
+    event: SearchEvent;
+  }
+
+  render() {
+    const event = this.props.event;
+    return (
+      <Card>
+        <HorizontalEventFlyer event={event} />
+        <h3 className="event-title" style={{ marginTop: 10 }}>
+          <a href={event.getUrl()}>
+            <span>{event.name}</span>
+          </a>
+        </h3>
+      </Card>
+    );
+  }
+}
 class FeaturedEvents extends React.Component {
   props: {
     events: Array<SearchEvent>;
@@ -218,9 +291,12 @@ class FeaturedEvents extends React.Component {
     }
 
     const resultItems = [];
-    this.props.events.forEach((event, index) => {
+    const imageEvents = this.props.events.filter(x => x.picture);
+    imageEvents.forEach((event, index) => {
       // Slider requires children to be actual HTML elements.
-      resultItems.push(<div key={event.id}><VerticalEvent event={event} /></div>);
+      resultItems.push(<div key={event.id}>
+        <FeaturedEvent event={event} />
+      </div>);
     });
 
     return (<div>
