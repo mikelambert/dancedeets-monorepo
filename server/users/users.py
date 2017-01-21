@@ -67,9 +67,9 @@ class User(ndb.Model):
     def dict_for_form(self):
         return {
             'location': self.location,
-            'distance': int(self.distance),
-            'distance_units': self.distance_units,
-            'min_attendees': self.min_attendees,
+            #'distance': int(self.distance),
+            #'distance_units': self.distance_units,
+            #'min_attendees': self.min_attendees,
         }
 
     def distance_in_km(self):
