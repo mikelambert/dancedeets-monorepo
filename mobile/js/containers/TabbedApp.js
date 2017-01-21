@@ -61,6 +61,8 @@ import {
   BattleBrackets,
 } from '../event_signups/views';
 import * as RemoteConfig from '../remoteConfig';
+import PositionProvider from '../providers/positionProvider';
+import { FullEventView } from '../events/uicomponents';
 
 const messages = defineMessages({
   events: {
@@ -167,14 +169,27 @@ class _EventView extends React.Component {
             trackWithEvent('View Event', event);
             this.props.navigatable.onNavigate({ key: 'EventView', title: event.name, event });
           }}
+          onFeaturedEventSelected={(event) => {
+            trackWithEvent('View Featured Event', event);
+            this.props.navigatable.onNavigate({ key: 'FeaturedEventView', title: event.name, event });
+          }}
           onAddEventClicked={(source) => {
             track('Add Event', { source });
             this.props.openAddEvent(this.props);
           }}
         />);
+      case 'FeaturedEventView':
+        return <PositionProvider
+          renderWithPosition={(position) => <FullEventView
+            onFlyerSelected={this.props.onFlyerSelected}
+            event={route.event}
+            currentPosition={position}
+          />}
+        />;
       case 'EventView':
         return (<EventPager
           onEventNavigated={(event) => {
+            console.log(event);
             trackWithEvent('View Event', event);
             this.props.navigatable.onSwap('EventView', { key: 'EventView', title: event.name, event });
           }}

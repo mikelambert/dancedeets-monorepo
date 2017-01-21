@@ -144,14 +144,18 @@ class FeaturedEvent extends React.Component {
 class FeaturedEvents extends React.Component {
   props: {
     featured: Array<Event>;
+    onEventSelected: (event: Event) => void;
   }
 
   renderPage(index: number) {
+    const event = this.props.featured[index];
     return <View key={index} style={{
       width: Dimensions.get('window').width,
     }}>
-      <FeaturedEvent event={this.props.featured[index]} />
-      <BottomFade />
+      <TouchableOpacity onPress={() => this.props.onEventSelected(event)} activeOpacity={0.5}>
+        <FeaturedEvent event={event} />
+        <BottomFade />
+      </TouchableOpacity>
     </View>;
   }
 
@@ -240,6 +244,7 @@ class _EventListContainer extends React.Component {
   props: {
     intl: intlShape;
     onEventSelected: (event: Event) => void;
+    onFeaturedEventSelected: (event: Event) => void;
     onAddEventClicked: (clickTarget: string) => void;
 
     // Self-managed props
@@ -431,7 +436,6 @@ class _EventListContainer extends React.Component {
   }
 
   renderSummaryView() {
-    console.log('render summary');
     const response = this.props.search.response;
     if (!response) {
       return null;
@@ -456,7 +460,10 @@ class _EventListContainer extends React.Component {
       }
     }
     return <View>
-      <FeaturedEvents featured={response.featured} />
+      <FeaturedEvents
+        featured={response.featured}
+        onEventSelected={this.props.onFeaturedEventSelected}
+        />
       {header}
     </View>;
   }
