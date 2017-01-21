@@ -25,7 +25,7 @@ const initialState = {
   searchQuery: {
     location: '',
     keywords: '',
-    timePeriod: 'UPCOMING',
+    timePeriod: 'ALL_FUTURE',
   },
   response: null,
   error: false,
