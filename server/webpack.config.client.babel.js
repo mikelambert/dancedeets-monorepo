@@ -10,7 +10,13 @@ function isCommonModule(module) {
   if (typeof userRequest !== 'string') {
     return false;
   }
-  const common = ['jquery', 'bootstrap', 'trackjs', '/react/', 'react-dom', 'moment', 'lodash', 'babel-polyfill', '/intl/', 'intl-', 'url', 'fbjs', 'js/messages', 'source-map', 'font-awesome'];
+  const common = [
+    'jquery', 'bootstrap', 'trackjs', '/react/', 'react-dom', 'moment', 'lodash', 'babel-polyfill', '/intl/', 'intl-', 'url', 'fbjs', 'js/messages', 'source-map',
+  ];
+  // Throw all CSS into the common module, so it doesn't require multiple downloads or blocking pages on subsequent navigations
+  if (userRequest.endsWith('css')) {
+    return true;
+  }
   for (const elem of common) {
     if (userRequest.indexOf(elem) > -1) {
       return true;
@@ -100,7 +106,7 @@ const config = {
         loader: ExtractTextPlugin.extract('style-loader', ['css-loader?sourceMap', 'pleeease-loader', 'postcss-loader', 'sass-loader?sourceMap']),
       },
       {
-        test: /\.png$/,
+        test: /\.(png|gif)$/,
         loader: combineLoaders([
           {
             loader: 'url',
