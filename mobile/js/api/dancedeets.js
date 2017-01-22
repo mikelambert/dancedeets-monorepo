@@ -66,7 +66,7 @@ async function performRequest(path: string, args: Object, postArgs: ?Object | nu
       return json;
     }
   } catch (e) {
-    console.warn('Error on API call:', path, 'withArgs:', args, '. Error:', e);
+    console.warn('Error on API call:', path, 'withArgs:', args, '. Error:', e.message, e);
     throw e;
   }
 }
