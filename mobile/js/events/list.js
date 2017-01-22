@@ -336,8 +336,17 @@ class _EventListContainer extends React.Component {
         dataBlob[oneboxKey] = response.onebox_links.map(x => x);
         sectionHeaders.push(oneboxKey);
       }
+      const now = moment();
       if (response.results != null && response.results.length > 0) {
         for (const e of response.results) {
+          // TODO: Due to some ancient bad design decisions,
+          // it's surprisingly difficult to to do
+          // time-zone-aware date manipulation on the server,
+          // so instead let's filter out those events here.
+          const end = moment(e.end_time, moment.ISO_8601);
+          if (end.isBefore(now)) {
+            continue;
+          }
           const start = moment(e.start_time, moment.ISO_8601);
           const formattedStart = this.props.intl.formatDate(start.toDate(), weekdayDate);
           if (!(formattedStart in dataBlob)) {
