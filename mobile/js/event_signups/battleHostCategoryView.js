@@ -19,6 +19,7 @@ import {
   Card,
   defaultFont,
   HorizontalView,
+  RibbonBanner,
   Text,
 } from '../ui';
 import type {
@@ -106,17 +107,20 @@ class _TeamList extends React.Component {
     }
 
     const rowIndex = parseInt(rowId, 10) + 1;
-    const style = prelim.auditioned ? { backgroundColor: 'red' } : null;
+    const width = 50;
+    const banner = prelim.auditioned ? <RibbonBanner text="Auditioned" width={width} /> : null;
+    const style = null; // prelim.auditioned ? { backgroundColor: 'red' } : null;
     return <TouchableOpacity
         onPress={this.onSignupPressed}
       >
-      <Card style={style}>
+      <Card>
         <View>
           <HorizontalView>
             <Text style={{ marginRight: 10 }}>{rowIndex}:</Text>
             {this.renderSignup(signup)}
           </HorizontalView>
         </View>
+        {banner}
       </Card>
     </TouchableOpacity>;
   }

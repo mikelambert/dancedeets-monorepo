@@ -46,6 +46,7 @@ import {
   Button,
   HorizontalView,
   normalize,
+  RibbonBanner,
   SegmentedControl,
   semiNormalize,
   Text,
@@ -175,16 +176,8 @@ class _AddEventRow extends React.Component {
         </View>
       );
     }
-    const addedBanner = (this.props.event.loaded ?
-      (
-        <View style={styles.disabledOverlay}>
-          <View style={[styles.redRibbon, { top: (width / 2) - 10 }]}>
-            <Text style={styles.redRibbonText}>
-              {this.props.intl.formatMessage(messages.addedBanner).toUpperCase()}
-            </Text>
-          </View>
-        </View>
-      ) : null);
+    const bannerText = this.props.intl.formatMessage(messages.addedBanner).toUpperCase();
+    const addedBanner = this.props.event.loaded ? <RibbonBanner text={bannerText} width={width} /> : null;
     const textColor = (this.props.event.loaded || tempOverlay) ? '#888' : 'white';
 
     const start = moment(this.props.event.start_time, moment.ISO_8601);
@@ -193,7 +186,7 @@ class _AddEventRow extends React.Component {
     const row = (
       <HorizontalView>
         <View style={styles.leftEventImage}>
-          <View style={{ borderRadius: 10, width, overflow: 'hidden' }}>
+          <View style={{ borderRadius: 10, width }}>
             <Image
               source={{ uri: imageUrl }}
               style={{ width, height: width }}
@@ -369,29 +362,6 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     // http://stackoverflow.com/questions/36605906/what-is-the-row-container-for-a-listview-component
     overflow: 'hidden',
-  },
-  disabledOverlay: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-    backgroundColor: '#00000088',
-  },
-  redRibbon: {
-    position: 'absolute',
-    transform: [{ rotate: '-30deg' }],
-    backgroundColor: '#c00',
-    borderWidth: 0.5,
-    left: -100,
-    right: -100,
-
-    alignItems: 'center',
-    flexDirection: 'row',
-    justifyContent: 'center',
-  },
-  redRibbonText: {
-    fontSize: semiNormalize(18),
   },
   leftEventImage: {
   },

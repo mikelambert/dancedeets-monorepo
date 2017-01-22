@@ -10,6 +10,7 @@ import Button from './Button';
 import Card from './Card';
 import ProgressiveLayout from './ProgressiveLayout';
 import ProportionalImage from './ProportionalImage';
+import RibbonBanner from './ribbonBanner';
 import SegmentedControl from './SegmentedControl';
 import ZoomableImage from './ZoomableImage';
 import * as Alerts from './alerts';
@@ -26,6 +27,7 @@ module.exports = {
   Card,
   ProgressiveLayout,
   ProportionalImage,
+  RibbonBanner,
   SegmentedControl,
   ZoomableImage,
   ...Alerts,
