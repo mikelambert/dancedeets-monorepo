@@ -365,6 +365,10 @@ type PlaylistViewProps = {
 };
 
 class _PlaylistView extends React.Component {
+  state: {
+    isPlaying: boolean;
+  }
+
   _youtubePlayer: YouTubeNoReload;
   _sectionedListView: SectionedListView;
   _cachedLayout: Array<Array<{top: number, bottom: number}>>;
@@ -379,13 +383,17 @@ class _PlaylistView extends React.Component {
     (this: any).onListViewLayout = this.onListViewLayout.bind(this);
     (this: any).onListViewScroll = this.onListViewScroll.bind(this);
     this._cachedLayout = [];
+    this.state = { isPlaying: true };
   }
 
   componentWillReceiveProps(nextProps: any) {
     if (nextProps.selectedTab !== 'learn') {
+      this.setState({isPlaying: false});
       this._youtubePlayer.setNativeProps({
         play: false,
       });
+    } else {
+      this.setState({isPlaying: true});
     }
   }
 
@@ -535,7 +543,7 @@ class _PlaylistView extends React.Component {
         }}
         apiKey={googleKey}
         videoId={video.youtubeId}
-        play // auto-play when loading a tutorial
+        play={this.state.isPlaying} // auto-play when loading a tutorial
         hidden={false}
         playsInline
         loop={false}
