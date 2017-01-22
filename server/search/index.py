@@ -79,7 +79,16 @@ class BaseIndex(object):
     def put_objects(cls, objects):
         doc_index = cls.real_index()
         for i in range(0, len(objects), search.MAXIMUM_DOCUMENTS_PER_PUT_REQUEST):
-            doc_index.put(objects[i:i + search.MAXIMUM_DOCUMENTS_PER_PUT_REQUEST])
+            objs = objects[i:i + search.MAXIMUM_DOCUMENTS_PER_PUT_REQUEST]
+            try:
+                doc_index.put(objs)
+            except:
+                logging.exception("Error putting docs, will try putting one by one")
+                for obj in objs:
+                    try:
+                        doc_index.put([obj])
+                    except:
+                        logging.exception("Error putting doc: %s", obj)
 
     @classmethod
     def delete_ids(cls, object_ids):
