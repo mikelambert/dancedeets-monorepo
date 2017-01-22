@@ -8,13 +8,14 @@ export type Dancer = {
   name: String;
 };
 
+// Currently this is of the form "<timestamp>_<random>"
+type SignupKey = string;
+
 export type Signup = {
+  id: SignupKey;
   teamName: string;
   dancers: ?{[uid: string]: Dancer};
 };
-
-// Currently this is of the form "<timestamp>_<random>"
-type SignupKey = string;
 
 // Various states the competiton can be in,
 // this is managed by the Event MC.

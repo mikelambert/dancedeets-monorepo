@@ -33,6 +33,7 @@ class RegisterHandler(api.ApiHandler):
 
         signup_id = '%s_%s' % (int(time.time()), random.randint(10000, 99999))
         signup = {
+            'id': signup_id,
             'teamName': team_name,
             'dancers': dancers,
         }

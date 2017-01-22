@@ -6,15 +6,14 @@
 
 import React from 'react';
 import {
+  ListView,
+  TouchableOpacity,
   View,
 } from 'react-native';
 import {
   injectIntl,
   defineMessages,
 } from 'react-intl';
-import SwipeableListView from 'SwipeableListView';
-import SwipeableQuickActions from 'SwipeableQuickActions';
-import SwipeableQuickActionButton from 'SwipeableQuickActionButton';
 import { FeedListView } from '../learn/BlogList';
 import {
   Card,
@@ -24,6 +23,7 @@ import {
 } from '../ui';
 import type {
   BattleCategory,
+  PrelimStatus,
   Signup,
 } from './models';
 import {
@@ -37,30 +37,45 @@ class _TeamList extends React.Component {
   };
 
   state: {
-    dataSource: any;
+    prelims: Array<PrelimStatus>;
+    dataSource: ListView.DataSource;
   };
 
   constructor(props: any) {
     super(props);
     (this: any).renderRow = this.renderRow.bind(this);
-    (this: any).renderQuickActions = this.renderQuickActions.bind(this);
+    (this: any).onSignupPressed = this.onSignupPressed.bind(this);
 
-    var ds = new SwipeableListView.getNewDataSource()
     // TODO: We need to "close off" signups and copy them to prelims at some point.
     // Then the numerical indices will be stable.
-    this.state = {
-      dataSource: ds.cloneWithRowsAndSections({s1: this.props.signups}, null, null)
-    }
+    const prelims = this.props.signups.map(signup => ({
+      signupKey: signup.id,
+      auditioned: false,
+    }));
+    this.state = this.prelimsState(prelims);
+  }
+
+  prelimsState(prelims) {
+    const ds = (this.state && this.state.dataSource) || new ListView.DataSource({
+      rowHasChanged: (r1, r2) => r1 !== r2,
+    });
+    return {
+      prelims,
+      dataSource: ds.cloneWithRows(prelims, null, null),
+    };
   }
 
   renderSignup(signup: Signup) {
     const dancers = Object.keys(signup.dancers || {}).map(x =>
-      <Text key={x} style={{ marginLeft: 20 }}>{signup.dancers ? signup.dancers[x].name : ''}</Text>
+      <Text key={x}>{signup.dancers ? signup.dancers[x].name : ''}</Text>
     );
     return <View>
-      <Text>Team: {signup.teamName}</Text>
       <HorizontalView>
-        <Text>Dancers:</Text>
+        <Text>Team: </Text>
+        <Text>{signup.teamName}</Text>
+      </HorizontalView>
+      <HorizontalView>
+        <Text>Dancers: </Text>
         <View>
           {dancers}
         </View>
@@ -68,41 +83,48 @@ class _TeamList extends React.Component {
     </View>;
   }
 
-  renderRow(signup: Signup, sectionId: string, rowId: string) {
-    const rowIndex = parseInt(rowId, 10) + 1;
-    return (<Card>
-      <HorizontalView>
-        <Text style={{ marginRight: 10 }}>{rowIndex}:</Text>
-        {this.renderSignup(signup)}
-      </HorizontalView>
-    </Card>);
+  getSignup(prelim) {
+    //TODO: Speed this up
+    return this.props.signups.find(x => x.id == prelim.signupKey);
   }
 
-  renderQuickActions() {
-    return <SwipeableQuickActions style={{
-      alignItems: 'center',
-      padding: 10,
-    }}>
-      <SwipeableQuickActionButton
-        text="Called!"
-        imageSource={require('../ui/FBButtons/images/facebook.png')}
-        textStyle={defaultFont}
-        onPress={() => console.log('1')}
-      />
-      <SwipeableQuickActionButton
-        text="Danced!"
-        imageSource={require('../ui/FBButtons/images/facebook.png')}
-        textStyle={defaultFont}
-        onPress={() => console.log('2')}
-      />
-    </SwipeableQuickActions>;
+  onSignupPressed(signup: Signup) {
+    const prelims = [...this.state.prelims];
+    const index = prelims.findIndex(x => x.signupKey == signup.id);
+    prelims[index] = {
+      ...prelims[index],
+      auditioned: !prelims[index].auditioned,
+    };
+    this.setState(this.prelimsState(prelims));
+  }
+
+  renderRow(prelim: PrelimStatus, sectionId: string, rowId: string) {
+    const signup = this.getSignup(prelim);
+    if (!signup) {
+      console.error('Missing signup for prelim', prelim, 'in list', this.props.signups);
+      return null;
+    }
+
+    const rowIndex = parseInt(rowId, 10) + 1;
+    const style = prelim.auditioned ? { backgroundColor: 'red' } : null;
+    return <TouchableOpacity
+        onPress={this.onSignupPressed}
+      >
+      <Card style={style}>
+        <View>
+          <HorizontalView>
+            <Text style={{ marginRight: 10 }}>{rowIndex}:</Text>
+            {this.renderSignup(signup)}
+          </HorizontalView>
+        </View>
+      </Card>
+    </TouchableOpacity>;
   }
 
   render() {
-     return <SwipeableListView
+     return <ListView
       maxSwipeDistance={120}
       renderRow={this.renderRow}
-      renderQuickActions={this.renderQuickActions}
       dataSource={this.state.dataSource}
       onScroll={(e) => {}}
     />;
