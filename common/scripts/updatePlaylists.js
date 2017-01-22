@@ -8,6 +8,7 @@
 import fetch from 'node-fetch';
 import * as fs from 'fs';
 import zip from 'lodash/zip';
+import findIndex from 'lodash/findIndex';
 import {
   loadPlaylist,
 } from './fetchYoutubeVideos';
@@ -62,11 +63,15 @@ async function reloadPlaylists(playlistInfos: Array<PlaylistInfo>) {
 
     const tutorialItemsJson = await loadPlaylist(playlist.id);
     const videoDimensions = await findVideoDimensions(tutorialItemsJson.map(x => x.youtubeId));
-    const finalTutorialItems = tutorialItemsJson.map((x) => ({
+    const tempTutorialItems = tutorialItemsJson.map((x) => ({
       ...x,
       title: transformTitle(x.title),
       ...videoDimensions[x.youtubeId],
     }));
+    // De-dupe the array on ids, keeping only the first element (where pos == found-itself)
+    const finalTutorialItems = tempTutorialItems.filter(function(item, pos, self) {
+        return findIndex(self, (x) => x.id == item.id) == pos;
+    });
     const tutorial = {
       id: playlistInfo.id,
       title: `VincaniTV: ${playlistInfo.name}`,
