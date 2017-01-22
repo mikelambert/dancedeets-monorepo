@@ -27,47 +27,53 @@ export default class ProportionalImage extends React.Component {
   props: Props;
 
   state: {
-    height: ?number;
-    width: ?number;
+    dimensions: ?{
+      width: number;
+      height: number;
+    };
     opacity: any;
   };
 
   constructor(props: Props) {
     super(props);
     this.state = {
-      height: null,
-      width: null,
+      dimensions: null,
       opacity: new Animated.Value(0),
     };
     (this: any).onLayout = this.onLayout.bind(this);
     (this: any).onLoad = this.onLoad.bind(this);
   }
 
+  // onLayout will only get called once when this view is re-used.
+  // So don't do any computations that are dependent on this.props here.
+  // Instead just save the necessary bits of state and do the computation elsewhere.
   onLayout(e: SyntheticEvent) {
     const nativeEvent: any = e.nativeEvent;
     const layout = nativeEvent.layout;
+    this.setState({
+      dimensions: {
+        width: layout.width,
+        height: layout.height,
+      },
+    });
+  }
+
+  getComputedWidthHeight() {
+    const dimensions = this.state.dimensions;
+    if (!dimensions) {
+      return {};
+    }
     const aspectRatio = this.props.originalWidth / this.props.originalHeight;
     if (this.props.resizeDirection === 'width') {
-      const measuredWidth = aspectRatio * layout.height;
-      const currentWidth = layout.width;
-      if (measuredWidth !== currentWidth) {
-        this.setState({
-          ...this.state,
-          height: layout.height,
-          width: measuredWidth,
-        });
-      }
+      return {
+        height: dimensions.height,
+        width: dimensions.height * aspectRatio,
+      };
     } else {
-      const measuredHeight = layout.width / aspectRatio;
-      const currentHeight = layout.height;
-
-      if (measuredHeight !== currentHeight) {
-        this.setState({
-          ...this.state,
-          width: layout.width,
-          height: measuredHeight,
-        });
-      }
+      return {
+        width: dimensions.width,
+        height: dimensions.width / aspectRatio,
+      };
     }
   }
 
@@ -85,6 +91,7 @@ export default class ProportionalImage extends React.Component {
   view: View;
 
   render() {
+    const resizedDimensions = this.getComputedWidthHeight();
     // We catch the onLayout in the view, find the size, then resize the child (before it is laid out?)
     return (
       <View
@@ -94,7 +101,7 @@ export default class ProportionalImage extends React.Component {
       >
         <Animated.Image
           {...this.props}
-          style={[{ opacity: this.state.opacity, height: this.state.height, width: this.state.width }, this.props.style]}
+          style={[{ opacity: this.state.opacity, ...resizedDimensions }, this.props.style]}
           onLoad={this.onLoad}
         />
       </View>
