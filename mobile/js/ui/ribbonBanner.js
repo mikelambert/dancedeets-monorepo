@@ -67,7 +67,9 @@ export default class RibbonBanner extends React.Component {
       top: (dimensions.height - fontSize) / 2,
       // Use the tangent to figure out how much to offset horizontally from the left
       // To ensure that it basically touches the bottom-right corner at all times
-      left: -dimensions.width / 2 + (dimensions.height / 2 / divisor),
+      // But on small views, we don't want it going off to the right.
+      // So only use this calculation to move things left, if we can. But clamp at 0.
+      left: Math.min(0, -dimensions.width / 2 + (dimensions.height / 2 / divisor)),
     }
     return <View style={placement}><View style={styles.redRibbon}>
       <Text style={[styles.redRibbonText]}>{this.props.text}</Text>
