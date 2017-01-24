@@ -1,5 +1,7 @@
+# -*-*- encoding: utf-8 -*-*-
 
 # from http://svn.python.org/projects/python/trunk/Tools/world/world
+# with some additions as we encounter new country codes
 countries_abbrev2full = {
     "AF": "Afghanistan",
     "AL": "Albania",
@@ -13,6 +15,7 @@ countries_abbrev2full = {
     "AR": "Argentina",
     "AM": "Armenia",
     "AW": "Aruba",
+    "AX": "Åland Islands"
     "AU": "Australia",
     "AT": "Austria",
     "AZ": "Azerbaijan",
