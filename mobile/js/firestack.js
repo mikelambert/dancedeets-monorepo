@@ -29,17 +29,29 @@ class _TrackFirebase extends React.Component {
     firebaseData: Object;
   };
 
+  _setHandler: boolean;
+
   constructor(props: any) {
     super(props);
     (this: any).handleValueChange = this.handleValueChange.bind(this);
+    this._setHandler = false;
   }
 
   componentWillMount() {
-    firestack.database.ref(this.props.path).on('value', this.handleValueChange);
+    const dbRef = firestack.database.ref(this.props.path);
+    if (!dbRef.listeners.value) {
+      console.log(`Installing handler on path: ${this.props.path}`);
+      dbRef.on('value', this.handleValueChange);
+      this._setHandler = true;
+    }
   }
 
+
   componentWillUnmount() {
-    firestack.database.ref(this.props.path).off('value', this.handleValueChange);
+    if (this._setHandler) {
+      console.log(`Uninstalling handler on path: ${this.props.path}`);
+      firestack.database.ref(this.props.path).off('value', this.handleValueChange);
+    }
   }
 
   handleValueChange(snapshot) {
