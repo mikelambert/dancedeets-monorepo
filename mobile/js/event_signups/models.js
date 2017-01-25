@@ -75,12 +75,12 @@ export type BattleCategory = {
 
   // The finalized list of prelims and status,
   // contains keys into the signups object.
-  prelims: Array<PrelimStatus>;
+  prelims: {[index: number]: PrelimStatus};
 
   // The finalized list of top-N,
   // contains keys into the signups object,
   // as well as the current status of this team in the bracket.
-  bracket: Array<BracketProgress>;
+  bracket: {[index: number]: BracketProgress};
 };
 
 export type BattleEvent = {
@@ -93,7 +93,7 @@ export type BattleEvent = {
   // And image
   headerImageUrl: string;
 
-  categories: Array<BattleCategory>;
+  categories: {[index: number]: BattleCategory};
 };
 
 export function categoryDisplayName(category: BattleCategory) {

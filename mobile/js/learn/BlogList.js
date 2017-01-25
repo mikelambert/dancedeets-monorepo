@@ -75,7 +75,7 @@ export class BlogPostTitle extends React.Component {
 
 type FeedProps = {
   items: [];
-  renderRow: (post: BlogPost) => any;
+  renderRow: (post: any) => any;
   renderHeader?: () => any;
   contentContainerStyle?: any;
 };

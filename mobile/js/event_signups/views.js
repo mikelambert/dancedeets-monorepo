@@ -160,6 +160,8 @@ class SelectedBattleBrackets extends React.Component {
     const route = this.props.route;
     const battleEvent = this.props.battleEvent;
 
+    console.log('BattleEvent is', this.props.battleEvent);
+
     let category = null;
     switch (route.key) {
       // Host Views
@@ -173,7 +175,7 @@ class SelectedBattleBrackets extends React.Component {
           }}
           />;
       case 'BattleHostCategory':
-        category = this.props.battleEvent.categories.find(x => x.id === route.categoryId);
+        category = this.props.battleEvent.categories[route.categoryId];
         return (<BattleHostCategoryView
           category={category}
         />);
@@ -190,14 +192,14 @@ class SelectedBattleBrackets extends React.Component {
           onUnregister={this.onUnregister}
         />);
       case 'Category':
-        category = this.props.battleEvent.categories.find(x => x.id === route.categoryId);
+        category = this.props.battleEvent.categories[route.categoryId];
         return (<CategoryView
           category={category}
           onRegister={this.onRegister}
           onUnregister={this.onUnregister}
         />);
       case 'Register':
-        category = this.props.battleEvent.categories.find(x => x.id === route.categoryId);
+        category = this.props.battleEvent.categories[route.categoryId];
         return (<CategorySignupScreen
           battle={this.props.battleEvent}
           category={category}
