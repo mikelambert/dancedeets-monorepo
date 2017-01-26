@@ -160,8 +160,6 @@ class SelectedBattleBrackets extends React.Component {
     const route = this.props.route;
     const battleEvent = this.props.battleEvent;
 
-    console.log('BattleEvent is', this.props.battleEvent);
-
     let category = null;
     switch (route.key) {
       // Host Views
