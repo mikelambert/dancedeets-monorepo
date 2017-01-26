@@ -27,9 +27,9 @@ import Mixpanel from 'react-native-mixpanel';
 import { Analytics } from 'react-native-firebase3';
 import { AccessToken, AppEventsLogger } from 'react-native-fbsdk';
 import { Crashlytics } from 'react-native-fabric';
+import DeviceInfo from 'react-native-device-info';
 import type { Event } from 'dancedeets-common/js/events/models';
 import { performRequest } from '../api/fb';
-
 import type { Action } from '../actions/types';
 
 let trackingEnabled = true;
@@ -50,6 +50,9 @@ function initMixpanel() {
   }
 
   Mixpanel.sharedInstanceWithToken(mixpanelApiKey);
+  if (DeviceInfo.getModel() == 'Calypso AppCrawler') {
+    Mixpanel.registerSuperProperties({'$ignore': true});
+  }
   // Don't use global track(), since this is a Mixpanel-only event:
   Mixpanel.track('$app_open');
 }
