@@ -178,6 +178,7 @@ configurations.all {
 }
 
 dependencies {
+    compile project(':react-native-device-info')
     compile project(':react-native-firestack')
     compile project(':react-native-youtube')
     compile project(':react-native-google-api-availability')

@@ -1,7 +1,9 @@
 package com.dancedeets.android;
 
 import android.app.Application;
+import android.os.Build;
 import android.support.multidex.MultiDexApplication;
+import android.util.Log;
 
 import com.BV.LinearGradient.LinearGradientPackage;
 import com.airbnb.android.react.maps.MapsPackage;
@@ -9,19 +11,18 @@ import com.burnweb.rnsendintent.RNSendIntentPackage;
 import com.chirag.RNMail.RNMail;
 import com.crashlytics.android.Crashlytics;
 import com.devfd.RNGeocoder.RNGeocoderPackage;
+import com.dieam.reactnativepushnotification.ReactNativePushNotificationPackage;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookSdk;
 import com.facebook.appevents.AppEventsLogger;
 import com.facebook.react.ReactApplication;
-import io.fullstack.firestack.FirestackPackage;
-import com.inprogress.reactnativeyoutube.ReactNativeYouTube;
-import org.jall.reactnative.googleapiavailability.GoogleApiAvailabilityPackage;
-import com.dieam.reactnativepushnotification.ReactNativePushNotificationPackage;
+import com.learnium.RNDeviceInfo.RNDeviceInfo;
 import com.facebook.react.ReactNativeHost;
 import com.facebook.react.ReactPackage;
 import com.facebook.react.shell.MainReactPackage;
 import com.facebook.reactnative.androidsdk.FBSDKPackage;
 import com.higo.zhangyp.segmented.AndroidSegmentedPackage;
+import com.inprogress.reactnativeyoutube.ReactNativeYouTube;
 import com.joshblour.reactnativepermissions.ReactNativePermissionsPackage;
 import com.kevinejohn.RNMixpanel.RNMixpanel;
 import com.microsoft.codepush.react.CodePush;
@@ -32,6 +33,9 @@ import com.smixx.fabric.FabricPackage;
 import com.xgfe.reactnativeenv.RCTNativeEnvPackage;
 
 import org.jall.reactnative.firebase.FirebasePackage;
+import org.jall.reactnative.googleapiavailability.GoogleApiAvailabilityPackage;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.Arrays;
 import java.util.List;
@@ -39,6 +43,7 @@ import java.util.List;
 import cl.json.RNSharePackage;
 import io.fabric.sdk.android.Fabric;
 import io.fixd.rctlocale.RCTLocalePackage;
+import io.fullstack.firestack.FirestackPackage;
 
 class MyReactNativeHost extends ReactNativeHost implements ReactInstanceHolder {
     static CallbackManager mCallbackManager = CallbackManager.Factory.create();
@@ -56,6 +61,7 @@ class MyReactNativeHost extends ReactNativeHost implements ReactInstanceHolder {
     protected List<ReactPackage> getPackages() {
         return Arrays.<ReactPackage>asList(
             new MainReactPackage(),
+            new RNDeviceInfo(),
             new FirestackPackage(),
             new ReactNativeYouTube(),
             new GoogleApiAvailabilityPackage(),

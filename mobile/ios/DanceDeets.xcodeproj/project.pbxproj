@@ -5,7 +5,6 @@
 	};
 	objectVersion = 46;
 	objects = {
-
 /* Begin PBXBuildFile section */
 		00C302E51ABCBA2D00DB3ED1 /* libRCTActionSheet.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 00C302AC1ABCB8CE00DB3ED1 /* libRCTActionSheet.a */; };
 		00C302E71ABCBA2D00DB3ED1 /* libRCTGeolocation.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 00C302BA1ABCB90400DB3ED1 /* libRCTGeolocation.a */; };
@@ -54,6 +53,7 @@
 		DC3E1A96615B4602B852EBA5 /* libRNMixpanel.a in Frameworks */ = {isa = PBXBuildFile; fileRef = DFE54775FE8646DF9CEA6CE5 /* libRNMixpanel.a */; };
 		DD59D63343E94D6D8944B63C /* libSMXCrashlytics.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 313C3BEEBF0E44A6A00988F5 /* libSMXCrashlytics.a */; };
 		FBBD7E3449F246CAAF149818 /* libBVLinearGradient.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8153A686C12B4C4581BC7BC5 /* libBVLinearGradient.a */; };
+		A07FE5C6992048358576867B /* libRNDeviceInfo.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3B0BC109F7F2417ABC7D5995 /* libRNDeviceInfo.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -434,6 +434,8 @@
 		DFE54775FE8646DF9CEA6CE5 /* libRNMixpanel.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNMixpanel.a; sourceTree = "<group>"; };
 		F0F2BCED993949CDA4946B12 /* libRNCalendarEvents.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNCalendarEvents.a; sourceTree = "<group>"; };
 		F33F4F5DCEB28B5ACFB6FDF7 /* Pods-DanceDeets.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-DanceDeets.debug.xcconfig"; path = "Pods/Target Support Files/Pods-DanceDeets/Pods-DanceDeets.debug.xcconfig"; sourceTree = "<group>"; };
+		B90504D487714E6B9C75C71E /* RNDeviceInfo.xcodeproj */ = {isa = PBXFileReference; name = "RNDeviceInfo.xcodeproj"; path = "../node_modules/react-native-device-info/RNDeviceInfo.xcodeproj"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = wrapper.pb-project; explicitFileType = undefined; includeInIndex = 0; };
+		3B0BC109F7F2417ABC7D5995 /* libRNDeviceInfo.a */ = {isa = PBXFileReference; name = "libRNDeviceInfo.a"; path = "libRNDeviceInfo.a"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = archive.ar; explicitFileType = undefined; includeInIndex = 0; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -478,6 +480,7 @@
 				D82AF4D80114453D803CA8DA /* libRCTYouTube.a in Frameworks */,
 				CF4D8C6D799F4666B5FE19F5 /* libReactNativePermissions.a in Frameworks */,
 				AB8A3F01797C41349DED6B00 /* libFirestack.a in Frameworks */,
+				A07FE5C6992048358576867B /* libRNDeviceInfo.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -840,6 +843,7 @@
 				C00266DB91C04488AA2F2192 /* RCTYouTube.xcodeproj */,
 				B18C080F237F4E74B6F5A0CC /* ReactNativePermissions.xcodeproj */,
 				0441D4CA567B48699FD62CE9 /* Firestack.xcodeproj */,
+				B90504D487714E6B9C75C71E /* RNDeviceInfo.xcodeproj */,
 			);
 			name = Libraries;
 			sourceTree = "<group>";
@@ -1581,11 +1585,13 @@
 					"$(SRCROOT)/../node_modules/react-native-youtube/**",
 					"$(SRCROOT)/../node_modules/react-native-permissions/**",
 					"$(SRCROOT)/../node_modules/react-native-firestack/ios/Firestack",
+					"$(SRCROOT)/../node_modules/react-native-device-info/RNDeviceInfo",
 				);
 				INFOPLIST_FILE = DanceDeets/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
+					"\"$(SRCROOT)/DanceDeets Debug\"",
 					"\"$(SRCROOT)/DanceDeets Debug\"",
 					"\"$(SRCROOT)/DanceDeets Debug\"",
 					"\"$(SRCROOT)/DanceDeets Debug\"",
@@ -1645,6 +1651,7 @@
 					"$(SRCROOT)/../node_modules/react-native-youtube/**",
 					"$(SRCROOT)/../node_modules/react-native-permissions/**",
 					"$(SRCROOT)/../node_modules/react-native-firestack/ios/Firestack",
+					"$(SRCROOT)/../node_modules/react-native-device-info/RNDeviceInfo",
 				);
 				INFOPLIST_FILE = DanceDeets/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -1758,6 +1765,7 @@
 					"$(SRCROOT)/../node_modules/react-native-youtube/**",
 					"$(SRCROOT)/../node_modules/react-native-permissions/**",
 					"$(SRCROOT)/../node_modules/react-native-firestack/ios/Firestack",
+					"$(SRCROOT)/../node_modules/react-native-device-info/RNDeviceInfo",
 				);
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				MTL_ENABLE_DEBUG_INFO = YES;
@@ -1821,6 +1829,7 @@
 					"$(SRCROOT)/../node_modules/react-native-youtube/**",
 					"$(SRCROOT)/../node_modules/react-native-permissions/**",
 					"$(SRCROOT)/../node_modules/react-native-firestack/ios/Firestack",
+					"$(SRCROOT)/../node_modules/react-native-device-info/RNDeviceInfo",
 				);
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
