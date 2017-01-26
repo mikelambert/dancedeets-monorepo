@@ -5,6 +5,7 @@
  */
 
 export type Dancer = {
+  id: String;
   name: String;
 };
 
@@ -14,7 +15,7 @@ type SignupKey = string;
 export type Signup = {
   id: SignupKey;
   teamName: string;
-  dancers: ?{[uid: string]: Dancer};
+  dancers: Array<Dancer>;
 };
 
 // Various states the competiton can be in,
@@ -75,12 +76,12 @@ export type BattleCategory = {
 
   // The finalized list of prelims and status,
   // contains keys into the signups object.
-  prelims: {[index: number]: PrelimStatus};
+  prelims: Array<PrelimStatus>;
 
   // The finalized list of top-N,
   // contains keys into the signups object,
   // as well as the current status of this team in the bracket.
-  bracket: {[index: number]: BracketProgress};
+  bracket: Array<BracketProgress>;
 };
 
 export type BattleEvent = {

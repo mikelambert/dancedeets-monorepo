@@ -20,12 +20,12 @@ class RegisterHandler(api.ApiHandler):
         team = self.json_body.get('team')
         team_name = team.get('team_name')
 
-        dancers = {}
+        dancers = []
         dancer_index = 1
         while team.get('dancer_name_%s' % dancer_index):
             dancer_name = team.get('dancer_name_%s' % dancer_index)
             dancer_id = team.get('dancer_id_%s' % dancer_index) or dancer_name
-            dancers[dancer_id] = {'name': dancer_name}
+            dancers.append({'name': dancer_name, 'id': dancer_id})
             dancer_index += 1
 
         event = db.get('/events', event_id)

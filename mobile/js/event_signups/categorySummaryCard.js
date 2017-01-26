@@ -98,7 +98,10 @@ class _UserRegistrationStatus extends React.Component {
     if (this.props.user) {
       const userId = this.props.user.profile.id;
       const signups = getCategorySignups(this.props.category);
-      const signedUpTeams = signups.filter(signup => userId in (signup.dancers || {}));
+      const signedUpTeams = signups.filter(signup => {
+        const dancerIds = signup.dancers.map(x => x.id);
+        return dancerIds.includes(userId);
+      });
       if (signedUpTeams.length) {
         const teamTexts = signedUpTeams.map(team => <HorizontalView style={styles.registrationLineOuter} key={team}>
           <CompactTeam team={team} style={styles.registrationIndent} />

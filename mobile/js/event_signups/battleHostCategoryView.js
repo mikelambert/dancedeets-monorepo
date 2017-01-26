@@ -67,8 +67,8 @@ class _TeamList extends React.Component {
   }
 
   renderSignup(signup: Signup) {
-    const dancers = Object.keys(signup.dancers || {}).map(x =>
-      <Text key={x}>{signup.dancers ? signup.dancers[x].name : ''}</Text>
+    const dancers = (signup.dancers || []).map((x, index) =>
+      <Text key={index}>{x.name}</Text>
     );
     return <View>
       <HorizontalView>
@@ -89,9 +89,9 @@ class _TeamList extends React.Component {
     return this.props.signups.find(x => x.id == prelim.signupKey);
   }
 
-  onSignupPressed(signup: Signup) {
+  onSignupPressed(prelim: PrelimStatus) {
     const prelims = [...this.state.prelims];
-    const index = prelims.findIndex(x => x.signupKey == signup.id);
+    const index = prelims.findIndex(x => x.signupKey == prelim.signupKey);
     prelims[index] = {
       ...prelims[index],
       auditioned: !prelims[index].auditioned,
@@ -111,7 +111,7 @@ class _TeamList extends React.Component {
     const banner = prelim.auditioned ? <RibbonBanner text="Auditioned" width={width} /> : null;
     const style = null; // prelim.auditioned ? { backgroundColor: 'red' } : null;
     return <TouchableOpacity
-        onPress={this.onSignupPressed}
+        onPress={() => this.onSignupPressed(prelim)}
       >
       <Card>
         <View>

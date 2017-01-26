@@ -33,8 +33,8 @@ class _TeamList extends React.Component {
   }
 
   renderRow(signup: Signup) {
-    const dancers = Object.keys(signup.dancers || {}).map(x =>
-      <Text key={x} style={{ marginLeft: 20 }}>{signup.dancers ? signup.dancers[x].name : ''}</Text>
+    const dancers = (signup.dancers || []).map(x =>
+      <Text key={x.id} style={{ marginLeft: 20 }}>{x.name}</Text>
     );
     return (<Card>
       <Text>{signup.teamName}:</Text>
