@@ -15,7 +15,7 @@ countries_abbrev2full = {
     "AR": "Argentina",
     "AM": "Armenia",
     "AW": "Aruba",
-    "AX": "Åland Islands"
+    "AX": "Åland Islands",
     "AU": "Australia",
     "AT": "Austria",
     "AZ": "Azerbaijan",
