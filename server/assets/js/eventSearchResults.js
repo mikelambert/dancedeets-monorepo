@@ -299,15 +299,14 @@ class FeaturedEvents extends React.Component {
       </div>);
     });
 
+    const results = resultItems.length > 1
+      ? <Slider autoplay dots>{resultItems}</Slider>
+      : resultItems;
+
     return (<div>
       <div>Featured Events:</div>
       <div style={{ width: '100%', padding: 10 }}>
-        <Slider
-          autoplay
-          dots
-        >
-          {resultItems}
-        </Slider>
+        {results}
       </div>
     </div>);
   }
