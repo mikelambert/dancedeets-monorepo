@@ -14,6 +14,7 @@ import event_types
 from event_scraper import add_entities
 from events import add_events
 from events import eventdata
+from events import featured
 import fb_api
 import keys
 from search import onebox
@@ -145,9 +146,20 @@ def build_search_results_api(city_name, form, search_query, search_results, vers
         except Exception as e:
             logging.exception("Error processing event %s: %s" % (result.event_id, e))
 
+    featured_event_ids = featured.get_featured_events_for(southwest, northeast)
+    featured_events = eventdata.DBEvent.get_by_ids(featured_event_ids)
+
+    featured_results = []
+    for featured_event in featured_events:
+        try:
+            json_result = canonicalize_event_data(featured_event, [], version)
+            featured_results.append(json_result)
+        except Exception as e:
+            logging.exception("Error processing event %s: %s" % (result.event_id, e))
+
     json_response = {
         'results': json_results,
-        'featured': [],
+        'featured': featured_results,
         'onebox_links': onebox_links,
         'location': city_name,
         'query': form.data if form else None,

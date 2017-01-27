@@ -8,6 +8,7 @@ import keys
 from classes.class_models import StudioClass
 from events.eventdata import DBEvent
 from events.event_locations import LocationMapping
+from events.featured import FeaturedResult
 from event_scraper.potential_events import PotentialEvent
 from event_scraper.thing_db import Source
 from rankings.cities import City
@@ -25,7 +26,25 @@ app.debug = True
 app.secret_key = keys.get('flask_session_key')
 
 admin = Admin(app, name="Admin")
-for model in [CachedGeoCode, City, DBEvent, DisplayEvent, FacebookCachedObject, GeoCode, LocationMapping, OAuthToken, PotentialEvent, Source, StaticContent, StudioClass, Topic, User, UserFriendsAtSignup, UserMessage]:
+for model in [
+    CachedGeoCode,
+    City,
+    DBEvent,
+    DisplayEvent,
+    FacebookCachedObject,
+    FeaturedResult,
+    GeoCode,
+    LocationMapping,
+    OAuthToken,
+    PotentialEvent,
+    Source,
+    StaticContent,
+    StudioClass,
+    Topic,
+    User,
+    UserFriendsAtSignup,
+    UserMessage
+]:
     admin.add_view(appengine.ModelView(model))
 
 
