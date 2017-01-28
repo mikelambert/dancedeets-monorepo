@@ -4,5 +4,6 @@ ADD install_re2.sh /app/install_re2.sh
 RUN /bin/bash install_re2.sh
 
 ADD requirements.txt /app/requirements.txt
+RUN apt-get install libgeos-dev
 RUN /env/bin/pip install -r requirements.txt
 
