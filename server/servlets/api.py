@@ -146,16 +146,19 @@ def build_search_results_api(city_name, form, search_query, search_results, vers
         except Exception as e:
             logging.exception("Error processing event %s: %s" % (result.event_id, e))
 
-    featured_event_ids = featured.get_featured_events_for(southwest, northeast)
-    featured_events = eventdata.DBEvent.get_by_ids(featured_event_ids)
+    try:
+        featured_event_ids = featured.get_featured_events_for(southwest, northeast)
+        featured_events = eventdata.DBEvent.get_by_ids(featured_event_ids)
 
-    featured_results = []
-    for featured_event in featured_events:
-        try:
-            json_result = canonicalize_event_data(featured_event, [], version)
-            featured_results.append(json_result)
-        except Exception as e:
-            logging.exception("Error processing event %s: %s" % (result.event_id, e))
+        featured_results = []
+        for featured_event in featured_events:
+            try:
+                json_result = canonicalize_event_data(featured_event, [], version)
+                featured_results.append(json_result)
+            except Exception as e:
+                logging.exception("Error processing event %s: %s" % (result.event_id, e))
+    except Exception as e:
+        logging.exception("Error building featured event listing: %s", e)
 
     json_response = {
         'results': json_results,
