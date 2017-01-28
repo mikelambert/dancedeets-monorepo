@@ -25,7 +25,7 @@ import {
   intlWeb,
 } from 'dancedeets-common/js/intl';
 import {
-  EventFlyer,
+  SquareEventFlyer,
 } from './eventSearchResults';
 import {
   Card,
@@ -61,7 +61,7 @@ export class _TopicEvent extends React.Component {
       style={{ width: this.props.width }}
     >
       <Card>
-        <EventFlyer event={event} lazyLoad={this.props.lazyLoad} />
+        <SquareEventFlyer event={event} lazyLoad={this.props.lazyLoad} />
         <h3 className="event-title" style={{ marginTop: 10 }}>
           <a href={event.getUrl()}>
             <span>{event.name}</span>
