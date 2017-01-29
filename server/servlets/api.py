@@ -1,7 +1,9 @@
+import dateparser
 import datetime
 import feedparser
 import json
 import logging
+import pytz
 import time
 import urllib
 
@@ -152,6 +154,9 @@ def build_search_results_api(city_name, form, search_query, search_results, vers
 
         featured_results = []
         for featured_event in featured_events:
+            if featured_event.end_time_with_tz < datetime.datetime.utcnow().replace(tzinfo=pytz.utc):
+                logging.info('Discarding featured event in the past: %s', featured_event.id)
+                continue
             try:
                 json_result = canonicalize_event_data(featured_event, [], version)
                 featured_results.append(json_result)
