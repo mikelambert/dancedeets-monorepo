@@ -22,7 +22,6 @@ html2text
 suds
 
 # Date Manip
-dateparser
 icalendar
 ruamel.yaml
 

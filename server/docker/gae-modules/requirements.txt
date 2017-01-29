@@ -1,3 +1,4 @@
 pillow
 cld2-cffi
 shapely
+dateparser
