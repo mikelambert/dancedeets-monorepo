@@ -28,7 +28,9 @@ class PMTHouseOfDance(browser_scraper.BrowserScraper):
     def _generate_request(self, url):
         script = """
         function main(splash)
-            assert(splash:go(splash.args.url))
+            assert(splash:go(splash.args.url, nil, {
+                ["User-Agent"] = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.95 Safari/537.36",
+            }))
             return splash:evaljs("document.body.outerHTML")
         end
         """
