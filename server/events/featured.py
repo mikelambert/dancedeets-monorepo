@@ -1,4 +1,5 @@
 import logging
+import random
 from shapely import geometry
 
 from google.appengine.ext import ndb
@@ -26,4 +27,6 @@ def get_featured_events_for(southwest, northeast):
     ])
     featured_results = FeaturedResult.query().fetch(MAX_OBJECTS)
     relevant_featured = [x for x in featured_results if search_polygon.intersects(x.polygon)]
-    return [x.event_id for x in relevant_featured]
+    featured_ids = [x.event_id for x in relevant_featured]
+    random.shuffle(featured_ids)
+    return featured_ids
