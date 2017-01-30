@@ -258,7 +258,7 @@ class SearchHandler(ApiHandler):
         logging.info("Found %r events within %s %s of %s", form.keywords.data, form.distance.data, form.distance_units.data, form.location.data)
 
         json_response = build_search_results_api(city_name, form, search_query, search_results, self.version, need_full_event, southwest, northeast)
-        if self.json_body.get('client') == 'react-android':
+        if self.request.get('client') == 'react-android':
             json_response['featured'] = []
         self.write_json_success(json_response)
     post = get
