@@ -22,7 +22,7 @@ python $TMP_DIR/get-pip.py $USER_FLAG
 
 echo "Installing docker-gae-modules libraries"
 # Things we expect to be installed in our docker container
-pip install --upgrade $USER_FLAG -r $BASE_DIR/docker-gae-modules/requirements.txt
+pip install --upgrade $USER_FLAG -r $BASE_DIR/docker/gae-modules/requirements.txt
 
 echo "Installing test libraries"
 # For testing, just install them locally (not in the lib/ dir).
