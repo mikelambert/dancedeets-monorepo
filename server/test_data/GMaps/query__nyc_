@@ -1,0 +1,44 @@
+{
+    "html_attributions": [], 
+    "results": [
+        {
+            "formatted_address": "New York, NY, USA", 
+            "geometry": {
+                "location": {
+                    "lat": 40.7127837, 
+                    "lng": -74.0059413
+                }, 
+                "viewport": {
+                    "northeast": {
+                        "lat": 40.9152555, 
+                        "lng": -73.70027209999999
+                    }, 
+                    "southwest": {
+                        "lat": 40.4960439, 
+                        "lng": -74.2557349
+                    }
+                }
+            }, 
+            "icon": "https://maps.gstatic.com/mapfiles/place_api/icons/geocode-71.png", 
+            "id": "7eae6a016a9c6f58e2044573fb8f14227b6e1f96", 
+            "name": "New York", 
+            "photos": [
+                {
+                    "height": 2988, 
+                    "html_attributions": [
+                        "<a href=\"https://maps.google.com/maps/contrib/114440192484945525702/photos\">Tony Saldana</a>"
+                    ], 
+                    "photo_reference": "CoQBdwAAAKRkSfy8NckzlX4PHbpeWHEWlmWFI6s1lOEh9S7sNjo6EgqHlIurrmRBlTUJZuvyRnbE2f-5di4rcgNWCOf5c242Q5UM4hsPYRKRu1O14zhjJ5uNvBW076ByCyfkNUhOZnJ63AJQjOkROFDjs9FX947kgsXm-ccfl_sonQAzIi_8EhBeNtIAwhyaQHaNGccYIJZ6GhQFHdKWAGc5mScY4Q9UGNu_iy1LFw", 
+                    "width": 5312
+                }
+            ], 
+            "place_id": "ChIJOwg_06VPwokRYv534QaPC8g", 
+            "reference": "CmRbAAAA2_uteIAa3S5hxoBUGCTcmKPXCibv1UezIn_GUct1NPG1XVZYQ_FeVYxguAq36QzP0qYMNRb16z0kJ9pN8owhKCJrWpONm08F9F2HF2Yfs0HcLPHuwrzEoARzXlbHmFprEhB2R_2OoRxYXEFmfDilVdCGGhS4xQxm4GQPgXq9QnPfR2Yd0B8ADg", 
+            "types": [
+                "locality", 
+                "political"
+            ]
+        }
+    ], 
+    "status": "OK"
+}

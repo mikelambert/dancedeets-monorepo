@@ -1,0 +1,46 @@
+{
+    "html_attributions": [], 
+    "results": [
+        {
+            "formatted_address": "Tokyo, Japan", 
+            "geometry": {
+                "location": {
+                    "lat": 35.6894875, 
+                    "lng": 139.6917064
+                }, 
+                "viewport": {
+                    "northeast": {
+                        "lat": 35.817813, 
+                        "lng": 139.910202
+                    }, 
+                    "southwest": {
+                        "lat": 35.528873, 
+                        "lng": 139.510574
+                    }
+                }
+            }, 
+            "icon": "https://maps.gstatic.com/mapfiles/place_api/icons/geocode-71.png", 
+            "id": "56ec6f6edcca1d79a026bb626f485d124bd6181a", 
+            "name": "Tokyo", 
+            "photos": [
+                {
+                    "height": 1365, 
+                    "html_attributions": [
+                        "<a href=\"https://maps.google.com/maps/contrib/109821580067294968977/photos\">Mitsuaki Naoi</a>"
+                    ], 
+                    "photo_reference": "CoQBdwAAACe79nej62XQikFadsoq6rgv8Arbq1shM7iw_Avk_EGfZ-cN6pk-srzrjeiOD4CeXkzvP1gqFvkrNMYmiY14a8P7MzzeR_pg69OWGNeDzAHzBqsGm0p-UqsmKhK2ImNbIsRanz3F1m5r-V564HJsjQx9aewdyBN7Rv8e2O9KoAZmEhDfHjga8KLkxuCTLnUQsZfKGhQ7rMpiKu5hRSUjXU4fKpGZKl9iAA", 
+                    "width": 2048
+                }
+            ], 
+            "place_id": "ChIJ51cu8IcbXWARiRtXIothAS4", 
+            "reference": "CmRbAAAAoXF3IuxkyUQlSaScJ5ClhTnPal4WlP1rCFTBde-ITtPOv8nfypfPbcfYpiv45a3C-SM2U_fI2YtMn03wuFaKABL7KEiLzK1mpsSMX4x2tnKznIYCCH5BSWhxqh2Pcb8tEhBFGhy-0ibkx1mCKSAJXI-oGhR7iRgZ6oFqsXd_Y4tCw_-5Sg-sxg", 
+            "types": [
+                "administrative_area_level_1", 
+                "political", 
+                "point_of_interest", 
+                "establishment"
+            ]
+        }
+    ], 
+    "status": "OK"
+}
