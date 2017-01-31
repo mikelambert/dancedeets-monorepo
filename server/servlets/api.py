@@ -149,17 +149,12 @@ def build_search_results_api(city_name, form, search_query, search_results, vers
             logging.exception("Error processing event %s: %s" % (result.event_id, e))
 
     try:
-        featured_event_ids = featured.get_featured_events_for(southwest, northeast)
-        featured_events = eventdata.DBEvent.get_by_ids(featured_event_ids)
-
-        featured_results = []
-        for featured_event in featured_events:
-            if featured_event.end_time_with_tz < datetime.datetime.utcnow().replace(tzinfo=pytz.utc):
-                logging.info('Discarding featured event in the past: %s', featured_event.id)
-                continue
+        featured_infos = featured.get_featured_events_for(southwest, northeast)
+        real_featured_infos = []
+        for featured_info in featured_infos:
             try:
-                json_result = canonicalize_event_data(featured_event, [], version)
-                featured_results.append(json_result)
+                featured_info['event'] = canonicalize_event_data(featured_info['event'], [], version)
+                real_featured_infos.append(featured_info)
             except Exception as e:
                 logging.exception("Error processing event %s: %s" % (result.event_id, e))
     except Exception as e:
@@ -167,7 +162,8 @@ def build_search_results_api(city_name, form, search_query, search_results, vers
 
     json_response = {
         'results': json_results,
-        'featured': featured_results,
+        'featured': [x['event'] for x in real_featured_infos],
+        'featuredInfos': real_featured_infos,
         'onebox_links': onebox_links,
         'location': city_name,
         'query': form.data if form else None,
