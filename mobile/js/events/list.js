@@ -349,7 +349,11 @@ class _EventListContainer extends React.Component {
           // it's surprisingly difficult to to do
           // time-zone-aware date manipulation on the server,
           // so instead let's filter out those events here.
-          const end = moment(e.end_time, moment.ISO_8601);
+          let end = moment(e.end_time, moment.ISO_8601);
+          // If it's an endtime-less event, compute a fallback endtime here.
+          if (!end.isValid()) {
+            end = moment(e.start_time, moment.ISO_8601).add(2, 'hours');
+          }
           if (end.isBefore(now)) {
             continue;
           }
