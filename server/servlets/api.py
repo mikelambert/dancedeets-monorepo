@@ -255,10 +255,10 @@ class SearchHandler(ApiHandler):
                 # If we searched the world, then break
                 break
 
-        logging.info("Found %r events within %s %s of %s", form.keywords.data, form.distance.data, form.distance_units.data, form.location.data)
+        logging.info("Found %s keyword=%r events within %s %s of %s", len(search_results), form.keywords.data, form.distance.data, form.distance_units.data, form.location.data)
 
         json_response = build_search_results_api(city_name, form, search_query, search_results, self.version, need_full_event, southwest, northeast)
-        if self.request.get('client') == 'react-android':
+        if self.request.get('client') == 'react-android' and self.version <= (1, 3):
             json_response['featured'] = []
         self.write_json_success(json_response)
     post = get
