@@ -167,8 +167,11 @@ class FeaturedEvents extends React.Component {
     if (!this.props.featured.length) {
       return null;
     }
-    return (<View style={{ height: 200 }}>
-      <Carousel
+    let carousel = null;
+    if (this.props.featured.length == 1) {
+      carousel = this.renderPage(0);
+    } else {
+      carousel = <Carousel
         indicatorOffset={0}
         indicatorColor="#FFFFFF"
         indicatorSize={25}
@@ -178,7 +181,10 @@ class FeaturedEvents extends React.Component {
         delay={4000}
       >
         {this.props.featured.map((event, i) => this.renderPage(i))}
-      </Carousel>
+      </Carousel>;
+    }
+    return (<View style={{ height: 200 }}>
+      {carousel}
     </View>);
   }
 }
@@ -499,6 +505,9 @@ class _EventListContainer extends React.Component {
   renderListView() {
     return (
       <ListView
+        // TODO: removeClippedSubviews is disabled until
+        // https://github.com/facebook/react-native/issues/8088 is fixed.
+        removeClippedSubviews={false}
         ref={(x) => { this._listView = x; }}
         style={[styles.listView]}
         dataSource={this.state.dataSource}
