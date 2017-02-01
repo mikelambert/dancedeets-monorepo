@@ -162,12 +162,14 @@ def build_search_results_api(city_name, form, search_query, search_results, vers
 
     json_response = {
         'results': json_results,
-        'featured': [x['event'] for x in real_featured_infos],
-        'featuredInfos': real_featured_infos,
         'onebox_links': onebox_links,
         'location': city_name,
         'query': form.data if form else None,
     }
+    if version <= (1, 3):
+        json_response['featured'] = [x['event'] for x in real_featured_infos]
+    else:
+        json_response['featuredInfos'] = real_featured_infos
     if southwest and northeast:
         json_response['location_box'] = {
             'southwest': {
