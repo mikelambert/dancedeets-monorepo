@@ -16,9 +16,13 @@ def map_each_attendee(db_events):
     fbl.batch_fetch()
 
     for db_event in db_events:
-        fb_event_attending = fbl.fetched_data(fb_api.LookupEventAttending, db_event.id)
+        try:
+            fb_event_attending = fbl.fetched_data(fb_api.LookupEventAttending, db_event.id)
+        except fb_api.NoFetchedDataException:
+            logging.warning('No attending found for %s', db_event.id)
+            continue
         if fb_event_attending['empty']:
-            return
+            continue
         for attendee in fb_event_attending['attending']['data']:
             yield ('City: %s' % db_event.city_name, attendee['id'])
             yield ('Country: %s' % db_event.country, attendee['id'])
