@@ -737,6 +737,13 @@ def lookup_debug_tokens(access_tokens):
     # We use a prod config here, so we can lookup access tokens from prod apps
     app_fbl = FBLookup(None, facebook._PROD_FACEBOOK_CONFIG['app_access_token'])
     app_fbl.make_passthrough()
-    return app_fbl.get_multi(_LookupDebugToken, access_tokens)
+    result = app_fbl.get_multi(_LookupDebugToken, access_tokens)
+    print result[0]
+    if result and not result[0]['empty']:
+        return result
+    else:
+        app_fbl = FBLookup(None, facebook.FACEBOOK_CONFIG['app_access_token'])
+        app_fbl.make_passthrough()
+        return app_fbl.get_multi(_LookupDebugToken, access_tokens)
 
 
