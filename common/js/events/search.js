@@ -28,11 +28,17 @@ type LatLong = {
   longitude: number;
 };
 
+export type FeaturedInfo = {
+  event: Event;
+  showTitle: boolean;
+  overrideFlyer: string;
+};
+
 // API Requests 1.x
 export type SearchResponse = {
   onebox_links: Array<Onebox>;
   results: Array<Event>;
-  featured: Array<Event>;
+  featuredInfos: Array<FeaturedInfo>;
   query: SearchQuery;
 };
 
@@ -40,7 +46,7 @@ export type SearchResponse = {
 export type NewSearchResponse = {
   onebox_links: Array<Onebox>;
   results: Array<SearchEvent>;
-  featured: Array<Event>;
+  featuredInfos: Array<FeaturedInfo>;
   query: SearchQuery;
   // These are technically in SearchResponse too, but they weren't necessary there.
   // They aren't necessary here (yet), but this helps document the schema.

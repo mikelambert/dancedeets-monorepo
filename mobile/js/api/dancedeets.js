@@ -135,7 +135,7 @@ export async function search(location: string, keywords: string, timePeriod: Tim
     keywords,
     time_period: timePeriod,
   }));
-  response.featured = response.featured.map(x => new Event(x));
+  response.featuredInfos = response.featuredInfos.map(x => ({...x, event: new Event(x.event)}));
   response.results = response.results.map(x => new Event(x));
   response.results = sortString(response.results, resultEvent => moment(resultEvent.start_time).toISOString());
   return response;

@@ -28,6 +28,7 @@ import Carousel from 'react-native-carousel';
 import upperFirst from 'lodash/upperFirst';
 import { Event } from 'dancedeets-common/js/events/models';
 import type {
+  FeaturedInfo,
   Onebox,
   SearchResponse,
 } from 'dancedeets-common/js/events/search';
@@ -54,6 +55,7 @@ import {
 import {
   BottomFade,
   Button,
+  CenterFade,
   normalize,
   ProportionalImage,
   semiNormalize,
@@ -110,6 +112,8 @@ const messages = defineMessages({
   },
 });
 
+const CarouselDotIndicatorSize = 25;
+
 class SectionHeader extends React.Component {
   props: {
     title: string,
@@ -143,18 +147,41 @@ class FeaturedEvent extends React.Component {
 
 class FeaturedEvents extends React.Component {
   props: {
-    featured: Array<Event>;
+    featured: Array<FeaturedInfo>;
     onEventSelected: (event: Event) => void;
   }
 
   renderPage(index: number) {
-    const event = this.props.featured[index];
+    const featuredInfo = this.props.featured[index];
+
+    let fadeOverlay = <BottomFade />;
+    if (featuredInfo.showTitle) {
+      fadeOverlay = <View style={{
+        position: 'absolute',
+        left: 0,
+        bottom: 0,
+        right: 0,
+      }}>
+        <BottomFade height={150} />
+        <Text
+          numberOfLines={1}
+          style={{
+            position: 'absolute',
+            bottom: CarouselDotIndicatorSize,
+            textAlign: 'center',
+            left: 0,
+            right: 0,
+            fontWeight: 'bold',
+          }}
+        >{featuredInfo.event.name}</Text>
+      </View>;
+    }
     return <View key={index} style={{
       width: Dimensions.get('window').width,
     }}>
-      <TouchableOpacity onPress={() => this.props.onEventSelected(event)} activeOpacity={0.5}>
-        <FeaturedEvent event={event} />
-        <BottomFade />
+      <TouchableOpacity onPress={() => this.props.onEventSelected(featuredInfo.event)} activeOpacity={0.5}>
+        <FeaturedEvent event={featuredInfo.event} />
+        {fadeOverlay}
       </TouchableOpacity>
     </View>;
   }
@@ -164,7 +191,7 @@ class FeaturedEvents extends React.Component {
   }
 
   render() {
-    if (!this.props.featured.length) {
+    if (!this.props.featured || !this.props.featured.length) {
       return null;
     }
     let carousel = null;
@@ -174,7 +201,7 @@ class FeaturedEvents extends React.Component {
       carousel = <Carousel
         indicatorOffset={0}
         indicatorColor="#FFFFFF"
-        indicatorSize={25}
+        indicatorSize={CarouselDotIndicatorSize}
         indicatorSpace={15}
         animate={true}
         loop={true}
@@ -480,7 +507,7 @@ class _EventListContainer extends React.Component {
     }
     return <View>
       <FeaturedEvents
-        featured={response.featured}
+        featured={response.featuredInfos}
         onEventSelected={this.props.onFeaturedEventSelected}
         />
       {header}
