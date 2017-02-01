@@ -25,6 +25,8 @@ import type {
   JSONObject,
 } from 'dancedeets-common/js/events/models';
 import {
+  BaseEvent,
+  Event,
   SearchEvent,
 } from 'dancedeets-common/js/events/models';
 import type {
@@ -214,7 +216,7 @@ const EventDescription = injectIntl(_EventDescription);
 
 class HorizontalEvent extends React.Component {
   props: {
-    event: SearchEvent;
+    event: BaseEvent;
     lazyLoad: boolean;
   }
 
@@ -235,7 +237,7 @@ class HorizontalEvent extends React.Component {
 
 class VerticalEvent extends React.Component {
   props: {
-    event: SearchEvent;
+    event: BaseEvent;
   }
 
   render() {
@@ -263,7 +265,7 @@ class VerticalEvent extends React.Component {
 
 class FeaturedEvent extends React.Component {
   props: {
-    event: SearchEvent;
+    event: BaseEvent;
   }
 
   render() {
@@ -282,7 +284,7 @@ class FeaturedEvent extends React.Component {
 }
 class FeaturedEvents extends React.Component {
   props: {
-    events: Array<SearchEvent>;
+    events: Array<BaseEvent>;
   }
 
   render() {
@@ -384,7 +386,7 @@ class ResultsList extends React.Component {
   }
   render() {
     const resultEvents = this.props.response.results.map(eventData => new SearchEvent(eventData));
-    const featuredEvents = this.props.response.featured.map(eventData => new SearchEvent(eventData));
+    const featuredInfos = this.props.response.featuredInfos.map(x => ({ ...x, event: new Event(x.event) }));
 
     const now = moment();
     if (this.props.past) {
@@ -396,7 +398,7 @@ class ResultsList extends React.Component {
       const currentEvents = resultEvents.filter(event => moment(event.start_time) < now && moment(event.end_time) > now);
       const futureEvents = resultEvents.filter(event => moment(event.start_time) > now);
       return (<div>
-        <FeaturedEvents events={featuredEvents} />
+        <FeaturedEvents events={featuredInfos.map(x => x.event)} />
         <CurrentEvents events={currentEvents} />
         <EventsList
           events={futureEvents}
