@@ -43,10 +43,8 @@ class _ValidationError(Exception):
 class FacebookMixinHandler(object):
     def setup_fbl(self):
         self.allow_cache = bool(int(self.request.get('allow_cache', 1)))
-        force_updated = bool(int(self.request.get('force_updated', 0)))
         self.fbl = fb_api.FBLookup(self.fb_uid, self.access_token)
         self.fbl.allow_cache = self.allow_cache
-        self.fbl.force_updated = force_updated
 
         # Refresh our potential event cache every N days (since they may have updated with better keywords, as often happens)
         expiry_days = int(self.request.get('expiry_days', 0)) or None

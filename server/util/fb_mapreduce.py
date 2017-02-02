@@ -60,7 +60,6 @@ def get_fblookup(user=None):
         user and user.fb_uid or params['fbl_fb_uid'],
         access_token)
     fbl.allow_cache = params['fbl_allow_cache']
-    fbl.force_updated = params['fbl_force_updated']
     if params.get('fbl_oldest_allowed') is not None:
         fbl.db.oldest_allowed = params['fbl_oldest_allowed']
     return fbl
@@ -70,7 +69,6 @@ def get_fblookup_params(fbl, randomize_tokens=False):
     params = {
         'fbl_fb_uid': fbl.fb_uid,
         'fbl_allow_cache': fbl.allow_cache,
-        'fbl_force_updated': fbl.force_updated,
     }
     if fbl.db.oldest_allowed != datetime.datetime.min:
         params['fbl_oldest_allowed'] = fbl.db.oldest_allowed
