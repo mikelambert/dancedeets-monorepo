@@ -88,13 +88,12 @@ class RelevantHandler(SearchHandler):
                     self.add_error('Unknown location: %s' % form.location.data)
 
             need_full_event = False
-            if self.request.get('new', '1') == '1':
-                json_search_response = api.build_search_results_api(city_name, form, search_query, search_results, (2, 0), need_full_event, southwest, northeast)
-                props = dict(
-                    response=json_search_response,
-                    past=(form.time_period.data == search_base.TIME_PAST),
-                )
-                self.setup_react_template('eventSearchResults.js', props)
+            json_search_response = api.build_search_results_api(city_name, form, search_query, search_results, (2, 0), need_full_event, southwest, northeast)
+            props = dict(
+                response=json_search_response,
+                past=(form.time_period.data == search_base.TIME_PAST),
+            )
+            self.setup_react_template('eventSearchResults.js', props)
 
             # We can probably speed this up 2x by shrinking the size of the fb-event-attending objects. a list of {u'id': u'100001860311009', u'name': u'Dance InMinistry', u'rsvp_status': u'attending'} is 50% overkill.
             a = time.time()
