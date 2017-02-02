@@ -387,7 +387,7 @@ class ResultsList extends React.Component {
   render() {
     const resultEvents = this.props.response.results.map(eventData => new SearchEvent(eventData));
     console.log('featuredInfos:', this.props.response.featuredInfos);
-    const featuredInfos = this.props.response.featuredInfos.map(x => ({ ...x, event: new Event(x.event) }));
+    const featuredInfos = (this.props.response.featuredInfos || []).map(x => ({ ...x, event: new Event(x.event) }));
 
     const now = moment();
     if (this.props.past) {
