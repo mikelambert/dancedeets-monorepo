@@ -10,6 +10,11 @@ if not runtime.is_local_appengine():
 # We don't need such real-time statistics (normally 1 second) on the mapreduce job.
 # More of an optimization to save on the associated database Get/Put every second.
 mapreduce__CONTROLLER_PERIOD_SEC = 5
+# Let's run these mapreduce tasks for 200 seconds.
+# There's no reason to make them 15 seconds in an age without task runtime limits.
+# And sometimes the TransientShareState goes above 1MB and can't be saved,
+# resulting in an impossible-to-complete mapreduce. This just helps it avoid that.
+mapreduce__SLICE_DURATION_SEC = 200
 
 appstats_MAX_STACK = 25
 appstats_MAX_REPR = 100
