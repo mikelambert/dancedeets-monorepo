@@ -26,7 +26,7 @@ def get_nearby_cities(point):
 
 def get_largest_city(cities):
     if not cities:
-        return "Unknown"
+        return City(city_name='Unknown')
     largest_nearby_city = max(cities, key=lambda x: x.population)
     return largest_nearby_city
 
@@ -46,6 +46,8 @@ class City(db.Model):
     geohashes = db.StringListProperty()
 
     def display_name(self):
+        if self.city_name == 'Unknown':
+            return self.city_name
         city_name = '%s, %s' % (self.city_name, abbrev.countries_abbrev2full[self.country_name])
         if city_name == 'San Jose, United States':
             city_name = 'San Francisco, United States'
