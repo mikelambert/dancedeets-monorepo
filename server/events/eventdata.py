@@ -96,8 +96,13 @@ class DBEvent(ndb.Model):
     # extra cached properties
     address = ndb.StringProperty(indexed=False) # manually overridden address
     actual_city_name = ndb.StringProperty(indexed=False) # city for this event
+    # A list of all nearby cities within NEARBY_DISTANCE_KM.
+    # The largest will be in 'city_name',
+    # but these are saved here to make any mapreduces that need this, cheaper to run.
+    nearby_city_names = ndb.StringProperty(repeated=True) # A list of all nearby cities.
     # Index is needed for city_name=Unknown searches in admin_nolocation_events
     city_name = ndb.StringProperty() # largest nearby city for this event
+
     latitude = ndb.FloatProperty(indexed=True) # needed to composite index
     longitude = ndb.FloatProperty(indexed=False)
     anywhere = ndb.BooleanProperty()

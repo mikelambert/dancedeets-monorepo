@@ -14,7 +14,7 @@ CITY_GEOHASH_PRECISIONS = range(
 
 NEARBY_DISTANCE_KM = 100 # km of distance to nearest "scene" a user will identify with
 
-def get_largest_nearby_city_name(point):
+def get_nearby_cities(point):
     # TODO(lambert): we should cache this entire function. use lowercase of location to determine cache key. Using DB cache too.
     logging.info("location is %s", point)
     # rather than return the nearest city (Sunnyvale, San Jose, etc)
@@ -22,17 +22,18 @@ def get_largest_nearby_city_name(point):
     geohashes = geohash_math.get_all_geohashes_for((point, point), precision=geohash_math.get_geohash_bits_for_km(NEARBY_DISTANCE_KM))
     cities = City.gql("where geohashes in :geohashes", geohashes=geohashes).fetch(100)
     cities = [x for x in cities if math.get_distance(point, (x.latitude, x.longitude), use_km=True) < NEARBY_DISTANCE_KM]
+    return cities
+
+def get_largest_city(cities):
     if not cities:
         return "Unknown"
     largest_nearby_city = max(cities, key=lambda x: x.population)
-    city_name = '%s, %s' % (largest_nearby_city.city_name, abbrev.countries_abbrev2full[largest_nearby_city.country_name])
-    if city_name == 'San Jose, United States':
-        city_name = 'San Francisco, United States'
-    if city_name == 'San Francisco, United States':
-        city_name = 'San Francisco Bay Area, United States'
-    if city_name == 'Tijuana, Mexico':
-        city_name = 'San Diego, United States'
-    return city_name
+    return largest_nearby_city
+
+def get_largest_nearby_city_name(point):
+    cities = get_nearby_cities(point)
+    city = get_largest_city(cities)
+    return city.display_name()
 
 class City(db.Model):
     city_name = db.StringProperty()
@@ -43,6 +44,17 @@ class City(db.Model):
     population = db.IntegerProperty(indexed=False)
     timezone = db.StringProperty(indexed=False)
     geohashes = db.StringListProperty()
+
+    def display_name(self):
+        city_name = '%s, %s' % (self.city_name, abbrev.countries_abbrev2full[self.country_name])
+        if city_name == 'San Jose, United States':
+            city_name = 'San Francisco, United States'
+        if city_name == 'San Francisco, United States':
+            city_name = 'San Francisco Bay Area, United States'
+        if city_name == 'Tijuana, Mexico':
+            city_name = 'San Diego, United States'
+        return city_name
+
 
 def import_cities():
     # Download this file from http://download.geonames.org/export/dump/

@@ -6,7 +6,7 @@ from google.appengine.ext import ndb
 
 import fb_api
 from loc import gmaps_api
-from rankings import rankings
+from rankings import cities
 from search import search
 from nlp import categories
 from nlp import event_classifier
@@ -104,6 +104,7 @@ def _inner_make_event_findable_for_fb_event(db_event, fb_dict, update_geodata):
         db_event.address = None
         db_event.actual_city_name = None
         db_event.city_name = None
+        db_event.nearby_city_names = []
         db_event.fb_event = fb_dict
         return
     elif fb_dict['empty'] == fb_api.EMPTY_CAUSE_INSUFFICIENT_PERMISSIONS:
@@ -214,10 +215,23 @@ def _update_geodata(db_event, location_info):
         logging.info('NO EVENT LOCATION1: %s', db_event.id)
         logging.info('NO EVENT LOCATION2: %s', location_info)
         logging.info('NO EVENT LOCATION3: %s', location_info.geocode)
-    if location_info.actual_city() != db_event.actual_city_name or not db_event.actual_city_name or db_event.city_name == 'Unknown':
+    if (
+        # The event has moved cities
+        location_info.actual_city() != db_event.actual_city_name or
+        # We are doing a backfill of a missing nearby_city_names that shouldn't be missing
+        (not db_event.nearby_city_names and db_event.city_name != 'Unknown') or
+        # We are creating a new event, and don't know where it is
+        not db_event.actual_city_name or
+        # We didn't have a city for this event. Maybe we do now, though? Let's double-check
+        db_event.city_name == 'Unknown' or
+        False
+    ):
         if location_info.geocode:
-            db_event.city_name = rankings.get_ranking_location_latlng(location_info.geocode.latlng())
+            nearby_cities = cities.get_nearby_cities(location_info.geocode.latlng())
+            db_event.nearby_city_names = [city.display_name() for city in nearby_cities]
+            db_event.city_name = cities.get_largest_city(nearby_cities).display_name()
         else:
+            db_event.nearby_city_names = []
             db_event.city_name = "Unknown"
     db_event.anywhere = location_info.is_online_event()
     db_event.actual_city_name = location_info.actual_city()
