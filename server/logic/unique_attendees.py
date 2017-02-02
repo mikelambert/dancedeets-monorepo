@@ -28,8 +28,8 @@ def map_each_attendee(db_events):
             yield ('Country: %s' % db_event.country, attendee['id'])
 
 def reduce_just_unique_attendees(location, all_attendees):
-    yield 'Total RSVPs in %s: %s\n' % (location, len(set(all_attendees)))
-    yield 'Unique Attendees in %s: %s\n' % (location, len(all_attendees))
+    yield 'Unique Attendees in %s: %s\n' % (location, len(set(all_attendees)))
+    yield 'Total RSVPs in %s: %s\n' % (location, len(all_attendees))
 
 def mr_count_attendees_per_city(fbl):
     mapper_params = {
