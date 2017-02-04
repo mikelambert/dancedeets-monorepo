@@ -15,6 +15,7 @@ from rankings.cities import City
 from fb_api import FacebookCachedObject
 from loc.gmaps_cached import CachedGeoCode
 from loc.gmaps_bwcompat import GeoCode
+from logic.popular_people import PeopleRanking
 from pubsub.pubsub import OAuthToken
 from search.search import DisplayEvent
 from servlets.static_db import StaticContent
@@ -36,6 +37,7 @@ for model in [
     GeoCode,
     LocationMapping,
     OAuthToken,
+    PeopleRanking,
     PotentialEvent,
     Source,
     StaticContent,

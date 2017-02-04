@@ -1,6 +1,8 @@
 import logging
 
+from google.appengine.ext import ndb
 from mapreduce import mapreduce_pipeline
+from mapreduce import operation
 
 import app
 import base_servlet
@@ -25,19 +27,21 @@ foreach cityname: (attendee, event_count):
         export top_N
 """
 
-STYLES_SET = set(event_types.STYLES)
+class PeopleRanking(ndb.Model):
+    person_type = ndb.StringProperty()
+    city = ndb.StringProperty()
+    category = ndb.StringProperty()
+    top_people = ndb.StringProperty(repeated=True, indexed=False)
 
-def track_person(grouping, db_event, person):
-    logging.error('aaaa')
+STYLES_SET = set(x.index_name for x in event_types.STYLES)
+
+def track_person(person_type, db_event, person):
     person_name = ('%s: %s' % (person['id'], person.get('name'))).encode('utf-8')
-    logging.info('%s: %s', grouping, person_name)
     for city in db_event.nearby_city_names:
-        key = '%s: %s: %s' % (grouping, None, city)
+        key = '%s: %s: %s' % (person_type, '', city)
         yield (key, person_name)
-        logging.info('%s: %s', db_event.auto_categories, STYLES_SET.intersection(db_event.auto_categories))
-        logging.info('%s', (key, person_name))
         for category in STYLES_SET.intersection(db_event.auto_categories):
-            key = '%s: %s: %s' % (grouping, category, city)
+            key = '%s: %s: %s' % (person_type, category, city)
             yield (key, person_name)
             logging.info('%s', (key, person_name))
 
@@ -65,9 +69,8 @@ def output_people(db_events):
             for y in track_person('ATTENDEE', db_event, attendee):
                 yield y
 
-def reduce_popular_people(city_category, people):
-    logging.info('%r', city_category)
-    grouping, city, category = city_category.split(': ', 2)
+def reduce_popular_people(type_city_category, people):
+    person_type, category, city = type_city_category.split(': ', 2)
     counts = {}
     for person in people:
         if person in counts:
@@ -75,9 +78,16 @@ def reduce_popular_people(city_category, people):
         else:
             counts[person] = 1
     sorted_counts = sorted(counts.items(), key=lambda kv: -kv[1])
-    logging.info('Top %s in %s for %s', grouping, city, category)
-    for x in sorted_counts[:5]:
-        logging.info('%s', x)
+
+    # Yes, key is the same as type_city_category above.
+    # But we're declaring our key explicitly, here.
+    key = '%s: %s: %s' % (person_type, city, category)
+    ranking = PeopleRanking.get_or_insert(key)
+    ranking.person_type = person_type
+    ranking.city = city
+    ranking.category = category
+    ranking.top_people = ['%s: %s' % kv for kv in sorted_counts[:20]]
+    yield operation.db.Put(ranking)
 
 def mr_popular_people_per_city(fbl):
     mapper_params = {
