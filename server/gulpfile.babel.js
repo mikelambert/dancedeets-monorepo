@@ -268,6 +268,12 @@ gulp.task('dev-appserver:server:hot:force',     cb => runSequence('dev-appserver
 gulp.task('react-server', $.shell.task(['../runNode.js ./node_server/renderServer.js --port 8090']));
 
 
+const dockerImages = ['gae-py-js', 'gae-geos', 'gae-modules'];
+dockerImages.forEach(imageName =>
+  gulp.task(`buildDocker:${imageName}`, $.shell.task([`cd docker/${imageName} && ./build.sh`]))
+);
+gulp.task('buildDocker', cb => runSequence(...dockerImages.map(x => `buildDocker:${x}`), cb))
+
 // Workable Dev Server (1): Hot reloading
 // Port 8090: Backend React Render server
 // (We don't really use this, but it's there in case our generate_amp_sources/compilation tasks want it)
