@@ -172,7 +172,11 @@ def _choose_best_geocode(g1, g2):
 def _find_best_geocode(s, language=None):
     """A more versatile lookup function that uses two google apis,
     though returns unknown-type data that may or may not have viewports or address_components."""
-    location_geocode = lookup_location(s, language=language)
+    try:
+        location_geocode = lookup_location(s, language=language)
+    except GeocodeException:
+        logging.exception('Error looking up location: %r with language %s', s, language)
+        location_geocode = None
     address_geocode = lookup_address(s, language=language)
     logging.info('location lookup: %s', location_geocode)
     logging.info('address lookup: %s', address_geocode)
