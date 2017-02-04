@@ -10,6 +10,7 @@ from event_scraper import thing_scraper2
 from event_scraper import webhooks
 from events import event_reloading_tasks
 from events import find_access_tokens
+from logic import popular_people
 from logic import unique_attendees
 from ml import gprediction_servlets
 from notifications import added_events
