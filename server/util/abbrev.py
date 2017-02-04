@@ -113,6 +113,7 @@ countries_abbrev2full = {
     "IT": "Italy",
     "JM": "Jamaica",
     "JP": "Japan",
+    "JE": "Jersey",
     "JO": "Jordan",
     "KZ": "Kazakstan",
     "KE": "Kenya",
