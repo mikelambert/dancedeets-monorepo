@@ -541,6 +541,8 @@ def canonicalize_event_data(db_event, event_keywords, version):
             'creator': str(db_event.creating_fb_uid) if db_event.creating_fb_uid else None, #STR_ID_MIGRATE
             'creatorName': db_event.creating_name if db_event.creating_name else None, #STR_ID_MIGRATE
         }
+    else:
+        annotations['creation'] = None
     # We may have keywords from the search result that called us
     if event_keywords:
         annotations['dance_keywords'] = event_keywords
