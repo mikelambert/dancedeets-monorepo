@@ -35,34 +35,35 @@ def need_forced_update(db_event):
     return new_time_period
 
 
-def update_and_save_fb_events(events_to_update, update_geodata=True):
+def update_and_save_fb_events(events_to_update, disable_updates=None):
     for db_event, fb_event in events_to_update:
         logging.info("Updating and saving DBEvent %s", db_event.id)
-        _inner_make_event_findable_for_fb_event(db_event, fb_event, update_geodata=update_geodata)
+        _inner_make_event_findable_for_fb_event(db_event, fb_event, disable_updates=disable_updates)
     # We want to save it here, no matter how it was changed.
     db_events = [x[0] for x in events_to_update]
-    _save_events(db_events)
+    _save_events(db_events, disable_updates=disable_updates)
 
 
-def update_and_save_web_events(events_to_update, update_geodata=True):
+def update_and_save_web_events(events_to_update, disable_updates=None):
     for db_event, web_event in events_to_update:
         logging.info("Updating and saving DBEvent %s", db_event.id)
-        _inner_make_event_findable_for_web_event(db_event, web_event, update_geodata=update_geodata)
+        _inner_make_event_findable_for_web_event(db_event, web_event, disable_updates=disable_updates)
     db_events = [x[0] for x in events_to_update]
-    _save_events(db_events)
+    _save_events(db_events, disable_updates=disable_updates)
 
 
 def resave_display_events(db_events):
     display_events = [search.DisplayEvent.build(x) for x in db_events]
     ndb.put_multi([x for x in display_events if x])
 
-def _save_events(db_events):
+def _save_events(db_events, disable_updates=None):
     objects_to_put = list(db_events)
     objects_to_put += [search.DisplayEvent.build(x) for x in db_events]
     # Because some DisplayEvent.build() calls return None (from errors, or from inability)
     objects_to_put = [x for x in objects_to_put if x]
     ndb.put_multi(objects_to_put)
-    search.update_fulltext_search_index_batch(db_events)
+    if 'index' not in (disable_updates or []):
+        search.update_fulltext_search_index_batch(db_events)
 
 
 def _all_attending_count(fb_event):
@@ -87,7 +88,7 @@ def _inner_cache_photo(db_event):
         if 'photo_height' in db_event.json_props:
             del db_event.json_props['photo_height']
 
-def _inner_make_event_findable_for_fb_event(db_event, fb_dict, update_geodata):
+def _inner_make_event_findable_for_fb_event(db_event, fb_dict, disable_updates):
     """set up any cached fields or bucketing or whatnot for this event"""
 
     # Update this event with the latest time_period regardless (possibly overwritten below)
@@ -128,9 +129,9 @@ def _inner_make_event_findable_for_fb_event(db_event, fb_dict, update_geodata):
     db_event.event_keywords = event_classifier.relevant_keywords(fb_dict)
     db_event.auto_categories = [x.index_name for x in categories.find_styles(fb_dict) + categories.find_event_types(fb_dict)]
 
-    _inner_common_setup(db_event)
+    _inner_common_setup(db_event, disable_updates=disable_updates)
 
-    if update_geodata:
+    if 'geodata' not in (disable_updates or []):
         # Don't use cached/stale geocode when constructing the LocationInfo here
         db_event.location_geocode = None
         location_info = event_locations.LocationInfo(fb_dict, db_event=db_event)
@@ -140,7 +141,7 @@ def clean_address(address):
     address = re.sub(r'B?\d+F$', '', address)
     return address
 
-def _inner_make_event_findable_for_web_event(db_event, web_event, update_geodata):
+def _inner_make_event_findable_for_web_event(db_event, web_event, disable_updates):
     logging.info("Making web_event %s findable." % db_event.id)
     db_event.web_event = web_event
 
@@ -193,17 +194,18 @@ def _inner_make_event_findable_for_web_event(db_event, web_event, update_geodata
 
     db_event.address = web_event.get('location_address')
 
-    _inner_common_setup(db_event)
+    _inner_common_setup(db_event, disable_updates=disable_updates)
 
-    if update_geodata:
+    if 'geodata' not in (disable_updates or []):
         # Don't use cached/stale geocode when constructing the LocationInfo here
-        db_event.location_geocode = geocode
+        #db_event.location_geocode = geocode
         location_info = event_locations.LocationInfo(db_event=db_event)
         _update_geodata(db_event, location_info)
 
 
-def _inner_common_setup(db_event):
-    _inner_cache_photo(db_event)
+def _inner_common_setup(db_event, disable_updates=None):
+    if 'photo' not in (disable_updates or []):
+        _inner_cache_photo(db_event)
 
     text = '%s. %s' % (db_event.name, db_event.description)
     db_event.json_props['language'] = language.detect(text)

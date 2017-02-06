@@ -30,7 +30,7 @@ def add_event_tuple_if_updating(events_to_update, fbl, db_event, only_if_updated
         events_to_update.append((db_event, fb_event))
 
 
-def load_fb_events_using_backup_tokens(event_ids, allow_cache, only_if_updated, update_geodata):
+def load_fb_events_using_backup_tokens(event_ids, allow_cache, only_if_updated, disable_updates):
     db_events = eventdata.DBEvent.get_by_ids(event_ids)
     events_to_update = []
     for db_event in db_events:
@@ -63,7 +63,7 @@ def load_fb_events_using_backup_tokens(event_ids, allow_cache, only_if_updated, 
             # So instead, let's call it and just have it use the db_event.fb_event
             if fbl:
                 add_event_tuple_if_updating(events_to_update, fbl, db_event, only_if_updated)
-    event_updates.update_and_save_fb_events(events_to_update, update_geodata=update_geodata)
+    event_updates.update_and_save_fb_events(events_to_update, disable_updates=disable_updates)
 
 def yield_resave_display_event(fbl, all_events):
     event_updates.resave_display_events(all_events)
@@ -73,10 +73,10 @@ def yield_load_fb_event(fbl, all_events):
     ctx = context.get()
     if ctx:
         params = ctx.mapreduce_spec.mapper.params
-        update_geodata = params['update_geodata']
+        disable_updates = params['disable_updates']
         only_if_updated = params['only_if_updated']
     else:
-        update_geodata = True
+        disable_updates = True
         only_if_updated = True
 
     # Process web_events
@@ -85,7 +85,7 @@ def yield_load_fb_event(fbl, all_events):
     for web_event in web_events:
         if event_updates.need_forced_update(web_event):
             events_to_update.append((web_event, web_event.web_event))
-    event_updates.update_and_save_web_events(events_to_update, update_geodata=update_geodata)
+    event_updates.update_and_save_web_events(events_to_update, disable_updates=disable_updates)
 
     # Now process fb_events
     db_events = [x for x in all_events if x.is_fb_event]
@@ -120,10 +120,10 @@ def yield_load_fb_event(fbl, all_events):
     # Now trigger off a background reloading of empty fb_events
     if empty_fb_event_ids:
         logging.info("Couldn't fetch, using backup tokens for events: %s", empty_fb_event_ids)
-        deferred.defer(load_fb_events_using_backup_tokens, empty_fb_event_ids, allow_cache=fbl.allow_cache, only_if_updated=only_if_updated, update_geodata=update_geodata)
+        deferred.defer(load_fb_events_using_backup_tokens, empty_fb_event_ids, allow_cache=fbl.allow_cache, only_if_updated=only_if_updated, disable_updates=disable_updates)
     logging.info("Updating events: %s", [x[0].id for x in events_to_update])
     # And then re-save all the events in here
-    event_updates.update_and_save_fb_events(events_to_update, update_geodata=update_geodata)
+    event_updates.update_and_save_fb_events(events_to_update, disable_updates=disable_updates)
 map_load_fb_event = fb_mapreduce.mr_wrap(yield_load_fb_event)
 load_fb_event = fb_mapreduce.nomr_wrap(yield_load_fb_event)
 
@@ -135,7 +135,7 @@ map_load_fb_event_attending = fb_mapreduce.mr_wrap(yield_load_fb_event_attending
 load_fb_event_attending = fb_mapreduce.nomr_wrap(yield_load_fb_event_attending)
 
 
-def mr_load_fb_events(fbl, display_event=False, load_attending=False, time_period=None, update_geodata=True, only_if_updated=True, queue='slow-queue'):
+def mr_load_fb_events(fbl, display_event=False, load_attending=False, time_period=None, disable_updates=None, only_if_updated=True, queue='slow-queue'):
     if display_event:
         event_or_attending = 'Display Events'
         mr_func = 'map_resave_display_event'
@@ -158,7 +158,7 @@ def mr_load_fb_events(fbl, display_event=False, load_attending=False, time_perio
         entity_kind='events.eventdata.DBEvent',
         handle_batch_size=20,
         filters=filters,
-        extra_mapper_params={'update_geodata': update_geodata, 'only_if_updated': only_if_updated},
+        extra_mapper_params={'disable_updates': disable_updates, 'only_if_updated': only_if_updated},
         queue=queue,
     )
 
@@ -177,11 +177,11 @@ class LoadEventAttendingHandler(base_servlet.EventOperationHandler):
 @app.route('/tasks/reload_events')
 class ReloadEventsHandler(base_servlet.BaseTaskFacebookRequestHandler):
     def get(self):
-        update_geodata = self.request.get('update_geodata', '1') != '0'
+        disable_updates = self.request.get('disable_updates', '').split(',')
         only_if_updated = self.request.get('only_if_updated', '1') != '0'
         time_period = self.request.get('time_period', None)
         load_attending = self.request.get('load_attending', '0') != '0'
         display_event = self.request.get('display_event', '0') != '0'
         queue = self.request.get('queue', 'slow-queue')
-        mr_load_fb_events(self.fbl, display_event=display_event, load_attending=load_attending, time_period=time_period, update_geodata=update_geodata, only_if_updated=only_if_updated, queue=queue)
+        mr_load_fb_events(self.fbl, display_event=display_event, load_attending=load_attending, time_period=time_period, disable_updates=disable_updates, only_if_updated=only_if_updated, queue=queue)
     post=get
