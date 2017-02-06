@@ -10,23 +10,6 @@ import event_types
 import fb_api
 from util import fb_mapreduce
 
-"""
-MAP
-for each event:
-    for each nearby city of event:
-        for each attendee of event:
-            export (cityname, attendee): event_id
-
-REDDUCE:
-foreach (cityname, attendee): event_ids:
-    export cityname: (attendee, len(event_ids)1)
-
-
-foreach cityname: (attendee, event_count):
-    get top_N(attendee by event_count) in cityname:
-        export top_N
-"""
-
 class PeopleRanking(ndb.Model):
     person_type = ndb.StringProperty()
     city = ndb.StringProperty()
@@ -36,18 +19,20 @@ class PeopleRanking(ndb.Model):
 STYLES_SET = set(x.index_name for x in event_types.STYLES)
 
 def track_person(person_type, db_event, person):
-    person_name = ('%s: %s' % (person['id'], person.get('name'))).encode('utf-8')
+    person_name = '%s: %s' % (person['id'], person.get('name'))
+    person_name = person_name.encode('utf-8')
     for city in db_event.nearby_city_names:
         key = '%s: %s: %s' % (person_type, '', city)
-        yield (key, person_name)
+        logging.info('%s', (key, person_name))
+        yield (key.encode('utf-8'), person_name)
         for category in STYLES_SET.intersection(db_event.auto_categories):
             key = '%s: %s: %s' % (person_type, category, city)
-            yield (key, person_name)
             logging.info('%s', (key, person_name))
+            yield (key.encode('utf-8'), person_name)
 
 BATCH_SIZE = 20
 def output_people(db_events):
-    db_events = [x for x in db_events if x.is_fb_event]
+    db_events = [x for x in db_events if x.is_fb_event and x.has_content()]
 
     fbl = fb_mapreduce.get_fblookup()
     fbl.request_multi(fb_api.LookupEventAttending, [x.fb_event_id for x in db_events])
