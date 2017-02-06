@@ -73,8 +73,6 @@ def _all_attending_count(fb_event):
         return None
 
 def _inner_cache_photo(db_event):
-    if db_event.json_props is None:
-        db_event.json_props = {}
     if db_event.full_image_url:
         try:
             width, height = event_image.cache_image_and_get_size(db_event)
@@ -204,6 +202,9 @@ def _inner_make_event_findable_for_web_event(db_event, web_event, disable_update
 
 
 def _inner_common_setup(db_event, disable_updates=None):
+    if db_event.json_props is None:
+        db_event.json_props = {}
+
     if 'photo' not in (disable_updates or []):
         _inner_cache_photo(db_event)
 
