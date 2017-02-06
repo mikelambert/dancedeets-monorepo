@@ -159,6 +159,22 @@ class _EventView extends React.Component {
     openAddEvent: (props: any) => void;
   }
 
+  constructor(props) {
+    super(props);
+    (this: any).onFlyerSelected = this.onFlyerSelected.bind(this);
+  }
+
+  onFlyerSelected(event) {
+    trackWithEvent('View Flyer', event);
+    this.props.navigatable.onNavigate({
+      key: 'FlyerView',
+      title: this.props.intl.formatMessage(messages.viewFlyer),
+      image: event.picture.source,
+      width: event.picture.width,
+      height: event.picture.height,
+    });
+  }
+
   render() {
     const { scene } = this.props.sceneProps;
     const { route } = scene;
@@ -181,7 +197,7 @@ class _EventView extends React.Component {
       case 'FeaturedEventView':
         return <PositionProvider
           renderWithPosition={(position) => <FullEventView
-            onFlyerSelected={this.props.onFlyerSelected}
+            onFlyerSelected={this.onFlyerSelected}
             event={route.event}
             currentPosition={position}
           />}
@@ -193,16 +209,7 @@ class _EventView extends React.Component {
             trackWithEvent('View Event', event);
             this.props.navigatable.onSwap('EventView', { key: 'EventView', title: event.name, event });
           }}
-          onFlyerSelected={(event) => {
-            trackWithEvent('View Flyer', event);
-            this.props.navigatable.onNavigate({
-              key: 'FlyerView',
-              title: this.props.intl.formatMessage(messages.viewFlyer),
-              image: event.picture.source,
-              width: event.picture.width,
-              height: event.picture.height,
-            });
-          }}
+          onFlyerSelected={this.onFlyerSelected}
           selectedEvent={route.event}
         />);
       case 'FlyerView':
