@@ -73,7 +73,7 @@ def reduce_popular_people(type_city_category, people):
     ranking.top_people = ['%s: %s' % kv for kv in sorted_counts[:20]]
     yield operation.db.Put(ranking)
 
-def mr_popular_people_per_city(fbl):
+def mr_popular_people_per_city(fbl, queue):
     mapper_params = {
         'entity_kind': 'events.eventdata.DBEvent',
         'handle_batch_size': BATCH_SIZE,
@@ -94,10 +94,11 @@ def mr_popular_people_per_city(fbl):
         },
         shards=8,
     )
-    mrp.start()
+    mrp.start(queue_name=queue)
     return mrp
 
 @app.route('/tools/popular_people')
 class ExportSourcesHandler(base_servlet.BaseTaskFacebookRequestHandler):
     def get(self):
-        mr_popular_people_per_city(self.fbl)
+        queue = self.request.get('queue', 'slow-queue')
+        mr_popular_people_per_city(self.fbl, queue)
