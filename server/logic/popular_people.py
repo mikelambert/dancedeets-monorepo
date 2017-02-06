@@ -21,13 +21,12 @@ STYLES_SET = set(x.index_name for x in event_types.STYLES)
 def track_person(person_type, db_event, person):
     person_name = '%s: %s' % (person['id'], person.get('name'))
     person_name = person_name.encode('utf-8')
-    for city in db_event.nearby_city_names:
+    # Not using db_event.nearby_city_names since it's way too slow.
+    for city in [db_event.city_name]:
         key = '%s: %s: %s' % (person_type, '', city)
-        logging.info('%s', (key, person_name))
         yield (key.encode('utf-8'), person_name)
         for category in STYLES_SET.intersection(db_event.auto_categories):
             key = '%s: %s: %s' % (person_type, category, city)
-            logging.info('%s', (key, person_name))
             yield (key.encode('utf-8'), person_name)
 
 BATCH_SIZE = 20
