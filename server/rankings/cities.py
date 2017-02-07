@@ -14,14 +14,14 @@ CITY_GEOHASH_PRECISIONS = range(
 
 NEARBY_DISTANCE_KM = 100 # km of distance to nearest "scene" a user will identify with
 
-def get_nearby_cities(point):
+def get_nearby_cities(point, distance=NEARBY_DISTANCE_KM):
     # TODO(lambert): we should cache this entire function. use lowercase of location to determine cache key. Using DB cache too.
     logging.info("location is %s", point)
     # rather than return the nearest city (Sunnyvale, San Jose, etc)
     # try to find the largest city within a certain range to give us good groupings for the "scene" name of a user/event.
-    geohashes = geohash_math.get_all_geohashes_for((point, point), precision=geohash_math.get_geohash_bits_for_km(NEARBY_DISTANCE_KM))
+    geohashes = geohash_math.get_all_geohashes_for((point, point), precision=geohash_math.get_geohash_bits_for_km(distance))
     cities = City.gql("where geohashes in :geohashes", geohashes=geohashes).fetch(100)
-    cities = [x for x in cities if math.get_distance(point, (x.latitude, x.longitude), use_km=True) < NEARBY_DISTANCE_KM]
+    cities = [x for x in cities if math.get_distance(point, (x.latitude, x.longitude), use_km=True) < distance]
     return cities
 
 def get_largest_city(cities):
@@ -41,7 +41,7 @@ class City(db.Model):
     country_name = db.StringProperty(indexed=False)
     latitude = db.FloatProperty(indexed=False)
     longitude = db.FloatProperty(indexed=False)
-    population = db.IntegerProperty(indexed=False)
+    population = db.IntegerProperty()
     timezone = db.StringProperty(indexed=False)
     geohashes = db.StringListProperty()
 

@@ -1,4 +1,5 @@
 import logging
+import re
 
 from google.appengine.ext import ndb
 from mapreduce import mapreduce_pipeline
@@ -17,6 +18,38 @@ class PeopleRanking(ndb.Model):
     top_people = ndb.StringProperty(repeated=True, indexed=False)
 
 STYLES_SET = set(x.index_name for x in event_types.STYLES)
+
+def combine_rankings(rankings):
+    groupings = {}
+    for r in rankings:
+        key = (r.person_type, r.category)
+        if key not in groupings:
+            groupings[key] = {}
+        for person_triplet in r.top_people:
+            match = re.match(r'(.*): (\d+)', person_triplet)
+            if not match:
+                logging.error('Error parsing %s, person: %s', r.id, person_triplet)
+                continue
+            name, count = match.groups()
+            if name in groupings[key]:
+                groupings[key][name] += int(count)
+            else:
+                groupings[key][name] = int(count)
+    for key in groupings.keys():
+        if key[0] == 'ATTENDEE':
+            limit = 2
+        elif key[0] == 'ADMIN':
+            limit = 1
+        else:
+            logging.error('Unknown person type in grouping key: %s', key)
+        for name in groupings[key].keys():
+            # Remove low/bad frequency data
+            if groupings[key][name] < limit:
+                del groupings[key][name]
+        if len(groupings[key]) == 0:
+            del groupings[key]
+    return groupings
+
 
 def track_person(person_type, db_event, person):
     person_name = '%s: %s' % (person['id'], person.get('name'))

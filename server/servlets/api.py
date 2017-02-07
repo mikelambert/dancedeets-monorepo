@@ -19,6 +19,9 @@ from events import eventdata
 from events import featured
 import fb_api
 import keys
+from loc import math
+from logic import popular_people
+from rankings import cities
 from search import onebox
 from search import search
 from search import search_base
@@ -224,7 +227,7 @@ class SearchHandler(ApiHandler):
                     self.add_error('Please enter a location or keywords')
         else:
             try:
-                city_name, southwest, northeast = search_base.normalize_location(form)
+                city_name, center_latlng, southwest, northeast = search_base.normalize_location(form)
             except:
                 if self.version == (1, 0):
                     self.write_json_success({'results': []})
@@ -233,6 +236,18 @@ class SearchHandler(ApiHandler):
                     self.add_error('Could not geocode location')
 
         self.errors_are_fatal()
+
+        distance_km = math.get_inner_box_radius_km(center_latlng, southwest, northeast)
+        if distance_km > 1000:
+            # Too big a search area, not worth showing promoters or dancers
+            groupings = {}
+        else:
+            included_cities = cities.get_nearby_cities(center_latlng, distance_km)
+            biggest_cities = sorted(included_cities, key=lambda x: -x.population)[:5]
+            city_names = [city.display_name() for city in biggest_cities]
+            people_rankings = popular_people.PeopleRanking.query(popular_people.PeopleRanking.city.IN(city_names))
+            groupings = popular_people.combine_rankings(people_rankings)
+            logging.info('Person Groupings:\n%s', '\n'.join('%s: %s' % kv for kv in groupings.iteritems()))
 
         search_results = []
         distances = [50, 100, 170, 300]

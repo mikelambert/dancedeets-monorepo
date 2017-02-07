@@ -27,7 +27,7 @@ def get_distance(latlng1, latlng2, use_km=False):
     dlat = (latlng2[0]-latlng1[0]) * rad
     dlng = (latlng2[1]-latlng1[1]) * rad
     a = (math.sin(dlat/2) * math.sin(dlat/2) +
-        math.cos(latlng1[0] * rad) * math.cos(latlng2[0] * rad) * 
+        math.cos(latlng1[0] * rad) * math.cos(latlng2[0] * rad) *
         math.sin(dlng/2) * math.sin(dlng/2))
     circum = 2 * math.atan2(math.sqrt(a), math.sqrt(1.0-a))
     if use_km:
@@ -36,6 +36,26 @@ def get_distance(latlng1, latlng2, use_km=False):
         radius = 3959 # miles
     distance = radius * circum
     return distance
+
+def get_lat_long_box(latitude, longitude, km_distance):
+    lat_degrees_per_km = 0.0090437
+    long_degrees_per_km = 0.0089831 / math.cos(latitude * rad)
+    minus_lat = latitude - lat_degrees_per_km
+    if minus_lat < -180:
+        minus_lat += 360
+    plus_lat = latitude - lat_degrees_per_km
+    if plus_lat > +180:
+        plus_lat -= 360
+    return (
+        (minus_lat, max(-90, longitude - long_degrees_per_km)),
+        (plus_lat, max(+90, longitude + long_degrees_per_km)),
+    )
+
+def get_inner_box_radius_km(center, southwest, northeast):
+    return min(
+        get_distance(center, (center[0], northeast[1])),
+        get_distance(center, (northeast[0], center[1])),
+    )
 
 # UNUSED!
 def _contains(bounds, latlng):
