@@ -3,6 +3,9 @@ cron:
 - description: reload future facebook event data
   url: /tasks/reload_events?user_id=701004&allow_cache=0&time_period=FUTURE&load_attending=0
   schedule: every 2 hours
+- description: reload future facebook attendin gevent data
+  url: /tasks/reload_events?user_id=701004&allow_cache=0&time_period=FUTURE&load_attending=1
+  schedule: every 4 hours
 # These don't rely on a magical user_id
 - description: auto-add events
   url: /tools/auto_add_potential_events?user_id=dummy&past_event=0&expiry_days=10
@@ -40,3 +43,7 @@ cron:
 #- description: reload past facebook event data
 #  url: /tasks/reload_events?user_id=dummy&allow_cache=0&time_period=FUTURE
 #  schedule: every monday 2:00
+- description: compute popular organizers/dancers
+  url: /tools/popular_people?user_id=701004
+  # twice a month
+  schedule: 1,15 of month 09:00
