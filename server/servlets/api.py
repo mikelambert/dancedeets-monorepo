@@ -148,9 +148,9 @@ def build_search_results_api(city_name, form, search_query, search_results, vers
         except Exception as e:
             logging.exception("Error processing event %s: %s" % (result.event_id, e))
 
+    real_featured_infos = []
     try:
         featured_infos = featured.get_featured_events_for(southwest, northeast)
-        real_featured_infos = []
         for featured_info in featured_infos:
             try:
                 featured_info['event'] = canonicalize_event_data(featured_info['event'], [], version)
