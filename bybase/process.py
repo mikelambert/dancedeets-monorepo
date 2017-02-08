@@ -12,6 +12,8 @@ import time
 import urllib
 import urllib2
 
+# PROCESSING: 353672721655806 killason ...and afterwards
+
 logging.getLogger().setLevel(logging.INFO)
 
 path = '/Users/%s/Dropbox/dancedeets/private/fb-token.txt' % getpass.getuser()
@@ -147,16 +149,10 @@ events = {}
 
 for e in eventData:
     post_date = e['post_date_utc'][:10]
-    if post_date in posts:
-        posts[post_date] += 1
-    else:
-        posts[post_date] = 1
+    posts.setdefault(post_date, []).append(e)
 
     event_date = e['date'][:10]
-    if event_date in events:
-        events[event_date] += 1
-    else:
-        events[event_date] = 1
+    events.setdefault(event_date, []).append(e)
 
 future = {}
 status = {}
@@ -171,31 +167,31 @@ for e in eventData:
     future[e['id']] = True
     e_exists = exists(e)
     status[e['id']] = e_exists
-    if e['state'] in countries:
-        countries[e['state']] += 1
-    else:
-        countries[e['state']] = 1
+    countries.setdefault(e['state'], []).append(e)
     if not e_exists:
-        if e['state'] in new_countries:
-            new_countries[e['state']] += 1
-        else:
-            new_countries[e['state']] = 1
+        new_countries.setdefault(e['state'], []).append(e)
     
 print 'Post-Ups:'
-for post_date, count in sorted(posts.items()):
-    print post_date, count
+for post_date, lst in sorted(posts.items()):
+    print post_date, len(lst)
+    for e in lst:
+        ids = [x['id'] for x in find_fb_ids(e)]
+        print '  ', 'X' if status[e['id']] else '-', ids, e['title']
 
-print 'Events:'
-for post_date, count in sorted(events.items()):
-    print post_date, count
+#print 'Events:'
+#for post_date, count in sorted(events.items()):
+#    print post_date, count
 
 print 'Countries:'
-for country, count in sorted(countries.items(), key=lambda x: x[1]):
-    print country, count
+for country, lst in sorted(countries.items(), key=lambda x: len(x[1]))[-10:]:
+    print country, len(lst)
 
 print 'New Countries:'
-for country, count in sorted(new_countries.items(), key=lambda x: x[1]):
-    print country, count
+for country, lst in sorted(new_countries.items(), key=lambda x: len(x[1]))[-10:]:
+    print country, len(lst)
+    for e in lst:
+        ids = [x['id'] for x in find_fb_ids(e)] if not status[e['id']] else '--'
+        print '  ', 'X' if status[e['id']] else '-', ids, e['title']
 
 print 'Coverage:'
 existIds = [x for x in status if status[x]]
