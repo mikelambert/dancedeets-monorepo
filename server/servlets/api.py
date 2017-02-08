@@ -217,25 +217,23 @@ class SearchHandler(ApiHandler):
 
         if not form.location.data:
             city_name = None
+            center_latlng = None
             southwest = None
             northeast = None
             if not form.keywords.data:
-                if self.version == (1, 0):
-                    self.write_json_success({'results': []})
-                    return
-                else:
-                    self.add_error('Please enter a location or keywords')
+                self.add_error('Please enter a location or keywords')
         else:
             try:
                 city_name, center_latlng, southwest, northeast = search_base.normalize_location(form)
             except:
-                if self.version == (1, 0):
-                    self.write_json_success({'results': []})
-                    return
-                else:
-                    self.add_error('Could not geocode location')
+                self.add_error('Could not geocode location')
 
-        self.errors_are_fatal()
+        if self.has_errors():
+            if self.version == (1, 0):
+                self.write_json_success({'results': []})
+                return
+            else:
+                self.errors_are_fatal()
 
         distance_km = math.get_inner_box_radius_km(center_latlng, southwest, northeast)
         if distance_km > 1000:
@@ -245,8 +243,11 @@ class SearchHandler(ApiHandler):
             included_cities = cities.get_nearby_cities(center_latlng, distance_km)
             biggest_cities = sorted(included_cities, key=lambda x: -x.population)[:5]
             city_names = [city.display_name() for city in biggest_cities]
-            people_rankings = popular_people.PeopleRanking.query(popular_people.PeopleRanking.city.IN(city_names))
-            groupings = popular_people.combine_rankings(people_rankings)
+            if not city_names:
+                people_rankings = popular_people.PeopleRanking.query(popular_people.PeopleRanking.city.IN(city_names))
+                groupings = popular_people.combine_rankings(people_rankings)
+            else:
+                groupings = {}
             logging.info('Person Groupings:\n%s', '\n'.join('%s: %s' % kv for kv in groupings.iteritems()))
 
         search_results = []

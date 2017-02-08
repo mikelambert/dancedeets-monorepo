@@ -161,6 +161,9 @@ class BareBaseRequestHandler(webapp2.RequestHandler, FacebookMixinHandler):
     def add_error(self, error):
         self._errors.append(error)
 
+    def has_errors(self):
+        return self._errors
+
     def fatal_error(self, error):
         self.add_error(error)
         self.errors_are_fatal()
