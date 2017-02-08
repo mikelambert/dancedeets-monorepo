@@ -23,31 +23,33 @@ def combine_rankings(rankings):
     groupings = {}
     for r in rankings:
         key = (r.person_type, r.category)
-        if key not in groupings:
-            groupings[key] = {}
         for person_triplet in r.top_people:
             match = re.match(r'(.*): (\d+)', person_triplet)
             if not match:
                 logging.error('Error parsing %s, person: %s', r.id, person_triplet)
                 continue
             name, count = match.groups()
+            groupings.setdefault(r.person_type, {}).setdefault(r.category, {})
             if name in groupings[key]:
-                groupings[key][name] += int(count)
+                groupings[r.person_type][r.category][name] += int(count)
             else:
-                groupings[key][name] = int(count)
-    for key in groupings.keys():
+                groupings[r.person_type][r.category][name] = int(count)
+    for person_type in groupings.keys():
         if key[0] == 'ATTENDEE':
             limit = 2
         elif key[0] == 'ADMIN':
             limit = 1
         else:
             logging.error('Unknown person type in grouping key: %s', key)
-        for name in groupings[key].keys():
+        for category in groupings[person_type].keys():
             # Remove low/bad frequency data
-            if groupings[key][name] < limit:
-                del groupings[key][name]
-        if len(groupings[key]) == 0:
-            del groupings[key]
+            for name in groupings[person_type][category]:
+                if groupings[person_type][category][name] < limit:
+                    del groupings[person_type][category][name]
+            if len(groupings[person_type][category]) == 0:
+                del groupings[person_type][category]
+        if len(groupings[person_type]) == 0:
+            del groupings[person_type]
     return groupings
 
 

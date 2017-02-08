@@ -79,6 +79,7 @@ class RelevantHandler(SearchHandler):
                 onebox_links = onebox.get_links_for_query(search_query)
 
             city_name = None
+            center_latlng = None
             southwest = None
             northeast = None
             if form.location.data:
@@ -88,7 +89,7 @@ class RelevantHandler(SearchHandler):
                     self.add_error('Unknown location: %s' % form.location.data)
 
             need_full_event = False
-            json_search_response = api.build_search_results_api(city_name, form, search_query, search_results, (2, 0), need_full_event, southwest, northeast)
+            json_search_response = api.build_search_results_api(city_name, form, search_query, search_results, (2, 0), need_full_event, center_latlng, southwest, northeast)
             props = dict(
                 response=json_search_response,
                 past=(form.time_period.data == search_base.TIME_PAST),

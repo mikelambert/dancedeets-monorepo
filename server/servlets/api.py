@@ -135,7 +135,7 @@ def retryable(func):
             raise
     return wrapped_func
 
-def build_search_results_api(city_name, form, search_query, search_results, version, need_full_event, southwest, northeast):
+def build_search_results_api(city_name, form, search_query, search_results, version, need_full_event, center_latlng, southwest, northeast):
     onebox_links = []
     if search_query:
         onebox_links = onebox.get_links_for_query(search_query)
@@ -163,7 +163,23 @@ def build_search_results_api(city_name, form, search_query, search_results, vers
     except Exception as e:
         logging.exception("Error building featured event listing: %s", e)
 
+    distance_km = math.get_inner_box_radius_km(center_latlng, southwest, northeast)
+    if distance_km > 1000:
+        # Too big a search area, not worth showing promoters or dancers
+        groupings = {}
+    else:
+        included_cities = cities.get_nearby_cities(center_latlng, distance_km)
+        biggest_cities = sorted(included_cities, key=lambda x: -x.population)[:5]
+        city_names = [city.display_name() for city in biggest_cities]
+        if not city_names:
+            people_rankings = popular_people.PeopleRanking.query(popular_people.PeopleRanking.city.IN(city_names))
+            groupings = popular_people.combine_rankings(people_rankings)
+        else:
+            groupings = {}
+        logging.info('Person Groupings:\n%s', '\n'.join('%s: %s' % kv for kv in groupings.iteritems()))
+
     json_response = {
+        'people': groupings,
         'results': json_results,
         'onebox_links': onebox_links,
         'location': city_name,
@@ -235,21 +251,6 @@ class SearchHandler(ApiHandler):
             else:
                 self.errors_are_fatal()
 
-        distance_km = math.get_inner_box_radius_km(center_latlng, southwest, northeast)
-        if distance_km > 1000:
-            # Too big a search area, not worth showing promoters or dancers
-            groupings = {}
-        else:
-            included_cities = cities.get_nearby_cities(center_latlng, distance_km)
-            biggest_cities = sorted(included_cities, key=lambda x: -x.population)[:5]
-            city_names = [city.display_name() for city in biggest_cities]
-            if not city_names:
-                people_rankings = popular_people.PeopleRanking.query(popular_people.PeopleRanking.city.IN(city_names))
-                groupings = popular_people.combine_rankings(people_rankings)
-            else:
-                groupings = {}
-            logging.info('Person Groupings:\n%s', '\n'.join('%s: %s' % kv for kv in groupings.iteritems()))
-
         search_results = []
         distances = [50, 100, 170, 300]
         distance_index = 0
@@ -271,7 +272,7 @@ class SearchHandler(ApiHandler):
 
         logging.info("Found %s keyword=%r events within %s %s of %s", len(search_results), form.keywords.data, form.distance.data, form.distance_units.data, form.location.data)
 
-        json_response = build_search_results_api(city_name, form, search_query, search_results, self.version, need_full_event, southwest, northeast)
+        json_response = build_search_results_api(city_name, form, search_query, search_results, self.version, need_full_event, center_latlng, southwest, northeast)
         if self.request.get('client') == 'react-android' and self.version <= (1, 3):
             json_response['featured'] = []
         self.write_json_success(json_response)
