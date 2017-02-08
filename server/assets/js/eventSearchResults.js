@@ -31,6 +31,7 @@ import {
 } from 'dancedeets-common/js/events/models';
 import type {
   NewSearchResponse,
+  Onebox,
 } from 'dancedeets-common/js/events/search';
 import {
   formatStartEnd,
@@ -48,10 +49,6 @@ import {
 require('slick-carousel/slick/slick.css');
 require('slick-carousel/slick/slick-theme.css');
 require('../css/slick.scss');
-
-type OneboxResult = any;
-type EventResult = SearchEvent;
-type Result = OneboxResult | EventResult;
 
 export class SquareEventFlyer extends React.Component {
   props: {
@@ -379,6 +376,26 @@ class _EventsList extends React.Component {
 }
 const EventsList = injectIntl(_EventsList);
 
+class _OneboxLinks extends React.Component {
+  props: {
+    links: Array<Onebox>;
+  }
+
+  render() {
+    const oneboxList = this.props.links.map(onebox =>
+      <li key={onebox.url}><a className="link-onebox" href={onebox.url}>{onebox.title}</a></li>
+    );
+
+    return (
+      <div className="col-xs-12">
+        <div><b>Related pages:</b></div>
+        <ul>{oneboxList}</ul>
+      </div>
+    );
+  }
+}
+const OneboxLinks = injectIntl(_OneboxLinks);
+
 class ResultsList extends React.Component {
   props: {
     response: NewSearchResponse;
@@ -400,6 +417,7 @@ class ResultsList extends React.Component {
       const futureEvents = resultEvents.filter(event => moment(event.start_time) > now);
       return (<div>
         <FeaturedEvents events={featuredInfos.map(x => x.event)} />
+        <OneboxLinks links={this.props.response.onebox_links} />
         <CurrentEvents events={currentEvents} />
         <EventsList
           events={futureEvents}

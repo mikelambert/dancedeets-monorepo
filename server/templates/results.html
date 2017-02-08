@@ -104,17 +104,6 @@
 	><span><i class="fa fa-calendar fa-lg"></i> Calendar</span></a></li>
 </ul>
 <div class="tabs-after row">
-	{% if onebox_links %}
-	<div class="col-xs-12">
-		<div><b>Related pages:</b></div>
-		<ul>
-		{% for onebox in onebox_links %}
-			<li><a class="link-onebox" href="{{ onebox.url }}">{{ onebox.title }}</a></li>
-		{% endfor %}
-		</ul>
-	</div>
-	{% endif %}
-
   {% if selected_tab == 'past' %}
     <div class="cold-md-8 col-xs-12">
       <div id="react-parent">
