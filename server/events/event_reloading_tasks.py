@@ -76,7 +76,7 @@ def yield_load_fb_event(fbl, all_events):
         disable_updates = params['disable_updates']
         only_if_updated = params['only_if_updated']
     else:
-        disable_updates = True
+        disable_updates = []
         only_if_updated = True
 
     # Process web_events
