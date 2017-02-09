@@ -93,6 +93,7 @@ class RelevantHandler(SearchHandler):
             props = dict(
                 response=json_search_response,
                 past=(form.time_period.data == search_base.TIME_PAST),
+                showPeople=bool('people' in self.debug_list),
             )
             self.setup_react_template('eventSearchResults.js', props)
 

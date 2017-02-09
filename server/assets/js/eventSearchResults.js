@@ -382,12 +382,15 @@ class _OneboxLinks extends React.Component {
   }
 
   render() {
+    if (!this.props.links) {
+      return null;
+    }
     const oneboxList = this.props.links.map(onebox =>
       <li key={onebox.url}><a className="link-onebox" href={onebox.url}>{onebox.title}</a></li>
     );
 
     return (
-      <div className="col-xs-12">
+      <div>
         <div><b>Related pages:</b></div>
         <ul>{oneboxList}</ul>
       </div>
@@ -422,13 +425,14 @@ class PersonList extends React.Component {
 
   render() {
     const defaultList = this.props.people[this.state.category];
+    const people = Object.keys(this.props.people).slice(10);
     const selector = (<form className="form-inline">
       <b>{this.props.title}:</b>
       <select
         className="form-control form-inline"
         onChange={e => this.setState({ category: e.target.value })}
       >
-        {Object.keys(this.props.people).map(x => <option key={x} value={x}>{x || 'Overall'}</option>)}
+        {people.map(x => <option key={x} value={x}>{x || 'Overall'}</option>)}
       </select>
     </form>);
     return (<div>
@@ -468,7 +472,7 @@ class NearbyPeople extends React.Component {
         />
       </div>);
     }
-    return <div>{promoters}{attendees}</div>;
+    return <div className="row">{promoters}{attendees}</div>;
   }
 }
 
@@ -476,6 +480,7 @@ class ResultsList extends React.Component {
   props: {
     response: NewSearchResponse;
     past: boolean;
+    showPeople: boolean;
   }
   render() {
     const resultEvents = this.props.response.results.map(eventData => new SearchEvent(eventData));
@@ -493,7 +498,9 @@ class ResultsList extends React.Component {
       const futureEvents = resultEvents.filter(event => moment(event.start_time) > now);
       return (<div>
         <FeaturedEvents events={featuredInfos.map(x => x.event)} />
-        <NearbyPeople admins={this.props.response.people.ADMIN} attendees={this.props.response.people.ATTENDEE} />
+        {this.props.showPeople ?
+          <NearbyPeople admins={this.props.response.people.ADMIN} attendees={this.props.response.people.ATTENDEE} /> :
+          null}
         <OneboxLinks links={this.props.response.onebox_links} />
         <CurrentEvents events={currentEvents} />
         <EventsList
