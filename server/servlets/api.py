@@ -181,6 +181,8 @@ def build_search_results_api(city_name, form, search_query, search_results, vers
             if city_names:
                 try:
                     people_rankings = popular_people.PeopleRanking.query(popular_people.PeopleRanking.city.IN(city_names))
+                    if 'fakepeople' in form.deb.data:
+                        people_rankings = popular_people.faked_people_rankings()
                     groupings = popular_people.combine_rankings(people_rankings)
                 except:
                     logging.exception('Error creating combined people rankings')

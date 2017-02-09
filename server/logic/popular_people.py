@@ -1,4 +1,5 @@
 import logging
+import random
 import re
 
 from google.appengine.ext import ndb
@@ -18,6 +19,21 @@ class PeopleRanking(ndb.Model):
     top_people = ndb.StringProperty(repeated=True, indexed=False)
 
 STYLES_SET = set(x.index_name for x in event_types.STYLES)
+
+def faked_people_rankings():
+    people_rankings = []
+    top_people = []
+    for person_type in ['ADMIN', 'ATTENDEE']:
+        for style in [''] + [x.index_name for x in event_types.STYLES]:
+            for i in range(10):
+                id = random.randint(0, 100)
+                top_people.append('%s: User %s: %s' % (id, id, random.randint(5, 100)))
+            people_rankings.append(PeopleRanking(
+                    person_type=person_type,
+                    category=style,
+                    top_people=top_people,
+            ))
+    return people_rankings
 
 def combine_rankings(rankings):
     groupings = {}
