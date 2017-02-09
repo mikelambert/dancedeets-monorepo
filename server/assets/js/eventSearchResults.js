@@ -427,7 +427,7 @@ class PersonList extends React.Component {
     const peopleList = this.props.people[this.state.category].slice(0, 10);
     const categories = Object.keys(this.props.people);
     const selector = (<form className="form-inline">
-      <b>{this.props.title}:</b>
+      <b>{this.props.title}: </b>
       <select
         className="form-control form-inline"
         onChange={e => this.setState({ category: e.target.value })}
@@ -437,7 +437,7 @@ class PersonList extends React.Component {
     </form>);
     return (<div>
       {selector}
-      <i>{this.props.subtitle})</i><br />
+      <i>{this.props.subtitle}:</i><br />
       <ul>
         {peopleList.map(x => <li key={x.id}><a href={`https://www.facebook.com/${x.id}`}>{x.name}</a></li>)}
       </ul>
@@ -454,7 +454,7 @@ class NearbyPeople extends React.Component {
   render() {
     let promoters = null;
     if (this.props.admins) {
-      promoters = (<div className="col-md-6">
+      promoters = (<div className="col-sm-6">
         <PersonList
           title="Nearby Promoters"
           subtitle="If you want organize an event, work with these folks"
@@ -464,7 +464,7 @@ class NearbyPeople extends React.Component {
     }
     let attendees = null;
     if (this.props.attendees) {
-      attendees = (<div className="col-md-6">
+      attendees = (<div className="col-sm-6">
         <PersonList
           title="Nearby Influencers"
           subtitle="If you want to connect with the dance scene, hit these folks up"
