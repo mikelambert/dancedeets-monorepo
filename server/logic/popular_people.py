@@ -22,34 +22,45 @@ STYLES_SET = set(x.index_name for x in event_types.STYLES)
 def combine_rankings(rankings):
     groupings = {}
     for r in rankings:
-        key = (r.person_type, r.category)
         for person_triplet in r.top_people:
             match = re.match(r'(.*): (\d+)', person_triplet)
             if not match:
                 logging.error('Error parsing %s, person: %s', r.id, person_triplet)
                 continue
-            name, count = match.groups()
+            name, new_count = match.groups()
             groupings.setdefault(r.person_type, {}).setdefault(r.category, {})
-            if name in groupings[key]:
-                groupings[r.person_type][r.category][name] += int(count)
+            if name in groupings[r.person_type][r.category]:
+                groupings[r.person_type][r.category][name] += int(new_count)
             else:
-                groupings[r.person_type][r.category][name] = int(count)
+                groupings[r.person_type][r.category][name] = int(new_count)
     for person_type in groupings.keys():
-        if key[0] == 'ATTENDEE':
+        if person_type == 'ATTENDEE':
             limit = 2
-        elif key[0] == 'ADMIN':
+        elif person_type == 'ADMIN':
             limit = 1
         else:
-            logging.error('Unknown person type in grouping key: %s', key)
+            logging.error('Unknown person type: %s', person_type)
         for category in groupings[person_type].keys():
             # Remove low/bad frequency data
-            for name in groupings[person_type][category]:
+            for name in groupings[person_type][category].keys():
                 if groupings[person_type][category][name] < limit:
                     del groupings[person_type][category][name]
             if len(groupings[person_type][category]) == 0:
                 del groupings[person_type][category]
         if len(groupings[person_type]) == 0:
             del groupings[person_type]
+
+    for person_type in groupings:
+        for category in groupings[person_type]:
+            orig = groupings[person_type][category]
+            dicts = [
+                {
+                    'name': name.split(': ', 1)[1],
+                    'id': name.split(': ', 1)[0],
+                    'count': count,
+                } for (name, count) in orig.items()
+            ]
+            groupings[person_type][category] = sorted(dicts, key=lambda x: -x['count'])
     return groupings
 
 
