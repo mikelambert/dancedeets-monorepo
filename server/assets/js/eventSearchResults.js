@@ -404,14 +404,40 @@ type PersonData = {
 
 class PersonList extends React.Component {
   props: {
+    title: String;
+    subtitle: String;
     people: {[category: String]: Array<PersonData>};
   }
 
+  state: {
+    category: string;
+  }
+
+  constructor(props) {
+    super(props);
+    this.state = {
+      category: '',
+    };
+  }
+
   render() {
-    const defaultList = this.props.people[''];
-    return (<ul>
-      {defaultList.map(x => <li key={x.id}><a href={`https://www.facebook.com/${x.id}`}>{x.name}</a></li>)}
-    </ul>);
+    const defaultList = this.props.people[this.state.category];
+    const selector = (<form className="form-inline">
+      <b>{this.props.title}:</b>
+      <select
+        className="form-control form-inline"
+        onChange={e => this.setState({ category: e.target.value })}
+      >
+        {Object.keys(this.props.people).map(x => <option key={x} value={x}>{x || 'Overall'}</option>)}
+      </select>
+    </form>);
+    return (<div>
+      {selector}
+      <i>{this.props.subtitle})</i><br />
+      <ul>
+        {defaultList.map(x => <li key={x.id}><a href={`https://www.facebook.com/${x.id}`}>{x.name}</a></li>)}
+      </ul>
+    </div>);
   }
 }
 
@@ -425,17 +451,21 @@ class NearbyPeople extends React.Component {
     let promoters = null;
     if (this.props.admins) {
       promoters = (<div className="col-md-6">
-        <b>Nearby Promoters:</b><br />
-        <i>(If you want organize an event, work with these folks)</i>
-        <PersonList people={this.props.admins} />
+        <PersonList
+          title="Nearby Promoters"
+          subtitle="If you want organize an event, work with these folks"
+          people={this.props.admins}
+        />
       </div>);
     }
     let attendees = null;
     if (this.props.attendees) {
       attendees = (<div className="col-md-6">
-        <b>Nearby Influencers:</b><br />
-        <i>(If you want to connect with the dance scene, hit these folks up)</i>
-        <PersonList people={this.props.attendees} />
+        <PersonList
+          title="Nearby Influencers"
+          subtitle="If you want to connect with the dance scene, hit these folks up"
+          people={this.props.attendees}
+        />
       </div>);
     }
     return <div>{promoters}{attendees}</div>;
