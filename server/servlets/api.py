@@ -163,20 +163,28 @@ def build_search_results_api(city_name, form, search_query, search_results, vers
     except Exception as e:
         logging.exception("Error building featured event listing: %s", e)
 
-    distance_km = math.get_inner_box_radius_km(center_latlng, southwest, northeast)
-    if distance_km > 1000:
-        # Too big a search area, not worth showing promoters or dancers
+    if not center_latlng:
+        # keyword-only search, no location to give promoters for
+        logging.info('No center latlng, skipping person groupings')
         groupings = {}
     else:
-        included_cities = cities.get_nearby_cities(center_latlng, distance_km)
-        biggest_cities = sorted(included_cities, key=lambda x: -x.population)[:5]
-        city_names = [city.display_name() for city in biggest_cities]
-        if not city_names:
-            people_rankings = popular_people.PeopleRanking.query(popular_people.PeopleRanking.city.IN(city_names))
-            groupings = popular_people.combine_rankings(people_rankings)
-        else:
+        distance_km = math.get_inner_box_radius_km(center_latlng, southwest, northeast)
+        if distance_km > 1000:
+            logging.info('Search area >1000km, skipping person groupings')
+            # Too big a search area, not worth showing promoters or dancers
             groupings = {}
-        logging.info('Person Groupings:\n%s', '\n'.join('%s: %s' % kv for kv in groupings.iteritems()))
+        else:
+            logging.info('Searching for cities around %s within %s km', center_latlng, distance_km)
+            included_cities = cities.get_nearby_cities(center_latlng, distance_km)
+            biggest_cities = sorted(included_cities, key=lambda x: -x.population)[:5]
+            city_names = [city.display_name() for city in biggest_cities]
+            logging.info('City names: %s', city_names)
+            if city_names:
+                people_rankings = popular_people.PeopleRanking.query(popular_people.PeopleRanking.city.IN(city_names))
+                groupings = popular_people.combine_rankings(people_rankings)
+            else:
+                groupings = {}
+            logging.info('Person Groupings:\n%s', '\n'.join('%s: %s' % kv for kv in groupings.iteritems()))
 
     json_response = {
         'people': groupings,
