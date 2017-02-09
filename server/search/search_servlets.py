@@ -5,6 +5,7 @@ import time
 
 import app
 import base_servlet
+import event_types
 from logic import friends
 from logic import rsvp
 from util import urls
@@ -94,6 +95,7 @@ class RelevantHandler(SearchHandler):
                 response=json_search_response,
                 past=(form.time_period.data == search_base.TIME_PAST),
                 showPeople=bool('people' in self.debug_list),
+                categoryOrder=[''] + [x.public_name for x in event_types.STYLES]
             )
             self.setup_react_template('eventSearchResults.js', props)
 

@@ -59,6 +59,7 @@ import {
   yellowColors,
 } from '../ui/Colors';
 */
+// TODO: Copies from mobile/js/ui/Colors.js
 const yellowColors = [
   '#FFF3B0',
   '#FFEA73',
@@ -426,6 +427,7 @@ class PersonList extends React.Component {
   props: {
     title: String;
     subtitle: String;
+    categoryOrder: Array<String>;
     people: {[category: String]: Array<PersonData>};
   }
 
@@ -442,7 +444,8 @@ class PersonList extends React.Component {
 
   render() {
     const peopleList = this.props.people[this.state.category].slice(0, 10);
-    const categories = Object.keys(this.props.people);
+    const categories = this.props.categoryOrder.filter(x => x === '' || this.props.people[x]);
+
     const selector = (<form className="form-inline" style={{ padding: 5 }}>
       <b>{this.props.title}: </b>
       <select
@@ -466,6 +469,7 @@ class _NearbyPeople extends React.Component {
   props: {
     admins: {[category: String]: Array<PersonData>};
     attendees: {[category: String]: Array<PersonData>};
+    categoryOrder: Array<String>;
 
     // Self-managed props
     window: windowProps;
@@ -479,6 +483,7 @@ class _NearbyPeople extends React.Component {
           title="Nearby Promoters"
           subtitle="If you want organize an event, work with these folks"
           people={this.props.admins}
+          categoryOrder={this.props.categoryOrder}
         />
       </div>);
     }
@@ -489,6 +494,7 @@ class _NearbyPeople extends React.Component {
           title="Nearby Influencers"
           subtitle="If you want to connect with the dance scene, hit these folks up"
           people={this.props.attendees}
+          categoryOrder={this.props.categoryOrder}
         />
       </div>);
     }
@@ -523,6 +529,7 @@ class ResultsList extends React.Component {
     response: NewSearchResponse;
     past: boolean;
     showPeople: boolean;
+    categoryOrder: Array<String>;
   }
   render() {
     const resultEvents = this.props.response.results.map(eventData => new SearchEvent(eventData));
@@ -541,7 +548,11 @@ class ResultsList extends React.Component {
       return (<div>
         <FeaturedEvents events={featuredInfos.map(x => x.event)} />
         {this.props.showPeople ?
-          <NearbyPeople admins={this.props.response.people.ADMIN} attendees={this.props.response.people.ATTENDEE} /> :
+          <NearbyPeople
+            admins={this.props.response.people.ADMIN}
+            attendees={this.props.response.people.ATTENDEE}
+            categoryOrder={this.props.categoryOrder}
+          /> :
           null}
         <OneboxLinks links={this.props.response.onebox_links} />
         <CurrentEvents events={currentEvents} />

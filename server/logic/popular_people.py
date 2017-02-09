@@ -18,6 +18,11 @@ class PeopleRanking(ndb.Model):
     category = ndb.StringProperty()
     top_people = ndb.StringProperty(repeated=True, indexed=False)
 
+    @property
+    def human_category(self):
+        # '' represents 'Overall'
+        return event_types.CATEGORY_LOOKUP.get(self.category, '')
+
 STYLES_SET = set(x.index_name for x in event_types.STYLES)
 
 def faked_people_rankings():
@@ -44,11 +49,11 @@ def combine_rankings(rankings):
                 logging.error('Error parsing %s, person: %s', r.id, person_triplet)
                 continue
             name, new_count = match.groups()
-            groupings.setdefault(r.person_type, {}).setdefault(r.category, {})
-            if name in groupings[r.person_type][r.category]:
-                groupings[r.person_type][r.category][name] += int(new_count)
+            groupings.setdefault(r.person_type, {}).setdefault(r.human_category, {})
+            if name in groupings[r.person_type][r.human_category]:
+                groupings[r.person_type][r.human_category][name] += int(new_count)
             else:
-                groupings[r.person_type][r.category][name] = int(new_count)
+                groupings[r.person_type][r.human_category][name] = int(new_count)
     for person_type in groupings.keys():
         if person_type == 'ATTENDEE':
             limit = 3
