@@ -35,9 +35,9 @@ def combine_rankings(rankings):
                 groupings[r.person_type][r.category][name] = int(new_count)
     for person_type in groupings.keys():
         if person_type == 'ATTENDEE':
-            limit = 2
+            limit = 3
         elif person_type == 'ADMIN':
-            limit = 1
+            limit = 2
         else:
             logging.error('Unknown person type: %s', person_type)
         for category in groupings[person_type].keys():
