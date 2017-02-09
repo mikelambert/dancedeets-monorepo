@@ -382,7 +382,7 @@ class _OneboxLinks extends React.Component {
   }
 
   render() {
-    if (!this.props.links) {
+    if (!this.props.links.length) {
       return null;
     }
     const oneboxList = this.props.links.map(onebox =>
@@ -424,22 +424,22 @@ class PersonList extends React.Component {
   }
 
   render() {
-    const defaultList = this.props.people[this.state.category];
-    const people = Object.keys(this.props.people).slice(10);
+    const peopleList = this.props.people[this.state.category].slice(0, 10);
+    const categories = Object.keys(this.props.people);
     const selector = (<form className="form-inline">
       <b>{this.props.title}:</b>
       <select
         className="form-control form-inline"
         onChange={e => this.setState({ category: e.target.value })}
       >
-        {people.map(x => <option key={x} value={x}>{x || 'Overall'}</option>)}
+        {categories.map(x => <option key={x} value={x}>{x || 'Overall'}</option>)}
       </select>
     </form>);
     return (<div>
       {selector}
       <i>{this.props.subtitle})</i><br />
       <ul>
-        {defaultList.map(x => <li key={x.id}><a href={`https://www.facebook.com/${x.id}`}>{x.name}</a></li>)}
+        {peopleList.map(x => <li key={x.id}><a href={`https://www.facebook.com/${x.id}`}>{x.name}</a></li>)}
       </ul>
     </div>);
   }
