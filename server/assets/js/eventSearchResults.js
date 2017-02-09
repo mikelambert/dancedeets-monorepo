@@ -396,6 +396,52 @@ class _OneboxLinks extends React.Component {
 }
 const OneboxLinks = injectIntl(_OneboxLinks);
 
+type PersonData = {
+  id: String,
+  name: String,
+  count: Number,
+};
+
+class PersonList extends React.Component {
+  props: {
+    people: {[category: String]: Array<PersonData>};
+  }
+
+  render() {
+    const defaultList = this.props.people[''];
+    return (<ul>
+      {defaultList.map(x => <li key={x.id}><a href={`https://www.facebook.com/${x.id}`}>{x.name}</a></li>)}
+    </ul>);
+  }
+}
+
+class NearbyPeople extends React.Component {
+  props: {
+    admins: {[category: String]: Array<PersonData>};
+    attendees: {[category: String]: Array<PersonData>};
+  }
+
+  render() {
+    let promoters = null;
+    if (this.props.admins) {
+      promoters = (<div className="col-md-6">
+        <b>Nearby Promoters:</b><br />
+        <i>(If you want organize an event, work with these folks)</i>
+        <PersonList people={this.props.admins} />
+      </div>);
+    }
+    let attendees = null;
+    if (this.props.attendees) {
+      attendees = (<div className="col-md-6">
+        <b>Nearby Influencers:</b><br />
+        <i>(If you want to connect with the dance scene, hit these folks up)</i>
+        <PersonList people={this.props.attendees} />
+      </div>);
+    }
+    return <div>{promoters}{attendees}</div>;
+  }
+}
+
 class ResultsList extends React.Component {
   props: {
     response: NewSearchResponse;
@@ -417,6 +463,7 @@ class ResultsList extends React.Component {
       const futureEvents = resultEvents.filter(event => moment(event.start_time) > now);
       return (<div>
         <FeaturedEvents events={featuredInfos.map(x => x.event)} />
+        <NearbyPeople admins={this.props.response.people.ADMIN} attendees={this.props.response.people.ATTENDEE} />
         <OneboxLinks links={this.props.response.onebox_links} />
         <CurrentEvents events={currentEvents} />
         <EventsList
