@@ -44,11 +44,28 @@ import {
 import {
   Card,
   ImagePrefix,
+  wantsWindowSizes,
+} from './ui';
+import type {
+  windowProps,
 } from './ui';
 
 require('slick-carousel/slick/slick.css');
 require('slick-carousel/slick/slick-theme.css');
 require('../css/slick.scss');
+
+/*
+import {
+  yellowColors,
+} from '../ui/Colors';
+*/
+const yellowColors = [
+  '#FFF3B0',
+  '#FFEA73',
+  '#FFD802',
+  '#FFCA01',
+  '#C0A000',
+];
 
 export class SquareEventFlyer extends React.Component {
   props: {
@@ -426,7 +443,7 @@ class PersonList extends React.Component {
   render() {
     const peopleList = this.props.people[this.state.category].slice(0, 10);
     const categories = Object.keys(this.props.people);
-    const selector = (<form className="form-inline">
+    const selector = (<form className="form-inline" style={{ padding: 5 }}>
       <b>{this.props.title}: </b>
       <select
         className="form-control form-inline"
@@ -445,10 +462,13 @@ class PersonList extends React.Component {
   }
 }
 
-class NearbyPeople extends React.Component {
+class _NearbyPeople extends React.Component {
   props: {
     admins: {[category: String]: Array<PersonData>};
     attendees: {[category: String]: Array<PersonData>};
+
+    // Self-managed props
+    window: windowProps;
   }
 
   render() {
@@ -472,9 +492,31 @@ class NearbyPeople extends React.Component {
         />
       </div>);
     }
-    return <div className="row">{promoters}{attendees}</div>;
+    if (this.props.window.width < 768) {
+      return (<div style={{ paddingBottom: 10 }}>
+        <ul className="nav nav-tabs" role="tablist">
+          <li role="presentation" className="active"><a href="#promoters" aria-controls="home" role="tab" data-toggle="tab">Event Promoters</a></li>
+          <li role="presentation"><a href="#attendees" aria-controls="profile" role="tab" data-toggle="tab">Dance Influencers</a></li>
+        </ul>
+        <div
+          className="tab-content"
+          style={{
+            borderWidth: 1,
+            borderStyle: 'solid',
+            borderColor: yellowColors[2],
+            borderTopWidth: 0,
+          }}
+        >
+          <div role="tabpanel" className="tab-pane active" id="promoters">{promoters}</div>
+          <div role="tabpanel" className="tab-pane" id="attendees">{attendees}</div>
+        </div>
+      </div>);
+    } else {
+      return <div className="row">{promoters}{attendees}</div>;
+    }
   }
 }
+const NearbyPeople = wantsWindowSizes(_NearbyPeople);
 
 class ResultsList extends React.Component {
   props: {

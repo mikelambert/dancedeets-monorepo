@@ -27,7 +27,7 @@ def faked_people_rankings():
         for style in [''] + [x.index_name for x in event_types.STYLES]:
             for i in range(10):
                 id = random.randint(0, 100)
-                top_people.append('%s: User %s: %s' % (id, id, random.randint(5, 100)))
+                top_people.append('%s: User First LastName %s: %s' % (id, id* 10000, random.randint(5, 100)))
             people_rankings.append(PeopleRanking(
                     person_type=person_type,
                     category=style,
