@@ -14,14 +14,16 @@ CITY_GEOHASH_PRECISIONS = range(
 
 NEARBY_DISTANCE_KM = 100 # km of distance to nearest "scene" a user will identify with
 
-def get_nearby_cities(point, distance=NEARBY_DISTANCE_KM):
+def get_nearby_cities(points):
     # TODO(lambert): we should cache this entire function. use lowercase of location to determine cache key. Using DB cache too.
-    logging.info("location is %s", point)
+    logging.info("search location is %s", points)
     # rather than return the nearest city (Sunnyvale, San Jose, etc)
     # try to find the largest city within a certain range to give us good groupings for the "scene" name of a user/event.
-    geohashes = geohash_math.get_all_geohashes_for((point, point), precision=geohash_math.get_geohash_bits_for_km(distance))
-    cities = City.gql("where geohashes in :geohashes", geohashes=geohashes).fetch(100)
-    cities = [x for x in cities if math.get_distance(point, (x.latitude, x.longitude), use_km=True) < distance]
+    geohashes = geohash_math.get_all_geohashes_for(points, 8)
+    # This can return a bunch. In theory, it'd be nice to order by population, but that doesn't seem to work...
+    cities = City.gql("where geohashes in :geohashes", geohashes=geohashes).fetch(1000)
+    print [x.city_name for x in cities]
+    cities = [x for x in cities if math.contains(points, (x.latitude, x.longitude))]
     return cities
 
 def get_largest_city(cities):
@@ -31,7 +33,7 @@ def get_largest_city(cities):
     return largest_nearby_city
 
 def get_largest_nearby_city_name(point):
-    cities = get_nearby_cities(point)
+    cities = get_nearby_cities((point, point))
     city = get_largest_city(cities)
     return city.display_name()
 

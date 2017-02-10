@@ -27,9 +27,9 @@ STYLES_SET = set(x.index_name for x in event_types.STYLES)
 
 def faked_people_rankings():
     people_rankings = []
-    top_people = []
     for person_type in ['ADMIN', 'ATTENDEE']:
         for style in [''] + [x.index_name for x in event_types.STYLES]:
+            top_people = []
             for i in range(10):
                 id = random.randint(0, 100)
                 top_people.append('%s: User First LastName %s: %s' % (id, id* 10000, random.randint(5, 100)))
@@ -43,7 +43,9 @@ def faked_people_rankings():
 def combine_rankings(rankings):
     groupings = {}
     for r in rankings:
+        logging.info(r.key)
         for person_triplet in r.top_people:
+            logging.info('  - %s', person_triplet)
             match = re.match(r'(.*): (\d+)', person_triplet)
             if not match:
                 logging.error('Error parsing %s, person: %s', r.id, person_triplet)

@@ -58,7 +58,7 @@ def get_inner_box_radius_km(center, southwest, northeast):
     )
 
 # UNUSED!
-def _contains(bounds, latlng):
+def contains(bounds, latlng):
     lats_good = bounds[0][0] < latlng[0] < bounds[1][0]
     if bounds[0][1] < bounds[1][1]:
         lngs_good = bounds[0][1] < latlng[1] < bounds[1][1]

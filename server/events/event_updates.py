@@ -230,7 +230,7 @@ def _update_geodata(db_event, location_info):
         False
     ):
         if location_info.geocode:
-            nearby_cities = cities.get_nearby_cities(location_info.geocode.latlng())
+            nearby_cities = cities.get_nearby_cities((location_info.geocode.latlng(), location_info.geocode.latlng()))
             db_event.nearby_city_names = [city.display_name() for city in nearby_cities]
             db_event.city_name = cities.get_largest_city(nearby_cities).display_name()
         else:
