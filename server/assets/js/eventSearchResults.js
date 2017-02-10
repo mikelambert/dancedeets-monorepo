@@ -498,7 +498,7 @@ class _NearbyPeople extends React.Component {
         />
       </div>);
     }
-    if (this.props.window.width < 768) {
+    if (this.props.window && this.props.window.width < 768) {
       return (<div style={{ paddingBottom: 10 }}>
         <ul className="nav nav-tabs" role="tablist">
           <li role="presentation" className="active"><a href="#promoters" aria-controls="home" role="tab" data-toggle="tab">Event Promoters</a></li>
