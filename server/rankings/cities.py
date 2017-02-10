@@ -22,8 +22,8 @@ def get_nearby_cities(points):
     geohashes = geohash_math.get_all_geohashes_for(points, 8)
     # This can return a bunch. In theory, it'd be nice to order by population, but that doesn't seem to work...
     cities = City.gql("where geohashes in :geohashes", geohashes=geohashes).fetch(1000)
-    print [x.city_name for x in cities]
-    cities = [x for x in cities if math.contains(points, (x.latitude, x.longitude))]
+    if points[0] != points[1]:
+        cities = [x for x in cities if math.contains(points, (x.latitude, x.longitude))]
     return cities
 
 def get_largest_city(cities):
