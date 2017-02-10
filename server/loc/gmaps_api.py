@@ -197,7 +197,7 @@ def lookup_string(s, language=None):
         if 'address_components' in geocode.json_data and 'geometry' in geocode.json_data:
             return geocode
         else:
-            logging.info('lookup_string result does not have address or geomtry, doing geocode address lookup on: %s', geocode.formatted_address())
+            logging.info('lookup_string result does not have address or geometry, doing geocode address lookup on: %s', geocode.formatted_address())
             new_geocode = lookup_address(geocode.formatted_address())
             if new_geocode:
                 return new_geocode

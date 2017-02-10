@@ -43,9 +43,9 @@ def faked_people_rankings():
 def combine_rankings(rankings):
     groupings = {}
     for r in rankings:
-        logging.info(r.key)
+        #logging.info(r.key)
         for person_triplet in r.top_people:
-            logging.info('  - %s', person_triplet)
+            #logging.info('  - %s', person_triplet)
             match = re.match(r'(.*): (\d+)', person_triplet)
             if not match:
                 logging.error('Error parsing %s, person: %s', r.id, person_triplet)
