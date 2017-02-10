@@ -145,7 +145,7 @@ grooveology
 grv dance
 grv,0
 haluan
-heartbreak crew	
+heartbreak crew
 hijinx
 hip hop connxion
 hiptop
@@ -156,6 +156,7 @@ hopskotch,0
 hostepper
 hotstepper
 house of funk
+house of movement
 hoya break squad
 hungry bumz
 hype 303
@@ -337,7 +338,7 @@ team vibe
 that one company,0
 thatonecompany
 the \Wm\Wovement
-the boom cats crew 
+the boom cats crew
 the company,0
 the diplomats,0
 the drop company

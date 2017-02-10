@@ -529,6 +529,8 @@ PREPROCESS_REMOVAL = Name('PREPROCESS_REMOVAL', Any(
     # positive
     'tap water', # for theo and dominque's jam
 
+    'house of movement', # not a vogue keyword!
+
     # negative
     "america's got talent",
     'jerk chicken',
