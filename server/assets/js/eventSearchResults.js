@@ -469,7 +469,7 @@ class _ResultsList extends React.Component {
   }
 
   getPeoplePanel() {
-    let peoplePanel = null;
+    let peoplePanel = [];
     const admins = this.props.response.people.ADMIN;
     const attendees = this.props.response.people.ATTENDEE;
     if (admins || attendees) {
