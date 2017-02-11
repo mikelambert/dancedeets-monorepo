@@ -2,14 +2,14 @@
 
 .rc-collapse {
   border-radius: 3px;
-  border: 1px solid $yellow-lightest;
+  border: 1px solid $yellow-medium;
 }
 .rc-collapse-anim-active {
   -webkit-transition: height 0.2s ease-out;
   transition: height 0.2s ease-out;
 }
 .rc-collapse > .rc-collapse-item {
-  border-top: 1px solid $yellow-lightest;
+  border-top: 1px solid $yellow-medium;
 }
 .rc-collapse > .rc-collapse-item:first-child {
   border-top: none;
