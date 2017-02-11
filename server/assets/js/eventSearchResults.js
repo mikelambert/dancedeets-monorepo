@@ -341,13 +341,10 @@ class CurrentEvents extends React.Component {
       resultItems.push(<VerticalEvent key={event.id} event={event} />);
     });
 
-    return (<div>
-      <div>Events Happening Now:</div>
-      <div style={{ width: '100%', padding: 10 }}>
-        <Masonry>
-          {resultItems}
-        </Masonry>
-      </div>
+    return (<div style={{ width: '100%', padding: 10 }}>
+      <Masonry>
+        {resultItems}
+      </Masonry>
     </div>);
   }
 }
@@ -515,21 +512,31 @@ class _ResultsList extends React.Component {
     const featuredInfos = (this.props.response.featuredInfos || []).map(x => ({ ...x, event: new Event(x.event) }));
 
     const now = moment();
-    let eventsList = null;
+    const eventPanels = [];
     let eventCount = null;
     if (this.props.past) {
       const pastEvents = resultEvents.filter(event => moment(event.start_time) < now);
-      eventsList = <EventsList events={pastEvents} />;
+      if (pastEvents.length) {
+        eventPanels.push(<Panel key="pastEvents" header="Past Events">
+          <EventsList events={pastEvents} />
+        </Panel>);
+      }
       eventCount = pastEvents.length;
     } else {
       // DEBUG CODE:
       // const currentEvents = resultEvents.filter(event => moment(event.start_time) > now);
       const currentEvents = resultEvents.filter(event => moment(event.start_time) < now && moment(event.end_time) > now);
       const futureEvents = resultEvents.filter(event => moment(event.start_time) > now);
-      eventsList = [
-        <CurrentEvents key="current" events={currentEvents} />,
-        <EventsList key="future" events={futureEvents} />,
-      ];
+      if (currentEvents.length) {
+        eventPanels.push(<Panel key="currentEvents" header="Events Happening Now">
+          <CurrentEvents events={currentEvents} />
+        </Panel>);
+      }
+      if (futureEvents.length) {
+        eventPanels.push(<Panel key="futureEvents" header="Upcoming Events">
+          <EventsList events={futureEvents} />
+        </Panel>);
+      }
       eventCount = currentEvents.length + futureEvents.length;
     }
     console.log(eventCount);
@@ -552,23 +559,16 @@ class _ResultsList extends React.Component {
         </Panel>
       );
     }
-    const defaultKeys = ['featured', 'onebox', 'events'];
+    const defaultKeys = ['featured', 'onebox', 'pastEvents', 'currentEvents', 'futureEvents'];
     if (eventCount < 5) {
       defaultKeys.push('people', 'people1', 'people2');
-    }
-
-    let eventsPanel = null;
-    if (eventCount) {
-      eventsPanel = (<Panel key="events" header="Upcoming Events">
-        {eventsList}
-      </Panel>);
     }
 
     return (<Collapse defaultActiveKey={defaultKeys}>
       {featuredPanel}
       {peoplePanel}
       {oneboxPanel}
-      {eventsPanel}
+      {eventPanels}
     </Collapse>);
   }
 }
