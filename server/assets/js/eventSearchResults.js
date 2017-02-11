@@ -524,11 +524,83 @@ class _NearbyPeople extends React.Component {
 }
 const NearbyPeople = wantsWindowSizes(_NearbyPeople);
 
+class ExpandCollapse extends React.Component {
+  props: {
+    closed: () => React.Component;
+    children: React.Component;
+  }
+
+  state: {
+    open: boolean;
+  }
+
+  constructor(props) {
+    super(props);
+    this.state = {
+      open: false,
+    };
+    (this: any).toggleVisibility = this.toggleVisibility.bind(this);
+  }
+
+  toggleVisibility() {
+    this.setState({ open: !this.state.open });
+  }
+
+  render() {
+    if (this.state.open) {
+      return (<div>
+        <button onClick={this.toggleVisibility}>-</button>
+        {this.props.children}
+      </div>);
+    } else {
+      return (<div>
+        <button onClick={this.toggleVisibility}>+</button>
+        {this.props.closed()}
+      </div>);
+    }
+  }
+}
+
+class OptionalNearbyPeople extends React.Component {
+  props: {
+    people: {
+      ADMIN: {[category: String]: Array<PersonData>};
+      ATTENDEE: {[category: String]: Array<PersonData>};
+    };
+    categoryOrder: Array<String>;
+    eventCount: Number;
+  }
+
+  render() {
+    console.log(this.props.people);
+    if (!this.props.people.ADMIN && !this.props.people.ATTENDEE) {
+      return null;
+    }
+
+    const realPeopleWidget = (<NearbyPeople
+      admins={this.props.people.ADMIN}
+      attendees={this.props.people.ATTENDEE}
+      categoryOrder={this.props.categoryOrder}
+    />);
+
+    if (this.props.eventCount > 5) {
+      return realPeopleWidget;
+    } else {
+      return (
+        <ExpandCollapse
+          closed={() => 'Show Organizers and Influencers in the area...'}
+        >
+          {realPeopleWidget}
+        </ExpandCollapse>
+      );
+    }
+  }
+}
+
 class ResultsList extends React.Component {
   props: {
     response: NewSearchResponse;
     past: boolean;
-    showPeople: boolean;
     categoryOrder: Array<String>;
   }
   render() {
@@ -537,30 +609,34 @@ class ResultsList extends React.Component {
     const featuredInfos = (this.props.response.featuredInfos || []).map(x => ({ ...x, event: new Event(x.event) }));
 
     const now = moment();
+    let eventsList = null;
+    let eventCount = null;
     if (this.props.past) {
       const pastEvents = resultEvents.filter(event => moment(event.start_time) < now);
-      return <EventsList events={pastEvents} />;
+      eventsList = <EventsList events={pastEvents} />;
+      eventCount = pastEvents.length;
     } else {
       // DEBUG CODE:
       // const currentEvents = resultEvents.filter(event => moment(event.start_time) > now);
       const currentEvents = resultEvents.filter(event => moment(event.start_time) < now && moment(event.end_time) > now);
       const futureEvents = resultEvents.filter(event => moment(event.start_time) > now);
-      return (<div>
-        <FeaturedEvents events={featuredInfos.map(x => x.event)} />
-        {this.props.showPeople ?
-          <NearbyPeople
-            admins={this.props.response.people.ADMIN}
-            attendees={this.props.response.people.ATTENDEE}
-            categoryOrder={this.props.categoryOrder}
-          /> :
-          null}
-        <OneboxLinks links={this.props.response.onebox_links} />
-        <CurrentEvents events={currentEvents} />
-        <EventsList
-          events={futureEvents}
-        />
-      </div>);
+      eventsList = [
+        <CurrentEvents events={currentEvents} />,
+        <EventsList events={futureEvents} />,
+      ];
+      eventCount = currentEvents.length + futureEvents.length;
     }
+
+    return (<div>
+      <FeaturedEvents events={featuredInfos.map(x => x.event)} />
+      <OptionalNearbyPeople
+        people={this.props.response.people}
+        categoryOrder={this.props.categoryOrder}
+        eventCount={eventCount}
+      />
+      <OneboxLinks links={this.props.response.onebox_links} />
+      {eventsList}
+    </div>);
   }
 }
 
