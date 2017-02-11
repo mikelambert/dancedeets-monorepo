@@ -455,31 +455,15 @@ class PersonList extends React.Component {
       >
         {categories.map(x => <option key={x} value={x}>{x || 'Overall'}</option>)}
       </select>
+      <p><i>{this.props.subtitle}:</i></p>
     </form>);
     return (<div>
       {selector}
-      <i>{this.props.subtitle}:</i><br />
       <ul>
         {peopleList.map(x => <li key={x.id}><a href={`https://www.facebook.com/${x.id}`}>{x.name}</a></li>)}
       </ul>
     </div>);
   }
-}
-
-function AdminList(props) {
-  return (<PersonList
-    title="Promoters"
-    subtitle="If you want organize an event, work with these folks"
-    {...props}
-  />);
-}
-
-function AttendeeList(props) {
-  return (<PersonList
-    title="Influencers"
-    subtitle="If you want to connect with the dance scene, hit these folks up"
-    {...props}
-  />);
 }
 
 class _ResultsList extends React.Component {
@@ -497,31 +481,32 @@ class _ResultsList extends React.Component {
     const admins = this.props.response.people.ADMIN;
     const attendees = this.props.response.people.ATTENDEE;
     if (admins || attendees) {
-      const adminsList = (<AdminList
+      const adminsList = (<PersonList
+        title="Promoters"
+        subtitle="If you want organize an event, work with these folks"
         people={admins}
         categoryOrder={this.props.categoryOrder}
       />);
-      const attendeesList = (<AttendeeList
+      const attendeesList = (<PersonList
+        title="Influencers"
+        subtitle="If you want to connect with the dance scene, hit these folks up"
         people={attendees}
         categoryOrder={this.props.categoryOrder}
       />);
 
       if (this.props.window && this.props.window.width < 768) {
-        peoplePanel = [
-          <Panel key="people1" header="Nearby Promoters">{adminsList}</Panel>,
-          <Panel key="people2" header="Nearby Influencers">{attendeesList}</Panel>,
-        ];
+        if (admins) {
+          peoplePanel.push(<Panel key="people1" header="Nearby Promoters">{adminsList}</Panel>);
+        }
+        if (attendees) {
+          peoplePanel.push(<Panel key="people2" header="Nearby Influencers">{attendeesList}</Panel>);
+        }
       } else {
+        const adminsDiv = admins ? <div className="col-sm-6">{adminsList}</div> : null;
+        const attendeesDiv = attendees ? <div className="col-sm-6">{attendeesList}</div> : null;
         peoplePanel = (
           <Panel key="people" header="Nearby Promoters & Influencers">
-            <div className="row">
-              <div className="col-sm-6">
-                {adminsList}
-              </div>
-              <div className="col-sm-6">
-                {attendeesList}
-              </div>
-            </div>
+            <div className="row">{adminsDiv}{attendeesDiv}</div>
           </Panel>
         );
       }
@@ -577,13 +562,18 @@ class _ResultsList extends React.Component {
       defaultKeys.push('people', 'people1', 'people2');
     }
 
+    let eventsPanel = null;
+    if (eventCount) {
+      eventsPanel = (<Panel key="events" header="Upcoming Events">
+        {eventsList}
+      </Panel>);
+    }
+
     return (<Collapse defaultActiveKey={defaultKeys}>
       {featuredPanel}
       {peoplePanel}
       {oneboxPanel}
-      <Panel key="events" header="Upcoming Events">
-        {eventsList}
-      </Panel>
+      {eventsPanel}
     </Collapse>);
   }
 }
