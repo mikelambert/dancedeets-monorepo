@@ -17,6 +17,7 @@ import LazyLoad from 'react-lazyload';
 import { StickyContainer, Sticky } from 'react-sticky';
 import Masonry from 'react-masonry-component';
 import Slider from 'react-slick';
+import Collapse, { Panel } from 'rc-collapse';
 import {
   intlWeb,
 } from 'dancedeets-common/js/intl';
@@ -53,6 +54,7 @@ import type {
 require('slick-carousel/slick/slick.css');
 require('slick-carousel/slick/slick-theme.css');
 require('../css/slick.scss');
+require('../css/rc-collapse.scss');
 
 /*
 import {
@@ -524,43 +526,6 @@ class _NearbyPeople extends React.Component {
 }
 const NearbyPeople = wantsWindowSizes(_NearbyPeople);
 
-class ExpandCollapse extends React.Component {
-  props: {
-    closed: () => React.Component;
-    children: React.Component;
-  }
-
-  state: {
-    open: boolean;
-  }
-
-  constructor(props) {
-    super(props);
-    this.state = {
-      open: false,
-    };
-    (this: any).toggleVisibility = this.toggleVisibility.bind(this);
-  }
-
-  toggleVisibility() {
-    this.setState({ open: !this.state.open });
-  }
-
-  render() {
-    if (this.state.open) {
-      return (<div>
-        <button onClick={this.toggleVisibility}>-</button>
-        {this.props.children}
-      </div>);
-    } else {
-      return (<div>
-        <button onClick={this.toggleVisibility}>+</button>
-        {this.props.closed()}
-      </div>);
-    }
-  }
-}
-
 class OptionalNearbyPeople extends React.Component {
   props: {
     people: {
@@ -587,11 +552,11 @@ class OptionalNearbyPeople extends React.Component {
       return realPeopleWidget;
     } else {
       return (
-        <ExpandCollapse
-          closed={() => 'Show Organizers and Influencers in the area...'}
-        >
-          {realPeopleWidget}
-        </ExpandCollapse>
+        <Collapse>
+          <Panel header="Nearby Organizers and Influencers">
+            {realPeopleWidget}
+          </Panel>
+        </Collapse>
       );
     }
   }
@@ -621,8 +586,8 @@ class ResultsList extends React.Component {
       const currentEvents = resultEvents.filter(event => moment(event.start_time) < now && moment(event.end_time) > now);
       const futureEvents = resultEvents.filter(event => moment(event.start_time) > now);
       eventsList = [
-        <CurrentEvents events={currentEvents} />,
-        <EventsList events={futureEvents} />,
+        <CurrentEvents key="current" events={currentEvents} />,
+        <EventsList key="future" events={futureEvents} />,
       ];
       eventCount = currentEvents.length + futureEvents.length;
     }
