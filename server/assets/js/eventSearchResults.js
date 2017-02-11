@@ -322,12 +322,7 @@ class FeaturedEvents extends React.Component {
       ? <Slider autoplay dots>{resultItems}</Slider>
       : resultItems;
 
-    return (<div>
-      <div>Featured Events:</div>
-      <div style={{ width: '100%', padding: 10 }}>
-        {results}
-      </div>
-    </div>);
+    return <div style={{ width: '100%', padding: 10 }}>{results}</div>;
   }
 }
 
