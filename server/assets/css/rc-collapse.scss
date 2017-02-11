@@ -27,9 +27,9 @@
   height: 0;
   font-size: 0;
   line-height: 0;
-  border-top: 3px solid transparent;
-  border-bottom: 3px solid transparent;
-  border-left: 4px solid $yellow-medium;
+  border-top: 4px solid transparent;
+  border-bottom: 4px solid transparent;
+  border-left: 5px solid $yellow-medium;
   vertical-align: middle;
   margin-right: 8px;
 }
@@ -48,8 +48,8 @@
   border-radius: 0 0 3px 3px;
 }
 .rc-collapse > .rc-collapse-item-active > .rc-collapse-header .arrow {
-  border-left: 3px solid transparent;
-  border-right: 3px solid transparent;
-  border-top: 4px solid $yellow-medium;
-  margin-right: 6px;
+  border-left: 4px solid transparent;
+  border-right: 4px solid transparent;
+  border-top: 5px solid $yellow-medium;
+  margin-right: 5px;
 }

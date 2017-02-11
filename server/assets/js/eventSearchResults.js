@@ -411,7 +411,6 @@ class _OneboxLinks extends React.Component {
 
     return (
       <div>
-        <div><b>Related pages:</b></div>
         <ul>{oneboxList}</ul>
       </div>
     );
@@ -526,42 +525,6 @@ class _NearbyPeople extends React.Component {
 }
 const NearbyPeople = wantsWindowSizes(_NearbyPeople);
 
-class OptionalNearbyPeople extends React.Component {
-  props: {
-    people: {
-      ADMIN: {[category: String]: Array<PersonData>};
-      ATTENDEE: {[category: String]: Array<PersonData>};
-    };
-    categoryOrder: Array<String>;
-    eventCount: Number;
-  }
-
-  render() {
-    console.log(this.props.people);
-    if (!this.props.people.ADMIN && !this.props.people.ATTENDEE) {
-      return null;
-    }
-
-    const realPeopleWidget = (<NearbyPeople
-      admins={this.props.people.ADMIN}
-      attendees={this.props.people.ATTENDEE}
-      categoryOrder={this.props.categoryOrder}
-    />);
-
-    if (this.props.eventCount > 5) {
-      return realPeopleWidget;
-    } else {
-      return (
-        <Collapse>
-          <Panel header="Nearby Organizers and Influencers">
-            {realPeopleWidget}
-          </Panel>
-        </Collapse>
-      );
-    }
-  }
-}
-
 class ResultsList extends React.Component {
   props: {
     response: NewSearchResponse;
@@ -591,17 +554,50 @@ class ResultsList extends React.Component {
       ];
       eventCount = currentEvents.length + futureEvents.length;
     }
+    console.log(eventCount);
 
-    return (<div>
-      <FeaturedEvents events={featuredInfos.map(x => x.event)} />
-      <OptionalNearbyPeople
-        people={this.props.response.people}
-        categoryOrder={this.props.categoryOrder}
-        eventCount={eventCount}
-      />
-      <OneboxLinks links={this.props.response.onebox_links} />
-      {eventsList}
-    </div>);
+    let featuredPanel = null;
+    if (featuredInfos.length) {
+      featuredPanel = (
+        <Panel key="featured" header="Featured Event">
+          <FeaturedEvents events={featuredInfos.map(x => x.event)} />
+        </Panel>
+      );
+    }
+    let peoplePanel = null;
+    const admins = this.props.response.people.ADMIN;
+    const attendees = this.props.response.people.ATTENDEE;
+    if (admins || attendees) {
+      peoplePanel = (
+        <Panel key="people" header="Nearby Promoters & Influencers">
+          <NearbyPeople
+            admins={admins}
+            attendees={attendees}
+            categoryOrder={this.props.categoryOrder}
+          />
+        </Panel>
+      );
+    }
+    let oneboxPanel = null;
+    if (this.props.response.onebox_links.length) {
+      oneboxPanel = (
+        <Panel key="onebox" header="Related Links">
+          <OneboxLinks links={this.props.response.onebox_links} />
+        </Panel>
+      );
+    }
+    const defaultKeys = ['featured', 'onebox', 'events'];
+    if (eventCount < 5) {
+      defaultKeys.push('people');
+    }
+    return (<Collapse defaultActiveKey={defaultKeys}>
+      {featuredPanel}
+      {peoplePanel}
+      {oneboxPanel}
+      <Panel key="events" header="Upcoming Events">
+        {eventsList}
+      </Panel>
+    </Collapse>);
   }
 }
 
