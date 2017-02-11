@@ -64,7 +64,7 @@ class SearchException(Exception):
 class SearchForm(wtforms.Form):
     location = wtforms.StringField(default='', validators=[_no_wiki_or_html, _geocodable_location])
     keywords = wtforms.StringField(default='', validators=[_no_wiki_or_html, _valid_query])
-    distance = wtforms.IntegerField(default=0)
+    distance = wtforms.IntegerField(default=50)
     distance_units = wtforms.SelectField(choices=[('miles', 'Miles'), ('km', 'KM')], default='km')
     locale = wtforms.StringField(default='')
     min_attendees = wtforms.IntegerField(default=0)
