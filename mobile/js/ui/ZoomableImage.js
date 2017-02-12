@@ -31,8 +31,16 @@ import {
   ScrollView,
   StyleSheet,
   TouchableWithoutFeedback,
+  View,
 } from 'react-native';
 import PhotoView from 'react-native-photo-view';
+
+type Layout = {
+  x: Number,
+  y: Number,
+  width: Number,
+  height: Number,
+};
 
 export default class ZoomableImage extends React.Component {
   props: {
@@ -44,6 +52,7 @@ export default class ZoomableImage extends React.Component {
   state: {
     lastTapTimestamp: number;
     isZoomed: boolean;
+    layout: Layout
   };
 
   _zoomableScroll: ScrollView;
@@ -53,10 +62,12 @@ export default class ZoomableImage extends React.Component {
     this.state = {
       lastTapTimestamp: 0,
       isZoomed: false,
+      layout: null,
     };
 
     (this: any).onZoomChanged = this.onZoomChanged.bind(this);
     (this: any).toggleZoom = this.toggleZoom.bind(this);
+    (this: any).onLayout = this.onLayout.bind(this);
   }
 /*
   componentDidMount() {
@@ -116,6 +127,7 @@ export default class ZoomableImage extends React.Component {
         horizontal={horizontal}
         directionalLockEnabled={false}
         centerContent
+        contentContainerStyle={{ alignItems:'center', justifyContent:'center' }}
         style={{ flex: 1 }}
       >
         <TouchableWithoutFeedback onPress={this.toggleZoom} style={{ flex: 1 }}>
@@ -128,25 +140,31 @@ export default class ZoomableImage extends React.Component {
     );
   }
 
-  render() {
-    const windowSize = Dimensions.get('window');
-    const widthScale = windowSize.width / this.props.width;
-    const heightScale = windowSize.height / this.props.height;
-    const zoomScale = Math.min(widthScale, heightScale);
-    const horizontal = (widthScale < heightScale);
+  onLayout(e: SyntheticEvent) {
+    this.setState({ layout: e.nativeEvent.layout });
+  }
 
-    if (Platform.OS === 'android') {
-      return (<PhotoView
-        maximumZoomScale={Math.max(zoomScale, 4.0)}
-        minimumZoomScale={Math.min(zoomScale, 1.0)}
-        androidScaleType="fitCenter"
-        style={[{ flex: 1 }]}
-        source={{ uri: this.props.url, width: this.props.width, height: this.props.height }}
-      />);
-    } else if (Platform.OS === 'ios') {
-      return this.renderIOS(zoomScale, horizontal);
+  render() {
+    let contents = null;
+    if (this.state.layout) {
+      const widthScale = this.state.layout.width / this.props.width;
+      const heightScale = this.state.layout.height / this.props.height;
+      const zoomScale = Math.min(widthScale, heightScale);
+
+      if (Platform.OS === 'android') {
+        contents = (<PhotoView
+          maximumZoomScale={Math.max(zoomScale, 4.0)}
+          minimumZoomScale={Math.min(zoomScale, 1.0)}
+          androidScaleType="fitCenter"
+          style={[{ flex: 1 }]}
+          source={{ uri: this.props.url, width: this.props.width, height: this.props.height }}
+        />);
+      } else if (Platform.OS === 'ios') {
+        const horizontal = (widthScale < heightScale);
+        contents = this.renderIOS(zoomScale, horizontal);
+      }
     }
-    return null;
+    return <View style={{ flex: 1 }} onLayout={this.onLayout}>{contents}</View>;
   }
 }
 
