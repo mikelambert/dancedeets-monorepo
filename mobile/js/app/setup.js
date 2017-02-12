@@ -9,6 +9,7 @@ import { Platform } from 'react-native';
 import { Provider } from 'react-redux';
 import Mixpanel from 'react-native-mixpanel';
 import ProcessInfo from 'react-native-processinfo';
+import backAndroid from 'react-native-back-android';
 import { intl } from 'dancedeets-common/js/intl';
 import App from './app';
 import configureStore from '../store/configureStore';
@@ -45,7 +46,7 @@ export default function setup() {
     }
   }
 
-  return intl(Root, getCurrentLocale());
+  return backAndroid(intl(Root, getCurrentLocale()));
 }
 
 global.LOG = (...args) => {

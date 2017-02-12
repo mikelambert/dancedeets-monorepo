@@ -21,6 +21,9 @@ import {
   injectIntl,
   intlShape,
 } from 'react-intl';
+import {
+  hardwareBackPress,
+} from 'react-native-back-android';
 import type {
   NavigationRoute,
   NavigationSceneRendererProps,
@@ -87,10 +90,16 @@ class _Navigator extends React.Component {
     (this: any).renderLeft = this.renderLeft.bind(this);
     (this: any).renderTitle = this.renderTitle.bind(this);
     (this: any).renderRight = this.renderRight.bind(this);
+    (this: any).handleHardwareBackPress = this.handleHardwareBackPress.bind(this);
   }
 
   backToHome() {
     this.props.goHome();
+  }
+
+  handleHardwareBackPress() {
+    this.props.onBack();
+    return true;
   }
 
   renderLeft(props) {
@@ -149,7 +158,7 @@ class _Navigator extends React.Component {
     );
   }
 }
-const Navigator = injectIntl(_Navigator);
+const Navigator = injectIntl(hardwareBackPress(_Navigator));
 
 export default function (navName: string) {
   const component = connect(
