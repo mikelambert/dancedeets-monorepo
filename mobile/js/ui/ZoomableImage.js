@@ -139,8 +139,9 @@ export default class ZoomableImage extends React.Component {
       return (<PhotoView
         maximumZoomScale={Math.max(zoomScale, 4.0)}
         minimumZoomScale={Math.min(zoomScale, 1.0)}
-        style={[styles.image, { flex: 1, width: this.props.width, height: this.props.height }]}
-        source={{ uri: this.props.url }}
+        androidScaleType="fitCenter"
+        style={[{ flex: 1 }]}
+        source={{ uri: this.props.url, width: this.props.width, height: this.props.height }}
       />);
     } else if (Platform.OS === 'ios') {
       return this.renderIOS(zoomScale, horizontal);
