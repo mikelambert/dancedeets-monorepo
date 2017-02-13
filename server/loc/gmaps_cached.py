@@ -27,8 +27,10 @@ class CachedBackend(gmaps_backends.GMapsBackend):
             new_kwargs['latlng'] = '(%s, %s)' % tuple(new_kwargs['latlng'].split(','))
         for k, v in new_kwargs.items():
             byte_length = len(repr(v))
-            if byte_length > 400:
-                new_kwargs[k] = v[:(len(v) * 400 / byte_length)]
+            while byte_length > 400:
+                v = v[:(len(v) * 400 / byte_length)]
+                byte_length = len(repr(v))
+            new_kwargs[k] = v
         return ', '.join(sorted('%s=%r' % (k, unicode(v).strip().lower()) for (k, v) in new_kwargs.items()))
 
     def get_json(self, **kwargs):
