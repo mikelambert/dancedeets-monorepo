@@ -19,7 +19,8 @@ def get_nearby_cities(points):
     logging.info("search location is %s", points)
     # rather than return the nearest city (Sunnyvale, San Jose, etc)
     # try to find the largest city within a certain range to give us good groupings for the "scene" name of a user/event.
-    geohashes = geohash_math.get_all_geohashes_for(points, 8)
+    precision = geohash_math.get_geohash_bits_for_km(math.get_distance(points[0], points[1]))
+    geohashes = geohash_math.get_all_geohashes_for(points, precision)
     # This can return a bunch. In theory, it'd be nice to order by population, but that doesn't seem to work...
     cities = City.gql("where geohashes in :geohashes", geohashes=geohashes).fetch(1000)
     if points[0] != points[1]:
