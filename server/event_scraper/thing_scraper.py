@@ -62,6 +62,12 @@ def discover_events_from_sources(fbl, sources):
         min_potential_events = params.get('min_potential_events', 0)
         sources = [x for x in sources if min_potential_events <= (x.num_potential_events or 0)]
 
+    # Maybe we can build this into the upfront mapreduce filter?
+    # Unfortunately, '!='' is more difficult to do and requires better schema planning,
+    # so let's just do this for now.
+    # Hopefully this also prevents the API Rate limits on GET {user-id} lookups.
+    sources = [x for x in sources if x.graph_type != thing_db.GRAPH_TYPE_PROFILE]
+
     # don't scrape sources that prove useless and give mostly garbage events
     #sources = [x for x in sources if x.fraction_potential_are_real() > 0.05]
 
