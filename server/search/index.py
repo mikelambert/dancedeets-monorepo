@@ -43,12 +43,12 @@ class BaseIndex(object):
                 key = obj
             obj_id = key.string_id()
         else:
-            if not isinstance(key, db.Key):
+            if not isinstance(obj, db.Key):
                 # Turn objects into keys
                 key = obj.key()
             else:
                 key = obj
-            obj_id = key().name()
+            obj_id = key.name()
         return obj_id
 
     @classmethod

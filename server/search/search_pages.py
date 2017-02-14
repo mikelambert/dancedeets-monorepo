@@ -16,6 +16,8 @@ class PageResult(object):
         self.num_real_events = result.field('num_real_events').value
         self.source = source
 
+    def __repr__(self):
+        return 'PageResult(%r)' % self.__dict__.items()
 class SearchPages(object):
     def __init__(self, search_query):
         self.query = search_query
@@ -26,7 +28,7 @@ class SearchPages(object):
     def _get_candidate_doc_events(self, ids_only=True):
         clauses = []
         if self.query.bounds:
-            # We try to keep searches as simple as possible, 
+            # We try to keep searches as simple as possible,
             # using just AND queries on latitude/longitude.
             # But for stuff crossing +/-180 degrees,
             # we need to do an OR longitude query on each side.
@@ -39,8 +41,8 @@ class SearchPages(object):
                 clauses += ['(longitude >= %s OR longitude <= %s)' % longitudes]
         if self.query.keywords:
             clauses += ['(%s)' % self.query.keywords]
-        if self.query.min_likes:
-            clauses += ['like_count > %d' % self.query.min_likes]
+        #if self.query.min_likes:
+        #    clauses += ['like_count > %d' % self.query.min_likes]
         if clauses:
             full_search = ' '.join(clauses)
             logging.info("Doing search for %r", full_search)

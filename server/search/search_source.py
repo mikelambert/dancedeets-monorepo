@@ -1,4 +1,5 @@
 import iso3166
+import logging
 
 from google.appengine.api import search
 
@@ -16,6 +17,14 @@ class SourceIndex(index.BaseIndex):
         fb_info = source.fb_info
         if not fb_info:
             return None
+
+        # Only index fan pages for now:
+        # - Profiles are not public or indexable.
+        # - Groups don't have a location.
+        # - Fan Pages are both.
+        if source.graph_type != thing_db.GRAPH_TYPE_FANPAGE:
+            return None
+
         # TODO(lambert): find a way to index no-location sources.
         # As of now, the lat/long number fields cannot be None.
         # In what radius/location should no-location sources show up
@@ -23,6 +32,7 @@ class SourceIndex(index.BaseIndex):
         # Perhaps a separate index that is combined at search-time?
         if fb_info.get('location', None) is None:
             return None
+
         if not source.latitude:
             return None
 
