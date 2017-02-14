@@ -58,12 +58,18 @@ async function performRequest(path: string, args: Object, postArgs: ?Object | nu
       },
       body: JSON.stringify(fullPostData),
     });
-    const json = await result.json();
-    // 'undefined' means success, 'false' means error
-    if (json.success === false) {
-      throw new Error(`Server Error: ${json.errors}`);
-    } else {
-      return json;
+    const buffer = await result.text();
+    try {
+      const json = JSON.parse(buffer);
+      // 'undefined' means success, 'false' means error
+      if (json.success === false) {
+        throw new Error(`Server Error: ${json.errors}`);
+      } else {
+        return json;
+      }
+    } catch (e) {
+      console.warn('Un-parseable page:', buffer);
+      throw e;
     }
   } catch (e) {
     console.warn('Error on API call:', path, 'withArgs:', args, '. Error:', e.message, e);

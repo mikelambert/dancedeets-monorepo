@@ -34,7 +34,7 @@ export function performSearch(): ThunkAction {
       await dispatch(searchComplete(responseData));
     } catch (e) {
       // TODO: error fetching events.
-      console.log('error fetching events', e, e.stack);
+      console.log('Error fetching events', e.message, e, e.stack);
       await dispatch(searchFailed());
     }
   };
