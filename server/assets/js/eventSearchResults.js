@@ -508,7 +508,6 @@ class _ResultsList extends React.Component {
 
   render() {
     const resultEvents = this.props.response.results.map(eventData => new SearchEvent(eventData));
-    console.log('featuredInfos:', this.props.response.featuredInfos);
     const featuredInfos = (this.props.response.featuredInfos || []).map(x => ({ ...x, event: new Event(x.event) }));
 
     const now = moment();
@@ -539,7 +538,6 @@ class _ResultsList extends React.Component {
       }
       eventCount = currentEvents.length + futureEvents.length;
     }
-    console.log(eventCount);
 
     let featuredPanel = null;
     if (featuredInfos.length) {
