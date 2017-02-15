@@ -59,6 +59,7 @@ import {
   BottomFade,
   Button,
   CenterFade,
+  HorizontalView,
   normalize,
   ProportionalImage,
   semiNormalize,
@@ -311,10 +312,13 @@ class PersonList extends React.Component {
 
 
   renderLink(user) {
-    return (<TouchableOpacity
-      key={user.id}
-      onPress={() => openUserId(user.id)}
-    ><Text style={[styles.rowLink]}>{user.name}</Text></TouchableOpacity>);
+    return (<HorizontalView key={user.id}>
+      <Text> – </Text>
+      <TouchableOpacity
+        key={user.id}
+        onPress={() => openUserId(user.id)}
+      ><Text style={[styles.rowLink]}>{user.name}</Text></TouchableOpacity>
+    </HorizontalView>);
   }
 
   render() {
