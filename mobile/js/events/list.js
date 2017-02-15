@@ -14,6 +14,7 @@ import {
   RefreshControl,
   StyleSheet,
   TouchableOpacity,
+  TouchableHighlight,
   View,
 } from 'react-native';
 import { AdMobBanner } from 'react-native-admob';
@@ -316,21 +317,76 @@ class PersonList extends React.Component {
   }
 }
 
-class PeopleView extends React.Component {
+class HeaderCollapsible extends React.Component {
+  props: {
+    defaultCollapsed: Boolean;
+    title: String;
+    children: React.Element<*>;
+  }
+
+  state: {
+    collapsed: boolean;
+  }
+
+  constructor(props) {
+    super(props);
+    this.state = { collapsed: !!props.defaultCollapsed };
+    (this: any)._toggle = this._toggle.bind(this);
+  }
+
+  _toggle() {
+    this.setState({ collapsed: !this.state.collapsed });
+  }
+
+  render() {
+    return <View>
+      <TouchableHighlight onPress={this._toggle} underlayColor={this.props.underlayColor}>
+        <View><Text>{this.props.title}</Text></View>
+      </TouchableHighlight>
+      <Collapsible collapsed={this.state.collapsed}>
+        {this.props.children}
+      </Collapsible>
+    </View>
+  }
+}
+
+class _PeopleView extends React.Component {
   props: {
     people: PeopleListing;
   }
 
   render() {
-    return <PersonList
-      title="Organizers"
-      subtitle="XXXXXX"
-      people={this.props.people.ADMIN}
-      />;
-    //return <Collapsible>
-    //</Collapsible>;
+    const defaultCollapsed = this.props.search.response.results.length > 10;
+    return <View>
+      <HeaderCollapsible
+        title="Nearby Promoters"
+        defaultCollapsed={defaultCollapsed}
+        >
+        <PersonList
+          title="Promoters"
+          subtitle="If you want organize an event, work with these folks"
+          people={this.props.people.ADMIN}
+          />
+      </HeaderCollapsible>
+      <HeaderCollapsible
+        title="Nearby Influencers"
+        defaultCollapsed={defaultCollapsed}
+        >
+        <PersonList
+          title="Influencers"
+          subtitle="If you want to connect with the dance scene, hit these folks up"
+          people={this.props.people.ATTENDEE}
+          defaultCollapsed={defaultCollapsed}
+          />
+      </HeaderCollapsible>
+    </View>;
   }
 }
+const PeopleView = connect(
+  state => ({
+    search: state.search,
+  }),
+)(_PeopleView);
 
 class _EventListContainer extends React.Component {
   props: {
