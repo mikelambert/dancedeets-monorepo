@@ -66,6 +66,7 @@ import {
   toggleEventTranslation,
   canGetValidLoginFor,
 } from '../actions';
+import { openUserId } from '../util/fb';
 
 class SubEventLine extends React.Component {
   props: {
@@ -399,42 +400,10 @@ class _EventOrganizers extends React.Component {
     };
   }
 
-  async openAdmin(adminId) {
-    let adminUrl = null;
-    // On Android, just send them to the URL and let the native URL intecerpetor send it to FB.
-    if (Platform.OS === 'ios' && await Linking.canOpenURL('fb://')) {
-      // We don't really need to pass fields=, but the FB SDK complains if we don't
-      const metadata = await performRequest('GET', adminId, { metadata: '1', fields: '' });
-      const idType = metadata.metadata.type;
-      if (idType === 'user') {
-        // This should work, but doesn't...
-        // adminUrl = 'fb://profile/' + adminId;
-        // So let's send them to the URL directly:
-        adminUrl = `https://www.facebook.com/app_scoped_user_id/${adminId}`;
-      } else if (idType === 'page') {
-        adminUrl = `fb://page/?id=${adminId}`;
-      } else {
-        adminUrl = `https://www.facebook.com/${adminId}`;
-      }
-      // Every event lists all members of the event who created it
-      // Group events only list members (not the group, which is in a different field)
-      // Page events list the members and the page id, too
-    } else {
-      adminUrl = `https://www.facebook.com/${adminId}`;
-    }
-    try {
-      Linking.openURL(adminUrl);
-    } catch (err) {
-      console.error('Error opening FB admin page:', adminUrl, ', with Error:', err);
-    }
-  }
-
   renderAdminLink(admin) {
     return (<TouchableOpacity
       key={admin.id}
-      onPress={() => {
-        this.openAdmin(admin.id);
-      }}
+      onPress={() => openUserId(admin.id)}
     ><Text style={[eventStyles.detailText, eventStyles.detailListText, eventStyles.rowLink]}>{admin.name}</Text></TouchableOpacity>);
   }
 

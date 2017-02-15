@@ -33,6 +33,7 @@ import {
 import type {
   NewSearchResponse,
   Onebox,
+  StylePersonLookup,
 } from 'dancedeets-common/js/events/search';
 import {
   formatStartEnd,
@@ -410,18 +411,12 @@ class _OneboxLinks extends React.Component {
 }
 const OneboxLinks = injectIntl(_OneboxLinks);
 
-type PersonData = {
-  id: String,
-  name: String,
-  count: Number,
-};
-
 class PersonList extends React.Component {
   props: {
     title: String;
     subtitle: String;
     categoryOrder: Array<String>;
-    people: {[category: String]: Array<PersonData>};
+    people: StylePersonLookup;
   }
 
   state: {

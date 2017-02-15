@@ -30,8 +30,10 @@ import { Event } from 'dancedeets-common/js/events/models';
 import type {
   FeaturedInfo,
   Onebox,
+  PeopleListing,
   SearchResponse,
 } from 'dancedeets-common/js/events/search';
+import Collapsible from 'react-native-collapsible';
 import { EventRow } from './uicomponents';
 import SearchHeader from './searchHeader';
 import type {
@@ -73,6 +75,7 @@ import {
   loadSavedAddress,
   storeSavedAddress,
 } from './savedAddress';
+import { openUserId } from '../util/fb';
 
 const messages = defineMessages({
   fetchEventsError: {
@@ -272,6 +275,62 @@ class _AddEventButton extends React.Component {
   }
 }
 const AddEventButton = injectIntl(_AddEventButton);
+
+class PersonList extends React.Component {
+  props: {
+    title: String;
+    subtitle: String;
+    categoryOrder: Array<String>;
+    people: StylePersonLookup;
+  }
+
+  state: {
+    category: string;
+  }
+
+  constructor(props) {
+    super(props);
+    this.state = {
+      category: '',
+    };
+  }
+
+
+  renderLink(user) {
+    return (<TouchableOpacity
+      key={user.id}
+      onPress={() => openUserId(user.id)}
+    ><Text style={[styles.rowLink]}>{user.name}</Text></TouchableOpacity>);
+  }
+
+  render() {
+    const peopleList = this.props.people[this.state.category].slice(0, 10);
+    //const categories = this.props.categoryOrder.filter(x => x === '' || this.props.people[x]);
+    //{categories.map(x => <option key={x} value={x}>{x || 'Overall'}</option>)}
+
+    return (<View>
+      <Text>{this.props.title} by Style: </Text>
+      <Text style={{ fontStyle: 'italic' }}>{this.props.subtitle}:</Text>
+      {peopleList.map(x => this.renderLink(x))}
+    </View>);
+  }
+}
+
+class PeopleView extends React.Component {
+  props: {
+    people: PeopleListing;
+  }
+
+  render() {
+    return <PersonList
+      title="Organizers"
+      subtitle="XXXXXX"
+      people={this.props.people.ADMIN}
+      />;
+    //return <Collapsible>
+    //</Collapsible>;
+  }
+}
 
 class _EventListContainer extends React.Component {
   props: {
@@ -510,6 +569,7 @@ class _EventListContainer extends React.Component {
         featured={response.featuredInfos}
         onEventSelected={this.props.onFeaturedEventSelected}
         />
+      <PeopleView people={response.people} />
       {header}
     </View>;
   }
@@ -611,6 +671,9 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'center',
+  },
+  rowLink: {
+    color: linkColor,
   },
   loading: {
     color: 'white',

@@ -34,8 +34,24 @@ export type FeaturedInfo = {
   overrideFlyer: string;
 };
 
+type Person = {
+  id: string;
+  name: string;
+  count: Number;
+};
+
+type Style = string;
+
+export type StylePersonLookup = {[style: Style]: Array<Person>};
+
+export type PeopleListing = {
+  ADMIN: StylePersonLookup;
+  ATTENDEE: StylePersonLookup;
+};
+
 // API Requests 1.x
 export type SearchResponse = {
+  people: PeopleListing;
   onebox_links: Array<Onebox>;
   results: Array<Event>;
   featuredInfos: Array<FeaturedInfo>;
@@ -44,6 +60,7 @@ export type SearchResponse = {
 
 // API Requests 2.0+
 export type NewSearchResponse = {
+  people: PeopleListing;
   onebox_links: Array<Onebox>;
   results: Array<SearchEvent>;
   featuredInfos: Array<FeaturedInfo>;
