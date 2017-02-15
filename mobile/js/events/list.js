@@ -158,7 +158,20 @@ class FeaturedEvents extends React.Component {
   renderPage(index: number) {
     const featuredInfo = this.props.featured[index];
 
-    let fadeOverlay = <BottomFade />;
+    // No fade for single items
+    let fadeOverlay = null;
+    // But if there's multiple items, let's do a bottom-fade
+    if (this.props.featured.length > 1) {
+      fadeOverlay = <View style={{
+          position: 'absolute',
+          left: 0,
+          bottom: 0,
+          right: 0,
+        }}>
+          <BottomFade />
+        </View>;
+    }
+    // And if there's a title, do an even larger fade that lets us stick the text in there
     if (featuredInfo.showTitle) {
       fadeOverlay = <View style={{
         position: 'absolute',
