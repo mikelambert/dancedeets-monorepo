@@ -553,7 +553,8 @@ class _ResultsList extends React.Component {
       );
     }
     const defaultKeys = ['featured', 'onebox', 'pastEvents', 'currentEvents', 'futureEvents'];
-    if (eventCount < 5) {
+    // Keep in sync with mobile?
+    if (eventCount < 10) {
       defaultKeys.push('people', 'people1', 'people2');
     }
 
