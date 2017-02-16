@@ -1,26 +1,31 @@
 language: python
 python:
-  - 2.7
+- 2.7
 
 install:
-  # Download the latest version of the GAE Python SDK
-  - "wget https://storage.googleapis.com/appengine-sdks/featured/google_appengine_1.9.30.zip -nv -O downloaded_appengine.zip"
-  - "unzip -q downloaded_appengine.zip"
-  # This is a quick hack, necessary to get fancy_urllib working,
-  # by exposing the lib/fancy_urllib/fancy_urllib/ dirctory within for use by appengine.
-  - "rm -rf google_appengine/lib/fancy_urllib/__init__.py"
-  # Install latest version of node
-  - . $HOME/.nvm/nvm.sh
-  - nvm install stable
-  - nvm use stable
-  # Set up and compile our project
-  - npm install
-  - cd common && npm install && cd ..
-  - "cd server && ./setup.sh"
+# Download the latest version of the GAE Python SDK
+- wget https://storage.googleapis.com/appengine-sdks/featured/google_appengine_1.9.30.zip
+  -nv -O downloaded_appengine.zip
+# This is a quick hack, necessary to get fancy_urllib working,
+# by exposing the lib/fancy_urllib/fancy_urllib/ dirctory within for use by appengine.
+- unzip -q downloaded_appengine.zip
+- rm -rf google_appengine/lib/fancy_urllib/__init__.py
+# Install latest version of node
+- ". $HOME/.nvm/nvm.sh"
+- nvm install stable
+- nvm use stable
+# Set up and compile our project
+- npm install
+- cd common && npm install && cd ..
+- cd server && ./setup.sh
 
-# command to run tests
-script: "cd server && ./nose.sh --coverage --gae-lib-root=../google_appengine"
+script: cd server && ./nose.sh --coverage --gae-lib-root=../google_appengine
 
 after_success:
-  - pip install coveralls
-  - coveralls
+- pip install coveralls
+- coveralls
+
+notifications:
+  slack:
+    # The notifications.slack password
+    secure: OixLy18Q96LYE064dwSMJgZPTGCeDld4HNnzu3iUdXsUaLYTzp82rarKclln3rgl4DznROwc0vS5Dsxqb1m0ZYbx4hSDXSBb7TQr+9VENkzDXoBlReWPSdt+hbE6D5PleYAS0V6Z2bsNswmIjf1vcctWiweFOP1Yl1X/Ms5kftqNVPsJfyf3eTQmwMDE0XqYS1L+uRjs2MdLVePUWyBmj/Xi28vH6SCHbSNhnvpJU/OEXUxq+IdTehjmzmNJxm6pPCqMq29bIuDGdlZ+3mLx7bU6hNUphso6S3LztzAM32crvjypb9eLn4PK23YHdoahQgKhwHIS+7PiKI/g7suXjKpFsgIGYo7TRlg9S6GnBmHAfbHTQKfqtkD4hVZ7KENA0Dt5F0mKh43EQIXBgjPJRklaoLgywc/EbzhYjFVi2Q9OMERSvTg2VJyHUf1MaFxGnt2ZfBnfVkj+8E/XXcS5Jkoxtjh+HiXDEacSDriI42UN4Vg/2FcPiZCkiesl4rniVw0k345LVlzxLR+94CNZI78TBLIXb9wvwKbK+g2TwF60jt0DUBtUWM1B/YTC7BH9qmRIZCahCmtRZ5g2uT4LlP1nSB3sl5Ito0f1Gju1mq4SMTlWy+lX/p+sCk1vblPnWtWH0/7DKRsrR6Mx5IAsDcdtvzTqYdIAC0f/29GT6f0=
