@@ -130,12 +130,12 @@ class TopicHandler(base_servlet.BaseRequestHandler):
         self.display['topic_image'] = topic.override_image or (fb_source and fb_source['picture']['data']['url'])
         self.display['topic_description'] = topic.override_description or (fb_source and fb_source['info'].get('about')) or ''
 
-        json_search_response = api.build_search_results_api(None, None, search_query, search_results, (2, 0), need_full_event=False, southwest=None, northeast=None)
+        json_search_response = api.build_search_results_api(None, None, search_query, search_results, (2, 0), need_full_event=False, center_latlng=None, southwest=None, northeast=None)
 
         videos = get_videos_for(topic.youtube_query)
 
         props = dict(
-            results=json_search_response,
+            response=json_search_response,
             videos=videos,
         )
 
