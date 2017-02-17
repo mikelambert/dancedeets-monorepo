@@ -13,7 +13,7 @@ import urllib
 import urllib2
 
 DATETIME_FORMAT_TZ = "%Y-%m-%dT%H:%M:%S%z"
-DATETIME_FORMAT = "%Y-%m-%dT%H:%M:%SZ"
+DATETIME_FORMAT = "%Y-%m-%dT%H:%M:%S"
 
 PROD_SERVER = 'www.dancedeets.com'
 DEV_SERVER = 'dev.dancedeets.com:8080'

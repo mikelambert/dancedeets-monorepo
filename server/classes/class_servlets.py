@@ -1,11 +1,5 @@
 import datetime
-import json
 import logging
-import os.path
-from react import exceptions
-from react.render import render_component
-import urllib
-import webapp2
 
 import app
 import base_servlet
@@ -14,7 +8,7 @@ from search import search_base
 from . import class_index
 from . import class_models
 
-DATETIME_FORMAT = "%Y-%m-%dT%H:%M:%SZ"
+DATETIME_FORMAT = "%Y-%m-%dT%H:%M:%S"
 
 
 @app.route('/classes/(nyc|la)')
