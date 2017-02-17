@@ -196,7 +196,7 @@ def _inner_make_event_findable_for_web_event(db_event, web_event, disable_update
             logging.error("Could not get fully parsed address for: %s: %s", web_event['location_address'], geocode_with_address)
             pass
         elif web_event['country'] != geocode_with_address.country():
-            logging.error("Found incorrect address for venue! Expected %s but found %s", web_event['country'], geocode.country())
+            logging.error("Found incorrect address for venue! Expected %s but found %s", web_event['country'], geocode_with_address.country())
 
         latlng = geocode.json_data['geometry']['location']
         web_event['latitude'] = latlng['lat']
@@ -205,10 +205,13 @@ def _inner_make_event_findable_for_web_event(db_event, web_event, disable_update
         # Add timezones, and save them to the web_event strings, for use by eventdata accessors
         timezone_string = timezone_finder.certain_timezone_at(lat=latlng['lat'], lng=latlng['lng'])
         web_event['timezone'] = timezone_string
-        tz = pytz.timezone(timezone_string)
-        web_event['start_time'] = tz.localize(db_event.start_time).strftime(DATETIME_FORMAT_TZ)
-        if db_event.end_time:
-            web_event['end_time'] = tz.localize(db_event.end_time).strftime(DATETIME_FORMAT_TZ)
+        if timezone_string:
+            tz = pytz.timezone(timezone_string)
+            web_event['start_time'] = tz.localize(db_event.start_time).strftime(DATETIME_FORMAT_TZ)
+            if db_event.end_time:
+                web_event['end_time'] = tz.localize(db_event.end_time).strftime(DATETIME_FORMAT_TZ)
+        else:
+            logging.error('No timezone string found for latlng: %s', latlng)
     db_event.address = web_event.get('location_address')
 
     _inner_common_setup(db_event, disable_updates=disable_updates)

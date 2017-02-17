@@ -92,7 +92,7 @@ class StreetDanceKoreaScraper(items.WebEventScraper):
     def parseEvent(self, response):
         item = items.WebEvent()
         qs = urlparse.parse_qs(urlparse.urlparse(response.url).query)
-        item['country'] = 'KO'
+        item['country'] = 'KR'
         item['namespace'] = self.namespace
         item['namespaced_id'] = qs['seq'][0]
         item['name'] = strip_markdown.strip(items.extract_text(response.xpath('.//h3')))
