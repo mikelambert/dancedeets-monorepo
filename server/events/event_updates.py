@@ -136,7 +136,7 @@ def _inner_make_event_findable_for_fb_event(db_event, fb_dict, disable_updates):
         _update_geodata(db_event, location_info)
 
 def clean_address(address):
-    address = re.sub(r'B?\d+F$', '', address)
+    address = re.sub(r'B?\d+F?$', '', address)
     return address
 
 def _inner_make_event_findable_for_web_event(db_event, web_event, disable_updates):
@@ -183,9 +183,17 @@ def _inner_make_event_findable_for_web_event(db_event, web_event, disable_update
             web_event['location_name'] = geocode.json_data['name']
         web_event['location_address'] = geocode.json_data['formatted_address']
         logging.info("Found an address: %s", web_event['location_address'])
-        # BIG HACK!!!
-        if 'Japan' not in web_event['location_address'] and 'Korea' not in web_event['location_address']:
-            logging.error("Found incorrect address for venue!")
+
+        # We have a formatted_address, but that's it. Let's get a fully componentized address
+        geocode_with_address = gmaps_api.lookup_address(web_event['location_address'])
+        if not geocode_with_address:
+            logging.error("Could not get geocode for: %s", web_event['location_address'])
+        elif 'address_components' not in geocode_with_address.json_data:
+            logging.error("Could not get fully parsed address for: %s: %s", web_event['location_address'], geocode_with_address)
+            pass
+        elif web_event['country'] != geocode_with_address.country():
+            logging.error("Found incorrect address for venue! Expected %s but found %s", web_event['country'], geocode.country())
+
         latlng = geocode.json_data['geometry']['location']
         web_event['latitude'] = latlng['lat']
         web_event['longitude'] = latlng['lng']

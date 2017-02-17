@@ -85,6 +85,7 @@ class DewsScraper(items.WebEventScraper):
             return items.extract_text(response.xpath(u'//dt[contains(., "%s")]/following-sibling::dd' % term))
 
         item = items.WebEvent()
+        item['country'] = 'JP'
         item['namespace'] = self.namespace
         item['namespaced_id'] = re.search(r'/event/(\w+)\.html', response.url).group(1)
         item['name'] = _get('name')

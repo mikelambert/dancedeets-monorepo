@@ -48,6 +48,7 @@ class DanceDelightScraper(items.WebEventScraper):
         print response.url
 
         item = items.WebEvent()
+        item['country'] = 'JP'
         item['namespace'] = self.namespace
         item['namespaced_id'] = re.search(r'\?p=(\d+)', response.url).group(1)
         item['name'] = items.extract_text(response.xpath('//a[@rel="bookmark"]/text()'))

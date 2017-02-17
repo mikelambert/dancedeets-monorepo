@@ -58,7 +58,7 @@ def process_upload_finalization(studio_name):
 
 
 @app.route('/web_events/upload_multi')
-class ClassMultiUploadHandler(JsonDataHandler):
+class WebMultiUploadHandler(JsonDataHandler):
     def post(self):
         if self.json_body['scrapinghub_key'] != keys.get('scrapinghub_key'):
             self.response.status = 403

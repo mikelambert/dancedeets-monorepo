@@ -44,6 +44,7 @@ class WebEvent(item.DictItem):
         'geolocate_location_name', # used to geolocate this event
         'latitude',
         'longitude',
+        'country', # the country we expect this event to be in, based on the scraper
     ]
 
 

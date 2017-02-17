@@ -64,6 +64,7 @@ class EnterTheStageScraper(items.WebEventScraper):
             return items.extract_text(response.css('#%s' % css_id))
 
         item = items.WebEvent()
+        item['country'] = 'JP'
         item['namespace'] = self.namespace
         item['namespaced_id'] = re.search(r'/event/(\w+)/', response.url).group(1)
         item['name'] = _get('u474-4')
