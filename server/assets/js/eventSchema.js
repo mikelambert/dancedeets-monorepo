@@ -69,6 +69,7 @@ function getArticleSchema(event: Event) {
     return null;
   }
 
+  const datePublished = event.annotations.creation ? event.annotations.creation.time : event.start_time;
   const schema = {
     '@context': 'http://schema.org',
     '@type': 'Article',
@@ -90,7 +91,7 @@ function getArticleSchema(event: Event) {
         height: 60,
       },
     },
-    datePublished: formatSchemaDate(event.annotations.creation.time || event.start_time),
+    datePublished: formatSchemaDate(datePublished),
     author: {
       '@type': 'Organization',
       name: 'DanceDeets',

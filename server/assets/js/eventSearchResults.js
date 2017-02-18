@@ -431,6 +431,10 @@ class PersonList extends React.Component {
   }
 
   render() {
+    if (!this.props.people[this.state.category]) {
+      console.error('PersonList: Found empty people for category:', this.state.category, 'in people object:', this.props.people);
+      return null;
+    }
     const peopleList = this.props.people[this.state.category].slice(0, 10);
     const categories = this.props.categoryOrder.filter(x => x === '' || this.props.people[x]);
 
