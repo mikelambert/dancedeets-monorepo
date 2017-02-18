@@ -178,6 +178,8 @@ configurations.all {
 }
 
 dependencies {
+    compile project(':react-native-vector-icons')
+    compile project(':react-native-send-intent')
     compile project(':react-native-device-info')
     compile project(':react-native-firestack')
     compile project(':react-native-youtube')
@@ -199,7 +201,6 @@ dependencies {
     compile project(':react-native-linear-gradient')
     compile project(':react-native-maps')
     compile project(':react-native-segmented-android')
-    compile project(':RNSendIntentModule')
     //compile "com.mixpanel.android:mixpanel-android:4.+"
     compile fileTree(dir: "libs", include: ["*.jar"])
     compile 'com.facebook.android:facebook-android-sdk:4.+'
