@@ -198,7 +198,7 @@ gulp.task('deploy:scrapy', $.shell.task([
 ]));
 gulp.task('deploy:cleanup-files', () => del.sync('lib/setuptools/script (dev).tmpl'))
 
-gulp.task('deploy:server:fast', $.shell.task(['gcloud app deploy app.yaml --quiet']));
+gulp.task('deploy:server:fast', $.shell.task(['./tools/check_for_native_modules.sh', 'gcloud app deploy app.yaml --quiet']));
 gulp.task('deploy:server', cb => runSequence('deploy:cleanup-files', 'compile', 'deploy:server:fast', cb));
 
 gulp.task('deploy', ['deploy:server', 'deploy:scrapy']);
