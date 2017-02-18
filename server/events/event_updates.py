@@ -152,6 +152,10 @@ def _inner_make_event_findable_for_web_event(db_event, web_event, disable_update
 
     db_event.attendee_count = 0 # Maybe someday set attending counts when we fetch them?
 
+    if web_event['start_time'].endswith('Z'):
+        web_event['start_time'] = web_event['start_time'][:-1]
+    if web_event['end_time'].endswith('Z'):
+        web_event['end_time'] = web_event['start_time'][:-1]
     db_event.start_time = datetime.datetime.strptime(web_event['start_time'], DATETIME_FORMAT)
     if web_event.get('end_time'):
         db_event.end_time = datetime.datetime.strptime(web_event['end_time'], DATETIME_FORMAT)
@@ -195,6 +199,8 @@ def _inner_make_event_findable_for_web_event(db_event, web_event, disable_update
         elif 'address_components' not in geocode_with_address.json_data:
             logging.error("Could not get fully parsed address for: %s: %s", web_event['location_address'], geocode_with_address)
             pass
+        elif 'country' not in web_event:
+            web_event['country'] = geocode_with_address.country()
         elif web_event['country'] != geocode_with_address.country():
             logging.error("Found incorrect address for venue! Expected %s but found %s", web_event['country'], geocode_with_address.country())
 
