@@ -12,15 +12,6 @@ git+https://github.com/wtforms/wtforms-appengine
 git+https://github.com/mikelambert/optional-django
 react
 
-# ScrapingHub API
-scrapinghub
-scrapy
-scrapyjs
-html2text
-
-# MindBody
-suds
-
 # Date Manip
 icalendar
 ruamel.yaml

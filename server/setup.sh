@@ -28,6 +28,10 @@ echo "Installing test libraries"
 # For testing, just install them locally (not in the lib/ dir).
 pip install --upgrade $USER_FLAG -r $BASE_DIR/test-requirements.txt
 
+echo "Installing test libraries"
+# For testing, just install them locally (not in the lib/ dir).
+pip install --upgrade $USER_FLAG -r $BASE_DIR/shub-local-requirements.txt
+
 echo "Installing production libraries"
 pip install --upgrade -t $BASE_DIR/lib -r $BASE_DIR/setup-requirements.txt
 # This is installed in the docker-gae-modules, so we don't need them here.
@@ -35,11 +39,6 @@ pip install --upgrade -t $BASE_DIR/lib -r $BASE_DIR/setup-requirements.txt
 # Another option is to hardcode our modules above (minus Pillow) and use --no-deps:
 # https://stackoverflow.com/questions/33441033/pip-install-to-custom-target-directory-and-exclude-specific-dependencies
 rm -rf lib/Pillow* lib/PIL
-
-# So we can import zope.interface
-touch $BASE_DIR/lib/zope/__init__.py
-# So we can import ruamel.yaml
-touch $BASE_DIR/lib/ruamel/__init__.py
 
 # TODO: install node
 # TODO: install npm?

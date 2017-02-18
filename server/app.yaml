@@ -104,11 +104,6 @@ skip_files:
 - ^snapshotted(/.*)?
 - ^tmp(/.*)?
 - ^build(/.*)?
-# We don't need these on the server, this is only used for scrapy:
-- ^lib/lxml(/.*)?
-- ^lib/scrapy(/.*)?
-- ^lib/twisted(/.*)?
-- ^lib/zope(/.*)?
 # This is here so that the GAE dev_appserver's mtime_watcher will ignore this directory
 # and therefore not complain about 'too many files'. It's different from the other lines,
 # which are intended to keep files from getting pushed to the GAE server.

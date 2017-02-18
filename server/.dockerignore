@@ -17,12 +17,6 @@ build
 # We don't need this on the server, this is just for our replacement dev_appserver
 frankenserver
 
-# We don't need these on the server, this is only used for scrapy:
-lib/lxml
-lib/scrapy
-lib/twisted
-lib/zope
-
 # These are C modules, which we need in the GAE sandbox to run locally.
 # But on GAE/GCE, these should be provided built directly for the GCE platform
 # (instead of my local dev box), and will be provided by requirements.txt
