@@ -18,6 +18,7 @@ import username from 'username';
 import taskListing from 'gulp-task-listing';
 import yaml from 'js-yaml';
 import yargs from 'yargs';
+import process from 'process';
 
 const argv = yargs
   .option('d', {
@@ -217,9 +218,15 @@ function webpack(configName, dependencies = []) {
   gulp.task(`compile:webpack:${configName}:debug:watch`, dependencies, $.shell.task([`${webpackCommand} --watch --debug`]));
 }
 // Generate rules for our three webpack configs
-webpack('amp', ['generate-amp-sources']);
 webpack('server');
 webpack('client');
+if (process.env.TRAVIS) {
+  // We disable generate-amp-sources on Travis CI,
+  // because it dies when trying to 'import webtest'.
+  webpack('amp');
+} else {
+  webpack('amp', ['generate-amp-sources']);
+}
 
 const webpackConfigs = ['amp', 'server', 'client'];
 
