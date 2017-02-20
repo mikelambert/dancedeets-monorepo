@@ -7,7 +7,7 @@
 import {
   defineMessages,
 } from 'react-intl';
-import type {
+import {
   messageDescriptorPropTypes,
 } from 'react-intl/src/types';
 

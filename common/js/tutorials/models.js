@@ -6,7 +6,7 @@
 
 import moment from 'moment';
 
-import type {
+import {
   messageDescriptorPropTypes,
 } from 'react-intl/src/types';
 
