@@ -3,6 +3,7 @@ import logging
 import re
 from timezonefinder import TimezoneFinder
 import pytz
+import dateutil
 
 from google.appengine.ext import ndb
 
@@ -157,16 +158,10 @@ def _inner_make_event_findable_for_web_event(db_event, web_event, disable_update
     if web_event['end_time'] and web_event['end_time'].endswith('Z'):
         web_event['end_time'] = web_event['start_time'][:-1]
 
-    try:
-        db_event.start_time = datetime.datetime.strptime(web_event['start_time'], DATETIME_FORMAT_TZ)
-    except ValueError:
-        db_event.start_time = datetime.datetime.strptime(web_event['start_time'], DATETIME_FORMAT)
+    db_event.start_time = dateutil.parser.parse(web_event['start_time']).replace(tzinfo=None)
 
     if web_event.get('end_time'):
-        try:
-            db_event.end_time = datetime.datetime.strptime(web_event['end_time'], DATETIME_FORMAT_TZ)
-        except ValueError:
-            db_event.end_time = datetime.datetime.strptime(web_event['end_time'], DATETIME_FORMAT)
+        db_event.end_time = dateutil.parser.parse(web_event['end_time']).replace(tzinfo=None)
     else:
         db_event.end_time = None
     db_event.search_time_period = _event_time_period(db_event)
