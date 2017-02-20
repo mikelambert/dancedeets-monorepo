@@ -26,7 +26,7 @@ import {
 } from 'dancedeets-common/js/intl';
 import {
   SquareEventFlyer,
-} from './eventSearchResults';
+} from './eventCommon';
 import {
   Card,
   ImagePrefix,

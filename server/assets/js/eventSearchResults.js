@@ -13,7 +13,6 @@ import {
   injectIntl,
   intlShape,
 } from 'react-intl';
-import LazyLoad from 'react-lazyload';
 import { StickyContainer, Sticky } from 'react-sticky';
 import Masonry from 'react-masonry-component';
 import Slider from 'react-slick';
@@ -51,6 +50,9 @@ import {
 import type {
   windowProps,
 } from './ui';
+import {
+  SquareEventFlyer,
+} from './eventCommon';
 
 require('slick-carousel/slick/slick.css');
 require('slick-carousel/slick/slick-theme.css');
@@ -70,63 +72,6 @@ const yellowColors = [
   '#FFCA01',
   '#C0A000',
 ];
-
-export class SquareEventFlyer extends React.Component {
-  props: {
-    event: SearchEvent;
-    lazyLoad?: boolean;
-  }
-
-  generateCroppedCover(picture: Cover, width: number, height: number) {
-    const parsedSource = url.parse(picture.source, true);
-    parsedSource.query = { ...parsedSource.query, width, height };
-    const newSourceUrl = url.format(parsedSource);
-
-    return {
-      source: newSourceUrl,
-      width,
-      height,
-    };
-  }
-
-  render() {
-    const event = this.props.event;
-    const picture = event.picture;
-    if (!picture) {
-      return null;
-    }
-    const width = 180;
-    const height = 180;
-
-    const scaledHeight = '100'; // height == width
-
-    const croppedPicture = this.generateCroppedCover(picture, width, height);
-    let imageTag = (<div
-      style={{
-        height: 0,
-        paddingBottom: `${scaledHeight}%`,
-      }}
-    >
-      <img
-        role="presentation"
-        src={croppedPicture.source}
-        style={{
-          width: '100%',
-        }}
-        className="no-border"
-      />
-    </div>
-    );
-    if (this.props.lazyLoad) {
-      imageTag = <LazyLoad height={height} once offset={300}>{imageTag}</LazyLoad>;
-    }
-    return (
-      <a className="link-event-flyer" href={event.getUrl()}>
-        {imageTag}
-      </a>
-    );
-  }
-}
 
 export class HorizontalEventFlyer extends React.Component {
   props: {
