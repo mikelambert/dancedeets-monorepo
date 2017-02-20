@@ -419,7 +419,7 @@ class _ResultsList extends React.Component {
     if (admins || attendees) {
       const adminsList = (<PersonList
         title="Promoters"
-        subtitle="If you want organize an event, work with these folks"
+        subtitle="If you want to organize an event, work with these folks"
         people={admins}
         categoryOrder={this.props.categoryOrder}
       />);

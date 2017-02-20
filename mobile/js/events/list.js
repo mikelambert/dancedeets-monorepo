@@ -26,6 +26,7 @@ import {
 import moment from 'moment';
 import { connect } from 'react-redux';
 import Carousel from 'react-native-carousel';
+import Icon from 'react-native-vector-icons/Ionicons';
 import upperFirst from 'lodash/upperFirst';
 import { Event } from 'dancedeets-common/js/events/models';
 import type {
@@ -327,7 +328,6 @@ class PersonList extends React.Component {
     //{categories.map(x => <option key={x} value={x}>{x || 'Overall'}</option>)}
 
     return (<View>
-      <Text>{this.props.title} by Style: </Text>
       <Text style={{ fontStyle: 'italic' }}>{this.props.subtitle}:</Text>
       {peopleList.map(x => this.renderLink(x))}
     </View>);
@@ -356,9 +356,17 @@ class HeaderCollapsible extends React.Component {
   }
 
   render() {
+    const iconName = this.state.collapsed ? 'md-arrow-dropright' : 'md-arrow-dropdown';
     return <View>
       <TouchableHighlight onPress={this._toggle} underlayColor={this.props.underlayColor}>
-        <View><Text>{this.props.title}</Text></View>
+        <View style={styles.sectionHeader}>
+          <HorizontalView>
+            <View style={{ width: 20, height: 20, alignItems: 'center', alignSelf: 'center' }}>
+              <Icon name={iconName} size={15} color="#FFF" />
+            </View>
+            <Text>{this.props.title}</Text>
+          </HorizontalView>
+        </View>
       </TouchableHighlight>
       <Collapsible collapsed={this.state.collapsed}>
         {this.props.children}
@@ -382,7 +390,7 @@ class _PeopleView extends React.Component {
         >
         <PersonList
           title="Promoters"
-          subtitle="If you want organize an event, work with these folks"
+          subtitle="If you want to organize an event, work with these folks"
           people={this.props.people.ADMIN}
           />
       </HeaderCollapsible>
@@ -755,6 +763,8 @@ const styles = StyleSheet.create({
     marginBottom: 50,
   },
   sectionHeader: {
+    borderTopWidth: 1,
+    borderTopColor: purpleColors[1],
     height: semiNormalize(30),
     alignItems: 'flex-start', // left align
     justifyContent: 'center', // vertically center
@@ -762,6 +772,7 @@ const styles = StyleSheet.create({
   },
   sectionHeaderText: {
     color: 'white',
+    alignSelf: 'center',
     fontWeight: 'bold',
   },
   errorView: {
