@@ -6,11 +6,6 @@
 
 import moment from 'moment';
 
-import {
-  messageDescriptorPropTypes,
-} from 'react-intl/src/types';
-
-
 export class Playlist {
   id: string;
   title: string;

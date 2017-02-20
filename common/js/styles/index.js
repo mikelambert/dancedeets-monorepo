@@ -9,7 +9,7 @@ import {
 } from 'react-intl';
 import {
   messageDescriptorPropTypes,
-} from 'react-intl/src/types';
+} from 'react-intl/dist/react-intl';
 
 export const messages = defineMessages({
   otherStylesTitle: {

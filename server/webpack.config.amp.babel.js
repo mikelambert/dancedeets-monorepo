@@ -69,24 +69,24 @@ module.exports = {
       },
     ],
   },
-  // This handles a bunch for us:
-  // sass: Preprocesses your CSS using Sass.
-  // autoprefixer: Adds vendor prefixes to CSS, using Autoprefixer.
-  // filters: Converts CSS shorthand filters to SVG equivalent
-  // rem: Generates pixel fallbacks for rem units
-  // pseudoElements: Converts pseudo-elements using CSS3 syntax
-  //   (two-colons notation like ::after, ::before, ::first-line and ::first-letter) with the old one
-  // opacity: Adds opacity filter for IE8 when using opacity property
-  // import: Inlines @import styles, using postcss-import and rebases URLs if needed.
-  //
-  // We intentionally don't do any minification, since we'd prefer to run uncss first
-  pleeease: {
-    import: false,
-    rebase: false,
-    minifier: false,
-    browsers: ['> 2%'],
-  },
   postcss: () => [
+    // This handles a bunch for us:
+    // sass: Preprocesses your CSS using Sass.
+    // autoprefixer: Adds vendor prefixes to CSS, using Autoprefixer.
+    // filters: Converts CSS shorthand filters to SVG equivalent
+    // rem: Generates pixel fallbacks for rem units
+    // pseudoElements: Converts pseudo-elements using CSS3 syntax
+    //   (two-colons notation like ::after, ::before, ::first-line and ::first-letter) with the old one
+    // opacity: Adds opacity filter for IE8 when using opacity property
+    // import: Inlines @import styles, using postcss-import and rebases URLs if needed.
+    //
+    // We intentionally don't do any minification, since we'd prefer to run uncss first
+    pleeease({
+      import: false,
+      rebase: false,
+      minifier: false,
+      browsers: ['> 2%'],
+    }),
     uncss.postcssPlugin({
       html: ['amp/generated/*.html'],
     }),

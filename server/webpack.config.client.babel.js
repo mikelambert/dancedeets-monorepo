@@ -4,6 +4,7 @@ import path from 'path';
 import uncss from 'uncss';
 import { argv as env } from 'yargs';
 import combineLoaders from 'webpack-combine-loaders';
+import pleeease from 'pleeease';
 
 function isCommonModule(module) {
   const userRequest = module.userRequest;
@@ -83,14 +84,13 @@ const config = {
     loaders: [
       {
         test: /\.jsx?$/,
-        exclude: /(node_modules|bower_components)/,
+        exclude: /node_modules/,
         loader: combineLoaders([
           {
             loader: 'babel',
             query: {
-              presets: ['latest', 'react'],
+              presets: ['latest', 'react', 'stage-0'],
               plugins: [
-                'transform-object-rest-spread',
                 'transform-flow-strip-types',
               ],
             },
@@ -103,7 +103,7 @@ const config = {
       },
       {
         test: /\.s?css$/,
-        loader: ExtractTextPlugin.extract('style-loader', ['css-loader?sourceMap', 'pleeease-loader', 'postcss-loader', 'sass-loader?sourceMap']),
+        loader: ExtractTextPlugin.extract('style-loader', ['css-loader?sourceMap', 'postcss-loader', 'sass-loader?sourceMap']),
       },
       {
         test: /\.(png|gif)$/,
@@ -140,24 +140,24 @@ const config = {
       },
     ],
   },
-  // This handles a bunch for us:
-  // sass: Preprocesses your CSS using Sass.
-  // autoprefixer: Adds vendor prefixes to CSS, using Autoprefixer.
-  // filters: Converts CSS shorthand filters to SVG equivalent
-  // rem: Generates pixel fallbacks for rem units
-  // pseudoElements: Converts pseudo-elements using CSS3 syntax
-  //   (two-colons notation like ::after, ::before, ::first-line and ::first-letter) with the old one
-  // opacity: Adds opacity filter for IE8 when using opacity property
-  // import: Inlines @import styles, using postcss-import and rebases URLs if needed.
-  //
-  // We intentionally don't do any minification, since we'd prefer to run uncss first
-  pleeease: {
-    import: false,
-    rebase: false,
-    minifier: false,
-    browsers: ['> 2%'],
-  },
   postcss: () => [
+    // This handles a bunch for us:
+    // sass: Preprocesses your CSS using Sass.
+    // autoprefixer: Adds vendor prefixes to CSS, using Autoprefixer.
+    // filters: Converts CSS shorthand filters to SVG equivalent
+    // rem: Generates pixel fallbacks for rem units
+    // pseudoElements: Converts pseudo-elements using CSS3 syntax
+    //   (two-colons notation like ::after, ::before, ::first-line and ::first-letter) with the old one
+    // opacity: Adds opacity filter for IE8 when using opacity property
+    // import: Inlines @import styles, using postcss-import and rebases URLs if needed.
+    //
+    // We intentionally don't do any minification, since we'd prefer to run uncss first
+    pleeease({
+      import: false,
+      rebase: false,
+      minifier: false,
+      browsers: ['> 2%'],
+    }),
     /* uncss.postcssPlugin({
       ignore: [
         '.animated',

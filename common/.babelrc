@@ -1,6 +1,7 @@
 {
   "presets": ["latest", "react", "stage-0"],
   "plugins": [
+    "transform-flow-strip-types",
     ["react-intl", {
         "messagesDir": "../build/messages/",
         "enforceDescriptions": true
