@@ -14,7 +14,7 @@ react
 
 # Date Manip
 icalendar
-ruamel.yaml
+dateparser
 
 iso3166
 oauth2
