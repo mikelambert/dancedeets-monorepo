@@ -20,7 +20,7 @@ EVENT_IMAGE_BUCKET = 'dancedeets-event-flyers-full'
 EVENT_IMAGE_CACHE_BUCKET = 'dancedeets-event-flyers-%s-by-%s'
 
 CACHEABLE_SIZES = set([
-    (360, 360)
+    (180, 180),
 ])
 
 def test_jpeg(h, f):

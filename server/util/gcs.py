@@ -1,3 +1,4 @@
+import logging
 import io
 
 from oauth2client.client import GoogleCredentials
@@ -68,7 +69,7 @@ def get_object(bucket, filename):
         done = False
         while done is False:
             status, done = downloader.next_chunk()
-            print("Download {}%.".format(int(status.progress() * 100)))
+            logging.info("Download {}%.".format(int(status.progress() * 100)))
 
         return out_file.getvalue()
     except errors.HttpError as e:
