@@ -103,7 +103,7 @@ const config = {
       },
       {
         test: /\.s?css$/,
-        loader: ExtractTextPlugin.extract('style-loader', ['css-loader?sourceMap', 'postcss-loader', 'sass-loader?sourceMap']),
+        loader: ExtractTextPlugin.extract('style-loader', ['css-loader?sourceMap', 'postcss-loader', 'resolve-url-loader', 'sass-loader?sourceMap']),
       },
       {
         test: /\.(png|gif)$/,

@@ -77,7 +77,7 @@ module.exports = {
       // We don't care about these on the server too much, but we would like them to avoid erroring-out:
       {
         test: /\.s?css$/,
-        loaders: ['css-loader?sourceMap', 'pleeease-loader', 'postcss-loader', 'sass-loader?sourceMap'],
+        loaders: ['css-loader?sourceMap', 'postcss-loader', 'resolve-url-loader', 'sass-loader?sourceMap'],
       },
       {
         test: /\.(ttf|otf|eot|svg|woff(2)?)(\?[a-z0-9=.]+)?$/,

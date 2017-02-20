@@ -2,6 +2,7 @@ import webpack from 'webpack';
 import ExtractTextPlugin from 'extract-text-webpack-plugin';
 import path from 'path';
 import uncss from 'uncss';
+import pleeease from 'pleeease';
 
 module.exports = {
   entry: {
@@ -45,7 +46,7 @@ module.exports = {
       },
       {
         test: /\.s?css$/,
-        loader: ExtractTextPlugin.extract('style-loader', ['css-loader?sourceMap,-minimize', 'pleeease-loader', 'postcss-loader', 'sass-loader?sourceMap']),
+        loader: ExtractTextPlugin.extract('style-loader', ['css-loader?sourceMap,-minimize', 'postcss-loader', 'resolve-url-loader', 'sass-loader?sourceMap']),
       },
       {
         test: /\.png$/,
