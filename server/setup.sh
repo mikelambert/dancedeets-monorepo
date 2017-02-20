@@ -58,8 +58,9 @@ ln -s ../../common node_modules/dancedeets-common
 cd $BASE_DIR/node_server
 npm install
 
+cd $BASE_DIR
 # Our replacement dev_appserver
-git clone https://github.com/Khan/frankenserver
+git clone https://github.com/Khan/frankenserver $BASE_DIR/frankenserver
 # Install the modules that make frankenserver amazing
 cd $BASE_DIR/frankenserver && pip install -r requirements.txt --user
 
