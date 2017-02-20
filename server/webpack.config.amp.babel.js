@@ -46,7 +46,7 @@ module.exports = {
       },
       {
         test: /\.s?css$/,
-        loader: ExtractTextPlugin.extract('style-loader', ['css-loader?sourceMap,-minimize', 'postcss-loader', 'resolve-url-loader', 'sass-loader?sourceMap']),
+        loader: ExtractTextPlugin.extract('style-loader', ['css-loader?sourceMap,-minimize', 'postcss-loader', 'sass-loader?sourceMap']),
       },
       {
         test: /\.png$/,
@@ -72,19 +72,17 @@ module.exports = {
   },
   postcss: () => [
     // This handles a bunch for us:
-    // sass: Preprocesses your CSS using Sass.
     // autoprefixer: Adds vendor prefixes to CSS, using Autoprefixer.
     // filters: Converts CSS shorthand filters to SVG equivalent
     // rem: Generates pixel fallbacks for rem units
     // pseudoElements: Converts pseudo-elements using CSS3 syntax
     //   (two-colons notation like ::after, ::before, ::first-line and ::first-letter) with the old one
     // opacity: Adds opacity filter for IE8 when using opacity property
-    // import: Inlines @import styles, using postcss-import and rebases URLs if needed.
     //
     // We intentionally don't do any minification, since we'd prefer to run uncss first
     pleeease({
       import: false,
-      rebase: false,
+      rebaseUrls: false,
       minifier: false,
       browsers: ['> 2%'],
     }),
