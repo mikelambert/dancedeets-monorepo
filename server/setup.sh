@@ -59,10 +59,15 @@ cd $BASE_DIR/node_server
 npm install
 
 cd $BASE_DIR
-# Our replacement dev_appserver
-git clone https://github.com/Khan/frankenserver $BASE_DIR/frankenserver
-# Install the modules that make frankenserver amazing
-cd $BASE_DIR/frankenserver && pip install $USER_FLAG -r requirements.txt
+
+# Don't try to install frankenserver on travis, since pyobjc is non-portable:
+# https://bugzilla.redhat.com/show_bug.cgi?id=1032491
+if [ "$TRAVIS" != true ]; then
+  # Our replacement dev_appserver
+  git clone https://github.com/Khan/frankenserver $BASE_DIR/frankenserver
+  # Install the modules that make frankenserver amazing
+  cd $BASE_DIR/frankenserver && pip install $USER_FLAG -r requirements.txt
+fi
 
 cd $BASE_DIR
 if [ "$TRAVIS" == true ]; then
