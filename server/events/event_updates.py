@@ -154,11 +154,19 @@ def _inner_make_event_findable_for_web_event(db_event, web_event, disable_update
 
     if web_event['start_time'].endswith('Z'):
         web_event['start_time'] = web_event['start_time'][:-1]
-    if web_event['end_time'].endswith('Z'):
+    if web_event['end_time'] and web_event['end_time'].endswith('Z'):
         web_event['end_time'] = web_event['start_time'][:-1]
-    db_event.start_time = datetime.datetime.strptime(web_event['start_time'], DATETIME_FORMAT)
+
+    try:
+        db_event.start_time = datetime.datetime.strptime(web_event['start_time'], DATETIME_FORMAT_TZ)
+    except ValueError:
+        db_event.start_time = datetime.datetime.strptime(web_event['start_time'], DATETIME_FORMAT)
+
     if web_event.get('end_time'):
-        db_event.end_time = datetime.datetime.strptime(web_event['end_time'], DATETIME_FORMAT)
+        try:
+            db_event.end_time = datetime.datetime.strptime(web_event['end_time'], DATETIME_FORMAT_TZ)
+        except ValueError:
+            db_event.end_time = datetime.datetime.strptime(web_event['end_time'], DATETIME_FORMAT)
     else:
         db_event.end_time = None
     db_event.search_time_period = _event_time_period(db_event)
