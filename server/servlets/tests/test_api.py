@@ -33,7 +33,7 @@ class TestAuth(unittest.TestCase):
         }
         fb_api.FBAPI.results = {
             url: (200, {'id': me_uid, 'name': 'Mike Lambert'}),
-            '/v2.8/me/events?since=yesterday&fields=id,rsvp_status&limit=5000': (200, {}),
+            '/v2.8/me/events?since=yesterday&fields=id,rsvp_status&limit=3000': (200, {}),
             '/v2.8/me/friends': (200, {}),
             '/v2.8/me/permissions': (200, {}),
             '/v2.8/debug_token?input_token=BlahToken': (200, {
