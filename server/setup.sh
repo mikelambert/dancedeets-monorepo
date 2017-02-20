@@ -62,7 +62,7 @@ cd $BASE_DIR
 # Our replacement dev_appserver
 git clone https://github.com/Khan/frankenserver $BASE_DIR/frankenserver
 # Install the modules that make frankenserver amazing
-cd $BASE_DIR/frankenserver && pip install -r requirements.txt --user
+cd $BASE_DIR/frankenserver && pip install $USER_FLAG -r requirements.txt
 
 cd $BASE_DIR
 if [ "$TRAVIS" == true ]; then
