@@ -17,7 +17,7 @@ install:
 # Set up and compile our project
 - npm install
 - cd common && npm install && cd ..
-- cd server && ./setup.sh
+- cd server && ./setup.sh && cd ..
 
 script: cd server && ./nose.sh --coverage --gae-lib-root=../google_appengine
 
