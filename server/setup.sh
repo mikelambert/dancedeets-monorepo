@@ -28,7 +28,7 @@ echo "Installing test libraries"
 # For testing, just install them locally (not in the lib/ dir).
 pip install --upgrade $USER_FLAG -r $BASE_DIR/test-requirements.txt
 
-echo "Installing test libraries"
+echo "Installing libraries necessary for scrapy"
 # For testing, just install them locally (not in the lib/ dir).
 pip install --upgrade $USER_FLAG -r $BASE_DIR/shub-local-requirements.txt
 
