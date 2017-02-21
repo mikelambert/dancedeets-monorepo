@@ -9,13 +9,14 @@ import moment from 'moment';
 import { intlShape } from 'react-intl';
 
 // TODO: combine this with mobile's formats.js
-export const weekdayDate = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+export const weekdayDate = { weekday: 'long', month: 'long', day: 'numeric' };
 export const weekdayTime = { hour: 'numeric', minute: 'numeric' };
 export const weekdayDateTime = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: 'numeric' };
 
 export function formatStartDateOnly(startString: string, intl: intlShape) {
   const now = moment(intl.now());
   const start = moment(startString, moment.ISO_8601);
+  console.log(weekDayDate, intl.formatDate(start.toDate(), weekdayDate));
   return upperFirst(intl.formatDate(start.toDate(), weekdayDate));
 }
 

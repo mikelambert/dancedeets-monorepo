@@ -155,7 +155,7 @@ class _EventDateTime extends React.Component {
     const formattedText = formatStartEnd(this.props.start, this.props.end, this.props.intl);
     return (<SubEventLine icon={require('./images/datetime.png')}>
       <View style={{ alignItems: 'flex-start' }}>
-        <Text style={[eventStyles.detailText, eventStyles.rowDateTime]}>{formattedText}</Text>
+        <Text style={eventStyles.detailText}>{formattedText}</Text>
         {this.props.children}
       </View>
     </SubEventLine>);
@@ -189,7 +189,7 @@ class _EventDateTimeShort extends React.Component {
     const formattedText = formatStartDateOnly(this.props.start, this.props.intl);
     return (<SubEventLine icon={require('./images/datetime.png')}>
       <View style={{ alignItems: 'flex-start' }}>
-        <Text style={[eventStyles.detailText, eventStyles.rowDateTime]}>{formattedText}</Text>
+        <Text style={eventStyles.detailText}>{formattedText}</Text>
         {this.props.children}
       </View>
     </SubEventLine>);
@@ -778,7 +778,7 @@ class _EventRow extends React.Component {
               </View>
               <View style={{ flex: 1 }}>
                 <EventCategories categories={this.props.event.annotations.categories} />
-                <EventDateTimeShort start={this.props.event.start_time} end={this.props.event.end_time} />
+                <EventDateTimeShort start={this.props.event.start_time} />
                 <EventVenueShort venue={this.props.event.venue} currentPosition={this.props.currentPosition} />
               </View>
             </HorizontalView>
@@ -787,7 +787,7 @@ class _EventRow extends React.Component {
       );
     } else {
       return (
-        <Card style={eventStyles.row}>
+        <View>
           <TouchableOpacity onPress={() => this.props.onEventSelected(this.props.event)} activeOpacity={0.5}>
             {imageProps.length ? <ProportionalImage
               source={imageProps}
@@ -800,10 +800,10 @@ class _EventRow extends React.Component {
               style={[eventStyles.rowTitle, eventStyles.rowLink]}
             >{this.props.event.name}</Text>
             <EventCategories categories={this.props.event.annotations.categories} />
-            <EventDateTimeShort start={this.props.event.start_time} end={this.props.event.end_time} />
+            <EventDateTimeShort start={this.props.event.start_time} />
             <EventVenueShort venue={this.props.event.venue} currentPosition={this.props.currentPosition} />
           </TouchableOpacity>
-        </Card>
+        </View>
       );
     }
   }
@@ -1022,9 +1022,6 @@ const eventStyles = StyleSheet.create({
     fontSize: semiNormalize(18),
     lineHeight: semiNormalize(22),
     margin: 5,
-  },
-  rowDateTime: {
-    color: '#C0FFC0',
   },
   rowLink: {
     color: linkColor,
