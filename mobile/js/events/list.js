@@ -26,16 +26,13 @@ import {
 import moment from 'moment';
 import { connect } from 'react-redux';
 import Carousel from 'react-native-carousel';
-import Icon from 'react-native-vector-icons/Ionicons';
 import upperFirst from 'lodash/upperFirst';
 import { Event } from 'dancedeets-common/js/events/models';
 import type {
   FeaturedInfo,
   Onebox,
-  PeopleListing,
   SearchResponse,
 } from 'dancedeets-common/js/events/search';
-import Collapsible from 'react-native-collapsible';
 import { EventRow } from './listEvent';
 import SearchHeader from './searchHeader';
 import type {
@@ -57,7 +54,6 @@ import {
   isAuthenticated,
 } from '../api/dancedeets';
 import {
-  BlurredImage,
   BottomFade,
   Button,
   CenterFade,
@@ -79,7 +75,7 @@ import {
   loadSavedAddress,
   storeSavedAddress,
 } from './savedAddress';
-import { openUserId } from '../util/fb';
+import PeopleView from './peopleList';
 
 const messages = defineMessages({
   fetchEventsError: {
@@ -292,134 +288,6 @@ class _AddEventButton extends React.Component {
   }
 }
 const AddEventButton = injectIntl(_AddEventButton);
-
-class PersonList extends React.Component {
-  props: {
-    title: String;
-    subtitle: String;
-    categoryOrder: Array<String>;
-    people: StylePersonLookup;
-  }
-
-  state: {
-    category: string;
-  }
-
-  constructor(props) {
-    super(props);
-    this.state = {
-      category: '',
-    };
-  }
-
-
-  renderLink(user) {
-    return (<HorizontalView key={user.id}>
-      <Text> – </Text>
-      <TouchableOpacity
-        key={user.id}
-        onPress={() => openUserId(user.id)}
-      ><Text style={[styles.rowLink]}>{user.name}</Text></TouchableOpacity>
-    </HorizontalView>);
-  }
-
-  render() {
-    const peopleList = this.props.people[this.state.category].slice(0, 10);
-    //const categories = this.props.categoryOrder.filter(x => x === '' || this.props.people[x]);
-    //{categories.map(x => <option key={x} value={x}>{x || 'Overall'}</option>)}
-
-    if (!peopleList.length) {
-      return null;
-    }
-
-    const id = peopleList[0]['id'];
-    const url = `https://graph.facebook.com/${id}/picture?type=large`;
-    return (<BlurredImage source={{uri: url}}>
-      <Text style={{ fontStyle: 'italic' }}>{this.props.subtitle}:</Text>
-      {peopleList.map(x => this.renderLink(x))}
-    </BlurredImage>);
-  }
-}
-
-class HeaderCollapsible extends React.Component {
-  props: {
-    defaultCollapsed: Boolean;
-    title: String;
-    children: React.Element<*>;
-  }
-
-  state: {
-    collapsed: boolean;
-  }
-
-  constructor(props) {
-    super(props);
-    this.state = { collapsed: !!props.defaultCollapsed };
-    (this: any)._toggle = this._toggle.bind(this);
-  }
-
-  _toggle() {
-    this.setState({ collapsed: !this.state.collapsed });
-  }
-
-  render() {
-    const iconName = this.state.collapsed ? 'md-arrow-dropright' : 'md-arrow-dropdown';
-    return <View>
-      <TouchableHighlight onPress={this._toggle} underlayColor={this.props.underlayColor}>
-        <View style={styles.sectionHeader}>
-          <HorizontalView>
-            <View style={{ width: 20, height: 20, alignItems: 'center', alignSelf: 'center' }}>
-              <Icon name={iconName} size={15} color="#FFF" />
-            </View>
-            <Text>{this.props.title}</Text>
-          </HorizontalView>
-        </View>
-      </TouchableHighlight>
-      <Collapsible collapsed={this.state.collapsed}>
-        {this.props.children}
-      </Collapsible>
-    </View>
-  }
-}
-
-class _PeopleView extends React.Component {
-  props: {
-    people: PeopleListing;
-  }
-
-  render() {
-    // Keep in sync with web?
-    const defaultCollapsed = !(this.props.search.response.results.length < 10);
-    return <View>
-      <HeaderCollapsible
-        title="Nearby Promoters"
-        defaultCollapsed={defaultCollapsed}
-        >
-        <PersonList
-          title="Promoters"
-          subtitle="If you want to organize an event, work with these folks"
-          people={this.props.people.ADMIN}
-          />
-      </HeaderCollapsible>
-      <HeaderCollapsible
-        title="Nearby Influencers"
-        defaultCollapsed={defaultCollapsed}
-        >
-        <PersonList
-          title="Influencers"
-          subtitle="If you want to connect with the dance scene, hit these folks up"
-          people={this.props.people.ATTENDEE}
-          defaultCollapsed={defaultCollapsed}
-          />
-      </HeaderCollapsible>
-    </View>;
-  }
-}
-const PeopleView = connect(
-  state => ({
-    search: state.search,
-  }),
-)(_PeopleView);
 
 class _EventListContainer extends React.Component {
   props: {
@@ -658,7 +526,10 @@ class _EventListContainer extends React.Component {
         featured={response.featuredInfos}
         onEventSelected={this.props.onFeaturedEventSelected}
         />
-      <PeopleView people={response.people} />
+      <PeopleView
+        people={response.people}
+        headerStyle={styles.sectionHeader}
+      />
       {header}
     </View>;
   }
