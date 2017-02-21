@@ -26,7 +26,7 @@ import {
   updateLocation,
   updateKeywords,
 } from '../actions';
-import { gradientTop, lightPurpleColors } from '../Colors';
+import { gradientBottom, gradientTop, lightPurpleColors } from '../Colors';
 
 const messages = defineMessages({
   location: {
@@ -147,7 +147,6 @@ class _SearchHeader extends React.Component {
 
     // Self-managed props
     intl: intlShape,
-    listLayout: boolean,
     searchQuery: SearchQuery,
     updateLocation: (location: string) => void,
     updateKeywords: (keywords: string) => void,
@@ -231,16 +230,6 @@ class _SearchHeader extends React.Component {
             icon={require('./images/add_calendar.png')}
             onPress={this.props.onAddEvent}
           />
-          <Button
-            size="small"
-            style={styles.toggleButton}
-            icon={
-              this.props.listLayout
-                ? require('./search-images/large-flyer.png')
-                : require('./search-images/small-flyer.png')
-            }
-            onPress={this.props.toggleLayout}
-          />
         </HorizontalView>
         {this.props.children}
         <AutocompleteList
@@ -270,7 +259,6 @@ class _SearchHeader extends React.Component {
 const SearchHeader = injectIntl(_SearchHeader);
 
 const mapStateToProps = state => ({
-  listLayout: state.search.listLayout,
   searchQuery: state.search.searchQuery,
 });
 const mapDispatchToProps = dispatch => ({
@@ -297,7 +285,7 @@ const styles = StyleSheet.create({
   },
   statusBar: {
     justifyContent: 'space-between',
-    backgroundColor: gradientTop,
+    backgroundColor: gradientBottom,
     paddingBottom: 4,
   },
   searchField: {

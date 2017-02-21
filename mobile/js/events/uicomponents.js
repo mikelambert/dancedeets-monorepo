@@ -24,10 +24,7 @@ import moment from 'moment';
 import geolib from 'geolib';
 import url from 'url';
 import querystring from 'querystring';
-import {
-  formatStartEnd,
-  formatStartDateOnly,
-} from 'dancedeets-common/js/dates';
+import { formatStartEnd } from 'dancedeets-common/js/dates';
 import { Event, Venue } from 'dancedeets-common/js/events/models';
 import messages from 'dancedeets-common/js/events/messages';
 import { formatAttending } from 'dancedeets-common/js/events/helpers';
@@ -168,46 +165,6 @@ class _EventDateTime extends React.Component {
 }
 const EventDateTime = injectIntl(_EventDateTime);
 
-class _EventDateTimeShort extends React.Component {
-  props: {
-    start: string,
-
-    // Self-managed props
-    intl: intlShape,
-    children: Array<React.Element<*>>,
-  };
-
-  _interval: number;
-
-  componentDidMount() {
-    // refresh our 'relative start offset' every minute
-    this._interval = setInterval(() => this.forceUpdate(), 60 * 1000);
-  }
-
-  componentWillUnmount() {
-    clearInterval(this._interval);
-  }
-
-  render() {
-    // Explicitly ignore the endtime in calling formatStartTime.
-    const formattedText = formatStartDateOnly(
-      this.props.start,
-      this.props.intl
-    );
-    return (
-      <SubEventLine icon={require('./images/datetime.png')}>
-        <View style={{ alignItems: 'flex-start' }}>
-          <Text style={[eventStyles.detailText]}>
-            {formattedText}
-          </Text>
-          {this.props.children}
-        </View>
-      </SubEventLine>
-    );
-  }
-}
-const EventDateTimeShort = injectIntl(_EventDateTimeShort);
-
 function formatDistance(intl, distanceKm) {
   const useKm = Locale.constants().usesMetricSystem;
   if (useKm) {
@@ -272,24 +229,6 @@ class _EventVenue extends React.Component {
   }
 }
 const EventVenue = injectIntl(_EventVenue);
-
-class EventVenueShort extends React.Component {
-  props: {
-    venue: Venue,
-    style?: View.propTypes.style,
-  };
-
-  render() {
-    if (!this.props.venue.address) {
-      return null;
-    }
-    return (
-      <Text style={[eventStyles.detailText, this.props.style]}>
-        {this.props.venue.cityState()}
-      </Text>
-    );
-  }
-}
 
 class _EventSource extends React.Component {
   constructor(props: Object) {
@@ -676,25 +615,8 @@ class _EventDescription extends React.Component {
     }
 
     return (
-      <Card
-        title={
-          <HorizontalView
-            style={[
-              eventStyles.splitButtons,
-              {
-                margin: 5,
-                alignItems: 'center',
-              },
-            ]}
-          >
-            <Text style={[eventStyles.rowTitle, eventStyles.rowTitlePadding]}>
-              {this.props.intl.formatMessage(messages.eventDetails)}
-            </Text>
-            {translation}
-          </HorizontalView>
-        }
-      >
-        {this.props.children}
+      <View style={{ margin: 5 }}>
+        {translation}
         <Autolink
           linkStyle={eventStyles.rowLink}
           style={eventStyles.description}
@@ -705,7 +627,7 @@ class _EventDescription extends React.Component {
           hashtag="instagram"
           twitter
         />
-      </Card>
+      </View>
     );
   }
 }
@@ -827,99 +749,6 @@ async function openVenueWithApp(venue: Venue) {
     console.error('Error opening map URL:', venueUrl, ', with Error:', err);
   }
 }
-
-class _EventRow extends React.Component {
-  props: {
-    onEventSelected: (x: Event) => void,
-    event: Event,
-    listLayout: boolean,
-  };
-
-  render() {
-    const imageProps = this.props.event.getResponsiveFlyers();
-    if (this.props.listLayout) {
-      return (
-        <View style={eventStyles.row}>
-          <TouchableOpacity
-            onPress={() => this.props.onEventSelected(this.props.event)}
-            activeOpacity={0.5}
-          >
-            <Text
-              numberOfLines={2}
-              style={[eventStyles.rowTitle, eventStyles.rowLink]}
-            >
-              {this.props.event.name}
-            </Text>
-            <HorizontalView>
-              <View style={{ width: 100 }}>
-                {imageProps.length
-                  ? <ProportionalImage
-                      source={imageProps}
-                      originalWidth={imageProps[imageProps.length - 1].width}
-                      originalHeight={imageProps[imageProps.length - 1].height}
-                      style={eventStyles.thumbnail}
-                    />
-                  : null}
-              </View>
-              <View style={{ flex: 1 }}>
-                <EventCategories
-                  categories={this.props.event.annotations.categories}
-                />
-                <EventDateTimeShort start={this.props.event.start_time} />
-                <EventVenueShort venue={this.props.event.venue} />
-              </View>
-            </HorizontalView>
-          </TouchableOpacity>
-        </View>
-      );
-    } else {
-      return (
-        <View>
-          <TouchableOpacity
-            onPress={() => this.props.onEventSelected(this.props.event)}
-            activeOpacity={0.5}
-          >
-            <HorizontalView>
-              <BlurredImage
-                source={imageProps}
-                style={{ height: 130, flex: 1 }}
-              >
-                <View style={{ flex: 1, margin: 5 }}>
-                  <Text
-                    numberOfLines={2}
-                    style={[
-                      eventStyles.rowTitle,
-                      { fontWeight: 'bold', flexShrink: 1 },
-                    ]}
-                  >
-                    {this.props.event.name}
-                  </Text>
-                  <EventVenueShort venue={this.props.event.venue} />
-                  <Text
-                    style={
-                      (eventStyles.detailText, {
-                        position: 'absolute',
-                        bottom: 0,
-                      })
-                    }
-                  >
-                    {this.props.event.annotations.categories
-                      .slice(0, 8)
-                      .join(', ')}
-                  </Text>
-                </View>
-              </BlurredImage>
-              <Image source={imageProps} style={{ height: 130, width: 130 }} />
-            </HorizontalView>
-          </TouchableOpacity>
-        </View>
-      );
-    }
-  }
-}
-export const EventRow = connect(state => ({
-  listLayout: state.search.listLayout,
-}))(_EventRow);
 
 class EventShare extends React.Component {
   props: {
@@ -1098,14 +927,16 @@ class _FullEventView extends React.Component {
     }
 
     return (
-      <ProgressiveLayout style={[eventStyles.container, { width }]}>
-        {flyer}
-        <Card
-          title={
-            <Text numberOfLines={2} style={eventStyles.rowTitle}>{name}</Text>
-          }
-        >
+      <BlurredImage source={imageProps} style={{ flex: 1 }}>
+        <ProgressiveLayout style={[eventStyles.container, { width }]}>
+          {flyer}
           <ProgressiveLayout>
+            <Text
+              numberOfLines={2}
+              style={[eventStyles.rowTitle, eventStyles.rowTitlePadding]}
+            >
+              {name}
+            </Text>
             <EventCategories
               categories={this.props.event.annotations.categories}
             />
@@ -1138,9 +969,9 @@ class _FullEventView extends React.Component {
               <EventShare event={this.props.event} />
             </HorizontalView>
           </ProgressiveLayout>
-        </Card>
-        <EventDescription event={this.props.event} />
-      </ProgressiveLayout>
+          <EventDescription event={this.props.event} />
+        </ProgressiveLayout>
+      </BlurredImage>
     );
   }
 }
@@ -1207,8 +1038,6 @@ const eventStyles = StyleSheet.create({
     flexGrow: 1,
     paddingHorizontal: 10,
     height: normalize(150),
-    marginLeft: 25,
     marginBottom: 10,
-    borderRadius: 5,
   },
 });

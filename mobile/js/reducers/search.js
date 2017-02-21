@@ -12,17 +12,13 @@ import type {
 import type { Action } from '../actions/types';
 
 export type State = {
-  listLayout: boolean, // should show list view or expanded view
   loading: boolean, // loading indicator
   searchQuery: SearchQuery, // our current search query
   response: ?SearchResponse, // our last-searched response
   error: boolean, // whether there was an error fetching the current results
 };
 
-// Use the smaller thumbnails by default on a larger screen
-const widescreen = Dimensions.get('window').width >= 768;
 const initialState = {
-  listLayout: widescreen,
   loading: false,
   searchQuery: {
     location: '',
@@ -54,7 +50,6 @@ export function search(state: State = initialState, action: Action): State {
   if (action.type === 'TOGGLE_LAYOUT') {
     return {
       ...state,
-      listLayout: !state.listLayout,
     };
   }
   if (action.type === 'UPDATE_KEYWORDS') {

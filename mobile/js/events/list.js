@@ -39,7 +39,7 @@ import type {
 } from 'dancedeets-common/js/events/search';
 import { formatStartDateOnly } from 'dancedeets-common/js/dates';
 import Collapsible from 'react-native-collapsible';
-import { EventRow } from './uicomponents';
+import { EventRow } from './listEvent';
 import SearchHeader from './searchHeader';
 import type { State } from '../reducers/search';
 import {
