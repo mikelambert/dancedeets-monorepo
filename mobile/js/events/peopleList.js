@@ -131,6 +131,10 @@ class HeaderCollapsible extends React.Component {
 class _PeopleView extends React.Component {
   props: {
     people: PeopleListing,
+    headerStyle: View.propTypes,
+
+    // Self-managed props
+    search: State,
   };
 
   render() {
@@ -150,6 +154,7 @@ class _PeopleView extends React.Component {
         <HeaderCollapsible
           title="Nearby Dancers"
           defaultCollapsed={defaultCollapsed}
+          style={this.props.headerStyle}
         >
           <PersonList
             subtitle="If you want to connect with the dance scene, hit these folks up"
