@@ -6,7 +6,7 @@ RESULT=$?
 
 if [ -n "$FILES" ]; then
     >&2 echo 'Found unexpected .so files:'
-    >&2 echo $FILES
+    >&2 echo "$FILES"
 fi
 
 exit $RESULT

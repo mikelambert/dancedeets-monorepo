@@ -19,6 +19,7 @@ import taskListing from 'gulp-task-listing';
 import yaml from 'js-yaml';
 import yargs from 'yargs';
 import process from 'process';
+import childProcess from 'child_process';
 
 const argv = yargs
   .option('d', {
@@ -199,7 +200,32 @@ gulp.task('deploy:scrapy', $.shell.task([
 ]));
 gulp.task('deploy:cleanup-files', () => del.sync('lib/setuptools/script (dev).tmpl'))
 
-gulp.task('deploy:server:fast', $.shell.task(['./tools/check_for_native_modules.sh', 'gcloud app deploy app.yaml --quiet']));
+function executeCommand(command) {
+  return new Promise(function (resolve, reject) {
+    var ls = childProcess.spawn('sh', ['-c', command], {
+      stdio: ['inherit', 'inherit', 'inherit'],
+    });
+
+    ls.on('error', reject);
+    ls.on('exit', (code) => {
+      if (code === 0) {
+        resolve();
+      } else {
+        reject(code);
+      }
+    });
+  });
+}
+
+// We cannot use $.shell.task here because of a gcloud issue:
+// https://code.google.com/p/google-cloud-sdk/issues/detail?id=850
+// That can be resolved with these workarounds:
+// http://stackoverflow.com/questions/32623815/simple-gulp-task-to-deploy-to-google-app-engine-and-stream-output-to-console
+// At least, until/if gulp-shell is fixed to work around it:
+// https://github.com/sun-zheng-an/gulp-shell/issues/84
+gulp.task('deploy:server:toofast', () => executeCommand('gcloud app deploy app.yaml --quiet'));
+gulp.task('deploy:server:prepush', $.shell.task(['./tools/check_for_native_modules.sh']));
+gulp.task('deploy:server:fast', cb => runSequence('deploy:server:prepush', 'deploy:server:toofast', cb));
 gulp.task('deploy:server', cb => runSequence('deploy:cleanup-files', 'compile', 'deploy:server:fast', cb));
 
 gulp.task('deploy', ['deploy:server', 'deploy:scrapy']);
