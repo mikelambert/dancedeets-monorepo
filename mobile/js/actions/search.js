@@ -42,12 +42,6 @@ export function performSearch(): ThunkAction {
   };
 }
 
-export function toggleLayout(): Action {
-  return {
-    type: 'TOGGLE_LAYOUT',
-  };
-}
-
 export function detectedLocation(location: string): ThunkAction {
   return async (dispatch: Dispatch) => {
     await dispatch({

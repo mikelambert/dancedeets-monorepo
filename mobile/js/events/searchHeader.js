@@ -20,12 +20,7 @@ import { defineMessages, injectIntl, intlShape } from 'react-intl';
 import { Event } from 'dancedeets-common/js/events/models';
 import type { SearchQuery } from 'dancedeets-common/js/events/search';
 import { AutocompleteList, Button, defaultFont, HorizontalView } from '../ui';
-import {
-  performSearch,
-  toggleLayout,
-  updateLocation,
-  updateKeywords,
-} from '../actions';
+import { performSearch, updateLocation, updateKeywords } from '../actions';
 import { gradientBottom, gradientTop, lightPurpleColors } from '../Colors';
 
 const messages = defineMessages({
@@ -151,7 +146,6 @@ class _SearchHeader extends React.Component {
     updateLocation: (location: string) => void,
     updateKeywords: (keywords: string) => void,
     performSearch: () => Promise<void>,
-    toggleLayout: () => Promise<void>,
   };
 
   state: {
@@ -270,9 +264,6 @@ const mapDispatchToProps = dispatch => ({
   },
   performSearch: async () => {
     await dispatch(performSearch());
-  },
-  toggleLayout: async () => {
-    await dispatch(toggleLayout());
   },
 });
 export default connect(mapStateToProps, mapDispatchToProps)(SearchHeader);

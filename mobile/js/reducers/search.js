@@ -47,11 +47,6 @@ export function search(state: State = initialState, action: Action): State {
       searchQuery,
     };
   }
-  if (action.type === 'TOGGLE_LAYOUT') {
-    return {
-      ...state,
-    };
-  }
   if (action.type === 'UPDATE_KEYWORDS') {
     const searchQuery = {
       ...state.searchQuery,

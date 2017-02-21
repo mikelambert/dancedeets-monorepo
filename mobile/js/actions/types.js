@@ -57,7 +57,6 @@ export type Action =
   | { type: 'LOGIN_LOADED_USER', user: User }
   | { type: 'LOGIN_SKIPPED' }
   | { type: 'DETECTED_LOCATION', location: string }
-  | { type: 'TOGGLE_LAYOUT' }
   | { type: 'UPDATE_LOCATION', location: string }
   | { type: 'UPDATE_KEYWORDS', keywords: string }
   | { type: 'START_SEARCH' }
