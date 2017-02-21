@@ -209,6 +209,7 @@ countries_abbrev2full = {
     "SO": "Somalia",
     "ZA": "South Africa",
     "GS": "South Georgia and the South Sandwich Islands",
+    "SS": "South Sudan",
     "ES": "Spain",
     "LK": "Sri Lanka",
     "SD": "Sudan",
