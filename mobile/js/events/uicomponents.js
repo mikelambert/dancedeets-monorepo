@@ -75,11 +75,12 @@ class SubEventLine extends React.Component {
   props: {
     icon: any;
     children?: React.Element<*>;
+    style: View.PropTypes;
   };
 
   render() {
     return (
-      <HorizontalView style={eventStyles.detailLine}>
+      <HorizontalView style={[eventStyles.detailLine, this.props.style]}>
         <Image key="image" source={this.props.icon} style={eventStyles.detailIcon} />
         <View style={eventStyles.detailTextContainer}>
           {this.props.children}
@@ -157,7 +158,7 @@ class _EventDateTime extends React.Component {
   render() {
     const formattedText = formatStartEnd(this.props.start, this.props.end, this.props.intl);
     return (<SubEventLine icon={require('./images/datetime.png')}>
-      <View style={{ alignItems: 'flex-start' }}>
+      <View style={{ flexGrow: 1, alignItems: 'flex-start', paddingRight: 10 }}>
         <Text style={eventStyles.detailText}>{formattedText}</Text>
         {this.props.children}
       </View>
@@ -213,9 +214,21 @@ class _EventVenue extends React.Component {
       const km = geolib.getDistance(this.props.currentPosition.coords, this.props.venue.geocode) / 1000;
       distanceComponent = <Text>{formatDistance(this.props.intl, km)}</Text>;
     }
+
+    const map = this.props.venue.geocode
+      ? <EventMap venue={this.props.venue} defaultSize={0.005} />
+      : null;
+
+    const maxWidth = Dimensions.get('window').width - normalize(100);
+
     return (<SubEventLine icon={require('./images/location.png')}>
-      {components}
-      {distanceComponent}
+      <HorizontalView>
+        <View style={{ maxWidth }}>
+          {components}
+          {distanceComponent}
+        </View>
+        {map}
+      </HorizontalView>
     </SubEventLine>);
   }
 }
@@ -513,7 +526,7 @@ class _EventRsvp extends React.Component {
       // TODO: Maybe make a pop-out to show the list-of-users-attending prepended by DD users
       const countsText = <Text style={eventStyles.detailText}>{counts}</Text>;
       const rsvpControl = (this.props.event.source.name === 'Facebook Event') ? <EventRsvpControl event={this.props.event} /> : null;
-      return (<SubEventLine icon={require('./images/attending.png')}>
+      return (<SubEventLine icon={require('./images/attending.png')} style={{ marginRight: 20 }}>
         {countsText}
         {rsvpControl}
       </SubEventLine>);
@@ -527,7 +540,6 @@ const EventRsvp = injectIntl(_EventRsvp);
 class _EventDescription extends React.Component {
   props: {
     event: Event;
-    children: Array<React.Element<*>>;
 
     // Self-managed props
     intl: intlShape;
@@ -541,13 +553,7 @@ class _EventDescription extends React.Component {
       description = translatedEvent.translation.description;
     }
 
-    let translation = null;
-    if (this.props.event.language != this.props.intl.locale) {
-      translation = <EventTranslate event={this.props.event} />;
-    }
-
     return (<View style={{margin: 5}}>
-      {translation}
       <Autolink
         linkStyle={eventStyles.rowLink}
         style={eventStyles.description}
@@ -568,6 +574,23 @@ const EventDescription = connect(
   }),
 )(injectIntl(_EventDescription));
 
+class _TranslateButton extends React.Component {
+  props: {
+    event: Event;
+
+    // Self-managed props
+    intl: intlShape;
+  }
+
+  render() {
+    if (this.props.event.language != this.props.intl.locale) {
+      return <EventTranslate event={this.props.event} />;
+    } else {
+      return null;
+    }
+  }
+}
+const TranslateButton = injectIntl(_TranslateButton);
 
 class EventMap extends React.Component {
   props: {
@@ -814,10 +837,6 @@ class _FullEventView extends React.Component {
         </TouchableOpacity>);
     }
 
-    const map = this.props.event.venue.geocode
-      ? <EventMap venue={this.props.event.venue} style={eventStyles.eventMap} defaultSize={0.005} />
-      : null;
-
     let name = this.props.event.name;
     const translatedEvent = this.props.translatedEvents[this.props.event.id];
     if (translatedEvent && translatedEvent.visible) {
@@ -832,28 +851,26 @@ class _FullEventView extends React.Component {
           style={[eventStyles.container, { width }]}
         >
           {flyer}
-            <ProgressiveLayout>
-              <Text
-                numberOfLines={2}
-                style={[eventStyles.rowTitle, eventStyles.rowTitlePadding]}
-              >{name}</Text>
-              <EventCategories categories={this.props.event.annotations.categories} />
-              <EventRsvp event={this.props.event} />
-              <EventDateTime start={this.props.event.start_time} end={this.props.event.end_time} >
-                <AddToCalendarButton event={this.props.event} style={{ marginTop: 5 }} />
-              </EventDateTime>
-              <TouchableOpacity onPress={this.onLocationClicked} activeOpacity={0.5}>
-                <EventVenue style={eventStyles.rowLink} venue={this.props.event.venue} currentPosition={this.props.currentPosition} />
-                {map}
-              </TouchableOpacity>
-              <EventTickets event={this.props.event} />
-              <EventSource event={this.props.event} />
-              <EventAddedBy event={this.props.event} />
-              <EventOrganizers event={this.props.event} />
-              <HorizontalView style={eventStyles.splitButtons}>
-                <EventShare event={this.props.event} />
-              </HorizontalView>
-            </ProgressiveLayout>
+          <Text
+            numberOfLines={2}
+            style={[eventStyles.rowTitle, eventStyles.rowTitlePadding]}
+          >{name}</Text>
+          <EventCategories categories={this.props.event.annotations.categories} />
+          <EventDateTime start={this.props.event.start_time} end={this.props.event.end_time} >
+            <AddToCalendarButton event={this.props.event} style={{ marginTop: 5 }} />
+          </EventDateTime>
+          <EventRsvp event={this.props.event} />
+          <EventTickets event={this.props.event} />
+          <TouchableOpacity onPress={this.onLocationClicked} activeOpacity={0.5}>
+            <EventVenue style={eventStyles.rowLink} venue={this.props.event.venue} currentPosition={this.props.currentPosition} />
+          </TouchableOpacity>
+          <EventSource event={this.props.event} />
+          <EventAddedBy event={this.props.event} />
+          <EventOrganizers event={this.props.event} />
+          <HorizontalView style={eventStyles.splitButtons}>
+            <EventShare event={this.props.event} />
+            <TranslateButton event={this.props.event} />
+          </HorizontalView>
           <EventDescription event={this.props.event} />
         </ProgressiveLayout>
       </BlurredImage>
@@ -925,8 +942,7 @@ const eventStyles = StyleSheet.create({
   },
   eventMap: {
     flexGrow: 1,
-    paddingHorizontal: 10,
+    marginLeft: 10,
     height: normalize(150),
-    marginBottom: 10,
   },
 });
