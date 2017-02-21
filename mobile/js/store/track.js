@@ -32,7 +32,7 @@ import type { Event } from 'dancedeets-common/js/events/models';
 import { performRequest } from '../api/fb';
 import type { Action } from '../actions/types';
 
-let trackingEnabled = true;
+let trackingEnabled = (DeviceInfo.getModel() != 'Calypso AppCrawler');
 
 export function disableTracking() {
   trackingEnabled = false;
