@@ -16,7 +16,6 @@ export const weekdayDateTime = { weekday: 'long', year: 'numeric', month: 'long'
 export function formatStartDateOnly(startString: string, intl: intlShape) {
   const now = moment(intl.now());
   const start = moment(startString, moment.ISO_8601);
-  console.log(weekDayDate, intl.formatDate(start.toDate(), weekdayDate));
   return upperFirst(intl.formatDate(start.toDate(), weekdayDate));
 }
 
