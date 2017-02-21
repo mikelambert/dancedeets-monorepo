@@ -324,22 +324,25 @@ class DBEvent(ndb.Model):
         else:
             return event_locations.get_fb_place_name(self.fb_event)
 
+    def rebuild_venue(self):
+        geocode = self.get_geocode()
+        venue = {
+            'country': geocode.country(long=True),
+        }
+        city = formatting.get_city(geocode)
+        if city:
+            venue['city'] = city
+        state = formatting.get_state(geocode)
+        if state:
+            venue['state'] = state
+        return venue
+
     @property
     def venue(self):
         if self.web_event:
-            geocode = self.get_geocode()
-            venue = {
-                'country': geocode.country(long=True),
-            }
-            city = formatting.get_city(geocode)
-            if city:
-                venue['city'] = city
-            state = formatting.get_state(geocode)
-            if state:
-                venue['state'] = state
-            return venue
+            return self.rebuild_venue()
         else:
-            return event_locations.get_fb_place(self.fb_event)
+            return event_locations.get_fb_place(self.fb_event) or self.rebuild_venue()
 
     @property
     def venue_id(self):
