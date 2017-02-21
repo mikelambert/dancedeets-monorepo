@@ -1,4 +1,22 @@
 
+def get_city(geocode):
+    country = geocode.get_component('country', long=False)
+    if not country:
+        return geocode.get_component('administrative_area_level_2')
+    elif country in ['US', 'CA', 'AU', 'MX', 'MY', 'ID', 'JP', 'HK', 'TW']:
+        return geocode.get_component('locality')
+    else:
+        return geocode.get_component('locality')
+
+def get_state(geocode):
+    country = geocode.get_component('country', long=False)
+    if not country:
+        return geocode.get_component('administrative_area_level_1'),
+    elif country in ['US', 'CA', 'AU', 'MX', 'MY', 'ID', 'JP', 'HK', 'TW']:
+        return geocode.get_component('administrative_area_level_1', long=False) or geocode.get_component('administrative_area_level_2', long=False)
+    else:
+        return ''
+
 def _get_formatting_parts(geocode, include_neighborhood):
     if not geocode:
         return []
