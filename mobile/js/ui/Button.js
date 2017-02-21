@@ -100,13 +100,13 @@ class Button extends React.Component {
   render() {
     const size = this.props.size === 'small' ? styles.smallButton : styles.largeButton;
     let colors = null;
-    if (this.props.color === 'purple') {
+    if (this.props.color === 'grey') {
       colors = [purpleColors[1], purpleColors[3], purpleColors[3]];
     } else if (this.props.color === 'yellow') {
       colors = [yellowColors[1], yellowColors[4], yellowColors[4]];
     } else if (this.props.color === 'red') {
       colors = [redColors[0], redColors[1], redColors[1]];
-    } else if (this.props.color === 'green') {
+    } else if (this.props.color === 'green' || this.props.color === 'purple') {
       colors = [greenColors[0], greenColors[1], greenColors[1]];
     }
     const buttonContents = (<LinearGradient

@@ -14,18 +14,18 @@ export const yellowColors = [
 ];
 
 export const lightPurpleColors = [
-  '#E0E0F5',
-  '#D0D0F0',
-  '#C0C0D0',
+  '#EEE',
+  '#DDD',
+  '#CCC',
 ];
 
 export const purpleColors = [
-  '#8283A9',
-  '#656595',
-  '#4C4D81',
-  '#333452',
-  '#222238',
-  '#171728',
+  '#AAA',
+  '#666',
+  '#555',
+  '#333',
+  '#222',
+  '#111',
 ];
 
 export const redColors = [
@@ -34,8 +34,8 @@ export const redColors = [
 ];
 
 export const greenColors = [
-  '#449B37',
-  '#005000',
+  '#5F70B6',
+  '#4F5086',
 ];
 
 const fbBlueColor = '#415DAE';
@@ -46,5 +46,5 @@ export const lightText = yellowColors[0];
 
 export const linkColor = blueColor;
 
-export const gradientTop = '#5F70B6';
-export const gradientBottom = '#4F5086';
+export const gradientTop = '#333';
+export const gradientBottom = '#111';

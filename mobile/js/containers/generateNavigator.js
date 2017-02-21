@@ -38,6 +38,7 @@ import {
   Text,
 } from '../ui';
 import {
+  gradientBottom,
   gradientTop,
   purpleColors,
 } from '../Colors';
@@ -133,7 +134,7 @@ class _Navigator extends React.Component {
     // 0.33: Disable for now, as it doesn't appear to work: <GradientBar style={styles.navHeader}>
     return (<NavigationHeader
       {...props}
-      style={[styles.navHeader, { backgroundColor: gradientTop, borderBottomWidth: 0 }]}
+      style={[styles.navHeader, { backgroundColor: gradientBottom, borderBottomWidth: 0 }]}
       renderLeftComponent={this.renderLeft}
       renderTitleComponent={this.renderTitle}
       renderRightComponent={this.renderRight}
