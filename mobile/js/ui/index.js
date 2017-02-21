@@ -5,6 +5,7 @@
  */
 
 import AutocompleteList from './AutocompleteList';
+import BlurredImage from './blurredImage';
 import BottomFade from './bottomFade';
 import Button from './Button';
 import Card from './Card';
@@ -22,6 +23,7 @@ import * as normalize from './normalize';
 
 module.exports = {
   AutocompleteList,
+  BlurredImage,
   BottomFade,
   Button,
   Card,

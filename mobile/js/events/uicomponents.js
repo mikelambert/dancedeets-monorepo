@@ -33,6 +33,7 @@ import messages from 'dancedeets-common/js/events/messages';
 import { formatAttending } from 'dancedeets-common/js/events/helpers';
 import {
   Autolink,
+  BlurredImage,
   Button,
   Card,
   FBShareButton,
@@ -283,11 +284,9 @@ class EventVenueShort extends React.Component {
       return null;
     }
     return (
-      <SubEventLine icon={require('./images/location.png')}>
-        <Text style={[eventStyles.detailText, this.props.style]}>
-          {this.props.venue.cityState()}
-        </Text>
-      </SubEventLine>
+      <Text style={[eventStyles.detailText, this.props.style]}>
+        {this.props.venue.cityState()}
+      </Text>
     );
   }
 }
@@ -688,7 +687,7 @@ class _EventDescription extends React.Component {
               },
             ]}
           >
-            <Text style={eventStyles.rowTitle}>
+            <Text style={[eventStyles.rowTitle, eventStyles.rowTitlePadding]}>
               {this.props.intl.formatMessage(messages.eventDetails)}
             </Text>
             {translation}
@@ -875,30 +874,43 @@ class _EventRow extends React.Component {
       );
     } else {
       return (
-        <View style={eventStyles.row}>
+        <View>
           <TouchableOpacity
             onPress={() => this.props.onEventSelected(this.props.event)}
             activeOpacity={0.5}
           >
-            {imageProps.length
-              ? <ProportionalImage
-                  source={imageProps}
-                  originalWidth={imageProps[imageProps.length - 1].width}
-                  originalHeight={imageProps[imageProps.length - 1].height}
-                  style={eventStyles.thumbnail}
-                />
-              : null}
-            <Text
-              numberOfLines={2}
-              style={[eventStyles.rowTitle, eventStyles.rowLink]}
-            >
-              {this.props.event.name}
-            </Text>
-            <EventCategories
-              categories={this.props.event.annotations.categories}
-            />
-            <EventDateTimeShort start={this.props.event.start_time} />
-            <EventVenueShort venue={this.props.event.venue} />
+            <HorizontalView>
+              <BlurredImage
+                source={imageProps}
+                style={{ height: 130, flex: 1 }}
+              >
+                <View style={{ flex: 1, margin: 5 }}>
+                  <Text
+                    numberOfLines={2}
+                    style={[
+                      eventStyles.rowTitle,
+                      { fontWeight: 'bold', flexShrink: 1 },
+                    ]}
+                  >
+                    {this.props.event.name}
+                  </Text>
+                  <EventVenueShort venue={this.props.event.venue} />
+                  <Text
+                    style={
+                      (eventStyles.detailText, {
+                        position: 'absolute',
+                        bottom: 0,
+                      })
+                    }
+                  >
+                    {this.props.event.annotations.categories
+                      .slice(0, 8)
+                      .join(', ')}
+                  </Text>
+                </View>
+              </BlurredImage>
+              <Image source={imageProps} style={{ height: 130, width: 130 }} />
+            </HorizontalView>
           </TouchableOpacity>
         </View>
       );
@@ -1156,6 +1168,8 @@ const eventStyles = StyleSheet.create({
   rowTitle: {
     fontSize: semiNormalize(18),
     lineHeight: semiNormalize(22),
+  },
+  rowTitlePadding: {
     margin: 5,
   },
   rowLink: {
