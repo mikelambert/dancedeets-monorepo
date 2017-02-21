@@ -52,6 +52,7 @@ import type { User } from '../actions/types';
 import { linkColor, purpleColors } from '../Colors';
 import { auth, isAuthenticated } from '../api/dancedeets';
 import {
+  BlurredImage,
   BottomFade,
   Button,
   HorizontalView,
@@ -344,11 +345,17 @@ class PersonList extends React.Component {
     // const categories = this.props.categoryOrder.filter(x => x === '' || this.props.people[x]);
     // {categories.map(x => <option key={x} value={x}>{x || 'Overall'}</option>)}
 
+    if (!peopleList.length) {
+      return null;
+    }
+
+    const id = peopleList[0]['id'];
+    const url = `https://graph.facebook.com/${id}/picture?type=large`;
     return (
-      <View>
+      <BlurredImage source={{ uri: url }}>
         <Text style={{ fontStyle: 'italic' }}>{this.props.subtitle}:</Text>
         {peopleList.map(x => this.renderLink(x))}
-      </View>
+      </BlurredImage>
     );
   }
 }
