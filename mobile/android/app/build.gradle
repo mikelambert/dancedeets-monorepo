@@ -6,18 +6,21 @@ import com.android.build.OutputFile
 buildscript {
     repositories {
         maven { url 'https://maven.fabric.io/public' }
+        maven { url 'https://github.com/500px/500px-android-blur/raw/master/releases/' }
     }
     dependencies {
         // The Fabric Gradle plugin uses an open ended version to react
         // quickly to Android tooling updates
         classpath 'io.fabric.tools:gradle:1.+'
+        // For our blurring view
+        classpath 'com.fivehundredpx:blurringview:1.0.0'
     }
 }
 apply plugin: 'io.fabric'
 repositories {
     maven { url 'https://maven.fabric.io/public' }
+    maven { url 'https://github.com/500px/500px-android-blur/raw/master/releases/' }
 }
-
 
 /**
  * The react.gradle file registers a task for each build variant (e.g. bundleDebugJsAndAssets
@@ -185,8 +188,12 @@ configurations.all {
 }
 
 dependencies {
+<<<<<<< HEAD
     compile fileTree(dir: "libs", include: ["*.jar"])
 
+=======
+    compile project(':react-native-blur')
+>>>>>>> d7852749... Add react-native-blur again.
     compile project(':react-native-vector-icons')
     compile project(':react-native-send-intent')
     compile project(':react-native-device-info')

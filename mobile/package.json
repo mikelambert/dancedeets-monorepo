@@ -24,6 +24,7 @@
     "react-native-admob": "^1.0.0",
     "react-native-autolink": "^0.7.0",
     "react-native-back-android": "^2.0.1",
+    "react-native-blur": "^1.2.1",
     "react-native-calendar-events": "github:mikelambert/react-native-calendar-events",
     "react-native-carousel": "^0.10.0",
     "react-native-code-push": "^2.0.3-beta",
