@@ -36,7 +36,7 @@ import type {
   SearchResponse,
 } from 'dancedeets-common/js/events/search';
 import Collapsible from 'react-native-collapsible';
-import { EventRow } from './uicomponents';
+import { EventRow } from './listEvent';
 import SearchHeader from './searchHeader';
 import type {
   State,

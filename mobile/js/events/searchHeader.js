@@ -35,6 +35,7 @@ import {
   updateKeywords,
 } from '../actions';
 import {
+  gradientBottom,
   gradientTop,
   lightPurpleColors,
 } from '../Colors';
@@ -286,7 +287,7 @@ const styles = StyleSheet.create({
   },
   statusBar: {
     justifyContent: 'space-between',
-    backgroundColor: gradientTop,
+    backgroundColor: gradientBottom,
     paddingBottom: 4,
   },
   searchField: {

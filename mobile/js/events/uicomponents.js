@@ -30,9 +30,11 @@ import url from 'url';
 import querystring from 'querystring';
 import {
   formatStartEnd,
-  formatStartDateOnly,
 } from 'dancedeets-common/js/dates';
-import { Event, Venue } from 'dancedeets-common/js/events/models';
+import {
+  Event,
+  Venue,
+  } from 'dancedeets-common/js/events/models';
 import messages from 'dancedeets-common/js/events/messages';
 import {
   formatAttending,
@@ -164,40 +166,6 @@ class _EventDateTime extends React.Component {
 }
 const EventDateTime = injectIntl(_EventDateTime);
 
-class _EventDateTimeShort extends React.Component {
-  props: {
-    start: string;
-    end: string;
-
-    // Self-managed props
-    intl: intlShape;
-    children: Array<React.Element<*>>;
-  }
-
-  _interval: number;
-
-  componentDidMount() {
-    // refresh our 'relative start offset' every minute
-    this._interval = setInterval(() => this.forceUpdate(), 60 * 1000);
-  }
-
-  componentWillUnmount() {
-    clearInterval(this._interval);
-  }
-
-  render() {
-    // Explicitly ignore the endtime in calling formatStartTime.
-    const formattedText = formatStartDateOnly(this.props.start, this.props.intl);
-    return (<SubEventLine icon={require('./images/datetime.png')}>
-      <View style={{ alignItems: 'flex-start' }}>
-        <Text style={eventStyles.detailText}>{formattedText}</Text>
-        {this.props.children}
-      </View>
-    </SubEventLine>);
-  }
-}
-const EventDateTimeShort = injectIntl(_EventDateTimeShort);
-
 function formatDistance(intl, distanceKm) {
   const useKm = Locale.constants().usesMetricSystem;
   if (useKm) {
@@ -252,28 +220,6 @@ class _EventVenue extends React.Component {
   }
 }
 const EventVenue = injectIntl(_EventVenue);
-
-class _EventVenueShort extends React.Component {
-  props: {
-    venue: Venue;
-    style: View.propTypes.style;
-
-    currentPosition: ?Object;
-
-    // Self-managed props
-    intl: intlShape;
-  }
-
-  render() {
-    if (!this.props.venue.address) {
-      return null;
-    }
-    return (<Text
-        style={[eventStyles.detailText, this.props.style]}
-      >{this.props.venue.cityState()}</Text>);
-  }
-}
-const EventVenueShort = injectIntl(_EventVenueShort);
 
 class _EventSource extends React.Component {
   constructor(props: Object) {
@@ -600,20 +546,8 @@ class _EventDescription extends React.Component {
       translation = <EventTranslate event={this.props.event} />;
     }
 
-    return (<Card
-      title={
-        <HorizontalView
-          style={[eventStyles.splitButtons, {
-            margin: 5,
-            alignItems: 'center',
-          }]}
-        >
-          <Text style={[eventStyles.rowTitle, eventStyles.rowTitlePadding]}>{this.props.intl.formatMessage(messages.eventDetails)}</Text>
-          {translation}
-        </HorizontalView>
-    }
-    >
-      {this.props.children}
+    return (<View style={{margin: 5}}>
+      {translation}
       <Autolink
         linkStyle={eventStyles.rowLink}
         style={eventStyles.description}
@@ -624,7 +558,7 @@ class _EventDescription extends React.Component {
         hashtag="instagram"
         twitter
       />
-    </Card>);
+    </View>);
   }
 }
 
@@ -746,79 +680,6 @@ async function openVenueWithApp(venue: Venue) {
     console.error('Error opening map URL:', venueUrl, ', with Error:', err);
   }
 }
-
-
-class _EventRow extends React.Component {
-  props: {
-    onEventSelected: (x: Event) => void,
-    event: Event,
-    listLayout: boolean,
-    currentPosition: ?Object,
-  };
-
-  render() {
-    const imageProps = this.props.event.getResponsiveFlyers();
-    if (this.props.listLayout) {
-      return (
-        <Card style={eventStyles.row}>
-          <TouchableOpacity onPress={() => this.props.onEventSelected(this.props.event)} activeOpacity={0.5}>
-            <Text
-              numberOfLines={2}
-              style={[eventStyles.rowTitle, eventStyles.rowLink]}
-            >{this.props.event.name}</Text>
-            <HorizontalView>
-              <View style={{ width: 100 }}>
-                {imageProps.length ? <ProportionalImage
-                  source={imageProps}
-                  originalWidth={imageProps[imageProps.length - 1].width}
-                  originalHeight={imageProps[imageProps.length - 1].height}
-                  style={eventStyles.thumbnail}
-                /> : null}
-              </View>
-              <View style={{ flex: 1 }}>
-                <EventCategories categories={this.props.event.annotations.categories} />
-                <EventDateTimeShort start={this.props.event.start_time} />
-                <EventVenueShort venue={this.props.event.venue} currentPosition={this.props.currentPosition} />
-              </View>
-            </HorizontalView>
-          </TouchableOpacity>
-        </Card>
-      );
-    } else {
-      return (
-        <View>
-          <TouchableOpacity onPress={() => this.props.onEventSelected(this.props.event)} activeOpacity={0.5}>
-            <HorizontalView>
-              <BlurredImage source={imageProps}
-                style={{height: 130, flex: 1}}
-              >
-                <View style={{flex: 1, margin: 5}}>
-                  <Text
-                    numberOfLines={2}
-                    style={[eventStyles.rowTitle, {fontWeight: 'bold', flexShrink: 1}]}
-                  >{this.props.event.name}</Text>
-                  <EventVenueShort venue={this.props.event.venue} currentPosition={this.props.currentPosition} />
-                  <Text
-                    style={eventStyles.detailText, {position: 'absolute', bottom: 0}}
-                  >{this.props.event.annotations.categories.slice(0, 8).join(', ')}</Text>
-                </View>
-              </BlurredImage>
-              <Image
-                source={imageProps}
-                style={{height: 130, width: 130}}
-              />
-            </HorizontalView>
-          </TouchableOpacity>
-        </View>
-      );
-    }
-  }
-}
-export const EventRow = connect(
-  state => ({
-    listLayout: state.search.listLayout,
-  }),
-)(_EventRow);
 
 class EventShare extends React.Component {
   props: {
@@ -964,39 +825,38 @@ class _FullEventView extends React.Component {
     }
 
     return (
-      <ProgressiveLayout
-        style={[eventStyles.container, { width }]}
+      <BlurredImage source={imageProps}
+        style={{flex: 1}}
       >
-        {flyer}
-        <Card
-          title={
-            <Text
-              numberOfLines={2}
-              style={eventStyles.rowTitle}
-            >{name}</Text>
-          }
+        <ProgressiveLayout
+          style={[eventStyles.container, { width }]}
         >
-          <ProgressiveLayout>
-            <EventCategories categories={this.props.event.annotations.categories} />
-            <EventRsvp event={this.props.event} />
-            <EventDateTime start={this.props.event.start_time} end={this.props.event.end_time} >
-              <AddToCalendarButton event={this.props.event} style={{ marginTop: 5 }} />
-            </EventDateTime>
-            <TouchableOpacity onPress={this.onLocationClicked} activeOpacity={0.5}>
-              <EventVenue style={eventStyles.rowLink} venue={this.props.event.venue} currentPosition={this.props.currentPosition} />
-              {map}
-            </TouchableOpacity>
-            <EventTickets event={this.props.event} />
-            <EventSource event={this.props.event} />
-            <EventAddedBy event={this.props.event} />
-            <EventOrganizers event={this.props.event} />
-            <HorizontalView style={eventStyles.splitButtons}>
-              <EventShare event={this.props.event} />
-            </HorizontalView>
-          </ProgressiveLayout>
-        </Card>
-        <EventDescription event={this.props.event} />
-      </ProgressiveLayout>
+          {flyer}
+            <ProgressiveLayout>
+              <Text
+                numberOfLines={2}
+                style={[eventStyles.rowTitle, eventStyles.rowTitlePadding]}
+              >{name}</Text>
+              <EventCategories categories={this.props.event.annotations.categories} />
+              <EventRsvp event={this.props.event} />
+              <EventDateTime start={this.props.event.start_time} end={this.props.event.end_time} >
+                <AddToCalendarButton event={this.props.event} style={{ marginTop: 5 }} />
+              </EventDateTime>
+              <TouchableOpacity onPress={this.onLocationClicked} activeOpacity={0.5}>
+                <EventVenue style={eventStyles.rowLink} venue={this.props.event.venue} currentPosition={this.props.currentPosition} />
+                {map}
+              </TouchableOpacity>
+              <EventTickets event={this.props.event} />
+              <EventSource event={this.props.event} />
+              <EventAddedBy event={this.props.event} />
+              <EventOrganizers event={this.props.event} />
+              <HorizontalView style={eventStyles.splitButtons}>
+                <EventShare event={this.props.event} />
+              </HorizontalView>
+            </ProgressiveLayout>
+          <EventDescription event={this.props.event} />
+        </ProgressiveLayout>
+      </BlurredImage>
     );
   }
 }
@@ -1067,8 +927,6 @@ const eventStyles = StyleSheet.create({
     flexGrow: 1,
     paddingHorizontal: 10,
     height: normalize(150),
-    marginLeft: 25,
     marginBottom: 10,
-    borderRadius: 5,
   },
 });
