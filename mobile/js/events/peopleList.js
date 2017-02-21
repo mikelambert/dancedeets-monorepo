@@ -125,7 +125,7 @@ class _PeopleView extends React.Component {
   props: {
     people: PeopleListing;
     headerStyle: View.propTypes;
-    
+
     // Self-managed props
     search: State,
   }
@@ -150,12 +150,12 @@ class _PeopleView extends React.Component {
           />
       </HeaderCollapsible>
       <HeaderCollapsible
-        title="Nearby Influencers"
+        title="Nearby Dancers"
         defaultCollapsed={defaultCollapsed}
         style={this.props.headerStyle}
         >
         <PersonList
-          title="Influencers"
+          title="Dancers"
           subtitle="If you want to connect with the dance scene, hit these folks up"
           people={this.props.people.ATTENDEE}
           defaultCollapsed={defaultCollapsed}
