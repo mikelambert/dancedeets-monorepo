@@ -39,6 +39,7 @@ import {
 } from 'dancedeets-common/js/events/helpers';
 import {
   Autolink,
+  BlurredImage,
   Button,
   Card,
   FBShareButton,
@@ -267,11 +268,9 @@ class _EventVenueShort extends React.Component {
     if (!this.props.venue.address) {
       return null;
     }
-    return (<SubEventLine icon={require('./images/location.png')}>
-      <Text
+    return (<Text
         style={[eventStyles.detailText, this.props.style]}
-      >{this.props.venue.cityState()}</Text>
-    </SubEventLine>);
+      >{this.props.venue.cityState()}</Text>);
   }
 }
 const EventVenueShort = injectIntl(_EventVenueShort);
@@ -609,7 +608,7 @@ class _EventDescription extends React.Component {
             alignItems: 'center',
           }]}
         >
-          <Text style={eventStyles.rowTitle}>{this.props.intl.formatMessage(messages.eventDetails)}</Text>
+          <Text style={[eventStyles.rowTitle, eventStyles.rowTitlePadding]}>{this.props.intl.formatMessage(messages.eventDetails)}</Text>
           {translation}
         </HorizontalView>
     }
@@ -789,19 +788,26 @@ class _EventRow extends React.Component {
       return (
         <View>
           <TouchableOpacity onPress={() => this.props.onEventSelected(this.props.event)} activeOpacity={0.5}>
-            {imageProps.length ? <ProportionalImage
-              source={imageProps}
-              originalWidth={imageProps[imageProps.length - 1].width}
-              originalHeight={imageProps[imageProps.length - 1].height}
-              style={eventStyles.thumbnail}
-            /> : null}
-            <Text
-              numberOfLines={2}
-              style={[eventStyles.rowTitle, eventStyles.rowLink]}
-            >{this.props.event.name}</Text>
-            <EventCategories categories={this.props.event.annotations.categories} />
-            <EventDateTimeShort start={this.props.event.start_time} />
-            <EventVenueShort venue={this.props.event.venue} currentPosition={this.props.currentPosition} />
+            <HorizontalView>
+              <BlurredImage source={imageProps}
+                style={{height: 130, flex: 1}}
+              >
+                <View style={{flex: 1, margin: 5}}>
+                  <Text
+                    numberOfLines={2}
+                    style={[eventStyles.rowTitle, {fontWeight: 'bold', flexShrink: 1}]}
+                  >{this.props.event.name}</Text>
+                  <EventVenueShort venue={this.props.event.venue} currentPosition={this.props.currentPosition} />
+                  <Text
+                    style={eventStyles.detailText, {position: 'absolute', bottom: 0}}
+                  >{this.props.event.annotations.categories.slice(0, 8).join(', ')}</Text>
+                </View>
+              </BlurredImage>
+              <Image
+                source={imageProps}
+                style={{height: 130, width: 130}}
+              />
+            </HorizontalView>
           </TouchableOpacity>
         </View>
       );
@@ -1021,6 +1027,8 @@ const eventStyles = StyleSheet.create({
   rowTitle: {
     fontSize: semiNormalize(18),
     lineHeight: semiNormalize(22),
+  },
+  rowTitlePadding: {
     margin: 5,
   },
   rowLink: {
