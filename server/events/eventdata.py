@@ -326,6 +326,8 @@ class DBEvent(ndb.Model):
 
     def rebuild_venue(self):
         geocode = self.get_geocode()
+        if not geocode:
+            return {}
         venue = {
             'country': geocode.country(long=True),
         }
