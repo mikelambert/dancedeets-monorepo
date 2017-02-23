@@ -328,9 +328,10 @@ class DBEvent(ndb.Model):
         geocode = self.get_geocode()
         if not geocode:
             return {}
-        venue = {
-            'country': geocode.country(long=True),
-        }
+        country = geocode.country(long=True)
+        venue = {}
+        if country:
+            venue['country'] = country
         city = formatting.get_city(geocode)
         if city:
             venue['city'] = city
