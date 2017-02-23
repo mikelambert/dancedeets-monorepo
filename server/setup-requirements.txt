@@ -10,51 +10,52 @@ git+https://github.com/wtforms/wtforms-appengine
 # We need our fixed version of optional-django, that handles ImportError safely.
 # And we need to do it before we import/load the react module which depends on it.
 git+https://github.com/mikelambert/optional-django
-react
+react==3.0.1
 
 # Date Manip
-icalendar
-ruamel.yaml
+icalendar==3.11
+ruamel.yaml==0.11.7
 # Included in docker gae-modules:
 # dateparser
 # timezonefinder
 
-iso3166
-oauth2
-twilio
-python-gcm
-python-gflags
-jinja2
-htmlmin
+iso3166==0.7
+oauth2==1.9.0.post1
+twilio==5.6.0
+python-gcm==0.4
+python-gflags==3.1.0
+Jinja2==2.8
+htmlmin==0.1.10
 
-requests
-urllib3
-requests-toolbelt
+requests==2.12.1
+urllib3==1.19.1
+requests-toolbelt==0.7.0
 
 # WebApps
-Flask
-flask-admin
-wtforms
+Flask==0.11.1
+Flask-Admin==1.4.2
+WTForms==2.1
 git+https://github.com/mikelambert/wtforms-appengine
 
 # Relay / GraphQL
-flask_graphql
-graphene
+Flask-GraphQL==1.3.1
+graphene==1.1.2
 
 # For /event/222/title-is-here URLs
-slugify
+slugify==0.0.1
 
 # In case we want to parse rss/atom feeds
-feedparser
+feedparser==5.2.1
 
 # Google
-GoogleAppEngineMapReduce
-GoogleAppEnginePipeline
-google-api-python-client
-gdata
+GoogleAppEngineMapReduce==1.9.22.0
+GoogleAppEnginePipeline==1.9.22.1
+GoogleAppEngineCloudStorageClient==1.9.22.1
+google-api-python-client==1.6.2
+gdata==2.0.18
 
-python-firebase-gae
+python-firebase-gae==1.0.1
 
-markdown
+Markdown==2.6.7
 
-python-resize-image
+python-resize-image==1.1.10

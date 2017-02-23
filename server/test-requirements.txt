@@ -1,5 +1,4 @@
-coverage
-nosegae
-nose
-webtest
-jinja2
+coverage==4.2
+NoseGAE==0.5.9
+nose==1.3.7
+WebTest==2.0.23
