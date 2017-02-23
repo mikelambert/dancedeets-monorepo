@@ -18,6 +18,9 @@ import {
   defineMessages,
 } from 'react-intl';
 import Button from '../Button';
+import {
+  trackWithEvent,
+} from '../../store/track';
 
 const messages = defineMessages({
   share: {
@@ -29,8 +32,11 @@ const messages = defineMessages({
 
 class _FBShareButton extends React.Component {
   props: {
-    intl: intlShape;
     shareContent: ShareContent;
+    event: ?Event;
+
+    // Self-managed props
+    intl: intlShape;
   };
 
   render() {
@@ -40,6 +46,11 @@ class _FBShareButton extends React.Component {
         caption={this.props.intl.formatMessage(messages.share)}
         size="small"
         onPress={() => {
+          if (this.props.event) {
+            trackWithEvent('FBShare', this.props.event);
+          } else {
+            track('FBShare');
+          }
           ShareDialog.show(this.props.shareContent);
         }}
         {...this.props}
