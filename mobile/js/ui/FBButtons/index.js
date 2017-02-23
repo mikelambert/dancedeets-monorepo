@@ -9,7 +9,9 @@ import { View } from 'react-native';
 import type { ShareContent } from 'react-native-fbsdk/js/models/FBShareContent';
 import { ShareDialog } from 'react-native-fbsdk';
 import { injectIntl, intlShape, defineMessages } from 'react-intl';
+import { Event } from 'dancedeets-common/js/events/models';
 import Button from '../Button';
+import { track, trackWithEvent } from '../../store/track';
 
 const messages = defineMessages({
   share: {
@@ -21,8 +23,11 @@ const messages = defineMessages({
 
 class _FBShareButton extends React.Component {
   props: {
-    intl: intlShape,
     shareContent: ShareContent,
+    event?: Event,
+
+    // Self-managed props
+    intl: intlShape,
   };
 
   render() {
@@ -33,6 +38,11 @@ class _FBShareButton extends React.Component {
           caption={this.props.intl.formatMessage(messages.share)}
           size="small"
           onPress={() => {
+            if (this.props.event) {
+              trackWithEvent('FBShare', this.props.event);
+            } else {
+              track('FBShare');
+            }
             ShareDialog.show(this.props.shareContent);
           }}
           {...this.props}

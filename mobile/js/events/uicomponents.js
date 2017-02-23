@@ -788,7 +788,7 @@ class EventShare extends React.Component {
     };
     return (
       <View style={eventStyles.shareIndent}>
-        <FBShareButton shareContent={shareContent} />
+        <FBShareButton shareContent={shareContent} event={this.props.event} />
       </View>
     );
   }
