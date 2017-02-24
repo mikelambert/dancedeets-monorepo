@@ -11,7 +11,7 @@ def get_city(geocode):
 def get_state(geocode):
     country = geocode.get_component('country', long=False)
     if not country:
-        return geocode.get_component('administrative_area_level_1'),
+        return geocode.get_component('administrative_area_level_1')
     elif country in ['US', 'CA', 'AU', 'MX', 'MY', 'ID', 'JP', 'HK', 'TW']:
         return geocode.get_component('administrative_area_level_1', long=False) or geocode.get_component('administrative_area_level_2', long=False)
     else:

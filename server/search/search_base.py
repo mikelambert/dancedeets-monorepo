@@ -184,7 +184,7 @@ class SearchResult(object):
             # Semi backwards-compatible support for people who aren't upgrading to use the data directly
             address = self.data.get('venue', {}).get('address')
             if address:
-                city_parts = [address[x] for x in ['city', 'state', 'country'] if x in address]
+                city_parts = [address[x] for x in ['city', 'state', 'country'] if address.get(x)]
                 return ', '.join(city_parts)
             else:
                 return None
