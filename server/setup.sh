@@ -51,7 +51,12 @@ if [ "$TRAVIS" != true ]; then
   cp ~/Dropbox/dancedeets/private/*.yaml $BASE_DIR/
 fi
 
-echo "Installing npm modules"
+echo "Installing npm modules: ../"
+cd $BASE_DIR/..
+npm install
+
+
+echo "Installing npm modules: ../server/"
 cd $BASE_DIR
 npm install
 
@@ -59,6 +64,7 @@ npm install
 rm -rf node_modules/dancedeets-common
 ln -s ../../common node_modules/dancedeets-common
 
+echo "Installing npm modules: ../server/node_server/"
 cd $BASE_DIR/node_server
 npm install
 
@@ -79,8 +85,8 @@ if [ "$TRAVIS" == true ]; then
   gulp compile:webpack compile:images:favicons
 else
   echo "Installing necessary brew libraries"
-  brew install homebrew/science/vips --with-webp --with-graphicsmagick
-  brew install graphicsmagick
+  brew ls --versions homebrew/science/vips >/dev/null || brew install homebrew/science/vips --with-webp --with-graphicsmagick
+  brew ls --versions graphicsmagick >/dev/null || brew install graphicsmagick
   echo "Compiling everything"
   gulp compile
 fi
