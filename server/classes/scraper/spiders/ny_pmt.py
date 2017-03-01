@@ -28,8 +28,6 @@ class PMTHouseOfDance(items.StudioScraper):
         yield scrapy.Request('http://www.pmthouseofdance.com/schedule?_escaped_fragment_=')
 
     def parse_classes(self, response):
-        import logging
-        logging.info(response.body)
         text_sections = response.css('div.Text')
 
         captured_columns = []
