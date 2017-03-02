@@ -344,21 +344,35 @@ def facebook_post(auth_token, db_event):
     else:
         venue = db_event.location_name
 
+    if not location:
+        # Don't want to post events globally...too noisy
+        return
+
     params = {
         'location': ' ' + location if location else '',
         'date': human_date,
         'venue': venue,
     }
     messages = [
-        'Hey%(location)s dancers, mark your calendars! We just found a new dance event on %(date)s at %(venue)s.',
+        'Dancers, are you ready? %(venue)s is hosting an event on %(date)s in %(location)s.',
+        'Hello %(location)s dancers, mark your calendars! We just found a new dance event on %(date)s at %(venue)s.',
         'Hey%(location)s dancers, save the date! Look what we found coming up on %(date)s at %(venue)s.',
-        'Hey%(location)s, upcoming dance event on %(date)s at %(venue)s.',
+        'Just posted! We have an upcoming dance event on %(date)s at %(venue)s in %(location)s.',
+        'What\'s up %(location)s, %(venue)s is hosting an event on %(date)s.',
     ]
     message = random.choice(messages) % params
     if host and host != venue:
-        message += ' Hosted by our friends at %s.' % host
+        message += random.choice([
+            ' Hosted by our friends at %(host)s.',
+            ' Thanks to our buddies at %(host)s for hosting!',
+            ' Hitup the awesome %(host)s with any questions you\'ve got!',
+        ]) % {'host': host}
     if name:
-        message += ' Thanks to %s for adding it to DanceDeets!' % name
+        message += random.choice([
+            ' Thanks to %(name)s for adding it to DanceDeets!',
+            ' And a special thanks to %(name)s, for sharing it with you all on DanceDeets!',
+            ' This event brought to you on DanceDeets courtesy of %(name)s!',
+        ]) % {'name': name}
     post_values['message'] = message
 
     description = db_event.description

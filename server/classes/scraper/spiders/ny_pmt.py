@@ -5,7 +5,6 @@ import datetime
 import scrapy
 import scrapyjs
 
-from .. import browser_scraper
 from .. import items
 
 from nlp import event_classifier
@@ -19,49 +18,21 @@ def parse_times(times):
     return start_time, end_time
 
 
-class PMTHouseOfDance(browser_scraper.BrowserScraper):
+class PMTHouseOfDance(items.StudioScraper):
     name = 'PMT'
     allowed_domains = ['pmthouseofdance.com']
     latlong = (40.7374272, -73.9987284)
     address = '69 W 14th St, New York, NY'
 
-    def _generate_request(self, url):
-        script = """
-        function main(splash)
-            assert(splash:go(splash.args.url, nil, {
-                ["User-Agent"] = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.95 Safari/537.36",
-            }))
-            return splash:evaljs("document.body.outerHTML")
-        end
-        """
-        return scrapy.Request(
-            url,
-            meta={
-                'splash': {
-                    'args': {
-                        'lua_source': script,
-                    },
-                    'endpoint': 'execute',
-                    # optional parameters
-                    'slot_policy': scrapyjs.SlotPolicy.PER_DOMAIN,
-                }
-            },
-        )
-
     def start_requests(self):
-        yield self._generate_request(self._get_url(None))
-
-    def _get_url(self, response):
-        return 'http://www.pmthouseofdance.com/#!schedule/c1jfb'
+        yield scrapy.Request('http://www.pmthouseofdance.com/schedule?_escaped_fragment_=')
 
     def parse_classes(self, response):
-        import logging
-        logging.info(response.body)
-        table = response.css('div#c1jfbinlineContent div.s2')
+        text_sections = response.css('div.Text')
 
         captured_columns = []
         rows_to_capture = 0
-        for text_block in table:
+        for text_block in text_sections:
             if 'Tuesday' in self._extract_text(text_block):
                 rows_to_capture = 5
             if rows_to_capture > 0:
