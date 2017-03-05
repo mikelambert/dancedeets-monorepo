@@ -141,7 +141,7 @@ def _inner_make_event_findable_for_fb_event(db_event, fb_dict, disable_updates):
         _update_geodata(db_event, location_info)
 
 def clean_address(address):
-    address = re.sub(r'B?\d+F?$', '', address)
+    address = re.sub(r'B?\d*F?\d*$', '', address)
     return address
 
 def _inner_make_event_findable_for_web_event(db_event, web_event, disable_updates):
@@ -212,7 +212,7 @@ def _inner_make_event_findable_for_web_event(db_event, web_event, disable_update
         web_event['longitude'] = latlng['lng']
 
         # Add timezones, and save them to the web_event strings, for use by eventdata accessors
-        timezone_string = timezone_finder.certain_timezone_at(lat=latlng['lat'], lng=latlng['lng'])
+        timezone_string = timezone_finder.closest_timezone_at(lat=latlng['lat'], lng=latlng['lng'])
         web_event['timezone'] = timezone_string
         if timezone_string:
             tz = pytz.timezone(timezone_string)
