@@ -49,7 +49,7 @@ class WebhookPageHandler(webapp2.RequestHandler):
             changed_users = users.User.get_by_ids(user_ids)
             for user_id, user in zip(user_ids, changed_users):
                 if not user:
-                    logging.error("Received webhook call for user id %s, but no User object.", user_id)
+                    logging.warning("Received webhook call for user id %s, but no User object.", user_id)
                     continue
                 try:
                     potential_events_reloading.load_potential_events_for_user(user)
