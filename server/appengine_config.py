@@ -1,10 +1,14 @@
 import logging
 import os
-import sys
-sys.path = [os.path.join(os.path.dirname(__file__), 'lib')] + sys.path
+from google.appengine.ext import vendor
 from util import runtime
 
-if not runtime.is_local_appengine():
+vendor.add('lib-both')
+
+if runtime.is_local_appengine():
+    vendor.add('lib-local')
+else:
+    # Import our lib/ directory on dev only (on prod, they should be installed in the Docker image)
     os.environ['GAE_USE_SOCKETS_HTTPLIB'] = '1'
 
 # We don't need such real-time statistics (normally 1 second) on the mapreduce job.

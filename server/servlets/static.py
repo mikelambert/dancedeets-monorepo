@@ -28,7 +28,7 @@ class StaticHandler(base_servlet.webapp2.RequestHandler):
             result = regex.match(self.request.path)
             if result:
                 full_path = os.path.join(path, result.group(1))
-                if os.path.exists(full_path):
+                if os.path.isfile(full_path):
                     mimetype, encoding = mimetypes.guess_type(self.request.path)
                     if mimetype:
                         self.response.headers['Content-Type'] = mimetype

@@ -301,7 +301,7 @@ gulp.task('dev-appserver:server:hot:force',     cb => runSequence('dev-appserver
 gulp.task('react-server', $.shell.task(['../runNode.js ./node_server/renderServer.js --port 8090']));
 
 
-const dockerImages = ['gae-py-js', 'gae-geos', 'gae-modules'];
+const dockerImages = ['gae-py-js', 'gae-geos', 'gae-modules', 'gae-modules-py'];
 dockerImages.forEach(imageName =>
   gulp.task(`buildDocker:${imageName}`, $.shell.task([`cd docker/${imageName} && ./build.sh`]))
 );

@@ -1,3 +1,3 @@
-FROM gcr.io/dancedeets-hrd/gae-modules
+FROM gcr.io/dancedeets-hrd/gae-modules-py
 
 ADD . /app/

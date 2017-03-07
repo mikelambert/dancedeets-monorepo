@@ -89,6 +89,7 @@ skip_files:
 - ^(.*/)?.*\.csv
 - ^(.*/)?test_data(/.*)?
 - ^.git(/.*)?
+- ^lib-local(/.*)?
 - ^local_data(/.*)?
 - ^local_data2(/.*)?
 - ^local_data3(/.*)?
