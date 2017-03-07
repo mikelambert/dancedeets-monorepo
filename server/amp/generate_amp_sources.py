@@ -1,9 +1,14 @@
 #!/usr/bin/python
 
+import site
 import sys
-sys.path.insert(0, 'lib')
-sys.path.insert(0, '/Users/lambert/google-cloud-sdk/platform/google_appengine')
+sys.path.insert(0, 'frankenserver/python')
 sys.path.insert(0, '/Users/lambert/google-cloud-sdk/lib/third_party')
+site.addsitedir('lib-local')
+site.addsitedir('lib-both')
+import google
+del sys.modules['google']
+
 
 import logging
 logging.getLogger().setLevel(logging.DEBUG)

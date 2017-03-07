@@ -9,8 +9,11 @@
 # It means we have no chance to hook-in and update the sys.path before they are loaded.
 # So this wrapper just does that...updates the sys.path, and loads the _APP handlers
 
-import os
-import sys
-sys.path.append(os.path.join(os.path.dirname(__file__), 'lib'))
+from google.appengine.ext import vendor
+from util import runtime
+
+vendor.add('lib-both')
+if runtime.is_local_appengine():
+    vendor.add('lib-local')
 
 from pipeline.handlers import _APP
