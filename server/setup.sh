@@ -27,7 +27,7 @@ pip install --upgrade -t $BASE_DIR/lib-local -r $BASE_DIR/docker/gae-modules-py/
 
 echo "Installing test libraries"
 # For testing, just install them locally (not in the lib/ dir).
-pip install --upgrade -t $USER_FLAG -r $BASE_DIR/test-requirements.txt
+pip install --upgrade $USER_FLAG -r $BASE_DIR/test-requirements.txt
 
 echo "Installing the libraries which don't work with gae-modules*"
 pip install --upgrade -t $BASE_DIR/lib-both -r $BASE_DIR/setup-requirements.txt
