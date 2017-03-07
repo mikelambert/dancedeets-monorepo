@@ -2,6 +2,7 @@ node_server/node_modules
 node_modules
 scratch
 download
+lib-local*
 local_data
 local_data2
 local_data3
@@ -16,14 +17,3 @@ build
 
 # We don't need this on the server, this is just for our replacement dev_appserver
 frankenserver
-
-# These are C modules, which we need in the GAE sandbox to run locally.
-# But on GAE/GCE, these should be provided built directly for the GCE platform
-# (instead of my local dev box), and will be provided by requirements.txt
-lib/PIL
-lib/Pillow*
-lib/cld2
-lib/cld2_cffi*
-lib/cld2full
-lib/cffi
-lib/_cffi*

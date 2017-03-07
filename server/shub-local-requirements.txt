@@ -1,4 +1,0 @@
-# ScrapingHub API
-scrapy
-scrapyjs
-html2text

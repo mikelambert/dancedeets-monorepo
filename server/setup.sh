@@ -22,28 +22,23 @@ python $TMP_DIR/get-pip.py $USER_FLAG
 
 echo "Installing docker-gae-modules libraries"
 # Things we expect to be installed in our docker container
-pip install --upgrade $USER_FLAG -r $BASE_DIR/docker/gae-modules/requirements.txt
+pip install --upgrade -t $BASE_DIR/lib-local -r $BASE_DIR/docker/gae-modules/requirements.txt
+pip install --upgrade -t $BASE_DIR/lib-local -r $BASE_DIR/docker/gae-modules-py/requirements.txt
 
 echo "Installing test libraries"
 # For testing, just install them locally (not in the lib/ dir).
-pip install --upgrade $USER_FLAG -r $BASE_DIR/test-requirements.txt
+pip install --upgrade -t $BASE_DIR/lib-local -r $BASE_DIR/test-requirements.txt
 
 echo "Installing libraries necessary for scrapy"
 # For testing, just install them locally (not in the lib/ dir).
-pip install --upgrade $USER_FLAG -r $BASE_DIR/shub-local-requirements.txt
+pip install --upgrade -t $BASE_DIR/lib-local -r $BASE_DIR/shub-local-requirements.txt
 
 echo "Installing production libraries"
-pip install --upgrade -t $BASE_DIR/lib -r $BASE_DIR/setup-requirements.txt
-# This is installed in the docker-gae-modules, so we don't need them here.
-# Having them here will break GCE, since they override the docker system modules.
-# Another option is to hardcode our modules above (minus Pillow) and use --no-deps:
-# https://stackoverflow.com/questions/33441033/pip-install-to-custom-target-directory-and-exclude-specific-dependencies
-rm -rf $BASE_DIR/lib/Pillow* $BASE_DIR/lib/PIL
-rm -rf $BASE_DIR/lib/_ruamel.so $BASE_DIR/lib/_ordereddict.so $BASE_DIR/lib/ruamel*
+pip install --upgrade -t $BASE_DIR/lib-both -r $BASE_DIR/setup-requirements.txt
 
-# If we don't add this __init__ file, then dev_appserver will fail to import ruamel.yaml.
-# Seems it is more old-school on its import requirements than is standard python...
-touch $BASE_DIR/lib/ruamel/__init__.py
+# This seems to be necessary to fix this error:
+# DistributionNotFound: The 'google-cloud-datastore' distribution was not found and is required by the application
+pip install $USER_FLAG google-cloud-datastore
 
 # TODO: install node
 # TODO: install npm?
@@ -75,7 +70,9 @@ cd $BASE_DIR
 # https://bugzilla.redhat.com/show_bug.cgi?id=1032491
 if [ "$TRAVIS" != true ]; then
   # Our replacement dev_appserver
-  git clone https://github.com/Khan/frankenserver $BASE_DIR/frankenserver
+  if [ ! -e $BASE_DIR/frankenserver ]; then
+    git clone https://github.com/Khan/frankenserver $BASE_DIR/frankenserver
+  fi
   # Install the modules that make frankenserver amazing
   cd $BASE_DIR/frankenserver && pip install $USER_FLAG -r requirements.txt
 fi

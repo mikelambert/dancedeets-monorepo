@@ -3,8 +3,6 @@
 import logging
 import os
 import sys
-sys.path.append(os.path.join(os.path.dirname(__file__), 'lib'))
-
 
 prod_mode = 'SERVER_SOFTWARE' in os.environ and not os.environ['SERVER_SOFTWARE'].startswith('Dev')
 
