@@ -12,6 +12,8 @@ import event_types
 import fb_api
 from util import fb_mapreduce
 
+TOP_N = 20
+
 class PeopleRanking(ndb.Model):
     person_type = ndb.StringProperty()
     city = ndb.StringProperty()
@@ -139,7 +141,7 @@ def reduce_popular_people(type_city_category, people):
     ranking.person_type = person_type
     ranking.city = city
     ranking.category = category
-    ranking.top_people = ['%s: %s' % kv for kv in sorted_counts[:20]]
+    ranking.top_people = ['%s: %s' % kv for kv in sorted_counts[:TOP_N]]
     yield operation.db.Put(ranking)
 
 def mr_popular_people_per_city(fbl, queue):
