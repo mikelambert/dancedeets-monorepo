@@ -13,3 +13,6 @@ cd ..
 cd pyre2-master
 python setup.py build
 python setup.py install
+cd ..
+
+rm -rf re2-masterpyre2-master

@@ -17,6 +17,15 @@ build
 # Don't technically need the server-side JS maps,
 # as they're never accessed or used...
 dist/js-server/*.map
+dist-includes/*/*.map
+
+# Source bits, that we actually don't need to run on the server
+amp/
+assets/
+docker/
+tests/
+notes/
+test_data/
 
 # We don't need this on the server, this is just for our replacement dev_appserver
 frankenserver

@@ -223,7 +223,7 @@ function executeCommand(command) {
 // http://stackoverflow.com/questions/32623815/simple-gulp-task-to-deploy-to-google-app-engine-and-stream-output-to-console
 // At least, until/if gulp-shell is fixed to work around it:
 // https://github.com/sun-zheng-an/gulp-shell/issues/84
-gulp.task('deploy:server:toofast', () => executeCommand('gcloud app deploy app.yaml --quiet'));
+gulp.task('deploy:server:toofast', () => executeCommand('./buildpush.sh'));
 gulp.task('deploy:server:prepush', $.shell.task(['./tools/check_for_native_modules.sh']));
 gulp.task('deploy:server:fast', cb => runSequence('deploy:server:prepush', 'deploy:server:toofast', cb));
 gulp.task('deploy:server', cb => runSequence('deploy:cleanup-files', 'compile', 'deploy:server:fast', cb));
