@@ -59,3 +59,5 @@ python-firebase-gae==1.0.1
 Markdown==2.6.7
 
 python-resize-image==1.1.10
+
+scrapinghub

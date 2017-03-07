@@ -38,7 +38,8 @@ pip install --upgrade -t $BASE_DIR/lib -r $BASE_DIR/setup-requirements.txt
 # Having them here will break GCE, since they override the docker system modules.
 # Another option is to hardcode our modules above (minus Pillow) and use --no-deps:
 # https://stackoverflow.com/questions/33441033/pip-install-to-custom-target-directory-and-exclude-specific-dependencies
-rm -rf $BASE_DIR/lib/Pillow* lib/PIL
+rm -rf $BASE_DIR/lib/Pillow* $BASE_DIR/lib/PIL
+rm -rf $BASE_DIR/lib/_ruamel.so $BASE_DIR/lib/_ordereddict.so $BASE_DIR/lib/ruamel*
 
 # If we don't add this __init__ file, then dev_appserver will fail to import ruamel.yaml.
 # Seems it is more old-school on its import requirements than is standard python...
