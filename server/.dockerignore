@@ -14,6 +14,9 @@ snapshotted
 tmp
 build
 .git
+# Don't technically need the server-side JS maps,
+# as they're never accessed or used...
+dist/js-server/*.map
 
 # We don't need this on the server, this is just for our replacement dev_appserver
 frankenserver
