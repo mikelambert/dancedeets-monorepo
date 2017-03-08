@@ -3,6 +3,8 @@
 import re
 import unittest
 
+from google.appengine.ext import testbed
+
 import fb_api
 from test_utils import fb_api_stub
 from test_utils import mock_memcache
@@ -62,9 +64,14 @@ class TestMemcache(unittest.TestCase):
         d = m.fetch_keys(set([user_key, user_key2]))
         self.assertEqual(d, {user_key: user})
 
-class TestDBCache(unittest.TestCase):
+class TestDBCache(full_unittest.TestCase):
     def setUp(self):
+        self.testbed = testbed.Testbed()
+        self.testbed.activate()
         self.testbed.init_datastore_v3_stub()
+
+    def tearDown(self):
+        self.testbed.deactivate()
 
     def runTest(self):
         db = fb_api.DBCache('fetch_id')

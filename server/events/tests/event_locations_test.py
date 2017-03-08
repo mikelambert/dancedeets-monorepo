@@ -14,18 +14,8 @@ EVENT_ID = '299993043349170'
 
 class TestEventLocations(unittest.TestCase):
     def setUp(self):
-        self.fb_api = fb_api_stub.Stub()
-        self.fb_api.activate()
+        super(TestEventLocations, self).setUp()
         self.fbl = fb_api.FBLookup("dummyid", None)
-        self.gmaps_stub = gmaps_stub.Stub()
-        self.gmaps_stub.activate()
-
-        self.testbed.init_datastore_v3_stub()
-        self.testbed.init_memcache_stub()
-
-    def tearDown(self):
-        self.fb_api.deactivate()
-        self.gmaps_stub.deactivate()
 
     def get_event(self, event_id):
         return self.fbl.get(fb_api.LookupEvent, event_id)

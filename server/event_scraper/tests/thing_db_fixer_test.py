@@ -18,17 +18,6 @@ URL_222_EVENTS = '/%s/222/events' % VERSION
 
 class TestThingDBFixer(unittest.TestCase):
 
-    def setUp(self):
-        self.testbed.init_memcache_stub()
-        self.testbed.init_datastore_v3_stub()
-        self.testbed.init_taskqueue_stub(root_path='.')
-        self.taskqueue_stub = self.testbed.get_stub(testbed.TASKQUEUE_SERVICE_NAME)
-        self.fb_api = fb_api_stub.Stub()
-        self.fb_api.activate()
-
-    def tearDown(self):
-        self.fb_api.deactivate()
-
     def mark_as_error_and_reload(self, fbl):
 
         # Now let's "rename" the source to be id 222

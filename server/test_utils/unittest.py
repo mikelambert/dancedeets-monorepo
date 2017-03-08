@@ -1,7 +1,8 @@
 # Necessary so unittest grabs the python unittest
 from __future__ import absolute_import
 
-import unittest
+from unittest import *
+from unittest import TestCase as RealTestCase
 
 from google.appengine.ext import testbed
 
@@ -9,8 +10,10 @@ from loc import gmaps_stub
 from test_utils import fb_api_stub
 from util import gcs
 
-class TestCase(unittest.TestCase):
+class TestCase(RealTestCase):
     def setUp(self):
+        self.testbed = testbed.Testbed()
+        self.testbed.activate()
         self.testbed.init_blobstore_stub()
         self.testbed.init_datastore_v3_stub()
         self.testbed.init_mail_stub()
@@ -35,5 +38,6 @@ class TestCase(unittest.TestCase):
         self.gmaps_stub.deactivate()
         self.fb_api.deactivate()
         gcs.test_mode = False
+        self.testbed.deactivate()
 
 
