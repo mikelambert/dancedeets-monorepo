@@ -33,4 +33,4 @@ if [ -d lib-local ]; then
 else
 	EXCLUDE=""
 fi
-PYTHONPATH=lib-local:lib-both $COVERAGE_PREFIX python -mnose --with-gae --gae-application=app-nose.yaml $EXCLUDE ${NOSE_ARGS[@]}
+PYTHONPATH=lib-local:lib-both $COVERAGE_PREFIX `which nosetests` --with-gae --gae-application=app-nose.yaml $EXCLUDE ${NOSE_ARGS[@]}
