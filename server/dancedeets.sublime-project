@@ -13,7 +13,7 @@
       "name": "test",
       "working_dir": "${project_path:${folder}}",
       "file_regex": "^[ ]*File \"(...*?)\", line ([0-9]*)",
-      "shell_cmd": "make && ./nose.sh"
+      "shell_cmd": "make && ./test.sh"
     },
   ],
   "SublimeLinter": {

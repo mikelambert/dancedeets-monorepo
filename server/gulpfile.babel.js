@@ -266,7 +266,7 @@ gulp.task('compile', ['compile:webpack', 'compile:images', 'compile:fonts']);
 
 gulp.task('clean', () => del.sync('dist'));
 
-gulp.task('test', $.shell.task(['./nose.sh']));
+gulp.task('test', $.shell.task(['./test.sh']));
 
 gulp.task('rebuild', cb => runSequence('clean', 'compile', 'test', cb));
 

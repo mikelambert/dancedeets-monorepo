@@ -29,10 +29,10 @@ and setup some in our lib/ directory for uploading to appengine.
 Then you need to download babel (the jsx->js converter), and run ./babel.sh
 to ensure our jsx files are processed correctly (and continuously).
 
-You can run:
-- ./nose.sh to run all of the included tests.
-- ./server.sh to run a local server
-- ./deploy.sh to push to production
+You can run a variety of commands from gulp:
+- `gulp test` to run all of the included tests.
+- `gulp server:hot` to run a local server
+- `gulp deployServer` to push to production
 
 If you are running the NLP classifier evaluations, you may want to setup re2 for speed.
 To do this, download/install from https://github.com/google/re2/

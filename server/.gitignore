@@ -1,7 +1,6 @@
 # generated files:
 *.pyc
 *.swp
-app-nose.yaml
 app-devserver.yaml
 dist/
 dist-includes/
