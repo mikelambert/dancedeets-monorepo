@@ -61,7 +61,6 @@ def main(sdk_path, test_path, test_pattern):
 
     # Discover and run tests.
     suite = unittest.loader.TestLoader().discover(test_path, test_pattern)
-    print suite
     return unittest.TextTestRunner(verbosity=2).run(suite)
 
 
