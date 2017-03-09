@@ -47,7 +47,7 @@ def put_object(bucket, filename, contents):
     try:
         resp = req.execute()
     except errors.HttpError as e:
-        if e.resp.status == 404:
+        if e.resp.status in [400, 404]:
             raise NotFoundError()
         raise
     return resp
