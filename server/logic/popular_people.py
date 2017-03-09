@@ -12,7 +12,7 @@ import event_types
 import fb_api
 from util import fb_mapreduce
 
-TOP_N = 20
+TOP_N = 100
 
 class PeopleRanking(ndb.Model):
     person_type = ndb.StringProperty()
