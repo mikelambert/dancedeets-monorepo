@@ -4,6 +4,7 @@ import fb_api
 
 from events import eventdata
 from events import event_locations
+from logic import popular_people
 from nlp import event_auto_classifier
 from nlp import event_classifier
 from util import fb_mapreduce
@@ -11,6 +12,34 @@ from util import mr
 from . import add_entities
 from . import potential_events
 
+
+def is_good_event_by_text(fb_event):
+    classified_event = event_classifier.classified_event_from_fb_event(fb_event)
+    classified_event.classify()
+    auto_add_result = event_auto_classifier.is_auto_add_event(classified_event)
+    return classified_event, auto_add_result
+
+def is_good_event_by_attendees(fbl, pe, fb_event):
+    fb_event_attending = fbl.get(fb_api.LookupEventAttending, pe.fb_event_id)
+    if fb_event_attending['empty']:
+        logging.info('No attendees, skipping attendee-based classification.')
+        return False
+
+    event_attendee_ids = [attendee['id'] for attendee in fb_event_attending['attending']['data']]
+
+    location_info = event_locations.LocationInfo(fb_event)
+    dance_attendee_ids = popular_people.get_attendee_ids_near(location_info)
+
+    intersection_ids = set(event_attendee_ids).intersection(dance_attendee_ids)
+    fraction_known = 100.0 * len(intersection_ids) / len(event_attendee_ids)
+
+    logging.error('Event %s has %s ids, intersection is %s ids (%s%%)', pe.fb_event_id, len(event_attendee_ids), len(intersection_ids), fraction_known)
+
+    if fraction_known > 5 or len(intersection_ids) > 3:
+        logging.error('Event %s has an attendee-based classifier result!', pe.fb_event_id)
+        return True
+    else:
+        return False
 
 def classify_events(fbl, pe_list, fb_list):
     results = []
@@ -31,10 +60,14 @@ def classify_events(fbl, pe_list, fb_list):
         if not pe.should_look_at or pe.looked_at:
             continue
 
-        classified_event = event_classifier.classified_event_from_fb_event(fb_event)
-        classified_event.classify()
-        auto_add_result = event_auto_classifier.is_auto_add_event(classified_event)
-        if auto_add_result[0]:
+        classified_event, auto_add_result = is_good_event_by_text(fb_event)
+        good_event = is_good_event_by_attendees(fbl, pe, fb_event)
+        good_event = False
+        if auto_add_result:
+            good_event = auto_add_result[0]
+        else:
+            good_event = is_good_event_by_attendees(fbl, pe, fb_event)
+        if good_event:
             logging.info("Found event %s, looking up location", pe.fb_event_id)
             location_info = event_locations.LocationInfo(fb_event)
             result = '+%s\n' % '\t'.join(unicode(x) for x in (pe.fb_event_id, True, location_info.final_city, location_info.final_city is not None, location_info.fb_address, fb_event['info'].get('name', '')))

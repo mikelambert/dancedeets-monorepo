@@ -9,6 +9,8 @@ from mapreduce import operation
 import app
 import base_servlet
 import event_types
+from loc import math
+from rankings import cities
 import fb_api
 from util import fb_mapreduce
 
@@ -41,6 +43,31 @@ def faked_people_rankings():
                     top_people=top_people,
             ))
     return people_rankings
+
+
+def get_attendee_ids_near(location_info):
+    latlong = location_info.latlong()
+    southwest, northeast = math.expand_bounds((latlong, latlong), 100)
+    included_cities = cities.get_nearby_cities((southwest, northeast))
+    biggest_cities = sorted(included_cities, key=lambda x: -x.population)[:10]
+    city_names = [city.display_name() for city in biggest_cities]
+    logging.info('City names: %s', city_names)
+    if city_names:
+        try:
+            people_rankings = PeopleRanking.query(
+                PeopleRanking.city.IN(city_names),
+                PeopleRanking.person_type=='ATTENDEE'
+            )
+            groupings = combine_rankings(people_rankings)
+        except:
+            logging.exception('Error creating combined people rankings')
+            return []
+    logging.info('Person Groupings:\n%s', '\n'.join('%s: %s' % kv for kv in groupings.iteritems()))
+    all_attendee_ids = []
+    attendees = groupings.get('ATTENDEE', [])
+    for category in attendees:
+        all_attendee_ids.extend([x['id'] for x in attendees[category]])
+    return all_attendee_ids
 
 def combine_rankings(rankings):
     groupings = {}
