@@ -13,6 +13,7 @@ from loc import math
 from rankings import cities
 import fb_api
 from util import fb_mapreduce
+from util import runtime
 
 TOP_N = 100
 
@@ -44,24 +45,49 @@ def faked_people_rankings():
             ))
     return people_rankings
 
+def load_from_dev(city_names):
+    from google.cloud import datastore
+
+    rankings = []
+    client = datastore.Client()
+
+    for city_name in city_names:
+        q = client.query(kind='PeopleRanking')
+        q.add_filter('city', '=', city_name)
+        q.add_filter('person_type', '=', 'ATTENDEE')
+
+        for result in q.fetch(100):
+            ranking = PeopleRanking()
+            ranking.person_type = result['person_type']
+            ranking.city = result['city']
+            ranking.category = result['category']
+            ranking.top_people = result['top_people']
+            rankings.append(ranking)
+    return rankings
 
 def get_attendee_ids_near(location_info):
     latlong = location_info.latlong()
+    if latlong == (None, None):
+        return []
     southwest, northeast = math.expand_bounds((latlong, latlong), 100)
     included_cities = cities.get_nearby_cities((southwest, northeast))
     biggest_cities = sorted(included_cities, key=lambda x: -x.population)[:10]
     city_names = [city.display_name() for city in biggest_cities]
     logging.info('City names: %s', city_names)
-    if city_names:
-        try:
+    if not city_names:
+        return []
+    try:
+        if runtime.is_local_appengine():
+            people_rankings = load_from_dev(city_names)
+        else:
             people_rankings = PeopleRanking.query(
                 PeopleRanking.city.IN(city_names),
                 PeopleRanking.person_type=='ATTENDEE'
             )
-            groupings = combine_rankings(people_rankings)
-        except:
-            logging.exception('Error creating combined people rankings')
-            return []
+        groupings = combine_rankings(people_rankings)
+    except:
+        logging.exception('Error creating combined people rankings')
+        return []
     logging.info('Person Groupings:\n%s', '\n'.join('%s: %s' % kv for kv in groupings.iteritems()))
     all_attendee_ids = []
     attendees = groupings.get('ATTENDEE', [])

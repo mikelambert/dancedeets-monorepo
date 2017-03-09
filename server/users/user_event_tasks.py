@@ -11,8 +11,8 @@ def update_user_qualities(user):
     source_potential_events = potential_events.PotentialEvent.gql('WHERE source_ids = :graph_id', graph_id=long(user.fb_uid)).fetch(1000)
     added_events = eventdata.DBEvent.get_by_ids([x.fb_event_id for x in source_potential_events])
 
-    user.num_auto_added_events     = len([x for x in added_events if x and x.creating_method == eventdata.CM_AUTO])
-    user.num_auto_added_own_events = len([x for x in added_events if x and x.creating_method == eventdata.CM_AUTO and x.owner_fb_uid == user.fb_uid])
+    user.num_auto_added_events     = len([x for x in added_events if x and x.creating_method in [eventdata.CM_AUTO, eventdata.CM_AUTO_ATTENDEE]])
+    user.num_auto_added_own_events = len([x for x in added_events if x and x.creating_method in [eventdata.CM_AUTO, eventdata.CM_AUTO_ATTENDEE] and x.owner_fb_uid == user.fb_uid])
     #STR_ID_MIGRATE
     user.num_hand_added_events     = len([x for x in added_events if x and x.creating_method == eventdata.CM_USER and str(x.creating_fb_uid) == user.fb_uid])
     #STR_ID_MIGRATE
