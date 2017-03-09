@@ -24,6 +24,7 @@ def is_good_event_by_attendees(fbl, pe, fb_event):
         fb_event_attending = fbl.get(fb_api.LookupEventAttending, pe.fb_event_id)
     except fb_api.NoFetchedDataException:
         logging.info('Event %s could not fetch event attendees, aborting.', pe.fb_event_id)
+        return False
     if fb_event_attending['empty']:
         logging.info('Event %s has no attendees, skipping attendee-based classification.', pe.fb_event_id)
         return False
