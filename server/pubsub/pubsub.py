@@ -339,8 +339,8 @@ def facebook_post(auth_token, db_event):
         host = text.human_list('@[%s]' % x for x in page_admin_ids)
 
     # Tag it if we can
-    if db_event.venue.get('id'):
-        venue = '@[%s]' % db_event.venue.get('id')
+    if db_event.venue_id:
+        venue = '@[%s]' % db_event.venue_id
     else:
         venue = db_event.location_name
 
