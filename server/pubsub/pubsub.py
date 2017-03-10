@@ -384,7 +384,7 @@ def facebook_post(auth_token, db_event):
     cover = db_event.largest_cover
     if cover:
         post_values['picture'] = cover['source']
-    venue_id = db_event.venue.get('id')
+    venue_id = db_event.venue_id
     if venue_id:
         post_values['place'] = venue_id
 
