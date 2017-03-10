@@ -395,11 +395,11 @@ class _PeopleView extends React.Component {
           />
       </HeaderCollapsible>
       <HeaderCollapsible
-        title="Nearby Influencers"
+        title="Nearby Dancers"
         defaultCollapsed={defaultCollapsed}
         >
         <PersonList
-          title="Influencers"
+          title="Dancers"
           subtitle="If you want to connect with the dance scene, hit these folks up"
           people={this.props.people.ATTENDEE}
           defaultCollapsed={defaultCollapsed}

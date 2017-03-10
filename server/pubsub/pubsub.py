@@ -346,7 +346,7 @@ def facebook_post(auth_token, db_event):
 
     if not location:
         # Don't want to post events globally...too noisy
-        return
+        return {}
 
     params = {
         'location': ' ' + location if location else '',

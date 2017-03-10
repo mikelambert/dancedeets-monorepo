@@ -424,7 +424,7 @@ class _ResultsList extends React.Component {
         categoryOrder={this.props.categoryOrder}
       />);
       const attendeesList = (<PersonList
-        title="Influencers"
+        title="Dancers"
         subtitle="If you want to connect with the dance scene, hit these folks up"
         people={attendees}
         categoryOrder={this.props.categoryOrder}
@@ -435,13 +435,13 @@ class _ResultsList extends React.Component {
           peoplePanel.push(<Panel key="people1" header="Nearby Promoters">{adminsList}</Panel>);
         }
         if (attendees) {
-          peoplePanel.push(<Panel key="people2" header="Nearby Influencers">{attendeesList}</Panel>);
+          peoplePanel.push(<Panel key="people2" header="Nearby Dancers">{attendeesList}</Panel>);
         }
       } else {
         const adminsDiv = admins ? <div className="col-sm-6">{adminsList}</div> : null;
         const attendeesDiv = attendees ? <div className="col-sm-6">{attendeesList}</div> : null;
         peoplePanel = (
-          <Panel key="people" header="Nearby Promoters & Influencers">
+          <Panel key="people" header="Nearby Promoters & Dancers">
             <div className="row">{adminsDiv}{attendeesDiv}</div>
           </Panel>
         );
