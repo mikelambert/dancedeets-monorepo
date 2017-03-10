@@ -307,7 +307,6 @@ class LookupGeoTarget(fb_api.LookupType):
     def cache_key(cls, query, fetching_uid):
         return (fb_api.USERLESS_UID, query, 'OBJ_GEO_TARGET')
 
-
 def facebook_post(auth_token, db_event):
     link = campaign_url(db_event.id, 'fb_feed')
     datetime_string = db_event.start_time.strftime('%s @ %s' % (DATE_FORMAT, TIME_FORMAT))
@@ -433,7 +432,11 @@ def get_targeting_data(fbl, db_event):
     feed_targeting = {}
     # Target by city if we can, otherwise use the country
     if city_key:
-        feed_targeting['cities'] = [{'key': city_key}]
+        feed_targeting['cities'] = [{
+            'key': city_key,
+            'radius': 80,
+            'distance_unit': 'kilometer',
+        }]
     elif short_country:
         feed_targeting['countries'] = [short_country]
     full_targeting = {'geo_locations': feed_targeting}
