@@ -8,6 +8,7 @@ import json
 import hashlib
 import htmlmin
 import logging
+import random
 from react import render
 from react.conf import settings
 import os
@@ -49,6 +50,7 @@ class FacebookMixinHandler(object):
         # Refresh our potential event cache every N days (since they may have updated with better keywords, as often happens)
         expiry_days = int(self.request.get('expiry_days', 0)) or None
         if expiry_days:
+            expiry_days += random.uniform(-0.5, 0.5)
             self.fbl.db.oldest_allowed = datetime.datetime.now() - datetime.timedelta(days=expiry_days)
 
 class BareBaseRequestHandler(webapp2.RequestHandler, FacebookMixinHandler):
