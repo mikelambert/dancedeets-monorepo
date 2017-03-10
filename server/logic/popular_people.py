@@ -9,6 +9,7 @@ from mapreduce import operation
 import app
 import base_servlet
 import event_types
+from events import eventdata
 from loc import math
 from rankings import cities
 import fb_api
@@ -155,7 +156,8 @@ def track_person(person_type, db_event, person):
 
 BATCH_SIZE = 20
 def output_people(db_events):
-    db_events = [x for x in db_events if x.is_fb_event and x.has_content()]
+    # Don't use auto-events to train...could have a runaway AI system there!
+    db_events = [x for x in db_events if x.is_fb_event and x.has_content() and x.creating_method != eventdata.CM_AUTO_ATTENDEE]
 
     fbl = fb_mapreduce.get_fblookup()
     fbl.request_multi(fb_api.LookupEventAttending, [x.fb_event_id for x in db_events])
