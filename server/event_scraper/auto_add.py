@@ -19,6 +19,13 @@ def is_good_event_by_text(fb_event):
     auto_add_result = event_auto_classifier.is_auto_add_event(classified_event)
     return classified_event, auto_add_result
 
+
+def find_overlap(event_attendee_ids, top_dance_attendee_ids):
+    intersection_ids = set(event_attendee_ids).intersection(top_dance_attendee_ids)
+    num_intersection = len(intersection_ids)
+    fraction_known = 100.0 * num_intersection / len(event_attendee_ids)
+    return intersection_ids, num_intersection, fraction_known
+
 def is_good_event_by_attendees(fbl, pe, fb_event):
     try:
         fb_event_attending = fbl.get(fb_api.LookupEventAttending, pe.fb_event_id)
@@ -36,17 +43,19 @@ def is_good_event_by_attendees(fbl, pe, fb_event):
     location_info = event_locations.LocationInfo(fb_event)
     dance_attendee_ids = popular_people.get_attendee_ids_near(location_info)
 
-    intersection_ids = set(event_attendee_ids).intersection(dance_attendee_ids)
-    num_intersection = len(intersection_ids)
-    fraction_known = 100.0 * num_intersection / len(event_attendee_ids)
+    overlap, count, fraction = find_overlap(event_attendee_ids, dance_attendee_ids[:20])
+    logging.info('Attendee-Detection-Top: Event %s has %s ids, intersection is %s ids (%.0f%%)', pe.fb_event_id, len(event_attendee_ids), count, fraction)
+    if (fraction >= 5 and count >= 1) or count >= 3:
+        logging.info('Attendee-Detection-Top: Event %s has an attendee-based classifier result!', pe.fb_event_id)
+        return overlap
 
-    logging.info('Attendee-Detection: Event %s has %s ids, intersection is %s ids (%.0f%%)', pe.fb_event_id, len(event_attendee_ids), num_intersection, fraction_known)
+    overlap, count, fraction = find_overlap(event_attendee_ids, dance_attendee_ids[:100])
+    logging.info('Attendee-Detection-Top: Event %s has %s ids, intersection is %s ids (%.0f%%)', pe.fb_event_id, len(event_attendee_ids), count, fraction)
+    if (fraction >= 5 and count >= 4) or count >= 8:
+        logging.info('Attendee-Detection-Top: Event %s has an attendee-based classifier result!', pe.fb_event_id)
+        return overlap
 
-    if (fraction_known > 5 and num_intersection > 1) or num_intersection > 3:
-        logging.info('Attendee-Detection: Event %s has an attendee-based classifier result!', pe.fb_event_id)
-        return True
-    else:
-        return False
+    return []
 
 def classify_events(fbl, pe_list, fb_list):
     results = []
