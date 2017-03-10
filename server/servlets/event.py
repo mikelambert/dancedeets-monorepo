@@ -328,7 +328,7 @@ class AdminEditHandler(base_servlet.BaseRequestHandler):
             self.display['fb_geocoded_address'] = ''
         self.display['ranking_city_name'] = rankings.get_ranking_location_latlng(location_info.geocode.latlng()) if location_info.geocode else 'None'
 
-        self.display['overlap_attendee_ids'] = auto_add.is_good_event_by_attendees(self.fbl, potential_event, fb_event)
+        self.display['overlap_attendee_ids'] = auto_add.is_good_event_by_attendees(self.fbl, potential_event, fb_event) or []
 
         self.display['event'] = e
         self.display['event_id'] = event_id
