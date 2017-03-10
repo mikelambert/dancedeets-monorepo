@@ -13,6 +13,7 @@ from slugify import slugify
 import app
 import base_servlet
 from event_scraper import add_entities
+from event_scraper import auto_add
 from event_scraper import potential_events
 from events import add_events
 from events import eventdata
@@ -326,6 +327,8 @@ class AdminEditHandler(base_servlet.BaseRequestHandler):
         else:
             self.display['fb_geocoded_address'] = ''
         self.display['ranking_city_name'] = rankings.get_ranking_location_latlng(location_info.geocode.latlng()) if location_info.geocode else 'None'
+
+        self.display['overlap_attendee_ids'] = auto_add.is_good_event_by_attendees(self.fbl, potential_event, fb_event)
 
         self.display['event'] = e
         self.display['event_id'] = event_id
