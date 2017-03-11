@@ -28,6 +28,11 @@ indexes:
 
 - kind: DBEvent
   properties:
+  - name: creating_method
+  - name: __scatter__
+
+- kind: DBEvent
+  properties:
   - name: search_time_period
   - name: __scatter__
 

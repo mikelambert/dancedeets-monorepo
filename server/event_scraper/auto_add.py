@@ -48,7 +48,7 @@ def get_attendee_ids(fbl, fb_event):
     return event_attendee_ids, dance_attendee_ids
 
 
-def is_good_event_by_attendees(fbl, pe, fb_event):
+def is_good_event_by_attendees(fbl, fb_event):
     event_attendee_ids, dance_attendee_ids = get_attendee_ids(fbl, fb_event)
     return test_good_event_by_attendees(fb_event['info']['id'], event_attendee_ids, dance_attendee_ids)
 
@@ -93,7 +93,7 @@ def classify_events(fbl, pe_list, fb_list):
             good_event = auto_add_result[0]
             method = eventdata.CM_AUTO
         else:
-            good_event = is_good_event_by_attendees(fbl, pe, fb_event)
+            good_event = is_good_event_by_attendees(fbl, fb_event)
             method = eventdata.CM_AUTO_ATTENDEE
         if good_event:
             logging.info("Found event %s, looking up location", pe.fb_event_id)

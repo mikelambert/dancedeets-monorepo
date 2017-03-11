@@ -162,7 +162,31 @@ def mr_load_fb_events(fbl, display_event=False, load_attending=False, time_perio
         queue=queue,
     )
 
+def yield_maybe_delete_bad_event(fbl, db_event):
+    if db_event.creating_method != eventdata.CM_AUTO_ATTENDEE:
+        return
+    from event_scraper import auto_add
+    good_event = auto_add.is_good_event_by_attendees(fbl, db_event.fb_event)
+    if not good_event:
+        logging.info('Oops, found accidentally added event %s: %s', db_event.fb_event_id, db_event.name)
+    yield None
 
+map_maybe_delete_bad_event = fb_mapreduce.mr_wrap(yield_maybe_delete_bad_event)
+maybe_delete_bad_event = fb_mapreduce.nomr_wrap(yield_maybe_delete_bad_event)
+
+@app.route('/tasks/delete_bad_autoadds')
+class DeleteBadAutoAddsHandler(base_servlet.EventOperationHandler):
+    def get(self):
+        queue = self.request.get('queue', 'super-slow-queue')
+        fb_mapreduce.start_map(
+            fbl=self.fbl,
+            name='Delete Bad Autoadds',
+            handler_spec='events.event_reloading_tasks.map_maybe_delete_bad_event',
+            entity_kind='events.eventdata.DBEvent',
+            filters=[('creating_method', '=', eventdata.CM_AUTO_ATTENDEE)],
+            queue=queue,
+        )
+    post=get
 
 @app.route('/tasks/load_events')
 class LoadEventHandler(base_servlet.EventOperationHandler):
