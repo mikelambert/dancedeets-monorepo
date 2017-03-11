@@ -140,7 +140,7 @@ def classify_events(fbl, pe_list, fb_list):
             logging.info('Is Good Event By Attendees: %s', good_event)
             method = eventdata.CM_AUTO_ATTENDEE
         if good_event:
-            result = '+%s\n' % '\t'.join(pe.fb_event_id, fb_event['info'].get('name', ''))
+            result = '+%s\n' % '\t'.join((pe.fb_event_id, fb_event['info'].get('name', '')))
             try:
                 logging.info('VTFI %s: Adding event %s, due to pe-invite-ids: %s', pe.fb_event_id, pe.fb_event_id, pe.get_invite_uids())
                 add_entities.add_update_event(fb_event, fbl, visible_to_fb_uids=pe.get_invite_uids(), creating_method=method)
