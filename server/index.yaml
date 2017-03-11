@@ -79,6 +79,12 @@ indexes:
   properties:
   - name: looked_at
   - name: past_event
+  - name: __scatter__
+
+- kind: PotentialEvent
+  properties:
+  - name: looked_at
+  - name: past_event
   - name: match_score
 
 - kind: PotentialEvent

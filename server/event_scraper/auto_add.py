@@ -51,7 +51,7 @@ def is_good_event_by_attendees(fbl, pe, fb_event):
 
     overlap, count, fraction = find_overlap(event_attendee_ids, dance_attendee_ids[:100])
     logging.info('Attendee-Detection-Top: Event %s has %s ids, intersection is %s ids (%.0f%%)', pe.fb_event_id, len(event_attendee_ids), count, fraction)
-    if (fraction >= 5 and count >= 5) or count >= 8:
+    if (fraction >= 5 and count >= 4) or count >= 8:
         logging.info('Attendee-Detection-Top: Event %s has an attendee-based classifier result!', pe.fb_event_id)
         return overlap
 
@@ -73,7 +73,7 @@ def classify_events(fbl, pe_list, fb_list):
         # Don't process events we've already looked at, or don't need to look at.
         # This doesn't happen with the mapreduce that pre-filters them out,
         # but it does happen when we scrape users potential events and throw them all in here.
-        if not pe.should_look_at or pe.looked_at:
+        if pe.looked_at:
             continue
 
         classified_event, auto_add_result = is_good_event_by_text(fb_event)
@@ -125,7 +125,7 @@ map_classify_events = fb_mapreduce.mr_wrap(classify_events_with_yield)
 
 
 def mr_classify_potential_events(fbl, past_event):
-    filters = [('looked_at', '=', None), ('should_look_at', '=', True)]
+    filters = [('looked_at', '=', None)]
     if past_event is not None:
         filters.append(('past_event', '=', past_event))
     fb_mapreduce.start_map(
