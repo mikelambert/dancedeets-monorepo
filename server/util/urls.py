@@ -49,5 +49,7 @@ def get_event_id_from_url(url):
     if not match:
         match = re.search(r'/events/(%s)(?:[/?]|$)' % EVENT_ID_REGEX, url)
         if not match:
-            return None
+            match = re.search(r'event_id=(%s)(?:[/?]|$)' % EVENT_ID_REGEX, url)
+            if not match:
+                return None
     return match.group(1)
