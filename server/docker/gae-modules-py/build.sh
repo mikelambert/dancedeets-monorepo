@@ -1,3 +1,4 @@
+set -e
 cd `dirname $0`
 export NAME=gae-modules-py
 export LOCAL_IMAGE=mlambert/$NAME
