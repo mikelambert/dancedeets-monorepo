@@ -268,7 +268,7 @@ class CacheSystem(object):
         return '.'.join(self._normalize_key(key))
 
     def _normalize_key(self, key):
-        return tuple(re.sub(r'[."\']', '-', str(x)) for x in key)
+        return tuple(re.sub(r'[."\']', '-', urllib.quote(x.encode('utf-8')) if x else 'None') for x in key)
 
     def key_to_cache_key(self, key):
         cls, oid = break_key(key)
@@ -338,6 +338,7 @@ class DBCache(CacheSystem):
         max_in_queries = datastore.MAX_ALLOWABLE_QUERIES
         cache_keys = cache_key_mapping.keys()
         for i in range(0, len(cache_keys), max_in_queries):
+            logging.info('%r', cache_keys)
             objects = FacebookCachedObject.get_by_key_name(cache_keys[i:i+max_in_queries])
             for o in objects:
                 if o:
@@ -555,7 +556,7 @@ class FBAPI(CacheSystem):
 def generate_key(cls, object_id):
     if isinstance(object_id, (set, list, tuple)):
         raise TypeError("object_id is of incorrect type: %s" % type(object_id))
-    new_object_id = str(object_id)
+    new_object_id = unicode(object_id)
     return (cls, new_object_id)
 
 def break_key(key):
