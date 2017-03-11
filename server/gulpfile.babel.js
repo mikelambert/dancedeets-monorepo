@@ -176,7 +176,7 @@ const webEventNames = getScrapyNames('web_events/scraper/spiders/*.py');
 const classesNames = getScrapyNames('classes/scraper/spiders/*.py');
 
 webEventNames.concat(classesNames).forEach(x =>
-  gulp.task(`scrape:one:${x}`, $.shell.task(`PYTHONPATH=/Library/Python/2.7/site-packages:$PYTHONPATH scrapy crawl ${x}`)));
+  gulp.task(`scrape:one:${x}`, $.shell.task(`PYTHONPATH=lib-local/ scrapy crawl ${x}`)));
 gulp.task('scrape:web:scrapy',    webEventNames.map(x => `scrape:one:${x}`));
 gulp.task('scrape:classes:scrapy', classesNames.map(x => `scrape:one:${x}`));
 gulp.task('scrape:classes:index:prod', $.shell.task(['curl http://www.dancedeets.com/classes/reindex']))
