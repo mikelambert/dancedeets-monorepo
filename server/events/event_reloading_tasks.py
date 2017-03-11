@@ -1,6 +1,7 @@
 import logging
 
 from mapreduce import context
+from mapreduce import operation as op
 
 import app
 import base_servlet
@@ -166,12 +167,13 @@ def mr_load_fb_events(fbl, display_event=False, load_attending=False, time_perio
 def yield_maybe_delete_bad_event(fbl, db_event):
     if db_event.creating_method != eventdata.CM_AUTO_ATTENDEE:
         return
+
     from event_scraper import auto_add
     good_event = auto_add.is_good_event_by_attendees(fbl, db_event.fb_event)
     if not good_event:
         logging.info('Oops, found accidentally added event %s: %s', db_event.fb_event_id, db_event.name)
         mr.increment('deleting-bad-event')
-    yield None
+        yield op.db.Delete(db_event)
 
 map_maybe_delete_bad_event = fb_mapreduce.mr_wrap(yield_maybe_delete_bad_event)
 maybe_delete_bad_event = fb_mapreduce.nomr_wrap(yield_maybe_delete_bad_event)
