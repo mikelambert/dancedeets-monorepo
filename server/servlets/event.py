@@ -336,7 +336,7 @@ class AdminEditHandler(base_servlet.BaseRequestHandler):
         # For extra debugging
         event_attendee_ids = auto_add.get_event_attendee_ids(self.fbl, fb_event)
         dance_style_attendees = auto_add.get_location_style_attendees(fb_event)
-        dance_attendee_ids = [x['id'] for x in dance_style_attendees['']]
+        dance_attendee_ids = [x['id'] for x in dance_style_attendees.get('', [])]
         overlap_ids, count, fraction = auto_add.find_overlap(event_attendee_ids, dance_attendee_ids[:100])
         self.display['overlap_attendee_ids'] = overlap_ids
 

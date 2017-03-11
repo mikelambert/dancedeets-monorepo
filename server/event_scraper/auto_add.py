@@ -24,7 +24,7 @@ def is_good_event_by_text(fb_event):
 def find_overlap(event_attendee_ids, top_dance_attendee_ids):
     intersection_ids = set(event_attendee_ids).intersection(top_dance_attendee_ids)
     num_intersection = len(intersection_ids)
-    fraction_known = 100.0 * num_intersection / len(event_attendee_ids)
+    fraction_known = num_intersection / len(event_attendee_ids)
     return intersection_ids, num_intersection, fraction_known
 
 def get_event_attendee_ids(fbl, fb_event):
@@ -34,51 +34,62 @@ def get_event_attendee_ids(fbl, fb_event):
         fb_event_attending = fbl.get(fb_api.LookupEventAttending, event_id)
     except fb_api.NoFetchedDataException:
         logging.info('Event %s could not fetch event attendees, aborting.', event_id)
-        return False
+        return []
     if fb_event_attending['empty']:
         logging.info('Event %s has no attendees, skipping attendee-based classification.', event_id)
-        return False
+        return []
 
     event_attendee_ids = [attendee['id'] for attendee in fb_event_attending['attending']['data']]
     if not event_attendee_ids:
-        return False
+        return []
     return event_attendee_ids
 
 def get_location_style_attendees(fb_event):
     location_info = event_locations.LocationInfo(fb_event)
-    dance_attendee_style_ids = popular_people.get_attendees_near(location_info)
-    return dance_attendee_style_ids
+    dance_attendee_styles = popular_people.get_attendees_near(location_info)
+    return dance_attendee_styles
 
 def is_good_event_by_attendees(fbl, fb_event, debug=False):
     event_id = fb_event['info']['id']
 
-    event_attendee_ids = get_event_attendee_ids(fbl, fb_event)
-    dance_style_attendees = get_location_style_attendees(fb_event)
-    styles = categories.find_styles(fb_event)
-
     good_event = []
     results = []
-    for style in [None] + sorted(styles):
-        style_name = style.public_name if style else ''
-        dance_attendees = dance_style_attendees[style_name]
-        logging.info('%s Attendees Nearby:\n%s', style_name, '\n'.join(repr(x) for x in dance_attendees))
-        dance_attendee_ids = [x['id'] for x in dance_attendees]
 
-        overlap_ids, count, fraction = find_overlap(event_attendee_ids, dance_attendee_ids[:20])
-        logging.info('%s Attendee-Detection-Top-20: Event %s has %s ids, intersection is %s ids (%.0f%%)', style_name, event_id, len(event_attendee_ids), count, fraction)
-        results += ['%s Top20: %s (%.0f%%)' % (style_name, count, fraction)]
-        if (fraction >= 5 and count >= 2) or count >= 4:
-            logging.info('Attendee-Detection-Top-20: Event %s has an attendee-based classifier result!', event_id)
-            results[-1] += ' GOOD!'
-            good_event = overlap_ids
+    event_attendee_ids = get_event_attendee_ids(fbl, fb_event)
+    if event_attendee_ids:
+        dance_style_attendees = get_location_style_attendees(fb_event)
+        styles = categories.find_styles(fb_event)
 
-        overlap_ids, count, fraction = find_overlap(event_attendee_ids, dance_attendee_ids[:100])
-        logging.info('%s Attendee-Detection-Top-100: Event %s has %s ids, intersection is %s ids (%.0f%%)', style_name, event_id, len(event_attendee_ids), count, fraction)
-        results += ['%s Top100: %s (%.0f%%)' % (style_name, count, fraction)]
-        if (fraction >= 10 and count >= 3) or (fraction >= 5 and count >= 4) or count >= 6:
-            logging.info('Attendee-Detection-Top-100: Event %s has an attendee-based classifier result!', event_id)
-            results[-1] += ' GOOD!'
-            good_event = overlap_ids
+        for style in [None] + sorted(styles):
+            style_name = style.public_name if style else ''
+            dance_attendees = dance_style_attendees.get(style_name, [])
+            logging.info('%s Attendees Nearby:\n%s', style_name, '\n'.join(repr(x) for x in dance_attendees))
+            dance_attendee_ids = [x['id'] for x in dance_attendees]
+
+            overlap_ids, count, fraction = find_overlap(event_attendee_ids, dance_attendee_ids[:20])
+            logging.info('%s Attendee-Detection-Top-20: Event %s has %s ids, intersection is %s ids (%.1f%%)', style_name, event_id, len(event_attendee_ids), count, 100.0 * fraction)
+            results += ['%s Top20: %s (%.1f%%)' % (style_name, count, 100.0 * fraction)]
+            if (
+                (fraction >= 0.05 and count >= 2) or
+                (fraction >= 0.001 and count >= 4) or # catches 4-or-more on events 4000-or-less
+                False
+            ):
+                logging.info('Attendee-Detection-Top-20: Event %s has an attendee-based classifier result!', event_id)
+                results[-1] += ' GOOD!'
+                good_event = overlap_ids
+
+            overlap_ids, count, fraction = find_overlap(event_attendee_ids, dance_attendee_ids[:100])
+            logging.info('%s Attendee-Detection-Top-100: Event %s has %s ids, intersection is %s ids (%.1f%%)', style_name, event_id, len(event_attendee_ids), count, 100.0 * fraction)
+            results += ['%s Top100: %s (%.1f%%)' % (style_name, count, 100.0 * fraction)]
+            if (
+                (fraction >= 0.10 and count >= 3) or
+                (fraction >= 0.05 and count >= 4) or
+                (fraction >= 0.001 and count >= 6) or # catches 6-or-more on events 6000-or-less
+                False
+            ):
+                logging.info('Attendee-Detection-Top-100: Event %s has an attendee-based classifier result!', event_id)
+                results[-1] += ' GOOD!'
+                good_event = overlap_ids
 
     if debug:
         return good_event, results

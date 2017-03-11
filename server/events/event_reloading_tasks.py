@@ -5,9 +5,10 @@ from mapreduce import context
 import app
 import base_servlet
 import fb_api
+from users import users
 from util import deferred
 from util import fb_mapreduce
-from users import users
+from util import mr
 from . import eventdata
 from . import event_updates
 
@@ -169,6 +170,7 @@ def yield_maybe_delete_bad_event(fbl, db_event):
     good_event = auto_add.is_good_event_by_attendees(fbl, db_event.fb_event)
     if not good_event:
         logging.info('Oops, found accidentally added event %s: %s', db_event.fb_event_id, db_event.name)
+        mr.increment('deleting-bad-event')
     yield None
 
 map_maybe_delete_bad_event = fb_mapreduce.mr_wrap(yield_maybe_delete_bad_event)
