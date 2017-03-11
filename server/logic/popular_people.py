@@ -76,7 +76,7 @@ def get_attendees_near(location_info):
     city_names = [city.display_name() for city in biggest_cities]
     logging.info('City names: %s', city_names)
     if not city_names:
-        return []
+        return {}
     try:
         if runtime.is_local_appengine():
             people_rankings = load_from_dev(city_names)
