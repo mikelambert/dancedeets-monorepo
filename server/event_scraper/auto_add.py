@@ -22,9 +22,11 @@ def is_good_event_by_text(fb_event):
 
 
 def find_overlap(event_attendee_ids, top_dance_attendee_ids):
+    if not len(event_attendee_ids):
+        return [], None, None
     intersection_ids = set(event_attendee_ids).intersection(top_dance_attendee_ids)
     num_intersection = len(intersection_ids)
-    fraction_known = num_intersection / len(event_attendee_ids)
+    fraction_known = 1.0 * num_intersection / len(event_attendee_ids)
     return intersection_ids, num_intersection, fraction_known
 
 def get_event_attendee_ids(fbl, fb_event):
