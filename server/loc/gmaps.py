@@ -8,6 +8,7 @@ import urllib
 import keys
 
 from . import gmaps_backends
+from util import mr
 from util import urls
 
 google_maps_private_key = keys.get("google_maps_private_key")
@@ -15,12 +16,14 @@ google_server_key = keys.get("google_server_key")
 
 
 class LiveBackend(gmaps_backends.GMapsBackend):
-    def __init__(self, protocol_host, path, use_private_key):
+    def __init__(self, name, protocol_host, path, use_private_key):
+        self.name = name
         self.protocol_host = protocol_host
         self.path = path
         self.use_private_key = use_private_key
 
     def get_json(self, **kwargs):
+        mr.increment('gmaps-api-%s' % self.name)
         if self.use_private_key:
             kwargs['client'] = 'free-dancedeets'
             unsigned_url_path = "%s?%s" % (self.path, urls.urlencode(kwargs))

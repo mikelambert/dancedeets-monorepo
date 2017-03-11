@@ -9,8 +9,8 @@ from . import math
 
 USE_PRIVATE_KEY = False
 
-live_places_api = gmaps.LiveBackend('https://maps.googleapis.com', '/maps/api/place/textsearch/json', use_private_key=False)
-live_geocode_api = gmaps.LiveBackend('https://maps.google.com', '/maps/api/geocode/json', use_private_key=USE_PRIVATE_KEY)
+live_places_api = gmaps.LiveBackend('places', 'https://maps.googleapis.com', '/maps/api/place/textsearch/json', use_private_key=False)
+live_geocode_api = gmaps.LiveBackend('geocode', 'https://maps.google.com', '/maps/api/geocode/json', use_private_key=USE_PRIVATE_KEY)
 
 if runtime.is_local_appengine():
     remote_places_api = gmaps_prod_cache.ProdServerBackend('places', live_places_api)
