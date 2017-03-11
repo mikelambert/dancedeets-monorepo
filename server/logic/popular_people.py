@@ -89,12 +89,9 @@ def get_attendee_ids_near(location_info):
     except:
         logging.exception('Error creating combined people rankings')
         return []
-    logging.info('Person Groupings:\n%s', '\n'.join('%s: %s' % kv for kv in groupings.iteritems()))
-    all_attendee_ids = []
-    attendees = groupings.get('ATTENDEE', [])
-    for category in attendees:
-        all_attendee_ids.extend([x['id'] for x in attendees[category]])
-    return all_attendee_ids
+    attendees = groupings.get('ATTENDEE', {}).get('', [])
+    logging.info('Attendees Nearby:\n%s', '\n'.join(repr(x) for x in attendees))
+    return [x['id'] for x in attendees]
 
 def combine_rankings(rankings):
     groupings = {}

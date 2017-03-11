@@ -328,7 +328,14 @@ class AdminEditHandler(base_servlet.BaseRequestHandler):
             self.display['fb_geocoded_address'] = ''
         self.display['ranking_city_name'] = rankings.get_ranking_location_latlng(location_info.geocode.latlng()) if location_info.geocode else 'None'
 
-        self.display['overlap_attendee_ids'] = auto_add.is_good_event_by_attendees(self.fbl, potential_event, fb_event) or []
+        event_attendee_ids, dance_attendee_ids = auto_add.get_attendee_ids(self.fbl, fb_event)
+        overlap_attendee_ids_20, count_20, fraction_20 = auto_add.find_overlap(event_attendee_ids, dance_attendee_ids[:20])
+        overlap_attendee_ids_100, count_100, fraction_100 = auto_add.find_overlap(event_attendee_ids, dance_attendee_ids[:100])
+        good_event_attendee_ids = auto_add.test_good_event_by_attendees(event_id, event_attendee_ids, dance_attendee_ids)
+
+        self.display['auto_add_attendee_ids'] = good_event_attendee_ids
+        self.display['overlap_attendee_ids'] = overlap_attendee_ids_100
+        self.display['overlap_results'] = 'Top20: %s (%.0f%%), Top100: %s (%.0f%%)' % (count_20, fraction_20, count_100, fraction_100)
 
         self.display['event'] = e
         self.display['event_id'] = event_id

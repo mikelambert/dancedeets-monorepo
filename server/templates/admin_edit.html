@@ -75,7 +75,13 @@ Edit Event
 			<p>Reason: {{ classified_event.reason() }}<br>
 			Dance Words: {{ classifier_dance_words }}<br>
 			Event Words: {{ classifier_event_words }}<br>
-			Auto-classified: {{ auto_classified_types }}<br>
+			Auto-classified Keywords: {{ auto_classified_types }}<br>
+      Auto-classified Attendee Results: {{ overlap_results }}<br>
+      Auto-classified Attendees:
+        {% for id in auto_add_attendee_ids %}
+          <a href="http://www.facebook.com/{{ id }}">{{ id }}</a>,
+        {% endfor %}
+      <br>
 			Auto-categorized: {{ auto_categorized_types }}<br>
 			{% if event %}
 				Any Existing Tags:
@@ -110,10 +116,12 @@ Edit Event
 				{% for source_id in potential_event.source_ids %}
 					<a href="{{ dd_admin_source_url(source_id) }}">{{ source_id }}</a>,
 				{% endfor %}
-        Overlap Dance Attendee IDs:<br>
+        <br>
+        Overlap Dance Attendee IDs:
         {% for id in overlap_attendee_ids %}
           <a href="http://www.facebook.com/{{ id }}">{{ id }}</a>,
         {% endfor %}
+        <br>
 			{% endif %}
 			<input type="hidden" name="event_id" value="{{ fb_event.info.id }}">
 
