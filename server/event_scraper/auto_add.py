@@ -45,13 +45,13 @@ def is_good_event_by_attendees(fbl, pe, fb_event):
 
     overlap, count, fraction = find_overlap(event_attendee_ids, dance_attendee_ids[:20])
     logging.info('Attendee-Detection-Top: Event %s has %s ids, intersection is %s ids (%.0f%%)', pe.fb_event_id, len(event_attendee_ids), count, fraction)
-    if (fraction >= 5 and count >= 1) or count >= 3:
+    if (fraction >= 5 and count >= 2) or count >= 4:
         logging.info('Attendee-Detection-Top: Event %s has an attendee-based classifier result!', pe.fb_event_id)
         return overlap
 
     overlap, count, fraction = find_overlap(event_attendee_ids, dance_attendee_ids[:100])
     logging.info('Attendee-Detection-Top: Event %s has %s ids, intersection is %s ids (%.0f%%)', pe.fb_event_id, len(event_attendee_ids), count, fraction)
-    if (fraction >= 5 and count >= 4) or count >= 8:
+    if (fraction >= 5 and count >= 5) or count >= 8:
         logging.info('Attendee-Detection-Top: Event %s has an attendee-based classifier result!', pe.fb_event_id)
         return overlap
 
