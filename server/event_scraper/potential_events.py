@@ -42,7 +42,6 @@ class PotentialEvent(db.Model):
     non_dance_bias_score = db.FloatProperty(indexed=False)
     match_score = db.IntegerProperty()
     show_even_if_no_score = db.BooleanProperty()
-    should_look_at = db.BooleanProperty()
 
     #STR_ID_MIGRATE
     source_ids = db.ListProperty(int)
@@ -67,11 +66,6 @@ class PotentialEvent(db.Model):
             if source_id_ == source_id and source_field_ == source_field:
                 has_source = True
         return has_source
-
-    def put(self):
-        #TODO(lambert): write as pre-put hook once we're using NDB.
-        self.should_look_at = bool(self.match_score > 0 or self.show_even_if_no_score)
-        super(PotentialEvent, self).put()
 
     def set_past_event(self, fb_event):
         if not fb_event:
@@ -157,8 +151,9 @@ def make_potential_event_with_source(fb_event, discovered):
         _common_potential_event_setup(potential_event, fb_event)
 
         #STR_ID_MIGRATE
-        potential_event.source_ids.append(long(discovered.source_id))
-        potential_event.source_fields.append(discovered.source_field)
+        if discovered.source_id:
+            potential_event.source_ids.append(long(discovered.source_id))
+            potential_event.source_fields.append(discovered.source_field)
 
         logging.info('VTFI %s: Just added source id %s to potential event, and saving', fb_event_id, discovered.source_id)
 
@@ -175,7 +170,7 @@ def make_potential_event_with_source(fb_event, discovered):
     logging.info('VTFI %s: Just loaded potential event %s, now with sources: %s', fb_event_id, fb_event_id, potential_event.get_invite_uids())
 
     # potential_event = update_scores_for_potential_event(potential_event, fb_event, fb_event_attending)
-    if new_source:
+    if new_source and discovered.source_id:
         s = thing_db.Source.get_by_key_name(discovered.source_id)
         #TODO(lambert): doesn't handle the case of the match score increasing from <0 to >0 in the future
         if match_score > 0:
