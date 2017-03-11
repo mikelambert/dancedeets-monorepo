@@ -987,6 +987,7 @@ CONNECTOR = Name('CONNECTOR', Any(
     u'な', # japanese
     u'の', # japanese
     u'的', # chinese
+    '-',
     # TODO(lambert): explore adding these variations, and their impact on quality
     # r' ?[^\w\s] ?',
     # ' \W ',
