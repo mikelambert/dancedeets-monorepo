@@ -66,7 +66,7 @@ def load_from_dev(city_names):
             rankings.append(ranking)
     return rankings
 
-def get_attendee_ids_near(location_info):
+def get_attendees_near(location_info):
     latlong = location_info.latlong()
     if latlong == (None, None):
         return []
@@ -89,9 +89,7 @@ def get_attendee_ids_near(location_info):
     except:
         logging.exception('Error creating combined people rankings')
         return []
-    attendees = groupings.get('ATTENDEE', {}).get('', [])
-    logging.info('Attendees Nearby:\n%s', '\n'.join(repr(x) for x in attendees))
-    return [x['id'] for x in attendees]
+    return groupings.get('ATTENDEE', {})
 
 def combine_rankings(rankings):
     groupings = {}

@@ -316,8 +316,9 @@ class AdminEditHandler(base_servlet.BaseRequestHandler):
             auto_classified += 'notadd: %s.\n' % notadd_result[1]
 
         self.display['auto_classified_types'] = auto_classified
-        styles = categories.find_styles(fb_event) + categories.find_event_types(fb_event)
-        self.display['auto_categorized_types'] = ', '.join(x.public_name for x in styles)
+        styles = categories.find_styles(fb_event)
+        event_types = styles + categories.find_event_types(fb_event)
+        self.display['auto_categorized_types'] = ', '.join(x.public_name for x in event_types)
 
         location_info = event_locations.LocationInfo(fb_event, db_event=e, debug=True)
         self.display['location_info'] = location_info
@@ -328,14 +329,17 @@ class AdminEditHandler(base_servlet.BaseRequestHandler):
             self.display['fb_geocoded_address'] = ''
         self.display['ranking_city_name'] = rankings.get_ranking_location_latlng(location_info.geocode.latlng()) if location_info.geocode else 'None'
 
-        event_attendee_ids, dance_attendee_ids = auto_add.get_attendee_ids(self.fbl, fb_event)
-        overlap_attendee_ids_20, count_20, fraction_20 = auto_add.find_overlap(event_attendee_ids, dance_attendee_ids[:20])
-        overlap_attendee_ids_100, count_100, fraction_100 = auto_add.find_overlap(event_attendee_ids, dance_attendee_ids[:100])
-        good_event_attendee_ids = auto_add.test_good_event_by_attendees(event_id, event_attendee_ids, dance_attendee_ids)
-
+        good_event_attendee_ids, good_event_attendee_results = auto_add.is_good_event_by_attendees(self.fbl, fb_event, debug=True)
         self.display['auto_add_attendee_ids'] = good_event_attendee_ids
-        self.display['overlap_attendee_ids'] = overlap_attendee_ids_100
-        self.display['overlap_results'] = 'Top20: %s (%.0f%%), Top100: %s (%.0f%%)' % (count_20, fraction_20, count_100, fraction_100)
+        self.display['overlap_results'] = good_event_attendee_results
+
+        # For extra debugging
+        event_attendee_ids = auto_add.get_event_attendee_ids(self.fbl, fb_event)
+        dance_style_attendees = auto_add.get_location_style_attendees(fb_event)
+        dance_attendee_ids = [x['id'] for x in dance_style_attendees['']]
+        overlap_ids, count, fraction = auto_add.find_overlap(event_attendee_ids, dance_attendee_ids[:100])
+        self.display['overlap_attendee_ids'] = overlap_ids
+
 
         self.display['event'] = e
         self.display['event_id'] = event_id
