@@ -24,6 +24,8 @@ CM_USER = 'CM_USER'
 CM_WEB_SCRAPE = 'CM_WEB_SCRAPE' # A WebEvent we scraped from the web
 CM_UNKNOWN = 'CM_UNKNOWN'
 
+ALL_CM_HUMAN_CREATED = [CM_ADMIN, CM_USER]
+
 EVENT_ID_REGEX = r'(?:\d+|[^/?#]+:[^/?#]+)'
 
 

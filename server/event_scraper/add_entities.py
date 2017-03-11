@@ -25,9 +25,14 @@ def add_update_event(fb_event, fbl, creating_uid=None, visible_to_fb_uids=None, 
     newly_created = (e.creating_method is None)
     if override_address is not None:
         e.address = override_address
-    if newly_created:
+
+    if e.creating_method is None:
         e.creating_method = creating_method or eventdata.CM_UNKNOWN
-        # Don't override the original creating_fb_uid
+    # Allow an override if we get a user or admin taking a human action
+    if creating_method in eventdata.ALL_CM_HUMAN_CREATED:
+        e.creating_method = creating_method or e.creating_method
+    # Don't override the original creating_fb_uid
+    if not e.creating_fb_uid:
         #STR_ID_MIGRATE
         e.creating_fb_uid = long(creating_uid) if creating_uid else None
         if e.creating_fb_uid:
