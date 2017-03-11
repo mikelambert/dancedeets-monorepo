@@ -66,15 +66,16 @@ def load_from_dev(city_names):
             rankings.append(ranking)
     return rankings
 
-def get_attendees_near(location_info):
-    latlong = location_info.latlong()
+def get_attendees_near(latlong):
     if latlong == (None, None):
         return {}
     southwest, northeast = math.expand_bounds((latlong, latlong), 100)
+    logging.info('Looking up nearby cities to %s', latlong)
     included_cities = cities.get_nearby_cities((southwest, northeast))
+    logging.info('Found %s cities', len(included_cities))
     biggest_cities = sorted(included_cities, key=lambda x: -x.population)[:10]
     city_names = [city.display_name() for city in biggest_cities]
-    logging.info('City names: %s', city_names)
+    logging.info('Loading PeopleRanking for top 10 cities: %s', city_names)
     if not city_names:
         return {}
     try:
@@ -85,6 +86,7 @@ def get_attendees_near(location_info):
                 PeopleRanking.city.IN(city_names),
                 PeopleRanking.person_type=='ATTENDEE'
             )
+        logging.info('Loaded People Rankings')
         groupings = combine_rankings(people_rankings)
     except:
         logging.exception('Error creating combined people rankings')

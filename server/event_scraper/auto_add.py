@@ -50,8 +50,15 @@ def get_event_attendee_ids(fbl, fb_event):
     return event_attendee_ids
 
 def get_location_style_attendees(fb_event):
-    location_info = event_locations.LocationInfo(fb_event)
-    dance_attendee_styles = popular_people.get_attendees_near(location_info)
+    # We don't need google-maps latlong accuracy. Let's cheat and use the fb_event for convenience if possible...
+    location = fb_event['info'].get('place', {}).get('location', {})
+    if location and 'latitude' in location:
+        latlong = (location['latitude'], location['longitude'])
+    else:
+        logging.info('Looking up event LocationInfo')
+        location_info = event_locations.LocationInfo(fb_event)
+        latlong = location_info.latlong()
+    dance_attendee_styles = popular_people.get_attendees_near(latlong)
     return dance_attendee_styles
 
 def is_good_event_by_attendees(fbl, fb_event, debug=False):
@@ -120,18 +127,20 @@ def classify_events(fbl, pe_list, fb_list):
         if pe.looked_at:
             continue
 
+        logging.info('Is Good Event By Text: Checking...')
         classified_event, auto_add_result = is_good_event_by_text(fb_event)
+        logging.info('Is Good Event By Text: %s', auto_add_result)
         good_event = False
         if auto_add_result and auto_add_result[0]:
             good_event = auto_add_result[0]
             method = eventdata.CM_AUTO
         else:
+            logging.info('Is Good Event By Attendees: Checking...')
             good_event = is_good_event_by_attendees(fbl, fb_event)
+            logging.info('Is Good Event By Attendees: %s', good_event)
             method = eventdata.CM_AUTO_ATTENDEE
         if good_event:
-            logging.info("Found event %s, looking up location", pe.fb_event_id)
-            location_info = event_locations.LocationInfo(fb_event)
-            result = '+%s\n' % '\t'.join(unicode(x) for x in (pe.fb_event_id, True, location_info.final_city, location_info.final_city is not None, location_info.fb_address, fb_event['info'].get('name', '')))
+            result = '+%s\n' % '\t'.join(pe.fb_event_id, fb_event['info'].get('name', ''))
             try:
                 logging.info('VTFI %s: Adding event %s, due to pe-invite-ids: %s', pe.fb_event_id, pe.fb_event_id, pe.get_invite_uids())
                 add_entities.add_update_event(fb_event, fbl, visible_to_fb_uids=pe.get_invite_uids(), creating_method=method)
