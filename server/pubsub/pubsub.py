@@ -434,8 +434,8 @@ def get_targeting_data(fbl, db_event):
     if city_key:
         feed_targeting['cities'] = [{
             'key': city_key,
-            'radius': 80,
-            'distance_unit': 'kilometer',
+            #'radius': 80,
+            #'distance_unit': 'kilometer',
         }]
     elif short_country:
         feed_targeting['countries'] = [short_country]
