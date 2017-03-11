@@ -210,6 +210,7 @@ class LookupEventAttending(LookupType):
     def get_lookups(cls, object_id):
         return [
             ('attending', cls.url('%s/attending?fields=id,name&limit=3000' % object_id)),
+            ('maybe', cls.url('%s/maybe?fields=id,name&limit=3000' % object_id)),
         ]
     @classmethod
     def cache_key(cls, object_id, fetching_uid):

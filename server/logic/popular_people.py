@@ -170,6 +170,9 @@ def output_people(db_events):
         for admin in db_event.admins:
             for y in track_person('ADMIN', db_event, admin):
                 yield y
+        # We don't want to use the 'maybe' lists in computing who are the go-to people for each city/style,
+        # because they're not actually committed to these events.
+        # Those who have committed to going should be the relevant authorities.
         for attendee in fb_event_attending['attending']['data']:
             for y in track_person('ATTENDEE', db_event, attendee):
                 yield y
