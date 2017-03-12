@@ -159,9 +159,9 @@ def classify_events(fbl, pe_list, fb_list):
                 results.append(result)
                 mr.increment('auto-added-dance-events')
                 if e.start_time < datetime.datetime.now():
-                    mr.increment('auto-added-dance-events-future')
-                else:
                     mr.increment('auto-added-dance-events-past')
+                else:
+                    mr.increment('auto-added-dance-events-future')
             except fb_api.NoFetchedDataException as e:
                 logging.error("Error adding event %s, no fetched data: %s", pe.fb_event_id, e)
             except add_entities.AddEventException as e:
