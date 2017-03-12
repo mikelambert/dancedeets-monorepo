@@ -95,16 +95,19 @@ def get_attendees_near(latlong):
 
 def combine_rankings(rankings):
     groupings = {}
+    # Unfortunately this for-loop still takes a long time...
+    # I wonder if we could instead store these top_people as json
+    # and avoid the need for any of this preprocessing?
     for r in rankings:
         #logging.info(r.key)
         key = (r.person_type, r.human_category)
-        groupings.setdefault(key, {})
+        people = groupings[key] = {}
         for person_triplet in r.top_people:
             person_name, new_count = person_triplet.rsplit(':', 1)
-            if person_name in groupings[key]:
-                groupings[key][person_name] += int(new_count)
+            if person_name in people:
+                people[person_name] += int(new_count)
             else:
-                groupings[key][person_name] = int(new_count)
+                people[person_name] = int(new_count)
     for key in groupings:
         person_type, category = key
         if person_type == 'ATTENDEE':
@@ -122,17 +125,18 @@ def combine_rankings(rankings):
     for key in groupings:
         person_type, category = key
         orig = groupings[key]
-        dicts = [
-            {
-                'name': name.split(': ', 1)[1],
-                'id': name.split(': ', 1)[0],
+        dicts = []
+        for name, count in orig.iteritems():
+            split_name = name.split(': ', 1)
+            dicts.append({
+                'name': split_name[1],
+                'id': split_name[0],
                 'count': count,
-            } for (name, count) in orig.items()
-        ]
+            })
         if person_type not in final_groupings:
-            final_groupings.setdefault(person_type, {})
+            final_groupings[person_type] = {}
         if category not in final_groupings[person_type]:
-            final_groupings[person_type].setdefault(category, {})
+            final_groupings[person_type][category] = {}
         final_groupings[person_type][category] = sorted(dicts, key=lambda x: -x['count'])
     return final_groupings
 
