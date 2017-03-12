@@ -95,6 +95,7 @@ def get_attendees_near(latlong):
 
 def combine_rankings(rankings):
     groupings = {}
+    logging.info('CR1')
     for r in rankings:
         #logging.info(r.key)
         for person_triplet in r.top_people:
@@ -109,6 +110,7 @@ def combine_rankings(rankings):
                 groupings[r.person_type][r.human_category][name] += int(new_count)
             else:
                 groupings[r.person_type][r.human_category][name] = int(new_count)
+    logging.info('CR2')
     for person_type in groupings.keys():
         if person_type == 'ATTENDEE':
             limit = 3
@@ -126,6 +128,7 @@ def combine_rankings(rankings):
         if len(groupings[person_type]) == 0:
             del groupings[person_type]
 
+    logging.info('CR3')
     for person_type in groupings:
         for category in groupings[person_type]:
             orig = groupings[person_type][category]
@@ -137,6 +140,7 @@ def combine_rankings(rankings):
                 } for (name, count) in orig.items()
             ]
             groupings[person_type][category] = sorted(dicts, key=lambda x: -x['count'])
+    logging.info('CR4')
     return groupings
 
 
