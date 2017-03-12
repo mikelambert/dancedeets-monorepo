@@ -29,14 +29,15 @@ def find_overlap(event_attendee_ids, top_dance_attendee_ids):
     fraction_known = 1.0 * num_intersection / len(event_attendee_ids)
     return intersection_ids, num_intersection, fraction_known
 
-def get_event_attendee_ids(fbl, fb_event):
+def get_event_attendee_ids(fbl, fb_event, fb_event_attending_maybe=None):
     event_id = fb_event['info']['id']
 
-    try:
-        fb_event_attending_maybe = fbl.get(fb_api.LookupEventAttendingMaybe, event_id)
-    except fb_api.NoFetchedDataException:
-        logging.info('Event %s could not fetch event attendees, aborting.', event_id)
-        return []
+    if fb_event_attending_maybe is None:
+        try:
+            fb_event_attending_maybe = fbl.get(fb_api.LookupEventAttendingMaybe, event_id)
+        except fb_api.NoFetchedDataException:
+            logging.info('Event %s could not fetch event attendees, aborting.', event_id)
+            return []
     if fb_event_attending_maybe['empty']:
         logging.info('Event %s has no attendees, skipping attendee-based classification.', event_id)
         return []
@@ -61,16 +62,16 @@ def get_location_style_attendees(fb_event):
     dance_attendee_styles = popular_people.get_attendees_near(latlong)
     return dance_attendee_styles
 
-def is_good_event_by_attendees(fbl, fb_event, debug=False):
+def is_good_event_by_attendees(fbl, fb_event, fb_event_attending_maybe=None, debug=False):
     event_id = fb_event['info']['id']
 
     good_event = []
     results = []
 
-    event_attendee_ids = get_event_attendee_ids(fbl, fb_event)
+    event_attendee_ids = get_event_attendee_ids(fbl, fb_event, fb_event_attending_maybe)
     if event_attendee_ids:
         dance_style_attendees = get_location_style_attendees(fb_event)
-        logging.info('Compuing Styles for Event')
+        logging.info('Computing Styles for Event')
         styles = categories.find_styles(fb_event)
 
         for style in [None] + sorted(styles):
@@ -111,7 +112,9 @@ def is_good_event_by_attendees(fbl, fb_event, debug=False):
 
 def classify_events(fbl, pe_list, fb_list):
     results = []
-    for pe, fb_event in zip(pe_list, fb_list):
+    fb_event_ids = [x['info']['id'] for x in fb_list]
+    fb_attending_maybe_list = fbl.get_multi(fb_api.LookupEventAttendingMaybe, fb_event_ids)
+    for pe, fb_event, fb_event_attending_maybe in zip(pe_list, fb_list, fb_attending_maybe_list):
         if fb_event and fb_event['empty']:
             fb_event = None
 
@@ -137,7 +140,7 @@ def classify_events(fbl, pe_list, fb_list):
             method = eventdata.CM_AUTO
         else:
             logging.info('Is Good Event By Attendees: Checking...')
-            good_event = is_good_event_by_attendees(fbl, fb_event)
+            good_event = is_good_event_by_attendees(fbl, fb_event, fb_event_attending_maybe)
             logging.info('Is Good Event By Attendees: %s', good_event)
             method = eventdata.CM_AUTO_ATTENDEE
         if good_event:
