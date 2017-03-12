@@ -1,11 +1,12 @@
 import logging
+import pycountry
 import re
+
 from google.appengine.ext import db
 from google.appengine.runtime import apiproxy_errors
 
 from loc import gmaps_api
 from loc import formatting
-from util import abbrev
 
 ONLINE_ADDRESS = 'ONLINE'
 
@@ -23,8 +24,16 @@ class LocationMapping(db.Model):
     remapped_address = db.StringProperty(indexed=False)
 
 
+def state_name_for_fb_location(location):
+    try:
+        country = pycountry.countries.get(name=location.get('country'))
+        state = pycountry.subdivisions.get(code='%s-%s' % (country.alpha_2, location.get('state'))).name
+    except KeyError:
+        state = location.get('state')
+    return state
+
 def city_for_fb_location(location):
-    state = abbrev.states_full2abbrev.get(location.get('state'), location.get('state'))
+    state = state_name_for_fb_location(location)
     if location.get('city') and (state or location.get('country')):
         address_components = [location.get('city'), state, location.get('country')]
         address_components = [x for x in address_components if x]
@@ -72,8 +81,7 @@ def get_address_for_fb_event(fb_event):
     if not venue:
         return event_location
 
-    # Use states_full2abbrev to convert "Lousiana" to "LA" so "Hollywood, LA" geocodes correctly.
-    state = abbrev.states_full2abbrev.get(venue.get('state'), venue.get('state'))
+    state = state_name_for_fb_location(venue)
     address_components = [event_location, venue.get('street'), venue.get('city'), state, venue.get('country')]
     address_components = [x for x in address_components if x]
     final_address = ', '.join(address_components)
