@@ -18,7 +18,7 @@ mapreduce__CONTROLLER_PERIOD_SEC = 5
 # There's no reason to make them 15 seconds in an age without task runtime limits.
 # And sometimes the TransientShareState goes above 1MB and can't be saved,
 # resulting in an impossible-to-complete mapreduce. This just helps it avoid that.
-mapreduce__SLICE_DURATION_SEC = 200
+mapreduce__SLICE_DURATION_SEC = 60
 
 appstats_MAX_STACK = 25
 appstats_MAX_REPR = 100
