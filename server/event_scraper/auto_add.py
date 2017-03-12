@@ -1,3 +1,4 @@
+import datetime
 import logging
 
 import fb_api
@@ -149,7 +150,7 @@ def classify_events(fbl, pe_list, fb_list):
             result = '+%s\n' % '\t'.join((pe.fb_event_id, fb_event['info'].get('name', '')))
             try:
                 logging.info('VTFI %s: Adding event %s, due to pe-invite-ids: %s', event_id, event_id, pe.get_invite_uids())
-                add_entities.add_update_event(fb_event, fbl, visible_to_fb_uids=pe.get_invite_uids(), creating_method=method)
+                e = add_entities.add_update_event(fb_event, fbl, visible_to_fb_uids=pe.get_invite_uids(), creating_method=method)
                 pe2 = potential_events.PotentialEvent.get_by_key_name(pe.fb_event_id)
                 pe2.looked_at = True
                 pe2.auto_looked_at = True
@@ -157,6 +158,10 @@ def classify_events(fbl, pe_list, fb_list):
                 # TODO(lambert): handle un-add-able events differently
                 results.append(result)
                 mr.increment('auto-added-dance-events')
+                if e.start_time < datetime.datetime.now():
+                    mr.increment('auto-added-dance-events-future')
+                else:
+                    mr.increment('auto-added-dance-events-past')
             except fb_api.NoFetchedDataException as e:
                 logging.error("Error adding event %s, no fetched data: %s", pe.fb_event_id, e)
             except add_entities.AddEventException as e:
