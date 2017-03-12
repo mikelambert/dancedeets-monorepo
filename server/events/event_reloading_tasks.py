@@ -6,6 +6,7 @@ from mapreduce import operation as op
 import app
 import base_servlet
 import fb_api
+from search import search
 from users import users
 from util import deferred
 from util import fb_mapreduce
@@ -174,7 +175,10 @@ def yield_maybe_delete_bad_event(fbl, db_event):
     if not good_event:
         logging.info('MDBE: Oops, found accidentally added event %s: %s', db_event.fb_event_id, db_event.name)
         mr.increment('deleting-bad-event')
+        search.delete_from_fulltext_search_index(db_event.fb_event_id)
         yield op.db.Delete(db_event)
+        display_event = search.DisplayEvent.get_by_id(db_event.fb_event_id)
+        yield op.db.Delete(display_event)
 
 map_maybe_delete_bad_event = fb_mapreduce.mr_wrap(yield_maybe_delete_bad_event)
 maybe_delete_bad_event = fb_mapreduce.nomr_wrap(yield_maybe_delete_bad_event)
