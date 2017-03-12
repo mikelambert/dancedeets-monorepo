@@ -95,53 +95,46 @@ def get_attendees_near(latlong):
 
 def combine_rankings(rankings):
     groupings = {}
-    logging.info('CR1')
     for r in rankings:
         #logging.info(r.key)
+        key = (r.person_type, r.human_category)
+        groupings.setdefault(key, {})
         for person_triplet in r.top_people:
-            #logging.info('  - %s', person_triplet)
-            match = re.match(r'(.*): (\d+)', person_triplet)
-            if not match:
-                logging.error('Error parsing %s, person: %s', r.id, person_triplet)
-                continue
-            name, new_count = match.groups()
-            groupings.setdefault(r.person_type, {}).setdefault(r.human_category, {})
-            if name in groupings[r.person_type][r.human_category]:
-                groupings[r.person_type][r.human_category][name] += int(new_count)
+            person_name, new_count = person_triplet.rsplit(':', 1)
+            if person_name in groupings[key]:
+                groupings[key][person_name] += int(new_count)
             else:
-                groupings[r.person_type][r.human_category][name] = int(new_count)
-    logging.info('CR2')
-    for person_type in groupings.keys():
+                groupings[key][person_name] = int(new_count)
+    for key in groupings:
+        person_type, category = key
         if person_type == 'ATTENDEE':
             limit = 3
         elif person_type == 'ADMIN':
             limit = 2
         else:
             logging.error('Unknown person type: %s', person_type)
-        for category in groupings[person_type].keys():
-            # Remove low/bad frequency data
-            for name in groupings[person_type][category].keys():
-                if groupings[person_type][category][name] < limit:
-                    del groupings[person_type][category][name]
-            if len(groupings[person_type][category]) == 0:
-                del groupings[person_type][category]
-        if len(groupings[person_type]) == 0:
-            del groupings[person_type]
+        # Remove low/bad frequency data
+        groupings[key] = dict(kv for kv in groupings[key].iteritems() if kv[1] >= limit)
 
-    logging.info('CR3')
-    for person_type in groupings:
-        for category in groupings[person_type]:
-            orig = groupings[person_type][category]
-            dicts = [
-                {
-                    'name': name.split(': ', 1)[1],
-                    'id': name.split(': ', 1)[0],
-                    'count': count,
-                } for (name, count) in orig.items()
-            ]
-            groupings[person_type][category] = sorted(dicts, key=lambda x: -x['count'])
-    logging.info('CR4')
-    return groupings
+    groupings = dict(kv for kv in groupings.iteritems() if len(kv[1]))
+
+    final_groupings = {}
+    for key in groupings:
+        person_type, category = key
+        orig = groupings[key]
+        dicts = [
+            {
+                'name': name.split(': ', 1)[1],
+                'id': name.split(': ', 1)[0],
+                'count': count,
+            } for (name, count) in orig.items()
+        ]
+        if person_type not in final_groupings:
+            final_groupings.setdefault(person_type, {})
+        if category not in final_groupings[person_type]:
+            final_groupings[person_type].setdefault(category, {})
+        final_groupings[person_type][category] = sorted(dicts, key=lambda x: -x['count'])
+    return final_groupings
 
 
 def track_person(person_type, db_event, person):
