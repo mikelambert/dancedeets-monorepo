@@ -101,7 +101,10 @@ def combine_rankings(rankings):
     for r in rankings:
         #logging.info(r.key)
         key = (r.person_type, r.human_category)
-        people = groupings[key] = {}
+        # Make sure we use setdefault....we can have key repeats due to rankings from different cities
+        groupings.setdefault(key, {})
+        # Use this version below, and avoid the lookups
+        people = groupings[key]
         for person_triplet in r.top_people:
             person_name, new_count = person_triplet.rsplit(':', 1)
             if person_name in people:
