@@ -36,6 +36,9 @@ EASY_DANCE = Name('EASY_DANCE', Any(
     u'танцува', # bulgarian dance
     u'танцовия', # bulgarian dance
     u'изтанцуват', # bulgarian dancing
+    u'רקוד', # hebrew dancing
+    u'בלרקוד', # hebrew dancing
+    u'כשרוקדים', # hebrew 'when dancing'
     u'ダンサー', # japanese dance
     u'ダンス', # japanese dance
     u'춤.?', # korean dance
@@ -719,6 +722,9 @@ CLASS = Name('CLASS', Any(
     'w\.s\.', # japanese workshop W.S.
     u'ワークショップ', # japanese workshop
     u'작업장', # korean workshop
+    u'סדנת', # hebrew workshop
+    u'בסדנה', # hebrew workshop
+    u'בסדנא', # hebrew workshop
     u'hội thảo', # vietnamese workshop
     'cursillo', # spanish workshop
     'ateliers', # french workshop
@@ -1089,6 +1095,7 @@ VOGUE = Name('VOGUE', Any(
     'vogue fem',
     'hand performance',
     'face performance',
+    u'פרפורמנס', # hebrew performance
     'fem(?:me)? queen',
     'sex siren',
     "vou?gue?in[g']?",
