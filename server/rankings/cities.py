@@ -1,11 +1,11 @@
 import logging
-import pycountry
 
 from google.appengine.ext import db
 
 import geohash
 from loc import geohash_math
 from loc import math
+from loc import names
 
 CITY_GEOHASH_PRECISIONS = range(
     geohash_math.get_geohash_bits_for_km(1500),
@@ -51,10 +51,7 @@ class City(db.Model):
     def display_name(self):
         if self.city_name == 'Unknown':
             return self.city_name
-        try:
-            full_country = pycountry.countries.get(alpha_2=self.country_name).name
-        except:
-            full_country = self.country_name
+        full_country = names.get_country_name(self.country_name)
         city_name = '%s, %s' % (self.city_name, full_country)
         if city_name == 'San Jose, United States':
             city_name = 'San Francisco, United States'

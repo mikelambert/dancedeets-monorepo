@@ -25,12 +25,15 @@ class LocationMapping(db.Model):
 
 
 def state_name_for_fb_location(location):
+    state_name = location.get('state')
     try:
         country = pycountry.countries.get(name=location.get('country'))
-        state = pycountry.subdivisions.get(code='%s-%s' % (country.alpha_2, location.get('state'))).name
+        state = pycountry.subdivisions.get(code='%s-%s' % (country.alpha_2, location.get('state')))
+        if state:
+            state_name = state.name
     except KeyError:
-        state = location.get('state')
-    return state
+        pass
+    return state_name
 
 def city_for_fb_location(location):
     state = state_name_for_fb_location(location)

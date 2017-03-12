@@ -1,7 +1,7 @@
 import app
 import base_servlet
-import pycountry
 
+from loc import names
 from logic import mobile
 from logic import sms
 from util import country_dialing_codes
@@ -48,10 +48,7 @@ class MobileAppsHandler(base_servlet.BaseRequestHandler):
             self.display['prefix'] = self.request.get('prefix')
         else:
             iso3166_country = self.request.headers.get("X-AppEngine-Country")
-            try:
-                full_country = pycountry.countries.get(alpha_2=iso3166_country).name
-            except:
-                full_country = iso3166_country
+            full_country = names.get_country_name(iso3166_country)
             self.display['prefix'] = country_dialing_codes.mapping.get(full_country, '')
         self.display['phone'] = self.request.get('phone')
         self.render_template('mobile_apps')

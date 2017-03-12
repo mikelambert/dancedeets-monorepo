@@ -11,7 +11,6 @@ import logging
 import random
 from react import render
 from react.conf import settings
-import pycountry
 import os
 import traceback
 import urllib
@@ -27,6 +26,7 @@ from events import eventdata
 import event_types
 import facebook
 import fb_api
+from loc import names
 from logic import backgrounder
 from logic import mobile
 from rankings import rankings
@@ -239,10 +239,7 @@ class BareBaseRequestHandler(webapp2.RequestHandler, FacebookMixinHandler):
 
     def get_location_from_headers(self, city=True):
         iso3166_country = self.request.headers.get("X-AppEngine-Country")
-        try:
-            full_country = pycountry.countries.get(alpha_2=iso3166_country).name
-        except:
-            full_country = iso3166_country
+        full_country = names.get_country_name(iso3166_country)
 
         location_components = []
         if city:
