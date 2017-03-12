@@ -182,7 +182,7 @@ maybe_delete_bad_event = fb_mapreduce.nomr_wrap(yield_maybe_delete_bad_event)
 @app.route('/tasks/delete_bad_autoadds')
 class DeleteBadAutoAddsHandler(base_servlet.EventOperationHandler):
     def get(self):
-        queue = self.request.get('queue', 'super-slow-queue')
+        queue = self.request.get('queue', 'fast-queue')
         fb_mapreduce.start_map(
             fbl=self.fbl,
             name='Delete Bad Autoadds',
