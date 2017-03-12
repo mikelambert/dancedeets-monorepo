@@ -57,7 +57,7 @@ def get_location_style_attendees(fb_event):
     if location and 'latitude' in location:
         latlong = (location['latitude'], location['longitude'])
     else:
-        logging.info('Looking up event LocationInfo')
+        logging.info('Looking up event %s LocationInfo', fb_event['info']['id'])
         location_info = event_locations.LocationInfo(fb_event)
         latlong = location_info.latlong()
     dance_attendee_styles = popular_people.get_attendees_near(latlong)
@@ -86,7 +86,7 @@ def is_good_event_by_attendees(fbl, fb_event, fb_event_attending_maybe=None, deb
             results += ['%s Top20: %s (%.1f%%)' % (style_name, count, 100.0 * fraction)]
             if (
                 (fraction >= 0.05 and count >= 2) or
-                (fraction >= 0.003 and count >= 4) or # catches 4-or-more on events 4000-or-less
+                (fraction >= 0.003 and count >= 4) or # catches 4-or-more on events 1300-or-less
                 False
             ):
                 logging.info('Attendee-Detection-Top-20: Event %s has an attendee-based classifier result!', event_id)
@@ -99,7 +99,7 @@ def is_good_event_by_attendees(fbl, fb_event, fb_event_attending_maybe=None, deb
             if (
                 (fraction >= 0.10 and count >= 3) or
                 (fraction >= 0.05 and count >= 4) or
-                (fraction >= 0.003 and count >= 6) or # catches 6-or-more on events 6000-or-less
+                (fraction >= 0.003 and count >= 6) or # catches 6-or-more on events 2000-or-less
                 False
             ):
                 logging.info('Attendee-Detection-Top-100: Event %s has an attendee-based classifier result!', event_id)
