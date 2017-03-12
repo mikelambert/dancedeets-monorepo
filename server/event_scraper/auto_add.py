@@ -85,7 +85,7 @@ def is_good_event_by_attendees(fbl, fb_event, fb_event_attending_maybe=None, deb
             results += ['%s Top20: %s (%.1f%%)' % (style_name, count, 100.0 * fraction)]
             if (
                 (fraction >= 0.05 and count >= 2) or
-                (fraction >= 0.001 and count >= 4) or # catches 4-or-more on events 4000-or-less
+                (fraction >= 0.003 and count >= 4) or # catches 4-or-more on events 4000-or-less
                 False
             ):
                 logging.info('Attendee-Detection-Top-20: Event %s has an attendee-based classifier result!', event_id)
@@ -98,7 +98,7 @@ def is_good_event_by_attendees(fbl, fb_event, fb_event_attending_maybe=None, deb
             if (
                 (fraction >= 0.10 and count >= 3) or
                 (fraction >= 0.05 and count >= 4) or
-                (fraction >= 0.001 and count >= 6) or # catches 6-or-more on events 6000-or-less
+                (fraction >= 0.003 and count >= 6) or # catches 6-or-more on events 6000-or-less
                 False
             ):
                 logging.info('Attendee-Detection-Top-100: Event %s has an attendee-based classifier result!', event_id)
@@ -131,22 +131,24 @@ def classify_events(fbl, pe_list, fb_list):
         if pe.looked_at:
             continue
 
-        logging.info('Is Good Event By Text: Checking...')
+        event_id = pe.fb_event_id
+
+        logging.info('Is Good Event By Text: %s: Checking...', event_id)
         classified_event, auto_add_result = is_good_event_by_text(fb_event)
-        logging.info('Is Good Event By Text: %s', auto_add_result)
+        logging.info('Is Good Event By Text: %s: %s', event_id, auto_add_result)
         good_event = False
         if auto_add_result and auto_add_result[0]:
             good_event = auto_add_result[0]
             method = eventdata.CM_AUTO
         else:
-            logging.info('Is Good Event By Attendees: Checking...')
+            logging.info('Is Good Event By Attendees: %s: Checking...', event_id)
             good_event = is_good_event_by_attendees(fbl, fb_event, fb_event_attending_maybe)
-            logging.info('Is Good Event By Attendees: %s', good_event)
+            logging.info('Is Good Event By Attendees: %s: %s', event_id, good_event)
             method = eventdata.CM_AUTO_ATTENDEE
         if good_event:
             result = '+%s\n' % '\t'.join((pe.fb_event_id, fb_event['info'].get('name', '')))
             try:
-                logging.info('VTFI %s: Adding event %s, due to pe-invite-ids: %s', pe.fb_event_id, pe.fb_event_id, pe.get_invite_uids())
+                logging.info('VTFI %s: Adding event %s, due to pe-invite-ids: %s', event_id, event_id, pe.get_invite_uids())
                 add_entities.add_update_event(fb_event, fbl, visible_to_fb_uids=pe.get_invite_uids(), creating_method=method)
                 pe2 = potential_events.PotentialEvent.get_by_key_name(pe.fb_event_id)
                 pe2.looked_at = True
