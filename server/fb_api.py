@@ -202,6 +202,10 @@ class LookupEventPageComments(LookupType):
         return (USERLESS_UID, object_id, 'OBJ_EVENTPAGE_COMMENTS')
 
 class LookupEventAttending(LookupType):
+    """Gets id and name (for display) for just the attending.
+
+    Used with DBEvents, to aggregate the dance names in the city."""
+
     @classmethod
     def track_lookup(cls):
         mr.increment('fb-lookups-event-rsvp')
@@ -210,7 +214,25 @@ class LookupEventAttending(LookupType):
     def get_lookups(cls, object_id):
         return [
             ('attending', cls.url('%s/attending?fields=id,name&limit=3000' % object_id)),
-            ('maybe', cls.url('%s/maybe?fields=id,name&limit=3000' % object_id)),
+        ]
+    @classmethod
+    def cache_key(cls, object_id, fetching_uid):
+        return (USERLESS_UID, object_id, 'OBJ_EVENT_ATTENDING')
+
+class LookupEventAttendingMaybe(LookupType):
+    """Gets id-only (faster) for both attending and maybe.
+
+    Used with PotentialEvents, to check if ids are dance-y."""
+
+    @classmethod
+    def track_lookup(cls):
+        mr.increment('fb-lookups-event-rsvp')
+
+    @classmethod
+    def get_lookups(cls, object_id):
+        return [
+            ('attending', cls.url('%s/attending?fields=id&limit=3000' % object_id)),
+            ('maybe', cls.url('%s/maybe?fields=id&limit=3000' % object_id)),
         ]
     @classmethod
     def cache_key(cls, object_id, fetching_uid):
@@ -338,7 +360,6 @@ class DBCache(CacheSystem):
         max_in_queries = datastore.MAX_ALLOWABLE_QUERIES
         cache_keys = cache_key_mapping.keys()
         for i in range(0, len(cache_keys), max_in_queries):
-            logging.info('%r', cache_keys)
             objects = FacebookCachedObject.get_by_key_name(cache_keys[i:i+max_in_queries])
             for o in objects:
                 if o:

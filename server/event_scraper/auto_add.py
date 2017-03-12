@@ -33,17 +33,17 @@ def get_event_attendee_ids(fbl, fb_event):
     event_id = fb_event['info']['id']
 
     try:
-        fb_event_attending = fbl.get(fb_api.LookupEventAttending, event_id)
+        fb_event_attending_maybe = fbl.get(fb_api.LookupEventAttendingMaybe, event_id)
     except fb_api.NoFetchedDataException:
         logging.info('Event %s could not fetch event attendees, aborting.', event_id)
         return []
-    if fb_event_attending['empty']:
+    if fb_event_attending_maybe['empty']:
         logging.info('Event %s has no attendees, skipping attendee-based classification.', event_id)
         return []
 
     # Combine both attending AND maybe for looking at people and figuring out if this event is legit
     # Will really help improve the coverage and accuracy versus just using the attendee lists...
-    people = fb_event_attending['attending']['data'] + fb_event_attending.get('maybe', {}).get('data', [])
+    people = fb_event_attending_maybe['attending']['data'] + fb_event_attending_maybe['maybe']['data']
     event_attendee_ids = [attendee['id'] for attendee in people]
     if not event_attendee_ids:
         return []
@@ -70,6 +70,7 @@ def is_good_event_by_attendees(fbl, fb_event, debug=False):
     event_attendee_ids = get_event_attendee_ids(fbl, fb_event)
     if event_attendee_ids:
         dance_style_attendees = get_location_style_attendees(fb_event)
+        logging.info('Compuing Styles for Event')
         styles = categories.find_styles(fb_event)
 
         for style in [None] + sorted(styles):
