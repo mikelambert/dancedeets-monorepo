@@ -9,7 +9,9 @@ from . import math
 
 USE_PRIVATE_KEY = False
 
+# 150K daily limit. But textsearch costs 10x as much.
 live_places_api = gmaps.LiveBackend('places', 'https://maps.googleapis.com', '/maps/api/place/textsearch/json', use_private_key=False)
+# 100K daily limit
 live_geocode_api = gmaps.LiveBackend('geocode', 'https://maps.google.com', '/maps/api/geocode/json', use_private_key=USE_PRIVATE_KEY)
 
 if runtime.is_local_appengine():
