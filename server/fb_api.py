@@ -213,7 +213,7 @@ class LookupEventAttending(LookupType):
     @classmethod
     def get_lookups(cls, object_id):
         return [
-            ('attending', cls.url('%s/attending?fields=id,name&limit=3000' % object_id)),
+            ('attending', cls.url('%s/attending?fields=id,name&limit=2000' % object_id)),
         ]
     @classmethod
     def cache_key(cls, object_id, fetching_uid):
@@ -226,17 +226,17 @@ class LookupEventAttendingMaybe(LookupType):
 
     @classmethod
     def track_lookup(cls):
-        mr.increment('fb-lookups-event-rsvp')
+        mr.increment('fb-lookups-event-rsvp', 2)
 
     @classmethod
     def get_lookups(cls, object_id):
         return [
-            ('attending', cls.url('%s/attending?fields=id&limit=3000' % object_id)),
-            ('maybe', cls.url('%s/maybe?fields=id&limit=3000' % object_id)),
+            ('attending', cls.url('%s/attending?fields=id&limit=2000' % object_id)),
+            ('maybe', cls.url('%s/maybe?fields=id&limit=2000' % object_id)),
         ]
     @classmethod
     def cache_key(cls, object_id, fetching_uid):
-        return (USERLESS_UID, object_id, 'OBJ_EVENT_ATTENDING')
+        return (USERLESS_UID, object_id, 'OBJ_EVENT_ATTENDING_MAYBE')
 
 class LookupEventMembers(LookupType):
     @classmethod
@@ -722,7 +722,7 @@ class FBLookup(object):
         keys = set(keys).difference(fetched_objects)
 
         if keys:
-            logging.error("BatchLookup: Couldn't find values for keys: %s", keys)
+            logging.warning("BatchLookup: Couldn't find values for keys: %s", keys)
 
         self.fb_fetches = self.fb.fb_fetches
         if self.db:
