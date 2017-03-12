@@ -151,15 +151,21 @@ def pull_and_publish_event():
         tasks = q.lease_tasks_by_tag(120, 1, token.queue_id())
         logging.info("Fetching %d tasks with queue id %s", len(tasks), token.queue_id())
         if tasks:
-            for task in tasks:
-                event_id = task.payload
-                logging.info("  Found event, posting %s", event_id)
-                post_event_id_with_authtoken(event_id, token)
-                q.delete_tasks(task)
-            next_post_time = datetime.datetime.now() + datetime.timedelta(seconds=token.time_between_posts)
-            token = token.key.get()
-            token.next_post_time = next_post_time
-            token.put()
+            # Should only be one task
+            if len(tasks) != 1:
+                logging.error('Found too many tasks in our lease_tasks_by_tag: %s', len(tasks))
+            task = tasks[0]
+            event_id = task.payload
+            logging.info("  Found event, posting %s", event_id)
+            posted = post_event_id_with_authtoken(event_id, token)
+            q.delete_tasks(task)
+
+            # Only mark it up for delay, if we actually posted...
+            if posted:
+                next_post_time = datetime.datetime.now() + datetime.timedelta(seconds=token.time_between_posts)
+                token = token.key.get()
+                token.next_post_time = next_post_time
+                token.put()
 
 
 def post_event_id_with_authtoken(event_id, auth_token):
@@ -167,15 +173,19 @@ def post_event_id_with_authtoken(event_id, auth_token):
     db_event = eventdata.DBEvent.get_by_id(event_id)
     if not db_event:
         logging.warning("Failed to post event: %s, dbevent deleted in dancedeets", event_id)
-        return
+        return False
     if not db_event.has_content():
         logging.warning("Failed to post event: %s, due to %s", event_id, db_event.empty_reason)
-        return
+        return False
     try:
         _post_event(auth_token, db_event)
+        return True
     except Exception as e:
         logging.exception("Facebook Post Exception: %s", e)
         logging.error(traceback.format_exc())
+        # Just in case there's something failing-after-posting,
+        # we don't want to trigger rapid-fire posts in a loop.
+        return True
 
 
 def _post_event(auth_token, db_event):
