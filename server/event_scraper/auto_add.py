@@ -58,7 +58,11 @@ def get_location_style_attendees(fb_event):
         latlong = (location['latitude'], location['longitude'])
     else:
         logging.info('Looking up event %s LocationInfo', fb_event['info']['id'])
-        location_info = event_locations.LocationInfo(fb_event)
+        # Places textsearch lookups turn out to be 10x-expensive against our quota
+        # So we disable them here, and instead just rely on the 99% good address searches
+        # It should fallback to places on un-geocodable addresses too...
+        # But at least it won't try Places *in addition* to geocode lookups.
+        location_info = event_locations.LocationInfo(fb_event, check_places=False)
         latlong = location_info.latlong()
     dance_attendee_styles = popular_people.get_attendees_near(latlong)
     return dance_attendee_styles

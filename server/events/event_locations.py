@@ -134,7 +134,7 @@ def update_remapped_address(fb_event, new_remapped_address):
         _save_remapped_address_for(location_info.fb_address, new_remapped_address)
 
 class LocationInfo(object):
-    def __init__(self, fb_event=None, db_event=None, debug=False):
+    def __init__(self, fb_event=None, db_event=None, debug=False, check_places=True):
         self.overridden_address = None
         self.fb_address = None
         self.remapped_address = None
@@ -154,7 +154,7 @@ class LocationInfo(object):
                 logging.info("Checking remapped address, which is %r", self.remapped_address)
             lookup_address = self.remapped_address or self.fb_address
             if lookup_address:
-                location_geocode = gmaps_api.lookup_string(lookup_address)
+                location_geocode = gmaps_api.lookup_string(lookup_address, check_places=check_places)
                 if location_geocode:
                     self.geocode = location_geocode
                     self.final_address = location_geocode.formatted_address()
@@ -170,7 +170,7 @@ class LocationInfo(object):
             self.overridden_address = db_event.address
             self.final_address = self.overridden_address
             if self.final_address != ONLINE_ADDRESS:
-                self.geocode = gmaps_api.lookup_string(self.final_address)
+                self.geocode = gmaps_api.lookup_string(self.final_address, check_places=check_places)
 
         logging.info("Final address is %r", self.final_address)
 
