@@ -14,7 +14,7 @@ CITY_GEOHASH_PRECISIONS = range(
 
 NEARBY_DISTANCE_KM = 100 # km of distance to nearest "scene" a user will identify with
 
-def get_nearby_cities(points):
+def get_nearby_cities(points, only_populated=False):
     # TODO(lambert): we should cache this entire function. use lowercase of location to determine cache key. Using DB cache too.
     logging.info("search location is %s", points)
     # rather than return the nearest city (Sunnyvale, San Jose, etc)
@@ -22,7 +22,10 @@ def get_nearby_cities(points):
     precision = geohash_math.get_geohash_bits_for_km(math.get_distance(points[0], points[1]))
     geohashes = geohash_math.get_all_geohashes_for(points, precision)
     # This can return a bunch. In theory, it'd be nice to order by population, but that doesn't seem to work...
-    cities = City.gql("where geohashes in :geohashes", geohashes=geohashes).fetch(1000)
+    if only_populated:
+        cities = City.gql("where geohashes in :geohashes and has_nearby_events = :nearby_events", geohashes=geohashes, nearby_events=True).fetch(1000)
+    else:
+        cities = City.gql("where geohashes in :geohashes", geohashes=geohashes).fetch(1000)
     if points[0] != points[1]:
         cities = [x for x in cities if math.contains(points, (x.latitude, x.longitude))]
     return cities
@@ -47,6 +50,10 @@ class City(db.Model):
     population = db.IntegerProperty()
     timezone = db.StringProperty(indexed=False)
     geohashes = db.StringListProperty()
+
+    # This indicates whether any events are "tagged" against this City
+    # This can be used to filter out unnecessary cities in searches that don't have events/people associated with them
+    has_nearby_events = db.BooleanProperty()
 
     def display_name(self):
         if self.city_name == 'Unknown':
