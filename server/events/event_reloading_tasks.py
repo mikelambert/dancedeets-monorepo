@@ -201,6 +201,18 @@ class LoadEventHandler(base_servlet.EventOperationHandler):
 class LoadEventAttendingHandler(base_servlet.EventOperationHandler):
     event_operation = staticmethod(load_fb_event_attending)
 
+from event_scraper import auto_add
+@app.route('/tasks/maybe_add_event')
+class MaybeAddEventHandler(base_servlet.EventIdOperationHandler):
+    event_id_operation = staticmethod(auto_add.maybe_add_event)
+
+@app.route('/tasks/queue_maybe_add_event')
+class QueueMaybeAddEventHandler(base_servlet.EventIdOperationHandler):
+    @staticmethod
+    def event_id_operation(fbl, event_ids):
+        for event_id in event_ids:
+            deferred.defer(auto_add.maybe_add_event, fbl, [event_id])
+
 
 @app.route('/tasks/reload_events')
 class ReloadEventsHandler(base_servlet.BaseTaskFacebookRequestHandler):

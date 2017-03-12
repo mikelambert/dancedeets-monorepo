@@ -199,3 +199,15 @@ def mr_classify_potential_events(fbl, past_event):
             'bucket_name': 'dancedeets-hrd.appspot.com',
         },
     )
+
+def maybe_add_event(fbl, event_ids):
+    for event_id in event_ids:
+        logging.info('Maybe adding event: %s', event_id)
+        pe = potential_events.PotentialEvent.get_by_key_name(event_id)
+        fb_event = fbl.get(fb_api.LookupEvent, event_id)
+        good_event = is_good_event_by_attendees(fbl, fb_event)
+        if good_event:
+            logging.info('Event %s is good event, adding...', event_id)
+            uids = pe.get_invite_uids() if pe else None
+            add_entities.add_update_event(fb_event, fbl, visible_to_fb_uids=uids, creating_method=eventdata.CM_AUTO_ATTENDEE, allow_posting=False)
+
