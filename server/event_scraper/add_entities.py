@@ -14,7 +14,7 @@ from . import thing_db
 class AddEventException(Exception):
     pass
 
-def add_update_event(fb_event, fbl, creating_uid=None, visible_to_fb_uids=None, remapped_address=None, override_address=None, creating_method=None):
+def add_update_event(fb_event, fbl, creating_uid=None, visible_to_fb_uids=None, remapped_address=None, override_address=None, creating_method=None, allow_posting=True):
     if not fb_events.is_public_ish(fb_event):
         raise AddEventException('Cannot add secret/closed events to dancedeets!')
 
@@ -49,7 +49,7 @@ def add_update_event(fb_event, fbl, creating_uid=None, visible_to_fb_uids=None, 
     # Updates and saves the event
     event_updates.update_and_save_fb_events([(e, fb_event)])
 
-    if newly_created:
+    if newly_created and allow_posting:
         logging.info("New event, publishing to twitter/facebook")
         deferred.defer(pubsub.eventually_publish_event, e.fb_event_id)
 
