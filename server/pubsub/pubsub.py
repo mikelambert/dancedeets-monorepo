@@ -180,15 +180,21 @@ def pull_and_publish_event():
 
 
 def post_data_with_authtoken(data, auth_token):
-    if auth_token.application == APP_FACEBOOK_WEEKLY:
-        city_name = data
-        logging.info("  Posting weekly update for city: %s", city_name)
-        # TODO: fix circular import
-        from . import weekly
-        return weekly.facebook_weekly_post(auth_token, city_name)
-    else:
-        event_id = data
-        return post_event(auth_token, event_id)
+    try:
+        if auth_token.application == APP_FACEBOOK_WEEKLY:
+            city_name = data
+            logging.info("  Posting weekly update for city: %s", city_name)
+            # TODO: fix circular import
+            from . import weekly
+            return weekly.facebook_weekly_post(auth_token, city_name)
+        else:
+            event_id = data
+            return post_event(auth_token, event_id)
+    except Exception as e:
+        logging.exception("Post Exception: %s", e)
+        # Just in case there's something failing-after-posting,
+        # we don't want to trigger rapid-fire posts in a loop.
+        return True
 
 
 def post_event(auth_token, event_id):
@@ -201,15 +207,8 @@ def post_event(auth_token, event_id):
     if not db_event.has_content():
         logging.warning("Failed to post event: %s, due to %s", event_id, db_event.empty_reason)
         return False
-    try:
-        _post_event(auth_token, db_event)
-        return True
-    except Exception as e:
-        logging.exception("Facebook Post Exception: %s", e)
-        logging.error(traceback.format_exc())
-        # Just in case there's something failing-after-posting,
-        # we don't want to trigger rapid-fire posts in a loop.
-        return True
+    _post_event(auth_token, db_event)
+    return True
 
 
 def _post_event(auth_token, db_event):
@@ -485,7 +484,6 @@ APP_TWITTER = 'APP_TWITTER'
 APP_FACEBOOK = 'APP_FACEBOOK'  # a butchering of OAuthToken!
 APP_FACEBOOK_WALL = 'APP_FACEBOOK_WALL'  # a further butchering!
 APP_FACEBOOK_WEEKLY = 'APP_FACEBOOK_WEEKLY' # weekly posts!
-
 
 class OAuthToken(ndb.Model):
     user_id = ndb.StringProperty()
