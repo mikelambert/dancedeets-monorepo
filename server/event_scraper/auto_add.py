@@ -1,5 +1,6 @@
 import datetime
 import logging
+import re
 
 import fb_api
 
@@ -90,7 +91,7 @@ def is_good_event_by_attendees(fbl, fb_event, fb_event_attending_maybe=None, deb
             results += ['%s Top20: %s (%.1f%%)' % (style_name, count, 100.0 * fraction)]
             if (
                 (fraction >= 0.05 and count >= 2) or
-                (fraction >= 0.003 and count >= 4) or # catches 4-or-more on events 1300-or-less
+                (fraction >= 0.006 and count >= 4) or # catches 4-or-more on events 666-or-less
                 False
             ):
                 logging.info('Attendee-Detection-Top-20: Event %s has an attendee-based classifier result!', event_id)
@@ -103,7 +104,8 @@ def is_good_event_by_attendees(fbl, fb_event, fb_event_attending_maybe=None, deb
             if (
                 (fraction >= 0.10 and count >= 3) or
                 (fraction >= 0.05 and count >= 4) or
-                (fraction >= 0.003 and count >= 6) or # catches 6-or-more on events 2000-or-less
+                (fraction >= 0.006 and count >= 6) or # catches 6-or-more on events 1K-or-less
+                (fraction >= 0.001 and count >= 10) or # catches 10-or-more on events 10K-or-less
                 False
             ):
                 logging.info('Attendee-Detection-Top-100: Event %s has an attendee-based classifier result!', event_id)
@@ -137,6 +139,9 @@ def classify_events(fbl, pe_list, fb_list):
             continue
 
         event_id = pe.fb_event_id
+        if not re.match(r'^\d+$', event_id):
+            logging.error('Found a very strange potential event id: %s', event_id)
+            continue
 
         logging.info('Is Good Event By Text: %s: Checking...', event_id)
         classified_event, auto_add_result = is_good_event_by_text(fb_event)
