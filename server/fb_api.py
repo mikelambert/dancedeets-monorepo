@@ -510,6 +510,7 @@ class FBAPI(CacheSystem):
                 # expired/invalidated OAuth token for User objects. We use one OAuth token per BatchLookup, so no use continuing...
                 # we don't trigger on UserEvents objects since those are often optional and we don't want to break on those, or set invalid bits on those (get it from the User failures instead)
                 if error_code == 190 and error_type == 'OAuthException':
+                    logging.error("Error with expired token: %s", self.access_token)
                     raise ExpiredOAuthToken(error_message)
                 logging.error("BatchLookup: Error occurred on response, rpc_results is %s", rpc_results)
                 object_is_bad = True
