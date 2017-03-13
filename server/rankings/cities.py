@@ -23,13 +23,16 @@ def get_nearby_cities(points, only_populated=False):
     precision = geohash_math.get_geohash_bits_for_km(math.get_distance(points[0], points[1]))
     geohashes = geohash_math.get_all_geohashes_for(points, precision)
     # This can return a bunch. In theory, it'd be nice to order by population, but that doesn't seem to work...
-    if only_populated and not runtime.is_local_appengine():
+    if only_populated:
         cities = City.gql("where geohashes in :geohashes and has_nearby_events = :nearby_events", geohashes=geohashes, nearby_events=True).fetch(1000)
     else:
         cities = City.gql("where geohashes in :geohashes", geohashes=geohashes).fetch(1000)
     if points[0] != points[1]:
         cities = [x for x in cities if math.contains(points, (x.latitude, x.longitude))]
     return cities
+
+def get_largest_cities(limit=5):
+    return City.gql("where has_nearby_events = :nearby_events order by population desc", nearby_events=True).fetch(limit)
 
 def get_largest_city(cities):
     if not cities:
@@ -75,7 +78,12 @@ def import_cities():
     # Generally we import locally (to avoid 30sec servlet limits), then download-and-upload data:
     # appcfg.py download_data --application=dancedeets --kind="City" --url=http://127.0.0.1:8080/remote_api --filename=cities.db
     # appcfg.py upload_data --application=dancedeets --kind="City" --url=http://dancedeets.appspot.com/remote_api --filename=cities.db
+    count = 0
     for line in open('cities15000.txt'):
+        count += 1
+
+        if not count % 1000:
+            logging.info('Imported %s cities', count)
         # List of fields from http://download.geonames.org/export/dump/
         geonameid, name, asciiname, alternatenames, latitude, longitude, feature_class, feature_code, country_code, cc2, admin1_code, admin2_code, admin3_code, admin4_code, population, elevation, gtopo30, timezone, modification_date = line.split('\t')
 
@@ -90,6 +98,8 @@ def import_cities():
         city.longitude = float(longitude)
         city.population = int(population)
         city.geohashes = []
+        if runtime.is_local_appengine():
+            city.has_nearby_events = True
         for x in CITY_GEOHASH_PRECISIONS:
             city.geohashes.append(str(geohash.Geostring((float(latitude), float(longitude)), depth=x)))
         city.timezone = timezone

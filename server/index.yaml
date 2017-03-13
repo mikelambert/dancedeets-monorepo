@@ -15,6 +15,12 @@ indexes:
   - name: __key__
     direction: desc
 
+- kind: City
+  properties:
+  - name: has_nearby_events
+  - name: population
+    direction: desc
+
 - kind: DBEvent
   properties:
   - name: __key__
