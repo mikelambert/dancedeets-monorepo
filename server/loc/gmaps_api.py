@@ -124,7 +124,7 @@ def lookup_location(location, language=None):
             geocode = _build_geocode_from_json(json)
     return geocode
 
-def lookup_address(address, language=None):
+def lookup_address(address, language=None, check_places=True):
     if address == None:
         raise ValueError('Address cannot be None')
     logging.info('lookup address: %s', address.encode('utf-8'))
@@ -133,7 +133,7 @@ def lookup_address(address, language=None):
         params['language'] = language
     json = geocode_api.get_json(**params)
     geocode = _build_geocode_from_json(json)
-    if not geocode:
+    if not geocode and check_places:
         params = {'query': address}
         if language:
             params['language'] = language
@@ -182,7 +182,7 @@ def _find_best_geocode(s, language=None, check_places=True):
             location_geocode = None
     else:
         location_geocode = None
-    address_geocode = lookup_address(s, language=language)
+    address_geocode = lookup_address(s, language=language, check_places=check_places)
     logging.info('location lookup: %s', location_geocode)
     logging.info('address lookup: %s', address_geocode)
     if location_geocode:
@@ -203,7 +203,7 @@ def lookup_string(s, language=None, check_places=True):
             return geocode
         else:
             logging.info('lookup_string result does not have address or geometry, doing geocode address lookup on: %s', geocode.formatted_address())
-            new_geocode = lookup_address(geocode.formatted_address())
+            new_geocode = lookup_address(geocode.formatted_address(), check_places=check_places)
             if new_geocode:
                 return new_geocode
             else:
