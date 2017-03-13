@@ -1,15 +1,15 @@
 cron:
 # These rely on 701004
 - description: reload future facebook event data
-  url: /tasks/reload_events?user_id=701004&allow_cache=0&time_period=FUTURE&load_attending=0
+  url: /tasks/reload_events?user_id=701004&allow_cache=0&time_period=FUTURE&load_attending=0&disable_updates=
   schedule: every 2 hours
 - description: reload future facebook attending event data
-  url: /tasks/reload_events?user_id=701004&allow_cache=0&time_period=FUTURE&load_attending=1
+  url: /tasks/reload_events?user_id=701004&allow_cache=0&time_period=FUTURE&load_attending=1&disable_updates=
   schedule: every 4 hours
 # These don't rely on a magical user_id
-- description: auto-add events
-  url: /tools/auto_add_potential_events?user_id=dummy&past_event=0&expiry_days=2
-  schedule: every 12 hours
+#- description: auto-add events
+#  url: /tools/auto_add_potential_events?user_id=dummy&past_event=0&expiry_days=2
+#  schedule: every 12 hours
 - description: reload all sources
   url: /tasks/scrape_sources_and_process_events?user_id=dummy&allow_cache=0&min_potential_events=0
   schedule: every monday 00:00
