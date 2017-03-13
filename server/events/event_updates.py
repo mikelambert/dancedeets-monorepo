@@ -264,7 +264,8 @@ def _update_geodata(db_event, location_info):
             nearby_cities = cities.get_nearby_cities((location_info.geocode.latlng(), location_info.geocode.latlng()))
             db_event.nearby_city_names = [city.display_name() for city in nearby_cities]
             city = cities.get_largest_city(nearby_cities)
-            if not city.has_nearby_events:
+            # We check country_name as a proxy for determining if this is a Real City or a Dummy City
+            if not city.has_nearby_events and city.country_name:
                 city.has_nearby_events = True
                 city.put()
             db_event.city_name = city.display_name()
