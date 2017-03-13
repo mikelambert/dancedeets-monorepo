@@ -46,7 +46,11 @@ def get_event_attendee_ids(fbl, fb_event, fb_event_attending_maybe=None):
 
     # Combine both attending AND maybe for looking at people and figuring out if this event is legit
     # Will really help improve the coverage and accuracy versus just using the attendee lists...
-    people = fb_event_attending_maybe['attending']['data'] + fb_event_attending_maybe['maybe']['data']
+    try:
+        people = fb_event_attending_maybe['attending']['data'] + fb_event_attending_maybe['maybe']['data']
+    except KeyError:
+        logging.error('Got corrupted fb_event_attending_maybe: %s', fb_event_attending_maybe)
+        return []
     event_attendee_ids = [attendee['id'] for attendee in people]
     if not event_attendee_ids:
         return []

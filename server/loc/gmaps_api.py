@@ -222,7 +222,7 @@ def _build_geocode_from_json(json_data):
     try:
         geocode = parse_geocode(json_data)
     except GeocodeException as e:
-        if e.status == 'INVALID_REQUEST':
+        if e.status == 'INVALID_REQUEST' or e.status == 'UNKNOWN_ERROR':
             return None
         raise
     return geocode
