@@ -42,6 +42,17 @@ def eventually_publish_event(event_id, token_nickname=None):
     if (db_event.end_time or db_event.start_time) < datetime.datetime.now():
         return
 
+    def should_post(auth_token):
+        return _should_post_event(auth_token, db_event)
+    return eventually_publish_data(event_id, should_post, token_nickname)
+
+def eventually_publish_city_key(city_key):
+    print city_key
+    def should_post(auth_token):
+        return auth_token.application == APP_FACEBOOK_WEEKLY
+    return eventually_publish_data(city_key, should_post)
+
+def eventually_publish_data(data, should_post, token_nickname=None):
     args = []
     if token_nickname:
         args.append(OAuthToken.token_nickname == token_nickname)
@@ -49,14 +60,16 @@ def eventually_publish_event(event_id, token_nickname=None):
     q = taskqueue.Queue(EVENT_PULL_QUEUE)
     for token in oauth_tokens:
         logging.info("Evaluating token %s", token)
-        if _should_post_event(token, db_event):
+        if should_post(token):
             logging.info("Adding task for posting!")
             # Names are limited to r"^[a-zA-Z0-9_-]{1,500}$"
             time_add = int(time.time()) if token.allow_reposting else 0
-            name = 'Token_%s__Event_%s__TimeAdd_%s' % (token.queue_id(), event_id.replace(':', '-'), time_add)
+            # "Event" here is a misnamer...but we leave it for now.
+            sanitized_data = re.sub(r'[^a-zA-Z0-9_-]', '-', data)
+            name = 'Token_%s__Event_%s__TimeAdd_%s' % (token.queue_id(), sanitized_data, time_add)
             logging.info("Adding task with name %s", name)
             try:
-                q.add(taskqueue.Task(name=name, payload=event_id, method='PULL', tag=token.queue_id()))
+                q.add(taskqueue.Task(name=name, payload=data, method='PULL', tag=token.queue_id()))
             except (taskqueue.TombstonedTaskError, taskqueue.TaskAlreadyExistsError):
                 # Ignore publishing requests we've already decided to publish (multi-task concurrency)
                 pass
@@ -155,9 +168,7 @@ def pull_and_publish_event():
             if len(tasks) != 1:
                 logging.error('Found too many tasks in our lease_tasks_by_tag: %s', len(tasks))
             task = tasks[0]
-            event_id = task.payload
-            logging.info("  Found event, posting %s", event_id)
-            posted = post_event_id_with_authtoken(event_id, token)
+            posted = post_data_with_authtoken(task.payload, token)
             q.delete_tasks(task)
 
             # Only mark it up for delay, if we actually posted...
@@ -168,7 +179,20 @@ def pull_and_publish_event():
                 token.put()
 
 
-def post_event_id_with_authtoken(event_id, auth_token):
+def post_data_with_authtoken(data, auth_token):
+    if auth_token.application == APP_FACEBOOK_WEEKLY:
+        city_name = data
+        logging.info("  Posting weekly update for city: %s", city_name)
+        # TODO: fix circular import
+        from . import weekly
+        return weekly.facebook_weekly_post(auth_token, city_name)
+    else:
+        event_id = data
+        return post_event(auth_token, event_id)
+
+
+def post_event(auth_token, event_id):
+    logging.info("  Found event, posting %s", event_id)
     event_id = event_id
     db_event = eventdata.DBEvent.get_by_id(event_id)
     if not db_event:

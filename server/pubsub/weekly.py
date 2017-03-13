@@ -7,6 +7,7 @@ import random
 
 import fb_api
 from loc import math
+from rankings import cities
 from search import search_base
 from search import search
 from util import urls
@@ -76,14 +77,15 @@ def _generate_results_for(city):
     search_results = searcher.get_search_results(full_event=True)
     return search_results
 
-def facebook_weekly_post(db_auth_token, city):
+def facebook_weekly_post(db_auth_token, city_key):
+    city = cities.City.get_by_key_name(city_key)
     page_id = db_auth_token.token_nickname
     endpoint = 'v2.8/%s/feed' % page_id
     fbl = fb_api.FBLookup(None, db_auth_token.oauth_token)
 
     search_results = _generate_results_for(city)
     if len(search_results) < 2:
-        return
+        return False
     post_values = _generate_post_for(city, search_results)
 
     feed_targeting = get_city_targeting_data(fbl, city)
@@ -94,8 +96,9 @@ def facebook_weekly_post(db_auth_token, city):
         #  u'error_user_msg': u'You can only specify connections to objects you are an administrator or developer of.',
         #  u'error_data': {u'blame_field': u'targeting'}}}
         post_values['targeting'] = json.dumps(feed_targeting)
-    print post_values
-    return fbl.fb.post(endpoint, None, post_values)
+    result = fbl.fb.post(endpoint, None, post_values)
+    logging.info('Post Result for %s: %s', city.display_name(), result)
+    return result
 
 
 def get_city_targeting_data(fbl, city):

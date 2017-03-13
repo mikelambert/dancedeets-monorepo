@@ -44,10 +44,8 @@ class PostJapanEventsHandler(base_servlet.BaseTaskFacebookRequestHandler):
 @app.route('/tasks/weekly_posts')
 class WeeklyEventsPostHandler(base_servlet.BaseTaskFacebookRequestHandler):
     def get(self):
-        limit = 100
+        limit = 10
         top_cities = cities.get_largest_cities(limit=limit)
-        tokens = pubsub.OAuthToken.query(pubsub.OAuthToken.application==pubsub.APP_FACEBOOK_WEEKLY)
-        for token in tokens:
-            for city in top_cities:
-                result = weekly.facebook_weekly_post(token, city)
-                logging.info('Post Result for %s: %s', city.display_name(), result)
+        top_city_keys = [x.key().name() for x in top_cities]
+        for city_key in top_city_keys:
+            pubsub.eventually_publish_city_key(city_key)
