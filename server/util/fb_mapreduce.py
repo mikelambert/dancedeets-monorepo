@@ -52,7 +52,8 @@ def get_fblookup(user=None):
     ctx = context.get()
     params = ctx.mapreduce_spec.mapper.params
     if params.get('fbl_access_tokens'):
-        parent_token = random.choice(params.get('fbl_access_tokens'))
+        tokens = params.get('fbl_access_tokens')
+        parent_token = random.choice(tokens)
     else:
         parent_token = params['fbl_access_token']
     access_token = (user and user.fb_access_token or parent_token)
@@ -73,7 +74,7 @@ def get_fblookup_params(fbl, randomize_tokens=False):
     if fbl.db.oldest_allowed != datetime.datetime.min:
         params['fbl_oldest_allowed'] = fbl.db.oldest_allowed
     if randomize_tokens:
-        params['fbl_access_tokens'] = _get_multiple_tokens(token_count=20)
+        params['fbl_access_tokens'] = _get_multiple_tokens(token_count=50)
         logging.info('Found %s valid tokens', len(params['fbl_access_tokens']))
         if len(params['fbl_access_tokens']) == 0:
             raise Exception('No Valid Tokens')
@@ -84,10 +85,15 @@ def get_fblookup_params(fbl, randomize_tokens=False):
 
 def _get_multiple_tokens(token_count):
     good_users = users.User.query(users.User.key >= ndb.Key(users.User, '701004'), users.User.expired_oauth_token == False).fetch(token_count)  # noqa
+    guaranteed_users = [x for x in good_users if x.fb_uid == '701004']
+    if guaranteed_users:
+        guaranteed_user_token = guaranteed_users[0].fb_access_token
+    else:
+        guaranteed_user_token = None
     tokens = [x.fb_access_token for x in good_users]
     debug_token_infos = fb_api.lookup_debug_tokens(tokens)
-    one_day_from_now = time.time() + (24 * 60 * 60)
-    # Ensure our tokens are really still valid, and still valid a day from now, for long-running mapreduces
+    some_future_time = time.time() + 7 * (24 * 60 * 60)
+    # Ensure our tokens are really still valid, and still valid a few days from now, for long-running mapreduces
     good_tokens = []
     for token, info in zip(tokens, debug_token_infos):
         if info['empty']:
@@ -95,8 +101,11 @@ def _get_multiple_tokens(token_count):
             continue
         if (info['token']['data']['is_valid'] and
             (info['token']['data']['expires_at'] == 0 or  # infinite token
-             info['token']['data']['expires_at'] > one_day_from_now)):
+             info['token']['data']['expires_at'] > some_future_time)):
             good_tokens.append(token)
+    # Only trim out the guaranteed-token if we have some to spare
+    if len(good_tokens) > 1:
+        good_tokens = [x for x in good_tokens if x != guaranteed_user_token]
     return good_tokens
 
 
