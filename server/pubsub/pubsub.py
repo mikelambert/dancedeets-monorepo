@@ -460,6 +460,7 @@ authorize_url = 'https://twitter.com/oauth/authorize'
 APP_TWITTER = 'APP_TWITTER'
 APP_FACEBOOK = 'APP_FACEBOOK'  # a butchering of OAuthToken!
 APP_FACEBOOK_WALL = 'APP_FACEBOOK_WALL'  # a further butchering!
+APP_FACEBOOK_WEEKLY = 'APP_FACEBOOK_WEEKLY' # weekly posts!
 
 
 class OAuthToken(ndb.Model):
@@ -591,7 +592,8 @@ def facebook_auth(fbl, page_uid, country_filter):
     all_pages = accounts['accounts']['data']
     pages = [x for x in all_pages if x['id'] == page_uid]
     if not pages:
-        raise ValueError("Failed to find page id in user's page permissions: %s" % page_uid)
+        all_page_ids = [x['id'] for x in all_pages]
+        raise ValueError("Failed to find page id %s in user's page permissions: %s" % (page_uid, all_page_ids))
     page = pages[0]
     page_token = page['access_token']
 

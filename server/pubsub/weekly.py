@@ -31,10 +31,22 @@ def _generate_post_for(city, search_results):
 
     for result in search_results:
         dt = result.start_time.strftime('%a %-H:%M')
-        if ':' in result.event_id:
-            messages.append('%s: @[%s]' % (dt, result.name))
+        event = result.db_event
+        if event.venue_id:
+            location = ' @ @[%s]' % event.venue_id
+        elif event.location_name:
+            location = ' @ %s' % event.location_name
         else:
-            messages.append('%s: @[%s]' % (dt, result.event_id))
+            location = ''
+        params = {
+            'daytime': dt,
+            'name': result.name,
+            'location': location,
+            'url': urls.dd_event_url(result.event_id),
+        }
+        line = '%(daytime)s: %(name)s%(location)s: %(url)s' % params
+        messages.append(line)
+        messages.append('')
 
     messages.append(random.choice(footers))
 
@@ -61,7 +73,7 @@ def _generate_results_for(city):
         bounds=city_bounds
     )
     searcher = search.Search(search_query)
-    search_results = searcher.get_search_results(full_event=False)
+    search_results = searcher.get_search_results(full_event=True)
     return search_results
 
 def facebook_weekly_post(db_auth_token, city):

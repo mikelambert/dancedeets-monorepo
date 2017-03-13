@@ -46,7 +46,8 @@ class WeeklyEventsPostHandler(base_servlet.BaseTaskFacebookRequestHandler):
     def get(self):
         limit = 100
         top_cities = cities.get_largest_cities(limit=limit)
-        tokens = pubsub.OAuthToken.query(pubsub.OAuthToken.token_nickname=='1613128148918160').fetch(1)
-        for city in top_cities:
-            result = weekly.facebook_weekly_post(tokens[0], city)
-            logging.info('Post Result for %s: %s', city.display_name(), result)
+        tokens = pubsub.OAuthToken.query(pubsub.OAuthToken.application==pubsub.APP_FACEBOOK_WEEKLY)
+        for token in tokens:
+            for city in top_cities:
+                result = weekly.facebook_weekly_post(token, city)
+                logging.info('Post Result for %s: %s', city.display_name(), result)
