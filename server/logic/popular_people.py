@@ -71,8 +71,7 @@ def get_attendees_near(latlong):
         return {}
     southwest, northeast = math.expand_bounds((latlong, latlong), 100)
     logging.info('Looking up nearby cities to %s', latlong)
-    #TODO: Enable populated-cities-only
-    included_cities = cities.get_nearby_cities((southwest, northeast))
+    included_cities = cities.get_nearby_cities((southwest, northeast), only_populated=True)
     logging.info('Found %s cities', len(included_cities))
     biggest_cities = sorted(included_cities, key=lambda x: -x.population)[:10]
     city_names = [city.display_name() for city in biggest_cities]

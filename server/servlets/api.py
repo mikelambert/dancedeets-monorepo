@@ -174,8 +174,7 @@ def build_search_results_api(city_name, form, search_query, search_results, vers
             # Too big a search area, not worth showing promoters or dancers
         else:
             logging.info('Searching for cities within %s', (southwest, northeast))
-            #TODO: Enable populated-cities-only
-            included_cities = cities.get_nearby_cities((southwest, northeast))
+            included_cities = cities.get_nearby_cities((southwest, northeast), only_populated=True)
             biggest_cities = sorted(included_cities, key=lambda x: -x.population)[:10]
             city_names = [city.display_name() for city in biggest_cities]
             logging.info('City names: %s', city_names)
