@@ -6,6 +6,7 @@ import geohash
 from loc import geohash_math
 from loc import math
 from loc import names
+from util import runtime
 
 CITY_GEOHASH_PRECISIONS = range(
     geohash_math.get_geohash_bits_for_km(1500),
@@ -22,7 +23,7 @@ def get_nearby_cities(points, only_populated=False):
     precision = geohash_math.get_geohash_bits_for_km(math.get_distance(points[0], points[1]))
     geohashes = geohash_math.get_all_geohashes_for(points, precision)
     # This can return a bunch. In theory, it'd be nice to order by population, but that doesn't seem to work...
-    if only_populated:
+    if only_populated and not runtime.is_local_appengine():
         cities = City.gql("where geohashes in :geohashes and has_nearby_events = :nearby_events", geohashes=geohashes, nearby_events=True).fetch(1000)
     else:
         cities = City.gql("where geohashes in :geohashes", geohashes=geohashes).fetch(1000)
