@@ -2,9 +2,11 @@ from mapreduce import control
 
 import app
 import base_servlet
+import logging
+from rankings import cities
 from util import dates
 from . import pubsub
-
+from . import weekly
 
 @app.route('/tasks/social_publisher')
 class SocialPublisherHandler(base_servlet.BaseTaskRequestHandler):
@@ -38,3 +40,13 @@ class PostJapanEventsHandler(base_servlet.BaseTaskFacebookRequestHandler):
             queue_name='fast-queue',
             mapper_parameters=mapper_params,
         )
+
+@app.route('/tasks/weekly_posts')
+class WeeklyEventsPostHandler(base_servlet.BaseTaskFacebookRequestHandler):
+    def get(self):
+        limit = 100
+        top_cities = cities.get_largest_cities(limit=limit)
+        tokens = pubsub.OAuthToken.query(pubsub.OAuthToken.token_nickname=='1613128148918160').fetch(1)
+        for city in top_cities:
+            result = weekly.facebook_weekly_post(tokens[0], city)
+            logging.info('Post Result for %s: %s', city.display_name(), result)

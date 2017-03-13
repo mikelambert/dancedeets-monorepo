@@ -32,7 +32,7 @@ def get_nearby_cities(points, only_populated=False):
     return cities
 
 def get_largest_cities(limit=5):
-    return City.gql("where has_nearby_events = :nearby_events order by population desc", nearby_events=True).fetch(limit)
+    return City.gql("where has_nearby_events = :nearby_events order by population desc", nearby_events=True).fetch(limit=limit)
 
 def get_largest_city(cities):
     if not cities:

@@ -12,7 +12,7 @@ from search import search
 from util import urls
 from . import pubsub
 
-def _generate_post_for(city):
+def _generate_post_for(city, search_results):
     post_values = {}
     headers = [
         "Hey %(location)s, here's what's coming up for you this week in dance!",
@@ -29,6 +29,24 @@ def _generate_post_for(city):
     messages = []
     messages.append(random.choice(headers) % {'location': city.city_name})
 
+    for result in search_results:
+        dt = result.start_time.strftime('%a %-H:%M')
+        if ':' in result.event_id:
+            messages.append('%s: @[%s]' % (dt, result.name))
+        else:
+            messages.append('%s: @[%s]' % (dt, result.event_id))
+
+    messages.append(random.choice(footers))
+
+    post_values['message'] = '\n'.join(messages)
+
+    #TODO: attach a bunch of event flyers to this post!
+
+    logging.info("FB Feed Post Values: %s", post_values)
+    return post_values
+
+
+def _generate_results_for(city):
     d = datetime.date.today()
     monday = d - datetime.timedelta(days=d.weekday()) # round down to last monday
     start_time = monday
@@ -44,30 +62,17 @@ def _generate_post_for(city):
     )
     searcher = search.Search(search_query)
     search_results = searcher.get_search_results(full_event=False)
+    return search_results
 
-    for result in search_results:
-        dt = result.start_time.strftime('%a %-H:%M')
-        if ':' in result.event_id:
-            messages.append('%s: @[%s]' % (dt, result.name))
-        else:
-            messages.append('%s: @[%s]' % (dt, result.event_id))
-
-    messages.append(random.choice(footers))
-
-    post_values['messages'] = '\n'.join(messages)
-
-    #TODO: attach a bunch of event flyers to this post!
-
-    logging.info("FB Feed Post Values: %s", post_values)
-    return post_values
-
-
-def facebook_weekly_post(auth_token, city):
-    page_id = auth_token.token_nickname
+def facebook_weekly_post(db_auth_token, city):
+    page_id = db_auth_token.token_nickname
     endpoint = 'v2.8/%s/feed' % page_id
-    fbl = fb_api.FBLookup(None, auth_token.oauth_token)
+    fbl = fb_api.FBLookup(None, db_auth_token.oauth_token)
 
-    post_values = _generate_post_for(city)
+    search_results = _generate_results_for(city)
+    if len(search_results) < 2:
+        return
+    post_values = _generate_post_for(city, search_results)
 
     feed_targeting = get_city_targeting_data(fbl, city)
     if feed_targeting:
@@ -77,6 +82,7 @@ def facebook_weekly_post(auth_token, city):
         #  u'error_user_msg': u'You can only specify connections to objects you are an administrator or developer of.',
         #  u'error_data': {u'blame_field': u'targeting'}}}
         post_values['targeting'] = json.dumps(feed_targeting)
+    print post_values
     return fbl.fb.post(endpoint, None, post_values)
 
 
