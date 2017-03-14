@@ -20,6 +20,10 @@ mapreduce__CONTROLLER_PERIOD_SEC = 5
 # resulting in an impossible-to-complete mapreduce. This just helps it avoid that.
 mapreduce__SLICE_DURATION_SEC = 60
 
+# Ugh, we are running a super-long mapreduce for now. Let's avoid failures...eventually we'll reduce these.
+mapreduce_TASK_MAX_DATA_PROCESSING_ATTEMPTS = 1000
+mapreduce_SHARD_MAX_ATTEMPTS = 1000
+
 appstats_MAX_STACK = 25
 appstats_MAX_REPR = 100
 appstats_MAX_LOCALS = 5
