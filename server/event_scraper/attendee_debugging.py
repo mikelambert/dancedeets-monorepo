@@ -36,7 +36,7 @@ def debug_attendee_addition_for_event(fbl, fb_event):
 
 
     # Build lookup for finding all events for a given attendee
-    attendee_to_events = {}
+    attendee_id_to_event_ids = {}
     for event_id in event_ids:
         fb_event_attending_maybe = fbl.fetched_data(fb_api.LookupEventAttendingMaybe, event_id)
         if fb_event_attending_maybe['empty']:
@@ -45,10 +45,10 @@ def debug_attendee_addition_for_event(fbl, fb_event):
 
         people = fb_event_attending_maybe['attending']['data']
         event_attendee_ids = [attendee['id'] for attendee in people]
-        for attendee_id in set(event_attendee_ids).intersection(attendee_to_events):
-            attendee_to_events[attendee_id].append(event_id)
-        for attendee_id in set(event_attendee_ids).difference(attendee_to_events):
-            attendee_to_events[attendee_id] = [event_id]
+        for attendee_id in set(event_attendee_ids).intersection(attendee_id_to_event_ids):
+            attendee_id_to_event_ids[attendee_id].append(event_id)
+        for attendee_id in set(event_attendee_ids).difference(attendee_id_to_event_ids):
+            attendee_id_to_event_ids[attendee_id] = [event_id]
 
 
     # Now get a list of dancer-attendees for this event...that we want to debug
@@ -58,8 +58,8 @@ def debug_attendee_addition_for_event(fbl, fb_event):
     # Compute which events are most popular/common among our attendees, in triggering the list of dancer-attendees
     event_popularity = {}
     for dancer_id in good_event_attendee_ids:
-        if dancer_id in attendee_to_events:
-            event_ids = attendee_to_events[dancer_id]
+        if dancer_id in attendee_id_to_event_ids:
+            event_ids = attendee_id_to_event_ids[dancer_id]
         else:
             event_ids = []
             logging.error('Could not find events for dancer-attendee %s, perhaps this is running on dev?', dancer_id)
@@ -80,7 +80,7 @@ def debug_attendee_addition_for_event(fbl, fb_event):
     # Output the events for each dancer-attendee.
     dancer_to_events = {}
     for dancer_id in good_event_attendee_ids:
-        dancer_to_events[dancer_id] = attendee_to_events.get(dancer_id)
+        dancer_to_events[dancer_id] = attendee_id_to_event_ids.get(dancer_id)
 
     # And the overall most popular events leading to these dancer-attendees
     event_popularity_list = []
