@@ -100,7 +100,7 @@ class DBEvent(ndb.Model):
 
     # extra cached properties
     address = ndb.StringProperty(indexed=False) # manually overridden address
-    actual_city_name = ndb.StringProperty(indexed=False) # city for this event
+    actual_city_name = ndb.StringProperty() # city for this event
     # A list of all nearby cities within NEARBY_DISTANCE_KM.
     # The largest will be in 'city_name',
     # but these are saved here to make any mapreduces that need this, cheaper to run.
