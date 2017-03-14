@@ -75,6 +75,12 @@ Edit Event
 			<p>Reason: {{ classified_event.reason() }}<br>
 			Dance Words: {{ classifier_dance_words }}<br>
 			Event Words: {{ classifier_event_words }}<br>
+      <br>
+
+      {% if event %}
+      Event Added: {{ event.creating_method }}<br>
+      <br>
+      {% endif %}
 
 			{% if auto_classified_types %}<b>{% endif %}
       Auto-classified Keywords:
@@ -93,13 +99,13 @@ Edit Event
       {% if event_popularity or dancer_and_events %}
         Debug Dancer-Attendee Data:<br>
         {% for event, popularity in event_popularity %}
-          Popular event <a href="/events/{{ event.id }}">{{ event.id }}</a> with {{ popularity }} attendees: {{ event.name }}<br>
+          Popular event <a href="/events/admin_edit?event_id={{ event.id }}&debug_people=1">{{ event.id }}</a> with {{ popularity }} attendees: {{ event.name }}<br>
         {% endfor %}
         {% for dancer_id, events in dancer_and_events %}
           Dancer <a href="https://www.facebook.com/{{ dancer_id }}">{{ dancer_id }}</a> attended events:
           {% if events %}
             {% for event_id in events %}
-              <a href="/events/{{ event_id }}">{{ event_id }}</a>,
+              <a href="/events/admin_edit?event_id={{ event_id }}&debug_people=1">{{ event_id }}</a>,
             {% endfor %}
           {% endif %}
           <br>
