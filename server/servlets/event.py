@@ -343,6 +343,16 @@ class AdminEditHandler(base_servlet.BaseRequestHandler):
         overlap_ids, count, fraction = auto_add.find_overlap(event_attendee_ids, dance_attendee_ids[:100])
         self.display['overlap_attendee_ids'] = sorted(overlap_ids)
 
+        if self.request.get('debug_people'):
+            from event_scraper import attendee_debugging
+            dancer_to_events, event_popularity = attendee_debugging.debug_attendee_addition_for_event(self.fbl, fb_event)
+
+            debug_results = []
+            for event, popularity in event_popularity:
+                debug_results.append('Popular event %s with %s attendees: %s' % (event.id, popularity, event.name))
+            for dancer_id, events in dancer_to_events.iteritems():
+                debug_results.append('Dancer ID %s attended %r' % (dancer_id, events))
+            self.display['debug_results'] = debug_results
 
         self.display['event'] = e
         self.display['event_id'] = event_id

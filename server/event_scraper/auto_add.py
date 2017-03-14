@@ -56,7 +56,7 @@ def get_event_attendee_ids(fbl, fb_event, fb_event_attending_maybe=None):
         return []
     return event_attendee_ids
 
-def get_location_style_attendees(fb_event):
+def get_latlong_for_fb_event(fb_event):
     # We don't need google-maps latlong accuracy. Let's cheat and use the fb_event for convenience if possible...
     location = fb_event['info'].get('place', {}).get('location', {})
     if location and 'latitude' in location:
@@ -69,6 +69,10 @@ def get_location_style_attendees(fb_event):
         # But at least it won't try Places *in addition* to geocode lookups.
         location_info = event_locations.LocationInfo(fb_event, check_places=False)
         latlong = location_info.latlong()
+    return latlong
+
+def get_location_style_attendees(fb_event):
+    latlong = get_latlong_for_fb_event(fb_event)
     dance_attendee_styles = popular_people.get_attendees_near(latlong)
     return dance_attendee_styles
 
@@ -104,7 +108,7 @@ def is_good_event_by_attendees(fbl, fb_event, fb_event_attending_maybe=None, deb
                 (fraction >= 0.006 and count >= 4) or # catches 4-or-more on events 666-or-less
                 False
             ):
-                logging.info('Attendee-Detection-Top-20: Found attendee-based classifier result: %s', event_id, reason)
+                logging.info('Attendee-Detection-Top-20: Attendee-based classifier match: %s', reason)
                 results[-1] += ' GOOD!'
                 good_event = overlap_ids
 
@@ -119,7 +123,7 @@ def is_good_event_by_attendees(fbl, fb_event, fb_event_attending_maybe=None, deb
                 (fraction >= 0.001 and count >= 10) or # catches 10-or-more on events 10K-or-less
                 False
             ):
-                logging.info('Attendee-Detection-Top-100: Found attendee-based classifier result: %s', event_id, reason)
+                logging.info('Attendee-Detection-Top-100: Attendee-based classifier match: %s', reason)
                 results[-1] += ' GOOD!'
                 good_event = overlap_ids
 

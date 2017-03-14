@@ -75,12 +75,30 @@ Edit Event
 			<p>Reason: {{ classified_event.reason() }}<br>
 			Dance Words: {{ classifier_dance_words }}<br>
 			Event Words: {{ classifier_event_words }}<br>
-			Auto-classified Keywords: {{ auto_classified_types }}<br>
+
+			{% if auto_classified_types %}<b>{% endif %}
+      Auto-classified Keywords:
+      {% if auto_classified_types %}</b>{% endif %}
+      {{ auto_classified_types }}<br>
+
+      {% if auto_add_attendee_ids %}<b>{% endif %}
       Auto-classified Attendees:
-        {% for id in auto_add_attendee_ids %}
-          <a href="http://www.facebook.com/{{ id }}">{{ id }}</a>,
-        {% endfor %}
+      {% if auto_add_attendee_ids %}</b>{% endif %}
+      {% for id in auto_add_attendee_ids %}
+        <a href="http://www.facebook.com/{{ id }}">{{ id }}</a>,
+      {% endfor %}
       <br>
+      <br>
+
+      {% if debug_results %}
+        Debug Dancer-Attendee Data:<br>
+        {% for row in debug_results %}
+          {{ row }}<br>
+        {% endfor %}
+        <br>
+      {% endif %}
+
+
       Attendee Raw Data:<br>
         {% for result in overlap_results %}
           {{ result }}<br>
