@@ -2,11 +2,9 @@ from mapreduce import control
 
 import app
 import base_servlet
-import logging
 from rankings import cities
 from util import dates
 from . import pubsub
-from . import weekly
 
 @app.route('/tasks/social_publisher')
 class SocialPublisherHandler(base_servlet.BaseTaskRequestHandler):
