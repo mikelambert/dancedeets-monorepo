@@ -288,6 +288,9 @@ class AdminEditHandler(base_servlet.BaseRequestHandler):
         e = eventdata.DBEvent.get_by_id(event_id)
         if e and e.creating_fb_uid:
             creating_user = self.fbl.get(fb_api.LookupUser, e.creating_fb_uid)
+            if creating_user.get('empty'):
+                logging.warning('Have creating-user %s...but it is not publicly visible, so treating as None', e.creating_fb_uid)
+                creating_user = None
         else:
             creating_user = None
 
@@ -330,7 +333,7 @@ class AdminEditHandler(base_servlet.BaseRequestHandler):
         self.display['ranking_city_name'] = rankings.get_ranking_location_latlng(location_info.geocode.latlng()) if location_info.geocode else 'None'
 
         good_event_attendee_ids, good_event_attendee_results = auto_add.is_good_event_by_attendees(self.fbl, fb_event, debug=True)
-        self.display['auto_add_attendee_ids'] = good_event_attendee_ids
+        self.display['auto_add_attendee_ids'] = sorted(good_event_attendee_ids)
         self.display['overlap_results'] = good_event_attendee_results
 
         # For extra debugging
@@ -338,7 +341,7 @@ class AdminEditHandler(base_servlet.BaseRequestHandler):
         dance_style_attendees = auto_add.get_location_style_attendees(fb_event)
         dance_attendee_ids = [x['id'] for x in dance_style_attendees.get('', [])]
         overlap_ids, count, fraction = auto_add.find_overlap(event_attendee_ids, dance_attendee_ids[:100])
-        self.display['overlap_attendee_ids'] = overlap_ids
+        self.display['overlap_attendee_ids'] = sorted(overlap_ids)
 
 
         self.display['event'] = e
