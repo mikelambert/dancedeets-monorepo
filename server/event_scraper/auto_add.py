@@ -59,7 +59,7 @@ def get_event_attendee_ids(fbl, fb_event, fb_event_attending_maybe=None):
 def get_latlong_for_fb_event(fb_event):
     # We don't need google-maps latlong accuracy. Let's cheat and use the fb_event for convenience if possible...
     location = fb_event['info'].get('place', {}).get('location', {})
-    if location and 'latitude' in location:
+    if location and location.get('latitude') is not None:
         latlong = (location['latitude'], location['longitude'])
     else:
         logging.info('Looking up event %s LocationInfo', fb_event['info']['id'])
