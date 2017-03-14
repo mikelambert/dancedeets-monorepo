@@ -131,7 +131,7 @@ def is_good_event_by_attendees(fbl, fb_event, fb_event_attending_maybe=None, deb
 def classify_events(fbl, pe_list, fb_list):
     results = []
     fb_event_ids = [x.fb_event_id for x in pe_list]
-    fb_attending_maybe_list = fbl.get_multi(fb_api.LookupEventAttendingMaybe, fb_event_ids)
+    fb_attending_maybe_list = fbl.get_multi(fb_api.LookupEventAttendingMaybe, fb_event_ids, allow_fail=True)
     for pe, fb_event, fb_event_attending_maybe in zip(pe_list, fb_list, fb_attending_maybe_list):
         if fb_event and fb_event['empty']:
             fb_event = None
@@ -161,7 +161,7 @@ def classify_events(fbl, pe_list, fb_list):
         if auto_add_result and auto_add_result[0]:
             good_event = auto_add_result[0]
             method = eventdata.CM_AUTO
-        else:
+        elif fb_event_attending_maybe:
             logging.info('Is Good Event By Attendees: %s: Checking...', event_id)
             good_event = is_good_event_by_attendees(fbl, fb_event, fb_event_attending_maybe)
             logging.info('Is Good Event By Attendees: %s: %s', event_id, good_event)
