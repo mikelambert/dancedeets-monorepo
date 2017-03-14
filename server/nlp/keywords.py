@@ -588,6 +588,7 @@ PREPROCESS_REMOVAL = Name('PREPROCESS_REMOVAL', Any(
     'go\W?go\W?danc(?:ers?|ing?)',
     'latin street',
     'ice\W?breaker',
+    u'アイスブレイク',
 
     'straight up', # up rock
     'tear\W?jerker', # jerker
