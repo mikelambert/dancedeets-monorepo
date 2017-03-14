@@ -76,6 +76,8 @@ def eventually_publish_data(data, should_post, token_nickname=None):
 
 
 def _should_post_event(auth_token, db_event):
+    if auth_token.application == APP_FACEBOOK_WEEKLY:
+        return False
     geocode = db_event.get_geocode()
     if not geocode:
         # Don't post events without a location. It's too confusing...
