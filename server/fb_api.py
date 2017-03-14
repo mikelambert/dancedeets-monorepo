@@ -384,7 +384,7 @@ class DBCache(CacheSystem):
         for obj, (object_key, this_object) in zip(existing_objects, keys_to_objects.iteritems()):
             if not self._is_cacheable(object_key, this_object):
                 #TODO(lambert): cache the fact that it's a private-unshowable event somehow? same as deleted events?
-                logging.warning("BatchLookup: Looked up event %s but is not cacheable.", object_key)
+                logging.warning("BatchLookup: Looked up id %s but is not cacheable.", object_key)
                 continue
             cache_key = self.key_to_cache_key(object_key)
             if not obj:
