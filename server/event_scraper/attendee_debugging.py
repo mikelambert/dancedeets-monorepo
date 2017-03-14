@@ -24,13 +24,15 @@ def debug_attendee_addition_for_event(fbl, fb_event):
     # Let's get all the events from all the cities that contributed to the dancer-attendee list used for this event
     latlong = auto_add.get_latlong_for_fb_event(fb_event)
     city_names = popular_people.get_city_names_near(latlong)
-    event_keys = eventdata.DBEvent.query(eventdata.DBEvent.city_name.IN(city_names)).fetch(num_events, keys_only=True)
-    event_ids = [x.string_id() for x in event_keys]
-    logging.info('%r', event_ids)
-
+    if city_names:
+        events = eventdata.DBEvent.query(eventdata.DBEvent.city_name.IN(city_names)).fetch(num_events)
+        # Only track/debug the non-auto-attendee events (ie, the ones that fed data into the classifier system)
+        events = [x for x in events if x.creating_method != eventdata.CM_AUTO_ATTENDEE]
+        event_ids = [x.key.string_id() for x in events]
+    else:
+        event_ids = []
 
     # Look up a toooooooooooon of crap here, for all O(num_events) events.
-    # TODO: Will this blow memory, and need to be segmented into loops?
     fbl.request_multi(fb_api.LookupEventAttendingMaybe, event_ids)
     fbl.batch_fetch()
 
@@ -41,7 +43,7 @@ def debug_attendee_addition_for_event(fbl, fb_event):
         fb_event_attending_maybe = fbl.fetched_data(fb_api.LookupEventAttendingMaybe, event_id)
         if fb_event_attending_maybe['empty']:
             logging.info('Event %s has no attendees, skipping attendee-based classification.', event_id)
-            return []
+            continue
 
         people = fb_event_attending_maybe['attending']['data']
         event_attendee_ids = [attendee['id'] for attendee in people]
@@ -53,7 +55,6 @@ def debug_attendee_addition_for_event(fbl, fb_event):
 
     # Now get a list of dancer-attendees for this event...that we want to debug
     good_event_attendee_ids = auto_add.is_good_event_by_attendees(fbl, fb_event)
-
 
     # Compute which events are most popular/common among our attendees, in triggering the list of dancer-attendees
     event_popularity = {}
@@ -78,13 +79,13 @@ def debug_attendee_addition_for_event(fbl, fb_event):
     # Generate our results to send to the caller for display/printing
 
     # Output the events for each dancer-attendee.
-    dancer_to_events = {}
+    dancer_and_events = []
     for dancer_id in good_event_attendee_ids:
-        dancer_to_events[dancer_id] = attendee_id_to_event_ids.get(dancer_id)
+        dancer_and_events.append((dancer_id, attendee_id_to_event_ids.get(dancer_id)))
 
     # And the overall most popular events leading to these dancer-attendees
     event_popularity_list = []
     for event in events:
         event_popularity_list.append((event, event_popularity[event.id]))
 
-    return dancer_to_events, event_popularity_list
+    return dancer_and_events, event_popularity_list
