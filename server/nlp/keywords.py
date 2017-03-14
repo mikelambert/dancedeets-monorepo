@@ -211,6 +211,7 @@ MUSIC_ONLY = Name('MUSIC_ONLY', Any(
     'dub',
     'europop',
     'pop music',
+    'post-punk',
     'trip hop',
     'drum\W?(?:and|&|\+)\W?bass',
     'dnb',
@@ -528,6 +529,11 @@ CLUB_ONLY = Name('CLUB_ONLY', Any(
     'go\W?go',
 ))
 
+POP_MUSIC = Any(*['%s\W+pop' for x in
+# List grabbed off wikipedia, but leaving electropop
+    ['art', 'avant', 'bubble\W+gum', 'chamber', 'country', 'dark', 'dream', 'emo', 'experim\w+', 'folk', 'indie', 'jangle', 'kraut', 'noise', 'orchest\w+', 'operatic', 'progressive', 'psychedelic', 'surf', 'sunshine', 'swamp', 'teen', 'wonky']
+])
+
 PREPROCESS_REMOVAL = Name('PREPROCESS_REMOVAL', Any(
     # positive
     'tap water', # for theo and dominque's jam
@@ -545,9 +551,10 @@ PREPROCESS_REMOVAL = Name('PREPROCESS_REMOVAL', Any(
     'costume competition',
     'bottles? popping?',
     'poppin.? bottles?',
-    'pop music',
     'pop video',
     'dance fitness',
+    'pop\W+music',
+    POP_MUSIC,
 
     'eye-poppin\w+',
     'on lock',
