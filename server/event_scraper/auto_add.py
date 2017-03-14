@@ -201,8 +201,10 @@ def classify_events_with_yield(fbl, pe_list):
 map_classify_events = fb_mapreduce.mr_wrap(classify_events_with_yield)
 
 
-def mr_classify_potential_events(fbl, past_event):
+def mr_classify_potential_events(fbl, past_event, dancey_only):
     filters = [('looked_at', '=', None)]
+    if dancey_only:
+        filters.append(('should_look_at', '=', True))
     if past_event is not None:
         filters.append(('past_event', '=', past_event))
     fb_mapreduce.start_map(

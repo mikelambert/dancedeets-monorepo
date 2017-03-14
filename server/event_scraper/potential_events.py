@@ -42,6 +42,7 @@ class PotentialEvent(db.Model):
     non_dance_bias_score = db.FloatProperty(indexed=False)
     match_score = db.IntegerProperty()
     show_even_if_no_score = db.BooleanProperty()
+    should_look_at = db.BooleanProperty()
 
     #STR_ID_MIGRATE
     source_ids = db.ListProperty(int)
@@ -66,6 +67,12 @@ class PotentialEvent(db.Model):
             if source_id_ == source_id and source_field_ == source_field:
                 has_source = True
         return has_source
+
+
+    def put(self):
+        #TODO(lambert): write as pre-put hook once we're using NDB.
+        self.should_look_at = bool(self.match_score > 0 or self.show_even_if_no_score)
+        super(PotentialEvent, self).put()
 
     def set_past_event(self, fb_event):
         if not fb_event:

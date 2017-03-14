@@ -13,7 +13,13 @@ class AutoAddPotentialEventsHandler(base_servlet.BaseTaskFacebookRequestHandler)
             past_event = True
         elif past_event == '0':
             past_event = False
-        auto_add.mr_classify_potential_events(self.fbl, past_event)
+
+        if self.request.get('dancey_only', None) == '1':
+            dancey_only = True
+        else:
+            dancey_only = False
+
+        auto_add.mr_classify_potential_events(self.fbl, past_event, dancey_only)
 
 @app.route('/tools/export_sources')
 class ExportSourcesHandler(base_servlet.BaseTaskFacebookRequestHandler):
