@@ -53,6 +53,7 @@ _VENUE_REMAP = {
     u'ＨＡＴＣＨ！！～ＳＨＩＢＵＹＡ　ＲＥＮＴＡＬ　ＳＴＵＤＩＯ～': 'Studio Hatch, Shibuya',
     u'うめきた広場 テントステージ': u'グランフロント大阪 うめきた広場テントステージ',
     u'Studio 1000 / Studio NY': u'大阪市北区兎我野町5-6',
+    u'darwin': u'Sendai Darwin',
 }
 
 

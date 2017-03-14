@@ -196,7 +196,7 @@ def _inner_make_event_findable_for_web_event(db_event, web_event, disable_update
         logging.info("Found an address: %s", web_event['location_address'])
 
         # We have a formatted_address, but that's it. Let's get a fully componentized address
-        geocode_with_address = gmaps_api.lookup_address(web_event['location_address'])
+        geocode_with_address = gmaps_api.lookup_address(clean_address(web_event['location_address']))
         if not geocode_with_address:
             logging.error("Could not get geocode for: %s", web_event['location_address'])
         elif 'address_components' not in geocode_with_address.json_data:
