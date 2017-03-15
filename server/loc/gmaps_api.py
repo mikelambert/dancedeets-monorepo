@@ -182,7 +182,7 @@ def _find_best_geocode(s, language=None, check_places=True):
             location_geocode = None
     else:
         location_geocode = None
-    address_geocode = lookup_address(s, language=language, check_places=check_places)
+    address_geocode = lookup_address(s, language=language)
     logging.info('location lookup: %s', location_geocode)
     logging.info('address lookup: %s', address_geocode)
     if location_geocode:
