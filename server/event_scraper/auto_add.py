@@ -16,9 +16,7 @@ from . import add_entities
 from . import potential_events
 
 
-def is_good_event_by_text(fb_event):
-    classified_event = event_classifier.classified_event_from_fb_event(fb_event)
-    classified_event.classify()
+def is_good_event_by_text(fb_event, classified_event):
     auto_add_result = event_auto_classifier.is_auto_add_event(classified_event)
     return classified_event, auto_add_result
 
@@ -56,7 +54,7 @@ def get_event_attendee_ids(fbl, fb_event, fb_event_attending_maybe=None):
         return []
     return event_attendee_ids
 
-def get_latlong_for_fb_event(fb_event):
+def get_latlong_for_fb_event(fb_event, check_places=False):
     # We don't need google-maps latlong accuracy. Let's cheat and use the fb_event for convenience if possible...
     location = fb_event['info'].get('place', {}).get('location', {})
     if location and location.get('latitude') is not None:
@@ -67,24 +65,30 @@ def get_latlong_for_fb_event(fb_event):
         # So we disable them here, and instead just rely on the 99% good address searches
         # It should fallback to places on un-geocodable addresses too...
         # But at least it won't try Places *in addition* to geocode lookups.
-        location_info = event_locations.LocationInfo(fb_event, check_places=False)
+        location_info = event_locations.LocationInfo(fb_event, check_places=check_places)
         latlong = location_info.latlong()
     return latlong
 
-def get_location_style_attendees(fb_event):
-    latlong = get_latlong_for_fb_event(fb_event)
+def get_location_style_attendees(fb_event, suspected_dance_event=False):
+    if suspected_dance_event:
+        logging.info('Suspected dance event, so checking place API too just in case.')
+    latlong = get_latlong_for_fb_event(fb_event, check_places=suspected_dance_event)
     dance_attendee_styles = popular_people.get_attendees_near(latlong)
     return dance_attendee_styles
 
-def is_good_event_by_attendees(fbl, fb_event, fb_event_attending_maybe=None, debug=False):
+def is_good_event_by_attendees(fbl, fb_event, fb_event_attending_maybe=None, classified_event=None, debug=False):
     event_id = fb_event['info']['id']
 
     good_event = []
     results = []
 
+    if classified_event is None:
+        classified_event = event_classifier.get_classified_event(fb_event)
     event_attendee_ids = get_event_attendee_ids(fbl, fb_event, fb_event_attending_maybe)
     if event_attendee_ids:
-        dance_style_attendees = get_location_style_attendees(fb_event)
+        # If it's a suspected dance event, then we'll fall-through and check the places API for the location data
+        # This ensures that any suspected dance events will get proper dance-attendees, and be more likely to be found.
+        dance_style_attendees = get_location_style_attendees(fb_event, suspected_dance_event=classified_event.found_dance_matches)
         logging.info('Computing Styles for Event')
         styles = categories.find_styles(fb_event)
 
@@ -159,7 +163,8 @@ def classify_events(fbl, pe_list, fb_list):
             continue
 
         logging.info('Is Good Event By Text: %s: Checking...', event_id)
-        classified_event, auto_add_result = is_good_event_by_text(fb_event)
+        classified_event = event_classifier.get_classified_event(fb_event)
+        classified_event, auto_add_result = is_good_event_by_text(fb_event, classified_event)
         logging.info('Is Good Event By Text: %s: %s', event_id, auto_add_result)
         good_event = False
         if auto_add_result and auto_add_result[0]:
@@ -167,7 +172,12 @@ def classify_events(fbl, pe_list, fb_list):
             method = eventdata.CM_AUTO
         elif fb_event_attending_maybe:
             logging.info('Is Good Event By Attendees: %s: Checking...', event_id)
-            good_event = is_good_event_by_attendees(fbl, fb_event, fb_event_attending_maybe)
+            good_event = is_good_event_by_attendees(
+                fbl,
+                fb_event,
+                fb_event_attending_maybe=fb_event_attending_maybe,
+                classified_event=classified_event
+            )
             logging.info('Is Good Event By Attendees: %s: %s', event_id, good_event)
             method = eventdata.CM_AUTO_ATTENDEE
         if good_event:
