@@ -35,7 +35,7 @@ class PeopleRanking(ndb.Model):
 STYLES_SET = set(x.index_name for x in event_types.STYLES)
 
 def get_people_rankings_for_city_names(city_names, attendees_only=False):
-    if runtime.is_local_appengine() and False:
+    if runtime.is_local_appengine():
         people_rankings = load_from_dev(city_names, attendees_only=attendees_only)
     else:
         args = []
@@ -64,7 +64,9 @@ def load_from_dev(city_names, attendees_only):
             ranking.person_type = result['person_type']
             ranking.city = result['city']
             ranking.category = result['category']
-            ranking.top_people_json = result['top_people_json']
+            #TODO: remove bwcompat code
+            ranking.top_people = result.get('top_people')
+            ranking.top_people_json = result.get('top_people_json')
             rankings.append(ranking)
     return rankings
 
@@ -109,7 +111,7 @@ def combine_rankings(rankings):
                 else:
                     people[person_name] = count
         else:
-            # bwcompat
+            #TODO: remove bwcompat code
             for person_triplet in r.top_people:
                 person_name, new_count = person_triplet.rsplit(':', 1)
                 if person_name in people:
