@@ -31,22 +31,20 @@ class PeopleRanking(ndb.Model):
 
 STYLES_SET = set(x.index_name for x in event_types.STYLES)
 
-def faked_people_rankings():
-    people_rankings = []
-    for person_type in ['ADMIN', 'ATTENDEE']:
-        for style in [''] + [x.index_name for x in event_types.STYLES]:
-            top_people = []
-            for i in range(10):
-                id = random.randint(0, 100)
-                top_people.append('%s: User First LastName %s: %s' % (id, id* 10000, random.randint(5, 100)))
-            people_rankings.append(PeopleRanking(
-                    person_type=person_type,
-                    category=style,
-                    top_people=top_people,
-            ))
+def get_people_rankings_for_city_names(city_names, attendees_only=False):
+    if runtime.is_local_appengine():
+        people_rankings = load_from_dev(city_names, attendees_only=attendees_only)
+    else:
+        args = []
+        if attendees_only:
+            args = [PeopleRanking.person_type=='ATTENDEE']
+        people_rankings = PeopleRanking.query(
+            PeopleRanking.city.IN(city_names),
+            *args
+        )
     return people_rankings
 
-def load_from_dev(city_names):
+def load_from_dev(city_names, attendees_only):
     from google.cloud import datastore
 
     rankings = []
@@ -55,7 +53,8 @@ def load_from_dev(city_names):
     for city_name in city_names:
         q = client.query(kind='PeopleRanking')
         q.add_filter('city', '=', city_name)
-        q.add_filter('person_type', '=', 'ATTENDEE')
+        if attendees_only:
+            q.add_filter('person_type', '=', 'ATTENDEE')
 
         for result in q.fetch(100):
             ranking = PeopleRanking()
@@ -83,13 +82,7 @@ def get_attendees_near(latlong):
     if not city_names:
         return {}
     try:
-        if runtime.is_local_appengine():
-            people_rankings = load_from_dev(city_names)
-        else:
-            people_rankings = PeopleRanking.query(
-                PeopleRanking.city.IN(city_names),
-                PeopleRanking.person_type=='ATTENDEE'
-            )
+        people_rankings = get_people_rankings_for_city_names(city_names, attendees_only=True)
         logging.info('Loaded People Rankings')
         groupings = combine_rankings(people_rankings)
     except:
