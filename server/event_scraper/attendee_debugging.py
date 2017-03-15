@@ -28,9 +28,10 @@ def debug_attendee_addition_for_event(fbl, fb_event):
         events = eventdata.DBEvent.query(eventdata.DBEvent.city_name.IN(city_names)).fetch(num_events)
         # Only track/debug the non-auto-attendee events (ie, the ones that fed data into the classifier system)
         events = [x for x in events if x.creating_method != eventdata.CM_AUTO_ATTENDEE]
-        event_ids = [x.key.string_id() for x in events]
     else:
-        event_ids = []
+        events = []
+    event_ids = [x.key.string_id() for x in events]
+    event_lookup = dict(zip(event_ids, events))
 
     # Look up a toooooooooooon of crap here, for all O(num_events) events.
     fbl.request_multi(fb_api.LookupEventAttendingMaybe, event_ids)
@@ -73,7 +74,7 @@ def debug_attendee_addition_for_event(fbl, fb_event):
     # Now find the top ten events based on this ranking, and load them
     top_n = 10
     sorted_popular_event_ids = sorted(event_popularity, key=lambda x: -event_popularity[x])[:top_n]
-    events = eventdata.DBEvent.get_by_ids(sorted_popular_event_ids)
+    events = [event_lookup[x] for x in sorted_popular_event_ids]
 
 
     # Generate our results to send to the caller for display/printing
