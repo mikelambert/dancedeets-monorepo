@@ -14,7 +14,7 @@ data = json.loads(urllib2.urlopen(first_url, first_data).read())
 print data
 
 url = 'http://185.7.80.229/web/wp-json/bybase/v1/events?page_size=10000&access_token=%s' % data['access_token']
-data = urllib2.urlopen(url, timeout=30).read()
+data = urllib2.urlopen(url, timeout=60).read()
 d = datetime.datetime.now().strftime("%Y-%m-%dT%H:%M:%S")
 events = json.loads(data)
 open('events-%s.json' % (d), 'w').write(data)
