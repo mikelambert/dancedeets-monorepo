@@ -1,3 +1,4 @@
+import json
 import logging
 import random
 import re
@@ -22,7 +23,8 @@ class PeopleRanking(ndb.Model):
     person_type = ndb.StringProperty()
     city = ndb.StringProperty()
     category = ndb.StringProperty()
-    top_people = ndb.StringProperty(repeated=True, indexed=False)
+    top_people_json = ndb.JsonProperty()
+    # top_people_json is [['id: name', count], ...]
 
     @property
     def human_category(self):
@@ -32,7 +34,7 @@ class PeopleRanking(ndb.Model):
 STYLES_SET = set(x.index_name for x in event_types.STYLES)
 
 def get_people_rankings_for_city_names(city_names, attendees_only=False):
-    if runtime.is_local_appengine():
+    if runtime.is_local_appengine() and False:
         people_rankings = load_from_dev(city_names, attendees_only=attendees_only)
     else:
         args = []
@@ -61,7 +63,7 @@ def load_from_dev(city_names, attendees_only):
             ranking.person_type = result['person_type']
             ranking.city = result['city']
             ranking.category = result['category']
-            ranking.top_people = result['top_people']
+            ranking.top_people_json = result['top_people_json']
             rankings.append(ranking)
     return rankings
 
@@ -92,9 +94,6 @@ def get_attendees_near(latlong):
 
 def combine_rankings(rankings):
     groupings = {}
-    # Unfortunately this for-loop still takes a long time...
-    # I wonder if we could instead store these top_people as json
-    # and avoid the need for any of this preprocessing?
     for r in rankings:
         #logging.info(r.key)
         key = (r.person_type, r.human_category)
@@ -102,12 +101,11 @@ def combine_rankings(rankings):
         groupings.setdefault(key, {})
         # Use this version below, and avoid the lookups
         people = groupings[key]
-        for person_triplet in r.top_people:
-            person_name, new_count = person_triplet.rsplit(':', 1)
+        for person_name, count in r.top_people_json:
             if person_name in people:
-                people[person_name] += int(new_count)
+                people[person_name] += count
             else:
-                people[person_name] = int(new_count)
+                people[person_name] = count
     for key in groupings:
         person_type, category = key
         if person_type == 'ATTENDEE':
@@ -129,8 +127,8 @@ def combine_rankings(rankings):
         for name, count in orig.iteritems():
             split_name = name.split(': ', 1)
             dicts.append({
-                'name': split_name[1],
                 'id': split_name[0],
+                'name': split_name[1],
                 'count': count,
             })
         if person_type not in final_groupings:
@@ -141,16 +139,28 @@ def combine_rankings(rankings):
     return final_groupings
 
 
+def encode_map_result(key, value):
+    return json.dumps(key, sort_keys=True).encode('utf-8'), value.encode('utf-8')
+
 def track_person(person_type, db_event, person):
+    """Yields json({person-type, category, city}) to json([id, name])"""
     person_name = '%s: %s' % (person['id'], person.get('name'))
-    person_name = person_name.encode('utf-8')
     # Not using db_event.nearby_city_names since it's way too slow.
+    # And we just search-many-cities on lookup time.
     for city in [db_event.city_name]:
-        key = '%s: %s: %s' % (person_type, '', city)
-        yield (key.encode('utf-8'), person_name)
+        key = {
+            'person_type': person_type,
+            'category': '',
+            'city': city,
+        }
+        yield encode_map_result(key, person_name)
         for category in STYLES_SET.intersection(db_event.auto_categories):
-            key = '%s: %s: %s' % (person_type, category, city)
-            yield (key.encode('utf-8'), person_name)
+            key = {
+                'person_type': person_type,
+                'category': category,
+                'city': city,
+            }
+            yield encode_map_result(key, person_name)
 
 BATCH_SIZE = 20
 def output_people(db_events):
@@ -180,24 +190,28 @@ def output_people(db_events):
             for y in track_person('ATTENDEE', db_event, attendee):
                 yield y
 
-def reduce_popular_people(type_city_category, people):
-    person_type, category, city = type_city_category.split(': ', 2)
+def reduce_popular_people(key, people_json):
+    """Takes json({person-type, category, city}), ['id: name', ...]"""
+    bucket = json.loads(key)
+
     counts = {}
-    for person in people:
+    for person in people_json:
         if person in counts:
             counts[person] += 1
         else:
             counts[person] = 1
-    sorted_counts = sorted(counts.items(), key=lambda kv: -kv[1])
+    count_list = [(person_json, count) for (person_json, count) in counts.items()]
+    # count_list is [['id: name', count], ...]
+    sorted_counts = sorted(count_list, key=lambda kv: -kv[1])
 
     # Yes, key is the same as type_city_category above.
     # But we're declaring our key explicitly, here.
-    key = '%s: %s: %s' % (person_type, city, category)
+    key = '%s: %s: %s' % (bucket['person_type'], bucket['city'], bucket['category'])
     ranking = PeopleRanking.get_or_insert(key)
-    ranking.person_type = person_type
-    ranking.city = city
-    ranking.category = category
-    ranking.top_people = ['%s: %s' % kv for kv in sorted_counts[:TOP_N]]
+    ranking.person_type = bucket['person_type']
+    ranking.city = bucket['city']
+    ranking.category = bucket['category']
+    ranking.top_people_json = sorted_counts[:TOP_N]
     yield operation.db.Put(ranking)
 
 def mr_popular_people_per_city(fbl, queue):
