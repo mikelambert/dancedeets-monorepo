@@ -1,5 +1,6 @@
 import json
 import logging
+import random
 
 from google.appengine.ext import ndb
 from mapreduce import mapreduce_pipeline
@@ -197,7 +198,9 @@ def output_people(db_events):
         for admin in db_event.admins:
             for y in track_person('ADMIN', db_event, admin):
                 yield y
-        admin_hash = ','.join(sorted([x['id'] for x in db_event.admins]))
+        admin_hash = db_event.fb_event['info'].get('owner', {}).get('id', random.random())
+        # admin_hash = ','.join(sorted([x['id'] for x in db_event.admins]))
+
         # We don't want to use the 'maybe' lists in computing who are the go-to people for each city/style,
         # because they're not actually committed to these events.
         # Those who have committed to going should be the relevant authorities.
