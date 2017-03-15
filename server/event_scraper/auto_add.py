@@ -88,7 +88,8 @@ def is_good_event_by_attendees(fbl, fb_event, fb_event_attending_maybe=None, cla
     if event_attendee_ids:
         # If it's a suspected dance event, then we'll fall-through and check the places API for the location data
         # This ensures that any suspected dance events will get proper dance-attendees, and be more likely to be found.
-        dance_style_attendees = get_location_style_attendees(fb_event, suspected_dance_event=classified_event.found_dance_matches)
+        suspected_dance_event = classified_event.dance_event
+        dance_style_attendees = get_location_style_attendees(fb_event, suspected_dance_event=suspected_dance_event)
         logging.info('Computing Styles for Event')
         styles = categories.find_styles(fb_event)
 
