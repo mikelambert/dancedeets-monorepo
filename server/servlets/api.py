@@ -168,11 +168,16 @@ def build_search_results_api(city_name, form, search_query, search_results, vers
         # keyword-only search, no location to give promoters for
         logging.info('No center latlng, skipping person groupings')
     else:
-        distance_km = math.get_inner_box_radius_km(center_latlng, southwest, northeast)
+        distance_km = math.get_inner_box_radius_km(southwest, northeast)
         if distance_km > 1000:
             logging.info('Search area >1000km, skipping person groupings')
             # Too big a search area, not worth showing promoters or dancers
         else:
+            southwest_100, northeast_100 = math.expand_bounds((center_latlng, center_latlng), 100)
+            distance_km_100 = math.get_inner_box_radius_km(southwest_100, northeast_100)
+            if distance_km < distance_km_100:
+                southwest = southwest_100
+                northeast = northeast_100
             logging.info('Searching for cities within %s', (southwest, northeast))
             included_cities = cities.get_nearby_cities((southwest, northeast), only_populated=True)
             biggest_cities = sorted(included_cities, key=lambda x: -x.population)[:10]
