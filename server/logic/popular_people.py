@@ -23,6 +23,7 @@ class PeopleRanking(ndb.Model):
     person_type = ndb.StringProperty()
     city = ndb.StringProperty()
     category = ndb.StringProperty()
+    top_people = ndb.StringProperty(repeated=True, indexed=False)
     top_people_json = ndb.JsonProperty()
     # top_people_json is [['id: name', count], ...]
 
@@ -212,6 +213,10 @@ def reduce_popular_people(key, people_json):
     ranking.city = bucket['city']
     ranking.category = bucket['category']
     ranking.top_people_json = sorted_counts[:TOP_N]
+    # TODO: delete
+    # Clean this field out
+    ranking.top_people = []
+
     yield operation.db.Put(ranking)
 
 def mr_popular_people_per_city(fbl, queue):
