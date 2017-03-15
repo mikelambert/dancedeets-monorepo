@@ -143,9 +143,13 @@ def combine_rankings(rankings):
 def encode_map_result(key, value):
     return json.dumps(key, sort_keys=True).encode('utf-8'), value.encode('utf-8')
 
-def track_person(person_type, db_event, person):
-    """Yields json({person-type, category, city}) to json([id, name])"""
-    person_name = '%s: %s' % (person['id'], person.get('name'))
+def track_person(person_type, db_event, person, count_once_per=None):
+    if count_once_per is None:
+        # This is a nice way to ensure each id counts once per...id
+        # (ie, every id counts)
+        count_once_per = person['id']
+    """Yields json({person-type, category, city}) to 'count_once_per: id: name' """
+    person_name = '%s: %s: %s' % (count_once_per, person['id'], person.get('name'))
     # Not using db_event.nearby_city_names since it's way too slow.
     # And we just search-many-cities on lookup time.
     for city in [db_event.city_name]:
@@ -184,25 +188,27 @@ def output_people(db_events):
         for admin in db_event.admins:
             for y in track_person('ADMIN', db_event, admin):
                 yield y
+        admin_hash = ','.join(sorted([x['id'] for x in db_event.admins]))
         # We don't want to use the 'maybe' lists in computing who are the go-to people for each city/style,
         # because they're not actually committed to these events.
         # Those who have committed to going should be the relevant authorities.
         for attendee in fb_event_attending['attending']['data']:
-            for y in track_person('ATTENDEE', db_event, attendee):
+            for y in track_person('ATTENDEE', db_event, attendee, admin_hash):
                 yield y
 
 def reduce_popular_people(key, people_json):
-    """Takes json({person-type, category, city}), ['id: name', ...]"""
+    """Takes json({person-type, category, city}), ['count_once_per: id: name', ...]"""
     bucket = json.loads(key)
 
     counts = {}
-    for person in people_json:
-        if person in counts:
-            counts[person] += 1
+    for full_person_name in people_json:
+        count_once_per, person_name = full_person_name.split(': ', 1)
+        if person_name in counts:
+            counts[person_name].add(count_once_per)
         else:
-            counts[person] = 1
-    count_list = [(person_json, count) for (person_json, count) in counts.items()]
-    # count_list is [['id: name', count], ...]
+            counts[person_name] = set([count_once_per])
+    count_list = [(person_json, len(unique_organizers)) for (person_json, unique_organizers) in counts.items()]
+    # count_list is [['id: name', count_of_unique_organizers], ...]
     sorted_counts = sorted(count_list, key=lambda kv: -kv[1])
 
     # Yes, key is the same as type_city_category above.
