@@ -102,11 +102,20 @@ def combine_rankings(rankings):
         groupings.setdefault(key, {})
         # Use this version below, and avoid the lookups
         people = groupings[key]
-        for person_name, count in r.top_people_json:
-            if person_name in people:
-                people[person_name] += count
-            else:
-                people[person_name] = count
+        if r.top_people_json:
+            for person_name, count in r.top_people_json:
+                if person_name in people:
+                    people[person_name] += count
+                else:
+                    people[person_name] = count
+        else:
+            # bwcompat
+            for person_triplet in r.top_people:
+                person_name, new_count = person_triplet.rsplit(':', 1)
+                if person_name in people:
+                    people[person_name] += int(new_count)
+                else:
+                    people[person_name] = int(new_count)
     for key in groupings:
         person_type, category = key
         if person_type == 'ATTENDEE':
@@ -221,7 +230,7 @@ def reduce_popular_people(key, people_json):
     ranking.top_people_json = sorted_counts[:TOP_N]
     # TODO: delete
     # Clean this field out
-    ranking.top_people = []
+    # ranking.top_people = []
 
     yield operation.db.Put(ranking)
 
