@@ -1,7 +1,5 @@
 import json
 import logging
-import random
-import re
 
 from google.appengine.ext import ndb
 from mapreduce import mapreduce_pipeline
@@ -73,7 +71,7 @@ def load_from_dev(city_names, attendees_only):
 def get_city_names_near(latlong):
     if latlong == (None, None):
         return []
-    southwest, northeast = math.expand_bounds((latlong, latlong), 100)
+    southwest, northeast = math.expand_bounds((latlong, latlong), cities.NEARBY_DISTANCE_KM)
     logging.info('Looking up nearby cities to %s', latlong)
     included_cities = cities.get_nearby_cities((southwest, northeast), only_populated=True)
     logging.info('Found %s cities', len(included_cities))

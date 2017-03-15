@@ -66,7 +66,7 @@ def _generate_results_for(city):
     end_time = start_time + datetime.timedelta(days=8)
 
     latlng_bounds = ((city.latitude, city.longitude), (city.latitude, city.longitude))
-    city_bounds = math.expand_bounds(latlng_bounds, 100)
+    city_bounds = math.expand_bounds(latlng_bounds, cities.NEARBY_DISTANCE_KM)
     search_query = search_base.SearchQuery(
         time_period=search_base.TIME_ALL_FUTURE,
         start_date=start_time,

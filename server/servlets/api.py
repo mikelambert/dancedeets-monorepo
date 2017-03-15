@@ -1,9 +1,7 @@
-import dateparser
 import datetime
 import feedparser
 import json
 import logging
-import pytz
 import time
 import urllib
 
@@ -173,11 +171,11 @@ def build_search_results_api(city_name, form, search_query, search_results, vers
             logging.info('Search area >1000km, skipping person groupings')
             # Too big a search area, not worth showing promoters or dancers
         else:
-            southwest_100, northeast_100 = math.expand_bounds((center_latlng, center_latlng), 100)
-            distance_km_100 = math.get_inner_box_radius_km(southwest_100, northeast_100)
-            if distance_km < distance_km_100:
-                southwest = southwest_100
-                northeast = northeast_100
+            southwest_baseline, northeast_baseline = math.expand_bounds((center_latlng, center_latlng), cities.NEARBY_DISTANCE_KM)
+            distance_km_baseline = math.get_inner_box_radius_km(southwest_baseline, northeast_baseline)
+            if distance_km < distance_km_baseline:
+                southwest = southwest_baseline
+                northeast = northeast_baseline
             logging.info('Searching for cities within %s', (southwest, northeast))
             included_cities = cities.get_nearby_cities((southwest, northeast), only_populated=True)
             biggest_cities = sorted(included_cities, key=lambda x: -x.population)[:10]

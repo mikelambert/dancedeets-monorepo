@@ -8,6 +8,7 @@ import base_servlet
 import event_types
 from logic import friends
 from logic import rsvp
+from rankings import cities
 from util import urls
 from . import onebox
 from . import search
@@ -152,7 +153,7 @@ class CityHandler(RelevantHandler):
     def handle(self, city_name):
         # TODO(lambert): Why is this still required, can we get rid of it?
         self.fbl.batch_fetch() # to avoid bad error handler?
-        form = search_base.SearchForm(data={'location': city_name, 'distance': 100, 'distance_units': 'km'})
+        form = search_base.SearchForm(data={'location': city_name, 'distance': cities.NEARBY_DISTANCE_KM, 'distance_units': 'km'})
         self.handle_search(form)
 
 @app.route('/pages/search')
