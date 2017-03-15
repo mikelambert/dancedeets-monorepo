@@ -270,8 +270,13 @@ class AdminEditHandler(base_servlet.BaseRequestHandler):
         except fb_api.NoFetchedDataException:
             return self.show_barebones_page(event_id, "No fetched data")
 
+        e = eventdata.DBEvent.get_by_id(event_id)
+
         if not fb_events.is_public_ish(fb_event):
-            self.add_error('Cannot add secret/closed events to dancedeets!')
+            if e:
+                fb_event = e.fb_event
+            else:
+                self.add_error('Cannot add secret/closed events to dancedeets!')
 
         self.errors_are_fatal()
 
@@ -285,7 +290,6 @@ class AdminEditHandler(base_servlet.BaseRequestHandler):
 
         display_event = search.DisplayEvent.get_by_id(event_id)
         # Don't insert object until we're ready to save it...
-        e = eventdata.DBEvent.get_by_id(event_id)
         if e and e.creating_fb_uid:
             creating_user = self.fbl.get(fb_api.LookupUser, e.creating_fb_uid)
             if creating_user.get('empty'):
@@ -374,6 +378,11 @@ class AdminEditHandler(base_servlet.BaseRequestHandler):
         # We could be looking at a potential event for something that is inaccessable to our admin.
         # So we want to grab the cached value here if possible, which should exist given the admin-edit flow.
         fb_event = self.fbl.get(fb_api.LookupEvent, event_id)
+
+        if not fb_events.is_public_ish(fb_event):
+            self.add_error('Cannot add secret/closed events to dancedeets!')
+        self.errors_are_fatal()
+
         if self.request.get('background'):
             deferred.defer(add_entities.add_update_event, fb_event, self.fbl, creating_uid=self.user.fb_uid, remapped_address=remapped_address, override_address=override_address, creating_method=eventdata.CM_ADMIN)
             self.response.out.write("<title>Added!</title>Added!")
