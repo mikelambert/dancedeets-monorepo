@@ -99,7 +99,7 @@ Edit Event
       {% if event_popularity or dancer_and_events %}
         Debug Dancer-Attendee Data:<br>
         {% for event, popularity in event_popularity %}
-          Popular event <a href="/events/admin_edit?event_id={{ event.id }}&debug_people=1">{{ event.id }}</a> with {{ popularity }} attendees: {{ event.name }}<br>
+          Event {{ event.id }} with {{ popularity }} attendees: <a href="/events/admin_edit?event_id={{ event.id }}&debug_people=1">{{ event.name }}</a><br>
         {% endfor %}
         {% for dancer_id, events in dancer_and_events %}
           Dancer <a href="https://www.facebook.com/{{ dancer_id }}">{{ dancer_id }}</a> attended events:
