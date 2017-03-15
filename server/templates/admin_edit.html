@@ -96,11 +96,26 @@ Edit Event
       <br>
       <br>
 
+      Attendee Raw Data:<br>
+      {% for result in overlap_results %}
+        {{ result }}<br>
+      {% endfor %}
+      <br>
+      <br>
+
       {% if event_popularity or dancer_and_events %}
         Debug Dancer-Attendee Data:<br>
         {% for event, popularity in event_popularity %}
-          Event {{ event.id }} with {{ popularity }} attendees: <a href="/events/admin_edit?event_id={{ event.id }}&debug_people=1">{{ event.name }}</a><br>
+          Event {{ event.id }} with {{ popularity }} attendees:
+          <a href="/events/admin_edit?event_id={{ event.id }}&debug_people=1">{{ event.name }}</a><br>
+          Admins are
+          {% for admin in event.admins %}
+            <a href="/sources/admin_edit?source_id={{ admin.id }}">{{ admin.name }}</a>,
+          {% endfor %}
+          <br>
+          <br>
         {% endfor %}
+        <br>
         {% for dancer_id, events in dancer_and_events %}
           Dancer <a href="https://www.facebook.com/{{ dancer_id }}">{{ dancer_id }}</a> attended events:
           {% if events %}
@@ -113,11 +128,6 @@ Edit Event
         <br>
       {% endif %}
 
-
-      Attendee Raw Data:<br>
-        {% for result in overlap_results %}
-          {{ result }}<br>
-        {% endfor %}
 			Auto-categorized: {{ auto_categorized_types }}<br>
 			{% if event %}
 				Any Existing Tags:
