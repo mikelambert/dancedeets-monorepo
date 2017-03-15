@@ -347,7 +347,8 @@ class AdminEditHandler(base_servlet.BaseRequestHandler):
         overlap_ids, count, fraction = auto_add.find_overlap(event_attendee_ids, dance_attendee_ids[:100])
         self.display['overlap_attendee_ids'] = sorted(overlap_ids)
 
-        if e and e.creating_method == eventdata.CM_AUTO_ATTENDEE:
+        # If this *was* auto-added by attendee, or *could be* auto-added by attendee
+        if (e and e.creating_method == eventdata.CM_AUTO_ATTENDEE) or good_event_attendee_ids:
             from event_scraper import attendee_debugging
             dancer_and_events, event_popularity = attendee_debugging.debug_attendee_addition_for_event(self.fbl, fb_event)
             self.display['event_popularity'] = event_popularity
