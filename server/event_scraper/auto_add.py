@@ -145,10 +145,10 @@ def is_good_event_by_attendees(fbl, fb_event, fb_event_attending_maybe=None, cla
         return good_event
 
 def classify_events(fbl, pe_list, fb_list):
-    results = []
-    fb_event_ids = [x.fb_event_id for x in pe_list]
-    fb_attending_maybe_list = fbl.get_multi(fb_api.LookupEventAttendingMaybe, fb_event_ids, allow_fail=True)
-    for pe, fb_event, fb_event_attending_maybe in zip(pe_list, fb_list, fb_attending_maybe_list):
+    new_pe_list = []
+    new_fb_list = []
+    # Go through and find all potential events we actually want to attempt to classify
+    for pe, fb_event in zip(pe_list, fb_list):
         if fb_event and fb_event['empty']:
             fb_event = None
 
@@ -171,6 +171,14 @@ def classify_events(fbl, pe_list, fb_list):
             logging.error('Found a very strange potential event id: %s', event_id)
             continue
 
+        new_pe_list.append(pe)
+        new_fb_list.append(fb_event)
+
+    fb_event_ids = [x.fb_event_id for x in new_pe_list]
+    fb_attending_maybe_list = fbl.get_multi(fb_api.LookupEventAttendingMaybe, fb_event_ids, allow_fail=True)
+
+    results = []
+    for pe, fb_event, fb_event_attending_maybe in zip(new_pe_list, new_fb_list, fb_attending_maybe_list):
         logging.info('Is Good Event By Text: %s: Checking...', event_id)
         classified_event = event_classifier.get_classified_event(fb_event)
         classified_event, auto_add_result = is_good_event_by_text(fb_event, classified_event)
