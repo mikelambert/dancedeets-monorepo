@@ -32,6 +32,22 @@ class DiscoveredEvent(object):
         else:
             return -1
 
+
+class PESource(object):
+    def __init__(self, id, field):
+        self.id = id
+        self.field = field
+
+    def copy(self):
+        return self.__class__(self.id, self.field)
+
+    def __eq__(self, other):
+      return self.id == other.id and self.field == other.field
+
+    def __hash__(self):
+      return hash((self.id, self.field))
+
+
 class PotentialEvent(db.Model):
     fb_event_id = property(lambda x: str(x.key().name()))
 
@@ -52,19 +68,30 @@ class PotentialEvent(db.Model):
     past_event = db.BooleanProperty()
 
     def get_invite_uids(self):
+        return [source.id for source in self.sources(thing_db.FIELD_INVITES)]
+
+    def sources(self, source_field=None):
         #STR_ID_MIGRATE
-        source_ids = [str(source_id) for source_id, source_field in zip(self.source_ids, self.source_fields) if source_field == thing_db.FIELD_INVITES]
-        return source_ids
+        sources = [PESource(str(id), field) for (id, field) in zip(self.source_ids, self.source_fields)]
+
+        if source_field:
+            sources = [x for x in sources if x.field == source_field]
+
+        return sources
+
+    def set_sources(self, sources):
+        source_infos_list = list(sources)
+        #STR_ID_MIGRATE
+        self.source_ids = [long(x.id) for x in source_infos_list]
+        self.source_fields = [x.field for x in source_infos_list]
 
     def has_discovered(self, discovered_event):
         return self.has_source_with_field(discovered_event.source_id, discovered_event.source_field)
 
     def has_source_with_field(self, source_id, source_field):
         has_source = False
-        for source_id_, source_field_ in zip(self.source_ids, self.source_fields):
-            #STR_ID_MIGRATE
-            source_id_ = str(source_id_)
-            if source_id_ == source_id and source_field_ == source_field:
+        for source in self.sources():
+            if source.id == source_id and source.field == source_field:
                 has_source = True
         return has_source
 
@@ -159,8 +186,7 @@ def make_potential_event_with_source(fb_event, discovered):
 
         #STR_ID_MIGRATE
         if discovered.source_id:
-            potential_event.source_ids.append(long(discovered.source_id))
-            potential_event.source_fields.append(discovered.source_field)
+            potential_event.set_sources(potential_event.sources() + [PESource(discovered.source_id, discovered.source_field)])
 
         logging.info('VTFI %s: Just added source id %s to potential event, and saving', fb_event_id, discovered.source_id)
 

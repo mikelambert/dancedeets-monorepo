@@ -158,8 +158,8 @@ Edit Event
 				Inv Keyword Density is {{ classified_event.inverse_keyword_density() }}.<br>
 				Show-even-if-zero is {{ potential_event.show_even_if_no_score }}.<br>
 				With Sources:
-				{% for source_id in potential_event.source_ids %}
-					<a href="{{ dd_admin_source_url(source_id) }}">{{ source_id }}</a>,
+				{% for source in potential_event.sources() %}
+					<a href="{{ dd_admin_source_url(source.id) }}">{{ source.id }}</a>,
 				{% endfor %}
         <br>
         Overlap Dance Attendee IDs:

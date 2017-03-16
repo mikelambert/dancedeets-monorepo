@@ -529,7 +529,7 @@ class AdminPotentialEventViewHandler(base_servlet.BaseRequestHandler):
             location_info = None # event_locations.LocationInfo(fb_event, debug=True)
             potential_event_dict[e] = potential_events.update_scores_for_potential_event(potential_event_dict[e], fb_event, fb_event_attending)
             template_events.append(dict(fb_event=fb_event, classified_event=classified_event, dance_words=dance_words_str, event_words=event_words_str, wrong_words=wrong_words_str, keyword_reason=reason, potential_event=potential_event_dict[e], location_info=location_info))
-        template_events = sorted(template_events, key=lambda x: -len(x['potential_event'].source_ids))
+        template_events = sorted(template_events, key=lambda x: -len(x['potential_event'].sources()))
         self.display['number_of_events'] = number_of_events
         self.display['total_potential_events'] = '%s + %s' % (non_zero_events, zero_events)
         self.display['has_more_events'] = has_more_events

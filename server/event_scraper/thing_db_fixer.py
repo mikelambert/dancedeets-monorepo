@@ -45,19 +45,17 @@ def migrate_potential_events(old_source_id, new_source_id):
     potential_event_list = potential_events.PotentialEvent.gql("WHERE source_ids = %s" % long(old_source_id)).fetch(100)
 
     for pe in potential_event_list:
-        logging.info("old pe %s has ids: %s", pe.fb_event_id, pe.source_ids)
+        logging.info("old pe %s has ids: %s", pe.fb_event_id, [x.id for x in pe.sources()])
         source_infos = set()
-        for source_info in zip(pe.source_ids, pe.source_fields):
-            #STR_ID_MIGRATE
-            source_id = str(source_info[0])
-            if source_id == old_source_id:
+        for source in pe.sources():
+            # remap ids
+            if source.id == old_source_id:
                 #STR_ID_MIGRATE
-                source_info = (long(new_source_id), source_info[1])
-            source_infos.add(source_info)
-        source_infos_list = list(source_infos)
-        pe.source_ids = [x[0] for x in source_infos_list]
-        pe.source_fields = [x[1] for x in source_infos_list]
-        logging.info("new pe %s has ids: %s", pe.fb_event_id, pe.source_ids)
+                source = source.copy()
+                source.id = new_source_id
+            source_infos.add(source)
+        pe.set_sources(source_infos)
+        logging.info("new pe %s has ids: %s", pe.fb_event_id, [x.id for x in pe.sources()])
         pe.put()
 
     if len(potential_event_list):
