@@ -1058,6 +1058,7 @@ WRONG_BATTLE_STYLE = Name('WRONG_BATTLE_STYLE', Any(
     '(?:mc|emcee)\Whip\W?hop',
     'emcee',
     'rap',
+    'rhyme[sz]',
     'beat',
     'beatbox',
     'dj(?:\W?s)?',
