@@ -291,7 +291,8 @@ class AdminEditHandler(base_servlet.BaseRequestHandler):
         display_event = search.DisplayEvent.get_by_id(event_id)
         # Don't insert object until we're ready to save it...
         if e and e.creating_fb_uid:
-            creating_user = self.fbl.get(fb_api.LookupProfile, e.creating_fb_uid)
+            #STR_ID_MIGRATE
+            creating_user = self.fbl.get(fb_api.LookupProfile, str(e.creating_fb_uid))
             if creating_user.get('empty'):
                 logging.warning('Have creating-user %s...but it is not publicly visible, so treating as None: %s', e.creating_fb_uid, creating_user)
                 creating_user = None
