@@ -30,6 +30,7 @@ GRAPH_TYPES = [
 FIELD_FEED = 'FIELD_FEED' # /feed
 FIELD_EVENTS = 'FIELD_EVENTS' # /events
 FIELD_INVITES = 'FIELD_INVITES' # fql query on invites for signed-up users
+FIELD_SEARCH = 'FIELD_SEARCH' # /search?q=
 
 class Source(db.Model):
     graph_id = property(lambda x: str(x.key().name()))
@@ -199,8 +200,8 @@ def explode_per_source_count(pe):
     false_negative = bool(db_event and not is_potential_event)
     result = (is_potential_event, real_event, false_negative)
 
-    for source in pe.sources():
-        yield (source.id, json.dumps(result))
+    for source_id in pe.source_ids_only():
+        yield (source_id, json.dumps(result))
 
 def combine_source_count(source_id, counts_to_sum):
     s = Source.get_by_key_name(source_id)

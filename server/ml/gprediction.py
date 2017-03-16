@@ -57,7 +57,7 @@ def get_training_features(potential_event, fb_event, fb_event_attending):
 
     attendee_list = ' '.join(['id%s' % x['id'] for x in fb_event_attending['attending']['data']])
 
-    source_list = ' '.join('id%s' % x.id for x in potential_event.sources())
+    source_list = ' '.join('id%s' % x.id for x in potential_event.source_ids_only())
 
     #TODO(lambert): maybe include number-of-keywords and keyword-density?
 

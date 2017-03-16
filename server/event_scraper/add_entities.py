@@ -69,10 +69,10 @@ def crawl_event_source(fbl, event_id):
     potential_event = potential_events.make_potential_event_without_source(e.fb_event_id, fb_event, fb_event_attending)
     classified_event = event_classifier.get_classified_event(fb_event, potential_event.language)
     if potential_event:
-        for source in potential_event.sources():
-            s = thing_db.Source.get_by_key_name(source.id)
+        for source_id in potential_event.source_ids_only():
+            s = thing_db.Source.get_by_key_name(source_id)
             if not s:
-                logging.warning("Couldn't find source %s when updating event %s", source.id, e.fb_event_id)
+                logging.warning("Couldn't find source %s when updating event %s", source_id, e.fb_event_id)
                 continue
             # TODO(lambert): doesn't handle the case of the match score increasing from <0 to >0 in the future
             if not classified_event.is_dance_event():

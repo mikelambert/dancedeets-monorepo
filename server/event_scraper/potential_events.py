@@ -79,10 +79,13 @@ class PotentialEvent(db.Model):
 
         return sources
 
+    def source_ids_only(self):
+        return [x.id for x in self.sources() if x.id]
+
     def set_sources(self, sources):
         source_infos_list = list(sources)
         #STR_ID_MIGRATE
-        self.source_ids = [long(x.id) for x in source_infos_list]
+        self.source_ids = [long(x.id or 0) for x in source_infos_list]
         self.source_fields = [x.field for x in source_infos_list]
 
     def has_discovered(self, discovered_event):
