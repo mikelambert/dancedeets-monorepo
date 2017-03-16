@@ -388,11 +388,11 @@ def facebook_post(auth_token, db_event):
         'venue': venue,
     }
     messages = [
-        'Dancers, are you ready? %(venue)s is hosting an event on %(date)s in %(location)s.',
+        'Dancers, are you ready? %(venue)s has an event on %(date)s in %(location)s.',
         'Hello %(location)s dancers, mark your calendars! We just found a new dance event on %(date)s at %(venue)s.',
         'Hey%(location)s dancers, save the date! Look what we found coming up on %(date)s at %(venue)s.',
         'Just posted! We have an upcoming dance event on %(date)s at %(venue)s in %(location)s.',
-        'What\'s up %(location)s, %(venue)s is hosting an event on %(date)s.',
+        'What\'s up %(location)s, there\'s a dance event at %(venue)s on %(date)s.',
     ]
     message = random.choice(messages) % params
     if host and host != venue:
