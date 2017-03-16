@@ -340,7 +340,7 @@ class LookupGeoTarget(fb_api.LookupType):
 
     @classmethod
     def cache_key(cls, query, fetching_uid):
-        return (fb_api.USERLESS_UID, query, 'OBJ_GEO_TARGET')
+        return (fb_api.USERLESS_UID, json.dumps(query, sort_keys=True), 'OBJ_GEO_TARGET')
 
 def facebook_post(auth_token, db_event):
     link = campaign_url(db_event.id, 'fb_feed')
