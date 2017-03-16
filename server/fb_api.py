@@ -582,12 +582,12 @@ class FBAPI(CacheSystem):
 def generate_key(cls, object_id):
     if isinstance(object_id, (set, list, tuple)):
         raise TypeError("object_id is of incorrect type: %s" % type(object_id))
-    new_object_id = unicode(object_id)
+    new_object_id = json.dumps(object_id, sort_keys=True)
     return (cls, new_object_id)
 
 def break_key(key):
     cls, object_id = key
-    return (cls, object_id)
+    return (cls, json.loads(object_id))
 
 class FBLookup(object):
     def __init__(self, fb_uid, access_token):
