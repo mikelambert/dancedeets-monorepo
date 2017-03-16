@@ -20,63 +20,63 @@ class TestClassifier(unittest.TestCase):
 
 class TestRockBattleEvent(TestClassifier):
     def runTest(self):
-        fb_event = self.get_event(292568747504427)
+        fb_event = self.get_event('292568747504427')
         classified_event = event_classifier.get_classified_event(fb_event)
         is_battle, reasons = event_auto_classifier.is_battle(classified_event)
         self.assertTrue(is_battle)
 
 class TestDJBattleEvent(TestClassifier):
     def runTest(self):
-        fb_event = self.get_event(101883956566382)
+        fb_event = self.get_event('101883956566382')
         classified_event = event_classifier.get_classified_event(fb_event)
         is_battle, reasons = event_auto_classifier.is_battle(classified_event)
         self.assertFalse(is_battle)
 
 class TestAllStylesBattleEvent(TestClassifier):
     def runTest(self):
-        fb_event = self.get_event(113756888764413)
+        fb_event = self.get_event('113756888764413')
         classified_event = event_classifier.get_classified_event(fb_event)
         is_battle, reasons = event_auto_classifier.is_battle(classified_event)
         self.assertTrue(is_battle, reasons)
 
 class TestMixtapeCompetitorList(TestClassifier):
     def runTest(self):
-        fb_event = self.get_event(194555360659913)
+        fb_event = self.get_event('194555360659913')
         classified_event = event_classifier.get_classified_event(fb_event)
         is_battle, reasons = event_auto_classifier.is_battle(classified_event)
         self.assertFalse(is_battle)
 
 class TestClass(TestClassifier):
     def runTest(self):
-        fb_event = self.get_event(127125550747109)
+        fb_event = self.get_event('127125550747109')
         classified_event = event_classifier.get_classified_event(fb_event)
         has_classes, reasons = event_auto_classifier.has_list_of_good_classes(classified_event)
         self.assertTrue(has_classes)
 
 class TestBadClub(TestClassifier):
     def runTest(self):
-        fb_event = self.get_event(149083330948)
+        fb_event = self.get_event('149083330948')
         classified_event = event_classifier.get_classified_event(fb_event)
         is_bad_club, reasons = event_auto_classifier.is_bad_club(classified_event)
         self.assertTrue(is_bad_club)
 
 class TestBadDance(TestClassifier):
     def runTest(self):
-        fb_event = self.get_event(170007276417905)
+        fb_event = self.get_event('170007276417905')
         classified_event = event_classifier.get_classified_event(fb_event)
         is_bad_dance, reasons = event_auto_classifier.is_bad_wrong_dance(classified_event)
         self.assertTrue(is_bad_dance)
 
 class TestNoClass(TestClassifier):
     def runTest(self):
-        fb_event = self.get_event(278853778841357)
+        fb_event = self.get_event('278853778841357')
         classified_event = event_classifier.get_classified_event(fb_event)
         has_classes, reasons = event_auto_classifier.has_list_of_good_classes(classified_event)
         self.assertFalse(has_classes)
 
 class TestDanceBattle(TestClassifier):
     def runTest(self):
-        fb_event = self.get_event(158496110883513)
+        fb_event = self.get_event('158496110883513')
         classified_event = event_classifier.get_classified_event(fb_event)
         is_battle, reasons = event_auto_classifier.is_battle(classified_event)
         self.assertTrue(is_battle)

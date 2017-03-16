@@ -54,8 +54,8 @@ class TestMemcache(unittest.TestCase):
         d = m.fetch_keys(set())
         self.assertEqual(d, {})
 
-        user_key = (fb_api.LookupUser, 'uid')
-        user_key2 = (fb_api.LookupUser, 'uid2')
+        user_key = (fb_api.LookupUser, '"uid"')
+        user_key2 = (fb_api.LookupUser, '"uid2"')
         d = m.fetch_keys(set([user_key]))
         self.assertEqual(d, {})
 
@@ -78,8 +78,8 @@ class TestDBCache(full_unittest.TestCase):
         d = db.fetch_keys(set())
         self.assertEqual(d, {})
 
-        user_key = (fb_api.LookupUser, 'uid')
-        user_key2 = (fb_api.LookupUser, 'uid2')
+        user_key = (fb_api.LookupUser, '"uid"')
+        user_key2 = (fb_api.LookupUser, '"uid2"')
         d = db.fetch_keys(set([user_key]))
         self.assertEqual(d, {})
 
@@ -111,7 +111,7 @@ class TestFBAPI(full_unittest.TestCase):
             '/v2.8/uid/friends': (200, {}),
             '/v2.8/uid/permissions': (200, {}),
         }
-        user_key = (fb_api.LookupUser, 'uid')
+        user_key = (fb_api.LookupUser, '"uid"')
         d = fb.fetch_keys(set([user_key]))
         self.assertEqual(d,
             {user_key: {
@@ -129,7 +129,7 @@ class TestFBAPI(full_unittest.TestCase):
             '/v2.8/uid/friends': (200, {}),
             '/v2.8/uid/permissions': (200, {}),
         }
-        user_key = (fb_api.LookupUser, 'uid')
+        user_key = (fb_api.LookupUser, '"uid"')
         d = fb.fetch_keys(set([user_key]))
         # We don't return incomplete objects at all, if a component errors-out on 500
         self.assertEqual(d, {})
@@ -140,7 +140,7 @@ class TestFBAPI(full_unittest.TestCase):
             '/v2.8/uid/friends': (200, False),
             '/v2.8/uid/permissions': (200, False),
         }
-        user_key = (fb_api.LookupUser, 'uid')
+        user_key = (fb_api.LookupUser, '"uid"')
         d = fb.fetch_keys(set([user_key]))
         self.assertEqual(d,
             {user_key: {
@@ -154,7 +154,7 @@ class TestFBAPI(full_unittest.TestCase):
             '/v2.8/uid/friends': (200, {'error_code': 100}),
             '/v2.8/uid/permissions': (200, {'error_code': 100}),
         }
-        user_key = (fb_api.LookupUser, 'uid')
+        user_key = (fb_api.LookupUser, '"uid"')
         d = fb.fetch_keys(set([user_key]))
         self.assertEqual(d,
             {user_key: {
@@ -234,7 +234,7 @@ class TestFBLookup(FBApiTestCase):
         )
 
         # Clear memcache...
-        user_key = (fb_api.LookupUser, 'uid')
+        user_key = (fb_api.LookupUser, '"uid"')
         fbl.m.invalidate_keys([user_key])
         fbl.clear_local_cache()
 
