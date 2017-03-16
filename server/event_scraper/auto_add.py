@@ -96,7 +96,7 @@ def is_good_event_by_attendees(fbl, fb_event, fb_event_attending_maybe=None, cla
         for style in [None] + sorted(styles):
             style_name = style.public_name if style else ''
             dance_attendees = dance_style_attendees.get(style_name, [])
-            logging.info('%s Attendees Nearby:\n%s', style_name, '\n'.join(repr(x) for x in dance_attendees))
+            # logging.info('%s Attendees Nearby:\n%s', style_name, '\n'.join(repr(x) for x in dance_attendees))
             dance_attendee_ids = [x['id'] for x in dance_attendees]
 
             overlap_ids, count, fraction = find_overlap(event_attendee_ids, dance_attendee_ids[:20])
