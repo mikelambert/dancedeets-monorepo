@@ -108,7 +108,9 @@ Edit Event
         {% for event, popularity in event_popularity %}
           Event {{ event.id }} with {{ popularity }} attendees:
           <a href="/events/admin_edit?event_id={{ event.id }}&debug_people=1">{{ event.name }}</a><br>
-          Owned by <a href="/sources/admin_edit?source_id={{ event.owner.id }}">{{ event.owner.name }}</a>,
+          {% if event.fb_event.owner %}
+            Owned by <a href="/sources/admin_edit?source_id={{ event.fb_event.owner.id }}">{{ event.fb_event.owner.name }}</a>,
+          {% endif %}
           <br>
           <br>
         {% endfor %}
