@@ -9,7 +9,8 @@ cron:
 # These don't rely on a magical user_id
 - description: auto-add events
   url: /tools/auto_add_potential_events?user_id=dummy&past_event=0&expiry_days=2&dancey_only=1
-  schedule: every 4 hours
+  # TODO: Delay this while we're busy running the multi-day mapreduce
+  schedule: every 12 hours
 - description: reload all sources
   url: /tasks/scrape_sources_and_process_events?user_id=dummy&allow_cache=0&min_potential_events=0
   schedule: every monday 00:00
@@ -43,7 +44,8 @@ cron:
 #- description: reload past facebook event data
 #  url: /tasks/reload_events?user_id=dummy&allow_cache=0&time_period=FUTURE
 #  schedule: every monday 2:00
-- description: compute popular organizers/dancers
-  url: /tools/popular_people?user_id=701004
-  # twice a month
-  schedule: 1,15 of month 09:00
+#TODO: Don't touch this while we're busy running the mapreduce. Let's check this in and test things later before re-running this...
+#- description: compute popular organizers/dancers
+#  url: /tools/popular_people?user_id=701004
+#  # twice a month
+#  schedule: 1,15 of month 09:00
