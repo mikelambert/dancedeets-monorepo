@@ -40,4 +40,7 @@ class LiveBackend(gmaps_backends.GMapsBackend):
         result = urllib.urlopen(url).read()
         logging.info('geocoding results: %s', result)
 
-        return json.loads(result)
+        try:
+            return json.loads(result)
+        except ValueError:
+            return None

@@ -94,7 +94,9 @@ def convert_geocode_to_json(geocode):
 
 
 def parse_geocode(json_result):
-    if json_result['status'] == 'OK':
+    if not json_result:
+        return None
+    elif json_result['status'] == 'OK':
         return GMapsGeocode(json_result['results'][0])
     elif json_result['status'] == 'ZERO_RESULTS':
         return None
