@@ -570,6 +570,7 @@ PREPROCESS_REMOVAL = Name('PREPROCESS_REMOVAL', Any(
     'lock\W?down',
     'whack music',
     'wack music',
+
     'wave\W?house', # venue in san diego
     'full house',
     'open house',
@@ -579,6 +580,7 @@ PREPROCESS_REMOVAL = Name('PREPROCESS_REMOVAL', Any(
     'camp\W?house',
     'hip\W?hop\W?kempu?', # refers to hiphop music!
     'tiny\W+house',
+    'log\W*house',
 
     'latin street dance',
     'marvellous dance crew',
@@ -1149,6 +1151,18 @@ EASY_VOGUE = Name('EASY_VOGUE', Any(
     'old way',
     'new way',
     'ball',
+))
+
+PHYSICAL_HOUSE = Name('PHYSICAL_HOUSE', Any(
+    'walls?',
+    'windows?',
+    'roofs?',
+    'logs?',
+    'tile[sd]?',
+    'kitchen',
+    'home',
+    'houses',
+    ''
 ))
 
 SEMI_BAD_DANCE = Name('SEMI_BAD_DANCE', Any(

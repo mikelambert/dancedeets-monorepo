@@ -300,6 +300,8 @@ def is_workshop(classified_event):
 
     has_good_crew = classified_event.processed_text.has_token(rules.MANUAL_DANCER[grammar.STRONG])
 
+    is_a_real_house = classified_event.processed_text.has_token(keywords.PHYSICAL_HOUSE)
+
     # print has_class_title
     # print has_good_dance_title
     # print has_extended_good_crew_title
@@ -320,9 +322,9 @@ def is_workshop(classified_event):
         return (True, 'has class with strong style-title: %s %s' % (has_good_dance_title, has_extended_good_crew_title))
     elif has_class_title and not has_wrong_style and (has_good_dance or has_good_crew):
         return (True, 'has dance class title: %s, that contains strong description %s, %s' % (has_class_title, has_good_dance, has_good_crew))
-    elif has_good_dance_class_title:
+    elif has_good_dance_class_title and not is_a_real_house:
         return (True, 'has good dance class title: %s' % has_good_dance_class_title)
-    elif has_good_dance_class and not has_wrong_style_title:
+    elif has_good_dance_class and not has_wrong_style_title and not is_a_real_house:
         return (True, 'has good dance class: %s' % has_good_dance_class)
     return (False, 'nothing')
 
