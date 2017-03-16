@@ -26,6 +26,13 @@ count = len(eventData)
 txt = open('eventList-%s.txt' % (count), 'w')
 
 def exists(e):
+
+    # Just in case, search FB and see if the ID we get is on dancedeets
+    found_events = find_fb_ids(e)
+    for fb_event in found_events:
+        if dd_id_exists(fb_event['id']):
+            return True
+
     cache_filename = 'dd_cached/%s.txt' % e['id']
     if os.path.exists(cache_filename):
         data = open(cache_filename).read()
@@ -50,12 +57,6 @@ def exists(e):
             open(cache_filename, 'w').write(data)
     if 'results' in response:
         if response['results']:
-            return True
-
-    # Just in case, search FB and see if the ID we get is on dancedeets
-    found_events = find_fb_ids(e)
-    for fb_event in found_events:
-        if dd_id_exists(fb_event['id']):
             return True
 
     return False
