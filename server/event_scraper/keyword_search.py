@@ -3,6 +3,7 @@
 
 import base_servlet
 import app
+import logging
 import fb_api
 from util import mr
 from . import thing_db
@@ -104,17 +105,17 @@ def search_fb(fbl):
             all_keywords.append('%s %s' % (x, y))
 
     all_ids = set()
-    for query in all_keywords[:1]:
-        search_results = fbl.get(LookupSearchEvents, query)
+    for query in all_keywords:
+        search_results = fbl.get(LookupSearchEvents, query, allow_cache=False)
         ids = [x['id'] for x in search_results['results']['data']]
         all_ids.update(ids)
 
-    print all_ids
+    logging.info('Found %s ids from our FB searches', len(all_ids))
 
     # Run these all_ids in a queue of some sort...to process later, in groups?
     discovered_list = [potential_events.DiscoveredEvent(id, None, thing_db.FIELD_SEARCH) for id in sorted(all_ids)]
 
-    event_pipeline.process_discovered_events(fbl, discovered_list[6:8])
+    event_pipeline.process_discovered_events(fbl, discovered_list)
 
 
 

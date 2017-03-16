@@ -47,7 +47,7 @@ class PESource(object):
     def __hash__(self):
       return hash((self.id, self.field))
 
-    def __str__(self):
+    def __repr__(self):
         return '%s(**%r)' % (self.__class__.__name__, self.__dict__)
 
 class PotentialEvent(db.Model):
