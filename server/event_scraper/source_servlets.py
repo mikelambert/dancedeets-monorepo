@@ -39,7 +39,8 @@ class AdminEditHandler(base_servlet.BaseRequestHandler):
         found_db_event_ids = [x.string_id() for x in eventdata.DBEvent.get_by_ids([x.fb_event_id for x in source_potential_events], keys_only=True) if x]
 
         if s.creating_fb_uid:
-            creating_user = self.fbl.get(fb_api.LookupUser, s.creating_fb_uid)
+            #STR_ID_MIGRATE
+            creating_user = self.fbl.get(fb_api.LookupUser, str(s.creating_fb_uid))
         else:
             creating_user = None
 

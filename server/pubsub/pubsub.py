@@ -446,7 +446,6 @@ def get_targeting_data(fbl, db_event):
         ]
         city_state = ', '.join(x for x in city_state_list if x)
         geo_search = {
-            'type': 'adgeolocation',
             'location_types': 'city',
             'country_code': db_event.country,
             'q': city_state,
