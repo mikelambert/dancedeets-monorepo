@@ -335,7 +335,7 @@ class LookupGeoTarget(fb_api.LookupType):
     @classmethod
     def get_lookups(cls, urlparams):
         return [
-            ('search', cls.url('search?type=adgeolocation&%s' % urlparams)),
+            ('search', cls.url('search', type='adgeolocation', **urlparams)),
         ]
 
     @classmethod
@@ -451,7 +451,7 @@ def get_targeting_data(fbl, db_event):
             'country_code': db_event.country,
             'q': city_state,
         }
-        geo_target = fbl.get(LookupGeoTarget, urls.urlencode(geo_search), allow_cache=False)
+        geo_target = fbl.get(LookupGeoTarget, geo_search, allow_cache=False)
 
         good_targets = geo_target['search']['data']
         if good_targets:

@@ -70,7 +70,11 @@ class LookupType(object):
     @classmethod
     def url(cls, path, fields=None, **kwargs):
         if fields:
-            return '/%s/%s?%s' % (cls.version, path, urls.urlencode(dict(fields=','.join(fields), **kwargs)))
+            if isinstance(fields, basestring):
+                raise ValueError('Must pass in a list to fields: %r' % fields)
+            kwargs['fields'] = ','.join(fields)
+        if kwargs:
+            return '/%s/%s?%s' % (cls.version, path, urls.urlencode(kwargs))
         else:
             return '/%s/%s' % (cls.version, path)
 
@@ -179,7 +183,7 @@ class LookupEvent(LookupType):
             ('info', cls.url(object_id, fields=OBJ_EVENT_FIELDS)),
             # Dependent lookup for the image from the info's cover photo id:
             ('cover_info', cls.url('', fields=['images','width','height'], ids='{result=info:$.cover.id}')),
-            ('picture', cls.url('%s/picture?redirect=false&type=large' % object_id)),
+            ('picture', cls.url('%s/picture' % object_id, redirect='false', type='large')),
         ]
     @classmethod
     def cache_key(cls, object_id, fetching_uid):
@@ -195,7 +199,7 @@ class LookupEventPageComments(LookupType):
     @classmethod
     def get_lookups(cls, object_id):
         return [
-            ('comments', cls.url('/comments/?ids=%s' % urls.dd_event_url(object_id))),
+            ('comments', cls.url('comments/', ids=urls.dd_event_url(object_id))),
         ]
     @classmethod
     def cache_key(cls, object_id, fetching_uid):
@@ -213,7 +217,7 @@ class LookupEventAttending(LookupType):
     @classmethod
     def get_lookups(cls, object_id):
         return [
-            ('attending', cls.url('%s/attending?fields=id,name&limit=2000' % object_id)),
+            ('attending', cls.url('%s/attending' % object_id, fields=['id', 'name'], limit='2000')),
         ]
     @classmethod
     def cache_key(cls, object_id, fetching_uid):
@@ -231,8 +235,8 @@ class LookupEventAttendingMaybe(LookupType):
     @classmethod
     def get_lookups(cls, object_id):
         return [
-            ('attending', cls.url('%s/attending?fields=id&limit=2000' % object_id)),
-            ('maybe', cls.url('%s/maybe?fields=id&limit=2000' % object_id)),
+            ('attending', cls.url('%s/attending' % object_id, fields=['id'], limit='2000')),
+            ('maybe', cls.url('%s/maybe' % object_id, fields=['id'], limit='2000')),
         ]
     @classmethod
     def cache_key(cls, object_id, fetching_uid):
@@ -271,7 +275,7 @@ class LookupThingFeed(LookupType):
         return [
             # Can't pass fields=OBJ_SOURCE_FIELDS, because we can't guarantee it has all these fields (groups vs pages vs profiles etc)
             ('info', cls.url('%s' % object_id)),
-            ('feed', cls.url('%s/feed?fields=created_time,from,link,actions,message' % object_id)),
+            ('feed', cls.url('%s/feed' % object_id, fields=['created_time', 'from', 'link', 'actions', 'message'])),
             ('events', cls.url('%s/events' % object_id)),
         ]
     @classmethod
@@ -749,7 +753,7 @@ class _LookupDebugToken(LookupType):
     @classmethod
     def get_lookups(cls, object_id):
         return [
-            ('token', cls.url('debug_token?input_token=%s' % object_id)),
+            ('token', cls.url('debug_token', input_token=object_id)),
         ]
 
     @classmethod
