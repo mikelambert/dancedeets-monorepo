@@ -549,11 +549,16 @@ PREPROCESS_REMOVAL = Name('PREPROCESS_REMOVAL', Any(
     't?shirt competition',
     'shaking competition',
     'costume competition',
+
     'bottles? popping?',
     'poppin.? bottles?',
     'pop video',
     'dance fitness',
     'pop\W+music',
+    'pop\W*up',
+    'eye\W*popping',
+    'pearl popping',
+    'pony popping',
     POP_MUSIC,
 
     'eye-poppin\w+',
