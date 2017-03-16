@@ -1,5 +1,6 @@
 # -*-*- encoding: utf-8 -*-*-
 
+import time
 
 import base_servlet
 import app
@@ -18,7 +19,7 @@ class LookupSearchEvents(fb_api.LookupType):
     @classmethod
     def get_lookups(cls, query):
         return [
-            ('results', cls.url('search', type='event', q=query, fields=['id'], limit=1000)),
+            ('results', cls.url('search', type='event', q=query, fields=['id', 'name'], limit=1000)),
         ]
 
     @classmethod
@@ -36,7 +37,7 @@ def two(w):
 def search_fb(fbl):
     obvious_keywords = ([
         'bboy', 'bboys', 'bboying', 'bgirl', 'bgirls', 'bgirling', 'breakdance', 'breakdancing', 'breakdancers',
-        'hiphop', 'hip hop', 'hip-hop', 'new style',
+        'hiphop', 'hip hop', 'new style',
         'house dance', 'house danse',
         'poppers', 'poplock',
         'tutting', 'bopping', 'boppers',
@@ -46,6 +47,12 @@ def search_fb(fbl):
         'dancehall', 'ragga jam',
         'krump', 'krumperz', 'krumping',
         'street jazz', 'street-jazz', 'streetjazz',
+        'house dance',
+        'house danse',
+        'hiphop dance',
+        'hip hop dance',
+        'hiphop danse',
+        'hip hop danse',
         'tous style',
         'urban dance',
         'afro house',
@@ -64,8 +71,8 @@ def search_fb(fbl):
     )
     too_popular_keywords = ([
         'breaking',
-        # TODO: 'house workshop'....finds auto-add events we don't want labelled as house or as dance events
-        'house',
+        # 'house workshop'....finds auto-add events we don't want labelled as house or as dance events
+        # so we don't want to list it here..
         #'waving',
         #'boogaloo',
         # 'uk jazz', 'uk jazz', 'jazz fusion',
@@ -73,14 +80,13 @@ def search_fb(fbl):
         'lock',
         'popping',
         'dance', 'choreo', 'choreography',
-        'kpop', 'k pop',
+        #'kpop', 'k pop',
         'vogue',
-        'bonnie and clyde',
+        'all styles',
+        'freestyle',
     ] + two('hip hop')
       + two('new style')
-      + two('all style')
       + two('all styles')
-      + two('free style')
     )
     event_types = [
         'session',
@@ -96,22 +102,28 @@ def search_fb(fbl):
 
         'performance', 'spectacle',
 
-        'party', 'parties',
         'audition', 'audiciones',
+        'bonnie and clyde',
     ]
     all_keywords = obvious_keywords[:]
     for x in too_popular_keywords:
         for y in event_types:
             all_keywords.append('%s %s' % (x, y))
 
+    logging.info('Looking up %s search queries', len(all_keywords))
+
     all_ids = set()
     for query in all_keywords:
-        search_results = fbl.get(LookupSearchEvents, query, allow_cache=False)
+        search_results = fbl.get(LookupSearchEvents, query)
         ids = [x['id'] for x in search_results['results']['data']]
         all_ids.update(ids)
+        logging.info('Keyword %r returned %s results:', query, len(ids))
+        # Debug code
+        for x in search_results['results']['data']:
+            logging.info('Found %s: %s', x['id'], x.get('name'))
+        time.sleep(3)
 
-    logging.info('Found %s ids from our FB searches', len(all_ids))
-
+    return
     # Run these all_ids in a queue of some sort...to process later, in groups?
     discovered_list = [potential_events.DiscoveredEvent(id, None, thing_db.FIELD_SEARCH) for id in sorted(all_ids)]
 
