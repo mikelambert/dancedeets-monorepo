@@ -93,6 +93,13 @@ def is_good_event_by_attendees(fbl, fb_event, fb_event_attending_maybe=None, cla
         logging.info('Computing Styles for Event')
         styles = categories.find_styles(fb_event)
 
+        # Raise the threshold for regular un-dance-y events, for what it means to 'be a dance event'
+        if suspected_dance_event:
+            mult = 1.0
+        # This will affect various club events too...
+        else:
+            mult = 2.0
+
         for style in [None] + sorted(styles):
             style_name = style.public_name if style else ''
             dance_attendees = dance_style_attendees.get(style_name, [])
@@ -109,8 +116,8 @@ def is_good_event_by_attendees(fbl, fb_event, fb_event_attending_maybe=None, cla
             else:
                 min_count = 3
             if (
-                (fraction >= 0.05 and count >= min_count) or
-                (fraction >= 0.006 and count >= 4) or # catches 4-or-more on events 666-or-less
+                (fraction >= 0.05 * mult and count >= min_count) or
+                (fraction >= 0.006 * mult and count >= 4) or # catches 4-or-more on events 666-or-less
                 False
             ):
                 logging.info('Attendee-Detection-Top-20: Attendee-based classifier match: %s', reason)
@@ -122,10 +129,10 @@ def is_good_event_by_attendees(fbl, fb_event, fb_event_attending_maybe=None, cla
             logging.info('%s Attendee-Detection-Top-100: %s', style_name, reason)
             results += ['%s Top100: %s (%.1f%%)' % (style_name, count, 100.0 * fraction)]
             if (
-                (fraction >= 0.10 and count >= 3) or
-                (fraction >= 0.05 and count >= 4) or
-                (fraction >= 0.006 and count >= 6) or # catches 6-or-more on events 1K-or-less
-                (fraction >= 0.001 and count >= 10) or # catches 10-or-more on events 10K-or-less
+                (fraction >= 0.10 * mult and count >= 3) or
+                (fraction >= 0.05 * mult and count >= 4) or
+                (fraction >= 0.006 * mult and count >= 6) or # catches 6-or-more on events 1K-or-less
+                (fraction >= 0.001 * mult and count >= 10) or # catches 10-or-more on events 10K-or-less
                 False
             ):
                 logging.info('Attendee-Detection-Top-100: Attendee-based classifier match: %s', reason)
