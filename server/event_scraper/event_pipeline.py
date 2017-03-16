@@ -71,6 +71,6 @@ def process_discovered_events(fbl, full_discovered_list):
     fb_lookup = dict((x['info']['id'], x) for x in discovered_fb_events if x and not x['empty'])
     pe_lookup = dict((x.fb_event_id, x) for x in potential_events_added)
     potential_event_ids = pe_lookup.keys()
-    logging.info("Going to classify the %s potential events", len(discovered_list))
+    logging.info("Going to classify the %s potential events", len(potential_event_ids))
     # Classify events on the fly as we add them as potential events, instead of waiting for the mapreduce
     auto_add.classify_events(fbl, [pe_lookup[x] for x in potential_event_ids], [fb_lookup[x] for x in potential_event_ids])

@@ -163,6 +163,7 @@ def classify_events(fbl, pe_list, fb_list):
         # This doesn't happen with the mapreduce that pre-filters them out,
         # but it does happen when we scrape users potential events and throw them all in here.
         if pe.looked_at:
+            logging.info('Already looked at event (added, or manually discarded), so no need to re-process.')
             continue
 
         event_id = pe.fb_event_id

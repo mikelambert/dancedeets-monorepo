@@ -47,6 +47,8 @@ class PESource(object):
     def __hash__(self):
       return hash((self.id, self.field))
 
+    def __str__(self):
+        return '%s(**%r)' % (self.__class__.__name__, self.__dict__)
 
 class PotentialEvent(db.Model):
     fb_event_id = property(lambda x: str(x.key().name()))
@@ -72,7 +74,7 @@ class PotentialEvent(db.Model):
 
     def sources(self, source_field=None):
         #STR_ID_MIGRATE
-        sources = [PESource(str(id), field) for (id, field) in zip(self.source_ids, self.source_fields)]
+        sources = [PESource(str(id) if id else None, field) for (id, field) in zip(self.source_ids, self.source_fields)]
 
         if source_field:
             sources = [x for x in sources if x.field == source_field]
@@ -187,11 +189,12 @@ def make_potential_event_with_source(fb_event, discovered):
 
         _common_potential_event_setup(potential_event, fb_event)
 
-        #STR_ID_MIGRATE
-        if discovered.source_id:
-            potential_event.set_sources(potential_event.sources() + [PESource(discovered.source_id, discovered.source_field)])
+        # Sometimes we have a source_field with a zeroed/None-d source_id, so be sure to check on source_field
+        if discovered.source_field:
+            #STR_ID_MIGRATE
+            potential_event.set_sources(potential_event.sources() + [PESource(discovered.source_id or 0, discovered.source_field)])
 
-        logging.info('VTFI %s: Just added source id %s to potential event, and saving', fb_event_id, discovered.source_id)
+        logging.info('VTFI %s: Just added source id %s/%s to potential event, and saving', fb_event_id, discovered.source_id, discovered.source_field)
 
         potential_event.show_even_if_no_score = potential_event.show_even_if_no_score or show_all_events
         potential_event.put()
@@ -203,7 +206,7 @@ def make_potential_event_with_source(fb_event, discovered):
     except apiproxy_errors.CapabilityDisabledError, e:
         logging.error("Error saving potential event %s due to %s", fb_event_id, e)
     potential_event = PotentialEvent.get_by_key_name(fb_event_id)
-    logging.info('VTFI %s: Just loaded potential event %s, now with sources: %s', fb_event_id, fb_event_id, potential_event.get_invite_uids())
+    logging.info('VTFI %s: Just loaded potential event %s, now with sources: %s', fb_event_id, fb_event_id, potential_event.sources())
 
     # potential_event = update_scores_for_potential_event(potential_event, fb_event, fb_event_attending)
     if new_source and discovered.source_id:
