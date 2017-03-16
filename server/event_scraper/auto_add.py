@@ -174,6 +174,7 @@ def classify_events(fbl, pe_list, fb_list):
         new_pe_list.append(pe)
         new_fb_list.append(fb_event)
 
+    logging.info('Filtering out already-added events and others, have %s remaining events to run the classifier on', len(new_pe_list))
     fb_event_ids = [x.fb_event_id for x in new_pe_list]
     fb_attending_maybe_list = fbl.get_multi(fb_api.LookupEventAttendingMaybe, fb_event_ids, allow_fail=True)
 
