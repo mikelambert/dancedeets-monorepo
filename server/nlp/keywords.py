@@ -1167,7 +1167,15 @@ EASY_VOGUE = Name('EASY_VOGUE', Any(
     'ball',
 ))
 
-PHYSICAL_HOUSE = Name('PHYSICAL_HOUSE', Any(
+WRONG_LOCK = Name('WRONG_LOCK', Any(
+    'picking',
+    'cracking',
+    'crack',
+    'pick',
+    'key',
+))
+
+WRONG_HOUSE = Name('WRONG_HOUSE', Any(
     'walls?',
     'windows?',
     'roofs?',

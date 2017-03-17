@@ -58,6 +58,11 @@ WRONG_BATTLE = Name('WRONG_BATTLE', Any(
     commutative_connected(keywords.WRONG_BATTLE_STYLE, Any(keywords.BATTLE, keywords.N_X_N, keywords.CONTEST))
 ))
 
+RIGHT_NAME_WRONG_KING = Name('RIGHT_NAME_WRONG_KING', Any(
+    keywords.WRONG_HOUSE,
+    keywords.WRONG_LOCK
+))
+
 DANCE_STYLE = Name('DANCE_STYLE',
     Any(keywords.AMBIGUOUS_DANCE_MUSIC, DANCE, keywords.VOGUE, keywords.HOUSE))
 
