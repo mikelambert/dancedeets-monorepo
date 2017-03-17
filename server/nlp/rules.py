@@ -58,7 +58,7 @@ WRONG_BATTLE = Name('WRONG_BATTLE', Any(
     commutative_connected(keywords.WRONG_BATTLE_STYLE, Any(keywords.BATTLE, keywords.N_X_N, keywords.CONTEST))
 ))
 
-RIGHT_NAME_WRONG_KING = Name('RIGHT_NAME_WRONG_KING', Any(
+RIGHT_NAME_WRONG_KIND = Name('RIGHT_NAME_WRONG_KIND', Any(
     keywords.WRONG_HOUSE,
     keywords.WRONG_LOCK
 ))

@@ -300,7 +300,7 @@ def is_workshop(classified_event):
 
     has_good_crew = classified_event.processed_text.has_token(rules.MANUAL_DANCER[grammar.STRONG])
 
-    is_a_real_house = classified_event.processed_text.has_token(keywords.RIGHT_NAME_WRONG_KING)
+    is_a_real_house = classified_event.processed_text.has_token(rules.RIGHT_NAME_WRONG_KIND)
 
     # print has_class_title
     # print has_good_dance_title
