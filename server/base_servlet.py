@@ -22,6 +22,7 @@ from google.appengine.api.app_identity import app_identity
 from google.appengine.ext import db
 
 from users import users
+from users import access_tokens
 from events import eventdata
 import event_types
 import facebook
@@ -799,6 +800,10 @@ class BaseTaskFacebookRequestHandler(BaseTaskRequestHandler, FacebookMixinHandle
             self.fb_uid = None
             self.user = None
             self.access_token = None
+        elif self.request.get('user_id') == 'random':
+            self.fb_uid = None
+            self.user = None
+            self.access_token = access_tokens.get_multiple_tokens(50)
         else:
             self.fb_uid = self.request.get('user_id')
             if not self.fb_uid:
