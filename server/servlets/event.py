@@ -268,6 +268,7 @@ class AdminEditHandler(base_servlet.BaseRequestHandler):
             fb_event_attending = None
             # fb_event_attending = fbl.fetched_data(fb_api.LookupEventAttending, event_id)
         except fb_api.NoFetchedDataException:
+            logging.error('No fetched data for %s, showing error page', event_id)
             return self.show_barebones_page(event_id, "No fetched data")
 
         e = eventdata.DBEvent.get_by_id(event_id)
