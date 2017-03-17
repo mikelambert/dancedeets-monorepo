@@ -46,7 +46,8 @@ slugify==0.0.1
 feedparser==5.2.1
 
 # Google
-GoogleAppEngineMapReduce==1.9.22.0
+# This git repo has https://github.com/GoogleCloudPlatform/appengine-mapreduce/pull/111
+git+https://github.com/mikelambert/appengine-mapreduce#egg=GoogleAppEngineMapReduce&subdirectory=python/src
 GoogleAppEnginePipeline==1.9.22.1
 GoogleAppEngineCloudStorageClient==1.9.22.1
 gdata==2.0.18
