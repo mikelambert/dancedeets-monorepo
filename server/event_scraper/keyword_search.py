@@ -114,16 +114,19 @@ def search_fb(fbl):
 
     all_ids = set()
     for query in all_keywords:
-        search_results = fbl.get(LookupSearchEvents, query, allow_cache=False)
+        old_fb_fetches = fbl.fb.fb_fetches
+        search_results = fbl.get(LookupSearchEvents, query)
         ids = [x['id'] for x in search_results['results']['data']]
         all_ids.update(ids)
         logging.info('Keyword %r returned %s results:', query, len(ids))
         # Debug code
         for x in search_results['results']['data']:
             logging.info('Found %s: %s', x['id'], x.get('name'))
-        time.sleep(3)
 
-    return
+        # Only sleep and space things out, if we actually hit the FB server...
+        if old_fb_fetches != fbl.fb.fb_fetches:
+            time.sleep(2)
+
     # Run these all_ids in a queue of some sort...to process later, in groups?
     discovered_list = [potential_events.DiscoveredEvent(id, None, thing_db.FIELD_SEARCH) for id in sorted(all_ids)]
 
