@@ -180,6 +180,7 @@ def classify_events(fbl, pe_list, fb_list):
 
     results = []
     for pe, fb_event, fb_event_attending_maybe in zip(new_pe_list, new_fb_list, fb_attending_maybe_list):
+        event_id = pe.fb_event_id
         logging.info('Is Good Event By Text: %s: Checking...', event_id)
         classified_event = event_classifier.get_classified_event(fb_event)
         classified_event, auto_add_result = is_good_event_by_text(fb_event, classified_event)
