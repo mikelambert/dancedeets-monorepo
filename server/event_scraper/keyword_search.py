@@ -114,7 +114,7 @@ def search_fb(fbl):
 
     all_ids = set()
     for query in all_keywords:
-        search_results = fbl.get(LookupSearchEvents, query)
+        search_results = fbl.get(LookupSearchEvents, query, allow_cache=False)
         ids = [x['id'] for x in search_results['results']['data']]
         all_ids.update(ids)
         logging.info('Keyword %r returned %s results:', query, len(ids))
