@@ -123,7 +123,7 @@ class StudioClassIndex(index.BaseIndex):
         title = '%s: %s' % (studio_class.style, studio_class.teacher)
         description = studio_class.teacher_link
         # include twitter link to studio?
-        timestamp = min(int(time.mktime(studio_class.start_time.timetuple())), 2**32 - 1)
+        timestamp = min(int(time.mktime(studio_class.start_time.timetuple())), 2**31 - 1)
         doc_event = search.Document(
             doc_id=studio_class.key.string_id(),
             fields=[

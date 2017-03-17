@@ -276,7 +276,7 @@ class EventsIndex(index.BaseIndex):
         if not isinstance(db_event.start_time, datetime.datetime) and not isinstance(db_event.start_time, datetime.date):
             logging.error("DB Event %s start_time is not correct format: ", db_event.id, db_event.start_time)
             return None
-        timestamp = min(int(time.mktime(db_event.start_time.timetuple())), 2**32 - 1)
+        timestamp = min(int(time.mktime(db_event.start_time.timetuple())), 2**31 - 1)
         doc_event = search.Document(
             doc_id=db_event.id,
             fields=[
