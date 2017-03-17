@@ -3,8 +3,8 @@
 import datetime
 import json
 import logging
+import random
 import re
-import time
 import urllib
 
 import facebook
@@ -418,10 +418,16 @@ class DBCache(CacheSystem):
 
 
 class FBAPI(CacheSystem):
-    def __init__(self, access_token):
-        self.access_token = access_token
+    def __init__(self, access_token_or_list):
+        if isinstance(access_token_or_list, list):
+            self.access_token_list = access_token_or_list
+        else:
+            self.access_token_list = [access_token_or_list]
         self.fb_fetches = 0
         self.raise_on_page_redirect = False
+
+    def random_access_token(self):
+        return random.choice(self.access_token_list)
 
     def fetch_keys(self, keys):
         FB_FETCH_COUNT = 10 # number of objects, each of which may be 1-5 RPCs
@@ -441,11 +447,12 @@ class FBAPI(CacheSystem):
 
     def post(self, path, args, post_args):
         if not args: args = {}
-        if self.access_token:
+        token = self.random_access_token()
+        if token:
             if post_args is not None:
-                post_args["access_token"] = self.access_token
+                post_args["access_token"] = token
             else:
-                args["access_token"] = self.access_token
+                args["access_token"] = token
         post_data = None if post_args is None else urls.urlencode(post_args)
         f = urllib.urlopen(
                 "https://graph.facebook.com/" + path + "?" +
@@ -468,8 +475,9 @@ class FBAPI(CacheSystem):
 
     def _create_rpc_for_batch(self, batch_list, use_access_token):
         post_args = {'batch': json.dumps(batch_list)}
-        if use_access_token and self.access_token:
-            post_args["access_token"] = self.access_token
+        token = self.random_access_token()
+        if use_access_token and token:
+            post_args["access_token"] = token
         else:
             post_args["access_token"] = '%s|%s' % (facebook.FACEBOOK_CONFIG['app_id'], facebook.FACEBOOK_CONFIG['secret_key'])
         post_args["include_headers"] = False # Don't need to see all the caching headers per response
