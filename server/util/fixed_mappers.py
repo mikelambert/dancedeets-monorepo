@@ -6,6 +6,8 @@ from google.appengine.ext import ndb
 
 from mapreduce import context
 from mapreduce import handlers
+from mapreduce import model
+from mapreduce import util
 
 #class FixedKeyRangeEntityIterator(datastore_range_iterators.KeyRangeEntityIterator):
 #    def __iter__(self):
@@ -101,3 +103,23 @@ class FixedMapperWorkerCallbackHandler(handlers.MapperWorkerCallbackHandler):
     # We need to remove the context, so other requests that run after us in this thread don't mistakenly see a context when they shouldn't.
     context.Context._set(None)
     return super(FixedMapperWorkerCallbackHandler, self).__return(shard_state, tstate, task_directive)
+
+  def _drop_gracefully(self):
+    """Drop worker task gracefully.
+
+    Set current shard_state to failed. Controller logic will take care of
+    other shards and the entire MR.
+    """
+    shard_id = self.request.headers[util._MR_SHARD_ID_TASK_HEADER]
+    mr_id = self.request.headers[util._MR_ID_TASK_HEADER]
+    shard_state, mr_state = db.get([
+        model.ShardState.get_key_by_shard_id(shard_id),
+        model.MapreduceState.get_key_by_job_id(mr_id)])
+
+    if shard_state and shard_state.active:
+      logging.error('Would normally mark this shard for failure...and kill the entire mapreduce!')
+      logging.error('But we ignore that and let this shard continue to run (and fail) instead.')
+      # shard_state.set_for_failure()
+      # config = util.create_datastore_write_config(mr_state.mapreduce_spec)
+      # shard_state.put(config=config)
+      raise Exception('Worker cannot run due to attempt to drop gracefully.')
