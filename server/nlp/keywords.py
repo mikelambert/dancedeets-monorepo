@@ -49,6 +49,8 @@ EASY_DANCE = Name('EASY_DANCE', Any(
     u'רקדם', # hebrew dancers
     u'רוקדים', # hebrew dance
     u'רקדנים', # hebrew dancers
+    u'לרקדני', # hebrew dancers
+    u'ריקוד', # hebrew dance
     u'舞者', # chinese dancer
     u'舞技', # chinese dancing
     u'舞.?蹈', # chinese dance
@@ -159,6 +161,7 @@ STYLE_ALLSTYLE_WEAK = Any(
     'tou[ts]\W?style[zs]?', # french all-styles
     'tutti gli stili', # italian all-styles
     'kaikille tyyleille avoin', # finnish all-styles
+    u'לכל הסגנונות', # hebrew all styles
 )
 STYLE_BREAK_WEAK = Any(
     # 'breaks', # too many false positives
@@ -247,6 +250,8 @@ STYLE_BREAK = Name('STYLE_BREAK', Any(
     'break\W?danc\w+',
     'power\W?moves?',
     'b\W?(?:boy|girl)\w*',
+    u'ברייקדאנס', # hebrew breakdancing
+    u'הברייקדאנס', # hebrew breakdance
     u'비보이', # korean bboy
     u'비걸', # korean bgirl
     u'파워무브', # powermove korean
@@ -371,6 +376,7 @@ legit_dance = [
     u'البريك دانس', # arabic breakdance
     u'街舞', # chinese streetdance / hiphop
     u'街頭舞蹈', # chinese streetdance
+    u'ריקודי רחוב', # hebrew street dancing
     u'gatvės šokių', # lithuanian streetdance
     'katutanssi\w*', # finnish streetdance
     "buckin[g']?", "jookin[g']?",
@@ -729,6 +735,12 @@ BATTLE = Name('BATTLE', Any(
     u'منافسات', # arabic competitions
     u'مسابقات', # arabic contests
     u'معركة', # arabic battle
+    u'התחרות', # hebrew competition
+    u'לתחרות', # hebrew competition
+    u'לאליפות', # hebrew championship
+    u'אליפות', # hebrew championship
+    u'באליפות', # hebrew championship
+    u'לקרבות', # hebrew battles
 ))
 
 CLASS = Name('CLASS', Any(
@@ -883,6 +895,7 @@ JUDGE = Name('JUDGE', Any(
     u'ジャッジ', # japanese judges
     u'심사', # korean judges
     u'שופט', # hebrew judges
+    u'השופטים', # hebrew the-judges
 ))
 
 AMBIGUOUS_CLASS = Name('AMBIGUOUS_CLASS', Any(
