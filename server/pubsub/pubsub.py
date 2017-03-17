@@ -38,8 +38,10 @@ EVENT_PULL_QUEUE = 'event-publishing-pull-queue'
 def eventually_publish_event(event_id, token_nickname=None):
     db_event = eventdata.DBEvent.get_by_id(event_id)
     if not db_event.has_content():
+        logging.info('Not publishing %s because it has no content.', db_event.id)
         return
     if (db_event.end_time or db_event.start_time) < datetime.datetime.now():
+        logging.info('Not publishing %s because it is in the past.', db_event.id)
         return
 
     def should_post(auth_token):
