@@ -485,7 +485,7 @@ class FBAPI(CacheSystem):
         rpc = urlfetch.create_rpc(deadline=DEADLINE)
         urlfetch.make_fetch_call(rpc, "https://graph.facebook.com/", post_data, "POST")
         self.fb_fetches += len(batch_list)
-        return rpc
+        return rpc, token
 
     def _fetch_object_keys(self, object_keys_to_lookup):
         logging.info("BatchLookup: Fetching IDs from FB: %s", object_keys_to_lookup)
@@ -496,12 +496,12 @@ class FBAPI(CacheSystem):
             parts_to_urls = cls.track_lookup()
             parts_to_urls = cls.get_lookups(oid)
             batch_list = [dict(method='GET', name=part_key, relative_url=url, omit_response_on_success=False) for (part_key, url) in parts_to_urls]
-            rpc = self._create_rpc_for_batch(batch_list, cls.use_access_token)
-            object_keys_to_rpcs[object_key] = rpc
+            rpc, token = self._create_rpc_for_batch(batch_list, cls.use_access_token)
+            object_keys_to_rpcs[object_key] = rpc, token
 
         # fetch RPCs
         fetched_objects = {}
-        for object_key, object_rpc in object_keys_to_rpcs.iteritems():
+        for object_key, (object_rpc, object_token) in object_keys_to_rpcs.iteritems():
             cls, oid = break_key(object_key)
             parts_to_urls = cls.get_lookups(oid)
             mini_batch_list = [dict(name=part_key, relative_url=url) for (part_key, url) in parts_to_urls]
@@ -522,7 +522,7 @@ class FBAPI(CacheSystem):
                 # expired/invalidated OAuth token for User objects. We use one OAuth token per BatchLookup, so no use continuing...
                 # we don't trigger on UserEvents objects since those are often optional and we don't want to break on those, or set invalid bits on those (get it from the User failures instead)
                 if error_code == 190 and error_type == 'OAuthException':
-                    logging.warning("Error with expired token: %s", self.access_token)
+                    logging.warning("Error with expired token: %s", object_token)
                     raise ExpiredOAuthToken(error_message)
                 logging.error("BatchLookup: Error occurred on response, rpc_results is %s", rpc_results)
                 object_is_bad = True
