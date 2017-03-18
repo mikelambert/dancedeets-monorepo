@@ -30,7 +30,7 @@ def debug_attendee_addition_for_event(fbl, fb_event):
         events = [x for x in events if x.creating_method != eventdata.CM_AUTO_ATTENDEE]
     else:
         events = []
-    event_ids = [x.key.string_id() for x in events]
+    event_ids = [x.key.string_id() for x in events if x.is_fb_event]
     event_lookup = dict(zip(event_ids, events))
 
     # Look up a toooooooooooon of crap here, for all O(num_events) events.
