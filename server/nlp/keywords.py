@@ -808,6 +808,7 @@ CLASS = Name('CLASS', Any(
     'classi', # classes italin
     'klasser?', # norwegian class
     'cours', 'clases?',
+
     'camp',
     'kamp',
     'kemp',
@@ -1184,7 +1185,6 @@ WRONG_HOUSE = Name('WRONG_HOUSE', Any(
     'kitchen',
     'home',
     'houses',
-    ''
 ))
 
 SEMI_BAD_DANCE = Name('SEMI_BAD_DANCE', Any(
