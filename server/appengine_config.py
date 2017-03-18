@@ -24,6 +24,11 @@ mapreduce__SLICE_DURATION_SEC = 60
 mapreduce_TASK_MAX_DATA_PROCESSING_ATTEMPTS = 1000
 mapreduce_SHARD_MAX_ATTEMPTS = 1000
 
+# This is the max-timeout we wait before giving up.
+# Normally it'd check the logs-API to verify, but we run on managed VMs where that doesn't exist
+# Without this, it'd wait 10.5 minutes to restart the mapreduce, but we should do much better...
+mapreduce__MAX_LEASE_DURATION_SEC = mapreduce__SLICE_DURATION_SEC * 1.5
+
 appstats_MAX_STACK = 25
 appstats_MAX_REPR = 100
 appstats_MAX_LOCALS = 5
