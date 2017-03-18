@@ -576,6 +576,7 @@ PREPROCESS_REMOVAL = Name('PREPROCESS_REMOVAL', Any(
     'zip\W?lock',
     'lock\Win',
     'lock\W?down',
+    'blade\W?lock',
 
     'whack music',
     'wack music',
@@ -593,6 +594,7 @@ PREPROCESS_REMOVAL = Name('PREPROCESS_REMOVAL', Any(
 
     'latin street dance',
     'marvellous dance crew',
+
     '1st class',
     'first class',
     'world class',
@@ -601,6 +603,8 @@ PREPROCESS_REMOVAL = Name('PREPROCESS_REMOVAL', Any(
     'top class',
     'class\W?rnb',
     'class act',
+    'class of\W*\d+',
+
     'go\W?go\W?danc(?:ers?|ing?)',
     'latin street',
     'ice\W?breaker',
@@ -611,6 +615,8 @@ PREPROCESS_REMOVAL = Name('PREPROCESS_REMOVAL', Any(
     'in-strutter', # strutter
     'on stage',
     'main\Wstage',
+    'music\Wstage',
+    'the stage',
     'of course',
 
     'breaking down',
@@ -906,7 +912,7 @@ JUDGE = Name('JUDGE', Any(
     u'השופטים', # hebrew the-judges
 ))
 
-AMBIGUOUS_CLASS = Name('AMBIGUOUS_CLASS', Any(
+ROMANCE_LANGUAGE_CLASS = Name('ROMANCE_LANGUAGE_CLASS', Any(
     'spectacle',
     'stage',
     'stages',
@@ -1187,6 +1193,10 @@ WRONG_LOCK = Name('WRONG_LOCK', Any(
     'marina',
     'dam',
     'vessel',
+
+    'bind',
+    'blade',
+    'dialog',
 ))
 
 WRONG_HOUSE = Name('WRONG_HOUSE', Any(

@@ -97,11 +97,11 @@ good_dance = Any(keywords.AMBIGUOUS_DANCE_MUSIC, GOOD_DANCE, keywords.HOUSE)
 GOOD_DANCE_CLASS = Name('GOOD_DANCE_CLASS', Any(
     commutative_connected(good_dance, keywords.CLASS),
     # only do one direction here, since we don't want "house stage" and "funk stage"
-    connected(keywords.AMBIGUOUS_CLASS, good_dance),
+    connected(keywords.ROMANCE_LANGUAGE_CLASS, good_dance),
 ))
 # TODO: is this one necessary? we could do it as a regex, but we could also do it as a rule...
-EXTENDED_CLASS = Name('EXTENDED_CLASS',
-    Any(keywords.CLASS, keywords.AMBIGUOUS_CLASS))
+ROMANCE_EXTENDED_CLASS = Name('ROMANCE_EXTENDED_CLASS',
+    Any(keywords.CLASS, keywords.ROMANCE_LANGUAGE_CLASS))
 
 full_judge = Any(
     keywords.JUDGE,
@@ -139,7 +139,7 @@ EVENT = Name('EVENT', Any(
 ))
 
 EVENT_WITH_ROMANCE_EVENT = Name('EVENT_WITH_ROMANCE_EVENT',
-    Any(keywords.AMBIGUOUS_CLASS, EVENT))
+    Any(keywords.ROMANCE_LANGUAGE_CLASS, EVENT))
 
 
 MANUAL_DANCER = [Name('MANUAL_DANCER', Any(
@@ -191,6 +191,6 @@ ANY_GOOD = Name('ANY_GOOD', Any(
     keywords.PERFORMANCE,
     keywords.CONTEST,
     keywords.FORMAT_TYPE,
-    keywords.AMBIGUOUS_CLASS,
+    keywords.ROMANCE_LANGUAGE_CLASS,
 
 ))
