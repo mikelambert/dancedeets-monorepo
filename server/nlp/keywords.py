@@ -565,15 +565,18 @@ PREPROCESS_REMOVAL = Name('PREPROCESS_REMOVAL', Any(
     'eye\W*popping',
     'pearl popping',
     'pony popping',
+    'eye-poppin\w+',
+    'poppin.?\W?box',
     POP_MUSIC,
 
-    'eye-poppin\w+',
     'on lock',
     'lock(?:ing|ed|s)? (?:in|out|your|our|the|a|it|down|up)',
     'lock\s*(?:and|&)\s*key',
+    'lock\s*(?:and|&)\s*load',
     'zip\W?lock',
     'lock\Win',
     'lock\W?down',
+
     'whack music',
     'wack music',
 
@@ -609,8 +612,12 @@ PREPROCESS_REMOVAL = Name('PREPROCESS_REMOVAL', Any(
     'on stage',
     'main\Wstage',
     'of course',
+
     'breaking down',
     'ground\W?breaking',
+    'board\W?breaking',
+    'breaking\W?boards?',
+
     '(?:second|2nd) stage',
     'juste debout school',
     'baile funk',
@@ -1174,6 +1181,12 @@ WRONG_LOCK = Name('WRONG_LOCK', Any(
     'crack',
     'pick',
     'key',
+
+    'boaters?',
+    'the locks',
+    'marina',
+    'dam',
+    'vessel',
 ))
 
 WRONG_HOUSE = Name('WRONG_HOUSE', Any(
