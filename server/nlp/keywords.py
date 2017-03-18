@@ -569,6 +569,7 @@ PREPROCESS_REMOVAL = Name('PREPROCESS_REMOVAL', Any(
     'poppin.?\W?box',
     POP_MUSIC,
 
+    # Should many of these quality as a "immediate failure" keyword?
     'on lock',
     'lock(?:ing|ed|s)? (?:in|out|your|our|the|a|it|down|up)',
     'lock\s*(?:and|&)\s*key',
@@ -577,6 +578,7 @@ PREPROCESS_REMOVAL = Name('PREPROCESS_REMOVAL', Any(
     'lock\Win',
     'lock\W?down',
     'blade\W?lock',
+    '(?:through|thru)\W+the\W+lock',
 
     'whack music',
     'wack music',
@@ -623,6 +625,8 @@ PREPROCESS_REMOVAL = Name('PREPROCESS_REMOVAL', Any(
     'ground\W?breaking',
     'board\W?breaking',
     'breaking\W?boards?',
+    'record\Wbreaking',
+    'break\w+\W+(?:the\W+)?records?',
 
     '(?:second|2nd) stage',
     'juste debout school',
@@ -941,7 +945,7 @@ DANCE_WRONG_STYLE = Name('DANCE_WRONG_STYLE', Any(
     'milonga',
     'dance partner',
     'cha cha',
-    'hula',
+    'hula', 'hoop', 'ghost', 'ghosting',
     'tumbling',
     'exotic',
     'cheer',
