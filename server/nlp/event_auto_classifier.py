@@ -283,9 +283,9 @@ def is_audition(classified_event):
 def is_workshop(classified_event):
     trimmed_title = classified_event.processed_title.delete_with_rule(rules.WRONG_CLASS)
     if classified_event.processed_text.get_tokens(keywords.ROMANCE):
-        has_class_title = classified_event.processed_text.get_tokens(rules.ROMANCE_EXTENDED_CLASS)
+        has_class_title = trimmed_title.get_tokens(rules.ROMANCE_EXTENDED_CLASS)
     else:
-        has_class_title = classified_event.processed_text.get_tokens(keywords.CLASS)
+        has_class_title = trimmed_title.get_tokens(keywords.CLASS)
     has_good_dance_class_title = trimmed_title.has_token(rules.GOOD_DANCE_CLASS)
 
     has_non_dance_event_title = classified_event.processed_title.has_token(keywords.BAD_COMPETITION_TITLE_ONLY)
