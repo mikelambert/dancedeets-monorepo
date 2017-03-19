@@ -233,20 +233,6 @@ def classify_events(fbl, pe_list, fb_list):
 
 def classify_events_with_yield(fbl, pe_list):
     assert fbl.allow_cache
-    completed_bounds = [
-        ('569353556569892', '702893579732952'),
-        ('409916225794369', '504803102869028'),
-        ('0', '1383026398624759'),
-        ('215724058889219', '312203542281483'),
-        ('759773837502164', '948892461829760'),
-        ('143971142708741', '1597683317194380'),
-        ('317178958408513', '407323919478783'),
-        ('1675093002743131', '205024773016109'),
-    ]
-    for completed_bound in completed_bounds:
-        pe_list = [x for x in pe_list if x.fb_event_id < completed_bound[0] or x.fb_event_id > completed_bound[1]]
-    if not pe_list:
-        return
 
     fb_list = fbl.get_multi(fb_api.LookupEvent, [x.fb_event_id for x in pe_list], allow_fail=True)
     # DISABLE_ATTENDING
