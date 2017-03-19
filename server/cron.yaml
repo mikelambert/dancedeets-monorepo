@@ -30,6 +30,9 @@ cron:
 - description: post to social networks
   url: /tasks/social_publisher
   schedule: every 1 minutes
+- description: search fb for more events
+  url: /tools/search_fb_for_events?user_id=random
+  schedule: every 11 hours
 # This seems to be too spammy, and has a negative effect on users :(
 # So let's disable it for now, until we can find a better threshold/metric for whether to notify users
 #- description: notify about newly-added events

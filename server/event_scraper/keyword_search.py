@@ -1,5 +1,6 @@
 # -*-*- encoding: utf-8 -*-*-
 
+import datetime
 import time
 
 import base_servlet
@@ -116,9 +117,13 @@ def search_fb(fbl):
     logging.info('Looking up %s search queries', len(all_keywords))
 
     all_ids = set()
+    oldest_allowed = fbl.db.oldest_allowed
+    # Still want to re-run these queries...but allow re-repeated re-runs to work without hammering FB
+    # And we want the searches to expire much more quickly than the servlet as a whole (and event/attending lookups)
+    fbl.db.oldest_allowed = datetime.datetime.now() - datetime.timedelta(hours=6)
+
     for query in all_keywords:
         old_fb_fetches = fbl.fb.fb_fetches
-        # TODO: ensure that we expire this...somehow? but allow re-runs, i guess?
         search_results = fbl.get(LookupSearchEvents, query)
         ids = [x['id'] for x in search_results['results']['data']]
         all_ids.update(ids)
@@ -130,6 +135,8 @@ def search_fb(fbl):
         # Only sleep and space things out, if we actually hit the FB server...
         if old_fb_fetches != fbl.fb.fb_fetches:
             time.sleep(2)
+
+    fbl.db.oldest_allowed = oldest_allowed
 
     # Run these all_ids in a queue of some sort...to process later, in groups?
     discovered_list = [potential_events.DiscoveredEvent(id, None, thing_db.FIELD_SEARCH) for id in sorted(all_ids)]
