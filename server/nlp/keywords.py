@@ -1026,6 +1026,7 @@ DANCE_WRONG_STYLE_TITLE_ONLY = Name('DANCE_WRONG_STYLE_TITLE_ONLY', Any(
     'talent shows?', # we don't care about talent shows that offer dance options
     'stiletto',
     '\w+ball', # basketball/baseball/football tryouts
+    'pole',
 ))
 
 
