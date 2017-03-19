@@ -95,6 +95,7 @@ def search_fb(fbl):
 
         'workshop',
         'class', 'taller', 'stage',
+        'lesson',
 
         'battle',
         'jam',
