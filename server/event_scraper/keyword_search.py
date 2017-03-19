@@ -39,6 +39,7 @@ def search_fb(fbl):
         'bboy', 'bboys', 'bboying', 'bgirl', 'bgirls', 'bgirling', 'breakdance', 'breakdancing', 'breakdancers',
         'hiphop', 'hip hop', 'new style',
         'house dance', 'house danse',
+        'afro house', 'afrohouse',
         'poppers', 'poplock',
         'tutting', 'bopping', 'boppers',
         'lockers', 'locking',
@@ -47,6 +48,7 @@ def search_fb(fbl):
         'dancehall', 'ragga jam',
         'krump', 'krumperz', 'krumping',
         'street jazz', 'street-jazz', 'streetjazz',
+        'voguing',
         'house dance',
         'house danse',
         'hiphop dance',
@@ -115,6 +117,7 @@ def search_fb(fbl):
     all_ids = set()
     for query in all_keywords:
         old_fb_fetches = fbl.fb.fb_fetches
+        # TODO: ensure that we expire this...somehow? but allow re-runs, i guess?
         search_results = fbl.get(LookupSearchEvents, query)
         ids = [x['id'] for x in search_results['results']['data']]
         all_ids.update(ids)
