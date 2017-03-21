@@ -20,15 +20,15 @@ class DiscoveredEvent(object):
     def __repr__(self):
         return '%s(%r)' % (self.__class__.__name__, ', '.join('%s=%s' % x for x in self.__dict__.iteritems()))
 
-    def _repr(self):
+    def _cmprepr(self):
         return (self.event_id, self.source_id, self.source_field, self.extra_source_id)
 
     def __hash__(self):
-        return hash(self._repr())
+        return hash(self._cmprepr())
 
     def __cmp__(self, other):
         if isinstance(other, DiscoveredEvent):
-            return cmp(self._repr(), other._repr())
+            return cmp(self._cmprepr(), other._cmprepr())
         else:
             return -1
 
