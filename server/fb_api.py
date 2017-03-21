@@ -326,6 +326,9 @@ class Memcache(CacheSystem):
     def __init__(self, fetching_uid):
         self.fetching_uid = fetching_uid
 
+    def __repr__(self):
+        return 'Memcache(%r)' % self.__dict__
+
     def fetch_keys(self, keys):
         cache_key_mapping = dict((self.key_to_cache_key(key), key) for key in keys)
         objects = memcache.get_multi(cache_key_mapping.keys())
@@ -356,6 +359,9 @@ class DBCache(CacheSystem):
         self.fetching_uid = fetching_uid
         self.db_updates = 0
         self.oldest_allowed = datetime.datetime.min
+
+    def __repr__(self):
+        return 'DBCache(%r)' % self.__dict__
 
     def fetch_keys(self, keys):
         cache_key_mapping = dict((self.key_to_cache_key(key), key) for key in keys)
@@ -416,6 +422,9 @@ class FBAPI(CacheSystem):
             self.access_token_list = [access_token_or_list]
         self.fb_fetches = 0
         self.raise_on_page_redirect = False
+
+    def __repr__(self):
+        return 'FBAPI(%r)' % self.__dict__
 
     def random_access_token(self):
         return random.choice(self.access_token_list)
@@ -606,6 +615,11 @@ class FBLookup(object):
         self.db = DBCache(self.fb_uid)
         self.fb = FBAPI(self.access_token)
         self.debug = False
+
+    def __repr__(self):
+        keys = set(['fb_uid', 'access_token', 'allow_cache', 'allow_memcache_read', 'allow_memcache_write', 'allow_dbcache', 'resave_to_memcache', 'debug'])
+        newdict = dict(kv for kv in self.__dict__.iteritems() if kv[0] in keys)
+        return 'FBLookup(%r)' % newdict
 
     def __getstate__(self):
         d = self.__dict__.copy()
