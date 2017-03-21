@@ -50,6 +50,10 @@ Edit Source
 					{% endfor %}
 					<br>
 				{% endif %}
+        <a href="https://developers.facebook.com/tools/explorer/{{ app_id }}?method=GET&path={{ fb_source.info.id }}">FB Source Live</a><br>
+        <a href="/tools/fb_data?key=701004.{{ fb_source.info.id }}.OBJ_THING_FEED">FB Source/Feed Cache</a><br>
+        <a href="/admin/source/edit/?url=%2Fadmin%2Fsource%2F&id={{ source.key().__str__() }}">Source</a><br>
+        <a href="https://console.cloud.google.com/datastore/entities/edit?key=0%2F%7C6%2FSource%7C20%2Fname:{{ source.graph_id }}&project=dancedeets-hrd">Source Datastore</a><br>
 				<pre>{{ fb_source_data }}</pre>
 			{% else %}
 				Adding new source!
