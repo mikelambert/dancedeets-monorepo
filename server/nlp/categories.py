@@ -109,7 +109,7 @@ ANY_VOGUE = Any(
     keywords.EASY_VOGUE,
 )
 
-STRICTSTYLES = {
+STRICT_STYLES = {
     event_types.BREAK: ANY_BREAK,
     event_types.POP: ANY_POP,
     event_types.LOCK: ANY_LOCK_STRICT,
@@ -271,7 +271,7 @@ def find_styles(event):
 
 
 def find_styles_strict(event):
-    return find_rules(event, STYLES)
+    return find_rules(event, STRICT_STYLES)
 
 
 def find_event_types(event):
