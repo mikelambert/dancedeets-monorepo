@@ -148,14 +148,12 @@ def classify_events(fbl, pe_list, fb_list):
     new_fb_list = []
     # Go through and find all potential events we actually want to attempt to classify
     for pe, fb_event in zip(pe_list, fb_list):
-        if fb_event and fb_event['empty']:
-            fb_event = None
-
         # Get these past events out of the way, saved, then continue.
         # Next time through this mapreduce, we shouldn't need to process them.
         if pe.set_past_event(fb_event):
             pe.put()
-        if not fb_event:
+
+        if not fb_event or fb_event['empty']:
             continue
 
         # Don't process events we've already looked at, or don't need to look at.
