@@ -47,6 +47,8 @@ def process_discovered_events(fbl, full_discovered_list):
         return
 
     # Trust that fbl.allow_cache was allowed in our caller
+    if not fbl.allow_cache:
+        logging.error('process_discovered_events unexpected called with an enabled cache!')
     discovered_fb_events = fbl.get_multi(fb_api.LookupEvent, [x.event_id for x in discovered_list], allow_fail=True)
 
     potential_events_added = []
