@@ -48,7 +48,7 @@ def exists(e):
             'client': 'cmdline',
         })
         url = 'http://www.dancedeets.com/api/v1.3/search?%s' % qs
-        data = urllib2.urlopen(url, '{"client": "cmdline"}', timeout=3).read()
+        data = urllib2.urlopen(url, '{"client": "cmdline"}', timeout=10).read()
         response = json.loads(data)
         if not 'results' in response:
             logging.error(url)
@@ -69,7 +69,7 @@ def dd_id_exists(eid):
     else:
         logging.info('Looking up info for event %s in DanceDeets', eid)
         url = 'http://www.dancedeets.com/api/v1.3/events/%s' % eid
-        data = urllib2.urlopen(url, timeout=2).read()
+        data = urllib2.urlopen(url, timeout=5).read()
         response = json.loads(data)
         open(cache_filename, 'w').write(data)
     if 'id' in response:
