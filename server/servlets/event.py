@@ -300,7 +300,7 @@ class AdminEditHandler(base_servlet.BaseRequestHandler):
         else:
             creating_user = None
 
-        potential_event = potential_events.make_potential_event_without_source(event_id, fb_event, fb_event_attending)
+        potential_event = potential_events.make_potential_event_without_source(event_id)
         classified_event = event_classifier.get_classified_event(fb_event, potential_event.language)
         self.display['classified_event'] = classified_event
         if classified_event.is_dance_event():

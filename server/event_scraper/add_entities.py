@@ -64,9 +64,7 @@ def crawl_event_source(fbl, event_id):
     e = eventdata.DBEvent.get_by_id(fb_event['info']['id'])
     thing_db.create_source_from_event(fbl, e)
 
-    # DISABLE_ATTENDING
-    fb_event_attending = None
-    potential_event = potential_events.make_potential_event_without_source(e.fb_event_id, fb_event, fb_event_attending)
+    potential_event = potential_events.make_potential_event_without_source(e.fb_event_id)
     classified_event = event_classifier.get_classified_event(fb_event, potential_event.language)
     if potential_event:
         for source_id in potential_event.source_ids_only():
