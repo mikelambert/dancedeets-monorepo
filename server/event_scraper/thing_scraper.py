@@ -1,4 +1,5 @@
 import cgi
+import dateparser
 import datetime
 import logging
 import re
@@ -145,20 +146,31 @@ def process_thing_feed(source, thing_feed):
         logging.error("No 'data' found in: %s", thing_feed['feed'])
         return []
 
+    # Go back in time 7 days...not too far back!
+    # In case any of our MR's failed and updated the last_scrape_time prematurely,
+    # we still want to check back and make sure we include them.
+    if source.last_scrape_time:
+        post_high_watermark = source.last_scrape_time - datetime.timedelta(days=7)
+    else:
+        post_high_watermark = datetime.datetime.min
+
+    logging.info('Finding events on source %s, using high watermark %s', source.graph_id, post_high_watermark)
     # save new name, feed_history_in_seconds
     source.compute_derived_properties(thing_feed)
     source.last_scrape_time = datetime.datetime.now()
     source.put()
 
-    discovered_list = build_discovered_from_feed(source, thing_feed['feed']['data'])
+    discovered_list = build_discovered_from_feed(source, thing_feed['feed']['data'], post_high_watermark)
 
     # Now also grab the events that the page owns/manages itself:
     for event in thing_feed['events']['data']:
-        discovered = potential_events.DiscoveredEvent(event['id'], source, thing_db.FIELD_FEED)
-        discovered_list.append(discovered)
+        updated_time = dateparser.parse(event['updated_time'])
+        if post_high_watermark < updated_time:
+            discovered = potential_events.DiscoveredEvent(event['id'], source, thing_db.FIELD_FEED)
+            discovered_list.append(discovered)
     return discovered_list
 
-def build_discovered_from_feed(source, feed_data):
+def build_discovered_from_feed(source, feed_data, post_high_watermark):
     discovered_list = []
     for post in feed_data:
         links = []
@@ -189,8 +201,12 @@ def build_discovered_from_feed(source, feed_data):
                     eid = m.group(1)
             if eid:
                 extra_source_id = post['from']['id']
-                discovered = potential_events.DiscoveredEvent(eid, source, thing_db.FIELD_FEED, extra_source_id)
-                discovered_list.append(discovered)
+                if extra_source_id == source.graph_id:
+                    extra_source_id = None
+                updated_time = dateparser.parse(post['updated_time'])
+                if post_high_watermark < updated_time:
+                    discovered = potential_events.DiscoveredEvent(eid, source, thing_db.FIELD_FEED, extra_source_id)
+                    discovered_list.append(discovered)
             else:
                 logging.warning("broken link is %s", urlparse.urlunparse(p))
     return discovered_list

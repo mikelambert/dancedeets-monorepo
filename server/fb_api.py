@@ -275,8 +275,8 @@ class LookupThingFeed(LookupType):
         return [
             # Can't pass fields=OBJ_SOURCE_FIELDS, because we can't guarantee it has all these fields (groups vs pages vs profiles etc)
             ('info', cls.url('%s' % object_id)),
-            ('feed', cls.url('%s/feed' % object_id, fields=['created_time', 'from', 'link', 'actions', 'message'])),
-            ('events', cls.url('%s/events' % object_id)),
+            ('feed', cls.url('%s/feed' % object_id, fields=['created_time', 'updated_time', 'from', 'link', 'actions', 'message'])),
+            ('events', cls.url('%s/events' % object_id, fields=['id', 'updated_time'])),
         ]
     @classmethod
     def cache_key(cls, object_id, fetching_uid):
