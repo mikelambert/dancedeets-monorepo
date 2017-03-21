@@ -46,12 +46,8 @@ def process_discovered_events(fbl, full_discovered_list):
     if not discovered_list:
         return
 
-    orig_allow_cache = fbl.allow_cache
-    try:
-        fbl.allow_cache = True
-        discovered_fb_events = fbl.get_multi(fb_api.LookupEvent, [x.event_id for x in discovered_list], allow_fail=True)
-    finally:
-        fbl.allow_cache = orig_allow_cache
+    # Trust that fbl.allow_cache was allowed in our caller
+    discovered_fb_events = fbl.get_multi(fb_api.LookupEvent, [x.event_id for x in discovered_list], allow_fail=True)
 
     potential_events_added = []
     for fb_event, discovered in zip(discovered_fb_events, discovered_list):

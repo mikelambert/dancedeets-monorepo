@@ -51,7 +51,9 @@ def mr_delete_bad_sources():
 
 
 def scrape_events_from_sources(fbl, sources):
+    fbl.allow_cache = False
     discovered_list = discover_events_from_sources(fbl, sources)
+    fbl.allow_cache = True
     process_event_source_ids(discovered_list, fbl)
 
 

@@ -1,4 +1,5 @@
 import json
+import logging
 
 from mapreduce import mapreduce_pipeline
 from util import fb_mapreduce
@@ -12,6 +13,7 @@ from . import thing_scraper
 
 def scrape_sources_for_events(sources):
     fbl = fb_mapreduce.get_fblookup()
+    fbl.allow_cache = False
     discovered_list = thing_scraper.discover_events_from_sources(fbl, sources)
     for x in discovered_list:
         state = (x.source_id, x.source_field, x.extra_source_id)
@@ -20,6 +22,7 @@ def scrape_sources_for_events(sources):
 
 def process_events(event_id, via_sources):
     fbl = fb_mapreduce.get_fblookup()
+    fbl.allow_cache = True
     discovered_list = []
     for data in via_sources:
         source_id, source_field, extra_source_id = json.loads(data)
