@@ -24,6 +24,7 @@ def process_events(event_id, via_sources):
     fbl = fb_mapreduce.get_fblookup()
     fbl.allow_cache = True
     discovered_list = []
+    logging.info('Running process_events on event %s with %s sources', event_id, len(via_sources))
     for data in via_sources:
         source_id, source_field, extra_source_id = json.loads(data)
         discovered = potential_events.DiscoveredEvent(event_id, None, source_field, extra_source_id)
@@ -66,7 +67,7 @@ def mapreduce_scrape_sources_and_process_events(fbl, min_potential_events, queue
         'mapreduce.output_writers.GoogleCloudStorageOutputWriter',
         mapper_params=mapper_params,
         reducer_params=reducer_params,
-        shards=2,
+        shards=16,
     )
 
     pipeline.start(queue_name='super-slow-queue')

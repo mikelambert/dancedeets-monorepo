@@ -65,7 +65,7 @@ def begin_ranking_calculations():
         handler_spec='rankings.rankings.count_event_for_city',
         mapper_parameters={'entity_kind': 'events.eventdata.DBEvent'},
         queue_name='slow-queue',
-        shard_count=2,
+        shard_count=8,
         _app=EVENT_FOR_CITY_RANKING,
     )
     #TODO(lambert): Make the above have a done callback triggering this one:
@@ -75,7 +75,7 @@ def begin_ranking_calculations():
         handler_spec='rankings.rankings.count_user_for_city',
         mapper_parameters={'entity_kind': 'users.users.User'},
         queue_name='slow-queue',
-        shard_count=2,
+        shard_count=8,
         _app=USER_FOR_CITY_RANKING,
     )
     #TODO(lambert): move this into a /done callback on the above two. use pipeline api?
