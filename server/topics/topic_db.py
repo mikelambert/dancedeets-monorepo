@@ -42,4 +42,4 @@ class LookupTopicPage(fb_api.LookupType):
         ]
     @classmethod
     def cache_key(cls, object_id, fetching_uid):
-        return (object_id, 'OBJ_TOPIC_PAGE')
+        return (object_id or 'None', 'OBJ_TOPIC_PAGE')

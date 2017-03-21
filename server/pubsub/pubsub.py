@@ -599,7 +599,7 @@ class LookupUserAccounts(fb_api.LookupType):
 
     @classmethod
     def cache_key(cls, object_id, fetching_uid):
-        return (fetching_uid, object_id, 'OBJ_USER_ACCOUNTS')
+        return (fetching_uid or 'None', object_id, 'OBJ_USER_ACCOUNTS')
 
 
 def get_dancedeets_fbl():

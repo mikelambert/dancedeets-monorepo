@@ -133,7 +133,7 @@ class LookupUser(LookupType):
         ]
     @classmethod
     def cache_key(cls, object_id, fetching_uid):
-        return (fetching_uid, object_id, 'OBJ_USER')
+        return (fetching_uid or 'None', object_id, 'OBJ_USER')
 
 #TODO(lambert): move these LookupType subclasses out of fb_api.py into client code where they belong,
 # keeping this file infrastructure and unmodified as we add new features + LookupTypes
@@ -168,7 +168,7 @@ class LookupUserEvents(LookupType):
 
     @classmethod
     def cache_key(cls, object_id, fetching_uid):
-        return (fetching_uid, object_id, 'OBJ_USER_EVENTS')
+        return (fetching_uid or 'None', object_id, 'OBJ_USER_EVENTS')
 
 class LookupEvent(LookupType):
     optional_keys = ['cover_info']
@@ -280,7 +280,7 @@ class LookupThingFeed(LookupType):
         ]
     @classmethod
     def cache_key(cls, object_id, fetching_uid):
-        return (fetching_uid, object_id, 'OBJ_THING_FEED')
+        return ('None', object_id, 'OBJ_THING_FEED')
 
 class CacheSystem(object):
     def fetch_keys(self, keys):
@@ -405,8 +405,8 @@ class DBCache(CacheSystem):
         if db_objects_to_put:
             try:
                 db.put(db_objects_to_put)
-            except apiproxy_errors.CapabilityDisabledError:
-                pass
+            except apiproxy_errors.CapabilityDisabledError as e:
+                logging.warning('CapabilityDisabledError: %s', e)
 
     def invalidate_keys(self, keys):
         cache_keys = [self.key_to_cache_key(key) for key in keys]
@@ -493,7 +493,7 @@ class FBAPI(CacheSystem):
         object_keys_to_rpcs = {}
         for object_key in object_keys_to_lookup:
             cls, oid = break_key(object_key)
-            parts_to_urls = cls.track_lookup()
+            cls.track_lookup()
             parts_to_urls = cls.get_lookups(oid)
             batch_list = [dict(method='GET', name=part_key, relative_url=url, omit_response_on_success=False) for (part_key, url) in parts_to_urls]
             rpc, token = self._create_rpc_for_batch(batch_list, cls.use_access_token)
