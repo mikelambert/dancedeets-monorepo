@@ -73,6 +73,9 @@ def discover_events_from_sources(fbl, sources):
     # don't scrape sources that prove useless and give mostly garbage events
     #sources = [x for x in sources if x.fraction_potential_are_real() > 0.05]
 
+    if fbl.allow_cache:
+        logging.error('discover_events_from_sources unexpectedly called with a disabled cache!')
+
     logging.info("Looking up sources: %s", [x.graph_id for x in sources])
     fbl.request_multi(fb_api.LookupThingFeed, [x.graph_id for x in sources])
     fbl.batch_fetch()

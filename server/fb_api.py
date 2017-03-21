@@ -686,7 +686,6 @@ class FBLookup(object):
     def _lookup(self):
         keys = self._keys_to_fetch
         all_fetched_objects = {}
-        updated_objects = {}
         if self.debug:
             logging.info("DEBUG: allow_cache is %s", self.allow_cache)
         if self.allow_cache:
