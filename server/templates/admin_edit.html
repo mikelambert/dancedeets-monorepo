@@ -138,7 +138,7 @@ Edit Event
 			<p>
 			{% if event %}
 				{% if creating_user %}
-					Submitted by <a href="{{ creating_user.profile.link }}">{{ creating_user.profile.name }}</a>.<br>
+					Submitted by <a href="https://www.facebook.com/{{ creating_user.profile.id }}">{{ creating_user.profile.name }}</a>.<br>
 				{% endif %}
 				<button type="submit" class="btn btn-primary">Edit Event</button>
 				<button type="submit" class="btn btn-danger" name="delete" value="yes">Delete Event</button>
