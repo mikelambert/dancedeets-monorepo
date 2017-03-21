@@ -346,7 +346,6 @@ class Memcache(CacheSystem):
                 cache_key = self.key_to_cache_key(k)
                 memcache_set[cache_key] = v
         memcache.set_multi(memcache_set, 2*3600)
-        return {}
 
     def invalidate_keys(self, keys):
         cache_keys = [self.key_to_cache_key(key) for key in keys]
@@ -377,7 +376,6 @@ class DBCache(CacheSystem):
         return object_map
 
     def save_objects(self, keys_to_objects):
-        updated_objects = {}
         cache_keys = [self.key_to_cache_key(object_key) for object_key, this_object in keys_to_objects.iteritems()]
         if cache_keys:
             existing_objects = FacebookCachedObject.get_by_key_name(cache_keys)
@@ -398,23 +396,16 @@ class DBCache(CacheSystem):
             if old_json_data != obj.json_data:
                 self.db_updates += 1
                 db_objects_to_put.append(obj)
-                #DEBUG
-                #logging.info("OLD %s", old_json_data)
-                #logging.info("NEW %s", obj.json_data)
-                # Store list of updated objects for later querying
-                updated_objects[object_key] = this_object
         if db_objects_to_put:
             try:
                 db.put(db_objects_to_put)
             except apiproxy_errors.CapabilityDisabledError:
                 pass
-        return updated_objects
 
     def invalidate_keys(self, keys):
         cache_keys = [self.key_to_cache_key(key) for key in keys]
-        results = FacebookCachedObject.get_by_key_name(cache_keys)
-        for result in results:
-            result.delete()
+        entity_keys = [db.Key.from_path(FacebookCachedObject, x) for x in cache_keys]
+        db.delete(entity_keys)
 
 
 class FBAPI(CacheSystem):
@@ -603,7 +594,6 @@ class FBLookup(object):
         self.fb_uid = fb_uid
         self.access_token = access_token
         self._fetched_objects = {}
-        self._db_updated_objects = set()
         self._object_keys_to_lookup_without_cache = set()
         self.allow_cache = True
         self.allow_memcache_write = True
@@ -620,7 +610,6 @@ class FBLookup(object):
     def __getstate__(self):
         d = self.__dict__.copy()
         d['_fetched_objects'] = {}
-        d['_db_updated_objects'] = set()
         return d
 
     def make_passthrough(self):
@@ -664,9 +653,8 @@ class FBLookup(object):
         return self.fetched_data_multi(cls, object_ids, allow_fail=allow_fail)
 
     def batch_fetch(self):
-        object_map, updated_object_map = self._lookup()
+        object_map = self._lookup()
         self._fetched_objects.update(object_map)
-        self._db_updated_objects = set(updated_object_map.keys())
         return object_map
 
     def invalidate(self, cls, object_id):
@@ -727,7 +715,7 @@ class FBLookup(object):
         if self.m and self.allow_memcache_write:
             self.m.save_objects(fetched_objects)
         if self.db:
-            updated_objects = self.db.save_objects(fetched_objects)
+            self.db.save_objects(fetched_objects)
         all_fetched_objects.update(fetched_objects)
         unknown_results = set(fetched_objects).difference(keys)
         if len(unknown_results):
@@ -745,7 +733,7 @@ class FBLookup(object):
         self._keys_to_fetch = set()
         self._object_keys_to_lookup_without_cache = set()
 
-        return all_fetched_objects, updated_objects
+        return all_fetched_objects
 
     @staticmethod
     def _cleanup_object_map(object_map):
