@@ -132,7 +132,6 @@ def is_good_event_by_attendees(fbl, fb_event, fb_event_attending_maybe=None, cla
                 (fraction >= 0.10 * mult and count >= 3) or
                 (fraction >= 0.05 * mult and count >= 4) or
                 (fraction >= 0.006 * mult and count >= 6) or # catches 6-or-more on events 1K-or-less
-                (fraction >= 0.001 * mult and count >= 10) or # catches 10-or-more on events 10K-or-less
                 False
             ):
                 logging.info('Attendee-Detection-Top-100: Attendee-based classifier match: %s', reason)

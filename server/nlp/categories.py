@@ -29,21 +29,29 @@ ANY_POP = Any(
     "pop", # dangerous one due to pop music
 )
 
-ANY_LOCK = Any(
+ANY_LOCK_STRICT = Any(
     keywords.STYLE_LOCK,
 #    "lock\w*",
     u'ロック',
+)
+
+ANY_LOCK = Any(
+    ANY_LOCK_STRICT,
     'funk\w*',
     'funky',
 )
 
 # No extras needed here
-ANY_WAACK = Any(
+ANY_WAACK_STRICT = Any(
     keywords.STYLE_WAACK,
     # we don't want "wake" to trigger, so let's enforce lengthß
     #"[uw]h?aa?c?c?k\w*",
     "[uw]h?aac?c?k\w*",
     "[uw]h?aa?cc?k\w*",
+)
+
+ANY_WAACK = Any(
+    ANY_WAACK_STRICT,
     "punk\w+",
     'disco',
 )
@@ -100,6 +108,23 @@ ANY_VOGUE = Any(
     keywords.VOGUE,
     keywords.EASY_VOGUE,
 )
+
+STRICTSTYLES = {
+    event_types.BREAK: ANY_BREAK,
+    event_types.POP: ANY_POP,
+    event_types.LOCK: ANY_LOCK_STRICT,
+    event_types.WAACK: ANY_WAACK_STRICT,
+    event_types.HOUSE: ANY_HOUSE,
+    event_types.HIPHOP: ANY_HIPHOP,
+    event_types.DANCEHALL: ANY_DANCEHALL,
+    event_types.KRUMP: ANY_KRUMP,
+    event_types.TURF: ANY_TURF,
+    event_types.LITEFEET: ANY_LITEFEET,
+    event_types.FLEX: ANY_FLEX,
+    event_types.BEBOP: ANY_BEBOP,
+    event_types.ALLSTYLE: ANY_ALLSTYLE,
+    event_types.VOGUE: ANY_VOGUE,
+}
 
 STYLES = {
     event_types.BREAK: ANY_BREAK,
@@ -243,6 +268,10 @@ def find_rules(event, styles):
 
 def find_styles(event):
     return find_rules(event, BROAD_STYLES)
+
+
+def find_styles_strict(event):
+    return find_rules(event, STYLES)
 
 
 def find_event_types(event):

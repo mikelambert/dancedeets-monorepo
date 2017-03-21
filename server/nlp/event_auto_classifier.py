@@ -24,7 +24,7 @@ def has_many_street_styles(classified_event):
     if title_wrong_style_matches:
         return False, 'wrong style in the title: %s' % title_wrong_style_matches
 
-    styles = categories.find_styles(classified_event)
+    styles = categories.find_styles_strict(classified_event)
     et = categories.find_event_types(classified_event)
     music_only = classified_event.processed_text.get_tokens(keywords.MUSIC_ONLY)
     # If they mention too many other styles of music, then our dance styles were probably just referring to music

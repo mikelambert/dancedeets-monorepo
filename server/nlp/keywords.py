@@ -826,15 +826,19 @@ CLASS = Name('CLASS', Any(
     'klasser?', # norwegian class
     'cours', 'clases?',
 
+    'formazione', # training italian
+    'formazioni', # training italian
+    u'トレーニング', # japanese training
+    'teach(?:ing?|ers?)',
+))
+
+# Used to be in classes, but have disabled these due to false positives
+CAMP = Name('CAMP', Any(
     'camp',
     'kamp',
     'kemp',
     u'캠프', # korean camp
     u'營', # chinese camp
-    'formazione', # training italian
-    'formazioni', # training italian
-    u'トレーニング', # japanese training
-    'teach(?:ing?|ers?)',
 ))
 
 AUDITION = Name('AUDITION', Any(
@@ -923,6 +927,7 @@ ROMANCE_LANGUAGE_CLASS = Name('ROMANCE_LANGUAGE_CLASS', Any(
 ))
 
 DANCE_WRONG_STYLE = Name('DANCE_WRONG_STYLE', Any(
+    'parkour',
     'styling', 'salsa', 'bachata', 'balboa', 'tango', 'latin', 'lindy', 'lindyhop', 'swing', 'wcs', 'samba',
     u'サルサ', # japanese salsa
     u'タンゴ', # japanese tango
