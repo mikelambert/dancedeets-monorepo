@@ -21,6 +21,7 @@ FREESTYLE_KEYWORD = GenFileBackedKeywords('FREESTYLE_KEYWORD', 'freestyle/keywor
 COMPETITION = GenFileBackedKeywords('COMPETITION', 'competitions')
 GOOD_DJ = GenFileBackedKeywords('GOOD_DJ', 'djs')
 
+BEBOP_CREW = GenFileBackedKeywords('GOOD_DJ', 'bebop/crews*')
 
 # 'crew' biases dance one way, 'company' biases it another
 EASY_DANCE = Name('EASY_DANCE', Any(

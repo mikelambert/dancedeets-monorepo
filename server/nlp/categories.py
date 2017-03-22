@@ -93,6 +93,7 @@ ANY_FLEX = Any(
 ANY_BEBOP = Any(
     keywords.STYLE_BEBOP,
     keywords.STYLE_BEBOP_WEAK,
+    keywords.BEBOP_CREW[grammar.STRONG_WEAK],
     'jazz\Wfusion',
 )
 
