@@ -20,9 +20,10 @@ cron:
 # They will periodically refresh the event data to check for the latest values.
 # Many times events get discovered in one of the earlier stages, but *too* early, when keywords/attendees don't trigger yet.
 # This mapreduces is the "cleanup" that run through and reload them and guarantee they get rechecked.
+# We could run it with expiry_days, but what's the point of re-running a classifier with cached data?
+# Instead, let's run it with no cache, reloading all fb event/attending data, to then re-classify.
 - description: auto-add events
-  url: /tools/auto_add_potential_events?user_id=dummy&past_event=0
-  #TODO: figure out how to do an expiry in the mapreduce params?
+  url: /tools/auto_add_potential_events?user_id=dummy&past_event=0&allow_cache=0
   schedule: every 12 hours
 #
 #
