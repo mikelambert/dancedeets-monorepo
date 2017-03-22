@@ -172,7 +172,8 @@ def make_potential_event_with_source(discovered):
 
     if new_source and discovered.source_id:
         s = thing_db.Source.get_by_key_name(discovered.source_id)
-        s.num_all_events = (s.num_all_events or 0) + 1
-        s.put()
+        if s:
+            s.num_all_events = (s.num_all_events or 0) + 1
+            s.put()
     return potential_event
 
