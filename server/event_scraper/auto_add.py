@@ -110,13 +110,8 @@ def is_good_event_by_attendees(fbl, fb_event, fb_event_attending_maybe=None, cla
             reason = 'Event %s has %s ids, intersection is %s ids (%.1f%%)' % (event_id, len(event_attendee_ids), count, 100.0 * fraction)
             logging.info('%s Attendee-Detection-Top-20: %s', style_name, reason)
             results += ['%s Top20: %s (%.1f%%)' % (style_name, count, 100.0 * fraction)]
-            # There's more randomness in the individual styles list of dancers....so let's raise the threshold a bit
-            if style == None:
-                min_count = 2
-            else:
-                min_count = 3
             if (
-                (fraction >= 0.05 * mult and count >= min_count) or
+                (fraction >= 0.05 * mult and count >= 3) or
                 (fraction >= 0.006 * mult and count >= 4) or # catches 4-or-more on events 666-or-less
                 False
             ):

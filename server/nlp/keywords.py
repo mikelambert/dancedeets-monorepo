@@ -119,7 +119,6 @@ BAD_CLUB = Name('BAD_CLUB', Any(
     'belvedere',
     'ciroc',
     'ital zion crew', # accidentally added one of their private events once.
-    'johnny soultrain', # some artist in SF who is named 'soultrain'
 ))
 
 CYPHER = Name('CYPHER', Any(
@@ -543,7 +542,6 @@ POP_MUSIC = Any(*['%s\W+pop' for x in
 PREPROCESS_REMOVAL = Name('PREPROCESS_REMOVAL', Any(
     # positive
     'tap water', # for theo and dominque's jam
-
     'house of movement', # not a vogue keyword!
 
     # negative
@@ -566,6 +564,8 @@ PREPROCESS_REMOVAL = Name('PREPROCESS_REMOVAL', Any(
     'pearl popping',
     'pony popping',
     'eye-poppin\w+',
+    'spinning popping', # event 1784253371902736 and potentially others
+    'pop\W*culture',
     'poppin.?\W?box',
     POP_MUSIC,
 
@@ -579,10 +579,12 @@ PREPROCESS_REMOVAL = Name('PREPROCESS_REMOVAL', Any(
     'lock\W?down',
     'blade\W?lock',
     '(?:through|thru)\W+the\W+lock',
+    'lock\W*city\w+', # event 1886535754903769 and source 311775542225221
 
     'whack music',
     'wack music',
 
+    'at battle house', # To get rid of most events from 1753270238323171
     'wave\W?house', # venue in san diego
     'full house',
     'open house',
@@ -596,6 +598,7 @@ PREPROCESS_REMOVAL = Name('PREPROCESS_REMOVAL', Any(
 
     'latin street dance',
     'marvellous dance crew',
+    'johnny soultrain', # some artist in SF who is named 'soultrain'
 
     '1st class',
     'first class',
@@ -632,6 +635,8 @@ PREPROCESS_REMOVAL = Name('PREPROCESS_REMOVAL', Any(
     'juste debout school',
     'baile funk',
     'cherry popp\w+',
+
+    'champs\W+sur', # french city champs-sur-marne is not a championship event
 ))
 
 # battle freestyle ?
@@ -928,7 +933,7 @@ ROMANCE_LANGUAGE_CLASS = Name('ROMANCE_LANGUAGE_CLASS', Any(
 
 DANCE_WRONG_STYLE = Name('DANCE_WRONG_STYLE', Any(
     'parkour',
-    'styling', 'salsa', 'bachata', 'balboa', 'tango', 'latin', 'lindy', 'lindyhop', 'swing', 'wcs', 'samba',
+    'styling', 'salsa', 'bachata', 'balboa', 'tango', 'latin', 'lindy', 'lindyhop\w*', 'swing', 'wcs', 'samba',
     u'サルサ', # japanese salsa
     u'タンゴ', # japanese tango
     u'リンディ', # japanese lindy

@@ -55,7 +55,7 @@ def has_list_of_good_classes(classified_event):
     time_with_minutes = r'\b[012]?\d[:.,h]?(?:[0-5][05])(?:am|pm)?\b'
     time_to_time = r'%s ?(?:to|do|до|til|till|alle|a|-|[^\w,.]) ?%s' % (time, time)
 
-    text = classified_event.search_text
+    text = classified_event.final_search_text
     club_only_matches = classified_event.processed_text.get_tokens(keywords.CLUB_ONLY)
     if len(club_only_matches) > 2:
         return False, 'too many club keywords: %s' % club_only_matches

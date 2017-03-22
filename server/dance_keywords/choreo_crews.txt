@@ -111,7 +111,6 @@ expressive doubt
 fambiz
 family bizness
 fanny pak
-flash mob
 flow dance,0
 flowethics
 fo\Wreal
@@ -120,7 +119,6 @@ foota?\W+thrillaz # ignore 5 at front due to backtracking
 for the cause,0
 freakin twistrz
 freshh
-ftc,0
 funkanometry
 funkdation
 funks
