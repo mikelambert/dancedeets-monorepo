@@ -11,22 +11,29 @@ from . import potential_events
 from . import thing_scraper
 
 
+# Given that we get around 50K events in our MR (see below),
+# let's do 1000 shards, for roughly 50-events-per.
+# Should allow for much better CPU/network/etc usage and run faster
+NUM_SHARDS = 1000
+def _shard_for(event_id):
+    hash(event_id) % NUM_SHARDS
+
 def scrape_sources_for_events(sources):
     fbl = fb_mapreduce.get_fblookup()
     fbl.allow_cache = False
     discovered_list = thing_scraper.discover_events_from_sources(fbl, sources)
     for x in discovered_list:
-        state = (x.source_id, x.source_field, x.extra_source_id)
-        yield (x.event_id, json.dumps(state))
+        state = (x.event_id, x.source_id, x.source_field, x.extra_source_id)
+        yield (_shard_for(x.event_id), json.dumps(state))
 
 
 def process_events(event_id, via_sources):
     fbl = fb_mapreduce.get_fblookup()
     fbl.allow_cache = True
     discovered_list = []
-    logging.info('Running process_events on event %s with %s sources', event_id, len(via_sources))
+    logging.info('Running process_events with %s event-sources', len(via_sources))
     for data in via_sources:
-        source_id, source_field, extra_source_id = json.loads(data)
+        event_id, source_id, source_field, extra_source_id = json.loads(data)
         discovered = potential_events.DiscoveredEvent(event_id, None, source_field, extra_source_id)
         discovered.source = None  # TODO: This will come back to bite us I'm sure :(
         discovered.source_id = source_id
