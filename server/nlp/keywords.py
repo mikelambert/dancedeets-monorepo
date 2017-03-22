@@ -9,17 +9,17 @@ from .grammar import Name
 def GenFileBackedKeywords(name, filename):
     return [Name(name, grammar.FileBackedKeyword(filename, strength=i)) for i in [grammar.STRONG, grammar.STRONG_WEAK]]
 
-BBOY_CREW = GenFileBackedKeywords('BBOY_CREW', 'bboy_crews')
-BBOY_DANCER = GenFileBackedKeywords('BBOY_DANCER', 'bboys')
-CHOREO_CREW = GenFileBackedKeywords('CHOREO_CREW', 'choreo_crews')
-CHOREO_DANCER = GenFileBackedKeywords('CHOREO_DANCER', 'choreo_dancers')
-FREESTYLE_CREW = GenFileBackedKeywords('FREESTYLE_CREW', 'freestyle_crews')
-FREESTYLE_DANCER = GenFileBackedKeywords('FREESTYLE_DANCER', 'freestyle_dancers')
+BBOY_CREW = GenFileBackedKeywords('BBOY_WORD', 'break/crew*')
+BBOY_DANCER = GenFileBackedKeywords('BBOY_DANCER', 'break/dancers*')
+CHOREO_CREW = GenFileBackedKeywords('CHOREO_CREW', 'hiphop_choreo/crew*')
+CHOREO_DANCER = GenFileBackedKeywords('CHOREO_DANCER', 'hiphop_choreo/dancers*')
+FREESTYLE_CREW = GenFileBackedKeywords('FREESTYLE_CREW', 'freestyle/crew*')
+FREESTYLE_DANCER = GenFileBackedKeywords('FREESTYLE_DANCER', 'freestyle/dancers*')
 
-CHOREO_KEYWORD = GenFileBackedKeywords('CHOREO_KEYWORD', 'choreo_keywords')
-FREESTYLE_KEYWORD = GenFileBackedKeywords('FREESTYLE_KEYWORD', 'freestyle_keywords')
+CHOREO_KEYWORD = GenFileBackedKeywords('CHOREO_KEYWORD', 'choreo/keywords')
+FREESTYLE_KEYWORD = GenFileBackedKeywords('FREESTYLE_KEYWORD', 'freestyle/keywords')
 COMPETITION = GenFileBackedKeywords('COMPETITION', 'competitions')
-GOOD_DJ = GenFileBackedKeywords('GOOD_DJ', 'good_djs')
+GOOD_DJ = GenFileBackedKeywords('GOOD_DJ', 'djs')
 
 
 # 'crew' biases dance one way, 'company' biases it another
