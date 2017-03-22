@@ -21,8 +21,12 @@ mapreduce__CONTROLLER_PERIOD_SEC = 5
 mapreduce__SLICE_DURATION_SEC = 60
 
 # Ugh, we are running a super-long mapreduce for now. Let's avoid failures...eventually we'll reduce these.
+# How many times to re-attempt the data in this slice, before giving up and restarting the entire shard
 mapreduce_TASK_MAX_DATA_PROCESSING_ATTEMPTS = 1000
+# How many times to re-attempt this shard as a whole, before giving up and aborting the entire mapreduce
 mapreduce_SHARD_MAX_ATTEMPTS = 1000
+# How many times to re-attempt this task (outside of the data-processing attempts), before giving up and aborting the entire mapreudce
+mapreduce_TASK_MAX_ATTEMPTS = 1000
 
 # This is the max-timeout we wait before giving up.
 # Normally it'd check the logs-API to verify, but we run on managed VMs where that doesn't exist
