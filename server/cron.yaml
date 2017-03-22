@@ -19,13 +19,11 @@ cron:
 # These run through all our collected potential events and reload them, checking for what should be included.
 # They will periodically refresh the event data to check for the latest values.
 # Many times events get discovered in one of the earlier stages, but *too* early, when keywords/attendees don't trigger yet.
-# These mapreduces are the "cleanups" that run through and reload them and guarantee they get rechecked.
-- description: auto-add events
-  url: /tools/auto_add_potential_events?user_id=dummy&past_event=0&dancey_only=1
-  schedule: every 12 hours
+# This mapreduces is the "cleanup" that run through and reload them and guarantee they get rechecked.
 - description: auto-add events
   url: /tools/auto_add_potential_events?user_id=dummy&past_event=0
-  schedule: every 30 hours
+  #TODO: figure out how to do an expiry in the mapreduce params?
+  schedule: every 12 hours
 #
 #
 - description: reload user data
