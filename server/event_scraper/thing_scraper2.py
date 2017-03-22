@@ -45,7 +45,7 @@ def process_events(event_id, via_sources):
 class LoadPotentialEventsFromWallPostsHandler(base_servlet.BaseTaskFacebookRequestHandler):
     def get(self):
         min_potential_events = int(self.request.get('min_potential_events', '0'))
-        queue = self.request.get('queue', 'super-slow-queue')
+        queue = self.request.get('queue', 'slow-queue')
         mapreduce_scrape_sources_and_process_events(self.fbl, min_potential_events=min_potential_events, queue=queue)
 
 
@@ -77,4 +77,4 @@ def mapreduce_scrape_sources_and_process_events(fbl, min_potential_events, queue
         shards=16,
     )
 
-    pipeline.start(queue_name='super-slow-queue')
+    pipeline.start(queue_name='slow-queue')

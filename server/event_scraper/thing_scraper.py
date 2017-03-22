@@ -101,7 +101,7 @@ def scrape_events_from_source_ids(fbl, source_ids):
 
 map_scrape_events_from_sources = fb_mapreduce.mr_wrap(scrape_events_from_sources)
 
-def mapreduce_scrape_all_sources(fbl, min_potential_events=None, queue='super-slow-queue'):
+def mapreduce_scrape_all_sources(fbl, min_potential_events=None, queue='slow-queue'):
     # Do not do the min_potential_events>1 filter in the mapreduce filter,
     # or it will want to do a range-shard on that property. Instead, pass-it-down
     # and use it as an early-return in the per-Source processing.
