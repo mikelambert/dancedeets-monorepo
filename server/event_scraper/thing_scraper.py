@@ -146,12 +146,11 @@ def process_thing_feed(source, thing_feed):
         logging.error("No 'data' found in: %s", thing_feed['feed'])
         return []
 
-    # Go back in time 7 days...not too far back!
     # In case any of our MR's failed and updated the last_scrape_time prematurely,
     # we still want to check back and make sure we include them.
     # Setting a high-watermark means the map produces 50K (new) events instead of 500K (old+new) events.
     if source.last_scrape_time:
-        post_high_watermark = source.last_scrape_time - datetime.timedelta(days=7)
+        post_high_watermark = source.last_scrape_time - datetime.timedelta(days=2)
     else:
         post_high_watermark = datetime.datetime.min
 
