@@ -16,7 +16,7 @@ from . import thing_scraper
 # Should allow for much better CPU/network/etc usage and run faster
 NUM_SHARDS = 1000
 def _shard_for(event_id):
-    hash(event_id) % NUM_SHARDS
+    return hash(event_id) % NUM_SHARDS
 
 def scrape_sources_for_events(sources):
     fbl = fb_mapreduce.get_fblookup()
