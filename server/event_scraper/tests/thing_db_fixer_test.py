@@ -12,8 +12,8 @@ URL_111 = '/%s/111' % VERSION # ?fields=%s' % fields_str
 URL_222 = '/%s/222' % VERSION # ?fields=%s' % fields_str
 URL_111_FEED = '/%s/111/feed?%s' % (VERSION, urllib.urlencode(dict(fields='created_time,from,link,actions,message')))
 URL_222_FEED = '/%s/222/feed?%s' % (VERSION, urllib.urlencode(dict(fields='created_time,from,link,actions,message')))
-URL_111_EVENTS = '/%s/111/events' % VERSION
-URL_222_EVENTS = '/%s/222/events' % VERSION
+URL_111_EVENTS = '/%s/111/events%s' % (VERSION, urllib.urlencode(dict(fields='id,updated_time')))
+URL_222_EVENTS = '/%s/222/events%s' % (VERSION, urllib.urlencode(dict(fields='id,updated_time')))
 
 class TestThingDBFixer(unittest.TestCase):
 
