@@ -6,11 +6,23 @@ import site
 import sys
 
 """
-pip install 'git+https://github.com/apache/beam.git#egg=1.0&subdirectory=sdks/python' -t lib
-pip install googledatastore -t lib
+pip install 'git+https://github.com/apache/beam.git#egg=0.7.0-dev&subdirectory=sdks/python' -t lib
+pip install googledatastore google-apitools -t lib
 pip install google-cloud-datastore --user (cant use lib/)
 
 python -m popular_people --log=DEBUG
+
+OR FOR SERVER RUNS:
+
+wget https://github.com/apache/beam/archive/master.zip
+unzip master.zip
+cd beam-master/sdks/python/
+python setup.py sdist
+cd ../../..
+export SDK=beam-master/sdks/python/dist/apache-beam-0.7.0.dev0.tar.gz
+export BUCKET=gs://dancedeets-hrd.appspot.com
+python -m popular_people --log=DEBUG --project dancedeets-hrd job-name=popular-people --runner DataflowRunner --staging_location $BUCKET/staging --temp_location $BUCKET/temp --output $BUCKET/output --sdk_location $SDK --setup_file setup.py
+
 """
 
 # Hack to fix serialization issues
@@ -193,6 +205,8 @@ def ConvertFromEntity(entity):
     print entity
     return helpers.entity_to_protobuf(entity)
 
+run_locally = False
+
 def read_from_datastore(project, pipeline_options):
     """Creates a pipeline that reads entities from Cloud Datastore."""
     p = beam.Pipeline(options=pipeline_options)
@@ -200,7 +214,6 @@ def read_from_datastore(project, pipeline_options):
     client = datastore.Client()
     q = client.query(kind='DBEvent')
 
-    run_locally = True
     if run_locally:
         q.key_filter(client.key('DBEvent', '99'), '>')
         q.key_filter(client.key('DBEvent', 'A'), '<')
@@ -219,8 +232,9 @@ def read_from_datastore(project, pipeline_options):
         # And save it all back to the database
         | 'generate database record' >> beam.Map(BuildPeopleRanking, client)
         | 'convert from entity' >> beam.Map(ConvertFromEntity)
-        #| 'write to datastore' >> WriteToDatastore(client.project)
     )
+    if not run_locally:
+        p | 'write to datastore' >> WriteToDatastore(client.project)
 
     # Actually run the pipeline (all operations above are deferred).
     result = p.run()
