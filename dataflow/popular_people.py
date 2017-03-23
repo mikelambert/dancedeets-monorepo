@@ -107,19 +107,28 @@ def CountableEvent(db_event):
     else:
         namespace = 'FB'
     if namespace == 'FB' and db_event['creating_method'] != 'CM_AUTO_ATTENDEE':
-        fb_event = json.loads(db_event['fb_event'])
-        if not fb_event['empty']:
-            yield db_event, fb_event
+        try:
+            fb_event = json.loads(db_event['fb_event'])
+            if not fb_event['empty']:
+                yield db_event, fb_event
+        except TypeError:
+            logging.warning('Strange json data in dbevent: %s', db_event.key)
 
 def GetEventAndAttending((db_event, fb_event), client):
     key = client.key('FacebookCachedObject', '701004.%s.OBJ_EVENT_ATTENDING' % db_event.key.name)
     fb_event_attending_record = client.get(key)
-    if fb_event_attending_record and 'json_data' in fb_event_attending_record:
-        fb_event_attending = json.loads(fb_event_attending_record['json_data'])
-        if not fb_event_attending['empty']:
-            yield db_event, fb_event, fb_event_attending
+    if fb_event_attending_record:
+        if 'json_data' in fb_event_attending_record:
+            fb_event_attending = json.loads(fb_event_attending_record['json_data'])
 
-def CountPeople((db_event, fb_event, fb_event_attending)):
+            if 'attending' in fb_event_attending:
+                yield db_event, fb_event, fb_event_attending['attending'].get('data', [])
+            else:
+                logging.warning('Strange attending object: %s: %s', key, fb_event_attending)
+        else:
+            logging.warning('Strange attending record: %s: %s', key, fb_event_attending_record)
+
+def CountPeople((db_event, fb_event, attending)):
     # Count admins
     fb_info = fb_event['info']
     admins = fb_info.get('admins', {}).get('data')
@@ -139,11 +148,6 @@ def CountPeople((db_event, fb_event, fb_event_attending)):
     # We don't want to use the 'maybe' lists in computing who are the go-to people for each city/style,
     # because they're not actually committed to these events.
     # Those who have committed to going should be the relevant authorities.
-    try:
-        attending = fb_event_attending['attending']['data']
-    except KeyError:
-        logging.error('Error loading attending for event %s: %s', fb_info['id'], fb_event_attending)
-        return
 
     for attendee in attending:
         for y in track_person('ATTENDEE', db_event, attendee, admin_hash):
@@ -202,7 +206,6 @@ def BuildPeopleRanking((key, top_n_counts), client):
     return ranking
 
 def ConvertFromEntity(entity):
-    print entity
     return helpers.entity_to_protobuf(entity)
 
 run_locally = False
@@ -233,8 +236,8 @@ def read_from_datastore(project, pipeline_options):
         | 'generate database record' >> beam.Map(BuildPeopleRanking, client)
         | 'convert from entity' >> beam.Map(ConvertFromEntity)
     )
-    if not run_locally:
-        p | 'write to datastore' >> WriteToDatastore(client.project)
+    #if not run_locally:
+    #    p | 'write to datastore' >> WriteToDatastore(client.project)
 
     # Actually run the pipeline (all operations above are deferred).
     result = p.run()
