@@ -78,27 +78,32 @@ def styles():
 #TODO: Use Constants
 STYLES_SET = set(x.index_name for x in styles())
 
-client = datastore.Client()
-
 def ConvertToEntity(element):
     return helpers.entity_from_protobuf(element)
 
 def CountableEvent(event):
     # Don't use auto-events to train...could have a runaway AI system there!
     #TODO: Use Constants
-    if event['namespace'] == 'FB' and event['creating_method'] != 'CM_AUTO_ATTENDEE':
+    if ':' in event.key.name:
+        namespace = event.key.name.split(':')[0]
+    else:
+        namespace = 'FB'
+    if namespace == 'FB' and event['creating_method'] != 'CM_AUTO_ATTENDEE':
         yield event
 
 def GetEventAndAttending(event):
-    print dir(event)
-    key = client.key('FacebookCachedObject', 'None.%s.OBJ_EVENT_ATTENDING' % event.key)
-    fb_event_attending = client.get(key)
-    if not fb_event_attending['empty']:
-        yield event, fb_event_attending
+    client = datastore.Client()
+    key = client.key('FacebookCachedObject', '701004.%s.OBJ_EVENT_ATTENDING' % event.key.name)
+    fb_event_attending_record = client.get(key)
+    if 'json_data' in fb_event_attending_record:
+        fb_event_attending = json.loads(fb_event_attending_record['json_data'])
+        if not fb_event_attending['empty']:
+            yield event, fb_event_attending
 
-def CountPeople(db_event, fb_event_attending):
+def CountPeople((db_event, fb_event_attending)):
     # Count admins
-    fb_info = db_event['fb_event']['info']
+    fb_event = json.loads(db_event['fb_event'])
+    fb_info = fb_event['info']
     admins = fb_info.get('admins', {}).get('data')
     if not admins:
         if fb_info.get('owner'):
@@ -139,14 +144,14 @@ def track_person(person_type, db_event, person, count_once_per=None):
     }
     # Not using db_event.nearby_city_names since it's way too slow.
     # And we just search-many-cities on lookup time.
-    for city in [db_event.city_name]:
+    for city in [db_event['city_name']]:
         key = {
             'person_type': person_type,
             'category': '',
             'city': city,
         }
         yield (key, people_info)
-        for category in STYLES_SET.intersection(db_event.auto_categories):
+        for category in STYLES_SET.intersection(db_event['auto_categories']):
             key = {
                 'person_type': person_type,
                 'category': category,
@@ -154,7 +159,7 @@ def track_person(person_type, db_event, person, count_once_per=None):
             }
             yield (key, people_info)
 
-def CountPeopleInfos(key, people_infos):
+def CountPeopleInfos((key, people_infos)):
     print key, people_infos
     return
     counts = {}
@@ -173,11 +178,12 @@ def read_from_datastore(project, pipeline_options):
     """Creates a pipeline that reads entities from Cloud Datastore."""
     p = beam.Pipeline(options=pipeline_options)
     # Create a query to read entities from datastore.
+    client = datastore.Client()
     q = client.query(kind='DBEvent')
 
     run_locally = True
     if run_locally:
-        q.key_filter(client.key('DBEvent', '999'), '>')
+        q.key_filter(client.key('DBEvent', '9999'), '>')
         q.key_filter(client.key('DBEvent', 'A'), '<')
 
     # Read entities from Cloud Datastore into a PCollection.
@@ -195,7 +201,7 @@ def read_from_datastore(project, pipeline_options):
 
     counted_admin_attendees = (admin_attendees
         | 'group words' >> beam.GroupByKey()
-        | 'count words' >> beam.Map(CountPeopleInfos)
+        | 'count words' >> beam.FlatMap(CountPeopleInfos)
     )
 
     # Write the output using a "Write" transform that has side effects.
