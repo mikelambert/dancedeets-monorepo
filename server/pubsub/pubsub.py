@@ -80,6 +80,8 @@ def eventually_publish_data(data, should_post, token_nickname=None):
 def _should_post_event(auth_token, db_event):
     if auth_token.application == APP_FACEBOOK_WEEKLY:
         return False
+    if auth_token.application == APP_TWITTER_DEV:
+        return False
     geocode = db_event.get_geocode()
     if not geocode:
         # Don't post events without a location. It's too confusing...
@@ -231,6 +233,8 @@ def _post_event(auth_token, db_event):
                 logging.error("Facebook WallPost Error: %r", result)
             else:
                 logging.info("Facebook result was %r", result)
+    elif auth_token.application == APP_TWITTER_DEV:
+        pass
     else:
         logging.error("Unknown application for OAuthToken: %s", auth_token.application)
 
@@ -485,6 +489,7 @@ access_token_url = 'https://twitter.com/oauth/access_token'
 authorize_url = 'https://twitter.com/oauth/authorize'
 
 APP_TWITTER = 'APP_TWITTER'
+APP_TWITTER_DEV = 'APP_TWITTER_DEV' # disabled twitter dev
 APP_FACEBOOK = 'APP_FACEBOOK'  # a butchering of OAuthToken!
 APP_FACEBOOK_WALL = 'APP_FACEBOOK_WALL'  # a further butchering!
 APP_FACEBOOK_WEEKLY = 'APP_FACEBOOK_WEEKLY' # weekly posts!
