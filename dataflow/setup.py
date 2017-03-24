@@ -102,9 +102,9 @@ REQUIRED_PACKAGES = [
 
 
 setuptools.setup(
-    name='juliaset',
+    name='dancedeets-popular-people',
     version='0.0.1',
-    description='Julia set workflow package.',
+    description='popular-people workflow package.',
     install_requires=REQUIRED_PACKAGES,
     packages=setuptools.find_packages(),
     cmdclass={
