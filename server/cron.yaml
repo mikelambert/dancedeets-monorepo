@@ -54,7 +54,8 @@ cron:
 #- description: reload past facebook event data
 #  url: /tasks/reload_events?user_id=dummy&allow_cache=0&time_period=FUTURE
 #  schedule: every monday 2:00
-- description: compute popular organizers/dancers
-  url: /tools/popular_people?user_id=701004
-  # twice a month
-  schedule: 1,15 of month 09:00
+# Disabled in favor of the Dataflow pipeline, that will need to be called on this schedule
+#- description: compute popular organizers/dancers
+#  url: /tools/popular_people?user_id=701004
+#  # twice a month
+#  schedule: 1,15 of month 09:00
