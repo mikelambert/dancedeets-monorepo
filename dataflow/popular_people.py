@@ -21,7 +21,8 @@ python setup.py sdist
 cd ../../..
 export SDK=beam-master/sdks/python/dist/apache-beam-0.7.0.dev0.tar.gz
 export BUCKET=gs://dancedeets-hrd.appspot.com
-python -m popular_people --log=DEBUG --project dancedeets-hrd job-name=popular-people --runner DataflowRunner --staging_location $BUCKET/staging --temp_location $BUCKET/temp --output $BUCKET/output --sdk_location $SDK --setup_file setup.py
+python -m popular_people --log=DEBUG --project dancedeets-hrd job-name=popular-people --runner DataflowRunner --staging_location $BUCKET/staging --temp_location $BUCKET/temp --output $BUCKET/output --sdk_location $SDK --setup_file setup.py --num_workers=20
+# TODO: up the number of splits, and up the number of workers? finish this in <5mins?
 
 """
 
@@ -120,7 +121,8 @@ def GetEventAndAttending((db_event, fb_event), client):
     if fb_event_attending_record:
         if 'json_data' in fb_event_attending_record:
             fb_event_attending = json.loads(fb_event_attending_record['json_data'])
-
+            if fb_event_attending.get('empty'):
+                return
             if 'attending' in fb_event_attending:
                 yield db_event, fb_event, fb_event_attending['attending'].get('data', [])
             else:
@@ -197,13 +199,16 @@ def CountPeopleInfos((key, people_infos)):
 def BuildPeopleRanking((key, top_n_counts), client):
     key_name = '%s: %s: %s' % (key['person_type'], key['city'], key['category'])
     db_key = client.key('PeopleRanking', key_name)
-    ranking = datastore.Entity(key=db_key)
+    ranking = datastore.Entity(key=db_key, exclude_from_indexes=['top_people_json'])
 
     ranking['person_type'] = key['person_type']
     ranking['city'] = key['city']
     ranking['category'] = key['category']
-    ranking['top_people_json'] = top_n_counts
+    ranking['top_people_json'] = json.dumps(top_n_counts)
     return ranking
+
+def WriteToDatastoreSingle(entity, client):
+    client.put(entity)
 
 def ConvertFromEntity(entity):
     return helpers.entity_to_protobuf(entity)
@@ -222,7 +227,7 @@ def read_from_datastore(project, pipeline_options):
         q.key_filter(client.key('DBEvent', 'A'), '<')
 
     # Set up our map/reduce pipeline
-    (p
+    output = (p
         | 'read from datastore' >> ReadFromDatastore(project, query._pb_from_query(q))
         | 'convert to entity' >> beam.Map(ConvertToEntity)
         # Find the events we want to count, and expand all the admins/attendees
@@ -234,10 +239,15 @@ def read_from_datastore(project, pipeline_options):
         | 'count by city-category' >> beam.Map(CountPeopleInfos)
         # And save it all back to the database
         | 'generate database record' >> beam.Map(BuildPeopleRanking, client)
-        | 'convert from entity' >> beam.Map(ConvertFromEntity)
     )
-    #if not run_locally:
-    #    p | 'write to datastore' >> WriteToDatastore(client.project)
+    if not run_locally:
+        output | 'write to datastore (unbatched)' >> beam.Map(WriteToDatastoreSingle, client)
+        """
+        (output
+            | 'convert from entity' >> beam.Map(ConvertFromEntity)
+            | 'write to datastore' >> WriteToDatastore(client.project)
+        )
+        """
 
     # Actually run the pipeline (all operations above are deferred).
     result = p.run()
