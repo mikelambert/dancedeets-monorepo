@@ -244,6 +244,9 @@ def reduce_popular_people(key, people_json):
     yield operation.db.Put(ranking)
 
 def mr_popular_people_per_city(fbl, queue):
+    # Broken :(
+    # due to https://groups.google.com/forum/#!topic/appengine-ndb-discuss/0oqlM3Zt4ZU
+    # and https://groups.google.com/forum/#!topic/google-appengine/t2AZkfmoUlk
     mapper_params = {
         'entity_kind': 'events.eventdata.DBEvent',
         'handle_batch_size': BATCH_SIZE,

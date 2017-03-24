@@ -372,6 +372,7 @@ def facebook_post(auth_token, db_event):
     if admins:
         admin_ids = [x['id'] for x in admins]
         page_admin_ids = fb_api_util.filter_by_type(fbl, admin_ids, 'page')
+        # TODO: Can I @mention the people here too, like I do as a human? Or does it only work with pages?
         host = text.human_list('@[%s]' % x for x in page_admin_ids)
 
     # Tag it if we can
