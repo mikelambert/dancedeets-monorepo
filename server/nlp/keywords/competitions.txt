@@ -148,7 +148,7 @@ choreographer\W?s carnival
 soul summit
 motown party
 funk off
-soul\W?train
+# soul\W?train --- too abused..
 seaport soul series
 # support stage if french words in the page: l' le et un
 # street battle
