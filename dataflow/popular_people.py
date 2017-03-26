@@ -21,13 +21,9 @@ python setup.py sdist
 cd ../../..
 export SDK=beam-master/sdks/python/dist/apache-beam-0.7.0.dev0.tar.gz
 export BUCKET=gs://dancedeets-hrd.appspot.com
-python -m popular_people --log=DEBUG --project dancedeets-hrd job-name=popular-people --runner DataflowRunner --staging_location $BUCKET/staging --temp_location $BUCKET/temp --output $BUCKET/output --sdk_location $SDK --setup_file setup.py --num_workers=20
-# TODO: up the number of splits, and up the number of workers? finish this in <5mins?
+python -m popular_people --log=DEBUG --project dancedeets-hrd job-name=popular-people --runner DataflowRunner --staging_location $BUCKET/staging --temp_location $BUCKET/temp --output $BUCKET/output --sdk_location $SDK --setup_file ./setup.py --num_workers=20
 
 """
-
-# Hack to fix serialization issues
-os.environ['GOOGLE_CLOUD_DISABLE_GRPC'] = 'true'
 
 site.addsitedir('lib')
 
@@ -115,20 +111,25 @@ def CountableEvent(db_event):
         except TypeError:
             logging.warning('Strange json data in dbevent: %s', db_event.key)
 
-def GetEventAndAttending((db_event, fb_event), client):
-    key = client.key('FacebookCachedObject', '701004.%s.OBJ_EVENT_ATTENDING' % db_event.key.name)
-    fb_event_attending_record = client.get(key)
-    if fb_event_attending_record:
-        if 'json_data' in fb_event_attending_record:
-            fb_event_attending = json.loads(fb_event_attending_record['json_data'])
-            if fb_event_attending.get('empty'):
-                return
-            if 'attending' in fb_event_attending:
-                yield db_event, fb_event, fb_event_attending['attending'].get('data', [])
+class GetEventAndAttending(beam.DoFn):
+
+    def start_bundle(self):
+        self.client = datastore.Client()
+
+    def process(self, (db_event, fb_event)):
+        key = self.client.key('FacebookCachedObject', '701004.%s.OBJ_EVENT_ATTENDING' % db_event.key.name)
+        fb_event_attending_record = self.client.get(key)
+        if fb_event_attending_record:
+            if 'json_data' in fb_event_attending_record:
+                fb_event_attending = json.loads(fb_event_attending_record['json_data'])
+                if fb_event_attending.get('empty'):
+                    return
+                if 'attending' in fb_event_attending:
+                    yield db_event, fb_event, fb_event_attending['attending'].get('data', [])
+                else:
+                    logging.warning('Strange attending object: %s: %s', key, fb_event_attending)
             else:
-                logging.warning('Strange attending object: %s: %s', key, fb_event_attending)
-        else:
-            logging.warning('Strange attending record: %s: %s', key, fb_event_attending_record)
+                logging.warning('Strange attending record: %s: %s', key, fb_event_attending_record)
 
 def CountPeople((db_event, fb_event, attending)):
     # Count admins
@@ -196,19 +197,29 @@ def CountPeopleInfos((key, people_infos)):
     sorted_counts = sorted(count_list, key=lambda kv: -kv[1])
     return (key, sorted_counts[:TOP_N])
 
-def BuildPeopleRanking((key, top_n_counts), client):
-    key_name = '%s: %s: %s' % (key['person_type'], key['city'], key['category'])
-    db_key = client.key('PeopleRanking', key_name)
-    ranking = datastore.Entity(key=db_key, exclude_from_indexes=['top_people_json'])
+class BuildPeopleRanking(beam.DoFn):
 
-    ranking['person_type'] = key['person_type']
-    ranking['city'] = key['city']
-    ranking['category'] = key['category']
-    ranking['top_people_json'] = json.dumps(top_n_counts)
-    return ranking
+    def start_bundle(self):
+        self.client = datastore.Client()
 
-def WriteToDatastoreSingle(entity, client):
-    client.put(entity)
+    def process(self, (key, top_n_counts)):
+        key_name = '%s: %s: %s' % (key['person_type'], key['city'], key['category'])
+        db_key = self.client.key('PeopleRanking', key_name)
+        ranking = datastore.Entity(key=db_key, exclude_from_indexes=['top_people_json'])
+
+        ranking['person_type'] = key['person_type']
+        ranking['city'] = key['city']
+        ranking['category'] = key['category']
+        ranking['top_people_json'] = json.dumps(top_n_counts)
+        yield ranking
+
+class WriteToDatastoreSingle(beam.DoFn):
+
+    def start_bundle(self):
+        self.client = datastore.Client()
+
+    def process(self, entity):
+        self.client.put(entity)
 
 def ConvertFromEntity(entity):
     return helpers.entity_to_protobuf(entity)
@@ -232,16 +243,16 @@ def read_from_datastore(project, pipeline_options):
         | 'convert to entity' >> beam.Map(ConvertToEntity)
         # Find the events we want to count, and expand all the admins/attendees
         | 'filter events' >> beam.FlatMap(CountableEvent)
-        | 'load fb attending' >> beam.FlatMap(GetEventAndAttending, client)
+        | 'load fb attending' >> beam.ParDo(GetEventAndAttending())
         | 'count people' >> beam.FlatMap(CountPeople)
         # Group them and count most popular people per city-category
         | 'group by city-category' >> beam.GroupByKey()
         | 'count by city-category' >> beam.Map(CountPeopleInfos)
         # And save it all back to the database
-        | 'generate database record' >> beam.Map(BuildPeopleRanking, client)
+        | 'generate database record' >> beam.ParDo(BuildPeopleRanking())
     )
     if not run_locally:
-        output | 'write to datastore (unbatched)' >> beam.Map(WriteToDatastoreSingle, client)
+        output | 'write to datastore (unbatched)' >> beam.ParDo(WriteToDatastoreSingle())
         """
         (output
             | 'convert from entity' >> beam.Map(ConvertFromEntity)
