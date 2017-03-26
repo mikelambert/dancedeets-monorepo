@@ -410,7 +410,7 @@ class DBCache(CacheSystem):
 
     def invalidate_keys(self, keys):
         cache_keys = [self.key_to_cache_key(key) for key in keys]
-        entity_keys = [db.Key.from_path(FacebookCachedObject, x) for x in cache_keys]
+        entity_keys = [db.Key.from_path('FacebookCachedObject', x) for x in cache_keys]
         db.delete(entity_keys)
 
 
