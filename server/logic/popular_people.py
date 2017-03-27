@@ -1,3 +1,4 @@
+import json
 import logging
 
 from google.appengine.ext import ndb
@@ -15,7 +16,6 @@ class PeopleRanking(ndb.Model):
     person_type = ndb.StringProperty()
     city = ndb.StringProperty()
     category = ndb.StringProperty()
-    top_people = ndb.StringProperty(repeated=True, indexed=False)
     top_people_json = ndb.JsonProperty()
     # top_people_json is [['id: name', count], ...]
 
@@ -56,9 +56,7 @@ def load_from_dev(city_names, attendees_only):
             ranking.person_type = result['person_type']
             ranking.city = result['city']
             ranking.category = result['category']
-            #TODO: remove bwcompat code
-            ranking.top_people = result.get('top_people')
-            ranking.top_people_json = result.get('top_people_json')
+            ranking.top_people_json = json.loads(result.get('top_people_json', '[]'))
             rankings.append(ranking)
     return rankings
 
@@ -96,20 +94,11 @@ def combine_rankings(rankings):
         groupings.setdefault(key, {})
         # Use this version below, and avoid the lookups
         people = groupings[key]
-        if r.top_people_json:
-            for person_name, count in r.top_people_json:
-                if person_name in people:
-                    people[person_name] += count
-                else:
-                    people[person_name] = count
-        else:
-            #TODO: remove bwcompat code
-            for person_triplet in r.top_people:
-                person_name, new_count = person_triplet.rsplit(':', 1)
-                if person_name in people:
-                    people[person_name] += int(new_count)
-                else:
-                    people[person_name] = int(new_count)
+        for person_name, count in r.top_people_json:
+            if person_name in people:
+                people[person_name] += count
+            else:
+                people[person_name] = count
     for key in groupings:
         person_type, category = key
         if person_type == 'ATTENDEE':
