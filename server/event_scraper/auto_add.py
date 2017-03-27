@@ -17,9 +17,7 @@ from . import potential_events
 
 
 def is_good_event_by_text(fb_event, classified_event):
-    auto_add_result = event_auto_classifier.is_auto_add_event(classified_event)
-    return classified_event, auto_add_result
-
+    return event_auto_classifier.is_auto_add_event(classified_event)[0]
 
 def find_overlap(event_attendee_ids, top_dance_attendee_ids):
     if not len(event_attendee_ids):
@@ -111,7 +109,8 @@ def is_good_event_by_attendees(fbl, fb_event, fb_event_attending_maybe=None, cla
             overlap_ids, count, fraction = find_overlap(event_attendee_ids, dance_attendee_ids[:20])
             reason = 'Event %s has %s ids, intersection is %s ids (%.1f%%)' % (event_id, len(event_attendee_ids), count, 100.0 * fraction)
             logging.info('%s Attendee-Detection-Top-20: %s', style_name, reason)
-            results += ['%s Top20: %s (%.1f%%)' % (style_name, count, 100.0 * fraction)]
+            if count > 0:
+                results += ['%s Top20: %s (%.1f%%)' % (style_name, count, 100.0 * fraction)]
             if (
                 (fraction >= 0.05 * mult and count >= 3) or
                 (fraction >= 0.006 * mult and count >= 4) or # catches 4-or-more on events 666-or-less
@@ -124,7 +123,8 @@ def is_good_event_by_attendees(fbl, fb_event, fb_event_attending_maybe=None, cla
             overlap_ids, count, fraction = find_overlap(event_attendee_ids, dance_attendee_ids[:100])
             reason = 'Event %s has %s ids, intersection is %s ids (%.1f%%)' % (event_id, len(event_attendee_ids), count, 100.0 * fraction)
             logging.info('%s Attendee-Detection-Top-100: %s', style_name, reason)
-            results += ['%s Top100: %s (%.1f%%)' % (style_name, count, 100.0 * fraction)]
+            if count > 0:
+                results += ['%s Top100: %s (%.1f%%)' % (style_name, count, 100.0 * fraction)]
             if (
                 (fraction >= 0.10 * mult and count >= 3) or
                 (fraction >= 0.05 * mult and count >= 4) or
@@ -179,11 +179,11 @@ def classify_events(fbl, pe_list, fb_list):
         event_id = pe.fb_event_id
         logging.info('Is Good Event By Text: %s: Checking...', event_id)
         classified_event = event_classifier.get_classified_event(fb_event)
-        classified_event, auto_add_result = is_good_event_by_text(fb_event, classified_event)
-        logging.info('Is Good Event By Text: %s: %s', event_id, auto_add_result)
+        is_auto_add_event = is_good_event_by_text(fb_event, classified_event)
+        logging.info('Is Good Event By Text: %s: %s', event_id, is_auto_add_event)
         good_event = False
-        if auto_add_result and auto_add_result[0]:
-            good_event = auto_add_result[0]
+        if is_auto_add_event:
+            good_event = is_auto_add_event
             method = eventdata.CM_AUTO
         elif fb_event_attending_maybe:
             logging.info('Is Good Event By Attendees: %s: Checking...', event_id)

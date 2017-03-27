@@ -104,7 +104,7 @@ def combine_rankings(rankings):
     for key in groupings:
         person_type, category = key
         if person_type == 'ATTENDEE':
-            limit = 2
+            limit = 3
         elif person_type == 'ADMIN':
             limit = 2
         else:
