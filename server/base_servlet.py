@@ -7,6 +7,7 @@ import jinja2
 import json
 import hashlib
 import htmlmin
+import humanize
 import logging
 import random
 from react import render
@@ -744,7 +745,10 @@ class BaseRequestHandler(BareBaseRequestHandler):
         else:
             self.display['class_base_template'] = '_new_base.html'
 
-        self.display.update(rankings.retrieve_summary())
+        totals = rankings.retrieve_summary()
+        totals['total_events'] = humanize.intcomma(totals['total_events'])
+        totals['total_users'] = humanize.intcomma(totals['total_users'])
+        self.display.update(totals)
 
     def dispatch(self):
         if self.run_handler:
