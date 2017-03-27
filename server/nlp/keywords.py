@@ -183,6 +183,7 @@ AMBIGUOUS_DANCE_MUSIC = Name('AMBIGUOUS_DANCE_MUSIC', Any(
     STYLE_DANCEHALL_WEAK,
     STYLE_BEBOP_WEAK,
     'shuffle',
+    'afrobeat',
     'funk',
     'jerk',
     'k\W?pop',
@@ -332,6 +333,7 @@ STYLE_HIPHOP = Name('STYLE_HIPHOP', Any(
     u'뉴스타일 ?힙합', # korean new style hiphop
     'hip\W?hop\Wn(?:ew|u)\W?style',
     'girl\W?s\W?hip\W?hop',
+    'girly\W?hip\W?hop',
     'hip\W?hopp?er[sz]?',
     'video\W?funk',
     'street\W?jazz', 'street\W?funk',
@@ -368,6 +370,7 @@ STYLE_BEBOP = Name('STYLE_BEBOP', Any(
     u'재즈 ?록', # korean jazz rock
 ))
 legit_dance = [
+    'soulful dance',
     'street\W?jam',
     "jerk(?:ers?|in[g']?)",
     u'스트릿', # street korean
