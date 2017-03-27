@@ -88,6 +88,8 @@ def get_attendees_near(latlong):
 def combine_rankings(rankings):
     groupings = {}
     for r in rankings:
+        if not r.top_people_json:
+            continue
         #logging.info(r.key)
         key = (r.person_type, r.human_category)
         # Make sure we use setdefault....we can have key repeats due to rankings from different cities
@@ -102,7 +104,7 @@ def combine_rankings(rankings):
     for key in groupings:
         person_type, category = key
         if person_type == 'ATTENDEE':
-            limit = 3
+            limit = 2
         elif person_type == 'ADMIN':
             limit = 2
         else:

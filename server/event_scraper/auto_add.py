@@ -7,7 +7,7 @@ import fb_api
 from events import eventdata
 from events import event_locations
 from logic import popular_people
-from nlp import categories
+import event_types
 from nlp import event_auto_classifier
 from nlp import event_classifier
 from util import fb_mapreduce
@@ -88,10 +88,12 @@ def is_good_event_by_attendees(fbl, fb_event, fb_event_attending_maybe=None, cla
     if event_attendee_ids:
         # If it's a suspected dance event, then we'll fall-through and check the places API for the location data
         # This ensures that any suspected dance events will get proper dance-attendees, and be more likely to be found.
-        suspected_dance_event = classified_event.dance_event
+        suspected_dance_event = classified_event.dance_event or classified_event.found_dance_matches >= 2
         dance_style_attendees = get_location_style_attendees(fb_event, suspected_dance_event=suspected_dance_event)
         logging.info('Computing Styles for Event')
-        styles = categories.find_styles(fb_event)
+        # Don't care about which style this event is in...we may misclassify it due to poor keywords
+        # So instead let's check *all* the styles
+        styles = event_types.STYLES
 
         # Raise the threshold for regular un-dance-y events, for what it means to 'be a dance event'
         if suspected_dance_event:
@@ -127,6 +129,8 @@ def is_good_event_by_attendees(fbl, fb_event, fb_event_attending_maybe=None, cla
                 (fraction >= 0.10 * mult and count >= 3) or
                 (fraction >= 0.05 * mult and count >= 4) or
                 (fraction >= 0.006 * mult and count >= 6) or # catches 6-or-more on events 1K-or-less
+                # Is this a good idea? Would help with 370973376344784
+                # (fraction >= 0.002 * mult and count >= 12) or
                 False
             ):
                 logging.info('Attendee-Detection-Top-100: Attendee-based classifier match: %s', reason)

@@ -166,15 +166,18 @@ def mr_load_fb_events(fbl, display_event=False, load_attending=False, time_perio
     )
 
 def yield_maybe_delete_bad_event(fbl, db_event):
-    logging.info('MDBE: Check on event %s: %s', db_event.id, db_event.creating_method)
     if db_event.creating_method != eventdata.CM_AUTO_ATTENDEE:
         return
 
+    logging.info('MDBE: Check on event %s: %s', db_event.id, db_event.creating_method)
     from event_scraper import auto_add
     good_event = auto_add.is_good_event_by_attendees(fbl, db_event.fb_event)
     if not good_event:
         logging.info('MDBE: Oops, found accidentally added event %s: %s', db_event.fb_event_id, db_event.name)
         mr.increment('deleting-bad-event')
+        result = '%s: %s' % (db_event.fb_event_id, db_event.name)
+        yield result.encode('utf-8')
+        return
         search.delete_from_fulltext_search_index(db_event.fb_event_id)
         yield op.db.Delete(db_event)
         display_event = search.DisplayEvent.get_by_id(db_event.fb_event_id)
@@ -194,6 +197,11 @@ class DeleteBadAutoAddsHandler(base_servlet.EventOperationHandler):
             entity_kind='events.eventdata.DBEvent',
             filters=[('creating_method', '=', eventdata.CM_AUTO_ATTENDEE)],
             queue=queue,
+            output_writer_spec='mapreduce.output_writers.GoogleCloudStorageOutputWriter',
+            output_writer={
+                'mime_type': 'text/plain',
+                'bucket_name': 'dancedeets-hrd.appspot.com',
+            },
         )
     post=get
 
