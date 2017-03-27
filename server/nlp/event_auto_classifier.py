@@ -53,7 +53,7 @@ def has_list_of_good_classes(classified_event):
     # (?!20[01][05])
     time = r'\b[012]?\d[:.,h]?(?:[0-5][05])?(?:am|pm)?\b'
     time_with_minutes = r'\b[012]?\d[:.,h]?(?:[0-5][05])(?:am|pm)?\b'
-    time_to_time = r'%s ?(?:to|do|до|til|till|alle|a|-|[^\w,.]) ?%s' % (time, time)
+    time_to_time = r'%s ?(?:to|do|до|til|till|alle|a|-|–|[^\w,.]) ?%s' % (time, time)
 
     text = classified_event.final_search_text
     club_only_matches = classified_event.processed_text.get_tokens(keywords.CLUB_ONLY)
@@ -62,7 +62,9 @@ def has_list_of_good_classes(classified_event):
     title_wrong_style_matches = classified_event.processed_title.has_token(keywords.DANCE_WRONG_STYLE)
     if title_wrong_style_matches:
         return False, 'wrong style in the title: %s' % title_wrong_style_matches
-    lines = text.split('\n')
+    # We try to grab all lines in schedule up until schedule ends,
+    # so we need a "non-schedule line at the end", aka ['']
+    lines = text.split('\n') + ['']
     idx = 0
     schedule_lines = []
     while idx < len(lines):

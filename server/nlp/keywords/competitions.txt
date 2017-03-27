@@ -166,7 +166,7 @@ deep sf
 deep la
 hip hop dancefest
 coney island dancers
-paradise garage
+# paradise garage
 clubhouse jamboree
 
 release.{0,20}disciple

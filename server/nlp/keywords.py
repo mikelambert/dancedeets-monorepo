@@ -51,6 +51,7 @@ EASY_DANCE = Name('EASY_DANCE', Any(
     u'רוקדים', # hebrew dance
     u'רקדנים', # hebrew dancers
     u'לרקדני', # hebrew dancers
+    u'רקדן', # hebrew dancer
     u'ריקוד', # hebrew dance
     u'舞者', # chinese dancer
     u'舞技', # chinese dancing
@@ -193,6 +194,7 @@ AMBIGUOUS_DANCE_MUSIC = Name('AMBIGUOUS_DANCE_MUSIC', Any(
     'hard\Whitting',
     'electro\W?dance',
     u'얼반', # korean urban
+    'vogue',
 ))
 
 MUSIC_ONLY = Name('MUSIC_ONLY', Any(
@@ -259,6 +261,8 @@ STYLE_BREAK = Name('STYLE_BREAK', Any(
     'breakeuse', # french bgirl
     u'탑락', # toprock
     u'بريك دانس', # arabic breakdance
+    u'מקצה ברייקדאנס', # hebrew breakdancing
+    u'ביבוינג', # hebrew bboying
     u'霹靂舞', # chinese breakdance
 ))
 # Crazy polish sometimes does lockingu and lockingy. Maybe we need to do this more generally though.
@@ -353,6 +357,8 @@ STYLE_DANCEHALL = Name('STYLE_DANCEHALL', Any(
 STYLE_KRUMP = Name('STYLE_KRUMP', Any(
     'krump', "krumpin[g']?", 'krumper[sz]?',
     u'크럼핑', # korean krumping
+    u'קראמפ', # hebrew krump
+    u'קראמפר', # hebrew krumper
 ))
 STYLE_TURF = Name('STYLE_TURF', Any(
     "turfin(?:[g']?|er[sz])", 'turf danc\w+',
@@ -825,8 +831,7 @@ CLASS = Name('CLASS', Any(
     'pamokas', # lithuanian lesson
     'kursai', # course lithuanian
     'lez\.', # lesson italian
-    'lezione', # lesson italian
-    'lezioni', # lessons italian
+    'lezion[ei]?', # lesson italian
     u'zajęciach', # class polish
     u'zajęcia', # classes polish
     u'คลาส', # class thai
