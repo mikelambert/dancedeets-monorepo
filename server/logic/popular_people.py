@@ -1,19 +1,12 @@
-import json
 import logging
-import random
 
 from google.appengine.ext import ndb
-from mapreduce import mapreduce_pipeline
-from mapreduce import operation
 
 import app
 import base_servlet
 import event_types
-from events import eventdata
 from loc import math
 from rankings import cities
-import fb_api
-from util import fb_mapreduce
 from util import runtime
 
 TOP_N = 100
