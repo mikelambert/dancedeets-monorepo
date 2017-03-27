@@ -10,7 +10,7 @@ cron:
 # These load potential events from all the various pages/groups out there
 - description: load potential events from special users and sources
   url: /tasks/scrape_sources_and_process_events?user_id=dummy
-  schedule: every 21 hours
+  schedule: every 24 hours
 # These also load potential events, but from the /events of our logged-in users
 - description: load potential events from our users
   url: /tasks/load_all_potential_events?user_id=dummy
@@ -29,7 +29,7 @@ cron:
 #
 - description: reload user data
   url: /tasks/reload_all_users?user_id=dummy&allow_cache=0
-  schedule: every 25 hours
+  schedule: every 24 hours
 - description: email users about upcoming events
   url: /tasks/email_all_users?user_id=dummy
   schedule: every wednesday 15:00
@@ -39,7 +39,7 @@ cron:
   schedule: every 1 minutes
 - description: search fb for more events
   url: /tools/search_fb_for_events?user_id=random
-  schedule: every 9 hours
+  schedule: every 8 hours
 # This seems to be too spammy, and has a negative effect on users :(
 # So let's disable it for now, until we can find a better threshold/metric for whether to notify users
 #- description: notify about newly-added events
@@ -50,7 +50,7 @@ cron:
   schedule: every 6 hours
 - description: calculate periodic statistics and rankings
   url: /tasks/compute_rankings
-  schedule: every 48 hours
+  schedule: every 24 hours
 #- description: reload past facebook event data
 #  url: /tasks/reload_events?user_id=dummy&allow_cache=0&time_period=FUTURE
 #  schedule: every monday 2:00
