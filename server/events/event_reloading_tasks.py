@@ -171,17 +171,24 @@ def yield_maybe_delete_bad_event(fbl, db_event):
 
     logging.info('MDBE: Check on event %s: %s', db_event.id, db_event.creating_method)
     from event_scraper import auto_add
-    good_event = auto_add.is_good_event_by_attendees(fbl, db_event.fb_event)
+    from nlp import event_classifier
+    classified_event = event_classifier.get_classified_event(db_event.fb_event)
+    good_event = auto_add.is_good_event_by_attendees(fbl, db_event.fb_event, classified_event=classified_event)
     if not good_event:
-        logging.info('MDBE: Oops, found accidentally added event %s: %s', db_event.fb_event_id, db_event.name)
-        mr.increment('deleting-bad-event')
-        result = '%s: %s' % (db_event.fb_event_id, db_event.name)
-        yield result.encode('utf-8')
-        return
-        search.delete_from_fulltext_search_index(db_event.fb_event_id)
-        yield op.db.Delete(db_event)
-        display_event = search.DisplayEvent.get_by_id(db_event.fb_event_id)
-        yield op.db.Delete(display_event)
+        good_text_event = auto_add.is_good_event_by_text(db_event.fb_event, classified_event)
+        if good_text_event:
+            db_event.creating_method = eventdata.CM_AUTO
+            yield op.db.Put(db_event)
+        else:
+            logging.info('MDBE: Oops, found accidentally added event %s: %s', db_event.fb_event_id, db_event.name)
+            mr.increment('deleting-bad-event')
+            result = '%s: %s' % (db_event.fb_event_id, db_event.name)
+            yield result.encode('utf-8')
+
+            search.delete_from_fulltext_search_index(db_event.fb_event_id)
+            yield op.db.Delete(db_event)
+            display_event = search.DisplayEvent.get_by_id(db_event.fb_event_id)
+            yield op.db.Delete(display_event)
 
 map_maybe_delete_bad_event = fb_mapreduce.mr_wrap(yield_maybe_delete_bad_event)
 maybe_delete_bad_event = fb_mapreduce.nomr_wrap(yield_maybe_delete_bad_event)
