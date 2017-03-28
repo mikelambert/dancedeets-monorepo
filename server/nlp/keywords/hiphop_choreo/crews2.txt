@@ -89,6 +89,7 @@ barkada modern
 fasa modern
 samahang modern
 project m
+\\[m\\]ovement
 
 # prelude east coast
 puso modern

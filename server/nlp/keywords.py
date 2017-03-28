@@ -40,6 +40,7 @@ EASY_DANCE = Name('EASY_DANCE', Any(
     u'רקוד', # hebrew dancing
     u'בלרקוד', # hebrew dancing
     u'כשרוקדים', # hebrew 'when dancing'
+    u'ריקודים', # hebrew dances
     u'ダンサー', # japanese dance
     u'ダンス', # japanese dance
     u'춤.?', # korean dance
@@ -48,9 +49,11 @@ EASY_DANCE = Name('EASY_DANCE', Any(
     u'踊り', # japanese dance
     u'רוקד', # hebrew dance
     u'רקדם', # hebrew dancers
+    u'הריקוד', # hebrew dance
     u'רוקדים', # hebrew dance
     u'רקדנים', # hebrew dancers
     u'לרקדני', # hebrew dancers
+    u'לרקדנים', # hebrew 'for the dancers'
     u'רקדן', # hebrew dancer
     u'ריקוד', # hebrew dance
     u'舞者', # chinese dancer
@@ -75,6 +78,7 @@ EASY_DANCE = Name('EASY_DANCE', Any(
     'danza\w*', # dance italian
     u'šok\w*', # dance lithuanian
     'tanz\w*', # dance german
+    u'tänz\w*', # dance german
     'tanssi\w*', # finnish dance
     'bail[ae]\w*', # dance spanish
     'danzas', # dance spanish
@@ -125,6 +129,7 @@ BAD_CLUB = Name('BAD_CLUB', Any(
 
 CYPHER = Name('CYPHER', Any(
     'c(?:y|i)ph(?:a|ers?)',
+    'cyphern', # german cypher
     u'サイファ', # japanese cypher
     u'サイファー', # japanese cypher
     u'サークル', # japanese circle
@@ -254,6 +259,7 @@ STYLE_BREAK = Name('STYLE_BREAK', Any(
     'power\W?moves?',
     'b\W?(?:boy|girl)\w*',
     u'ברייקדאנס', # hebrew breakdancing
+    u'בברייקדאנס', # hebrew breakdancing
     u'הברייקדאנס', # hebrew breakdance
     u'비보이', # korean bboy
     u'비걸', # korean bgirl
@@ -353,6 +359,7 @@ STYLE_DANCEHALL = Name('STYLE_DANCEHALL', Any(
     'ragga\W?jamm?',
     u'댄스 ?레게', # korean reggae dance
     u'레게 ?댄스', # korean reggae dance
+    u'דאנסהול', # hebrew dancehall
 ))
 STYLE_KRUMP = Name('STYLE_KRUMP', Any(
     'krump', "krumpin[g']?", 'krumper[sz]?',
@@ -426,12 +433,14 @@ HOUSE = Name('HOUSE', Any(
     u'하우스', # korean house
     u'ハウス', # japanese house
     u'хаус', # russian house
+    u'האוס', # hebrew house
 ))
 
 FREESTYLE = Name('FREESTYLE', Any(
     'free\W?style(?:r?|rs?)',
     u'フリースタイル', # japanese freestyle
     u'فريز ستايل', # arabic freestyle
+    u'פריסטייל', # hebrew freestyle
 ))
 
 STREET = Name('STREET', Any(
@@ -773,6 +782,7 @@ BATTLE = Name('BATTLE', Any(
     u'אליפות', # hebrew championship
     u'באליפות', # hebrew championship
     u'לקרבות', # hebrew battles
+    u'תחרות', # hebrew competition
 ))
 
 CLASS = Name('CLASS', Any(
@@ -784,12 +794,14 @@ CLASS = Name('CLASS', Any(
     u'סדנת', # hebrew workshop
     u'בסדנה', # hebrew workshop
     u'בסדנא', # hebrew workshop
+    u'הקורס', # hebrew course
     u'hội thảo', # vietnamese workshop
     'cursillo', # spanish workshop
     'ateliers', # french workshop
     'workshopy', # czech workshop
     u'סדנאות', # hebrew workshops
     u'סדנה', # hebew workshop
+    u'הסדנא', # hebrew workshop
     # 'taller', # workshop spanish
     'delavnice', # workshop slovak
     'talleres', # workshops spanish
@@ -818,8 +830,10 @@ CLASS = Name('CLASS', Any(
     u'表演班', # performance class
     u'專攻班', # chinese specialized class
     u'コース', # course japanese
+    'cors[io]', # course italian
     'concorso', # course italian
     'concurso', # course spanish
+    'cursuri', # course romanian
     'kur[sz](?:y|en)?', # course german/polish/czech
     'aulas?', # portuguese class(?:es)?
     u'특강', # korean lecture
@@ -858,6 +872,7 @@ CAMP = Name('CAMP', Any(
 AUDITION = Name('AUDITION', Any(
     'try\W?outs?',
     'casting',
+    'castingi', # polish casting
     'casting call',
     'castingul', # romanian casting
     'auditions?',
