@@ -298,11 +298,10 @@ class AdminEditHandler(base_servlet.BaseRequestHandler):
         potential_event = potential_events.make_potential_event_without_source(event_id)
         classified_event = event_classifier.get_classified_event(fb_event, potential_event.language)
         self.display['classified_event'] = classified_event
+        dance_words_str = ', '.join(list(classified_event.dance_matches()))
         if classified_event.is_dance_event():
-            dance_words_str = ', '.join(list(classified_event.dance_matches()))
             event_words_str = ', '.join(list(classified_event.event_matches()))
         else:
-            dance_words_str = 'NONE'
             event_words_str = 'NONE'
         self.display['classifier_dance_words'] = dance_words_str
         self.display['classifier_event_words'] = event_words_str
