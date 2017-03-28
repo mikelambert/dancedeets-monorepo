@@ -86,7 +86,7 @@ def is_good_event_by_attendees(fbl, fb_event, fb_event_attending_maybe=None, cla
     if event_attendee_ids:
         # If it's a suspected dance event, then we'll fall-through and check the places API for the location data
         # This ensures that any suspected dance events will get proper dance-attendees, and be more likely to be found.
-        suspected_dance_event = classified_event.dance_event or classified_event.found_dance_matches >= 2
+        suspected_dance_event = classified_event.dance_event or len(classified_event.found_dance_matches) >= 2
         dance_style_attendees = get_location_style_attendees(fb_event, suspected_dance_event=suspected_dance_event)
         logging.info('Computing Styles for Event')
         # Don't care about which style this event is in...we may misclassify it due to poor keywords
@@ -179,11 +179,11 @@ def classify_events(fbl, pe_list, fb_list):
         event_id = pe.fb_event_id
         logging.info('Is Good Event By Text: %s: Checking...', event_id)
         classified_event = event_classifier.get_classified_event(fb_event)
-        is_auto_add_event = is_good_event_by_text(fb_event, classified_event)
-        logging.info('Is Good Event By Text: %s: %s', event_id, is_auto_add_event)
+        auto_add_result = event_auto_classifier.is_auto_add_event(classified_event)
+        logging.info('Is Good Event By Text: %s: %s', event_id, auto_add_result)
         good_event = False
-        if is_auto_add_event:
-            good_event = is_auto_add_event
+        if auto_add_result and auto_add_result[0]:
+            good_event = auto_add_result[0]
             method = eventdata.CM_AUTO
         elif fb_event_attending_maybe:
             logging.info('Is Good Event By Attendees: %s: Checking...', event_id)
