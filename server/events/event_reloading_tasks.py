@@ -234,18 +234,19 @@ def fixup_events(fbl, db_event_ids):
     for start_index in range(0, len(db_event_ids), batch_size):
         batch_ids = db_event_ids[start_index:start_index + batch_size]
         from event_scraper import potential_events
-        pes = potential_events.PotentialEvent.get_by_key_name(batch_ids)
-        for pe in pes:
-            if pe and pe.looked_at:
-                pe.looked_at = False
-                pe.put()
-        return
         from event_scraper import event_pipeline
         discovered_list = [potential_events.DiscoveredEvent(x, None, None) for x in batch_ids]
         event_pipeline.process_discovered_events(fbl, discovered_list)
 
 def yield_maybe_delete_bad_event(fbl, db_event):
     if db_event.creating_method not in [eventdata.CM_AUTO_ATTENDEE, eventdata.CM_AUTO]:
+        return
+
+    if db_event.fb_event['empty']:
+        return
+    import datetime
+    logging.info('MDB: CHECK: %s: %s < %s', db_event.id, db_event.creation_time, datetime.datetime.now() - datetime.timedelta(days=30))
+    if not db_event.creation_time or db_event.creation_time < datetime.datetime.now() - datetime.timedelta(days=30):
         return
 
     logging.info('MDBE: Check on event %s: %s', db_event.id, db_event.creating_method)
@@ -262,6 +263,9 @@ def yield_maybe_delete_bad_event(fbl, db_event):
             db_event.creating_method = eventdata.CM_AUTO_ATTENDEE
             yield op.db.Put(db_event)
         else:
+            # central/south america
+            if db_event.country in ['AR', 'BO', 'BR', 'CL', 'CO', 'EC', 'FK', 'GF', 'GY', 'GY', 'PY', 'PE', 'SR', 'UY', 'VE', 'AI', 'AG', 'AW', 'BS', 'BB', 'BZ', 'BM', 'BQ', 'VG', 'KY', 'CR', 'CU', 'CW', 'DM', 'DO', 'SV', 'GL', 'GD', 'GP', 'GT', 'HT', 'HN', 'JM', 'MQ', 'MX', 'PM', 'MS', 'CW', 'KN', 'NI', 'PA', 'PR', 'BQ', 'BQ', 'SX', 'KN', 'LC', 'PM', 'VC', 'TT', 'TC']:
+                logging.info('MDB: Oops Country %s: %s: %s', db_event.country, db_event.fb_event_id, db_event.name)
             logging.info('MDBE: Oops, found accidentally added event %s: %s', db_event.fb_event_id, db_event.name)
             mr.increment('deleting-bad-event')
             result = '%s: %s\n' % (db_event.fb_event_id, db_event.name)
