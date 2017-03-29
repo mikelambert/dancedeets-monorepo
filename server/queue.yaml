@@ -5,6 +5,7 @@ queue:
 - name: fast-queue
   rate: 60/s
   max_concurrent_requests: 16
+  bucket_size: 16
 - name: event-publishing-pull-queue
   mode: pull
 - name: mobile-notify-queue
