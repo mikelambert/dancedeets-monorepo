@@ -13,7 +13,12 @@ CITY_GEOHASH_PRECISIONS = range(
     geohash_math.get_geohash_bits_for_km(50) + 1,
 )
 
-NEARBY_DISTANCE_KM = 100 # km of distance to nearest "scene" a user will identify with
+# The km of distance to nearest "scene" a user will identify with
+# We group events into cities by NEARBY_DISTANCE_KM/2,
+# then later everything expands by NEARBY_DISTANCE_KM in searching:
+# - expand our search box by this
+# - find people within this distance of our search box, too
+NEARBY_DISTANCE_KM = 100
 
 def get_nearby_cities(points, only_populated=False, country=None):
     # TODO(lambert): we should cache this entire function. use lowercase of location to determine cache key. Using DB cache too.
