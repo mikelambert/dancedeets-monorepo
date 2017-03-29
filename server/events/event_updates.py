@@ -135,11 +135,12 @@ def _inner_make_event_findable_for_fb_event(db_event, fb_dict, disable_updates):
 
     _inner_common_setup(db_event, disable_updates=disable_updates)
 
-    if 'geodata' not in (disable_updates or []):
-        # Don't use cached/stale geocode when constructing the LocationInfo here
+    if 'regeocode' not in (disable_updates or []):
+        # Don't use cached/stale geocode, when constructing the LocationInfo below.
+        # Force it to re-look-up from the fb location and cached geo lookups.
         db_event.location_geocode = None
-        location_info = event_locations.LocationInfo(fb_dict, db_event=db_event)
-        _update_geodata(db_event, location_info, disable_updates)
+    location_info = event_locations.LocationInfo(fb_dict, db_event=db_event)
+    _update_geodata(db_event, location_info, disable_updates)
 
 def clean_address(address):
     address = re.sub(r'B?\d*F?\d*$', '', address)

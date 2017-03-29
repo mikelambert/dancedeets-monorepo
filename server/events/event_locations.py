@@ -141,6 +141,13 @@ class LocationInfo(object):
         self.final_address = None
         self.geocode = None
 
+        # If we're not doing a full-fledged step-by-step debug, used our cached geocode (if available)
+        if not debug and db_event.has_geocode():
+            self.geocode = db_event.get_geocode()
+            self.final_address = self.geocode.formatted_address()
+            self.fb_address = get_address_for_fb_event(fb_event)
+            return
+
         has_overridden_address = db_event and db_event.address
         if not has_overridden_address and not fb_event:
             logging.warning("Passed a db_event without an address, and no fb_event to pull from: %s" % db_event.id)
