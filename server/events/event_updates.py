@@ -9,6 +9,7 @@ from google.appengine.ext import ndb
 
 import fb_api
 from loc import gmaps_api
+from loc import math
 from rankings import cities
 from search import search
 from nlp import categories
@@ -262,7 +263,8 @@ def _update_geodata(db_event, location_info, disable_updates):
         False
     ):
         if location_info.geocode:
-            nearby_cities = cities.get_nearby_cities((location_info.geocode.latlng(), location_info.geocode.latlng()))
+            southwest, northeast = math.expand_bounds((location_info.geocode.latlng(), location_info.geocode.latlng()), cities.NEARBY_DISTANCE_KM)
+            nearby_cities = cities.get_nearby_cities((southwest, northeast))
             db_event.nearby_city_names = [city.display_name() for city in nearby_cities]
             city = cities.get_largest_city(nearby_cities)
             # We check country_name as a proxy for determining if this is a Real City or a Dummy City
