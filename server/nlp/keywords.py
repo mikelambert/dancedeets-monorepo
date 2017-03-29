@@ -340,9 +340,9 @@ STYLE_HIPHOP = Name('STYLE_HIPHOP', Any(
     # only do la-style if not salsa? http://www.dancedeets.com/events/admin_edit?event_id=292605290807447
     # 'l\W?a\W?\Wstyle',
     'l\W?a\W?\Wdance',
-    'n(?:ew|u)\W?style\Whip\W?hop',
+    'n(?:ew|u)\W?style?\Whip\W?hop',
     u'뉴스타일 ?힙합', # korean new style hiphop
-    'hip\W?hop\Wn(?:ew|u)\W?style',
+    'hip\W?hop\Wn(?:ew|u)\W?style?',
     'girl\W?s\W?hip\W?hop',
     'girly\W?hip\W?hop',
     'hip\W?hopp?er[sz]?',
@@ -845,6 +845,7 @@ CLASS = Name('CLASS', Any(
     'eigoje', # lithuanian course
     'pamokas', # lithuanian lesson
     'kursai', # course lithuanian
+    'kursas', # course lithuanian
     'lez\.', # lesson italian
     'lezion[ei]?', # lesson italian
     u'zajęciach', # class polish
