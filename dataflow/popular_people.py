@@ -91,7 +91,7 @@ def styles():
 #TODO: Use Constants
 STYLES_SET = set(x.index_name for x in styles())
 
-TOP_N = 100
+TOP_N = 1000
 
 def ConvertToEntity(element):
     return helpers.entity_from_protobuf(element)
