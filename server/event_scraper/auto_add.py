@@ -137,6 +137,28 @@ def is_good_event_by_attendees(fbl, fb_event, fb_event_attending_maybe=None, cla
                 results[-1] += ' GOOD!'
                 good_event = overlap_ids
 
+            # TODO: Disable for now...
+            # Basically, cities that have a few events that mix streetdance-and-nonstreetdance
+            # will get a bunch of people that are "other-styled dancers"
+            # and that, in turn, will cause these to trigger on "any old dance event"
+            # Perhaps should find a way to better target our audience as "only counting for events that are purely street dance" ?
+            # Or some weighted computation?
+            if False:
+                overlap_ids, count, fraction = find_overlap(event_attendee_ids, dance_attendee_ids[:500])
+                reason = 'Event %s has %s ids, intersection is %s ids (%.1f%%)' % (event_id, len(event_attendee_ids), count, 100.0 * fraction)
+                logging.info('%s Attendee-Detection-Top-500: %s', style_name, reason)
+                if count > 0:
+                    results += ['%s Top500: %s (%.1f%%)' % (style_name, count, 100.0 * fraction)]
+                if (
+                    (fraction >= 0.20 * mult and count >= 5) or
+                    (fraction >= 0.01 * mult and count >= 15) or
+                    (fraction >= 0.001 * mult and count >= 50) or
+                    False
+                ):
+                    logging.info('Attendee-Detection-Top-500: Attendee-based classifier match: %s', reason)
+                    results[-1] += ' GOOD!'
+                    good_event = overlap_ids
+
     if debug:
         return good_event, results
     else:
