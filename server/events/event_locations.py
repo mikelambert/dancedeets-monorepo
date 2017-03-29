@@ -142,7 +142,7 @@ class LocationInfo(object):
         self.geocode = None
 
         # If we're not doing a full-fledged step-by-step debug, used our cached geocode (if available)
-        if not debug and db_event.has_geocode():
+        if not debug and db_event and db_event.has_geocode():
             self.geocode = db_event.get_geocode()
             self.final_address = self.geocode.formatted_address()
             self.fb_address = get_address_for_fb_event(fb_event)
