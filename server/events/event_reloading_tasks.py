@@ -213,12 +213,20 @@ maybe_delete_bad_event = fb_mapreduce.nomr_wrap(yield_maybe_delete_bad_event)
 @app.route('/tasks/delete_bad_autoadds')
 class DeleteBadAutoAddsHandler(base_servlet.EventOperationHandler):
     def get(self):
+        time_period = self.request.get('time_period', None)
         queue = self.request.get('queue', 'fast-queue')
+        filters = []
+        if time_period:
+            filters.append(('search_time_period', '=', time_period))
+            name = 'Delete %s Bad Autoadds' % time_period
+        else:
+            name = 'Delete All Bad Autoadds'
         fb_mapreduce.start_map(
             fbl=self.fbl,
-            name='Delete Bad Autoadds',
+            name=name,
             handler_spec='events.event_reloading_tasks.map_maybe_delete_bad_event',
             entity_kind='events.eventdata.DBEvent',
+            filters=filters,
             queue=queue,
             output_writer_spec='mapreduce.output_writers.GoogleCloudStorageOutputWriter',
             output_writer={
