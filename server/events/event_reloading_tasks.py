@@ -6,7 +6,6 @@ from mapreduce import operation as op
 import app
 import base_servlet
 import fb_api
-from search import search
 from users import users
 from util import deferred
 from util import fb_mapreduce
@@ -24,6 +23,9 @@ def add_event_tuple_if_updating(events_to_update, fbl, db_event, only_if_updated
         # This helps ensure we still update the event's search_time_period regardless.
         fb_event = db_event.fb_event
     update_regardless = not only_if_updated
+    if fb_event['empty']:
+        logging.info('The latest fb event %s is empty (%s), using dbevent.fb_event instead', db_event.id, fb_event['empty'])
+        fb_event = db_event.fb_event
     if update_regardless or db_event.fb_event != fb_event:
         logging.info("Event %s is updated.", db_event.id)
         events_to_update.append((db_event, fb_event))
@@ -66,7 +68,8 @@ def load_fb_events_using_backup_tokens(event_ids, allow_cache, only_if_updated, 
             # So instead, let's call it and just have it use the db_event.fb_event
             if fbl:
                 add_event_tuple_if_updating(events_to_update, fbl, db_event, only_if_updated)
-    event_updates.update_and_save_fb_events(events_to_update, disable_updates=disable_updates)
+    if events_to_update:
+        event_updates.update_and_save_fb_events(events_to_update, disable_updates=disable_updates)
 
 def yield_resave_display_event(fbl, all_events):
     event_updates.resave_display_events(all_events)
@@ -126,7 +129,8 @@ def yield_load_fb_event(fbl, all_events):
         deferred.defer(load_fb_events_using_backup_tokens, empty_fb_event_ids, allow_cache=fbl.allow_cache, only_if_updated=only_if_updated, disable_updates=disable_updates)
     logging.info("Updating events: %s", [x[0].id for x in events_to_update])
     # And then re-save all the events in here
-    event_updates.update_and_save_fb_events(events_to_update, disable_updates=disable_updates)
+    if events_to_update:
+        event_updates.update_and_save_fb_events(events_to_update, disable_updates=disable_updates)
 map_load_fb_event = fb_mapreduce.mr_wrap(yield_load_fb_event)
 load_fb_event = fb_mapreduce.nomr_wrap(yield_load_fb_event)
 

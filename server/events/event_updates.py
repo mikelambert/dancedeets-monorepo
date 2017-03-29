@@ -43,7 +43,7 @@ def need_forced_update(db_event):
 
 def update_and_save_fb_events(events_to_update, disable_updates=None):
     for db_event, fb_event in events_to_update:
-        logging.info("Updating and saving DBEvent %s", db_event.id)
+        logging.info("Updating and saving DBEvent fb event %s", db_event.id)
         _inner_make_event_findable_for_fb_event(db_event, fb_event, disable_updates=disable_updates)
     # We want to save it here, no matter how it was changed.
     db_events = [x[0] for x in events_to_update]
@@ -52,7 +52,7 @@ def update_and_save_fb_events(events_to_update, disable_updates=None):
 
 def update_and_save_web_events(events_to_update, disable_updates=None):
     for db_event, web_event in events_to_update:
-        logging.info("Updating and saving DBEvent %s", db_event.id)
+        logging.info("Updating and saving DBEvent web event %s", db_event.id)
         _inner_make_event_findable_for_web_event(db_event, web_event, disable_updates=disable_updates)
     db_events = [x[0] for x in events_to_update]
     _save_events(db_events, disable_updates=disable_updates)
