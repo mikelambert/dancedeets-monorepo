@@ -475,6 +475,7 @@ CONTEST = Name('CONTEST', Any(
     'contests?',
     'concours', # french contest
     'konkurrencer', # danish contest
+    'konkuranser', # norwegian contest/competition
     'dancecontests', # dance contests german
 ))
 PRACTICE = Name('PRACTICE', Any(
