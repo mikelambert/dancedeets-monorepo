@@ -101,10 +101,6 @@ class DBEvent(ndb.Model):
     # extra cached properties
     address = ndb.StringProperty(indexed=False) # manually overridden address
     actual_city_name = ndb.StringProperty() # city for this event
-    # A list of all nearby cities within NEARBY_DISTANCE_KM.
-    # The largest will be in 'city_name',
-    # but these are saved here to make any mapreduces that need this, cheaper to run.
-    nearby_city_names = ndb.StringProperty(repeated=True) # A list of all nearby cities.
     # Index is needed for city_name=Unknown searches in admin_nolocation_events
     city_name = ndb.StringProperty() # largest nearby city for this event
 
@@ -121,6 +117,7 @@ class DBEvent(ndb.Model):
     # TODO(lambert): right now this is unused, but maybe we want to cache our "ish" tags or something to that effect?
     # Was originally used to track manually-applied tags, and contains that data for some old events...
     tags = ndb.StringProperty(indexed=False, repeated=True)
+    nearby_city_names = ndb.StringProperty(indexed=False, repeated=True) # Unused
 
     # Things that would be nice to have in DBEvent:
     # - event privacy

@@ -109,7 +109,6 @@ def _inner_make_event_findable_for_fb_event(db_event, fb_dict, disable_updates):
         db_event.address = None
         db_event.actual_city_name = None
         db_event.city_name = None
-        db_event.nearby_city_names = []
         db_event.fb_event = fb_dict
         return
     elif fb_dict['empty'] == fb_api.EMPTY_CAUSE_INSUFFICIENT_PERMISSIONS:
@@ -246,6 +245,9 @@ def _inner_common_setup(db_event, disable_updates=None):
 
 
 def _update_geodata(db_event, location_info, disable_updates):
+    # Empty this out, we no longer care/need it
+    db_event.nearby_city_names = []
+
     # If we got good values from before, don't overwrite with empty values!
     if not db_event.actual_city_name:
         logging.info('NO EVENT LOCATION1: %s', db_event.id)
@@ -257,8 +259,6 @@ def _update_geodata(db_event, location_info, disable_updates):
     if (
         # The event has moved cities
         location_info.actual_city() != db_event.actual_city_name or
-        # We are doing a backfill of a missing nearby_city_names that shouldn't be missing
-        (not db_event.nearby_city_names and db_event.city_name != 'Unknown') or
         # We are creating a new event, and don't know where it is
         not db_event.actual_city_name or
         # We didn't have a city for this event. Maybe we do now, though? Let's double-check
@@ -274,7 +274,6 @@ def _update_geodata(db_event, location_info, disable_updates):
             # So instead of searching 200km in popular people for cities...let's try to be more specific about which person goes to which city
             southwest, northeast = math.expand_bounds((location_info.geocode.latlng(), location_info.geocode.latlng()), cities.NEARBY_DISTANCE_KM/2)
             nearby_cities = cities.get_nearby_cities((southwest, northeast), country=db_event.country)
-            db_event.nearby_city_names = [city.display_name() for city in nearby_cities]
             city = cities.get_largest_city(nearby_cities)
             # We check country_name as a proxy for determining if this is a Real City or a Dummy City
             if not city.has_nearby_events and city.country_name:
@@ -283,7 +282,6 @@ def _update_geodata(db_event, location_info, disable_updates):
                 city.put()
             db_event.city_name = city.display_name()
         else:
-            db_event.nearby_city_names = []
             db_event.city_name = "Unknown"
         logging.info('Event %s decided on city %s', db_event.id, db_event.city_name)
     db_event.anywhere = location_info.is_online_event()

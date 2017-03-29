@@ -167,22 +167,19 @@ def track_person(person_type, db_event, person, count_once_per=None):
         'count_once_per': count_once_per,
         'person': '%s: %s' % (person['id'], person.get('name')),
     }
-    # Not using db_event.nearby_city_names since it's way too slow.
-    # And we just search-many-cities on lookup time.
-    for city in [db_event['city_name']]:
+    key = {
+        'person_type': person_type,
+        'category': '',
+        'city': db_event['city_name'],
+    }
+    yield (key, people_info)
+    for category in STYLES_SET.intersection(db_event.get('auto_categories', [])):
         key = {
             'person_type': person_type,
-            'category': '',
-            'city': city,
+            'category': category,
+            'city': db_event['city_name'],
         }
         yield (key, people_info)
-        for category in STYLES_SET.intersection(db_event.get('auto_categories', [])):
-            key = {
-                'person_type': person_type,
-                'category': category,
-                'city': city,
-            }
-            yield (key, people_info)
 
 def CountPeopleInfos((key, people_infos)):
     counts = {}
