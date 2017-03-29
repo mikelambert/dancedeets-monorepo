@@ -145,7 +145,9 @@ class LocationInfo(object):
         if not debug and db_event and db_event.has_geocode():
             self.geocode = db_event.get_geocode()
             self.final_address = self.geocode.formatted_address()
-            self.fb_address = get_address_for_fb_event(fb_event)
+            # Sometimes we get called with a webevent...in which case the fb_address doesn't matter
+            if db_event.fb_event:
+                self.fb_address = get_address_for_fb_event(db_event.fb_event)
             return
 
         has_overridden_address = db_event and db_event.address
