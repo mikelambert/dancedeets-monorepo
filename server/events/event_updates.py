@@ -138,7 +138,7 @@ def _inner_make_event_findable_for_fb_event(db_event, fb_dict, disable_updates):
         # Don't use cached/stale geocode when constructing the LocationInfo here
         db_event.location_geocode = None
         location_info = event_locations.LocationInfo(fb_dict, db_event=db_event)
-        _update_geodata(db_event, location_info)
+        _update_geodata(db_event, location_info, disable_updates)
 
 def clean_address(address):
     address = re.sub(r'B?\d*F?\d*$', '', address)
@@ -229,7 +229,7 @@ def _inner_make_event_findable_for_web_event(db_event, web_event, disable_update
         # Don't use cached/stale geocode when constructing the LocationInfo here
         #db_event.location_geocode = geocode
         location_info = event_locations.LocationInfo(db_event=db_event)
-        _update_geodata(db_event, location_info)
+        _update_geodata(db_event, location_info, disable_updates)
 
 
 def _inner_common_setup(db_event, disable_updates=None):
@@ -243,7 +243,7 @@ def _inner_common_setup(db_event, disable_updates=None):
     db_event.json_props['language'] = language.detect(text)
 
 
-def _update_geodata(db_event, location_info):
+def _update_geodata(db_event, location_info, disable_updates):
     # If we got good values from before, don't overwrite with empty values!
     if not db_event.actual_city_name:
         logging.info('NO EVENT LOCATION1: %s', db_event.id)
@@ -258,6 +258,7 @@ def _update_geodata(db_event, location_info):
         not db_event.actual_city_name or
         # We didn't have a city for this event. Maybe we do now, though? Let's double-check
         db_event.city_name == 'Unknown' or
+        'cached_city' in (disable_updates or []) or
         False
     ):
         if location_info.geocode:
