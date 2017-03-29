@@ -85,7 +85,7 @@ def _inner_cache_photo(db_event):
             db_event.json_props['photo_width'] = width
             db_event.json_props['photo_height'] = height
         except (event_image.DownloadError, event_image.NotFoundError, Exception) as e:
-            logging.warning('Error downloading flyer for event %s: %s', db_event.id, e)
+            logging.warning('Error downloading flyer for event %s: %r', db_event.id, e)
     else:
         if 'photo_width' in db_event.json_props:
             del db_event.json_props['photo_width']
@@ -269,12 +269,14 @@ def _update_geodata(db_event, location_info, disable_updates):
             city = cities.get_largest_city(nearby_cities)
             # We check country_name as a proxy for determining if this is a Real City or a Dummy City
             if not city.has_nearby_events and city.country_name:
+                logging.info('Marking city %s as "having events"', city)
                 city.has_nearby_events = True
                 city.put()
             db_event.city_name = city.display_name()
         else:
             db_event.nearby_city_names = []
             db_event.city_name = "Unknown"
+        logging.info('Event %s decided on city %s', db_event.id, db_event.city_name)
     db_event.anywhere = location_info.is_online_event()
     db_event.actual_city_name = location_info.actual_city()
     if location_info.latlong():
