@@ -6,6 +6,7 @@ from util import fb_mapreduce
 
 import app
 import base_servlet
+from util import mr
 from . import event_pipeline
 from . import potential_events
 from . import thing_scraper
@@ -24,6 +25,7 @@ def scrape_sources_for_events(sources):
     discovered_list = thing_scraper.discover_events_from_sources(fbl, sources)
     for x in discovered_list:
         state = (x.event_id, x.source_id, x.source_field, x.extra_source_id)
+        mr.increment('found-event-to-check')
         yield (_shard_for(x.event_id), json.dumps(state))
 
 

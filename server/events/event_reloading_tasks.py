@@ -236,6 +236,7 @@ def fixup_events(fbl, db_event_ids):
         from event_scraper import potential_events
         from event_scraper import event_pipeline
         discovered_list = [potential_events.DiscoveredEvent(x, None, None) for x in batch_ids]
+        logging.info('FE: Processing events: %s', batch_ids)
         event_pipeline.process_discovered_events(fbl, discovered_list)
 
 def yield_maybe_delete_bad_event(fbl, db_event):
