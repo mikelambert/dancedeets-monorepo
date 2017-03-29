@@ -235,7 +235,9 @@ def fixup_events(fbl, db_event_ids):
         batch_ids = db_event_ids[start_index:start_index + batch_size]
         from event_scraper import potential_events
         from event_scraper import event_pipeline
-        discovered_list = [potential_events.DiscoveredEvent(x, None, None) for x in batch_ids]
+        pes = potential_events.PotentialEvent.get_by_key_name(batch_ids)
+        pe_ids = [pe.fb_event_id for pe in pes if pe and not pe.looked_at]
+        discovered_list = [potential_events.DiscoveredEvent(x, None, None) for x in pe_ids]
         logging.info('FE: Processing events: %s', batch_ids)
         event_pipeline.process_discovered_events(fbl, discovered_list)
 
