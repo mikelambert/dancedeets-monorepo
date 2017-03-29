@@ -79,4 +79,4 @@ def mapreduce_scrape_sources_and_process_events(fbl, min_potential_events, queue
         shards=16,
     )
 
-    pipeline.start(queue_name='slow-queue')
+    pipeline.start(queue_name=queue)
