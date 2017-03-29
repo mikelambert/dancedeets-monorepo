@@ -4,7 +4,7 @@ queue:
   max_concurrent_requests: 3
 - name: fast-queue
   rate: 60/s
-  max_concurrent_requests: 4
+  max_concurrent_requests: 16
 - name: event-publishing-pull-queue
   mode: pull
 - name: mobile-notify-queue
