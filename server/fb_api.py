@@ -535,7 +535,11 @@ class FBAPI(CacheSystem):
                         object_is_bad = True
                     continue
                 object_result_code = result['code']
-                object_json = json.loads(result['body'])
+                try:
+                    object_json = json.loads(result['body'])
+                except:
+                    logging.error('Error parsing result body for %r: %r', batch_item, result)
+                    raise
                 if object_result_code in [200, 400] and object_json is not None:
                     error_code = None
                     if type(object_json) == dict and ('error_code' in object_json or 'error' in object_json):
