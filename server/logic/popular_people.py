@@ -79,6 +79,9 @@ def get_attendees_near(latlong):
     try:
         people_rankings = get_people_rankings_for_city_names(city_names, attendees_only=True)
         logging.info('Loaded People Rankings')
+        if runtime.is_local_appengine():
+            for x in people_rankings:
+                logging.info(x)
         groupings = combine_rankings(people_rankings)
     except:
         logging.exception('Error creating combined people rankings')
