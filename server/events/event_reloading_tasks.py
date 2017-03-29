@@ -166,7 +166,7 @@ def mr_load_fb_events(fbl, display_event=False, load_attending=False, time_perio
     )
 
 @app.route('/tasks/fixup_bad_fixups')
-class DeleteBadAutoAddsHandler(base_servlet.EventOperationHandler):
+class FixupBadFixupsHandler(base_servlet.EventOperationHandler):
     def get(self):
         import re
         from util import gcs
@@ -230,72 +230,47 @@ class DeleteBadAutoAddsHandler(base_servlet.EventOperationHandler):
             fixup_events(self.fbl, db_event_ids)
 
 def fixup_events(fbl, db_event_ids):
-    batch_size = 20
+    batch_size = 200
     for start_index in range(0, len(db_event_ids), batch_size):
         batch_ids = db_event_ids[start_index:start_index + batch_size]
-        db_events = eventdata.DBEvent.get_by_ids(batch_ids)
-        for db_id, db_event in zip(batch_ids, db_events):
-            fixup_one_event(fbl, db_id, db_event)
-
-def fixup_one_event(fbl, db_id, db_event):
-    if not db_event:
-        logging.info('FOE: %s: Missing', db_id)
+        from event_scraper import potential_events
+        pes = potential_events.PotentialEvent.get_by_key_name(batch_ids)
+        for pe in pes:
+            if pe and pe.looked_at:
+                pe.looked_at = False
+                pe.put()
         return
-    if db_event.creating_fb_uid:
-        logging.info('FOE: %s: Already Processed: %s', db_id, db_event.name)
-        return
-    logging.info('MDBE: Check on event %s: %s', db_event.id, db_event.name)
-    from event_scraper import auto_add
-    from nlp import event_classifier
-    classified_event = event_classifier.get_classified_event(db_event.fb_event)
-    good_text_event = auto_add.is_good_event_by_text(db_event.fb_event, classified_event)
-    if good_text_event:
-        db_event.creating_method = eventdata.CM_AUTO
-        mr.increment('reclassify-auto')
-        logging.info('FOE: %s: Auto-Add Keyword: %s', db_id, db_event.name)
-        db_event.put()
-    else:
-        good_event = auto_add.is_good_event_by_attendees(fbl, db_event.fb_event, classified_event=classified_event)
-        if good_event:
-            db_event.creating_method = eventdata.CM_AUTO_ATTENDEE
-            mr.increment('reclassify-auto-attendee')
-            logging.info('FOE: %s: Auto-Add Attendee: %S', db_id, db_event.name)
-            db_event.put()
-        else:
-            logging.info('MDBE: Oops, found accidentally added event %s: %s', db_event.fb_event_id, db_event.name)
-            #result = '%s: %s\n' % (db_event.fb_event_id, db_event.name)
-            mr.increment('reclassify-delete')
-            logging.info('FOE: %s: Delete: %s', db_id, db_event.name)
-
-            search.delete_from_fulltext_search_index(db_event.fb_event_id)
-            db_event.key.delete()
-            display_event = search.DisplayEvent.get_by_id(db_event.fb_event_id)
-            display_event.key.delete()
+        from event_scraper import event_pipeline
+        discovered_list = [potential_events.DiscoveredEvent(x, None, None) for x in batch_ids]
+        event_pipeline.process_discovered_events(fbl, discovered_list)
 
 def yield_maybe_delete_bad_event(fbl, db_event):
-    if db_event.creating_method != eventdata.CM_AUTO_ATTENDEE:
+    if db_event.creating_method not in [eventdata.CM_AUTO_ATTENDEE, eventdata.CM_AUTO]:
         return
 
     logging.info('MDBE: Check on event %s: %s', db_event.id, db_event.creating_method)
     from event_scraper import auto_add
     from nlp import event_classifier
     classified_event = event_classifier.get_classified_event(db_event.fb_event)
-    good_event = auto_add.is_good_event_by_attendees(fbl, db_event.fb_event, classified_event=classified_event)
-    if not good_event:
-        good_text_event = auto_add.is_good_event_by_text(db_event.fb_event, classified_event)
-        if good_text_event:
-            db_event.creating_method = eventdata.CM_AUTO
+    good_text_event = auto_add.is_good_event_by_text(db_event.fb_event, classified_event)
+    if good_text_event:
+        db_event.creating_method = eventdata.CM_AUTO
+        yield op.db.Put(db_event)
+    else:
+        good_event = auto_add.is_good_event_by_attendees(fbl, db_event.fb_event, classified_event=classified_event)
+        if good_event:
+            db_event.creating_method = eventdata.CM_AUTO_ATTENDEE
             yield op.db.Put(db_event)
         else:
             logging.info('MDBE: Oops, found accidentally added event %s: %s', db_event.fb_event_id, db_event.name)
             mr.increment('deleting-bad-event')
-            result = '%s: %s' % (db_event.fb_event_id, db_event.name)
+            result = '%s: %s\n' % (db_event.fb_event_id, db_event.name)
             yield result.encode('utf-8')
 
-            search.delete_from_fulltext_search_index(db_event.fb_event_id)
-            yield op.db.Delete(db_event)
-            display_event = search.DisplayEvent.get_by_id(db_event.fb_event_id)
-            yield op.db.Delete(display_event)
+            #search.delete_from_fulltext_search_index(db_event.fb_event_id)
+            #yield op.db.Delete(db_event)
+            #display_event = search.DisplayEvent.get_by_id(db_event.fb_event_id)
+            #yield op.db.Delete(display_event)
 
 map_maybe_delete_bad_event = fb_mapreduce.mr_wrap(yield_maybe_delete_bad_event)
 maybe_delete_bad_event = fb_mapreduce.nomr_wrap(yield_maybe_delete_bad_event)
@@ -309,7 +284,6 @@ class DeleteBadAutoAddsHandler(base_servlet.EventOperationHandler):
             name='Delete Bad Autoadds',
             handler_spec='events.event_reloading_tasks.map_maybe_delete_bad_event',
             entity_kind='events.eventdata.DBEvent',
-            filters=[('creating_method', '=', eventdata.CM_AUTO_ATTENDEE)],
             queue=queue,
             output_writer_spec='mapreduce.output_writers.GoogleCloudStorageOutputWriter',
             output_writer={
