@@ -15,13 +15,12 @@ CITY_GEOHASH_PRECISIONS = range(
 
 NEARBY_DISTANCE_KM = 100 # km of distance to nearest "scene" a user will identify with
 
-def get_nearby_cities(points, only_populated=False):
+def get_nearby_cities(points, only_populated=False, country=None):
     # TODO(lambert): we should cache this entire function. use lowercase of location to determine cache key. Using DB cache too.
     logging.info("search location is %s", points)
     # rather than return the nearest city (Sunnyvale, San Jose, etc)
     # try to find the largest city within a certain range to give us good groupings for the "scene" name of a user/event.
-    precision = geohash_math.get_geohash_bits_for_km(math.get_distance(points[0], points[1]))
-    geohashes = geohash_math.get_all_geohashes_for(points, precision)
+    geohashes = geohash_math.get_all_geohashes_for(points)
     # This can return a bunch. In theory, it'd be nice to order by population, but that doesn't seem to work...
     if only_populated:
         cities = City.gql("where geohashes in :geohashes and has_nearby_events = :nearby_events", geohashes=geohashes, nearby_events=True).fetch(1000)
@@ -29,6 +28,8 @@ def get_nearby_cities(points, only_populated=False):
         cities = City.gql("where geohashes in :geohashes", geohashes=geohashes).fetch(1000)
     if points[0] != points[1]:
         cities = [x for x in cities if math.contains(points, (x.latitude, x.longitude))]
+    if country:
+        cities = [x for x in cities if x.country_name == country]
     return cities
 
 def get_largest_cities(limit=5):
@@ -65,14 +66,10 @@ class City(db.Model):
             return self.city_name
         full_country = names.get_country_name(self.country_name)
         city_name = '%s, %s' % (self.city_name, full_country)
-        if city_name == 'San Jose, United States':
-            city_name = 'San Francisco, United States'
-        if city_name == 'San Francisco, United States':
-            city_name = 'San Francisco Bay Area, United States'
-        if city_name == 'Tijuana, Mexico':
-            city_name = 'San Diego, United States'
         return city_name
 
+    def __repr__(self):
+        return 'City(%s, %s, %s (%s, %s) Pop %s, hashes: %s)' % (self.city_name, self.state_name, self.country_name, self.latitude, self.longitude, self.population, self.geohashes)
 
 def import_cities():
     # Download this file from http://download.geonames.org/export/dump/

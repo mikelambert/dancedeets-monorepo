@@ -251,6 +251,9 @@ def _update_geodata(db_event, location_info, disable_updates):
         logging.info('NO EVENT LOCATION1: %s', db_event.id)
         logging.info('NO EVENT LOCATION2: %s', location_info)
         logging.info('NO EVENT LOCATION3: %s', location_info.geocode)
+
+    db_event.country = location_info.geocode.country() if location_info.geocode else None
+
     if (
         # The event has moved cities
         location_info.actual_city() != db_event.actual_city_name or
@@ -264,8 +267,13 @@ def _update_geodata(db_event, location_info, disable_updates):
         False
     ):
         if location_info.geocode:
-            southwest, northeast = math.expand_bounds((location_info.geocode.latlng(), location_info.geocode.latlng()), cities.NEARBY_DISTANCE_KM)
-            nearby_cities = cities.get_nearby_cities((southwest, northeast))
+            # We shrink it by two:
+            # An event in Palo Alto could be thrown into a San Jose bucket
+            # But an event in San Francisco, looking for "people who would go to SF event",
+            # would want to include Palo Alto in its search radius....so would need to go 2x to San Jose
+            # So instead of searching 200km in popular people for cities...let's try to be more specific about which person goes to which city
+            southwest, northeast = math.expand_bounds((location_info.geocode.latlng(), location_info.geocode.latlng()), cities.NEARBY_DISTANCE_KM/2)
+            nearby_cities = cities.get_nearby_cities((southwest, northeast), country=db_event.country)
             db_event.nearby_city_names = [city.display_name() for city in nearby_cities]
             city = cities.get_largest_city(nearby_cities)
             # We check country_name as a proxy for determining if this is a Real City or a Dummy City
@@ -290,5 +298,3 @@ def _update_geodata(db_event, location_info, disable_updates):
 
     # This only grabs the very first result from the raw underlying geocode request, since that's all that's used to construct the Geocode object in memory
     db_event.location_geocode = gmaps_api.convert_geocode_to_json(location_info.geocode)
-
-    db_event.country = location_info.geocode.country() if location_info.geocode else None
