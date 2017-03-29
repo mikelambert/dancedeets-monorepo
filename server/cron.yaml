@@ -1,19 +1,19 @@
 cron:
 # These rely on 701004
 - description: reload future facebook event data
-  url: /tasks/reload_events?user_id=701004&allow_cache=0&time_period=FUTURE&load_attending=0&disable_updates=
+  url: /tasks/reload_events?user_id=701004&allow_cache=0&time_period=FUTURE&load_attending=0&disable_updates=&queue=slow-queue
   schedule: every 2 hours
 - description: reload future facebook attending event data
-  url: /tasks/reload_events?user_id=701004&allow_cache=0&time_period=FUTURE&load_attending=1&disable_updates=
+  url: /tasks/reload_events?user_id=701004&allow_cache=0&time_period=FUTURE&load_attending=1&disable_updates=&queue=slow-queue
   schedule: every 5 hours
 #
 # These load potential events from all the various pages/groups out there
 - description: load potential events from special users and sources
-  url: /tasks/scrape_sources_and_process_events?user_id=dummy
+  url: /tasks/scrape_sources_and_process_events?user_id=dummy&queue=slow-queue
   schedule: every 24 hours
 # These also load potential events, but from the /events of our logged-in users
 - description: load potential events from our users
-  url: /tasks/load_all_potential_events?user_id=dummy
+  url: /tasks/load_all_potential_events?user_id=dummy&queue=slow-queue
   schedule: every 8 hours
 #
 # These run through all our collected potential events and reload them, checking for what should be included.
@@ -23,12 +23,12 @@ cron:
 # We could run it with expiry_days, but what's the point of re-running a classifier with cached data?
 # Instead, let's run it with no cache, reloading all fb event/attending data, to then re-classify.
 - description: auto-add events
-  url: /tools/auto_add_potential_events?user_id=dummy&past_event=0&allow_cache=0
+  url: /tools/auto_add_potential_events?user_id=dummy&past_event=0&allow_cache=0&queue=fast-queue
   schedule: every 12 hours
 #
 #
 - description: reload user data
-  url: /tasks/reload_all_users?user_id=dummy&allow_cache=0
+  url: /tasks/reload_all_users?user_id=dummy&allow_cache=0&queue=slow-queue
   schedule: every 24 hours
 - description: email users about upcoming events
   url: /tasks/email_all_users?user_id=dummy
@@ -49,7 +49,7 @@ cron:
   url: /tasks/crawl_and_index_classes
   schedule: every 6 hours
 - description: calculate periodic statistics and rankings
-  url: /tasks/compute_rankings
+  url: /tasks/compute_rankings # runs on slow-queue
   schedule: every 24 hours
 #- description: reload past facebook event data
 #  url: /tasks/reload_events?user_id=dummy&allow_cache=0&time_period=FUTURE
