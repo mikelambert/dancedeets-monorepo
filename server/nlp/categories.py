@@ -88,6 +88,7 @@ ANY_LITEFEET = Any(
 
 ANY_FLEX = Any(
     keywords.STYLE_FLEX,
+    keywords.FLEX_KEYWORD[grammar.STRONG_WEAK],
 )
 
 ANY_BEBOP = Any(
