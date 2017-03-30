@@ -138,6 +138,8 @@ load_fb_event = fb_mapreduce.nomr_wrap(yield_load_fb_event)
 def yield_load_fb_event_attending(fbl, all_events):
     db_events = [x for x in all_events if x.is_fb_event]
     fbl.get_multi(fb_api.LookupEventAttending, [x.fb_event_id for x in db_events], allow_fail=True)
+    # We load these too, just in case we want to check up on our auto-attendee criteria for events
+    fbl.get_multi(fb_api.LookupEventAttendingMaybe, [x.fb_event_id for x in db_events], allow_fail=True)
 map_load_fb_event_attending = fb_mapreduce.mr_wrap(yield_load_fb_event_attending)
 load_fb_event_attending = fb_mapreduce.nomr_wrap(yield_load_fb_event_attending)
 
