@@ -1,6 +1,6 @@
+import datetime
 import json
 import logging
-import os
 import random
 import site
 import sys
@@ -208,6 +208,7 @@ class BuildPeopleRanking(beam.DoFn):
         ranking['city'] = key['city']
         ranking['category'] = key['category']
         ranking['top_people_json'] = json.dumps(top_n_counts)
+        ranking['created_date'] = datetime.datetime.now()
         yield ranking
 
 class WriteToDatastoreSingle(beam.DoFn):

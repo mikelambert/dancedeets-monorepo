@@ -16,6 +16,7 @@ class PeopleRanking(ndb.Model):
     person_type = ndb.StringProperty()
     city = ndb.StringProperty()
     category = ndb.StringProperty()
+    created_date = ndb.DateTimeProperty(auto_now=True)
     top_people_json = ndb.JsonProperty()
     # top_people_json is [['id: name', count], ...]
 
