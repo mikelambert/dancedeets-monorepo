@@ -38,11 +38,10 @@ DANCE = Name('DANCE', Any(
 GOOD_DANCE = Name('GOOD_DANCE', Any(
     DANCE,
     keywords.VOGUE,
-    commutative_connected(Any(keywords.HOUSE, keywords.FREESTYLE), keywords.EASY_DANCE),
-    commutative_connected(keywords.AMBIGUOUS_DANCE_MUSIC, keywords.EASY_DANCE),
+    # This may seem strange to list 'dance dance' essentially twice,
+    # but necessary for "battles de danses breakdance" or 'afro-house dance workshop'.
+    commutative_connected(Any(keywords.HOUSE, keywords.FREESTYLE, keywords.AMBIGUOUS_DANCE_MUSIC, DANCE), keywords.EASY_DANCE),
     commutative_connected(keywords.STREET, Any(keywords.EASY_CHOREO, keywords.EASY_DANCE)),
-    # This may seem strange to list it essentially twice ,but necessary for "battles de danses breakdance"
-    commutative_connected(keywords.EASY_DANCE, DANCE),
 ))
 
 DECENT_DANCE = Name('DECENT_DANCE', Any(

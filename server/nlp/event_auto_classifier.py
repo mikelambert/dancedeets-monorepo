@@ -306,7 +306,7 @@ def is_workshop(classified_event):
     has_good_crew = classified_event.processed_text.has_token(rules.MANUAL_DANCER[grammar.STRONG])
 
     is_right_name_wrong_kind = classified_event.processed_text.has_token(rules.RIGHT_NAME_WRONG_KIND)
-    if is_right_name_wrong_kind:
+    if not has_good_dance and is_right_name_wrong_kind:
         return (False, 'nothing')
 
     # print has_class_title

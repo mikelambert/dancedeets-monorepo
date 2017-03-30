@@ -446,6 +446,7 @@ FREESTYLE = Name('FREESTYLE', Any(
 
 STREET = Name('STREET', Any(
     'street',
+    'urban',
     u'스트리트', # korean street
 ))
 
