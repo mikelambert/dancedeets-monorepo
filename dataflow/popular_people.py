@@ -199,7 +199,7 @@ class BuildPeopleRanking(beam.DoFn):
     def start_bundle(self):
         self.client = datastore.Client()
 
-    def process(self, (key, top_n_counts)):
+    def process(self, (key, top_n_counts), timestamp):
         key_name = '%s: %s: %s' % (key['person_type'], key['city'], key['category'])
         db_key = self.client.key('PeopleRanking', key_name)
         ranking = datastore.Entity(key=db_key, exclude_from_indexes=['top_people_json'])
@@ -208,7 +208,7 @@ class BuildPeopleRanking(beam.DoFn):
         ranking['city'] = key['city']
         ranking['category'] = key['category']
         ranking['top_people_json'] = json.dumps(top_n_counts)
-        ranking['created_date'] = datetime.datetime.now()
+        ranking['created_date'] = timestamp
         yield ranking
 
 class WriteToDatastoreSingle(beam.DoFn):
@@ -235,6 +235,9 @@ def read_from_datastore(project, pipeline_options):
         q.key_filter(client.key('DBEvent', '99'), '>')
         q.key_filter(client.key('DBEvent', 'A'), '<')
 
+    # Let's build a timestamp to save all our objects with
+    timestamp = datetime.datetime.now()
+
     # Set up our map/reduce pipeline
     output = (p
         | 'read from datastore' >> ReadFromDatastore(project, query._pb_from_query(q))
@@ -247,7 +250,7 @@ def read_from_datastore(project, pipeline_options):
         | 'group by city-category' >> beam.GroupByKey()
         | 'count by city-category' >> beam.Map(CountPeopleInfos)
         # And save it all back to the database
-        | 'generate database record' >> beam.ParDo(BuildPeopleRanking())
+        | 'generate database record' >> beam.ParDo(BuildPeopleRanking(), timestamp)
     )
     if not run_locally:
         output | 'write to datastore (unbatched)' >> beam.ParDo(WriteToDatastoreSingle())
