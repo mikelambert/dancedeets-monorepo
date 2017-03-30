@@ -70,7 +70,10 @@ class City(db.Model):
         if self.city_name == 'Unknown':
             return self.city_name
         full_country = names.get_country_name(self.country_name)
-        city_name = '%s, %s' % (self.city_name, full_country)
+        if self.country_name in ['US']:
+            city_name = '%s, %s, %s' % (self.city_name, self.state_name, full_country)
+        else:
+            city_name = '%s, %s' % (self.city_name, full_country)
         return city_name
 
     def __repr__(self):
