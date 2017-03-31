@@ -330,7 +330,7 @@ class AdminEditHandler(base_servlet.BaseRequestHandler):
             self.display['fb_geocoded_address'] = ''
         self.display['ranking_city_name'] = rankings.get_ranking_location_latlng(location_info.geocode.latlng()) if location_info.geocode else 'None'
 
-        fb_event_attending_maybe = get_fb_event(self.fbl, event_id, type=fb_api.LookupEventAttendingMaybe)
+        fb_event_attending_maybe = get_fb_event(self.fbl, event_id, lookup_type=fb_api.LookupEventAttendingMaybe)
         good_event_attendee_ids, good_event_attendee_results = auto_add.is_good_event_by_attendees(self.fbl, fb_event, fb_event_attending_maybe, debug=True)
         self.display['auto_add_attendee_ids'] = sorted(good_event_attendee_ids)
         self.display['overlap_results'] = good_event_attendee_results
@@ -374,7 +374,7 @@ class AdminEditHandler(base_servlet.BaseRequestHandler):
         # We could be looking at a potential event for something that is inaccessable to our admin.
         # So we want to grab the cached value here if possible, which should exist given the admin-edit flow.
         fb_event = get_fb_event(self.fbl, event_id)
-
+        logging.info("Fetched fb_event %s", fb_event)
         if not fb_events.is_public_ish(fb_event):
             self.add_error('Cannot add secret/closed events to dancedeets!')
         self.errors_are_fatal()
@@ -398,6 +398,8 @@ def get_fb_event(fbl, event_id, lookup_type=fb_api.LookupEvent):
         data = fbl.get(lookup_type, event_id)
     except fb_api.NoFetchedDataException:
         pass
+    if data['empty']:
+        data = None
     if not data:
         db_event = eventdata.DBEvent.get_by_id(event_id)
         if db_event:
