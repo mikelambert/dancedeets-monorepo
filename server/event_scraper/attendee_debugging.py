@@ -22,8 +22,8 @@ def debug_attendee_addition_for_event(fbl, fb_event):
 
     # A certain set of dancer-attendees triggered this event to be added.
     # Let's get all the events from all the cities that contributed to the dancer-attendee list used for this event
-    latlong = auto_add.get_latlong_for_fb_event(fb_event)
-    city_names = popular_people.get_city_names_near(latlong)
+    bounds = auto_add.get_bounds_for_fb_event(fb_event)
+    city_names = popular_people._get_city_names_within(bounds)
     if city_names:
         events = eventdata.DBEvent.query(eventdata.DBEvent.city_name.IN(city_names)).fetch(num_events)
         # Only track/debug the non-auto-attendee events (ie, the ones that fed data into the classifier system)

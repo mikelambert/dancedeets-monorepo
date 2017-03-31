@@ -61,19 +61,18 @@ def load_from_dev(city_names, attendees_only):
             rankings.append(ranking)
     return rankings
 
-def get_city_names_near(latlong):
-    if latlong == (None, None):
+def _get_city_names_within(bounds):
+    if bounds == None:
         return []
-    southwest, northeast = math.expand_bounds((latlong, latlong), cities.NEARBY_DISTANCE_KM)
-    logging.info('Looking up nearby cities to %s', latlong)
-    included_cities = cities.get_nearby_cities((southwest, northeast), only_populated=True)
+    logging.info('Looking up nearby cities to %s', bounds)
+    included_cities = cities.get_nearby_cities(bounds, only_populated=True)
     logging.info('Found %s cities', len(included_cities))
     biggest_cities = sorted(included_cities, key=lambda x: -x.population)[:10]
     city_names = [city.display_name() for city in biggest_cities]
     return city_names
 
-def get_attendees_near(latlong):
-    city_names = get_city_names_near(latlong)
+def get_attendees_within(bounds):
+    city_names = _get_city_names_within(bounds)
     logging.info('Loading PeopleRanking for top 10 cities: %s', city_names)
     if not city_names:
         return {}

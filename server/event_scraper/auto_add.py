@@ -8,8 +8,10 @@ from events import eventdata
 from events import event_locations
 from logic import popular_people
 import event_types
+from loc import math
 from nlp import event_auto_classifier
 from nlp import event_classifier
+from rankings import cities
 from util import fb_mapreduce
 from util import mr
 from . import add_entities
@@ -52,11 +54,12 @@ def get_event_attendee_ids(fbl, fb_event, fb_event_attending_maybe=None):
         return []
     return event_attendee_ids
 
-def get_latlong_for_fb_event(fb_event, check_places=False):
+def get_bounds_for_fb_event(fb_event, check_places=False):
     # We don't need google-maps latlong accuracy. Let's cheat and use the fb_event for convenience if possible...
     location = fb_event['info'].get('place', {}).get('location', {})
     if location and location.get('latitude') is not None:
         latlong = (location['latitude'], location['longitude'])
+        bounds = math.expand_bounds((latlong, latlong), cities.NEARBY_DISTANCE_KM)
     else:
         logging.info('Looking up event %s LocationInfo', fb_event['info']['id'])
         # Places textsearch lookups turn out to be 10x-expensive against our quota
@@ -64,14 +67,14 @@ def get_latlong_for_fb_event(fb_event, check_places=False):
         # It should fallback to places on un-geocodable addresses too...
         # But at least it won't try Places *in addition* to geocode lookups.
         location_info = event_locations.LocationInfo(fb_event, check_places=check_places)
-        latlong = location_info.latlong()
-    return latlong
+        bounds = location_info.geocode.latlng_bounds()
+    return bounds
 
 def get_location_style_attendees(fb_event, suspected_dance_event=False):
     if suspected_dance_event:
         logging.info('Suspected dance event, so checking place API too just in case.')
-    latlong = get_latlong_for_fb_event(fb_event, check_places=suspected_dance_event)
-    dance_attendee_styles = popular_people.get_attendees_near(latlong)
+    bounds = get_bounds_for_fb_event(fb_event, check_places=suspected_dance_event)
+    dance_attendee_styles = popular_people.get_attendees_within(bounds)
     return dance_attendee_styles
 
 def is_good_event_by_attendees(fbl, fb_event, fb_event_attending_maybe=None, classified_event=None, debug=False):
