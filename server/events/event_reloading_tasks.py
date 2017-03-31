@@ -50,7 +50,11 @@ def load_fb_events_using_backup_tokens(event_ids, allow_cache, only_if_updated, 
             fbl = user.get_fblookup()
             fbl.allow_cache = allow_cache
             try:
-                real_fb_event = fbl.get(fb_api.LookupEvent, db_event.fb_event_id)
+                fbl.request(fb_api.LookupEvent, db_event.fb_event_id)
+                fbl.request(fb_api.LookupEventAttending, db_event.fb_event_id)
+                fbl.request(fb_api.LookupEventAttendingMaybe, db_event.fb_event_id)
+                fbl.batch_fetch()
+                real_fb_event = fbl.fetched_data(fb_api.LookupEvent, db_event.fb_event_id)
             except fb_api.ExpiredOAuthToken:
                 logging.warning("User %s has expired oauth token", user.fb_uid)
             else:
@@ -96,7 +100,12 @@ def yield_load_fb_event(fbl, all_events):
     # Now process fb_events
     db_events = [x for x in all_events if x.is_fb_event]
     logging.info("loading db events %s", [db_event.fb_event_id for db_event in db_events])
+
     fbl.request_multi(fb_api.LookupEvent, [x.fb_event_id for x in db_events])
+    fbl.request_multi(fb_api.LookupEventAttending, [x.fb_event_id for x in db_events])
+    # We load these too, just in case we want to check up on our auto-attendee criteria for events
+    fbl.request_multi(fb_api.LookupEventAttendingMaybe, [x.fb_event_id for x in db_events])
+
     # fbl.request_multi(fb_api.LookupEventPageComments, [x.fb_event_id for x in db_events])
     fbl.batch_fetch()
     events_to_update = []
@@ -135,22 +144,10 @@ map_load_fb_event = fb_mapreduce.mr_wrap(yield_load_fb_event)
 load_fb_event = fb_mapreduce.nomr_wrap(yield_load_fb_event)
 
 
-def yield_load_fb_event_attending(fbl, all_events):
-    db_events = [x for x in all_events if x.is_fb_event]
-    fbl.get_multi(fb_api.LookupEventAttending, [x.fb_event_id for x in db_events], allow_fail=True)
-    # We load these too, just in case we want to check up on our auto-attendee criteria for events
-    fbl.get_multi(fb_api.LookupEventAttendingMaybe, [x.fb_event_id for x in db_events], allow_fail=True)
-map_load_fb_event_attending = fb_mapreduce.mr_wrap(yield_load_fb_event_attending)
-load_fb_event_attending = fb_mapreduce.nomr_wrap(yield_load_fb_event_attending)
-
-
 def mr_load_fb_events(fbl, display_event=False, load_attending=False, time_period=None, disable_updates=None, only_if_updated=True, queue='slow-queue'):
     if display_event:
         event_or_attending = 'Display Events'
         mr_func = 'map_resave_display_event'
-    elif load_attending:
-        event_or_attending = 'Event Attendings'
-        mr_func = 'map_load_fb_event_attending'
     else:
         event_or_attending = 'Events'
         mr_func = 'map_load_fb_event'
@@ -241,12 +238,6 @@ class DeleteBadAutoAddsHandler(base_servlet.EventOperationHandler):
 @app.route('/tasks/load_events')
 class LoadEventHandler(base_servlet.EventOperationHandler):
     event_operation = staticmethod(load_fb_event)
-
-
-@app.route('/tasks/load_event_attending')
-class LoadEventAttendingHandler(base_servlet.EventOperationHandler):
-    event_operation = staticmethod(load_fb_event_attending)
-
 
 @app.route('/tasks/reload_events')
 class ReloadEventsHandler(base_servlet.BaseTaskFacebookRequestHandler):

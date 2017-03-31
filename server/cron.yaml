@@ -2,10 +2,7 @@ cron:
 # These rely on 701004
 - description: reload future facebook event data
   url: /tasks/reload_events?user_id=701004&allow_cache=0&time_period=FUTURE&load_attending=0&disable_updates=&queue=slow-queue
-  schedule: every 2 hours
-- description: reload future facebook attending event data
-  url: /tasks/reload_events?user_id=701004&allow_cache=0&time_period=FUTURE&load_attending=1&disable_updates=&queue=slow-queue
-  schedule: every 5 hours
+  schedule: every 3 hours
 #
 # These load potential events from all the various pages/groups out there
 - description: load potential events from special users and sources
