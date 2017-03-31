@@ -136,7 +136,7 @@ def is_good_event_by_attendees(fbl, fb_event, fb_event_attending_maybe=None, cla
                 # (fraction >= 0.002 * mult and count >= 12) or
                 False
             ):
-                logging.info('Attendee-Detection-Top-100: Attendee-based classifier match: %s', reason)
+                logging.info('%s Attendee-Detection-Top-100: Attendee-based classifier match: %s', style_name, reason)
                 results[-1] += ' GOOD!'
                 good_event = overlap_ids
 
@@ -158,7 +158,7 @@ def is_good_event_by_attendees(fbl, fb_event, fb_event_attending_maybe=None, cla
                     (fraction >= 0.001 * mult and count >= 50) or
                     False
                 ):
-                    logging.info('Attendee-Detection-Top-500: Attendee-based classifier match: %s', reason)
+                    logging.info('%s Attendee-Detection-Top-500: Attendee-based classifier match: %s', style_name, reason)
                     results[-1] += ' GOOD!'
                     good_event = overlap_ids
 
