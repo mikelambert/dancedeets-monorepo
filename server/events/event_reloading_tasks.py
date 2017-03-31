@@ -193,18 +193,16 @@ def yield_maybe_delete_bad_event(fbl, db_event):
             db_event.creating_method = eventdata.CM_AUTO_ATTENDEE
             yield op.db.Put(db_event)
         else:
-            # central/south america
-            if db_event.country in ['AR', 'BO', 'BR', 'CL', 'CO', 'EC', 'FK', 'GF', 'GY', 'GY', 'PY', 'PE', 'SR', 'UY', 'VE', 'AI', 'AG', 'AW', 'BS', 'BB', 'BZ', 'BM', 'BQ', 'VG', 'KY', 'CR', 'CU', 'CW', 'DM', 'DO', 'SV', 'GL', 'GD', 'GP', 'GT', 'HT', 'HN', 'JM', 'MQ', 'MX', 'PM', 'MS', 'CW', 'KN', 'NI', 'PA', 'PR', 'BQ', 'BQ', 'SX', 'KN', 'LC', 'PM', 'VC', 'TT', 'TC']:
-                logging.info('MDB: Oops Country %s: %s: %s', db_event.country, db_event.fb_event_id, db_event.name)
-            logging.info('MDBE: Oops, found accidentally added event %s: %s', db_event.fb_event_id, db_event.name)
+            logging.info('MDBE: Oops, found accidentally added event %s: %s: %s', db_event.fb_event_id, db_event.country, db_event.name)
             mr.increment('deleting-bad-event')
-            result = '%s: %s\n' % (db_event.fb_event_id, db_event.name)
+            result = '%s: %s: %s\n' % (db_event.fb_event_id, db_event.country, db_event.name)
             yield result.encode('utf-8')
-
-            #search.delete_from_fulltext_search_index(db_event.fb_event_id)
-            #yield op.db.Delete(db_event)
-            #display_event = search.DisplayEvent.get_by_id(db_event.fb_event_id)
-            #yield op.db.Delete(display_event)
+            from search import search
+            search.delete_from_fulltext_search_index(db_event.fb_event_id)
+            yield op.db.Delete(db_event)
+            display_event = search.DisplayEvent.get_by_id(db_event.fb_event_id)
+            if display_event:
+                yield op.db.Delete(display_event)
 
 map_maybe_delete_bad_event = fb_mapreduce.mr_wrap(yield_maybe_delete_bad_event)
 maybe_delete_bad_event = fb_mapreduce.nomr_wrap(yield_maybe_delete_bad_event)
