@@ -218,7 +218,7 @@ class AdminEditHandler(base_servlet.BaseRequestHandler):
         potential_event = potential_events.PotentialEvent.get_by_key_name(fb_event_id)
         e = eventdata.DBEvent.get_by_id(fb_event_id)
         display_event = search.DisplayEvent.get_by_id(fb_event_id)
-        fb_event = self.fbl.get(fb_api.LookupEvent, fb_event_id)
+        fb_event = get_fb_event(self.fbl, fb_event_id)
         self.display['potential_event'] = potential_event
         self.display['display_event'] = display_event
         self.display['event'] = e
@@ -257,12 +257,10 @@ class AdminEditHandler(base_servlet.BaseRequestHandler):
             event_id = urls.get_event_id_from_url(self.request.get('event_url'))
         elif self.request.get('event_id'):
             event_id = self.request.get('event_id')
-        self.fbl.request(fb_api.LookupEvent, event_id, allow_cache=False)
         self.finish_preload()
 
-        try:
-            fb_event = self.fbl.fetched_data(fb_api.LookupEvent, event_id)
-        except fb_api.NoFetchedDataException:
+        fb_event = get_fb_event(self.fbl, event_id)
+        if not fb_event:
             logging.error('No fetched data for %s, showing error page', event_id)
             return self.show_barebones_page(event_id, "No fetched data")
 
@@ -374,7 +372,7 @@ class AdminEditHandler(base_servlet.BaseRequestHandler):
 
         # We could be looking at a potential event for something that is inaccessable to our admin.
         # So we want to grab the cached value here if possible, which should exist given the admin-edit flow.
-        fb_event = self.fbl.get(fb_api.LookupEvent, event_id)
+        fb_event = get_fb_event(self.fbl, event_id)
 
         if not fb_events.is_public_ish(fb_event):
             self.add_error('Cannot add secret/closed events to dancedeets!')
@@ -393,6 +391,32 @@ class AdminEditHandler(base_servlet.BaseRequestHandler):
             self.user.add_message("Changes saved!")
             return self.redirect('/events/admin_edit?event_id=%s' % event_id)
 
+def get_fb_event(fbl, event_id):
+    fb_event = None
+    try:
+        fb_event = fbl.get(fb_api.LookupEvent, event_id)
+    except fb_api.NoFetchedDataException:
+        pass
+    if not fb_event:
+        db_event = eventdata.DBEvent.get_by_id(event_id)
+        if db_event:
+            for user in users.User.get_by_ids(db_event.visible_to_fb_uids):
+                if not user:
+                    # If this user id doesn't exist in our system, then it was never an actual user
+                    # It most likely comes from the days when we could get fb events from friends-of-users
+                    continue
+                fbl = user.get_fblookup()
+                fbl.allow_cache = fbl.allow_cache
+                try:
+                    fbl.request(fb_api.LookupEvent, db_event.fb_event_id)
+                    fbl.batch_fetch()
+                    fb_event = fbl.fetched_data(fb_api.LookupEvent, db_event.fb_event_id)
+                except fb_api.ExpiredOAuthToken:
+                    logging.warning("User %s has expired oauth token", user.fb_uid)
+                else:
+                    if fb_event['empty'] != fb_api.EMPTY_CAUSE_INSUFFICIENT_PERMISSIONS:
+                        break
+    return fb_event
 
 @app.route('/events_add')
 class AddHandler(base_servlet.BaseRequestHandler):
