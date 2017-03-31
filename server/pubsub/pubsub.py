@@ -213,6 +213,9 @@ def post_event(auth_token, event_id):
     if not db_event.has_content():
         logging.warning("Failed to post event: %s, due to %s", event_id, db_event.empty_reason)
         return False
+    if (db_event.end_time or db_event.start_time) < datetime.datetime.now():
+        logging.info('Not publishing %s because it is in the past.', db_event.id)
+        return False
     _post_event(auth_token, db_event)
     return True
 
