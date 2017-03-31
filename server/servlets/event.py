@@ -330,7 +330,8 @@ class AdminEditHandler(base_servlet.BaseRequestHandler):
             self.display['fb_geocoded_address'] = ''
         self.display['ranking_city_name'] = rankings.get_ranking_location_latlng(location_info.geocode.latlng()) if location_info.geocode else 'None'
 
-        good_event_attendee_ids, good_event_attendee_results = auto_add.is_good_event_by_attendees(self.fbl, fb_event, debug=True)
+        fb_event_attending_maybe = get_fb_event(self.fbl, event_id, type=fb_api.LookupEventAttendingMaybe)
+        good_event_attendee_ids, good_event_attendee_results = auto_add.is_good_event_by_attendees(self.fbl, fb_event, fb_event_attending_maybe, debug=True)
         self.display['auto_add_attendee_ids'] = sorted(good_event_attendee_ids)
         self.display['overlap_results'] = good_event_attendee_results
 
@@ -391,13 +392,13 @@ class AdminEditHandler(base_servlet.BaseRequestHandler):
             self.user.add_message("Changes saved!")
             return self.redirect('/events/admin_edit?event_id=%s' % event_id)
 
-def get_fb_event(fbl, event_id):
-    fb_event = None
+def get_fb_event(fbl, event_id, lookup_type=fb_api.LookupEvent):
+    data = None
     try:
-        fb_event = fbl.get(fb_api.LookupEvent, event_id)
+        data = fbl.get(lookup_type, event_id)
     except fb_api.NoFetchedDataException:
         pass
-    if not fb_event:
+    if not data:
         db_event = eventdata.DBEvent.get_by_id(event_id)
         if db_event:
             for user in users.User.get_by_ids(db_event.visible_to_fb_uids):
@@ -408,15 +409,15 @@ def get_fb_event(fbl, event_id):
                 fbl = user.get_fblookup()
                 fbl.allow_cache = fbl.allow_cache
                 try:
-                    fbl.request(fb_api.LookupEvent, db_event.fb_event_id)
+                    fbl.request(lookup_type, db_event.fb_event_id)
                     fbl.batch_fetch()
-                    fb_event = fbl.fetched_data(fb_api.LookupEvent, db_event.fb_event_id)
+                    data = fbl.fetched_data(lookup_type, db_event.fb_event_id)
                 except fb_api.ExpiredOAuthToken:
                     logging.warning("User %s has expired oauth token", user.fb_uid)
                 else:
-                    if fb_event['empty'] != fb_api.EMPTY_CAUSE_INSUFFICIENT_PERMISSIONS:
+                    if data['empty'] != fb_api.EMPTY_CAUSE_INSUFFICIENT_PERMISSIONS:
                         break
-    return fb_event
+    return data
 
 @app.route('/events_add')
 class AddHandler(base_servlet.BaseRequestHandler):
