@@ -197,14 +197,18 @@ def classify_events(fbl, pe_list, fb_list):
 
         new_pe_list.append(pe)
         new_fb_list.append(fb_event)
+    return really_classify_events(fbl, new_pe_list, new_fb_list)
 
-    logging.info('Filtering out already-added events and others, have %s remaining events to run the classifier on', len(new_pe_list))
-    fb_event_ids = [x.fb_event_id for x in new_pe_list]
+def really_classify_events(fbl, new_pe_list, new_fb_list):
+    if not new_pe_list:
+        new_pe_list = [None] * len(new_fb_list)
+    logging.info('Filtering out already-added events and others, have %s remaining events to run the classifier on', len(new_fb_list))
+    fb_event_ids = [x['info']['id'] for x in new_fb_list]
     fb_attending_maybe_list = fbl.get_multi(fb_api.LookupEventAttendingMaybe, fb_event_ids, allow_fail=True)
 
     results = []
     for pe, fb_event, fb_event_attending_maybe in zip(new_pe_list, new_fb_list, fb_attending_maybe_list):
-        event_id = pe.fb_event_id
+        event_id = fb_event['info']['id']
         logging.info('Is Good Event By Text: %s: Checking...', event_id)
         classified_event = event_classifier.get_classified_event(fb_event)
         auto_add_result = event_auto_classifier.is_auto_add_event(classified_event)
@@ -224,11 +228,12 @@ def classify_events(fbl, pe_list, fb_list):
             logging.info('Is Good Event By Attendees: %s: %s', event_id, good_event)
             method = eventdata.CM_AUTO_ATTENDEE
         if good_event:
-            result = '+%s\n' % '\t'.join((pe.fb_event_id, fb_event['info'].get('name', '')))
+            result = '+%s\n' % '\t'.join((event_id, fb_event['info'].get('name', '')))
             try:
-                logging.info('VTFI %s: Adding event %s, due to pe-invite-ids: %s', event_id, event_id, pe.get_invite_uids())
-                e = add_entities.add_update_event(fb_event, fbl, visible_to_fb_uids=pe.get_invite_uids(), creating_method=method)
-                pe2 = potential_events.PotentialEvent.get_by_key_name(pe.fb_event_id)
+                invite_ids = pe.get_invite_uids() if pe else []
+                logging.info('VTFI %s: Adding event %s, due to pe-invite-ids: %s', event_id, event_id, invite_ids)
+                e = add_entities.add_update_event(fb_event, fbl, visible_to_fb_uids=invite_ids, creating_method=method)
+                pe2 = potential_events.PotentialEvent.get_by_key_name(event_id)
                 pe2.looked_at = True
                 pe2.auto_looked_at = True
                 pe2.put()
@@ -240,16 +245,16 @@ def classify_events(fbl, pe_list, fb_list):
                 else:
                     mr.increment('auto-added-dance-events-future')
             except fb_api.NoFetchedDataException as e:
-                logging.error("Error adding event %s, no fetched data: %s", pe.fb_event_id, e)
+                logging.error("Error adding event %s, no fetched data: %s", event_id, e)
             except add_entities.AddEventException as e:
-                logging.warning("Error adding event %s, no fetched data: %s", pe.fb_event_id, e)
+                logging.warning("Error adding event %s, no fetched data: %s", event_id, e)
         auto_notadd_result = event_auto_classifier.is_auto_notadd_event(classified_event, auto_add_result=auto_add_result)
         if auto_notadd_result[0]:
-            pe2 = potential_events.PotentialEvent.get_by_key_name(pe.fb_event_id)
+            pe2 = potential_events.PotentialEvent.get_by_key_name(event_id)
             pe2.looked_at = True
             pe2.auto_looked_at = True
             pe2.put()
-            result = '-%s\n' % '\t'.join(unicode(x) for x in (pe.fb_event_id, fb_event['info'].get('name', '')))
+            result = '-%s\n' % '\t'.join(unicode(x) for x in (event_id, fb_event['info'].get('name', '')))
             results.append(result)
             mr.increment('auto-notadded-dance-events')
     return results
