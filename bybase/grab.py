@@ -39,11 +39,11 @@ def get_json(last_id=None):
                 continue
         events = json.loads(event_data)
         print 'Got %s results' % len(events)
+        last_id = events[-1]['id']
+        all_events.extend(events)
         if len(events) < page_size:
             print 'Got less results than requested, reached the end'
             break
-        last_id = events[-1]['id']
-        all_events.extend(events)
     return all_events, not errored
 
 all_events, success = get_json()
