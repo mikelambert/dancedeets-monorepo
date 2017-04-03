@@ -17,6 +17,7 @@ print data
 def get_json(last_id=None):
     all_events = []
     page_size = 1000
+    errored = False
     while True:
         args = {
             'page_size': page_size,
@@ -30,20 +31,20 @@ def get_json(last_id=None):
             event_data = urllib2.urlopen(url, timeout=60).read()
         except urllib2.HTTPError as e:
             print 'Got Error:', e
-            new_page_size = page_size / 3
-            if new_page_size == 0 and page_size > 1:
-                page_size = 1
-            else:
-                page_size = new_page_size
-            if page_size == 0:
+            if page_size == 1:
+                errored = True
                 break
-            continue
+            else:
+                page_size = page_size / 5 + 1
+                continue
         events = json.loads(event_data)
-        if not events:
+        print 'Got %s results' % len(events)
+        if len(events) < page_size:
+            print 'Got less results than requested, reached the end'
             break
         last_id = events[-1]['id']
         all_events.extend(events)
-    return all_events, page_size != 0
+    return all_events, not errored
 
 all_events, success = get_json()
 if not success:
