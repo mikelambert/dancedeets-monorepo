@@ -199,7 +199,7 @@ def classify_events(fbl, pe_list, fb_list):
         new_fb_list.append(fb_event)
     return really_classify_events(fbl, new_pe_list, new_fb_list)
 
-def really_classify_events(fbl, new_pe_list, new_fb_list):
+def really_classify_events(fbl, new_pe_list, new_fb_list, allow_posting=True):
     if not new_pe_list:
         new_pe_list = [None] * len(new_fb_list)
     logging.info('Filtering out already-added events and others, have %s remaining events to run the classifier on', len(new_fb_list))
@@ -232,7 +232,7 @@ def really_classify_events(fbl, new_pe_list, new_fb_list):
             try:
                 invite_ids = pe.get_invite_uids() if pe else []
                 logging.info('VTFI %s: Adding event %s, due to pe-invite-ids: %s', event_id, event_id, invite_ids)
-                e = add_entities.add_update_event(fb_event, fbl, visible_to_fb_uids=invite_ids, creating_method=method)
+                e = add_entities.add_update_event(fb_event, fbl, visible_to_fb_uids=invite_ids, creating_method=method, allow_posting=allow_posting)
                 pe2 = potential_events.PotentialEvent.get_by_key_name(event_id)
                 pe2.looked_at = True
                 pe2.auto_looked_at = True
@@ -288,3 +288,8 @@ def mr_classify_potential_events(fbl, past_event, dancey_only):
             'bucket_name': 'dancedeets-hrd.appspot.com',
         },
     )
+
+def maybe_add_events(fbl, event_ids):
+    fb_events = fbl.get_multi(fb_api.LookupEvent, event_ids)
+    fb_events = [x for x in fb_events if x]
+    return really_classify_events(fbl, None, fb_events, allow_posting=False)
