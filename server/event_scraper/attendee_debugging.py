@@ -34,8 +34,13 @@ def debug_attendee_addition_for_event(fbl, fb_event):
     event_lookup = dict(zip(event_ids, events))
 
     # Look up a toooooooooooon of crap here, for all O(num_events) events.
-    fbl.request_multi(fb_api.LookupEventAttendingMaybe, event_ids)
-    fbl.batch_fetch()
+    try:
+        original_cache = fbl.allow_cache
+        fbl.allow_cache = True
+        fbl.request_multi(fb_api.LookupEventAttendingMaybe, event_ids)
+        fbl.batch_fetch()
+    finally:
+        fbl.allow_cache = original_cache
 
 
     # Build lookup for finding all events for a given attendee
