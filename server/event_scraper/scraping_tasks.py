@@ -21,6 +21,11 @@ class AutoAddPotentialEventsHandler(base_servlet.BaseTaskFacebookRequestHandler)
 
         auto_add.mr_classify_potential_events(self.fbl, past_event, dancey_only)
 
+
+@app.route('/tools/maybe_add_events')
+class MaybeAddEventsHandler(base_servlet.EventIdOperationHandler):
+    event_id_operation = staticmethod(auto_add.maybe_add_events)
+
 @app.route('/tools/export_sources')
 class ExportSourcesHandler(base_servlet.BaseTaskFacebookRequestHandler):
     def get(self):
