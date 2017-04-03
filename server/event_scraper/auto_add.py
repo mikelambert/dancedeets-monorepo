@@ -291,5 +291,7 @@ def mr_classify_potential_events(fbl, past_event, dancey_only):
 
 def maybe_add_events(fbl, event_ids):
     fb_events = fbl.get_multi(fb_api.LookupEvent, event_ids)
-    fb_events = [x for x in fb_events if x]
+    empty_ids = [eid for x, eid in zip(fb_events, event_ids) if x['empty']]
+    logging.info('Found empty ids: %s', empty_ids)
+    fb_events = [x for x in fb_events if x and not x['empty']]
     return really_classify_events(fbl, None, fb_events, allow_posting=False)
