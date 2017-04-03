@@ -7,7 +7,7 @@ cron:
 # These load potential events from all the various pages/groups out there
 - description: load potential events from special users and sources
   url: /tasks/scrape_sources_and_process_events?user_id=dummy&queue=slow-queue
-  schedule: every 24 hours
+  schedule: every day 0:00
 # These also load potential events, but from the /events of our logged-in users
 - description: load potential events from our users
   url: /tasks/load_all_potential_events?user_id=dummy&queue=slow-queue
@@ -26,7 +26,7 @@ cron:
 #
 - description: reload user data
   url: /tasks/reload_all_users?user_id=dummy&allow_cache=0&queue=slow-queue
-  schedule: every 24 hours
+  schedule: every day 18:00
 - description: email users about upcoming events
   url: /tasks/email_all_users?user_id=dummy
   schedule: every wednesday 15:00
@@ -47,7 +47,7 @@ cron:
   schedule: every 6 hours
 - description: calculate periodic statistics and rankings
   url: /tasks/compute_rankings # runs on slow-queue
-  schedule: every 24 hours
+  schedule: every day 10:00
 #- description: reload past facebook event data
 #  url: /tasks/reload_events?user_id=dummy&allow_cache=0&time_period=FUTURE
 #  schedule: every monday 2:00
