@@ -68,7 +68,7 @@ def get_bounds_for_fb_event(fb_event, check_places=False):
         # But at least it won't try Places *in addition* to geocode lookups.
         location_info = event_locations.LocationInfo(fb_event, check_places=check_places)
         if location_info.geocode:
-            bounds = location_info.geocode.latlng_bounds()
+            bounds = math.expand_bounds(location_info.geocode.latlng_bounds(), cities.NEARBY_DISTANCE_KM)
         else:
             bounds = None
     return bounds
