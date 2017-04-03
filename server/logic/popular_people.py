@@ -25,11 +25,12 @@ class PeopleRanking(ndb.Model):
         # '' represents 'Overall'
         return event_types.CATEGORY_LOOKUP.get(self.category, '')
 
-    def worthy_top_people(self):
-        cutoff = self.get_worthy_cutoff()
+    def worthy_top_people(self, person_index=10, cutoff=0.5):
+        return self.top_people_json
+        cutoff = self.get_worthy_cutoff(person_index, cutoff)
         return [x for x in self.top_people_json if x[1] >= cutoff]
 
-    def get_worthy_cutoff(self):
+    def get_worthy_cutoff(self, person_index, cutoff):
         # If a scene doesn't have "enough people", then the top-person
         # will be drastically different relative to the remainder in the scene.
         # So let's filter people out to ensure they're close to the top-person.
@@ -39,9 +40,9 @@ class PeopleRanking(ndb.Model):
             minimum = 2
         else:
             logging.error('Unknown person type: %s', self.person_type)
-        top_person = self.top_people_json[0]
+        top_person = self.top_people_json[person_index]
         top_person_unique_events = top_person[1]
-        return max([int(top_person_unique_events / 2), minimum])
+        return max([int(top_person_unique_events * cutoff), minimum])
 
 STYLES_SET = set(x.index_name for x in event_types.STYLES)
 
@@ -100,8 +101,6 @@ def get_attendees_within(bounds):
         logging.info('Loaded People Rankings')
         if runtime.is_local_appengine():
             for x in people_rankings:
-                if not x.worthy_top_people():
-                    continue
                 logging.info(x.key)
                 for person in x.worthy_top_people():
                     logging.info('  - %s' % person)
@@ -114,7 +113,8 @@ def get_attendees_within(bounds):
 def combine_rankings(rankings):
     groupings = {}
     for r in rankings:
-        if not r.worthy_top_people():
+        top_people = r.worthy_top_people()
+        if not top_people:
             continue
         #logging.info(r.key)
         key = (r.person_type, r.human_category)
@@ -122,7 +122,7 @@ def combine_rankings(rankings):
         groupings.setdefault(key, {})
         # Use this version below, and avoid the lookups
         people = groupings[key]
-        for person_name, count in r.worthy_top_people():
+        for person_name, count in top_people:
             if person_name in people:
                 people[person_name] += count
             else:
