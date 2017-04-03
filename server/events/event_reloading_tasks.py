@@ -169,6 +169,13 @@ def mr_load_fb_events(fbl, display_event=False, load_attending=False, time_perio
     )
 
 def yield_maybe_delete_bad_event(fbl, db_event):
+    ctx = context.get()
+    if ctx:
+        params = ctx.mapreduce_spec.mapper.params
+        allow_deletes = params['allow_deletes']
+    else:
+        allow_deletes = False
+
     if db_event.creating_method not in [eventdata.CM_AUTO_ATTENDEE, eventdata.CM_AUTO]:
         return
 
@@ -185,24 +192,27 @@ def yield_maybe_delete_bad_event(fbl, db_event):
     classified_event = event_classifier.get_classified_event(db_event.fb_event)
     good_text_event = auto_add.is_good_event_by_text(db_event.fb_event, classified_event)
     if good_text_event:
-        db_event.creating_method = eventdata.CM_AUTO
-        yield op.db.Put(db_event)
+        if db_event.creating_method != eventdata.CM_AUTO:
+            db_event.creating_method = eventdata.CM_AUTO
+            yield op.db.Put(db_event)
     else:
         good_event = auto_add.is_good_event_by_attendees(fbl, db_event.fb_event, classified_event=classified_event)
         if good_event:
-            db_event.creating_method = eventdata.CM_AUTO_ATTENDEE
-            yield op.db.Put(db_event)
+            if db_event.creating_method != eventdata.CM_AUTO_ATTENDEE:
+                db_event.creating_method = eventdata.CM_AUTO_ATTENDEE
+                yield op.db.Put(db_event)
         else:
-            logging.info('MDBE: Oops, found accidentally added event %s: %s: %s', db_event.fb_event_id, db_event.country, db_event.name)
+            logging.info('Accidentally %s added event %s: %s: %s', db_event.creating_method, db_event.fb_event_id, db_event.country, db_event.name)
             mr.increment('deleting-bad-event')
             result = '%s: %s: %s\n' % (db_event.fb_event_id, db_event.country, db_event.name)
             yield result.encode('utf-8')
-            from search import search
-            search.delete_from_fulltext_search_index(db_event.fb_event_id)
-            yield op.db.Delete(db_event)
-            display_event = search.DisplayEvent.get_by_id(db_event.fb_event_id)
-            if display_event:
-                yield op.db.Delete(display_event)
+            if allow_deletes:
+                from search import search
+                search.delete_from_fulltext_search_index(db_event.fb_event_id)
+                yield op.db.Delete(db_event)
+                display_event = search.DisplayEvent.get_by_id(db_event.fb_event_id)
+                if display_event:
+                    yield op.db.Delete(display_event)
 
 map_maybe_delete_bad_event = fb_mapreduce.mr_wrap(yield_maybe_delete_bad_event)
 maybe_delete_bad_event = fb_mapreduce.nomr_wrap(yield_maybe_delete_bad_event)
@@ -218,12 +228,17 @@ class DeleteBadAutoAddsHandler(base_servlet.EventOperationHandler):
             name = 'Delete %s Bad Autoadds' % time_period
         else:
             name = 'Delete All Bad Autoadds'
+        allow_deletes = self.request.get('allow_deletes', None) == '1'
+        extra_mapper_params = {
+            'allow_deletes': allow_deletes,
+        }
         fb_mapreduce.start_map(
             fbl=self.fbl,
             name=name,
             handler_spec='events.event_reloading_tasks.map_maybe_delete_bad_event',
             entity_kind='events.eventdata.DBEvent',
             filters=filters,
+            extra_mapper_params=extra_mapper_params,
             queue=queue,
             output_writer_spec='mapreduce.output_writers.GoogleCloudStorageOutputWriter',
             output_writer={
