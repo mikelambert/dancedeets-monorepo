@@ -67,7 +67,10 @@ def get_bounds_for_fb_event(fb_event, check_places=False):
         # It should fallback to places on un-geocodable addresses too...
         # But at least it won't try Places *in addition* to geocode lookups.
         location_info = event_locations.LocationInfo(fb_event, check_places=check_places)
-        bounds = location_info.geocode.latlng_bounds()
+        if location_info.geocode:
+            bounds = location_info.geocode.latlng_bounds()
+        else:
+            bounds = None
     return bounds
 
 def get_location_style_attendees(fb_event, suspected_dance_event=False):
