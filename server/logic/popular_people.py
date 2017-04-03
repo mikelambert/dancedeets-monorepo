@@ -25,6 +25,24 @@ class PeopleRanking(ndb.Model):
         # '' represents 'Overall'
         return event_types.CATEGORY_LOOKUP.get(self.category, '')
 
+    def worthy_top_people(self):
+        cutoff = self.get_worthy_cutoff()
+        return [x for x in self.top_people_json if x[1] >= cutoff]
+
+    def get_worthy_cutoff(self):
+        # If a scene doesn't have "enough people", then the top-person
+        # will be drastically different relative to the remainder in the scene.
+        # So let's filter people out to ensure they're close to the top-person.
+        if self.person_type == 'ATTENDEE':
+            minimum = 3
+        elif self.person_type == 'ADMIN':
+            minimum = 2
+        else:
+            logging.error('Unknown person type: %s', self.person_type)
+        top_person = self.top_people_json[0]
+        top_person_unique_events = top_person[1]
+        return max([int(top_person_unique_events / 2), minimum])
+
 STYLES_SET = set(x.index_name for x in event_types.STYLES)
 
 def get_people_rankings_for_city_names(city_names, attendees_only=False):
@@ -54,6 +72,7 @@ def load_from_dev(city_names, attendees_only):
 
         for result in q.fetch(100):
             ranking = PeopleRanking()
+            ranking.key = ndb.Key('PeopleRanking', result.key.name)
             ranking.person_type = result['person_type']
             ranking.city = result['city']
             ranking.category = result['category']
@@ -81,7 +100,11 @@ def get_attendees_within(bounds):
         logging.info('Loaded People Rankings')
         if runtime.is_local_appengine():
             for x in people_rankings:
-                logging.info(x)
+                if not x.worthy_top_people():
+                    continue
+                logging.info(x.key)
+                for person in x.worthy_top_people():
+                    logging.info('  - %s' % person)
         groupings = combine_rankings(people_rankings)
     except:
         logging.exception('Error creating combined people rankings')
@@ -91,7 +114,7 @@ def get_attendees_within(bounds):
 def combine_rankings(rankings):
     groupings = {}
     for r in rankings:
-        if not r.top_people_json:
+        if not r.worthy_top_people():
             continue
         #logging.info(r.key)
         key = (r.person_type, r.human_category)
@@ -99,7 +122,7 @@ def combine_rankings(rankings):
         groupings.setdefault(key, {})
         # Use this version below, and avoid the lookups
         people = groupings[key]
-        for person_name, count in r.top_people_json:
+        for person_name, count in r.worthy_top_people():
             if person_name in people:
                 people[person_name] += count
             else:
