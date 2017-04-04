@@ -50,6 +50,9 @@ all_events, success = get_json()
 if not success:
     result, success = get_json(11530)
     all_events.extend(result)
+    if not success:
+        result, success = get_json(1168)
+        all_events.extend(result)
 
 d = datetime.datetime.now().strftime("%Y-%m-%dT%H:%M:%S")
 filename = 'events-%s.json' % (d)
