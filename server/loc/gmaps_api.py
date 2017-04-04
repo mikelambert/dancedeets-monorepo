@@ -60,9 +60,12 @@ class GMapsGeocode(_GMapsResult):
         return self.get_component('country', long=long)
 
     def latlng_bounds(self):
-        viewport = self.json_data['geometry']['viewport']
-        northeast = (viewport['northeast']['lat'], viewport['northeast']['lng'])
-        southwest = (viewport['southwest']['lat'], viewport['southwest']['lng'])
+        if 'viewport' in self.json_data['geometry']:
+            viewport = self.json_data['geometry']['viewport']
+            northeast = (viewport['northeast']['lat'], viewport['northeast']['lng'])
+            southwest = (viewport['southwest']['lat'], viewport['southwest']['lng'])
+        else:
+            northeast = southwest = self.latlng()
         return northeast, southwest
 
     def copy(self):
