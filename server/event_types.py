@@ -56,6 +56,7 @@ LITEFEET = Style('LITEFEET', 'Litefeet')
 FLEX = Style('FLEX', 'Flexing')
 BEBOP = Style('BEBOP', 'Bebop')
 ALLSTYLE = Style('ALLSTYLE', 'All-Styles')
+KIDS = Style('KIDS', 'Kids')
 
 STYLES = [
     BREAK,
@@ -72,6 +73,7 @@ STYLES = [
     FLEX,
     BEBOP,
     ALLSTYLE,
+    KIDS,
 ]
 
 CATEGORY_LOOKUP = dict([(x.index_name, x.public_name) for x in STYLES + EVENT_TYPES])

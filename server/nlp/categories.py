@@ -111,6 +111,10 @@ ANY_VOGUE = Any(
     keywords.EASY_VOGUE,
 )
 
+ANY_KIDS = Any(
+    keywords.KIDS,
+)
+
 STRICT_STYLES = {
     event_types.BREAK: ANY_BREAK,
     event_types.POP: ANY_POP,
@@ -143,6 +147,7 @@ STYLES = {
     event_types.BEBOP: ANY_BEBOP,
     event_types.ALLSTYLE: ANY_ALLSTYLE,
     event_types.VOGUE: ANY_VOGUE,
+    event_types.KIDS: ANY_KIDS,
 }
 
 ANY_BATTLE = Any(

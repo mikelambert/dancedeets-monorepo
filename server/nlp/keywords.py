@@ -1297,3 +1297,46 @@ ROMANCE = Name('ROMANCE', Any(
     'di', 'i', 'e', 'con', # italian
     "l'\w*", 'le', 'et', 'une', 'avec', u'à', 'pour', # french
 ))
+
+KIDS = Name('KIDS', Any(
+    'kid\W?s?',
+    'child(?:ren)?\W?s?',
+    'students?',
+    'high\W?school',
+    'college',
+    'university',
+    'under\W?\d+',
+    u'キッズ', # japanese kids
+    u'子供', # japanese kids
+    u'学生', # japanese students
+    u'高校', # japanese high school
+    u'カレッジ', # japanese college
+    u'大学', # japanese university
+    u'歳以下', # japanese/chinese under-age
+    u'孩子們?', # chinese kids
+    u'兒童', # chinese child
+    u'學生們?', # chinese students
+    u'中學', # chinese high school
+    u'學院', # chinese college
+    u'大學', # chinese university
+    u'아이들', # korean kids
+    u'어린이', # korean kids
+    u'재?학생', # korean students
+    u'고등학교', # korean high school
+    u'칼리지', # korean college
+    u'대학', # korean university
+    u'세 미만', # korean under-age
+    'enfants?', # french kids
+    u'étudiant', # french students
+    u'élèves', # french students
+    u'école secondaire', # french high school
+    u'université', # french college/university
+    u'moins de\W?\d+\W?ans', # french under-age
+    'ragazz[io]', # italian kid
+    'bambin[io]', # italian kids
+    'alunn[io]', # italian student
+    'student[io]', # italian student
+    'scuola superiore', # italian high school
+    u'università', # italian university
+    'sotto i\W?\d+', # italian under-age
+))
