@@ -6,4 +6,5 @@ export REMOTE_IMAGE=gcr.io/dancedeets-hrd/$NAME
 time docker build -t $LOCAL_IMAGE .
 docker tag $LOCAL_IMAGE $REMOTE_IMAGE
 time gcloud docker -- push $REMOTE_IMAGE
-time gcloud app deploy --quiet --image-url $REMOTE_IMAGE
+time gcloud app deploy --quiet --image-url $REMOTE_IMAGE batch.yaml &
+time gcloud app deploy --quiet --image-url $REMOTE_IMAGE app.yaml

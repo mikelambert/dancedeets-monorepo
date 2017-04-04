@@ -7,14 +7,15 @@ from pipeline import util as pipeline_util
 
 def _get_task_host():
     default_host = os.environ["DEFAULT_VERSION_HOSTNAME"]
-    module = os.environ["CURRENT_MODULE_ID"]
-    if os.environ["CURRENT_MODULE_ID"] == "default":
+    module = _get_task_target()
+    if module == "default":
         return "%s" % (default_host)
     return "%s.%s" % (module, default_host)
 
 
 def _get_task_target():
     module = os.environ["CURRENT_MODULE_ID"]
+    module = 'batch'
     return module
 
 

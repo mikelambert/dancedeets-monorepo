@@ -1,0 +1,31 @@
+vm: true
+runtime: custom
+threadsafe: true
+api_version: 1
+service: batch
+
+automatic_scaling:
+  min_num_instances: 1
+  cpu_utilization:
+    target_utilization: 0.8
+
+vm_settings:
+  machine_type: n1-standard-1
+
+handlers:
+- url: /_pipeline(/.*)?
+  script: pipeline_wrapper._APP
+- url: /_ah/queue/deferred
+  script: google.appengine.ext.deferred.application
+- url: /mapreduce/worker_callback.*
+  script: main.application
+  login: admin
+- url: /mapreduce(/.*)?
+  script: mapreduce.main.APP
+  login: admin
+
+skip_files:
+# This is here so that the GAE dev_appserver's mtime_watcher will ignore this directory
+# and therefore not complain about 'too many files'. It's different from the other lines,
+# which are intended to keep files from getting pushed to the GAE server.
+- .*node_modules

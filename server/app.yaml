@@ -5,7 +5,7 @@ api_version: 1
 service: default
 
 manual_scaling:
-  instances: 8
+  instances: 2
 
 # At some point, we must swap vm_settings for resources
 # And change runtime form 'vm' to 'custom'
@@ -40,8 +40,6 @@ handlers:
 - url: /_ah/queue/deferred
   script: google.appengine.ext.deferred.application
   login: admin
-- url: /_ah/stats.*
-  script: google.appengine.ext.appstats.ui.app
 - url: /_ah/remote_api(/.*)?
   script: google.appengine.ext.remote_api.handler.application
 - url: /tools/.*
@@ -74,43 +72,8 @@ handlers:
 - url: .*
   script: main.application
 
-admin_console:
-  pages:
-  - name: Appstats
-    url: /_ah/stats
-
 skip_files:
-- ^(.*/)?#.*#
-- ^(.*/)?.*~
-- ^(.*/)?.*\.py[co]
-- ^(.*/)?.*/RCS/.*
-- ^(.*/)?\..*
-- ^(.*/)?.*\.db
-- ^(.*/)?.*\.csv
-- ^(.*/)?test_data(/.*)?
-- ^.git(/.*)?
-- ^lib-local(/.*)?
-- ^local_data(/.*)?
-- ^local_data2(/.*)?
-- ^local_data3(/.*)?
-- ^download(/.*)?
-- ^node_modules(/.*)?
-- ^node_server/node_modules(/.*)?
-- ^snapshotted(/.*)?
-- ^scratch(/.*)?
-- ^grammar-processed.*
-- ^full-logs.txt
-- ^r/(.*)
-- ^s/(.*)
-- ^snapshotted(/.*)?
-- ^tmp(/.*)?
-- ^build(/.*)?
 # This is here so that the GAE dev_appserver's mtime_watcher will ignore this directory
 # and therefore not complain about 'too many files'. It's different from the other lines,
 # which are intended to keep files from getting pushed to the GAE server.
 - .*node_modules
-#- ^(.*/)?app\.yaml
-#- ^(.*/)?app\.yml
-#- ^(.*/)?index\.yaml
-#- ^(.*/)?index\.yml
-#- ^(.*/)?.*\.spt
