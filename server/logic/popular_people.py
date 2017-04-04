@@ -47,8 +47,6 @@ class PeopleRanking(ndb.Model):
         top_person_unique_events = top_person[1]
         return max([int(top_person_unique_events * cutoff), minimum])
 
-STYLES_SET = set(x.index_name for x in event_types.STYLES)
-
 def get_people_rankings_for_city_names(city_names, attendees_only=False):
     if runtime.is_local_appengine():
         people_rankings = load_from_dev(city_names, attendees_only=attendees_only)

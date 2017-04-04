@@ -42,55 +42,6 @@ from apache_beam.utils.pipeline_options import PipelineOptions
 from apache_beam.utils.pipeline_options import SetupOptions
 
 
-def styles():
-    class Style(object):
-        def __init__(self, index_name, public_name):
-            self.index_name = index_name
-            self.public_name = public_name
-
-        def __repr__(self):
-            return 'Style(%s, %s)' % (self.index_name, self.public_name)
-
-        @property
-        def url_name(self):
-            return self.public_name.lower()
-
-    BREAK = Style('BREAK', 'Breaking')
-    HIPHOP = Style('HIPHOP', 'Hip-Hop')
-    HOUSE = Style('HOUSE', 'House')
-    POP = Style('POP', 'Popping')
-    LOCK = Style('LOCK', 'Locking')
-    WAACK = Style('WAACK', 'Waacking')
-    DANCEHALL = Style('DANCEHALL', 'Dancehall')
-    VOGUE = Style('VOGUE', 'Vogue')
-    KRUMP = Style('KRUMP', 'Krumping')
-    TURF = Style('TURF', 'Turfing')
-    LITEFEET = Style('LITEFEET', 'Litefeet')
-    FLEX = Style('FLEX', 'Flexing')
-    BEBOP = Style('BEBOP', 'Bebop')
-    ALLSTYLE = Style('ALLSTYLE', 'All-Styles')
-
-    STYLES = [
-        BREAK,
-        HIPHOP,
-        HOUSE,
-        POP,
-        LOCK,
-        WAACK,
-        DANCEHALL,
-        VOGUE,
-        KRUMP,
-        TURF,
-        LITEFEET,
-        FLEX,
-        BEBOP,
-        ALLSTYLE,
-    ]
-    return STYLES
-
-#TODO: Use Constants
-STYLES_SET = set(x.index_name for x in styles())
-
 TOP_N = 1000
 
 def ConvertToEntity(element):
@@ -173,7 +124,7 @@ def track_person(person_type, db_event, person, count_once_per=None):
         'city': db_event['city_name'],
     }
     yield (key, people_info)
-    for category in STYLES_SET.intersection(db_event.get('auto_categories', [])):
+    for category in db_event.get('auto_categories', []):
         key = {
             'person_type': person_type,
             'category': category,

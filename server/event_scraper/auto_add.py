@@ -97,7 +97,7 @@ def is_good_event_by_attendees(fbl, fb_event, fb_event_attending_maybe=None, cla
         logging.info('Computing Styles for Event')
         # Don't care about which style this event is in...we may misclassify it due to poor keywords
         # So instead let's check *all* the styles
-        styles = event_types.STYLES
+        styles = event_types.STYLES + event_types.EVENT_TYPES
 
         # Raise the threshold for regular un-dance-y events, for what it means to 'be a dance event'
         if suspected_dance_event:
