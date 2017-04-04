@@ -75,6 +75,9 @@ class StringProcessor(object):
         self._get_token_cache = {}
         self._has_token_cache = {}
 
+    def __repr__(self):
+        return 'StringProcessor(%r)' % self.text
+
     def tokenize(self, token):
         """Tokenizes the relevant bits of this String. Replaces all instances of the token's regex, with the token's string representation.
         """

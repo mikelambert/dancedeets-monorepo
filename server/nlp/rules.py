@@ -59,7 +59,8 @@ WRONG_BATTLE = Name('WRONG_BATTLE', Any(
 
 RIGHT_NAME_WRONG_KIND = Name('RIGHT_NAME_WRONG_KIND', Any(
     keywords.WRONG_HOUSE,
-    keywords.WRONG_LOCK
+    keywords.WRONG_LOCK,
+    keywords.WRONG_FLEX,
 ))
 
 DANCE_STYLE = Name('DANCE_STYLE',

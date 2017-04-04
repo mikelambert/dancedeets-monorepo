@@ -300,6 +300,7 @@ def is_workshop(classified_event):
 
     trimmed_text = classified_event.processed_text.delete_with_rule(rules.WRONG_CLASS)
     has_good_dance_class = trimmed_text.has_token(rules.GOOD_DANCE_CLASS)
+    print classified_event.processed_text
     has_good_dance = classified_event.processed_text.has_token(rules.GOOD_DANCE)
     has_wrong_style = classified_event.processed_text.has_token(rules.DANCE_WRONG_STYLE_TITLE)
 

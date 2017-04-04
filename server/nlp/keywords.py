@@ -591,6 +591,9 @@ PREPROCESS_REMOVAL = Name('PREPROCESS_REMOVAL', Any(
     'poppin.?\W?box',
     POP_MUSIC,
 
+    # refers to ninjitsu stuff, not flexing stuff
+    'bone\W*breaking\W+techniques?',
+
     # Should many of these quality as a "immediate failure" keyword?
     'on lock',
     'lock(?:ing|ed|s)? (?:in|out|your|our|the|a|it|down|up)',
@@ -1251,6 +1254,12 @@ WRONG_HOUSE = Name('WRONG_HOUSE', Any(
     'kitchen',
     'home',
     'houses',
+))
+
+WRONG_FLEX = Name('WRONG_FLEX', Any(
+    'ninjutsu',
+    'jutsu',
+    'pressure point',
 ))
 
 SEMI_BAD_DANCE = Name('SEMI_BAD_DANCE', Any(
