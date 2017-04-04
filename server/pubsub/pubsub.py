@@ -216,8 +216,7 @@ def post_event(auth_token, event_id):
     if (db_event.end_time or db_event.start_time) < datetime.datetime.now():
         logging.info('Not publishing %s because it is in the past.', db_event.id)
         return False
-    _post_event(auth_token, db_event)
-    return True
+    return _post_event(auth_token, db_event)
 
 
 def _post_event(auth_token, db_event):
@@ -226,6 +225,12 @@ def _post_event(auth_token, db_event):
     elif auth_token.application == APP_FACEBOOK:
         result = facebook_post(auth_token, db_event)
         if 'error' in result:
+            if result.get('code') == 368 and result.get('error_subcode') == 1390008:
+                next_post_time = datetime.datetime.now() + datetime.timedelta(days=1)
+                auth_token = auth_token.key.get()
+                auth_token.next_post_time = next_post_time
+                auth_token.put()
+                return False
             logging.error("Facebook Post Error: %r", result)
         else:
             logging.info("Facebook result was %r", result)
@@ -240,6 +245,8 @@ def _post_event(auth_token, db_event):
         pass
     else:
         logging.error("Unknown application for OAuthToken: %s", auth_token.application)
+        return False
+    return True
 
 def create_media_on_twitter(t, db_event):
     cover = db_event.largest_cover
