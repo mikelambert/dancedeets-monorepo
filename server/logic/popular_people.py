@@ -25,10 +25,13 @@ class PeopleRanking(ndb.Model):
         # '' represents 'Overall'
         return event_types.CATEGORY_LOOKUP.get(self.category, '')
 
-    def worthy_top_people(self, person_index=10, cutoff=0.5):
-        return self.top_people_json
-        cutoff = self.get_worthy_cutoff(person_index, cutoff)
-        return [x for x in self.top_people_json if x[1] >= cutoff]
+    def worthy_top_people(self, person_index=10, cutoff=0.0):
+        #return self.top_people_json
+        if cutoff > 0:
+            cutoff = self.get_worthy_cutoff(person_index, cutoff)
+            return [x for x in self.top_people_json if x[1] >= cutoff]
+        else:
+            return self.top_people_json
 
     def get_worthy_cutoff(self, person_index, cutoff):
         # If a scene doesn't have "enough people", then the top-person
