@@ -11,9 +11,9 @@ def GenFileBackedKeywords(name, filename):
 
 BBOY_CREW = GenFileBackedKeywords('BBOY_WORD', 'break/crew*')
 BBOY_DANCER = GenFileBackedKeywords('BBOY_DANCER', 'break/dancers*')
-CHOREO_CREW = GenFileBackedKeywords('CHOREO_CREW', 'hiphop_choreo/crew*')
+CHOREO_CREW = GenFileBackedKeywords('CHOREO_CREW', 'hiphop_choreo/crews*')
 CHOREO_DANCER = GenFileBackedKeywords('CHOREO_DANCER', 'hiphop_choreo/dancers*')
-FREESTYLE_CREW = GenFileBackedKeywords('FREESTYLE_CREW', 'freestyle/crew*')
+FREESTYLE_CREW = GenFileBackedKeywords('FREESTYLE_CREW', 'freestyle/crews*')
 FREESTYLE_DANCER = GenFileBackedKeywords('FREESTYLE_DANCER', 'freestyle/dancers*')
 
 CHOREO_KEYWORD = GenFileBackedKeywords('CHOREO_KEYWORD', 'choreo/keywords')
@@ -255,6 +255,7 @@ STYLE_BREAK = Name('STYLE_BREAK', Any(
     'breakingu', # breaking polish
     u'breaktánc', # breakdance hungarian
     u'ブレイク', # breakdance japanese
+    'breakdans', # breakdance swedish
     "bre?ak\W?dancin[g']?", 'bre?ak\W?dancer?s?',
     'break\W?danc\w+',
     'power\W?moves?',
