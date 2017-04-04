@@ -273,7 +273,9 @@ gulp.task('rebuild', cb => runSequence('clean', 'compile', 'test', cb));
 
 
 const homedir = osHomedir();
-gulp.task('datalab', $.shell.task([`docker run -it -p "127.0.0.1:8081:8080" -v "${homedir}:/content" -e "PROJECT_ID=dancedeets-hrd" gcr.io/cloud-datalab/datalab:local`]));
+gulp.task('datalab:local', $.shell.task([`docker run -it -p "127.0.0.1:8081:8080" -v "${homedir}:/content" -e "PROJECT_ID=dancedeets-hrd" gcr.io/cloud-datalab/datalab:local`]));
+gulp.task('datalab:remote:start', $.shell.task([`datalab connect dl`]));
+gulp.task('datalab:remote:stop', $.shell.task([`datalab stop dl`]));
 
 
 
