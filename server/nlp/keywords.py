@@ -1339,4 +1339,6 @@ KIDS = Name('KIDS', Any(
     'scuola superiore', # italian high school
     u'università', # italian university
     'sotto i\W?\d+', # italian under-age
+    'kinderen', # dutch children
+    'tot \d+ jaar', # dutch to-n-years
 ))
