@@ -59,6 +59,9 @@ def get_bounds_for_fb_event(fb_event, check_places=False):
     location = fb_event['info'].get('place', {}).get('location', {})
     if location and location.get('latitude') is not None:
         latlong = (location['latitude'], location['longitude'])
+        # TODO: Someday we'd like to use locations of Taiwan or Germany to grab a bunch of stuff in those bounds
+        # but for now, FB doesn't send us proper lat-long-boxes for them, and I don't want to look up everything
+        # just in case there are bigger bounds...so we accept the latlong as-is.
         bounds = math.expand_bounds((latlong, latlong), cities.NEARBY_DISTANCE_KM)
     else:
         logging.info('Looking up event %s LocationInfo', fb_event['info']['id'])

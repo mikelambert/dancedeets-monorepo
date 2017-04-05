@@ -40,6 +40,8 @@ def process_events(event_id, via_sources):
         discovered.source = None  # TODO: This will come back to bite us I'm sure :(
         discovered.source_id = source_id
         discovered_list.append(discovered)
+    # Some of these are newly-discovered events, some of these are already-cached and classified.
+    # TODO: Filter out the already-classified ones, so we don't waste time re-classifying on cached on data.
     event_pipeline.process_discovered_events(fbl, discovered_list)
 
 
