@@ -64,6 +64,8 @@ ANY_HOUSE = Any(
 ANY_HIPHOP = Any(
     keywords.STYLE_HIPHOP,
     keywords.STYLE_HIPHOP_WEAK,
+    keywords.CHOREO_CREW[grammar.STRONG_WEAK],
+    keywords.CHOREO_DANCER[grammar.STRONG_WEAK],
     'hip\Whop\w*',
 )
 
