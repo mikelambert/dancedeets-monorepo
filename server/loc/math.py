@@ -67,10 +67,8 @@ def contains(bounds, latlng):
     return lats_good and lngs_good
 
 def _get_lat_lng_offsets(latlng, km):
-    miles = km_in_miles(km)
-    miles_per_nautical_mile = 1.15078
-    lat_range = miles / (miles_per_nautical_mile * 60.0)
-    lng_range = miles / (math.cos(latlng[0] * rad) * miles_per_nautical_mile * 60.0)
+    lat_range = km / 110.574
+    lng_range = km / (math.cos(latlng[0] * rad) * 111.320)
     return lat_range, lng_range
 
 def miles_in_km(miles):
