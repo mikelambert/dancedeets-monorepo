@@ -98,9 +98,6 @@ def is_good_event_by_attendees(fbl, fb_event, fb_event_attending_maybe=None, cla
         suspected_dance_event = classified_event.dance_event or len(classified_event.found_dance_matches) >= 2
         dance_style_attendees = get_location_style_attendees(fb_event, suspected_dance_event=suspected_dance_event)
         logging.info('Computing Styles for Event')
-        # Don't care about which style this event is in...we may misclassify it due to poor keywords
-        # So instead let's check *all* the styles
-        styles = event_types.STYLES + event_types.EVENT_TYPES
 
         # Raise the threshold for regular un-dance-y events, for what it means to 'be a dance event'
         if suspected_dance_event:
@@ -109,17 +106,15 @@ def is_good_event_by_attendees(fbl, fb_event, fb_event_attending_maybe=None, cla
         else:
             mult = 2.0
 
-        for style in [None] + sorted(styles):
-            style_name = style.public_name if style else ''
-            dance_attendees = dance_style_attendees.get(style_name, [])
+        for name, dance_attendees in dance_style_attendees.iteritems():
             # logging.info('%s Attendees Nearby:\n%s', style_name, '\n'.join(repr(x) for x in dance_attendees))
             dance_attendee_ids = [x['id'] for x in dance_attendees]
 
             overlap_ids, count, fraction = find_overlap(event_attendee_ids, dance_attendee_ids[:20])
             reason = 'Event %s has %s ids, intersection is %s ids (%.1f%%)' % (event_id, len(event_attendee_ids), count, 100.0 * fraction)
-            logging.info('%s Attendee-Detection-Top-20: %s', style_name, reason)
+            logging.info('%s Attendee-Detection-Top-20: %s', name, reason)
             if count > 0:
-                results += ['%s Top20: %s (%.1f%%)' % (style_name, count, 100.0 * fraction)]
+                results += ['%s Top20: %s (%.1f%%)' % (name, count, 100.0 * fraction)]
             if (
                 (fraction >= 0.05 * mult and count >= 3) or
                 (fraction >= 0.006 * mult and count >= 4) or # catches 4-or-more on events 666-or-less
@@ -131,9 +126,9 @@ def is_good_event_by_attendees(fbl, fb_event, fb_event_attending_maybe=None, cla
 
             overlap_ids, count, fraction = find_overlap(event_attendee_ids, dance_attendee_ids[:100])
             reason = 'Event %s has %s ids, intersection is %s ids (%.1f%%)' % (event_id, len(event_attendee_ids), count, 100.0 * fraction)
-            logging.info('%s Attendee-Detection-Top-100: %s', style_name, reason)
+            logging.info('%s Attendee-Detection-Top-100: %s', name, reason)
             if count > 0:
-                results += ['%s Top100: %s (%.1f%%)' % (style_name, count, 100.0 * fraction)]
+                results += ['%s Top100: %s (%.1f%%)' % (name, count, 100.0 * fraction)]
             if (
                 (fraction >= 0.10 * mult and count >= 3) or
                 (fraction >= 0.05 * mult and count >= 4) or
@@ -142,7 +137,7 @@ def is_good_event_by_attendees(fbl, fb_event, fb_event_attending_maybe=None, cla
                 # (fraction >= 0.002 * mult and count >= 12) or
                 False
             ):
-                logging.info('%s Attendee-Detection-Top-100: Attendee-based classifier match: %s', style_name, reason)
+                logging.info('%s Attendee-Detection-Top-100: Attendee-based classifier match: %s', name, reason)
                 results[-1] += ' GOOD!'
                 good_event = overlap_ids
 
@@ -155,16 +150,16 @@ def is_good_event_by_attendees(fbl, fb_event, fb_event_attending_maybe=None, cla
             if False:
                 overlap_ids, count, fraction = find_overlap(event_attendee_ids, dance_attendee_ids[:500])
                 reason = 'Event %s has %s ids, intersection is %s ids (%.1f%%)' % (event_id, len(event_attendee_ids), count, 100.0 * fraction)
-                logging.info('%s Attendee-Detection-Top-500: %s', style_name, reason)
+                logging.info('%s Attendee-Detection-Top-500: %s', name, reason)
                 if count > 0:
-                    results += ['%s Top500: %s (%.1f%%)' % (style_name, count, 100.0 * fraction)]
+                    results += ['%s Top500: %s (%.1f%%)' % (name, count, 100.0 * fraction)]
                 if (
                     (fraction >= 0.20 * mult and count >= 5) or
                     (fraction >= 0.01 * mult and count >= 15) or
                     (fraction >= 0.001 * mult and count >= 50) or
                     False
                 ):
-                    logging.info('%s Attendee-Detection-Top-500: Attendee-based classifier match: %s', style_name, reason)
+                    logging.info('%s Attendee-Detection-Top-500: Attendee-based classifier match: %s', name, reason)
                     results[-1] += ' GOOD!'
                     good_event = overlap_ids
 
