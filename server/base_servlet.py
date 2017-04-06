@@ -208,11 +208,13 @@ class BareBaseRequestHandler(webapp2.RequestHandler, FacebookMixinHandler):
             currentLocale=self.locales[0],
         ))
         try:
+            logging.info('Begin rendering react template: %s', template_name)
             result = render.render_component(
                 renderer=render_server,
                 path=os.path.abspath(os.path.join('dist/js-server/', template_name)),
                 to_static_markup=static_html,
                 props=props)
+            logging.info('Finish rendering react template: %s', template_name)
         except render.ComponentSourceFileNotFound as e:
             self.display['react_props'] = json.dumps(props)
             logging.exception('Error rendering React component: %s', e)
