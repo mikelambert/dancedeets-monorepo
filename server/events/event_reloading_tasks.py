@@ -181,9 +181,10 @@ def yield_maybe_delete_bad_event(fbl, db_event):
 
     if db_event.fb_event['empty']:
         return
+
     import datetime
-    logging.info('MDB: CHECK: %s: %s < %s', db_event.id, db_event.creation_time, datetime.datetime.now() - datetime.timedelta(days=30))
-    if not db_event.creation_time or db_event.creation_time < datetime.datetime.now() - datetime.timedelta(days=30):
+    # This is when we started adding all sorts of "crap"
+    if not db_event.creation_time or db_event.creation_time < datetime.datetime(2016, 3, 5):
         return
 
     logging.info('MDBE: Check on event %s: %s', db_event.id, db_event.creating_method)
