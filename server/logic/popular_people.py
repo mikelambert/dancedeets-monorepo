@@ -115,8 +115,12 @@ def get_attendees_within(bounds, max_attendees):
         groupings = combine_rankings(people_rankings, max_people=max_attendees)
         result = groupings.get('ATTENDEE', {})
         json_dump = json.dumps(result)
-        memcache.set(memcache_key, json_dump, time=24 * 60 * 60)
-        logging.info('Writing memcache key %s with value length: %s', memcache_key, len(json_dump))
+        try:
+            logging.info('Writing memcache key %s with value length: %s', memcache_key, len(json_dump))
+            memcache.set(memcache_key, json_dump, time=24 * 60 * 60)
+        except ValueError:
+            logging.warning('Error writing memcache key %s with value length: %s', memcache_key, len(json_dump))
+            logging.warning('Tried to write: %s', json.dumps(result, indent=2))
     return result
 
 def combine_rankings(rankings, max_people=0):
