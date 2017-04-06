@@ -184,6 +184,7 @@ def classify_events(fbl, pe_list, fb_list):
             pe.put()
 
         if not fb_event or fb_event['empty']:
+            mr.increment('skip-due-to-empty')
             continue
 
         # Don't process events we've already looked at, or don't need to look at.
@@ -191,11 +192,13 @@ def classify_events(fbl, pe_list, fb_list):
         # but it does happen when we scrape users potential events and throw them all in here.
         if pe.looked_at:
             logging.info('Already looked at event (added, or manually discarded), so no need to re-process.')
+            mr.increment('skip-due-to-looked-at')
             continue
 
         event_id = pe.fb_event_id
         if not re.match(r'^\d+$', event_id):
             logging.error('Found a very strange potential event id: %s', event_id)
+            mr.increment('skip-due-to-bad-id')
             continue
 
         new_pe_list.append(pe)
@@ -251,15 +254,16 @@ def really_classify_events(fbl, new_pe_list, new_fb_list, allow_posting=True):
                 logging.error("Error adding event %s, no fetched data: %s", event_id, e)
             except add_entities.AddEventException as e:
                 logging.warning("Error adding event %s, no fetched data: %s", event_id, e)
-        auto_notadd_result = event_auto_classifier.is_auto_notadd_event(classified_event, auto_add_result=auto_add_result)
-        if auto_notadd_result[0]:
-            pe2 = potential_events.PotentialEvent.get_by_key_name(event_id)
-            pe2.looked_at = True
-            pe2.auto_looked_at = True
-            pe2.put()
-            result = '-%s\n' % '\t'.join(unicode(x) for x in (event_id, fb_event['info'].get('name', '')))
-            results.append(result)
-            mr.increment('auto-notadded-dance-events')
+        else:
+            auto_notadd_result = event_auto_classifier.is_auto_notadd_event(classified_event, auto_add_result=auto_add_result)
+            if auto_notadd_result[0]:
+                pe2 = potential_events.PotentialEvent.get_by_key_name(event_id)
+                pe2.looked_at = True
+                pe2.auto_looked_at = True
+                pe2.put()
+                result = '-%s\n' % '\t'.join(unicode(x) for x in (event_id, fb_event['info'].get('name', '')))
+                results.append(result)
+                mr.increment('auto-notadded-dance-events')
     return results
 
 
