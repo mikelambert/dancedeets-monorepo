@@ -190,12 +190,12 @@ def build_search_results_api(city_name, form, search_query, search_results, vers
                     logging.exception('Error creating combined people rankings')
                 # These lists can get huge now...make sure we trim them down for what clients need!
                 new_groupings = dict((x, {}) for x in groupings)
-                for key, styles in groupings.iteritems():
+                for person_type, styles in groupings.iteritems():
                     for style in event_types.STYLES + ['']:
                         style_name = style.public_name if style else ''
                         summed_key = '%s: %s' % (style_name, popular_people.SUMMED_AREA)
-                        if summed_key in groupings[key]:
-                            new_groupings[key][style_name] = groupings[key][summed_key][10:]
+                        if summed_key in groupings[person_type]:
+                            new_groupings[person_type][style_name] = groupings[person_type][summed_key][:10]
                 groupings = new_groupings
 
             logging.info('Person Groupings:\n%s', '\n'.join('%s: %s' % kv for kv in groupings.iteritems()))
