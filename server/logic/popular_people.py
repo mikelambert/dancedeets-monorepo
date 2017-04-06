@@ -159,7 +159,8 @@ def combine_rankings(rankings, max_people=0):
             final_groupings[person_type] = {}
         if secondary_key not in final_groupings[person_type]:
             final_groupings[person_type][secondary_key] = {}
-        final_groupings[person_type][secondary_key] = sorted(dicts, key=lambda x: -x['count'])
+        # Sort by count, then by name (for stable sorting)
+        final_groupings[person_type][secondary_key] = sorted(dicts, key=lambda x: (-x['count'], x['id']))
     return final_groupings
 
 @app.route('/tools/popular_people')

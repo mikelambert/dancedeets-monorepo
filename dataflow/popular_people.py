@@ -138,7 +138,8 @@ def CountPeopleInfos((key, people_infos)):
             counts[person_name] = set([person_info['person']])
     count_list = [[person_json, len(unique_organizers)] for (person_json, unique_organizers) in counts.iteritems()]
     # count_list is [['id: name', count_of_unique_organizers], ...]
-    sorted_counts = sorted(count_list, key=lambda kv: -kv[1])
+    # Sort by count, then by id (for stable sorting)
+    sorted_counts = sorted(count_list, key=lambda kv: (-kv[1], kv[0]))
     return (key, sorted_counts[:TOP_N])
 
 class BuildPeopleRanking(beam.DoFn):
