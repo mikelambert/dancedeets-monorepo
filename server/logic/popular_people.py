@@ -97,18 +97,14 @@ def get_attendees_within(bounds):
     logging.info('Loading PeopleRanking for top 10 cities: %s', city_names)
     if not city_names:
         return {}
-    try:
-        people_rankings = get_people_rankings_for_city_names(city_names, attendees_only=True)
-        logging.info('Loaded People Rankings')
-        if runtime.is_local_appengine() and False:
-            for x in people_rankings:
-                logging.info(x.key)
-                for person in x.worthy_top_people():
-                    logging.info('  - %s' % person)
-        groupings = combine_rankings(people_rankings)
-    except:
-        logging.exception('Error creating combined people rankings')
-        return {}
+    people_rankings = get_people_rankings_for_city_names(city_names, attendees_only=True)
+    logging.info('Loaded People Rankings')
+    if runtime.is_local_appengine() and False:
+        for x in people_rankings:
+            logging.info(x.key)
+            for person in x.worthy_top_people():
+                logging.info('  - %s' % person)
+    groupings = combine_rankings(people_rankings)
     return groupings.get('ATTENDEE', {})
 
 def combine_rankings(rankings):
@@ -162,7 +158,6 @@ def combine_rankings(rankings):
         if secondary_key not in final_groupings[person_type]:
             final_groupings[person_type][secondary_key] = {}
         final_groupings[person_type][secondary_key] = sorted(dicts, key=lambda x: -x['count'])
-    print json.dumps(final_groupings, indent=2)
     return final_groupings
 
 @app.route('/tools/popular_people')
