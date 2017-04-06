@@ -93,7 +93,7 @@ def CountPeople((db_event, fb_event, attending)):
             admins = []
 
     for admin in admins:
-        for y in track_person('ADMIN', db_event, admin):
+        for y in track_person('ADMIN', db_event, admin, fb_info['id']):
             yield y
 
     # Count attendees
@@ -107,12 +107,8 @@ def CountPeople((db_event, fb_event, attending)):
         for y in track_person('ATTENDEE', db_event, attendee, admin_hash):
             yield y
 
-def track_person(person_type, db_event, person, count_once_per=None):
+def track_person(person_type, db_event, person, count_once_per):
     """Yields json({person-type, category, city}) to 'count_once_per: id: name' """
-    if count_once_per is None:
-        # This is a nice way to ensure each id counts once per...id
-        # (ie, every id counts)
-        count_once_per = person['id']
 
     people_info = {
         'count_once_per': count_once_per,
