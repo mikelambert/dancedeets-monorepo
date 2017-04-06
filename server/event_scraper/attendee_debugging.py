@@ -25,7 +25,11 @@ def debug_attendee_addition_for_event(fbl, fb_event):
     bounds = auto_add.get_bounds_for_fb_event(fb_event)
     city_names = popular_people._get_city_names_within(bounds)
     if city_names:
-        events = eventdata.DBEvent.query(eventdata.DBEvent.city_name.IN(city_names)).fetch(num_events)
+        events = []
+        for city_name in city_names:
+            new_events = eventdata.DBEvent.query(eventdata.DBEvent.city_name==city_name).fetch(num_events)
+            logging.info('Found %s events for city %s', len(new_events), city_name)
+            events.extend(new_events)
         # Only track/debug the non-auto-attendee events (ie, the ones that fed data into the classifier system)
         events = [x for x in events if x.creating_method != eventdata.CM_AUTO_ATTENDEE]
     else:
