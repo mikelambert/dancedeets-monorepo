@@ -12,6 +12,8 @@ from util import runtime
 
 TOP_N = 100
 
+SUMMED_AREA = 'Summed-Area'
+
 class PeopleRanking(ndb.Model):
     person_type = ndb.StringProperty()
     city = ndb.StringProperty()
@@ -92,7 +94,7 @@ def _get_city_names_within(bounds):
     city_names = [city.display_name() for city in biggest_cities]
     return city_names
 
-def get_attendees_within(bounds):
+def get_attendees_within(bounds, max_attendees):
     city_names = _get_city_names_within(bounds)
     logging.info('Loading PeopleRanking for top 10 cities: %s', city_names)
     if not city_names:
@@ -104,10 +106,10 @@ def get_attendees_within(bounds):
             logging.info(x.key)
             for person in x.worthy_top_people():
                 logging.info('  - %s' % person)
-    groupings = combine_rankings(people_rankings)
+    groupings = combine_rankings(people_rankings, max_people=max_attendees)
     return groupings.get('ATTENDEE', {})
 
-def combine_rankings(rankings):
+def combine_rankings(rankings, max_people=0):
     groupings = {}
     for r in rankings:
         top_people = r.worthy_top_people()
@@ -115,14 +117,15 @@ def combine_rankings(rankings):
             continue
         #logging.info(r.key)
         for key in (
-            ('Summed-Area', r.person_type, r.human_category),
+            (SUMMED_AREA, r.person_type, r.human_category),
             (r.city, r.person_type, r.human_category),
         ):
             # Make sure we use setdefault....we can have key repeats due to rankings from different cities
             groupings.setdefault(key, {})
             # Use this version below, and avoid the lookups
             people = groupings[key]
-            for person_name, count in top_people:
+            people_list = top_people[:max_people] if max_people else top_people
+            for person_name, count in people_list:
                 if person_name in people:
                     people[person_name] += count
                 else:

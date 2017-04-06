@@ -76,11 +76,11 @@ def get_bounds_for_fb_event(fb_event, check_places=False):
             bounds = None
     return bounds
 
-def get_location_style_attendees(fb_event, suspected_dance_event=False):
+def get_location_style_attendees(fb_event, suspected_dance_event=False, max_attendees=None):
     if suspected_dance_event:
         logging.info('Suspected dance event, so checking place API too just in case.')
     bounds = get_bounds_for_fb_event(fb_event, check_places=suspected_dance_event)
-    dance_attendee_styles = popular_people.get_attendees_within(bounds)
+    dance_attendee_styles = popular_people.get_attendees_within(bounds, max_attendees=max_attendees)
     return dance_attendee_styles
 
 def is_good_event_by_attendees(fbl, fb_event, fb_event_attending_maybe=None, classified_event=None, debug=False):
@@ -96,7 +96,7 @@ def is_good_event_by_attendees(fbl, fb_event, fb_event_attending_maybe=None, cla
         # If it's a suspected dance event, then we'll fall-through and check the places API for the location data
         # This ensures that any suspected dance events will get proper dance-attendees, and be more likely to be found.
         suspected_dance_event = classified_event.dance_event or len(classified_event.found_dance_matches) >= 2
-        dance_style_attendees = get_location_style_attendees(fb_event, suspected_dance_event=suspected_dance_event)
+        dance_style_attendees = get_location_style_attendees(fb_event, suspected_dance_event=suspected_dance_event, max_attendees=100)
         logging.info('Computing Styles for Event')
 
         # Raise the threshold for regular un-dance-y events, for what it means to 'be a dance event'

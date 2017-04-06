@@ -185,15 +185,19 @@ def build_search_results_api(city_name, form, search_query, search_results, vers
             if city_names:
                 try:
                     people_rankings = popular_people.get_people_rankings_for_city_names(city_names)
-                    groupings = popular_people.combine_rankings(people_rankings)
+                    groupings = popular_people.combine_rankings(people_rankings, max_people=10)
                 except:
                     logging.exception('Error creating combined people rankings')
-                # These lists can get huge now...make sure we trim thtem down for what clients need!
-                for styles in groupings.values():
-                    for k in set(styles).difference([x.public_name for x in event_types.STYLES]):
-                        del styles[k]
-                    for people in styles.values():
-                        del people[10:]
+                # These lists can get huge now...make sure we trim them down for what clients need!
+                new_groupings = dict((x, {}) for x in groupings)
+                for key, styles in groupings.iteritems():
+                    for style in event_types.STYLES + ['']:
+                        style_name = style.public_name if style else ''
+                        summed_key = '%s: %s' % (style_name, popular_people.SUMMED_AREA)
+                        if summed_key in groupings[key]:
+                            new_groupings[key][style_name] = groupings[key][summed_key][10:]
+                groupings = new_groupings
+
             logging.info('Person Groupings:\n%s', '\n'.join('%s: %s' % kv for kv in groupings.iteritems()))
 
     json_response = {
