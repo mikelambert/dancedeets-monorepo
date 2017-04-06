@@ -21,7 +21,7 @@ python setup.py sdist
 cd ../../..
 export SDK=beam-master/sdks/python/dist/apache-beam-0.7.0.dev0.tar.gz
 export BUCKET=gs://dancedeets-hrd.appspot.com
-python -m popular_people --log=DEBUG --project dancedeets-hrd job-name=popular-people --runner DataflowRunner --staging_location $BUCKET/staging --temp_location $BUCKET/temp --output $BUCKET/output --sdk_location $SDK --setup_file ./setup.py --num_workers=20
+python -m popular_people --log=DEBUG --project dancedeets-hrd --job-name=popular-people --runner DataflowRunner --staging_location $BUCKET/staging --temp_location $BUCKET/temp --output $BUCKET/output --sdk_location $SDK --setup_file ./setup.py --num_workers=20
 
 """
 
