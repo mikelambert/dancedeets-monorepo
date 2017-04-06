@@ -100,7 +100,7 @@ def get_attendees_within(bounds, max_attendees):
     logging.info('Loading PeopleRanking for top 10 cities: %s', city_names)
     if not city_names:
         return {}
-    memcache_key = 'AttendeeOnly: %s' % hashlib.md5('\n'.join(city_names)).hexdigest()
+    memcache_key = 'AttendeeOnly: %s' % hashlib.md5('\n'.join(city_names).encode('utf-8')).hexdigest()
     memcache_result = memcache.get(memcache_key)
     if memcache_result:
         logging.info('Reading memcache key %s with value length: %s', memcache_key, len(memcache_result))
