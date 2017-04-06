@@ -6,7 +6,6 @@ from google.appengine.ext import ndb
 import app
 import base_servlet
 import event_types
-from loc import math
 from rankings import cities
 from util import runtime
 
