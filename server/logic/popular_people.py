@@ -100,7 +100,7 @@ def get_attendees_within(bounds):
     try:
         people_rankings = get_people_rankings_for_city_names(city_names, attendees_only=True)
         logging.info('Loaded People Rankings')
-        if runtime.is_local_appengine():
+        if runtime.is_local_appengine() and False:
             for x in people_rankings:
                 logging.info(x.key)
                 for person in x.worthy_top_people():
@@ -118,18 +118,21 @@ def combine_rankings(rankings):
         if not top_people:
             continue
         #logging.info(r.key)
-        key = (r.person_type, r.human_category)
-        # Make sure we use setdefault....we can have key repeats due to rankings from different cities
-        groupings.setdefault(key, {})
-        # Use this version below, and avoid the lookups
-        people = groupings[key]
-        for person_name, count in top_people:
-            if person_name in people:
-                people[person_name] += count
-            else:
-                people[person_name] = count
+        for key in (
+            ('Summed-Area', r.person_type, r.human_category),
+            (r.city, r.person_type, r.human_category),
+        ):
+            # Make sure we use setdefault....we can have key repeats due to rankings from different cities
+            groupings.setdefault(key, {})
+            # Use this version below, and avoid the lookups
+            people = groupings[key]
+            for person_name, count in top_people:
+                if person_name in people:
+                    people[person_name] += count
+                else:
+                    people[person_name] = count
     for key in groupings:
-        person_type, category = key
+        city, person_type, category = key
         if person_type == 'ATTENDEE':
             limit = 3
         elif person_type == 'ADMIN':
@@ -143,7 +146,8 @@ def combine_rankings(rankings):
 
     final_groupings = {}
     for key in groupings:
-        person_type, category = key
+        city, person_type, category = key
+        secondary_key = '%s: %s' % (category, city)
         orig = groupings[key]
         dicts = []
         for name, count in orig.iteritems():
@@ -155,9 +159,10 @@ def combine_rankings(rankings):
             })
         if person_type not in final_groupings:
             final_groupings[person_type] = {}
-        if category not in final_groupings[person_type]:
-            final_groupings[person_type][category] = {}
-        final_groupings[person_type][category] = sorted(dicts, key=lambda x: -x['count'])
+        if secondary_key not in final_groupings[person_type]:
+            final_groupings[person_type][secondary_key] = {}
+        final_groupings[person_type][secondary_key] = sorted(dicts, key=lambda x: -x['count'])
+    print json.dumps(final_groupings, indent=2)
     return final_groupings
 
 @app.route('/tools/popular_people')
