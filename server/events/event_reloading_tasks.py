@@ -205,7 +205,7 @@ def yield_maybe_delete_bad_event(fbl, db_event):
         else:
             logging.info('Accidentally %s added event %s: %s: %s', db_event.creating_method, db_event.fb_event_id, db_event.country, db_event.name)
             mr.increment('deleting-bad-event')
-            result = '%s: %s: %s\n' % (db_event.fb_event_id, db_event.country, db_event.name)
+            result = '%s: %s: %s: %s\n' % (db_event.fb_event_id, db_event.creating_method, db_event.country, db_event.name)
             yield result.encode('utf-8')
             if allow_deletes:
                 from search import search
