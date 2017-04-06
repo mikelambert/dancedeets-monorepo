@@ -1,6 +1,7 @@
 import json
 import logging
 
+from google.appengine.api import memcache
 from google.appengine.ext import ndb
 
 import app
@@ -98,15 +99,25 @@ def get_attendees_within(bounds, max_attendees):
     logging.info('Loading PeopleRanking for top 10 cities: %s', city_names)
     if not city_names:
         return {}
-    people_rankings = get_people_rankings_for_city_names(city_names, attendees_only=True)
-    logging.info('Loaded People Rankings')
-    if runtime.is_local_appengine() and False:
-        for x in people_rankings:
-            logging.info(x.key)
-            for person in x.worthy_top_people():
-                logging.info('  - %s' % person)
-    groupings = combine_rankings(people_rankings, max_people=max_attendees)
-    return groupings.get('ATTENDEE', {})
+    memcache_key = 'AttendeeOnly: %s' % hash('\n'.join(city_names))
+    memcache_result = memcache.get(memcache_key)
+    if memcache_result:
+        logging.info('Reading memcache key %s with value length: %s', memcache_key, len(memcache_result))
+        result = json.loads(memcache_result)
+    else:
+        people_rankings = get_people_rankings_for_city_names(city_names, attendees_only=True)
+        logging.info('Loaded People Rankings')
+        if runtime.is_local_appengine() and False:
+            for x in people_rankings:
+                logging.info(x.key)
+                for person in x.worthy_top_people():
+                    logging.info('  - %s' % person)
+        groupings = combine_rankings(people_rankings, max_people=max_attendees)
+        result = groupings.get('ATTENDEE', {})
+        json_dump = json.dumps(result)
+        memcache.set(memcache_key, json_dump, time=24 * 60 * 60)
+        logging.info('Writing memcache key %s with value length: %s', memcache_key, len(json_dump))
+    return result
 
 def combine_rankings(rankings, max_people=0):
     groupings = {}
