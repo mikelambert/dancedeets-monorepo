@@ -23,6 +23,8 @@ handlers:
 - url: /mapreduce(/.*)?
   script: mapreduce.main.APP
   login: admin
+- url: .*
+  script: main.application
 
 skip_files:
 # This is here so that the GAE dev_appserver's mtime_watcher will ignore this directory
