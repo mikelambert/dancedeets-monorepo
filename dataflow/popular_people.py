@@ -42,7 +42,8 @@ from apache_beam.utils.pipeline_options import PipelineOptions
 from apache_beam.utils.pipeline_options import SetupOptions
 
 
-TOP_N = 1000
+TOP_ALL_N = 1000
+TOP_CITY_N = 100
 
 def ConvertToEntity(element):
     return helpers.entity_from_protobuf(element)
@@ -82,7 +83,7 @@ class GetEventAndAttending(beam.DoFn):
             else:
                 logging.warning('Strange attending record: %s: %s', key, fb_event_attending_record)
 
-def CountPeople((db_event, fb_event, attending)):
+def ExportPeople((db_event, fb_event, attending)):
     # Count admins
     fb_info = fb_event['info']
     admins = fb_info.get('admins', {}).get('data')
@@ -108,57 +109,93 @@ def CountPeople((db_event, fb_event, attending)):
             yield y
 
 def track_person(person_type, db_event, person, count_once_per):
-    """Yields json({person-type, category, city}) to 'count_once_per: id: name' """
-
-    people_info = {
-        'count_once_per': count_once_per,
-        'person': '%s: %s' % (person['id'], person.get('name')),
-    }
-    key = {
+    '''Yields json({person-type, category, city}) to 'count_once_per: id: name' '''
+    base_key = {
         'person_type': person_type,
-        'category': '',
         'city': db_event['city_name'],
+        'count_once_per': count_once_per,
+        'person_id': person['id'],
+        'person_name': person.get('name'),
     }
-    yield (key, people_info)
+    key = base_key.copy()
+    key['category'] = ''
+    yield key
     for category in db_event.get('auto_categories', []):
-        key = {
-            'person_type': person_type,
-            'category': category,
-            'city': db_event['city_name'],
-        }
-        yield (key, people_info)
+        key = base_key.copy()
+        key['category'] = category
+        yield key
 
-def CountPeopleInfos((key, people_infos)):
-    counts = {}
-    for person_info in people_infos:
-        person_name = person_info['person']
-        if person_name in counts:
-            counts[person_name].add(person_info['count_once_per'])
-        else:
-            counts[person_name] = set([person_info['person']])
-    count_list = [[person_json, len(unique_organizers)] for (person_json, unique_organizers) in counts.iteritems()]
-    # count_list is [['id: name', count_of_unique_organizers], ...]
-    # Sort by count, then by id (for stable sorting)
-    sorted_counts = sorted(count_list, key=lambda kv: (-kv[1], kv[0]))
-    return (key, sorted_counts[:TOP_N])
+def ToJson(value):
+    yield json.dumps(value, sort_keys=True)
 
-class BuildPeopleRanking(beam.DoFn):
+def FromJson(value):
+    yield json.loads(value)
 
+def FromJsonKeys((key, value)):
+    yield (json.loads(key), value)
+
+def GroupAttendeesByPerson(value):
+    logging.debug('GroupAttendeesByPerson: %r', value)
+    new_value = value.copy()
+    del new_value['count_once_per']
+    yield new_value
+
+def GroupPeopleByCategory((key, count)):
+    logging.debug('GroupPeopleByCategory: %r: %r', key, count)
+    new_value = {
+        'id': key['person_id'],
+        'name': key['person_name'],
+        'count': count,
+    }
+    new_key = key.copy()
+    del new_key['person_id']
+    del new_key['person_name']
+    # key contains {person_type, city, category}
+    yield (new_key, new_value)
+
+def BuildTopAttendeesList((key, people)):
+    logging.debug('BuildTopAttendeesList: %r: %r', key, people)
+    sorted_people = sorted(people, key=lambda kv: (-kv['count'], kv['id']))[:TOP_ALL_N]
+    yield key, sorted_people
+
+def CityToCategoryPeople((key, people)):
+    within_city_category = {
+        'category': key['category'],
+        'person_type': key['person_type'],
+    }
+    yield (key['city'], [within_city_category, people])
+
+class BuildPRCityCategory(beam.DoFn):
     def start_bundle(self):
         self.client = datastore.Client()
 
-    def process(self, (key, top_n_counts), timestamp):
+    def process(self, (key, sorted_people), timestamp):
         key_name = '%s: %s: %s' % (key['person_type'], key['city'], key['category'])
-        db_key = self.client.key('PeopleRanking', key_name)
+        db_key = self.client.key('PRCategoryCity', key_name)
         ranking = datastore.Entity(key=db_key, exclude_from_indexes=['top_people_json'])
 
         ranking['person_type'] = key['person_type']
         ranking['city'] = key['city']
         ranking['category'] = key['category']
-        ranking['top_people_json'] = json.dumps(top_n_counts)
+        ranking['top_people_json'] = json.dumps(sorted_people)
         ranking['created_date'] = timestamp
         yield ranking
 
+class BuildPRCity(beam.DoFn):
+
+    def start_bundle(self):
+        self.client = datastore.Client()
+
+    def process(self, (city, category_and_people), timestamp):
+        category_and_people = list(category_and_people)
+        logging.info('BuildPeopleRankingObject: %r: %r', city, category_and_people)
+        db_key = self.client.key('PRCity', city)
+        ranking = datastore.Entity(key=db_key, exclude_from_indexes=['category_and_people'])
+        ranking['category_and_people'] = [json.dumps(x) for x in category_and_people[:TOP_CITY_N]]
+        ranking['created_date'] = timestamp
+        yield ranking
+
+ 
 class WriteToDatastoreSingle(beam.DoFn):
 
     def start_bundle(self):
@@ -180,7 +217,7 @@ def read_from_datastore(project, pipeline_options):
     q = client.query(kind='DBEvent')
 
     if run_locally:
-        q.key_filter(client.key('DBEvent', '99'), '>')
+        q.key_filter(client.key('DBEvent', '999'), '>')
         q.key_filter(client.key('DBEvent', 'A'), '<')
 
     # Let's build a timestamp to save all our objects with
@@ -188,20 +225,38 @@ def read_from_datastore(project, pipeline_options):
 
     # Set up our map/reduce pipeline
     output = (p
-        | 'read from datastore' >> ReadFromDatastore(project, query._pb_from_query(q))
+        | 'read from datastore' >> ReadFromDatastore(project, query._pb_from_query(q), num_splits=50)
         | 'convert to entity' >> beam.Map(ConvertToEntity)
         # Find the events we want to count, and expand all the admins/attendees
         | 'filter events' >> beam.FlatMap(CountableEvent)
         | 'load fb attending' >> beam.ParDo(GetEventAndAttending())
-        | 'count people' >> beam.FlatMap(CountPeople)
-        # Group them and count most popular people per city-category
-        | 'group by city-category' >> beam.GroupByKey()
-        | 'count by city-category' >> beam.Map(CountPeopleInfos)
-        # And save it all back to the database
-        | 'generate database record' >> beam.ParDo(BuildPeopleRanking(), timestamp)
+        | 'export attendees' >> beam.FlatMap(ExportPeople)
+        | 'serialize dicts' >> beam.FlatMap(ToJson)
+        | 'remove duplicate attendees to unique-event-type' >> beam.RemoveDuplicates()
+        | 'deserialize dicts' >> beam.FlatMap(FromJson)
+        | 'export unique-attendees to count' >> beam.FlatMap(GroupAttendeesByPerson)
+        | 'serialize dicts 2' >> beam.FlatMap(ToJson)
+        | 'count unique-attendees per person' >> beam.combiners.Count.PerElement()
+        | 'deserialize keys 2' >> beam.FlatMap(FromJsonKeys)
+        | 'output category -> person-with-count' >> beam.FlatMap(GroupPeopleByCategory)
+        | 'group by category' >> beam.GroupByKey()
+        | 'build top-attendee lists' >> beam.FlatMap(BuildTopAttendeesList)
     )
+
+    save_rankings_for_city_category = (output
+        | 'generate PRCityCategory database record' >> beam.ParDo(BuildPRCityCategory(), timestamp)
+    )
+
+    save_rankings_for_city = (output
+        | 'output with city as key' >> beam.FlatMap(CityToCategoryPeople)
+        | 'group by city' >> beam.GroupByKey()
+        # And save it all back to the database
+        | 'generate PRCity database record' >> beam.ParDo(BuildPRCity(), timestamp)
+    )
+
     if not run_locally:
-        output | 'write to datastore (unbatched)' >> beam.ParDo(WriteToDatastoreSingle())
+        save_rankings_for_city_category | 'write PRCityCategory to datastore (unbatched)' >> beam.ParDo(WriteToDatastoreSingle())
+        save_rankings_for_city | 'write PRCity to datastore (unbatched)' >> beam.ParDo(WriteToDatastoreSingle())
         """
         (output
             | 'convert from entity' >> beam.Map(ConvertFromEntity)

@@ -15,11 +15,20 @@ TOP_N = 100
 
 SUMMED_AREA = 'Summed-Area'
 
-class PeopleRanking(ndb.Model):
+class PRCity(ndb.Model):
+    # key == city
+    created_date = ndb.DateTimeProperty(auto_now=True)
+
+    category_to_people = ndb.JsonProperty(repeated=True)
+
+
+class PRCityCategory(ndb.Model):
+    # key = city + other things
+    created_date = ndb.DateTimeProperty(auto_now=True)
+
     person_type = ndb.StringProperty()
     city = ndb.StringProperty()
     category = ndb.StringProperty()
-    created_date = ndb.DateTimeProperty(auto_now=True)
     top_people_json = ndb.JsonProperty()
     # top_people_json is [['id: name', count], ...]
 
@@ -56,9 +65,9 @@ def get_people_rankings_for_city_names(city_names, attendees_only=False):
     else:
         args = []
         if attendees_only:
-            args = [PeopleRanking.person_type=='ATTENDEE']
-        people_rankings = PeopleRanking.query(
-            PeopleRanking.city.IN(city_names),
+            args = [PRCityCategory.person_type=='ATTENDEE']
+        people_rankings = PRCityCategory.query(
+            PRCityCategory.city.IN(city_names),
             *args
         )
     return people_rankings
@@ -70,14 +79,14 @@ def load_from_dev(city_names, attendees_only):
     client = datastore.Client()
 
     for city_name in city_names:
-        q = client.query(kind='PeopleRanking')
+        q = client.query(kind='PRCityCategory')
         q.add_filter('city', '=', city_name)
         if attendees_only:
             q.add_filter('person_type', '=', 'ATTENDEE')
 
         for result in q.fetch(100):
-            ranking = PeopleRanking()
-            ranking.key = ndb.Key('PeopleRanking', result.key.name)
+            ranking = PRCityCategory()
+            ranking.key = ndb.Key('PRCityCategory', result.key.name)
             ranking.person_type = result['person_type']
             ranking.city = result['city']
             ranking.category = result['category']
@@ -97,7 +106,7 @@ def _get_city_names_within(bounds):
 
 def get_attendees_within(bounds, max_attendees):
     city_names = _get_city_names_within(bounds)
-    logging.info('Loading PeopleRanking for top 10 cities: %s', city_names)
+    logging.info('Loading PRCityCategory for top 10 cities: %s', city_names)
     if not city_names:
         return {}
     memcache_key = 'AttendeeOnly: %s' % hashlib.md5('\n'.join(city_names).encode('utf-8')).hexdigest()
