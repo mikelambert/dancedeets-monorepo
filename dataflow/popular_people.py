@@ -120,14 +120,6 @@ def track_person(person_type, db_event, person, count_once_per):
         'count_once_per': count_once_per,
         'person_id': person['id'],
         'person_name': person.get('name'),
-    }
-
-    # For debugging how an attendee was added to the list
-    base_debug_attendee = {
-        'person_type': person_type,
-        'city': db_event['city_name'],
-        'count_once_per': count_once_per,
-        'person_id': person['id'],
         'event_id': db_event.key.name,
     }
 
@@ -135,44 +127,48 @@ def track_person(person_type, db_event, person, count_once_per):
     key['category'] = ''
     yield key
 
-    debug_attendee = base_debug_attendee.copy()
-    debug_attendee['category'] = ''
-    yield pvalue.SideOutputValue('event_for_attendee', debug_attendee)
-
     for category in db_event.get('auto_categories', []):
         key = base_key.copy()
         key['category'] = category
         yield key
 
-        debug_attendee = base_debug_attendee.copy()
-        debug_attendee['category'] = category
-        yield pvalue.SideOutputValue('event_for_attendee', debug_attendee)
-
 def DebugExportEventAttendeesForGrouping(data):
     key = data.copy()
+    del key['person_name'] # Don't need
     del key['event_id']
+    del key['count_once_per']
     # key = {person_type, city, category, person_id, count_once_per}
-    yield key, data['event_id']
+    yield key, (data['count_once_per'], data['event_id'])
 
-def DebugAccumulateEventsForAdminHash((key, event_ids)):
-    new_key = key.copy()
-    del new_key['count_once_per']
-    # key = {person_type, city, category, person_id}
-    yield new_key, (key['count_once_per'], event_ids)
+def DebugGroupEventIds((key, values)):
+    token_to_event_ids = {}
+    for value in values:
+        token, event_id = value
+        if token in token_to_event_ids:
+            token_to_event_ids[token].append(event_id)
+        else:
+            token_to_event_ids[token] = [event_id]
+    yield key, token_to_event_ids
 
 def DebugExplodeAttendeeList((key, sorted_people)):
     # key contains {person_type, city, category}
     for person in sorted_people:
         new_key = key.copy()
-        new_key['person_id'] = person['id']
+        new_key['person_id'] = person['person_id']
         # new_key contains {person_type, city, category, person_id}
         yield new_key, TOP_ATTENDEE
 
 def DebugFilterForTopAttendee((key, values)):
+    values = list(values)
+    if random.random() < 0.01:
+        logging.info('got0 %r', (key, values))
     if TOP_ATTENDEE in values:
+        if random.random() < 0.1:
+            logging.info('got1 %r', (key, values))
         new_values = [x for x in values if x != TOP_ATTENDEE]
         if len(new_values) != 1:
-            logging.error('Key %s had unexpected trimmed new_values length == %s, values: %s', len(new_values), new_values)
+            logging.info('got2 %r', (key, values))
+            logging.error('Key %s had unexpected trimmed new_values length == %s, values: %s', key, len(new_values), new_values)
         else:
             yield key, new_values[0]
 
@@ -181,7 +177,6 @@ class DebugBuildPRDebugAttendee(beam.DoFn):
         self.client = datastore.Client()
 
     def process(self, (key, grouped_events), timestamp):
-        grouped_events = list(grouped_events)
         key_name = '%s: %s' % (key['city'], key['person_id'])
         db_key = self.client.key('PRDebugAttendee', key_name)
         debug_attendee = datastore.Entity(key=db_key, exclude_from_indexes=['grouped_event_ids'])
@@ -204,30 +199,42 @@ def FromJson(value):
 def FromJsonKeys((key, value)):
     yield (json.loads(key), value)
 
-def GroupAttendeesByPerson(value):
-    #logging.debug('GroupAttendeesByPerson: %r', value)
-    new_value = value.copy()
-    del new_value['count_once_per']
-    yield new_value
-
-def GroupPeopleByCategory((key, count)):
-    #logging.debug('GroupPeopleByCategory: %r: %r', key, count)
-    new_value = {
-        'id': key['person_id'],
-        'name': key['person_name'],
-        'count': count,
-    }
-    new_key = key.copy()
+def GroupAttendeesByCategory(data):
+    #logging.debug('GroupAttendeesByCategory: %r', value)
+    new_key = data.copy()
+    del new_key['event_id'] # Don't need
+    del new_key['count_once_per']
     del new_key['person_id']
     del new_key['person_name']
+    new_value = {
+        'count_once_per': data['count_once_per'],
+        'person_id': data['person_id'],
+        'person_name': data['person_name'],
+    }
     # key contains {person_type, city, category}
     yield (new_key, new_value)
 
-def BuildTopAttendeesList((key, people)):
-    #logging.debug('BuildTopAttendeesList: %r: %r', key, people)
-    sorted_people = sorted(people, key=lambda kv: (-kv['count'], kv['id']))[:TOP_ALL_N]
-    # key contains {person_type, city, category}
-    yield key, sorted_people
+def CountPeopleInfos((key, people_infos)):
+    array_of_frozen_sets = (frozenset(sorted(x.items())) for x in people_infos)
+
+    people_counts = {}
+    person_lookup = {}
+    for people_info_items in set(array_of_frozen_sets):
+        people_info = dict(people_info_items)
+        person_id = people_info['person_id']
+        if person_id in people_counts:
+            people_counts[person_id] += 1
+        else:
+            people_counts[person_id] = 1
+        person_lookup[person_id] = people_info['person_name']
+
+    sorted_counts = sorted(people_counts.iteritems(), key=lambda (person_id, count): -count)
+    sorted_people = [{
+        'person_id': pid,
+        'person_name': person_lookup[pid],
+        'count': count,
+    } for pid, count in sorted_counts]
+    yield (key, sorted_people[:TOP_ALL_N])
 
 def CityToCategoryPeople((key, people)):
     within_city_category = {
@@ -267,14 +274,18 @@ class BuildPRCity(beam.DoFn):
         ranking['category_and_people'] = [json.dumps(x) for x in category_and_people[:TOP_CITY_N]]
         yield ranking
 
- 
+from google.cloud import exceptions
+
 class WriteToDatastoreSingle(beam.DoFn):
 
     def start_bundle(self):
         self.client = datastore.Client()
 
     def process(self, entity):
-        self.client.put(entity)
+        try:
+            self.client.put(entity)
+        except exceptions.BadRequest:
+            logging.error('Error putting %s', entity)
 
 def ConvertFromEntity(entity):
     return helpers.entity_to_protobuf(entity)
@@ -306,30 +317,22 @@ def read_from_datastore(project, pipeline_options):
         # Find the events we want to count, and expand all the admins/attendees
         | 'filter events' >> beam.FlatMap(CountableEvent)
         | 'load fb attending' >> beam.ParDo(GetEventAndAttending())
-        | 'export attendees' >> beam.FlatMap(ExportPeople).with_outputs('event_for_attendee', main='attendee_data')
+        | 'export attendees' >> beam.FlatMap(ExportPeople)
     )
 
 
-    top_attendee_lists = (produce_attendees.attendee_data
-        | 'serialize dicts' >> beam.FlatMap(ToJson)
-        | 'remove duplicate attendees to unique-event-type' >> beam.RemoveDuplicates()
-        | 'deserialize dicts' >> beam.FlatMap(FromJson)
-        | 'export unique-attendees to count' >> beam.FlatMap(GroupAttendeesByPerson)
-        | 'serialize dicts 2' >> beam.FlatMap(ToJson)
-        | 'count unique-attendees per person' >> beam.combiners.Count.PerElement()
-        | 'deserialize keys 2' >> beam.FlatMap(FromJsonKeys)
-        | 'output category -> person-with-count' >> beam.FlatMap(GroupPeopleByCategory)
-        | 'group by category' >> beam.GroupByKey()
-        | 'build top-attendee lists' >> beam.FlatMap(BuildTopAttendeesList)
+    top_attendee_lists = (produce_attendees
+        | 'group people by city' >> beam.FlatMap(GroupAttendeesByCategory)
+        | 'group people by city-category' >> beam.GroupByKey()
+        | 'build top-attendee lists' >> beam.FlatMap(CountPeopleInfos)
     )
 
-    attendee_event_debugging = (produce_attendees.event_for_attendee
+    attendee_event_debugging = (produce_attendees
         # TODO: I think doing the admin-hash grouping inside the city-attendee grouping, will be muuuuuch faster (due to avoiding the shuffling)
-        | 'regroup by City-Attendee-Admin_hash' >> beam.FlatMap(DebugExportEventAttendeesForGrouping)
-        | 'group by City-Attendee-Admin_hash' >> beam.GroupByKey()
-        | 'regroup by City-Attendee' >> beam.FlatMap(DebugAccumulateEventsForAdminHash)
+        | 'regroup by City-Attendee' >> beam.FlatMap(DebugExportEventAttendeesForGrouping)
             #.with_output_types(typehints.Tuple[typehints.Dict[str, str], typehints.Tuple[str, typehints.List[str]]])
         | 'group by City-Attendee' >> beam.GroupByKey()
+        | 'group event_ids' >> beam.FlatMap(DebugGroupEventIds)
             #.with_output_types(typehints.KV[typehints.Dict[str, str], typehints.Iterable[typehints.Tuple[str, typehints.List[str]]]])
     )
 
