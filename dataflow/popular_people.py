@@ -46,6 +46,7 @@ from apache_beam.utils.pipeline_options import SetupOptions
 
 
 TOP_ALL_N = 1000
+TOP_DISPLAY_CITY_N = 10
 TOP_CITY_N = 100
 
 TOP_ATTENDEE = 'TA_MARK'
@@ -224,7 +225,8 @@ def CountPeopleInfos((key, people_infos)):
             people_counts[person_id] = 1
         person_lookup[person_id] = people_info['person_name']
 
-    sorted_counts = sorted(people_counts.iteritems(), key=lambda (person_id, count): -count)
+    # We use the person_id in there for repeat-stability when choosing the top people
+    sorted_counts = sorted(people_counts.iteritems(), key=lambda (person_id, count): (-count, person_id))
     sorted_people = [{
         'person_id': pid,
         'person_name': person_lookup[pid],
@@ -245,7 +247,7 @@ class BuildPRCityCategory(beam.DoFn):
 
     def process(self, (key, sorted_people), timestamp):
         key_name = '%s: %s: %s' % (key['person_type'], key['city'], key['category'])
-        db_key = self.client.key('PRCategoryCity', key_name)
+        db_key = self.client.key('PRCityCategory', key_name)
         ranking = datastore.Entity(key=db_key, exclude_from_indexes=['top_people_json'])
         ranking['created_date'] = timestamp
 
@@ -255,22 +257,43 @@ class BuildPRCityCategory(beam.DoFn):
         ranking['top_people_json'] = json.dumps(sorted_people)
         yield ranking
 
-class BuildPRCity(beam.DoFn):
+class BuildPRCityDisplay(beam.DoFn):
 
     def start_bundle(self):
         self.client = datastore.Client()
 
     def process(self, (city, category_and_people), timestamp):
         category_and_people = list(category_and_people)
+
         #logging.info('BuildPRCity: %r: %r', city, category_and_people)
-        db_key = self.client.key('PRCity', city)
+        db_key = self.client.key('PRCityDisplay', city)
         ranking = datastore.Entity(key=db_key, exclude_from_indexes=['category_and_people'])
         ranking['created_date'] = timestamp
-
-        ranking['category_and_people'] = [json.dumps(x) for x in category_and_people[:TOP_CITY_N]]
+        ranking['category_and_people'] = [json.dumps(x) for x in category_and_people[:TOP_DISPLAY_CITY_N]]
         yield ranking
 
-from google.cloud import exceptions
+
+class BuildPRCityIdsOnly(beam.DoFn):
+
+    def start_bundle(self):
+        self.client = datastore.Client()
+
+    def process(self, (city, category_and_people), timestamp):
+        category_and_people = list(category_and_people)
+
+        db_key = self.client.key('PRCityIdsOnly', city)
+        ranking = datastore.Entity(key=db_key, exclude_from_indexes=['category_and_people'])
+        ranking['created_date'] = timestamp
+        category_and_nameless_people = []
+        for category, people in category_and_people[:TOP_CITY_N]:
+            nameless_people = {}
+            for person_info in people:
+                p = person_info.copy()
+                del p['person_name']
+                nameless_people[p['person_id']] = p['count']
+            category_and_nameless_people.append([category, nameless_people])
+        ranking['category_and_people'] = [json.dumps(x) for x in category_and_nameless_people]
+        yield ranking
 
 class WriteToDatastoreSingle(beam.DoFn):
 
@@ -278,10 +301,7 @@ class WriteToDatastoreSingle(beam.DoFn):
         self.client = datastore.Client()
 
     def process(self, entity):
-        try:
-            self.client.put(entity)
-        except exceptions.BadRequest:
-            logging.error('Error putting %s', entity)
+        self.client.put(entity)
 
 def ConvertFromEntity(entity):
     return helpers.entity_to_protobuf(entity)
@@ -352,16 +372,25 @@ def run_pipeline(project, pipeline_options, run_locally):
         | 'generate PRCityCategory database record' >> beam.ParDo(BuildPRCityCategory(), timestamp)
     )
 
-    save_rankings_for_city = (top_attendee_lists
+    build_rankings_for_city = (top_attendee_lists
         | 'output with city as key' >> beam.FlatMap(CityToCategoryPeople)
         | 'group by city' >> beam.GroupByKey()
+    )
+
+    save_rankings_for_city_ids = (build_rankings_for_city
         # And save it all back to the database
-        | 'generate PRCity database record' >> beam.ParDo(BuildPRCity(), timestamp)
+        | 'generate PRCityIdsOnly database record' >> beam.ParDo(BuildPRCityIdsOnly(), timestamp)
+    )
+
+    save_rankings_for_city_display = (build_rankings_for_city
+        # And save it all back to the database
+        | 'generate PRCityDisplay database record' >> beam.ParDo(BuildPRCityDisplay(), timestamp)
     )
 
     if not run_locally:
         save_rankings_for_city_category | 'write PRCityCategory to datastore (unbatched)' >> beam.ParDo(WriteToDatastoreSingle())
-        save_rankings_for_city | 'write PRCity to datastore (unbatched)' >> beam.ParDo(WriteToDatastoreSingle())
+        save_rankings_for_city_ids | 'write PRCityIdsOnly to datastore (unbatched)' >> beam.ParDo(WriteToDatastoreSingle())
+        save_rankings_for_city_display | 'write PRCityDisplay to datastore (unbatched)' >> beam.ParDo(WriteToDatastoreSingle())
         good_attendee_event_debugging | 'write PRDebugAttendee to datastore (unbatched)' >> beam.ParDo(WriteToDatastoreSingle())
         """
         (output
