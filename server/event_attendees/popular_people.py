@@ -87,7 +87,7 @@ def get_people_rankings_for_city_names(city_names, attendees_only=False):
         args = []
         if attendees_only:
             args = [PRCityCategory.person_type == 'ATTENDEE']
-        pr_city_categories = PRCityCategory.query(PRCityCategory.city.IN(city_names), args).fetch(100)
+        pr_city_categories = PRCityCategory.query(PRCityCategory.city.IN(city_names), *args).fetch(100)
 
     results = []
     for city_category in pr_city_categories:
@@ -132,7 +132,7 @@ def get_attendees_within(bounds, max_attendees):
         return {}
     memcache_key = 'AttendeeOnly: %s' % hashlib.md5('\n'.join(city_names).encode('utf-8')).hexdigest()
     memcache_result = memcache.get(memcache_key)
-    if memcache_result and False:
+    if memcache_result:
         logging.info('Reading memcache key %s with value length: %s', memcache_key, len(memcache_result))
         result = json.loads(memcache_result)
     else:
