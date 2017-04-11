@@ -159,8 +159,12 @@ def DebugExplodeAttendeeList((key, sorted_people)):
     # key contains {person_type, city, category}
     if key['person_type'] != 'ATTENDEE':
         return
-    if key['category'] != '':
-        return
+    # We don't want to use category in our key...
+    # And we do want to be category-less...
+    # But we want to grab all potential attendees in the sub-styles as well
+    # Because we will want to debug where the "Ukranian flex" scene comes from.
+    #if key['category'] != '':
+    #    return
     new_key = {
         'city': key['city'],
     }
@@ -323,6 +327,7 @@ def run_pipeline(project, pipeline_options, run_locally, debug_attendees):
 
         exploded_top_attendees = (top_attendee_lists
             | 'explode the top attendees into a mapping: category-attendee -> YES' >> beam.FlatMap(DebugExplodeAttendeeList)
+            | 'remove duplicates from multiple overlapping attendee-lists' >> beam.RemoveDuplicates()
         )
 
         (
