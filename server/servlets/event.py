@@ -331,25 +331,27 @@ class AdminEditHandler(base_servlet.BaseRequestHandler):
         self.display['ranking_city_name'] = rankings.get_ranking_location_latlng(location_info.geocode.latlng()) if location_info.geocode else 'None'
 
         fb_event_attending_maybe = get_fb_event(self.fbl, event_id, lookup_type=fb_api.LookupEventAttendingMaybe)
-        good_event_attendee_ids, good_event_attendee_results = event_attendee_classifier.is_good_event_by_attendees(self.fbl, fb_event, fb_event_attending_maybe, debug=True)
-        self.display['auto_add_attendee_ids'] = sorted(good_event_attendee_ids)
-        self.display['overlap_results'] = good_event_attendee_results
+        matcher = event_attendee_classifier.get_matcher(self.fbl, fb_event, fb_event_attending_maybe)
+        overlap_ids = matcher.matches[0][1] if matcher.matches else []
+        self.display['auto_add_attendee_ids'] = sorted(overlap_ids)
+        self.display['overlap_results'] = matcher.results
 
         # For extra debugging
-        event_attendee_ids = event_attendee_classifier.get_event_attendee_ids(self.fbl, fb_event)
-        dance_style_attendees = event_attendee_classifier.get_location_style_attendees(fb_event)
-        dance_attendee_ids = [x['id'] for x in dance_style_attendees.get('', [])]
-        overlap_ids, count, fraction = event_attendee_classifier.find_overlap(event_attendee_ids, dance_attendee_ids[:100])
+        #TODO: pass in the fb_event_attending for our API (or otherwise delete this if we can depend on the 'matcher'!)
+        #event_attendee_ids = event_attendee_classifier.get_event_attendee_ids(self.fbl, fb_event)
+        #dance_style_attendees = event_attendee_classifier.get_location_style_attendees(fb_event)
+        #dance_attendee_ids = [x['id'] for x in dance_style_attendees.get('', [])]
+        #overlap_ids, count, fraction = event_attendee_classifier.find_overlap(event_attendee_ids, dance_attendee_ids[:100])
         self.display['overlap_attendee_ids'] = sorted(overlap_ids)
 
         # If this *was* auto-added by attendee, or *could be* auto-added by attendee
-        if (e and e.creating_method == eventdata.CM_AUTO_ATTENDEE) or good_event_attendee_ids:
+        if (e and e.creating_method == eventdata.CM_AUTO_ATTENDEE) or overlap_ids:
             from event_attendees import attendee_debugging
             dancer_and_events, event_popularity = attendee_debugging.debug_attendee_addition_for_event(self.fbl, fb_event)
             self.display['event_popularity'] = event_popularity
             self.display['dancer_and_events'] = dancer_and_events
         #from event_attendees import attendee_debugging
-        #attendee_debugging.debug_attendee_addition_for_event_new(fb_event, good_event_attendee_ids)
+        #attendee_debugging.debug_attendee_addition_for_event_new(fb_event, overlap_ids)
 
         self.display['event'] = e
         self.display['event_id'] = event_id
