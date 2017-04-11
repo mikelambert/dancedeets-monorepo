@@ -264,7 +264,6 @@ class BuildPRCityCategory(beam.DoFn):
         yield ranking
 
 class WriteToDatastoreSingle(beam.DoFn):
-    def __init__(self)
     def start_bundle(self):
         self.client = datastore.Client()
 
@@ -324,7 +323,7 @@ def run_pipeline(project, pipeline_options, run_locally, debug_attendees):
                 #.with_output_types(typehints.KV[typehints.Dict[str, str], str])
         )
 
-        good_attendee_event_debugging = (
+        (
             # These both have the same keys:
             # key contains {person_type, city, category, person_id}
             (attendee_event_debugging, exploded_top_attendees)
@@ -339,17 +338,17 @@ def run_pipeline(project, pipeline_options, run_locally, debug_attendees):
             | 'write PRDebugAttendee to datastore (unbatched)' >> beam.ParDo(WriteToDatastoreSingle(), actually_save=not run_locally)
         )
 
-    save_rankings_for_city_category = (top_attendee_lists
+    (top_attendee_lists
         | 'generate PRCityCategory database record' >> beam.ParDo(BuildPRCityCategory(), timestamp, 'PRCityCategory', TOP_ALL_N)
         | 'write PRCityCategory to datastore (unbatched)' >> beam.ParDo(WriteToDatastoreSingle(), actually_save=not run_locally)
     )
 
-        """
-        (output
-            | 'convert from entity' >> beam.Map(ConvertFromEntity)
-            | 'write to datastore' >> WriteToDatastore(client.project)
-        )
-        """
+    """
+    (output
+        | 'convert from entity' >> beam.Map(ConvertFromEntity)
+        | 'write to datastore' >> WriteToDatastore(client.project)
+    )
+    """
 
     # Actually run the pipeline (all operations above are deferred).
     result = p.run()
@@ -365,7 +364,7 @@ def run():
         help='Run data subset and do not save.')
     parser.add_argument('--debug_attendees',
         dest='debug_attendees',
-        default='',
+        default='True',
         help='Generate PRDebugAttendee data')
     known_args, pipeline_args = parser.parse_known_args()
     pipeline_options = PipelineOptions(pipeline_args)
