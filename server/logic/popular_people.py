@@ -121,8 +121,10 @@ def get_people_rankings_for_city_names2(city_names, attendees_only=False):
     if runtime.is_local_appengine():
         pr_city_categories = load_from_dev2(city_names, attendees_only=attendees_only)
     else:
-        fix_attendees
-        pr_city_categories = PRCategoryCity.query(PRCategoryCity.city.IN(city_names))
+        args = []
+        if attendees_only:
+            args = [PRCategoryCity.person_type == 'ATTENDEE']
+        pr_city_categories = PRCategoryCity.query(PRCategoryCity.city.IN(city_names), args)
 
     results = []
     for city_category in pr_city_categories:
