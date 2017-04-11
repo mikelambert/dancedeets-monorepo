@@ -24,9 +24,9 @@ class PRDebugAttendee(ndb.Model):
     grouped_event_ids = ndb.JsonProperty()
 
     @staticmethod
-    def generate_key(city, category, person_id):
+    def generate_key(city, person_id):
         # TODO: sync with dataflow
-        return '%s: %s: %s' % (city, category, person_id)
+        return '%s: %s' % (city, person_id)
 
 class PRCityCategory(ndb.Model):
     # key = city + other things

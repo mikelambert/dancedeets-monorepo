@@ -105,7 +105,7 @@ class AttendeeMatch(object):
 
         debug_keys = []
         for person_id in self.overlap_ids:
-            debug_key = popular_people.PRDebugAttendee.generate_key(self.city_name, self.category, person_id)
+            debug_key = popular_people.PRDebugAttendee.generate_key(self.city_name, person_id)
             debug_keys.append(client.key('PRDebugAttendee', debug_key))
 
         missing_keys = []
