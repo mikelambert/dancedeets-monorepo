@@ -1,5 +1,8 @@
+import json
 import logging
 import time
+
+from google.cloud import datastore
 
 from events import event_locations
 import fb_api
@@ -85,10 +88,32 @@ def get_matcher(fbl, fb_event, fb_event_attending_maybe=None, classified_event=N
 
 class AttendeeMatch(object):
     def __init__(self, name, top_n, overlap_ids, reason):
+        # TODO: clean up our city passing
+        category, city = name.split(': ', 1)
         self.name = name
+        self.category = category
+        self.city_name = city
         self.top_n = top_n
         self.overlap_ids = overlap_ids
         self.reason = reason
+
+    def __repr__(self):
+        return '%s(**%r)' % (self.__class__.__name__, self.__dict__)
+
+    def get_attendee_lookups(self):
+        client = datastore.Client()
+
+        debug_keys = []
+        for person_id in self.overlap_ids:
+            debug_key = popular_people.PRDebugAttendee.generate_key(self.city_name, self.category, person_id)
+            debug_keys.append(client.key('PRDebugAttendee', debug_key))
+
+        missing_keys = []
+        print debug_keys
+        debug_attendees = client.get_multi(debug_keys, missing_keys)
+        print debug_attendees
+        person_to_hash_and_event_ids = dict((x['person_id'], json.loads(x['grouped_event_ids'])) for x in debug_attendees)
+        return person_to_hash_and_event_ids
 
 class EventAttendeeMatcher(object):
     def __init__(self, fb_event, fb_event_attending_maybe, classified_event):
@@ -100,6 +125,8 @@ class EventAttendeeMatcher(object):
 
         self.matches = []
         self.results = []
+
+        self.overlap_ids = set()
 
     def classify(self):
         event_id = self.fb_event['info']['id']
@@ -124,6 +151,7 @@ class EventAttendeeMatcher(object):
                 dance_attendee_ids = [x['id'] for x in dance_attendees]
 
                 overlap_ids, count, fraction = find_overlap(self.event_attendee_ids, dance_attendee_ids[:20])
+                self.overlap_ids.update(overlap_ids)
                 reason = 'Event %s has %s ids, intersection is %s ids (%.1f%%)' % (event_id, len(self.event_attendee_ids), count, 100.0 * fraction)
                 logging.info('%s Attendee-Detection-Top-20: %s', name, reason)
                 if count > 0:
@@ -138,6 +166,7 @@ class EventAttendeeMatcher(object):
                     self.matches.append(AttendeeMatch(name, 20, overlap_ids, reason))
 
                 overlap_ids, count, fraction = find_overlap(self.event_attendee_ids, dance_attendee_ids[:100])
+                self.overlap_ids.update(overlap_ids)
                 reason = 'Event %s has %s ids, intersection is %s ids (%.1f%%)' % (event_id, len(self.event_attendee_ids), count, 100.0 * fraction)
                 logging.info('%s Attendee-Detection-Top-100: %s', name, reason)
                 if count > 0:

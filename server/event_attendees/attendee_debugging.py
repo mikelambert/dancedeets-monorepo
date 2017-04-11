@@ -1,7 +1,6 @@
 
 import logging
 
-from google.cloud import datastore
 
 from events import eventdata
 import fb_api
