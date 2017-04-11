@@ -109,10 +109,9 @@ class AttendeeMatch(object):
             debug_keys.append(client.key('PRDebugAttendee', debug_key))
 
         missing_keys = []
-        print debug_keys
         debug_attendees = client.get_multi(debug_keys, missing_keys)
-        print debug_attendees
-        person_to_hash_and_event_ids = dict((x['person_id'], json.loads(x['grouped_event_ids'])) for x in debug_attendees)
+        person_to_hash_and_event_ids = [(x['person_id'], json.loads(x['grouped_event_ids'])) for x in debug_attendees]
+        person_to_hash_and_event_ids = sorted(person_to_hash_and_event_ids, key=lambda x: -len(x[1]))
         return person_to_hash_and_event_ids
 
 class EventAttendeeMatcher(object):
@@ -204,3 +203,4 @@ class EventAttendeeMatcher(object):
                         logging.info('%s Attendee-Detection-Top-500: Attendee-based classifier match: %s', name, reason)
                         self.results[-1] += ' GOOD!'
                         self.matches.append(AttendeeMatch(name, 500, overlap_ids, reason))
+        self.matches = sorted(self.matches, key=lambda x: -len(x.overlap_ids))

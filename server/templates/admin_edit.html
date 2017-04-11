@@ -117,7 +117,7 @@ Edit Event
         {% endfor %}
 #}
         <br>
-        {% for dancer_id, admin_hash_and_event_ids in attendee_ids_to_admin_hash_and_event_ids.iteritems() %}
+        {% for dancer_id, admin_hash_and_event_ids in attendee_ids_to_admin_hash_and_event_ids %}
           Dancer <a href="https://www.facebook.com/{{ dancer_id }}">{{ dancer_id }}</a> has {{ len(admin_hash_and_event_ids.items()) }} points, and attended events:<br>
           {% if admin_hash_and_event_ids %}
             {% for admin_hash, event_ids in admin_hash_and_event_ids.iteritems() %}

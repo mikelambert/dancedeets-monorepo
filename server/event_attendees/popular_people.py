@@ -166,8 +166,8 @@ def combine_rankings(rankings, max_people=0):
             continue
         #logging.info(r.key)
         for key in (
-            (SUMMED_AREA, r.person_type, r.human_category),
-            (r.city, r.person_type, r.human_category),
+            (SUMMED_AREA, r.person_type, r.category),
+            (r.city, r.person_type, r.category),
         ):
             # Make sure we use setdefault....we can have key repeats due to rankings from different cities
             groupings.setdefault(key, {})

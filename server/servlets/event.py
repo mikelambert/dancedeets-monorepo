@@ -332,25 +332,17 @@ class AdminEditHandler(base_servlet.BaseRequestHandler):
 
         fb_event_attending_maybe = get_fb_event(self.fbl, event_id, lookup_type=fb_api.LookupEventAttendingMaybe)
         matcher = event_attendee_classifier.get_matcher(self.fbl, fb_event, fb_event_attending_maybe)
-        overlap_ids = matcher.matches[0].overlap_ids if matcher.matches else []
-        self.display['auto_add_attendee_ids'] = sorted(overlap_ids)
+        matched_overlap_ids = matcher.matches[0].overlap_ids if matcher.matches else []
+        self.display['auto_add_attendee_ids'] = sorted(matched_overlap_ids)
         self.display['overlap_results'] = matcher.results
 
-        # For extra debugging
-        #TODO: pass in the fb_event_attending for our API (or otherwise delete this if we can depend on the 'matcher'!)
-        #event_attendee_ids = event_attendee_classifier.get_event_attendee_ids(self.fbl, fb_event)
-        #dance_style_attendees = event_attendee_classifier.get_location_style_attendees(fb_event)
-        #dance_attendee_ids = [x['id'] for x in dance_style_attendees.get('', [])]
-        #overlap_ids, count, fraction = event_attendee_classifier.find_overlap(event_attendee_ids, dance_attendee_ids[:100])
-        self.display['overlap_attendee_ids'] = sorted(overlap_ids)
+        self.display['overlap_attendee_ids'] = sorted(matcher.overlap_ids)
 
         city_matches = [x for x in matcher.matches if x.city_name != 'Summed-Area']
+        print city_matches
         if city_matches:
             attendee_ids_to_admin_hash_and_event_ids = city_matches[0].get_attendee_lookups()
             self.display['attendee_ids_to_admin_hash_and_event_ids'] = attendee_ids_to_admin_hash_and_event_ids
-            #self.display['dancer_and_events'] = dancer_and_events
-        #from event_attendees import attendee_debugging
-        #attendee_debugging.debug_attendee_addition_for_event_new(fb_event, overlap_ids)
 
         self.display['event'] = e
         self.display['event_id'] = event_id
