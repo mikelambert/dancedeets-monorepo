@@ -23,18 +23,7 @@ class PRDebugAttendee(ndb.Model):
     person_id = ndb.StringProperty()
     grouped_event_ids = ndb.JsonProperty()
 
-class PRCity(ndb.Model):
-    # key == city
-    created_date = ndb.DateTimeProperty(auto_now=True)
-
-    # [{category, person_type}, [{person_id, person_name}]
-    category_and_people = ndb.JsonProperty(repeated=True)
-
-    @property
-    def city_name(self):
-        return self.key.string_id()
-
-class PRCategoryCity(ndb.Model):
+class PRCityCategory(ndb.Model):
     # key = city + other things
     created_date = ndb.DateTimeProperty(auto_now=True)
 
@@ -87,18 +76,17 @@ class PeopleRanking(object):
 
 def get_people_rankings_for_city_names(city_names, attendees_only=False):
     if runtime.is_local_appengine():
-        pr_cities = load_from_dev(city_names, attendees_only=attendees_only)
+        pr_city_categories = load_from_dev(city_names, attendees_only=attendees_only)
     else:
-        pr_cities = PRCity.query(PRCity.city.IN(city_names))
+        args = []
+        if attendees_only:
+            args = [PRCityCategory.person_type == 'ATTENDEE']
+        pr_city_categories = PRCityCategory.query(PRCityCategory.city.IN(city_names), args)
 
     results = []
-    for city in pr_cities:
-        for list_type, person_list in city.category_and_people:
-            if attendees_only and list_type['person_type'] != 'ATTENDEE':
-                continue
-            results.append(PeopleRanking(city.city_name, list_type['category'], list_type['person_type'], person_list))
+    for city_category in pr_city_categories:
+        results.append(PeopleRanking(city_category.city, city_category.category, city_category.person_type, city_category.top_people_json))
 
-    print '\n'.join(repr(x) for x in results)
     return results
 
 def load_from_dev(city_names, attendees_only):
@@ -108,51 +96,19 @@ def load_from_dev(city_names, attendees_only):
     client = datastore.Client()
 
     for city_name in city_names:
-        result = client.get(client.key('PRCity', city_name))
-        if result:
-            ranking = PRCity()
-            ranking.key = ndb.Key('PRCity', result.key.name)
-            ranking.category_and_people = [json.loads(x) for x in result['category_and_people']]
-            rankings.append(ranking)
-
-    return rankings
-
-def get_people_rankings_for_city_names2(city_names, attendees_only=False):
-    if runtime.is_local_appengine():
-        pr_city_categories = load_from_dev2(city_names, attendees_only=attendees_only)
-    else:
-        args = []
-        if attendees_only:
-            args = [PRCategoryCity.person_type == 'ATTENDEE']
-        pr_city_categories = PRCategoryCity.query(PRCategoryCity.city.IN(city_names), args)
-
-    results = []
-    for city_category in pr_city_categories:
-        results.append(PeopleRanking(city_category.city, city_category.category, city_category.person_type, city_category.top_people_json))
-
-    return results
-
-def load_from_dev2(city_names, attendees_only):
-    from google.cloud import datastore
-
-    rankings = []
-    client = datastore.Client()
-
-    for city_name in city_names:
-        q = client.query(kind='PRCategoryCity')
+        q = client.query(kind='PRCityCategory')
         q.add_filter('city', '=', city_name)
         if attendees_only:
             q.add_filter('person_type', '=', 'ATTENDEE')
 
         for result in q.fetch(100):
-            ranking = PRCategoryCity()
-            ranking.key = ndb.Key('PRCategoryCity', result.key.name)
+            ranking = PRCityCategory()
+            ranking.key = ndb.Key('PRCityCategory', result.key.name)
             ranking.person_type = result['person_type']
             ranking.city = result['city']
             ranking.category = result['category']
             ranking.top_people_json = json.loads(result.get('top_people_json', '[]'))
             rankings.append(ranking)
-    print rankings
     return rankings
 
 def _get_city_names_within(bounds):
@@ -167,7 +123,7 @@ def _get_city_names_within(bounds):
 
 def get_attendees_within(bounds, max_attendees):
     city_names = _get_city_names_within(bounds)
-    logging.info('Loading PRCategoryCity for top 10 cities: %s', city_names)
+    logging.info('Loading PRCityCategory for top 10 cities: %s', city_names)
     if not city_names:
         return {}
     memcache_key = 'AttendeeOnly: %s' % hashlib.md5('\n'.join(city_names).encode('utf-8')).hexdigest()
@@ -176,7 +132,7 @@ def get_attendees_within(bounds, max_attendees):
         logging.info('Reading memcache key %s with value length: %s', memcache_key, len(memcache_result))
         result = json.loads(memcache_result)
     else:
-        people_rankings = get_people_rankings_for_city_names2(city_names, attendees_only=True)
+        people_rankings = get_people_rankings_for_city_names(city_names, attendees_only=True)
         logging.info('Loaded %s People Rankings', len(people_rankings))
         if runtime.is_local_appengine() and False:
             for x in people_rankings:
@@ -185,6 +141,10 @@ def get_attendees_within(bounds, max_attendees):
                     logging.info('  - %s' % person)
         groupings = combine_rankings(people_rankings, max_people=max_attendees)
         result = groupings.get('ATTENDEE', {})
+        # Trim out the unnecessary names
+        for category_city, people in result.iteritems():
+            for person in people:
+                del person['name']
         json_dump = json.dumps(result)
         try:
             logging.info('Writing memcache key %s with value length: %s', memcache_key, len(json_dump))
@@ -205,13 +165,12 @@ def combine_rankings(rankings, max_people=0):
             (SUMMED_AREA, r.person_type, r.human_category),
             (r.city, r.person_type, r.human_category),
         ):
-            print key
             # Make sure we use setdefault....we can have key repeats due to rankings from different cities
             groupings.setdefault(key, {})
             # Use this version below, and avoid the lookups
             people = groupings[key]
             people_list = top_people[:max_people] if max_people else top_people
-            for person_name, count in people_list:
+            for person_name, count in people_list[:TOP_N]:
                 if person_name in people:
                     people[person_name] += count
                 else:
