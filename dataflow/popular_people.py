@@ -134,8 +134,10 @@ def track_person(person_type, db_event, person, count_once_per):
         key['category'] = category
         yield key
 
-def DebugExportEventAttendeesForGrouping(data):
+def DebugExportEventPeopleForGrouping(data):
     key = data.copy()
+    if key['person_type'] != 'ATTENDEE':
+        return
     del key['person_name'] # Don't need
     del key['event_id']
     del key['count_once_per']
@@ -154,6 +156,8 @@ def DebugGroupEventIds((key, values)):
 
 def DebugExplodeAttendeeList((key, sorted_people)):
     # key contains {person_type, city, category}
+    if key['person_type'] != 'ATTENDEE':
+        return
     for person in sorted_people:
         new_key = key.copy()
         new_key['person_id'] = person['person_id']
@@ -174,7 +178,8 @@ class DebugBuildPRDebugAttendee(beam.DoFn):
         self.client = datastore.Client()
 
     def process(self, (key, grouped_events), timestamp):
-        key_name = '%s: %s' % (key['city'], key['person_id'])
+        # TODO: Sync with server/logic
+        key_name = '%s: %s: %s' % (key['city'], key['category'], key['person_id'])
         db_key = self.client.key('PRDebugAttendee', key_name)
         debug_attendee = datastore.Entity(key=db_key, exclude_from_indexes=['grouped_event_ids'])
         debug_attendee['created_date'] = timestamp
@@ -196,8 +201,8 @@ def FromJson(value):
 def FromJsonKeys((key, value)):
     yield (json.loads(key), value)
 
-def GroupAttendeesByCategory(data):
-    #logging.debug('GroupAttendeesByCategory: %r', value)
+def GroupPeopleByCategory(data):
+    #logging.debug('GroupPeopleByCategory: %r', value)
     new_key = data.copy()
     del new_key['event_id'] # Don't need
     del new_key['count_once_per']
@@ -232,6 +237,7 @@ def CountPeopleInfos((key, people_infos)):
         'person_name': person_lookup[pid],
         'count': count,
     } for pid, count in sorted_counts]
+    # key contains {person_type, city, category}
     yield (key, sorted_people[:TOP_ALL_N])
 
 def CityToCategoryPeople((key, people)):
@@ -299,14 +305,14 @@ def run_pipeline(project, pipeline_options, run_locally, debug_attendees):
 
 
     top_attendee_lists = (produce_attendees
-        | 'map category -> person' >> beam.FlatMap(GroupAttendeesByCategory)
+        | 'map category -> person' >> beam.FlatMap(GroupPeopleByCategory)
         | 'group by category' >> beam.GroupByKey()
-        | 'build top-attendee lists' >> beam.FlatMap(CountPeopleInfos)
+        | 'build top-people lists' >> beam.FlatMap(CountPeopleInfos)
     )
 
     if debug_attendees:
         attendee_event_debugging = (produce_attendees
-            | 'map category-attendee -> event' >> beam.FlatMap(DebugExportEventAttendeesForGrouping)
+            | 'map category-attendee -> event' >> beam.FlatMap(DebugExportEventPeopleForGrouping)
                 #.with_output_types(typehints.Tuple[typehints.Dict[str, str], typehints.Tuple[str, typehints.List[str]]])
             | 'group by category-attendee' >> beam.GroupByKey()
             | 'within category-attendee, group event_ids by admin_hash' >> beam.FlatMap(DebugGroupEventIds)
