@@ -332,7 +332,7 @@ class AdminEditHandler(base_servlet.BaseRequestHandler):
 
         fb_event_attending_maybe = get_fb_event(self.fbl, event_id, lookup_type=fb_api.LookupEventAttendingMaybe)
         matcher = event_attendee_classifier.get_matcher(self.fbl, fb_event, fb_event_attending_maybe)
-        overlap_ids = matcher.matches[0][1] if matcher.matches else []
+        overlap_ids = matcher.matches[0].overlap_ids if matcher.matches else []
         self.display['auto_add_attendee_ids'] = sorted(overlap_ids)
         self.display['overlap_results'] = matcher.results
 
