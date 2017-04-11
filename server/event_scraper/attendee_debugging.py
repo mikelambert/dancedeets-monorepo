@@ -1,10 +1,12 @@
 
 import logging
 
+from google.cloud import datastore
+
 from events import eventdata
 import fb_api
 from logic import popular_people
-from . import auto_add
+from . import event_attendee_classifier
 
 def debug_attendee_addition_for_event(fbl, fb_event):
     """Used to debug the attendees for an event:
@@ -22,7 +24,7 @@ def debug_attendee_addition_for_event(fbl, fb_event):
 
     # A certain set of dancer-attendees triggered this event to be added.
     # Let's get all the events from all the cities that contributed to the dancer-attendee list used for this event
-    bounds = auto_add.get_bounds_for_fb_event(fb_event)
+    bounds = event_attendee_classifier.get_bounds_for_fb_event(fb_event)
     city_names = popular_people._get_city_names_within(bounds)
     if city_names:
         events = []
@@ -64,7 +66,7 @@ def debug_attendee_addition_for_event(fbl, fb_event):
 
 
     # Now get a list of dancer-attendees for this event...that we want to debug
-    good_event_attendee_ids = auto_add.is_good_event_by_attendees(fbl, fb_event)
+    good_event_attendee_ids = event_attendee_classifier.is_good_event_by_attendees(fbl, fb_event)
 
     # Compute which events are most popular/common among our attendees, in triggering the list of dancer-attendees
     event_popularity = {}

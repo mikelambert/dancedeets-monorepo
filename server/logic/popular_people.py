@@ -4,6 +4,7 @@ import logging
 
 from google.appengine.api import memcache
 from google.appengine.ext import ndb
+from google.cloud import datastore
 
 import app
 import base_servlet
@@ -22,6 +23,11 @@ class PRDebugAttendee(ndb.Model):
     category = ndb.StringProperty()
     person_id = ndb.StringProperty()
     grouped_event_ids = ndb.JsonProperty()
+
+    @staticmethod
+    def generate_key(city, category, person_id):
+        # TODO: sync with dataflow
+        return '%s: %s: %s' % (city, category, person_id)
 
 class PRCityCategory(ndb.Model):
     # key = city + other things
@@ -81,7 +87,7 @@ def get_people_rankings_for_city_names(city_names, attendees_only=False):
         args = []
         if attendees_only:
             args = [PRCityCategory.person_type == 'ATTENDEE']
-        pr_city_categories = PRCityCategory.query(PRCityCategory.city.IN(city_names), args)
+        pr_city_categories = PRCityCategory.query(PRCityCategory.city.IN(city_names), args).fetch(100)
 
     results = []
     for city_category in pr_city_categories:
@@ -90,8 +96,6 @@ def get_people_rankings_for_city_names(city_names, attendees_only=False):
     return results
 
 def load_from_dev(city_names, attendees_only):
-    from google.cloud import datastore
-
     rankings = []
     client = datastore.Client()
 
