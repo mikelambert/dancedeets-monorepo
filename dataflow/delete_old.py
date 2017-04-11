@@ -1,4 +1,4 @@
-import datetime
+import argparse
 import logging
 import site
 import sys
@@ -35,7 +35,7 @@ def OldPeopleRanking(people_ranking, old_date):
     if 'created_date' not in people_ranking:
         yield people_ranking
     else:
-        naive_dt = people_ranking['created_date'].replace(tzinfo=None)
+        naive_dt = people_ranking['created_date']
         if naive_dt < old_date:
             yield people_ranking
 
@@ -46,28 +46,33 @@ class DeleteFromDatastore(beam.DoFn):
     def process(self, entity):
         self.client.delete(entity.key)
 
-run_locally = False
-
-def read_from_datastore(project, pipeline_options):
+def delete_from_datastore(project, pipeline_options, table, run_locally):
     """Creates a pipeline that reads entities from Cloud Datastore."""
     p = beam.Pipeline(options=pipeline_options)
     # Create a query to read entities from datastore.
     client = datastore.Client()
-    q = client.query(kind='PeopleRanking')
+    q = client.query(kind=table)
 
     if run_locally:
-        q.add_filter('category', '=', 'BEBOP')
+        pass
+        #q.add_filter('category', '=', 'BEBOP')
 
-    # We're using a native-datetime comparison...
-    # So let's make sure this is at least 24 hours old
-    old_date = datetime.datetime.now() - datetime.timedelta(hours=24)
+    q = client.query(kind=table)
+    query.order = ['-created_date']
+    results = list(q.fetch(1))
+    if not results:
+        logging.error('No %s objects found', table)
+        return
+
+    newest_date = results[0]['created_date']
+    logging.info('Deleting elements older than %s', newest_date)
 
     # Set up our map/reduce pipeline
     output = (p
-        | 'read from datastore' >> ReadFromDatastore(project, query._pb_from_query(q))
+        | 'read from datastore' >> ReadFromDatastore(project, query._pb_from_query(q), num_splits=400)
         | 'convert to entity' >> beam.Map(ConvertToEntity)
         # Find the events we want to count, and expand all the admins/attendees
-        | 'find old rankings' >> beam.FlatMap(OldPeopleRanking, old_date)
+        | 'find old rankings' >> beam.FlatMap(OldPeopleRanking, newest_date)
         # And save it all back to the database
     )
     if not run_locally:
@@ -86,10 +91,20 @@ def read_from_datastore(project, pipeline_options):
     return result
 
 def run():
-    pipeline_options = PipelineOptions(sys.argv)
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--run_locally',
+        dest='run_locally',
+        default='',
+        help='Run data subset and do not save.')
+    parser.add_argument('--table',
+        dest='table',
+        default='PRDebugAttendee',
+        help='DB Table to delete old records from.')
+    known_args, pipeline_args = parser.parse_known_args()
+    pipeline_options = PipelineOptions(pipeline_args)
     pipeline_options.view_as(SetupOptions).save_main_session = True
     gcloud_options = pipeline_options.view_as(GoogleCloudOptions)
-    read_from_datastore('dancedeets-hrd', gcloud_options)
+    delete_from_datastore('dancedeets-hrd', gcloud_options, known_args.table, known_args.run_locally)
 
 if __name__ == '__main__':
     run()
