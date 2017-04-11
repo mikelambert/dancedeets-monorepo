@@ -26,8 +26,6 @@ class PRDebugAttendee(ndb.Model):
 
     @staticmethod
     def generate_key(city, category, person_id):
-        #TODO: temp hack while we fix issues with the MR producing wrongly-keyed data
-        return '%s: %s' % (city, person_id)
         # TODO: sync with dataflow
         return '%s: %s: %s' % (city, category, person_id)
 
