@@ -327,7 +327,9 @@ def run_pipeline(project, pipeline_options, run_locally, debug_attendees):
 
         exploded_top_attendees = (top_attendee_lists
             | 'explode the top attendees into a mapping: category-attendee -> YES' >> beam.FlatMap(DebugExplodeAttendeeList)
-            | 'remove duplicates from multiple overlapping attendee-lists' >> beam.RemoveDuplicates()
+            # We don't deal with duplicates, since it requires the objects (ie our dicts) to be hashable
+            # Instead, we rely on DebugFilterForTopAttendee to filter out duplicates created by the above
+            # | 'remove duplicates from multiple overlapping attendee-lists' >> beam.RemoveDuplicates()
         )
 
         (
