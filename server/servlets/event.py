@@ -339,7 +339,6 @@ class AdminEditHandler(base_servlet.BaseRequestHandler):
         self.display['overlap_attendee_ids'] = sorted(matcher.overlap_ids)
 
         city_matches = [x for x in matcher.matches if x.city_name != 'Summed-Area']
-        print city_matches
         if city_matches:
             attendee_ids_to_admin_hash_and_event_ids = city_matches[0].get_attendee_lookups()
             self.display['attendee_ids_to_admin_hash_and_event_ids'] = attendee_ids_to_admin_hash_and_event_ids
@@ -390,7 +389,6 @@ class AdminEditHandler(base_servlet.BaseRequestHandler):
 def get_fb_event(fbl, event_id, lookup_type=fb_api.LookupEvent):
     data = None
     try:
-        print lookup_type, event_id
         data = fbl.get(lookup_type, event_id)
     except fb_api.NoFetchedDataException:
         pass
