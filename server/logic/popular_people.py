@@ -27,10 +27,14 @@ class PRCity(ndb.Model):
     # key == city
     created_date = ndb.DateTimeProperty(auto_now=True)
 
-    category_to_people = ndb.JsonProperty(repeated=True)
+    # [{category, person_type}, [{person_id, person_name}]
+    category_and_people = ndb.JsonProperty(repeated=True)
 
+    @property
+    def city_name(self):
+        return self.key.string_id()
 
-class PRCityCategory(ndb.Model):
+class PRCategoryCity(ndb.Model):
     # key = city + other things
     created_date = ndb.DateTimeProperty(auto_now=True)
 
@@ -40,12 +44,26 @@ class PRCityCategory(ndb.Model):
     top_people_json = ndb.JsonProperty()
     # top_people_json is [['id: name', count], ...]
 
+class PeopleRanking(object):
+    def __init__(self, city, category, person_type, top_people_json):
+        self.city = city
+        self.category = category
+        self.person_type = person_type
+        self.top_people_json = top_people_json
+
+    def __repr__(self):
+        return 'PeopleRanking(%s, %s, %s,\n%s\n)' % (self.city, self.category, self.person_type, self.top_people_json)
+
     @property
     def human_category(self):
         # '' represents 'Overall'
         return event_types.CATEGORY_LOOKUP.get(self.category, '')
 
     def worthy_top_people(self, person_index=10, cutoff=0.0):
+        results = self._worthy_top_people(person_index, cutoff)
+        return [('%s: %s' % (x['person_id'], x['person_name']), x['count']) for x in results]
+
+    def _worthy_top_people(self, person_index, cutoff):
         #return self.top_people_json
         if cutoff > 0:
             cutoff = self.get_worthy_cutoff(person_index, cutoff)
@@ -69,16 +87,19 @@ class PRCityCategory(ndb.Model):
 
 def get_people_rankings_for_city_names(city_names, attendees_only=False):
     if runtime.is_local_appengine():
-        people_rankings = load_from_dev(city_names, attendees_only=attendees_only)
+        pr_cities = load_from_dev(city_names, attendees_only=attendees_only)
     else:
-        args = []
-        if attendees_only:
-            args = [PRCityCategory.person_type=='ATTENDEE']
-        people_rankings = PRCityCategory.query(
-            PRCityCategory.city.IN(city_names),
-            *args
-        )
-    return people_rankings
+        pr_cities = PRCity.query(PRCity.city.IN(city_names))
+
+    results = []
+    for city in pr_cities:
+        for list_type, person_list in city.category_and_people:
+            if attendees_only and list_type['person_type'] != 'ATTENDEE':
+                continue
+            results.append(PeopleRanking(city.city_name, list_type['category'], list_type['person_type'], person_list))
+
+    print '\n'.join(repr(x) for x in results)
+    return results
 
 def load_from_dev(city_names, attendees_only):
     from google.cloud import datastore
@@ -87,19 +108,49 @@ def load_from_dev(city_names, attendees_only):
     client = datastore.Client()
 
     for city_name in city_names:
-        q = client.query(kind='PRCityCategory')
+        result = client.get(client.key('PRCity', city_name))
+        if result:
+            ranking = PRCity()
+            ranking.key = ndb.Key('PRCity', result.key.name)
+            ranking.category_and_people = [json.loads(x) for x in result['category_and_people']]
+            rankings.append(ranking)
+
+    return rankings
+
+def get_people_rankings_for_city_names2(city_names, attendees_only=False):
+    if runtime.is_local_appengine():
+        pr_city_categories = load_from_dev2(city_names, attendees_only=attendees_only)
+    else:
+        fix_attendees
+        pr_city_categories = PRCategoryCity.query(PRCategoryCity.city.IN(city_names))
+
+    results = []
+    for city_category in pr_city_categories:
+        results.append(PeopleRanking(city_category.city, city_category.category, city_category.person_type, city_category.top_people_json))
+
+    return results
+
+def load_from_dev2(city_names, attendees_only):
+    from google.cloud import datastore
+
+    rankings = []
+    client = datastore.Client()
+
+    for city_name in city_names:
+        q = client.query(kind='PRCategoryCity')
         q.add_filter('city', '=', city_name)
         if attendees_only:
             q.add_filter('person_type', '=', 'ATTENDEE')
 
         for result in q.fetch(100):
-            ranking = PRCityCategory()
-            ranking.key = ndb.Key('PRCityCategory', result.key.name)
+            ranking = PRCategoryCity()
+            ranking.key = ndb.Key('PRCategoryCity', result.key.name)
             ranking.person_type = result['person_type']
             ranking.city = result['city']
             ranking.category = result['category']
             ranking.top_people_json = json.loads(result.get('top_people_json', '[]'))
             rankings.append(ranking)
+    print rankings
     return rankings
 
 def _get_city_names_within(bounds):
@@ -114,17 +165,17 @@ def _get_city_names_within(bounds):
 
 def get_attendees_within(bounds, max_attendees):
     city_names = _get_city_names_within(bounds)
-    logging.info('Loading PRCityCategory for top 10 cities: %s', city_names)
+    logging.info('Loading PRCategoryCity for top 10 cities: %s', city_names)
     if not city_names:
         return {}
     memcache_key = 'AttendeeOnly: %s' % hashlib.md5('\n'.join(city_names).encode('utf-8')).hexdigest()
     memcache_result = memcache.get(memcache_key)
-    if memcache_result:
+    if memcache_result and False:
         logging.info('Reading memcache key %s with value length: %s', memcache_key, len(memcache_result))
         result = json.loads(memcache_result)
     else:
-        people_rankings = get_people_rankings_for_city_names(city_names, attendees_only=True)
-        logging.info('Loaded People Rankings')
+        people_rankings = get_people_rankings_for_city_names2(city_names, attendees_only=True)
+        logging.info('Loaded %s People Rankings', len(people_rankings))
         if runtime.is_local_appengine() and False:
             for x in people_rankings:
                 logging.info(x.key)
@@ -152,6 +203,7 @@ def combine_rankings(rankings, max_people=0):
             (SUMMED_AREA, r.person_type, r.human_category),
             (r.city, r.person_type, r.human_category),
         ):
+            print key
             # Make sure we use setdefault....we can have key repeats due to rankings from different cities
             groupings.setdefault(key, {})
             # Use this version below, and avoid the lookups
