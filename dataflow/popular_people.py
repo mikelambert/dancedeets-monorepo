@@ -185,6 +185,7 @@ class DebugBuildPRDebugAttendee(beam.DoFn):
         debug_attendee['created_date'] = timestamp
 
         debug_attendee['city'] = key['city']
+        debug_attendee['category'] = key['category']
         debug_attendee['person_id'] = key['person_id']
         debug_attendee['grouped_event_ids'] = json.dumps(grouped_events)
         yield debug_attendee
