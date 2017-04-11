@@ -184,13 +184,12 @@ class DebugBuildPRDebugAttendee(beam.DoFn):
 
     def process(self, (key, grouped_events), timestamp):
         # TODO: Sync with server/logic
-        key_name = '%s: %s: %s' % (key['city'], key['category'], key['person_id'])
+        key_name = '%s: %s' % (key['city'], key['person_id'])
         db_key = self.client.key('PRDebugAttendee', key_name)
         debug_attendee = datastore.Entity(key=db_key, exclude_from_indexes=['grouped_event_ids'])
         debug_attendee['created_date'] = timestamp
 
         debug_attendee['city'] = key['city']
-        debug_attendee['category'] = key['category']
         debug_attendee['person_id'] = key['person_id']
         debug_attendee['grouped_event_ids'] = json.dumps(grouped_events)
         yield debug_attendee
