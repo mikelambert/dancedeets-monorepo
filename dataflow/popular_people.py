@@ -1,3 +1,4 @@
+import argparse
 import datetime
 import json
 import logging
@@ -160,14 +161,9 @@ def DebugExplodeAttendeeList((key, sorted_people)):
 
 def DebugFilterForTopAttendee((key, values)):
     values = list(values)
-    if random.random() < 0.01:
-        logging.info('got0 %r', (key, values))
     if TOP_ATTENDEE in values:
-        if random.random() < 0.1:
-            logging.info('got1 %r', (key, values))
         new_values = [x for x in values if x != TOP_ATTENDEE]
         if len(new_values) != 1:
-            logging.info('got2 %r', (key, values))
             logging.error('Key %s had unexpected trimmed new_values length == %s, values: %s', key, len(new_values), new_values)
         else:
             yield key, new_values[0]
@@ -294,9 +290,7 @@ def Logger(entity, prefix):
     logging.info('%s: %r', prefix, entity)
     yield entity
 
-run_locally = False
-
-def read_from_datastore(project, pipeline_options):
+def run_pipeline(project, pipeline_options, run_locally):
     """Creates a pipeline that reads entities from Cloud Datastore."""
     p = beam.Pipeline(options=pipeline_options)
     # Create a query to read entities from datastore.
@@ -322,22 +316,21 @@ def read_from_datastore(project, pipeline_options):
 
 
     top_attendee_lists = (produce_attendees
-        | 'group people by city' >> beam.FlatMap(GroupAttendeesByCategory)
-        | 'group people by city-category' >> beam.GroupByKey()
+        | 'map category -> person' >> beam.FlatMap(GroupAttendeesByCategory)
+        | 'group by category' >> beam.GroupByKey()
         | 'build top-attendee lists' >> beam.FlatMap(CountPeopleInfos)
     )
 
     attendee_event_debugging = (produce_attendees
-        # TODO: I think doing the admin-hash grouping inside the city-attendee grouping, will be muuuuuch faster (due to avoiding the shuffling)
-        | 'regroup by City-Attendee' >> beam.FlatMap(DebugExportEventAttendeesForGrouping)
+        | 'map category-attendee -> event' >> beam.FlatMap(DebugExportEventAttendeesForGrouping)
             #.with_output_types(typehints.Tuple[typehints.Dict[str, str], typehints.Tuple[str, typehints.List[str]]])
-        | 'group by City-Attendee' >> beam.GroupByKey()
-        | 'group event_ids' >> beam.FlatMap(DebugGroupEventIds)
+        | 'group by category-attendee' >> beam.GroupByKey()
+        | 'within category-attendee, group event_ids by admin_hash' >> beam.FlatMap(DebugGroupEventIds)
             #.with_output_types(typehints.KV[typehints.Dict[str, str], typehints.Iterable[typehints.Tuple[str, typehints.List[str]]]])
     )
 
     exploded_top_attendees = (top_attendee_lists
-        | 'explode the top attendees into the correct combo format' >> beam.FlatMap(DebugExplodeAttendeeList)
+        | 'explode the top attendees into a mapping: category-attendee -> YES' >> beam.FlatMap(DebugExplodeAttendeeList)
             #.with_output_types(typehints.KV[typehints.Dict[str, str], str])
     )
 
@@ -384,10 +377,16 @@ def read_from_datastore(project, pipeline_options):
     return result
 
 def run():
-    pipeline_options = PipelineOptions(sys.argv)
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--run_locally',
+        dest='run_locally',
+        default='',
+        help='Run data subset and do not save.')
+    known_args, pipeline_args = parser.parse_known_args()
+    pipeline_options = PipelineOptions(pipeline_args)
     pipeline_options.view_as(SetupOptions).save_main_session = True
     gcloud_options = pipeline_options.view_as(GoogleCloudOptions)
-    read_from_datastore('dancedeets-hrd', gcloud_options)
+    run_pipeline('dancedeets-hrd', gcloud_options, known_args.run_locally)
 
 if __name__ == '__main__':
     run()

@@ -31,7 +31,7 @@ function remoteJob(filename) {
 }
 
 function localJob(filename) {
-  return $.shell.task([`/usr/local/bin/python -m ${filename} --log=DEBUG`]);
+  return $.shell.task([`/usr/local/bin/python -m ${filename} --log=DEBUG --run_locally=true`]);
 }
 
 function localRemoteTasks(command) {
