@@ -31,7 +31,7 @@ def ConvertToEntity(element):
 def ConvertFromEntity(entity):
     return helpers.entity_to_protobuf(entity)
 
-def OldPeopleRanking(people_ranking, old_date):
+def OldPRRecord(people_ranking, old_date):
     if 'created_date' not in people_ranking:
         yield people_ranking
     else:
@@ -46,33 +46,38 @@ class DeleteFromDatastore(beam.DoFn):
     def process(self, entity):
         self.client.delete(entity.key)
 
-def delete_from_datastore(project, pipeline_options, table, run_locally):
+def delete_from_datastore(project, pipeline_options, run_locally):
     """Creates a pipeline that reads entities from Cloud Datastore."""
     p = beam.Pipeline(options=pipeline_options)
     # Create a query to read entities from datastore.
     client = datastore.Client()
-    q = client.query(kind=table)
 
     if run_locally:
         pass
         #q.add_filter('category', '=', 'BEBOP')
 
-    q = client.query(kind=table)
+    q = client.query(kind='PRDebugAttendee')
     query.order = ['-created_date']
     results = list(q.fetch(1))
     if not results:
-        logging.error('No %s objects found', table)
+        logging.error('No PRDebugAttendee objects found')
         return
+
 
     newest_date = results[0]['created_date']
     logging.info('Deleting elements older than %s', newest_date)
 
+    q1 = client.query(kind='PRDebugAttendee')
+    q2 = client.query(kind='PRCityCategory')
+    datastore_1 = p | 'read PRDebugAttendee from datastore' >> ReadFromDatastore(project, query._pb_from_query(q1), num_splits=400)
+    datastore_2 = p | 'read PRCityCategory from datastore' >> ReadFromDatastore(project, query._pb_from_query(q2), num_splits=400)
     # Set up our map/reduce pipeline
-    output = (p
-        | 'read from datastore' >> ReadFromDatastore(project, query._pb_from_query(q), num_splits=400)
+    output = (
+        (datastore_1, datastore_2)
+        | beam.Flatten()
         | 'convert to entity' >> beam.Map(ConvertToEntity)
         # Find the events we want to count, and expand all the admins/attendees
-        | 'find old rankings' >> beam.FlatMap(OldPeopleRanking, newest_date)
+        | 'find old rankings' >> beam.FlatMap(OldPRRecord, newest_date)
         # And save it all back to the database
     )
     if not run_locally:
@@ -96,15 +101,11 @@ def run():
         dest='run_locally',
         default='',
         help='Run data subset and do not save.')
-    parser.add_argument('--table',
-        dest='table',
-        default='PRDebugAttendee',
-        help='DB Table to delete old records from.')
     known_args, pipeline_args = parser.parse_known_args()
     pipeline_options = PipelineOptions(pipeline_args)
     pipeline_options.view_as(SetupOptions).save_main_session = True
     gcloud_options = pipeline_options.view_as(GoogleCloudOptions)
-    delete_from_datastore('dancedeets-hrd', gcloud_options, known_args.table, known_args.run_locally)
+    delete_from_datastore('dancedeets-hrd', gcloud_options, known_args.run_locally)
 
 if __name__ == '__main__':
     run()
