@@ -398,10 +398,11 @@ class AdminEditHandler(base_servlet.BaseRequestHandler):
 def get_fb_event(fbl, event_id, lookup_type=fb_api.LookupEvent):
     data = None
     try:
+        print lookup_type, event_id
         data = fbl.get(lookup_type, event_id)
     except fb_api.NoFetchedDataException:
         pass
-    if data['empty']:
+    if data and data['empty']:
         data = None
     if not data:
         db_event = eventdata.DBEvent.get_by_id(event_id)
