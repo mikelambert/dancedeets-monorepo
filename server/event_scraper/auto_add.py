@@ -4,13 +4,13 @@ import re
 
 import fb_api
 
+from event_attendees import event_attendee_classifier
 from events import eventdata
 from nlp import event_auto_classifier
 from nlp import event_classifier
 from util import fb_mapreduce
 from util import mr
 from . import add_entities
-from . import event_attendee_classifier
 from . import potential_events
 
 def is_good_event_by_text(fb_event, classified_event):

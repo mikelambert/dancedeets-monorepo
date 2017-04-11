@@ -5,8 +5,8 @@ from google.cloud import datastore
 
 from events import eventdata
 import fb_api
-from logic import popular_people
 from . import event_attendee_classifier
+from . import popular_people
 
 def debug_attendee_addition_for_event(fbl, fb_event):
     """Used to debug the attendees for an event:

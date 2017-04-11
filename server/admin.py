@@ -6,17 +6,17 @@ from flask.ext.admin.contrib import appengine
 import keys
 
 from classes.class_models import StudioClass
+from event_attendees.popular_people import PRCityCategory
+from event_attendees.popular_people import PRDebugAttendee
+from event_scraper.potential_events import PotentialEvent
+from event_scraper.thing_db import Source
 from events.eventdata import DBEvent
 from events.event_locations import LocationMapping
 from events.featured import FeaturedResult
-from event_scraper.potential_events import PotentialEvent
-from event_scraper.thing_db import Source
 from rankings.cities import City
 from fb_api import FacebookCachedObject
 from loc.gmaps_cached import CachedGeoCode
 from loc.gmaps_bwcompat import GeoCode
-from logic.popular_people import PRCity
-from logic.popular_people import PRCityCategory
 from pubsub.pubsub import OAuthToken
 from search.search import DisplayEvent
 from servlets.static_db import StaticContent
@@ -38,8 +38,8 @@ for model in [
     GeoCode,
     LocationMapping,
     OAuthToken,
-    PRCity,
     PRCityCategory,
+    PRDebugAttendee,
     PotentialEvent,
     Source,
     StaticContent,

@@ -2,10 +2,10 @@ import logging
 
 from events import event_locations
 import fb_api
-from event_attendees import popular_people
 from loc import math
 from nlp import event_classifier
 from rankings import cities
+from . import popular_people
 
 def find_overlap(event_attendee_ids, top_dance_attendee_ids):
     if not len(event_attendee_ids):

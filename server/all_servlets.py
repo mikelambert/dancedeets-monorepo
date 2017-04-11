@@ -4,6 +4,7 @@ from battle_brackets import signup_servlets
 from brackets import servlets
 from classes import class_pipeline
 from classes import class_servlets
+from event_attendees import popular_people
 from event_scraper import keyword_search
 from event_scraper import source_servlets
 from event_scraper import scraping_tasks
@@ -11,7 +12,6 @@ from event_scraper import thing_scraper2
 from event_scraper import webhooks
 from events import event_reloading_tasks
 from events import find_access_tokens
-from logic import popular_people
 from logic import unique_attendees
 from ml import gprediction_servlets
 from notifications import added_events

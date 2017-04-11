@@ -18,7 +18,7 @@ from events import featured
 import fb_api
 import keys
 from loc import math
-from logic import popular_people
+from event_attendees import popular_people
 from rankings import cities
 from search import onebox
 from search import search

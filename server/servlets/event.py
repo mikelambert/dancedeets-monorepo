@@ -12,8 +12,8 @@ from slugify import slugify
 
 import app
 import base_servlet
+from event_attendees import event_attendee_classifier
 from event_scraper import add_entities
-from event_scraper import event_attendee_classifier
 from event_scraper import potential_events
 from events import add_events
 from events import eventdata
@@ -344,10 +344,12 @@ class AdminEditHandler(base_servlet.BaseRequestHandler):
 
         # If this *was* auto-added by attendee, or *could be* auto-added by attendee
         if (e and e.creating_method == eventdata.CM_AUTO_ATTENDEE) or good_event_attendee_ids:
-            from event_scraper import attendee_debugging
+            from event_attendees import attendee_debugging
             dancer_and_events, event_popularity = attendee_debugging.debug_attendee_addition_for_event(self.fbl, fb_event)
             self.display['event_popularity'] = event_popularity
             self.display['dancer_and_events'] = dancer_and_events
+        #from event_attendees import attendee_debugging
+        #attendee_debugging.debug_attendee_addition_for_event_new(fb_event, good_event_attendee_ids)
 
         self.display['event'] = e
         self.display['event_id'] = event_id
