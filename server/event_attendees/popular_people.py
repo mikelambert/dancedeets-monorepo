@@ -20,7 +20,6 @@ class PRDebugAttendee(ndb.Model):
     created_date = ndb.DateTimeProperty(auto_now=True)
 
     city = ndb.StringProperty()
-    category = ndb.StringProperty()
     person_id = ndb.StringProperty()
     grouped_event_ids = ndb.JsonProperty()
 

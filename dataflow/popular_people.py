@@ -135,13 +135,14 @@ def track_person(person_type, db_event, person, count_once_per):
         yield key
 
 def DebugExportEventPeopleForGrouping(data):
-    key = data.copy()
-    if key['person_type'] != 'ATTENDEE':
+    if data['person_type'] != 'ATTENDEE':
         return
-    del key['person_name'] # Don't need
-    del key['event_id']
-    del key['count_once_per']
-    # key = {person_type, city, category, person_id, count_once_per}
+    if data['category'] != '':
+        return
+    key = {
+        'city': data['city'],
+        'person_id': data['person_id'],
+    }
     yield key, (data['count_once_per'], data['event_id'])
 
 def DebugGroupEventIds((key, values)):
@@ -158,11 +159,15 @@ def DebugExplodeAttendeeList((key, sorted_people)):
     # key contains {person_type, city, category}
     if key['person_type'] != 'ATTENDEE':
         return
+    if key['category'] != '':
+        return
+    new_key = {
+        'city': key['city'],
+    }
     for person in sorted_people:
-        new_key = key.copy()
-        new_key['person_id'] = person['person_id']
-        # new_key contains {person_type, city, category, person_id}
-        yield new_key, TOP_ATTENDEE
+        final_key = new_key.copy()
+        final_key['person_id'] = person['person_id']
+        yield final_key, TOP_ATTENDEE
 
 def DebugFilterForTopAttendee((key, values)):
     values = list(values)
@@ -312,16 +317,13 @@ def run_pipeline(project, pipeline_options, run_locally, debug_attendees):
 
     if debug_attendees:
         attendee_event_debugging = (produce_attendees
-            | 'map category-attendee -> event' >> beam.FlatMap(DebugExportEventPeopleForGrouping)
-                #.with_output_types(typehints.Tuple[typehints.Dict[str, str], typehints.Tuple[str, typehints.List[str]]])
-            | 'group by category-attendee' >> beam.GroupByKey()
-            | 'within category-attendee, group event_ids by admin_hash' >> beam.FlatMap(DebugGroupEventIds)
-                #.with_output_types(typehints.KV[typehints.Dict[str, str], typehints.Iterable[typehints.Tuple[str, typehints.List[str]]]])
+            | 'map city-attendee -> event' >> beam.FlatMap(DebugExportEventPeopleForGrouping)
+            | 'group by city-attendee' >> beam.GroupByKey()
+            | 'within city-attendee, group event_ids by admin_hash' >> beam.FlatMap(DebugGroupEventIds)
         )
 
         exploded_top_attendees = (top_attendee_lists
             | 'explode the top attendees into a mapping: category-attendee -> YES' >> beam.FlatMap(DebugExplodeAttendeeList)
-                #.with_output_types(typehints.KV[typehints.Dict[str, str], str])
         )
 
         (
@@ -329,12 +331,9 @@ def run_pipeline(project, pipeline_options, run_locally, debug_attendees):
             # key contains {person_type, city, category, person_id}
             (attendee_event_debugging, exploded_top_attendees)
             | beam.Flatten()
-            # This is necessary so that they both have unicode keys (or not), and so will GroupBYKey correctly
-            | 'serialize dicts for unicode' >> beam.FlatMap(ToJsonKeys)
-            | 'unserialize dicts for unicode' >> beam.FlatMap(FromJsonKeys)
+            # keys are {city, person_id}
             | 'group the attendee-debug info with the is-it-a-top-attendee info' >> beam.GroupByKey()
             | 'filter for TOP_ATTENDEE' >> beam.FlatMap(DebugFilterForTopAttendee)
-                #.with_output_types(typehints.KV[typehints.Dict[str, str], typehints.Iterable[typehints.Tuple[str, typehints.List[str]]]])
             | 'build PRDebugAttendee' >> beam.ParDo(DebugBuildPRDebugAttendee(), timestamp)
             | 'write PRDebugAttendee to datastore (unbatched)' >> beam.ParDo(WriteToDatastoreSingle(), actually_save=not run_locally)
         )
