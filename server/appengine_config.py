@@ -28,12 +28,6 @@ mapreduce_SHARD_MAX_ATTEMPTS = 1000
 # How many times to re-attempt this task (outside of the data-processing attempts), before giving up and aborting the entire mapreudce
 mapreduce_TASK_MAX_ATTEMPTS = 1000
 
-# This is the max-timeout we wait before giving up.
-# Normally it'd check the logs-API to verify, but we run on managed VMs where that doesn't exist
-# Without this, it'd wait 10.5 minutes to restart the mapreduce, but we should do much better...
-from mapreduce import parameters
-parameters._MAX_LEASE_DURATION_SEC = mapreduce__SLICE_DURATION_SEC * 1.2
-
 appstats_MAX_STACK = 25
 appstats_MAX_REPR = 100
 appstats_MAX_LOCALS = 5
