@@ -12,6 +12,7 @@ from search import search_base
 from search import search
 from util import urls
 from .facebook import event
+from .facebook import util as fb_util
 
 def _generate_post_for(city, week_start, search_results):
     post_values = {}
@@ -37,11 +38,10 @@ def _generate_post_for(city, week_start, search_results):
             dt = result.start_time.strftime('%a %-I:%M%p')
         else:
             dt = result.start_time.strftime('%a %-H:%M')
-        event = result.db_event
-        if event.venue_id:
-            location = ' @ @[%s]' % event.venue_id
+        if result.db_event.venue_id:
+            location = ' @ @[%s]' % result.db_event.venue_id
         elif event.location_name:
-            location = ' @ %s' % event.location_name
+            location = ' @ %s' % result.db_event.location_name
         else:
             location = ''
         params = {
@@ -81,6 +81,10 @@ def _generate_results_for(city, week_start):
     return search_results
 
 def facebook_weekly_post(db_auth_token, city_data):
+    result = _facebook_weekly_post(db_auth_token, city_data)
+    return fb_util.processed_task(db_auth_token, result)
+
+def _facebook_weekly_post(db_auth_token, city_data):
     city_key = city_data['city']
 
     city = cities.City.get_by_key_name(city_key)

@@ -52,7 +52,7 @@ def eventually_publish_city_key(city_key):
     }
     def should_post(auth_token):
         return auth_token.application == db.APP_FACEBOOK
-    return _eventually_publish_data(data, should_post, queue_name=EVENT_PULL_QUEUE_HIGH)
+    return _eventually_publish_data(data, should_post, queue_name=EVENT_PULL_QUEUE_HIGH, allow_reposting=True)
 
 def _sanitize(x):
     return re.sub(r'[^a-zA-Z0-9_-]', '-', x)
@@ -64,7 +64,7 @@ def _get_type_and_data_names(data):
     data_rest = json.dumps(new_data, sort_keys=True)
     return _sanitize(data_type), _sanitize(data_rest)
 
-def _eventually_publish_data(data, should_post, token_nickname=None, queue_name=EVENT_PULL_QUEUE):
+def _eventually_publish_data(data, should_post, token_nickname=None, queue_name=EVENT_PULL_QUEUE, allow_reposting=False):
     args = []
     if token_nickname:
         args.append(db.OAuthToken.token_nickname == token_nickname)
@@ -72,9 +72,10 @@ def _eventually_publish_data(data, should_post, token_nickname=None, queue_name=
     q = taskqueue.Queue(queue_name)
     for token in oauth_tokens:
         logging.info("Evaluating token %s", token)
+        token_allow_resposting = token.allow_reposting or allow_reposting
         if should_post(token):
             # Names are limited to r"^[a-zA-Z0-9_-]{1,500}$"
-            time_add = int(time.time()) if token.allow_reposting else 0
+            time_add = int(time.time()) if token_allow_resposting else 0
             # "Event" here is a misnamer...but we leave it for now.
 
             datatype, extra = _get_type_and_data_names(data)

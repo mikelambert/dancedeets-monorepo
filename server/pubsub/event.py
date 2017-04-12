@@ -4,6 +4,7 @@ import logging
 from events import eventdata
 from util import fb_events
 from .facebook import event as facebook_event
+from .facebook import util as fb_util
 from .twitter import event as twitter_event
 from . import db
 
@@ -71,27 +72,10 @@ def _post_event(auth_token, db_event):
         twitter_event.twitter_post(auth_token, db_event)
     elif auth_token.application == db.APP_FACEBOOK:
         result = facebook_event.facebook_post(auth_token, db_event)
-        if 'error' in result:
-            error = result['error']
-            if error.get('code') == 368 and error.get('error_subcode') == 1390008:
-                logging.error('We are posting too fast to the facebook wall, so wait a day and try again later')
-                next_post_time = datetime.datetime.now() + datetime.timedelta(days=1)
-                auth_token = auth_token.key.get()
-                auth_token.next_post_time = next_post_time
-                # And space things out a tiny bit more!
-                auth_token.time_between_posts += 1
-                auth_token.put()
-                return False
-            logging.error("Facebook Post Error: %r", result)
-        else:
-            logging.info("Facebook result was %r", result)
+        return fb_util.processed_task(auth_token, result)
     elif auth_token.application == db.APP_FACEBOOK_WALL:
         result = facebook_event.post_on_event_wall(db_event)
-        if result:
-            if 'error' in result:
-                logging.error("Facebook WallPost Error: %r", result)
-            else:
-                logging.info("Facebook result was %r", result)
+        return fb_util.processed_task(auth_token, result)
     else:
         logging.error("Unknown application for OAuthToken: %s", auth_token.application)
         return False
