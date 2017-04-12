@@ -151,6 +151,7 @@ STYLE_HIPHOP_WEAK = Any(
     'hip\W?hop',
     u'嘻哈', # chinese hiphop
     u'ההיפ הופ', # hebrew hiphop
+    u'והיפ הופ', # hebrew hiphop
     u'هيب هوب', # arabic hiphop
     u'الهيب هوب.', # arabic 'the hiphop'
     u'хипхоп', # macedonian hiphop
@@ -269,6 +270,7 @@ STYLE_BREAK = Name('STYLE_BREAK', Any(
     'breakeuse', # french bgirl
     u'탑락', # toprock
     u'بريك دانس', # arabic breakdance
+    u'מופעי ברייקדאנס', # hebrew breakdancing
     u'מקצה ברייקדאנס', # hebrew breakdancing
     u'ביבוינג', # hebrew bboying
     u'霹靂舞', # chinese breakdance
