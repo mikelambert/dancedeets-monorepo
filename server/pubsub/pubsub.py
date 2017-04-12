@@ -27,16 +27,16 @@ def eventually_publish_event(event_id, token_nickname=None):
         return
 
     def should_post(auth_token):
-        return _should_post_event(auth_token, db_event)
-    return eventually_publish_data(event_id, should_post, token_nickname)
+        return _should_queue_event_for_posting(auth_token, db_event)
+    return _eventually_publish_data(event_id, should_post, token_nickname)
 
 def eventually_publish_city_key(city_key):
     print city_key
     def should_post(auth_token):
         return auth_token.application == APP_FACEBOOK_WEEKLY
-    return eventually_publish_data(city_key, should_post)
+    return _eventually_publish_data(city_key, should_post)
 
-def eventually_publish_data(data, should_post, token_nickname=None):
+def _eventually_publish_data(data, should_post, token_nickname=None):
     args = []
     if token_nickname:
         args.append(OAuthToken.token_nickname == token_nickname)
@@ -58,12 +58,14 @@ def eventually_publish_data(data, should_post, token_nickname=None):
                 # Ignore publishing requests we've already decided to publish (multi-task concurrency)
                 pass
 
+def _should_queue_event_for_posting(auth_token, db_event):
+    func = POSTING_FILTERS.get(auth_token.application)
+    result = func(auth_token, db_event)
+    if result:
+        logging.info("Publishing event %s", db_event.id)
+    return True
 
-def _should_post_event(auth_token, db_event):
-    if auth_token.application == APP_FACEBOOK_WEEKLY:
-        return False
-    if auth_token.application == APP_TWITTER_DEV:
-        return False
+def _should_post_event_to_account(auth_token, db_event):
     geocode = db_event.get_geocode()
     if not geocode:
         # Don't post events without a location. It's too confusing...
@@ -72,32 +74,34 @@ def _should_post_event(auth_token, db_event):
     if auth_token.country_filters and event_country not in auth_token.country_filters:
         logging.info("Skipping event due to country filters")
         return False
-    # Additional filtering for FB Wall postings, since they are heavily-rate-limited by FB.
-    if auth_token.application == APP_FACEBOOK_WALL:
-        if not db_event.is_fb_event:
-            logging.info("Event is not FB event")
-            return False
-        if db_event.is_page_owned:
-            logging.info("Event is not owned by page")
-            return False
-        if not db_event.public:
-            logging.info("Event is not public")
-            return False
-        if db_event.attendee_count < 20:
-            logging.warning("Skipping event due to <20 attendees: %s", db_event.attendee_count)
-            return False
-        if db_event.attendee_count > 600:
-            logging.warning("Skipping event due to 600+ attendees: %s", db_event.attendee_count)
-            return False
-        invited = fb_events.get_all_members_count(db_event.fb_event)
-        if invited < 200:
-            logging.warning("Skipping event due to <200 invitees: %s", invited)
-            return False
-        if invited > 2000:
-            logging.warning("Skipping event due to 2000+ invitees: %s", invited)
-            return False
-    logging.info("Publishing event %s with latlng %s", db_event.id, geocode)
     return True
+
+def _should_post_on_event_wall(auth_token, db_event):
+    if not _should_post_event_to_account(auth_token, db_event):
+        return False
+    # Additional filtering for FB Wall postings, since they are heavily-rate-limited by FB.
+    if not db_event.is_fb_event:
+        logging.info("Event is not FB event")
+        return False
+    if db_event.is_page_owned:
+        logging.info("Event is not owned by page")
+        return False
+    if not db_event.public:
+        logging.info("Event is not public")
+        return False
+    if db_event.attendee_count < 20:
+        logging.warning("Skipping event due to <20 attendees: %s", db_event.attendee_count)
+        return False
+    if db_event.attendee_count > 600:
+        logging.warning("Skipping event due to 600+ attendees: %s", db_event.attendee_count)
+        return False
+    invited = fb_events.get_all_members_count(db_event.fb_event)
+    if invited < 200:
+        logging.warning("Skipping event due to <200 invitees: %s", invited)
+        return False
+    if invited > 2000:
+        logging.warning("Skipping event due to 2000+ invitees: %s", invited)
+        return False
 
 
 def pull_and_publish_event():
@@ -118,7 +122,7 @@ def pull_and_publish_event():
             if len(tasks) != 1:
                 logging.error('Found too many tasks in our lease_tasks_by_tag: %s', len(tasks))
             task = tasks[0]
-            posted = post_data_with_authtoken(task.payload, token)
+            posted = _post_data_with_authtoken(task.payload, token)
             q.delete_tasks(task)
 
             # Only mark it up for delay, if we actually posted...
@@ -129,7 +133,7 @@ def pull_and_publish_event():
                 token.put()
 
 
-def post_data_with_authtoken(data, auth_token):
+def _post_data_with_authtoken(data, auth_token):
     try:
         if auth_token.application == APP_FACEBOOK_WEEKLY:
             city_name = data
@@ -148,20 +152,23 @@ def post_data_with_authtoken(data, auth_token):
 
 
 def post_event(auth_token, event_id):
-    logging.info("  Found event, posting %s", event_id)
-    event_id = event_id
     db_event = eventdata.DBEvent.get_by_id(event_id)
+    if _should_still_post_about_event(auth_token, db_event):
+        return _post_event(auth_token, db_event)
+    else:
+        return False
+
+def _should_still_post_about_event(auth_token, db_event):
     if not db_event:
-        logging.warning("Failed to post event: %s, dbevent deleted in dancedeets", event_id)
+        logging.warning("Failed to post event: %s, dbevent deleted in dancedeets", db_event)
         return False
     if not db_event.has_content():
-        logging.warning("Failed to post event: %s, due to %s", event_id, db_event.empty_reason)
+        logging.warning("Failed to post event: %s, due to %s", db_event.id, db_event.empty_reason)
         return False
     if (db_event.end_time or db_event.start_time) < datetime.datetime.now():
         logging.info('Not publishing %s because it is in the past.', db_event.id)
         return False
-    return _post_event(auth_token, db_event)
-
+    return True
 
 def _post_event(auth_token, db_event):
     if auth_token.application == APP_TWITTER:
@@ -170,9 +177,12 @@ def _post_event(auth_token, db_event):
         result = facebook_event.facebook_post(auth_token, db_event)
         if 'error' in result:
             if result.get('code') == 368 and result.get('error_subcode') == 1390008:
+                logging.error('We are posting too fast to the facebook wall, so wait a day and try again later')
                 next_post_time = datetime.datetime.now() + datetime.timedelta(days=1)
                 auth_token = auth_token.key.get()
                 auth_token.next_post_time = next_post_time
+                # And space things out a tiny bit more!
+                auth_token.time_between_posts += 1
                 auth_token.put()
                 return False
             logging.error("Facebook Post Error: %r", result)
@@ -226,3 +236,9 @@ class OAuthToken(ndb.Model):
         if self.json_data is None:
             self.json_data = {}
         return self.json_data.setdefault('country_filters', [])
+
+POSTING_FILTERS = {
+    APP_FACEBOOK: _should_post_event_to_account,
+    APP_TWITTER: _should_post_event_to_account,
+    APP_FACEBOOK_WALL: _should_post_on_event_wall,
+}
