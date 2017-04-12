@@ -9,5 +9,7 @@ queue:
   bucket_size: 1
 - name: event-publishing-pull-queue
   mode: pull
+- name: event-publishing-pull-queue-high
+  mode: pull
 - name: mobile-notify-queue
   rate: 60/s

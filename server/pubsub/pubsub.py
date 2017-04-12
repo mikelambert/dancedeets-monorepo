@@ -15,6 +15,7 @@ from . import event
 from . import weekly
 
 EVENT_PULL_QUEUE = 'event-publishing-pull-queue'
+EVENT_PULL_QUEUE_HIGH = 'event-publishing-pull-queue-high'
 
 SHOULD_POST_EVENT_TO = {
     db.APP_FACEBOOK: event.should_post_event_to_account,
@@ -42,7 +43,7 @@ def eventually_publish_event(event_id, token_nickname=None):
 
     def should_post(auth_token):
         return _should_queue_event_for_posting(auth_token, db_event)
-    return _eventually_publish_data(data, should_post, token_nickname)
+    return _eventually_publish_data(data, should_post, token_nickname=token_nickname)
 
 def eventually_publish_city_key(city_key):
     data = {
@@ -51,7 +52,7 @@ def eventually_publish_city_key(city_key):
     }
     def should_post(auth_token):
         return auth_token.application == db.APP_FACEBOOK
-    return _eventually_publish_data(data, should_post)
+    return _eventually_publish_data(data, should_post, queue_name=EVENT_PULL_QUEUE_HIGH)
 
 def _sanitize(x):
     return re.sub(r'[^a-zA-Z0-9_-]', '-', x)
@@ -63,12 +64,12 @@ def _get_type_and_data_names(data):
     data_rest = json.dumps(new_data, sort_keys=True)
     return _sanitize(data_type), _sanitize(data_rest)
 
-def _eventually_publish_data(data, should_post, token_nickname=None):
+def _eventually_publish_data(data, should_post, token_nickname=None, queue_name=EVENT_PULL_QUEUE):
     args = []
     if token_nickname:
         args.append(db.OAuthToken.token_nickname == token_nickname)
     oauth_tokens = db.OAuthToken.query(db.OAuthToken.valid_token == True, *args).fetch(100)
-    q = taskqueue.Queue(EVENT_PULL_QUEUE)
+    q = taskqueue.Queue(queue_name)
     for token in oauth_tokens:
         logging.info("Evaluating token %s", token)
         if should_post(token):
@@ -102,10 +103,15 @@ def pull_and_publish_event():
             db.OAuthToken.next_post_time == None
         )
     ).fetch(100)
-    q = taskqueue.Queue(EVENT_PULL_QUEUE)
+    q1 = taskqueue.Queue(EVENT_PULL_QUEUE_HIGH)
+    q2 = taskqueue.Queue(EVENT_PULL_QUEUE)
     for token in oauth_tokens:
         logging.info("Can post to OAuthToken %s: %s", token.queue_id(), token)
-        tasks = q.lease_tasks_by_tag(120, 1, token.queue_id())
+        tasks = q1.lease_tasks_by_tag(120, 1, token.queue_id())
+        q = q1
+        if not tasks:
+            tasks = q2.lease_tasks_by_tag(120, 1, token.queue_id())
+            q = q2
         logging.info("Fetching %d tasks with queue id %s", len(tasks), token.queue_id())
         if tasks:
             # Should only be one task
