@@ -13,7 +13,7 @@ from search import search
 from util import urls
 from .facebook import event
 
-def _generate_post_for(city, search_results):
+def _generate_post_for(city, week_start, search_results):
     post_values = {}
     headers = [
         "Hey %(location)s, here's what's coming up for you this week in dance!",
@@ -29,7 +29,7 @@ def _generate_post_for(city, search_results):
 
     messages = []
     messages.append(random.choice(headers) % {'location': city.city_name})
-
+    messages.append('Week of %s:', week_start.strftime('%A %B %-d'))
     for result in search_results:
         dt = result.start_time.strftime('%a %-H:%M')
         event = result.db_event
@@ -59,10 +59,8 @@ def _generate_post_for(city, search_results):
     return post_values
 
 
-def _generate_results_for(city):
-    d = datetime.date.today()
-    monday = d - datetime.timedelta(days=d.weekday()) # round down to last monday
-    start_time = monday
+def _generate_results_for(city, week_start):
+    start_time = week_start
     end_time = start_time + datetime.timedelta(days=8)
 
     latlng_bounds = ((city.latitude, city.longitude), (city.latitude, city.longitude))
@@ -79,15 +77,19 @@ def _generate_results_for(city):
 
 def facebook_weekly_post(db_auth_token, city_data):
     city_key = city_data['city']
+
     city = cities.City.get_by_key_name(city_key)
     page_id = db_auth_token.token_nickname
     endpoint = 'v2.8/%s/feed' % page_id
     fbl = fb_api.FBLookup(None, db_auth_token.oauth_token)
 
-    search_results = _generate_results_for(city)
+    d = datetime.date.today()
+    week_start = d - datetime.timedelta(days=d.weekday()) # round down to last monday
+
+    search_results = _generate_results_for(city, week_start)
     if len(search_results) < 2:
         return False
-    post_values = _generate_post_for(city, search_results)
+    post_values = _generate_post_for(city, week_start, search_results)
 
     feed_targeting = get_city_targeting_data(fbl, city)
     if feed_targeting:
