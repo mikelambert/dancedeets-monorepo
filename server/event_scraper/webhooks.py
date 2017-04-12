@@ -30,6 +30,7 @@ class WebhookPageHandler(webapp2.RequestHandler):
             logging.critical('Unknown hub.mode received: %s', self.request.get('hub.mode'))
 
     def post(self):
+        logging.info('/webhooks/user called')
         signature = self.request.headers.get('X_HUB_SIGNATURE')
         digest = hmac.new(facebook.FACEBOOK_CONFIG['secret_key'], self.request.body, hashlib.sha1).hexdigest()
         computed = 'sha1=%s' % digest
