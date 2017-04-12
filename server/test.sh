@@ -28,4 +28,4 @@ if [ -d "frankenserver/python" ]; then
 else
   GAE_PATH="../google_appengine"
 fi
-$COVERAGE_PREFIX ./runner.py $GAE_PATH $ARGS
+$COVERAGE_PREFIX ./testrunner.py $GAE_PATH $ARGS
