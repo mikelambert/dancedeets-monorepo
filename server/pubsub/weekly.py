@@ -11,7 +11,7 @@ from rankings import cities
 from search import search_base
 from search import search
 from util import urls
-from . import pubsub
+from .facebook import event
 
 def _generate_post_for(city, search_results):
     post_values = {}
@@ -115,7 +115,7 @@ def get_city_targeting_data(fbl, city):
         'country_code': city.country_name,
         'q': city_state,
     }
-    geo_target = fbl.get(pubsub.LookupGeoTarget, urls.urlencode(geo_search))
+    geo_target = fbl.get(event.LookupGeoTarget, urls.urlencode(geo_search))
 
     good_targets = geo_target['search']['data']
     if good_targets:

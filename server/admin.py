@@ -17,7 +17,7 @@ from rankings.cities import City
 from fb_api import FacebookCachedObject
 from loc.gmaps_cached import CachedGeoCode
 from loc.gmaps_bwcompat import GeoCode
-from pubsub.pubsub import OAuthToken
+from pubsub.db import OAuthToken
 from search.search import DisplayEvent
 from servlets.static_db import StaticContent
 from topics.topic_db import Topic

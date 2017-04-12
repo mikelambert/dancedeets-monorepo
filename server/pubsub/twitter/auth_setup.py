@@ -3,8 +3,7 @@ import urlparse
 
 import base_servlet
 import app
-from ..pubsub import OAuthToken
-from ..pubsub import APP_TWITTER
+from .. import db
 from . import auth
 
 request_token_url = 'https://twitter.com/oauth/request_token'
@@ -25,18 +24,18 @@ def twitter_oauth1(user_id, token_nickname, country_filter):
 
     request_token = dict(urlparse.parse_qsl(content))
 
-    auth_tokens = OAuthToken.query(
-        OAuthToken.user_id == user_id,
-        OAuthToken.token_nickname == token_nickname,
-        OAuthToken.application == APP_TWITTER
+    auth_tokens = db.OAuthToken.query(
+        db.OAuthToken.user_id == user_id,
+        db.OAuthToken.token_nickname == token_nickname,
+        db.OAuthToken.application == db.APP_TWITTER
     ).fetch(1)
     if auth_tokens:
         auth_token = auth_tokens[0]
     else:
-        auth_token = OAuthToken()
+        auth_token = db.OAuthToken()
     auth_token.user_id = user_id
     auth_token.token_nickname = token_nickname
-    auth_token.application = APP_TWITTER
+    auth_token.application = db.APP_TWITTER
     auth_token.temp_oauth_token = request_token['oauth_token']
     auth_token.temp_oauth_token_secret = request_token['oauth_token_secret']
     if country_filter:
@@ -56,9 +55,9 @@ def twitter_oauth1(user_id, token_nickname, country_filter):
 
 
 def twitter_oauth2(oauth_token, oauth_verifier):
-    auth_tokens = OAuthToken.query(
-        OAuthToken.temp_oauth_token == oauth_token,
-        OAuthToken.application == APP_TWITTER
+    auth_tokens = db.OAuthToken.query(
+        db.OAuthToken.temp_oauth_token == oauth_token,
+        db.OAuthToken.application == db.APP_TWITTER
     ).fetch(1)
     if not auth_tokens:
         return None

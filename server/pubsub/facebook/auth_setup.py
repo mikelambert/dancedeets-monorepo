@@ -1,12 +1,11 @@
 
 import fb_api
-from ..pubsub import OAuthToken
-from ..pubsub import APP_FACEBOOK
 
 import app
 import base_servlet
 from events import eventdata
-from .. import pubsub
+from .. import db
+from . import event
 
 class LookupUserAccounts(fb_api.LookupType):
     @classmethod
@@ -30,14 +29,14 @@ def facebook_auth(fbl, page_uid, country_filter):
     page = pages[0]
     page_token = page['access_token']
 
-    auth_tokens = OAuthToken.query(OAuthToken.user_id == fbl.fb_uid, OAuthToken.token_nickname == page_uid, OAuthToken.application == APP_FACEBOOK).fetch(1)
+    auth_tokens = db.OAuthToken.query(db.OAuthToken.user_id == fbl.fb_uid, db.OAuthToken.token_nickname == page_uid, db.OAuthToken.application == db.APP_FACEBOOK).fetch(1)
     if auth_tokens:
         auth_token = auth_tokens[0]
     else:
-        auth_token = OAuthToken()
+        auth_token = db.OAuthToken()
     auth_token.user_id = fbl.fb_uid
     auth_token.token_nickname = page_uid
-    auth_token.application = APP_FACEBOOK
+    auth_token.application = db.APP_FACEBOOK
     auth_token.valid_token = True
     auth_token.oauth_token = page_token
     auth_token.time_between_posts = 5 * 60
@@ -56,7 +55,7 @@ class FacebookPageSetupHandler(base_servlet.BaseRequestHandler):
             #TODO(lambert): Clean up
             self.response.write('Need page_uid parameter')
             return
-        pubsub.facebook_auth(self.fbl, page_uid, country_filter)
+        facebook_auth(self.fbl, page_uid, country_filter)
         #TODO(lambert): Clean up
         self.response.write('Authorized!')
 
@@ -68,9 +67,9 @@ class FacebookPostHandler(base_servlet.BaseRequestHandler):
 
         event_id = self.request.get('event_id')
         db_event = eventdata.DBEvent.get_by_id(event_id)
-        auth_tokens = pubsub.OAuthToken.query(pubsub.OAuthToken.user_id==self.fb_uid, pubsub.OAuthToken.token_nickname==page_id).fetch(1)
+        auth_tokens = db.OAuthToken.query(db.OAuthToken.user_id==self.fb_uid, db.OAuthToken.token_nickname==page_id).fetch(1)
         if auth_tokens:
-            result = pubsub.facebook_post(auth_tokens[0], db_event)
+            result = event.facebook_post(auth_tokens[0], db_event)
             if 'error' in result:
                 self.response.write(result)
             else:

@@ -8,9 +8,8 @@ import fb_api
 import fb_api_util
 from users import users
 from util import text
-from . import common
-from ..pubsub import OAuthToken
-from ..pubsub import APP_FACEBOOK
+from .. import common
+from .. import db
 
 class LookupGeoTarget(fb_api.LookupType):
     @classmethod
@@ -171,7 +170,7 @@ def _get_posting_user(db_event):
 def get_dancedeets_fbl():
     page_id = '110312662362915'
     #page_id = '1375421172766829' # DD-Manager-Test
-    tokens = OAuthToken.query(OAuthToken.user_id == '701004', OAuthToken.token_nickname == page_id, OAuthToken.application == APP_FACEBOOK).fetch(1)
+    tokens = db.OAuthToken.query(db.OAuthToken.user_id == '701004', db.OAuthToken.token_nickname == page_id, db.OAuthToken.application == db.APP_FACEBOOK).fetch(1)
     if tokens:
         return fb_api.FBLookup(None, tokens[0].oauth_token)
     else:
