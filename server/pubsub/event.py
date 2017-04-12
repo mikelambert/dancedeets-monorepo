@@ -3,7 +3,7 @@ import logging
 
 from events import eventdata
 from util import fb_events
-from .twitter import event as facebook_event
+from .facebook import event as facebook_event
 from .twitter import event as twitter_event
 from . import db
 

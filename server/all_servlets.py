@@ -16,7 +16,7 @@ import logic.unique_attendees
 import ml.gprediction_servlets
 import notifications.added_events
 import notifications.rsvped_events
-import pubsub.pubsub_setup
+import pubsub.pubsub_tasks
 import pubsub.facebook.auth_setup
 import pubsub.twitter.auth_setup
 import rankings.rankings_servlets

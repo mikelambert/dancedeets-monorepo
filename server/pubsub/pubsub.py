@@ -72,7 +72,6 @@ def _eventually_publish_data(data, should_post, token_nickname=None):
     for token in oauth_tokens:
         logging.info("Evaluating token %s", token)
         if should_post(token):
-            logging.info("Adding task for posting!")
             # Names are limited to r"^[a-zA-Z0-9_-]{1,500}$"
             time_add = int(time.time()) if token.allow_reposting else 0
             # "Event" here is a misnamer...but we leave it for now.
@@ -88,10 +87,12 @@ def _eventually_publish_data(data, should_post, token_nickname=None):
 
 def _should_queue_event_for_posting(auth_token, db_event):
     func = SHOULD_POST_EVENT_TO.get(auth_token.application)
-    result = func(auth_token, db_event)
-    if result:
-        logging.info("Publishing event %s", db_event.id)
-    return True
+    result = False
+    if func:
+        result = func(auth_token, db_event)
+        if result:
+            logging.info("Publishing event %s", db_event.id)
+    return result
 
 def pull_and_publish_event():
     oauth_tokens = db.OAuthToken.query(
