@@ -72,7 +72,8 @@ def _post_event(auth_token, db_event):
     elif auth_token.application == db.APP_FACEBOOK:
         result = facebook_event.facebook_post(auth_token, db_event)
         if 'error' in result:
-            if result.get('code') == 368 and result.get('error_subcode') == 1390008:
+            error = result['error']
+            if error.get('code') == 368 and error.get('error_subcode') == 1390008:
                 logging.error('We are posting too fast to the facebook wall, so wait a day and try again later')
                 next_post_time = datetime.datetime.now() + datetime.timedelta(days=1)
                 auth_token = auth_token.key.get()
