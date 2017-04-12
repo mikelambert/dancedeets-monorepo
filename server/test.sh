@@ -23,9 +23,4 @@ esac
 shift # past argument or value
 done
 
-if [ -d "frankenserver/python" ]; then
-  GAE_PATH="frankenserver/python"
-else
-  GAE_PATH="../google_appengine"
-fi
-$COVERAGE_PREFIX ./testrunner.py $GAE_PATH $ARGS
+$COVERAGE_PREFIX ./testrunner.py $ARGS
