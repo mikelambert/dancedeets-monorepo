@@ -37,8 +37,12 @@ def get_nearby_cities(points, only_populated=False, country=None):
         cities = [x for x in cities if x.country_name == country]
     return cities
 
-def get_largest_cities(limit=5):
-    return City.gql("where has_nearby_events = :nearby_events order by population desc", nearby_events=True).fetch(limit=limit)
+def get_largest_cities(limit=5, country=None):
+    if country:
+        q = City.gql("where has_nearby_events = :nearby_events and country_name = :country order by population desc", nearby_events=True, country=country)
+    else:
+        q = City.gql("where has_nearby_events = :nearby_events order by population desc", nearby_events=True)
+    return q.fetch(limit=limit)
 
 def get_largest_city(cities):
     if not cities:
@@ -55,11 +59,11 @@ def get_largest_nearby_city_name(point):
 class City(db.Model):
     city_name = db.StringProperty()
     state_name = db.StringProperty(indexed=False)
-    country_name = db.StringProperty(indexed=False)
+    country_name = db.StringProperty()
     latitude = db.FloatProperty(indexed=False)
     longitude = db.FloatProperty(indexed=False)
     population = db.IntegerProperty()
-    timezone = db.StringProperty(indexed=False)
+    timezone = db.StringProperty()
     geohashes = db.StringListProperty()
 
     # This indicates whether any events are "tagged" against this City

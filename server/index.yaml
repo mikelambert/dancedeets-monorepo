@@ -17,6 +17,20 @@ indexes:
 
 - kind: City
   properties:
+  - name: country
+  - name: has_nearby_events
+  - name: population
+    direction: desc
+
+- kind: City
+  properties:
+  - name: country_name
+  - name: has_nearby_events
+  - name: population
+    direction: desc
+
+- kind: City
+  properties:
   - name: has_nearby_events
   - name: population
     direction: desc

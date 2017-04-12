@@ -43,7 +43,7 @@ class PostJapanEventsHandler(base_servlet.BaseTaskFacebookRequestHandler):
 class WeeklyEventsPostHandler(base_servlet.BaseTaskFacebookRequestHandler):
     def get(self):
         limit = int(self.request.get('limit', '10'))
-        top_cities = cities.get_largest_cities(limit=limit)
+        top_cities = cities.get_largest_cities(limit=limit, country='US')
         top_city_keys = [x.key().name() for x in top_cities]
         for city_key in top_city_keys:
             pubsub.eventually_publish_city_key(city_key)
