@@ -11,7 +11,7 @@ from nlp import event_classifier
 from rankings import cities
 from . import popular_people
 
-def find_overlap(event_attendee_ids, top_dance_attendee_ids):
+def _find_overlap(event_attendee_ids, top_dance_attendee_ids):
     if not len(event_attendee_ids):
         return [], None, None
     intersection_ids = set(event_attendee_ids).intersection(top_dance_attendee_ids)
@@ -19,7 +19,7 @@ def find_overlap(event_attendee_ids, top_dance_attendee_ids):
     fraction_known = 1.0 * num_intersection / len(event_attendee_ids)
     return intersection_ids, num_intersection, fraction_known
 
-def get_event_attendee_ids(fb_event_attending_maybe):
+def _get_event_attendee_ids(fb_event_attending_maybe):
     if fb_event_attending_maybe['empty']:
         logging.info('Event has no attendees, skipping attendee-based classification.')
         return []
@@ -36,7 +36,7 @@ def get_event_attendee_ids(fb_event_attending_maybe):
         return []
     return event_attendee_ids
 
-def get_bounds_for_fb_event(fb_event, check_places=False):
+def _get_bounds_for_fb_event(fb_event, check_places=False):
     # We don't need google-maps latlong accuracy. Let's cheat and use the fb_event for convenience if possible...
     location = fb_event['info'].get('place', {}).get('location', {})
     if location and location.get('latitude') is not None:
@@ -58,10 +58,10 @@ def get_bounds_for_fb_event(fb_event, check_places=False):
             bounds = None
     return bounds
 
-def get_location_style_attendees(fb_event, suspected_dance_event=False, max_attendees=None):
+def _get_location_style_attendees(fb_event, suspected_dance_event=False, max_attendees=None):
     if suspected_dance_event:
         logging.info('Suspected dance event, so checking place API too just in case.')
-    bounds = get_bounds_for_fb_event(fb_event, check_places=suspected_dance_event)
+    bounds = _get_bounds_for_fb_event(fb_event, check_places=suspected_dance_event)
     dance_attendee_styles = popular_people.get_attendees_within(bounds, max_attendees=max_attendees)
     return dance_attendee_styles
 
@@ -129,13 +129,13 @@ class EventAttendeeMatcher(object):
 
     def classify(self):
         event_id = self.fb_event['info']['id']
-        self.event_attendee_ids = get_event_attendee_ids(self.fb_event_attending_maybe)
+        self.event_attendee_ids = _get_event_attendee_ids(self.fb_event_attending_maybe)
         if self.event_attendee_ids:
             # If it's a suspected dance event, then we'll fall-through and check the places API for the location data
             # This ensures that any suspected dance events will get proper dance-attendees, and be more likely to be found.
             suspected_dance_event = self.classified_event.dance_event or len(self.classified_event.found_dance_matches) >= 2
             start_time = time.time()
-            self.dance_style_attendees = get_location_style_attendees(self.fb_event, suspected_dance_event=suspected_dance_event, max_attendees=100)
+            self.dance_style_attendees = _get_location_style_attendees(self.fb_event, suspected_dance_event=suspected_dance_event, max_attendees=100)
             logging.info('Lookup for dancers in event location took %0.3f.', time.time() - start_time)
 
             # Raise the threshold for regular un-dance-y events, for what it means to 'be a dance event'
@@ -149,7 +149,7 @@ class EventAttendeeMatcher(object):
                 # logging.info('%s Attendees Nearby:\n%s', style_name, '\n'.join(repr(x) for x in dance_attendees))
                 dance_attendee_ids = [x['id'] for x in dance_attendees]
 
-                overlap_ids, count, fraction = find_overlap(self.event_attendee_ids, dance_attendee_ids[:20])
+                overlap_ids, count, fraction = _find_overlap(self.event_attendee_ids, dance_attendee_ids[:20])
                 self.overlap_ids.update(overlap_ids)
                 reason = 'Event %s has %s ids, intersection is %s ids (%.1f%%)' % (event_id, len(self.event_attendee_ids), count, 100.0 * fraction)
                 logging.info('%s Attendee-Detection-Top-20: %s', name, reason)
@@ -164,7 +164,7 @@ class EventAttendeeMatcher(object):
                     self.results[-1] += ' GOOD!'
                     self.matches.append(AttendeeMatch(name, 20, overlap_ids, reason))
 
-                overlap_ids, count, fraction = find_overlap(self.event_attendee_ids, dance_attendee_ids[:100])
+                overlap_ids, count, fraction = _find_overlap(self.event_attendee_ids, dance_attendee_ids[:100])
                 self.overlap_ids.update(overlap_ids)
                 reason = 'Event %s has %s ids, intersection is %s ids (%.1f%%)' % (event_id, len(self.event_attendee_ids), count, 100.0 * fraction)
                 logging.info('%s Attendee-Detection-Top-100: %s', name, reason)
@@ -189,7 +189,7 @@ class EventAttendeeMatcher(object):
                 # Perhaps should find a way to better target our audience as "only counting for events that are purely street dance" ?
                 # Or some weighted computation?
                 if False:
-                    overlap_ids, count, fraction = find_overlap(self.event_attendee_ids, dance_attendee_ids[:500])
+                    overlap_ids, count, fraction = _find_overlap(self.event_attendee_ids, dance_attendee_ids[:500])
                     reason = 'Event %s has %s ids, intersection is %s ids (%.1f%%)' % (event_id, len(self.event_attendee_ids), count, 100.0 * fraction)
                     logging.info('%s Attendee-Detection-Top-500: %s', name, reason)
                     if count > 0:
