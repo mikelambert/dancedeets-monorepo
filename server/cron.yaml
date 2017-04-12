@@ -1,12 +1,12 @@
 cron:
 # These rely on 701004
 - description: reload future facebook event data
-  url: /tasks/reload_events?user_id=701004&allow_cache=0&time_period=FUTURE&load_attending=0&disable_updates=&queue=slow-queue
+  url: /tasks/reload_events?user_id=701004&allow_cache=0&time_period=FUTURE&disable_updates=&queue=slow-queue
   schedule: every 3 hours
 #
 # These load potential events from all the various pages/groups out there
 - description: load potential events from special users and sources
-  url: /tasks/scrape_sources_and_process_events?user_id=dummy&queue=slow-queue
+  url: /tasks/scrape_sources_and_process_events?user_id=dummy&queue=fast-queue
   schedule: every day 0:00
 # These also load potential events, but from the /events of our logged-in users
 - description: load potential events from our users
@@ -20,7 +20,7 @@ cron:
 # We could run it with expiry_days, but what's the point of re-running a classifier with cached data?
 # Instead, let's run it with no cache, reloading all fb event/attending data, to then re-classify.
 - description: auto-add events
-  url: /tools/auto_add_potential_events?user_id=dummy&past_event=0&allow_cache=0&queue=fast-queue
+  url: /tools/auto_add_potential_events?user_id=dummy&past_event=0&allow_cache=0&queue=slow-queue
   schedule: every 12 hours
 #
 #
