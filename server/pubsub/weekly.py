@@ -29,9 +29,14 @@ def _generate_post_for(city, week_start, search_results):
 
     messages = []
     messages.append(random.choice(headers) % {'location': city.city_name})
-    messages.append('Week of %s:', week_start.strftime('%A %B %-d'))
+    messages.append('')
+    messages.append('Week of %s:' % week_start.strftime('%A %B %-d'))
     for result in search_results:
-        dt = result.start_time.strftime('%a %-H:%M')
+        # AMPM countries
+        if city.country_name in ['US', 'UK', 'PH', 'CA', 'AU', 'NZ', 'IN', 'EG', 'SA', 'CO', 'PK', 'MY']:
+            dt = result.start_time.strftime('%a %-I:%M%p')
+        else:
+            dt = result.start_time.strftime('%a %-H:%M')
         event = result.db_event
         if event.venue_id:
             location = ' @ @[%s]' % event.venue_id
@@ -126,12 +131,9 @@ def get_city_targeting_data(fbl, city):
         # if we want state-level targeting, 'region_id' would be the city's associated state
 
     feed_targeting = {}
-    # Target by city if we can, otherwise use the country
     if city_key:
         feed_targeting['cities'] = [{
             'key': city_key,
-            'radius': 80,
-            'distance_unit': 'kilometer',
         }]
     full_targeting = {'geo_locations': feed_targeting}
     return full_targeting
