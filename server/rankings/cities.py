@@ -57,6 +57,8 @@ def get_largest_nearby_city_name(point):
     return city.display_name()
 
 class City(db.Model):
+    created_date = db.DateTimeProperty(auto_now_add=True)
+
     city_name = db.StringProperty()
     state_name = db.StringProperty(indexed=False)
     country_name = db.StringProperty()
