@@ -12,7 +12,7 @@ from search import search_base
 from search import search
 from util import urls
 from .facebook import event
-from .facebook import util as fb_util
+from .facebook import fb_util
 
 def _generate_post_for(city, week_start, search_results):
     post_values = {}
