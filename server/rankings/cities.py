@@ -47,7 +47,7 @@ def get_largest_city(cities):
     return largest_nearby_city
 
 def get_largest_nearby_city_name(point):
-    southwest, northeast = math.expand_bounds((point, point), NEARBY_DISTANCE_KM)
+    southwest, northeast = math.expand_bounds((point, point), NEARBY_DISTANCE_KM/2)
     cities = get_nearby_cities((southwest, northeast))
     city = get_largest_city(cities)
     return city.display_name()
