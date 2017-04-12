@@ -275,7 +275,9 @@ class LookupThingFeed(LookupType):
         return [
             # Can't pass fields=OBJ_SOURCE_FIELDS, because we can't guarantee it has all these fields (groups vs pages vs profiles etc)
             ('info', cls.url('%s' % object_id)),
-            ('feed', cls.url('%s/feed' % object_id, fields=['created_time', 'updated_time', 'from', 'link', 'actions', 'message'])),
+            # We need to use limit=10, otherwise we trigger "Please reduce the amount of data you're asking for, then retry your request"
+            # on pages that have a feed full of events.
+            ('feed', cls.url('%s/feed' % object_id, fields=['created_time', 'updated_time', 'from', 'link', 'message'], limit=10)),
             ('events', cls.url('%s/events' % object_id, fields=['id', 'updated_time'])),
         ]
     @classmethod

@@ -178,10 +178,6 @@ def build_discovered_from_feed(source, feed_data, post_high_watermark):
         if 'link' in post:
             link = post['link']
             links.append(link)
-        # sometimes 'pages' have events-created, but posted as status messages that we need to parse out manually
-        for x in post.get('actions', []):
-            link = x['link']
-            links.append(link)
         if post.get('message'):
             links.extend(re.findall("https?://[A-Za-z0-9-._~:/?#@!$&\'()*+,;=%]+", post.get('message')))
         links = [x for x in links if x]

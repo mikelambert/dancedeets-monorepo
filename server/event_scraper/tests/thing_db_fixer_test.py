@@ -10,8 +10,8 @@ fields_str = '%2C'.join(fb_api.OBJ_SOURCE_FIELDS)
 VERSION = fb_api.LookupThingFeed.version
 URL_111 = '/%s/111' % VERSION # ?fields=%s' % fields_str
 URL_222 = '/%s/222' % VERSION # ?fields=%s' % fields_str
-URL_111_FEED = '/%s/111/feed?%s' % (VERSION, urllib.urlencode(dict(fields='created_time,updated_time,from,link,actions,message')))
-URL_222_FEED = '/%s/222/feed?%s' % (VERSION, urllib.urlencode(dict(fields='created_time,updated_time,from,link,actions,message')))
+URL_111_FEED = '/%s/111/feed?%s' % (VERSION, urllib.urlencode(dict(fields='created_time,updated_time,from,link,message', limit=10)))
+URL_222_FEED = '/%s/222/feed?%s' % (VERSION, urllib.urlencode(dict(fields='created_time,updated_time,from,link,message', limit=10)))
 URL_111_EVENTS = '/%s/111/events?%s' % (VERSION, urllib.urlencode(dict(fields='id,updated_time')))
 URL_222_EVENTS = '/%s/222/events?%s' % (VERSION, urllib.urlencode(dict(fields='id,updated_time')))
 
