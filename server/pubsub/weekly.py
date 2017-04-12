@@ -19,10 +19,10 @@ def _generate_post_for(city, search_results):
         "Hey %(location)s, here's what's coming up for you this week in dance!",
         "Here's your dance schedule for this week in %(location)s:",
         "Your street dance calendar this week for %(location)s:",
-        "Wondering where to dance this week in %(location)s? Here's what's coming up:",
+        "Wondering where to dance this week in %(location)s? Here's what's coming up!",
     ]
     footers = [
-        'Did we miss anything? Let everyone know in the comments',
+        'Did we miss anything? Chime in and let us know!',
         'Want us to grab your event for next week? Make sure you click Add Event on dancedeets.com!',
         'Did we forget your event? Let us know!',
     ]
@@ -77,7 +77,8 @@ def _generate_results_for(city):
     search_results = searcher.get_search_results(full_event=True)
     return search_results
 
-def facebook_weekly_post(db_auth_token, city_key):
+def facebook_weekly_post(db_auth_token, city_data):
+    city_key = city_data['city']
     city = cities.City.get_by_key_name(city_key)
     page_id = db_auth_token.token_nickname
     endpoint = 'v2.8/%s/feed' % page_id
@@ -110,12 +111,11 @@ def get_city_targeting_data(fbl, city):
     ]
     city_state = ', '.join(x for x in city_state_list if x)
     geo_search = {
-        'type': 'adgeolocation',
         'location_types': 'city',
         'country_code': city.country_name,
         'q': city_state,
     }
-    geo_target = fbl.get(event.LookupGeoTarget, urls.urlencode(geo_search))
+    geo_target = fbl.get(event.LookupGeoTarget, geo_search)
 
     good_targets = geo_target['search']['data']
     if good_targets:

@@ -50,7 +50,7 @@ def eventually_publish_city_key(city_key):
         'city': city_key,
     }
     def should_post(auth_token):
-        return auth_token.application == db.APP_FACEBOOK_WEEKLY
+        return auth_token.application == db.APP_FACEBOOK
     return _eventually_publish_data(data, should_post)
 
 def _sanitize(x):
@@ -104,7 +104,7 @@ def pull_and_publish_event():
     ).fetch(100)
     q = taskqueue.Queue(EVENT_PULL_QUEUE)
     for token in oauth_tokens:
-        logging.info("Can post to OAuthToken: %s", token)
+        logging.info("Can post to OAuthToken %s: %s", token.queue_id(), token)
         tasks = q.lease_tasks_by_tag(120, 1, token.queue_id())
         logging.info("Fetching %d tasks with queue id %s", len(tasks), token.queue_id())
         if tasks:
@@ -120,6 +120,7 @@ def pull_and_publish_event():
                 }
             else:
                 data = json.loads(task.payload)
+            logging.info('Processing data payload: %r', data)
             posted = _post_data_with_authtoken(data, token)
             q.delete_tasks(task)
 

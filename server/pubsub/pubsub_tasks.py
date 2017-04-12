@@ -42,7 +42,7 @@ class PostJapanEventsHandler(base_servlet.BaseTaskFacebookRequestHandler):
 @app.route('/tasks/weekly_posts')
 class WeeklyEventsPostHandler(base_servlet.BaseTaskFacebookRequestHandler):
     def get(self):
-        limit = 10
+        limit = int(self.request.get('limit', '10'))
         top_cities = cities.get_largest_cities(limit=limit)
         top_city_keys = [x.key().name() for x in top_cities]
         for city_key in top_city_keys:
