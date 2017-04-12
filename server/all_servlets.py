@@ -18,6 +18,7 @@ from notifications import added_events
 from notifications import rsvped_events
 from pubsub import pubsub_setup
 from pubsub import pubsub_tasks
+from pubsub.twitter import auth_setup
 from rankings import rankings_servlets
 from search import search_servlets
 from search import search_tasks

@@ -7,6 +7,8 @@ import fb_api
 from events import eventdata
 from events import event_updates
 from pubsub import pubsub
+from pubsub.twitter import auth_setup
+from pubsub.twitter import event
 from test_utils import unittest
 
 FB_EVENT = {
@@ -34,8 +36,8 @@ class TestPublishEvent(unittest.TestCase):
 
         # No-op works with a freshly created token
         Client_request.return_value = {'status': '200'}, 'oauth_token=token&oauth_token_secret=secret'
-        pubsub.twitter_oauth1('user_id', 'token_nickname', None)
-        pubsub.twitter_oauth2('token', 'verifier')
+        auth_setup.twitter_oauth1('user_id', 'token_nickname', None)
+        auth_setup.twitter_oauth2('token', 'verifier')
         pubsub.pull_and_publish_event()
 
         # Now when we add a token to the pull queue, it will get run
@@ -67,17 +69,17 @@ class TestImports(unittest.TestCase):
             fb_event = FB_EVENT
         url = 'http://www.dancedeets.com/events/555/?utm_campaign=autopost&utm_medium=share&utm_source=twitter_feed'
         self.assertEqual(
-            pubsub.format_twitter_post(config, DBEvent(), media=False, handles=[]),
+            event.format_twitter_post(config, DBEvent(), media=False, handles=[]),
             u'2010/01/01: Sacramento, CA, United States: Some really long name here that just keeps on going and may or may not ev… %s' % url)
         self.assertEqual(
-            pubsub.format_twitter_post(config, DBEvent(), media=False, handles=['@name']),
+            event.format_twitter_post(config, DBEvent(), media=False, handles=['@name']),
             u'2010/01/01: Sacramento, CA, United States: Some really long name here that just keeps on going and may or may … %s @name' % url)
         self.assertEqual(
-            pubsub.format_twitter_post(config, DBEvent(), media=False, handles=['@name1', '@name2', '@name3', '@name4', '@name5', '@name6', '@name7']),
+            event.format_twitter_post(config, DBEvent(), media=False, handles=['@name1', '@name2', '@name3', '@name4', '@name5', '@name6', '@name7']),
             u'2010/01/01: Sacramento, CA, United States: Some really long name here that just k… %s @name1 @name2 @name3 @name4 @name5' % url)
         self.assertEqual(
-            pubsub.format_twitter_post(config, DBEvent(), media=False, handles=['@mspersia', '@grooveologydc', '@groovealils', '@dam_sf', '@mishmashboutique']),
+            event.format_twitter_post(config, DBEvent(), media=False, handles=['@mspersia', '@grooveologydc', '@groovealils', '@dam_sf', '@mishmashboutique']),
             u'2010/01/01: Sacramento, CA, United States: Some really long name here that jus… %s @mspersia @grooveologydc @groovealils' % url)
         self.assertEqual(
-            pubsub.format_twitter_post(config, DBEvent(), media=False, handles=['@jodywisternoff', '@jodywisternoff', '@Lane8music']),
+            event.format_twitter_post(config, DBEvent(), media=False, handles=['@jodywisternoff', '@jodywisternoff', '@Lane8music']),
             u'2010/01/01: Sacramento, CA, United States: Some really long name here that just keep… %s @jodywisternoff @jodywisternoff' % url)

@@ -1,36 +1,24 @@
 # -*-*- encoding: utf-8 -*-*-
 
 import datetime
-import iso3166
 import json
 import logging
-import oauth2 as oauth
 import random
 import re
 import time
-import traceback
-import urlparse
 
-from google.appengine.api import memcache
 from google.appengine.ext import ndb
-import twitter
 
 from events import eventdata
 import fb_api
 import fb_api_util
-import keys
 from users import users
 from util import fb_events
-from util import fetch
 from util import taskqueue
 from util import text
-from util import urls
+from . import common
+from .twitter import event as twitter_event
 
-consumer_key = 'xzpiBnUCGqTWSqTgmE6XtLDpw'
-consumer_secret = keys.get("twitter_consumer_secret")
-
-DATE_FORMAT = "%Y/%m/%d"
-TIME_FORMAT = "%H:%M"
 
 EVENT_PULL_QUEUE = 'event-publishing-pull-queue'
 
@@ -135,7 +123,7 @@ def post_on_event_wall(db_event):
         logging.error("Failed to find DanceDeets page access token.")
         return
 
-    url = campaign_url(db_event.id, 'fb_event_wall')
+    url = common.campaign_url(db_event.id, 'fb_event_wall')
     name = _get_posting_user(db_event) or "we've"
     messages = [
         ('Congrats, %(name)s added this dance event to DanceDeets, the site for street dance events worldwide! '
@@ -221,7 +209,7 @@ def post_event(auth_token, event_id):
 
 def _post_event(auth_token, db_event):
     if auth_token.application == APP_TWITTER:
-        twitter_post(auth_token, db_event)
+        twitter_event.twitter_post(auth_token, db_event)
     elif auth_token.application == APP_FACEBOOK:
         result = facebook_post(auth_token, db_event)
         if 'error' in result:
@@ -248,105 +236,6 @@ def _post_event(auth_token, db_event):
         return False
     return True
 
-def create_media_on_twitter(t, db_event):
-    cover = db_event.largest_cover
-    if not cover:
-        return None
-    mimetype, response = fetch.fetch_data(cover['source'])
-    try:
-        t.domain = 'upload.twitter.com'
-        result = t.media.upload(media=response)
-    finally:
-        t.domain = 'api.twitter.com'
-    return result
-
-
-def campaign_url(eid, source):
-    return urls.dd_event_url(eid, {
-        'utm_source': source,
-        'utm_medium': 'share',
-        'utm_campaign': 'autopost'
-    })
-
-TWITTER_CONFIG_KEY = 'TwitterConfig'
-TWITTER_CONFIG_EXPIRY = 24 * 60 * 60
-
-
-def get_twitter_config(t):
-    config = memcache.get(TWITTER_CONFIG_KEY)
-    if config:
-        return json.loads(config)
-    config = t.help.configuration()
-    memcache.set(TWITTER_CONFIG_KEY, json.dumps(config), TWITTER_CONFIG_EXPIRY)
-    return config
-
-
-def format_twitter_post(config, db_event, media, handles=None):
-    url = campaign_url(db_event.id, 'twitter_feed')
-    title = db_event.name
-    city = db_event.actual_city_name
-
-    datetime_string = db_event.start_time.strftime(DATE_FORMAT)
-
-    short_url_length = config['short_url_length']
-    characters_reserved_per_media = config['characters_reserved_per_media']
-    url_length = short_url_length + 1
-    prefix = ''
-    prefix += "%s: " % datetime_string
-    if city:
-        prefix += '%s: ' % city
-
-    if handles:
-        handle_string = ''
-        for handle in handles:
-            new_handle_string = '%s %s' % (handle_string, handle)
-            if len(new_handle_string) >= 40:
-                break
-            handle_string = new_handle_string
-    else:
-        handle_string = ''
-
-    title_length = 140 - len(prefix) - len(u"…") - url_length - len(handle_string)
-    if media:
-        title_length -= characters_reserved_per_media
-
-    final_title = title[0:title_length]
-    if final_title != title:
-        final_title += u'…'
-    result = u"%s%s %s%s" % (prefix, final_title, url, handle_string)
-    return result
-
-
-def twitter_post(auth_token, db_event):
-    t = twitter.Twitter(
-        auth=twitter.OAuth(auth_token.oauth_token, auth_token.oauth_token_secret, consumer_key, consumer_secret))
-
-    update_params = {}
-    if db_event.latitude:
-        update_params['lat'] = db_event.latitude
-        update_params['long'] = db_event.longitude
-
-    media = create_media_on_twitter(t, db_event)
-    if media:
-        update_params['media_ids'] = media['media_id']
-
-    TWITTER_HANDLE_LENGTH = 16
-    description = db_event.description
-    twitter_handles = re.findall(r'\s@[A-za-z0-9_]+', description)
-    twitter_handles = [x.strip() for x in twitter_handles if len(x) <= 1 + TWITTER_HANDLE_LENGTH]
-    twitter_handles2 = re.findall(r'twitter\.com/([A-za-z0-9_]+)', description)
-    twitter_handles2 = ['@%s' % x.strip() for x in twitter_handles2 if len(x) <= 1 + TWITTER_HANDLE_LENGTH]
-    # This is the only twitter account allowed to @mention, to avoid spamming everyone...
-    if auth_token.token_nickname == 'BigTwitter':
-        # De-dupe these lists
-        handles = list(set(twitter_handles + twitter_handles2))
-    else:
-        handles = []
-    config = get_twitter_config(t)
-    status = format_twitter_post(config, db_event, media, handles=handles)
-    t.statuses.update(status=status, **update_params)
-
-
 class LookupGeoTarget(fb_api.LookupType):
     @classmethod
     def get_lookups(cls, urlparams):
@@ -359,8 +248,8 @@ class LookupGeoTarget(fb_api.LookupType):
         return (fb_api.USERLESS_UID, json.dumps(query, sort_keys=True), 'OBJ_GEO_TARGET')
 
 def facebook_post(auth_token, db_event):
-    link = campaign_url(db_event.id, 'fb_feed')
-    datetime_string = db_event.start_time.strftime('%s @ %s' % (DATE_FORMAT, TIME_FORMAT))
+    link = common.campaign_url(db_event.id, 'fb_feed')
+    datetime_string = db_event.start_time.strftime('%s @ %s' % (common.DATE_FORMAT, common.TIME_FORMAT))
 
     page_id = auth_token.token_nickname
     endpoint = 'v2.8/%s/feed' % page_id
@@ -494,10 +383,6 @@ def get_targeting_data(fbl, db_event):
     return full_targeting
 
 
-request_token_url = 'https://twitter.com/oauth/request_token'
-access_token_url = 'https://twitter.com/oauth/access_token'
-authorize_url = 'https://twitter.com/oauth/authorize'
-
 APP_TWITTER = 'APP_TWITTER'
 APP_TWITTER_DEV = 'APP_TWITTER_DEV' # disabled twitter dev
 APP_FACEBOOK = 'APP_FACEBOOK'  # a butchering of OAuthToken!
@@ -532,79 +417,6 @@ class OAuthToken(ndb.Model):
         if self.json_data is None:
             self.json_data = {}
         return self.json_data.setdefault('country_filters', [])
-
-
-def twitter_oauth1(user_id, token_nickname, country_filter):
-    consumer = oauth.Consumer(consumer_key, consumer_secret)
-    client = oauth.Client(consumer)
-
-    # Step 1: Get a request token. This is a temporary token that is used for
-    # having the user authorize an access token and to sign the request to obtain
-    # said access token.
-
-    resp, content = client.request(request_token_url, "GET")
-    if resp['status'] != '200':
-        raise Exception("Invalid response %s." % resp['status'])
-
-    request_token = dict(urlparse.parse_qsl(content))
-
-    auth_tokens = OAuthToken.query(
-        OAuthToken.user_id == user_id,
-        OAuthToken.token_nickname == token_nickname,
-        OAuthToken.application == APP_TWITTER
-    ).fetch(1)
-    if auth_tokens:
-        auth_token = auth_tokens[0]
-    else:
-        auth_token = OAuthToken()
-    auth_token.user_id = user_id
-    auth_token.token_nickname = token_nickname
-    auth_token.application = APP_TWITTER
-    auth_token.temp_oauth_token = request_token['oauth_token']
-    auth_token.temp_oauth_token_secret = request_token['oauth_token_secret']
-    if country_filter:
-        auth_token.country_filters += country_filter.upper()
-    auth_token.put()
-
-    # Step 2: Redirect to the provider. Since this is a CLI script we do not
-    # redirect. In a web application you would redirect the user to the URL
-    # below.
-
-    return "%s?oauth_token=%s" % (authorize_url, request_token['oauth_token'])
-
-# user comes to:
-# /sign-in-with-twitter/?
-#        oauth_token=NPcudxy0yU5T3tBzho7iCotZ3cnetKwcTIRlX0iwRl0&
-#        oauth_verifier=uw7NjWHT6OJ1MpJOXsHfNxoAhPKpgI8BlYDhxEjIBY
-
-
-def twitter_oauth2(oauth_token, oauth_verifier):
-    auth_tokens = OAuthToken.query(
-        OAuthToken.temp_oauth_token == oauth_token,
-        OAuthToken.application == APP_TWITTER
-    ).fetch(1)
-    if not auth_tokens:
-        return None
-    auth_token = auth_tokens[0]
-    # Step 3: Once the consumer has redirected the user back to the oauth_callback
-    # URL you can request the access token the user has approved. You use the
-    # request token to sign this request. After this is done you throw away the
-    # request token and use the access token returned. You should store this
-    # access token somewhere safe, like a database, for future use.
-    token = oauth.Token(oauth_token, auth_token.temp_oauth_token_secret)
-    token.set_verifier(oauth_verifier)
-    consumer = oauth.Consumer(consumer_key, consumer_secret)
-    client = oauth.Client(consumer, token)
-
-    resp, content = client.request(access_token_url, "POST")
-    access_token = dict(urlparse.parse_qsl(content))
-    auth_token.oauth_token = access_token['oauth_token']
-    auth_token.oauth_token_secret = access_token['oauth_token_secret']
-    auth_token.valid_token = True
-    auth_token.time_between_posts = 5 * 60 # every 5 minutes
-    auth_token.put()
-    return auth_token
-
 
 class LookupUserAccounts(fb_api.LookupType):
     @classmethod
