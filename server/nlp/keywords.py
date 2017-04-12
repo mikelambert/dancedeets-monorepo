@@ -514,6 +514,10 @@ PERFORMANCE = Name('PERFORMANCE', Any(
     u'výkonnostních', # czech performance
     u'изпълнението', # bulgarian performance
     u'パフォーマンス', # japanese performance
+    u'מופע', # hebrew show/performance
+    u'מופעי', # hebrew show/performance
+    u'למופע', # hebrew 'for the show'
+    u'ראווה', # hebrew show/showcase
     # maybe include 'spectacle' as well?
     'esibizioni', # italian performance/exhibition
 ))
@@ -811,6 +815,7 @@ CLASS = Name('CLASS', Any(
     u'סדנאות', # hebrew workshops
     u'סדנה', # hebew workshop
     u'הסדנא', # hebrew workshop
+    u'שיעורים', # hebrew lessons
     # 'taller', # workshop spanish
     'delavnice', # workshop slovak
     'talleres', # workshops spanish
