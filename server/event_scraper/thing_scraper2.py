@@ -29,7 +29,7 @@ def scrape_sources_for_events(sources):
         yield (_shard_for(x.event_id), json.dumps(state))
 
 
-def process_events(event_id, via_sources):
+def process_events(shard_id, via_sources):
     fbl = fb_mapreduce.get_fblookup()
     fbl.allow_cache = True
     discovered_list = []
