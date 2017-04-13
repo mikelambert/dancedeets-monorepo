@@ -399,7 +399,7 @@ legit_dance = [
     u'ריקודי רחוב', # hebrew street dancing
     u'gatvės šokių', # lithuanian streetdance
     'katutanssi\w*', # finnish streetdance
-    "buckin[g']?", "jookin[g']?",
+    "jookin[g']?",
     "footworkin[g']?",
     'footworks', # spanish footworks
     u'フットワーキング', # japanese footworking
@@ -1262,6 +1262,10 @@ WRONG_HOUSE = Name('WRONG_HOUSE', Any(
     'kitchen',
     'home',
     'houses',
+))
+
+WRONG_BREAK = Name('WRONG_BREAK', Any(
+    'horses?', # breaking in horses
 ))
 
 WRONG_FLEX = Name('WRONG_FLEX', Any(
