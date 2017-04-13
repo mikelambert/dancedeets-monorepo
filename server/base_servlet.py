@@ -242,8 +242,12 @@ class BareBaseRequestHandler(webapp2.RequestHandler, FacebookMixinHandler):
         self.response.out.write(rendered)
 
     def get_location_from_headers(self, city=True):
-        ip = self.request.remote_addr
-        return ip_geolocation.get_location_string_for(ip, city=city)
+        try:
+            ip = self.request.remote_addr
+            return ip_geolocation.get_location_string_for(ip, city=city)
+        except:
+            logging.exception('Failure to geolocate IP')
+            return ''
 
     def _get_static_version(self):
         return os.getenv('CURRENT_VERSION_ID').split('.')[-1]
