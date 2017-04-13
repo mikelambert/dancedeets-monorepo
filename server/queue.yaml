@@ -4,7 +4,7 @@ queue:
   max_concurrent_requests: 6
   bucket_size: 1
 - name: fast-queue
-  rate: 20/m
+  rate: 1/s
   max_concurrent_requests: 16
   bucket_size: 1
 - name: event-publishing-pull-queue
