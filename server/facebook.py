@@ -108,7 +108,6 @@ def parse_signed_request_cookie(cookies):
 
 def get_user_from_cookie(cookies):
     app_id = FACEBOOK_CONFIG['app_id']
-    logging.info(cookies)
     access_token = cookies.get("user_token_" + app_id, "")
     if not access_token:
         return None
@@ -117,7 +116,6 @@ def get_user_from_cookie(cookies):
     fb_cookie_data = parse_signed_request_cookie(cookies)
     if 'user_id' in fb_cookie_data:
         result['uid'] = fb_cookie_data['user_id']
-    print result
     return result
 
 def extend_access_token(access_token):
@@ -139,9 +137,14 @@ def extend_access_token(access_token):
     parsed_response = json.loads(token_response)
     logging.info("token extension response: %r", parsed_response)
 
-    result = {}
-    result['access_token'] = parsed_response["access_token"]
     if 'expires_in' in parsed_response:
-        result['access_token_expires'] = datetime.datetime.now() + datetime.timedelta(seconds=int(parsed_response["expires_in"]))
+        access_token_expires = datetime.datetime.now() + datetime.timedelta(seconds=int(parsed_response["expires_in"]))
+    else:
+        access_token_expires = None
+
+    result = {
+        'access_token': parsed_response["access_token"],
+        'access_token_expires': access_token_expires,
+    }
     return result
 
