@@ -244,10 +244,25 @@ class BareBaseRequestHandler(webapp2.RequestHandler, FacebookMixinHandler):
     def get_location_from_headers(self, city=True):
         try:
             ip = self.request.remote_addr
+            # HACK to refresh clients?
+            ip_geolocation.client = ip_geolocation.datastore.Client()
             return ip_geolocation.get_location_string_for(ip, city=city)
         except:
-            logging.exception('Failure to geolocate IP')
-            return ''
+            logging.exception('Failure to geolocate IP, falling back on old-school resolution')
+
+            from loc import names
+            iso3166_country = self.request.headers.get("X-AppEngine-Country")
+            full_country = names.get_country_name(iso3166_country)
+
+            location_components = []
+            if city:
+                location_components.append(self.request.headers.get("X-AppEngine-City"))
+            if full_country in ['United States', 'Canada']:
+                location_components.append(self.request.headers.get("X-AppEngine-Region"))
+            if full_country != 'ZZ':
+                location_components.append(full_country)
+            location = ', '.join(x for x in location_components if x and x != '?')
+            return location
 
     def _get_static_version(self):
         return os.getenv('CURRENT_VERSION_ID').split('.')[-1]
