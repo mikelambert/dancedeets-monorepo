@@ -35,7 +35,7 @@ def _get_cache(ip):
 def get_location_data_for(ip):
     data = _get_cache(ip)
     if not data:
-        url = 'http://ip-api.com/json/%s' % ip
+        url = 'http://freegeoip.net/json/%s' % ip
         results = urllib.urlopen(url).read()
         data = json.loads(results)
         _save_cache(ip, data)
@@ -43,15 +43,15 @@ def get_location_data_for(ip):
 
 def get_location_string_for(ip, city=True):
     data = get_location_data_for(ip)
-    if data['status'] == 'fail':
-        logging.warning('Failure to geocode %r: %s', ip, data['message'])
+    if data['country_code'] == '':
+        logging.warning('Failure to geocode %r: %s', ip, data)
         return ''
     location_components = []
 
     location_components.append(data['city'])
-    if data['countryCode'] in ['US', 'CA']:
-        location_components.append(data['region'])
-    location_components.append(data['country'])
+    if data['country_code'] in ['US', 'CA']:
+        location_components.append(data['region_code'])
+    location_components.append(data['country_name'])
 
     location = ', '.join(x for x in location_components if x)
     return location
