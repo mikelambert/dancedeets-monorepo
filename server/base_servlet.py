@@ -28,7 +28,7 @@ from events import eventdata
 import event_types
 import facebook
 import fb_api
-from loc import names
+import ip_geolocation
 from logic import backgrounder
 from logic import mobile
 from rankings import rankings
@@ -242,18 +242,8 @@ class BareBaseRequestHandler(webapp2.RequestHandler, FacebookMixinHandler):
         self.response.out.write(rendered)
 
     def get_location_from_headers(self, city=True):
-        iso3166_country = self.request.headers.get("X-AppEngine-Country")
-        full_country = names.get_country_name(iso3166_country)
-
-        location_components = []
-        if city:
-            location_components.append(self.request.headers.get("X-AppEngine-City"))
-        if full_country in ['United States', 'Canada']:
-            location_components.append(self.request.headers.get("X-AppEngine-Region"))
-        if full_country != 'ZZ':
-            location_components.append(full_country)
-        location = ', '.join(x for x in location_components if x and x != '?')
-        return location
+        ip = self.request.remote_addr
+        return ip_geolocation.get_location_string_for(ip, city=city)
 
     def _get_static_version(self):
         return os.getenv('CURRENT_VERSION_ID').split('.')[-1]
