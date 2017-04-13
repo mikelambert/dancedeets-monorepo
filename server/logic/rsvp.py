@@ -33,7 +33,7 @@ class RSVPManager(object):
         fb = fb_api.FBAPI(access_token)
         result = fb.post('v2.8/%s/%s' % (event_id, rsvp_status), args={}, post_args={})
         backgrounder.load_users([self.fbl.fb_uid], allow_cache=False)
-        backgrounder.load_event_attending([event_id], allow_cache=False)
+        backgrounder.load_event([event_id], allow_cache=False)
         return result
 
 
