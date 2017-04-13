@@ -37,23 +37,21 @@ def two(w):
 
 def search_fb(fbl):
     obvious_keywords = ([
-        'bboy', 'bboys', 'bboying', 'bgirl', 'bgirls', 'bgirling', 'breakdance', 'breakdancing', 'breakdancers',
+        'bboys', 'bboying', 'bgirl', 'bgirls', 'bgirling', 'breakdancing', 'breakdancers', 'breakdanse',
         'hiphop', 'hip hop', 'new style',
-        'house dance', 'house danse',
+        'house danse',
         'afro house', 'afrohouse',
         'poppers', 'poplock',
         'tutting', 'bopping', 'boppers',
         'lockers', 'locking',
         'waacking', 'waackers', 'waack', 'whacking', 'whackers',
-        'bebop', 'jazzrock', 'jazz rock', 'jazz-rock',
-        'dancehall', 'ragga jam',
+        'jazzrock', 'jazz rock', 'jazz-rock',
+        'ragga jam',
         'krump', 'krumperz', 'krumping',
-        'street jazz', 'street-jazz', 'streetjazz',
+        'streetjazz',
         'voguing',
-        'house dance',
         'house danse',
         'hiphop dance',
-        'hip hop dance',
         'hiphop danse',
         'hip hop danse',
         'tous style',
@@ -68,12 +66,20 @@ def search_fb(fbl):
         u'ストリートダンス',
         u'ブレックダンス',
         'cypher',
-    ] + two('street dance')
-      + two('electro dance')
+        'cypher battle',
+        'cypher jam',
+    ] + two('electro dance')
       + two('lite feet')
     )
     too_popular_keywords = ([
+        'bboy',
         'breaking',
+        'breakdance',
+        'house dance',
+        'bebop',
+        'dancehall',
+        'street jazz', 'street-jazz',
+        'hip hop dance',
         # 'house workshop'....finds auto-add events we don't want labelled as house or as dance events
         # so we don't want to list it here..
         #'waving',
@@ -88,6 +94,7 @@ def search_fb(fbl):
         'all styles',
         'freestyle',
     ] + two('hip hop')
+      + two('street dance')
       + two('new style')
       + two('all styles')
     )
@@ -111,6 +118,7 @@ def search_fb(fbl):
     ]
     all_keywords = obvious_keywords[:]
     for x in too_popular_keywords:
+        all_keywords.append(x)
         for y in event_types:
             all_keywords.append('%s %s' % (x, y))
 
