@@ -172,27 +172,29 @@ for e in eventData:
     if not e_exists:
         new_countries.setdefault(e['state'], []).append(e)
     
-print 'Post-Ups:'
+print 'Post-Ups (Missing):'
 for post_date, lst in sorted(posts.items()):
     print post_date, len(lst)
     for e in lst:
         ids = [x['id'] for x in find_fb_ids(e)]
-        print '  ', 'X' if status.get(e['id']) else '-', ids, e['title']
+        if not status.get(e['id']):
+            print '-', e['title']
 
 #print 'Events:'
 #for post_date, count in sorted(events.items()):
 #    print post_date, count
 
-print 'Countries:'
-for country, lst in sorted(countries.items(), key=lambda x: len(x[1]))[-10:]:
-    print country, len(lst)
+if False:
+    print 'Countries:'
+    for country, lst in sorted(countries.items(), key=lambda x: len(x[1]))[-10:]:
+        print country, len(lst)
 
-print 'New Countries:'
-for country, lst in sorted(new_countries.items(), key=lambda x: len(x[1]))[-10:]:
-    print country, len(lst)
-    for e in lst:
-        ids = [x['id'] for x in find_fb_ids(e)] if not status[e['id']] else '--'
-        print '  ', 'X' if status[e['id']] else '-', ids, e['title']
+    print 'New Countries:'
+    for country, lst in sorted(new_countries.items(), key=lambda x: len(x[1]))[-10:]:
+        print country, len(lst)
+        for e in lst:
+            ids = [x['id'] for x in find_fb_ids(e)] if not status[e['id']] else '--'
+            print '  ', 'X' if status[e['id']] else '-', ids, e['title']
 
 print 'Coverage:'
 existIds = [x for x in status if status[x]]
