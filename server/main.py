@@ -6,6 +6,11 @@ import sys
 
 prod_mode = 'SERVER_SOFTWARE' in os.environ and not os.environ['SERVER_SOFTWARE'].startswith('Dev')
 
+# Need to do this after vendoring lib-local/
+# And can't do it in appengine_config, since that gets loaded by appengine/api/lib_config
+# in places where we can't actually load pylibmc
+from services import memcache
+
 if not prod_mode:
     # Make python-twitter work in the sandbox (not yet sure about prod...)
     #import google

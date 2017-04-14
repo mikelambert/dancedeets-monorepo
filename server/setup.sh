@@ -21,6 +21,13 @@ echo "Installing pip"
 python $TMP_DIR/get-pip.py $USER_FLAG
 
 echo "Installing docker gae-modules* libraries"
+# This is necessary for requirements.txt installing pylibmc
+if [ "$TRAVIS" == true ]; then
+  sudo apt-get -qq update
+  sudo apt-get install -y libxml2-dev
+else
+  brew install libmemcached
+fi
 # Things we expect to be installed in our docker container
 pip install --upgrade -t $BASE_DIR/lib-local -r $BASE_DIR/docker/gae-modules/requirements.txt
 pip install --upgrade -t $BASE_DIR/lib-local -r $BASE_DIR/docker/gae-modules-py/requirements.txt
