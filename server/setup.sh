@@ -23,8 +23,8 @@ python $TMP_DIR/get-pip.py $USER_FLAG
 echo "Installing docker gae-modules* libraries"
 # This is necessary for requirements.txt installing pylibmc
 if [ "$TRAVIS" == true ]; then
-  apt-get -qq update
-  apt-get install -y libxml2-dev
+  sudo apt-get -qq update
+  sudo apt-get install -y libxml2-dev
 else
   brew install libmemcached
 fi
