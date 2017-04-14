@@ -7,7 +7,7 @@ cron:
 # These load potential events from all the various pages/groups out there
 - description: load potential events from special users and sources
   url: /tasks/scrape_sources_and_process_events?user_id=dummy&queue=fast-queue
-  schedule: every 12 hours
+  schedule: every day 12:00
 # These also load potential events, but from the /events of our logged-in users
 - description: load potential events from our users
   url: /tasks/load_all_potential_events?user_id=dummy&queue=slow-queue
