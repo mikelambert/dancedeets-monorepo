@@ -28,11 +28,11 @@ from events import eventdata
 import event_types
 import facebook
 import fb_api
-import ip_geolocation
 from logic import backgrounder
 from logic import mobile
 from rankings import rankings
 from render_server import render_server
+from services import ip_geolocation
 from users import user_creation
 from util import dates
 from util import deferred
