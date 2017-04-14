@@ -10,6 +10,7 @@ from util import deferred
 from util import fb_events
 from . import potential_events
 from . import thing_db
+from . import thing_scraper
 
 class AddEventException(Exception):
     pass
@@ -55,14 +56,14 @@ def add_update_event(fb_event, fbl, creating_uid=None, visible_to_fb_uids=None, 
 
     fbl.clear_local_cache()
     deferred.defer(crawl_event_source, fbl, e.fb_event_id)
-
     return e
 
 
 def crawl_event_source(fbl, event_id):
     fb_event = fbl.get(fb_api.LookupEvent, event_id)
     e = eventdata.DBEvent.get_by_id(fb_event['info']['id'])
-    thing_db.create_source_from_event(fbl, e)
+    source = thing_db.create_source_from_event(fbl, e)
+    deferred.defer(thing_scraper.scrape_events_from_source_ids, fbl, [source.graph_id])
 
     potential_event = potential_events.make_potential_event_without_source(e.fb_event_id)
     classified_event = event_classifier.get_classified_event(fb_event, potential_event.language)
