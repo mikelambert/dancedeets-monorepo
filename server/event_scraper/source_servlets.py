@@ -79,3 +79,6 @@ class AdminEditHandler(base_servlet.BaseRequestHandler):
         thing_scraper.scrape_events_from_sources(self.fbl, [s])
         self.redirect('/sources/admin_edit?source_id=%s' % source_id)
 
+@app.route('/sources/scrape')
+class ScrapeSourceHandler(base_servlet.SourceIdOperationHandler):
+    source_id_operation = staticmethod(thing_scraper.scrape_events_from_source_ids)

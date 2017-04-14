@@ -868,3 +868,11 @@ class UserOperationHandler(BaseTaskFacebookRequestHandler):
         load_users = users.User.get_by_ids(user_ids)
         self.user_operation(self.fbl, load_users)
     post=get
+
+class SourceIdOperationHandler(BaseTaskFacebookRequestHandler):
+    source_id_operation = None
+
+    def get(self):
+        source_ids = [x for x in self.request.get('source_ids').split(',') if x]
+        self.source_id_operation(self.fbl, source_ids)
+    post=get
