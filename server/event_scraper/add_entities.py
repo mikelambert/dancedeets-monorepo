@@ -4,7 +4,6 @@ import fb_api
 from events import eventdata
 from events import event_locations
 from events import event_updates
-from logic import backgrounder
 from pubsub import pubsub
 from nlp import event_classifier
 from util import deferred
@@ -62,9 +61,7 @@ def add_update_event(fb_event, fbl, creating_uid=None, visible_to_fb_uids=None, 
 def crawl_event_source(fbl, event_id):
     fb_event = fbl.get(fb_api.LookupEvent, event_id)
     e = eventdata.DBEvent.get_by_id(fb_event['info']['id'])
-    source = thing_db.create_source_from_event(fbl, e)
-    if source:
-        backgrounder.load_sources([source.graph_id], fb_uid=fbl.fb_uid)
+    thing_db.create_sources_from_event(fbl, e)
 
     potential_event = potential_events.make_potential_event_without_source(e.fb_event_id)
     classified_event = event_classifier.get_classified_event(fb_event, potential_event.language)

@@ -121,7 +121,7 @@ def mapreduce_create_sources_from_events(fbl):
     fb_mapreduce.start_map(
         fbl,
         'Create Sources from Events',
-        'event_scraper.thing_db.map_create_source_from_event',
+        'event_scraper.thing_db.map_create_sources_from_event',
         'events.eventdata.DBEvent',
     )
 

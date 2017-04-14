@@ -10,6 +10,7 @@ from mapreduce import operation
 from events import eventdata
 import fb_api
 from loc import gmaps_api
+from logic import backgrounder
 from util import fb_mapreduce
 
 GRAPH_TYPE_PROFILE = 'GRAPH_TYPE_PROFILE'
@@ -137,17 +138,28 @@ def create_source_for_id(source_id, fb_data):
     logging.info('Getting source for id %s: %s', source.graph_id, source.name)
     return source
 
-def create_source_from_event(fbl, db_event):
-    if not db_event.owner_fb_uid:
+def create_source_for_id_without_feed(fbl, source_id):
+    if not source_id:
         return None
     # technically we could check if the object exists in the db, before we bother fetching the feed
-    thing_feed = fbl.get(fb_api.LookupThingFeed, db_event.owner_fb_uid)
+    thing_feed = fbl.get(fb_api.LookupThingFeed, source_id)
     if not thing_feed['empty']:
-        s = create_source_for_id(db_event.owner_fb_uid, thing_feed)
+        new_source = False
+        s = create_source_for_id(source_id, thing_feed)
+        if not s.creating_fb_uid:
+            new_source = True
         s.put()
+        if new_source:
+            backgrounder.load_sources([source_id], fb_uid=fbl.fb_uid)
         return s
-    return None
-map_create_source_from_event = fb_mapreduce.mr_wrap(create_source_from_event)
+
+def create_sources_from_event(fbl, db_event):
+    create_source_for_id_without_feed(fbl, db_event.owner_fb_uid)
+    for admin in db_event.admins:
+        if admin['id'] != db_event.owner_fb_uid:
+            create_source_for_id_without_feed(fbl, admin['id'])
+
+map_create_sources_from_event = fb_mapreduce.mr_wrap(create_sources_from_event)
 
 def export_sources(fbl, sources):
     fbl.request_multi(fb_api.LookupThingFeed, [x.graph_id for x in sources])
