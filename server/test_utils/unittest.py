@@ -1,6 +1,5 @@
 # Necessary so unittest grabs the python unittest
 from __future__ import absolute_import
-import os
 
 from unittest import *
 from unittest import TestCase as RealTestCase
@@ -13,7 +12,6 @@ from util import gcs
 
 class TestCase(RealTestCase):
     def setUp(self):
-        os.environ['APPLICATION_ID'] = 'dancedeets-hrd'
         self.testbed = testbed.Testbed()
         self.testbed.activate()
         self.testbed.init_blobstore_stub()

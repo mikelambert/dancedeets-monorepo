@@ -27,6 +27,9 @@ if not prod_mode:
     logging.info('Trimmed sys.meta_path from %s to %s entries', len(sys.meta_path), len(new_path))
     sys.meta_path = new_path
 
+    # We need this for tests that use gcloud libraries that need auth and app_identity
+    os.environ['APPLICATION_ID'] = 'dancedeets-hrd'
+
 from hacks import fixed_jinja2  # noqa: ignore=E402
 from hacks import fixed_ndb  # noqa: ignore=E402
 from hacks import fixed_mapreduce_util  # noqa: ignore=E402
