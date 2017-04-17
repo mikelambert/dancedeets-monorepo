@@ -9,6 +9,8 @@ from events import eventdata
 import fb_api
 from nlp import event_auto_classifier
 from nlp import event_classifier
+from servlets import api
+from servlets import event
 from util import dates
 from util import fb_events
 from util import urls
@@ -103,3 +105,30 @@ class PromoteHandler(base_servlet.BaseRequestHandler):
             self.user.add_message('Your event "%s" has been added.' % fb_event['info']['name'])
             add_entities.add_update_event(fb_event, self.fbl, creating_uid=self.user.fb_uid, creating_method=eventdata.CM_USER)
         self.render_page()
+
+
+@app.route(r'/promoters/events/(%s)(?:/.*)?' % urls.EVENT_ID_REGEX)
+class PromoteEventHandler(base_servlet.BaseRequestHandler):
+
+    def get(self, event_id):
+        self.finish_preload()
+
+        # Load the db_event instead of the fb_event, as the db_event is likely to be in cache
+        db_event = eventdata.DBEvent.get_by_id(event_id)
+        if not db_event:
+            self.abort(404)
+        if not db_event.has_content():
+            self.response.out.write('This event was %s.' % db_event.empty_reason)
+            return
+
+        self.display['displayable_event'] = event.DisplayableEvent(db_event)
+
+        # Render React component for inclusion in our template:
+        api_event = api.canonicalize_event_data(db_event, None, version=(1, 3))
+        props = dict(
+            event=api_event,
+            forceAdmin=True,
+        )
+        self.setup_react_template('event.js', props)
+
+        self.render_template('event')

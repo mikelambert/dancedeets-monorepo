@@ -102,7 +102,7 @@ class Title extends React.Component {
 class ImageWithLinks extends React.Component {
   props: {
     event: Event;
-    amp: boolean;
+    amp: ?boolean;
   }
 
   state: {
@@ -196,8 +196,8 @@ class _EventLinks extends React.Component {
   props: {
     event: Event;
     amp: boolean;
-    loggedIn: boolean;
-    userRsvp: RsvpValue;
+    userId: ?number;
+    userRsvp: ?RsvpValue;
 
     // Self-managed props
     intl: intlShape;
@@ -208,7 +208,7 @@ class _EventLinks extends React.Component {
     let rsvpElement = null;
     if (event.rsvp && (event.rsvp.attending_count || event.rsvp.maybe_count)) {
       let rsvpAction = null;
-      if (this.props.loggedIn && !this.props.amp) {
+      if (this.props.userId != null && this.props.userRsvp && !this.props.amp) {
         rsvpAction = (
           <div>
             RSVP:{' '}
@@ -321,7 +321,7 @@ const EventLinks = injectIntl(_EventLinks);
 class MapWithLinks extends React.Component {
   props: {
     event: Event;
-    amp: boolean;
+    amp: ?boolean;
   }
 
   map() {
@@ -407,6 +407,32 @@ class Description extends React.Component {
   }
 }
 
+class AdminPanel extends React.Component {
+  props: {
+    forceAdmin: boolean;
+    event: Event;
+    userId: ?number;
+  }
+
+  isAdmin() {
+    const adminIds = this.props.event.admins.map(x => x.id);
+    return this.props.userId && adminIds.includes(this.props.userId);
+  }
+
+  render() {
+    // TODO: Temporarily disable for the event pages, while we build this out...
+    if (!this.props.forceAdmin) {
+      return null;
+    }
+    if (!this.props.forceAdmin && !this.isAdmin()) {
+      return null;
+    }
+    return (<div>
+      Refresh from Facebook | Delete from DanceDeets | Pay to Promote | Edit Categories
+    </div>);
+  }
+}
+
 class HtmlHead extends React.Component {
   props: {
     event: Event;
@@ -417,12 +443,13 @@ class HtmlHead extends React.Component {
   }
 }
 
-class EventPage extends React.Component {
+export class EventPage extends React.Component {
   props: {
     event: JSONObject;
-    amp: boolean;
-    loggedIn: boolean;
-    userRsvp: RsvpValue;
+    forceAdmin?: boolean;
+    amp?: boolean;
+    userId?: number;
+    userRsvp?: RsvpValue;
   }
 
   render() {
@@ -434,6 +461,11 @@ class EventPage extends React.Component {
         <div className="row">
           <div className="col-xs-12">
             <Title event={event} />
+            <AdminPanel
+              event={event}
+              userId={this.props.userId}
+              forceAdmin={this.props.forceAdmin}
+            />
           </div>
         </div>
         <div className="row">
@@ -442,7 +474,7 @@ class EventPage extends React.Component {
             <EventLinks
               event={event}
               amp={this.props.amp}
-              loggedIn={this.props.loggedIn}
+              userId={this.props.userId}
               userRsvp={this.props.userRsvp}
             />
             <MapWithLinks event={event} amp={this.props.amp} />

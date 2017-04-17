@@ -204,7 +204,7 @@ class BareBaseRequestHandler(webapp2.RequestHandler, FacebookMixinHandler):
         settings.configure(RENDER=True)
         props = props.copy()
         props.update(dict(
-            loggedIn=bool(self.fb_uid),
+            userId=self.fb_uid,
             currentLocale=self.locales[0],
         ))
         try:
