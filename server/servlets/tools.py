@@ -118,13 +118,33 @@ def resave_table(obj):
 
 
 @app.route('/tools/resave_table')
-class ResaveUsersHandler(webapp2.RequestHandler):
+class ResaveHandler(webapp2.RequestHandler):
     def get(self):
         table = self.request.get('table') # users.users.User or events.eventdata.DBEvent or ...
         control.start_map(
             name='Resave %s' % table,
             reader_spec='mapreduce.input_readers.DatastoreInputReader',
             handler_spec='servlets.tools.resave_table',
+            mapper_parameters={
+                'entity_kind': table,
+            },
+        )
+
+
+def delete_table(obj):
+    if obj.created_date is None:
+        logging.info('Deleting %s', obj)
+        yield op.db.Delete(obj)
+
+
+@app.route('/tools/delete_table')
+class DeleteTableHandler(webapp2.RequestHandler):
+    def get(self):
+        table = 'rankings.cities.City'
+        control.start_map(
+            name='Resave %s' % table,
+            reader_spec='mapreduce.input_readers.DatastoreInputReader',
+            handler_spec='servlets.tools.delete_table',
             mapper_parameters={
                 'entity_kind': table,
             },
