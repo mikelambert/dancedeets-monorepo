@@ -389,11 +389,11 @@ class AdminEditHandler(base_servlet.BaseRequestHandler):
 def get_fb_event(fbl, event_id, lookup_type=fb_api.LookupEvent):
     data = None
     try:
-        data = fbl.get(lookup_type, event_id)
+        data = fbl.get(lookup_type, event_id, allow_cache=False)
+        if data and data['empty']:
+            data = None
     except fb_api.NoFetchedDataException:
         pass
-    if data and data['empty']:
-        data = None
     if not data:
         db_event = eventdata.DBEvent.get_by_id(event_id)
         if db_event:
@@ -405,7 +405,7 @@ def get_fb_event(fbl, event_id, lookup_type=fb_api.LookupEvent):
                 fbl = user.get_fblookup()
                 fbl.allow_cache = fbl.allow_cache
                 try:
-                    fbl.request(lookup_type, db_event.fb_event_id)
+                    fbl.request(lookup_type, db_event.fb_event_id, allow_cache=False)
                     fbl.batch_fetch()
                     data = fbl.fetched_data(lookup_type, db_event.fb_event_id)
                 except fb_api.ExpiredOAuthToken:
