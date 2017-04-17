@@ -5,7 +5,7 @@ queue:
   bucket_size: 1
 - name: fast-queue
   rate: 1/s
-  max_concurrent_requests: 16
+  max_concurrent_requests: 12
   bucket_size: 1
 - name: event-publishing-pull-queue
   mode: pull
