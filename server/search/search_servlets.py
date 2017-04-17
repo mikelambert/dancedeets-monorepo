@@ -141,6 +141,7 @@ class CityHandler(RelevantHandler):
     def handle(self, city_name):
         # TODO(lambert): Why is this still required, can we get rid of it?
         self.fbl.batch_fetch() # to avoid bad error handler?
+        city_name = city_name.decode('utf-8')
         form = search_base.SearchForm(data={'location': city_name, 'distance': cities.NEARBY_DISTANCE_KM, 'distance_units': 'km'})
         self.handle_search(form)
 
