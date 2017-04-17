@@ -129,6 +129,8 @@ export function fbSetup(fbPermissions: string, fbAppId: string, baseHostname: st
     const js = d.createElement(s);
     js.id = id;
     js.src = 'https://connect.facebook.net/en_US/sdk.js';
-    fjs.parentNode.insertBefore(js, fjs);
+    if (fjs.parentNode) {
+      fjs.parentNode.insertBefore(js, fjs);
+    }
   })(document, 'script', 'facebook-jssdk');
 }

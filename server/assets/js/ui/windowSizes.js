@@ -47,8 +47,16 @@ export function wantsWindowSizes(WrappedComponent: Object) {
 
     getWindowState() {
       if (global.window != null) {
-        const width = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
-        const height = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight;
+        const width = (
+          window.innerWidth ||
+          (document.documentElement && document.documentElement.clientWidth) ||
+          (document.body && document.body.clientWidth)
+        );
+        const height = (
+          window.innerHeight ||
+          (document.documentElement && document.documentElement.clientHeight) ||
+          (document.body && document.body.clientHeight)
+        );
         return { window: { width, height } };
       } else {
         return { window: null };

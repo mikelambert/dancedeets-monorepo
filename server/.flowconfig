@@ -11,11 +11,13 @@
 
 .*/node_modules/config-chain/test/.*\.json
 .*/node_modules/npmconf/test/fixtures/.*\.json
+.*/node_modules/google-app-engine/composer\.json
 
 .*/CodePushHash.json
 
 .*/common/node_modules/fbjs/.*
 .*/server/node_modules/fbjs/.*
+
 
 [include]
 ../common
