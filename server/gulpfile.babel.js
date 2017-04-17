@@ -309,6 +309,8 @@ dockerImages.forEach(imageName =>
 );
 gulp.task('buildDocker', cb => runSequence(...dockerImages.map(x => `buildDocker:${x}`), cb))
 
+gulp.task('server:datastore:local', $.shell.task(['gcloud beta emulators datastore start --no-store-on-disk --consistency=1.0 --host-port=localhost:8095']))
+
 // Workable Dev Server (1): Hot reloading
 // Port 8090: Backend React Render server
 // (We don't really use this, but it's there in case our generate_amp_sources/compilation tasks want it)
@@ -320,7 +322,7 @@ gulp.task('server:hot:python:force', ['dev-appserver:server:hot:force']);
 gulp.task('server:hot:javascript', $.shell.task(['../runNode.js ./hotServer.js --debug --port 8080 --backend 8085']));
 // Or we can run them all with:
 gulp.task('server:hot', ['server:hot:react', 'server:hot:python', 'server:hot:javascript']);
-gulp.task('server:hot:force', ['server:hot:react', 'server:hot:python:force', 'server:hot:javascript']);
+gulp.task('server:hot:force', ['server:hot:react', 'server:hot:python:force', 'server:hot:javascript', 'server:datastore:local']);
 
 
 // Workable Dev Server (2) Prod-like JS/CSS setup
@@ -333,7 +335,7 @@ gulp.task('server:full:python', ['dev-appserver:server:regular']);
 //    'compile:webpack:server:prod:watch'
 //    'compile:webpack:client:prod:watch'
 // Or we can run them all with:
-gulp.task('server:full', ['server:full:react', 'server:full:python', 'compile:webpack:server:prod:watch', 'compile:webpack:client:prod:watch']);
+gulp.task('server:full', ['server:full:react', 'server:full:python', 'compile:webpack:server:prod:watch', 'compile:webpack:client:prod:watch', 'server:datastore:local']);
 // TODO: We ignore 'compile:webpack:amp:prod:watch' because it will need a running server to run against, and timing that is hard.
 
 gulp.task('serverFull', ['server:full'])
