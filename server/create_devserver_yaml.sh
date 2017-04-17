@@ -8,6 +8,5 @@ if [ "$HOT_SERVER_PORT" != "" ]; then
 env_variables:
   HOT_SERVER_PORT: $HOT_SERVER_PORT
   DATASTORE_EMULATOR_HOST: localhost:8095
-  APPLICATION_ID: dancedeets-hrd
 EOF
 fi
