@@ -28,7 +28,7 @@ export class Blog {
 export class MediumBlog extends Blog {
   constructor(json: any) {
     super();
-    const realPosts: [] = Object.values(json.payload.references.Post);
+    const realPosts: Array<any> = Object.values(json.payload.references.Post);
     const users = json.payload.references.User;
     this.title = json.payload.value.name;
     this.description = json.payload.value.shortDescription;

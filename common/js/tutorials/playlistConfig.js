@@ -183,7 +183,7 @@ function sortedTutorials(tutorials, locale) {
   return [].concat(nativeTutorials, foreignTutorials);
 }
 
-export function getTutorials(locale: string) {
+export function getTutorials(locale: string): Array<Category> {
   const constructedPlaylists = defaultTutorials.map(style => ({
     ...style,
     tutorials: sortedTutorials(style.tutorials, locale).map(x => new Playlist(x)),

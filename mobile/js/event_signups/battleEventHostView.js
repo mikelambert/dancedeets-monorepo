@@ -27,6 +27,9 @@ import type {
   Signup,
 } from './models';
 import {
+  getCategories,
+} from './models';
+import {
   Button,
 } from '../ui';
 import CategorySummaryCard from './categorySummaryCard';
@@ -72,7 +75,7 @@ class _BattleEventHostView extends React.Component {
     let view = null;
     if (this.props.battleEvent) {
       view = (<FeedListView
-        items={this.props.battleEvent.categories}
+        items={getCategories(this.props.battleEvent)}
         renderHeader={this.renderHeader}
         renderRow={this.renderRow}
         contentContainerStyle={{

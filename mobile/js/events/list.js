@@ -34,6 +34,7 @@ import type {
   Onebox,
   PeopleListing,
   SearchResponse,
+  StylePersonLookup,
 } from 'dancedeets-common/js/events/search';
 import Collapsible from 'react-native-collapsible';
 import { EventRow } from './uicomponents';
@@ -59,7 +60,6 @@ import {
 import {
   BottomFade,
   Button,
-  CenterFade,
   HorizontalView,
   normalize,
   ProportionalImage,
@@ -294,9 +294,9 @@ const AddEventButton = injectIntl(_AddEventButton);
 
 class PersonList extends React.Component {
   props: {
-    title: String;
-    subtitle: String;
-    categoryOrder: Array<String>;
+    title: string;
+    subtitle: string;
+    categoryOrder?: Array<string>;
     people: StylePersonLookup;
   }
 
@@ -336,9 +336,10 @@ class PersonList extends React.Component {
 
 class HeaderCollapsible extends React.Component {
   props: {
-    defaultCollapsed: Boolean;
-    title: String;
-    children: React.Element<*>;
+    defaultCollapsed: boolean;
+    title: string;
+    children?: React.Element<*>;
+    underlayColor?: string;
   }
 
   state: {

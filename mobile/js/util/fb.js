@@ -10,7 +10,7 @@ import {
 } from 'react-native';
 import { performRequest } from '../api/fb';
 
-export async function openUserId(userId: String) {
+export async function openUserId(userId: string) {
   let adminUrl = null;
   // On Android, just send them to the URL and let the native URL intecerpetor send it to FB.
   if (Platform.OS === 'ios' && await Linking.canOpenURL('fb://')) {
