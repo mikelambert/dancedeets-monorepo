@@ -1,10 +1,18 @@
 
 import json
 import logging
+import os
 import urllib
 
 from google.appengine.api import memcache
 from google.cloud import datastore
+
+from util import runtime
+
+if runtime.is_local_appengine():
+    # We need this for tests that use gcloud libraries, that need auth and app_identity.
+    # They don't run with the gcloud credentials, so need this to figure out who they are.
+    os.environ['APPLICATION_ID'] = 'dancedeets-hrd'
 
 client = datastore.Client()
 
