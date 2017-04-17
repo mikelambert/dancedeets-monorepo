@@ -5,7 +5,7 @@ python:
 
 install:
 # Download the latest version of the GAE Python SDK
-- wget https://storage.googleapis.com/appengine-sdks/featured/google_appengine_1.9.50.zip
+- wget https://storage.googleapis.com/appengine-sdks/featured/google_appengine_1.9.52.zip
   -nv -O downloaded_appengine.zip
 # This is a quick hack, necessary to get fancy_urllib working,
 # by exposing the lib/fancy_urllib/fancy_urllib/ dirctory within for use by appengine.
