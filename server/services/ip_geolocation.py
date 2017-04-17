@@ -41,6 +41,8 @@ def _get_cache(ip):
     return json.loads(data_dump)
 
 def get_location_data_for(ip):
+    if not ip:
+        return {}
     data = _get_cache(ip)
     if not data:
         url = 'http://freegeoip.net/json/%s' % ip
@@ -51,6 +53,8 @@ def get_location_data_for(ip):
 
 def get_location_string_for(ip, city=True):
     data = get_location_data_for(ip)
+    if not data:
+        return ''
     if data['country_code'] == '':
         logging.warning('Failure to geocode %r: %s', ip, data)
         return ''
