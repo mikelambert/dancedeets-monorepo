@@ -87,8 +87,12 @@ export type EventRsvpList = {
   maybe_count: number,
 };
 
-class BaseEvent extends JsonDerivedObject {
+export class BaseEvent extends JsonDerivedObject {
   id: string;
+  name: string;
+  start_time: string; // eslint-disable-line camelcase
+  end_time: string; // eslint-disable-line camelcase
+  picture: ?Cover;
   venue: Venue;
 
   constructor(eventData: JSONObject) {
@@ -102,11 +106,7 @@ class BaseEvent extends JsonDerivedObject {
 }
 
 export class SearchEvent extends BaseEvent {
-  name: string;
-  start_time: string; // eslint-disable-line camelcase
-  end_time: string; // eslint-disable-line camelcase
   rsvp: ?EventRsvpList;
-  picture: ?Cover;
   annotations: {
     categories: Array<string>,
     keywords: Array<string>,
@@ -114,10 +114,7 @@ export class SearchEvent extends BaseEvent {
 }
 
 export class Event extends BaseEvent {
-  name: string;
   description: string;
-  start_time: string; // eslint-disable-line camelcase
-  end_time: string; // eslint-disable-line camelcase
   source: {
     url: string,
     name: string,
