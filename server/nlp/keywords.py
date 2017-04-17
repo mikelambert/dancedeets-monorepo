@@ -512,6 +512,7 @@ PERFORMANCE = Name('PERFORMANCE', Any(
     u'trình diễn', # vietnamese performance
     u'vystoupení', # czech performances
     u'výkonnostních', # czech performance
+    u'wykonaniu', # polish performance
     u'изпълнението', # bulgarian performance
     u'パフォーマンス', # japanese performance
     u'מופע', # hebrew show/performance
@@ -1352,4 +1353,5 @@ KIDS = Name('KIDS', Any(
     'sotto i\W?\d+', # italian under-age
     'kinderen', # dutch children
     'tot \d+ jaar', # dutch to-n-years
+    'dzieci\w*', # polish children
 ))
