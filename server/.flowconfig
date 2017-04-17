@@ -17,7 +17,7 @@
 
 .*/common/node_modules/fbjs/.*
 .*/server/node_modules/fbjs/.*
-
+.*/react-side-effect/node_modules/fbjs/.*
 
 [include]
 ../common
