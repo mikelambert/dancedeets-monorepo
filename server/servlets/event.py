@@ -79,7 +79,7 @@ class RedirectToEventHandler(base_servlet.BaseRequestHandler):
 
 
 # SHORT URL!
-@app.short_route(r'/(%s)' % urls.EVENT_ID_REGEX)
+@app.short_route(r'/e-(%s)' % urls.EVENT_ID_REGEX)
 class RedirectShortUrlHandler(base_servlet.BareBaseRequestHandler):
     def get(self, event_id):
         return self.redirect(urls.dd_event_url(event_id))

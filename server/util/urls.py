@@ -12,6 +12,10 @@ def dd_relative_event_url(eid):
     return '/events/%s/' % eid
 
 
+def dd_short_event_url(eid):
+    return 'http://dd.events/e-%s' % eid
+
+
 def raw_fb_event_url(eid):
     return 'http://www.facebook.com/events/%s/' % eid
 
