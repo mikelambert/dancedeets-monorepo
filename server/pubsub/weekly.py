@@ -16,7 +16,6 @@ from .facebook import fb_util
 from . import weekly_images
 
 def _generate_post_for(city, week_start, search_results):
-    post_values = {}
     headers = [
         "Hey %(location)s, here's what's coming up for you this week in dance!",
         "Here's your dance schedule for this week in %(location)s:",
@@ -60,10 +59,7 @@ def _generate_post_for(city, week_start, search_results):
 
     messages.append(random.choice(footers))
 
-    post_values['message'] = '\n'.join(messages)
-
-    #TODO: attach a bunch of event flyers to this post!
-    return post_values
+    return '\n'.join(messages)
 
 
 def _generate_results_for(city, week_start):
@@ -91,7 +87,6 @@ def _facebook_weekly_post(db_auth_token, city_data):
 
     city = cities.City.get_by_key_name(city_key)
     page_id = db_auth_token.token_nickname
-    endpoint = 'v2.8/%s/feed' % page_id
     fbl = fb_api.FBLookup(None, db_auth_token.oauth_token)
 
     d = datetime.date.today()
@@ -100,10 +95,29 @@ def _facebook_weekly_post(db_auth_token, city_data):
     search_results = _generate_results_for(city, week_start)
     if len(search_results) < 2:
         return {}
-    post_values = _generate_post_for(city, week_start, search_results)
 
-    weekly_images.build_and_cache_image(city, week_start, search_results)
+    # Generate image on GCS
+    image_url = weekly_images.build_and_cache_image(city, week_start, search_results)
 
+    # Generate the weekly text post
+    message = _generate_post_for(city, week_start, search_results)
+
+    # Upload image to FB Page
+    photo_values = {
+        'url': image_url,
+        'caption': message,
+    }
+    logging.info("FB Photo Post Values: %s", photo_values)
+    photos_endpoint = 'v2.8/%s/photos' % page_id
+    photos_result = fbl.fb.post(photos_endpoint, None, photo_values)
+    logging.info('Photo Post Result for %s: %s', city.display_name(), photos_result)
+
+
+    # Now post to FB Feed about it
+    post_values = {
+        'message': message,
+        'object_attachment': photos_result['id'],
+    }
     feed_targeting = get_city_targeting_data(fbl, city)
     if feed_targeting:
         # Ideally we'd do this as 'feed_targeting', but Facebook appears to return errors with that due to:
@@ -113,6 +127,7 @@ def _facebook_weekly_post(db_auth_token, city_data):
         #  u'error_data': {u'blame_field': u'targeting'}}}
         post_values['targeting'] = json.dumps(feed_targeting)
     logging.info("FB Feed Post Values: %s", post_values)
+    endpoint = 'v2.8/%s/feed' % page_id
     result = fbl.fb.post(endpoint, None, post_values)
     logging.info('Post Result for %s: %s', city.display_name(), result)
     return result
