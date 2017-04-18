@@ -9,6 +9,7 @@ import base_servlet
 from events import event_image
 from rankings import cities
 from util import gcs
+from util import runtime
 
 full_size = (626, 840)
 
@@ -52,6 +53,8 @@ def _generate_image(event):
 
 def _generate_path(city, week_start):
     path = '%s/%s.gif' % (week_start.strftime('%Y-%m-%d'), city.display_name())
+    if runtime.is_local_appengine():
+        path = 'dev/%s' % path
     return path
 
 def build_and_cache_image(city, week_start, search_results):
