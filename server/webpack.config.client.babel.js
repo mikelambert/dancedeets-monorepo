@@ -12,7 +12,7 @@ function isCommonModule(module) {
     return false;
   }
   const common = [
-    'jquery', 'bootstrap', 'trackjs', '/react/', 'react-dom', 'moment', 'lodash', 'babel-polyfill', '/intl/', 'intl-', 'url', 'fbjs', 'js/messages', 'source-map',
+    'jquery', 'bootstrap', 'raven-js', '/react/', 'react-dom', 'moment', 'lodash', 'babel-polyfill', '/intl/', 'intl-', 'url', 'fbjs', 'js/messages', 'source-map',
   ];
   // Throw all CSS into the common module, so it doesn't require multiple downloads or blocking pages on subsequent navigations
   if (userRequest.endsWith('css')) {
