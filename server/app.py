@@ -25,6 +25,11 @@ class HostRoute(webapp2.BaseRoute):
 
         return re.compile(self.template)
 
+    @webapp2.cached_property
+    def host_regex(self):
+        """Lazy regex compiler."""
+        return re.compile(self.host)
+
     def match(self, request):
         """Matches this route against the current request.
 
@@ -32,9 +37,8 @@ class HostRoute(webapp2.BaseRoute):
         """
         # We fetch get_main_hostname dynamically at match-time,
         # to ensure we get the latest self.prod_mode, which may have changed
-        route_host = self.host
         request_host = request.host.split(':')[0]
-        if request_host.endswith(route_host):
+        if self.host_regex.search(request_host):
             match = self.regex.match(urllib.unquote(request.path))
             if match:
                 return self, match.groups(), {}
@@ -49,7 +53,7 @@ class _DDApplication(webapp2.WSGIApplication):
         def wrapper(func):
             # Do we want to extend this to full Routes someday?
             # Won't work with batched_mapperworker's slurp-all-but-pass-no-args approach, so need bwcompat
-            self.router.add(HostRoute('dancedeets.com', handler=func, *args, **kwargs))
+            self.router.add(HostRoute(r'dancedeets\.com$|dancedeets-hrd\.appspot\.com$', handler=func, *args, **kwargs))
             return func
         return wrapper
 
@@ -57,7 +61,7 @@ class _DDApplication(webapp2.WSGIApplication):
         def wrapper(func):
             # Do we want to extend this to full Routes someday?
             # Won't work with batched_mapperworker's slurp-all-but-pass-no-args approach, so need bwcompat
-            self.router.add(HostRoute('dd.events', handler=func, *args, **kwargs))
+            self.router.add(HostRoute(r'dd\.events$', handler=func, *args, **kwargs))
             return func
         return wrapper
 
