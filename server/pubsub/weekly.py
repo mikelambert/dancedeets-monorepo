@@ -102,21 +102,13 @@ def _facebook_weekly_post(db_auth_token, city_data):
     # Generate the weekly text post
     message = _generate_post_for(city, week_start, search_results)
 
-    # Upload image to FB Page
-    photo_values = {
-        'url': image_url,
-        'caption': message,
-    }
-    logging.info("FB Photo Post Values: %s", photo_values)
-    photos_endpoint = 'v2.8/%s/photos' % page_id
-    photos_result = fbl.fb.post(photos_endpoint, None, photo_values)
-    logging.info('Photo Post Result for %s: %s', city.display_name(), photos_result)
-
+    # Can't upload image to FB Page...as the uploaded photo then becomes un-animated
+    # So instead lets link to the image from our FB post
 
     # Now post to FB Feed about it
     post_values = {
         'message': message,
-        'object_attachment': photos_result['id'],
+        'link': image_url,
     }
     feed_targeting = get_city_targeting_data(fbl, city)
     if feed_targeting:
