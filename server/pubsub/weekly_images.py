@@ -67,7 +67,10 @@ def build_and_cache_image(city, week_start, search_results):
 def load_cached_image(city, week_start):
     path = _generate_path(city, week_start)
     logging.info('Looking up image at %s: %s', WEEKLY_IMAGE_BUCKET, path)
-    image_data = gcs.get_object(WEEKLY_IMAGE_BUCKET, path)
+    try:
+        image_data = gcs.get_object(WEEKLY_IMAGE_BUCKET, path)
+    except gcs.NotFoundError:
+        image_data = None
     return image_data
 
 @app.route('/weekly/image')
