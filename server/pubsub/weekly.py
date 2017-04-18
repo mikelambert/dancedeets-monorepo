@@ -50,7 +50,7 @@ def _generate_post_for(city, week_start, search_results):
             'daytime': dt,
             'name': result.name,
             'location': location,
-            'url': urls.dd_event_url(result.event_id),
+            'url': urls.dd_short_event_url(result.event_id),
         }
         messages.append('- %(daytime)s: %(name)s%(location)s:' % params)
         messages.append('  %(url)s' % params)
