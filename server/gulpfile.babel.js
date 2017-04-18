@@ -6,6 +6,7 @@
 
 import del from 'del';
 import favicons from 'gulp-favicons';
+import fetch from 'node-fetch';
 import fs from 'fs';
 import glob from 'glob';
 import gutil from 'gutil';
@@ -37,6 +38,9 @@ gulp.task('default', taskListing);
 const $ = gulpLoadPlugins();
 
 const baseAssetsDir = `/Users/${username.sync()}/Dropbox/dancedeets/art/build-assets/`;
+
+//TODO: Support login here, so that this URL can actually run. Currently blocked by 'login: admin'
+gulp.task('web:events:resave', cb => fetch('http://www.dancedeets.com/tasks/reload_events?user_id=701004&allow_cache=1&disable_updates=regeocode,photo,cached_city&queue=fast-queue&only_if_updated=0').then(x => console.log(x)))
 
 gulp.task('compile:images:favicons', () => gulp
   .src('assets/img/deets-head.png')
