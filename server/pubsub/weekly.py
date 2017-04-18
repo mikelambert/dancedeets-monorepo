@@ -13,6 +13,7 @@ from search import search
 from util import urls
 from .facebook import event
 from .facebook import fb_util
+from . import weekly_images
 
 def _generate_post_for(city, week_start, search_results):
     post_values = {}
@@ -98,8 +99,10 @@ def _facebook_weekly_post(db_auth_token, city_data):
 
     search_results = _generate_results_for(city, week_start)
     if len(search_results) < 2:
-        return False
+        return {}
     post_values = _generate_post_for(city, week_start, search_results)
+
+    weekly_images.build_and_cache_image(city, week_start, search_results)
 
     feed_targeting = get_city_targeting_data(fbl, city)
     if feed_targeting:

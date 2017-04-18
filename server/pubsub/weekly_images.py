@@ -1,4 +1,5 @@
 import datetime
+import logging
 from PIL import Image
 from PIL import ImageFilter
 import StringIO
@@ -7,10 +8,11 @@ import app
 import base_servlet
 from events import event_image
 from rankings import cities
-
+from util import gcs
 
 full_size = (626, 840)
 
+WEEKLY_IMAGE_BUCKET = 'dancedeets-weekly'
 
 def build_animated_image(results):
     images = [_generate_image(x.db_event) for x in results]
@@ -48,17 +50,38 @@ def _generate_image(event):
 
     return target
 
+def _generate_path(city, week_start):
+    path = '%s/%s.gif' % (week_start.strftime('%Y-%m-%d'), city.display_name())
+    return path
+
+def build_and_cache_image(city, week_start, search_results):
+    image = build_animated_image(search_results)
+    path = _generate_path(city, week_start)
+    gcs.put_object(WEEKLY_IMAGE_BUCKET, path, image)
+
+def load_cached_image(city, week_start):
+    path = _generate_path(city, week_start)
+    logging.info('Looking up image at %s: %s', WEEKLY_IMAGE_BUCKET, path)
+    image_data = gcs.get_object(WEEKLY_IMAGE_BUCKET, path)
+    return image_data
 
 @app.route('/weekly/image')
 class WeeklyImageHandler(base_servlet.BareBaseRequestHandler):
     def get(self):
-        city = self.request.get('city')
-        city = cities.City.get_by_key_name(city)
-        d = datetime.date.today()
-        week_start = d - datetime.timedelta(days=d.weekday()) # round down to last monday
+        city_name = self.request.get('city')
+        city = cities.City.get_by_key_name(city_name)
 
-        from . import weekly
-        results = weekly._generate_results_for(city, week_start)
-        image_data = build_animated_image(results)
+        if self.request.get('week_start'):
+            week_start = self.request.get('week_start').strptime('%Y-%m-%d')
+        else:
+            d = datetime.date.today()
+            week_start = d - datetime.timedelta(days=d.weekday()) # round down to last monday
+
+        image_data = load_cached_image(city, week_start)
+        if not image_data:
+            logging.error('Failed to find image for week %s in city %s, dynamically generating...', week_start, city)
+            from . import weekly
+            results = weekly._generate_results_for(city, week_start)
+            image_data = build_animated_image(results)
         self.response.headers['Content-Type'] = "image/gif"
         self.response.out.write(image_data)
