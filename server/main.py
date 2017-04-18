@@ -82,6 +82,12 @@ settings.configure(
 if os.environ.get('HOT_SERVER_PORT'):
     logging.info('Using hot reloader!')
 
+# Load this first, so 'app.prod_mode' is set asap
+from app import app
+app.debug = True
+app.prod_mode = prod_mode
+
+
 logging.info("Begin modules")
 import webapp2
 from google.appengine.ext.ndb import tasklets
@@ -98,9 +104,5 @@ import _strptime
 logging.info("Begin servlets")
 import all_servlets
 logging.info("Finished servlets")
-
-from app import app
-app.debug = True
-app.prod_mode = prod_mode
 
 application = app

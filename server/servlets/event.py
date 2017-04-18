@@ -78,16 +78,21 @@ class RedirectToEventHandler(base_servlet.BaseRequestHandler):
         return self.redirect(urls.dd_relative_event_url(event_id), permanent=True)
 
 
-@app.route(r'/events/%s(?:/.*)?' % urls.EVENT_ID_REGEX)
+# SHORT URL!
+@app.short_route(r'/(%s)' % urls.EVENT_ID_REGEX)
+class RedirectShortUrlHandler(base_servlet.BareBaseRequestHandler):
+    def get(self, event_id):
+        return self.redirect(urls.dd_event_url(event_id))
+
+
+@app.route(r'/events/(%s)(?:/.*)?' % urls.EVENT_ID_REGEX)
 class ShowEventHandler(base_servlet.BaseRequestHandler):
 
     def requires_login(self):
         return False
 
-    def get(self):
+    def get(self, event_id):
         self.finish_preload()
-        path_bits = self.request.path.split('/')
-        event_id = urllib.unquote(path_bits[2])
         if not event_id:
             self.response.out.write('Need an event_id.')
             return
