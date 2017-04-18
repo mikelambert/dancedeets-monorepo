@@ -137,6 +137,14 @@ def _get_mimetype(image_data):
     image_type = imghdr.what(f)
     return 'image/%s' % image_type
 
+def get_image(event):
+    try:
+        final_image = _render_image(event.id)
+    except NotFoundError:
+        cache_image_and_get_size(event)
+        final_image = _render_image(event.id)
+    return final_image
+
 def render(response, event, width=None, height=None):
     final_image = None
     cache_key = (width, height)
@@ -144,11 +152,7 @@ def render(response, event, width=None, height=None):
     if cache_key in CACHEABLE_SIZES:
         final_image = _read_image_cache(event.id, width, height)
     if not final_image:
-        try:
-            final_image = _render_image(event.id)
-        except NotFoundError:
-            cache_image_and_get_size(event)
-            final_image = _render_image(event.id)
+        final_image = get_image(event)
     if width or height:
         try:
             final_image = _resize_image(final_image, width, height)
