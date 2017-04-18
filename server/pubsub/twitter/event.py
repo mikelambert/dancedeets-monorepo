@@ -92,9 +92,12 @@ def twitter_post(auth_token, db_event):
     # This is the only twitter account allowed to @mention, to avoid spamming everyone...
     if auth_token.token_nickname == 'BigTwitter':
         # De-dupe these lists
-        handles = list(set(twitter_handles + twitter_handles2))
+        handles = [x.lower() for x in list(set(twitter_handles + twitter_handles2))]
     else:
         handles = []
+    venue_name = db_event.location_name.lower()
+    # Remove any handles that are really just "@venue_name"
+    handles = [x for x in handles if x not in venue_name]
     config = get_twitter_config(t)
     status = format_twitter_post(config, db_event, media, handles=handles)
     t.statuses.update(status=status, **update_params)
