@@ -7,8 +7,11 @@ import fb_api
 from events import eventdata
 from events import event_updates
 from pubsub import pubsub
+from pubsub import weekly
 from pubsub.twitter import auth_setup
 from pubsub.twitter import event
+from rankings import cities
+from search import search_base
 from test_utils import unittest
 
 FB_EVENT = {
@@ -53,6 +56,48 @@ class TestPublishEvent(unittest.TestCase):
         pubsub.pull_and_publish_event()
         # Check that Twitter().statuses.update(...) was called
         self.assertTrue(Twitter.return_value.statuses.update.called)
+
+
+class TestWeeklyPost(unittest.TestCase):
+    def runTest(self):
+        city = cities.City(city_name='Gotham')
+        d = datetime.date(2020, 1, 1)
+        week_start = d - datetime.timedelta(days=d.weekday()) # round down to last monday
+        search_results = [
+            search_base.SearchResult('1', {
+                'name': 'Event 1',
+                'start_time': '2020-01-01T09:00:00',
+            }, eventdata.DBEvent(fb_event={
+                'info': {},
+            })),
+            search_base.SearchResult('2', {
+                'name': 'Event 2',
+                'start_time': '2020-01-01T10:00:00',
+            }, eventdata.DBEvent(fb_event={
+                'info': {},
+            })),
+            search_base.SearchResult('3', {
+                'name': 'Event 3',
+                'start_time': '2020-01-03T09:00:00',
+            }, eventdata.DBEvent(fb_event={
+                'info': {},
+            })),
+        ]
+        result = weekly._generate_post_for(city, week_start, search_results)
+        message = result['message']
+        contents = message.split('\n\n', 1)[1].rsplit('\n\n', 1)[0]
+        self.assertEqual(contents, '''\
+Wednesday January 1:
+- 9:00: Event 1:
+  http://www.dancedeets.com/events/1/
+
+- 10:00: Event 2:
+  http://www.dancedeets.com/events/2/
+
+
+Friday January 3:
+- 9:00: Event 3:
+  http://www.dancedeets.com/events/3/''')
 
 
 class TestImports(unittest.TestCase):

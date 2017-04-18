@@ -30,14 +30,16 @@ def _generate_post_for(city, week_start, search_results):
 
     messages = []
     messages.append(random.choice(headers) % {'location': city.city_name})
-    messages.append('')
-    messages.append('Week of %s:' % week_start.strftime('%A %B %-d'))
+    last_result = None
     for result in search_results:
-        # AMPM countries
+        if not last_result or last_result.start_time.strftime('%A') != result.start_time.strftime('%A'):
+            messages.append('')
+            messages.append(result.start_time.strftime('%A %B %-d:'))
+        # AM/PM countries
         if city.country_name in ['US', 'UK', 'PH', 'CA', 'AU', 'NZ', 'IN', 'EG', 'SA', 'CO', 'PK', 'MY']:
-            dt = result.start_time.strftime('%a %-I:%M%p')
+            dt = result.start_time.strftime('%-I:%M%p')
         else:
-            dt = result.start_time.strftime('%a %-H:%M')
+            dt = result.start_time.strftime('%-H:%M')
         if result.db_event.venue_id:
             location = ' @ @[%s]' % result.db_event.venue_id
         #elif result.db_event.location_name:
@@ -50,17 +52,16 @@ def _generate_post_for(city, week_start, search_results):
             'location': location,
             'url': urls.dd_event_url(result.event_id),
         }
-        line = '%(daytime)s: %(name)s%(location)s: %(url)s' % params
-        messages.append(line)
+        messages.append('- %(daytime)s: %(name)s%(location)s:' % params)
+        messages.append('  %(url)s' % params)
         messages.append('')
+        last_result = result
 
     messages.append(random.choice(footers))
 
     post_values['message'] = '\n'.join(messages)
 
     #TODO: attach a bunch of event flyers to this post!
-
-    logging.info("FB Feed Post Values: %s", post_values)
     return post_values
 
 
@@ -108,6 +109,7 @@ def _facebook_weekly_post(db_auth_token, city_data):
         #  u'error_user_msg': u'You can only specify connections to objects you are an administrator or developer of.',
         #  u'error_data': {u'blame_field': u'targeting'}}}
         post_values['targeting'] = json.dumps(feed_targeting)
+    logging.info("FB Feed Post Values: %s", post_values)
     result = fbl.fb.post(endpoint, None, post_values)
     logging.info('Post Result for %s: %s', city.display_name(), result)
     return result
