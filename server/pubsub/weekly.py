@@ -40,8 +40,8 @@ def _generate_post_for(city, week_start, search_results):
             dt = result.start_time.strftime('%a %-H:%M')
         if result.db_event.venue_id:
             location = ' @ @[%s]' % result.db_event.venue_id
-        elif event.location_name:
-            location = ' @ %s' % result.db_event.location_name
+        #elif result.db_event.location_name:
+        #    location = ' @ %s' % result.db_event.location_name
         else:
             location = ''
         params = {
