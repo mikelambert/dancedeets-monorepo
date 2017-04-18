@@ -142,7 +142,7 @@ class DeleteTableHandler(webapp2.RequestHandler):
     def get(self):
         table = 'rankings.cities.City'
         control.start_map(
-            name='Resave %s' % table,
+            name='Delete %s' % table,
             reader_spec='mapreduce.input_readers.DatastoreInputReader',
             handler_spec='servlets.tools.delete_table',
             mapper_parameters={
