@@ -13,7 +13,11 @@ class TestUrlRoutes(unittest.TestCase):
         from servlets import event
         from app import app
         router = app.router
-        env = {'PATH_INFO': '/events/55/'}
+        env = {
+            'SERVER_NAME': 'www.dancedeets.com',
+            'SERVER_PORT': '80',
+            'PATH_INFO': '/events/55/',
+        }
         route = router.match(webapp2.Request(env))
         self.assertEqual(route[0].handler, event.ShowEventHandler)
 

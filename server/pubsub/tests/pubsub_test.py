@@ -83,21 +83,20 @@ class TestWeeklyPost(unittest.TestCase):
                 'info': {},
             })),
         ]
-        result = weekly._generate_post_for(city, week_start, search_results)
-        message = result['message']
+        message = weekly._generate_post_for(city, week_start, search_results)
         contents = message.split('\n\n', 1)[1].rsplit('\n\n', 1)[0]
         self.assertEqual(contents, '''\
 Wednesday January 1:
 - 9:00: Event 1:
-  http://www.dancedeets.com/events/1/
+  http://dd.events/e-1
 
 - 10:00: Event 2:
-  http://www.dancedeets.com/events/2/
+  http://dd.events/e-2
 
 
 Friday January 3:
 - 9:00: Event 3:
-  http://www.dancedeets.com/events/3/''')
+  http://dd.events/e-3''')
 
 
 class TestImports(unittest.TestCase):

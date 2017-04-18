@@ -7,4 +7,4 @@ app = TestApp(main.application)
 
 class TestSearch(unittest.TestCase):
     def runTest(self):
-        app.get('/?location=New York&distance=50')
+        app.get('http://www.dancedeets.com/?location=New York&distance=50')
