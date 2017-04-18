@@ -19,6 +19,7 @@ import notifications.rsvped_events
 import pubsub.pubsub_tasks
 import pubsub.facebook.auth_setup
 import pubsub.twitter.auth_setup
+import pubsub.weekly_images
 import rankings.rankings_servlets
 import search.search_servlets
 import search.search_tasks
