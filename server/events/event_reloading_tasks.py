@@ -5,6 +5,7 @@ from mapreduce import operation as op
 
 import app
 import base_servlet
+from event_attendees import event_attendee_classifier
 import fb_api
 from users import users
 from util import deferred
@@ -197,7 +198,7 @@ def yield_maybe_delete_bad_event(fbl, db_event):
             db_event.creating_method = eventdata.CM_AUTO
             yield op.db.Put(db_event)
     else:
-        good_event = auto_add.is_good_event_by_attendees(fbl, db_event.fb_event, classified_event=classified_event)
+        good_event = event_attendee_classifier.is_good_event_by_attendees(fbl, db_event.fb_event, classified_event=classified_event)
         if good_event:
             if db_event.creating_method != eventdata.CM_AUTO_ATTENDEE:
                 db_event.creating_method = eventdata.CM_AUTO_ATTENDEE
