@@ -74,7 +74,7 @@ class WeeklyImageHandler(base_servlet.BareBaseRequestHandler):
         city = cities.City.get_by_key_name(city_name)
 
         if self.request.get('week_start'):
-            week_start = self.request.get('week_start').strptime('%Y-%m-%d')
+            week_start = datetime.datetime.strptime(self.request.get('week_start'), '%Y-%m-%d').date()
         else:
             d = datetime.date.today()
             week_start = d - datetime.timedelta(days=d.weekday()) # round down to last monday
