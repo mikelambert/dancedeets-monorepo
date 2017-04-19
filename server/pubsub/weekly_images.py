@@ -2,7 +2,9 @@ import datetime
 import logging
 from PIL import Image
 from PIL import ImageFilter
+import subprocess
 import StringIO
+import tempfile
 
 import app
 import base_servlet
@@ -21,10 +23,28 @@ def build_animated_image(results):
     out_image = StringIO.StringIO()
     images[0].save(out_image, format='gif', save_all=True, append_images=images[1:], duration=2500)
     out_image.seek(0)
-    result = out_image.getvalue()
+    image_data = out_image.getvalue()
     out_image.close()
-    return result
 
+    image_data = _compress_image(image_data)
+    return image_data
+
+def _compress_image(image_data):
+    if subprocess.call('which gifsicle > /dev/null', shell=True):
+        logging.warning('Could not find gifsicle in path')
+        return image_data
+    orig = tempfile.NamedTemporaryFile()
+    orig.write(image_data)
+    orig.flush()
+    compressed = tempfile.NamedTemporaryFile()
+
+    subprocess.call('gifsicle -O3 -o %s %s' % (compressed.name, orig.name), shell=True)
+
+    compressed_data = compressed.read()
+    compressed.close()
+    logging.info('Compressed %s -> %s bytes', len(image_data), len(compressed_data))
+    orig.close()
+    return compressed_data
 
 def _generate_image(event):
     image_data = event_image.get_image(event)
@@ -79,13 +99,15 @@ class WeeklyImageHandler(base_servlet.BareBaseRequestHandler):
         city_name = self.request.get('city')
         city = cities.City.get_by_key_name(city_name)
 
+        disable_cache = self.request.get('disable_cache') == '1'
         if self.request.get('week_start'):
             week_start = datetime.datetime.strptime(self.request.get('week_start'), '%Y-%m-%d').date()
         else:
             d = datetime.date.today()
             week_start = d - datetime.timedelta(days=d.weekday()) # round down to last monday
 
-        image_data = load_cached_image(city, week_start)
+        image_data = not disable_cache and load_cached_image(city, week_start)
+
         if not image_data:
             logging.error('Failed to find image for week %s in city %s, dynamically generating...', week_start, city)
             from . import weekly
