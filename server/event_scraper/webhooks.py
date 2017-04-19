@@ -66,11 +66,17 @@ class WebhookPageHandler(webapp2.RequestHandler):
                     de.source_id = user_id
                     discovered_list.append(de)
 
-                if not user:
+                processed = False
+                if user:
+                    fbl = user.get_fblookup()
+                    try:
+                        event_pipeline.process_discovered_events(fbl, discovered_list)
+                    except fb_api.ExpiredOAuthToken:
+                        logging.warning("Found ExpiredOAuthtoken when reloading events for User: %s", user.fb_uid)
+                        logging.warning("User's Clients: %s, Last Login: %s, Expiration: %s", user.clients, user.last_login_time, user.fb_access_token_expires)
+                    else:
+                        processed = True
+                if not processed:
                     user = users.User.get_by_id('701004')
-                fbl = user.get_fblookup()
-                try:
+                    fbl = user.get_fblookup()
                     event_pipeline.process_discovered_events(fbl, discovered_list)
-                except fb_api.ExpiredOAuthToken:
-                    logging.warning("Found ExpiredOAuthtoken when reloading events for User: %s", user.fb_uid)
-                    logging.warning("User's Clients: %s, Last Login: %s, Expiration: %s", user.clients, user.last_login_time, user.fb_access_token_expires)
