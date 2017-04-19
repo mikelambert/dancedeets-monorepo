@@ -178,7 +178,8 @@ for post_date, lst in sorted(posts.items()):
     for e in lst:
         ids = [x['id'] for x in find_fb_ids(e)]
         if not status.get(e['id']):
-            print '-', e['title']
+            ids = [x['id'] for x in find_fb_ids(e)]
+            print '-', ids, e['title']
 
 #print 'Events:'
 #for post_date, count in sorted(events.items()):
