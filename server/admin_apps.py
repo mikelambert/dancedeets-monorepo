@@ -7,7 +7,7 @@ import pipeline_wrapper
 
 import admin
 import facebook
-from login_admin import authorize_middlware
+from login_admin import authorize_middleware
 import main
 
 def _get_facebook_user_id(environ):
@@ -25,8 +25,9 @@ def is_admin(environ):
     return _get_facebook_user_id(environ) in admin_ids
 
 
-authorized_deferred_app = authorize_middlware(google.appengine.ext.deferred.application, is_admin)
-authorized_pipeline_app = authorize_middlware(pipeline_wrapper._APP, is_admin)
-authorized_mapreduce_app = authorize_middlware(mapreduce.main.APP, is_admin)
-authorized_main_app = authorize_middlware(main.application, is_admin)
-authorized_admin_app = authorize_middlware(admin.app, is_admin)
+authorized_deferred_app = authorize_middleware(google.appengine.ext.deferred.application, is_admin)
+authorized_deferred_app = authorize_middleware(google.appengine.ext.deferred.application, is_admin)
+authorized_pipeline_app = authorize_middleware(pipeline_wrapper._APP, is_admin)
+authorized_mapreduce_app = authorize_middleware(mapreduce.main.APP, is_admin)
+authorized_main_app = authorize_middleware(main.application, is_admin)
+authorized_admin_app = authorize_middleware(admin.app, is_admin)

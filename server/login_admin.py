@@ -1,3 +1,4 @@
+import IPy
 import logging
 
 def _check_for_builtin(environ):
@@ -8,8 +9,14 @@ def _check_for_builtin(environ):
 
 _no_admin = lambda x: False
 
-def authorize_middlware(app, check_env_for_admin=_no_admin):
+def authorize_middleware(app, check_env_for_admin=_no_admin):
     def wsgi_app(environ, start_response):
+        # deferred.py needs REMOTE_ADDR set to a specific value,
+        # so set it here if we're an internal request
+        private_ip = IPy.IP(environ['REMOTE_ADDR']).iptype() == 'PRIVATE'
+        if private_ip and _check_for_builtin(environ):
+            environ['REMOTE_ADDR'] = '0.1.0.2'
+
         if _check_for_builtin(environ) or check_env_for_admin(environ):
             return app(environ, start_response)
         else:
