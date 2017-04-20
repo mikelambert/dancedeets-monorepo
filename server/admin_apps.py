@@ -1,3 +1,4 @@
+import logging
 from webob.cookies import RequestCookies
 
 import google.appengine.ext.deferred
@@ -11,10 +12,10 @@ import main
 
 def _get_facebook_user_id(environ):
     request_cookies = RequestCookies(environ)
-    print request_cookies
     user_data = facebook.parse_signed_request_cookie(request_cookies)
-    print user_data
-    return user_data.get('user_id', None)
+    user_id = user_data.get('user_id', None)
+    logging.info('Got request with user id: %s', user_id)
+    return user_id
 
 
 admin_ids = ['701004']
