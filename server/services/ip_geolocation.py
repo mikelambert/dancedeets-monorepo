@@ -1,4 +1,5 @@
 
+import IPy
 import json
 import logging
 import os
@@ -42,6 +43,9 @@ def _get_cache(ip):
 
 def get_location_data_for(ip):
     if not ip:
+        return {}
+    # Check the common private IP spaces (used by Google for sending requests)
+    if IPy.IP(ip).iptype() == 'PRIVATE':
         return {}
     data = _get_cache(ip)
     if not data:
