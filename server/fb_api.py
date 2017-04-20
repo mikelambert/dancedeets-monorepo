@@ -781,7 +781,6 @@ def lookup_debug_tokens(access_tokens):
     app_fbl = FBLookup(None, facebook._PROD_FACEBOOK_CONFIG['app_access_token'])
     app_fbl.make_passthrough()
     result = app_fbl.get_multi(_LookupDebugToken, access_tokens)
-    print result[0]
     if result and not result[0]['empty']:
         return result
     else:
