@@ -1,16 +1,19 @@
-vm: true
 runtime: custom
 threadsafe: true
 api_version: 1
 service: batch
+env: flex
+beta_settings:
+  enable_app_engine_apis: true
+
+resources:
+  memory_gb: 2.0
+  cpu: 1.0
 
 automatic_scaling:
   min_num_instances: 1
   cpu_utilization:
     target_utilization: 0.8
-
-vm_settings:
-  machine_type: n1-standard-1
 
 handlers:
 - url: /_pipeline(/.*)?

@@ -1,36 +1,17 @@
-vm: true
 runtime: custom
 threadsafe: true
 api_version: 1
 service: default
+env: flex
+beta_settings:
+  enable_app_engine_apis: true
+
+resources:
+  memory_gb: 2.0
+  cpu: 1.0
 
 manual_scaling:
   instances: 3
-
-#TODO: re-enable this when we figure out a way to replace 'login: admin' functionality
-#env: flex
-#beta_settings:
-#  enable_app_engine_apis: true
-#
-#resources:
-#  memory_gb: 2.0
-#  cpu: 1.0
-vm_settings:
-  machine_type: n1-standard-1
-
-
-#  has_docker_image: 'True'
-
-#automatic_scaling:
-#  max_idle_instances: 1
-#  max_pending_latency: 500ms
-
-#automatic_scaling:
-#  min_num_instances: 1
-#  max_num_instances: 5
-#  cool_down_period_sec: 60
-#  cpu_utilization:
-#    target_utilization: 0.5
 
 inbound_services:
 - warmup
