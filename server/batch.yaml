@@ -14,15 +14,13 @@ vm_settings:
 
 handlers:
 - url: /_pipeline(/.*)?
-  script: pipeline_wrapper._APP
-- url: /_ah/queue/deferred
-  script: google.appengine.ext.deferred.application
+  script: admin_apps.authorized_pipeline_app
 - url: /mapreduce/worker_callback.*
-  script: main.application
-  login: admin
+  script: admin_apps.authorized_main_app
 - url: /mapreduce(/.*)?
-  script: mapreduce.main.APP
-  login: admin
+  script: admin_apps.authorized_mapreduce_app
+- url: /_ah/queue/deferred
+  script: admin_apps.authorized_deferred_app
 - url: .*
   script: main.application
 
