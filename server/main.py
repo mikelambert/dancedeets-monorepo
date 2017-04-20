@@ -83,9 +83,9 @@ if os.environ.get('HOT_SERVER_PORT'):
     logging.info('Using hot reloader!')
 
 # Load this first, so 'app.prod_mode' is set asap
-from app import app
-app.debug = True
-app.prod_mode = prod_mode
+from app import app as application
+application.debug = True
+application.prod_mode = prod_mode
 
 
 logging.info("Begin modules")
@@ -104,5 +104,3 @@ import _strptime
 logging.info("Begin servlets")
 import all_servlets
 logging.info("Finished servlets")
-
-application = app

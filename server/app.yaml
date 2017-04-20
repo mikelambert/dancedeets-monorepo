@@ -37,40 +37,34 @@ inbound_services:
 
 default_expiration: 10d
 handlers:
-- url: /_pipeline(/.*)?
-  script: pipeline_wrapper._APP
-- url: /_ah/queue/deferred
-  script: google.appengine.ext.deferred.application
-  login: admin
-- url: /_ah/remote_api(/.*)?
-  script: google.appengine.ext.remote_api.handler.application
-- url: /tools/.*
-  script: main.application
-  login: admin
+# Unused graphql:
 - url: /graphql.*
   script: graphql_server.app
 - url: /graphiql.*
   script: graphql_server.app
 - url: /static/graphql.*
   script: graphql_server.app
-- url: /admin.*
-  script: admin.app
-  login: admin
-- url: /events/admin.*
-  script: main.application
-  login: admin
-- url: /tasks/.*
-  script: main.application
-  login: admin
+# Builtin
+- url: /_ah/queue/deferred
+  script: admin_apps.authorized_deferred_app
+# Mapreduce/Pipeline:
+- url: /_pipeline(/.*)?
+  script: admin_apps.authorized_pipeline_app
 - url: /mapreduce/worker_callback.*
-  script: main.application
-  login: admin
+  script: admin_apps.authorized_main_app
 - url: /mapreduce(/.*)?
-  script: mapreduce.main.APP
-  login: admin
+  script: admin_apps.authorized_mapreduce_app
+# My Admin Tools
+- url: /tools/.*
+  script: admin_apps.authorized_main_app
+- url: /admin.*
+  script: admin_apps.authorized_admin_app
+- url: /events/admin.*
+  script: admin_apps.authorized_main_app
+- url: /tasks/.*
+  script: admin_apps.authorized_main_app
 - url: /_ah/warmup
   script: main.application
-  login: admin
 - url: .*
   script: main.application
 
