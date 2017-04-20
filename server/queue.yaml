@@ -3,13 +3,16 @@ queue:
   rate: 20/m
   max_concurrent_requests: 6
   bucket_size: 1
+  target: batch
 - name: fast-queue
   rate: 1/s
   max_concurrent_requests: 12
   bucket_size: 1
+  target: batch
 - name: event-publishing-pull-queue
   mode: pull
 - name: event-publishing-pull-queue-high
   mode: pull
 - name: mobile-notify-queue
   rate: 60/s
+  target: batch
