@@ -53,10 +53,11 @@ class ReloadAllUsersHandler(base_servlet.BaseTaskFacebookRequestHandler):
 
 def update_mailchimp(user):
     ctx = context.get()
-    if not ctx:
-        return
-    params = ctx.mapreduce_spec.mapper.params
-    mailchimp_list_id = params.get('mailchimp_list_id', 0)
+    if ctx:
+        params = ctx.mapreduce_spec.mapper.params
+        mailchimp_list_id = params.get('mailchimp_list_id', 0)
+    else:
+        mailchimp_list_id = mailchimp.get_list_id()
 
     trimmed_locale = user.locale or ''
     if '_' in trimmed_locale:
@@ -65,8 +66,7 @@ def update_mailchimp(user):
     members = [
         {
             'email_address': user.email,
-            #TODO: how do we avoid resubscribing!?!?
-            'status': 'subscribed',
+            'status_if_new': 'subscribed' if user.send_email else 'unsubscribed',
             'merge_fields': {
                 'FIRSTNAME': user.first_name or '',
                 'LASTNAME': user.last_name or '',
