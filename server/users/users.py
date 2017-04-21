@@ -97,7 +97,8 @@ class User(ndb.Model):
         self.full_name = fb_user['profile'].get('name')
         self.first_name = fb_user['profile'].get('first_name')
         self.last_name = fb_user['profile'].get('last_name')
-        self.email = fb_user['profile'].get('email')
+        if fb_user['profile'].get('email'):
+            self.email = fb_user['profile'].get('email')
         self.locale = fb_user['profile'].get('locale')
         try:
             self.timezone_offset = float(fb_user['profile'].get('timezone'))
