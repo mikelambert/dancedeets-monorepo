@@ -53,7 +53,7 @@ class _DDApplication(webapp2.WSGIApplication):
         def wrapper(func):
             # Do we want to extend this to full Routes someday?
             # Won't work with batched_mapperworker's slurp-all-but-pass-no-args approach, so need bwcompat
-            self.router.add(HostRoute(r'dancedeets\.com$|dancedeets-hrd\.appspot\.com$', handler=func, *args, **kwargs))
+            self.router.add(HostRoute(r'dancedeets\.com$|dancedeets-hrd\.appspot\.com$|localhost', handler=func, *args, **kwargs))
             return func
         return wrapper
 
