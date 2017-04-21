@@ -68,3 +68,5 @@ html2text==2016.9.19
 pycountry==17.1.8
 
 IPy==0.83
+
+mailchimp3==2.0.11
