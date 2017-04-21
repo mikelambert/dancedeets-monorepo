@@ -12,6 +12,7 @@ from loc import gmaps_api
 from loc import math
 import mailchimp
 from util import dates
+from util import mr
 
 class User(ndb.Model):
     # SSO
@@ -161,6 +162,11 @@ def update_mailchimp(user):
     if '_' in trimmed_locale:
         trimmed_locale = trimmed_locale.split('_')[0]
 
+    if not user.email:
+        mr.increment('mailchimp-no-email')
+        logging.error('No email for user %s: %s', user.fb_uid, user.full_name)
+        return
+
     members = [
         {
             'email_address': user.email,
@@ -179,7 +185,8 @@ def update_mailchimp(user):
     ]
     result = mailchimp.add_members(mailchimp_list_id, members)
     if result['errors']:
-        logging.error('Writing user %s to mailchimp returned %s', user.fb_uid, result['errors'])
+        mr.increment('mailchimp-error-response')
+        logging.error('Writing user %s to mailchimp returned %s on input: %s', user.fb_uid, result['errors'], members)
     else:
         logging.info('Writing user %s to mailchimp returned OK', user.fb_uid)
 
