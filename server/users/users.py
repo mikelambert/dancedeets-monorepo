@@ -164,8 +164,8 @@ def update_mailchimp(user):
         trimmed_locale = trimmed_locale.split('_')[0]
 
     if not user.email:
-        mr.increment('mailchimp-no-email')
-        logging.error('No email for user %s: %s', user.fb_uid, user.full_name)
+        mr.increment('mailchimp-error-no-email')
+        logging.info('No email for user %s: %s', user.fb_uid, user.full_name)
         return
 
     members = [
@@ -184,6 +184,7 @@ def update_mailchimp(user):
             }
         }
     ]
+    mr.increment('mailchimp-api-call')
     result = mailchimp.add_members(mailchimp_list_id, members)
     if result['errors']:
         mr.increment('mailchimp-error-response')
