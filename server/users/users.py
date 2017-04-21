@@ -1,4 +1,5 @@
 import logging
+from timezonefinder import TimezoneFinder
 
 from google.appengine.ext import ndb
 from google.appengine.api import datastore_errors
@@ -13,6 +14,8 @@ from loc import math
 import mailchimp
 from util import dates
 from util import mr
+
+timezone_finder = TimezoneFinder()
 
 class User(ndb.Model):
     # SSO
@@ -113,7 +116,7 @@ class User(ndb.Model):
     def put(self):
         super(User, self).put()
         # Always update mailchimp when we update the User
-        update_mailchimp(self)
+        #update_mailchimp(self)
 
     def add_message(self, message):
         user_message = UserMessage(
@@ -153,10 +156,11 @@ class User(ndb.Model):
 
 def update_mailchimp(user):
     ctx = context.get()
+    mailchimp_list_id = -1
     if ctx:
         params = ctx.mapreduce_spec.mapper.params
-        mailchimp_list_id = params.get('mailchimp_list_id', 0)
-    else:
+        mailchimp_list_id = params.get('mailchimp_list_id', mailchimp_list_id)
+    if mailchimp_list_id == -1:
         mailchimp_list_id = mailchimp.get_list_id()
 
     trimmed_locale = user.locale or ''
@@ -168,28 +172,36 @@ def update_mailchimp(user):
         logging.info('No email for user %s: %s', user.fb_uid, user.full_name)
         return
 
-    members = [
-        {
-            'email_address': user.email,
-            'status_if_new': 'subscribed' if user.send_email else 'unsubscribed',
-            'merge_fields': {
-                'USER_ID': user.fb_uid, # necessary so we can update our local datastore on callbacks
-                'FIRSTNAME': user.first_name or '',
-                'LASTNAME': user.last_name or '',
-                'FULLNAME': user.full_name or '',
-                'NAME': user.first_name or user.full_name or '',
-                'LANGUAGE': trimmed_locale,
-                'COUNTRY': user.location_country or '',
-                'WEEKLY': unicode(user.send_email),
-                'EXPIRED': unicode(user.expired_oauth_token),
-            }
+    member = {
+        'email_address': user.email,
+        'status': 'subscribed' if user.send_email else 'unsubscribed',
+        'language': trimmed_locale,
+        'merge_fields': {
+            'USER_ID': user.fb_uid, # necessary so we can update our local datastore on callbacks
+            'FIRSTNAME': user.first_name or '',
+            'LASTNAME': user.last_name or '',
+            'FULLNAME': user.full_name or '',
+            'NAME': user.first_name or user.full_name or '',
+            'WEEKLY': unicode(user.send_email),
+            'EXPIRED': unicode(user.expired_oauth_token),
+            'LASTLOGIN': user.last_login_time.strftime('%Y-%m-%d'),
+        },
+        'timestamp_signup': user.creation_time.strftime('%Y-%m-%dT%H:%M:%S'),
+        'timestamp_opt': user.creation_time.strftime('%Y-%m-%dT%H:%M:%S'),
+    }
+    if user.location:
+        geocode = gmaps_api.lookup_address(user.location)
+        user_latlong = geocode.latlng()
+        member['location'] = {
+            'latitude': user_latlong[0],
+            'longitude': user_latlong[1],
         }
-    ]
+
     mr.increment('mailchimp-api-call')
-    result = mailchimp.add_members(mailchimp_list_id, members)
+    result = mailchimp.add_members(mailchimp_list_id, [member])
     if result['errors']:
         mr.increment('mailchimp-error-response')
-        logging.error('Writing user %s to mailchimp returned %s on input: %s', user.fb_uid, result['errors'], members)
+        logging.error('Writing user %s to mailchimp returned %s on input: %s', user.fb_uid, result['errors'], member)
     else:
         logging.info('Writing user %s to mailchimp returned OK', user.fb_uid)
 
