@@ -116,7 +116,7 @@ class User(ndb.Model):
     def put(self):
         super(User, self).put()
         # Always update mailchimp when we update the User
-        #update_mailchimp(self)
+        update_mailchimp(self)
 
     def add_message(self, message):
         user_message = UserMessage(
