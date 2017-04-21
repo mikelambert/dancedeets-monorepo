@@ -4,10 +4,13 @@ from google.appengine.ext import ndb
 from google.appengine.api import datastore_errors
 from google.appengine.runtime import apiproxy_errors
 
+from mapreduce import context
+
 import datetime
 import fb_api
 from loc import gmaps_api
 from loc import math
+import mailchimp
 from util import dates
 
 class User(ndb.Model):
@@ -105,6 +108,11 @@ class User(ndb.Model):
             if geocode:
                 self.location_country = geocode.country()
 
+    def put(self):
+        super(User, self).put()
+        # Always update mailchimp when we update the User
+        update_mailchimp(self)
+
     def add_message(self, message):
         user_message = UserMessage(
             real_fb_uid=self.fb_uid,
@@ -139,6 +147,41 @@ class User(ndb.Model):
             raise ValueError('invalid platform: %r' % platform)
         device_tokens = (self.json_data or {}).setdefault('%s_device_token' % platform, [])
         return device_tokens
+
+
+def update_mailchimp(user):
+    ctx = context.get()
+    if ctx:
+        params = ctx.mapreduce_spec.mapper.params
+        mailchimp_list_id = params.get('mailchimp_list_id', 0)
+    else:
+        mailchimp_list_id = mailchimp.get_list_id()
+
+    trimmed_locale = user.locale or ''
+    if '_' in trimmed_locale:
+        trimmed_locale = trimmed_locale.split('_')[0]
+
+    members = [
+        {
+            'email_address': user.email,
+            'status_if_new': 'subscribed' if user.send_email else 'unsubscribed',
+            'merge_fields': {
+                'FIRSTNAME': user.first_name or '',
+                'LASTNAME': user.last_name or '',
+                'FULLNAME': user.full_name or '',
+                'NAME': user.first_name or user.full_name or '',
+                'LANGUAGE': trimmed_locale,
+                'COUNTRY': user.location_country or '',
+                'WEEKLY': unicode(user.send_email),
+                'EXPIRED': unicode(user.expired_oauth_token),
+            }
+        }
+    ]
+    result = mailchimp.add_members(mailchimp_list_id, members)
+    if result['errors']:
+        logging.error('Writing user %s to mailchimp returned %s', user.fb_uid, result['errors'])
+    else:
+        logging.info('Writing user %s to mailchimp returned OK', user.fb_uid)
 
 class UserFriendsAtSignup(ndb.Model):
     fb_uid = property(lambda x: str(x.key.string_id()))

@@ -1,6 +1,5 @@
 
 import logging
-from mapreduce import context
 
 import app
 import base_servlet
@@ -51,48 +50,18 @@ class ReloadAllUsersHandler(base_servlet.BaseTaskFacebookRequestHandler):
     post = get
 
 
-def update_mailchimp(user):
-    ctx = context.get()
-    if ctx:
-        params = ctx.mapreduce_spec.mapper.params
-        mailchimp_list_id = params.get('mailchimp_list_id', 0)
-    else:
-        mailchimp_list_id = mailchimp.get_list_id()
-
-    trimmed_locale = user.locale or ''
-    if '_' in trimmed_locale:
-        trimmed_locale = trimmed_locale.split('_')[0]
-
-    members = [
-        {
-            'email_address': user.email,
-            'status_if_new': 'subscribed' if user.send_email else 'unsubscribed',
-            'merge_fields': {
-                'FIRSTNAME': user.first_name or '',
-                'LASTNAME': user.last_name or '',
-                'FULLNAME': user.full_name or '',
-                'NAME': user.first_name or user.full_name or '',
-                'LANGUAGE': trimmed_locale,
-                'COUNTRY': user.location_country or '',
-                'WEEKLY': unicode(user.send_email),
-                'EXPIRED': unicode(user.expired_oauth_token),
-            }
-        }
-    ]
-    result = mailchimp.add_members(mailchimp_list_id, members)
-    if result['errors']:
-        logging.error('Writing user %s to mailchimp returned %s', user.fb_uid, result['errors'])
-    else:
-        logging.info('Writing user %s to mailchimp returned OK', user.fb_uid)
-
 def yield_load_fb_user(fbl, user):
     if user.expired_oauth_token:
         logging.info('Skipping user %s (%s) due to expired access_token', user.fb_uid, user.full_name)
+        users.update_mailchimp(user)
     elif not fbl.access_token:
         logging.info('Skipping user %s (%s) due to not having an access_token', user.fb_uid, user.full_name)
+        users.update_mailchimp(user)
     else:
         fetch_and_save_fb_user(fbl, user)
-    update_mailchimp(user)
+        # The above function calls user.put(), so no need for:
+        # users.update_mailchimp(user)
+
 
 def fetch_and_save_fb_user(fbl, user):
     try:
