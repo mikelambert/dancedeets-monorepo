@@ -49,6 +49,30 @@ class ReloadAllUsersHandler(base_servlet.BaseTaskFacebookRequestHandler):
         )
     post = get
 
+#TODO: temp code, delete after running
+@app.route('/tasks/fix_users')
+class FixupUsersHandler(base_servlet.BaseTaskFacebookRequestHandler):
+    def get(self):
+        # this calls a map function wrapped by mr_user_wrap, so it works correctly on a per-user basis
+        fb_mapreduce.start_map(
+            fbl=self.fbl,
+            name='Load Users',
+            handler_spec='users.user_tasks.map_fixup_user',
+            entity_kind='users.users.User',
+        )
+    post = get
+
+def yield_fixup_user(fbl, user):
+    import datetime
+    logging.info('User %s (%s) created %s with clients: %s', user.fb_uid, user.full_name, user.creation_time, user.clients)
+    if user.creation_time and user.creation_time > datetime.datetime(2015, 1, 1):
+        if set(['android', 'ios', 'react-android', 'react-ios']).intersection(user.clients):
+            logging.info('Setting send_email for user %s (%s)!', user.fb_uid, user.full_name)
+            user.send_email = True
+            user.put()
+
+map_fixup_user = fb_mapreduce.mr_user_wrap(yield_fixup_user)
+fixup_user = fb_mapreduce.nomr_wrap(yield_fixup_user)
 
 def yield_load_fb_user(fbl, user):
     if user.expired_oauth_token:
