@@ -56,7 +56,7 @@ class FixupUsersHandler(base_servlet.BaseTaskFacebookRequestHandler):
         # this calls a map function wrapped by mr_user_wrap, so it works correctly on a per-user basis
         fb_mapreduce.start_map(
             fbl=self.fbl,
-            name='Load Users',
+            name='Fixup Users',
             handler_spec='users.user_tasks.map_fixup_user',
             entity_kind='users.users.User',
         )
