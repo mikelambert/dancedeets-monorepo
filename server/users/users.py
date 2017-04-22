@@ -184,18 +184,21 @@ def update_mailchimp(user):
             'NAME': user.first_name or user.full_name or '',
             'WEEKLY': unicode(user.send_email),
             'EXPIRED': unicode(user.expired_oauth_token),
-            'LASTLOGIN': user.last_login_time.strftime('%Y-%m-%d'),
+            'LASTLOGIN': user.last_login_time.strftime('%Y-%m-%d') if user.last_login_time else '',
         },
         'timestamp_signup': user.creation_time.strftime('%Y-%m-%dT%H:%M:%S'),
         'timestamp_opt': user.creation_time.strftime('%Y-%m-%dT%H:%M:%S'),
     }
     if user.location:
         geocode = gmaps_api.lookup_address(user.location)
-        user_latlong = geocode.latlng()
-        member['location'] = {
-            'latitude': user_latlong[0],
-            'longitude': user_latlong[1],
-        }
+        if geocode:
+            user_latlong = geocode.latlng()
+            member['location'] = {
+                'latitude': user_latlong[0],
+                'longitude': user_latlong[1],
+            }
+        else:
+            logging.warning('User %s (%s) had un-geocodable address: %s', user.fb_uid, user.full_name, user.location)
 
     mr.increment('mailchimp-api-call')
     result = mailchimp.add_members(mailchimp_list_id, [member])
