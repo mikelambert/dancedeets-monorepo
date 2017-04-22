@@ -2,13 +2,12 @@ import datetime
 import jinja2
 import logging
 
-from google.appengine.api import mail
-
 import fb_api
 from loc import gmaps_api
 from loc import math
 from logic import friends
 from logic import rsvp
+from services import mail
 from users import users
 from util import fb_mapreduce
 from util import urls
@@ -69,19 +68,25 @@ def email_for_user(user, fbl, should_send=True):
     d = datetime.date.today()
     d = d - datetime.timedelta(days=d.weekday()) # round down to last monday
     logging.info("Rendered HTML:\n%s", rendered)
-    message = mail.EmailMessage(
-        sender="DanceDeets Events <events@dancedeets.com>",
-        subject="Dance events for %s" % d.strftime('%b %d, %Y'),
-        to=user.email,
-        html=rendered
-    )
+    subject = 'Dance events for %s' % d.strftime('%b %d, %Y')
+    message = {
+        'from_email': 'events@dancedeets.com',
+        'from_name': 'DanceDeets Events',
+        'subject': subject,
+        'to': [{
+            'email': user.email,
+            'name': user.full_name or user.first_name or '',
+            'type': 'to',
+        }],
+        'html': rendered,
+    }
     if should_send:
         # Update the last-sent-time here, so we any retryable errors don't cause emails to be multi-sent
         user = users.User.get_by_id(user.fb_uid)
         user.weekly_email_send_date = datetime.datetime.now()
         user.put()
         # And send the message now.
-        message.send()
+        mail.send_message(message)
     return message
 
 #TODO(lambert): do we really want yield on this one?
