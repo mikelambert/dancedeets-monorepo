@@ -70,3 +70,4 @@ pycountry==17.1.8
 IPy==0.83
 
 mailchimp3==2.0.11
+mandrill==1.0.57
