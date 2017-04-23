@@ -174,7 +174,7 @@ def update_mailchimp(user):
 
     member = {
         'email_address': user.email,
-        'status': 'subscribed' if user.send_email else 'unsubscribed',
+        'status': 'subscribed',
         'language': trimmed_locale,
         'merge_fields': {
             'USER_ID': user.fb_uid, # necessary so we can update our local datastore on callbacks
