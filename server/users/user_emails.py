@@ -2,7 +2,7 @@ import csv
 
 import app
 import base_servlet
-from mail import mailchimp
+from mail import mailchimp_api
 from . import users
 
 @app.route('/tools/user_emails')

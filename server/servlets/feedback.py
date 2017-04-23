@@ -1,7 +1,7 @@
 import app
 import base_servlet
 import fb_api
-from mail import mandrill
+from mail import mandrill_api
 
 @app.route('/feedback')
 class FeedbackHandler(base_servlet.BaseRequestHandler):

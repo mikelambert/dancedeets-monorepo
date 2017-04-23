@@ -7,7 +7,7 @@ from loc import gmaps_api
 from loc import math
 from logic import friends
 from logic import rsvp
-from mail import mandrill
+from mail import mandrill_api
 from users import users
 from util import fb_mapreduce
 from util import urls

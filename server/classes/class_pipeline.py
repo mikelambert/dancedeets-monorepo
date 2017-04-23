@@ -11,7 +11,7 @@ import app
 import base_servlet
 from classes import class_index
 import keys
-from mail import mandrill
+from mail import mandrill_api
 from util import fixed_pipelines
 
 
