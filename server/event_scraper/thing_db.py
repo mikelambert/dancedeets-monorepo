@@ -139,6 +139,7 @@ def create_source_for_id(source_id, fb_data):
     return source
 
 def create_source_for_id_without_feed(fbl, source_id):
+    logging.info('create_source_for_id_without_feed: %s', source_id)
     if not source_id:
         return None
     # technically we could check if the object exists in the db, before we bother fetching the feed
@@ -154,6 +155,7 @@ def create_source_for_id_without_feed(fbl, source_id):
         return s
 
 def create_sources_from_event(fbl, db_event):
+    logging.info('create_sources_from_event: %s', db_event.id)
     create_source_for_id_without_feed(fbl, db_event.owner_fb_uid)
     for admin in db_event.admins:
         if admin['id'] != db_event.owner_fb_uid:
