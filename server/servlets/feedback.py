@@ -1,7 +1,7 @@
 import app
 import base_servlet
 import fb_api
-from services import mail
+from mail import mandrill
 
 @app.route('/feedback')
 class FeedbackHandler(base_servlet.BaseRequestHandler):
@@ -30,6 +30,6 @@ class FeedbackHandler(base_servlet.BaseRequestHandler):
             }],
             'text': body,
         }
-        mail.send_message(message)
+        mandrill.send_message(message)
         self.user.add_message("Thanks, your message has been sent to DanceDeets!")
         self.redirect('/')

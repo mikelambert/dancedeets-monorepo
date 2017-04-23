@@ -13,6 +13,7 @@ import event_scraper.webhooks
 import events.event_reloading_tasks
 import events.find_access_tokens
 import logic.unique_attendees
+import mail.webhooks
 import ml.gprediction_servlets
 import notifications.added_events
 import notifications.rsvped_events

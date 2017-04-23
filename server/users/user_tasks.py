@@ -4,7 +4,7 @@ import logging
 import app
 import base_servlet
 import fb_api
-import mailchimp
+from mail import mailchimp
 from util import fb_mapreduce
 from . import users
 

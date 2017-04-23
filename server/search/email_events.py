@@ -7,7 +7,7 @@ from loc import gmaps_api
 from loc import math
 from logic import friends
 from logic import rsvp
-from services import mail
+from mail import mandrill
 from users import users
 from util import fb_mapreduce
 from util import urls
@@ -90,7 +90,7 @@ def email_for_user(user, fbl, should_send=True):
         user.weekly_email_send_date = datetime.datetime.now()
         user.put()
         # And send the message now.
-        mail.send_message(message)
+        mandrill.send_message(message)
     return message
 
 #TODO(lambert): do we really want yield on this one?

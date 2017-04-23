@@ -11,7 +11,7 @@ import app
 import base_servlet
 from classes import class_index
 import keys
-from services import mail
+from mail import mandrill
 from util import fixed_pipelines
 
 
@@ -123,7 +123,7 @@ class EmailErrors(fixed_pipelines.Pipeline):
             }],
             'text': body,
         }
-        mail.send_message(message)
+        mandrill.send_message(message)
 
 
 @app.route('/tasks/crawl_and_index_classes')

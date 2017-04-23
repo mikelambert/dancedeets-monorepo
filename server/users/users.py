@@ -11,7 +11,7 @@ import datetime
 import fb_api
 from loc import gmaps_api
 from loc import math
-import mailchimp
+from mail import mailchimp
 from util import dates
 from util import mr
 
