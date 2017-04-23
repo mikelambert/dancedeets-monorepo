@@ -2,7 +2,6 @@ import hashlib
 import hmac
 import json
 import logging
-import pprint
 import urllib
 import webapp2
 
@@ -13,7 +12,6 @@ import keys
 from users import users
 from . import event_pipeline
 from . import potential_events
-from . import potential_events_reloading
 from . import thing_db
 
 
@@ -21,9 +19,6 @@ from . import thing_db
 # curl 'http://dev.dancedeets.com:8080/webhooks/user' --data '{"entry": [{"time": 1492571621, "changes": [{"field": "events", "value": {"event_id": 4444444444, "verb": "accept"}}], "id": "701004", "uid": "701004"}], "object": "user"}'
 @app.route('/webhooks/user')
 class WebhookPageHandler(webapp2.RequestHandler):
-    def requires_login(self):
-        return True
-
     def get(self):
         if self.request.get('hub.mode') == 'subscribe':
             if self.request.get('hub.verify_token') != keys.get('fb_webhook_verify_token'):
