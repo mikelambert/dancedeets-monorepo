@@ -38,7 +38,7 @@ def update_email(list_id, old_email, new_email):
     if runtime.is_appengine():
         try:
             return client.lists.members.update(list_id=list_id, subscriber_hash=subscriber_hash, data=data)
-        except exceptions.HttpError:
+        except exceptions.HTTPError:
             raise UserNotFound()
     else:
         return {'errors': []}
