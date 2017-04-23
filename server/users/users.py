@@ -179,12 +179,17 @@ def update_mailchimp(user):
         # so we don't really need to worry about them here.
         if user.mailchimp_email != None:
             mr.increment('mailchimp-update-email-error-response')
-            result = mailchimp_api.update_email(mailchimp_api.LIST_ID, user.mailchimp_email, user.email)
-            if result['errors']:
-                mr.increment('mailchimp-update-email-error-response')
-                logging.error('Updating user %s email to mailchimp returned %s on input: %s', user.fb_uid, result['errors'])
+            try:
+                result = mailchimp_api.update_email(mailchimp_api.LIST_ID, user.mailchimp_email, user.email)
+            except mailchimp_api.UserNotFound:
+                mr.increment('mailchimp-update-email-error-not-found')
+                logging.error('Updating user %s email to mailchimp returned not found', user.fb_uid, result['errors'])
             else:
-                logging.info('Updating user %s email to mailchimp returned OK', user.fb_uid)
+                if result['errors']:
+                    mr.increment('mailchimp-update-email-error-response')
+                    logging.error('Updating user %s email to mailchimp returned %s', user.fb_uid, result['errors'])
+                else:
+                    logging.info('Updating user %s email to mailchimp returned OK', user.fb_uid)
         # Mark our current mailchimp_email down, so we can update it properly later if desired.
         user.mailchimp_email = user.email
         # Now that Mailchimp knows about our new user email,

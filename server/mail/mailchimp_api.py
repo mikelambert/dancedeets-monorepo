@@ -1,6 +1,7 @@
 import logging
 from mailchimp3 import MailChimp
 import md5
+from requests import exceptions
 
 import keys
 from util import runtime
@@ -9,6 +10,9 @@ client = MailChimp(keys.get('mailchimp_username'), keys.get('mailchimp_key'))
 
 LIST_WEB_ID = 554989
 LIST_ID = '93ab23d636'
+
+class UserNotFound(Exception):
+    pass
 
 def get_list_id():
     lists = client.lists.all()
@@ -32,6 +36,9 @@ def update_email(list_id, old_email, new_email):
     subscriber_hash = md5.new(old_email.lower()).hexdigest()
     logging.info('Updating subscriber_hash %s (%s) to %s', subscriber_hash, old_email, new_email)
     if runtime.is_appengine():
-        return client.lists.members.update(list_id=list_id, subscriber_hash=subscriber_hash, data=data)
+        try:
+            return client.lists.members.update(list_id=list_id, subscriber_hash=subscriber_hash, data=data)
+        except exceptions.HttpError:
+            raise UserNotFound()
     else:
         return {'errors': []}
