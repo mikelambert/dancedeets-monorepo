@@ -48,6 +48,7 @@ class UserHandler(base_servlet.BaseRequestHandler):
                 self.add_error("No country for location %r" % user.location)
         else:
             self.add_error("No location")
+        user.email = self.request.get('email')
         #TODO(lambert): add an option for doing email "via facebook" as well. not everyone uses email.
         for field in ['send_email']:
             form_value = self.request.get(field) == "true"

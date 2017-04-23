@@ -62,6 +62,8 @@ class User(ndb.Model):
     first_name = ndb.StringProperty(indexed=False)
     last_name = ndb.StringProperty(indexed=False)
     email = ndb.StringProperty() # Indexed to make it easier for me to find a user for manual support
+    mailchimp_email = ndb.StringProperty() # Indexed to make it easier for me to find a user for manual support
+
     locale = ndb.StringProperty(indexed=False)
     timezone_offset = ndb.FloatProperty()
 
@@ -100,7 +102,7 @@ class User(ndb.Model):
         self.full_name = fb_user['profile'].get('name')
         self.first_name = fb_user['profile'].get('first_name')
         self.last_name = fb_user['profile'].get('last_name')
-        if fb_user['profile'].get('email'):
+        if not self.email:
             self.email = fb_user['profile'].get('email')
         self.locale = fb_user['profile'].get('locale')
         try:
@@ -114,9 +116,9 @@ class User(ndb.Model):
                 self.location_country = geocode.country()
 
     def put(self):
-        super(User, self).put()
         # Always update mailchimp when we update the User
         update_mailchimp(self)
+        super(User, self).put()
 
     def add_message(self, message):
         user_message = UserMessage(
@@ -161,7 +163,7 @@ def update_mailchimp(user):
         params = ctx.mapreduce_spec.mapper.params
         mailchimp_list_id = params.get('mailchimp_list_id', mailchimp_list_id)
     if mailchimp_list_id == -1:
-        mailchimp_list_id = mailchimp_api.get_list_id()
+        mailchimp_list_id = mailchimp_api.LIST_ID
 
     trimmed_locale = user.locale or ''
     if '_' in trimmed_locale:
@@ -171,6 +173,22 @@ def update_mailchimp(user):
         mr.increment('mailchimp-error-no-email')
         logging.info('No email for user %s: %s', user.fb_uid, user.full_name)
         return
+
+    if user.mailchimp_email != user.email:
+        # When some old users are saved, their mailchimp email will be None,
+        # so we don't really need to worry about them here.
+        if user.mailchimp_email != None:
+            mr.increment('mailchimp-update-email-error-response')
+            result = mailchimp_api.update_email(mailchimp_api.LIST_ID, user.mailchimp_email, user.email)
+            if result['errors']:
+                mr.increment('mailchimp-update-email-error-response')
+                logging.error('Updating user %s email to mailchimp returned %s on input: %s', user.fb_uid, result['errors'])
+            else:
+                logging.info('Updating user %s email to mailchimp returned OK', user.fb_uid)
+        # Mark our current mailchimp_email down, so we can update it properly later if desired.
+        user.mailchimp_email = user.email
+        # Now that Mailchimp knows about our new user email,
+        # we can update/reference it using the normal add_members() below.
 
     member = {
         'email_address': user.email,

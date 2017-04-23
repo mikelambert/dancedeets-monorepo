@@ -4,6 +4,7 @@ import webapp2
 
 import app
 import keys
+from mail import mailchimp_api
 from users import users
 
 
@@ -28,7 +29,7 @@ class MailchimpWebhookPageHandler(webapp2.RequestHandler):
 
         # email update
         if self.request.get('type') == 'upemail':
-            if self.request.get('data[list_id]') == '93ab23d636':
+            if self.request.get('data[list_id]') == mailchimp_api.LIST_ID:
                 old_email = self.request.get('data[old_email]')
                 new_email = self.request.get('data[new_email]')
                 email_users = users.User.query(users.User.email == old_email).fetch(100)
