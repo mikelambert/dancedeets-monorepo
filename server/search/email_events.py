@@ -79,6 +79,10 @@ def email_for_user(user, fbl, should_send=True):
             'type': 'to',
         }],
         'html': rendered,
+        'metadata': {
+            'user_id': user.fb_uid,
+            'email_type': 'weekly',
+        },
     }
     if should_send:
         # Update the last-sent-time here, so we any retryable errors don't cause emails to be multi-sent
