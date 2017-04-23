@@ -37,7 +37,7 @@ class LoadUserHandler(base_servlet.UserOperationHandler):
 class ReloadAllUsersHandler(base_servlet.BaseTaskFacebookRequestHandler):
     def get(self):
         # this calls a map function wrapped by mr_user_wrap, so it works correctly on a per-user basis
-        mailchimp_list_id = mailchimp.get_list_id()
+        mailchimp_list_id = mailchimp_api.get_list_id()
         fb_mapreduce.start_map(
             fbl=self.fbl,
             name='Load Users',

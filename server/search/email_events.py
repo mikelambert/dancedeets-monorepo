@@ -90,7 +90,7 @@ def email_for_user(user, fbl, should_send=True):
         user.weekly_email_send_date = datetime.datetime.now()
         user.put()
         # And send the message now.
-        mandrill.send_message(message)
+        mandrill_api.send_message(message)
     return message
 
 #TODO(lambert): do we really want yield on this one?

@@ -30,6 +30,6 @@ class FeedbackHandler(base_servlet.BaseRequestHandler):
             }],
             'text': body,
         }
-        mandrill.send_message(message)
+        mandrill_api.send_message(message)
         self.user.add_message("Thanks, your message has been sent to DanceDeets!")
         self.redirect('/')

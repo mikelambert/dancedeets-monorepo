@@ -123,7 +123,7 @@ class EmailErrors(fixed_pipelines.Pipeline):
             }],
             'text': body,
         }
-        mandrill.send_message(message)
+        mandrill_api.send_message(message)
 
 
 @app.route('/tasks/crawl_and_index_classes')

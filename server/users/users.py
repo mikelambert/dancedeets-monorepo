@@ -161,7 +161,7 @@ def update_mailchimp(user):
         params = ctx.mapreduce_spec.mapper.params
         mailchimp_list_id = params.get('mailchimp_list_id', mailchimp_list_id)
     if mailchimp_list_id == -1:
-        mailchimp_list_id = mailchimp.get_list_id()
+        mailchimp_list_id = mailchimp_api.get_list_id()
 
     trimmed_locale = user.locale or ''
     if '_' in trimmed_locale:
@@ -201,7 +201,7 @@ def update_mailchimp(user):
             logging.warning('User %s (%s) had un-geocodable address: %s', user.fb_uid, user.full_name, user.location)
 
     mr.increment('mailchimp-api-call')
-    result = mailchimp.add_members(mailchimp_list_id, [member])
+    result = mailchimp_api.add_members(mailchimp_list_id, [member])
     if result['errors']:
         mr.increment('mailchimp-error-response')
         logging.error('Writing user %s to mailchimp returned %s on input: %s', user.fb_uid, result['errors'], member)
