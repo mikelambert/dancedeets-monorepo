@@ -407,6 +407,26 @@ class Description extends React.Component {
   }
 }
 
+class AdminButton extends React.Component {
+  props: {
+    path: string;
+    children?: React.Element<*>;
+  }
+
+  constructor(props) {
+    super(props);
+    (this: any).onClick = this.onClick.bind(this);
+  }
+
+  onClick() {
+    console.log(this.props.path);
+  }
+
+  render() {
+    return <button className="btn btn-default" onClick={this.onClick}>{this.props.children}</button>;
+  }
+}
+
 class AdminPanel extends React.Component {
   props: {
     forceAdmin: boolean;
@@ -427,8 +447,12 @@ class AdminPanel extends React.Component {
     if (!this.props.forceAdmin && !this.isAdmin()) {
       return null;
     }
+    const eventId = this.props.event.id;
     return (<div>
-      Refresh from Facebook | Delete from DanceDeets | Pay to Promote | Edit Categories
+      <AdminButton path={`/promoters/events/${eventId}/refresh`}>Refresh from Facebook</AdminButton> |
+      <AdminButton path={`/promoters/events/${eventId}/delete`}>Delete from DanceDeets</AdminButton> |
+      <AdminButton path={`/promoters/events/${eventId}/feature`}>Pay to Promote</AdminButton> |
+      <AdminButton path={`/promoters/events/${eventId}/categories`}>Edit Categories</AdminButton>
     </div>);
   }
 }
