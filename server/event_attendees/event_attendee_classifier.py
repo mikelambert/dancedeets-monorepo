@@ -152,7 +152,7 @@ class EventAttendeeMatcher(object):
                 overlap_ids, count, fraction = _find_overlap(self.event_attendee_ids, dance_attendee_ids[:20])
                 self.overlap_ids.update(overlap_ids)
                 reason = 'Event %s has %s ids, intersection is %s ids (%.1f%%)' % (event_id, len(self.event_attendee_ids), count, 100.0 * fraction)
-                logging.info('%s Attendee-Detection-Top-20: %s', name, reason)
+                #logging.info('%s Attendee-Detection-Top-20: %s', name, reason)
                 if count > 0:
                     self.results += ['%s Top20: %s (%.1f%%)' % (name, count, 100.0 * fraction)]
                 if (
@@ -167,7 +167,7 @@ class EventAttendeeMatcher(object):
                 overlap_ids, count, fraction = _find_overlap(self.event_attendee_ids, dance_attendee_ids[:100])
                 self.overlap_ids.update(overlap_ids)
                 reason = 'Event %s has %s ids, intersection is %s ids (%.1f%%)' % (event_id, len(self.event_attendee_ids), count, 100.0 * fraction)
-                logging.info('%s Attendee-Detection-Top-100: %s', name, reason)
+                #logging.info('%s Attendee-Detection-Top-100: %s', name, reason)
                 if count > 0:
                     self.results += ['%s Top100: %s (%.1f%%)' % (name, count, 100.0 * fraction)]
                 if (
