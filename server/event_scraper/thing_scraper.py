@@ -10,6 +10,7 @@ from mapreduce import context
 from mapreduce import control
 from mapreduce import operation
 
+from users import users
 from util import deferred
 from util import fb_mapreduce
 from . import event_pipeline
@@ -227,3 +228,12 @@ def process_event_source_ids(discovered_list, fbl):
         if new_source_ids:
             deferred.defer(scrape_events_from_source_ids, fbl, new_source_ids)
 
+def scrape_events_from_source_ids_with_fallback(fbl, source_ids):
+    for source_id in source_ids:
+        try:
+            scrape_events_from_source_ids(fbl, [source_id])
+        except fb_api.ExpiredOAuthToken:
+            logging.warning("Found ExpiredOAuthtoken %s when scraping source, falling back to main token: %s", fbl, source_id)
+            user = users.User.get_by_id('701004')
+            fbl = user.get_fblookup()
+            scrape_events_from_source_ids(fbl, [source_id])

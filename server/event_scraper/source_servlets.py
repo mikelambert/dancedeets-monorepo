@@ -81,4 +81,4 @@ class AdminEditHandler(base_servlet.BaseRequestHandler):
 
 @app.route('/sources/scrape')
 class ScrapeSourceHandler(base_servlet.SourceIdOperationHandler):
-    source_id_operation = staticmethod(thing_scraper.scrape_events_from_source_ids)
+    source_id_operation = staticmethod(thing_scraper.scrape_events_from_source_ids_with_fallback)
