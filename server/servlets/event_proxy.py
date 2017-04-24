@@ -16,9 +16,15 @@ class ImageProxyHandler(webapp2.RequestHandler):
             self.response.set_status(404)
             return
         width = self.request.get('width')
-        if width: width = int(width)
+        if width:
+            width = int(width)
+        else:
+            width = None
         height = self.request.get('height')
-        if height: height = int(height)
+        if height:
+            height = int(height)
+        else:
+            height = None
         try:
             event_image.render(self.response, db_event, width, height)
         except event_image.NotFoundError:

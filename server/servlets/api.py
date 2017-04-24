@@ -1,9 +1,7 @@
-import dateparser
 import datetime
 import feedparser
 import json
 import logging
-import pytz
 import time
 import urllib
 
@@ -20,7 +18,7 @@ from events import featured
 import fb_api
 import keys
 from loc import math
-from logic import popular_people
+from event_attendees import popular_people
 from rankings import cities
 from search import onebox
 from search import search
@@ -168,24 +166,38 @@ def build_search_results_api(city_name, form, search_query, search_results, vers
         # keyword-only search, no location to give promoters for
         logging.info('No center latlng, skipping person groupings')
     else:
-        distance_km = math.get_inner_box_radius_km(center_latlng, southwest, northeast)
+        distance_km = math.get_inner_box_radius_km(southwest, northeast)
         if distance_km > 1000:
             logging.info('Search area >1000km, skipping person groupings')
             # Too big a search area, not worth showing promoters or dancers
         else:
+            # TODO: Replace with a call to get_attendees_within (that also gets ADMIN people)
+            southwest_baseline, northeast_baseline = math.expand_bounds((center_latlng, center_latlng), cities.NEARBY_DISTANCE_KM)
+            distance_km_baseline = math.get_inner_box_radius_km(southwest_baseline, northeast_baseline)
+            if distance_km < distance_km_baseline:
+                southwest = southwest_baseline
+                northeast = northeast_baseline
             logging.info('Searching for cities within %s', (southwest, northeast))
-            included_cities = cities.get_nearby_cities((southwest, northeast))
+            included_cities = cities.get_nearby_cities((southwest, northeast), only_populated=True)
             biggest_cities = sorted(included_cities, key=lambda x: -x.population)[:10]
             city_names = [city.display_name() for city in biggest_cities]
             logging.info('City names: %s', city_names)
             if city_names:
                 try:
-                    people_rankings = popular_people.PeopleRanking.query(popular_people.PeopleRanking.city.IN(city_names))
-                    if 'fakepeople' in form.deb.data:
-                        people_rankings = popular_people.faked_people_rankings()
-                    groupings = popular_people.combine_rankings(people_rankings)
+                    people_rankings = popular_people.get_people_rankings_for_city_names(city_names)
+                    groupings = popular_people.combine_rankings(people_rankings, max_people=10)
                 except:
                     logging.exception('Error creating combined people rankings')
+                # These lists can get huge now...make sure we trim them down for what clients need!
+                new_groupings = dict((x, {}) for x in groupings)
+                for person_type, styles in groupings.iteritems():
+                    for style in event_types.STYLES + ['']:
+                        style_name = style.public_name if style else ''
+                        summed_key = '%s: %s' % (style_name, popular_people.SUMMED_AREA)
+                        if summed_key in groupings[person_type]:
+                            new_groupings[person_type][style_name] = groupings[person_type][summed_key][:10]
+                groupings = new_groupings
+
             logging.info('Person Groupings:\n%s', '\n'.join('%s: %s' % kv for kv in groupings.iteritems()))
 
     json_response = {

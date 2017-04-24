@@ -51,11 +51,11 @@ def get_lat_long_box(latitude, longitude, km_distance):
         (plus_lat, max(+90, longitude + long_degrees_per_km)),
     )
 
-def get_inner_box_radius_km(center, southwest, northeast):
+def get_inner_box_radius_km(southwest, northeast):
     return min(
-        get_distance(center, (center[0], northeast[1])),
-        get_distance(center, (northeast[0], center[1])),
-    )
+        get_distance((southwest[0], northeast[1]), northeast),
+        get_distance((northeast[0], southwest[1]), northeast),
+    ) / 2
 
 # UNUSED!
 def contains(bounds, latlng):
@@ -67,10 +67,8 @@ def contains(bounds, latlng):
     return lats_good and lngs_good
 
 def _get_lat_lng_offsets(latlng, km):
-    miles = km_in_miles(km)
-    miles_per_nautical_mile = 1.15078
-    lat_range = miles / (miles_per_nautical_mile * 60.0)
-    lng_range = miles / (math.cos(latlng[0] * rad) * miles_per_nautical_mile * 60.0)
+    lat_range = km / 110.574
+    lng_range = km / (math.cos(latlng[0] * rad) * 111.320)
     return lat_range, lng_range
 
 def miles_in_km(miles):

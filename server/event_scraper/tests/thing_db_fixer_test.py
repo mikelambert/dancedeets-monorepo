@@ -1,7 +1,6 @@
-from google.appengine.ext import testbed
+import urllib
 
 import fb_api
-from test_utils import fb_api_stub
 from event_scraper import potential_events
 from event_scraper import thing_db
 from test_utils import unittest
@@ -11,23 +10,12 @@ fields_str = '%2C'.join(fb_api.OBJ_SOURCE_FIELDS)
 VERSION = fb_api.LookupThingFeed.version
 URL_111 = '/%s/111' % VERSION # ?fields=%s' % fields_str
 URL_222 = '/%s/222' % VERSION # ?fields=%s' % fields_str
-URL_111_FEED = '/%s/111/feed?fields=created_time,from,link,actions,message' % VERSION
-URL_222_FEED = '/%s/222/feed?fields=created_time,from,link,actions,message' % VERSION
-URL_111_EVENTS = '/%s/111/events' % VERSION
-URL_222_EVENTS = '/%s/222/events' % VERSION
+URL_111_FEED = '/%s/111/feed?%s' % (VERSION, urllib.urlencode(dict(fields='created_time,updated_time,from,link,message', limit=10)))
+URL_222_FEED = '/%s/222/feed?%s' % (VERSION, urllib.urlencode(dict(fields='created_time,updated_time,from,link,message', limit=10)))
+URL_111_EVENTS = '/%s/111/events?%s' % (VERSION, urllib.urlencode(dict(fields='id,updated_time')))
+URL_222_EVENTS = '/%s/222/events?%s' % (VERSION, urllib.urlencode(dict(fields='id,updated_time')))
 
 class TestThingDBFixer(unittest.TestCase):
-
-    def setUp(self):
-        self.testbed.init_memcache_stub()
-        self.testbed.init_datastore_v3_stub()
-        self.testbed.init_taskqueue_stub(root_path='.')
-        self.taskqueue_stub = self.testbed.get_stub(testbed.TASKQUEUE_SERVICE_NAME)
-        self.fb_api = fb_api_stub.Stub()
-        self.fb_api.activate()
-
-    def tearDown(self):
-        self.fb_api.deactivate()
 
     def mark_as_error_and_reload(self, fbl):
 
@@ -100,14 +88,11 @@ class TestThingDBFixer(unittest.TestCase):
         source.put()
 
         pe = potential_events.PotentialEvent(key_name="333")
-        #STR_ID_MIGRATE
-        pe.source_ids = [111, 222]
-        pe.source_fields = [thing_db.GRAPH_TYPE_PROFILE, thing_db.GRAPH_TYPE_PROFILE]
+        pe.set_sources([potential_events.PESource("111", thing_db.FIELD_FEED), potential_events.PESource("222", thing_db.FIELD_FEED)])
         pe.put()
 
         self.mark_as_error_and_reload(fbl)
 
         pe = potential_events.PotentialEvent.get_by_key_name("333")
         #STR_ID_MIGRATE
-        self.assertEqual(pe.source_ids, [222])
-        self.assertEqual(pe.source_fields, [thing_db.GRAPH_TYPE_PROFILE])
+        self.assertEqual(pe.sources(), [potential_events.PESource("222", thing_db.FIELD_FEED)])

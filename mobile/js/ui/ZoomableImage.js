@@ -36,10 +36,10 @@ import {
 import PhotoView from 'react-native-photo-view';
 
 type Layout = {
-  x: Number,
-  y: Number,
-  width: Number,
-  height: Number,
+  x: number,
+  y: number,
+  width: number,
+  height: number,
 };
 
 export default class ZoomableImage extends React.Component {
@@ -52,7 +52,7 @@ export default class ZoomableImage extends React.Component {
   state: {
     lastTapTimestamp: number;
     isZoomed: boolean;
-    layout: Layout
+    layout: ?Layout;
   };
 
   _zoomableScroll: ScrollView;

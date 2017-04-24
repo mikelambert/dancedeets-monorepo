@@ -9,6 +9,7 @@ from google.appengine.ext import ndb
 
 import fb_api
 from loc import gmaps_api
+from loc import math
 from rankings import cities
 from search import search
 from nlp import categories
@@ -42,7 +43,7 @@ def need_forced_update(db_event):
 
 def update_and_save_fb_events(events_to_update, disable_updates=None):
     for db_event, fb_event in events_to_update:
-        logging.info("Updating and saving DBEvent %s", db_event.id)
+        logging.info("Updating and saving DBEvent fb event %s", db_event.id)
         _inner_make_event_findable_for_fb_event(db_event, fb_event, disable_updates=disable_updates)
     # We want to save it here, no matter how it was changed.
     db_events = [x[0] for x in events_to_update]
@@ -51,7 +52,7 @@ def update_and_save_fb_events(events_to_update, disable_updates=None):
 
 def update_and_save_web_events(events_to_update, disable_updates=None):
     for db_event, web_event in events_to_update:
-        logging.info("Updating and saving DBEvent %s", db_event.id)
+        logging.info("Updating and saving DBEvent web event %s", db_event.id)
         _inner_make_event_findable_for_web_event(db_event, web_event, disable_updates=disable_updates)
     db_events = [x[0] for x in events_to_update]
     _save_events(db_events, disable_updates=disable_updates)
@@ -84,7 +85,7 @@ def _inner_cache_photo(db_event):
             db_event.json_props['photo_width'] = width
             db_event.json_props['photo_height'] = height
         except (event_image.DownloadError, event_image.NotFoundError, Exception) as e:
-            logging.warning('Error downloading flyer for event %s: %s', db_event.id, e)
+            logging.warning('Error downloading flyer for event %s: %r', db_event.id, e)
     else:
         if 'photo_width' in db_event.json_props:
             del db_event.json_props['photo_width']
@@ -108,7 +109,6 @@ def _inner_make_event_findable_for_fb_event(db_event, fb_dict, disable_updates):
         db_event.address = None
         db_event.actual_city_name = None
         db_event.city_name = None
-        db_event.nearby_city_names = []
         db_event.fb_event = fb_dict
         return
     elif fb_dict['empty'] == fb_api.EMPTY_CAUSE_INSUFFICIENT_PERMISSIONS:
@@ -134,11 +134,12 @@ def _inner_make_event_findable_for_fb_event(db_event, fb_dict, disable_updates):
 
     _inner_common_setup(db_event, disable_updates=disable_updates)
 
-    if 'geodata' not in (disable_updates or []):
-        # Don't use cached/stale geocode when constructing the LocationInfo here
+    if 'regeocode' not in (disable_updates or []):
+        # Don't use cached/stale geocode, when constructing the LocationInfo below.
+        # Force it to re-look-up from the fb location and cached geo lookups.
         db_event.location_geocode = None
-        location_info = event_locations.LocationInfo(fb_dict, db_event=db_event)
-        _update_geodata(db_event, location_info)
+    location_info = event_locations.LocationInfo(fb_dict, db_event=db_event)
+    _update_geodata(db_event, location_info, disable_updates)
 
 def clean_address(address):
     address = re.sub(r'B?\d*F?\d*$', '', address)
@@ -196,7 +197,7 @@ def _inner_make_event_findable_for_web_event(db_event, web_event, disable_update
         logging.info("Found an address: %s", web_event['location_address'])
 
         # We have a formatted_address, but that's it. Let's get a fully componentized address
-        geocode_with_address = gmaps_api.lookup_address(web_event['location_address'])
+        geocode_with_address = gmaps_api.lookup_address(clean_address(web_event['location_address']))
         if not geocode_with_address:
             logging.error("Could not get geocode for: %s", web_event['location_address'])
         elif 'address_components' not in geocode_with_address.json_data:
@@ -229,7 +230,7 @@ def _inner_make_event_findable_for_web_event(db_event, web_event, disable_update
         # Don't use cached/stale geocode when constructing the LocationInfo here
         #db_event.location_geocode = geocode
         location_info = event_locations.LocationInfo(db_event=db_event)
-        _update_geodata(db_event, location_info)
+        _update_geodata(db_event, location_info, disable_updates)
 
 
 def _inner_common_setup(db_event, disable_updates=None):
@@ -243,30 +244,46 @@ def _inner_common_setup(db_event, disable_updates=None):
     db_event.json_props['language'] = language.detect(text)
 
 
-def _update_geodata(db_event, location_info):
+def _update_geodata(db_event, location_info, disable_updates):
+    # Empty this out, we no longer care/need it
+    db_event.nearby_city_names = []
+
     # If we got good values from before, don't overwrite with empty values!
     if not db_event.actual_city_name:
         logging.info('NO EVENT LOCATION1: %s', db_event.id)
         logging.info('NO EVENT LOCATION2: %s', location_info)
         logging.info('NO EVENT LOCATION3: %s', location_info.geocode)
+
+    db_event.country = location_info.geocode.country() if location_info.geocode else None
+
     if (
         # The event has moved cities
         location_info.actual_city() != db_event.actual_city_name or
-        # We are doing a backfill of a missing nearby_city_names that shouldn't be missing
-        (not db_event.nearby_city_names and db_event.city_name != 'Unknown') or
         # We are creating a new event, and don't know where it is
         not db_event.actual_city_name or
         # We didn't have a city for this event. Maybe we do now, though? Let's double-check
         db_event.city_name == 'Unknown' or
+        'cached_city' in (disable_updates or []) or
         False
     ):
         if location_info.geocode:
-            nearby_cities = cities.get_nearby_cities((location_info.geocode.latlng(), location_info.geocode.latlng()))
-            db_event.nearby_city_names = [city.display_name() for city in nearby_cities]
-            db_event.city_name = cities.get_largest_city(nearby_cities).display_name()
+            # We shrink it by two:
+            # An event in Palo Alto could be thrown into a San Jose bucket
+            # But an event in San Francisco, looking for "people who would go to SF event",
+            # would want to include Palo Alto in its search radius....so would need to go 2x to San Jose
+            # So instead of searching 200km in popular people for cities...let's try to be more specific about which person goes to which city
+            southwest, northeast = math.expand_bounds((location_info.geocode.latlng(), location_info.geocode.latlng()), cities.NEARBY_DISTANCE_KM/2)
+            nearby_cities = cities.get_nearby_cities((southwest, northeast), country=db_event.country)
+            city = cities.get_largest_city(nearby_cities)
+            # We check country_name as a proxy for determining if this is a Real City or a Dummy City
+            if not city.has_nearby_events and city.country_name:
+                logging.info('Marking city %s as "having events"', city)
+                city.has_nearby_events = True
+                city.put()
+            db_event.city_name = city.display_name()
         else:
-            db_event.nearby_city_names = []
             db_event.city_name = "Unknown"
+        logging.info('Event %s decided on city %s', db_event.id, db_event.city_name)
     db_event.anywhere = location_info.is_online_event()
     db_event.actual_city_name = location_info.actual_city()
     if location_info.latlong():
@@ -279,5 +296,3 @@ def _update_geodata(db_event, location_info):
 
     # This only grabs the very first result from the raw underlying geocode request, since that's all that's used to construct the Geocode object in memory
     db_event.location_geocode = gmaps_api.convert_geocode_to_json(location_info.geocode)
-
-    db_event.country = location_info.geocode.country() if location_info.geocode else None

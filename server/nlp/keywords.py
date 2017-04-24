@@ -9,18 +9,20 @@ from .grammar import Name
 def GenFileBackedKeywords(name, filename):
     return [Name(name, grammar.FileBackedKeyword(filename, strength=i)) for i in [grammar.STRONG, grammar.STRONG_WEAK]]
 
-BBOY_CREW = GenFileBackedKeywords('BBOY_CREW', 'bboy_crews')
-BBOY_DANCER = GenFileBackedKeywords('BBOY_DANCER', 'bboys')
-CHOREO_CREW = GenFileBackedKeywords('CHOREO_CREW', 'choreo_crews')
-CHOREO_DANCER = GenFileBackedKeywords('CHOREO_DANCER', 'choreo_dancers')
-FREESTYLE_CREW = GenFileBackedKeywords('FREESTYLE_CREW', 'freestyle_crews')
-FREESTYLE_DANCER = GenFileBackedKeywords('FREESTYLE_DANCER', 'freestyle_dancers')
+BBOY_CREW = GenFileBackedKeywords('BBOY_WORD', 'break/crew*')
+BBOY_DANCER = GenFileBackedKeywords('BBOY_DANCER', 'break/dancers*')
+CHOREO_CREW = GenFileBackedKeywords('CHOREO_CREW', 'hiphop_choreo/crews*')
+CHOREO_DANCER = GenFileBackedKeywords('CHOREO_DANCER', 'hiphop_choreo/dancers*')
+FREESTYLE_CREW = GenFileBackedKeywords('FREESTYLE_CREW', 'freestyle/crews*')
+FREESTYLE_DANCER = GenFileBackedKeywords('FREESTYLE_DANCER', 'freestyle/dancers*')
 
-CHOREO_KEYWORD = GenFileBackedKeywords('CHOREO_KEYWORD', 'choreo_keywords')
-FREESTYLE_KEYWORD = GenFileBackedKeywords('FREESTYLE_KEYWORD', 'freestyle_keywords')
+CHOREO_KEYWORD = GenFileBackedKeywords('CHOREO_KEYWORD', 'choreo/keywords')
+FREESTYLE_KEYWORD = GenFileBackedKeywords('FREESTYLE_KEYWORD', 'freestyle/keywords')
 COMPETITION = GenFileBackedKeywords('COMPETITION', 'competitions')
-GOOD_DJ = GenFileBackedKeywords('GOOD_DJ', 'good_djs')
+GOOD_DJ = GenFileBackedKeywords('GOOD_DJ', 'djs')
 
+BEBOP_CREW = GenFileBackedKeywords('BEBOP_CREW', 'bebop/crews*')
+FLEX_KEYWORD = GenFileBackedKeywords('FLEX', 'flex/keywords')
 
 # 'crew' biases dance one way, 'company' biases it another
 EASY_DANCE = Name('EASY_DANCE', Any(
@@ -36,6 +38,10 @@ EASY_DANCE = Name('EASY_DANCE', Any(
     u'танцува', # bulgarian dance
     u'танцовия', # bulgarian dance
     u'изтанцуват', # bulgarian dancing
+    u'רקוד', # hebrew dancing
+    u'בלרקוד', # hebrew dancing
+    u'כשרוקדים', # hebrew 'when dancing'
+    u'ריקודים', # hebrew dances
     u'ダンサー', # japanese dance
     u'ダンス', # japanese dance
     u'춤.?', # korean dance
@@ -44,8 +50,13 @@ EASY_DANCE = Name('EASY_DANCE', Any(
     u'踊り', # japanese dance
     u'רוקד', # hebrew dance
     u'רקדם', # hebrew dancers
+    u'הריקוד', # hebrew dance
     u'רוקדים', # hebrew dance
     u'רקדנים', # hebrew dancers
+    u'לרקדני', # hebrew dancers
+    u'לרקדנים', # hebrew 'for the dancers'
+    u'רקדן', # hebrew dancer
+    u'ריקוד', # hebrew dance
     u'舞者', # chinese dancer
     u'舞技', # chinese dancing
     u'舞.?蹈', # chinese dance
@@ -68,6 +79,7 @@ EASY_DANCE = Name('EASY_DANCE', Any(
     'danza\w*', # dance italian
     u'šok\w*', # dance lithuanian
     'tanz\w*', # dance german
+    u'tänz\w*', # dance german
     'tanssi\w*', # finnish dance
     'bail[ae]\w*', # dance spanish
     'danzas', # dance spanish
@@ -114,11 +126,11 @@ BAD_CLUB = Name('BAD_CLUB', Any(
     'belvedere',
     'ciroc',
     'ital zion crew', # accidentally added one of their private events once.
-    'johnny soultrain', # some artist in SF who is named 'soultrain'
 ))
 
 CYPHER = Name('CYPHER', Any(
     'c(?:y|i)ph(?:a|ers?)',
+    'cyphern', # german cypher
     u'サイファ', # japanese cypher
     u'サイファー', # japanese cypher
     u'サークル', # japanese circle
@@ -139,6 +151,7 @@ STYLE_HIPHOP_WEAK = Any(
     'hip\W?hop',
     u'嘻哈', # chinese hiphop
     u'ההיפ הופ', # hebrew hiphop
+    u'והיפ הופ', # hebrew hiphop
     u'هيب هوب', # arabic hiphop
     u'الهيب هوب.', # arabic 'the hiphop'
     u'хипхоп', # macedonian hiphop
@@ -156,6 +169,7 @@ STYLE_ALLSTYLE_WEAK = Any(
     'tou[ts]\W?style[zs]?', # french all-styles
     'tutti gli stili', # italian all-styles
     'kaikille tyyleille avoin', # finnish all-styles
+    u'לכל הסגנונות', # hebrew all styles
 )
 STYLE_BREAK_WEAK = Any(
     # 'breaks', # too many false positives
@@ -177,6 +191,7 @@ AMBIGUOUS_DANCE_MUSIC = Name('AMBIGUOUS_DANCE_MUSIC', Any(
     STYLE_DANCEHALL_WEAK,
     STYLE_BEBOP_WEAK,
     'shuffle',
+    'afrobeat',
     'funk',
     'jerk',
     'k\W?pop',
@@ -186,6 +201,7 @@ AMBIGUOUS_DANCE_MUSIC = Name('AMBIGUOUS_DANCE_MUSIC', Any(
     'hard\Whitting',
     'electro\W?dance',
     u'얼반', # korean urban
+    'vogue',
 ))
 
 MUSIC_ONLY = Name('MUSIC_ONLY', Any(
@@ -208,6 +224,7 @@ MUSIC_ONLY = Name('MUSIC_ONLY', Any(
     'dub',
     'europop',
     'pop music',
+    'post-punk',
     'trip hop',
     'drum\W?(?:and|&|\+)\W?bass',
     'dnb',
@@ -239,16 +256,23 @@ STYLE_BREAK = Name('STYLE_BREAK', Any(
     'breakingu', # breaking polish
     u'breaktánc', # breakdance hungarian
     u'ブレイク', # breakdance japanese
+    'breakdans', # breakdance swedish
     "bre?ak\W?dancin[g']?", 'bre?ak\W?dancer?s?',
     'break\W?danc\w+',
     'power\W?moves?',
     'b\W?(?:boy|girl)\w*',
+    u'ברייקדאנס', # hebrew breakdancing
+    u'בברייקדאנס', # hebrew breakdancing
+    u'הברייקדאנס', # hebrew breakdance
     u'비보이', # korean bboy
     u'비걸', # korean bgirl
     u'파워무브', # powermove korean
     'breakeuse', # french bgirl
     u'탑락', # toprock
     u'بريك دانس', # arabic breakdance
+    u'מופעי ברייקדאנס', # hebrew breakdancing
+    u'מקצה ברייקדאנס', # hebrew breakdancing
+    u'ביבוינג', # hebrew bboying
     u'霹靂舞', # chinese breakdance
 ))
 # Crazy polish sometimes does lockingu and lockingy. Maybe we need to do this more generally though.
@@ -319,10 +343,11 @@ STYLE_HIPHOP = Name('STYLE_HIPHOP', Any(
     # only do la-style if not salsa? http://www.dancedeets.com/events/admin_edit?event_id=292605290807447
     # 'l\W?a\W?\Wstyle',
     'l\W?a\W?\Wdance',
-    'n(?:ew|u)\W?style\Whip\W?hop',
+    'n(?:ew|u)\W?style?\Whip\W?hop',
     u'뉴스타일 ?힙합', # korean new style hiphop
-    'hip\W?hop\Wn(?:ew|u)\W?style',
+    'hip\W?hop\Wn(?:ew|u)\W?style?',
     'girl\W?s\W?hip\W?hop',
+    'girly\W?hip\W?hop',
     'hip\W?hopp?er[sz]?',
     'video\W?funk',
     'street\W?jazz', 'street\W?funk',
@@ -338,10 +363,13 @@ STYLE_DANCEHALL = Name('STYLE_DANCEHALL', Any(
     'ragga\W?jamm?',
     u'댄스 ?레게', # korean reggae dance
     u'레게 ?댄스', # korean reggae dance
+    u'דאנסהול', # hebrew dancehall
 ))
 STYLE_KRUMP = Name('STYLE_KRUMP', Any(
     'krump', "krumpin[g']?", 'krumper[sz]?',
     u'크럼핑', # korean krumping
+    u'קראמפ', # hebrew krump
+    u'קראמפר', # hebrew krumper
 ))
 STYLE_TURF = Name('STYLE_TURF', Any(
     "turfin(?:[g']?|er[sz])", 'turf danc\w+',
@@ -359,6 +387,7 @@ STYLE_BEBOP = Name('STYLE_BEBOP', Any(
     u'재즈 ?록', # korean jazz rock
 ))
 legit_dance = [
+    'soulful dance',
     'street\W?jam',
     "jerk(?:ers?|in[g']?)",
     u'스트릿', # street korean
@@ -367,9 +396,10 @@ legit_dance = [
     u'البريك دانس', # arabic breakdance
     u'街舞', # chinese streetdance / hiphop
     u'街頭舞蹈', # chinese streetdance
+    u'ריקודי רחוב', # hebrew street dancing
     u'gatvės šokių', # lithuanian streetdance
     'katutanssi\w*', # finnish streetdance
-    "buckin[g']?", "jookin[g']?",
+    "jookin[g']?",
     "footworkin[g']?",
     'footworks', # spanish footworks
     u'フットワーキング', # japanese footworking
@@ -407,16 +437,19 @@ HOUSE = Name('HOUSE', Any(
     u'하우스', # korean house
     u'ハウス', # japanese house
     u'хаус', # russian house
+    u'האוס', # hebrew house
 ))
 
 FREESTYLE = Name('FREESTYLE', Any(
     'free\W?style(?:r?|rs?)',
     u'フリースタイル', # japanese freestyle
     u'فريز ستايل', # arabic freestyle
+    u'פריסטייל', # hebrew freestyle
 ))
 
 STREET = Name('STREET', Any(
     'street',
+    'urban',
     u'스트리트', # korean street
 ))
 
@@ -446,6 +479,7 @@ CONTEST = Name('CONTEST', Any(
     'contests?',
     'concours', # french contest
     'konkurrencer', # danish contest
+    'konkuranser', # norwegian contest/competition
     'dancecontests', # dance contests german
 ))
 PRACTICE = Name('PRACTICE', Any(
@@ -478,8 +512,13 @@ PERFORMANCE = Name('PERFORMANCE', Any(
     u'trình diễn', # vietnamese performance
     u'vystoupení', # czech performances
     u'výkonnostních', # czech performance
+    u'wykonaniu', # polish performance
     u'изпълнението', # bulgarian performance
     u'パフォーマンス', # japanese performance
+    u'מופע', # hebrew show/performance
+    u'מופעי', # hebrew show/performance
+    u'למופע', # hebrew 'for the show'
+    u'ראווה', # hebrew show/showcase
     # maybe include 'spectacle' as well?
     'esibizioni', # italian performance/exhibition
 ))
@@ -525,10 +564,14 @@ CLUB_ONLY = Name('CLUB_ONLY', Any(
     'go\W?go',
 ))
 
+POP_MUSIC = Any(*['%s\W+pop' for x in
+# List grabbed off wikipedia, but leaving electropop
+    ['art', 'avant', 'bubble\W+gum', 'chamber', 'country', 'dark', 'dream', 'emo', 'experim\w+', 'folk', 'indie', 'jangle', 'kraut', 'noise', 'orchest\w+', 'operatic', 'progressive', 'psychedelic', 'surf', 'sunshine', 'swamp', 'teen', 'wonky']
+])
+
 PREPROCESS_REMOVAL = Name('PREPROCESS_REMOVAL', Any(
     # positive
     'tap water', # for theo and dominque's jam
-
     'house of movement', # not a vogue keyword!
 
     # negative
@@ -540,21 +583,41 @@ PREPROCESS_REMOVAL = Name('PREPROCESS_REMOVAL', Any(
     't?shirt competition',
     'shaking competition',
     'costume competition',
+
     'bottles? popping?',
     'poppin.? bottles?',
-    'pop music',
     'pop video',
     'dance fitness',
-
+    'pop\W+music',
+    'pop\W*up',
+    'eye\W*popping',
+    'pearl popping',
+    'pony popping',
     'eye-poppin\w+',
+    'spinning popping', # event 1784253371902736 and potentially others
+    'pop\W*culture',
+    'poppin.?\W?box',
+    POP_MUSIC,
+
+    # refers to ninjitsu stuff, not flexing stuff
+    'bone\W*breaking\W+techniques?',
+
+    # Should many of these quality as a "immediate failure" keyword?
     'on lock',
     'lock(?:ing|ed|s)? (?:in|out|your|our|the|a|it|down|up)',
     'lock\s*(?:and|&)\s*key',
+    'lock\s*(?:and|&)\s*load',
     'zip\W?lock',
     'lock\Win',
     'lock\W?down',
+    'blade\W?lock',
+    '(?:through|thru)\W+the\W+lock',
+    'lock\W*city\w+', # event 1886535754903769 and source 311775542225221
+
     'whack music',
     'wack music',
+
+    'at battle house', # To get rid of most events from 1753270238323171
     'wave\W?house', # venue in san diego
     'full house',
     'open house',
@@ -564,9 +627,12 @@ PREPROCESS_REMOVAL = Name('PREPROCESS_REMOVAL', Any(
     'camp\W?house',
     'hip\W?hop\W?kempu?', # refers to hiphop music!
     'tiny\W+house',
+    'log\W*house',
 
     'latin street dance',
     'marvellous dance crew',
+    'johnny soultrain', # some artist in SF who is named 'soultrain'
+
     '1st class',
     'first class',
     'world class',
@@ -575,22 +641,35 @@ PREPROCESS_REMOVAL = Name('PREPROCESS_REMOVAL', Any(
     'top class',
     'class\W?rnb',
     'class act',
+    'class of\W*\d+',
+
     'go\W?go\W?danc(?:ers?|ing?)',
     'latin street',
     'ice\W?breaker',
+    u'アイスブレイク',
 
     'straight up', # up rock
     'tear\W?jerker', # jerker
     'in-strutter', # strutter
     'on stage',
     'main\Wstage',
+    'music\Wstage',
+    'the stage',
     'of course',
+
     'breaking down',
     'ground\W?breaking',
+    'board\W?breaking',
+    'breaking\W?boards?',
+    'record\Wbreaking',
+    'break\w+\W+(?:the\W+)?records?',
+
     '(?:second|2nd) stage',
     'juste debout school',
     'baile funk',
     'cherry popp\w+',
+
+    'champs\W+sur', # french city champs-sur-marne is not a championship event
 ))
 
 # battle freestyle ?
@@ -711,6 +790,13 @@ BATTLE = Name('BATTLE', Any(
     u'منافسات', # arabic competitions
     u'مسابقات', # arabic contests
     u'معركة', # arabic battle
+    u'התחרות', # hebrew competition
+    u'לתחרות', # hebrew competition
+    u'לאליפות', # hebrew championship
+    u'אליפות', # hebrew championship
+    u'באליפות', # hebrew championship
+    u'לקרבות', # hebrew battles
+    u'תחרות', # hebrew competition
 ))
 
 CLASS = Name('CLASS', Any(
@@ -719,12 +805,18 @@ CLASS = Name('CLASS', Any(
     'w\.s\.', # japanese workshop W.S.
     u'ワークショップ', # japanese workshop
     u'작업장', # korean workshop
+    u'סדנת', # hebrew workshop
+    u'בסדנה', # hebrew workshop
+    u'בסדנא', # hebrew workshop
+    u'הקורס', # hebrew course
     u'hội thảo', # vietnamese workshop
     'cursillo', # spanish workshop
     'ateliers', # french workshop
     'workshopy', # czech workshop
     u'סדנאות', # hebrew workshops
     u'סדנה', # hebew workshop
+    u'הסדנא', # hebrew workshop
+    u'שיעורים', # hebrew lessons
     # 'taller', # workshop spanish
     'delavnice', # workshop slovak
     'talleres', # workshops spanish
@@ -753,8 +845,10 @@ CLASS = Name('CLASS', Any(
     u'表演班', # performance class
     u'專攻班', # chinese specialized class
     u'コース', # course japanese
+    'cors[io]', # course italian
     'concorso', # course italian
     'concurso', # course spanish
+    'cursuri', # course romanian
     'kur[sz](?:y|en)?', # course german/polish/czech
     'aulas?', # portuguese class(?:es)?
     u'특강', # korean lecture
@@ -765,9 +859,9 @@ CLASS = Name('CLASS', Any(
     'eigoje', # lithuanian course
     'pamokas', # lithuanian lesson
     'kursai', # course lithuanian
+    'kursas', # course lithuanian
     'lez\.', # lesson italian
-    'lezione', # lesson italian
-    'lezioni', # lessons italian
+    'lezion[ei]?', # lesson italian
     u'zajęciach', # class polish
     u'zajęcia', # classes polish
     u'คลาส', # class thai
@@ -775,20 +869,26 @@ CLASS = Name('CLASS', Any(
     'classi', # classes italin
     'klasser?', # norwegian class
     'cours', 'clases?',
-    'camp',
-    'kamp',
-    'kemp',
-    u'캠프', # korean camp
-    u'營', # chinese camp
+
     'formazione', # training italian
     'formazioni', # training italian
     u'トレーニング', # japanese training
     'teach(?:ing?|ers?)',
 ))
 
+# Used to be in classes, but have disabled these due to false positives
+CAMP = Name('CAMP', Any(
+    'camp',
+    'kamp',
+    'kemp',
+    u'캠프', # korean camp
+    u'營', # chinese camp
+))
+
 AUDITION = Name('AUDITION', Any(
     'try\W?outs?',
     'casting',
+    'castingi', # polish casting
     'casting call',
     'castingul', # romanian casting
     'auditions?',
@@ -862,16 +962,18 @@ JUDGE = Name('JUDGE', Any(
     u'ジャッジ', # japanese judges
     u'심사', # korean judges
     u'שופט', # hebrew judges
+    u'השופטים', # hebrew the-judges
 ))
 
-AMBIGUOUS_CLASS = Name('AMBIGUOUS_CLASS', Any(
+ROMANCE_LANGUAGE_CLASS = Name('ROMANCE_LANGUAGE_CLASS', Any(
     'spectacle',
     'stage',
     'stages',
 ))
 
 DANCE_WRONG_STYLE = Name('DANCE_WRONG_STYLE', Any(
-    'styling', 'salsa', 'bachata', 'balboa', 'tango', 'latin', 'lindy', 'lindyhop', 'swing', 'wcs', 'samba',
+    'parkour',
+    'styling', 'salsa', 'bachata', 'balboa', 'tango', 'latin', 'lindy', 'lindyhop\w*', 'swing', 'wcs', 'samba',
     u'サルサ', # japanese salsa
     u'タンゴ', # japanese tango
     u'リンディ', # japanese lindy
@@ -893,7 +995,7 @@ DANCE_WRONG_STYLE = Name('DANCE_WRONG_STYLE', Any(
     'milonga',
     'dance partner',
     'cha cha',
-    'hula',
+    'hula', 'hoop', 'ghost', 'ghosting',
     'tumbling',
     'exotic',
     'cheer',
@@ -974,6 +1076,7 @@ DANCE_WRONG_STYLE_TITLE_ONLY = Name('DANCE_WRONG_STYLE_TITLE_ONLY', Any(
     'talent shows?', # we don't care about talent shows that offer dance options
     'stiletto',
     '\w+ball', # basketball/baseball/football tryouts
+    'pole',
 ))
 
 
@@ -987,6 +1090,7 @@ CONNECTOR = Name('CONNECTOR', Any(
     u'な', # japanese
     u'の', # japanese
     u'的', # chinese
+    '-',
     # TODO(lambert): explore adding these variations, and their impact on quality
     # r' ?[^\w\s] ?',
     # ' \W ',
@@ -1036,6 +1140,7 @@ WRONG_BATTLE_STYLE = Name('WRONG_BATTLE_STYLE', Any(
     '(?:mc|emcee)\Whip\W?hop',
     'emcee',
     'rap',
+    'rhyme[sz]',
     'beat',
     'beatbox',
     'dj(?:\W?s)?',
@@ -1088,6 +1193,7 @@ VOGUE = Name('VOGUE', Any(
     'vogue fem',
     'hand performance',
     'face performance',
+    u'פרפורמנס', # hebrew performance
     'fem(?:me)? queen',
     'sex siren',
     "vou?gue?in[g']?",
@@ -1130,6 +1236,45 @@ EASY_VOGUE = Name('EASY_VOGUE', Any(
     'ball',
 ))
 
+WRONG_LOCK = Name('WRONG_LOCK', Any(
+    'picking',
+    'cracking',
+    'crack',
+    'pick',
+    'key',
+
+    'boaters?',
+    'the locks',
+    'marina',
+    'dam',
+    'vessel',
+
+    'bind',
+    'blade',
+    'dialog',
+))
+
+WRONG_HOUSE = Name('WRONG_HOUSE', Any(
+    'walls?',
+    'windows?',
+    'roofs?',
+    'logs?',
+    'tile[sd]?',
+    'kitchen',
+    'home',
+    'houses',
+))
+
+WRONG_BREAK = Name('WRONG_BREAK', Any(
+    'horses?', # breaking in horses
+))
+
+WRONG_FLEX = Name('WRONG_FLEX', Any(
+    'ninjutsu',
+    'jutsu',
+    'pressure point',
+))
+
 SEMI_BAD_DANCE = Name('SEMI_BAD_DANCE', Any(
     'technique',
     'dance company',
@@ -1163,4 +1308,50 @@ KING = Name('KING', Any(
 ROMANCE = Name('ROMANCE', Any(
     'di', 'i', 'e', 'con', # italian
     "l'\w*", 'le', 'et', 'une', 'avec', u'à', 'pour', # french
+))
+
+KIDS = Name('KIDS', Any(
+    'kid\W?s?',
+    'child(?:ren)?\W?s?',
+    'students?',
+    'high\W?school',
+    'college',
+    'university',
+    'under\W?\d+',
+    u'キッズ', # japanese kids
+    u'子供', # japanese kids
+    u'学生', # japanese students
+    u'高校', # japanese high school
+    u'カレッジ', # japanese college
+    u'大学', # japanese university
+    u'歳以下', # japanese/chinese under-age
+    u'孩子們?', # chinese kids
+    u'兒童', # chinese child
+    u'學生們?', # chinese students
+    u'中學', # chinese high school
+    u'學院', # chinese college
+    u'大學', # chinese university
+    u'아이들', # korean kids
+    u'어린이', # korean kids
+    u'재?학생', # korean students
+    u'고등학교', # korean high school
+    u'칼리지', # korean college
+    u'대학', # korean university
+    u'세 미만', # korean under-age
+    'enfants?', # french kids
+    u'étudiant', # french students
+    u'élèves', # french students
+    u'école secondaire', # french high school
+    u'université', # french college/university
+    u'moins de\W?\d+\W?ans', # french under-age
+    'ragazz[io]', # italian kid
+    'bambin[io]', # italian kids
+    'alunn[io]', # italian student
+    'student[io]', # italian student
+    'scuola superiore', # italian high school
+    u'università', # italian university
+    'sotto i\W?\d+', # italian under-age
+    'kinderen', # dutch children
+    'tot \d+ jaar', # dutch to-n-years
+    'dzieci\w*', # polish children
 ))

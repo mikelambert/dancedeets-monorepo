@@ -276,6 +276,7 @@ class EventsIndex(index.BaseIndex):
         if not isinstance(db_event.start_time, datetime.datetime) and not isinstance(db_event.start_time, datetime.date):
             logging.error("DB Event %s start_time is not correct format: ", db_event.id, db_event.start_time)
             return None
+        timestamp = min(int(time.mktime(db_event.start_time.timetuple())), 2**31 - 1)
         doc_event = search.Document(
             doc_id=db_event.id,
             fields=[
@@ -294,8 +295,11 @@ class EventsIndex(index.BaseIndex):
                 # so we can promote them to users when we send out daily notifications.
                 search.NumberField(name='creation_time', value=int(time.mktime(db_event.creation_time.timetuple())) if db_event.creation_time else 0),
             ],
-            # language=XX, # We have no good language detection
-            rank=int(time.mktime(db_event.start_time.timetuple())),
+            # TODO: Re-enable this. We disabled it because:
+            # - some langauges are like 'zh-Hant', but this expects two-letter languages
+            # - some events don't have a 'language' field in their json_props....why/how?!?
+            # language=db_event.json_props['language'],
+            rank=timestamp,
         )
         return doc_event
 

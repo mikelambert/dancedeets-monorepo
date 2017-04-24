@@ -123,6 +123,7 @@ class StudioClassIndex(index.BaseIndex):
         title = '%s: %s' % (studio_class.style, studio_class.teacher)
         description = studio_class.teacher_link
         # include twitter link to studio?
+        timestamp = min(int(time.mktime(studio_class.start_time.timetuple())), 2**31 - 1)
         doc_event = search.Document(
             doc_id=studio_class.key.string_id(),
             fields=[
@@ -139,6 +140,6 @@ class StudioClassIndex(index.BaseIndex):
                 #search.TextField(name='country', value=studio_class.country),
             ],
             #language=XX, # We have no good language detection
-            rank=int(time.mktime(studio_class.start_time.timetuple())),
+            rank=timestamp,
             )
         return doc_event

@@ -62,10 +62,10 @@ Potential Events Classification
 		<td>{{ potential_event.wrong_words }}</td>
 		<td>{{ potential_event.keyword_reason }}</td>
 		<td>
-		<button class="btn btn-default" type="button" onclick="jQuery('#sources_{{ potential_event.fb_event.info.id }}').toggle()">{{ potential_event.potential_event.source_ids|length }} Sources</button>
+		<button class="btn btn-default" type="button" onclick="jQuery('#sources_{{ potential_event.fb_event.info.id }}').toggle()">{{ potential_event.potential_event.sources() |length }} Sources</button>
 		<div id="sources_{{ potential_event.fb_event.info.id }}" style="display: none">
-		{% for source_id, source_field in zip(potential_event.potential_event.source_ids, potential_event.potential_event.source_fields) %}
-			<a href="http://graph.facebook.com/{{ source_id }}">{{ source_id }}</a> : {{ source_field }}<br>
+		{% for source in potential_event.potential_event.sources %}
+			<a href="http://graph.facebook.com/{{ source.id }}">{{ source.id }}</a> : {{ source.field }}<br>
 		{% endfor %}
 		</div>
 		</td>

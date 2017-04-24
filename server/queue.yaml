@@ -1,17 +1,18 @@
 queue:
 - name: slow-queue
-  rate: 30/m
-  max_concurrent_requests: 2
-- name: super-slow-queue
-  rate: 30/m
-  max_concurrent_requests: 1
-- name: super-super-slow-queue
-  rate: 1/m
-  max_concurrent_requests: 1
+  rate: 20/m
+  max_concurrent_requests: 6
+  bucket_size: 1
+  target: batch
 - name: fast-queue
-  rate: 60/s
-  max_concurrent_requests: 2
+  rate: 1/s
+  max_concurrent_requests: 12
+  bucket_size: 1
+  target: batch
 - name: event-publishing-pull-queue
+  mode: pull
+- name: event-publishing-pull-queue-high
   mode: pull
 - name: mobile-notify-queue
   rate: 60/s
+  target: batch

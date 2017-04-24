@@ -102,7 +102,7 @@ class Title extends React.Component {
 class ImageWithLinks extends React.Component {
   props: {
     event: Event;
-    amp: boolean;
+    amp: ?boolean;
   }
 
   state: {
@@ -196,8 +196,8 @@ class _EventLinks extends React.Component {
   props: {
     event: Event;
     amp: boolean;
-    loggedIn: boolean;
-    userRsvp: RsvpValue;
+    userId: ?number;
+    userRsvp: ?RsvpValue;
 
     // Self-managed props
     intl: intlShape;
@@ -208,7 +208,7 @@ class _EventLinks extends React.Component {
     let rsvpElement = null;
     if (event.rsvp && (event.rsvp.attending_count || event.rsvp.maybe_count)) {
       let rsvpAction = null;
-      if (this.props.loggedIn && !this.props.amp) {
+      if (this.props.userId != null && this.props.userRsvp && !this.props.amp) {
         rsvpAction = (
           <div>
             RSVP:{' '}
@@ -321,7 +321,7 @@ const EventLinks = injectIntl(_EventLinks);
 class MapWithLinks extends React.Component {
   props: {
     event: Event;
-    amp: boolean;
+    amp: ?boolean;
   }
 
   map() {
@@ -336,7 +336,7 @@ class MapWithLinks extends React.Component {
     const mapUrl = `http://maps.google.com/?daddr=${geocode.latitude},${geocode.longitude}`;
 
     const size = 450;
-    const staticMapImageUrl = (
+    const staticMapImageUrl: string = (
       `http://www.google.com/maps/api/staticmap?key=AIzaSyAvvrWfamjBD6LqCURkATAWEovAoBm1xNQ&size=${size}x${size}&scale=2&zoom=13&` +
       `center=${geocode.latitude},${geocode.longitude}&` +
       `markers=color:blue%7C${geocode.latitude},${geocode.longitude}`
@@ -407,6 +407,56 @@ class Description extends React.Component {
   }
 }
 
+class AdminButton extends React.Component {
+  props: {
+    path: string;
+    children?: React.Element<*>;
+  }
+
+  constructor(props) {
+    super(props);
+    (this: any).onClick = this.onClick.bind(this);
+  }
+
+  onClick() {
+    console.log(this.props.path);
+  }
+
+  render() {
+    return <button className="btn btn-default" onClick={this.onClick}>{this.props.children}</button>;
+  }
+}
+
+class AdminPanel extends React.Component {
+  props: {
+    forceAdmin: boolean;
+    event: Event;
+    userId: ?number;
+  }
+
+  isAdmin() {
+    const adminIds = this.props.event.admins.map(x => x.id);
+    return this.props.userId && adminIds.includes(this.props.userId);
+  }
+
+  render() {
+    // TODO: Temporarily disable for the event pages, while we build this out...
+    if (!this.props.forceAdmin) {
+      return null;
+    }
+    if (!this.props.forceAdmin && !this.isAdmin()) {
+      return null;
+    }
+    const eventId = this.props.event.id;
+    return (<div>
+      <AdminButton path={`/promoters/events/${eventId}/refresh`}>Refresh from Facebook</AdminButton> |
+      <AdminButton path={`/promoters/events/${eventId}/delete`}>Delete from DanceDeets</AdminButton> |
+      <AdminButton path={`/promoters/events/${eventId}/feature`}>Pay to Promote</AdminButton> |
+      <AdminButton path={`/promoters/events/${eventId}/categories`}>Edit Categories</AdminButton>
+    </div>);
+  }
+}
+
 class HtmlHead extends React.Component {
   props: {
     event: Event;
@@ -417,12 +467,13 @@ class HtmlHead extends React.Component {
   }
 }
 
-class EventPage extends React.Component {
+export class EventPage extends React.Component {
   props: {
     event: JSONObject;
-    amp: boolean;
-    loggedIn: boolean;
-    userRsvp: RsvpValue;
+    forceAdmin?: boolean;
+    amp?: boolean;
+    userId?: number;
+    userRsvp?: RsvpValue;
   }
 
   render() {
@@ -434,6 +485,11 @@ class EventPage extends React.Component {
         <div className="row">
           <div className="col-xs-12">
             <Title event={event} />
+            <AdminPanel
+              event={event}
+              userId={this.props.userId}
+              forceAdmin={this.props.forceAdmin}
+            />
           </div>
         </div>
         <div className="row">
@@ -442,7 +498,7 @@ class EventPage extends React.Component {
             <EventLinks
               event={event}
               amp={this.props.amp}
-              loggedIn={this.props.loggedIn}
+              userId={this.props.userId}
               userRsvp={this.props.userRsvp}
             />
             <MapWithLinks event={event} amp={this.props.amp} />

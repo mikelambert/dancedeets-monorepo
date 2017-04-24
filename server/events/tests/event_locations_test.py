@@ -14,18 +14,8 @@ EVENT_ID = '299993043349170'
 
 class TestEventLocations(unittest.TestCase):
     def setUp(self):
-        self.fb_api = fb_api_stub.Stub()
-        self.fb_api.activate()
+        super(TestEventLocations, self).setUp()
         self.fbl = fb_api.FBLookup("dummyid", None)
-        self.gmaps_stub = gmaps_stub.Stub()
-        self.gmaps_stub.activate()
-
-        self.testbed.init_datastore_v3_stub()
-        self.testbed.init_memcache_stub()
-
-    def tearDown(self):
-        self.fb_api.deactivate()
-        self.gmaps_stub.deactivate()
 
     def get_event(self, event_id):
         return self.fbl.get(fb_api.LookupEvent, event_id)
@@ -54,7 +44,7 @@ class TestSimpleVenue(TestEventLocations):
 
 class TestNoVenue(TestEventLocations):
     def runTest(self):
-        fb_event = self.get_event(100)
+        fb_event = self.get_event('100')
         location_info = event_locations.LocationInfo(fb_event, debug=True)
         self.assertEqual(location_info.overridden_address, None)
         self.assertEqual(location_info.remapped_address, None)
@@ -64,7 +54,7 @@ class TestNoVenue(TestEventLocations):
 
 class TestNoVenueWithRemap(TestNoVenue):
     def runTest(self):
-        fb_event = self.get_event(100)
+        fb_event = self.get_event('100')
 
         try:
             event_locations.update_remapped_address(fb_event, 'Oakland, CA')
@@ -84,7 +74,7 @@ class TestNoVenueWithRemap(TestNoVenue):
 class TestOverride(TestEventLocations):
     def runTest(self):
         db_event = eventdata.DBEvent(address='San Jose, CA')
-        fb_event = self.get_event(100)
+        fb_event = self.get_event('100')
 
         location_info = event_locations.LocationInfo(fb_event, db_event=db_event, debug=True)
         self.assertEqual(location_info.overridden_address, 'San Jose, CA')
@@ -96,7 +86,7 @@ class TestOverride(TestEventLocations):
 class TestOnline(TestEventLocations):
     def runTest(self):
         db_event = eventdata.DBEvent(address=event_locations.ONLINE_ADDRESS)
-        fb_event = self.get_event(100)
+        fb_event = self.get_event('100')
 
         location_info = event_locations.LocationInfo(fb_event, db_event=db_event, debug=True)
         self.assertEqual(location_info.overridden_address, event_locations.ONLINE_ADDRESS)
@@ -109,7 +99,7 @@ class TestOnline(TestEventLocations):
 
 class TestNewEventPlaceAPI(TestEventLocations):
     def runTest(self):
-        fb_event = self.get_event(103)
+        fb_event = self.get_event('103')
 
         location_info = event_locations.LocationInfo(fb_event, debug=True)
         self.assertEqual(location_info.overridden_address, None)
@@ -123,7 +113,7 @@ class TestNewEventPlaceAPI(TestEventLocations):
 class TestNone(TestEventLocations):
     def runTest(self):
         db_event = eventdata.DBEvent(address='ungeocodeable mess of crap')
-        fb_event = self.get_event(100)
+        fb_event = self.get_event('100')
 
         location_info = event_locations.LocationInfo(fb_event, db_event=db_event, debug=True)
         self.assertEqual(location_info.final_city, None)
@@ -132,7 +122,7 @@ class TestNone(TestEventLocations):
 class TestTBD(TestEventLocations):
     def runTest(self):
         db_event = eventdata.DBEvent(address='San Francisco, CA')
-        fb_event = self.get_event(100)
+        fb_event = self.get_event('100')
 
         try:
             event_locations.update_remapped_address(fb_event, 'TBD')
@@ -152,7 +142,7 @@ class TestTBD(TestEventLocations):
 
 class TestNothingAtAll(TestEventLocations):
     def runTest(self):
-        fb_event = self.get_event(101)
+        fb_event = self.get_event('101')
 
         location_info = event_locations.LocationInfo(fb_event, debug=True)
         self.assertEqual(location_info.overridden_address, None)
@@ -163,7 +153,7 @@ class TestNothingAtAll(TestEventLocations):
 
 class TestEasyLatLong(TestEventLocations):
     def runTest(self):
-        fb_event = self.get_event(102)
+        fb_event = self.get_event('102')
 
         location_info = event_locations.LocationInfo(fb_event, debug=True)
         self.assertEqual(location_info.overridden_address, None)

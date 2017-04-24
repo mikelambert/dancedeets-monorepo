@@ -5,17 +5,11 @@
  */
 
 import { RemoteConfig } from 'react-native-firebase3';
-import {
-  defaultBlogs,
-} from 'dancedeets-common/js/tutorials/playlistConfig';
 
 async function loadConfig() {
   if (__DEV__) {
     RemoteConfig.setDeveloperMode(true);
   }
-  RemoteConfig.setNamespacedDefaults({
-    blogs: JSON.stringify(defaultBlogs),
-  }, 'Learn');
   await RemoteConfig.fetchWithExpirationDuration(60 * 10);
   await RemoteConfig.activateFetched();
 }

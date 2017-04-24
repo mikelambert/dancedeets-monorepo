@@ -1,8 +1,7 @@
-from google.appengine.api import mail
-
 import app
 import base_servlet
 import fb_api
+from mail import mandrill_api
 
 @app.route('/feedback')
 class FeedbackHandler(base_servlet.BaseRequestHandler):
@@ -18,13 +17,19 @@ class FeedbackHandler(base_servlet.BaseRequestHandler):
             # Ugh, email is no longer a requied field ...?
             fb_user['profile'].get('email', 'User %s' % self.fb_uid),
         )
-        message = mail.EmailMessage(
-            sender="DanceDeets Feedback Form <events@dancedeets.com>",
-            subject=self.request.get('subject'),
-            to='feedback@dancedeets.com',
-            body='%s\n%s' % (from_line, self.request.get('body'))
-        )
-        message.send()
-
+        subject = self.request.get('subject')
+        body = '%s\n%s' % (from_line, self.request.get('body'))
+        message = {
+            'from_email': 'feedback@dancedeets.com',
+            'from_name': 'DanceDeets Feedback Form',
+            'subject': subject,
+            'to': [{
+                'email': 'feedback@dancedeets.com',
+                'name': 'DanceDeets Feedback',
+                'type': 'to',
+            }],
+            'text': body,
+        }
+        mandrill_api.send_message(message)
         self.user.add_message("Thanks, your message has been sent to DanceDeets!")
         self.redirect('/')

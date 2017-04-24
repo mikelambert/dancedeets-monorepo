@@ -1,17 +1,13 @@
 import datetime
 import logging
 import random
-import time
-
-from google.appengine.ext import ndb
 
 from mapreduce import context
 from mapreduce import control
 from mapreduce import util
 
 import fb_api
-from users import users
-
+from users import access_tokens
 
 def start_map(
     fbl,
@@ -42,7 +38,7 @@ def start_map(
         reader_spec='mapreduce.input_readers.DatastoreInputReader',
         handler_spec=handler_spec,
         output_writer_spec=output_writer_spec,
-        shard_count=8,  # since we want to stick it in the slow-queue, and don't care how fast it executes
+        shard_count=16,  # since we want to stick it in the slow-queue, and don't care how fast it executes
         queue_name=queue,
         mapper_parameters=mapper_params,
     )
@@ -52,7 +48,8 @@ def get_fblookup(user=None):
     ctx = context.get()
     params = ctx.mapreduce_spec.mapper.params
     if params.get('fbl_access_tokens'):
-        parent_token = random.choice(params.get('fbl_access_tokens'))
+        tokens = params.get('fbl_access_tokens')
+        parent_token = random.choice(tokens)
     else:
         parent_token = params['fbl_access_token']
     access_token = (user and user.fb_access_token or parent_token)
@@ -73,31 +70,13 @@ def get_fblookup_params(fbl, randomize_tokens=False):
     if fbl.db.oldest_allowed != datetime.datetime.min:
         params['fbl_oldest_allowed'] = fbl.db.oldest_allowed
     if randomize_tokens:
-        params['fbl_access_tokens'] = _get_multiple_tokens(token_count=20)
+        params['fbl_access_tokens'] = access_tokens.get_multiple_tokens(token_count=50)
         logging.info('Found %s valid tokens', len(params['fbl_access_tokens']))
         if len(params['fbl_access_tokens']) == 0:
             raise Exception('No Valid Tokens')
     else:
         params['fbl_access_token'] = fbl.access_token
     return params
-
-
-def _get_multiple_tokens(token_count):
-    good_users = users.User.query(users.User.key >= ndb.Key(users.User, '701004'), users.User.expired_oauth_token == False).fetch(token_count)  # noqa
-    tokens = [x.fb_access_token for x in good_users]
-    debug_token_infos = fb_api.lookup_debug_tokens(tokens)
-    one_day_from_now = time.time() + (24 * 60 * 60)
-    # Ensure our tokens are really still valid, and still valid a day from now, for long-running mapreduces
-    good_tokens = []
-    for token, info in zip(tokens, debug_token_infos):
-        if info['empty']:
-            logging.error('Trying to lookup invalid access token: %s', token)
-            continue
-        if (info['token']['data']['is_valid'] and
-            (info['token']['data']['expires_at'] == 0 or  # infinite token
-             info['token']['data']['expires_at'] > one_day_from_now)):
-            good_tokens.append(token)
-    return good_tokens
 
 
 def mr_wrap(func):

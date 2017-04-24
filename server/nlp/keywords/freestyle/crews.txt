@@ -1,0 +1,249 @@
+오리지날리티 # originality
+락앤롤,0 # lock n lol, but also rock n roll
+펑키즈 # Funkies
+코스믹 ?슬랍 # cosmic slop
+펑키 ?스트릿 ?프린스즈 # Funky street princes
+펑크 ?폴 ?라이프# Funk For Life
+크리티컬 ?포인트 # Critical point
+루플로 ?디플로 # Luplo D-FLO
+브랜드 ?뉴 ?마인드 # Brand New Mind
+위너스 ?크루 # Winners Crew
+일렉트릭 ?부갈루스 # Electric Boogaloos
+블루 ?웨일 ?브라더스 # Blue Whale Brothers
+애니메이션 ?크루 # Animation Crew
+티아이피 # TIP Crew
+진조 ?크루 # Jinjo Crew
+라스트 ?포 ?원 # Last For One
+겜블러 ?크루 # Gamblerz Crew
+리버스 # Riverz Crew
+익스프레션,0 # Expression
+익스트림,0 # Extreme Crew
+모닝 ?오브 ?오울 # Morning of Owl
+(?:5|five)\W?f(?:oo)?t thrillaz
+3kick sp[rl]it[sz]
+6sence
+a4o
+academy of shock
+academy of villians
+allshool'z
+ancut stonez
+aov,0
+art of tec[hk]nique
+au[rl]o[rl]a.tex
+b-trible
+b\W?fresh brno
+baccano
+baltimore dance crews
+bdcp collective
+bds praha
+be\W?bop crew
+beat focu
+beat freaks
+beat up brno
+beat\W?buddy\W?boi
+beatdown brothers
+beatstrong
+beatsukiboys
+black messengers
+blue power crew
+boogie renaissance
+bopster scat
+breakydelic
+broken\W?sport
+buccchild fam
+bulletproof funk
+burning styles crew
+bushbabeez
+capitol flow # turf
+chillax girlz
+citadanse
+collectif c nous
+coney island dancers
+consciencia,0
+control freaks
+conven crew
+cosec crew
+cosmic funk
+criminalz
+cultureshock
+cymatic soles
+d'oam
+d2mg crew
+da gentlemen
+dacrudancecompany
+dance fusion
+dark unit
+deep down dopeizm
+diger deep
+digital junkeez
+double elementz
+down\W?town\W?bounce
+dream wing crew
+ds players
+dsn core knowledge
+dynamic brno
+dynamic devotion
+electric boogaloos
+electro swinger\W?s
+electro swinger\W?s
+elite force
+fab 5 boogz
+fab\W*5 boogz
+five plus five
+floor engin kids
+floor magnets # turf
+floor masters
+floor monster crew
+floor raskals # turf
+floorriorz
+flow mircle rulerz
+footworkingz
+forzesound
+fresh audio mindz # turf
+fresh dynamix
+funk soldiers
+funkyshit
+funny bones,0
+g.c.\W?crew
+gart project
+gekko state
+gelaketz
+ghbv
+ghetto\W?style
+giddap
+glasshopper
+gogo brothers
+gr818ers
+grasshopper crew
+groovmekanex
+grv,0
+gunz hunt
+gute reize
+head\W?hunters\W+soulciety
+heavy-q
+hex bex
+hilty (?:&|and|\+) bosch
+hiphop junkeez
+hipnotic boogie
+hotclan crew
+house of dangerkat
+house of ebony
+house of evisu
+house of la douche
+house of ninja
+house of xtravaganza
+housin\W+authority
+ihow
+imperial house of waacking
+inhumanoids
+international house of waacking
+ivy\W?league crew
+j\W?s\W?b\W? undeground
+j\W?soul brothers
+jabbawockeez
+jack\W?baskets
+jazz\W?cotech
+kamikaze crew
+kamikaze clownz
+k\W?i\W?f\W?crew
+kinematik dance
+klandeskillz
+l\.?o\.?f\.?d
+lab bonita stax
+lab bonita stax
+lagos apt
+legion of extra.?ordinary dancers
+legion-x
+lockbandbeat
+lockin'on
+lockism
+lumi dance
+lxd
+machine gone funk
+madhood
+madness cycle
+marjoram
+master\W?mind rockers
+mawu
+mda crew
+men\W?soul
+metro gangz
+mgf,0
+mix\W?d ingr?dnts
+mo\w?\w?paradise
+moptops
+mos mitter
+natural movementz
+o'trip
+perfect combustion
+pinocchio brothers
+playboyz
+power beat crew
+pro phenomen
+pro-dance
+pro-seed
+psycho-tex
+queen mobb
+quest crew
+r\W?a\W?f\W?\W?crew
+radiolecos
+rag pound
+redwindsor
+relax crew
+repoll:fx
+rm sister
+serial\W?stepper[sz]
+shibuya harlem shakers
+silent.?trix
+slc danso
+sorakarat
+soul colors
+soul fresh crew
+soul sector
+soul2soul
+soul\W?shifters
+soulsweat
+soulxpress
+sound cream stepper[sz]
+stax groove
+steppin\W? jazz ladies
+street messengers
+stylematix
+sucreamgoodman
+super beat magicians
+supreme soul
+swing men brother[sz]
+symbiotic monsters
+symbol-ism
+syrenz
+temporaly
+tha rampage crew
+the kulture kids
+the lockers
+the next movement praha
+the pastels
+the waackers
+thequickstyle
+tokyo footworkz
+tokyo waacking sensation
+turf\W?feinz
+twiggz fam
+u-min
+urban artistry
+urban dance project
+vancity lockers
+versa-style
+vigorous ladies
+vulture kill
+waacking ain't wack
+waacktitioners
+waacouture
+wanted\W?possee?
+wavebotics crew
+wonder twins
+wrecking crew orchestra
+yo-bbo
+yo\W?bbo psycho hitters
+あけっparズ
+なすっ子キューカンバ
+オーロラテックス

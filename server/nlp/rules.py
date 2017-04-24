@@ -38,11 +38,10 @@ DANCE = Name('DANCE', Any(
 GOOD_DANCE = Name('GOOD_DANCE', Any(
     DANCE,
     keywords.VOGUE,
-    commutative_connected(Any(keywords.HOUSE, keywords.FREESTYLE), keywords.EASY_DANCE),
-    commutative_connected(keywords.AMBIGUOUS_DANCE_MUSIC, keywords.EASY_DANCE),
+    # This may seem strange to list 'dance dance' essentially twice,
+    # but necessary for "battles de danses breakdance" or 'afro-house dance workshop'.
+    commutative_connected(Any(keywords.HOUSE, keywords.FREESTYLE, keywords.AMBIGUOUS_DANCE_MUSIC, DANCE), keywords.EASY_DANCE),
     commutative_connected(keywords.STREET, Any(keywords.EASY_CHOREO, keywords.EASY_DANCE)),
-    # This may seem strange to list it essentially twice ,but necessary for "battles de danses breakdance"
-    commutative_connected(keywords.EASY_DANCE, DANCE),
 ))
 
 DECENT_DANCE = Name('DECENT_DANCE', Any(
@@ -56,6 +55,13 @@ WRONG_CLASS = Name('WRONG_CLASS',
 WRONG_BATTLE = Name('WRONG_BATTLE', Any(
     keywords.WRONG_BATTLE,
     commutative_connected(keywords.WRONG_BATTLE_STYLE, Any(keywords.BATTLE, keywords.N_X_N, keywords.CONTEST))
+))
+
+RIGHT_NAME_WRONG_KIND = Name('RIGHT_NAME_WRONG_KIND', Any(
+    keywords.WRONG_HOUSE,
+    keywords.WRONG_BREAK,
+    keywords.WRONG_LOCK,
+    keywords.WRONG_FLEX,
 ))
 
 DANCE_STYLE = Name('DANCE_STYLE',
@@ -92,11 +98,11 @@ good_dance = Any(keywords.AMBIGUOUS_DANCE_MUSIC, GOOD_DANCE, keywords.HOUSE)
 GOOD_DANCE_CLASS = Name('GOOD_DANCE_CLASS', Any(
     commutative_connected(good_dance, keywords.CLASS),
     # only do one direction here, since we don't want "house stage" and "funk stage"
-    connected(keywords.AMBIGUOUS_CLASS, good_dance),
+    connected(keywords.ROMANCE_LANGUAGE_CLASS, good_dance),
 ))
 # TODO: is this one necessary? we could do it as a regex, but we could also do it as a rule...
-EXTENDED_CLASS = Name('EXTENDED_CLASS',
-    Any(keywords.CLASS, keywords.AMBIGUOUS_CLASS))
+ROMANCE_EXTENDED_CLASS = Name('ROMANCE_EXTENDED_CLASS',
+    Any(keywords.CLASS, keywords.ROMANCE_LANGUAGE_CLASS))
 
 full_judge = Any(
     keywords.JUDGE,
@@ -134,7 +140,7 @@ EVENT = Name('EVENT', Any(
 ))
 
 EVENT_WITH_ROMANCE_EVENT = Name('EVENT_WITH_ROMANCE_EVENT',
-    Any(keywords.AMBIGUOUS_CLASS, EVENT))
+    Any(keywords.ROMANCE_LANGUAGE_CLASS, EVENT))
 
 
 MANUAL_DANCER = [Name('MANUAL_DANCER', Any(
@@ -186,6 +192,6 @@ ANY_GOOD = Name('ANY_GOOD', Any(
     keywords.PERFORMANCE,
     keywords.CONTEST,
     keywords.FORMAT_TYPE,
-    keywords.AMBIGUOUS_CLASS,
+    keywords.ROMANCE_LANGUAGE_CLASS,
 
 ))

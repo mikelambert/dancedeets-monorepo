@@ -23,7 +23,7 @@ setup(
         'scrapy_settings',
     ],
     data_files=[
-        ('dance_keywords', glob.glob('dance_keywords/*.txt')),
+        ('dance_keywords', glob.glob('nlp/dance_keywords/*.txt')),
         ('', [
             'keys.yaml',
             'facebook-prod.yaml',

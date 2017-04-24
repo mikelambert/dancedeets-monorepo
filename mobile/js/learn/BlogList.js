@@ -74,7 +74,7 @@ export class BlogPostTitle extends React.Component {
 }
 
 type FeedProps = {
-  items: [];
+  items: Array<any>;
   renderRow: (post: any) => any;
   renderHeader?: () => any;
   contentContainerStyle?: any;
@@ -98,7 +98,7 @@ export class FeedListView extends React.Component {
     this.setState(this.getNewState(nextProps.items));
   }
 
-  getNewState(items: []) {
+  getNewState(items: Array<any>) {
     const results = items || [];
     const state = {
       ...this.state,

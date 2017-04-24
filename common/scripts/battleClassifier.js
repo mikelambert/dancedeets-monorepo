@@ -23,7 +23,7 @@ const roundRegexes = {
   top16: /\b(?:(?:quarter|qtr|1\s*\/\s*4)\W?final|(?:best|top)\W?16)\b/i,
 };
 
-const anyRoundRegex = new RegExp(Object.values(roundRegexes).map(x => x.source).join('|'), 'i');
+const anyRoundRegex = new RegExp(Object.keys(roundRegexes).map(x => roundRegexes[x].source).join('|'), 'i');
 
 const vsRegex = /\bv\W?[zs]\b|versus|\bx\b|\b×\b/i;
 
@@ -111,7 +111,7 @@ async function buildBracketFromPlaylist(playlistId) {
             winner: result.first === contestant ? 0 : result.second === contestant ? 1 : null,
           };
         } else {
-          return result;
+          throw new Error(`Could not find match for contestant`);
         }
       });
     } else {

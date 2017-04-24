@@ -3,16 +3,15 @@
 import datetime
 import logging
 
-from google.appengine.api import mail
-
 from pipeline import common
 from pipeline import pipeline
 import scrapinghub
 
 import app
 import base_servlet
-import keys
 from classes import class_index
+import keys
+from mail import mandrill_api
 from util import fixed_pipelines
 
 
@@ -112,13 +111,19 @@ class EmailErrors(fixed_pipelines.Pipeline):
         body = '\n'.join(rendered)
         logging.warning("%s", body)
 
-        message = mail.EmailMessage(
-            sender="DanceDeets Reports <reports@dancedeets.com>",
-            subject="Crawl Errors for %s" % run_time.strftime('%b %d, %Y: %H:%M'),
-            to='reports@dancedeets.com',
-            body=body,
-        )
-        message.send()
+        subject = 'Crawl Errors for %s' % run_time.strftime('%b %d, %Y: %H:%M')
+        message = {
+            'from_email': 'reports@dancedeets.com',
+            'from_name': 'DanceDeets Reports',
+            'subject': subject,
+            'to': [{
+                'email': 'reports@dancedeets.com',
+                'name': 'DanceDeets Reports',
+                'type': 'to',
+            }],
+            'text': body,
+        }
+        mandrill_api.send_message(message)
 
 
 @app.route('/tasks/crawl_and_index_classes')

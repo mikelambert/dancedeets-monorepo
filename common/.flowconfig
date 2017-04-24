@@ -30,8 +30,10 @@ experimental.strict_type_args=true
 
 munge_underscores=true
 
-module.name_mapper='^image![a-zA-Z0-9$_-]+$' -> 'GlobalImageStub'
-module.name_mapper='^[./a-zA-Z0-9$_-]+\.\(bmp\|gif\|jpg\|jpeg\|png\|psd\|svg\|webp\|m4v\|mov\|mp4\|mpeg\|mpg\|webm\|aac\|aiff\|caf\|m4a\|mp3\|wav\|html\|pdf\)$' -> 'RelativeImageStub'
+module.name_mapper.extension='jpg' -> '<PROJECT_ROOT>/../server/assets/js/util/flow/RelativeImageStub.js'
+module.name_mapper.extension='png' -> '<PROJECT_ROOT>/../server/assets/js/util/flow/RelativeImageStub.js'
+module.name_mapper.extension='css' -> '<PROJECT_ROOT>/../server/assets/js/util/flow/CssStub.js'
+module.name_mapper.extension='scss' -> '<PROJECT_ROOT>/../server/assets/js/util/flow/CssStub.js'
 
 suppress_type=$FlowIssue
 suppress_type=$FlowFixMe

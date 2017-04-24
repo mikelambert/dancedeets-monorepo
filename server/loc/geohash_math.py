@@ -9,14 +9,16 @@ circumference_of_earth = 40000.0 # km
 def get_geohash_bits_for_km(km):
     if km < min_box_size:
         return max_geohash_bits
-    geohash_bits = int(math.ceil(-math.log(1.0 * km / circumference_of_earth) / math.log(2)))
+    # We floor(), because we want to minimize the number of bits to match this distance
+    # Too many bits, and we may have holes in our coverage
+    geohash_bits = int(math.floor(-math.log(1.0 * km / circumference_of_earth) / math.log(2)))
     return geohash_bits
 
 def get_km_for_geohash_bits(precision):
     km = circumference_of_earth * math.pow(2, -precision)
     return km
 
-min_box_size = 200 # km
+min_box_size = 100 # km
 max_geohash_bits = get_geohash_bits_for_km(min_box_size)
 # max_geohash_bits should be 8, which is reasonable compared to 32 possible for complete geohashing
 

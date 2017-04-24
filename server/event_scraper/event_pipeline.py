@@ -46,24 +46,23 @@ def process_discovered_events(fbl, full_discovered_list):
     if not discovered_list:
         return
 
-    orig_allow_cache = fbl.allow_cache
-    try:
-        fbl.allow_cache = True
-        discovered_fb_events = fbl.get_multi(fb_api.LookupEvent, [x.event_id for x in discovered_list], allow_fail=True)
-    finally:
-        fbl.allow_cache = orig_allow_cache
+    # Trust that fbl.allow_cache was allowed in our caller
+    if not fbl.allow_cache:
+        logging.error('process_discovered_events unexpectedly called with an enabled cache!')
+    discovered_fb_events = fbl.get_multi(fb_api.LookupEvent, [x.event_id for x in discovered_list], allow_fail=True)
 
     potential_events_added = []
     for fb_event, discovered in zip(discovered_fb_events, discovered_list):
         if not fb_event or fb_event['empty']:
             continue
-        event_id = fb_event['info']['id']
+        event_id = discovered.event_id
         if fb_event['empty'] or not fb_events.is_public_ish(fb_event):
             logging.info("event id %s: deleted, or private", event_id)
             continue # only legit events
+
         logging.info('VTFI %s: Discovered event %s, adding potential event due to discoveredevent %s', event_id, event_id, discovered)
         # makes a potential event, with scored information. transactions. one. by. one.
-        pe_event = potential_events.make_potential_event_with_source(fb_event, discovered)
+        pe_event = potential_events.make_potential_event_with_source(discovered)
         logging.info('VTFI %s: Discovered event %s, added potential event, now have pe with event ids %s', pe_event.fb_event_id, pe_event.fb_event_id, pe_event.get_invite_uids())
         potential_events_added.append(pe_event)
     # TODO: Create new sources, update source feed values, etc? done in make_potential_events_with_source, but need more that's not done there
@@ -71,6 +70,6 @@ def process_discovered_events(fbl, full_discovered_list):
     fb_lookup = dict((x['info']['id'], x) for x in discovered_fb_events if x and not x['empty'])
     pe_lookup = dict((x.fb_event_id, x) for x in potential_events_added)
     potential_event_ids = pe_lookup.keys()
-    logging.info("Going to classify the %s potential events", len(discovered_list))
+    logging.info("Going to classify the %s potential events", len(potential_event_ids))
     # Classify events on the fly as we add them as potential events, instead of waiting for the mapreduce
     auto_add.classify_events(fbl, [pe_lookup[x] for x in potential_event_ids], [fb_lookup[x] for x in potential_event_ids])

@@ -12,6 +12,7 @@ from slugify import slugify
 
 import app
 import base_servlet
+from event_attendees import event_attendee_classifier
 from event_scraper import add_entities
 from event_scraper import potential_events
 from events import add_events
@@ -77,16 +78,21 @@ class RedirectToEventHandler(base_servlet.BaseRequestHandler):
         return self.redirect(urls.dd_relative_event_url(event_id), permanent=True)
 
 
-@app.route(r'/events/%s(?:/.*)?' % urls.EVENT_ID_REGEX)
+# SHORT URL!
+@app.short_route(r'/e-(%s)' % urls.EVENT_ID_REGEX)
+class RedirectShortUrlHandler(base_servlet.BareBaseRequestHandler):
+    def get(self, event_id):
+        return self.redirect(urls.dd_event_url(event_id))
+
+
+@app.route(r'/events/(%s)(?:/.*)?' % urls.EVENT_ID_REGEX)
 class ShowEventHandler(base_servlet.BaseRequestHandler):
 
     def requires_login(self):
         return False
 
-    def get(self):
+    def get(self, event_id):
         self.finish_preload()
-        path_bits = self.request.path.split('/')
-        event_id = urllib.unquote(path_bits[2])
         if not event_id:
             self.response.out.write('Need an event_id.')
             return
@@ -217,7 +223,7 @@ class AdminEditHandler(base_servlet.BaseRequestHandler):
         potential_event = potential_events.PotentialEvent.get_by_key_name(fb_event_id)
         e = eventdata.DBEvent.get_by_id(fb_event_id)
         display_event = search.DisplayEvent.get_by_id(fb_event_id)
-        fb_event = self.fbl.get(fb_api.LookupEvent, fb_event_id)
+        fb_event = get_fb_event(self.fbl, fb_event_id)
         self.display['potential_event'] = potential_event
         self.display['display_event'] = display_event
         self.display['event'] = e
@@ -256,21 +262,20 @@ class AdminEditHandler(base_servlet.BaseRequestHandler):
             event_id = urls.get_event_id_from_url(self.request.get('event_url'))
         elif self.request.get('event_id'):
             event_id = self.request.get('event_id')
-        self.fbl.request(fb_api.LookupEvent, event_id, allow_cache=False)
-        # DISABLE_ATTENDING
-        # self.fbl.request(fb_api.LookupEventAttending, event_id, allow_cache=False)
         self.finish_preload()
 
-        try:
-            fb_event = self.fbl.fetched_data(fb_api.LookupEvent, event_id)
-            # DISABLE_ATTENDING
-            fb_event_attending = None
-            # fb_event_attending = fbl.fetched_data(fb_api.LookupEventAttending, event_id)
-        except fb_api.NoFetchedDataException:
+        fb_event = get_fb_event(self.fbl, event_id)
+        if not fb_event:
+            logging.error('No fetched data for %s, showing error page', event_id)
             return self.show_barebones_page(event_id, "No fetched data")
 
+        e = eventdata.DBEvent.get_by_id(event_id)
+
         if not fb_events.is_public_ish(fb_event):
-            self.add_error('Cannot add secret/closed events to dancedeets!')
+            if e:
+                fb_event = e.fb_event
+            else:
+                self.add_error('Cannot add secret/closed events to dancedeets!')
 
         self.errors_are_fatal()
 
@@ -284,20 +289,22 @@ class AdminEditHandler(base_servlet.BaseRequestHandler):
 
         display_event = search.DisplayEvent.get_by_id(event_id)
         # Don't insert object until we're ready to save it...
-        e = eventdata.DBEvent.get_by_id(event_id)
         if e and e.creating_fb_uid:
-            creating_user = self.fbl.get(fb_api.LookupUser, e.creating_fb_uid)
+            #STR_ID_MIGRATE
+            creating_user = self.fbl.get(fb_api.LookupProfile, str(e.creating_fb_uid))
+            if creating_user.get('empty'):
+                logging.warning('Have creating-user %s...but it is not publicly visible, so treating as None: %s', e.creating_fb_uid, creating_user)
+                creating_user = None
         else:
             creating_user = None
 
-        potential_event = potential_events.make_potential_event_without_source(event_id, fb_event, fb_event_attending)
+        potential_event = potential_events.make_potential_event_without_source(event_id)
         classified_event = event_classifier.get_classified_event(fb_event, potential_event.language)
         self.display['classified_event'] = classified_event
+        dance_words_str = ', '.join(list(classified_event.dance_matches()))
         if classified_event.is_dance_event():
-            dance_words_str = ', '.join(list(classified_event.dance_matches()))
             event_words_str = ', '.join(list(classified_event.event_matches()))
         else:
-            dance_words_str = 'NONE'
             event_words_str = 'NONE'
         self.display['classifier_dance_words'] = dance_words_str
         self.display['classifier_event_words'] = event_words_str
@@ -315,8 +322,9 @@ class AdminEditHandler(base_servlet.BaseRequestHandler):
             auto_classified += 'notadd: %s.\n' % notadd_result[1]
 
         self.display['auto_classified_types'] = auto_classified
-        styles = categories.find_styles(fb_event) + categories.find_event_types(fb_event)
-        self.display['auto_categorized_types'] = ', '.join(x.public_name for x in styles)
+        styles = categories.find_styles(fb_event)
+        event_types = styles + categories.find_event_types(fb_event)
+        self.display['auto_categorized_types'] = ', '.join(x.public_name for x in event_types)
 
         location_info = event_locations.LocationInfo(fb_event, db_event=e, debug=True)
         self.display['location_info'] = location_info
@@ -326,6 +334,19 @@ class AdminEditHandler(base_servlet.BaseRequestHandler):
         else:
             self.display['fb_geocoded_address'] = ''
         self.display['ranking_city_name'] = rankings.get_ranking_location_latlng(location_info.geocode.latlng()) if location_info.geocode else 'None'
+
+        fb_event_attending_maybe = get_fb_event(self.fbl, event_id, lookup_type=fb_api.LookupEventAttendingMaybe)
+        matcher = event_attendee_classifier.get_matcher(self.fbl, fb_event, fb_event_attending_maybe)
+        matched_overlap_ids = matcher.matches[0].overlap_ids if matcher.matches else []
+        self.display['auto_add_attendee_ids'] = sorted(matched_overlap_ids)
+        self.display['overlap_results'] = matcher.results
+
+        self.display['overlap_attendee_ids'] = sorted(matcher.overlap_ids)
+
+        city_matches = [x for x in matcher.matches if x.city_name != 'Summed-Area']
+        if city_matches:
+            attendee_ids_to_admin_hash_and_event_ids = city_matches[0].get_attendee_lookups()
+            self.display['attendee_ids_to_admin_hash_and_event_ids'] = attendee_ids_to_admin_hash_and_event_ids
 
         self.display['event'] = e
         self.display['event_id'] = event_id
@@ -351,7 +372,12 @@ class AdminEditHandler(base_servlet.BaseRequestHandler):
 
         # We could be looking at a potential event for something that is inaccessable to our admin.
         # So we want to grab the cached value here if possible, which should exist given the admin-edit flow.
-        fb_event = self.fbl.get(fb_api.LookupEvent, event_id)
+        fb_event = get_fb_event(self.fbl, event_id)
+        logging.info("Fetched fb_event %s", fb_event)
+        if not fb_events.is_public_ish(fb_event):
+            self.add_error('Cannot add secret/closed events to dancedeets!')
+        self.errors_are_fatal()
+
         if self.request.get('background'):
             deferred.defer(add_entities.add_update_event, fb_event, self.fbl, creating_uid=self.user.fb_uid, remapped_address=remapped_address, override_address=override_address, creating_method=eventdata.CM_ADMIN)
             self.response.out.write("<title>Added!</title>Added!")
@@ -365,6 +391,34 @@ class AdminEditHandler(base_servlet.BaseRequestHandler):
             self.user.add_message("Changes saved!")
             return self.redirect('/events/admin_edit?event_id=%s' % event_id)
 
+def get_fb_event(fbl, event_id, lookup_type=fb_api.LookupEvent):
+    data = None
+    try:
+        data = fbl.get(lookup_type, event_id, allow_cache=False)
+        if data and data['empty']:
+            data = None
+    except fb_api.NoFetchedDataException:
+        pass
+    if not data:
+        db_event = eventdata.DBEvent.get_by_id(event_id)
+        if db_event:
+            for user in users.User.get_by_ids(db_event.visible_to_fb_uids):
+                if not user:
+                    # If this user id doesn't exist in our system, then it was never an actual user
+                    # It most likely comes from the days when we could get fb events from friends-of-users
+                    continue
+                fbl = user.get_fblookup()
+                fbl.allow_cache = fbl.allow_cache
+                try:
+                    fbl.request(lookup_type, db_event.fb_event_id, allow_cache=False)
+                    fbl.batch_fetch()
+                    data = fbl.fetched_data(lookup_type, db_event.fb_event_id)
+                except fb_api.ExpiredOAuthToken:
+                    logging.warning("User %s has expired oauth token", user.fb_uid)
+                else:
+                    if data['empty'] != fb_api.EMPTY_CAUSE_INSUFFICIENT_PERMISSIONS:
+                        break
+    return data
 
 @app.route('/events_add')
 class AddHandler(base_servlet.BaseRequestHandler):
@@ -497,7 +551,7 @@ class AdminPotentialEventViewHandler(base_servlet.BaseRequestHandler):
             location_info = None # event_locations.LocationInfo(fb_event, debug=True)
             potential_event_dict[e] = potential_events.update_scores_for_potential_event(potential_event_dict[e], fb_event, fb_event_attending)
             template_events.append(dict(fb_event=fb_event, classified_event=classified_event, dance_words=dance_words_str, event_words=event_words_str, wrong_words=wrong_words_str, keyword_reason=reason, potential_event=potential_event_dict[e], location_info=location_info))
-        template_events = sorted(template_events, key=lambda x: -len(x['potential_event'].source_ids))
+        template_events = sorted(template_events, key=lambda x: -len(x['potential_event'].sources()))
         self.display['number_of_events'] = number_of_events
         self.display['total_potential_events'] = '%s + %s' % (non_zero_events, zero_events)
         self.display['has_more_events'] = has_more_events

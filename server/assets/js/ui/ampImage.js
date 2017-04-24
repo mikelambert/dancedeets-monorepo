@@ -20,7 +20,7 @@ type ClientCover = Cover | RequiredImage;
 export class AmpImage extends React.Component {
   props: {
     picture: ClientCover;
-    amp?: boolean;
+    amp?: ?boolean;
     width?: string;
   }
 

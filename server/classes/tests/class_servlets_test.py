@@ -5,6 +5,20 @@ from classes import class_servlets
 from classes.scraper import items
 from test_utils import unittest
 
+def FilteredTestSuite(tests):
+    try:
+        # Treat it like a TestSuite (which is an array), returning a new TestSuite
+        return unittest.TestSuite([FilteredTestSuite(x) for x in tests if FilteredTestSuite(x)])
+    except:
+        # Otherwise, handle the base case, and treat it like the actual class under test.
+        # Ensure we don't pass in protected classes:
+        if unicode(tests.__class__.__name__).startswith('_'):
+            return None
+        else:
+            return tests
+
+def load_tests(module, tests, dummy):
+    return FilteredTestSuite(tests)
 
 class _TestDedupeList(unittest.TestCase):
     studio_name = 'DummyStudio'

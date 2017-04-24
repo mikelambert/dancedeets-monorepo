@@ -37,7 +37,7 @@ export type FeaturedInfo = {
 type Person = {
   id: string;
   name: string;
-  count: Number;
+  count: number;
 };
 
 type Style = string;

@@ -75,7 +75,66 @@ Edit Event
 			<p>Reason: {{ classified_event.reason() }}<br>
 			Dance Words: {{ classifier_dance_words }}<br>
 			Event Words: {{ classifier_event_words }}<br>
-			Auto-classified: {{ auto_classified_types }}<br>
+      <br>
+
+      {% if event %}
+      Event Added: {{ event.creating_method }}<br>
+      <br>
+      {% endif %}
+
+			{% if auto_classified_types %}<b>{% endif %}
+      Auto-classified Keywords:
+      {% if auto_classified_types %}</b>{% endif %}
+      {{ auto_classified_types }}<br>
+
+      {% if auto_add_attendee_ids %}<b>{% endif %}
+      Auto-classified Attendees:
+      {% if auto_add_attendee_ids %}</b>{% endif %}
+      {% for id in auto_add_attendee_ids %}
+        <a href="http://www.facebook.com/{{ id }}">{{ id }}</a>,
+      {% endfor %}
+      <br>
+      <br>
+
+      Attendee Raw Data:<br>
+      {% for result in overlap_results %}
+        {{ result }}<br>
+      {% endfor %}
+      <br>
+      <br>
+
+      {% if attendee_ids_to_admin_hash_and_event_ids %}
+        Debug Dancer-Attendee Data:<br>
+{#
+        {% for event, popularity in event_popularity %}
+          Event {{ event.id }} with {{ popularity }} attendees:
+          <a href="/events/admin_edit?event_id={{ event.id }}">{{ event.name }}</a><br>
+          {% if event.fb_event.info.owner %}
+            Owned by <a href="/sources/admin_edit?source_id={{ event.fb_event.info.owner.id }}">{{ event.fb_event.info.owner.name }}</a>
+          {% endif %}
+          <br>
+          <br>
+        {% endfor %}
+#}
+        <br>
+        {% for dancer_id, admin_hash_and_event_ids in attendee_ids_to_admin_hash_and_event_ids %}
+          Dancer <a href="https://www.facebook.com/{{ dancer_id }}">{{ dancer_id }}</a> has {{ len(admin_hash_and_event_ids) }} points, and attended events:<br>
+          {% if len(admin_hash_and_event_ids) < 15 %}
+            {% for admin_hash, event_ids in admin_hash_and_event_ids.iteritems() %}
+              <a href="https://www.facebook.com/{{ admin_hash }}">{{ admin_hash }}</a>: (
+              {% for event_id in event_ids %}
+                <a href="http://www.dancedeets.com/events/admin_edit?event_id={{ event_id }}">{{ event_id }}</a>,
+              {% endfor %}
+              )<br>
+            {% endfor %}
+          {% else %}
+            Skipping due to too many hashes-and-events!<br>
+          {% endif %}
+          <br>
+        {% endfor %}
+        <br>
+      {% endif %}
+
 			Auto-categorized: {{ auto_categorized_types }}<br>
 			{% if event %}
 				Any Existing Tags:
@@ -87,7 +146,7 @@ Edit Event
 			<p>
 			{% if event %}
 				{% if creating_user %}
-					Submitted by <a href="{{ creating_user.profile.link }}">{{ creating_user.profile.name }}</a>.<br>
+					Submitted by <a href="https://www.facebook.com/{{ creating_user.profile.id }}">{{ creating_user.profile.name }}</a>.<br>
 				{% endif %}
 				<button type="submit" class="btn btn-primary">Edit Event</button>
 				<button type="submit" class="btn btn-danger" name="delete" value="yes">Delete Event</button>
@@ -107,9 +166,15 @@ Edit Event
 				Inv Keyword Density is {{ classified_event.inverse_keyword_density() }}.<br>
 				Show-even-if-zero is {{ potential_event.show_even_if_no_score }}.<br>
 				With Sources:
-				{% for source_id in potential_event.source_ids %}
+				{% for source_id in potential_event.source_ids_only() %}
 					<a href="{{ dd_admin_source_url(source_id) }}">{{ source_id }}</a>,
 				{% endfor %}
+        <br>
+        Overlap Dance Attendee IDs:
+        {% for id in overlap_attendee_ids %}
+          <a href="http://www.facebook.com/{{ id }}">{{ id }}</a>,
+        {% endfor %}
+        <br>
 			{% endif %}
 			<input type="hidden" name="event_id" value="{{ fb_event.info.id }}">
 

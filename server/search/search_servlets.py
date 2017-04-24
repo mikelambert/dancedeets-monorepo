@@ -8,6 +8,7 @@ import base_servlet
 import event_types
 from logic import friends
 from logic import rsvp
+from rankings import cities
 from util import urls
 from . import onebox
 from . import search
@@ -59,7 +60,6 @@ class RelevantHandler(SearchHandler):
             search_query = None
 
             search_results = []
-            sponsored_studios = {}
             onebox_links = []
             if validated:
                 search_query = form.build_query()
@@ -73,8 +73,6 @@ class RelevantHandler(SearchHandler):
                 if 'class' in form.deb.data:
                     from classes import class_index
                     class_results = class_index.ClassSearch(search_query).get_search_results()
-                    for result in class_results:
-                        sponsored_studios.setdefault(result.sponsor, set()).add(result.actual_city_name)
                     search_results += class_results
                     search_results.sort(key=lambda x: (x.start_time, x.actual_city_name, x.name))
                 onebox_links = onebox.get_links_for_query(search_query)
@@ -99,14 +97,6 @@ class RelevantHandler(SearchHandler):
             )
             self.setup_react_template('eventSearchResults.js', props)
 
-            # We can probably speed this up 2x by shrinking the size of the fb-event-attending objects. a list of {u'id': u'100001860311009', u'name': u'Dance InMinistry', u'rsvp_status': u'attending'} is 50% overkill.
-            a = time.time()
-            friends.decorate_with_friends(self.fbl, search_results)
-            logging.info("Decorating with friends-attending took %s seconds", time.time() - a)
-            a = time.time()
-            rsvp.decorate_with_rsvps(self.fbl, search_results)
-            logging.info("Decorating with personal rsvp data took %s seconds", time.time() - a)
-
             past_results, present_results, grouped_results = search.group_results(search_results)
             if search_query and search_query.time_period in search_base.TIME_ALL_FUTURE:
                 present_results = past_results + present_results
@@ -116,7 +106,6 @@ class RelevantHandler(SearchHandler):
             self.display['past_results'] = past_results
             self.display['ongoing_results'] = present_results
             self.display['grouped_upcoming_results'] = grouped_results
-            self.display['sponsored_studios'] = sponsored_studios
             self.display['onebox_links'] = onebox_links
 
         if form.time_period.data == search_base.TIME_PAST:
@@ -152,7 +141,8 @@ class CityHandler(RelevantHandler):
     def handle(self, city_name):
         # TODO(lambert): Why is this still required, can we get rid of it?
         self.fbl.batch_fetch() # to avoid bad error handler?
-        form = search_base.SearchForm(data={'location': city_name, 'distance': 100, 'distance_units': 'km'})
+        city_name = city_name.decode('utf-8')
+        form = search_base.SearchForm(data={'location': city_name, 'distance': cities.NEARBY_DISTANCE_KM, 'distance_units': 'km'})
         self.handle_search(form)
 
 @app.route('/pages/search')

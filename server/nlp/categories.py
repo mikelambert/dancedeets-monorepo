@@ -29,21 +29,29 @@ ANY_POP = Any(
     "pop", # dangerous one due to pop music
 )
 
-ANY_LOCK = Any(
+ANY_LOCK_STRICT = Any(
     keywords.STYLE_LOCK,
 #    "lock\w*",
     u'ロック',
+)
+
+ANY_LOCK = Any(
+    ANY_LOCK_STRICT,
     'funk\w*',
     'funky',
 )
 
 # No extras needed here
-ANY_WAACK = Any(
+ANY_WAACK_STRICT = Any(
     keywords.STYLE_WAACK,
     # we don't want "wake" to trigger, so let's enforce lengthß
     #"[uw]h?aa?c?c?k\w*",
     "[uw]h?aac?c?k\w*",
     "[uw]h?aa?cc?k\w*",
+)
+
+ANY_WAACK = Any(
+    ANY_WAACK_STRICT,
     "punk\w+",
     'disco',
 )
@@ -56,6 +64,8 @@ ANY_HOUSE = Any(
 ANY_HIPHOP = Any(
     keywords.STYLE_HIPHOP,
     keywords.STYLE_HIPHOP_WEAK,
+    keywords.CHOREO_CREW[grammar.STRONG_WEAK],
+    keywords.CHOREO_DANCER[grammar.STRONG_WEAK],
     'hip\Whop\w*',
 )
 
@@ -80,11 +90,13 @@ ANY_LITEFEET = Any(
 
 ANY_FLEX = Any(
     keywords.STYLE_FLEX,
+    keywords.FLEX_KEYWORD[grammar.STRONG_WEAK],
 )
 
 ANY_BEBOP = Any(
     keywords.STYLE_BEBOP,
     keywords.STYLE_BEBOP_WEAK,
+    keywords.BEBOP_CREW[grammar.STRONG_WEAK],
     'jazz\Wfusion',
 )
 
@@ -101,6 +113,27 @@ ANY_VOGUE = Any(
     keywords.EASY_VOGUE,
 )
 
+ANY_KIDS = Any(
+    keywords.KIDS,
+)
+
+STRICT_STYLES = {
+    event_types.BREAK: ANY_BREAK,
+    event_types.POP: ANY_POP,
+    event_types.LOCK: ANY_LOCK_STRICT,
+    event_types.WAACK: ANY_WAACK_STRICT,
+    event_types.HOUSE: ANY_HOUSE,
+    event_types.HIPHOP: ANY_HIPHOP,
+    event_types.DANCEHALL: ANY_DANCEHALL,
+    event_types.KRUMP: ANY_KRUMP,
+    event_types.TURF: ANY_TURF,
+    event_types.LITEFEET: ANY_LITEFEET,
+    event_types.FLEX: ANY_FLEX,
+    event_types.BEBOP: ANY_BEBOP,
+    event_types.ALLSTYLE: ANY_ALLSTYLE,
+    event_types.VOGUE: ANY_VOGUE,
+}
+
 STYLES = {
     event_types.BREAK: ANY_BREAK,
     event_types.POP: ANY_POP,
@@ -116,6 +149,7 @@ STYLES = {
     event_types.BEBOP: ANY_BEBOP,
     event_types.ALLSTYLE: ANY_ALLSTYLE,
     event_types.VOGUE: ANY_VOGUE,
+    event_types.KIDS: ANY_KIDS,
 }
 
 ANY_BATTLE = Any(
@@ -243,6 +277,10 @@ def find_rules(event, styles):
 
 def find_styles(event):
     return find_rules(event, BROAD_STYLES)
+
+
+def find_styles_strict(event):
+    return find_rules(event, STRICT_STYLES)
 
 
 def find_event_types(event):

@@ -14,7 +14,7 @@ from . import thing_db
 class AddEventException(Exception):
     pass
 
-def add_update_event(fb_event, fbl, creating_uid=None, visible_to_fb_uids=None, remapped_address=None, override_address=None, creating_method=None):
+def add_update_event(fb_event, fbl, creating_uid=None, visible_to_fb_uids=None, remapped_address=None, override_address=None, creating_method=None, allow_posting=True):
     if not fb_events.is_public_ish(fb_event):
         raise AddEventException('Cannot add secret/closed events to dancedeets!')
 
@@ -25,9 +25,14 @@ def add_update_event(fb_event, fbl, creating_uid=None, visible_to_fb_uids=None, 
     newly_created = (e.creating_method is None)
     if override_address is not None:
         e.address = override_address
-    if newly_created:
+
+    if e.creating_method is None:
         e.creating_method = creating_method or eventdata.CM_UNKNOWN
-        # Don't override the original creating_fb_uid
+    # Allow an override if we get a user or admin taking a human action
+    if creating_method in eventdata.ALL_CM_HUMAN_CREATED:
+        e.creating_method = creating_method or e.creating_method
+    # Don't override the original creating_fb_uid
+    if not e.creating_fb_uid:
         #STR_ID_MIGRATE
         e.creating_fb_uid = long(creating_uid) if creating_uid else None
         if e.creating_fb_uid:
@@ -44,29 +49,24 @@ def add_update_event(fb_event, fbl, creating_uid=None, visible_to_fb_uids=None, 
     # Updates and saves the event
     event_updates.update_and_save_fb_events([(e, fb_event)])
 
-    if newly_created:
+    if newly_created and allow_posting:
         logging.info("New event, publishing to twitter/facebook")
         deferred.defer(pubsub.eventually_publish_event, e.fb_event_id)
 
     fbl.clear_local_cache()
     deferred.defer(crawl_event_source, fbl, e.fb_event_id)
-
     return e
 
 
 def crawl_event_source(fbl, event_id):
     fb_event = fbl.get(fb_api.LookupEvent, event_id)
     e = eventdata.DBEvent.get_by_id(fb_event['info']['id'])
-    thing_db.create_source_from_event(fbl, e)
+    thing_db.create_sources_from_event(fbl, e)
 
-    # DISABLE_ATTENDING
-    fb_event_attending = None
-    potential_event = potential_events.make_potential_event_without_source(e.fb_event_id, fb_event, fb_event_attending)
+    potential_event = potential_events.make_potential_event_without_source(e.fb_event_id)
     classified_event = event_classifier.get_classified_event(fb_event, potential_event.language)
     if potential_event:
-        for source_id in potential_event.source_ids:
-            # STR_ID_MIGRATE
-            source_id = str(source_id)
+        for source_id in potential_event.source_ids_only():
             s = thing_db.Source.get_by_key_name(source_id)
             if not s:
                 logging.warning("Couldn't find source %s when updating event %s", source_id, e.fb_event_id)

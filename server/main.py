@@ -6,10 +6,17 @@ import sys
 
 prod_mode = 'SERVER_SOFTWARE' in os.environ and not os.environ['SERVER_SOFTWARE'].startswith('Dev')
 
+# Need to do this after vendoring lib-local/
+# And can't do it in appengine_config, since that gets loaded by appengine/api/lib_config
+# in places where we can't actually load pylibmc
+from services import memcache
+
 if not prod_mode:
     # Make python-twitter work in the sandbox (not yet sure about prod...)
-    from google.appengine.tools.devappserver2.python import sandbox
-    sandbox._WHITE_LIST_C_MODULES += ['_ssl']
+    #import google
+    #google.__file__ = ''
+    #from google.appengine.tools.devappserver2.python import sandbox
+    #sandbox._WHITE_LIST_C_MODULES += ['_ssl']
 
     # Remove the import hooks that disable C modules and built-in modules (popen et al)
     new_path = []
@@ -75,6 +82,12 @@ settings.configure(
 if os.environ.get('HOT_SERVER_PORT'):
     logging.info('Using hot reloader!')
 
+# Load this first, so 'app.prod_mode' is set asap
+from app import app as application
+application.debug = True
+application.prod_mode = prod_mode
+
+
 logging.info("Begin modules")
 import webapp2
 from google.appengine.ext.ndb import tasklets
@@ -91,9 +104,3 @@ import _strptime
 logging.info("Begin servlets")
 import all_servlets
 logging.info("Finished servlets")
-
-from app import app
-app.debug = True
-app.prod_mode = prod_mode
-
-application = app

@@ -15,6 +15,19 @@ indexes:
   - name: __key__
     direction: desc
 
+- kind: City
+  properties:
+  - name: country_name
+  - name: has_nearby_events
+  - name: population
+    direction: desc
+
+- kind: City
+  properties:
+  - name: has_nearby_events
+  - name: population
+    direction: desc
+
 - kind: DBEvent
   properties:
   - name: __key__
@@ -25,6 +38,11 @@ indexes:
   - name: city_name
   - name: start_time
     direction: desc
+
+- kind: DBEvent
+  properties:
+  - name: creating_method
+  - name: __scatter__
 
 - kind: DBEvent
   properties:
@@ -74,6 +92,12 @@ indexes:
   - name: looked_at
   - name: match_score
     direction: desc
+
+- kind: PotentialEvent
+  properties:
+  - name: looked_at
+  - name: past_event
+  - name: __scatter__
 
 - kind: PotentialEvent
   properties:

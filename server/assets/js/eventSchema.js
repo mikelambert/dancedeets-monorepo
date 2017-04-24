@@ -18,6 +18,7 @@ function getEventSchema(event: Event) {
     url: event.getUrl(),
     organizer: event.admins.map(x => x.name).join(', '),
     startDate: formatSchemaDate(event.start_time),
+    description: event.description,
   };
   if (event.end_time) {
     schema.endDate = formatSchemaDate(event.end_time);

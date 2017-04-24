@@ -75,7 +75,7 @@ const yellowColors = [
 
 export class HorizontalEventFlyer extends React.Component {
   props: {
-    event: SearchEvent;
+    event: BaseEvent;
   }
 
   generateCroppedCover(picture: Cover, width: number, height: number) {
@@ -179,7 +179,7 @@ const EventDescription = injectIntl(_EventDescription);
 
 class HorizontalEvent extends React.Component {
   props: {
-    event: BaseEvent;
+    event: SearchEvent;
     lazyLoad: boolean;
   }
 
@@ -200,7 +200,7 @@ class HorizontalEvent extends React.Component {
 
 class VerticalEvent extends React.Component {
   props: {
-    event: BaseEvent;
+    event: SearchEvent;
   }
 
   render() {
@@ -358,9 +358,9 @@ const OneboxLinks = injectIntl(_OneboxLinks);
 
 class PersonList extends React.Component {
   props: {
-    title: String;
-    subtitle: String;
-    categoryOrder: Array<String>;
+    title: string;
+    subtitle: string;
+    categoryOrder: Array<string>;
     people: StylePersonLookup;
   }
 
@@ -406,7 +406,7 @@ class _ResultsList extends React.Component {
   props: {
     response: NewSearchResponse;
     past: boolean;
-    categoryOrder: Array<String>;
+    categoryOrder: Array<string>;
 
     // Self-managed props
     window: windowProps;

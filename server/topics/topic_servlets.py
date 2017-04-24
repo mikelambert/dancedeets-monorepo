@@ -50,7 +50,7 @@ def decorate_with_topic_details(search_response):
     full_response = search_response.copy()
     for video in full_response['items']:
         if video['id']['kind'] == 'youtube#video':
-            video['topicDetails'] = topic_lookup[video['id']['videoId']]['topicDetails']
+            video['topicDetails'] = topic_lookup[video['id']['videoId']].get('topicDetails')
     return full_response
 
 def get_topic_details_for(search_response):
@@ -139,7 +139,7 @@ class TopicHandler(base_servlet.BaseRequestHandler):
             videos=videos,
         )
 
-        self.setup_react_template('topic', props)
+        self.setup_react_template('topic.js', props)
         self.display['all_results'] = search_results
 
         by_year = []

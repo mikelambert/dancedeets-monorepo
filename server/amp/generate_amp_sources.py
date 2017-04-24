@@ -1,18 +1,13 @@
 #!/usr/bin/python
 
-import site
-import sys
-sys.path.insert(0, 'frankenserver/python')
-sys.path.insert(0, '/Users/lambert/google-cloud-sdk/lib/third_party')
-site.addsitedir('lib-local')
-site.addsitedir('lib-both')
-import google
-del sys.modules['google']
+import os
 
+import runner
+
+runner.setup()
 
 import logging
 logging.getLogger().setLevel(logging.DEBUG)
-import os
 from unittest import result
 from webtest import TestApp
 

@@ -57,7 +57,7 @@ def get_training_features(potential_event, fb_event, fb_event_attending):
 
     attendee_list = ' '.join(['id%s' % x['id'] for x in fb_event_attending['attending']['data']])
 
-    source_list = ' '.join('id%s' % x for x in potential_event.source_ids)
+    source_list = ' '.join('id%s' % x.id for x in potential_event.source_ids_only())
 
     #TODO(lambert): maybe include number-of-keywords and keyword-density?
 
@@ -65,7 +65,7 @@ def get_training_features(potential_event, fb_event, fb_event_attending):
     # for now we can just grep and build sub-models per-language on my client machine.
     return (attendee_list,)
     return (potential_event.language, owner_name, location, name, description, attendee_list, source_list)
-    
+
 
 def mr_generate_training_data(fbl):
     fb_mapreduce.start_map(

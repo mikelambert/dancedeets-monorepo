@@ -1,11 +1,12 @@
 import logging
+import pycountry
 import re
+
 from google.appengine.ext import db
 from google.appengine.runtime import apiproxy_errors
 
 from loc import gmaps_api
 from loc import formatting
-from util import abbrev
 
 ONLINE_ADDRESS = 'ONLINE'
 
@@ -23,8 +24,19 @@ class LocationMapping(db.Model):
     remapped_address = db.StringProperty(indexed=False)
 
 
+def state_name_for_fb_location(location):
+    state_name = location.get('state')
+    try:
+        country = pycountry.countries.get(name=location.get('country'))
+        state = pycountry.subdivisions.get(code='%s-%s' % (country.alpha_2, location.get('state')))
+        if state:
+            state_name = state.name
+    except KeyError:
+        pass
+    return state_name
+
 def city_for_fb_location(location):
-    state = abbrev.states_full2abbrev.get(location.get('state'), location.get('state'))
+    state = state_name_for_fb_location(location)
     if location.get('city') and (state or location.get('country')):
         address_components = [location.get('city'), state, location.get('country')]
         address_components = [x for x in address_components if x]
@@ -72,8 +84,7 @@ def get_address_for_fb_event(fb_event):
     if not venue:
         return event_location
 
-    # Use states_full2abbrev to convert "Lousiana" to "LA" so "Hollywood, LA" geocodes correctly.
-    state = abbrev.states_full2abbrev.get(venue.get('state'), venue.get('state'))
+    state = state_name_for_fb_location(venue)
     address_components = [event_location, venue.get('street'), venue.get('city'), state, venue.get('country')]
     address_components = [x for x in address_components if x]
     final_address = ', '.join(address_components)
@@ -123,12 +134,21 @@ def update_remapped_address(fb_event, new_remapped_address):
         _save_remapped_address_for(location_info.fb_address, new_remapped_address)
 
 class LocationInfo(object):
-    def __init__(self, fb_event=None, db_event=None, debug=False):
+    def __init__(self, fb_event=None, db_event=None, debug=False, check_places=True):
         self.overridden_address = None
         self.fb_address = None
         self.remapped_address = None
         self.final_address = None
         self.geocode = None
+
+        # If we're not doing a full-fledged step-by-step debug, used our cached geocode (if available)
+        if not debug and db_event and db_event.has_geocode():
+            self.geocode = db_event.get_geocode()
+            self.final_address = self.geocode.formatted_address()
+            # Sometimes we get called with a webevent...in which case the fb_address doesn't matter
+            if db_event.fb_event:
+                self.fb_address = get_address_for_fb_event(db_event.fb_event)
+            return
 
         has_overridden_address = db_event and db_event.address
         if not has_overridden_address and not fb_event:
@@ -143,7 +163,7 @@ class LocationInfo(object):
                 logging.info("Checking remapped address, which is %r", self.remapped_address)
             lookup_address = self.remapped_address or self.fb_address
             if lookup_address:
-                location_geocode = gmaps_api.lookup_string(lookup_address)
+                location_geocode = gmaps_api.lookup_string(lookup_address, check_places=check_places)
                 if location_geocode:
                     self.geocode = location_geocode
                     self.final_address = location_geocode.formatted_address()
@@ -159,7 +179,7 @@ class LocationInfo(object):
             self.overridden_address = db_event.address
             self.final_address = self.overridden_address
             if self.final_address != ONLINE_ADDRESS:
-                self.geocode = gmaps_api.lookup_string(self.final_address)
+                self.geocode = gmaps_api.lookup_string(self.final_address, check_places=check_places)
 
         logging.info("Final address is %r", self.final_address)
 

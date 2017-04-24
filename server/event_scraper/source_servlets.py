@@ -39,7 +39,8 @@ class AdminEditHandler(base_servlet.BaseRequestHandler):
         found_db_event_ids = [x.string_id() for x in eventdata.DBEvent.get_by_ids([x.fb_event_id for x in source_potential_events], keys_only=True) if x]
 
         if s.creating_fb_uid:
-            creating_user = self.fbl.get(fb_api.LookupUser, s.creating_fb_uid)
+            #STR_ID_MIGRATE
+            creating_user = self.fbl.get(fb_api.LookupUser, str(s.creating_fb_uid))
         else:
             creating_user = None
 
@@ -78,3 +79,6 @@ class AdminEditHandler(base_servlet.BaseRequestHandler):
         thing_scraper.scrape_events_from_sources(self.fbl, [s])
         self.redirect('/sources/admin_edit?source_id=%s' % source_id)
 
+@app.route('/sources/scrape')
+class ScrapeSourceHandler(base_servlet.SourceIdOperationHandler):
+    source_id_operation = staticmethod(thing_scraper.scrape_events_from_source_ids_with_fallback)

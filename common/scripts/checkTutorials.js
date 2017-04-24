@@ -122,7 +122,7 @@ async function checkAllTutorials() {
     console.error('Error importing learnConfig.js\n', e);
     return;
   }
-  const configuredTutorials = [].concat(...Object.values(defaultTutorials.map(style => style.tutorials)));
+  const configuredTutorials = [].concat(...defaultTutorials.map(style => style.tutorials));
   const missingTutorials = tutorials.filter(fileTut => !configuredTutorials.find(configTut => configTut.id === fileTut.id));
   for (const tutorial of missingTutorials) {
     console.error('Tutorial not included: ', tutorial.style, tutorial.title);

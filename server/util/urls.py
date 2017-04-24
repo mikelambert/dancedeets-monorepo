@@ -12,6 +12,10 @@ def dd_relative_event_url(eid):
     return '/events/%s/' % eid
 
 
+def dd_short_event_url(eid):
+    return 'http://dd.events/e-%s' % eid
+
+
 def raw_fb_event_url(eid):
     return 'http://www.facebook.com/events/%s/' % eid
 
@@ -49,5 +53,7 @@ def get_event_id_from_url(url):
     if not match:
         match = re.search(r'/events/(%s)(?:[/?]|$)' % EVENT_ID_REGEX, url)
         if not match:
-            return None
+            match = re.search(r'event_id=(%s)(?:[/?]|$)' % EVENT_ID_REGEX, url)
+            if not match:
+                return None
     return match.group(1)

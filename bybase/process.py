@@ -26,6 +26,13 @@ count = len(eventData)
 txt = open('eventList-%s.txt' % (count), 'w')
 
 def exists(e):
+
+    # Just in case, search FB and see if the ID we get is on dancedeets
+    found_events = find_fb_ids(e)
+    for fb_event in found_events:
+        if dd_id_exists(fb_event['id']):
+            return True
+
     cache_filename = 'dd_cached/%s.txt' % e['id']
     if os.path.exists(cache_filename):
         data = open(cache_filename).read()
@@ -41,7 +48,7 @@ def exists(e):
             'client': 'cmdline',
         })
         url = 'http://www.dancedeets.com/api/v1.3/search?%s' % qs
-        data = urllib2.urlopen(url, '{"client": "cmdline"}', timeout=3).read()
+        data = urllib2.urlopen(url, '{"client": "cmdline"}', timeout=10).read()
         response = json.loads(data)
         if not 'results' in response:
             logging.error(url)
@@ -50,12 +57,6 @@ def exists(e):
             open(cache_filename, 'w').write(data)
     if 'results' in response:
         if response['results']:
-            return True
-
-    # Just in case, search FB and see if the ID we get is on dancedeets
-    found_events = find_fb_ids(e)
-    for fb_event in found_events:
-        if dd_id_exists(fb_event['id']):
             return True
 
     return False
@@ -68,7 +69,7 @@ def dd_id_exists(eid):
     else:
         logging.info('Looking up info for event %s in DanceDeets', eid)
         url = 'http://www.dancedeets.com/api/v1.3/events/%s' % eid
-        data = urllib2.urlopen(url, timeout=2).read()
+        data = urllib2.urlopen(url, timeout=5).read()
         response = json.loads(data)
         open(cache_filename, 'w').write(data)
     if 'id' in response:
@@ -171,27 +172,30 @@ for e in eventData:
     if not e_exists:
         new_countries.setdefault(e['state'], []).append(e)
     
-print 'Post-Ups:'
+print 'Post-Ups (Missing):'
 for post_date, lst in sorted(posts.items()):
     print post_date, len(lst)
     for e in lst:
         ids = [x['id'] for x in find_fb_ids(e)]
-        print '  ', 'X' if status[e['id']] else '-', ids, e['title']
+        if not status.get(e['id']):
+            ids = [x['id'] for x in find_fb_ids(e)]
+            print '-', ids, e['title']
 
 #print 'Events:'
 #for post_date, count in sorted(events.items()):
 #    print post_date, count
 
-print 'Countries:'
-for country, lst in sorted(countries.items(), key=lambda x: len(x[1]))[-10:]:
-    print country, len(lst)
+if False:
+    print 'Countries:'
+    for country, lst in sorted(countries.items(), key=lambda x: len(x[1]))[-10:]:
+        print country, len(lst)
 
-print 'New Countries:'
-for country, lst in sorted(new_countries.items(), key=lambda x: len(x[1]))[-10:]:
-    print country, len(lst)
-    for e in lst:
-        ids = [x['id'] for x in find_fb_ids(e)] if not status[e['id']] else '--'
-        print '  ', 'X' if status[e['id']] else '-', ids, e['title']
+    print 'New Countries:'
+    for country, lst in sorted(new_countries.items(), key=lambda x: len(x[1]))[-10:]:
+        print country, len(lst)
+        for e in lst:
+            ids = [x['id'] for x in find_fb_ids(e)] if not status[e['id']] else '--'
+            print '  ', 'X' if status[e['id']] else '-', ids, e['title']
 
 print 'Coverage:'
 existIds = [x for x in status if status[x]]

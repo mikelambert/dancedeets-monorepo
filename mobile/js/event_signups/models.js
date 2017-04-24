@@ -5,8 +5,8 @@
  */
 
 export type Dancer = {
-  id: String;
-  name: String;
+  id: string;
+  name: string;
 };
 
 // Currently this is of the form "<timestamp>_<random>"
@@ -105,10 +105,16 @@ export function categoryDisplayName(category: BattleCategory) {
 
 
 export function getCategorySignups(category: BattleCategory): Array<Signup> {
-  if (!category.signups) {
+  const signups = category.signups;
+  if (!signups) {
     return [];
   } else {
-    const result: Array<Signup> = Object.keys(category.signups).sort().map(x => category.signups[x]);
+    const result: Array<Signup> = Object.keys(signups).sort().map(x => signups[x]);
     return result;
   }
+}
+
+export function getCategories(battle: BattleEvent): Array<BattleCategory> {
+  const result: Array<BattleCategory> = Object.keys(battle.categories).sort().map(x => battle.categories[x]);
+  return result;
 }

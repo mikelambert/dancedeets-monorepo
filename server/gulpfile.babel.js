@@ -6,6 +6,7 @@
 
 import del from 'del';
 import favicons from 'gulp-favicons';
+import fetch from 'node-fetch';
 import fs from 'fs';
 import glob from 'glob';
 import gutil from 'gutil';
@@ -37,6 +38,9 @@ gulp.task('default', taskListing);
 const $ = gulpLoadPlugins();
 
 const baseAssetsDir = `/Users/${username.sync()}/Dropbox/dancedeets/art/build-assets/`;
+
+//TODO: Support login here, so that this URL can actually run. Currently blocked by 'login: admin'
+gulp.task('web:events:resave', cb => fetch('http://www.dancedeets.com/tasks/reload_events?user_id=701004&allow_cache=1&disable_updates=regeocode,photo,cached_city&queue=fast-queue&only_if_updated=0').then(x => console.log(x)))
 
 gulp.task('compile:images:favicons', () => gulp
   .src('assets/img/deets-head.png')
@@ -176,7 +180,7 @@ const webEventNames = getScrapyNames('web_events/scraper/spiders/*.py');
 const classesNames = getScrapyNames('classes/scraper/spiders/*.py');
 
 webEventNames.concat(classesNames).forEach(x =>
-  gulp.task(`scrape:one:${x}`, $.shell.task(`PYTHONPATH=/Library/Python/2.7/site-packages:$PYTHONPATH scrapy crawl ${x}`)));
+  gulp.task(`scrape:one:${x}`, $.shell.task(`PYTHONPATH=lib-local/ scrapy crawl ${x}`)));
 gulp.task('scrape:web:scrapy',    webEventNames.map(x => `scrape:one:${x}`));
 gulp.task('scrape:classes:scrapy', classesNames.map(x => `scrape:one:${x}`));
 gulp.task('scrape:classes:index:prod', $.shell.task(['curl http://www.dancedeets.com/classes/reindex']))
@@ -223,7 +227,7 @@ function executeCommand(command) {
 // http://stackoverflow.com/questions/32623815/simple-gulp-task-to-deploy-to-google-app-engine-and-stream-output-to-console
 // At least, until/if gulp-shell is fixed to work around it:
 // https://github.com/sun-zheng-an/gulp-shell/issues/84
-gulp.task('deploy:server:toofast', () => executeCommand('gcloud app deploy app.yaml --quiet'));
+gulp.task('deploy:server:toofast', () => executeCommand('./buildpush.sh'));
 gulp.task('deploy:server:prepush', $.shell.task(['./tools/check_for_native_modules.sh']));
 gulp.task('deploy:server:fast', cb => runSequence('deploy:server:prepush', 'deploy:server:toofast', cb));
 gulp.task('deploy:server', cb => runSequence('deploy:cleanup-files', 'compile', 'deploy:server:fast', cb));
@@ -266,14 +270,16 @@ gulp.task('compile', ['compile:webpack', 'compile:images', 'compile:fonts']);
 
 gulp.task('clean', () => del.sync('dist'));
 
-gulp.task('test', $.shell.task(['./nose.sh']));
+gulp.task('test', $.shell.task(['./test.sh']));
 
 gulp.task('rebuild', cb => runSequence('clean', 'compile', 'test', cb));
 
 
 
 const homedir = osHomedir();
-gulp.task('datalab', $.shell.task([`docker run -it -p "127.0.0.1:8081:8080" -v "${homedir}:/content" -e "PROJECT_ID=dancedeets-hrd" gcr.io/cloud-datalab/datalab:local`]));
+gulp.task('datalab:local', $.shell.task([`docker run -it -p "127.0.0.1:8081:8080" -v "${homedir}:/content" -e "PROJECT_ID=dancedeets-hrd" gcr.io/cloud-datalab/datalab:local`]));
+gulp.task('datalab:remote:start', $.shell.task([`datalab connect dl`]));
+gulp.task('datalab:remote:stop', $.shell.task([`datalab stop dl`]));
 
 
 
@@ -301,11 +307,13 @@ gulp.task('dev-appserver:server:hot:force',     cb => runSequence('dev-appserver
 gulp.task('react-server', $.shell.task(['../runNode.js ./node_server/renderServer.js --port 8090']));
 
 
-const dockerImages = ['gae-py-js', 'gae-geos', 'gae-modules', 'gae-modules-py'];
+const dockerImages = ['gae-py-js', 'gae-geos', 'gae-binaries', 'gae-modules', 'gae-modules-py'];
 dockerImages.forEach(imageName =>
   gulp.task(`buildDocker:${imageName}`, $.shell.task([`cd docker/${imageName} && ./build.sh`]))
 );
 gulp.task('buildDocker', cb => runSequence(...dockerImages.map(x => `buildDocker:${x}`), cb))
+
+gulp.task('server:datastore:local', $.shell.task(['gcloud beta emulators datastore start --no-store-on-disk --consistency=1.0 --host-port=localhost:8095']))
 
 // Workable Dev Server (1): Hot reloading
 // Port 8090: Backend React Render server
@@ -318,7 +326,7 @@ gulp.task('server:hot:python:force', ['dev-appserver:server:hot:force']);
 gulp.task('server:hot:javascript', $.shell.task(['../runNode.js ./hotServer.js --debug --port 8080 --backend 8085']));
 // Or we can run them all with:
 gulp.task('server:hot', ['server:hot:react', 'server:hot:python', 'server:hot:javascript']);
-gulp.task('server:hot:force', ['server:hot:react', 'server:hot:python:force', 'server:hot:javascript']);
+gulp.task('server:hot:force', ['server:hot:react', 'server:hot:python:force', 'server:hot:javascript', 'server:datastore:local']);
 
 
 // Workable Dev Server (2) Prod-like JS/CSS setup
@@ -331,7 +339,7 @@ gulp.task('server:full:python', ['dev-appserver:server:regular']);
 //    'compile:webpack:server:prod:watch'
 //    'compile:webpack:client:prod:watch'
 // Or we can run them all with:
-gulp.task('server:full', ['server:full:react', 'server:full:python', 'compile:webpack:server:prod:watch', 'compile:webpack:client:prod:watch']);
+gulp.task('server:full', ['server:full:react', 'server:full:python', 'compile:webpack:server:prod:watch', 'compile:webpack:client:prod:watch', 'server:datastore:local']);
 // TODO: We ignore 'compile:webpack:amp:prod:watch' because it will need a running server to run against, and timing that is hard.
 
 gulp.task('serverFull', ['server:full'])

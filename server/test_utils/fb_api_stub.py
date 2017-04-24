@@ -96,4 +96,4 @@ class MemoryFBAPI(fb_api.FBAPI):
         pass
 
     def _create_rpc_for_batch(self, batch_list, use_access_token):
-        return FakeRPC(batch_list, use_access_token, self.access_token == EXPIRED_ACCESS_TOKEN, self.do_timeout)
+        return FakeRPC(batch_list, use_access_token, self.access_token_list == [EXPIRED_ACCESS_TOKEN], self.do_timeout), EXPIRED_ACCESS_TOKEN

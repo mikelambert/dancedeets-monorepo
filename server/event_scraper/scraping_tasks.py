@@ -13,7 +13,18 @@ class AutoAddPotentialEventsHandler(base_servlet.BaseTaskFacebookRequestHandler)
             past_event = True
         elif past_event == '0':
             past_event = False
-        auto_add.mr_classify_potential_events(self.fbl, past_event)
+
+        if self.request.get('dancey_only', None) == '1':
+            dancey_only = True
+        else:
+            dancey_only = False
+
+        auto_add.mr_classify_potential_events(self.fbl, past_event, dancey_only)
+
+
+@app.route('/tools/maybe_add_events')
+class MaybeAddEventsHandler(base_servlet.EventIdOperationHandler):
+    event_id_operation = staticmethod(auto_add.maybe_add_events)
 
 @app.route('/tools/export_sources')
 class ExportSourcesHandler(base_servlet.BaseTaskFacebookRequestHandler):
@@ -41,5 +52,5 @@ class LoadAllPotentialEventsHandler(base_servlet.BaseTaskFacebookRequestHandler)
 class LoadPotentialEventsFromWallPostsHandler(base_servlet.BaseTaskFacebookRequestHandler):
     def get(self):
         min_potential_events = int(self.request.get('min_potential_events', '0'))
-        queue = self.request.get('queue', 'super-slow-queue')
+        queue = self.request.get('queue', 'slow-queue')
         thing_scraper.mapreduce_scrape_all_sources(self.fbl, min_potential_events=min_potential_events, queue=queue)

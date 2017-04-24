@@ -21,6 +21,7 @@ EVENT_IMAGE_CACHE_BUCKET = 'dancedeets-event-flyers-%s-by-%s'
 
 CACHEABLE_SIZES = set([
     (180, 180),
+    (720, None),
 ])
 
 def test_jpeg(h, f):
@@ -113,7 +114,8 @@ def _attempt_resize_image(final_image, width, height):
     return final_image
 
 def _get_cache_bucket_name(width, height):
-    return EVENT_IMAGE_CACHE_BUCKET % (width, height)
+    name = EVENT_IMAGE_CACHE_BUCKET % (width, height)
+    return name.lower()
 
 def _read_image_cache(event_id, width, height):
     try:
@@ -135,17 +137,22 @@ def _get_mimetype(image_data):
     image_type = imghdr.what(f)
     return 'image/%s' % image_type
 
+def get_image(event):
+    try:
+        final_image = _render_image(event.id)
+    except NotFoundError:
+        cache_image_and_get_size(event)
+        final_image = _render_image(event.id)
+    return final_image
+
 def render(response, event, width=None, height=None):
     final_image = None
     cache_key = (width, height)
+    logging.info('Cache key is %r', cache_key)
     if cache_key in CACHEABLE_SIZES:
         final_image = _read_image_cache(event.id, width, height)
     if not final_image:
-        try:
-            final_image = _render_image(event.id)
-        except NotFoundError:
-            cache_image_and_get_size(event)
-            final_image = _render_image(event.id)
+        final_image = get_image(event)
     if width or height:
         try:
             final_image = _resize_image(final_image, width, height)

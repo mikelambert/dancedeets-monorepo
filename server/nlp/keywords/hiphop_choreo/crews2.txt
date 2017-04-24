@@ -1,0 +1,251 @@
+# From Vibe
+academy of villains
+akashi breakers
+barkada modern
+cadc
+choreo cookies
+grv
+japanimation
+kaba modern
+nsu modern
+pac modern
+super galactic beat manipulators
+team millennia
+culture shock la
+ecsntrcs
+ill habits
+kabamodern
+km kaba legacy
+poreotix
+pac modern
+sgbm
+team millenia
+three23
+kinjaz
+mischief makers
+underground flow
+unity la
+
+# From The Bridge
+909 hhdt
+aca hip hop
+ascension hip hop
+bakery dance company
+barkada modern
+beat jerkeez
+cadc
+chaotic 3
+collective faction
+family bizness
+mandroidz
+main stacks
+natural st8
+nsu modern
+samahang modern
+three23
+vsu modern
+badgirlsclub
+tm juniors
+team millennia
+
+# From collaboration norcal/socal
+main\W*stacks
+grooveology
+animazing
+full potential
+haluan
+str8jacket
+mandroidz
+killerbeez
+academy of kings
+ecsntrcs
+academy of phresh
+mind over matter
+shorteez
+jr prophecy
+next prophecy
+chapkis dance
+doscero
+elev8
+outlawz
+elektro academy
+soul fresh fam
+williams fam
+
+# prelude nyc
+phunk phenomenon
+860 elite squad
+heartbreak crew
+slam hip hop
+future shock dc
+
+# prelude norcal
+aca hip\W?hop
+press play
+press p\.l\.a\.y
+groove against the machine
+abba modern
+barkada modern
+fasa modern
+samahang modern
+project m
+\\[m\\]ovement
+
+# prelude east coast
+puso modern
+ufp dance
+academy of phresh
+a rhythm company
+cohe
+outburst dance
+static noyze
+k9 collective
+the piecemakers
+clutch collective
+mint dance company
+synchronic dance team
+raps dance-troupe
+ven15 ladies
+epic motion
+2sdays
+lucy stoners
+project d
+
+# prelude phili
+clutch collective
+academy of phresh
+total kaoz krew
+modern demand dance crew
+the rhemix
+x-tasee
+l3gacy
+kozmic edge
+komikazies
+creative reaction
+onyx dance
+breani project
+total kaoz kidz krew
+dare to dance
+
+# prelude dmv
+x-tasee
+hyperspace command force
+amped
+akademix
+raw element dance
+major definition
+mozaic dance
+bamboom dance
+last minute crew
+urbanknowlogy
+madequal
+kdx muvmnt
+bahay base
+solow
+crewcial
+
+# prelude sacramento
+1up fam
+academy of kings
+hijinx
+str8jacket
+tat2
+vip san jose
+boogie monstarz
+groove-a-lils
+grooveology
+nhan ho project
+rhythm inc
+the box fam
+theproject
+
+# prelude las vegas
+high profile dance academy
+meccamee
+scu hipnotik
+vsu modern
+sleepless collective
+camp radar
+genesis dance
+hypnotix dance krew
+groundzero lv
+ateamlv
+tru fam
+
+# prelude midwest
+pds crew
+xquizit
+next level dance company
+washu hip hop union
+wuhhu
+piecemakers
+boom crack! dance
+phinix dance
+funk effect
+pack dance crew
+kinship dance community
+bpd danceforce
+fusion dance company
+ascension performing arts
+boom box! dance
+hip hop connxion
+fia modern
+primo dance troupe
+mantastic voyage
+
+# prelude northwest
+groove nation
+kutt n up
+team isod
+nw reign
+audacity cru
+
+# prelude new england
+protohype dance crew
+streethype
+project nailz
+megahurtz entertainment
+unknown hype dance company
+oasis dance
+kinematix dance troupe
+spirit of color
+revolve dance crew
+dexter's lab
+shu hip hop crew
+harvard expressions
+stereo missphitz
+unyted stylz
+dynamix
+lil phunk
+phunk phenomenon
+
+# prelude carolinas
+hiphopcrisy
+unc moonlight hip hop
+unleashed dance company
+akademix
+entropy dance crew
+mozaic dance team
+kamikazi hip hop
+just cuz crew
+physical graffeeti
+hittaz dance crew
+diva lyfe
+checkmatez
+dirty durm divas
+crewcial va
+genetix dance crew
+cindy lam project
+
+# prelude arizona
+bento box clubhouse
+primexample
+royal heat
+dia clones
+electro elite
+jukebox fam
+asu hip hop
+the riveters
+drop varsity
+aov
+ysc

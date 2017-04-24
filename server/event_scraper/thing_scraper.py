@@ -1,4 +1,5 @@
 import cgi
+import dateparser
 import datetime
 import logging
 import re
@@ -9,6 +10,7 @@ from mapreduce import context
 from mapreduce import control
 from mapreduce import operation
 
+from users import users
 from util import deferred
 from util import fb_mapreduce
 from . import event_pipeline
@@ -51,7 +53,9 @@ def mr_delete_bad_sources():
 
 
 def scrape_events_from_sources(fbl, sources):
+    fbl.allow_cache = False
     discovered_list = discover_events_from_sources(fbl, sources)
+    fbl.allow_cache = True
     process_event_source_ids(discovered_list, fbl)
 
 
@@ -70,6 +74,9 @@ def discover_events_from_sources(fbl, sources):
 
     # don't scrape sources that prove useless and give mostly garbage events
     #sources = [x for x in sources if x.fraction_potential_are_real() > 0.05]
+
+    if fbl.allow_cache:
+        logging.error('discover_events_from_sources unexpectedly called with a disabled cache!')
 
     logging.info("Looking up sources: %s", [x.graph_id for x in sources])
     fbl.request_multi(fb_api.LookupThingFeed, [x.graph_id for x in sources])
@@ -95,7 +102,7 @@ def scrape_events_from_source_ids(fbl, source_ids):
 
 map_scrape_events_from_sources = fb_mapreduce.mr_wrap(scrape_events_from_sources)
 
-def mapreduce_scrape_all_sources(fbl, min_potential_events=None, queue='super-slow-queue'):
+def mapreduce_scrape_all_sources(fbl, min_potential_events=None, queue='slow-queue'):
     # Do not do the min_potential_events>1 filter in the mapreduce filter,
     # or it will want to do a range-shard on that property. Instead, pass-it-down
     # and use it as an early-return in the per-Source processing.
@@ -115,7 +122,7 @@ def mapreduce_create_sources_from_events(fbl):
     fb_mapreduce.start_map(
         fbl,
         'Create Sources from Events',
-        'event_scraper.thing_db.map_create_source_from_event',
+        'event_scraper.thing_db.map_create_sources_from_event',
         'events.eventdata.DBEvent',
     )
 
@@ -140,30 +147,37 @@ def process_thing_feed(source, thing_feed):
         logging.error("No 'data' found in: %s", thing_feed['feed'])
         return []
 
+    # In case any of our MR's failed and updated the last_scrape_time prematurely,
+    # we still want to check back and make sure we include them.
+    # Setting a high-watermark means the map produces 50K (new) events instead of 500K (old+new) events.
+    if source.last_scrape_time:
+        post_high_watermark = source.last_scrape_time - datetime.timedelta(days=2)
+    else:
+        post_high_watermark = datetime.datetime.min
+
+    logging.info('Finding events on source %s, using high watermark %s', source.graph_id, post_high_watermark)
     # save new name, feed_history_in_seconds
     source.compute_derived_properties(thing_feed)
     source.last_scrape_time = datetime.datetime.now()
     source.put()
 
-    discovered_list = build_discovered_from_feed(source, thing_feed['feed']['data'])
+    discovered_list = build_discovered_from_feed(source, thing_feed['feed']['data'], post_high_watermark)
 
     # Now also grab the events that the page owns/manages itself:
     for event in thing_feed['events']['data']:
-        discovered = potential_events.DiscoveredEvent(event['id'], source, thing_db.FIELD_FEED)
-        discovered_list.append(discovered)
+        updated_time = dateparser.parse(event['updated_time'])
+        if post_high_watermark < updated_time:
+            discovered = potential_events.DiscoveredEvent(event['id'], source, thing_db.FIELD_FEED)
+            discovered_list.append(discovered)
     return discovered_list
 
-def build_discovered_from_feed(source, feed_data):
+def build_discovered_from_feed(source, feed_data, post_high_watermark):
     discovered_list = []
     for post in feed_data:
         links = []
         p = None
         if 'link' in post:
             link = post['link']
-            links.append(link)
-        # sometimes 'pages' have events-created, but posted as status messages that we need to parse out manually
-        for x in post.get('actions', []):
-            link = x['link']
             links.append(link)
         if post.get('message'):
             links.extend(re.findall("https?://[A-Za-z0-9-._~:/?#@!$&\'()*+,;=%]+", post.get('message')))
@@ -184,8 +198,12 @@ def build_discovered_from_feed(source, feed_data):
                     eid = m.group(1)
             if eid:
                 extra_source_id = post['from']['id']
-                discovered = potential_events.DiscoveredEvent(eid, source, thing_db.FIELD_FEED, extra_source_id)
-                discovered_list.append(discovered)
+                if extra_source_id == source.graph_id:
+                    extra_source_id = None
+                updated_time = dateparser.parse(post['updated_time'])
+                if post_high_watermark < updated_time:
+                    discovered = potential_events.DiscoveredEvent(eid, source, thing_db.FIELD_FEED, extra_source_id)
+                    discovered_list.append(discovered)
             else:
                 logging.warning("broken link is %s", urlparse.urlunparse(p))
     return discovered_list
@@ -210,3 +228,12 @@ def process_event_source_ids(discovered_list, fbl):
         if new_source_ids:
             deferred.defer(scrape_events_from_source_ids, fbl, new_source_ids)
 
+def scrape_events_from_source_ids_with_fallback(fbl, source_ids):
+    for source_id in source_ids:
+        try:
+            scrape_events_from_source_ids(fbl, [source_id])
+        except fb_api.ExpiredOAuthToken:
+            logging.warning("Found ExpiredOAuthtoken %s when scraping source, falling back to main token: %s", fbl, source_id)
+            user = users.User.get_by_id('701004')
+            fbl = user.get_fblookup()
+            scrape_events_from_source_ids(fbl, [source_id])

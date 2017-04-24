@@ -75,6 +75,9 @@ class StringProcessor(object):
         self._get_token_cache = {}
         self._has_token_cache = {}
 
+    def __repr__(self):
+        return 'StringProcessor(%r)' % self.text
+
     def tokenize(self, token):
         """Tokenizes the relevant bits of this String. Replaces all instances of the token's regex, with the token's string representation.
         """
@@ -258,6 +261,7 @@ class ClassifiedEvent(object):
         #    if 1.0 * good_parts / len(line) > 0.1:
         #        # strong!
         #        strong += 1
+        music_or_dance_keywords = self.processed_text.count_tokens(keywords.AMBIGUOUS_DANCE_MUSIC) + self.processed_text.count_tokens(keywords.HOUSE)
         if len(self.manual_dance_keywords_matches) >= 1:
             self.dance_event = 'obvious dancer or dance crew or battle'
         # one critical dance keyword
@@ -271,13 +275,15 @@ class ClassifiedEvent(object):
                 self.real_dance_matches)): # these two are implied by the above, but do it here just in case future clause re-ordering occurs
             self.dance_event = False
 
-        elif self.processed_text.count_tokens(keywords.AMBIGUOUS_DANCE_MUSIC) + self.processed_text.count_tokens(keywords.HOUSE) >= 1 and (len(event_matches) + self.processed_text.count_tokens(keywords.EASY_CHOREO)) >= 1 and self.calc_inverse_keyword_density < 5 and not (title_wrong_style_matches and not title_good_matches):
+        elif music_or_dance_keywords >= 1 and (len(event_matches) + self.processed_text.count_tokens(keywords.EASY_CHOREO)) >= 1 and self.calc_inverse_keyword_density < 5 and not (title_wrong_style_matches and not title_good_matches):
             self.dance_event = 'hiphop/funk and good event type'
         # one critical event and a basic dance keyword and not a wrong-dance-style and not a generic-club
         elif self.processed_text.count_tokens(keywords.EASY_DANCE) >= 1 and (len(event_matches) + self.processed_text.count_tokens(keywords.EASY_CHOREO)) >= 1 and not self.processed_text.count_tokens(keywords.DANCE_WRONG_STYLE) and self.calc_inverse_keyword_density < 5:
             self.dance_event = 'dance event thats not a bad-style'
         elif self.processed_text.count_tokens(keywords.EASY_DANCE) >= 1 and len(self.found_event_matches) >= 1 and not self.processed_text.count_tokens(keywords.DANCE_WRONG_STYLE) and self.processed_text.count_tokens(keywords.CLUB_ONLY) == 0:
             self.dance_event = 'dance show thats not a club'
+        elif music_or_dance_keywords >= 1 and self.processed_text.count_tokens(keywords.EASY_DANCE) >= 1:
+            self.dance_event = 'good music and dance keyword'
         else:
             self.dance_event = False
         self.times['all_match'] = time.time() - a

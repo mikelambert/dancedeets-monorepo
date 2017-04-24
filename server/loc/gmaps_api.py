@@ -9,8 +9,10 @@ from . import math
 
 USE_PRIVATE_KEY = False
 
-live_places_api = gmaps.LiveBackend('https://maps.googleapis.com', '/maps/api/place/textsearch/json', use_private_key=False)
-live_geocode_api = gmaps.LiveBackend('https://maps.google.com', '/maps/api/geocode/json', use_private_key=USE_PRIVATE_KEY)
+# 150K daily limit. But textsearch costs 10x as much.
+live_places_api = gmaps.LiveBackend('places', 'https://maps.googleapis.com', '/maps/api/place/textsearch/json', use_private_key=False)
+# 100K daily limit
+live_geocode_api = gmaps.LiveBackend('geocode', 'https://maps.google.com', '/maps/api/geocode/json', use_private_key=USE_PRIVATE_KEY)
 
 if runtime.is_local_appengine():
     remote_places_api = gmaps_prod_cache.ProdServerBackend('places', live_places_api)
@@ -58,9 +60,12 @@ class GMapsGeocode(_GMapsResult):
         return self.get_component('country', long=long)
 
     def latlng_bounds(self):
-        viewport = self.json_data['geometry']['viewport']
-        northeast = (viewport['northeast']['lat'], viewport['northeast']['lng'])
-        southwest = (viewport['southwest']['lat'], viewport['southwest']['lng'])
+        if 'viewport' in self.json_data['geometry']:
+            viewport = self.json_data['geometry']['viewport']
+            northeast = (viewport['northeast']['lat'], viewport['northeast']['lng'])
+            southwest = (viewport['southwest']['lat'], viewport['southwest']['lng'])
+        else:
+            northeast = southwest = self.latlng()
         return northeast, southwest
 
     def copy(self):
@@ -92,7 +97,9 @@ def convert_geocode_to_json(geocode):
 
 
 def parse_geocode(json_result):
-    if json_result['status'] == 'OK':
+    if not json_result:
+        return None
+    elif json_result['status'] == 'OK':
         return GMapsGeocode(json_result['results'][0])
     elif json_result['status'] == 'ZERO_RESULTS':
         return None
@@ -122,7 +129,7 @@ def lookup_location(location, language=None):
             geocode = _build_geocode_from_json(json)
     return geocode
 
-def lookup_address(address, language=None):
+def lookup_address(address, language=None, check_places=True):
     if address == None:
         raise ValueError('Address cannot be None')
     logging.info('lookup address: %s', address.encode('utf-8'))
@@ -131,7 +138,7 @@ def lookup_address(address, language=None):
         params['language'] = language
     json = geocode_api.get_json(**params)
     geocode = _build_geocode_from_json(json)
-    if not geocode:
+    if not geocode and check_places:
         params = {'query': address}
         if language:
             params['language'] = language
@@ -169,15 +176,18 @@ def _choose_best_geocode(g1, g2):
         else:
             return g1
 
-def _find_best_geocode(s, language=None):
+def _find_best_geocode(s, language=None, check_places=True):
     """A more versatile lookup function that uses two google apis,
     though returns unknown-type data that may or may not have viewports or address_components."""
-    try:
-        location_geocode = lookup_location(s, language=language)
-    except GeocodeException:
-        logging.exception('Error looking up location: %r with language %s', s, language)
+    if check_places:
+        try:
+            location_geocode = lookup_location(s, language=language)
+        except GeocodeException:
+            logging.exception('Error looking up location: %r with language %s', s, language)
+            location_geocode = None
+    else:
         location_geocode = None
-    address_geocode = lookup_address(s, language=language)
+    address_geocode = lookup_address(s, language=language, check_places=check_places)
     logging.info('location lookup: %s', location_geocode)
     logging.info('address lookup: %s', address_geocode)
     if location_geocode:
@@ -191,14 +201,14 @@ def _find_best_geocode(s, language=None):
         else:
             return None
 
-def lookup_string(s, language=None):
-    geocode = _find_best_geocode(s, language=language)
+def lookup_string(s, language=None, check_places=True):
+    geocode = _find_best_geocode(s, language=language, check_places=check_places)
     if geocode:
         if 'address_components' in geocode.json_data and 'geometry' in geocode.json_data:
             return geocode
         else:
             logging.info('lookup_string result does not have address or geometry, doing geocode address lookup on: %s', geocode.formatted_address())
-            new_geocode = lookup_address(geocode.formatted_address())
+            new_geocode = lookup_address(geocode.formatted_address(), check_places=check_places)
             if new_geocode:
                 return new_geocode
             else:
@@ -217,7 +227,7 @@ def _build_geocode_from_json(json_data):
     try:
         geocode = parse_geocode(json_data)
     except GeocodeException as e:
-        if e.status == 'INVALID_REQUEST':
+        if e.status == 'INVALID_REQUEST' or e.status == 'UNKNOWN_ERROR':
             return None
         raise
     return geocode

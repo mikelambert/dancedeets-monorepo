@@ -1,32 +1,47 @@
 import json
+import logging
 
 from mapreduce import mapreduce_pipeline
 from util import fb_mapreduce
 
 import app
 import base_servlet
+from util import mr
 from . import event_pipeline
 from . import potential_events
 from . import thing_scraper
 
 
+# Given that we get around 50K events in our MR (see below),
+# let's do 1000 shards, for roughly 50-events-per.
+# Should allow for much better CPU/network/etc usage and run faster
+NUM_SHARDS = 1000
+def _shard_for(event_id):
+    return hash(event_id) % NUM_SHARDS
+
 def scrape_sources_for_events(sources):
     fbl = fb_mapreduce.get_fblookup()
+    fbl.allow_cache = False
     discovered_list = thing_scraper.discover_events_from_sources(fbl, sources)
     for x in discovered_list:
-        state = (x.source_id, x.source_field, x.extra_source_id)
-        yield (x.event_id, json.dumps(state))
+        state = (x.event_id, x.source_id, x.source_field, x.extra_source_id)
+        mr.increment('found-event-to-check')
+        yield (_shard_for(x.event_id), json.dumps(state))
 
 
-def process_events(event_id, via_sources):
+def process_events(shard_id, via_sources):
     fbl = fb_mapreduce.get_fblookup()
+    fbl.allow_cache = True
     discovered_list = []
+    logging.info('Running process_events with %s event-sources', len(via_sources))
     for data in via_sources:
-        source_id, source_field, extra_source_id = json.loads(data)
+        event_id, source_id, source_field, extra_source_id = json.loads(data)
         discovered = potential_events.DiscoveredEvent(event_id, None, source_field, extra_source_id)
         discovered.source = None  # TODO: This will come back to bite us I'm sure :(
         discovered.source_id = source_id
         discovered_list.append(discovered)
+    # Some of these are newly-discovered events, some of these are already-cached and classified.
+    # TODO: Filter out the already-classified ones, so we don't waste time re-classifying on cached on data.
     event_pipeline.process_discovered_events(fbl, discovered_list)
 
 
@@ -34,7 +49,7 @@ def process_events(event_id, via_sources):
 class LoadPotentialEventsFromWallPostsHandler(base_servlet.BaseTaskFacebookRequestHandler):
     def get(self):
         min_potential_events = int(self.request.get('min_potential_events', '0'))
-        queue = self.request.get('queue', 'super-slow-queue')
+        queue = self.request.get('queue', 'slow-queue')
         mapreduce_scrape_sources_and_process_events(self.fbl, min_potential_events=min_potential_events, queue=queue)
 
 
@@ -63,7 +78,7 @@ def mapreduce_scrape_sources_and_process_events(fbl, min_potential_events, queue
         'mapreduce.output_writers.GoogleCloudStorageOutputWriter',
         mapper_params=mapper_params,
         reducer_params=reducer_params,
-        shards=2,
+        shards=16,
     )
 
-    pipeline.start(queue_name='super-slow-queue')
+    pipeline.start(queue_name=queue)

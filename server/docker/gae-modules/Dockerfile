@@ -1,8 +1,4 @@
-FROM gcr.io/dancedeets-hrd/gae-geos
+FROM gcr.io/dancedeets-hrd/gae-binaries
 
-ADD install_re2.sh /app/install_re2.sh
-RUN /bin/bash /app/install_re2.sh
-
-ADD requirements.txt /app/requirements.txt
-RUN /env/bin/pip install -r /app/requirements.txt
-
+ADD . /gae-modules/
+RUN /bin/bash /gae-modules/install.sh

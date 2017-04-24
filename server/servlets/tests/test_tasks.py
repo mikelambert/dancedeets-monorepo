@@ -34,17 +34,6 @@ class TestLoadEvents(TestTasks):
     def runTest(self):
         app.get('/tasks/load_events?user_id=%s&event_ids=%s' % (MIKE_ID, EVENT_ID))
 
-class TestLoadEventAttending(TestTasks):
-    def runTest(self):
-        fb_api.FBAPI.results = {
-            '/299993043349170/attending': (200, {
-                "data": [
-                    {"id": "703278"},
-                    {"id": "823422"},
-            ]})
-        }
-        app.get('/tasks/load_event_attending?user_id=%s&event_ids=%s' % (MIKE_ID, EVENT_ID))
-
 class TestReloadFutureEvents(TestTasks):
     def runTest(self):
         app.get('/tasks/reload_events?user_id=%s&event_ids=%s&time_period=%s' % (MIKE_ID, EVENT_ID, dates.TIME_FUTURE))

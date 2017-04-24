@@ -24,7 +24,7 @@ def has_many_street_styles(classified_event):
     if title_wrong_style_matches:
         return False, 'wrong style in the title: %s' % title_wrong_style_matches
 
-    styles = categories.find_styles(classified_event)
+    styles = categories.find_styles_strict(classified_event)
     et = categories.find_event_types(classified_event)
     music_only = classified_event.processed_text.get_tokens(keywords.MUSIC_ONLY)
     # If they mention too many other styles of music, then our dance styles were probably just referring to music
@@ -53,16 +53,18 @@ def has_list_of_good_classes(classified_event):
     # (?!20[01][05])
     time = r'\b[012]?\d[:.,h]?(?:[0-5][05])?(?:am|pm)?\b'
     time_with_minutes = r'\b[012]?\d[:.,h]?(?:[0-5][05])(?:am|pm)?\b'
-    time_to_time = r'%s ?(?:to|do|до|til|till|alle|a|-|[^\w,.]) ?%s' % (time, time)
+    time_to_time = r'%s ?(?:to|do|до|til|till|alle|a|-|–|[^\w,.]) ?%s' % (time, time)
 
-    text = classified_event.search_text
+    text = classified_event.final_search_text
     club_only_matches = classified_event.processed_text.get_tokens(keywords.CLUB_ONLY)
     if len(club_only_matches) > 2:
         return False, 'too many club keywords: %s' % club_only_matches
     title_wrong_style_matches = classified_event.processed_title.has_token(keywords.DANCE_WRONG_STYLE)
     if title_wrong_style_matches:
         return False, 'wrong style in the title: %s' % title_wrong_style_matches
-    lines = text.split('\n')
+    # We try to grab all lines in schedule up until schedule ends,
+    # so we need a "non-schedule line at the end", aka ['']
+    lines = text.split('\n') + ['']
     idx = 0
     schedule_lines = []
     while idx < len(lines):
@@ -282,7 +284,10 @@ def is_audition(classified_event):
 
 def is_workshop(classified_event):
     trimmed_title = classified_event.processed_title.delete_with_rule(rules.WRONG_CLASS)
-    has_class_title = trimmed_title.has_token(rules.EXTENDED_CLASS)
+    if classified_event.processed_text.get_tokens(keywords.ROMANCE):
+        has_class_title = trimmed_title.get_tokens(rules.ROMANCE_EXTENDED_CLASS)
+    else:
+        has_class_title = trimmed_title.get_tokens(keywords.CLASS)
     has_good_dance_class_title = trimmed_title.has_token(rules.GOOD_DANCE_CLASS)
 
     has_non_dance_event_title = classified_event.processed_title.has_token(keywords.BAD_COMPETITION_TITLE_ONLY)
@@ -299,6 +304,10 @@ def is_workshop(classified_event):
     has_wrong_style = classified_event.processed_text.has_token(rules.DANCE_WRONG_STYLE_TITLE)
 
     has_good_crew = classified_event.processed_text.has_token(rules.MANUAL_DANCER[grammar.STRONG])
+
+    is_right_name_wrong_kind = classified_event.processed_text.has_token(rules.RIGHT_NAME_WRONG_KIND)
+    if not has_good_dance and is_right_name_wrong_kind:
+        return (False, 'nothing')
 
     # print has_class_title
     # print has_good_dance_title
@@ -322,7 +331,7 @@ def is_workshop(classified_event):
         return (True, 'has dance class title: %s, that contains strong description %s, %s' % (has_class_title, has_good_dance, has_good_crew))
     elif has_good_dance_class_title:
         return (True, 'has good dance class title: %s' % has_good_dance_class_title)
-    elif has_good_dance_class and not has_wrong_style_title:
+    elif has_good_dance_class and not has_wrong_style_title :
         return (True, 'has good dance class: %s' % has_good_dance_class)
     return (False, 'nothing')
 

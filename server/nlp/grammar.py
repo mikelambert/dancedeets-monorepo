@@ -1,4 +1,5 @@
 import codecs
+import glob
 import itertools
 import logging
 import re
@@ -100,9 +101,13 @@ class FileBackedKeyword(_BaseAlternation):
     @classmethod
     def _get_manual_dance_keywords(cls, filename):
         import os
-        base_dir = os.path.join(os.path.dirname(__file__), '..')        
-        f = codecs.open('%s/dance_keywords/%s.txt' % (base_dir, filename), encoding='utf-8')
-        result = cls._parse_keywords(f.readlines())
+        base_dir = os.path.dirname(__file__)
+        glob_path = '%s/keywords/%s.txt' % (base_dir, filename)
+        lines = []
+        for filename in glob.glob(glob_path):
+            f = codecs.open(filename, encoding='utf-8')
+            lines.extend(f.readlines())
+        result = cls._parse_keywords(lines)
         return result
 
     @classmethod

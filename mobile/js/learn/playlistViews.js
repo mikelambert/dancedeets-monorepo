@@ -28,6 +28,9 @@ import type { Style } from 'dancedeets-common/js/styles';
 import { Playlist, Video } from 'dancedeets-common/js/tutorials/models';
 import styleIcons from 'dancedeets-common/js/styles/icons';
 import { getTutorials } from 'dancedeets-common/js/tutorials/playlistConfig';
+import type {
+  Category,
+} from 'dancedeets-common/js/tutorials/playlistConfig';
 import messages from 'dancedeets-common/js/tutorials/messages';
 import languages from 'dancedeets-common/js/languages';
 import {
@@ -79,7 +82,7 @@ class _PlaylistStylesView extends React.Component {
   }
 
   state: {
-    stylePlaylists: [];
+    stylePlaylists: Array<Category>;
   }
 
   constructor(props: PlaylistStylesViewProps) {

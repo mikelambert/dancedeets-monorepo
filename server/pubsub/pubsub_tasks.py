@@ -2,9 +2,9 @@ from mapreduce import control
 
 import app
 import base_servlet
+from rankings import cities
 from util import dates
 from . import pubsub
-
 
 @app.route('/tasks/social_publisher')
 class SocialPublisherHandler(base_servlet.BaseTaskRequestHandler):
@@ -38,3 +38,18 @@ class PostJapanEventsHandler(base_servlet.BaseTaskFacebookRequestHandler):
             queue_name='fast-queue',
             mapper_parameters=mapper_params,
         )
+
+def blacklisted(city):
+    if city.country_name == 'US' and city.state_name == 'NY' and city.city_name in ['Brooklyn', 'Borough of Queens', 'Manhattan', 'The Bronx']:
+        return True
+    return False
+
+@app.route('/tasks/weekly_posts')
+class WeeklyEventsPostHandler(base_servlet.BaseTaskFacebookRequestHandler):
+    def get(self):
+        #TODO: rewrite this to use "top cities" filter from rankings...maybe rewrite our rankings to be better organized?
+        limit = int(self.request.get('limit', '10'))
+        top_cities = cities.get_largest_cities(limit=limit, country='US')
+        top_city_keys = [x.key().name() for x in top_cities if not blacklisted(x)]
+        for city_key in top_city_keys:
+            pubsub.eventually_publish_city_key(city_key)

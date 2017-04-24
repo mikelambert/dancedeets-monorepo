@@ -13,13 +13,15 @@ export const fbLoadEmitter = new EventEmitter();
 export function fbSetup(fbPermissions: string, fbAppId: string, baseHostname: string) {
   let loginPressed = false;
 
+  const cookieOptions = {
+    domain: `.${baseHostname}`,
+    path: '/',
+  };
+
   function deleteLoginCookies() {
-    const cookieOptions = {
-      domain: `.${baseHostname}`,
-      path: '/',
-    };
     cookie.remove(`fbsr_${fbAppId}`, cookieOptions);
-    cookie.remove(`user_login_${fbAppId}`, cookieOptions);
+    cookie.remove(`user_token_${fbAppId}`, cookieOptions); // set by client, for server
+    cookie.remove(`user_login_${fbAppId}`, cookieOptions); // set by server, for client/server
   }
 
   function reloadWithNewToken() {
@@ -40,6 +42,11 @@ export function fbSetup(fbPermissions: string, fbAppId: string, baseHostname: st
 
   function handleStatusChange(response) {
     if (response.status === 'connected') {
+      // We want to set this cookie before we attempt to do any reloads below,
+      // so that the server will have access to our user_token_ (access token)
+      const accessToken = response.authResponse.accessToken;
+      cookie.save(`user_token_${fbAppId}`, accessToken, cookieOptions);
+
       if (response.authResponse.userID !== currentUser()) {
         if (loginPressed) {
           // Only do this for explicit logins, not for auto-logins
@@ -122,6 +129,8 @@ export function fbSetup(fbPermissions: string, fbAppId: string, baseHostname: st
     const js = d.createElement(s);
     js.id = id;
     js.src = 'https://connect.facebook.net/en_US/sdk.js';
-    fjs.parentNode.insertBefore(js, fjs);
+    if (fjs.parentNode) {
+      fjs.parentNode.insertBefore(js, fjs);
+    }
   })(document, 'script', 'facebook-jssdk');
 }

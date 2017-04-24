@@ -7,7 +7,9 @@ import jinja2
 import json
 import hashlib
 import htmlmin
+import humanize
 import logging
+import random
 from react import render
 from react.conf import settings
 import os
@@ -21,6 +23,7 @@ from google.appengine.api.app_identity import app_identity
 from google.appengine.ext import db
 
 from users import users
+from users import access_tokens
 from events import eventdata
 import event_types
 import facebook
@@ -29,8 +32,8 @@ from logic import backgrounder
 from logic import mobile
 from rankings import rankings
 from render_server import render_server
+from services import ip_geolocation
 from users import user_creation
-from util import abbrev
 from util import dates
 from util import deferred
 from util import text
@@ -49,6 +52,7 @@ class FacebookMixinHandler(object):
         # Refresh our potential event cache every N days (since they may have updated with better keywords, as often happens)
         expiry_days = int(self.request.get('expiry_days', 0)) or None
         if expiry_days:
+            expiry_days += random.uniform(-0.5, 0.5)
             self.fbl.db.oldest_allowed = datetime.datetime.now() - datetime.timedelta(days=expiry_days)
 
 class BareBaseRequestHandler(webapp2.RequestHandler, FacebookMixinHandler):
@@ -200,15 +204,17 @@ class BareBaseRequestHandler(webapp2.RequestHandler, FacebookMixinHandler):
         settings.configure(RENDER=True)
         props = props.copy()
         props.update(dict(
-            loggedIn=bool(self.fb_uid),
+            userId=self.fb_uid,
             currentLocale=self.locales[0],
         ))
         try:
+            logging.info('Begin rendering react template: %s', template_name)
             result = render.render_component(
                 renderer=render_server,
                 path=os.path.abspath(os.path.join('dist/js-server/', template_name)),
                 to_static_markup=static_html,
                 props=props)
+            logging.info('Finish rendering react template: %s', template_name)
         except render.ComponentSourceFileNotFound as e:
             self.display['react_props'] = json.dumps(props)
             logging.exception('Error rendering React component: %s', e)
@@ -236,18 +242,27 @@ class BareBaseRequestHandler(webapp2.RequestHandler, FacebookMixinHandler):
         self.response.out.write(rendered)
 
     def get_location_from_headers(self, city=True):
-        iso3166_country = self.request.headers.get("X-AppEngine-Country")
-        full_country = abbrev.countries_abbrev2full.get(iso3166_country, iso3166_country)
+        try:
+            ip = self.request.remote_addr
+            # HACK to refresh clients?
+            ip_geolocation.client = ip_geolocation.datastore.Client()
+            return ip_geolocation.get_location_string_for(ip, city=city)
+        except:
+            logging.exception('Failure to geolocate IP, falling back on old-school resolution')
 
-        location_components = []
-        if city:
-            location_components.append(self.request.headers.get("X-AppEngine-City"))
-        if full_country in ['United States', 'Canada']:
-            location_components.append(self.request.headers.get("X-AppEngine-Region"))
-        if full_country != 'ZZ':
-            location_components.append(full_country)
-        location = ', '.join(x for x in location_components if x and x != '?')
-        return location
+            from loc import names
+            iso3166_country = self.request.headers.get("X-AppEngine-Country")
+            full_country = names.get_country_name(iso3166_country)
+
+            location_components = []
+            if city:
+                location_components.append(self.request.headers.get("X-AppEngine-City"))
+            if full_country in ['United States', 'Canada']:
+                location_components.append(self.request.headers.get("X-AppEngine-Region"))
+            if full_country != 'ZZ':
+                location_components.append(full_country)
+            location = ', '.join(x for x in location_components if x and x != '?')
+            return location
 
     def _get_static_version(self):
         return os.getenv('CURRENT_VERSION_ID').split('.')[-1]
@@ -662,7 +677,10 @@ class BaseRequestHandler(BareBaseRequestHandler):
         self.display['mobile'] = mobile
         self.display['mobile_show_smartbanner'] = True
 
+        import time
+        start = time.time()
         self.display['ip_location'] = self.get_location_from_headers()
+        logging.info('Getting city took %s seconds', time.time() - start)
 
         self.display['styles'] = event_types.STYLES
         self.display['us_cities'] = [
@@ -741,7 +759,10 @@ class BaseRequestHandler(BareBaseRequestHandler):
         else:
             self.display['class_base_template'] = '_new_base.html'
 
-        self.display.update(rankings.retrieve_summary())
+        totals = rankings.retrieve_summary()
+        totals['total_events'] = humanize.intcomma(totals['total_events'])
+        totals['total_users'] = humanize.intcomma(totals['total_users'])
+        self.display.update(totals)
 
     def dispatch(self):
         if self.run_handler:
@@ -797,6 +818,10 @@ class BaseTaskFacebookRequestHandler(BaseTaskRequestHandler, FacebookMixinHandle
             self.fb_uid = None
             self.user = None
             self.access_token = None
+        elif self.request.get('user_id') == 'random':
+            self.fb_uid = None
+            self.user = None
+            self.access_token = access_tokens.get_multiple_tokens(50)
         else:
             self.fb_uid = self.request.get('user_id')
             if not self.fb_uid:
@@ -845,4 +870,12 @@ class UserOperationHandler(BaseTaskFacebookRequestHandler):
         user_ids = [x for x in self.request.get('user_ids').split(',') if x]
         load_users = users.User.get_by_ids(user_ids)
         self.user_operation(self.fbl, load_users)
+    post=get
+
+class SourceIdOperationHandler(BaseTaskFacebookRequestHandler):
+    source_id_operation = None
+
+    def get(self):
+        source_ids = [x for x in self.request.get('source_ids').split(',') if x]
+        self.source_id_operation(self.fbl, source_ids)
     post=get

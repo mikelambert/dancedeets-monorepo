@@ -5,7 +5,7 @@ class LookupMetadata(fb_api.LookupType):
     @classmethod
     def get_lookups(cls, object_id):
         return [
-            ('fb_metadata', cls.url('%s?metadata=1' % object_id)),
+            ('fb_metadata', cls.url('%s' % object_id, metadata='1')),
         ]
 
     @classmethod

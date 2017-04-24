@@ -1,13 +1,16 @@
 import logging
 
 from mapreduce import context
+from mapreduce import operation as op
 
 import app
 import base_servlet
+from event_attendees import event_attendee_classifier
 import fb_api
+from users import users
 from util import deferred
 from util import fb_mapreduce
-from users import users
+from util import mr
 from . import eventdata
 from . import event_updates
 
@@ -21,6 +24,9 @@ def add_event_tuple_if_updating(events_to_update, fbl, db_event, only_if_updated
         # This helps ensure we still update the event's search_time_period regardless.
         fb_event = db_event.fb_event
     update_regardless = not only_if_updated
+    if fb_event['empty']:
+        logging.info('The latest fb event %s is empty (%s), using dbevent.fb_event instead', db_event.id, fb_event['empty'])
+        fb_event = db_event.fb_event
     if update_regardless or db_event.fb_event != fb_event:
         logging.info("Event %s is updated.", db_event.id)
         events_to_update.append((db_event, fb_event))
@@ -45,7 +51,11 @@ def load_fb_events_using_backup_tokens(event_ids, allow_cache, only_if_updated, 
             fbl = user.get_fblookup()
             fbl.allow_cache = allow_cache
             try:
-                real_fb_event = fbl.get(fb_api.LookupEvent, db_event.fb_event_id)
+                fbl.request(fb_api.LookupEvent, db_event.fb_event_id)
+                fbl.request(fb_api.LookupEventAttending, db_event.fb_event_id)
+                fbl.request(fb_api.LookupEventAttendingMaybe, db_event.fb_event_id)
+                fbl.batch_fetch()
+                real_fb_event = fbl.fetched_data(fb_api.LookupEvent, db_event.fb_event_id)
             except fb_api.ExpiredOAuthToken:
                 logging.warning("User %s has expired oauth token", user.fb_uid)
             else:
@@ -63,7 +73,8 @@ def load_fb_events_using_backup_tokens(event_ids, allow_cache, only_if_updated, 
             # So instead, let's call it and just have it use the db_event.fb_event
             if fbl:
                 add_event_tuple_if_updating(events_to_update, fbl, db_event, only_if_updated)
-    event_updates.update_and_save_fb_events(events_to_update, disable_updates=disable_updates)
+    if events_to_update:
+        event_updates.update_and_save_fb_events(events_to_update, disable_updates=disable_updates)
 
 def yield_resave_display_event(fbl, all_events):
     event_updates.resave_display_events(all_events)
@@ -90,7 +101,12 @@ def yield_load_fb_event(fbl, all_events):
     # Now process fb_events
     db_events = [x for x in all_events if x.is_fb_event]
     logging.info("loading db events %s", [db_event.fb_event_id for db_event in db_events])
+
     fbl.request_multi(fb_api.LookupEvent, [x.fb_event_id for x in db_events])
+    fbl.request_multi(fb_api.LookupEventAttending, [x.fb_event_id for x in db_events])
+    # We load these too, just in case we want to check up on our auto-attendee criteria for events
+    fbl.request_multi(fb_api.LookupEventAttendingMaybe, [x.fb_event_id for x in db_events])
+
     # fbl.request_multi(fb_api.LookupEventPageComments, [x.fb_event_id for x in db_events])
     fbl.batch_fetch()
     events_to_update = []
@@ -123,25 +139,16 @@ def yield_load_fb_event(fbl, all_events):
         deferred.defer(load_fb_events_using_backup_tokens, empty_fb_event_ids, allow_cache=fbl.allow_cache, only_if_updated=only_if_updated, disable_updates=disable_updates)
     logging.info("Updating events: %s", [x[0].id for x in events_to_update])
     # And then re-save all the events in here
-    event_updates.update_and_save_fb_events(events_to_update, disable_updates=disable_updates)
+    if events_to_update:
+        event_updates.update_and_save_fb_events(events_to_update, disable_updates=disable_updates)
 map_load_fb_event = fb_mapreduce.mr_wrap(yield_load_fb_event)
 load_fb_event = fb_mapreduce.nomr_wrap(yield_load_fb_event)
-
-
-def yield_load_fb_event_attending(fbl, all_events):
-    db_events = [x for x in all_events if x.is_fb_event]
-    fbl.get_multi(fb_api.LookupEventAttending, [x.fb_event_id for x in db_events], allow_fail=True)
-map_load_fb_event_attending = fb_mapreduce.mr_wrap(yield_load_fb_event_attending)
-load_fb_event_attending = fb_mapreduce.nomr_wrap(yield_load_fb_event_attending)
 
 
 def mr_load_fb_events(fbl, display_event=False, load_attending=False, time_period=None, disable_updates=None, only_if_updated=True, queue='slow-queue'):
     if display_event:
         event_or_attending = 'Display Events'
         mr_func = 'map_resave_display_event'
-    elif load_attending:
-        event_or_attending = 'Event Attendings'
-        mr_func = 'map_load_fb_event_attending'
     else:
         event_or_attending = 'Events'
         mr_func = 'map_load_fb_event'
@@ -162,17 +169,90 @@ def mr_load_fb_events(fbl, display_event=False, load_attending=False, time_perio
         queue=queue,
     )
 
+def yield_maybe_delete_bad_event(fbl, db_event):
+    ctx = context.get()
+    if ctx:
+        params = ctx.mapreduce_spec.mapper.params
+        allow_deletes = params['allow_deletes']
+    else:
+        allow_deletes = False
 
+    if db_event.creating_method not in [eventdata.CM_AUTO_ATTENDEE, eventdata.CM_AUTO]:
+        return
+
+    if db_event.fb_event['empty']:
+        return
+
+    import datetime
+    # This is when we started adding all sorts of "crap"
+    if not db_event.creation_time or db_event.creation_time < datetime.datetime(2016, 3, 5):
+        return
+
+    logging.info('MDBE: Check on event %s: %s', db_event.id, db_event.creating_method)
+    from event_scraper import auto_add
+    from nlp import event_classifier
+    classified_event = event_classifier.get_classified_event(db_event.fb_event)
+    good_text_event = auto_add.is_good_event_by_text(db_event.fb_event, classified_event)
+    if good_text_event:
+        if db_event.creating_method != eventdata.CM_AUTO:
+            db_event.creating_method = eventdata.CM_AUTO
+            yield op.db.Put(db_event)
+    else:
+        good_event = event_attendee_classifier.is_good_event_by_attendees(fbl, db_event.fb_event, classified_event=classified_event)
+        if good_event:
+            if db_event.creating_method != eventdata.CM_AUTO_ATTENDEE:
+                db_event.creating_method = eventdata.CM_AUTO_ATTENDEE
+                yield op.db.Put(db_event)
+        else:
+            logging.info('Accidentally %s added event %s: %s: %s', db_event.creating_method, db_event.fb_event_id, db_event.country, db_event.name)
+            mr.increment('deleting-bad-event')
+            result = '%s: %s: %s: %s\n' % (db_event.fb_event_id, db_event.creating_method, db_event.country, db_event.name)
+            yield result.encode('utf-8')
+            if allow_deletes:
+                from search import search
+                search.delete_from_fulltext_search_index(db_event.fb_event_id)
+                yield op.db.Delete(db_event)
+                display_event = search.DisplayEvent.get_by_id(db_event.fb_event_id)
+                if display_event:
+                    yield op.db.Delete(display_event)
+
+map_maybe_delete_bad_event = fb_mapreduce.mr_wrap(yield_maybe_delete_bad_event)
+maybe_delete_bad_event = fb_mapreduce.nomr_wrap(yield_maybe_delete_bad_event)
+
+@app.route('/tasks/delete_bad_autoadds')
+class DeleteBadAutoAddsHandler(base_servlet.EventOperationHandler):
+    def get(self):
+        time_period = self.request.get('time_period', None)
+        queue = self.request.get('queue', 'fast-queue')
+        filters = []
+        if time_period:
+            filters.append(('search_time_period', '=', time_period))
+            name = 'Delete %s Bad Autoadds' % time_period
+        else:
+            name = 'Delete All Bad Autoadds'
+        allow_deletes = self.request.get('allow_deletes', None) == '1'
+        extra_mapper_params = {
+            'allow_deletes': allow_deletes,
+        }
+        fb_mapreduce.start_map(
+            fbl=self.fbl,
+            name=name,
+            handler_spec='events.event_reloading_tasks.map_maybe_delete_bad_event',
+            entity_kind='events.eventdata.DBEvent',
+            filters=filters,
+            extra_mapper_params=extra_mapper_params,
+            queue=queue,
+            output_writer_spec='mapreduce.output_writers.GoogleCloudStorageOutputWriter',
+            output_writer={
+                'mime_type': 'text/plain',
+                'bucket_name': 'dancedeets-hrd.appspot.com',
+            },
+        )
+    post=get
 
 @app.route('/tasks/load_events')
 class LoadEventHandler(base_servlet.EventOperationHandler):
     event_operation = staticmethod(load_fb_event)
-
-
-@app.route('/tasks/load_event_attending')
-class LoadEventAttendingHandler(base_servlet.EventOperationHandler):
-    event_operation = staticmethod(load_fb_event_attending)
-
 
 @app.route('/tasks/reload_events')
 class ReloadEventsHandler(base_servlet.BaseTaskFacebookRequestHandler):

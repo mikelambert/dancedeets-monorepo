@@ -1,48 +1,53 @@
 
 # We import these for their side-effects in adding routes to the wsgi app
-from battle_brackets import signup_servlets
-from brackets import servlets
-from classes import class_pipeline
-from classes import class_servlets
-from event_scraper import source_servlets
-from event_scraper import scraping_tasks
-from event_scraper import thing_scraper2
-from event_scraper import webhooks
-from events import event_reloading_tasks
-from events import find_access_tokens
-from logic import popular_people
-from logic import unique_attendees
-from ml import gprediction_servlets
-from notifications import added_events
-from notifications import rsvped_events
-from pubsub import pubsub_setup
-from pubsub import pubsub_tasks
-from rankings import rankings_servlets
-from search import search_servlets
-from search import search_tasks
-from search import style_servlets
-from search import search_source
-from servlets import admin
-from servlets import api
-from servlets import calendar
-from servlets import event
-from servlets import event_proxy
-from servlets import feedback
-from servlets import login
-from servlets import mobile_apps
-from servlets import private_apis
-from servlets import promote
-from servlets import profile_page
-from servlets import static
-from servlets import static_db
-from servlets import tools
-from servlets import warmup
-from servlets import youtube_simple_api
-from topics import topic_servlets
-from tutorials import servlets
-from users import user_event_tasks
-from users import user_servlets
-from users import user_tasks
-from util import batched_mapperworker
-from web_events import fb_events_servlets
-from web_events import web_events_servlets
+import battle_brackets.signup_servlets
+import brackets.servlets
+import classes.class_pipeline
+import classes.class_servlets
+import event_attendees.popular_people
+import event_scraper.keyword_search
+import event_scraper.source_servlets
+import event_scraper.scraping_tasks
+import event_scraper.thing_scraper2
+import event_scraper.webhooks
+import events.event_reloading_tasks
+import events.find_access_tokens
+import logic.unique_attendees
+import mail.webhooks
+import ml.gprediction_servlets
+import notifications.added_events
+import notifications.rsvped_events
+import pubsub.pubsub_tasks
+import pubsub.facebook.auth_setup
+import pubsub.twitter.auth_setup
+import pubsub.weekly_images
+import rankings.rankings_servlets
+import search.search_servlets
+import search.search_tasks
+import search.style_servlets
+import search.search_source
+import servlets.admin
+import servlets.api
+import servlets.calendar
+import servlets.event
+import servlets.event_proxy
+import servlets.feedback
+import servlets.login
+import servlets.mobile_apps
+import servlets.private_apis
+import servlets.promote
+import servlets.profile_page
+import servlets.static
+import servlets.static_db
+import servlets.tools
+import servlets.warmup
+import servlets.youtube_simple_api
+import topics.topic_servlets
+import tutorials.servlets
+import users.user_event_tasks
+import users.user_servlets
+import users.user_tasks
+import util.batched_mapperworker
+import util.ah_handlers
+import web_events.fb_events_servlets
+import web_events.web_events_servlets
