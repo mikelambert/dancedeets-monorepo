@@ -35,7 +35,7 @@ import type {
   StylePersonLookup,
 } from 'dancedeets-common/js/events/search';
 import {
-  formatStartEnd,
+  formatStartTime,
   weekdayDate,
   weekdayTime,
 } from 'dancedeets-common/js/dates';
@@ -142,15 +142,6 @@ class _EventDescription extends React.Component {
       keywords.push(...event.annotations.keywords);
     }
 
-    let rsvpElement = null;
-    if (event.rsvp && (event.rsvp.attending_count || event.rsvp.maybe_count)) {
-      rsvpElement = (
-        <ImagePrefix iconName="users">
-          {formatAttending(this.props.intl, event.rsvp)}
-        </ImagePrefix>
-      );
-    }
-
     return (
       <div>
         <h3 className="event-title">
@@ -164,13 +155,12 @@ class _EventDescription extends React.Component {
           {keywords.join(', ')}
         </ImagePrefix>
         <ImagePrefix iconName="clock-o">
-          {formatStartEnd(event.start_time, event.end_time, this.props.intl)}
+          {formatStartTime(event.start_time, this.props.intl)}
         </ImagePrefix>
         <ImagePrefix iconName="map-marker">
           <div>{event.venue.name}</div>
-          <FormatText>{event.venue.streetCityStateCountry('\n')}</FormatText>
+          <FormatText>{event.venue.cityStateCountry('\n')}</FormatText>
         </ImagePrefix>
-        {rsvpElement}
       </div>
     );
   }
@@ -186,14 +176,14 @@ class HorizontalEvent extends React.Component {
   render() {
     const event = this.props.event;
     return (
-      <Card className="wide-event clearfix">
+      <div className="wide-event clearfix">
         <div className="event-image">
           <SquareEventFlyer event={this.props.event} lazyLoad={this.props.lazyLoad} />
         </div>
         <div className="event-description">
           <EventDescription event={this.props.event} />
         </div>
-      </Card>
+      </div>
     );
   }
 }
@@ -220,7 +210,7 @@ class VerticalEvent extends React.Component {
       </h3>
       <div className="event-city">
         <div>{event.venue.name}</div>
-        <FormatText>{event.venue.streetCityStateCountry('\n')}</FormatText>
+        <FormatText>{event.venue.cityStateCountry('\n')}</FormatText>
       </div>
     </Card>);
   }
@@ -312,13 +302,17 @@ class _EventsList extends React.Component {
       const eventStartDate = upperFirst(this.props.intl.formatDate(eventStart.toDate(), weekdayDate));
       const eventStartTime = upperFirst(this.props.intl.formatDate(eventStart.toDate(), weekdayTime));
       if (eventStartDate !== currentDate) {
-        resultItems.push(<li key={eventStartDate} className="wide-event day-header"><Sticky className="opaque">{eventStartDate}</Sticky></li>);
+        resultItems.push(<li
+          key={eventStartDate}
+          className="day-header"
+          style={{
+            marginTop: '30px',
+            marginBottom: '10px',
+            borderBottom: '1px solid white',
+          }}
+        ><Sticky className="opaque">{eventStartDate}</Sticky></li>);
         currentDate = eventStartDate;
         currentTime = null;
-      }
-      if (eventStartTime !== currentTime) {
-        resultItems.push(<li key={`${eventStartDate} ${eventStartTime}`}><b>{eventStartTime}</b></li>);
-        currentTime = eventStartTime;
       }
       resultItems.push(<li key={event.id}><HorizontalEvent key={event.id} event={event} lazyLoad={index > 8} /></li>);
     });

@@ -19,6 +19,12 @@ export function formatStartDateOnly(startString: string, intl: intlShape) {
   return upperFirst(intl.formatDate(start.toDate(), weekdayDate));
 }
 
+export function formatStartTime(startString: string, intl: intlShape) {
+  const start = moment(startString, moment.ISO_8601);
+  const formattedStartTime = intl.formatTime(start);
+  return formattedStartTime;
+}
+
 export function formatStartEnd(startString: string, endString: ?string, intl: intlShape) {
   const textFields = [];
   const now = moment(intl.now());
