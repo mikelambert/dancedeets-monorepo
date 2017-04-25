@@ -198,6 +198,7 @@ class _EventLinks extends React.Component {
     amp: boolean;
     userId: ?number;
     userRsvp: ?RsvpValue;
+    isFavorited: boolean;
 
     // Self-managed props
     intl: intlShape;
@@ -291,6 +292,9 @@ class _EventLinks extends React.Component {
     }
     return (
       <Card>
+        <ImagePrefix iconName={this.props.isFavorited ? 'star' : 'star-o'}>
+          Favorite
+        </ImagePrefix>
         <ImagePrefix iconName={event.source.name === 'Facebook Event' ? 'facebook-square' : 'external-link'}>
           <Message message={messages.source} />{' '}
           {sourceName}
@@ -470,6 +474,7 @@ class HtmlHead extends React.Component {
 export class EventPage extends React.Component {
   props: {
     event: JSONObject;
+    isFavorited: boolean;
     forceAdmin?: boolean;
     amp?: boolean;
     userId?: number;
@@ -500,6 +505,7 @@ export class EventPage extends React.Component {
               amp={this.props.amp}
               userId={this.props.userId}
               userRsvp={this.props.userRsvp}
+              isFavorited={this.props.isFavorited}
             />
             <MapWithLinks event={event} amp={this.props.amp} />
           </div>

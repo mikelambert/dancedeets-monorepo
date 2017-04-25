@@ -8,11 +8,15 @@ class Favorite(ndb.Model):
 
     date_created = ndb.DateTimeProperty(auto_now_add=True)
 
+def does_user_favorite_event(user_id, event_id):
+    key_name = _generate_keyname(user_id, event_id)
+    return Favorite.get_by_id(key_name)
+
 def get_favorite_event_ids_for_user(user_id):
     # Get 1000 most recent favorite ids
     favorite_keys = Favorite.query(Favorite.user_id == user_id).order(-Favorite.date_created).fetch(1000, keys_only=True)
     event_ids = [x.string_id().split('::')[1] for x in favorite_keys]
-    return event_ids
+    return {'eventIds': event_ids}
 
 def _generate_keyname(user_id, event_id):
     return '%s::%s' % (user_id, event_id)

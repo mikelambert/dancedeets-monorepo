@@ -6,8 +6,7 @@ from . import db
 @api.apiroute(r'/favorites')
 class RsvpAjaxHandler(api.ApiHandler):
     def get(self):
-        favorite_event_ids = db.get_favorite_event_ids_for_user(user_id=self.fbl.fb_uid)
-        favorites_json = {'favorites': favorite_event_ids}
+        favorites_json = db.get_favorite_event_ids_for_user(user_id=self.fbl.fb_uid)
         self.write_json_success(favorites_json)
 
     def post(self):

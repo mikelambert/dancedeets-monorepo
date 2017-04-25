@@ -73,6 +73,11 @@ const yellowColors = [
   '#C0A000',
 ];
 
+type Favorites = {
+  eventIds: Array<String>;
+};
+type FavoritesMap = {[eventId: string]: boolean};
+
 export class HorizontalEventFlyer extends React.Component {
   props: {
     event: BaseEvent;
@@ -126,10 +131,41 @@ export class HorizontalEventFlyer extends React.Component {
   }
 }
 
+class FavoriteStatus extends React.Component {
+  props: {
+    eventId: string;
+    favorite: boolean;
+  }
+
+  constructor(props) {
+    super(props);
+    (this: any).toggleState = this.toggleState.bind(this);
+  }
+
+  toggleState() {
+    // TODO: implement
+    console.log('toggle', this.props.eventId);
+  }
+  render() {
+    // TODO: add yellow status
+    const favoriteIconName = this.props.favorite ? 'star' : 'star-o';
+    return (
+      <span
+        role="button"
+        onClick={this.toggleState}
+      >
+        <i className={`fa fa-${favoriteIconName} fa-lg`} />
+        {' '}
+      </span>
+    );
+  }
+}
+
 class _EventDescription extends React.Component {
   props: {
     event: SearchEvent;
     indexingBot: boolean;
+    favorite: boolean;
 
     // Self-managed props
     intl: intlShape;
@@ -145,6 +181,7 @@ class _EventDescription extends React.Component {
     return (
       <div>
         <h3 className="event-title">
+          <FavoriteStatus eventId={this.props.event.id} favorite={this.props.favorite} />
           <a href={event.getUrl()}>
             <span>{event.name}</span>
           </a>
@@ -171,6 +208,7 @@ class HorizontalEvent extends React.Component {
   props: {
     event: SearchEvent;
     lazyLoad: boolean;
+    favorite: boolean;
   }
 
   render() {
@@ -181,7 +219,7 @@ class HorizontalEvent extends React.Component {
           <SquareEventFlyer event={this.props.event} lazyLoad={this.props.lazyLoad} />
         </div>
         <div className="event-description">
-          <EventDescription event={this.props.event} />
+          <EventDescription event={this.props.event} favorite={this.props.favorite} />
         </div>
       </div>
     );
@@ -191,6 +229,7 @@ class HorizontalEvent extends React.Component {
 class VerticalEvent extends React.Component {
   props: {
     event: SearchEvent;
+    favorite: boolean;
   }
 
   render() {
@@ -204,6 +243,7 @@ class VerticalEvent extends React.Component {
     >
       <SquareEventFlyer event={event} />
       <h3 className="event-title" style={{ marginTop: 10 }}>
+        <FavoriteStatus eventId={this.props.event.id} favorite={this.props.favorite} />
         <a href={event.getUrl()}>
           <span>{event.name}</span>
         </a>
@@ -219,6 +259,7 @@ class VerticalEvent extends React.Component {
 class FeaturedEvent extends React.Component {
   props: {
     event: BaseEvent;
+    favorite: boolean;
   }
 
   render() {
@@ -227,6 +268,7 @@ class FeaturedEvent extends React.Component {
       <Card>
         <HorizontalEventFlyer event={event} />
         <h3 className="event-title" style={{ marginTop: 10 }}>
+          <FavoriteStatus eventId={this.props.event.id} favorite={this.props.favorite} />
           <a href={event.getUrl()}>
             <span>{event.name}</span>
           </a>
@@ -238,6 +280,7 @@ class FeaturedEvent extends React.Component {
 class FeaturedEvents extends React.Component {
   props: {
     events: Array<BaseEvent>;
+    favoriteEventIds: FavoritesMap;
   }
 
   render() {
@@ -248,9 +291,10 @@ class FeaturedEvents extends React.Component {
     const resultItems = [];
     const imageEvents = this.props.events.filter(x => x.picture);
     imageEvents.forEach((event, index) => {
+      const favorite = Boolean(this.props.favoriteEventIds[event.id]);
       // Slider requires children to be actual HTML elements.
       resultItems.push(<div key={event.id}>
-        <FeaturedEvent event={event} />
+        <FeaturedEvent event={event} favorite={favorite} />
       </div>);
     });
 
@@ -265,6 +309,7 @@ class FeaturedEvents extends React.Component {
 class CurrentEvents extends React.Component {
   props: {
     events: Array<SearchEvent>;
+    favoriteEventIds: FavoritesMap;
   }
 
   render() {
@@ -274,7 +319,8 @@ class CurrentEvents extends React.Component {
 
     const resultItems = [];
     this.props.events.forEach((event, index) => {
-      resultItems.push(<VerticalEvent key={event.id} event={event} />);
+      const favorite = Boolean(this.props.favoriteEventIds[event.id]);
+      resultItems.push(<VerticalEvent key={event.id} event={event} favorite={favorite} />);
     });
 
     return (<div style={{ width: '100%', padding: 10 }}>
@@ -288,6 +334,7 @@ class CurrentEvents extends React.Component {
 class _EventsList extends React.Component {
   props: {
     events: Array<SearchEvent>;
+    favoriteEventIds: FavoritesMap;
 
     // Self-managed props
     intl: intlShape;
@@ -314,7 +361,8 @@ class _EventsList extends React.Component {
         currentDate = eventStartDate;
         currentTime = null;
       }
-      resultItems.push(<li key={event.id}><HorizontalEvent key={event.id} event={event} lazyLoad={index > 8} /></li>);
+      const favorite = Boolean(this.props.favoriteEventIds[event.id]);
+      resultItems.push(<li key={event.id}><HorizontalEvent key={event.id} event={event} lazyLoad={index > 8} favorite={favorite} /></li>);
     });
 
     return (
@@ -401,6 +449,7 @@ class _ResultsList extends React.Component {
     response: NewSearchResponse;
     past: boolean;
     categoryOrder: Array<string>;
+    favorites: Favorites;
 
     // Self-managed props
     window: windowProps;
@@ -447,6 +496,9 @@ class _ResultsList extends React.Component {
   render() {
     const resultEvents = this.props.response.results.map(eventData => new SearchEvent(eventData));
     const featuredInfos = (this.props.response.featuredInfos || []).map(x => ({ ...x, event: new Event(x.event) }));
+    const favoriteEventIds = {};
+    this.props.favorites.eventIds.forEach((eventId) => { favoriteEventIds[eventId] = true; });
+    console.log(favoriteEventIds);
 
     const now = moment();
     const eventPanels = [];
@@ -455,7 +507,7 @@ class _ResultsList extends React.Component {
       const pastEvents = resultEvents.filter(event => moment(event.start_time) < now);
       if (pastEvents.length) {
         eventPanels.push(<Panel key="pastEvents" header="Past Events">
-          <EventsList events={pastEvents} />
+          <EventsList events={pastEvents} favoriteEventIds={favoriteEventIds} />
         </Panel>);
       }
       eventCount = pastEvents.length;
@@ -466,12 +518,12 @@ class _ResultsList extends React.Component {
       const futureEvents = resultEvents.filter(event => moment(event.start_time) > now);
       if (currentEvents.length) {
         eventPanels.push(<Panel key="currentEvents" header="Events Happening Now">
-          <CurrentEvents events={currentEvents} />
+          <CurrentEvents events={currentEvents} favoriteEventIds={favoriteEventIds} />
         </Panel>);
       }
       if (futureEvents.length) {
         eventPanels.push(<Panel key="futureEvents" header="Upcoming Events">
-          <EventsList events={futureEvents} />
+          <EventsList events={futureEvents} favoriteEventIds={favoriteEventIds} />
         </Panel>);
       }
       eventCount = currentEvents.length + futureEvents.length;
@@ -481,7 +533,7 @@ class _ResultsList extends React.Component {
     if (featuredInfos.length) {
       featuredPanel = (
         <Panel key="featured" header="Featured Event">
-          <FeaturedEvents events={featuredInfos.map(x => x.event)} />
+          <FeaturedEvents events={featuredInfos.map(x => x.event)} favoriteEventIds={favoriteEventIds} />
         </Panel>
       );
     }

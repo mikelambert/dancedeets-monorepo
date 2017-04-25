@@ -6,6 +6,7 @@ import time
 import app
 import base_servlet
 import event_types
+import favorites.db
 from logic import friends
 from logic import rsvp
 from rankings import cities
@@ -89,8 +90,10 @@ class RelevantHandler(SearchHandler):
 
             need_full_event = False
             json_search_response = api.build_search_results_api(city_name, form, search_query, search_results, (2, 0), need_full_event, center_latlng, southwest, northeast)
+            favorite_json = favorites.db.get_favorite_event_ids_for_user(self.fb_uid)
             props = dict(
                 response=json_search_response,
+                favorites=favorite_json,
                 past=(form.time_period.data == search_base.TIME_PAST),
                 showPeople=bool('people' in self.debug_list),
                 categoryOrder=[''] + [x.public_name for x in event_types.STYLES]

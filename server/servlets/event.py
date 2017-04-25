@@ -19,6 +19,7 @@ from events import add_events
 from events import eventdata
 from events import event_locations
 from events import event_updates
+import favorites.db
 import fb_api
 from loc import formatting
 from loc import gmaps_api
@@ -122,10 +123,12 @@ class ShowEventHandler(base_servlet.BaseRequestHandler):
         # Render React component for inclusion in our template:
         api_event = api.canonicalize_event_data(db_event, None, version=(1, 3))
         render_amp = bool(self.request.get('amp'))
+        is_favorited = bool(favorites.db.does_user_favorite_event(self.fb_uid, event_id))
         props = dict(
             amp=render_amp,
             event=api_event,
             userRsvp=rsvps.get(event_id),
+            isFavorited=is_favorited,
         )
         self.setup_react_template('event.js', props, static_html=render_amp)
 
