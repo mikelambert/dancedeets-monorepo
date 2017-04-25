@@ -61,6 +61,12 @@ indexes:
   - name: __key__
     direction: desc
 
+- kind: Favorite
+  properties:
+  - name: user_id
+  - name: date_created
+    direction: desc
+
 - kind: OAuthToken
   properties:
   - name: valid_token

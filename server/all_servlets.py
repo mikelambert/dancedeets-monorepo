@@ -12,6 +12,7 @@ import event_scraper.thing_scraper2
 import event_scraper.webhooks
 import events.event_reloading_tasks
 import events.find_access_tokens
+import favorites.servlets
 import logic.unique_attendees
 import mail.webhooks
 import ml.gprediction_servlets
