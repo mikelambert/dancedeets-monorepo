@@ -192,10 +192,11 @@ def build_search_results_api(city_name, form, search_query, search_results, vers
                 new_groupings = dict((x, {}) for x in groupings)
                 for person_type, styles in groupings.iteritems():
                     for style in event_types.STYLES + ['']:
-                        style_name = style.public_name if style else ''
-                        summed_key = '%s: %s' % (style_name, popular_people.SUMMED_AREA)
-                        if summed_key in groupings[person_type]:
-                            new_groupings[person_type][style_name] = groupings[person_type][summed_key][:10]
+                        index_style_name = style.index_name if style else ''
+                        public_style_name = style.public_name if style else ''
+                        summed_key = '%s: %s' % (index_style_name, popular_people.SUMMED_AREA)
+                        if summed_key in styles:
+                            new_groupings[person_type][public_style_name] = styles[summed_key][:10]
                 groupings = new_groupings
 
             logging.info('Person Groupings:\n%s', '\n'.join('%s: %s' % kv for kv in groupings.iteritems()))
