@@ -30,7 +30,7 @@ import { queryOn } from './dom';
 
 Raven
   .config('https://f966ae7e625249f8a36d42e8b521dc2f@sentry.io/159133', {
-    environmnent: window.prodMode ? 'prod' : 'dev',
+    environment: window.prodMode ? 'prod' : 'dev',
   })
   .install();
 window.addEventListener('unhandledrejection', event => Raven.captureException(event.reason));
