@@ -36,6 +36,12 @@ def event_image_url(eid, **kwargs):
     else:
         return url
 
+def dd_search_url(location, keywords=''):
+    return 'http://www.dancedeets.com/?' + urlencode({
+        'location': location,
+        'keywords': keywords,
+    })
+
 def urlencode(kwargs, doseq=False):
     if doseq:
         new_kwargs = {}

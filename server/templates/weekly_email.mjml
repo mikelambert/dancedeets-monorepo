@@ -1,0 +1,97 @@
+<mjml>
+  <mj-head>
+    <mj-attributes>
+      <mj-all padding="0" />
+      <mj-class name="preheader" color="#000000" font-size="11px" font-family="Ubuntu, Helvetica, Arial, sans-serif" padding="0" />
+    </mj-attributes>
+    <mj-style inline="inline">
+      a { text-decoration: none; color: inherit; }
+    </mj-style>
+  </mj-head>
+  <mj-body>
+    <mj-container background-color="#e0f2ff">
+      <mj-section full-width="full-width" padding="10px 25px">
+        <mj-group>
+          <mj-column>
+            <mj-text mj-class="preheader">
+              DanceDeets, with {{ len(num_events) }} this week for you!
+            </mj-text>
+          </mj-column>
+        </mj-group>
+      </mj-section>
+      <mj-section full-width="full-width" >
+        <mj-column>
+          <mj-image src="http://www.dancedeets.com/images/mail-top.png" alt="top border">
+          </mj-image>
+        </mj-column>
+      </mj-section>
+      <mj-section background-color="#222337" padding="0">
+        <mj-column width="40%" align="center">
+          <mj-image src="http://www.dancedeets.com/dist-400780539943311269/img/deets-head-and-title-on-black@2x.png" alt="logo" padding="0 0 30px 0">
+          </mj-image>
+        </mj-column>
+      </mj-section>
+      <mj-section background-color="#ffffff" padding-top="20px">
+        <mj-column width="100%">
+          <mj-text color="#FAB701" padding="10px 25px">
+            Hey {{user.first_name}}
+            {% if user.expired_oauth_token and user.num_auto_added_events > 10 %}
+            <br />
+            <br />
+            We haven't seen you in awhile. Please <a href="http://www.dancedeets.com/">stop by and login again</a>, and we'll ensure your dance events are shared with others!
+            {% endif %}
+            <br />
+            <br />
+            And you can always check <a href="{{ search_url }}">the most up-to-date listings</a>.
+          </mj-text>
+        </mj-column>
+      </mj-section>
+      {% for result in results %}
+      <mj-section background-color="#ffffff" padding="20px 0">
+        <mj-column width="180px">
+          <mj-image
+            src="{{ result.image }}"
+            alt=""
+            width="180"
+            href="{{ dd_event_url(result.event_id, dict(utm_source='weekly_email', utm_medium='email', utm_campaign='weekly_email')) }}"
+          />
+        </mj-column>
+        <mj-column>
+          <mj-text font-size="20px">
+            <a href="{{ dd_event_url(result.event_id, dict(utm_source='weekly_email', utm_medium='email', utm_campaign='weekly_email')) }}">
+              {{ result.title|e }
+            </a>
+          </mj-text>
+          <mj-text>
+            Time: {{ result.start_time|date_human_format }}
+            <br />
+            Location: {{ result.actual_city_name }}
+          </mj-text>
+          <mj-button align="left" href="{{ dd_event_url(result.event_id, dict(utm_source='weekly_email', utm_medium='email', utm_campaign='weekly_email')) }}">
+            See Event Details
+          </mj-button>
+        </mj-column>
+      </mj-section>
+      {% endfor %}
+      <mj-section background-color="#222337" padding-bottom="20px" padding-top="10px">
+        <mj-column width="full-width">
+          <mj-text align="center" color="#FFFFFF" font-size="20px" padding="30px 0 0 0">That's all we've got for now...see you next week!
+          </mj-text>
+        </mj-column>
+      </mj-section>
+      <mj-section>
+        <mj-column>
+          <mj-image src="http://www.dancedeets.com/images/mail-bottom.png" alt="bottom border" align="center" border="none" width="600" container-background-color="transparent">
+          </mj-image>
+        </mj-column>
+      </mj-section>
+      <mj-section full-width="full-width" padding="20px">
+        <mj-column>
+          <mj-text align="center">
+            You may also <a href="*|UNSUB:http://www.dancedeets.com|*">unsubscribe</a> or <a href="http://www.dancedeets.com/user/edit">change your preferred city</a>
+          </mj-text>
+        </mj-column>
+      </mj-section>
+    </mj-container>
+  </mj-body>
+</mjml>

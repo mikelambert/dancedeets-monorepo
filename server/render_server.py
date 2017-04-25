@@ -18,6 +18,11 @@ class RenderedComponent(object):
     def __unicode__(self):
         return unicode(self.markup)
 
+class RenderException(Exception):
+    pass
+
+class MjmlRenderException(RenderException):
+    pass
 
 class RenderServer(object):
     def render(self, path, props=None, to_static_markup=False, request_headers=None):
@@ -78,6 +83,34 @@ class RenderServer(object):
             return empty_response
 
         return RenderedComponent(markup, obj.get('head', None), serialized_props)
+
+    def render_mjml(self, mjml):
+        url = 'http://localhost:8090/mjml-render'
+
+        options = {
+            'mjml': mjml,
+        }
+        serialized_options = json.dumps(options)
+
+        all_request_headers = {'content-type': 'application/json'}
+
+        try:
+            res = requests.post(
+                url,
+                data=serialized_options,
+                headers=all_request_headers,
+            )
+        except requests.ConnectionError:
+            error = 'Could not connect to render server at {}'.format(url)
+            raise MjmlRenderException(error)
+
+        if res.status_code != 200:
+            error = 'Unexpected response from render server at {} - {}: {}'.format(url, res.status_code, res.text)
+            raise MjmlRenderException(error)
+
+        obj = res.json()
+        html = obj.get('html', None)
+        return html
 
 
 render_server = RenderServer()

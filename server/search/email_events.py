@@ -8,6 +8,7 @@ from loc import math
 from logic import friends
 from logic import rsvp
 from mail import mandrill_api
+from render_server import render_server
 from users import users
 from util import fb_mapreduce
 from util import urls
@@ -49,14 +50,15 @@ def email_for_user(user, fbl, should_send=True):
 
     past_results, present_results, grouped_results = search.group_results(search_results, include_all=True)
 
-    display = {}
-    display['user'] = user
-    display['fb_user'] = fb_user
-
     week_events = grouped_results[0]
     # Only send emails if we have upcoming events
     if not week_events.results:
         return None
+
+    display = {}
+    display['user'] = user
+    display['fb_user'] = fb_user
+    display['search_url'] = urls.dd_search_url(user_location)
     display['results'] = week_events.results
 
     jinja_env = jinja2.Environment(loader=jinja2.FileSystemLoader("templates"))
@@ -64,10 +66,12 @@ def email_for_user(user, fbl, should_send=True):
     jinja_env.globals['dd_event_url'] = urls.dd_event_url
     jinja_env.globals['raw_fb_event_url'] = urls.raw_fb_event_url
     jinja_env.globals['CHOOSE_RSVPS'] = rsvp.CHOOSE_RSVPS
-    rendered = jinja_env.get_template('html_mail_summary.html').render(display)
+    rendered_mjml = jinja_env.get_template('html_mail_summary.mjml').render(display)
+    rendered_html = render_server.render_mjml(rendered_mjml)
+
     d = datetime.date.today()
     d = d - datetime.timedelta(days=d.weekday()) # round down to last monday
-    logging.info("Rendered HTML:\n%s", rendered)
+    logging.info("Rendered HTML:\n%s", rendered_html)
     subject = 'Dance events for %s' % d.strftime('%b %d, %Y')
     message = {
         'from_email': 'events@dancedeets.com',
@@ -78,7 +82,7 @@ def email_for_user(user, fbl, should_send=True):
             'name': user.full_name or user.first_name or '',
             'type': 'to',
         }],
-        'html': rendered,
+        'html': rendered_html,
         'metadata': {
             'user_id': user.fb_uid,
             'email_type': 'weekly',
