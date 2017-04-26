@@ -533,9 +533,9 @@ class BaseRequestHandler(BareBaseRequestHandler):
     def get_login_url(self):
         final_url = self.request.path + '?' + urls.urlencode(self.request.GET)
         params = dict(next=final_url)
-        if 'deb' in self.request.arguments():
-            params['deb'] = self.request.get('deb')
-            self.debug_list = self.request.get('deb').split(',')
+        if 'deb' in self.request.GET:
+            params['deb'] = self.request.GET['deb']
+            self.debug_list = self.request.GET['deb'].split(',')
         else:
             self.debug_list = []
         logging.info("Debug list is %r", self.debug_list)
