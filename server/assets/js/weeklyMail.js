@@ -105,7 +105,7 @@ class _MailEvent extends React.Component {
     const event = this.props.event;
     const size = 180;
     const gutter = 10;
-    const flyerImage = null;
+    let flyerImage = null;
     if (event.picture) {
       const coverUrl = generateCroppedCover(event.picture, size, size);
       flyerImage = (<mj-image
