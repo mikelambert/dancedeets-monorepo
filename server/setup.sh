@@ -88,6 +88,7 @@ else
   echo "Installing necessary brew libraries"
   brew ls --versions homebrew/science/vips >/dev/null || brew install homebrew/science/vips --with-webp --with-graphicsmagick
   brew ls --versions graphicsmagick >/dev/null || brew install graphicsmagick
+  brew ls --versions librsvg >/dev/null || brew install librsvg
   echo "Compiling everything"
   gulp compile
 fi

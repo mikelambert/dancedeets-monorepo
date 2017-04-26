@@ -21,6 +21,7 @@ import yaml from 'js-yaml';
 import yargs from 'yargs';
 import process from 'process';
 import childProcess from 'child_process';
+import {generate as fontAwesomeGenerate} from 'font-awesome-svg-png/index';
 
 const argv = yargs
   .option('d', {
@@ -67,6 +68,19 @@ gulp.task('compile:images:favicons', () => gulp
   .on('error', gutil.log)
   .pipe(gulp.dest('./dist/img/favicons/'))
 );
+
+// These are images we grab expanded versions from font-awesome, for uploading to the site.
+// In particular, these are used by the mail we send out.
+gulp.task('compile-images:font-awesome', cb => fontAwesomeGenerate({
+  color: 'black',
+  png: true,
+  sizes: [16],
+  icons: [
+    'clock-o',
+
+  ],
+  dest: 'dist/img/font-awesome/',
+}));
 
 gulp.task('compile:images:resize', () => gulp
   .src(`${baseAssetsDir}img/**/*.{png,jpg}`)
