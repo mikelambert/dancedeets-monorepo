@@ -132,7 +132,7 @@ class Search(object):
 
     def __init__(self, search_query):
         self.query = search_query
-        self.limit = 1000
+        self.limit = 3000
         # Extra search index fields to return
         self.extra_fields = []
 
