@@ -2,13 +2,15 @@ import datetime
 import jinja2
 import logging
 
+import app
+import base_servlet
 import fb_api
 from loc import gmaps_api
 from loc import math
 from logic import friends
 from logic import rsvp
 from mail import mandrill_api
-from render_server import render_server
+import render_server
 from users import users
 from util import fb_mapreduce
 from util import urls
@@ -66,7 +68,9 @@ def email_for_user(user, fbl, should_send=True):
     jinja_env.globals['dd_event_url'] = urls.dd_event_url
     jinja_env.globals['raw_fb_event_url'] = urls.raw_fb_event_url
     jinja_env.globals['CHOOSE_RSVPS'] = rsvp.CHOOSE_RSVPS
-    rendered_mjml = jinja_env.get_template('html_mail_summary.mjml').render(display)
+
+
+    rendered_mjml = jinja_env.get_template('weekly_email.mjml').render(display)
     rendered_html = render_server.render_mjml(rendered_mjml)
 
     d = datetime.date.today()
@@ -96,6 +100,14 @@ def email_for_user(user, fbl, should_send=True):
         # And send the message now.
         mandrill_api.send_message(message)
     return message
+
+@app.route('/tools/display_email')
+class DisplayEmailHandler(base_servlet.UserOperationHandler):
+    def user_operation(self, fbl, users):
+        fbl.get(fb_api.LookupUser, users[0].fb_uid)
+        message = email_for_user(users[0], fbl, should_send=False)
+        self.response.out.write(message)
+
 
 #TODO(lambert): do we really want yield on this one?
 def yield_email_user(fbl, user):
