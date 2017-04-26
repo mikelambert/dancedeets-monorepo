@@ -51,7 +51,7 @@ def build_display_event_dict(doc):
 class ClassSearch(object):
     def __init__(self, search_query):
         self.query = search_query
-        self.limit = 1000
+        self.limit = search.MAXIMUM_DOCUMENTS_RETURNED_PER_SEARCH # 1000
         # Extra search index fields to return
         self.extra_fields = []
 

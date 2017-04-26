@@ -132,7 +132,7 @@ class Search(object):
 
     def __init__(self, search_query):
         self.query = search_query
-        self.limit = 3000
+        self.limit = search.MAXIMUM_DOCUMENTS_RETURNED_PER_SEARCH # 1000
         # Extra search index fields to return
         self.extra_fields = []
 
