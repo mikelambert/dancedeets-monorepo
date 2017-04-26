@@ -109,6 +109,21 @@ class _MailEvent extends React.Component {
     const eventUrl = addTrackingTags(this.props.event.getUrl());
 
     const verticalAlign = { verticalAlign: 'top' };
+    const imageAlign = { ...verticalAlign, textAlign: 'center', width: 32 };
+
+    let danceCategories = null;
+    if (event.annotations.categories.length) {
+      danceCategories = (
+        <tr>
+          <td style={imageAlign} padding-el><SmallIcon
+            url="http://www.dancedeets.com/dist/img/categories-black.png"
+            alt="Categories"
+          /></td>
+          <td style={verticalAlign}>{event.annotations.categories.join(', ')}</td>
+        </tr>
+      );
+    }
+
     return (
       <mj-section
         background-color="#ffffff"
@@ -132,19 +147,13 @@ class _MailEvent extends React.Component {
             <a href={eventUrl}>{event.name}</a>
           </mj-text>
           <mj-table>
+            {danceCategories}
             <tr>
-              <td style={verticalAlign}><SmallIcon
-                url="http://www.dancedeets.com/dist/img/categories-black.png"
-                alt="Categories"
-              /></td>
-              <td style={verticalAlign}>{event.annotations.categories.join(', ')}</td>
-            </tr>
-            <tr>
-              <td style={verticalAlign}><FontAwesomeIcon name="clock-o" alt="Time" /></td>
+              <td style={imageAlign}><FontAwesomeIcon name="clock-o" alt="Time" /></td>
               <td style={verticalAlign}>{formatStartTime(event.start_time, this.props.intl)}</td>
             </tr>
             <tr>
-              <td style={verticalAlign}><FontAwesomeIcon name="map-marker" alt="Location" /></td>
+              <td style={imageAlign}><FontAwesomeIcon name="map-marker" alt="Location" /></td>
               <td style={verticalAlign}>
                 {event.venue.name}
                 <br />
@@ -152,9 +161,6 @@ class _MailEvent extends React.Component {
               </td>
             </tr>
           </mj-table>
-          <mj-button background-color="#4C4D81" color="#ffffff" align="left" href={eventUrl} padding="10">
-            See Event Details
-          </mj-button>
         </mj-column>
       </mj-section>
     );
@@ -284,8 +290,8 @@ class WeeklyEmail extends React.Component {
       <mjml>
         <mj-head>
           <mj-attributes>
-            <mj-all padding="0" color="#000000" font-size="12px" line-height="18px" font-family="Ubuntu, Helvetica, Arial, sans-serif" />
-            <mj-class name="header" font-size="18px" line-height="23px" />
+            <mj-all padding="0" color="#000000" font-size="12px" line-height="20px" font-family="Ubuntu, Helvetica, Arial, sans-serif" />
+            <mj-class name="header" font-size="18px" line-height="26px" />
           </mj-attributes>
         </mj-head>
         <mj-body>
