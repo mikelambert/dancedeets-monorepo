@@ -296,7 +296,7 @@ class _EventLinks extends React.Component {
           {sourceName}
         </ImagePrefix>
         <ImagePrefix
-          icon={require('../img/categories.png')} // eslint-disable-line global-require
+          icon={require('../img/categories-white.png')} // eslint-disable-line global-require
           amp={this.props.amp}
         >
           {event.annotations.categories.join(', ')}

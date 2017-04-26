@@ -151,7 +151,7 @@ class _EventDescription extends React.Component {
           </a>
         </h3>
         <ImagePrefix
-          icon={require('../img/categories.png')} // eslint-disable-line global-require
+          icon={require('../img/categories-white.png')} // eslint-disable-line global-require
         >
           {keywords.join(', ')}
         </ImagePrefix>
