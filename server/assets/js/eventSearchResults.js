@@ -41,6 +41,7 @@ import {
 } from 'dancedeets-common/js/dates';
 import {
   formatAttending,
+  groupEventsByStartDate,
 } from 'dancedeets-common/js/events/helpers';
 import {
   Card,
@@ -295,26 +296,19 @@ class _EventsList extends React.Component {
 
   render() {
     const resultItems = [];
-    let currentDate = null;
-    let currentTime = null;
-    this.props.events.forEach((event, index) => {
-      const eventStart = moment(event.start_time);
-      const eventStartDate = upperFirst(this.props.intl.formatDate(eventStart.toDate(), weekdayDate));
-      const eventStartTime = upperFirst(this.props.intl.formatDate(eventStart.toDate(), weekdayTime));
-      if (eventStartDate !== currentDate) {
-        resultItems.push(<li
-          key={eventStartDate}
-          className="day-header"
-          style={{
-            marginTop: '30px',
-            marginBottom: '10px',
-            borderBottom: '1px solid white',
-          }}
-        ><Sticky className="opaque">{eventStartDate}</Sticky></li>);
-        currentDate = eventStartDate;
-        currentTime = null;
-      }
-      resultItems.push(<li key={event.id}><HorizontalEvent key={event.id} event={event} lazyLoad={index > 8} /></li>);
+    groupEventsByStartDate(this.props.intl, this.props.events).forEach(({ header, events }) => {
+      resultItems.push(<li
+        key={header}
+        className="day-header"
+        style={{
+          marginTop: '30px',
+          marginBottom: '10px',
+          borderBottom: '1px solid white',
+        }}
+      ><Sticky className="opaque">{header}</Sticky></li>);
+      resultItems.push(...events.map((event, index) =>
+        <li key={event.id}><HorizontalEvent key={event.id} event={event} lazyLoad={index > 8} /></li>
+      ));
     });
 
     return (
