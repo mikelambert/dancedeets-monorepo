@@ -4,7 +4,6 @@
  * @providesModule AssetRegistry
  * @flow
  */
-'use strict';
 
 export type PackagerAsset = {
   __packager_asset: boolean,
@@ -19,7 +18,7 @@ export type PackagerAsset = {
 };
 
 
-var assets: Array<PackagerAsset> = [];
+const assets: Array<PackagerAsset> = [];
 
 function registerAsset(asset: PackagerAsset): number {
   // `push` returns new array length, so the first asset will

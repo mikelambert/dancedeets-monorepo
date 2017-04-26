@@ -8,6 +8,7 @@
  *
  * @flow
  */
-'use strict';
 
-declare export default { [key: string]: string }
+type CSSModule = { [key: string]: string };
+const emptyCSSModule: CSSModule = {};
+export default emptyCSSModule;

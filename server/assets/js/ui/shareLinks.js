@@ -1,3 +1,9 @@
+/**
+ * Copyright 2016 DanceDeets.
+ *
+ * @flow
+ */
+
 import React from 'react';
 import { Share as TwitterShare } from 'react-twitter-widgets';
 import FacebookShare from './fbShare';

@@ -1,3 +1,8 @@
+/**
+ * Copyright 2016 DanceDeets.
+ *
+ * @flow
+ */
 
 export function generateMetaTags(title: string, url: string, thumbnail: string) {
   return [
