@@ -1,20 +1,14 @@
 import datetime
-import jinja2
 import logging
 
 import app
 import base_servlet
 import fb_api
-from loc import gmaps_api
-from loc import math
-from logic import friends
-from logic import rsvp
 from mail import mandrill_api
 import render_server
 from servlets import api
 from users import users
 from util import fb_mapreduce
-from util import urls
 from . import search_base
 from . import search
 
@@ -65,7 +59,9 @@ def email_for_user(user, fbl, should_send=True):
 
     need_full_event = False
     json_search_response = api.build_search_results_api(user_location, form, search_query, search_results, (2, 0), need_full_event, center_latlng, southwest, northeast, skip_people=True)
+    locale = user.locale or 'en_US'
     props = {
+        'currentLocale': locale.replace('_', '-'),
         'user': {
             'userName': user.first_name or user.name or '',
         },
@@ -109,7 +105,10 @@ class DisplayEmailHandler(base_servlet.UserOperationHandler):
     def user_operation(self, fbl, users):
         fbl.get(fb_api.LookupUser, users[0].fb_uid)
         message = email_for_user(users[0], fbl, should_send=False)
-        self.response.out.write(message['html'])
+        if message:
+            self.response.out.write(message['html'])
+        else:
+            self.response.out.write('Error generating mail html')
 
 
 #TODO(lambert): do we really want yield on this one?

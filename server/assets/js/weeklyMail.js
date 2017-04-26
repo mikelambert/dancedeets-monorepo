@@ -1,4 +1,22 @@
+/**
+ * Copyright 2016 DanceDeets.
+ *
+ * @flow
+ */
+
 import React from 'react';
+import {
+  injectIntl,
+  intlShape,
+} from 'react-intl';
+import url from 'url';
+import {
+  intlWeb,
+} from 'dancedeets-common/js/intl';
+import type {
+  Cover,
+  JSONObject,
+} from 'dancedeets-common/js/events/models';
 import {
   BaseEvent,
   SearchEvent,
@@ -6,35 +24,70 @@ import {
 import type {
   NewSearchResponse,
 } from 'dancedeets-common/js/events/search';
+import {
+  formatStartTime,
+  weekdayDate,
+  weekdayTime,
+} from 'dancedeets-common/js/dates';
 
-class MailEvent extends React.Component {
+
+function generateCroppedCover(picture: Cover, width: number, height: number) {
+  const parsedSource = url.parse(picture.source, true);
+  parsedSource.query = { ...parsedSource.query, width, height };
+  const newSourceUrl = url.format(parsedSource);
+
+  return {
+    source: newSourceUrl,
+    width,
+    height,
+  };
+}
+
+class _MailEvent extends React.Component {
   props: {
     event: BaseEvent;
+
+    // Self-managed props
+    intl: intlShape;
   }
 
   render() {
+    const event = this.props.event;
+    const fullWidth = 600;
+    const size = 180;
+    const gutter = 10;
+    const outsideGutter = 20;
+    const eventSpacing = 20;
+    const coverUrl = generateCroppedCover(event.picture, size, size);
+    const eventUrl = this.props.event.getUrl();
     return (
-      <mj-section background-color="#ffffff" padding="20px 0">
-        <mj-column width="180px">
+      <mj-section
+        background-color="#ffffff"
+        padding-left={outsideGutter}
+        padding-right={outsideGutter}
+        padding-bottom={eventSpacing}
+      >
+        <mj-column width={size + gutter}>
           <mj-image
-            src="{{ this.props.event.image }}"
+            padding-right={gutter}
+            src={coverUrl.source}
             alt=""
-            width="180"
-            href="{{ dd_event_url(this.props.event.id, dict(utm_source='weekly_email', utm_medium='email', utm_campaign='weekly_email')) }}"
+            width={size}
+            href={eventUrl}
           />
         </mj-column>
-        <mj-column>
-          <mj-text font-size="20px">
-            <a href="{{ dd_event_url(this.props.event.id, dict(utm_source='weekly_email', utm_medium='email', utm_campaign='weekly_email')) }}">
-              {this.props.event.name}
-            </a>
+        <mj-column width={fullWidth - size - gutter - outsideGutter * 2}>
+          <mj-text mj-class="header">
+            <a href={eventUrl}>{event.name}</a>
           </mj-text>
           <mj-text>
-            Time: {this.props.event.start_time}
+            Time: {formatStartTime(event.start_time, this.props.intl)}
             <br />
-            Location: {this.props.event.actual_city_name}
+            Location: {event.venue.name}
+            <br />
+            {event.venue.cityStateCountry('\n')}
           </mj-text>
-          <mj-button align="left" href="{{ dd_event_url(this.props.event.id, dict(utm_source='weekly_email', utm_medium='email', utm_campaign='weekly_email')) }}">
+          <mj-button align="left" href={eventUrl}>
             See Event Details
           </mj-button>
         </mj-column>
@@ -42,6 +95,7 @@ class MailEvent extends React.Component {
     );
   }
 }
+const MailEvent = injectIntl(_MailEvent);
 
 function shouldReactivateUser(user) {
   return true;
@@ -76,12 +130,13 @@ class BodyWrapper extends React.Component {
   }
 
   render() {
+    const resultEvents = this.props.response.results.map(eventData => new SearchEvent(eventData));
     return (
       <mj-container background-color="#e0f2ff">
         <mj-section full-width="full-width" padding="10px 25px">
           <mj-group>
             <mj-column>
-              <mj-text mj-class="preheader">
+              <mj-text>
                 DanceDeets Weekly, with {this.props.response.results.length} this week for you!
               </mj-text>
             </mj-column>
@@ -103,11 +158,11 @@ class BodyWrapper extends React.Component {
           </mj-column>
         </mj-section>
 
-        {this.props.response.results.map(event => <MailEvent key={event.id} event={event} />)}
+        {resultEvents.map(event => <MailEvent key={event.id} event={event} />)}
 
         <mj-section background-color="#222337" padding-bottom="20px" padding-top="10px">
           <mj-column width="full-width">
-            <mj-text align="center" color="#FFFFFF" font-size="20px" padding="30px 0 0 0">That&rsquo;s all we&rsquo;ve got for now...see you next week!
+            <mj-text align="center" color="#FFFFFF" mj-class="header" padding="30px 0 0 0">That&rsquo;s all we&rsquo;ve got for now...see you next week!
             </mj-text>
           </mj-column>
         </mj-section>
@@ -139,8 +194,8 @@ class WeeklyEmail extends React.Component {
       <mjml>
         <mj-head>
           <mj-attributes>
-            <mj-all padding="0" />
-            <mj-all name="preheader" color="#000000" font-size="11px" font-family="Ubuntu, Helvetica, Arial, sans-serif" padding="0" />
+            <mj-all padding="0" color="#000000" font-size="12px" line-height="18px" font-family="Ubuntu, Helvetica, Arial, sans-serif" />
+            <mj-class name="header" font-size="22px" line-height="27px" />
           </mj-attributes>
         </mj-head>
         <mj-body>
@@ -151,4 +206,4 @@ class WeeklyEmail extends React.Component {
   }
 }
 
-export default WeeklyEmail;
+export default intlWeb(WeeklyEmail);
