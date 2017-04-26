@@ -1,6 +1,7 @@
 import webpack from 'webpack';
 import path from 'path';
 import { argv as env } from 'yargs';
+import combineLoaders from 'webpack-combine-loaders';
 
 const prod = !env.debug;
 
@@ -53,15 +54,28 @@ module.exports = {
       },
       {
         test: /\.jsx?$/,
+        include: /node_modules(?!\/dancedeets-common)/,
+        loader: combineLoaders([
+          {
+            loader: 'shebang',
+          },
+        ]),
+      },
+      {
+        test: /\.jsx?$/,
         exclude: /node_modules(?!\/dancedeets-common)/,
-        loader: 'babel',
-        query: {
-          presets: ['latest', 'react'],
-          plugins: [
-            'transform-object-rest-spread',
-            'transform-flow-strip-types',
-          ],
-        },
+        loader: combineLoaders([
+          {
+            loader: 'babel',
+            query: {
+              presets: ['latest', 'react'],
+              plugins: [
+                'transform-object-rest-spread',
+                'transform-flow-strip-types',
+              ],
+            },
+          },
+        ]),
       },
       {
         test: /\.(png|gif)$/,
