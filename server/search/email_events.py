@@ -75,7 +75,7 @@ def email_for_user(user, fbl, should_send=True):
     rendered_html = mjml_response['html']
     if mjml_response.get('errors'):
         logging.error('Errors rendering weeklyMail.mjml: %s', mjml_response['errors'])
-    subject = 'Dance events for %s' % d.strftime('%b %d, %Y')
+    subject = 'Your Week in Dance: %s' % d.strftime('%b %d, %Y')
     message = {
         'from_email': 'events@dancedeets.com',
         'from_name': 'DanceDeets Events',

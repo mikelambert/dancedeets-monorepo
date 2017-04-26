@@ -217,7 +217,7 @@ class _BodyWrapper extends React.Component {
           <mj-group>
             <mj-column>
               <mj-text>
-                DanceDeets Weekly, with {this.props.response.results.length} events this week for you!
+                With {this.props.response.results.length} events for Your Week in Dance!
               </mj-text>
             </mj-column>
           </mj-group>
