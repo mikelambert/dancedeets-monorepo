@@ -34,8 +34,8 @@ def email_for_user(user, fbl, should_send=True):
         'location': user_location,
         'distance': user.distance_in_km(),
         'distance_units': 'km',
-        'start': start_time.strftime('%Y-%m-%d'),
-        'end': end_time.strftime('%Y-%m-%d'),
+        'start': start_time,
+        'end': end_time,
     }
     form = search_base.SearchForm(data=data)
 
@@ -49,7 +49,7 @@ def email_for_user(user, fbl, should_send=True):
         except:
             return 'Unknown location'
 
-    search_query = form.build_query()
+    search_query = form.build_query(start_end_query=True)
     search_results = search.Search(search_query).get_search_results()
     # Don't send email...
     if not search_results:

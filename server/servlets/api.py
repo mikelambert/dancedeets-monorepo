@@ -205,7 +205,7 @@ def build_search_results_api(city_name, form, search_query, search_results, vers
 
     query = {}
     for field in form:
-        query[field.name] = field.data
+        query[field.name] = getattr(field, '_value', lambda: field.data)()
     json_response = {
         'people': groupings,
         'results': json_results,
