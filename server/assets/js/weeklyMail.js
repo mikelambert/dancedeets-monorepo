@@ -37,13 +37,25 @@ import {
 const outsideGutter = 20;
 const verticalSpacing = 20;
 
-function generateCroppedCover(picture: Cover, width: number, height: number) {
-  const parsedSource = url.parse(picture.source, true);
-  parsedSource.query = { ...parsedSource.query, width, height };
-  const newSourceUrl = url.format(parsedSource);
+function addArgs(origUrl, args) {
+  const parsedUrl = url.parse(origUrl, true);
+  parsedUrl.query = { ...parsedUrl.query, ...args };
+  const newUrl = url.format(parsedUrl);
+  return newUrl;
+}
 
+function addTrackingTags(origUrl) {
+  const tags = {
+    utm_source: 'weekly_email',
+    utm_medium: 'email',
+    utm_campaign: 'weekly_email',
+  };
+  return addArgs(origUrl, tags);
+}
+
+function generateCroppedCover(picture: Cover, width: number, height: number) {
   return {
-    source: newSourceUrl,
+    source: addArgs(picture.source, { width, height }),
     width,
     height,
   };
@@ -62,7 +74,7 @@ class _MailEvent extends React.Component {
     const size = 180;
     const gutter = 10;
     const coverUrl = generateCroppedCover(event.picture, size, size);
-    const eventUrl = this.props.event.getUrl();
+    const eventUrl = addTrackingTags(this.props.event.getUrl());
     return (
       <mj-section
         background-color="#ffffff"
@@ -201,7 +213,7 @@ class _BodyWrapper extends React.Component {
         <mj-section full-width="full-width" padding="20px">
           <mj-column>
             <mj-text align="center">
-              You may also <a href="*|UNSUB:http://www.dancedeets.com|*">unsubscribe</a> or <a href="http://www.dancedeets.com/user/edit">change your preferred city</a>
+              You may also <a href="*|UNSUB:http://www.dancedeets.com|*">unsubscribe</a> or <a href="http://www.dancedeets.com/user/edit">change your preferred city</a>.
             </mj-text>
           </mj-column>
         </mj-section>
