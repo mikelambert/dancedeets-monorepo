@@ -7,7 +7,7 @@
 import url from 'url';
 
 type JSON = string | number | boolean | null | JSONObject | JSONArray;
-export type JSONObject = { [key:string]: JSON };
+export type JSONObject = { [key: string]: JSON };
 type JSONArray = Array<JSON>;
 type MiniImageProp = {
   uri: string;
