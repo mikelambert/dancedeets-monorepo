@@ -6,7 +6,7 @@ global.$ = global.jQuery = jQuery;
 
 // These depend on a jQuery being implicitly in scope,
 // so we need to require them instead of importing them.
-require('jquery.backstretch');
+require('jquery-backstretch');
 /* eslint-enable import/first */
 
 jQuery(document).ready(() => {
