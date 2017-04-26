@@ -64,7 +64,7 @@ def email_for_user(user, fbl, should_send=True):
     fb_user = fbl.fetched_data(fb_api.LookupUser, fbl.fb_uid)
 
     need_full_event = False
-    json_search_response = api.build_search_results_api(user_location, form, search_query, search_results, (2, 0), need_full_event, center_latlng, southwest, northeast)
+    json_search_response = api.build_search_results_api(user_location, form, search_query, search_results, (2, 0), need_full_event, center_latlng, southwest, northeast, skip_people=True)
     props = {
         'user': {
             'userName': user.first_name or user.name or '',

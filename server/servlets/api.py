@@ -133,7 +133,7 @@ def retryable(func):
             raise
     return wrapped_func
 
-def build_search_results_api(city_name, form, search_query, search_results, version, need_full_event, center_latlng, southwest, northeast):
+def build_search_results_api(city_name, form, search_query, search_results, version, need_full_event, center_latlng, southwest, northeast, skip_people=False):
     onebox_links = []
     if search_query:
         onebox_links = onebox.get_links_for_query(search_query)
@@ -162,7 +162,9 @@ def build_search_results_api(city_name, form, search_query, search_results, vers
         logging.exception("Error building featured event listing: %s", e)
 
     groupings = {}
-    if not center_latlng:
+    if skip_people:
+        pass
+    elif not center_latlng:
         # keyword-only search, no location to give promoters for
         logging.info('No center latlng, skipping person groupings')
     else:
