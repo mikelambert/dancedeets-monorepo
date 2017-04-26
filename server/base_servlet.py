@@ -10,8 +10,6 @@ import htmlmin
 import humanize
 import logging
 import random
-from react import render
-from react.conf import settings
 import os
 import traceback
 import urllib
@@ -31,7 +29,7 @@ import fb_api
 from logic import backgrounder
 from logic import mobile
 from rankings import rankings
-from render_server import render_server
+import render_server
 from services import ip_geolocation
 from users import user_creation
 from util import dates
@@ -199,23 +197,14 @@ class BareBaseRequestHandler(webapp2.RequestHandler, FacebookMixinHandler):
         self.response.out.write(json.dumps(arg))
 
     def setup_react_template(self, template_name, props, static_html=False):
-        # We could disable server-side rendering in dev...
-        # but it's useful to verify that everything is working properly.
-        settings.configure(RENDER=True)
         props = props.copy()
         props.update(dict(
             userId=self.fb_uid,
             currentLocale=self.locales[0],
         ))
         try:
-            logging.info('Begin rendering react template: %s', template_name)
-            result = render.render_component(
-                renderer=render_server,
-                path=os.path.abspath(os.path.join('dist/js-server/', template_name)),
-                to_static_markup=static_html,
-                props=props)
-            logging.info('Finish rendering react template: %s', template_name)
-        except render.ComponentSourceFileNotFound as e:
+            result = render_server.render_jsx(template_name, props, static_html=static_html)
+        except render_server.ComponentSourceFileNotFound as e:
             self.display['react_props'] = json.dumps(props)
             logging.exception('Error rendering React component: %s', e)
             return

@@ -72,13 +72,6 @@ def webapp_add_wsgi_middleware(app):
 
     return app
 
-from react.conf import settings
-settings.configure(
-    # We want to always use the render server, since we may be rendering things that we aren't sending clientside code to render
-    RENDER=True,
-    RENDER_URL='http://localhost:8090/render',
-)
-
 if os.environ.get('HOT_SERVER_PORT'):
     logging.info('Using hot reloader!')
 
