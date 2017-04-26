@@ -59,7 +59,6 @@ class _MailEvent extends React.Component {
 
   render() {
     const event = this.props.event;
-    const fullWidth = 600;
     const size = 180;
     const gutter = 10;
     const coverUrl = generateCroppedCover(event.picture, size, size);
@@ -71,27 +70,27 @@ class _MailEvent extends React.Component {
         padding-right={outsideGutter}
         padding-bottom={verticalSpacing}
       >
-        <mj-column width={size + gutter}>
+        <mj-column width="33%">
           <mj-image
+            align="left"
             padding-right={gutter}
             src={coverUrl.source}
             alt=""
             width={size}
             href={eventUrl}
+            border="1px solid black"
           />
         </mj-column>
-        <mj-column width={fullWidth - size - gutter - outsideGutter * 3}>
+        <mj-column width="66%">
           <mj-text mj-class="header">
             <a href={eventUrl}>{event.name}</a>
           </mj-text>
           <mj-text>
-            Time: {formatStartTime(event.start_time, this.props.intl)}
-            <br />
-            Location: {event.venue.name}
+            {formatStartTime(event.start_time, this.props.intl)} @ {event.venue.name}
             <br />
             {event.venue.cityStateCountry('\n')}
           </mj-text>
-          <mj-button align="left" href={eventUrl}>
+          <mj-button background-color="#4C4D81" color="#ffffff" align="left" href={eventUrl} padding="10">
             See Event Details
           </mj-button>
         </mj-column>
@@ -115,7 +114,7 @@ class IntroText extends React.Component {
   render() {
     return (<mj-text padding="10px 25px">
       <p>Hey {this.props.user.userName}, here&rsquo;s what we&rsquo;ve got for you this week!</p>
-      <p>Or check <a href="{{ search_url }}">the most up-to-date listings</a>.</p>
+      <p>Or check <a href="{{ search_url }}">the most up-to-date schedule</a>.</p>
     </mj-text>);
   }
 }
@@ -160,12 +159,12 @@ class _BodyWrapper extends React.Component {
       eventDisplays.push(...events.map(event => <MailEvent key={event.id} event={event} />));
     });
     return (
-      <mj-container background-color="#e0f2ff">
+      <mj-container background-color="#D0D0F0">
         <mj-section full-width="full-width" padding="10px 25px">
           <mj-group>
             <mj-column>
               <mj-text>
-                DanceDeets Weekly, with {this.props.response.results.length} this week for you!
+                DanceDeets Weekly, with {this.props.response.results.length} events this week for you!
               </mj-text>
             </mj-column>
           </mj-group>
