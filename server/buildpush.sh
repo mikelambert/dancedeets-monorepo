@@ -8,5 +8,5 @@ docker tag $LOCAL_IMAGE $REMOTE_IMAGE
 time gcloud docker -- push $REMOTE_IMAGE
 # I am sleeping, because it seems running concurrently can trigger this error:
 # Error Response: [13] Unexpected Error. (AppLock already held.)
-sleep 10 && time gcloud app deploy --quiet --image-url $REMOTE_IMAGE batch.yaml &
+sleep 30 && time gcloud app deploy --quiet --image-url $REMOTE_IMAGE batch.yaml &
 time gcloud app deploy --quiet --image-url $REMOTE_IMAGE app.yaml
