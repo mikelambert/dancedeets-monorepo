@@ -54,3 +54,7 @@ skip_files:
 # and therefore not complain about 'too many files'. It's different from the other lines,
 # which are intended to keep files from getting pushed to the GAE server.
 - .*node_modules
+# We don't want any webpack file generation (into dist/ dir) triggering a reload of the appserver,
+# since the appserver doesn't need/care about these files
+- .*dist
+- .*assets
