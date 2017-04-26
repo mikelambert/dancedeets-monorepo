@@ -1,9 +1,9 @@
 import mimetypes
 import os
 import re
+import webapp2
 
 import app
-import base_servlet
 
 mappings = [
     (r'^/(dancedeets\.png)', './'),
@@ -22,7 +22,7 @@ all_static = '|'.join(regex for regex, path in mappings)
 mimetypes.add_type('application/font-woff2', '.woff2')
 
 @app.route(all_static)
-class StaticHandler(base_servlet.webapp2.RequestHandler):
+class StaticHandler(webapp2.RequestHandler):
     def get(self, *args):
         for regex, path in compiled_mappings:
             result = regex.match(self.request.path)
