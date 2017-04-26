@@ -201,12 +201,15 @@ def build_search_results_api(city_name, form, search_query, search_results, vers
 
             logging.info('Person Groupings:\n%s', '\n'.join('%s: %s' % kv for kv in groupings.iteritems()))
 
+    query = {}
+    for field in form:
+        query[field.name] = field.data
     json_response = {
         'people': groupings,
         'results': json_results,
         'onebox_links': onebox_links,
         'location': city_name,
-        'query': form.data if form else None,
+        'query': query,
     }
     if version <= (1, 3):
         json_response['featured'] = [x['event'] for x in real_featured_infos]
