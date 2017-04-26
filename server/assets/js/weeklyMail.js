@@ -105,7 +105,19 @@ class _MailEvent extends React.Component {
     const event = this.props.event;
     const size = 180;
     const gutter = 10;
-    const coverUrl = generateCroppedCover(event.picture, size, size);
+    const flyerImage = null;
+    if (event.picture) {
+      const coverUrl = generateCroppedCover(event.picture, size, size);
+      flyerImage = (<mj-image
+        align="left"
+        padding-right={gutter}
+        src={coverUrl.source}
+        alt=""
+        width={size}
+        href={eventUrl}
+        border="1px solid black"
+      />);
+    }
     const eventUrl = addTrackingTags(this.props.event.getUrl());
 
     const verticalAlign = { verticalAlign: 'top' };
@@ -132,15 +144,7 @@ class _MailEvent extends React.Component {
         padding-bottom={verticalSpacing}
       >
         <mj-column width="33%">
-          <mj-image
-            align="left"
-            padding-right={gutter}
-            src={coverUrl.source}
-            alt=""
-            width={size}
-            href={eventUrl}
-            border="1px solid black"
-          />
+          {flyerImage}
         </mj-column>
         <mj-column width="66%">
           <mj-text mj-class="header">
