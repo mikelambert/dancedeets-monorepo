@@ -168,25 +168,6 @@ class _MailEvent extends React.Component {
 }
 const MailEvent = injectIntl(_MailEvent);
 
-function shouldReactivateUser(user) {
-  return true;
-  // return this.props.user.expired_oauth_token && this.props.user.num_auto_added_events > 10;
-}
-
-class IntroText extends React.Component {
-  props: {
-    // TODO: flesh this out
-    user: any;
-  }
-
-  render() {
-    return (<mj-text padding="10px 25px">
-      <p>Hey {this.props.user.userName}, here&rsquo;s what we&rsquo;ve got for you this week!</p>
-      <p>Or check <a href="{{ search_url }}">the most up-to-date schedule</a>.</p>
-    </mj-text>);
-  }
-}
-
 class DayHeader extends React.Component {
   props: {
     title: string;
@@ -249,12 +230,21 @@ class _BodyWrapper extends React.Component {
         </mj-section>
         <mj-section background-color="#ffffff">
           <mj-column width="100%">
-            <IntroText user={this.props.user} />
+            <mj-text padding="10px 25px">
+              <p>Hey {this.props.user.userName}, here&rsquo;s what we&rsquo;ve found for you this week!</p>
+            </mj-text>
           </mj-column>
         </mj-section>
 
         {eventDisplays}
 
+        <mj-section background-color="#ffffff">
+          <mj-column width="100%">
+            <mj-text padding="10px 25px">
+              Looking for more events? Be sure to <a href="{{ search_url }}">check out website</a> for the complete and up-to-date schedule!
+            </mj-text>
+          </mj-column>
+        </mj-section>
         <mj-section background-color="#222337" padding-bottom="20px" padding-top="10px">
           <mj-column width="full-width">
             <mj-text align="center" color="#FFFFFF" mj-class="header" padding="30px 0 0 0">That&rsquo;s all we&rsquo;ve got for now...see you next week!
