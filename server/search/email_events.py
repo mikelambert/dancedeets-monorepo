@@ -63,7 +63,7 @@ def email_for_user(user, fbl, should_send=True):
     props = {
         'currentLocale': locale.replace('_', '-'),
         'user': {
-            'userName': user.first_name or user.name or '',
+            'userName': user.first_name or user.full_name or '',
         },
         'response': json_search_response,
     }
