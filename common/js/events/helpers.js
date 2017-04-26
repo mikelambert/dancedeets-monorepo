@@ -34,7 +34,7 @@ export function groupEventsByStartDate(intl: intlShape, events) {
     const eventStart = moment(event.start_time);
     const eventStartDate = upperFirst(intl.formatDate(eventStart.toDate(), weekdayDate));
     if (eventStartDate !== currentDate) {
-      results.push({header: eventStartDate, events: []});
+      results.push({ header: eventStartDate, events: [] });
       currentDate = eventStartDate;
     }
     results[results.length - 1].events.push(event);
