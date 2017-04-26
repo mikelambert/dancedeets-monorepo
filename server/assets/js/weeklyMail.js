@@ -32,7 +32,9 @@ import {
 import {
   groupEventsByStartDate,
 } from 'dancedeets-common/js/events/helpers';
-
+import type {
+  ExportedIconsEnum,
+} from './exportedIcons';
 
 const outsideGutter = 20;
 const verticalSpacing = 20;
@@ -61,6 +63,22 @@ function generateCroppedCover(picture: Cover, width: number, height: number) {
   };
 }
 
+class FontAwesomeIcon extends React.Component {
+  props: {
+    name: ExportedIcons;
+    alt: string;
+  }
+
+  render() {
+    return (<img
+      src={`http://www.dancedeets.com/dist/img/font-awesome/black/16/${this.props.name}.png`}
+      width="16"
+      height="16"
+      alt={this.props.alt}
+    />);
+  }
+}
+
 class _MailEvent extends React.Component {
   props: {
     event: BaseEvent;
@@ -75,6 +93,8 @@ class _MailEvent extends React.Component {
     const gutter = 10;
     const coverUrl = generateCroppedCover(event.picture, size, size);
     const eventUrl = addTrackingTags(this.props.event.getUrl());
+
+    const verticalAlign = { verticalAlign: 'top' };
     return (
       <mj-section
         background-color="#ffffff"
@@ -97,13 +117,24 @@ class _MailEvent extends React.Component {
           <mj-text mj-class="header">
             <a href={eventUrl}>{event.name}</a>
           </mj-text>
-          <mj-text>
-            {event.annotations.categories.join(', ')}
-            <br />
-            {formatStartTime(event.start_time, this.props.intl)} @ {event.venue.name}
-            <br />
-            {event.venue.cityStateCountry('\n')}
-          </mj-text>
+          <mj-table>
+            <tr>
+              <td style={verticalAlign}>{' '}</td>
+              <td style={verticalAlign}>{event.annotations.categories.join(', ')}</td>
+            </tr>
+            <tr>
+              <td style={verticalAlign}><FontAwesomeIcon name="clock-o" alt="Time" /></td>
+              <td style={verticalAlign}>{formatStartTime(event.start_time, this.props.intl)}</td>
+            </tr>
+            <tr>
+              <td style={verticalAlign}><FontAwesomeIcon name="map-marker" alt="Location" /></td>
+              <td style={verticalAlign}>
+                {event.venue.name}
+                <br />
+                {event.venue.cityStateCountry('\n')}
+              </td>
+            </tr>
+          </mj-table>
           <mj-button background-color="#4C4D81" color="#ffffff" align="left" href={eventUrl} padding="10">
             See Event Details
           </mj-button>
