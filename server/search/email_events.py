@@ -47,7 +47,7 @@ def email_for_user(user, fbl, should_send=True):
         try:
             city_name, center_latlng, southwest, northeast = search_base.normalize_location(form)
         except:
-            return 'Unknown location'
+            return
 
     search_query = form.build_query(start_end_query=True)
     search_results = search.Search(search_query).get_search_results()
