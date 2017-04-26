@@ -63,11 +63,8 @@ def email_for_user(user, fbl, should_send=True):
 
     fb_user = fbl.fetched_data(fb_api.LookupUser, fbl.fb_uid)
 
-    #need_full_event = False
-    #json_search_response = api.build_search_results_api(user_location, form, search_query, search_results, (2, 0), need_full_event, center_latlng, southwest, northeast)
-    json_search_response = {
-        'results': [],
-    }
+    need_full_event = False
+    json_search_response = api.build_search_results_api(user_location, form, search_query, search_results, (2, 0), need_full_event, center_latlng, southwest, northeast)
     props = {
         'user': {
             'userName': user.first_name or user.name or '',
@@ -78,11 +75,10 @@ def email_for_user(user, fbl, should_send=True):
     if response.error:
         logging.error('Error rendering weeklyMail.js: %s', response.error)
         return
-    logging.info('Rendered: %s', response)
-    logging.info('Rendered mjml: %s', response.markup)
-    rendered_html = render_server.render_mjml(response.markup)
-
-    logging.info("Rendered HTML:\n%s", rendered_html)
+    mjml_response = render_server.render_mjml(response.markup)
+    rendered_html = mjml_response['html']
+    if mjml_response.get('errors'):
+        logging.error('Errors rendering weeklyMail.mjml: %s', mjml_response['errors'])
     subject = 'Dance events for %s' % d.strftime('%b %d, %Y')
     message = {
         'from_email': 'events@dancedeets.com',
@@ -113,7 +109,7 @@ class DisplayEmailHandler(base_servlet.UserOperationHandler):
     def user_operation(self, fbl, users):
         fbl.get(fb_api.LookupUser, users[0].fb_uid)
         message = email_for_user(users[0], fbl, should_send=False)
-        self.response.out.write(message)
+        self.response.out.write(message['html'])
 
 
 #TODO(lambert): do we really want yield on this one?

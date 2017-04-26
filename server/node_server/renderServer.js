@@ -130,66 +130,6 @@ app.post('/mjml-render', (req, res) => {
     error: null,
     html,
   });
-  // We're constructing new objects everytime we readFile,
-  // so let's make sure we clear the cache so it doesn't blow up.
-  reactRender._components._cache = [];
-  fs.readFile(req.body.path, { encoding: 'utf8' }, (err, data) => {
-    if (err) {
-      res.json({
-        error: {
-          type: err.constructor.name,
-          message: err.message,
-          stack: err.stack,
-        },
-        markup: null,
-      });
-    } else {
-      const body = req.body;
-      let component = null;
-      // We list this here, so that it applies for the eval.
-      // But we don't list it at the top, because any attempt to inline this code
-      // will trigger runtime errors on the compiled JS.
-      if (!global._babelPolyfill) {
-        require('babel-polyfill'); // eslint-disable-line global-require
-      }
-      // Ensure this runs in a try-catch, so the server cannot die on eval()ing code.
-      try {
-        component = eval(data); // eslint-disable-line no-eval
-        body.component = component.default;
-      } catch (e) {
-        console.error(e);
-        res.json({
-          error: {
-            type: e.constructor.name,
-            message: e.message,
-            stack: e.stack,
-          },
-          markup: null,
-        });
-        return;
-      }
-      reactRender(body, (err2, markup) => {
-        const head = serializedHead(component);
-        if (err2) {
-          console.error(err2);
-          res.json({
-            error: {
-              type: err2.constructor.name,
-              message: err2.message,
-              stack: err2.stack,
-            },
-            markup: null,
-          });
-        } else {
-          res.json({
-            error: null,
-            markup,
-            head,
-          });
-        }
-      });
-    }
-  });
 });
 server.listen(PORT, ADDRESS, () => {
   console.log(`Node (react, mjml) server listening at http://${ADDRESS}:${PORT}`);

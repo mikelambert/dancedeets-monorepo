@@ -93,8 +93,8 @@ class BodyWrapper extends React.Component {
           </mj-column>
         </mj-section>
         <mj-section background-color="#222337" padding="0">
-          <mj-column width="40%" align="center">
-            <mj-image src="http://www.dancedeets.com/dist-400780539943311269/img/deets-head-and-title-on-black@2x.png" alt="logo" padding="0 0 30px 0" />
+          <mj-column width="40%">
+            <mj-image align="center" src="http://www.dancedeets.com/dist-400780539943311269/img/deets-head-and-title-on-black@2x.png" alt="logo" padding="0 0 30px 0" />
           </mj-column>
         </mj-section>
         <mj-section background-color="#ffffff" padding-top="20px">
