@@ -63,6 +63,22 @@ function generateCroppedCover(picture: Cover, width: number, height: number) {
   };
 }
 
+class SmallIcon extends React.Component {
+  props: {
+    url: string;
+    alt: string;
+  }
+
+  render() {
+    return (<img
+      src={this.props.url}
+      width="16"
+      height="16"
+      alt={this.props.alt}
+    />);
+  }
+}
+
 class FontAwesomeIcon extends React.Component {
   props: {
     name: ExportedIcons;
@@ -70,10 +86,8 @@ class FontAwesomeIcon extends React.Component {
   }
 
   render() {
-    return (<img
-      src={`http://www.dancedeets.com/dist/img/font-awesome/black/16/${this.props.name}.png`}
-      width="16"
-      height="16"
+    return (<SmallIcon
+      url={`http://www.dancedeets.com/dist/img/font-awesome/black/png/16/${this.props.name}.png`}
       alt={this.props.alt}
     />);
   }
@@ -119,7 +133,10 @@ class _MailEvent extends React.Component {
           </mj-text>
           <mj-table>
             <tr>
-              <td style={verticalAlign}>{' '}</td>
+              <td style={verticalAlign}><SmallIcon
+                url="http://www.dancedeets.com/dist/img/categories-black.png"
+                alt="Categories"
+              /></td>
               <td style={verticalAlign}>{event.annotations.categories.join(', ')}</td>
             </tr>
             <tr>

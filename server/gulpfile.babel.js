@@ -82,6 +82,16 @@ gulp.task('compile:images:font-awesome', cb => fontAwesomeGenerate({
   dest: 'dist/img/font-awesome/',
 }));
 
+gulp.task('compile:images:assets-to-dist', () => gulp
+  .src(`./assets/img/**/*.{png,jpg}`)
+  .pipe($.responsiveImages({
+    // We reference categories-black.png from our mails
+    'categories-*.png': [{
+    }],
+  }))
+  .pipe(gulp.dest('dist/img'))
+);
+
 gulp.task('compile:images:resize', () => gulp
   .src(`${baseAssetsDir}img/**/*.{png,jpg}`)
   .pipe($.responsiveImages({
@@ -157,7 +167,7 @@ gulp.task('compile:images:svg', () => gulp
   .pipe(gulp.dest('dist/img'))
 );
 
-gulp.task('compile:images', ['compile:images:favicons', 'compile:images:font-awesome', 'compile:images:resize', 'compile:images:shared-resize', 'compile:images:svg']);
+gulp.task('compile:images', ['compile:images:favicons', 'compile:images:font-awesome', 'compile:images:assets-to-dist', 'compile:images:resize', 'compile:images:shared-resize', 'compile:images:svg']);
 
 gulp.task('compile:fonts', () => gulp
   .src('bower_components/font-awesome/fonts/*.*')
