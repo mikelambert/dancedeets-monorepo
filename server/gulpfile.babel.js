@@ -318,20 +318,20 @@ gulp.task('server:datastore:local', $.shell.task(['gcloud beta emulators datasto
 // Workable Dev Server (1): Hot reloading
 // Port 8090: Backend React Render server
 // (We don't really use this, but it's there in case our generate_amp_sources/compilation tasks want it)
-gulp.task('server:hot:react', ['react-server']);
+gulp.task('server:hot:node', ['react-server']);
 // Port 8085: Middle Python server.
 gulp.task('server:hot:python', ['dev-appserver:server:hot']);
 gulp.task('server:hot:python:force', ['dev-appserver:server:hot:force']);
 // Port 8080: Frontend Javascript Server (Handles Hot Reloads and proxies the rest to Middle Python)
-gulp.task('server:hot:javascript', $.shell.task(['../runNode.js ./hotServer.js --debug --port 8080 --backend 8085']));
+gulp.task('server:hot:frontend', $.shell.task(['../runNode.js ./hotServer.js --debug --port 8080 --backend 8085']));
 // Or we can run them all with:
-gulp.task('server:hot', ['server:hot:react', 'server:hot:python', 'server:hot:javascript']);
-gulp.task('server:hot:force', ['server:hot:react', 'server:hot:python:force', 'server:hot:javascript', 'server:datastore:local']);
+gulp.task('server:hot', ['server:hot:node', 'server:hot:python', 'server:hot:frontend']);
+gulp.task('server:hot:force', ['server:hot:node', 'server:hot:python:force', 'server:hot:frontend', 'server:datastore:local']);
 
 
 // Workable Dev Server (2) Prod-like JS/CSS setup
 // Port 8090: Backend React Render server
-gulp.task('server:full:react', ['react-server']);
+gulp.task('server:full:node', ['react-server']);
 // Port 8080: Frontend Python server
 gulp.task('server:full:python', ['dev-appserver:server:regular']);
 // Also need to run the three webpack servers:
@@ -339,7 +339,7 @@ gulp.task('server:full:python', ['dev-appserver:server:regular']);
 //    'compile:webpack:server:prod:watch'
 //    'compile:webpack:client:prod:watch'
 // Or we can run them all with:
-gulp.task('server:full', ['server:full:react', 'server:full:python', 'compile:webpack:server:prod:watch', 'compile:webpack:client:prod:watch', 'server:datastore:local']);
+gulp.task('server:full', ['server:full:node', 'server:full:python', 'compile:webpack:server:prod:watch', 'compile:webpack:client:prod:watch', 'server:datastore:local']);
 // TODO: We ignore 'compile:webpack:amp:prod:watch' because it will need a running server to run against, and timing that is hard.
 
 gulp.task('serverFull', ['server:full'])
