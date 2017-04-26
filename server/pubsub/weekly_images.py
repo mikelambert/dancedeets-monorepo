@@ -18,7 +18,7 @@ full_size = (626, 840)
 WEEKLY_IMAGE_BUCKET = 'dancedeets-weekly'
 
 def build_animated_image(results):
-    images = [_generate_image(x.db_event) for x in results if x.full_image_url]
+    images = [_generate_image(x.db_event) for x in results if x.db_event.full_image_url]
 
     out_image = StringIO.StringIO()
     images[0].save(out_image, format='gif', save_all=True, append_images=images[1:], duration=2500)
