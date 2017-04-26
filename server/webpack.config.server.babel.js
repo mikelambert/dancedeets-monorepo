@@ -14,6 +14,7 @@ module.exports = {
     topic: './assets/js/topic.js',
     tutorial: './assets/js/tutorial.js',
     tutorialCategory: './assets/js/tutorialCategory.js',
+    weeklyMail: './assets/js/weeklyMail.js',
   },
   output: {
     path: path.join(__dirname, 'dist/js-server'),

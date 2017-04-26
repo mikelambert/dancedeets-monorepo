@@ -77,7 +77,6 @@ def render_jsx(template_name, props=None, static_html=False):
         return empty_response
 
     obj = res.json()
-
     markup = obj.get('markup', None)
     err = obj.get('error', None)
 
@@ -94,7 +93,7 @@ def render_jsx(template_name, props=None, static_html=False):
 
     return RenderedComponent(markup, obj.get('head', None), serialized_props)
 
-def render_mjml(self, mjml):
+def render_mjml(mjml):
     url = RENDER_MJML_URL
 
     options = {

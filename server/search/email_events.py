@@ -11,6 +11,7 @@ from logic import friends
 from logic import rsvp
 from mail import mandrill_api
 import render_server
+from servlets import api
 from users import users
 from util import fb_mapreduce
 from util import urls
@@ -31,50 +32,56 @@ def email_for_user(user, fbl, should_send=True):
     user_location = user.location
     if not user_location:
         return
-    distance_in_km = user.distance_in_km()
-    min_attendees = user.min_attendees
 
-    # search for relevant events
-    geocode = gmaps_api.lookup_address(user_location)
-    if not geocode:
-        return None
-    bounds = math.expand_bounds(geocode.latlng_bounds(), distance_in_km)
-    query = search_base.SearchQuery(time_period=search_base.TIME_UPCOMING, bounds=bounds, min_attendees=min_attendees)
-    fb_user = fbl.fetched_data(fb_api.LookupUser, fbl.fb_uid)
+    d = datetime.date.today()
+    start_time = d - datetime.timedelta(days=d.weekday()) # round down to last monday
+    end_time = start_time + datetime.timedelta(days=8)
+    data = {
+        'location': user_location,
+        'distance': user.distance_in_km(),
+        'distance_units': 'km',
+        'start': start_time.strftime('%Y-%m-%d'),
+        'end': end_time.strftime('%Y-%m-%d'),
+    }
+    form = search_base.SearchForm(data=data)
 
-    search_results = search.Search(query).get_search_results()
+    city_name = None
+    center_latlng = None
+    southwest = None
+    northeast = None
+    if form.location.data:
+        try:
+            city_name, center_latlng, southwest, northeast = search_base.normalize_location(form)
+        except:
+            return 'Unknown location'
+
+    search_query = form.build_query()
+    search_results = search.Search(search_query).get_search_results()
     # Don't send email...
     if not search_results:
         return
 
-    friends.decorate_with_friends(fbl, search_results)
-    rsvp.decorate_with_rsvps(fbl, search_results)
+    fb_user = fbl.fetched_data(fb_api.LookupUser, fbl.fb_uid)
 
-    past_results, present_results, grouped_results = search.group_results(search_results, include_all=True)
+    #need_full_event = False
+    #json_search_response = api.build_search_results_api(user_location, form, search_query, search_results, (2, 0), need_full_event, center_latlng, southwest, northeast)
+    json_search_response = {
+        'results': [],
+    }
+    props = {
+        'user': {
+            'userName': user.first_name or user.name or '',
+        },
+        'response': json_search_response,
+    }
+    response = render_server.render_jsx('weeklyMail.js', props, static_html=True)
+    if response.error:
+        logging.error('Error rendering weeklyMail.js: %s', response.error)
+        return
+    logging.info('Rendered: %s', response)
+    logging.info('Rendered mjml: %s', response.markup)
+    rendered_html = render_server.render_mjml(response.markup)
 
-    week_events = grouped_results[0]
-    # Only send emails if we have upcoming events
-    if not week_events.results:
-        return None
-
-    display = {}
-    display['user'] = user
-    display['fb_user'] = fb_user
-    display['search_url'] = urls.dd_search_url(user_location)
-    display['results'] = week_events.results
-
-    jinja_env = jinja2.Environment(loader=jinja2.FileSystemLoader("templates"))
-    jinja_env.filters['date_human_format'] = user.date_human_format
-    jinja_env.globals['dd_event_url'] = urls.dd_event_url
-    jinja_env.globals['raw_fb_event_url'] = urls.raw_fb_event_url
-    jinja_env.globals['CHOOSE_RSVPS'] = rsvp.CHOOSE_RSVPS
-
-
-    rendered_mjml = jinja_env.get_template('weekly_email.mjml').render(display)
-    rendered_html = render_server.render_mjml(rendered_mjml)
-
-    d = datetime.date.today()
-    d = d - datetime.timedelta(days=d.weekday()) # round down to last monday
     logging.info("Rendered HTML:\n%s", rendered_html)
     subject = 'Dance events for %s' % d.strftime('%b %d, %Y')
     message = {
