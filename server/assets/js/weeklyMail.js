@@ -98,6 +98,8 @@ class _MailEvent extends React.Component {
             <a href={eventUrl}>{event.name}</a>
           </mj-text>
           <mj-text>
+            {event.annotations.categories.join(', ')}
+            <br />
             {formatStartTime(event.start_time, this.props.intl)} @ {event.venue.name}
             <br />
             {event.venue.cityStateCountry('\n')}
