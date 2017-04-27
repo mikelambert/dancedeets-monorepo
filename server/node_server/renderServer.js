@@ -9,10 +9,12 @@ import http from 'http';
 import express from 'express';
 import bodyParser from 'body-parser';
 import reactRender from 'react-render';
-import yargs from 'yargs';
+// We implement from yargs/yargs instead of yargs due to:
+// https://github.com/yargs/yargs/issues/781
+import yargs from 'yargs/yargs';
 import { mjml2html } from 'mjml';
 
-const argv = yargs
+const parser = yargs()
   .option('p', {
     alias: 'port',
     description: 'Specify the server\'s port',
@@ -23,9 +25,10 @@ const argv = yargs
     description: 'Specify the server\'s address',
     default: '127.0.0.1',
   })
-  .help('h').alias('h', 'help')
-  .strict()
-  .argv;
+  .help('h')
+  .alias('h', 'help')
+  .strict();
+const argv = parser.parse(process.argv);
 
 
 // Ensure support for loading files that contain ES6+7 & JSX
