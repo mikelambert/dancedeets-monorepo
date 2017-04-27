@@ -207,7 +207,7 @@ class Search(object):
         doc_events = self._get_candidate_doc_events(ids_only=not prefilter)
         logging.info("Search returned %s events in %s seconds", len(doc_events), time.time() - a)
         if len(doc_events) == self.limit:
-            logging.error('Query has more results, only returning %s results: %s', len(doc_events), query)
+            logging.error('Query has more results, only returning %s results: %r', len(doc_events), self._get_query_string())
 
         #TODO(lambert): move to common library.
         now = datetime.datetime.now() - datetime.timedelta(hours=12)
