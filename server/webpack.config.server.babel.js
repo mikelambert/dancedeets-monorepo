@@ -55,27 +55,19 @@ module.exports = {
       {
         test: /\.jsx?$/,
         include: /node_modules(?!\/dancedeets-common)/,
-        loader: combineLoaders([
-          {
-            loader: 'shebang',
-          },
-        ]),
+        loader: 'shebang',
       },
       {
         test: /\.jsx?$/,
         exclude: /node_modules(?!\/dancedeets-common)/,
-        loader: combineLoaders([
-          {
-            loader: 'babel',
-            query: {
-              presets: ['latest', 'react'],
-              plugins: [
-                'transform-object-rest-spread',
-                'transform-flow-strip-types',
-              ],
-            },
-          },
-        ]),
+        loader: 'babel',
+        query: {
+          presets: ['latest', 'react'],
+          plugins: [
+            'transform-object-rest-spread',
+            'transform-flow-strip-types',
+          ],
+        },
       },
       {
         test: /\.(png|gif)$/,
