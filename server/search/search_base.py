@@ -159,6 +159,8 @@ class SearchQuery(object):
         self.bounds = bounds
         self.keywords = keywords
 
+    def __repr__(self):
+        return 'SearchQuery(**%r)' % self.__dict__
 
 class SearchResult(object):
     def __init__(self, event_id, display_event_dict, db_event=None):
