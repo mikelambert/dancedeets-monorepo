@@ -27,11 +27,10 @@ cron:
 - description: reload user data
   url: /tasks/reload_all_users?user_id=dummy&allow_cache=0&queue=slow-queue
   schedule: every day 18:00
-#TODO: reenable when the weekly emails are tested again
-#- description: email users about upcoming events
-#  url: /tasks/email_all_users?user_id=dummy
-#  schedule: every wednesday 15:00
-#  timezone: America/Los_Angeles
+- description: email users about upcoming events
+  url: /tasks/email_all_users?user_id=dummy
+  schedule: every monday 12:00
+  timezone: America/Los_Angeles
 - description: post to social networks
   url: /tasks/social_publisher
   schedule: every 1 minutes
