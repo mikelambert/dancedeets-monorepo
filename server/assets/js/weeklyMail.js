@@ -154,7 +154,7 @@ class _MailEvent extends React.Component {
             {danceCategories}
             <tr>
               <td style={imageAlign}><FontAwesomeIcon name="clock-o" alt="Time" /></td>
-              <td style={verticalAlign}>{formatStartTime(event.start_time, this.props.intl)}</td>
+              <td style={verticalAlign}>{formatStartTime(event.startTimeNoTz(), this.props.intl)}</td>
             </tr>
             <tr>
               <td style={imageAlign}><FontAwesomeIcon name="map-marker" alt="Location" /></td>

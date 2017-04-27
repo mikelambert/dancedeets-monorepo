@@ -103,6 +103,13 @@ export class BaseEvent extends JsonDerivedObject {
   getUrl() {
     return `http://www.dancedeets.com/events/${this.id}/`;
   }
+
+  startTimeNoTz() {
+    return this.start_time.substr(0, 19);
+  }
+  endTimeNoTz() {
+    return this.end_time.substr(0, 19);
+  }
 }
 
 export class SearchEvent extends BaseEvent {
