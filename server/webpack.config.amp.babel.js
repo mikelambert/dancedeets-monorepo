@@ -84,7 +84,7 @@ module.exports = {
                     browsers: ['> 2%'],
                   }),
                   uncss.postcssPlugin({
-                    html: ['amp/generated/*.html'],
+                    html: ['amp/generated/*.html', 'amp/empty.html'],
                   }),
                 ],
               },
