@@ -30,7 +30,7 @@ module.exports = {
     }),
   ],
   resolve: {
-    extensions: ['', '.js', '.jsx', '.json'],
+    extensions: ['.js', '.jsx', '.json'],
   },
   target: 'node',
   node: {
@@ -40,55 +40,82 @@ module.exports = {
     http: 'empty',
   },
   module: {
-    preLoaders: [
+    rules: [
       {
         test: /\.jsx?$/,
-        loader: 'eslint-loader',
+        use: 'eslint-loader',
         exclude: /node_modules/,
-      },
-    ],
-    loaders: [
-      {
-        test: /\.json$/,
-        loader: 'json',
+        enforce: 'pre',
       },
       {
         test: /\.jsx?$/,
         include: /node_modules(?!\/dancedeets-common)/,
-        loader: 'shebang',
+        loader: 'shebang-loader',
       },
       {
         test: /\.jsx?$/,
         exclude: /node_modules(?!\/dancedeets-common)/,
-        loader: 'babel',
-        query: {
-          presets: ['latest', 'react'],
-          plugins: [
-            'transform-object-rest-spread',
-            'transform-flow-strip-types',
-          ],
+        use: {
+          loader: 'babel-loader',
+          options: {
+            presets: [
+              ["latest", {
+                "es2015": {
+                  "modules": false,
+                },
+              }],
+              'react',
+              'stage-0',
+            ],
+            plugins: [
+              'transform-flow-strip-types',
+            ],
+          },
         },
       },
       {
         test: /\.(png|gif)$/,
-        loaders: [
-          'url-loader?limit=10000&mimetype=application/font-woff&name=../img/[name].[ext]',
-          'image-webpack?bypassOnDebug&optimizationLevel=7&interlaced=false',
+        use: [
+          {
+            loader: 'url-loader',
+            options: {
+              limit: 10000,
+              mimetype: 'application/font-woff',
+              name: '../img/[name].[ext]',
+            },
+          },
+          {
+            loader: 'image-webpack-loader',
+            options: {
+              bypassOnDebug: true,
+              optimizationLevel: 7,
+              interlaced: false,
+            },
+          },
         ],
       },
       {
         // This exposes React variable so Chrome React devtools work
         test: require.resolve('react'),
-        loader: 'expose?React',
+        loader: 'expose-loader?React',
       },
       // We don't care about these on the server too much, but we would like them to avoid erroring-out:
       {
         test: /\.s?css$/,
-        loaders: ['css-loader?sourceMap', 'postcss-loader', 'sass-loader?sourceMap'],
+        use: [
+          {loader: 'css-loader?sourceMap'},
+          {loader: 'postcss-loader'},
+          {loader: 'sass-loader?sourceMap'},
+        ],
       },
       {
         test: /\.(ttf|otf|eot|svg|woff(2)?)(\?[a-z0-9=.]+)?$/,
-        loader: 'file-loader?name=../fonts/[name].[ext]',
+        use: {
+          loader: 'file-loader',
+          options: {
+            name: '../fonts/[name].[ext]',
+          },
+        },
       },
     ],
   },
