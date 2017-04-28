@@ -1,7 +1,6 @@
 from flask import Flask
-from flask.ext.admin import Admin
-
-from flask.ext.admin.contrib import appengine
+from flask_admin import Admin
+from flask_admin.contrib import appengine
 
 import keys
 
