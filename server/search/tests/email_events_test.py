@@ -1,3 +1,4 @@
+import logging
 import os
 import socket
 import subprocess
@@ -18,9 +19,11 @@ def get_free_port():
     return port
 
 def wait_for_string_in_file(search_string, f):
+    logging.info('Looking for %r in output', search_string)
     while True:
         f.seek(0)
         stdout = f.read()
+        logging.info("Received server output: %s", stdout)
         if search_string in stdout:
             break
         time.sleep(1)
