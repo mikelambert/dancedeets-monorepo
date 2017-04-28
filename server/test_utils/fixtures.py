@@ -82,7 +82,8 @@ def create_user(user_id='701004', access_token='Access Token', access_token_expi
         url: (200, {
             'id': user_id,
             'name': 'Test User',
-            'email': 'test@test.com'
+            'email': 'test@test.com',
+            'timezone': -8,
         }),
         '%s/events?since=yesterday&fields=id,rsvp_status&limit=3000' % base_url: (200, {
             "data": {
