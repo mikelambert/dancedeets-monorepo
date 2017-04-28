@@ -30,11 +30,7 @@ class TestSearch(unittest.TestCase):
         super(TestSearch, self).setUp()
         self.old_port = render_server.PORT
         render_server.PORT = get_free_port()
-        if os.environ.get('TRAVIS'):
-            node = '/nodejs/bin/node'
-        else:
-            node = '/usr/local/bin/node'
-        args = [node, '../runNode.js', './node_server/renderServer.js' ,'--port', unicode(render_server.PORT)]
+        args = ['node', '../runNode.js', './node_server/renderServer.js' ,'--port', unicode(render_server.PORT)]
         output = tempfile.TemporaryFile()
         self.server = subprocess.Popen(args, stdout=output, stderr=subprocess.STDOUT)
         address = '127.0.0.1:%s' % render_server.PORT
