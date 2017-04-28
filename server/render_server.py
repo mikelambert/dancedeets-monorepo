@@ -7,8 +7,9 @@ import time
 
 # We want to always use the render server, since we may be rendering things that we aren't sending clientside code to render
 RENDER = True
-RENDER_URL = 'http://localhost:8090/render'
-RENDER_MJML_URL = 'http://localhost:8090/mjml-render'
+PORT = 8090
+RENDER_URL = 'http://localhost:%s/render'
+RENDER_MJML_URL = 'http://localhost:%s/mjml-render'
 
 class ComponentSourceFileNotFound(Exception):
     pass
@@ -37,7 +38,7 @@ def render_jsx(template_name, props=None, static_html=False):
     if not os.path.exists(path):
         raise ComponentSourceFileNotFound(path)
 
-    url = RENDER_URL
+    url = RENDER_URL % PORT
 
     if props is not None:
         serialized_props = json.dumps(props)
@@ -94,7 +95,7 @@ def render_jsx(template_name, props=None, static_html=False):
     return RenderedComponent(markup, obj.get('head', None), serialized_props)
 
 def render_mjml(mjml):
-    url = RENDER_MJML_URL
+    url = RENDER_MJML_URL % PORT
 
     options = {
         'mjml': mjml,

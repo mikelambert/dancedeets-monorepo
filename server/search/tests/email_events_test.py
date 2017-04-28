@@ -1,9 +1,45 @@
+import socket
+import subprocess
+import tempfile
+import time
+
 import fb_api
 from search import email_events
 from test_utils import fixtures
 from test_utils import unittest
+import render_server
+
+def get_free_port():
+    s = socket.socket()
+    s.bind(('', 0))
+    port = s.getsockname()[1]
+    s.close()
+    return port
+
+def wait_for_string_in_file(search_string, f):
+    while True:
+        f.seek(0)
+        stdout = f.read()
+        if search_string in stdout:
+            break
+        time.sleep(1)
 
 class TestSearch(unittest.TestCase):
+    def setUp(self):
+        super(TestSearch, self).setUp()
+        self.old_port = render_server.PORT
+        render_server.PORT = get_free_port()
+        args = ['../runNode.js', './node_server/renderServer.js' ,'--port', unicode(render_server.PORT)]
+        output = tempfile.TemporaryFile()
+        self.server = subprocess.Popen(args, stdout=output, stderr=subprocess.STDOUT)
+        address = '127.0.0.1:%s' % render_server.PORT
+        wait_for_string_in_file(address, output)
+
+    def tearDown(self):
+        render_server.PORT = self.old_port
+        self.server.terminate()
+        super(TestSearch, self).tearDown()
+
     def runTest(self):
         user = fixtures.create_user()
         event = fixtures.create_event()
