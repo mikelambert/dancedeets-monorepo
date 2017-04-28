@@ -53,8 +53,8 @@ def email_for_user(user, fbl, should_send=True):
     if form.location.data:
         try:
             city_name, center_latlng, southwest, northeast = search_base.normalize_location(form)
-        except:
-            raise NoEmailException('Could not normalize user location: %s', form)
+        except Exception as e:
+            raise NoEmailException('Could not normalize user location: %s: %s', data, e)
 
     search_query = form.build_query(start_end_query=True)
     search_results = search.Search(search_query).get_search_results()
