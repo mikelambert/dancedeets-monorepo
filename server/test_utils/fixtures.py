@@ -104,5 +104,6 @@ def create_user(user_id='701004', access_token='Access Token', access_token_expi
     fbl = fb_api.FBLookup(None, None)
     fb_user = fbl.get(fb_api.LookupUser, user_id)
 
-    user = user_creation.create_user_with_fbuser(user_id, fb_user, access_token, access_token_expires, location, send_email=True, client=client)
+    ip = '127.0.0.1'
+    user = user_creation.create_user_with_fbuser(user_id, fb_user, access_token, access_token_expires, location, ip, send_email=True, client=client)
     return user

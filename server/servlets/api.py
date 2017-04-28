@@ -385,7 +385,8 @@ class AuthHandler(ApiHandler):
             client = self.json_body.get('client')
             location = self.json_body.get('location')
             fb_user = self.fbl.get(fb_api.LookupUser, 'me')
-            user_creation.create_user_with_fbuser(self.fb_uid, fb_user, access_token, access_token_expires, location, client=client)
+            ip = self.request.remote_addr
+            user_creation.create_user_with_fbuser(self.fb_uid, fb_user, access_token, access_token_expires, location, ip, client=client)
         self.write_json_success()
 
 
