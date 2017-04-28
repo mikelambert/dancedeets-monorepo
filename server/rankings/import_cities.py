@@ -31,22 +31,45 @@ def get_fb_targeting_key(data):
         'q': city_state,
         'type': 'adgeolocation',
         'access_token': FACEBOOK_CONFIG['app_access_token'],
+        'locale': 'en_US', # because app_access_token is locale-less and seems to use a IP-locale fallback
     }
-    cursor.execute('select data from AdGeoLocations where query = ? and country_code = ?', (geo_search['q'], geo_search['country_code']))
+    cursor.execute('select data from AdGeoLocation where q = ? and country_code = ?', (geo_search['q'], geo_search['country_code']))
     result = cursor.fetchone()
     if not result:
         result = urllib.urlopen('https://graph.facebook.com/v2.9/search?%s' % urls.urlencode(geo_search)).read()
         result_json = json.loads(result)
+        array_json = json.dumps(result_json['data'])
+        data = {
+            'geonameid': data['geonameid'],
+            'q': geo_search['q'],
+            'country_code': geo_search['country_code'],
+            'data': array_json,
+        }
+        insert_record(cursor, 'AdGeoLocation', data)
         print '\n'.join('- ' + str(x) for x in result_json['data'])
+
+def insert_record(cursor, table_name, data):
+    key_values = data.items()
+
+    insert_sql = 'INSERT INTO %s (%s) VALUES (%s)' % (
+        table_name,
+        ', '.join(kv[0] for kv in key_values),
+        ', '.join('?' for kv in key_values),
+    )
+    try:
+        result = cursor.execute(insert_sql, [kv[1] for kv in key_values])
+    except Exception as e:
+        logging.exception('Found problems with data: %s', data)
+    conn.commit()
 
 conn = sqlite3.connect(FILENAME)
 cursor = conn.cursor()
-cursor.execute('''CREATE TABLE IF NOT EXISTS AdGeoLocations
-             (query text, country_code text, data text)''')
+cursor.execute('''CREATE TABLE IF NOT EXISTS AdGeoLocation
+             (geonameid text, q text, country_code text, data text)''')
 
 cursor.execute('''DROP TABLE City''')
 cursor.execute('''CREATE TABLE City
-             (city_name text, state_name text, country_name text, latitude real, longitude real, population integer, timezone text)''')
+             (geonameid text, city_name text, state_name text, country_name text, latitude real, longitude real, population integer, timezone text)''')
 
 count = 0
 for line in open('/Users/lambert/Dropbox/dancedeets/data/cities5000.txt'):
@@ -63,6 +86,7 @@ for line in open('/Users/lambert/Dropbox/dancedeets/data/cities5000.txt'):
     #    continue
 
     data = {
+        'geonameid': geonameid,
         'city_name': asciiname,
         'state_name': admin1_code,
         'country_name': country_code,
@@ -72,16 +96,8 @@ for line in open('/Users/lambert/Dropbox/dancedeets/data/cities5000.txt'):
         'timezone': timezone,
     }
 
+
     key = get_fb_targeting_key(data)
 
-    key_values = data.items()
-
-    insert_sql = 'INSERT INTO City (%s) VALUES (%s)' % (
-        ', '.join(kv[0] for kv in key_values),
-        ', '.join('?' for kv in key_values),
-    )
-    try:
-        result = cursor.execute(insert_sql, [kv[1] for kv in key_values])
-    except Exception as e:
-        logging.exception('Found problems with data: %s', data)
+    insert_record(cursor, 'City', data)
 conn.commit()
