@@ -17,7 +17,8 @@ install:
 - nvm use stable
 # Set up and compile our project
 - npm install
-- cd common && npm install && cd ..
+- cd common && npm install ; cd ..
+- cd server/node_server && npm install ; cd ../..
 - cd server && ./setup.sh && cd ..
 
 script: cd server && ./test.sh --coverage
