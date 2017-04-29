@@ -40,6 +40,7 @@ def _get_formatting_parts(geocode, include_neighborhood):
         components.append(', '.join(x for x in mini_components if x))
     else:
         components.extend([
+            geocode.get_component('postal_town'),
             geocode.get_component('locality'),
         ])
     components.extend([
