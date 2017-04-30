@@ -48,11 +48,16 @@ def _get_formatting_parts(geocode, include_neighborhood):
             components.extend([
                 geocode.get_component('postal_town'),
             ])
-        else:
+        elif geocode.get_component('administrative_area_level_2'):
             # In Columbia on event 1436024073115860, there is no locality/postal_town, but is an administrative_area_level_2
             # So let's try to use and display that, to avoid "Columbia" address
             components.extend([
                 geocode.get_component('administrative_area_level_2'),
+            ])
+        elif geocode.get_component('administrative_area_level_1'):
+            # Some places like UAE, only have administrative_area_level_1. So let's grab 'Dubai' like in event 165322377314199.
+            components.extend([
+                geocode.get_component('administrative_area_level_1'),
             ])
     components.extend([
         geocode.get_component('country'),
