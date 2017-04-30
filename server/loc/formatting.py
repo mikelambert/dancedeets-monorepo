@@ -39,11 +39,14 @@ def _get_formatting_parts(geocode, include_neighborhood):
             ]
         components.append(', '.join(x for x in mini_components if x))
     else:
-        if geocode.get_component('postal_town') or geocode.get_component('locality'):
-            # In the UK, they don't use locality, but do use postal_town. So let's grab the postal_town for display here
+        if geocode.get_component('locality'):
+            components.extend([
+                geocode.get_component('locality'),
+            ])
+        # In the UK, they sometimes don't use locality, but do use postal_town
+        elif geocode.get_component('postal_town'):
             components.extend([
                 geocode.get_component('postal_town'),
-                geocode.get_component('locality'),
             ])
         else:
             # In Columbia on event 1436024073115860, there is no locality/postal_town, but is an administrative_area_level_2
