@@ -26,6 +26,7 @@ from logic import rsvp
 from nlp import categories
 from nlp import event_auto_classifier
 from nlp import event_classifier
+from rankings import cities_db
 from rankings import rankings
 from search import search
 from servlets import api
