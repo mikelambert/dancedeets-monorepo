@@ -103,6 +103,7 @@ class DBEvent(ndb.Model):
     actual_city_name = ndb.StringProperty() # city for this event
     # Index is needed for city_name=Unknown searches in admin_nolocation_events
     city_name = ndb.StringProperty() # largest nearby city for this event
+    nearby_geoname_id = ndb.IntegerProperty() # largest nearby city (geoname id) for this event
 
     latitude = ndb.FloatProperty(indexed=True) # needed to composite index
     longitude = ndb.FloatProperty(indexed=False)

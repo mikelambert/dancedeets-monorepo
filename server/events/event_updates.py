@@ -11,6 +11,7 @@ import fb_api
 from loc import gmaps_api
 from loc import math
 from rankings import cities
+from rankings import cities_db
 from search import search
 from nlp import categories
 from nlp import event_classifier
@@ -109,6 +110,7 @@ def _inner_make_event_findable_for_fb_event(db_event, fb_dict, disable_updates):
         db_event.address = None
         db_event.actual_city_name = None
         db_event.city_name = None
+        db_event.nearby_geoname_id = None
         db_event.fb_event = fb_dict
         return
     elif fb_dict['empty'] == fb_api.EMPTY_CAUSE_INSUFFICIENT_PERMISSIONS:
@@ -263,10 +265,11 @@ def _update_geodata(db_event, location_info, disable_updates):
         not db_event.actual_city_name or
         # We didn't have a city for this event. Maybe we do now, though? Let's double-check
         db_event.city_name == 'Unknown' or
-        'cached_city' in (disable_updates or []) or
+        'cached_city' not in (disable_updates or []) or
         False
     ):
         if location_info.geocode:
+            #TODO(city-migrate): delete me
             # We shrink it by two:
             # An event in Palo Alto could be thrown into a San Jose bucket
             # But an event in San Francisco, looking for "people who would go to SF event",
@@ -280,9 +283,17 @@ def _update_geodata(db_event, location_info, disable_updates):
                 logging.info('Marking city %s as "having events"', city)
                 city.has_nearby_events = True
                 city.put()
-            db_event.city_name = city.display_name()
+
+            geoname_city = cities_db.get_nearby_city(location_info.geocode.latlng(), country=location_info.geocode.country())
+            if geoname_city:
+                db_event.nearby_geoname_id = geoname_city.geoname_id
+                db_event.city_name = geoname_city.display_name()
+            else:
+                db_event.nearby_geoname_id = None
+                db_event.city_name = 'Unknown'
         else:
             db_event.city_name = "Unknown"
+            db_event.nearby_geoname_id = None
         logging.info('Event %s decided on city %s', db_event.id, db_event.city_name)
     db_event.anywhere = location_info.is_online_event()
     db_event.actual_city_name = location_info.actual_city()

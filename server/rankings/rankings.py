@@ -7,7 +7,7 @@ from mapreduce import model
 from mapreduce import operation as op
 
 from loc import gmaps_api
-from . import cities
+from . import cities_db
 
 EVENT_FOR_CITY_RANKING = 'CITY_EVENT_RANKING'
 USER_FOR_CITY_RANKING = 'CITY_USER_RANKING'
@@ -188,8 +188,13 @@ def get_ranking_location(location):
     geocode = gmaps_api.lookup_address(location)
     if geocode is None:
         return "Unknown"
-    point = geocode.latlng()
-    return get_ranking_location_latlng(point)
+    return get_ranking_location_geocode(geocode)
 
-def get_ranking_location_latlng(point):
-    return cities.get_largest_nearby_city_name(point)
+def get_ranking_location_geocode(geocode):
+    if not geocode:
+        return 'Unknown'
+    city = cities_db.get_nearby_city(geocode.latlng())
+    if city:
+        return city.display_name()
+    else:
+        return 'Unknown'

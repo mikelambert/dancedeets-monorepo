@@ -50,12 +50,6 @@ def get_largest_city(cities):
     largest_nearby_city = max(cities, key=lambda x: x.population)
     return largest_nearby_city
 
-def get_largest_nearby_city_name(point):
-    southwest, northeast = math.expand_bounds((point, point), NEARBY_DISTANCE_KM/2)
-    cities = get_nearby_cities((southwest, northeast))
-    city = get_largest_city(cities)
-    return city.display_name()
-
 class City(db.Model):
     created_date = db.DateTimeProperty(auto_now_add=True)
 

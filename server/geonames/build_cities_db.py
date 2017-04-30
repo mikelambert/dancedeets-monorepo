@@ -41,6 +41,8 @@ def get_fb_targeting_key(geoname):
 for geoname in geoname_files.cities(5000):
     adgeolocation_key = get_fb_targeting_key(geoname)
 
+    if not geoname.population:
+        print geoname.geoname_id, geoname.ascii_name, geoname.population
     data = {
         'geoname_id': geoname.geoname_id,
         'ascii_name': geoname.ascii_name,
@@ -48,7 +50,7 @@ for geoname in geoname_files.cities(5000):
         'country_code': geoname.country_code,
         'latitude': geoname.latitude,
         'longitude': geoname.longitude,
-        'population': geoname.population,
+        'population': geoname.population or 0,
         'timezone': geoname.timezone,
         'adgeolocation_key': adgeolocation_key,
     }

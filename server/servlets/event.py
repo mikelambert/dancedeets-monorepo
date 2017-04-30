@@ -333,7 +333,7 @@ class AdminEditHandler(base_servlet.BaseRequestHandler):
             self.display['fb_geocoded_address'] = formatting.format_geocode(fb_geocode)
         else:
             self.display['fb_geocoded_address'] = ''
-        self.display['ranking_city_name'] = rankings.get_ranking_location_latlng(location_info.geocode.latlng()) if location_info.geocode else 'None'
+        self.display['ranking_city_name'] = rankings.get_ranking_location_geocode(location_info.geocode)
 
         fb_event_attending_maybe = get_fb_event(self.fbl, event_id, lookup_type=fb_api.LookupEventAttendingMaybe)
         matcher = event_attendee_classifier.get_matcher(self.fbl, fb_event, fb_event_attending_maybe)
