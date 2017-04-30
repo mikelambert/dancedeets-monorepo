@@ -48,7 +48,6 @@ class AlternateName(Slotted):
 
 def _geo_open(filename):
     full_geonames_path = os.path.join(GEONAMES_PATH, filename)
-    print full_geonames_path
     for row in csv.reader(open(full_geonames_path), dialect=GeonamesDialect):
         # decode UTF-8 back to Unicode, cell by cell:
         yield [unicode(cell, 'utf-8') for cell in row]

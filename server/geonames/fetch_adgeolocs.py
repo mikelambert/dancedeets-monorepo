@@ -14,9 +14,7 @@ from util import urls
 from geonames import geoname_files
 from geonames import sqlite_db
 
-FILENAME_ADLOCS = '/Users/lambert/Dropbox/dancedeets/data/adlocs_only.db'
-
-FILENAME_CITIES_TXT = '/Users/lambert/Dropbox/dancedeets/data/cities5000.txt'
+FILENAME_ADLOCS = '/Users/lambert/Dropbox/dancedeets/data/generated/adlocs_only.db'
 
 
 FACEBOOK_CONFIG = facebook.load_yaml('facebook-dev.yaml')
@@ -24,18 +22,20 @@ FACEBOOK_CONFIG = facebook.load_yaml('facebook-dev.yaml')
 def number(x):
     return re.match(r'^\d+$', x)
 
-def load_targeting_key(cursor, geoname):
+def get_query(geoname):
+    city_state_list = [
+        geoname.ascii_name, # city name
+        geoname.admin1_code, # state name
+    ]
+    city_state = ', '.join(x for x in city_state_list if x and not number(x))
+    return city_state
 
-        city_state_list = [
-            geoname.ascii_name, # city name
-            geoname.admin1_code, # state name
-        ]
-        city_state = ', '.join(x for x in city_state_list if x and not number(x))
+def load_targeting_key(cursor, geoname):
         print city_state, geoname.country_code
         geo_search = {
             'location_types': 'city,region',
             'country_code': geoname.country_code,
-            'q': city_state,
+            'q': get_query(geoname),
             'type': 'adgeolocation',
             'access_token': FACEBOOK_CONFIG['app_access_token'],
             'locale': 'en_US', # because app_access_token is locale-less and seems to use a IP-locale fallback

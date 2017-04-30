@@ -1,4 +1,4 @@
-
+import logging
 
 def insert_record(cursor, table_name, data):
     key_values = data.items()
