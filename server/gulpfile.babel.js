@@ -308,6 +308,8 @@ gulp.task('datalab:remote:stop', $.shell.task([`datalab stop dl`]));
 
 
 gulp.task('dev-appserver:create-yaml:hot', $.shell.task(['HOT_SERVER_PORT=8080 ./create_devserver_yaml.sh']));
+gulp.task('dev-appserver:create-yaml:emulator-hot', $.shell.task(['USE_DATASTORE_EMULATOR=1 HOT_SERVER_PORT=8080 ./create_devserver_yaml.sh']));
+gulp.task('dev-appserver:create-yaml:emulator', $.shell.task(['USE_DATASTORE_EMULATOR=1 ./create_devserver_yaml.sh']));
 gulp.task('dev-appserver:create-yaml:regular', $.shell.task(['./create_devserver_yaml.sh']));
 
 gulp.task('dev-appserver:wait-for-exit', $.shell.task(['./wait_for_dev_appserver_exit.sh']));
@@ -327,6 +329,12 @@ gulp.task('dev-appserver:server:regular', ['dev-appserver:create-yaml:regular', 
 gulp.task('dev-appserver:server:hot',     ['dev-appserver:create-yaml:hot',     'dev-appserver:wait-for-exit'], startDevAppServer(8085));
 gulp.task('dev-appserver:server:regular:force', cb => runSequence('dev-appserver:kill', 'dev-appserver:server:regular', cb));
 gulp.task('dev-appserver:server:hot:force',     cb => runSequence('dev-appserver:kill', 'dev-appserver:server:hot', cb));
+
+['hot', 'emulator-hot', 'emulator', 'regular'].forEach((x) => {
+  const port = x.includes('hot') ? 8085 : 8080;
+  gulp.task(`dev-appserver:server:${x}`, [`dev-appserver:create-yaml:${x}`, 'dev-appserver:wait-for-exit'], startDevAppServer(port));
+  gulp.task(`dev-appserver:server:${x}:force`, cb => runSequence('dev-appserver:kill', `dev-appserver:server:${x}`, cb));
+})
 
 gulp.task('react-server', $.shell.task(['../runNode.js ./node_server/renderServer.js --port 8090']));
 
