@@ -53,10 +53,10 @@ class ReloadAllUsersHandler(base_servlet.BaseTaskFacebookRequestHandler):
 def yield_load_fb_user(fbl, user):
     if user.expired_oauth_token:
         logging.info('Skipping user %s (%s) due to expired access_token', user.fb_uid, user.full_name)
-        users.update_mailchimp(user)
+        user.put()
     elif not fbl.access_token:
         logging.info('Skipping user %s (%s) due to not having an access_token', user.fb_uid, user.full_name)
-        users.update_mailchimp(user)
+        user.put()
     else:
         fetch_and_save_fb_user(fbl, user)
         # The above function calls user.put(), so no need for:

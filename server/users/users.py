@@ -113,6 +113,8 @@ class User(ndb.Model):
             self.timezone_offset = float(fb_user['profile'].get('timezone'))
         except (datastore_errors.BadValueError, TypeError) as e:
             logging.error("Failed to save timezone %s: %s", fb_user['profile'].get('timezone'), e)
+
+    def preput(self):
         self.location_country = None
         self.geoname_id = None
         self.city_name = None
@@ -121,11 +123,13 @@ class User(ndb.Model):
             if geocode:
                 self.location_country = geocode.country()
                 city = cities_db.get_nearby_city(geocode.latlng(), country=geocode.country())
-                self.geoname_id = city.geoname_id
-                self.city_name = city.display_name()
+                if city:
+                    self.geoname_id = city.geoname_id
+                    self.city_name = city.display_name()
 
     def put(self):
         # Always update mailchimp when we update the User
+        self.preput()
         update_mailchimp(self)
         super(User, self).put()
 
