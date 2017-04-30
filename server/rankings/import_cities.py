@@ -11,7 +11,9 @@ import urllib
 import facebook
 from util import urls
 
-FILENAME = 'rankings/cities.db'
+
+FILENAME_CITIES = 'rankings/cities_only.db'
+FILENAME_ADLOCS = 'rankings/adlocs_only.db'
 
 FACEBOOK_CONFIG = facebook.load_yaml('facebook-dev.yaml')
 
@@ -33,8 +35,8 @@ def get_fb_targeting_key(data):
         'access_token': FACEBOOK_CONFIG['app_access_token'],
         'locale': 'en_US', # because app_access_token is locale-less and seems to use a IP-locale fallback
     }
-    cursor.execute('select data from AdGeoLocation where q = ? and country_code = ?', (geo_search['q'], geo_search['country_code']))
-    result = cursor.fetchone()
+    cursor_adlocs.execute('select data from AdGeoLocation where q = ? and country_code = ?', (geo_search['q'], geo_search['country_code']))
+    result = cursor_adlocs.fetchone()
     if not result:
         result = urllib.urlopen('https://graph.facebook.com/v2.9/search?%s' % urls.urlencode(geo_search)).read()
         result_json = json.loads(result)
@@ -45,7 +47,7 @@ def get_fb_targeting_key(data):
             'country_code': geo_search['country_code'],
             'data': array_json,
         }
-        insert_record(cursor, 'AdGeoLocation', data)
+        insert_record(cursor_adlocs, 'AdGeoLocation', data)
         print '\n'.join('- ' + str(x) for x in result_json['data'])
 
 def insert_record(cursor, table_name, data):
@@ -60,16 +62,18 @@ def insert_record(cursor, table_name, data):
         result = cursor.execute(insert_sql, [kv[1] for kv in key_values])
     except Exception as e:
         logging.exception('Found problems with data: %s', data)
-    conn.commit()
+    cursor.connection.commit()
 
-conn = sqlite3.connect(FILENAME)
-cursor = conn.cursor()
-cursor.execute('''CREATE TABLE IF NOT EXISTS AdGeoLocation
-             (geonameid text, q text, country_code text, data text)''')
+conn_adlocs = sqlite3.connect(FILENAME_ADLOCS)
+cursor_adlocs = conn_adlocs.cursor()
+cursor_adlocs.execute('''CREATE TABLE IF NOT EXISTS AdGeoLocation
+             (geonameid integer primary key, q text, country_code text, data text)''')
 
-cursor.execute('''DROP TABLE City''')
-cursor.execute('''CREATE TABLE City
-             (geonameid text, city_name text, state_name text, country_name text, latitude real, longitude real, population integer, timezone text)''')
+conn_cities = sqlite3.connect(FILENAME_CITIES)
+cursor_cities = conn_cities.cursor()
+cursor_cities.execute('''DROP TABLE City''')
+cursor_cities.execute('''CREATE TABLE City
+             (geonameid integer primary key, city_name text, state_name text, country_name text, latitude real, longitude real, population integer, timezone text)''')
 
 count = 0
 for line in open('/Users/lambert/Dropbox/dancedeets/data/cities5000.txt'):
@@ -99,5 +103,6 @@ for line in open('/Users/lambert/Dropbox/dancedeets/data/cities5000.txt'):
 
     key = get_fb_targeting_key(data)
 
-    insert_record(cursor, 'City', data)
-conn.commit()
+    insert_record(cursor_cities, 'City', data)
+conn_cities.commit()
+conn_adlocs.commit()
