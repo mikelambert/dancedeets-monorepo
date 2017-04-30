@@ -11,7 +11,8 @@ import urllib
 import facebook
 from util import urls
 
-from . import sqlite_db
+from geonames import geoname_files
+from geonames import sqlite_db
 
 FILENAME_ADLOCS = '/Users/lambert/Dropbox/dancedeets/data/adlocs_only.db'
 
@@ -23,7 +24,7 @@ FACEBOOK_CONFIG = facebook.load_yaml('facebook-dev.yaml')
 def number(x):
     return re.match(r'^\d+$', x)
 
-def get_fb_targeting_key(data):
+def get_fb_targeting_key(cursor, data):
     city_state_list = [
         data['city_name'],
         data['state_name'],
@@ -53,39 +54,29 @@ def get_fb_targeting_key(data):
         sqlite_db.insert_record(cursor, 'AdGeoLocation', data)
         print '\n'.join('- ' + str(x) for x in result_json['data'])
 
-conn = sqlite3.connect(FILENAME_ADLOCS)
-cursor = conn.cursor()
-cursor.execute('''
-    CREATE TABLE IF NOT EXISTS AdGeoLocation
-    (q text, country_code text, data text,
-    PRIMARY KEY (q, country_code))
-''')
+def fetch_database():
+    conn = sqlite3.connect(FILENAME_ADLOCS)
+    cursor = conn.cursor()
+    cursor.execute('''
+        CREATE TABLE IF NOT EXISTS AdGeoLocation
+        (q text, country_code text, data text,
+        PRIMARY KEY (q, country_code))
+    ''')
 
-count = 0
-for line in open(FILENAME_CITIES_TXT):
-    count += 1
-    line = line.decode('utf-8')
+    for geoname in geoname_files.cities(5000):
+        data = {
+            'geonameid': geoname.geonameid,
+            'city_name': geoname.asciiname,
+            'state_name': geoname.admin1_code,
+            'country_name': geoname.country_code,
+            'latitude': geoname.latitude,
+            'longitude': geoname.longitude,
+            'population': geoname.population,
+            'timezone': geoname.timezone,
+        }
 
-    if not count % 1000:
-        logging.info('Imported %s cities', count)
-    # List of fields from http://download.geonames.org/export/dump/
-    geonameid, name, asciiname, alternatenames, latitude, longitude, feature_class, feature_code, country_code, cc2, admin1_code, admin2_code, admin3_code, admin4_code, population, elevation, gtopo30, timezone, modification_date = line.split('\t')
+        get_fb_targeting_key(cursor, data)
+    conn.commit()
 
-    #if int(population) < 50000:
-    #    print name, population
-    #    continue
-
-    data = {
-        'geonameid': geonameid,
-        'city_name': asciiname,
-        'state_name': admin1_code,
-        'country_name': country_code,
-        'latitude': float(latitude),
-        'longitude': float(longitude),
-        'population': int(population),
-        'timezone': timezone,
-
-    }
-
-    get_fb_targeting_key(data)
-conn.commit()
+if __name__ == '__main__':
+    fetch_database()
