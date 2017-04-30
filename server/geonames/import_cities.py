@@ -16,8 +16,6 @@ from geonames import sqlite_db
 FILENAME_CITIES = 'rankings/cities_only.db'
 FILENAME_ADLOCS = 'rankings/adlocs_only.db'
 
-FACEBOOK_CONFIG = facebook.load_yaml('facebook-dev.yaml')
-
 def number(x):
     return re.match(r'^\d+$', x)
 
@@ -35,7 +33,7 @@ cursor_cities.execute('''CREATE TABLE City
 
 for geoname in geoname_files.cities(5000):
     data = {
-        'geonameid': geonameid,
+        'geoname_id': geoname_id,
         'city_name': asciiname,
         'state_name': admin1_code,
         'country_name': country_code,
