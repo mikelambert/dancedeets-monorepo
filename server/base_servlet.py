@@ -20,6 +20,7 @@ import webapp2
 from google.appengine.api.app_identity import app_identity
 from google.appengine.ext import db
 
+import abuse
 from users import users
 from users import access_tokens
 from events import eventdata
@@ -545,6 +546,11 @@ class BaseRequestHandler(BareBaseRequestHandler):
     def initialize(self, request, response):
         super(BaseRequestHandler, self).initialize(request, response)
         self.run_handler = True
+
+        if abuse.is_abuse(self.request):
+            self.run_handler = False
+            self.response.out.write('You are destroying our server with your request rate. Please implement rate-limiting, respect robots.txt, and/or email abuse@dancedeets.com')
+            return
 
         # Redirect from the bare 'dancedeets.com' to the full 'www.dancedeets.com'
         url = urlparse.urlsplit(self.request.url)

@@ -13,6 +13,7 @@ Disllow:
 
 # Too often caught hammering my site, too fast, using up resources I pay for
 # And given the lack of any benefit I see from them in terms of incoming traffic
-# I am just blocking them here
+# I am just blocking them here. If you'd like to scrape dancedeets, please
+# email abuse@dancedeets.com and we can talk about what you need and how to get it!
 User-agent: *
 Disallow: /
