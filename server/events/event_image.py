@@ -22,6 +22,10 @@ EVENT_IMAGE_CACHE_BUCKET = 'dancedeets-event-flyers-%s-by-%s'
 CACHEABLE_SIZES = set([
     (180, 180),
     (720, None),
+# Some other common mobile image sizes
+#    (320, None),
+#    (1080, None),
+#    (1440, None),
 ])
 
 def test_jpeg(h, f):
