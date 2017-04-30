@@ -24,6 +24,7 @@ class User(ndb.Model):
     fb_access_token_expires = ndb.DateTimeProperty(indexed=False)
     expired_oauth_token = ndb.BooleanProperty()
     expired_oauth_token_reason = ndb.StringProperty(indexed=False)
+    ip = ndb.StringProperty()
 
     # Statistics
     creation_time = ndb.DateTimeProperty()

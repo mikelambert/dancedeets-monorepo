@@ -452,7 +452,8 @@ class BaseRequestHandler(BareBaseRequestHandler):
             referer = self.get_cookie('User-Referer')
             city = self.request.get('city') or self.get_location_from_headers() or get_location(fb_user)
             logging.info("User passed in a city of %r, facebook city is %s", self.request.get('city'), get_location(fb_user))
-            user_creation.create_user_with_fbuser(self.fb_uid, fb_user, self.access_token, access_token_expires, city, send_email=True, referer=referer, client='web')
+            ip = self.request.remote_addr
+            user_creation.create_user_with_fbuser(self.fb_uid, fb_user, self.access_token, access_token_expires, city, ip, send_email=True, referer=referer, client='web')
             # TODO(lambert): handle this MUUUCH better
             logging.info("Not a /login request and there is no user object, constructed one realllly-quick, and continuing on.")
             self.user = users.User.get_by_id(self.fb_uid)

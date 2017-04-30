@@ -12,20 +12,27 @@ from util import fb_mapreduce
 from . import search_base
 from . import search
 
+class NoEmailException(Exception):
+    pass
+
 def email_for_user(user, fbl, should_send=True):
-    if not user.send_email or not user.email:
-        return
+    if not user.send_email:
+        raise NoEmailException('User has send_email==False')
+    if not user.email:
+        raise NoEmailException('User does not have an email')
+
     if user.weekly_email_send_date and user.weekly_email_send_date > datetime.datetime.now() - datetime.timedelta(days=3):
-        logging.warning("Skipping user %s (%s) because last weekly email was sent on %s", user.fb_uid, user.full_name, user.weekly_email_send_date)
+        message = "Skipping user %s (%s) because last weekly email was sent on %s" % (user.fb_uid, user.full_name, user.weekly_email_send_date)
+        logging.warning(message)
         # Sent the weekly email too recently, let's abort
-        return
+        raise NoEmailException(message)
     fb_user = fbl.fetched_data(fb_api.LookupUser, fbl.fb_uid)
     if not 'profile' in fb_user:
-        return
+        raise NoEmailException('Could not find LookupUser: %s', fb_user)
 
     user_location = user.location
     if not user_location:
-        return
+        raise NoEmailException('User does not have location')
 
     d = datetime.date.today()
     start_time = d - datetime.timedelta(days=d.weekday()) # round down to last monday
@@ -46,14 +53,14 @@ def email_for_user(user, fbl, should_send=True):
     if form.location.data:
         try:
             city_name, center_latlng, southwest, northeast = search_base.normalize_location(form)
-        except:
-            return
+        except Exception as e:
+            raise NoEmailException('Could not normalize user location: %s: %s', data, e)
 
     search_query = form.build_query(start_end_query=True)
     search_results = search.Search(search_query).get_search_results()
     # Don't send email...
     if not search_results:
-        return
+        raise NoEmailException('No search results for user')
 
     fb_user = fbl.fetched_data(fb_api.LookupUser, fbl.fb_uid)
 
@@ -69,12 +76,15 @@ def email_for_user(user, fbl, should_send=True):
     }
     response = render_server.render_jsx('weeklyMail.js', props, static_html=True)
     if response.error:
-        logging.error('Error rendering weeklyMail.js: %s', response.error)
-        return
+        message = 'Error rendering weeklyMail.js: %s' % response.error
+        logging.error(message)
+        raise NoEmailException(message)
     mjml_response = render_server.render_mjml(response.markup)
     rendered_html = mjml_response['html']
     if mjml_response.get('errors'):
-        logging.error('Errors rendering weeklyMail.mjml: %s', mjml_response['errors'])
+        message = 'Errors rendering weeklyMail.mjml: %s', mjml_response['errors']
+        logging.error(message)
+        raise NoEmailException(message)
     subject = 'Your Week in Dance: %s' % d.strftime('%b %d, %Y')
     message = {
         'from_email': 'events@dancedeets.com',
@@ -104,11 +114,12 @@ def email_for_user(user, fbl, should_send=True):
 class DisplayEmailHandler(base_servlet.UserOperationHandler):
     def user_operation(self, fbl, users):
         fbl.get(fb_api.LookupUser, users[0].fb_uid)
-        message = email_for_user(users[0], fbl, should_send=False)
-        if message:
-            self.response.out.write(message['html'])
+        try:
+            message = email_for_user(users[0], fbl, should_send=False)
+        except Exception as e:
+            self.response.out.write('Error generating mail html: %s', e)
         else:
-            self.response.out.write('Error generating mail html')
+            self.response.out.write(message['html'])
 
 
 #TODO(lambert): do we really want yield on this one?
@@ -126,6 +137,9 @@ def yield_email_user(fbl, user):
     try:
         email = email_for_user(user, fbl, should_send=True)
         return email
+    except NoEmailException as e:
+        logging.info("Not sending email for user %s: %s", user.fb_uid, e)
+        return None
     except Exception as e:
         logging.exception("Error sending email for user %s", user.fb_uid)
         return None
