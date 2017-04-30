@@ -45,7 +45,8 @@ class ReloadAllUsersHandler(base_servlet.BaseTaskFacebookRequestHandler):
             entity_kind='users.users.User',
             extra_mapper_params={
                 'mailchimp_list_id': mailchimp_list_id,
-            }
+            },
+            queue='fast-queue'
         )
     post = get
 
