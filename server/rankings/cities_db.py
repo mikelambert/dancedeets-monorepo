@@ -8,24 +8,6 @@ from loc import names
 # Maybe cities_db.py should be moved there eventually too...
 FILENAME = 'geonames/cities.db'
 
-"""
-class City(object):
-    def __init__(self)
-    created_date = db.DateTimeProperty(auto_now_add=True)
-
-    city_name = db.StringProperty()
-    state_name = db.StringProperty(indexed=False)
-    country_name = db.StringProperty()
-    latitude = db.FloatProperty(indexed=False)
-    longitude = db.FloatProperty(indexed=False)
-    population = db.IntegerProperty()
-    timezone = db.StringProperty()
-    geohashes = db.StringListProperty()
-
-    # This indicates whether any events are "tagged" against this City
-    # This can be used to filter out unnecessary cities in searches that don't have events/people associated with them
-    has_nearby_events = db.BooleanProperty()
-"""
 
 # The km of distance to nearest "scene" a user will identify with
 # We group events into cities by NEARBY_DISTANCE_KM/2,
