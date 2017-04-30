@@ -43,12 +43,12 @@ const $ = gulpLoadPlugins();
 
 const baseAssetsDir = `/Users/${username.sync()}/Dropbox/dancedeets/art/build-assets/`;
 
-gulp.task('geonames:fetch_adgeolocs', $.shell.task('python ./geonames/fetch_adgeolocs.py'))
-gulp.task('geonames:build_cities_db', ['geonames:fetch_adgeolocs'], $.shell.task('python ./geonames/build_cities_db.py'))
-gulp.task('geonames', ['geonames:build_cities_db'])
-
 //TODO: Support login here, so that this URL can actually run. Currently blocked by 'login: admin'
-gulp.task('web:events:resave', cb => fetch('http://www.dancedeets.com/tasks/reload_events?user_id=701004&allow_cache=1&disable_updates=regeocode,photo,cached_city&queue=fast-queue&only_if_updated=0').then(x => console.log(x)))
+gulp.task('web:events:resave', cb => fetch('http://www.dancedeets.com/tasks/reload_events?user_id=701004&allow_cache=1&disable_updates=regeocode,photo&queue=fast-queue&only_if_updated=0').then(x => console.log(x)))
+
+gulp.task('compile:geonames:fetch_adgeolocs', $.shell.task('python ./geonames/fetch_adgeolocs.py'))
+gulp.task('compile:geonames:build_cities_db', ['geonames:fetch_adgeolocs'], $.shell.task('python ./geonames/build_cities_db.py ./geonames/cities.db'))
+gulp.task('compile:geonames', ['geonames:build_cities_db'])
 
 gulp.task('compile:images:favicons', () => gulp
   .src('assets/img/deets-head.png')
@@ -294,7 +294,7 @@ suffixes.forEach(suffix =>
 );
 
 gulp.task('compile:webpack', ['compile:webpack:all:prod:once'])
-gulp.task('compile', ['compile:webpack', 'compile:images', 'compile:fonts']);
+gulp.task('compile', ['compile:webpack', 'compile:images', 'compile:fonts', 'compile:geonames']);
 
 gulp.task('clean', () => del.sync('dist'));
 
