@@ -258,43 +258,19 @@ def _update_geodata(db_event, location_info, disable_updates):
 
     db_event.country = location_info.geocode.country() if location_info.geocode else None
 
-    if (
-        # The event has moved cities
-        location_info.actual_city() != db_event.actual_city_name or
-        # We are creating a new event, and don't know where it is
-        not db_event.actual_city_name or
-        # We didn't have a city for this event. Maybe we do now, though? Let's double-check
-        db_event.city_name == 'Unknown' or
-        'cached_city' not in (disable_updates or []) or
-        False
-    ):
-        if location_info.geocode:
-            #TODO(city-migrate): delete me
-            # We shrink it by two:
-            # An event in Palo Alto could be thrown into a San Jose bucket
-            # But an event in San Francisco, looking for "people who would go to SF event",
-            # would want to include Palo Alto in its search radius....so would need to go 2x to San Jose
-            # So instead of searching 200km in popular people for cities...let's try to be more specific about which person goes to which city
-            southwest, northeast = math.expand_bounds((location_info.geocode.latlng(), location_info.geocode.latlng()), cities.NEARBY_DISTANCE_KM/2)
-            nearby_cities = cities.get_nearby_cities((southwest, northeast), country=db_event.country)
-            city = cities.get_largest_city(nearby_cities)
-            # We check country_name as a proxy for determining if this is a Real City or a Dummy City
-            if not city.has_nearby_events and city.country_name:
-                logging.info('Marking city %s as "having events"', city)
-                city.has_nearby_events = True
-                city.put()
-
-            geoname_city = cities_db.get_nearby_city(location_info.geocode.latlng(), country=location_info.geocode.country())
-            if geoname_city:
-                db_event.nearby_geoname_id = geoname_city.geoname_id
-                db_event.city_name = geoname_city.display_name()
-            else:
-                db_event.nearby_geoname_id = None
-                db_event.city_name = 'Unknown'
+    if location_info.geocode:
+        geoname_city = cities_db.get_nearby_city(location_info.geocode.latlng(), country=location_info.geocode.country())
+        if geoname_city:
+            db_event.nearby_geoname_id = geoname_city.geoname_id
+            db_event.city_name = geoname_city.display_name()
         else:
-            db_event.city_name = "Unknown"
             db_event.nearby_geoname_id = None
-        logging.info('Event %s decided on city %s', db_event.id, db_event.city_name)
+            db_event.city_name = 'Unknown'
+    else:
+        db_event.city_name = "Unknown"
+        db_event.nearby_geoname_id = None
+    logging.info('Event %s decided on city %s', db_event.id, db_event.city_name)
+
     db_event.anywhere = location_info.is_online_event()
     db_event.actual_city_name = location_info.actual_city()
     if location_info.latlong():
