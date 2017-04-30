@@ -43,6 +43,10 @@ const $ = gulpLoadPlugins();
 
 const baseAssetsDir = `/Users/${username.sync()}/Dropbox/dancedeets/art/build-assets/`;
 
+gulp.task('web:geonames:fetch_adgeolocs', $.shell.task('python ./geonames/fetch_adgeolocs.py'))
+gulp.task('web:geonames:build_cities_db', ['web:geonames:fetch_adgeolocs'], $.shell.task('python ./geonames/build_cities_db.py'))
+gulp.task('web:geonames', ['web:geonames:build_cities_db'])
+
 //TODO: Support login here, so that this URL can actually run. Currently blocked by 'login: admin'
 gulp.task('web:events:resave', cb => fetch('http://www.dancedeets.com/tasks/reload_events?user_id=701004&allow_cache=1&disable_updates=regeocode,photo,cached_city&queue=fast-queue&only_if_updated=0').then(x => console.log(x)))
 
