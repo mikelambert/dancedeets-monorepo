@@ -120,7 +120,7 @@ class User(ndb.Model):
             geocode = gmaps_api.lookup_address(self.location)
             if geocode:
                 self.location_country = geocode.country()
-                city = cities_db.get_nearby_city(geocode.latlng())
+                city = cities_db.get_nearby_city(geocode.latlng(), country=geocode.country())
                 self.geoname_id = city.geoname_id
                 self.city_name = city.display_name()
 

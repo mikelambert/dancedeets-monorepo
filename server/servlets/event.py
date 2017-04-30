@@ -336,7 +336,7 @@ class AdminEditHandler(base_servlet.BaseRequestHandler):
             self.display['fb_geocoded_address'] = ''
         city_name = 'Unknown'
         if location_info.geocode:
-            city = cities_db.get_nearby_city(location_info.geocode.latlng())
+            city = cities_db.get_nearby_city(location_info.geocode.latlng(), country=location_info.geocode.country())
             if city:
                 city_name = city.display_name()
         self.display['ranking_city_name'] = city_name
