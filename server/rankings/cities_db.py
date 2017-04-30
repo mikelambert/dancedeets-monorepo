@@ -42,7 +42,7 @@ class City(object):
         return city_name
 
 def get_nearby_cities(points, country=None):
-    logging.info("search location is %s", points)
+    logging.info("citiesdb search location is %s", points)
     values = [points[0][0], points[1][0], points[0][1], points[1][1]]
     query = ''
     if country:
