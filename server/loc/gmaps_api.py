@@ -161,20 +161,21 @@ def _get_size(geocode):
         return None
 
 def _choose_best_geocode(g1, g2):
+    min([g1, g2], lambda g: _get_size(g))
     g1_size = _get_size(g1)
     g2_size = _get_size(g2)
     if g1_size is not None and g2_size is not None:
         if g1_size > g2_size:
-            return g2
+            return g2, g1
         else:
-            return g1
+            return g1, g2
     else:
         g1_size = g1.formatted_address()
-        g2_size = g1.formatted_address()
+        g2_size = g2.formatted_address()
         if g1_size > g2_size:
-            return g2
+            return g1, g2
         else:
-            return g1
+            return g2, g1
 
 def _find_best_geocode(s, language=None, check_places=True):
     """A more versatile lookup function that uses two google apis,
@@ -194,26 +195,31 @@ def _find_best_geocode(s, language=None, check_places=True):
         if address_geocode:
             return _choose_best_geocode(location_geocode, address_geocode)
         else:
-            return location_geocode
+            return location_geocode, address_geocode
     else:
         if address_geocode:
-            return address_geocode
+            return address_geocode, None
         else:
-            return None
+            return None, None
 
 def lookup_string(s, language=None, check_places=True):
-    geocode = _find_best_geocode(s, language=language, check_places=check_places)
+    geocode, second_best_geocode = _find_best_geocode(s, language=language, check_places=check_places)
     if geocode:
         if 'address_components' in geocode.json_data and 'geometry' in geocode.json_data:
             return geocode
         else:
             logging.info('lookup_string result does not have address or geometry, doing geocode address lookup on: %s', geocode.formatted_address())
-            new_geocode = lookup_address(geocode.formatted_address(), check_places=check_places)
+            new_geocode = lookup_address(geocode.formatted_address(), check_places=False)
             if new_geocode:
                 return new_geocode
             else:
-                logging.info('Faking an empty address_components for now, since at least the latlong is correct')
-                geocode.json_data['address_components'] = []
+                if 'address_components' not in geocode.json_data and 'address_components' in second_best_geocode.json_data:
+                    geocode.json_data['address_components'] = second_best_geocode.json_data['address_components']
+                if 'geometry' not in geocode.json_data and 'geomtry' in second_best_geocode.json_data:
+                    geocode.json_data['geometry'] = second_best_geocode.json_data['geometry']
+                if 'address_components' not in geocode.json_data and 'address_components' not in geocode.json_data:
+                    logging.info('Faking an empty address_components for now, since at least the latlong is correct')
+                    geocode.json_data['address_components'] = []
                 return geocode
     else:
         return None
