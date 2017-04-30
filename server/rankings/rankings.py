@@ -53,7 +53,7 @@ def count_event_for_city(dbevent):
         yield op.counters.Increment(make_key_name("City", city=city, time_period=time_period))
 
 def count_user_for_city(user):
-    user_city = get_ranking_location(user.location)
+    user_city = user.city_name
     for time_period in get_time_periods(user.creation_time):
         yield op.counters.Increment(make_key_name("City", city=user_city, time_period=time_period))
 
@@ -181,20 +181,3 @@ def compute_city_template_rankings(all_rankings, time_period, use_url=True):
             city_ranking.append(dict(city=city, count=count, url=url))
     city_ranking = sorted(city_ranking, key=lambda x: (-x['count'], x['city']))
     return city_ranking
-
-def get_ranking_location(location):
-    if location is None:
-        return "Unknown"
-    geocode = gmaps_api.lookup_address(location)
-    if geocode is None:
-        return "Unknown"
-    return get_ranking_location_geocode(geocode)
-
-def get_ranking_location_geocode(geocode):
-    if not geocode:
-        return 'Unknown'
-    city = cities_db.get_nearby_city(geocode.latlng())
-    if city:
-        return city.display_name()
-    else:
-        return 'Unknown'

@@ -9,6 +9,7 @@ from mapreduce import context
 
 import datetime
 import fb_api
+from rankings import cities_db
 from loc import gmaps_api
 from loc import math
 from mail import mailchimp_api
@@ -55,8 +56,10 @@ class User(ndb.Model):
     choreo = ndb.StringProperty(indexed=False)
 
     # Other preferences
-    send_email = ndb.BooleanProperty(indexed=False)
-    location_country = ndb.StringProperty(indexed=False)
+    send_email = ndb.BooleanProperty()
+    location_country = ndb.StringProperty()
+    geoname_id = ndb.IntegerProperty()
+    city_name = ndb.StringProperty()
 
     # Derived from fb_user
     full_name = ndb.StringProperty() # Indexed to make it easier for me to find a user for manual support
@@ -111,10 +114,15 @@ class User(ndb.Model):
         except (datastore_errors.BadValueError, TypeError) as e:
             logging.error("Failed to save timezone %s: %s", fb_user['profile'].get('timezone'), e)
         self.location_country = None
+        self.geoname_id = None
+        self.city_name = None
         if self.location:
             geocode = gmaps_api.lookup_address(self.location)
             if geocode:
                 self.location_country = geocode.country()
+                city = cities_db.get_nearby_city(geocode.latlng())
+                self.geoname_id = city.geoname_id
+                self.city_name = city.display_name()
 
     def put(self):
         # Always update mailchimp when we update the User
