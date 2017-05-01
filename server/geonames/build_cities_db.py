@@ -26,9 +26,6 @@ def get_fb_targeting_key(cursor_adlocs, geoname):
 
 def save_cities_db(cities_db_filename, dummy_file=False):
 
-    conn_adlocs = sqlite3.connect(fetch_adgeolocs.FILENAME_ADLOCS)
-    cursor_adlocs = conn_adlocs.cursor()
-
     conn_cities = sqlite3.connect(cities_db_filename)
     cursor_cities = conn_cities.cursor()
     cursor_cities.execute('''DROP TABLE IF EXISTS City''')
@@ -38,6 +35,8 @@ def save_cities_db(cities_db_filename, dummy_file=False):
     cursor_cities.execute('''CREATE INDEX country_geo on City (country_code, longitude, latitude);''')
     cursor_cities.execute('''CREATE INDEX geo on City (longitude, latitude);''')
     if not dummy_file:
+        conn_adlocs = sqlite3.connect(fetch_adgeolocs.FILENAME_ADLOCS)
+        cursor_adlocs = conn_adlocs.cursor()
         for geoname in geoname_files.cities(5000):
             adgeolocation_key, adgeolocation_type = get_fb_targeting_key(cursor_adlocs, geoname)
 
@@ -56,7 +55,6 @@ def save_cities_db(cities_db_filename, dummy_file=False):
             sqlite_db.insert_record(cursor_cities, 'City', data)
 
     conn_cities.commit()
-    conn_adlocs.commit()
 
 if __name__ == '__main__':
     save_cities_db(sys.argv[1], os.environ.get('DUMMY_FILE'))
