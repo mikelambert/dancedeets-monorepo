@@ -3,6 +3,7 @@
 from __future__ import absolute_import
 
 import json
+import os
 import re
 import sqlite3
 import sys
@@ -24,7 +25,7 @@ def get_fb_targeting_key(cursor_adlocs, geoname):
     else:
         return None, None
 
-def save_cities_db(cities_db_filename):
+def save_cities_db(cities_db_filename, dummy_file=False):
 
     conn_adlocs = sqlite3.connect(fetch_adgeolocs.FILENAME_ADLOCS)
     cursor_adlocs = conn_adlocs.cursor()
@@ -37,25 +38,26 @@ def save_cities_db(cities_db_filename):
     # We index on longitude first, since it's likely to have the greatest variability and pull in the least amount of cities
     cursor_cities.execute('''CREATE INDEX country_geo on City (country_code, longitude, latitude);''')
     cursor_cities.execute('''CREATE INDEX geo on City (longitude, latitude);''')
-    for geoname in geoname_files.cities(5000):
-        adgeolocation_key, adgeolocation_type = get_fb_targeting_key(cursor_adlocs, geoname)
+    if not dummy_file:
+        for geoname in geoname_files.cities(5000):
+            adgeolocation_key, adgeolocation_type = get_fb_targeting_key(cursor_adlocs, geoname)
 
-        data = {
-            'geoname_id': geoname.geoname_id,
-            'ascii_name': geoname.ascii_name,
-            'admin1_code': geoname.admin1_code,
-            'country_code': geoname.country_code,
-            'latitude': geoname.latitude,
-            'longitude': geoname.longitude,
-            'population': geoname.population or 0,
-            'timezone': geoname.timezone,
-            'adgeolocation_key': adgeolocation_key,
-            'adgeolocation_type': adgeolocation_type,
-        }
-        sqlite_db.insert_record(cursor_cities, 'City', data)
+            data = {
+                'geoname_id': geoname.geoname_id,
+                'ascii_name': geoname.ascii_name,
+                'admin1_code': geoname.admin1_code,
+                'country_code': geoname.country_code,
+                'latitude': geoname.latitude,
+                'longitude': geoname.longitude,
+                'population': geoname.population or 0,
+                'timezone': geoname.timezone,
+                'adgeolocation_key': adgeolocation_key,
+                'adgeolocation_type': adgeolocation_type,
+            }
+            sqlite_db.insert_record(cursor_cities, 'City', data)
 
     conn_cities.commit()
     conn_adlocs.commit()
 
 if __name__ == '__main__':
-    save_cities_db(sys.argv[1])
+    save_cities_db(sys.argv[1], os.environ.get('DUMMY_FILE'))

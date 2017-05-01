@@ -50,6 +50,9 @@ gulp.task('compile:geonames:fetch_adgeolocs', $.shell.task('python ./geonames/fe
 gulp.task('compile:geonames:build_cities_db', ['compile:geonames:fetch_adgeolocs'], $.shell.task('python ./geonames/build_cities_db.py ./geonames/cities.db'))
 gulp.task('compile:geonames', ['compile:geonames:build_cities_db'])
 
+gulp.task('compile:test-geonames:build_cities_db', $.shell.task('DUMMY_FILE=1 python ./geonames/build_cities_db.py ./geonames/cities_test.db'))
+gulp.task('compile:test-geonames', ['compile:test-geonames:build_cities_db'])
+
 gulp.task('compile:images:favicons', () => gulp
   .src('assets/img/deets-head.png')
   .pipe(favicons({
