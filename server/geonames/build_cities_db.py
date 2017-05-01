@@ -9,7 +9,6 @@ import sqlite3
 import sys
 import urllib
 
-import facebook
 from util import urls
 from geonames import geoname_files
 from geonames import sqlite_db

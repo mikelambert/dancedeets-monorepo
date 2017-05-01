@@ -17,7 +17,12 @@ from geonames import sqlite_db
 FILENAME_ADLOCS = '/Users/lambert/Dropbox/dancedeets/data/generated/adlocs_only.db'
 
 
-FACEBOOK_CONFIG = facebook.load_yaml('facebook-dev.yaml')
+FACEBOOK_CONFIG = None
+def get_config():
+    global FACEBOOK_CONFIG
+    if not FACEBOOK_CONFIG:
+        FACEBOOK_CONFIG = facebook.load_yaml('facebook-dev.yaml')
+    return FACEBOOK_CONFIG
 
 def number(x):
     return re.match(r'^\d+$', x)
@@ -36,7 +41,7 @@ def load_targeting_key(cursor, geoname):
         'country_code': geoname.country_code,
         'q': get_query(geoname),
         'type': 'adgeolocation',
-        'access_token': FACEBOOK_CONFIG['app_access_token'],
+        'access_token': get_config()['app_access_token'],
         'locale': 'en_US', # because app_access_token is locale-less and seems to use a IP-locale fallback
     }
     cursor.execute('select data from AdGeoLocation where q = ? and country_code = ?', (geo_search['q'], geo_search['country_code']))
