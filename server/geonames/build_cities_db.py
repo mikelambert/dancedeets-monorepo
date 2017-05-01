@@ -20,9 +20,9 @@ def get_fb_targeting_key(cursor_adlocs, geoname):
     db_result = cursor_adlocs.execute('SELECT data from AdGeoLocation where q = ? and country_code = ?', (q, country_code)).fetchone()
     results = json.loads(db_result[0])
     if results:
-        return results[0]['key']
+        return results[0]['key'], results[0]['type']
     else:
-        return None
+        return None, None
 
 def save_cities_db(cities_db_filename):
 
@@ -33,15 +33,13 @@ def save_cities_db(cities_db_filename):
     cursor_cities = conn_cities.cursor()
     cursor_cities.execute('''DROP TABLE IF EXISTS City''')
     cursor_cities.execute('''CREATE TABLE City
-                 (geoname_id integer primary key, ascii_name text, admin1_code text, country_code text, latitude real, longitude real, population integer, timezone text, adgeolocation_key)''')
+                 (geoname_id integer primary key, ascii_name text, admin1_code text, country_code text, latitude real, longitude real, population integer, timezone text, adgeolocation_key integer, adgeolocation_type text)''')
     # We index on longitude first, since it's likely to have the greatest variability and pull in the least amount of cities
     cursor_cities.execute('''CREATE INDEX country_geo on City (country_code, longitude, latitude);''')
     cursor_cities.execute('''CREATE INDEX geo on City (longitude, latitude);''')
     for geoname in geoname_files.cities(5000):
-        adgeolocation_key = get_fb_targeting_key(cursor_adlocs, geoname)
+        adgeolocation_key, adgeolocation_type = get_fb_targeting_key(cursor_adlocs, geoname)
 
-        if not geoname.population:
-            print geoname.geoname_id, geoname.ascii_name, geoname.population
         data = {
             'geoname_id': geoname.geoname_id,
             'ascii_name': geoname.ascii_name,
@@ -52,6 +50,7 @@ def save_cities_db(cities_db_filename):
             'population': geoname.population or 0,
             'timezone': geoname.timezone,
             'adgeolocation_key': adgeolocation_key,
+            'adgeolocation_type': adgeolocation_type,
         }
         sqlite_db.insert_record(cursor_cities, 'City', data)
 
