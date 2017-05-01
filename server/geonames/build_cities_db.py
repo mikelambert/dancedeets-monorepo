@@ -35,7 +35,8 @@ def save_cities_db(cities_db_filename):
     cursor_cities.execute('''CREATE TABLE City
                  (geoname_id integer primary key, ascii_name text, admin1_code text, country_code text, latitude real, longitude real, population integer, timezone text, adgeolocation_key)''')
     # We index on longitude first, since it's likely to have the greatest variability and pull in the least amount of cities
-    cursor_cities.execute('''CREATE INDEX geo on City (country_code, longitude, latitude);''')
+    cursor_cities.execute('''CREATE INDEX country_geo on City (country_code, longitude, latitude);''')
+    cursor_cities.execute('''CREATE INDEX geo on City (longitude, latitude);''')
     for geoname in geoname_files.cities(5000):
         adgeolocation_key = get_fb_targeting_key(cursor_adlocs, geoname)
 
