@@ -19,9 +19,9 @@ from . import weekly_images
 def _generate_post_for(city, week_start, search_results):
     headers = [
         "Hey %(location)s, here's what's coming up for you this week in dance!",
-        "Here's your dance schedule for this week in %(location)s:",
+        "Here's your dance schedule for this week near %(location)s:",
         "Your street dance calendar this week for %(location)s:",
-        "Wondering where to dance this week in %(location)s? Here's what's coming up!",
+        "Wondering where to dance this week near %(location)s? Here's what's coming up!",
     ]
     footers = [
         'Did we miss anything? Chime in and let us know!',
