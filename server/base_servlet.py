@@ -141,7 +141,7 @@ class BareBaseRequestHandler(webapp2.RequestHandler, FacebookMixinHandler):
 
         logging.info("Appengine Request Headers:")
         for x in request.headers:
-            if x.lower().startswith('x-appengine-'):
+            if x.lower().startswith('x-'):
                 logging.info("%s: %s", x, request.headers[x])
 
     def set_cookie(self, name, value, expires=None):
@@ -232,14 +232,15 @@ class BareBaseRequestHandler(webapp2.RequestHandler, FacebookMixinHandler):
         self.response.out.write(rendered)
 
     def get_location_from_headers(self, city=True):
+        address = None
         try:
             ip = self.request.remote_addr
             # HACK to refresh clients?
             ip_geolocation.client = ip_geolocation.datastore.Client()
-            return ip_geolocation.get_location_string_for(ip, city=city)
+            address = ip_geolocation.get_location_string_for(ip, city=city)
         except:
             logging.exception('Failure to geolocate IP, falling back on old-school resolution')
-
+        if not address:
             from loc import names
             iso3166_country = self.request.headers.get("X-AppEngine-Country")
             full_country = names.get_country_name(iso3166_country)
@@ -252,7 +253,8 @@ class BareBaseRequestHandler(webapp2.RequestHandler, FacebookMixinHandler):
             if full_country != 'ZZ':
                 location_components.append(full_country)
             location = ', '.join(x for x in location_components if x and x != '?')
-            return location
+            address = location
+        return address
 
     def _get_static_version(self):
         return os.getenv('CURRENT_VERSION_ID').split('.')[-1]
