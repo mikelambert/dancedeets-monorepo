@@ -8,7 +8,7 @@ import re
 import sqlite3
 import sys
 import urllib
-
+print sys.path
 import facebook
 from util import urls
 from geonames import geoname_files

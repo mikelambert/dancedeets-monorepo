@@ -46,11 +46,11 @@ const baseAssetsDir = `/Users/${username.sync()}/Dropbox/dancedeets/art/build-as
 //TODO: Support login here, so that this URL can actually run. Currently blocked by 'login: admin'
 gulp.task('web:events:resave', cb => fetch('http://www.dancedeets.com/tasks/reload_events?user_id=701004&allow_cache=1&disable_updates=regeocode,photo&queue=fast-queue&only_if_updated=0').then(x => console.log(x)))
 
-gulp.task('compile:geonames:fetch_adgeolocs', $.shell.task('python ./geonames/fetch_adgeolocs.py'))
-gulp.task('compile:geonames:build_cities_db', ['compile:geonames:fetch_adgeolocs'], $.shell.task('python ./geonames/build_cities_db.py ./geonames/cities.db'))
+gulp.task('compile:geonames:fetch_adgeolocs', $.shell.task('PYTHONPATH=$PYTHONPATH:. python ./geonames/fetch_adgeolocs.py'))
+gulp.task('compile:geonames:build_cities_db', ['compile:geonames:fetch_adgeolocs'], $.shell.task('PYTHONPATH=$PYTHONPATH:. python ./geonames/build_cities_db.py ./geonames/cities.db'))
 gulp.task('compile:geonames', ['compile:geonames:build_cities_db'])
 
-gulp.task('compile:test-geonames:build_cities_db', $.shell.task('DUMMY_FILE=1 python ./geonames/build_cities_db.py ./geonames/cities_test.db'))
+gulp.task('compile:test-geonames:build_cities_db', $.shell.task('PYTHONPATH=$PYTHONPATH:. DUMMY_FILE=1 python ./geonames/build_cities_db.py ./geonames/cities_test.db'))
 gulp.task('compile:test-geonames', ['compile:test-geonames:build_cities_db'])
 
 gulp.task('compile:images:favicons', () => gulp
