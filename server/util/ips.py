@@ -1,3 +1,3 @@
 def get_remote_ip(request):
     # This is bogus Google IPs: self.request.remote_addr
-    return self.request.headers.get('x-forwarded-for').split(', ')[0]
+    return request.headers.get('x-forwarded-for').split(', ')[0]
