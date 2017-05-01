@@ -3,6 +3,7 @@ import ExtractTextPlugin from 'extract-text-webpack-plugin';
 import path from 'path';
 import uncss from 'uncss';
 import pleeease from 'pleeease';
+import OptimizeCssAssetsPlugin from 'optimize-css-assets-webpack-plugin';
 
 module.exports = {
   entry: {
@@ -27,6 +28,11 @@ module.exports = {
     }),
     new ExtractTextPlugin({
       filename: '../css/eventAmp.css',
+    }),
+    new OptimizeCssAssetsPlugin({
+      // Removing all comments because we're saving this to minimified AMP files with size limits
+      cssProcessorOptions: { discardComments: {removeAll: true } },
+      canPrint: true,
     }),
   ],
   module: {
@@ -67,7 +73,6 @@ module.exports = {
               loader: 'css-loader',
               options: {
                 sourceMap: true,
-                minimize: true,
               },
             },
             {
