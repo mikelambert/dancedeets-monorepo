@@ -8,6 +8,7 @@ import random
 import fb_api
 from loc import math
 from rankings import cities
+from rankings import cities_db
 from search import search_base
 from search import search
 from util import urls
@@ -126,30 +127,20 @@ def _facebook_weekly_post(db_auth_token, city_data):
 
 
 def get_city_targeting_data(fbl, city):
-    city_key = None
+    nearby_cities = cities_db.get_nearby_cities((city.latitude, city.longitude), distance=cities_db.NEARBY_DISTANCE_KM)
+    key_types = set((x.adgeolocation_key, x.adgeolocation_type) for x in nearby_cities)
 
-    city_state_list = [
-        city.city_name,
-        city.state_name,
-    ]
-    city_state = ', '.join(x for x in city_state_list if x)
-    geo_search = {
-        'location_types': 'city',
-        'country_code': city.country_name,
-        'q': city_state,
-    }
-    geo_target = fbl.get(event.LookupGeoTarget, geo_search)
-
-    good_targets = geo_target['search']['data']
-    if good_targets:
-        # Is usually an integer, but in the case of HK and SG (city/country combos), it can be a string
-        city_key = good_targets[0]['key']
-        # if we want state-level targeting, 'region_id' would be the city's associated state
+    city_keys = [x[0] for x in key_types if x[1] == 'city'][:250]
+    region_keys = [x[0] for x in key_types if x[1] == 'region'][:200]
 
     feed_targeting = {}
-    if city_key:
+    if city_keys:
         feed_targeting['cities'] = [{
             'key': city_key,
-        }]
+        } for city_key in city_keys]
+    if region_keys:
+        feed_targeting['regions'] = [{
+            'key': region_key,
+        } for region_key in region_keys]
     full_targeting = {'geo_locations': feed_targeting}
     return full_targeting
