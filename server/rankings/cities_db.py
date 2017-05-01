@@ -17,6 +17,11 @@ FILENAME = 'geonames/cities.db'
 NEARBY_DISTANCE_KM = 100
 
 def get_nearby_city(latlng, country=None):
+    nearby_cities = get_nearby_cities(latlng, country=country)
+    city = _get_largest_city(nearby_cities)
+    return city
+
+def get_nearby_cities(latlng, country=None):
     # We shrink it by two:
     # An event in Palo Alto could be thrown into a San Jose bucket
     # But an event in San Francisco, looking for "people who would go to SF event",
@@ -24,10 +29,9 @@ def get_nearby_city(latlng, country=None):
     # So instead of searching 200km in popular people for cities...let's try to be more specific about which person goes to which city
     distance = NEARBY_DISTANCE_KM/2
     southwest, northeast = math.expand_bounds((latlng, latlng), distance)
-    nearby_cities = get_nearby_cities((southwest, northeast), country=country)
+    nearby_cities = _get_contained_cities((southwest, northeast), country=country)
     nearby_cities = [x for x in nearby_cities if x.closer_than(latlng, distance)]
-    city = get_largest_city(nearby_cities)
-    return city
+    return nearby_cities
 
 class City(object):
     def __init__(self, data):
@@ -48,7 +52,7 @@ class City(object):
         lng_diff = (x.longitude - latlng[1])
         return distance * distance > lat_diff * lat_diff + lng_diff * lng_diff
 
-def get_nearby_cities(points, country=None):
+def _get_contained_cities(points, country=None):
     logging.info("citiesdb search location is %s", points)
     values = [points[0][0], points[1][0], points[0][1], points[1][1]]
     query = ''
@@ -65,7 +69,7 @@ def get_nearby_cities(points, country=None):
 def get_largest_cities(limit=5, country=None):
     raise NotImplementedError()
 
-def get_largest_city(cities):
+def _get_largest_city(cities):
     if not cities:
         return None
     largest_nearby_city = max(cities, key=lambda x: x.population)
