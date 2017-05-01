@@ -22,8 +22,10 @@ def get_nearby_city(latlng, country=None):
     # But an event in San Francisco, looking for "people who would go to SF event",
     # would want to include Palo Alto in its search radius....so would need to go 2x to San Jose
     # So instead of searching 200km in popular people for cities...let's try to be more specific about which person goes to which city
-    southwest, northeast = math.expand_bounds((latlng, latlng), NEARBY_DISTANCE_KM/2)
+    distance = NEARBY_DISTANCE_KM/2
+    southwest, northeast = math.expand_bounds((latlng, latlng), distance)
     nearby_cities = get_nearby_cities((southwest, northeast), country=country)
+    nearby_cities = [x for x in nearby_cities if x.closer_than(latlng, distance)]
     city = get_largest_city(nearby_cities)
     return city
 
@@ -40,6 +42,11 @@ class City(object):
         else:
             city_name = '%s, %s' % (self.ascii_name, full_country)
         return city_name
+
+    def closer_than(self, latlng, distance):
+        lat_diff = (x.latitude - latlng[0])
+        lng_diff = (x.longitude - latlng[1])
+        return distance * distance > lat_diff * lat_diff + lng_diff * lng_diff
 
 def get_nearby_cities(points, country=None):
     logging.info("citiesdb search location is %s", points)
