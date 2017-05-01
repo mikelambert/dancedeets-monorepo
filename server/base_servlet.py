@@ -35,6 +35,7 @@ from services import ip_geolocation
 from users import user_creation
 from util import dates
 from util import deferred
+from util import ips
 from util import text
 from util import urls
 
@@ -234,7 +235,7 @@ class BareBaseRequestHandler(webapp2.RequestHandler, FacebookMixinHandler):
     def get_location_from_headers(self, city=True):
         address = None
         try:
-            ip = self.request.remote_addr
+            ip = ips.get_remote_ip(self.request)
             # HACK to refresh clients?
             ip_geolocation.client = ip_geolocation.datastore.Client()
             address = ip_geolocation.get_location_string_for(ip, city=city)
@@ -454,7 +455,7 @@ class BaseRequestHandler(BareBaseRequestHandler):
             referer = self.get_cookie('User-Referer')
             city = self.request.get('city') or self.get_location_from_headers() or get_location(fb_user)
             logging.info("User passed in a city of %r, facebook city is %s", self.request.get('city'), get_location(fb_user))
-            ip = self.request.remote_addr
+            ip = ips.get_remote_ip(self.request)
             user_creation.create_user_with_fbuser(self.fb_uid, fb_user, self.access_token, access_token_expires, city, ip, send_email=True, referer=referer, client='web')
             # TODO(lambert): handle this MUUUCH better
             logging.info("Not a /login request and there is no user object, constructed one realllly-quick, and continuing on.")

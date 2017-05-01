@@ -25,8 +25,9 @@ from search import search
 from search import search_base
 from users import user_creation
 from users import users
-from util import taskqueue
+from util import ips
 from util import language
+from util import taskqueue
 from util import urls
 
 DATETIME_FORMAT = "%Y-%m-%dT%H:%M:%SZ"
@@ -385,7 +386,7 @@ class AuthHandler(ApiHandler):
             client = self.json_body.get('client')
             location = self.json_body.get('location')
             fb_user = self.fbl.get(fb_api.LookupUser, 'me')
-            ip = self.request.remote_addr
+            ip = ips.get_remote_ip(self.request)
             user_creation.create_user_with_fbuser(self.fb_uid, fb_user, access_token, access_token_expires, location, ip, client=client)
         self.write_json_success()
 

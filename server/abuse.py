@@ -1,5 +1,5 @@
 # import IPy
-# ip = IPy(request.remote_addr)
+# ip = IPy(ips.get_remote_ip(self.request))
 # gce_list = '130.211.0.0/16'
 # gce_list.overlaps(ip)
 
