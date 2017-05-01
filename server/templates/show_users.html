@@ -52,7 +52,11 @@ Users by platform:<br>
 	{{ client }}
 {% endfor %}
 </td><td>
-(<a href="https://appengine.google.com/datastore/edit?app_id=s~dancedeets-hrd&key={{ user.key.urlsafe() }}">AE</a>, <a href="/sources/admin_edit?source_id={{ user.fb_uid }}">Source</a>)
+(
+<a href="/admin/user/edit/?url=%2Fadmin%2Fuser%2F&id={{ user.key.urlsafe() }}">User</a>,
+<a href="https://console.cloud.google.com/datastore/entities/edit?key=0%2F%7C4%2FUser%7C20%2Fname:{{ user.fb_uid }}&project=dancedeets-hrd">User GCE</a>,
+<a href="/sources/admin_edit?source_id={{ user.fb_uid }}">Source</a>
+)
 {% if fb_user.profile %}
 <a href="{{ fb_user.profile.link }}">{{ user.full_name or 'Unknown Name' }}</a>
 {% else %}
