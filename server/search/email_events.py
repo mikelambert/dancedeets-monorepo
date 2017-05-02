@@ -1,5 +1,6 @@
 import datetime
 import logging
+import re
 
 import app
 import base_servlet
@@ -89,7 +90,20 @@ def email_for_user(user, fbl, should_send=True):
         message = 'Errors rendering weeklyMail.mjml: %s', mjml_response['errors']
         logging.error(message)
         raise NoEmailException(message)
-    subject = 'Your Week in Dance: %s' % d.strftime('%b %d, %Y')
+    messages = [
+        'Your Week in Dance: %s',
+        'DanceDeets Weekly: %s',
+        'Dance Events for %s',
+    ]
+    message = random.choice(messages)
+
+    tag = re.sub(r'[^a-z]', '-', message.lower())[:50]
+    tags = [
+        'weekly',
+        tag,
+    ]
+
+    subject = message % d.strftime('%b %d, %Y')
     message = {
         'from_email': 'events@dancedeets.com',
         'from_name': 'DanceDeets Events',
@@ -104,6 +118,7 @@ def email_for_user(user, fbl, should_send=True):
             'user_id': user.fb_uid,
             'email_type': 'weekly',
         },
+        'tags': tags,
     }
     if should_send:
         # Update the last-sent-time here, so we any retryable errors don't cause emails to be multi-sent
