@@ -56,7 +56,11 @@ def email_for_user(user, fbl, should_send=True):
         except Exception as e:
             raise NoEmailException('Could not normalize user location: %s: %s', data, e)
 
-    search_query = form.build_query(start_end_query=True)
+    try:
+        search_query = form.build_query(start_end_query=True)
+    except:
+        logging.error('Error looking up user location for user %s, form: %s', user.fb_uid, form)
+        raise
     search_results = search.Search(search_query).get_search_results()
     # Don't send email...
     if not search_results:
