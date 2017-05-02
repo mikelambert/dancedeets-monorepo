@@ -234,13 +234,13 @@ class BareBaseRequestHandler(webapp2.RequestHandler, FacebookMixinHandler):
 
     def get_location_from_headers(self, city=True):
         address = None
+        ip = ips.get_remote_ip(self.request)
         try:
-            ip = ips.get_remote_ip(self.request)
             # HACK to refresh clients?
             ip_geolocation.client = ip_geolocation.datastore.Client()
             address = ip_geolocation.get_location_string_for(ip, city=city)
         except:
-            logging.exception('Failure to geolocate IP, falling back on old-school resolution')
+            logging.exception('Failure to geolocate IP %s, falling back on old-school resolution', ip)
         if not address:
             from loc import names
             iso3166_country = self.request.headers.get("X-AppEngine-Country")
