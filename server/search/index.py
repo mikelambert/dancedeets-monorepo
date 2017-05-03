@@ -151,5 +151,5 @@ class BaseIndex(object):
             objects = cls.obj_type.get_by_key_name(object_ids)
         if None in objects:
             logging.error("Lookup returned at least one None!")
-
+        objects = [x for x in objects if x]
         cls.update_index(objects)
