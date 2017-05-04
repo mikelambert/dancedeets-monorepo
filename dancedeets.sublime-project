@@ -16,6 +16,16 @@
       "shell_cmd": "make && ./test.sh"
     },
   ],
+  "settings": {
+    "js_prettier": {
+      "debug": true,
+      "auto_format_on_save": true,
+      "prettier_options": {
+        "singleQuote": true,
+        "trailingComma": "es5",
+      },
+    },
+  },
   "SublimeLinter": {
     "@python": 2.7,
     "linters": {
@@ -27,7 +37,8 @@
         // C0301: Line too long (%s/%s)
         // R0903: Too few public methods (%s/%s)
         "paths": [
-          "${project}/lib",
+          "${project}/server/lib-local",
+          "${project}/server/lib-both",
           "${home}/google-cloud-sdk/platform/google_appengine",
         ],
       },
@@ -45,7 +56,8 @@
           // These project-relative and user-relative paths depend on:
           // https://github.com/SublimeCodeIntel/SublimeCodeIntel/pull/569
           // Otherwise we need to specify them as fully-absolute paths
-          "lib",
+          "server/lib-local",
+          "server/lib-both",
           "~/google-cloud-sdk/platform/google_appengine",
         ],
       },

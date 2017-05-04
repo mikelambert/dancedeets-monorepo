@@ -4,13 +4,19 @@
   'extends': [
     'airbnb',
     'plugin:flowtype/recommended',
+    'prettier',
+    'prettier/flowtype',
+    'prettier/react',
   ],
 
   'plugins': [
     'flowtype',
+    'prettier',
   ],
 
   'rules': {
+    'prettier/prettier': ["error", {'trailingComma': 'es5', 'singleQuote': true}],
+
     // A few overrides for what I prefer in this project (and legacy code)
     'comma-dangle': [2, 'always-multiline'],
     'no-console': 0,
