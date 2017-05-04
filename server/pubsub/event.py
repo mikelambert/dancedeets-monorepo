@@ -8,7 +8,7 @@ from .facebook import fb_util
 from .twitter import event as twitter_event
 from . import db
 
-def should_post_event_to_account(auth_token, db_event):
+def _should_post_event_common(auth_token, db_event):
     geocode = db_event.get_geocode()
     if not geocode:
         # Don't post events without a location. It's too confusing...
@@ -19,8 +19,14 @@ def should_post_event_to_account(auth_token, db_event):
         return False
     return True
 
+def should_post_event_to_account(auth_token, db_event):
+    if not _should_post_event_common(auth_token, db_event):
+        return False
+    # Add some filters based on number-attendees
+    return True
+
 def should_post_on_event_wall(auth_token, db_event):
-    if not should_post_event_to_account(auth_token, db_event):
+    if not _should_post_event_common(auth_token, db_event):
         return False
     # Additional filtering for FB Wall postings, since they are heavily-rate-limited by FB.
     if not db_event.is_fb_event:
@@ -45,6 +51,7 @@ def should_post_on_event_wall(auth_token, db_event):
     if invited > 2000:
         logging.warning("Skipping event due to 2000+ invitees: %s", invited)
         return False
+    return True
 
 
 def post_event(auth_token, data):
