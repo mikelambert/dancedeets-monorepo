@@ -20,5 +20,10 @@
     "fs-promise": "^1.0.0",
     "prettier": "^1.3.1",
     "shebang-loader": "0.0.1"
+  },
+  "scripts": {
+    "eslint-check": "./node_modules/eslint/bin/eslint.js --print-config .eslintrc | node_modules/eslint-config-prettier/bin/cli.js",
+    "js-files": "find . \\! -regex '.*node_modules.*' \\! -regex '.*/lib-.*' \\! -regex '.*/dist/.*' \\! -regex '.*/frankenserver/.*' -name '*.js' \\! -path './common/js/languages/data.js' \\! -path './mobile/js/data/localizedCountries.js'",
+    "prettier": "npm run js-files | xargs ./node_modules/prettier/bin/prettier.js --single-quote  --trailing-comma es5 --write"
   }
 }
