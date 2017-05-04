@@ -11,7 +11,7 @@ resources:
   cpu: 1.0
 
 manual_scaling:
-  instances: 3
+  instances: 1
 
 inbound_services:
 - warmup
