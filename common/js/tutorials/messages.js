@@ -4,9 +4,7 @@
  * @flow
  */
 
-import {
-  defineMessages,
-} from 'react-intl';
+import { defineMessages } from 'react-intl';
 
 export default defineMessages({
   numTutorials: {
@@ -36,7 +34,7 @@ export default defineMessages({
   },
   tutorialFooter: {
     id: 'tutorialVideos.turorialFooter',
-    defaultMessage: 'Want to put your tutorials, DVD, or classes here?\nWant lessons from the world\'s best teachers?\n',
+    defaultMessage: "Want to put your tutorials, DVD, or classes here?\nWant lessons from the world's best teachers?\n",
     description: 'Footer for tutorials list, inviting participation',
   },
   contact: {

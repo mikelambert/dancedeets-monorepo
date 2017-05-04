@@ -6,7 +6,7 @@
 
 import type { Action } from '../actions/types';
 
-export type State = {[key: string]: any};
+export type State = { [key: string]: any };
 
 const initialState = {};
 

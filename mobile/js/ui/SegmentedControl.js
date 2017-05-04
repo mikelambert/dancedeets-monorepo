@@ -6,10 +6,7 @@
 
 import React from 'react';
 
-import {
-  Platform,
-  SegmentedControlIOS,
-} from 'react-native';
+import { Platform, SegmentedControlIOS } from 'react-native';
 import normalizeColor from 'react-native/Libraries/StyleSheet/normalizeColor';
 import SegmentedControlAndroid from 'react-native-segmented-android';
 
@@ -17,7 +14,7 @@ type Props = {
   values: string[],
   defaultIndex: number,
   enabled: boolean,
-  tryOnChange: (index: number, oldIndex: number) => (void | Promise<void>),
+  tryOnChange: (index: number, oldIndex: number) => void | Promise<void>,
   tintColor: string,
   style: any,
 };
@@ -31,17 +28,16 @@ function disabledColor(color: string, multiplier: number = 0.5) {
   /* eslint-disable no-bitwise */
   const colorComponents = [
     ((colorNumber & 0xff000000) >> 24) + 256, // r
-    (colorNumber & 0x00ff0000) >> 16,         // g
-    (colorNumber & 0x0000ff00) >> 8,          // b
+    (colorNumber & 0x00ff0000) >> 16, // g
+    (colorNumber & 0x0000ff00) >> 8, // b
   ];
   const disabledColorComponents = colorComponents.map(d => d * multiplier);
-  const disabledNumber = (
+  const disabledNumber =
     (disabledColorComponents[0] << 16) |
     (disabledColorComponents[1] << 8) |
-    (disabledColorComponents[2] << 0)
-  );
+    (disabledColorComponents[2] << 0);
   /* eslint-enable no-bitwise */
-  const disabledHex = `#${(`000000${disabledNumber.toString(16)}`).substr(-6)}`;
+  const disabledHex = `#${`000000${disabledNumber.toString(16)}`.substr(-6)}`;
   return disabledHex;
 }
 
@@ -101,7 +97,11 @@ export default class SegmentedControl extends React.Component {
       try {
         await this.props.tryOnChange(index, oldIndex);
       } catch (e) {
-        console.warn('Undoing SegmentedControl due to error calling tryOnChange:', e, e.stack);
+        console.warn(
+          'Undoing SegmentedControl due to error calling tryOnChange:',
+          e,
+          e.stack
+        );
         this.setState({ selectedIndex: oldIndex });
       }
     } else {
@@ -111,25 +111,32 @@ export default class SegmentedControl extends React.Component {
 
   render() {
     if (Platform.OS === 'ios') {
-      return (<SegmentedControlIOS
-        style={this.props.style}
-        values={this.props.values}
-        enabled={this.props.enabled}
-        selectedIndex={this.state.selectedIndex}
-        onChange={event => this.onChange(event.nativeEvent.selectedSegmentIndex)}
-        tintColor={this.props.tintColor} // iOS handles the disabled color automatically
-      />);
+      return (
+        <SegmentedControlIOS
+          style={this.props.style}
+          values={this.props.values}
+          enabled={this.props.enabled}
+          selectedIndex={this.state.selectedIndex}
+          onChange={event =>
+            this.onChange(event.nativeEvent.selectedSegmentIndex)}
+          tintColor={this.props.tintColor} // iOS handles the disabled color automatically
+        />
+      );
     } else if (Platform.OS === 'android') {
-      const tintColor = this.props.enabled ? this.props.tintColor : disabledColor(this.props.tintColor);
-      return (<SegmentedControlAndroid
-        key="selected"
-        style={[{ height: 30 }, this.props.style]}
-        childText={this.props.values}
-        orientation="horizontal"
-        onChange={event => this.onChange(event.selected)}
-        tintColor={[tintColor, '#000000']}
-        selectedPosition={this.state.selectedIndex}
-      />);
+      const tintColor = this.props.enabled
+        ? this.props.tintColor
+        : disabledColor(this.props.tintColor);
+      return (
+        <SegmentedControlAndroid
+          key="selected"
+          style={[{ height: 30 }, this.props.style]}
+          childText={this.props.values}
+          orientation="horizontal"
+          onChange={event => this.onChange(event.selected)}
+          tintColor={[tintColor, '#000000']}
+          selectedPosition={this.state.selectedIndex}
+        />
+      );
     }
     return null;
   }

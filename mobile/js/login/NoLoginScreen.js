@@ -5,21 +5,10 @@
  */
 
 import React from 'react';
-import {
-  Image,
-  StyleSheet,
-  View,
-} from 'react-native';
-import {
-  defineMessages,
-  injectIntl,
-  intlShape,
-} from 'react-intl';
+import { Image, StyleSheet, View } from 'react-native';
+import { defineMessages, injectIntl, intlShape } from 'react-intl';
 import LoginButtonWithAlternate from './LoginButtonWithAlternate';
-import {
-  normalize,
-  Text,
-} from '../ui';
+import { normalize, Text } from '../ui';
 import { linkColor } from '../Colors';
 
 const messages = defineMessages({
@@ -55,12 +44,12 @@ to help us help your dance scene.
 
 class _NoLoginScreen extends React.Component {
   props: {
-    onLogin: () => void;
-    onNoLogin: (name: string) => void;
+    onLogin: () => void,
+    onNoLogin: (name: string) => void,
 
     // Self-managed props
-    intl: intlShape;
-  }
+    intl: intlShape,
+  };
   render() {
     return (
       <View style={styles.container}>
@@ -68,11 +57,15 @@ class _NoLoginScreen extends React.Component {
           style={[styles.container, styles.topAndBottom]}
           source={require('./images/Onboard4.jpg')}
         >
-          <Text style={[styles.topText, styles.text]}>{this.props.intl.formatMessage(messages.loginJustification)}</Text>
+          <Text style={[styles.topText, styles.text]}>
+            {this.props.intl.formatMessage(messages.loginJustification)}
+          </Text>
           <LoginButtonWithAlternate
             onLogin={this.props.onLogin}
             onNoLogin={() => this.props.onNoLogin('Bottom Button')}
-            noLoginText={this.props.intl.formatMessage(messages.useWithoutLogin)}
+            noLoginText={this.props.intl.formatMessage(
+              messages.useWithoutLogin
+            )}
           />
         </Image>
       </View>

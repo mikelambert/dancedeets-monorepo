@@ -4,7 +4,6 @@
  * @flow
  */
 
-
 export const yellowColors = [
   '#FFF3B0',
   '#FFEA73',
@@ -13,11 +12,7 @@ export const yellowColors = [
   '#C0A000',
 ];
 
-export const lightPurpleColors = [
-  '#E0E0F5',
-  '#D0D0F0',
-  '#C0C0D0',
-];
+export const lightPurpleColors = ['#E0E0F5', '#D0D0F0', '#C0C0D0'];
 
 export const purpleColors = [
   '#8283A9',
@@ -28,15 +23,9 @@ export const purpleColors = [
   '#171728',
 ];
 
-export const redColors = [
-  '#DB4437',
-  '#900000',
-];
+export const redColors = ['#DB4437', '#900000'];
 
-export const greenColors = [
-  '#449B37',
-  '#005000',
-];
+export const greenColors = ['#449B37', '#005000'];
 
 const fbBlueColor = '#415DAE';
 const blueColor = '#70C0FF';

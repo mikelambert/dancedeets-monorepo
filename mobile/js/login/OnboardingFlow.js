@@ -8,10 +8,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import TutorialScreen from './TutorialScreen';
 import NoLoginScreen from './NoLoginScreen';
-import {
-  loginButtonPressed,
-  skipLogin,
-} from '../actions';
+import { loginButtonPressed, skipLogin } from '../actions';
 import { track } from '../store/track';
 
 type ScreenState = 'CAROUSEL' | 'NO_LOGIN';
@@ -47,21 +44,27 @@ class OnboardingFlow extends React.Component {
 
   render() {
     if (this.state.screen === 'CAROUSEL') {
-      return (<TutorialScreen
-        onLogin={async () => {
-          track('Login - FBLogin Button Pressed', { Button: 'First Screen' });
-          await this.props.onLogin();
-        }}
-        onNoLogin={this.onDontWantLoginPressed}
-      />);
+      return (
+        <TutorialScreen
+          onLogin={async () => {
+            track('Login - FBLogin Button Pressed', { Button: 'First Screen' });
+            await this.props.onLogin();
+          }}
+          onNoLogin={this.onDontWantLoginPressed}
+        />
+      );
     } else if (this.state.screen === 'NO_LOGIN') {
-      return (<NoLoginScreen
-        onLogin={async () => {
-          track('Login - FBLogin Button Pressed', { Button: 'Second Screen' });
-          await this.props.onLogin();
-        }}
-        onNoLogin={this.onSkipLogin}
-      />);
+      return (
+        <NoLoginScreen
+          onLogin={async () => {
+            track('Login - FBLogin Button Pressed', {
+              Button: 'Second Screen',
+            });
+            await this.props.onLogin();
+          }}
+          onNoLogin={this.onSkipLogin}
+        />
+      );
     } else {
       console.error('Unknown state screen: ', this.state.screen);
       return null;
@@ -69,10 +72,7 @@ class OnboardingFlow extends React.Component {
   }
 }
 
-export default connect(
-    null,
-    dispatch => ({
-      onLogin: async () => await loginButtonPressed(dispatch),
-      skipLogin: () => dispatch(skipLogin()),
-    }),
-)(OnboardingFlow);
+export default connect(null, dispatch => ({
+  onLogin: async () => await loginButtonPressed(dispatch),
+  skipLogin: () => dispatch(skipLogin()),
+}))(OnboardingFlow);

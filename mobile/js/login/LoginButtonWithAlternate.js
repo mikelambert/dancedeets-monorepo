@@ -5,23 +5,10 @@
  */
 
 import React from 'react';
-import {
-  StyleSheet,
-  TouchableOpacity,
-  View,
-} from 'react-native';
-import {
-  defineMessages,
-  injectIntl,
-  intlShape,
-} from 'react-intl';
+import { StyleSheet, TouchableOpacity, View } from 'react-native';
+import { defineMessages, injectIntl, intlShape } from 'react-intl';
 import { yellowColors } from '../Colors';
-import {
-  Button,
-  normalize,
-  Text,
-  semiNormalize,
-} from '../ui';
+import { Button, normalize, Text, semiNormalize } from '../ui';
 
 const messages = defineMessages({
   loginButton: {

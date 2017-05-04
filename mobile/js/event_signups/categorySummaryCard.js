@@ -5,32 +5,15 @@
  */
 
 import React from 'react';
-import {
-  Animated,
-  Dimensions,
-  Image,
-  StyleSheet,
-  View,
-} from 'react-native';
-import {
-  injectIntl,
-  defineMessages,
-} from 'react-intl';
+import { Animated, Dimensions, Image, StyleSheet, View } from 'react-native';
+import { injectIntl, defineMessages } from 'react-intl';
 import { connect } from 'react-redux';
 import danceStyles from 'dancedeets-common/js/styles';
 import danceStyleIcons from 'dancedeets-common/js/styles/icons';
-import type {
-  Dispatch,
-  User,
-} from '../actions/types';
-import {
-  categoryDisplayName,
-  getCategorySignups,
-} from './models';
+import type { Dispatch, User } from '../actions/types';
+import { categoryDisplayName, getCategorySignups } from './models';
 import { FeedListView } from '../learn/BlogList';
-import {
-  purpleColors,
-} from '../Colors';
+import { purpleColors } from '../Colors';
 import {
   Button,
   Card,
@@ -40,11 +23,7 @@ import {
   semiNormalize,
   Text,
 } from '../ui';
-import type {
-  BattleCategory,
-  Signup,
-} from './models';
-
+import type { BattleCategory, Signup } from './models';
 
 // Try to make our boxes as wide as we can...
 let boxWidth = normalize(350);
@@ -56,27 +35,31 @@ if (Dimensions.get('window').width >= 1024) {
 
 class CompactTeam extends React.Component {
   props: {
-    style: View.propTypes.style;
-    team: Signup;
-  }
+    style: View.propTypes.style,
+    team: Signup,
+  };
 
   render() {
-    return <Text style={[this.props.style, styles.registrationStatusText]}>{this.props.team.teamName}</Text>;
+    return (
+      <Text style={[this.props.style, styles.registrationStatusText]}>
+        {this.props.team.teamName}
+      </Text>
+    );
   }
 }
 class _UserRegistrationStatus extends React.Component {
   props: {
-    category: BattleCategory;
-    onRegister: (category: BattleCategory) => void;
-    onUnregister: (category: BattleCategory, team: Signup) => void;
+    category: BattleCategory,
+    onRegister: (category: BattleCategory) => void,
+    onUnregister: (category: BattleCategory, team: Signup) => void,
 
     // Self-managed props
-    user: ?User;
-  }
+    user: ?User,
+  };
 
   state: {
-    isLoading: boolean;
-  }
+    isLoading: boolean,
+  };
 
   constructor(props) {
     super(props);
@@ -103,39 +86,45 @@ class _UserRegistrationStatus extends React.Component {
         return dancerIds.includes(userId);
       });
       if (signedUpTeams.length) {
-        const teamTexts = signedUpTeams.map(team => <HorizontalView style={styles.registrationLineOuter} key={team}>
-          <CompactTeam team={team} style={styles.registrationIndent} />
-          <Button
-            caption="Unregister"
-            onPress={async () => {
-              this.setState({ isLoading: true });
-              await this.props.onUnregister(this.props.category, team);
-              this.setState({ isLoading: false });
-            }}
-            isLoading={this.state.isLoading}
-          />
-        </HorizontalView>);
-        return (<View>
-          <HorizontalView style={styles.registrationLine}>
-            <Image
-              source={require('./images/green-check.png')}
-              style={styles.registrationStatusIcon}
+        const teamTexts = signedUpTeams.map(team => (
+          <HorizontalView style={styles.registrationLineOuter} key={team}>
+            <CompactTeam team={team} style={styles.registrationIndent} />
+            <Button
+              caption="Unregister"
+              onPress={async () => {
+                this.setState({ isLoading: true });
+                await this.props.onUnregister(this.props.category, team);
+                this.setState({ isLoading: false });
+              }}
+              isLoading={this.state.isLoading}
             />
-            <Text style={styles.registrationStatusText}>Registered:</Text>
           </HorizontalView>
-          {teamTexts}
-        </View>);
+        ));
+        return (
+          <View>
+            <HorizontalView style={styles.registrationLine}>
+              <Image
+                source={require('./images/green-check.png')}
+                style={styles.registrationStatusIcon}
+              />
+              <Text style={styles.registrationStatusText}>Registered:</Text>
+            </HorizontalView>
+            {teamTexts}
+          </View>
+        );
       } else {
-        return (<HorizontalView style={styles.registrationLineOuter}>
-          <HorizontalView style={styles.registrationLine}>
-            <Image
-              source={require('./images/red-x.png')}
-              style={styles.registrationStatusIcon}
-            />
-            <Text style={styles.registrationStatusText}>Not Registered</Text>
+        return (
+          <HorizontalView style={styles.registrationLineOuter}>
+            <HorizontalView style={styles.registrationLine}>
+              <Image
+                source={require('./images/red-x.png')}
+                style={styles.registrationStatusIcon}
+              />
+              <Text style={styles.registrationStatusText}>Not Registered</Text>
+            </HorizontalView>
+            {registerButton}
           </HorizontalView>
-          {registerButton}
-        </HorizontalView>);
+        );
       }
     } else {
       return registerButton;
@@ -146,16 +135,15 @@ const UserRegistrationStatus = connect(
   state => ({
     user: state.user.userData,
   }),
-  (dispatch: Dispatch, props) => ({
-  }),
+  (dispatch: Dispatch, props) => ({})
 )(injectIntl(_UserRegistrationStatus));
 
 class CategorySummaryCard extends React.Component {
   props: {
-    category: BattleCategory;
-    onRegister: (category: BattleCategory) => void;
-    onUnregister: (category: BattleCategory, team: Signup) => void;
-  }
+    category: BattleCategory,
+    onRegister: (category: BattleCategory) => void,
+    onUnregister: (category: BattleCategory, team: Signup) => void,
+  };
 
   _root: View;
 
@@ -170,17 +158,19 @@ class CategorySummaryCard extends React.Component {
     const images = [];
     const imageWidth = (boxWidth - 20) / (2 * Math.max(teamSize, 2));
     for (let i = 0; i < teamSize; i += 1) {
-      images.push(<ProportionalImage
-        key={i}
-        resizeDirection="width"
-        source={danceStyleIcons[display.styleIcon]}
-        originalWidth={danceStyles[display.styleIcon].width}
-        originalHeight={danceStyles[display.styleIcon].height}
-        resizeMode="contain"
-        style={{
-          height: imageWidth,
-        }}
-      />);
+      images.push(
+        <ProportionalImage
+          key={i}
+          resizeDirection="width"
+          source={danceStyleIcons[display.styleIcon]}
+          originalWidth={danceStyles[display.styleIcon].width}
+          originalHeight={danceStyles[display.styleIcon].height}
+          resizeMode="contain"
+          style={{
+            height: imageWidth,
+          }}
+        />
+      );
     }
     return <HorizontalView>{images}</HorizontalView>;
   }
@@ -188,28 +178,44 @@ class CategorySummaryCard extends React.Component {
   render() {
     const displayName = categoryDisplayName(this.props.category);
     const dancerIcons = this.dancerIcons(this.props.category);
-    return (<View
-      style={{
-        width: boxWidth,
-        backgroundColor: purpleColors[2],
-        padding: 5,
-        borderRadius: 10,
-      }}
-      ref={(x) => {
-        this._root = x;
-      }}
-    >
-      <HorizontalView style={{ justifyContent: 'space-between' }}>
-        <View>{dancerIcons}</View>
-        <Animated.View style={{ position: 'relative', transform: [{ skewY: '-180deg' }] }}>{dancerIcons}</Animated.View>
-      </HorizontalView>
-      <Text style={{ marginVertical: 10, textAlign: 'center', fontWeight: 'bold', fontSize: semiNormalize(30), lineHeight: semiNormalize(34) }}>{displayName}</Text>
-      <UserRegistrationStatus
-        category={this.props.category}
-        onRegister={this.props.onRegister}
-        onUnregister={this.props.onUnregister}
-      />
-    </View>);
+    return (
+      <View
+        style={{
+          width: boxWidth,
+          backgroundColor: purpleColors[2],
+          padding: 5,
+          borderRadius: 10,
+        }}
+        ref={x => {
+          this._root = x;
+        }}
+      >
+        <HorizontalView style={{ justifyContent: 'space-between' }}>
+          <View>{dancerIcons}</View>
+          <Animated.View
+            style={{ position: 'relative', transform: [{ skewY: '-180deg' }] }}
+          >
+            {dancerIcons}
+          </Animated.View>
+        </HorizontalView>
+        <Text
+          style={{
+            marginVertical: 10,
+            textAlign: 'center',
+            fontWeight: 'bold',
+            fontSize: semiNormalize(30),
+            lineHeight: semiNormalize(34),
+          }}
+        >
+          {displayName}
+        </Text>
+        <UserRegistrationStatus
+          category={this.props.category}
+          onRegister={this.props.onRegister}
+          onUnregister={this.props.onUnregister}
+        />
+      </View>
+    );
   }
 }
 export default CategorySummaryCard;

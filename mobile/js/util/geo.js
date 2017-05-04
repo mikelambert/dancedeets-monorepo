@@ -13,14 +13,16 @@ import { format } from '../events/formatAddress';
 function getCurrentPosition() {
   return new Promise((resolve, reject) => {
     const highAccuracy = Platform.OS === 'ios';
-    navigator.geolocation.getCurrentPosition(resolve, reject,
-      { enableHighAccuracy: highAccuracy, timeout: 10 * 1000, maximumAge: 10 * 60 * 1000 }
-    );
+    navigator.geolocation.getCurrentPosition(resolve, reject, {
+      enableHighAccuracy: highAccuracy,
+      timeout: 10 * 1000,
+      maximumAge: 10 * 60 * 1000,
+    });
   });
 }
 
 export async function getPosition() {
-//  Permissions.openSettings();
+  //  Permissions.openSettings();
   if (Platform.OS === 'ios') {
     const status = await Permissions.requestPermission('location');
     if (status !== 'authorized') {
@@ -48,7 +50,10 @@ export async function getAddress() {
   // This has atimeout, so we need to do the user action (requesting permissions) above
   // to ensure this call doesn't unnecessarily time out.
   const position = await getPosition();
-  const newCoords = { lat: position.coords.latitude, lng: position.coords.longitude };
+  const newCoords = {
+    lat: position.coords.latitude,
+    lng: position.coords.longitude,
+  };
   const address: Address = await Geocoder.geocodePosition(newCoords);
   const formattedAddress = format(address[0]);
   return formattedAddress;

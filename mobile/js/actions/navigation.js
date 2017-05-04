@@ -4,7 +4,9 @@
  * @flow
  */
 
-import type { NavigationRoute } from 'react-native/Libraries/NavigationExperimental/NavigationTypeDefinition';
+import type {
+  NavigationRoute,
+} from 'react-native/Libraries/NavigationExperimental/NavigationTypeDefinition';
 import type { Action } from './types';
 
 // *** Action Types ***
@@ -18,7 +20,10 @@ export const NAV_SWAP = 'NAV_SWAP';
 
 // *** Action Creators ***
 // The following action creators were derived from NavigationStackReducer
-export function navigatePush(navigator: string, state: string | NavigationRoute): Action {
+export function navigatePush(
+  navigator: string,
+  state: string | NavigationRoute
+): Action {
   const realState = typeof state === 'string' ? { key: state } : state;
   return {
     type: NAV_PUSH,
@@ -50,7 +55,11 @@ export function navigateJumpToIndex(navigator: string, index: number): Action {
   };
 }
 
-export function navigateSwap(navigator: string, key: string, newRoute: NavigationRoute): Action {
+export function navigateSwap(
+  navigator: string,
+  key: string,
+  newRoute: NavigationRoute
+): Action {
   return {
     type: NAV_SWAP,
     navigator,
@@ -59,7 +68,11 @@ export function navigateSwap(navigator: string, key: string, newRoute: Navigatio
   };
 }
 
-export function navigateReset(navigator: string, routes: Array<NavigationRoute>, index: number): Action {
+export function navigateReset(
+  navigator: string,
+  routes: Array<NavigationRoute>,
+  index: number
+): Action {
   return {
     type: NAV_RESET,
     navigator,

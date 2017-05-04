@@ -10,9 +10,9 @@ type JSON = string | number | boolean | null | JSONObject | JSONArray;
 export type JSONObject = { [key: string]: JSON };
 type JSONArray = Array<JSON>;
 type MiniImageProp = {
-  uri: string;
-  width: number;
-  height: number;
+  uri: string,
+  width: number,
+  height: number,
 };
 
 export type Cover = {
@@ -23,7 +23,7 @@ export type Cover = {
 
 export class JsonDerivedObject {
   constructor(data: any) {
-    Object.keys(data).forEach((attr) => {
+    Object.keys(data).forEach(attr => {
       (this: any)[attr] = data[attr];
     });
   }
@@ -46,7 +46,9 @@ export class Venue extends JsonDerivedObject {
 
   fullAddress(seperator: string = ', ') {
     if (this.address) {
-      return [this.name, this.address.street, this.cityStateCountry()].filter(x => x).join(seperator);
+      return [this.name, this.address.street, this.cityStateCountry()]
+        .filter(x => x)
+        .join(seperator);
     } else {
       return this.name;
     }
@@ -54,7 +56,9 @@ export class Venue extends JsonDerivedObject {
 
   streetCityStateCountry(seperator: string = ', ') {
     if (this.address) {
-      return [this.address.street, this.cityStateCountry()].filter(x => x).join(seperator);
+      return [this.address.street, this.cityStateCountry()]
+        .filter(x => x)
+        .join(seperator);
     } else {
       return null;
     }
@@ -62,7 +66,9 @@ export class Venue extends JsonDerivedObject {
 
   cityState(seperator: string = ', ') {
     if (this.address) {
-      return [this.address.city, this.address.state].filter(x => x).join(seperator);
+      return [this.address.city, this.address.state]
+        .filter(x => x)
+        .join(seperator);
     } else {
       return null;
     }
@@ -70,7 +76,9 @@ export class Venue extends JsonDerivedObject {
 
   cityStateCountry() {
     if (this.address) {
-      return [this.address.city, this.address.state, this.address.country].filter(x => x).join(', ');
+      return [this.address.city, this.address.state, this.address.country]
+        .filter(x => x)
+        .join(', ');
     } else {
       return null;
     }
@@ -78,8 +86,8 @@ export class Venue extends JsonDerivedObject {
 }
 
 export type Admin = {
-  id: string;
-  name: string;
+  id: string,
+  name: string,
 };
 
 export type EventRsvpList = {
@@ -148,7 +156,7 @@ export class Event extends BaseEvent {
     }
     const ratio = this.picture.width / this.picture.height;
     const parsedSource = url.parse(this.picture.source, true);
-    const results = [320, 480, 720, 1080, 1440].map((x) => {
+    const results = [320, 480, 720, 1080, 1440].map(x => {
       // Careful! We are re-using parsedSource here.
       // If we do more complex things, we may need to create and modify copies...
       parsedSource.query = { ...parsedSource.query, width: x };
@@ -161,5 +169,4 @@ export class Event extends BaseEvent {
     });
     return results;
   }
-
 }

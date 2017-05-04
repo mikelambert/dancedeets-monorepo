@@ -4,16 +4,27 @@
  * @flow
  */
 
-import * as NavigationStateUtils from 'react-native/Libraries/NavigationExperimental/NavigationStateUtils';
-import type { NavigationState, NavigationRoute } from 'react-native/Libraries/NavigationExperimental/NavigationTypeDefinition';
+import * as NavigationStateUtils
+  from 'react-native/Libraries/NavigationExperimental/NavigationStateUtils';
+import type {
+  NavigationState,
+  NavigationRoute,
+} from 'react-native/Libraries/NavigationExperimental/NavigationTypeDefinition';
 
-import { NAV_PUSH, NAV_POP, NAV_JUMP_TO_KEY, NAV_JUMP_TO_INDEX, NAV_RESET, NAV_SWAP } from '../actions';
+import {
+  NAV_PUSH,
+  NAV_POP,
+  NAV_JUMP_TO_KEY,
+  NAV_JUMP_TO_INDEX,
+  NAV_RESET,
+  NAV_SWAP,
+} from '../actions';
 
 import type { Action } from '../actions/types';
 
 // This is used to track the 'default' route for each possible navigator,
 // that can be configured from outside of this module
-const defaultNavigatorRoutes: {[navigator: string]: NavigationRoute} = {};
+const defaultNavigatorRoutes: { [navigator: string]: NavigationRoute } = {};
 
 type AllNavigationStates = { [key: string]: NavigationState };
 
@@ -23,14 +34,22 @@ export function setDefaultState(navigator: string, route: NavigationRoute) {
   defaultNavigatorRoutes[navigator] = route;
 }
 
-export function getNamedState(allStates: AllNavigationStates, navigator: string): NavigationState {
-  return allStates[navigator] || {
-    index: 0,
-    routes: [defaultNavigatorRoutes[navigator]],
-  };
+export function getNamedState(
+  allStates: AllNavigationStates,
+  navigator: string
+): NavigationState {
+  return (
+    allStates[navigator] || {
+      index: 0,
+      routes: [defaultNavigatorRoutes[navigator]],
+    }
+  );
 }
 
-export function navigationState(allStates: AllNavigationStates = initialNavStates, action: Action): AllNavigationStates {
+export function navigationState(
+  allStates: AllNavigationStates = initialNavStates,
+  action: Action
+): AllNavigationStates {
   if (action.type === 'LOGIN_LOGGED_OUT') {
     return {};
   }
@@ -38,7 +57,9 @@ export function navigationState(allStates: AllNavigationStates = initialNavState
   switch (action.type) {
     case NAV_PUSH:
       state = getNamedState(allStates, action.navigator);
-      if (state.routes[state.index].key === (action.state && action.state.key)) {
+      if (
+        state.routes[state.index].key === (action.state && action.state.key)
+      ) {
         return {
           ...allStates,
           [action.navigator]: state,
@@ -73,14 +94,21 @@ export function navigationState(allStates: AllNavigationStates = initialNavState
       state = getNamedState(allStates, action.navigator);
       return {
         ...allStates,
-        [action.navigator]: NavigationStateUtils.jumpToIndex(state, action.index),
+        [action.navigator]: NavigationStateUtils.jumpToIndex(
+          state,
+          action.index
+        ),
       };
 
     case NAV_SWAP:
       state = getNamedState(allStates, action.navigator);
       return {
         ...allStates,
-        [action.navigator]: NavigationStateUtils.replaceAt(state, action.key, action.newRoute),
+        [action.navigator]: NavigationStateUtils.replaceAt(
+          state,
+          action.key,
+          action.newRoute
+        ),
       };
 
     case NAV_RESET:

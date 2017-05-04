@@ -4,12 +4,10 @@
  * @flow
  */
 
-import {
-  AsyncStorage,
-} from 'react-native';
+import { AsyncStorage } from 'react-native';
 
 export async function loadSavedAddress() {
-  const result = await AsyncStorage.getItem('location.lastSearch') || '';
+  const result = (await AsyncStorage.getItem('location.lastSearch')) || '';
   return result;
 }
 

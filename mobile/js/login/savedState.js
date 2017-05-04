@@ -4,9 +4,7 @@
  * @flow
  */
 
-import {
-  AsyncStorage,
-} from 'react-native';
+import { AsyncStorage } from 'react-native';
 
 export async function hasSkippedLogin() {
   const result = await AsyncStorage.getItem('login.skipped');

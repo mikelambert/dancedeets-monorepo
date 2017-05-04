@@ -5,22 +5,9 @@
  */
 
 import React from 'react';
-import {
-  Platform,
-  ScrollView,
-  StyleSheet,
-  Switch,
-} from 'react-native';
-import {
-  injectIntl,
-  intlShape,
-  defineMessages,
-} from 'react-intl';
-import {
-  Card,
-  HorizontalView,
-  Text,
-} from '../ui';
+import { Platform, ScrollView, StyleSheet, Switch } from 'react-native';
+import { injectIntl, intlShape, defineMessages } from 'react-intl';
+import { Card, HorizontalView, Text } from '../ui';
 import { purpleColors } from '../Colors';
 import {
   PreferenceNames,
@@ -50,12 +37,12 @@ const messages = defineMessages({
 
 class NamedSwitch extends React.Component {
   props: {
-    text: string;
-    style?: any;
+    text: string,
+    style?: any,
   };
 
   state: {
-    value: boolean;
+    value: boolean,
   };
 
   render() {
@@ -77,17 +64,16 @@ class _NotificationPreferences extends React.Component {
   };
 
   props: {
-    intl: intlShape;
-  }
+    intl: intlShape,
+  };
 
   state: {
-    [key: string]: boolean
-  }
+    [key: string]: boolean,
+  };
 
   constructor(props) {
     super(props);
-    this.state = {
-    };
+    this.state = {};
   }
 
   componentWillMount() {
@@ -111,7 +97,10 @@ class _NotificationPreferences extends React.Component {
 
   render() {
     return (
-      <ScrollView style={styles.container} contentContainerStyle={styles.containerContent}>
+      <ScrollView
+        style={styles.container}
+        contentContainerStyle={styles.containerContent}
+      >
         <Card
           title={
             <NamedSwitch
@@ -121,7 +110,8 @@ class _NotificationPreferences extends React.Component {
                 alignItems: 'center',
               }}
               value={this.state.overall}
-              onValueChange={value => this.onChange(PreferenceNames.overall, value)}
+              onValueChange={value =>
+                this.onChange(PreferenceNames.overall, value)}
             />
           }
         >
@@ -129,13 +119,15 @@ class _NotificationPreferences extends React.Component {
             disabled={!this.state.overall}
             text={this.props.intl.formatMessage(messages.notificationSounds)}
             value={this.state.sounds}
-            onValueChange={value => this.onChange(PreferenceNames.sounds, value)}
+            onValueChange={value =>
+              this.onChange(PreferenceNames.sounds, value)}
           />
           <NamedSwitch
             disabled={!this.state.overall}
             text={this.props.intl.formatMessage(messages.notificationVibration)}
             value={this.state.vibration}
-            onValueChange={value => this.onChange(PreferenceNames.vibration, value)}
+            onValueChange={value =>
+              this.onChange(PreferenceNames.vibration, value)}
           />
         </Card>
       </ScrollView>

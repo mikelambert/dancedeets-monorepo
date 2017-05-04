@@ -41,7 +41,9 @@ export default class WebsiteUrl {
   }
 
   isSearchUrl() {
-    return this.url ? (this.url.query.location || this.url.query.keywords) : false;
+    return this.url
+      ? this.url.query.location || this.url.query.keywords
+      : false;
   }
 
   canHandleUrl() {

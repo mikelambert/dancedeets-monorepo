@@ -6,10 +6,7 @@
 
 import React from 'react';
 import moment from 'moment';
-import {
-  SearchEvent,
-  Event,
-} from 'dancedeets-common/js/events/models';
+import { SearchEvent, Event } from 'dancedeets-common/js/events/models';
 
 function formatSchemaDate(dateTime) {
   return moment(dateTime).format('YYYY-MM-DD[T]HH:mm:ss');
@@ -76,7 +73,9 @@ function getArticleSchema(event: Event) {
     return null;
   }
 
-  const datePublished = event.annotations.creation ? event.annotations.creation.time : event.start_time;
+  const datePublished = event.annotations.creation
+    ? event.annotations.creation.time
+    : event.start_time;
   const schema = {
     '@context': 'http://schema.org',
     '@type': 'Article',

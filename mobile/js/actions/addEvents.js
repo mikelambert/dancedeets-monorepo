@@ -5,10 +5,7 @@
  */
 
 import type { Action, ThunkAction, Dispatch } from './types';
-import type {
-  AddEventList,
-  SortOrder,
-} from '../addEventsModels';
+import type { AddEventList, SortOrder } from '../addEventsModels';
 import { track } from '../store/track';
 import { getAddEvents, addEvent as reallyAddEvent } from '../api/dancedeets';
 
@@ -17,7 +14,9 @@ export function reloadAddEvents(): ThunkAction {
     await dispatch(reloadStart());
     try {
       const responseData = await getAddEvents();
-      track('Add Event Loaded', { 'Potential Events': responseData.events.length });
+      track('Add Event Loaded', {
+        'Potential Events': responseData.events.length,
+      });
       await dispatch(reloadComplete(responseData.events));
     } catch (e) {
       console.log('error fetching events', e, e.stack);
@@ -74,7 +73,7 @@ function alreadyProcessing(getState, eventId: string) {
   if (!results) {
     return;
   }
-  results.forEach((x) => {
+  results.forEach(x => {
     if (x.id === eventId) {
       if (x.loaded !== false) {
         return true;

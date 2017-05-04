@@ -3,15 +3,18 @@
  *
  * @flow
  */
-import {
-  GraphRequest,
-  GraphRequestManager,
-} from 'react-native-fbsdk';
+import { GraphRequest, GraphRequestManager } from 'react-native-fbsdk';
 
-export function performRequest(method: string, path: string, params: Object = {}) {
+export function performRequest(
+  method: string,
+  path: string,
+  params: Object = {}
+) {
   const newParams = Object.assign({}, params);
   // Jump through hoops to setup the calling convention react-native-fbsdk wants
-  Object.keys(newParams).forEach((k) => { newParams[k] = { string: newParams[k] }; });
+  Object.keys(newParams).forEach(k => {
+    newParams[k] = { string: newParams[k] };
+  });
   return new Promise((resolve, reject) => {
     const request = new GraphRequest(
       path,

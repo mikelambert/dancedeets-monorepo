@@ -4,15 +4,13 @@
  * @flow
  */
 
-import {
-  defineMessages,
-} from 'react-intl';
+import { defineMessages } from 'react-intl';
 
 export default defineMessages({
   addToCalendar: {
     id: 'event.addToCalendar',
     defaultMessage: 'Add to Calendar',
-    description: 'Button to add this event to the user\'s calendar',
+    description: "Button to add this event to the user's calendar",
   },
   addedToCalendar: {
     id: 'event.addedToCalendar',
@@ -22,12 +20,12 @@ export default defineMessages({
   translate: {
     id: 'event.translate',
     defaultMessage: 'Translate',
-    description: 'Button to translate the event into the device\'s native language',
+    description: "Button to translate the event into the device's native language",
   },
   untranslate: {
     id: 'event.untranslate',
     defaultMessage: 'Original',
-    description: 'Button to show the event\'s original untranslated version',
+    description: "Button to show the event's original untranslated version",
   },
   addedBy: {
     id: 'event.addedBy',
@@ -81,7 +79,7 @@ export default defineMessages({
   },
   attending: {
     id: 'event.rsvp.attending',
-    defaultMessage: 'I\'ll be there!',
+    defaultMessage: "I'll be there!",
     description: 'Clickable text for when a user wants to attend an event',
   },
   maybe: {

@@ -20,34 +20,17 @@ import { Share as TwitterShare } from 'react-twitter-widgets';
 import ExecutionEnvironment from 'exenv';
 // TODO: Lightbox
 // import Lightbox from 'react-image-lightbox';
-import {
-  intlWeb,
-} from 'dancedeets-common/js/intl';
-import {
-  formatStartEnd,
-} from 'dancedeets-common/js/dates';
-import {
-  Event,
-} from 'dancedeets-common/js/events/models';
-import type {
-  JSONObject,
-} from 'dancedeets-common/js/events/models';
-import {
-  formatAttending,
-} from 'dancedeets-common/js/events/helpers';
+import { intlWeb } from 'dancedeets-common/js/intl';
+import { formatStartEnd } from 'dancedeets-common/js/dates';
+import { Event } from 'dancedeets-common/js/events/models';
+import type { JSONObject } from 'dancedeets-common/js/events/models';
+import { formatAttending } from 'dancedeets-common/js/events/helpers';
 import messages from 'dancedeets-common/js/events/messages';
 import { RsvpComponent } from './eventRsvp';
 import type { RsvpValue } from './eventRsvp';
-import {
-  getReactEventSchema,
-  getReactArticleSchema,
-} from './eventSchema';
+import { getReactEventSchema, getReactArticleSchema } from './eventSchema';
 import { Message } from './intl';
-import {
-  AmpImage,
-  Card,
-  ImagePrefix,
-} from './ui';
+import { AmpImage, Card, ImagePrefix } from './ui';
 
 /* intersperse: Return an array with the separator interspersed between
  * each element of the input array.
@@ -65,48 +48,60 @@ function intersperse(arr: Array<any>, sep: string) {
 
 class Title extends React.Component {
   props: {
-    event: Event;
-  }
+    event: Event,
+  };
 
   render() {
     const event = this.props.event;
 
     let categoryLinks = null;
     if (event.annotations.categories) {
-      const categories = event.annotations.categories.map(x => <a key={x} href={`/?keywords=${x}`}>{x}</a>);
-      categoryLinks = <li key="category">categorized as: {intersperse(categories, ', ')}.</li>;
+      const categories = event.annotations.categories.map(x => (
+        <a key={x} href={`/?keywords=${x}`}>{x}</a>
+      ));
+      categoryLinks = (
+        <li key="category">categorized as: {intersperse(categories, ', ')}.</li>
+      );
     }
     let locationLinks = null;
     const cityStateCountry = event.venue.cityStateCountry();
     if (cityStateCountry) {
-      locationLinks = <li key="location">in <a href={`/?location=${cityStateCountry}`}>{cityStateCountry}</a>.</li>;
+      locationLinks = (
+        <li key="location">
+          in <a href={`/?location=${cityStateCountry}`}>{cityStateCountry}</a>.
+        </li>
+      );
     }
     let moreLinks = null;
     if (categoryLinks || locationLinks) {
-      moreLinks = (<div>
-        See more events:
-        <ul>
-          {locationLinks}
-          {categoryLinks}
-        </ul>
-      </div>);
+      moreLinks = (
+        <div>
+          See more events:
+          <ul>
+            {locationLinks}
+            {categoryLinks}
+          </ul>
+        </div>
+      );
     }
 
-    return (<Card>
-      {moreLinks}
-      <h2>{this.props.event.name}</h2>
-    </Card>);
+    return (
+      <Card>
+        {moreLinks}
+        <h2>{this.props.event.name}</h2>
+      </Card>
+    );
   }
 }
 
 class ImageWithLinks extends React.Component {
   props: {
-    event: Event;
-    amp: ?boolean;
-  }
+    event: Event,
+    amp: ?boolean,
+  };
 
   state: {
-    lightbox: boolean;
+    lightbox: boolean,
   };
 
   constructor(props) {
@@ -129,9 +124,19 @@ class ImageWithLinks extends React.Component {
     // const imageUrl = (this.props.amp || !ExecutionEnvironment.canUseDOM) ? picture.source : '#';
     const imageUrl = picture.source; // (this.props.amp || !ExecutionEnvironment.canUseDOM) ? picture.source : '#';
 
-    const image = <AmpImage picture={picture} amp={this.props.amp} className="event-flyer" />;
+    const image = (
+      <AmpImage
+        picture={picture}
+        amp={this.props.amp}
+        className="event-flyer"
+      />
+    );
 
-    const link = <a className="link-event-flyer" href={imageUrl} onClick={this.onClick}>{image}</a>;
+    const link = (
+      <a className="link-event-flyer" href={imageUrl} onClick={this.onClick}>
+        {image}
+      </a>
+    );
 
     const lightbox = null;
     /*
@@ -151,7 +156,13 @@ class ImageWithLinks extends React.Component {
         {lightbox}
         <br />
         <ImagePrefix iconName="picture-o">
-          <a className="link-event-flyer" href={imageUrl} onClick={this.onClick}>See Full Flyer</a>
+          <a
+            className="link-event-flyer"
+            href={imageUrl}
+            onClick={this.onClick}
+          >
+            See Full Flyer
+          </a>
         </ImagePrefix>
       </Card>
     );
@@ -161,7 +172,9 @@ class ImageWithLinks extends React.Component {
 function googleCalendarStartEndFormat(event) {
   const fmt = 'YYYYMMDDTHHmmss[Z]';
   const start = moment(event.start_time).utc().format(fmt);
-  const endTime = event.end_time ? moment(event.end_time) : moment(event.start_time).add(2, 'hours');
+  const endTime = event.end_time
+    ? moment(event.end_time)
+    : moment(event.start_time).add(2, 'hours');
   const end = endTime.utc().format(fmt);
   return `${start}/${end}`;
 }
@@ -194,14 +207,14 @@ function rsvpString(event) {
 
 class _EventLinks extends React.Component {
   props: {
-    event: Event;
-    amp: boolean;
-    userId: ?number;
-    userRsvp: ?RsvpValue;
+    event: Event,
+    amp: boolean,
+    userId: ?number,
+    userRsvp: ?RsvpValue,
 
     // Self-managed props
-    intl: intlShape;
-  }
+    intl: intlShape,
+  };
 
   render() {
     const event = this.props.event;
@@ -229,12 +242,17 @@ class _EventLinks extends React.Component {
     let organizerElement = null;
     if (event.admins.length) {
       const admins = event.admins.map(admin => (
-        <li key={admin.id}><a
-          className="link-event-admin"
-          href={`https://www.facebook.com/${admin.id}`}
-          rel="noopener noreferrer"
-          target="_blank"
-        >{admin.name}</a></li>));
+        <li key={admin.id}>
+          <a
+            className="link-event-admin"
+            href={`https://www.facebook.com/${admin.id}`}
+            rel="noopener noreferrer"
+            target="_blank"
+          >
+            {admin.name}
+          </a>
+        </li>
+      ));
       organizerElement = (
         <ImagePrefix iconName="user">
           <Message message={messages.organizer} /><br />
@@ -249,16 +267,30 @@ class _EventLinks extends React.Component {
       const hostname = url.parse(this.props.event.ticket_uri).hostname;
       ticketElement = (
         <ImagePrefix iconName="ticket">
-          <Message message={messages.ticketsLink} /> <a href={this.props.event.ticket_uri} rel="noopener noreferrer" target="_blank">{hostname}</a>
+          <Message message={messages.ticketsLink} />
+          {' '}
+          <a
+            href={this.props.event.ticket_uri}
+            rel="noopener noreferrer"
+            target="_blank"
+          >
+            {hostname}
+          </a>
         </ImagePrefix>
       );
     }
 
     let addedByElement = null;
-    if (this.props.event.annotations.creation && this.props.event.annotations.creation.creatorName) {
+    if (
+      this.props.event.annotations.creation &&
+      this.props.event.annotations.creation.creatorName
+    ) {
       addedByElement = (
         <ImagePrefix iconName="user-plus">
-          <Message message={messages.addedBy} values={{ name: this.props.event.annotations.creation.creatorName }} />
+          <Message
+            message={messages.addedBy}
+            values={{ name: this.props.event.annotations.creation.creatorName }}
+          />
         </ImagePrefix>
       );
     }
@@ -267,15 +299,34 @@ class _EventLinks extends React.Component {
     if (!this.props.amp) {
       shareLinks = (
         <ImagePrefix iconName="share-square-o" className="product-social-links">
-          <div style={{ display: 'inline-block' }}><TwitterShare url={event.getUrl()} /></div>
-          <div className="link-event-share fb-share-button" data-href={event.getUrl()} data-layout="button" data-size="small" data-mobile-iframe="true">
-            <a className="fb-xfbml-parse-ignore" rel="noopener noreferrer" target="_blank" href={`https://www.facebook.com/sharer/sharer.php?u=${event.getUrl()}&amp;src=sdkpreparse`}>Share</a>
+          <div style={{ display: 'inline-block' }}>
+            <TwitterShare url={event.getUrl()} />
+          </div>
+          <div
+            className="link-event-share fb-share-button"
+            data-href={event.getUrl()}
+            data-layout="button"
+            data-size="small"
+            data-mobile-iframe="true"
+          >
+            <a
+              className="fb-xfbml-parse-ignore"
+              rel="noopener noreferrer"
+              target="_blank"
+              href={`https://www.facebook.com/sharer/sharer.php?u=${event.getUrl()}&amp;src=sdkpreparse`}
+            >
+              Share
+            </a>
           </div>
         </ImagePrefix>
       );
     }
 
-    const formattedStartEndText = formatStartEnd(event.start_time, event.end_time, this.props.intl);
+    const formattedStartEndText = formatStartEnd(
+      event.start_time,
+      event.end_time,
+      this.props.intl
+    );
     let sourceName = event.source.name;
     // Only add the a-href on the client, not the server.
     // This makes it mildly harder for scrapers to scrape us.
@@ -286,12 +337,31 @@ class _EventLinks extends React.Component {
     // - For non-fb events
     // - On the client
     // - For amp pages (since there is no client JS)
-    if (sourceName !== 'Facebook Event' || ExecutionEnvironment.canUseDOM || this.props.amp) {
-      sourceName = <a className="link-event-source" href={event.source.url} rel="noopener noreferrer" target="_blank">{sourceName}</a>;
+    if (
+      sourceName !== 'Facebook Event' ||
+      ExecutionEnvironment.canUseDOM ||
+      this.props.amp
+    ) {
+      sourceName = (
+        <a
+          className="link-event-source"
+          href={event.source.url}
+          rel="noopener noreferrer"
+          target="_blank"
+        >
+          {sourceName}
+        </a>
+      );
     }
     return (
       <Card>
-        <ImagePrefix iconName={event.source.name === 'Facebook Event' ? 'facebook-square' : 'external-link'}>
+        <ImagePrefix
+          iconName={
+            event.source.name === 'Facebook Event'
+              ? 'facebook-square'
+              : 'external-link'
+          }
+        >
           <Message message={messages.source} />{' '}
           {sourceName}
         </ImagePrefix>
@@ -305,7 +375,14 @@ class _EventLinks extends React.Component {
           <FormatText>{formattedStartEndText}</FormatText>
         </ImagePrefix>
         <ImagePrefix iconName="calendar-plus-o">
-          <a href={getAddToCalendarLink(event)} rel="noopener noreferrer" target="_blank" className="link-event-add-to-calendar"><Message message={messages.addToCalendar} /></a>
+          <a
+            href={getAddToCalendarLink(event)}
+            rel="noopener noreferrer"
+            target="_blank"
+            className="link-event-add-to-calendar"
+          >
+            <Message message={messages.addToCalendar} />
+          </a>
         </ImagePrefix>
         {rsvpElement}
         {ticketElement}
@@ -320,9 +397,9 @@ const EventLinks = injectIntl(_EventLinks);
 
 class MapWithLinks extends React.Component {
   props: {
-    event: Event;
-    amp: ?boolean;
-  }
+    event: Event,
+    amp: ?boolean,
+  };
 
   map() {
     const venueName = this.props.event.venue.name;
@@ -336,14 +413,18 @@ class MapWithLinks extends React.Component {
     const mapUrl = `http://maps.google.com/?daddr=${geocode.latitude},${geocode.longitude}`;
 
     const size = 450;
-    const staticMapImageUrl: string = (
+    const staticMapImageUrl: string =
       `http://www.google.com/maps/api/staticmap?key=AIzaSyAvvrWfamjBD6LqCURkATAWEovAoBm1xNQ&size=${size}x${size}&scale=2&zoom=13&` +
       `center=${geocode.latitude},${geocode.longitude}&` +
-      `markers=color:blue%7C${geocode.latitude},${geocode.longitude}`
-    );
+      `markers=color:blue%7C${geocode.latitude},${geocode.longitude}`;
 
     const mapContents = (
-      <a className="link-event-map" href={mapUrl} rel="noopener noreferrer" target="_blank">
+      <a
+        className="link-event-map"
+        href={mapUrl}
+        rel="noopener noreferrer"
+        target="_blank"
+      >
         <AmpImage
           amp={this.props.amp}
           picture={{
@@ -358,11 +439,24 @@ class MapWithLinks extends React.Component {
 
     return (
       <div>
-        <p>Open in <a className="link-event-map" href={mapUrl} rel="noopener noreferrer" target="_blank">Google Maps</a>.</p>
-        { this.props.event.description ?
-          <div className="visible-xs italics">Event description is below the map.</div> :
-          null
-        }
+        <p>
+          Open in
+          {' '}
+          <a
+            className="link-event-map"
+            href={mapUrl}
+            rel="noopener noreferrer"
+            target="_blank"
+          >
+            Google Maps
+          </a>
+          .
+        </p>
+        {this.props.event.description
+          ? <div className="visible-xs italics">
+              Event description is below the map.
+            </div>
+          : null}
         <div>
           {mapContents}
         </div>
@@ -375,7 +469,9 @@ class MapWithLinks extends React.Component {
     if (venue && venue.name) {
       let locationName = <FormatText>{venue.name}</FormatText>;
       if (venue.id) {
-        locationName = <a href={`https://www.facebook.com/${venue.id}`}>{locationName}</a>;
+        locationName = (
+          <a href={`https://www.facebook.com/${venue.id}`}>{locationName}</a>
+        );
       }
       return (
         <Card>
@@ -393,8 +489,8 @@ class MapWithLinks extends React.Component {
 
 class Description extends React.Component {
   props: {
-    event: Event;
-  }
+    event: Event,
+  };
 
   render() {
     return (
@@ -409,9 +505,9 @@ class Description extends React.Component {
 
 class AdminButton extends React.Component {
   props: {
-    path: string;
-    children?: React.Element<*>;
-  }
+    path: string,
+    children?: React.Element<*>,
+  };
 
   constructor(props) {
     super(props);
@@ -423,16 +519,20 @@ class AdminButton extends React.Component {
   }
 
   render() {
-    return <button className="btn btn-default" onClick={this.onClick}>{this.props.children}</button>;
+    return (
+      <button className="btn btn-default" onClick={this.onClick}>
+        {this.props.children}
+      </button>
+    );
   }
 }
 
 class AdminPanel extends React.Component {
   props: {
-    forceAdmin: boolean;
-    event: Event;
-    userId: ?number;
-  }
+    forceAdmin: boolean,
+    event: Event,
+    userId: ?number,
+  };
 
   isAdmin() {
     const adminIds = this.props.event.admins.map(x => x.id);
@@ -448,19 +548,35 @@ class AdminPanel extends React.Component {
       return null;
     }
     const eventId = this.props.event.id;
-    return (<div>
-      <AdminButton path={`/promoters/events/${eventId}/refresh`}>Refresh from Facebook</AdminButton> |
-      <AdminButton path={`/promoters/events/${eventId}/delete`}>Delete from DanceDeets</AdminButton> |
-      <AdminButton path={`/promoters/events/${eventId}/feature`}>Pay to Promote</AdminButton> |
-      <AdminButton path={`/promoters/events/${eventId}/categories`}>Edit Categories</AdminButton>
-    </div>);
+    return (
+      <div>
+        <AdminButton path={`/promoters/events/${eventId}/refresh`}>
+          Refresh from Facebook
+        </AdminButton>
+        {' '}
+        |
+        <AdminButton path={`/promoters/events/${eventId}/delete`}>
+          Delete from DanceDeets
+        </AdminButton>
+        {' '}
+        |
+        <AdminButton path={`/promoters/events/${eventId}/feature`}>
+          Pay to Promote
+        </AdminButton>
+        {' '}
+        |
+        <AdminButton path={`/promoters/events/${eventId}/categories`}>
+          Edit Categories
+        </AdminButton>
+      </div>
+    );
   }
 }
 
 class HtmlHead extends React.Component {
   props: {
-    event: Event;
-  }
+    event: Event,
+  };
 
   render() {
     return <Helmet title={this.props.event.name} />;
@@ -469,19 +585,21 @@ class HtmlHead extends React.Component {
 
 export class EventPage extends React.Component {
   props: {
-    event: JSONObject;
-    forceAdmin?: boolean;
-    amp?: boolean;
-    userId?: number;
-    userRsvp?: RsvpValue;
-  }
+    event: JSONObject,
+    forceAdmin?: boolean,
+    amp?: boolean,
+    userId?: number,
+    userRsvp?: RsvpValue,
+  };
 
   render() {
     const event = new Event(this.props.event);
     return (
       <div className="container">
         <HtmlHead event={event} />
-        {this.props.amp ? getReactArticleSchema(event) : getReactEventSchema(event)}
+        {this.props.amp
+          ? getReactArticleSchema(event)
+          : getReactEventSchema(event)}
         <div className="row">
           <div className="col-xs-12">
             <Title event={event} />

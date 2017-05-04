@@ -5,12 +5,10 @@
  */
 
 import React from 'react';
-import {
-  ListView,
-} from 'react-native';
+import { ListView } from 'react-native';
 
 type Props = {
-  children?: any;
+  children?: any,
 };
 
 export default class ProgressiveLayout extends React.Component {
@@ -45,14 +43,16 @@ export default class ProgressiveLayout extends React.Component {
 
   render() {
     const { children, ...otherProps } = this.props;
-    return (<ListView
-      dataSource={this.state.dataSource}
-      renderRow={this.renderRow}
-      initialListSize={1}
-      pageSize={1}
-      scrollRenderAheadDistance={10000}
-      indicatorStyle="white"
-      {...otherProps}
-    />);
+    return (
+      <ListView
+        dataSource={this.state.dataSource}
+        renderRow={this.renderRow}
+        initialListSize={1}
+        pageSize={1}
+        scrollRenderAheadDistance={10000}
+        indicatorStyle="white"
+        {...otherProps}
+      />
+    );
   }
 }

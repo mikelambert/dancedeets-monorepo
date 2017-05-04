@@ -12,32 +12,21 @@ import {
   TextInput,
   View,
 } from 'react-native';
-import SyntheticEvent from 'react-native/Libraries/Renderer/src/renderers/shared/stack/event/SyntheticEvent';
+import SyntheticEvent
+  from 'react-native/Libraries/Renderer/src/renderers/shared/stack/event/SyntheticEvent';
 import Locale from 'react-native-locale';
 import { connect } from 'react-redux';
-import {
-  defineMessages,
-  injectIntl,
-  intlShape,
-} from 'react-intl';
+import { defineMessages, injectIntl, intlShape } from 'react-intl';
 import { Event } from 'dancedeets-common/js/events/models';
 import type { SearchQuery } from 'dancedeets-common/js/events/search';
-import {
-  AutocompleteList,
-  Button,
-  defaultFont,
-  HorizontalView,
-} from '../ui';
+import { AutocompleteList, Button, defaultFont, HorizontalView } from '../ui';
 import {
   performSearch,
   toggleLayout,
   updateLocation,
   updateKeywords,
 } from '../actions';
-import {
-  gradientTop,
-  lightPurpleColors,
-} from '../Colors';
+import { gradientTop, lightPurpleColors } from '../Colors';
 
 const messages = defineMessages({
   location: {
@@ -64,13 +53,13 @@ const messages = defineMessages({
 
 class SearchInput extends React.Component {
   props: {
-    onFocus?: () => void;
-    onBlur?: () => void;
-    onSubmitEditing: () => void | Promise<void>;
-  }
+    onFocus?: () => void,
+    onBlur?: () => void,
+    onSubmitEditing: () => void | Promise<void>,
+  };
   state: {
     focused: boolean,
-  }
+  };
 
   _textInput: TextInput;
 
@@ -102,65 +91,73 @@ class SearchInput extends React.Component {
 
   render() {
     const { style, ...otherProps } = { style: {}, ...this.props };
-    return (<TextInput
-      {...otherProps}
-      ref={(x) => { this._textInput = x; }}
-      style={[defaultFont, styles.searchField, this.state.focused ? styles.focusedField : {}, style]}
-      placeholderTextColor="rgba(255, 255, 255, 0.5)"
-      keyboardAppearance="dark"
-      selectTextOnFocus
-      autoCorrect={false}
-      autoCapitalize="none"
-      clearButtonMode="while-editing"
-      underlineColorAndroid={lightPurpleColors[2]}
-      onFocus={() => {
-        this.animatedRelayout();
-        if (this.props.onFocus) {
-          this.props.onFocus();
-        }
-      }}
-      onBlur={() => {
-        this.animatedRelayout();
-        if (this.props.onBlur) {
-          this.props.onBlur();
-        }
-      }}
-      onEndEditing={() => {
-        this.animatedRelayout();
-        if (this.props.onBlur) {
-          this.props.onBlur();
-        }
-      }}
-      onSubmitEditing={() => {
-        this.animatedRelayout();
-        if (this.props.onSubmitEditing) {
-          this.props.onSubmitEditing();
-        }
-        this._textInput.blur();
-      }}
-    />);
+    return (
+      <TextInput
+        {...otherProps}
+        ref={x => {
+          this._textInput = x;
+        }}
+        style={[
+          defaultFont,
+          styles.searchField,
+          this.state.focused ? styles.focusedField : {},
+          style,
+        ]}
+        placeholderTextColor="rgba(255, 255, 255, 0.5)"
+        keyboardAppearance="dark"
+        selectTextOnFocus
+        autoCorrect={false}
+        autoCapitalize="none"
+        clearButtonMode="while-editing"
+        underlineColorAndroid={lightPurpleColors[2]}
+        onFocus={() => {
+          this.animatedRelayout();
+          if (this.props.onFocus) {
+            this.props.onFocus();
+          }
+        }}
+        onBlur={() => {
+          this.animatedRelayout();
+          if (this.props.onBlur) {
+            this.props.onBlur();
+          }
+        }}
+        onEndEditing={() => {
+          this.animatedRelayout();
+          if (this.props.onBlur) {
+            this.props.onBlur();
+          }
+        }}
+        onSubmitEditing={() => {
+          this.animatedRelayout();
+          if (this.props.onSubmitEditing) {
+            this.props.onSubmitEditing();
+          }
+          this._textInput.blur();
+        }}
+      />
+    );
   }
-
 }
 
 class _SearchHeader extends React.Component {
   props: {
-    onAddEvent: () => void;
-    children: Array<React.Element<*>>;
+    onAddEvent: () => void,
+    children: Array<React.Element<*>>,
 
     // Self-managed props
-    intl: intlShape;
+    intl: intlShape,
     listLayout: boolean,
     searchQuery: SearchQuery,
-    updateLocation: (location: string) => void;
-    updateKeywords: (keywords: string) => void;
-    performSearch: () => Promise<void>;
-    toggleLayout: () => Promise<void>;
-  }
+    updateLocation: (location: string) => void,
+    updateKeywords: (keywords: string) => void,
+    performSearch: () => Promise<void>,
+    toggleLayout: () => Promise<void>,
+  };
 
   state: {
-    height: number;
-  }
+    height: number,
+  };
 
   _location: SearchInput;
   _keywords: SearchInput;
@@ -181,75 +178,93 @@ class _SearchHeader extends React.Component {
   }
 
   render() {
-    return (<View style={{ flex: 1 }}>
-      <HorizontalView
-        onLayout={this.onLayout}
-        style={[styles.floatTop, styles.statusBar]}
-        blurType="dark"
-      >
-        <SearchInput
-          ref={(x) => { this._location = x; }}
-          placeholder={this.props.intl.formatMessage(messages.location)}
-          returnKeyType="search"
-          onChangeText={(text) => {
-            if (this.props.searchQuery.location !== text) {
-              this.props.updateLocation(text);
-              this._locationAutocomplete.onTextInputChangeText(text);
+    return (
+      <View style={{ flex: 1 }}>
+        <HorizontalView
+          onLayout={this.onLayout}
+          style={[styles.floatTop, styles.statusBar]}
+          blurType="dark"
+        >
+          <SearchInput
+            ref={x => {
+              this._location = x;
+            }}
+            placeholder={this.props.intl.formatMessage(messages.location)}
+            returnKeyType="search"
+            onChangeText={text => {
+              if (this.props.searchQuery.location !== text) {
+                this.props.updateLocation(text);
+                this._locationAutocomplete.onTextInputChangeText(text);
+              }
+            }}
+            onFocus={() => {
+              this._locationAutocomplete.onTextInputFocus();
+            }}
+            onBlur={() => {
+              this._locationAutocomplete.onTextInputBlur();
+            }}
+            onSubmitEditing={() => {
+              this._locationAutocomplete.onTextInputBlur();
+              this.props.performSearch();
+            }}
+            value={this.props.searchQuery.location}
+          />
+          <SearchInput
+            ref={x => {
+              this._keywords = x;
+            }}
+            placeholder={this.props.intl.formatMessage(messages.keywords)}
+            returnKeyType="search"
+            onChangeText={text => {
+              if (this.props.searchQuery.keywords !== text) {
+                this.props.updateKeywords(text);
+              }
+            }}
+            onSubmitEditing={() =>
+              this.props.performSearch(this.props.searchQuery)}
+            value={this.props.searchQuery.keywords}
+          />
+          <Button
+            size="small"
+            color="green"
+            style={styles.toggleButton}
+            icon={require('./images/add_calendar.png')}
+            onPress={this.props.onAddEvent}
+          />
+          <Button
+            size="small"
+            style={styles.toggleButton}
+            icon={
+              this.props.listLayout
+                ? require('./search-images/large-flyer.png')
+                : require('./search-images/small-flyer.png')
             }
+            onPress={this.props.toggleLayout}
+          />
+        </HorizontalView>
+        {this.props.children}
+        <AutocompleteList
+          ref={x => {
+            this._locationAutocomplete = x;
           }}
-          onFocus={() => {
-            this._locationAutocomplete.onTextInputFocus();
+          style={{ top: this.state.height }}
+          textValue={() => this.props.searchQuery.location}
+          queryLanguage={Locale.constants().localeIdentifier}
+          currentLocationLabel={this.props.intl.formatMessage(
+            messages.currentLocation
+          )}
+          onLocationSelected={async text => {
+            await this.props.updateLocation(text);
+            this._location.blur();
+            await this.props.performSearch();
           }}
-          onBlur={() => {
-            this._locationAutocomplete.onTextInputBlur();
-          }}
-          onSubmitEditing={() => {
-            this._locationAutocomplete.onTextInputBlur();
-            this.props.performSearch();
-          }}
-          value={this.props.searchQuery.location}
+          predefinedPlaces={this.props.intl
+            .formatMessage(messages.locations)
+            .split('\n')
+            .map(x => ({ description: x }))}
         />
-        <SearchInput
-          ref={(x) => { this._keywords = x; }}
-          placeholder={this.props.intl.formatMessage(messages.keywords)}
-          returnKeyType="search"
-          onChangeText={(text) => {
-            if (this.props.searchQuery.keywords !== text) {
-              this.props.updateKeywords(text);
-            }
-          }}
-          onSubmitEditing={() => this.props.performSearch(this.props.searchQuery)}
-          value={this.props.searchQuery.keywords}
-        />
-        <Button
-          size="small"
-          color="green"
-          style={styles.toggleButton}
-          icon={require('./images/add_calendar.png')}
-          onPress={this.props.onAddEvent}
-        />
-        <Button
-          size="small"
-          style={styles.toggleButton}
-          icon={this.props.listLayout ? require('./search-images/large-flyer.png') : require('./search-images/small-flyer.png')}
-          onPress={this.props.toggleLayout}
-        />
-      </HorizontalView>
-      {this.props.children}
-      <AutocompleteList
-        ref={(x) => { this._locationAutocomplete = x; }}
-        style={{ top: this.state.height }}
-        textValue={() => this.props.searchQuery.location}
-        queryLanguage={Locale.constants().localeIdentifier}
-        currentLocationLabel={this.props.intl.formatMessage(messages.currentLocation)}
-        onLocationSelected={async (text) => {
-          await this.props.updateLocation(text);
-          this._location.blur();
-          await this.props.performSearch();
-        }}
-        predefinedPlaces={this.props.intl.formatMessage(messages.locations).split('\n').map(x => ({ description: x }))}
-      />
-    </View>);
+      </View>
+    );
   }
 }
 const SearchHeader = injectIntl(_SearchHeader);
@@ -259,10 +274,10 @@ const mapStateToProps = state => ({
   searchQuery: state.search.searchQuery,
 });
 const mapDispatchToProps = dispatch => ({
-  updateLocation: async (location) => {
+  updateLocation: async location => {
     await dispatch(updateLocation(location));
   },
-  updateKeywords: async (keywords) => {
+  updateKeywords: async keywords => {
     await dispatch(updateKeywords(keywords));
   },
   performSearch: async () => {
@@ -272,11 +287,7 @@ const mapDispatchToProps = dispatch => ({
     await dispatch(toggleLayout());
   },
 });
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(SearchHeader);
-
+export default connect(mapStateToProps, mapDispatchToProps)(SearchHeader);
 
 const styles = StyleSheet.create({
   floatTop: {

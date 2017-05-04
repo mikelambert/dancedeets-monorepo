@@ -6,15 +6,8 @@
  * @flow
  */
 
-import {
-  fetchAll,
-  getUrl,
-  YoutubeKey,
-} from './_youtube';
-import type {
-  Bracket,
-  Match,
-} from '../../server/assets/js/bracketModels';
+import { fetchAll, getUrl, YoutubeKey } from './_youtube';
+import type { Bracket, Match } from '../../server/assets/js/bracketModels';
 
 const roundRegexes = {
   final: /\bfinal\b/i,
@@ -23,18 +16,23 @@ const roundRegexes = {
   top16: /\b(?:(?:quarter|qtr|1\s*\/\s*4)\W?final|(?:best|top)\W?16)\b/i,
 };
 
-const anyRoundRegex = new RegExp(Object.keys(roundRegexes).map(x => roundRegexes[x].source).join('|'), 'i');
+const anyRoundRegex = new RegExp(
+  Object.keys(roundRegexes).map(x => roundRegexes[x].source).join('|'),
+  'i'
+);
 
 const vsRegex = /\bv\W?[zs]\b|versus|\bx\b|\b×\b/i;
 
 async function getPlaylistVideos(playlistId) {
-  const playlistItemsUrl = getUrl('https://www.googleapis.com/youtube/v3/playlistItems',
+  const playlistItemsUrl = getUrl(
+    'https://www.googleapis.com/youtube/v3/playlistItems',
     {
       playlistId,
       maxResults: 50,
       part: 'snippet',
       key: YoutubeKey,
-    });
+    }
+  );
   const playlistItemsJson = await fetchAll(playlistItemsUrl);
   return playlistItemsJson;
 }
@@ -50,24 +48,35 @@ function getContestants(video) {
     console.error('Video:', video, 'found too many contestants:', contestants);
   }
   //TODO: HACK:
-  const finalContestants = contestants.map(x => x.replace(' EX', '').replace(/\(.*\)/, ''));
+  const finalContestants = contestants.map(x =>
+    x.replace(' EX', '').replace(/\(.*\)/, '')
+  );
   return finalContestants;
 }
 
-function getUniqueMatchesForRound(battleVideos, roundRegex, index): Array<Match> {
+function getUniqueMatchesForRound(
+  battleVideos,
+  roundRegex,
+  index
+): Array<Match> {
   const roundMatchCount = 2 ** index;
   const roundVideos = battleVideos.filter(x => roundRegex.test(x.title));
   if (!roundVideos.length) {
     return [];
   }
   if (roundVideos.length > roundMatchCount) {
-    console.error(`Found ${roundVideos.length} videos for round, expecting ${roundMatchCount}!`);
+    console.error(
+      `Found ${roundVideos.length} videos for round, expecting ${roundMatchCount}!`
+    );
   }
   const seenContestants = [];
   const roundMatches: Array<Match> = [];
   roundVideos.forEach(video => {
     const contestants = getContestants(video);
-    if (seenContestants.includes(contestants[0]) || seenContestants.includes(contestants[1])) {
+    if (
+      seenContestants.includes(contestants[0]) ||
+      seenContestants.includes(contestants[1])
+    ) {
       return;
     }
     seenContestants.push(contestants[0]);
@@ -89,26 +98,37 @@ async function buildBracketFromPlaylist(playlistId) {
   }));
 
   const bracket: Bracket = {
-    matches: []
+    matches: [],
   };
-  const order = [roundRegexes.final, roundRegexes.top4, roundRegexes.top8, roundRegexes.top16];
+  const order = [
+    roundRegexes.final,
+    roundRegexes.top4,
+    roundRegexes.top8,
+    roundRegexes.top16,
+  ];
 
   let parentRoundContestantOrder = [];
   order.forEach((roundRegex, index) => {
-    const foundMatches = getUniqueMatchesForRound(battleVideos, roundRegex, index);
+    const foundMatches = getUniqueMatchesForRound(
+      battleVideos,
+      roundRegex,
+      index
+    );
     if (!foundMatches.length) {
       return;
     }
     let sortedMatches = null;
     if (parentRoundContestantOrder.length) {
       sortedMatches = parentRoundContestantOrder.map(contestant => {
-        const result = foundMatches.find(match => (
-          match.first === contestant || match.second === contestant
-        ));
+        const result = foundMatches.find(
+          match => match.first === contestant || match.second === contestant
+        );
         if (result) {
           return {
             ...result,
-            winner: result.first === contestant ? 0 : result.second === contestant ? 1 : null,
+            winner: result.first === contestant
+              ? 0
+              : result.second === contestant ? 1 : null,
           };
         } else {
           throw new Error(`Could not find match for contestant`);
@@ -120,7 +140,9 @@ async function buildBracketFromPlaylist(playlistId) {
     console.log('round ', index);
     console.log(sortedMatches);
     bracket.matches.push(...sortedMatches);
-    parentRoundContestantOrder = [].concat(...sortedMatches.map(x => x ? [x.first, x.second] : [null, null]));
+    parentRoundContestantOrder = [].concat(
+      ...sortedMatches.map(x => (x ? [x.first, x.second] : [null, null]))
+    );
   });
   return bracket;
 }
@@ -174,7 +196,6 @@ async function buildBracketFromPlaylist(playlistId) {
 // PL02EtzYP5EDP6dx95KqJ85RMXSFml3D49 top-16 has 16 matches...must include some top-32, but mislabelled?
 
 // PL02EtzYP5EDOh0QViYMiwCNhpDu-IbKsv best16 doesn't exist...need to use A vs B metrics
-
 
 async function run() {
   const args = process.argv.slice(2);

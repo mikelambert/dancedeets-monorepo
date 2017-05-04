@@ -8,11 +8,11 @@ import React from 'react';
 
 export class SelectButton extends React.Component {
   props: {
-    toggleState: () => void;
-    active: boolean;
-    item: string;
-    itemRenderer?: (item: string) => React.Element<*>;
-  }
+    toggleState: () => void,
+    active: boolean,
+    item: string,
+    itemRenderer?: (item: string) => React.Element<*>,
+  };
 
   _button: HTMLButtonElement;
 
@@ -32,13 +32,17 @@ export class SelectButton extends React.Component {
     if (this.props.active) {
       extraClass = 'active';
     }
-    const contents = this.props.itemRenderer ? this.props.itemRenderer(this.props.item) : this.props.item;
+    const contents = this.props.itemRenderer
+      ? this.props.itemRenderer(this.props.item)
+      : this.props.item;
 
     return (
       <button
         type="button"
         className={`btn btn-default btn-sm ${extraClass}`}
-        ref={(x) => { this._button = x; }}
+        ref={x => {
+          this._button = x;
+        }}
         onClick={this.toggleState}
       >
         {contents}
@@ -51,7 +55,7 @@ export type MultiSelectState = { [item: string]: boolean };
 
 export function generateUniformState(list: Array<string>, value: boolean) {
   const newState = {};
-  list.forEach((x) => {
+  list.forEach(x => {
     newState[x] = value;
   });
   return newState;
@@ -71,11 +75,11 @@ export function isAllSelected(state) {
 
 export class MultiSelectList extends React.Component {
   props: {
-    list: Array<string>;
-    selected: MultiSelectState;
-    itemRenderer?: (item: string) => React.Element<*>;
-    onChange: (state: MultiSelectState) => void;
-  }
+    list: Array<string>,
+    selected: MultiSelectState,
+    itemRenderer?: (item: string) => React.Element<*>,
+    onChange: (state: MultiSelectState) => void,
+  };
 
   constructor(props) {
     super(props);
@@ -97,7 +101,10 @@ export class MultiSelectList extends React.Component {
       newState[item] = true;
       this.changedState(newState);
     } else {
-      const newState = { ...this.props.selected, [item]: !this.props.selected[item] };
+      const newState = {
+        ...this.props.selected,
+        [item]: !this.props.selected[item],
+      };
       if (getSelected(newState).length) {
         this.changedState(newState);
       } else {

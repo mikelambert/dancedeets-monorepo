@@ -8,8 +8,12 @@ import localizedCountries from '../data/localizedCountries';
 
 // localizedCountries is a {languageCode: {countryCode: countryName}} object
 // Let's convert that to an easy lookup: {countryName: countryCode}
-const countryLookup = Object.keys(localizedCountries).reduce((reduction, languageCode) => {
-  Object.keys(localizedCountries[languageCode]).reduce((reduction2, countryCode) => {
+const countryLookup = Object.keys(
+  localizedCountries
+).reduce((reduction, languageCode) => {
+  Object.keys(
+    localizedCountries[languageCode]
+  ).reduce((reduction2, countryCode) => {
     const country = localizedCountries[languageCode][countryCode];
     return { ...reduction, [country]: countryCode };
   }, reduction);
@@ -19,6 +23,6 @@ const countryLookup = Object.keys(localizedCountries).reduce((reduction, languag
 countryLookup['Hong Kong'] = 'HK';
 countryLookup['香港'] = 'HK';
 
-export default function (country: string) {
+export default function(country: string) {
   return countryLookup[country];
 }

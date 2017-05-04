@@ -4,10 +4,7 @@
  * @flow
  */
 
-import {
-  defineMessages,
-  intlShape,
-} from 'react-intl';
+import { defineMessages, intlShape } from 'react-intl';
 import { translateEvent as translateEventApi } from '../api/dancedeets';
 import type { Action, Dispatch, ThunkAction } from './types';
 import { canGetValidLoginFor } from './loginComplex';
@@ -20,12 +17,23 @@ const messages = defineMessages({
   },
 });
 
-export function toggleEventTranslation(eventId: string, language: string, intl: intlShape): ThunkAction {
+export function toggleEventTranslation(
+  eventId: string,
+  language: string,
+  intl: intlShape
+): ThunkAction {
   return async (dispatch: Dispatch, getState) => {
     const state = getState();
     if (!state.translate.events[eventId]) {
       // Lookup translation
-      if (!state.user.userData && !await canGetValidLoginFor(intl.formatMessage(messages.featureTranslation), intl, dispatch)) {
+      if (
+        !state.user.userData &&
+        !await canGetValidLoginFor(
+          intl.formatMessage(messages.featureTranslation),
+          intl,
+          dispatch
+        )
+      ) {
         return;
       }
       const translations = await translateEventApi(eventId, language);

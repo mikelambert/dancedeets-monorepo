@@ -4,10 +4,7 @@
  * @flow
  */
 
-import React, {
-  Element,
-  PropTypes,
-} from 'react';
+import React, { Element, PropTypes } from 'react';
 import {
   Image,
   NavigationExperimental,
@@ -17,13 +14,8 @@ import {
   View,
 } from 'react-native';
 import { connect } from 'react-redux';
-import {
-  injectIntl,
-  intlShape,
-} from 'react-intl';
-import {
-  hardwareBackPress,
-} from 'react-native-back-android';
+import { injectIntl, intlShape } from 'react-intl';
+import { hardwareBackPress } from 'react-native-back-android';
 import type {
   NavigationRoute,
   NavigationSceneRendererProps,
@@ -33,20 +25,13 @@ import { navigatePush, navigatePop, navigateSwap } from '../actions';
 import ShareEventIcon from './ShareEventIcon';
 import { getNamedState } from '../reducers/navigation';
 import type { ThunkAction, Dispatch } from '../actions/types';
-import {
-  semiNormalize,
-  Text,
-} from '../ui';
-import {
-  gradientTop,
-  purpleColors,
-} from '../Colors';
+import { semiNormalize, Text } from '../ui';
+import { gradientTop, purpleColors } from '../Colors';
 
 const {
   CardStack: NavigationCardStack,
   Header: NavigationHeader,
 } = NavigationExperimental;
-
 
 // These are basically copied from NavigationHeader.js.
 // But we made it shorter on Android for the more compact display
@@ -54,10 +39,10 @@ const APPBAR_HEIGHT = Platform.OS === 'ios' ? 44 : 46;
 const STATUSBAR_HEIGHT = Platform.OS === 'ios' ? 20 : 0;
 
 export type Navigatable = {
-  onNavigate: (x: NavigationRoute) => ThunkAction;
-  onBack: () => ThunkAction;
-  onSwap: (key: string, newState: NavigationRoute) => ThunkAction;
-  goHome: () => ThunkAction;
+  onNavigate: (x: NavigationRoute) => ThunkAction,
+  onBack: () => ThunkAction,
+  onSwap: (key: string, newState: NavigationRoute) => ThunkAction,
+  goHome: () => ThunkAction,
 };
 
 type NavigatorProps = {
@@ -66,12 +51,17 @@ type NavigatorProps = {
 };
 
 type CallingProps = {
-  renderScene: (scene: NavigationSceneRendererProps, nav: Navigatable) => Element<any>;
+  renderScene: (
+    scene: NavigationSceneRendererProps,
+    nav: Navigatable
+  ) => Element<any>,
 };
 
 const NavigationHeaderTitle = ({ children, style, textStyle, viewProps }) => (
   <View style={[styles.title, style]} {...viewProps}>
-    <Text style={[styles.titleText, textStyle]} numberOfLines={1}>{children}</Text>
+    <Text style={[styles.titleText, textStyle]} numberOfLines={1}>
+      {children}
+    </Text>
   </View>
 );
 NavigationHeaderTitle.propTypes = {
@@ -90,7 +80,9 @@ class _Navigator extends React.Component {
     (this: any).renderLeft = this.renderLeft.bind(this);
     (this: any).renderTitle = this.renderTitle.bind(this);
     (this: any).renderRight = this.renderRight.bind(this);
-    (this: any).handleHardwareBackPress = this.handleHardwareBackPress.bind(this);
+    (this: any).handleHardwareBackPress = this.handleHardwareBackPress.bind(
+      this
+    );
   }
 
   backToHome() {
@@ -106,10 +98,17 @@ class _Navigator extends React.Component {
     if (!props.scene.index) {
       return null;
     }
-    const icon = Platform.OS === 'ios' ? require('./navbar-icons/back-ios.png') : require('./navbar-icons/back-android.png');
-    return (<TouchableOpacity style={styles.centeredContainer} onPress={props.onNavigateBack}>
-      <Image style={{ height: 18, width: 18 }} source={icon} />
-    </TouchableOpacity>);
+    const icon = Platform.OS === 'ios'
+      ? require('./navbar-icons/back-ios.png')
+      : require('./navbar-icons/back-android.png');
+    return (
+      <TouchableOpacity
+        style={styles.centeredContainer}
+        onPress={props.onNavigateBack}
+      >
+        <Image style={{ height: 18, width: 18 }} source={icon} />
+      </TouchableOpacity>
+    );
   }
 
   renderTitle(props) {
@@ -117,29 +116,40 @@ class _Navigator extends React.Component {
     if (props.scene.route.message) {
       title = this.props.intl.formatMessage(props.scene.route.message);
     }
-    return (<NavigationHeaderTitle>
-      {title}
-    </NavigationHeaderTitle>);
+    return (
+      <NavigationHeaderTitle>
+        {title}
+      </NavigationHeaderTitle>
+    );
   }
 
   renderRight(props) {
     if (props.scene.route.event) {
-      return <View style={styles.centeredContainer}><ShareEventIcon event={props.scene.route.event} /></View>;
+      return (
+        <View style={styles.centeredContainer}>
+          <ShareEventIcon event={props.scene.route.event} />
+        </View>
+      );
     }
     return null;
   }
 
   renderHeader(props) {
     // 0.33: Disable for now, as it doesn't appear to work: <GradientBar style={styles.navHeader}>
-    return (<NavigationHeader
-      {...props}
-      style={[styles.navHeader, { backgroundColor: gradientTop, borderBottomWidth: 0 }]}
-      renderLeftComponent={this.renderLeft}
-      renderTitleComponent={this.renderTitle}
-      renderRightComponent={this.renderRight}
-      // Use this.props here, instead of passed-in props
-      onNavigateBack={this.props.onBack}
-    />);
+    return (
+      <NavigationHeader
+        {...props}
+        style={[
+          styles.navHeader,
+          { backgroundColor: gradientTop, borderBottomWidth: 0 },
+        ]}
+        renderLeftComponent={this.renderLeft}
+        renderTitleComponent={this.renderTitle}
+        renderRightComponent={this.renderRight}
+        // Use this.props here, instead of passed-in props
+        onNavigateBack={this.props.onBack}
+      />
+    );
   }
 
   render() {
@@ -160,7 +170,7 @@ class _Navigator extends React.Component {
 }
 const Navigator = injectIntl(hardwareBackPress(_Navigator));
 
-export default function (navName: string) {
+export default function(navName: string) {
   const component = connect(
     state => ({
       navigationState: getNamedState(state.navigationState, navName),
@@ -173,7 +183,7 @@ export default function (navName: string) {
       },
       onBack: () => dispatch(navigatePop(navName)),
       onSwap: (key, newRoute) => dispatch(navigateSwap(navName, key, newRoute)),
-    }),
+    })
   )(Navigator);
   component.navName = navName;
   return component;
@@ -219,5 +229,4 @@ const styles = StyleSheet.create({
     color: 'white',
     textAlign: Platform.OS === 'ios' ? 'center' : 'left',
   },
-
 });

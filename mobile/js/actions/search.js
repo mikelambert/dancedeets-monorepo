@@ -9,9 +9,7 @@ import type { Action, ThunkAction, Dispatch } from './types';
 
 import { search } from '../api/dancedeets';
 import { track } from '../store/track';
-import {
-  storeSavedAddress,
-} from '../events/savedAddress';
+import { storeSavedAddress } from '../events/savedAddress';
 
 export function performSearch(): ThunkAction {
   return async (dispatch: Dispatch, getState) => {
@@ -23,7 +21,11 @@ export function performSearch(): ThunkAction {
     await storeSavedAddress(searchQuery.location);
     await dispatch(searchStart());
     try {
-      const responseData = await search(searchQuery.location, searchQuery.keywords, searchQuery.timePeriod);
+      const responseData = await search(
+        searchQuery.location,
+        searchQuery.keywords,
+        searchQuery.timePeriod
+      );
       track('Searched Results', {
         Location: searchQuery.location,
         Keywords: searchQuery.keywords,

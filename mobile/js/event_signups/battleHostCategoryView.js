@@ -5,31 +5,12 @@
  */
 
 import React from 'react';
-import {
-  ListView,
-  TouchableOpacity,
-  View,
-} from 'react-native';
-import {
-  injectIntl,
-  defineMessages,
-} from 'react-intl';
+import { ListView, TouchableOpacity, View } from 'react-native';
+import { injectIntl, defineMessages } from 'react-intl';
 import { FeedListView } from '../learn/BlogList';
-import {
-  Card,
-  defaultFont,
-  HorizontalView,
-  RibbonBanner,
-  Text,
-} from '../ui';
-import type {
-  BattleCategory,
-  PrelimStatus,
-  Signup,
-} from './models';
-import {
-  getCategorySignups,
-} from './models';
+import { Card, defaultFont, HorizontalView, RibbonBanner, Text } from '../ui';
+import type { BattleCategory, PrelimStatus, Signup } from './models';
+import { getCategorySignups } from './models';
 import CategorySummaryCard from './categorySummaryCard';
 
 class _TeamList extends React.Component {
@@ -38,8 +19,8 @@ class _TeamList extends React.Component {
   };
 
   state: {
-    prelims: Array<PrelimStatus>;
-    dataSource: ListView.DataSource;
+    prelims: Array<PrelimStatus>,
+    dataSource: ListView.DataSource,
   };
 
   constructor(props: any) {
@@ -57,9 +38,11 @@ class _TeamList extends React.Component {
   }
 
   prelimsState(prelims) {
-    const ds = (this.state && this.state.dataSource) || new ListView.DataSource({
-      rowHasChanged: (r1, r2) => r1 !== r2,
-    });
+    const ds =
+      (this.state && this.state.dataSource) ||
+      new ListView.DataSource({
+        rowHasChanged: (r1, r2) => r1 !== r2,
+      });
     return {
       prelims,
       dataSource: ds.cloneWithRows(prelims, null, null),
@@ -67,21 +50,22 @@ class _TeamList extends React.Component {
   }
 
   renderSignup(signup: Signup) {
-    const dancers = (signup.dancers || []).map((x, index) =>
-      <Text key={index}>{x.name}</Text>
+    const dancers = (signup.dancers || [])
+      .map((x, index) => <Text key={index}>{x.name}</Text>);
+    return (
+      <View>
+        <HorizontalView>
+          <Text>Team: </Text>
+          <Text>{signup.teamName}</Text>
+        </HorizontalView>
+        <HorizontalView>
+          <Text>Dancers: </Text>
+          <View>
+            {dancers}
+          </View>
+        </HorizontalView>
+      </View>
     );
-    return <View>
-      <HorizontalView>
-        <Text>Team: </Text>
-        <Text>{signup.teamName}</Text>
-      </HorizontalView>
-      <HorizontalView>
-        <Text>Dancers: </Text>
-        <View>
-          {dancers}
-        </View>
-      </HorizontalView>
-    </View>;
   }
 
   getSignup(prelim) {
@@ -102,59 +86,71 @@ class _TeamList extends React.Component {
   renderRow(prelim: PrelimStatus, sectionId: string, rowId: string) {
     const signup = this.getSignup(prelim);
     if (!signup) {
-      console.error('Missing signup for prelim', prelim, 'in list', this.props.signups);
+      console.error(
+        'Missing signup for prelim',
+        prelim,
+        'in list',
+        this.props.signups
+      );
       return null;
     }
 
     const rowIndex = parseInt(rowId, 10) + 1;
     const width = 50;
-    const banner = prelim.auditioned ? <RibbonBanner text="Auditioned" width={width} /> : null;
+    const banner = prelim.auditioned
+      ? <RibbonBanner text="Auditioned" width={width} />
+      : null;
     const style = null; // prelim.auditioned ? { backgroundColor: 'red' } : null;
-    return <TouchableOpacity
-        onPress={() => this.onSignupPressed(prelim)}
-      >
-      <Card>
-        <View>
-          <HorizontalView>
-            <Text style={{ marginRight: 10 }}>{rowIndex}:</Text>
-            {this.renderSignup(signup)}
-          </HorizontalView>
-        </View>
-        {banner}
-      </Card>
-    </TouchableOpacity>;
+    return (
+      <TouchableOpacity onPress={() => this.onSignupPressed(prelim)}>
+        <Card>
+          <View>
+            <HorizontalView>
+              <Text style={{ marginRight: 10 }}>{rowIndex}:</Text>
+              {this.renderSignup(signup)}
+            </HorizontalView>
+          </View>
+          {banner}
+        </Card>
+      </TouchableOpacity>
+    );
   }
 
   render() {
-     return <ListView
-      maxSwipeDistance={120}
-      renderRow={this.renderRow}
-      dataSource={this.state.dataSource}
-      onScroll={(e) => {}}
-    />;
+    return (
+      <ListView
+        maxSwipeDistance={120}
+        renderRow={this.renderRow}
+        dataSource={this.state.dataSource}
+        onScroll={e => {}}
+      />
+    );
   }
 }
 const TeamList = injectIntl(_TeamList);
 
 class _BattleHostCategoryView extends React.Component {
   props: {
-    category: BattleCategory;
-  }
+    category: BattleCategory,
+  };
 
   render() {
     const signups = getCategorySignups(this.props.category);
-    return (<TeamList
-      signups={signups}
-      renderHeader={() => <View
-        style={{
-          alignSelf: 'center',
-          marginTop: 10,
-        }}
-      >
-        <Text>{signups.length} competitors:</Text>
-      </View>
-      }
-    />);
+    return (
+      <TeamList
+        signups={signups}
+        renderHeader={() => (
+          <View
+            style={{
+              alignSelf: 'center',
+              marginTop: 10,
+            }}
+          >
+            <Text>{signups.length} competitors:</Text>
+          </View>
+        )}
+      />
+    );
   }
 }
 const BattleHostCategoryView = injectIntl(_BattleHostCategoryView);

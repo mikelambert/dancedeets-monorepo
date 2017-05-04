@@ -10,11 +10,11 @@ import { feed } from '../api/dancedeets';
 const YoutubeKey = 'AIzaSyCV8QCRxSwv1vVk017qI3EZ9zlC8TefUjY';
 
 export type BlogPost = {
-  title: string;
-  preview: string;
-  postTime: number;
-  author: string;
-  url: string;
+  title: string,
+  preview: string,
+  postTime: number,
+  author: string,
+  url: string,
 };
 
 export class Blog {
@@ -33,7 +33,10 @@ export class MediumBlog extends Blog {
     this.title = json.payload.value.name;
     this.description = json.payload.value.shortDescription;
     this.url = `https://medium.com/${json.payload.value.slug}`;
-    this.authorLookup = Object.keys(users).reduce((previous, x) => ({ ...previous, [x]: users[x].name }), {});
+    this.authorLookup = Object.keys(users).reduce(
+      (previous, x) => ({ ...previous, [x]: users[x].name }),
+      {}
+    );
     this.posts = realPosts.map(x => this.parseMediumPost(x));
   }
 
@@ -92,14 +95,20 @@ export class YoutubePlaylistBlog extends Blog {
     this.url = `https://www.youtube.com/playlist?list=${playlistJson.items[0].id}`;
 
     const contentDetailsLookup = {};
-    videosJson.items.forEach((x) => {
+    videosJson.items.forEach(x => {
       contentDetailsLookup[x.id] = x.contentDetails;
     });
     // Filter out any private/deleted videos which we can't access contentDetails for
-    const filteredPlaylistItems = playlistItemsJson.items
-      .filter(x => contentDetailsLookup[x.snippet.resourceId.videoId]);
+    const filteredPlaylistItems = playlistItemsJson.items.filter(
+      x => contentDetailsLookup[x.snippet.resourceId.videoId]
+    );
 
-    this.posts = filteredPlaylistItems.map(x => this.parsePlaylistItem(x.snippet, contentDetailsLookup[x.snippet.resourceId.videoId]));
+    this.posts = filteredPlaylistItems.map(x =>
+      this.parsePlaylistItem(
+        x.snippet,
+        contentDetailsLookup[x.snippet.resourceId.videoId]
+      )
+    );
   }
 
   author() {
@@ -128,35 +137,49 @@ export class YoutubePlaylistBlog extends Blog {
   }
 
   static async getTimes(playlistItemsJson) {
-    const videoIds = playlistItemsJson.items.map(x => x.snippet.resourceId.videoId);
-    const playlistItemsUrl = YoutubePlaylistBlog.getUrl('https://www.googleapis.com/youtube/v3/videos',
+    const videoIds = playlistItemsJson.items.map(
+      x => x.snippet.resourceId.videoId
+    );
+    const playlistItemsUrl = YoutubePlaylistBlog.getUrl(
+      'https://www.googleapis.com/youtube/v3/videos',
       {
         id: videoIds.join(','),
         maxResults: 50,
         part: 'contentDetails',
         key: YoutubeKey,
-      });
+      }
+    );
     const videosResult = await (await fetch(playlistItemsUrl)).json();
     return videosResult;
   }
 
   static async load(playlistId) {
-    const playlistItemsUrl = YoutubePlaylistBlog.getUrl('https://www.googleapis.com/youtube/v3/playlistItems',
+    const playlistItemsUrl = YoutubePlaylistBlog.getUrl(
+      'https://www.googleapis.com/youtube/v3/playlistItems',
       {
         playlistId,
         maxResults: 50,
         part: 'snippet',
         key: YoutubeKey,
-      });
-    const playlistUrl = YoutubePlaylistBlog.getUrl('https://www.googleapis.com/youtube/v3/playlists',
+      }
+    );
+    const playlistUrl = YoutubePlaylistBlog.getUrl(
+      'https://www.googleapis.com/youtube/v3/playlists',
       {
         id: playlistId,
         part: 'snippet',
         key: YoutubeKey,
-      });
+      }
+    );
     const playlistItemsResult = await (await fetch(playlistItemsUrl)).json();
-    const videosResult = await YoutubePlaylistBlog.getTimes(playlistItemsResult);
+    const videosResult = await YoutubePlaylistBlog.getTimes(
+      playlistItemsResult
+    );
     const playlistResult = await (await fetch(playlistUrl)).json();
-    return new YoutubePlaylistBlog(playlistResult, playlistItemsResult, videosResult);
+    return new YoutubePlaylistBlog(
+      playlistResult,
+      playlistItemsResult,
+      videosResult
+    );
   }
 }

@@ -7,7 +7,7 @@
 import type { Action } from '../actions/types';
 
 type State = {
-  videoIndex: number;
+  videoIndex: number,
 };
 
 const initialState = {

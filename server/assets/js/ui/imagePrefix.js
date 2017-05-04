@@ -11,19 +11,26 @@ import type { RequiredImage } from './ampImage';
 
 export default class ImagePrefix extends React.Component {
   props: {
-    icon?: number; // aka required package
-    iconName?: string;
-    className?: string;
-    amp?: boolean;
-    children?: Array<React.Element<*>>;
-  }
+    icon?: number, // aka required package
+    iconName?: string,
+    className?: string,
+    amp?: boolean,
+    children?: Array<React.Element<*>>,
+  };
 
   render() {
     if (!this.props.icon && !this.props.iconName) {
       console.error('Missing icon and iconName');
       return null;
     }
-    const { icon, iconName, className, amp, children, ...otherProps } = this.props;
+    const {
+      icon,
+      iconName,
+      className,
+      amp,
+      children,
+      ...otherProps
+    } = this.props;
     let iconHtml = null;
     if (icon) {
       const picture: RequiredImage = {
@@ -31,21 +38,23 @@ export default class ImagePrefix extends React.Component {
         width: 18,
         height: 18,
       };
-      iconHtml = (<span className="fa fa-lg image-prefix-icon image-prefix-dancer">
-        <AmpImage
-          picture={picture}
-          width="18"
-          amp={this.props.amp}
-        />
-      </span>);
+      iconHtml = (
+        <span className="fa fa-lg image-prefix-icon image-prefix-dancer">
+          <AmpImage picture={picture} width="18" amp={this.props.amp} />
+        </span>
+      );
     } else if (this.props.iconName) {
-      iconHtml = <i className={`fa fa-${this.props.iconName} fa-lg image-prefix-icon`} />;
+      iconHtml = (
+        <i className={`fa fa-${this.props.iconName} fa-lg image-prefix-icon`} />
+      );
     }
-    return (<div className={`image-prefix ${className || ''}`} {...otherProps}>
-      {iconHtml}
-      <div className="image-prefix-contents">
-        {children}
+    return (
+      <div className={`image-prefix ${className || ''}`} {...otherProps}>
+        {iconHtml}
+        <div className="image-prefix-contents">
+          {children}
+        </div>
       </div>
-    </div>);
+    );
   }
 }

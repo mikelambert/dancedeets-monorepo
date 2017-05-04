@@ -9,7 +9,7 @@ import jQuery from 'jquery';
 const App = (() => {
   // Header Mega Menu
   function handleMegaMenu() {
-    jQuery(document).on('click', '.mega-menu .dropdown-menu', (e) => {
+    jQuery(document).on('click', '.mega-menu .dropdown-menu', e => {
       e.stopPropagation();
     });
   }

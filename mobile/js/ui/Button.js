@@ -13,34 +13,26 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import {
-  purpleColors,
-  yellowColors,
-  redColors,
-  greenColors,
-} from '../Colors';
+import { purpleColors, yellowColors, redColors, greenColors } from '../Colors';
 import { HorizontalView } from './Misc';
 import { Text } from './DDText';
-import {
-  semiNormalize,
-} from './normalize';
+import { semiNormalize } from './normalize';
 
 type Props = {
-  icon: ?number;
-  caption: string;
-  style: any;
-  onPress: () => (Promise<void> | void);
-  size: 'small' | 'large';
-  textStyle: any;
-  color: 'purple' | 'yellow' | 'red' | 'green';
-  testID: ?string;
-  isLoading: boolean;
-  enabled: ?boolean;
-  activityIndicatorColor: string;
+  icon: ?number,
+  caption: string,
+  style: any,
+  onPress: () => Promise<void> | void,
+  size: 'small' | 'large',
+  textStyle: any,
+  color: 'purple' | 'yellow' | 'red' | 'green',
+  testID: ?string,
+  isLoading: boolean,
+  enabled: ?boolean,
+  activityIndicatorColor: string,
 };
 
 class Button extends React.Component {
-
   static defaultProps: Props = {
     caption: '',
     icon: null,
@@ -61,7 +53,12 @@ class Button extends React.Component {
     const caption = this.props.caption;
     let icon;
     if (this.props.icon) {
-      icon = <Image source={this.props.icon} style={[caption ? styles.iconSpacing : {}, styles.iconSize]} />;
+      icon = (
+        <Image
+          source={this.props.icon}
+          style={[caption ? styles.iconSpacing : {}, styles.iconSize]}
+        />
+      );
     }
     const content = (
       <HorizontalView>
@@ -89,16 +86,20 @@ class Button extends React.Component {
       );
       contentOpacity = 0;
     }
-    return (<View>
-      {activityIndicator}
-      <View style={{ opacity: contentOpacity }}>
-        {this.renderRealContent()}
+    return (
+      <View>
+        {activityIndicator}
+        <View style={{ opacity: contentOpacity }}>
+          {this.renderRealContent()}
+        </View>
       </View>
-    </View>);
+    );
   }
 
   render() {
-    const size = this.props.size === 'small' ? styles.smallButton : styles.largeButton;
+    const size = this.props.size === 'small'
+      ? styles.smallButton
+      : styles.largeButton;
     let colors = null;
     if (this.props.color === 'purple') {
       colors = [purpleColors[1], purpleColors[3], purpleColors[3]];
@@ -109,14 +110,17 @@ class Button extends React.Component {
     } else if (this.props.color === 'green') {
       colors = [greenColors[0], greenColors[1], greenColors[1]];
     }
-    const buttonContents = (<LinearGradient
-      start={[0, 0]} end={[0, 1]}
-      locations={[0.0, 0.7, 1.0]}
-      colors={colors}
-      style={[styles.button, size]}
-    >
-      {this.renderContent()}
-    </LinearGradient>);
+    const buttonContents = (
+      <LinearGradient
+        start={[0, 0]}
+        end={[0, 1]}
+        locations={[0.0, 0.7, 1.0]}
+        colors={colors}
+        style={[styles.button, size]}
+      >
+        {this.renderContent()}
+      </LinearGradient>
+    );
 
     if (this.props.enabled) {
       return (

@@ -4,7 +4,11 @@
  * @flow
  */
 
-export function generateMetaTags(title: string, url: string, thumbnail: string) {
+export function generateMetaTags(
+  title: string,
+  url: string,
+  thumbnail: string
+) {
   return [
     { name: 'twitter:site', content: '@dancedeets' },
     { name: 'twitter:creator', content: '@dancedeets' },

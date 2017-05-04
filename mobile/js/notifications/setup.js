@@ -4,23 +4,15 @@
  * @flow
  */
 
-import {
-  PermissionsAndroid,
-  Platform,
-} from 'react-native';
+import { PermissionsAndroid, Platform } from 'react-native';
 import PushNotification from 'react-native-push-notification';
 import moment from 'moment';
-import {
-  intlShape,
-} from 'react-intl';
+import { intlShape } from 'react-intl';
 import { constructIntl } from 'dancedeets-common/js/intl';
 import type { Event } from 'dancedeets-common/js/events/models';
 import type { TokenRegistration } from '../store/track';
 import { setupMixpanelToken } from '../store/track';
-import {
-  saveToken,
-  event as fetchEvent,
-} from '../api/dancedeets';
+import { saveToken, event as fetchEvent } from '../api/dancedeets';
 import { purpleColors } from '../Colors';
 import {
   navigatePush,
@@ -29,10 +21,7 @@ import {
   selectTab,
 } from '../actions';
 import { time as timeFormat } from '../formats';
-import {
-  PreferenceNames,
-  getPreference,
-} from './prefs';
+import { PreferenceNames, getPreference } from './prefs';
 import { getCurrentLocale } from '../locale';
 
 let globalHandler = null;
@@ -45,7 +34,7 @@ function hashCode(s: string) {
   for (let i = 0; i < s.length; i += 1) {
     const char = s.charCodeAt(i);
     /* eslint-disable no-bitwise */
-    hash = ((hash << 5) - hash) + char;
+    hash = (hash << 5) - hash + char;
     hash &= hash; // Convert to 32bit integer
     /* eslint-enable no-bitwise */
   }
@@ -63,10 +52,18 @@ class Handler {
   }
 
   async shouldVibrate() {
-    const vibratePermission = await PermissionsAndroid.checkPermission('android.permission.VIBRATE');
-    const platformSupportsDefaultVibration = Platform.OS === 'ios' || Platform.Version >= 18;
-    const vibratePreference = await getPreference(PreferenceNames.vibration, true);
-    const vibrate = (vibratePermission || platformSupportsDefaultVibration) && vibratePreference;
+    const vibratePermission = await PermissionsAndroid.checkPermission(
+      'android.permission.VIBRATE'
+    );
+    const platformSupportsDefaultVibration =
+      Platform.OS === 'ios' || Platform.Version >= 18;
+    const vibratePreference = await getPreference(
+      PreferenceNames.vibration,
+      true
+    );
+    const vibrate =
+      (vibratePermission || platformSupportsDefaultVibration) &&
+      vibratePreference;
     return vibrate;
   }
 
@@ -139,7 +136,10 @@ class Handler {
         this.dispatch(appNavigateToEvent(notificationEvent));
       }
     } else if (notification.notification_type === 'EVENT_REMINDER') {
-      const notificationsEnabled = await getPreference(PreferenceNames.overall, true);
+      const notificationsEnabled = await getPreference(
+        PreferenceNames.overall,
+        true
+      );
       if (notificationsEnabled) {
         const notificationEvent = await fetchEvent(notification.event_id);
         this.sendUpcomingEventReminder(notificationEvent);
@@ -166,21 +166,21 @@ function init() {
 
     onNotification: globalHandler.receivedNotification,
 
-      // ANDROID ONLY: GCM Sender ID (optional - not required for local notifications, but is need to receive remote push notifications)
+    // ANDROID ONLY: GCM Sender ID (optional - not required for local notifications, but is need to receive remote push notifications)
     senderID: '911140565156',
 
-      // IOS ONLY (optional): default: all - Permissions to register.
+    // IOS ONLY (optional): default: all - Permissions to register.
     permissions: {
       alert: true,
       badge: true,
       sound: true,
     },
 
-      // Should the initial notification be popped automatically
-      // default: true
+    // Should the initial notification be popped automatically
+    // default: true
     popInitialNotification: false,
 
-      /**
+    /**
         * (optional) default: true
         * - Specified if permissions (ios) and token (android and ios) will requested or not,
         * - if not, you must call PushNotificationsHandler.requestPermissions() later

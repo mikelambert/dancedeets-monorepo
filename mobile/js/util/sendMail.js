@@ -5,12 +5,7 @@
  */
 
 import React from 'react';
-import {
-  Alert,
-  Linking,
-  NativeModules,
-  Platform,
-} from 'react-native';
+import { Alert, Linking, NativeModules, Platform } from 'react-native';
 import querystring from 'querystring';
 
 const Mailer = NativeModules.RNMail;
@@ -28,24 +23,36 @@ async function sendGmail(subject, to, body) {
         Linking.openURL(gmailUrl);
         return true;
       } catch (err) {
-        console.error('Error opening gmail URL:', gmailUrl, ', with Error:', err);
+        console.error(
+          'Error opening gmail URL:',
+          gmailUrl,
+          ', with Error:',
+          err
+        );
       }
     }
   }
   return false;
 }
 
-export default async function sendMail(props: {subject: string, to: string, body: string}) {
+export default async function sendMail(props: {
+  subject: string,
+  to: string,
+  body: string,
+}) {
   const { subject, to, body } = props;
   if (!await sendGmail(subject, to, body)) {
-    Mailer.mail({
-      subject,
-      recipients: [to],
-      body,
-    }, (error, event) => {
-      if (error) {
-        Alert.alert('Error', 'Please email us at feedback@dancedeets.com');
+    Mailer.mail(
+      {
+        subject,
+        recipients: [to],
+        body,
+      },
+      (error, event) => {
+        if (error) {
+          Alert.alert('Error', 'Please email us at feedback@dancedeets.com');
+        }
       }
-    });
+    );
   }
 }

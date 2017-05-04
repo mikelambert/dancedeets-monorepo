@@ -5,13 +5,7 @@
  */
 
 import React from 'react';
-import {
-  AppState,
-  Linking,
-  StatusBar,
-  StyleSheet,
-  View,
-} from 'react-native';
+import { AppState, Linking, StatusBar, StyleSheet, View } from 'react-native';
 import CodePush from 'react-native-code-push';
 import { connect } from 'react-redux';
 import storeShape from 'react-redux/lib/utils/storeShape';
@@ -25,8 +19,8 @@ import type { State } from '../reducers/user';
 
 class App extends React.Component {
   props: {
-    processUrl: (url: string) => void;
-    userState: State;
+    processUrl: (url: string) => void,
+    userState: State,
   };
 
   constructor(props, context) {
@@ -38,7 +32,10 @@ class App extends React.Component {
 
   componentDidMount() {
     AppState.addEventListener('change', this.handleAppStateChange);
-    CodePush.sync({ installMode: CodePush.InstallMode.ON_NEXT_RESUME, minimumBackgroundDuration: 60 * 5 });
+    CodePush.sync({
+      installMode: CodePush.InstallMode.ON_NEXT_RESUME,
+      minimumBackgroundDuration: 60 * 5,
+    });
     Linking.addEventListener('url', this.handleOpenURL);
   }
 
@@ -53,12 +50,18 @@ class App extends React.Component {
 
   handleAppStateChange(appState) {
     if (appState === 'active') {
-      CodePush.sync({ installMode: CodePush.InstallMode.ON_NEXT_RESUME, minimumBackgroundDuration: 60 * 5 });
+      CodePush.sync({
+        installMode: CodePush.InstallMode.ON_NEXT_RESUME,
+        minimumBackgroundDuration: 60 * 5,
+      });
     }
   }
 
   render() {
-    if (!this.props.userState.isLoggedIn && !this.props.userState.hasSkippedLogin) {
+    if (
+      !this.props.userState.isLoggedIn &&
+      !this.props.userState.hasSkippedLogin
+    ) {
       return <LoginFlow />;
     }
     return (
@@ -84,7 +87,7 @@ export default connect(
   }),
   dispatch => ({
     processUrl: event => dispatch(processUrl(event)),
-  }),
+  })
 )(App);
 
 const styles = StyleSheet.create({

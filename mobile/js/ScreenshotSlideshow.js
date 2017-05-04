@@ -5,25 +5,13 @@
  */
 
 import React from 'react';
-import {
-  TouchableHighlight,
-  View,
-} from 'react-native';
+import { TouchableHighlight, View } from 'react-native';
 import { connect } from 'react-redux';
-import {
-  AccessToken,
-} from 'react-native-fbsdk';
-import {
-  injectIntl,
-  intlShape,
-  defineMessages,
-} from 'react-intl';
+import { AccessToken } from 'react-native-fbsdk';
+import { injectIntl, intlShape, defineMessages } from 'react-intl';
 import type { Dispatch } from './actions/types';
 import { disableTracking } from './store/track';
-import {
-  disableWrites,
-  event,
-} from './api/dancedeets';
+import { disableWrites, event } from './api/dancedeets';
 import {
   logOut,
   loginComplete,
@@ -42,14 +30,14 @@ const messages = defineMessages({
 
 class _ScreenshotSlideshow extends React.Component {
   props: {
-    transitionPage: (page: React.Component<*, *, *>) => void;
-    children: Array<React.Element<*>>;
+    transitionPage: (page: React.Component<*, *, *>) => void,
+    children: Array<React.Element<*>>,
 
     // Self-managed props
-    intl: intlShape;
-  }
+    intl: intlShape,
+  };
   state: {
-    page: number;
+    page: number,
   };
 
   constructor(props) {
@@ -82,14 +70,22 @@ class _ScreenshotSlideshow extends React.Component {
       return;
     }
     await dispatch(loginComplete(token));
-    const firstLocation = this.props.intl.formatMessage(messages.locations).split('\n')[0];
+    const firstLocation = this.props.intl
+      .formatMessage(messages.locations)
+      .split('\n')[0];
     await dispatch(updateLocation(firstLocation));
     await dispatch(performSearch());
   }
 
   async setupEventView(dispatch) {
     const fetchedEvent = await event('397757633752918'); // SYGU 2015
-    await dispatch(navigatePush('EVENT_NAV', { key: 'EventView', title: fetchedEvent.name, event: fetchedEvent }));
+    await dispatch(
+      navigatePush('EVENT_NAV', {
+        key: 'EventView',
+        title: fetchedEvent.name,
+        event: fetchedEvent,
+      })
+    );
   }
 
   async logout(dispatch) {
@@ -147,5 +143,5 @@ export default connect(
   }),
   (dispatch: Dispatch) => ({
     transitionPage: obj => obj.transitionPage(dispatch),
-  }),
+  })
 )(injectIntl(_ScreenshotSlideshow));

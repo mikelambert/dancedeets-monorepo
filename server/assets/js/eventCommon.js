@@ -7,21 +7,14 @@
 import React from 'react';
 import url from 'url';
 import LazyLoad from 'react-lazyload';
-import type {
-  Cover,
-  JSONObject,
-} from 'dancedeets-common/js/events/models';
-import {
-  Event,
-  SearchEvent,
-} from 'dancedeets-common/js/events/models';
-
+import type { Cover, JSONObject } from 'dancedeets-common/js/events/models';
+import { Event, SearchEvent } from 'dancedeets-common/js/events/models';
 
 export class SquareEventFlyer extends React.Component {
   props: {
-    event: SearchEvent;
-    lazyLoad?: boolean;
-  }
+    event: SearchEvent,
+    lazyLoad?: boolean,
+  };
 
   generateCroppedCover(picture: Cover, width: number, height: number) {
     const parsedSource = url.parse(picture.source, true);
@@ -47,24 +40,27 @@ export class SquareEventFlyer extends React.Component {
     const scaledHeight = '100'; // height == width
 
     const croppedPicture = this.generateCroppedCover(picture, width, height);
-    let imageTag = (<div
-      style={{
-        height: 0,
-        paddingBottom: `${scaledHeight}%`,
-      }}
-    >
-      <img
-        role="presentation"
-        src={croppedPicture.source}
+    let imageTag = (
+      <div
         style={{
-          width: '100%',
+          height: 0,
+          paddingBottom: `${scaledHeight}%`,
         }}
-        className="no-border"
-      />
-    </div>
+      >
+        <img
+          role="presentation"
+          src={croppedPicture.source}
+          style={{
+            width: '100%',
+          }}
+          className="no-border"
+        />
+      </div>
     );
     if (this.props.lazyLoad) {
-      imageTag = <LazyLoad height={height} once offset={300}>{imageTag}</LazyLoad>;
+      imageTag = (
+        <LazyLoad height={height} once offset={300}>{imageTag}</LazyLoad>
+      );
     }
     return (
       <a className="link-event-flyer" href={event.getUrl()}>

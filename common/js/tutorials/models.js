@@ -30,7 +30,10 @@ export class Playlist {
   }
 
   getDurationSeconds(): number {
-    return this.sections.reduce((reduced, item) => reduced + item.getDurationSeconds(), 0);
+    return this.sections.reduce(
+      (reduced, item) => reduced + item.getDurationSeconds(),
+      0
+    );
   }
 
   getId() {
@@ -45,7 +48,10 @@ export class Playlist {
     const selectedVideo = this.getVideo(selectedIndex);
     const items = {};
     this.sections.forEach((section, i) => {
-      items[section.key(i)] = section.videos.map(video => ({ video, selected: video === selectedVideo }));
+      items[section.key(i)] = section.videos.map(video => ({
+        video,
+        selected: video === selectedVideo,
+      }));
     });
     return items;
   }
@@ -72,7 +78,9 @@ export class Playlist {
     let index = 0;
     for (let i = 0; i < this.sections.length; i += 1) {
       const videos = this.sections[i].videos;
-      const sectionIndex = videos.findIndex(thisVideo => thisVideo.youtubeId === video.youtubeId);
+      const sectionIndex = videos.findIndex(
+        thisVideo => thisVideo.youtubeId === video.youtubeId
+      );
       if (sectionIndex > -1) {
         return index + sectionIndex;
       } else {
@@ -82,7 +90,7 @@ export class Playlist {
     throw new Error('Video not in tutorial for index lookup');
   }
 
-  getVideoSectionRow(index: number): {section: number, row: number} {
+  getVideoSectionRow(index: number): { section: number, row: number } {
     let currentIndex = index;
     const originalIndex = index;
     for (let i = 0; i < this.sections.length; i += 1) {
@@ -113,9 +121,9 @@ export class Playlist {
     textBits.push(this.author);
     textBits.push(this.style);
     textBits.push(this.style);
-    this.sections.forEach((section) => {
+    this.sections.forEach(section => {
       textBits.push(section.getSearchText());
-      section.videos.forEach((video) => {
+      section.videos.forEach(video => {
         textBits.push(video.getSearchText());
       });
     });
@@ -138,7 +146,10 @@ export class Section {
   }
 
   getDurationSeconds(): number {
-    return this.videos.reduce((reduced, item) => reduced + item.getDurationSeconds(), 0);
+    return this.videos.reduce(
+      (reduced, item) => reduced + item.getDurationSeconds(),
+      0
+    );
   }
 
   getSearchText() {

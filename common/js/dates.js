@@ -9,9 +9,21 @@ import moment from 'moment';
 import { intlShape } from 'react-intl';
 
 // TODO: combine this with mobile's formats.js
-export const weekdayDate = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+export const weekdayDate = {
+  weekday: 'long',
+  year: 'numeric',
+  month: 'long',
+  day: 'numeric',
+};
 export const weekdayTime = { hour: 'numeric', minute: 'numeric' };
-export const weekdayDateTime = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: 'numeric' };
+export const weekdayDateTime = {
+  weekday: 'long',
+  year: 'numeric',
+  month: 'long',
+  day: 'numeric',
+  hour: 'numeric',
+  minute: 'numeric',
+};
 
 export function formatStartDateOnly(startString: string, intl: intlShape) {
   const now = moment(intl.now());
@@ -25,11 +37,17 @@ export function formatStartTime(startString: string, intl: intlShape) {
   return formattedStartTime;
 }
 
-export function formatStartEnd(startString: string, endString: ?string, intl: intlShape) {
+export function formatStartEnd(
+  startString: string,
+  endString: ?string,
+  intl: intlShape
+) {
   const textFields = [];
   const now = moment(intl.now());
   const start = moment(startString, moment.ISO_8601);
-  const formattedStart = upperFirst(intl.formatDate(start.toDate(), weekdayDateTime));
+  const formattedStart = upperFirst(
+    intl.formatDate(start.toDate(), weekdayDateTime)
+  );
   if (endString) {
     const end = moment(endString, moment.ISO_8601);
     const duration = end.diff(start);
@@ -48,7 +66,9 @@ export function formatStartEnd(startString: string, endString: ?string, intl: in
   // Ensure we do some sort of timer refresh update on this
   const relativeStart = start.diff(now);
   if (relativeStart > 0 && relativeStart < moment.duration(2, 'weeks')) {
-    const relativeStartOffset = upperFirst(moment.duration(relativeStart).humanize(true));
+    const relativeStartOffset = upperFirst(
+      moment.duration(relativeStart).humanize(true)
+    );
     textFields.push('\n');
     textFields.push(relativeStartOffset);
   }
@@ -63,7 +83,12 @@ function humanizeExactly(unitCount, unitName) {
   if (unitCount > 1) {
     possiblyPluralizedUnitName = unitName + unitName; // double it up
   }
-  return locale.relativeTime(unitCount, withoutSuffix, possiblyPluralizedUnitName, isFuture);
+  return locale.relativeTime(
+    unitCount,
+    withoutSuffix,
+    possiblyPluralizedUnitName,
+    isFuture
+  );
 }
 
 function humanizeDuration(eventDuration) {

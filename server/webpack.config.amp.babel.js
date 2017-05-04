@@ -23,7 +23,7 @@ module.exports = {
     new webpack.optimize.UglifyJsPlugin({
       sourceMap: true,
       compress: {
-        warnings: true
+        warnings: true,
       },
     }),
     new ExtractTextPlugin({
@@ -31,7 +31,7 @@ module.exports = {
     }),
     new OptimizeCssAssetsPlugin({
       // Removing all comments because we're saving this to minimified AMP files with size limits
-      cssProcessorOptions: { discardComments: {removeAll: true } },
+      cssProcessorOptions: { discardComments: { removeAll: true } },
       canPrint: true,
     }),
   ],
@@ -50,17 +50,18 @@ module.exports = {
           loader: 'babel-loader',
           options: {
             presets: [
-              ["latest", {
-                "es2015": {
-                  "modules": false,
+              [
+                'latest',
+                {
+                  es2015: {
+                    modules: false,
+                  },
                 },
-              }],
+              ],
               'react',
               'stage-0',
             ],
-            plugins: [
-              'transform-flow-strip-types',
-            ],
+            plugins: ['transform-flow-strip-types'],
           },
         },
       },
@@ -100,8 +101,8 @@ module.exports = {
                 ],
               },
             },
-            {loader: 'sass-loader?sourceMap'},
-          ]
+            { loader: 'sass-loader?sourceMap' },
+          ],
         }),
       },
       {
@@ -130,7 +131,7 @@ module.exports = {
         use: {
           loader: 'file-loader',
           options: {
-            'name': '../img/[name].[ext]',
+            name: '../img/[name].[ext]',
           },
         },
       },
@@ -139,7 +140,7 @@ module.exports = {
         use: {
           loader: 'file-loader',
           options: {
-            'name': '../fonts/[name].[ext]',
+            name: '../fonts/[name].[ext]',
           },
         },
       },

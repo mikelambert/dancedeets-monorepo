@@ -22,25 +22,37 @@
  * @flow
  */
 
-import type { NavigationRoute } from 'react-native/Libraries/NavigationExperimental/NavigationTypeDefinition';
+import type {
+  NavigationRoute,
+} from 'react-native/Libraries/NavigationExperimental/NavigationTypeDefinition';
 import { AccessToken } from 'react-native-fbsdk';
 import type { SearchResponse } from 'dancedeets-common/js/events/search';
 import type { AddEventList, SortOrder } from '../addEventsModels';
 
 export type User = {
-  profile: any;
-  picture: {data: {url: string}};
-  friends: any;
-  ddUser: any;
+  profile: any,
+  picture: { data: { url: string } },
+  friends: any,
+  ddUser: any,
 };
 
 export type Action =
-    { type: 'NAV_PUSH', navigator: string, state: NavigationRoute }
+  | { type: 'NAV_PUSH', navigator: string, state: NavigationRoute }
   | { type: 'NAV_POP', navigator: string }
   | { type: 'NAV_JUMP_TO_KEY', navigator: string, key: string }
   | { type: 'NAV_JUMP_TO_INDEX', navigator: string, index: number }
-  | { type: 'NAV_RESET', navigator: string, index: number, routes: Array<NavigationRoute> }
-  | { type: 'NAV_SWAP', navigator: string, key: string, newRoute: NavigationRoute }
+  | {
+      type: 'NAV_RESET',
+      navigator: string,
+      index: number,
+      routes: Array<NavigationRoute>,
+    }
+  | {
+      type: 'NAV_SWAP',
+      navigator: string,
+      key: string,
+      newRoute: NavigationRoute,
+    }
   | { type: 'LOGIN_START_ONBOARD' }
   | { type: 'LOGIN_LOGGED_IN', token: AccessToken }
   | { type: 'LOGIN_LOGGED_OUT' }
@@ -56,9 +68,11 @@ export type Action =
   | { type: 'ADD_EVENTS_RELOAD' }
   | { type: 'ADD_EVENTS_RELOAD_COMPLETE', results: AddEventList }
   | { type: 'ADD_EVENTS_RELOAD_FAILED' }
-  | { type: 'ADD_EVENTS_UPDATE_LOADED',
+  | {
+      type: 'ADD_EVENTS_UPDATE_LOADED',
       status: 'PENDING' | 'LOADED' | 'UNLOADED',
-      eventId: string }
+      eventId: string,
+    }
   | { type: 'ADD_EVENTS_SET_ONLY_UNADDED', value: boolean }
   | { type: 'ADD_EVENTS_SET_SORT_ORDER', value: SortOrder }
   | { type: 'SET_CURRENT_LOCALE', locale: string }
@@ -66,10 +80,11 @@ export type Action =
   | { type: 'TRANSLATE_EVENT_TOGGLE', eventId: string }
   | { type: 'TRANSLATE_EVENT_DONE', eventId: string, translations: Object }
   | { type: 'TUTORIAL_SET_VIDEO_INDEX', index: number }
-  | { type: 'FIREBASE_UPDATE', key: string, value: any }
-  ;
+  | { type: 'FIREBASE_UPDATE', key: string, value: any };
 
-export type Dispatch = (action: Action | ThunkAction | PromiseAction | Array<Action>) => any;
+export type Dispatch = (
+  action: Action | ThunkAction | PromiseAction | Array<Action>
+) => any;
 export type GetState = () => Object;
 export type ThunkAction = (dispatch: Dispatch, getState: GetState) => any;
 export type PromiseAction = Promise<Action>;

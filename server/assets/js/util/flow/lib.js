@@ -9,6 +9,6 @@
 // module.hot.accept(path, fn);
 declare var module: {
   hot: {
-    accept: (path: string, fn: () => void) => void;
-  };
+    accept: (path: string, fn: () => void) => void,
+  },
 };

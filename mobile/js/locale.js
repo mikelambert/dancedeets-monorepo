@@ -6,4 +6,5 @@
 
 import Locale from 'react-native-locale';
 
-export const getCurrentLocale = () => Locale.constants().localeIdentifier.replace('_', '-')
+export const getCurrentLocale = () =>
+  Locale.constants().localeIdentifier.replace('_', '-');

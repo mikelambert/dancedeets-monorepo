@@ -7,7 +7,7 @@
 import type { Action } from '../actions/types';
 
 export type State = {
-  selectedTab: string;
+  selectedTab: string,
 };
 
 const initialState = {

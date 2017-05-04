@@ -11,18 +11,21 @@ import {
   LoginManager,
 } from 'react-native-fbsdk';
 import { performRequest } from './fb';
-import {
-  OkCancelAlert,
-} from '../ui';
+import { OkCancelAlert } from '../ui';
 
 export default class RsvpOnFB {
   static RSVPs = ['attending', 'maybe', 'declined'];
 
   static async getPermissionsAndTryAgain(eventId, rsvpApiValue) {
     // Need to prime the user before switching apps and asking for "more" permissions
-    await OkCancelAlert('RSVP Permissions', 'To RSVP to this event, you need to give DanceDeets access to your Facebook event RSVPs.');
+    await OkCancelAlert(
+      'RSVP Permissions',
+      'To RSVP to this event, you need to give DanceDeets access to your Facebook event RSVPs.'
+    );
 
-    const result = await LoginManager.logInWithPublishPermissions(['rsvp_event']);
+    const result = await LoginManager.logInWithPublishPermissions([
+      'rsvp_event',
+    ]);
     if (result.isCancelled) {
       throw new Error('Request for RSVP Permission was Cancelled');
     } else {

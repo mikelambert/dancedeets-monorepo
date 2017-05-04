@@ -5,60 +5,43 @@
  */
 
 import React from 'react';
-import {
-  StyleSheet,
-} from 'react-native';
-import {
-  injectIntl,
-  defineMessages,
-} from 'react-intl';
+import { StyleSheet } from 'react-native';
+import { injectIntl, defineMessages } from 'react-intl';
 import { connect } from 'react-redux';
 import { GiftedForm } from 'react-native-gifted-form';
 import type {
   NavigationRoute,
   NavigationState,
 } from 'react-native/Libraries/NavigationExperimental/NavigationTypeDefinition';
-import {
-  MyGiftedForm,
-  MyGiftedSubmitWidget,
-} from '../ui';
-import {
-  navigatePop,
-  navigatePush,
-} from '../actions';
-import type {
-  Dispatch,
-  User,
-} from '../actions/types';
-import type {
-  BattleCategory,
-  BattleEvent,
-} from './models';
-import {
-  eventRegister,
-} from '../api/dancedeets';
+import { MyGiftedForm, MyGiftedSubmitWidget } from '../ui';
+import { navigatePop, navigatePush } from '../actions';
+import type { Dispatch, User } from '../actions/types';
+import type { BattleCategory, BattleEvent } from './models';
+import { eventRegister } from '../api/dancedeets';
 
 class _CategorySignupScreen extends React.Component {
   props: {
-    user: ?User;
-    battle: BattleEvent;
-    category: BattleCategory;
+    user: ?User,
+    battle: BattleEvent,
+    category: BattleCategory,
 
     // Self-managed props
-    navigatePush: (route: NavigationRoute) => void;
-    navigatePop: () => void;
-  }
+    navigatePush: (route: NavigationRoute) => void,
+    navigatePop: () => void,
+  };
 
   state: {
-    values: Object;
-  }
+    values: Object,
+  };
 
   constructor(props) {
     super(props);
-    const state = { values: {
-      ...this.teamDefaults(),
-      team_name: '',
-    } };
+    const state = {
+      values: {
+        ...this.teamDefaults(),
+        team_name: '',
+      },
+    };
     if (this.props.user) {
       state.values.dancer_name_1 = this.props.user.profile.name;
     }
@@ -84,28 +67,27 @@ class _CategorySignupScreen extends React.Component {
 
   teamDefaults() {
     const defaults = {};
-    this.teamIndices().forEach((index) => {
+    this.teamIndices().forEach(index => {
       defaults[`dancer_name_${index + 1}`] = '';
     });
     return defaults;
   }
 
   teamWidgets() {
-    return this.teamIndices().map(index =>
+    return this.teamIndices().map(index => (
       <GiftedForm.TextInputWidget
         key={index}
         name={`dancer_name_${index + 1}`}
         title={`Dancer ${index + 1}`}
         placeholder=""
-
         {...this.textInputProps()}
       />
-    );
+    ));
   }
 
   teamValidators() {
     const validators = {};
-    this.teamIndices().forEach((index) => {
+    this.teamIndices().forEach(index => {
       validators[`dancer_name_${index + 1}`] = {
         title: `Dancer ${index + 1}`,
         validate: [],
@@ -143,13 +125,16 @@ class _CategorySignupScreen extends React.Component {
     let teamMembers = rules.teamSize ? this.teamWidgets() : null;
     if (this.props.user) {
       teamMember1 = [
-        <GiftedForm.HiddenWidget key="hidden_0" name="dancer_id_1" value={this.props.user.profile.id} />,
+        <GiftedForm.HiddenWidget
+          key="hidden_0"
+          name="dancer_id_1"
+          value={this.props.user.profile.id}
+        />,
         <GiftedForm.TextInputWidget
           key={0}
           name="dancer_name_1" // mandatory
           title="Dancer 1 (You)"
           validationImage={false}
-
           {...this.textInputProps()}
         />,
       ];
@@ -158,74 +143,82 @@ class _CategorySignupScreen extends React.Component {
 
     let teamName = null;
     if (rules.needsTeamName) {
-      teamName = (<GiftedForm.TextInputWidget
-        name="team_name" // mandatory
-        title="Team Name"
-        placeholder={this.computeDefaultTeamName()}
-
-        {...this.textInputProps()}
-      />);
+      teamName = (
+        <GiftedForm.TextInputWidget
+          name="team_name" // mandatory
+          title="Team Name"
+          placeholder={this.computeDefaultTeamName()}
+          {...this.textInputProps()}
+        />
+      );
     }
-    return (<MyGiftedForm
-      navigator={this.fakeNavigator()}
-      scrollEnabled={false}
-      formName="signupForm" // GiftedForm instances that use the same name will also share the same states
+    return (
+      <MyGiftedForm
+        navigator={this.fakeNavigator()}
+        scrollEnabled={false}
+        formName="signupForm" // GiftedForm instances that use the same name will also share the same states
+        openModal={route => this.props.navigatePush(route)}
+        defaults={this.state.values}
+        validators={{
+          team_name: {
+            title: 'Team Name',
+            validate: [],
+          },
+          ...this.teamValidators(),
+        }}
+        onValueChange={this.handleValueChange}
+      >
 
-      openModal={route => this.props.navigatePush(route)}
+        {teamMember1}
+        {teamMembers}
 
-      defaults={this.state.values}
+        <GiftedForm.SeparatorWidget />
 
-      validators={{
-        team_name: {
-          title: 'Team Name',
-          validate: [],
-        },
-        ...this.teamValidators(),
-      }}
+        {teamName}
 
-      onValueChange={this.handleValueChange}
-    >
+        <GiftedForm.SeparatorWidget />
 
-      {teamMember1}
-      {teamMembers}
+        <MyGiftedSubmitWidget
+          title="Register"
+          onSubmit={async (
+            isValid,
+            values,
+            validationResults,
+            postSubmit = null,
+            modalNavigator = null
+          ) => {
+            if (isValid === true) {
+              // prepare object
 
-      <GiftedForm.SeparatorWidget />
-
-      {teamName}
-
-      <GiftedForm.SeparatorWidget />
-
-      <MyGiftedSubmitWidget
-        title="Register"
-        onSubmit={async (isValid, values, validationResults, postSubmit = null, modalNavigator = null) => {
-          if (isValid === true) {
-            // prepare object
-
-            /* Implement the request to your server using values variable
+              /* Implement the request to your server using values variable
             ** then you can do:
             ** postSubmit(); // disable the loader
             ** postSubmit(['An error occurred, please try again']); // disable the loader and display an error message
             ** postSubmit(['Username already taken', 'Email already taken']); // disable the loader and display an error message
             ** GiftedFormManager.reset('signupForm'); // clear the states of the form manually. 'signupForm' is the formName used
             */
-            const newValues = { ...values };
-            if (!newValues.team_name) {
-              newValues.team_name = this.computeDefaultTeamName();
+              const newValues = { ...values };
+              if (!newValues.team_name) {
+                newValues.team_name = this.computeDefaultTeamName();
+              }
+              const result = await eventRegister(
+                this.props.battle.id,
+                this.props.category.id,
+                { team: newValues }
+              );
+              if (postSubmit) {
+                postSubmit();
+              }
+              // Do we want this?
+              // this.props.onRegisterSubmit();
+              if (modalNavigator) {
+                modalNavigator.pop();
+              }
             }
-            const result = await eventRegister(this.props.battle.id, this.props.category.id, { team: newValues });
-            if (postSubmit) {
-              postSubmit();
-            }
-            // Do we want this?
-            // this.props.onRegisterSubmit();
-            if (modalNavigator) {
-              modalNavigator.pop();
-            }
-          }
-        }}
-
-      />
-    </MyGiftedForm>);
+          }}
+        />
+      </MyGiftedForm>
+    );
   }
 }
 const CategorySignupScreen = connect(
@@ -235,7 +228,7 @@ const CategorySignupScreen = connect(
   (dispatch: Dispatch, props) => ({
     navigatePush: route => dispatch(navigatePush('EVENT_SIGNUPS_NAV', route)),
     navigatePop: route => dispatch(navigatePop('EVENT_SIGNUPS_NAV')),
-  }),
+  })
 )(injectIntl(_CategorySignupScreen));
 
 export default CategorySignupScreen;

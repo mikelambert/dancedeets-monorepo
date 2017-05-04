@@ -1,18 +1,15 @@
 import React from 'react';
-import {
-  StyleSheet,
-  View,
-} from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import { purpleColors } from '../Colors';
 
 export default class Card extends React.Component {
   props: {
-    style: View.propTypes.style;
-    titleBackgroundStyle: View.propTypes.style;
-    mainBackgroundStyle: View.propTypes.style;
-    title: string;
-    children: Array<React.Element<*>>;
-  }
+    style: View.propTypes.style,
+    titleBackgroundStyle: View.propTypes.style,
+    mainBackgroundStyle: View.propTypes.style,
+    title: string,
+    children: Array<React.Element<*>>,
+  };
 
   _root: React.Component;
 
@@ -21,15 +18,21 @@ export default class Card extends React.Component {
   }
 
   render() {
-    return (<View
-      ref={(x) => {
-        this._root = x;
-      }}
-      style={[styles.card, this.props.style]}
-    >
-      <View style={[styles.titleBackground, this.props.titleBackgroundStyle]}>{this.props.title}</View>
-      <View style={[styles.mainBackground, this.props.mainBackgroundStyle]}>{this.props.children}</View>
-    </View>);
+    return (
+      <View
+        ref={x => {
+          this._root = x;
+        }}
+        style={[styles.card, this.props.style]}
+      >
+        <View style={[styles.titleBackground, this.props.titleBackgroundStyle]}>
+          {this.props.title}
+        </View>
+        <View style={[styles.mainBackground, this.props.mainBackgroundStyle]}>
+          {this.props.children}
+        </View>
+      </View>
+    );
   }
 }
 

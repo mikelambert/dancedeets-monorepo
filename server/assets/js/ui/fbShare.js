@@ -8,8 +8,8 @@ import React from 'react';
 
 export default class FacebookShare extends React.Component {
   props: {
-    url: string;
-  }
+    url: string,
+  };
 
   componentDidMount() {
     if (window.FB) {
@@ -18,6 +18,15 @@ export default class FacebookShare extends React.Component {
   }
 
   render() {
-    return <span style={{ verticalAlign: 'top' }} className="fb-share-button" data-href={this.props.url} data-layout="button" data-size="small" data-mobile-iframe="true" />;
+    return (
+      <span
+        style={{ verticalAlign: 'top' }}
+        className="fb-share-button"
+        data-href={this.props.url}
+        data-layout="button"
+        data-size="small"
+        data-mobile-iframe="true"
+      />
+    );
   }
 }

@@ -15,21 +15,12 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import {
-  AccessToken,
-} from 'react-native-fbsdk';
+import { AccessToken } from 'react-native-fbsdk';
 import { connect } from 'react-redux';
 import moment from 'moment';
-import {
-  injectIntl,
-  intlShape,
-  defineMessages,
-} from 'react-intl';
+import { injectIntl, intlShape, defineMessages } from 'react-intl';
 import type { AddEventData } from '../addEventsModels';
-import type {
-  DisplayOptions,
-  State,
-} from '../reducers/addEvents';
+import type { DisplayOptions, State } from '../reducers/addEvents';
 import { track } from '../store/track';
 import {
   addEvent,
@@ -38,10 +29,7 @@ import {
   setOnlyUnadded,
   setSortOrder,
 } from '../actions';
-import {
-  yellowColors,
-  gradientTop,
-} from '../Colors';
+import { yellowColors, gradientTop } from '../Colors';
 import {
   Button,
   HorizontalView,
@@ -103,22 +91,29 @@ const messages = defineMessages({
 
 class _FilterHeader extends React.Component {
   props: {
-    intl: intlShape;
-    displayOptions: DisplayOptions;
-    setOnlyUnadded: (onlyUnadded: boolean) => void;
-    setSortOrder: (x: string) => void;
-  }
+    intl: intlShape,
+    displayOptions: DisplayOptions,
+    setOnlyUnadded: (onlyUnadded: boolean) => void,
+    setSortOrder: (x: string) => void,
+  };
 
   render() {
     return (
       <View style={styles.header}>
 
-        <Text style={styles.headerRow}>{this.props.intl.formatMessage(messages.introText)}</Text>
+        <Text style={styles.headerRow}>
+          {this.props.intl.formatMessage(messages.introText)}
+        </Text>
 
         <HorizontalView style={styles.headerRow}>
-          <Text style={styles.headerText}>{this.props.intl.formatMessage(messages.showEvents)}</Text>
+          <Text style={styles.headerText}>
+            {this.props.intl.formatMessage(messages.showEvents)}
+          </Text>
           <SegmentedControl
-            values={[this.props.intl.formatMessage(messages.showEventsAll), this.props.intl.formatMessage(messages.showEventsNotYetAdded)]}
+            values={[
+              this.props.intl.formatMessage(messages.showEventsAll),
+              this.props.intl.formatMessage(messages.showEventsNotYetAdded),
+            ]}
             style={{ flex: 1 }}
             defaultIndex={this.props.displayOptions.onlyUnadded ? 1 : 0}
             tintColor={yellowColors[1]}
@@ -127,13 +122,21 @@ class _FilterHeader extends React.Component {
         </HorizontalView>
 
         <HorizontalView style={styles.headerRow}>
-          <Text style={styles.headerText}>{this.props.intl.formatMessage(messages.sort)}</Text>
+          <Text style={styles.headerText}>
+            {this.props.intl.formatMessage(messages.sort)}
+          </Text>
           <SegmentedControl
-            values={[this.props.intl.formatMessage(messages.sortByStartDate), this.props.intl.formatMessage(messages.sortByName)]}
+            values={[
+              this.props.intl.formatMessage(messages.sortByStartDate),
+              this.props.intl.formatMessage(messages.sortByName),
+            ]}
             style={{ flex: 1 }}
             tintColor={yellowColors[1]}
-            defaultIndex={this.props.displayOptions.sortOrder === 'ByName' ? 1 : 0}
-            tryOnChange={index => this.props.setSortOrder(index === 1 ? 'ByName' : 'ByDate')}
+            defaultIndex={
+              this.props.displayOptions.sortOrder === 'ByName' ? 1 : 0
+            }
+            tryOnChange={index =>
+              this.props.setSortOrder(index === 1 ? 'ByName' : 'ByDate')}
           />
         </HorizontalView>
       </View>
@@ -147,7 +150,7 @@ const FilterHeader = connect(
   dispatch => ({
     setOnlyUnadded: (x): Promise<void> => dispatch(setOnlyUnadded(x)),
     setSortOrder: x => dispatch(setSortOrder(x)),
-  }),
+  })
 )(injectIntl(_FilterHeader));
 
 class _AddEventRow extends React.Component {
@@ -166,7 +169,13 @@ class _AddEventRow extends React.Component {
     if (this.props.event.clickedConfirming) {
       tempOverlay = (
         <View style={{ position: 'absolute', top: 20, left: 0 }}>
-          <Button size="small" caption={this.props.intl.formatMessage(messages.addEventButton)} onPress={() => { this.props.onEventAdded(this.props.event); }} />
+          <Button
+            size="small"
+            caption={this.props.intl.formatMessage(messages.addEventButton)}
+            onPress={() => {
+              this.props.onEventAdded(this.props.event);
+            }}
+          />
         </View>
       );
     } else if (this.props.event.pending) {
@@ -176,12 +185,19 @@ class _AddEventRow extends React.Component {
         </View>
       );
     }
-    const bannerText = this.props.intl.formatMessage(messages.addedBanner).toUpperCase();
-    const addedBanner = this.props.event.loaded ? <RibbonBanner text={bannerText} width={width} /> : null;
-    const textColor = (this.props.event.loaded || tempOverlay) ? '#888' : 'white';
+    const bannerText = this.props.intl
+      .formatMessage(messages.addedBanner)
+      .toUpperCase();
+    const addedBanner = this.props.event.loaded
+      ? <RibbonBanner text={bannerText} width={width} />
+      : null;
+    const textColor = this.props.event.loaded || tempOverlay ? '#888' : 'white';
 
     const start = moment(this.props.event.start_time, moment.ISO_8601);
-    const formattedStart = this.props.intl.formatDate(start.toDate(), weekdayDateTime);
+    const formattedStart = this.props.intl.formatDate(
+      start.toDate(),
+      weekdayDateTime
+    );
 
     const row = (
       <HorizontalView>
@@ -195,8 +211,12 @@ class _AddEventRow extends React.Component {
           </View>
         </View>
         <View style={styles.rightTextDescription}>
-          <Text style={[styles.title, { color: textColor }]} numberOfLines={2}>{this.props.event.name}</Text>
-          <Text style={[styles.title, { color: textColor }]}>{formattedStart}</Text>
+          <Text style={[styles.title, { color: textColor }]} numberOfLines={2}>
+            {this.props.event.name}
+          </Text>
+          <Text style={[styles.title, { color: textColor }]}>
+            {formattedStart}
+          </Text>
           {tempOverlay}
         </View>
       </HorizontalView>
@@ -210,7 +230,10 @@ class _AddEventRow extends React.Component {
     } else {
       return (
         <View style={styles.row}>
-          <TouchableOpacity onPress={() => this.props.onEventClicked(this.props.event)} activeOpacity={0.5}>
+          <TouchableOpacity
+            onPress={() => this.props.onEventClicked(this.props.event)}
+            activeOpacity={0.5}
+          >
             {row}
           </TouchableOpacity>
         </View>
@@ -227,18 +250,22 @@ class _AddEventList extends React.Component {
       finalResults = finalResults.filter(x => !x.loaded);
     }
     if (props.addEvents.displayOptions.sortOrder === 'ByName') {
-      finalResults = finalResults.slice().sort((a, b) => a.name.localeCompare(b.name));
+      finalResults = finalResults
+        .slice()
+        .sort((a, b) => a.name.localeCompare(b.name));
     } else if (props.addEvents.displayOptions.sortOrder === 'ByDate') {
-      finalResults = finalResults.slice().sort((a, b) => a.start_time.localeCompare(b.start_time));
+      finalResults = finalResults
+        .slice()
+        .sort((a, b) => a.start_time.localeCompare(b.start_time));
     }
     return finalResults;
   }
 
   props: {
-    addEvent: (eventId: string) => void;
-    clickEvent: (eventId: string) => void;
-    addEvents: State;
-    reloadAddEvents: () => void;
+    addEvent: (eventId: string) => void,
+    clickEvent: (eventId: string) => void,
+    addEvents: State,
+    reloadAddEvents: () => void,
   };
 
   state: {
@@ -272,7 +299,10 @@ class _AddEventList extends React.Component {
   }
 
   getNewState(props) {
-    const results = AddEventList.applyFilterSorts(props, props.addEvents.results || []);
+    const results = AddEventList.applyFilterSorts(
+      props,
+      props.addEvents.results || []
+    );
     const state = {
       ...this.state,
       dataSource: this.state.dataSource.cloneWithRows(results),
@@ -292,7 +322,8 @@ class _AddEventList extends React.Component {
       <AddEventRow
         event={row}
         token={this.state.token}
-        onEventClicked={(event: AddEventData) => this.props.clickEvent(event.id)}
+        onEventClicked={(event: AddEventData) =>
+          this.props.clickEvent(event.id)}
         onEventAdded={(event: AddEventData) => {
           track('Add Event To Site', { 'Event ID': event.id });
           this.props.addEvent(event.id);
@@ -333,7 +364,7 @@ const AddEventList = connect(
     clickEvent: (eventId: string) => dispatch(clickEvent(eventId)),
     addEvent: (eventId: string) => dispatch(addEvent(eventId)),
     reloadAddEvents: () => dispatch(reloadAddEvents()),
-  }),
+  })
 )(_AddEventList);
 
 export default class AddEvents extends React.Component {
@@ -346,7 +377,6 @@ export default class AddEvents extends React.Component {
     );
   }
 }
-
 
 const styles = StyleSheet.create({
   container: {
@@ -363,8 +393,7 @@ const styles = StyleSheet.create({
     // http://stackoverflow.com/questions/36605906/what-is-the-row-container-for-a-listview-component
     overflow: 'hidden',
   },
-  leftEventImage: {
-  },
+  leftEventImage: {},
   rightTextDescription: {
     flex: 1,
     marginLeft: normalize(5),
@@ -379,6 +408,5 @@ const styles = StyleSheet.create({
   headerText: {
     marginRight: 5,
   },
-  title: {
-  },
+  title: {},
 });

@@ -5,20 +5,14 @@
  */
 
 import React from 'react';
-import {
-  Dimensions,
-  InteractionManager,
-  View,
-} from 'react-native';
+import { Dimensions, InteractionManager, View } from 'react-native';
 import ViewPager from 'react-native-viewpager';
 import { connect } from 'react-redux';
 import { Event } from 'dancedeets-common/js/events/models';
 import type { State } from '../reducers/search';
 import { FullEventView } from './uicomponents';
 import type { ThunkAction } from '../actions/types';
-import {
-  getPosition,
-} from '../util/geo';
+import { getPosition } from '../util/geo';
 
 class EventPager extends React.Component {
   props: {
@@ -26,13 +20,13 @@ class EventPager extends React.Component {
     onEventNavigated: (x: Event) => void,
     search: State,
     selectedEvent: Event,
-  }
+  };
 
   state: {
     dataSource: ViewPager.DataSource,
     position: ?Object,
-    loadInProgress: boolean;
-  }
+    loadInProgress: boolean,
+  };
 
   constructor(props) {
     super(props);
@@ -62,14 +56,19 @@ class EventPager extends React.Component {
     const newPosition = position || this.state.position;
 
     if (results && results.results) {
-      const pageIndex = results.results.findIndex(x => x.id === this.props.selectedEvent.id);
+      const pageIndex = results.results.findIndex(
+        x => x.id === this.props.selectedEvent.id
+      );
       if (pageIndex !== -1) {
         finalResults = results.results.map(event => ({ event, newPosition }));
       }
     }
     // If we have an event that's not in the list, it's because we're just displaying this event.
     if (!finalResults.length) {
-      finalResults = [this.props.selectedEvent].map(event => ({ event, newPosition }));
+      finalResults = [this.props.selectedEvent].map(event => ({
+        event,
+        newPosition,
+      }));
     }
     const state = {
       ...this.state,
@@ -82,7 +81,9 @@ class EventPager extends React.Component {
   getSelectedPage() {
     let initialPage = null;
     if (this.props.search.response && this.props.search.response.results) {
-      initialPage = this.props.search.response.results.findIndex(x => x.id === this.props.selectedEvent.id);
+      initialPage = this.props.search.response.results.findIndex(
+        x => x.id === this.props.selectedEvent.id
+      );
     }
     return initialPage;
   }
@@ -106,16 +107,18 @@ class EventPager extends React.Component {
       const width = Dimensions.get('window').width;
       return <View style={{ width }} />;
     }
-    return (<FullEventView
-      onFlyerSelected={this.props.onFlyerSelected}
-      event={eventData.event}
-      currentPosition={eventData.position}
-    />);
+    return (
+      <FullEventView
+        onFlyerSelected={this.props.onFlyerSelected}
+        event={eventData.event}
+        currentPosition={eventData.position}
+      />
+    );
   }
 
   componentDidMount() {
     InteractionManager.runAfterInteractions(() => {
-      this.setState({loadInProgress: false});
+      this.setState({ loadInProgress: false });
     });
   }
 
@@ -137,22 +140,23 @@ class EventPager extends React.Component {
     // We use react-native-viewpager instead of react-native-carousel,
     // because we only want to render a few pages in the big list
     // (as opposed to a fully rendered pageable/scrollable view, which will scale poorly)
-    return (<ViewPager
-      dataSource={dataSource}
-      renderPage={this.renderEvent}
-      renderPageIndicator={false}
-      onChangePage={i => this.props.onEventNavigated(this.state.dataSource.getPageData(i).event)}
-      initialPage={this.getSelectedPage()}
-    />);
+    return (
+      <ViewPager
+        dataSource={dataSource}
+        renderPage={this.renderEvent}
+        renderPageIndicator={false}
+        onChangePage={i =>
+          this.props.onEventNavigated(
+            this.state.dataSource.getPageData(i).event
+          )}
+        initialPage={this.getSelectedPage()}
+      />
+    );
   }
 }
 const mapStateToProps = state => ({
   search: state.search,
 });
-const mapDispatchToProps = dispatch => ({
-});
+const mapDispatchToProps = dispatch => ({});
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(EventPager);
+export default connect(mapStateToProps, mapDispatchToProps)(EventPager);

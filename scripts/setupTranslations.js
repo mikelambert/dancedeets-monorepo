@@ -6,7 +6,6 @@
  * @flow
  */
 
-
 import * as path from 'path';
 import stableJsonStringify from 'json-stable-stringify';
 import fs from 'fs-promise';
@@ -22,10 +21,10 @@ function loadJsonFile(filename) {
 }
 
 async function updateWithTranslations(englishTranslation) {
-  const promises = locales.map((locale) => {
+  const promises = locales.map(locale => {
     const filename = path.resolve(`../common/js/messages/${locale}.json`);
     const localeTranslation = locale === 'en' ? {} : loadJsonFile(filename);
-    Object.keys(englishTranslation).forEach((key) => {
+    Object.keys(englishTranslation).forEach(key => {
       if (!localeTranslation[key]) {
         localeTranslation[key] = englishTranslation[key];
       }
@@ -43,7 +42,7 @@ async function run() {
   const jsons = filenames.map(file => require(file));
   const json = jsons.reduce((result, jsList) => result.concat(jsList), []);
   const translationLookup = {};
-  json.forEach((x) => {
+  json.forEach(x => {
     translationLookup[x.id] = x.defaultMessage;
   });
   await updateWithTranslations(translationLookup);

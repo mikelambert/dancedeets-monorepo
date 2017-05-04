@@ -4,9 +4,7 @@
  * @flow
  */
 
-import {
-  AsyncStorage,
-} from 'react-native';
+import { AsyncStorage } from 'react-native';
 
 export const PreferenceNames = {
   overall: 'overall',
@@ -14,7 +12,10 @@ export const PreferenceNames = {
   vibration: 'vibration',
 };
 
-export async function getPreference(key: string, defaultValue: boolean): Promise<boolean> {
+export async function getPreference(
+  key: string,
+  defaultValue: boolean
+): Promise<boolean> {
   if (key == null) {
     throw new Error('Need key for getPreference');
   }
@@ -29,5 +30,8 @@ export async function setPreference(key: string, value: boolean) {
   if (key == null) {
     throw new Error('Need key for setPreference');
   }
-  await AsyncStorage.setItem(`preferences.notifications.${key}`, value ? '1' : '0');
+  await AsyncStorage.setItem(
+    `preferences.notifications.${key}`,
+    value ? '1' : '0'
+  );
 }

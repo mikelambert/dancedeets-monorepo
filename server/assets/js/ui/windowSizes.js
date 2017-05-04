@@ -10,10 +10,10 @@ export function wantsWindowSizes(WrappedComponent: Object) {
   class WindowSizes extends React.Component {
     state: {
       window: ?{
-        width: number;
-        height: number;
-      };
-    }
+        width: number,
+        height: number,
+      },
+    };
 
     constructor(props: Object) {
       super(props);
@@ -47,16 +47,14 @@ export function wantsWindowSizes(WrappedComponent: Object) {
 
     getWindowState() {
       if (global.window != null) {
-        const width = (
+        const width =
           window.innerWidth ||
           (document.documentElement && document.documentElement.clientWidth) ||
-          (document.body && document.body.clientWidth)
-        );
-        const height = (
+          (document.body && document.body.clientWidth);
+        const height =
           window.innerHeight ||
           (document.documentElement && document.documentElement.clientHeight) ||
-          (document.body && document.body.clientHeight)
-        );
+          (document.body && document.body.clientHeight);
         return { window: { width, height } };
       } else {
         return { window: null };

@@ -18,11 +18,7 @@ import {
   View,
 } from 'react-native';
 import { AdMobBanner } from 'react-native-admob';
-import {
-  injectIntl,
-  intlShape,
-  defineMessages,
-} from 'react-intl';
+import { injectIntl, intlShape, defineMessages } from 'react-intl';
 import moment from 'moment';
 import { connect } from 'react-redux';
 import Carousel from 'react-native-carousel';
@@ -39,24 +35,11 @@ import type {
 import Collapsible from 'react-native-collapsible';
 import { EventRow } from './uicomponents';
 import SearchHeader from './searchHeader';
-import type {
-  State,
-} from '../reducers/search';
-import {
-  detectedLocation,
-  performSearch,
-  processUrl,
-} from '../actions';
+import type { State } from '../reducers/search';
+import { detectedLocation, performSearch, processUrl } from '../actions';
 import type { User } from '../actions/types';
-import {
-  linkColor,
-  purpleColors,
-} from '../Colors';
-import {
-  auth,
-  event,
-  isAuthenticated,
-} from '../api/dancedeets';
+import { linkColor, purpleColors } from '../Colors';
+import { auth, event, isAuthenticated } from '../api/dancedeets';
 import {
   BottomFade,
   Button,
@@ -67,17 +50,11 @@ import {
   Text,
 } from '../ui';
 import { track } from '../store/track';
-import {
-  getAddress,
-  getPosition,
-} from '../util/geo';
+import { getAddress, getPosition } from '../util/geo';
 import { weekdayDate } from '../formats';
 import { loadUserData } from '../actions/login';
 import { canHandleUrl } from '../websiteUrl';
-import {
-  loadSavedAddress,
-  storeSavedAddress,
-} from './savedAddress';
+import { loadSavedAddress, storeSavedAddress } from './savedAddress';
 import { openUserId } from '../util/fb';
 
 const messages = defineMessages({
@@ -126,36 +103,40 @@ class SectionHeader extends React.Component {
   };
 
   render() {
-    return (<View style={styles.sectionHeader}>
-      <Text style={styles.sectionHeaderText}>{this.props.title}</Text>
-    </View>);
+    return (
+      <View style={styles.sectionHeader}>
+        <Text style={styles.sectionHeaderText}>{this.props.title}</Text>
+      </View>
+    );
   }
 }
 
 class FeaturedEvent extends React.Component {
   props: {
-    event: Event;
-  }
+    event: Event,
+  };
 
   render() {
     const imageProps = this.props.event.getResponsiveFlyers();
     if (!imageProps) {
       return null;
     }
-    return <Image
-      source={imageProps}
-      style={{
-        height: 200,
-      }}
-    />;
+    return (
+      <Image
+        source={imageProps}
+        style={{
+          height: 200,
+        }}
+      />
+    );
   }
 }
 
 class FeaturedEvents extends React.Component {
   props: {
-    featured: Array<FeaturedInfo>;
-    onEventSelected: (event: Event) => void;
-  }
+    featured: Array<FeaturedInfo>,
+    onEventSelected: (event: Event) => void,
+  };
 
   renderPage(index: number) {
     const featuredInfo = this.props.featured[index];
@@ -164,45 +145,63 @@ class FeaturedEvents extends React.Component {
     let fadeOverlay = null;
     // But if there's multiple items, let's do a bottom-fade
     if (this.props.featured.length > 1) {
-      fadeOverlay = <View style={{
-          position: 'absolute',
-          left: 0,
-          bottom: 0,
-          right: 0,
-        }}>
+      fadeOverlay = (
+        <View
+          style={{
+            position: 'absolute',
+            left: 0,
+            bottom: 0,
+            right: 0,
+          }}
+        >
           <BottomFade />
-        </View>;
+        </View>
+      );
     }
     // And if there's a title, do an even larger fade that lets us stick the text in there
     if (featuredInfo.showTitle) {
-      fadeOverlay = <View style={{
-        position: 'absolute',
-        left: 0,
-        bottom: 0,
-        right: 0,
-      }}>
-        <BottomFade height={150} />
-        <Text
-          numberOfLines={1}
+      fadeOverlay = (
+        <View
           style={{
             position: 'absolute',
-            bottom: CarouselDotIndicatorSize,
-            textAlign: 'center',
             left: 0,
+            bottom: 0,
             right: 0,
-            fontWeight: 'bold',
           }}
-        >{featuredInfo.event.name}</Text>
-      </View>;
+        >
+          <BottomFade height={150} />
+          <Text
+            numberOfLines={1}
+            style={{
+              position: 'absolute',
+              bottom: CarouselDotIndicatorSize,
+              textAlign: 'center',
+              left: 0,
+              right: 0,
+              fontWeight: 'bold',
+            }}
+          >
+            {featuredInfo.event.name}
+          </Text>
+        </View>
+      );
     }
-    return <View key={index} style={{
-      width: Dimensions.get('window').width,
-    }}>
-      <TouchableOpacity onPress={() => this.props.onEventSelected(featuredInfo.event)} activeOpacity={0.5}>
-        <FeaturedEvent event={featuredInfo.event} />
-        {fadeOverlay}
-      </TouchableOpacity>
-    </View>;
+    return (
+      <View
+        key={index}
+        style={{
+          width: Dimensions.get('window').width,
+        }}
+      >
+        <TouchableOpacity
+          onPress={() => this.props.onEventSelected(featuredInfo.event)}
+          activeOpacity={0.5}
+        >
+          <FeaturedEvent event={featuredInfo.event} />
+          {fadeOverlay}
+        </TouchableOpacity>
+      </View>
+    );
   }
 
   shouldComponentUpdate(nextProps, nextState) {
@@ -217,28 +216,32 @@ class FeaturedEvents extends React.Component {
     if (this.props.featured.length == 1) {
       carousel = this.renderPage(0);
     } else {
-      carousel = <Carousel
-        indicatorOffset={0}
-        indicatorColor="#FFFFFF"
-        indicatorSize={CarouselDotIndicatorSize}
-        indicatorSpace={15}
-        animate={true}
-        loop={true}
-        delay={4000}
-      >
-        {this.props.featured.map((event, i) => this.renderPage(i))}
-      </Carousel>;
+      carousel = (
+        <Carousel
+          indicatorOffset={0}
+          indicatorColor="#FFFFFF"
+          indicatorSize={CarouselDotIndicatorSize}
+          indicatorSpace={15}
+          animate={true}
+          loop={true}
+          delay={4000}
+        >
+          {this.props.featured.map((event, i) => this.renderPage(i))}
+        </Carousel>
+      );
     }
-    return (<View style={{ height: 200 }}>
-      {carousel}
-    </View>);
+    return (
+      <View style={{ height: 200 }}>
+        {carousel}
+      </View>
+    );
   }
 }
 
 class OneboxView extends React.Component {
   props: {
-    onebox: Onebox;
-  }
+    onebox: Onebox,
+  };
 
   constructor(props) {
     super(props);
@@ -256,7 +259,9 @@ class OneboxView extends React.Component {
     } else {
       url += '?webview=1';
     }
-    Linking.openURL(url).catch(err => console.error('Error opening onebox url:', url, 'with Error:', err));
+    Linking.openURL(url).catch(err =>
+      console.error('Error opening onebox url:', url, 'with Error:', err)
+    );
   }
 
   render() {
@@ -274,35 +279,37 @@ class OneboxView extends React.Component {
 
 class _AddEventButton extends React.Component {
   props: {
-    intl: intlShape;
-    onPress: () => void;
-  }
+    intl: intlShape,
+    onPress: () => void,
+  };
 
   render() {
-    return (<Button
-      icon={require('./images/add_calendar.png')}
-      caption={this.props.intl.formatMessage(messages.addEvent)}
-      color="green"
-      textStyle={{ fontWeight: 'bold' }}
-      style={styles.addEventButton}
-      onPress={this.props.onPress}
-      testID="addEvents"
-    />);
+    return (
+      <Button
+        icon={require('./images/add_calendar.png')}
+        caption={this.props.intl.formatMessage(messages.addEvent)}
+        color="green"
+        textStyle={{ fontWeight: 'bold' }}
+        style={styles.addEventButton}
+        onPress={this.props.onPress}
+        testID="addEvents"
+      />
+    );
   }
 }
 const AddEventButton = injectIntl(_AddEventButton);
 
 class PersonList extends React.Component {
   props: {
-    title: string;
-    subtitle: string;
-    categoryOrder?: Array<string>;
-    people: StylePersonLookup;
-  }
+    title: string,
+    subtitle: string,
+    categoryOrder?: Array<string>,
+    people: StylePersonLookup,
+  };
 
   state: {
-    category: string;
-  }
+    category: string,
+  };
 
   constructor(props) {
     super(props);
@@ -311,15 +318,15 @@ class PersonList extends React.Component {
     };
   }
 
-
   renderLink(user) {
-    return (<HorizontalView key={user.id}>
-      <Text> – </Text>
-      <TouchableOpacity
-        key={user.id}
-        onPress={() => openUserId(user.id)}
-      ><Text style={[styles.rowLink]}>{user.name}</Text></TouchableOpacity>
-    </HorizontalView>);
+    return (
+      <HorizontalView key={user.id}>
+        <Text> – </Text>
+        <TouchableOpacity key={user.id} onPress={() => openUserId(user.id)}>
+          <Text style={[styles.rowLink]}>{user.name}</Text>
+        </TouchableOpacity>
+      </HorizontalView>
+    );
   }
 
   render() {
@@ -327,24 +334,26 @@ class PersonList extends React.Component {
     //const categories = this.props.categoryOrder.filter(x => x === '' || this.props.people[x]);
     //{categories.map(x => <option key={x} value={x}>{x || 'Overall'}</option>)}
 
-    return (<View>
-      <Text style={{ fontStyle: 'italic' }}>{this.props.subtitle}:</Text>
-      {peopleList.map(x => this.renderLink(x))}
-    </View>);
+    return (
+      <View>
+        <Text style={{ fontStyle: 'italic' }}>{this.props.subtitle}:</Text>
+        {peopleList.map(x => this.renderLink(x))}
+      </View>
+    );
   }
 }
 
 class HeaderCollapsible extends React.Component {
   props: {
-    defaultCollapsed: boolean;
-    title: string;
-    children?: React.Element<*>;
-    underlayColor?: string;
-  }
+    defaultCollapsed: boolean,
+    title: string,
+    children?: React.Element<*>,
+    underlayColor?: string,
+  };
 
   state: {
-    collapsed: boolean;
-  }
+    collapsed: boolean,
+  };
 
   constructor(props) {
     super(props);
@@ -357,79 +366,93 @@ class HeaderCollapsible extends React.Component {
   }
 
   render() {
-    const iconName = this.state.collapsed ? 'md-arrow-dropright' : 'md-arrow-dropdown';
-    return <View>
-      <TouchableHighlight onPress={this._toggle} underlayColor={this.props.underlayColor}>
-        <View style={styles.sectionHeader}>
-          <HorizontalView>
-            <View style={{ width: 20, height: 20, alignItems: 'center', alignSelf: 'center' }}>
-              <Icon name={iconName} size={15} color="#FFF" />
-            </View>
-            <Text>{this.props.title}</Text>
-          </HorizontalView>
-        </View>
-      </TouchableHighlight>
-      <Collapsible collapsed={this.state.collapsed}>
-        {this.props.children}
-      </Collapsible>
-    </View>
+    const iconName = this.state.collapsed
+      ? 'md-arrow-dropright'
+      : 'md-arrow-dropdown';
+    return (
+      <View>
+        <TouchableHighlight
+          onPress={this._toggle}
+          underlayColor={this.props.underlayColor}
+        >
+          <View style={styles.sectionHeader}>
+            <HorizontalView>
+              <View
+                style={{
+                  width: 20,
+                  height: 20,
+                  alignItems: 'center',
+                  alignSelf: 'center',
+                }}
+              >
+                <Icon name={iconName} size={15} color="#FFF" />
+              </View>
+              <Text>{this.props.title}</Text>
+            </HorizontalView>
+          </View>
+        </TouchableHighlight>
+        <Collapsible collapsed={this.state.collapsed}>
+          {this.props.children}
+        </Collapsible>
+      </View>
+    );
   }
 }
 
 class _PeopleView extends React.Component {
   props: {
-    people: PeopleListing;
-  }
+    people: PeopleListing,
+  };
 
   render() {
     // Keep in sync with web?
     const defaultCollapsed = !(this.props.search.response.results.length < 10);
-    return <View>
-      <HeaderCollapsible
-        title="Nearby Promoters"
-        defaultCollapsed={defaultCollapsed}
-        >
-        <PersonList
-          title="Promoters"
-          subtitle="If you want to organize an event, work with these folks"
-          people={this.props.people.ADMIN}
-          />
-      </HeaderCollapsible>
-      <HeaderCollapsible
-        title="Nearby Dancers"
-        defaultCollapsed={defaultCollapsed}
-        >
-        <PersonList
-          title="Dancers"
-          subtitle="If you want to connect with the dance scene, hit these folks up"
-          people={this.props.people.ATTENDEE}
+    return (
+      <View>
+        <HeaderCollapsible
+          title="Nearby Promoters"
           defaultCollapsed={defaultCollapsed}
+        >
+          <PersonList
+            title="Promoters"
+            subtitle="If you want to organize an event, work with these folks"
+            people={this.props.people.ADMIN}
           />
-      </HeaderCollapsible>
-    </View>;
+        </HeaderCollapsible>
+        <HeaderCollapsible
+          title="Nearby Dancers"
+          defaultCollapsed={defaultCollapsed}
+        >
+          <PersonList
+            title="Dancers"
+            subtitle="If you want to connect with the dance scene, hit these folks up"
+            people={this.props.people.ATTENDEE}
+            defaultCollapsed={defaultCollapsed}
+          />
+        </HeaderCollapsible>
+      </View>
+    );
   }
 }
-const PeopleView = connect(
-  state => ({
-    search: state.search,
-  }),
-)(_PeopleView);
+const PeopleView = connect(state => ({
+  search: state.search,
+}))(_PeopleView);
 
 class _EventListContainer extends React.Component {
   props: {
-    intl: intlShape;
-    onEventSelected: (event: Event) => void;
-    onFeaturedEventSelected: (event: Event) => void;
-    onAddEventClicked: (clickTarget: string) => void;
+    intl: intlShape,
+    onEventSelected: (event: Event) => void,
+    onFeaturedEventSelected: (event: Event) => void,
+    onAddEventClicked: (clickTarget: string) => void,
 
     // Self-managed props
     search: State,
     user: ?User,
-    detectedLocation: (location: string) => Promise<void>;
-    performSearch: () => Promise<void>;
-    processUrl: (url: string) => Promise<void>;
-    loadUserData: () => Promise<void>;
-  }
+    detectedLocation: (location: string) => Promise<void>,
+    performSearch: () => Promise<void>,
+    processUrl: (url: string) => Promise<void>,
+    loadUserData: () => Promise<void>,
+  };
 
   state: {
     position: ?Object,
@@ -470,10 +493,15 @@ class _EventListContainer extends React.Component {
   }
 
   getNewState(props) {
-    const { dataBlob, sectionHeaders } = this.buildDataBlobAndHeaders(props.search.response);
+    const { dataBlob, sectionHeaders } = this.buildDataBlobAndHeaders(
+      props.search.response
+    );
     const state = {
       ...this.state,
-      dataSource: this.state.dataSource.cloneWithRowsAndSections(dataBlob, sectionHeaders),
+      dataSource: this.state.dataSource.cloneWithRowsAndSections(
+        dataBlob,
+        sectionHeaders
+      ),
     };
     return state;
   }
@@ -496,7 +524,11 @@ class _EventListContainer extends React.Component {
     // If the user doesn't have a location, let's save one based on their search
     // Hopefully we'll have loaded the user data by now, after the search has completed...
     // But this isn't critical functionality, but just a best-effort attempt to save a location
-    if (this.props.user && this.props.user.ddUser && !this.props.user.ddUser.location) {
+    if (
+      this.props.user &&
+      this.props.user.ddUser &&
+      !this.props.user.ddUser.location
+    ) {
       await storeSavedAddress(formattedAddress);
     }
   }
@@ -527,12 +559,18 @@ class _EventListContainer extends React.Component {
             continue;
           }
           const start = moment(e.start_time, moment.ISO_8601);
-          const formattedStart = this.props.intl.formatDate(start.toDate(), weekdayDate);
+          const formattedStart = this.props.intl.formatDate(
+            start.toDate(),
+            weekdayDate
+          );
           if (!(formattedStart in dataBlob)) {
             dataBlob[formattedStart] = [];
           }
           dataBlob[formattedStart].push(e);
-          if (!sectionHeaders || sectionHeaders[sectionHeaders.length - 1] !== formattedStart) {
+          if (
+            !sectionHeaders ||
+            sectionHeaders[sectionHeaders.length - 1] !== formattedStart
+          ) {
             sectionHeaders.push(formattedStart);
           }
         }
@@ -566,7 +604,10 @@ class _EventListContainer extends React.Component {
     // Otherwise, fall back to the last-searched address
     if (!address) {
       address = await loadSavedAddress();
-      console.log('Failed to load GPS, falling back to last-searched address: ', address);
+      console.log(
+        'Failed to load GPS, falling back to last-searched address: ',
+        address
+      );
     }
 
     // And if we have a location from either place, do a search
@@ -587,7 +628,10 @@ class _EventListContainer extends React.Component {
       const position = await getPosition();
       this.setState({ position });
     } catch (e) {
-      console.log('Error fetching user location for finding distance-to-event:', e);
+      console.log(
+        'Error fetching user location for finding distance-to-event:',
+        e
+      );
     }
   }
 
@@ -604,23 +648,27 @@ class _EventListContainer extends React.Component {
 
   renderRow(row) {
     if ('id' in row) {
-      return (<EventRow
-        event={row}
-        onEventSelected={this.props.onEventSelected}
-        currentPosition={this.state.position}
-      />);
+      return (
+        <EventRow
+          event={row}
+          onEventSelected={this.props.onEventSelected}
+          currentPosition={this.state.position}
+        />
+      );
     } else {
       return <OneboxView onebox={row} />;
     }
   }
 
   renderErrorView() {
-    return (<View style={styles.errorView}>
-      <Text style={styles.errorText}>
-        {this.props.intl.formatMessage(messages.fetchEventsError)}{' '}
-        {this.props.intl.formatMessage(messages.networkRetry)}
-      </Text>
-    </View>);
+    return (
+      <View style={styles.errorView}>
+        <Text style={styles.errorText}>
+          {this.props.intl.formatMessage(messages.fetchEventsError)}{' '}
+          {this.props.intl.formatMessage(messages.networkRetry)}
+        </Text>
+      </View>
+    );
   }
 
   renderSummaryView() {
@@ -642,19 +690,26 @@ class _EventListContainer extends React.Component {
         // Don't show any header for non-existent search queries/results
       }
       if (message) {
-        header = <Text style={styles.listHeader}>
-          {this.props.intl.formatMessage(message, { location: query.location, keywords: query.keywords })}
-        </Text>;
+        header = (
+          <Text style={styles.listHeader}>
+            {this.props.intl.formatMessage(message, {
+              location: query.location,
+              keywords: query.keywords,
+            })}
+          </Text>
+        );
       }
     }
-    return <View>
-      <FeaturedEvents
-        featured={response.featuredInfos}
-        onEventSelected={this.props.onFeaturedEventSelected}
+    return (
+      <View>
+        <FeaturedEvents
+          featured={response.featuredInfos}
+          onEventSelected={this.props.onFeaturedEventSelected}
         />
-      <PeopleView people={response.people} />
-      {header}
-    </View>;
+        <PeopleView people={response.people} />
+        {header}
+      </View>
+    );
   }
 
   renderAd() {
@@ -669,11 +724,13 @@ class _EventListContainer extends React.Component {
     } else {
       return null;
     }
-    return (<AdMobBanner
-      bannerSize={'smartBannerPortrait'}
-      adUnitID={adUnitID}
-      didFailToReceiveAdWithError={this.bannerError}
-    />);
+    return (
+      <AdMobBanner
+        bannerSize={'smartBannerPortrait'}
+        adUnitID={adUnitID}
+        didFailToReceiveAdWithError={this.bannerError}
+      />
+    );
   }
 
   renderListView() {
@@ -682,7 +739,9 @@ class _EventListContainer extends React.Component {
         // TODO: removeClippedSubviews is disabled until
         // https://github.com/facebook/react-native/issues/8088 is fixed.
         removeClippedSubviews={false}
-        ref={(x) => { this._listView = x; }}
+        ref={x => {
+          this._listView = x;
+        }}
         style={[styles.listView]}
         dataSource={this.state.dataSource}
         renderHeader={this.renderHeader}
@@ -693,9 +752,9 @@ class _EventListContainer extends React.Component {
           />
         }
         renderRow={this.renderRow}
-        renderSectionHeader={(data, sectionID) =>
+        renderSectionHeader={(data, sectionID) => (
           <SectionHeader title={upperFirst(sectionID)} />
-        }
+        )}
         initialListSize={5}
         pageSize={1}
         scrollRenderAheadDistance={5000}
@@ -730,13 +789,13 @@ export default connect(
     user: state.user.userData,
   }),
   dispatch => ({
-    detectedLocation: async (location) => {
+    detectedLocation: async location => {
       await dispatch(detectedLocation(location));
     },
     performSearch: async () => {
       await dispatch(performSearch());
     },
-    processUrl: async (url) => {
+    processUrl: async url => {
       await dispatch(processUrl(url));
     },
     loadUserData: async () => {
@@ -744,7 +803,6 @@ export default connect(
     },
   })
 )(injectIntl(_EventListContainer));
-
 
 const styles = StyleSheet.create({
   listView: {

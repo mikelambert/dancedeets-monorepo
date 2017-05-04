@@ -6,17 +6,9 @@
 
 import React from 'react';
 import { View } from 'react-native';
-import type {
-  ShareContent,
-} from 'react-native-fbsdk/js/models/FBShareContent';
-import {
-  ShareDialog,
-} from 'react-native-fbsdk';
-import {
-  injectIntl,
-  intlShape,
-  defineMessages,
-} from 'react-intl';
+import type { ShareContent } from 'react-native-fbsdk/js/models/FBShareContent';
+import { ShareDialog } from 'react-native-fbsdk';
+import { injectIntl, intlShape, defineMessages } from 'react-intl';
 import Button from '../Button';
 
 const messages = defineMessages({
@@ -29,21 +21,23 @@ const messages = defineMessages({
 
 class _FBShareButton extends React.Component {
   props: {
-    intl: intlShape;
-    shareContent: ShareContent;
+    intl: intlShape,
+    shareContent: ShareContent,
   };
 
   render() {
     return (
-      <View style={{ flexDirection: 'row' }}><Button
-        icon={require('./images/facebook.png')}
-        caption={this.props.intl.formatMessage(messages.share)}
-        size="small"
-        onPress={() => {
-          ShareDialog.show(this.props.shareContent);
-        }}
-        {...this.props}
-      /></View>
+      <View style={{ flexDirection: 'row' }}>
+        <Button
+          icon={require('./images/facebook.png')}
+          caption={this.props.intl.formatMessage(messages.share)}
+          size="small"
+          onPress={() => {
+            ShareDialog.show(this.props.shareContent);
+          }}
+          {...this.props}
+        />
+      </View>
     );
   }
 }

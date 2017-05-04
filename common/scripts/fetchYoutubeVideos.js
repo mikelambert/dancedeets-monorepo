@@ -8,28 +8,27 @@
 import _ from 'underscore';
 import fetch from 'node-fetch';
 import querystring from 'querystring';
-import {
-  fetchAll,
-  getUrl,
-  YoutubeKey,
-} from './_youtube';
+import { fetchAll, getUrl, YoutubeKey } from './_youtube';
 
 async function getTimes(playlistItemsJson) {
-  const videoIds = playlistItemsJson.items.map(x => (
-    x.id instanceof Object ? x.id.videoId : x.snippet.resourceId.videoId));
+  const videoIds = playlistItemsJson.items.map(
+    x => (x.id instanceof Object ? x.id.videoId : x.snippet.resourceId.videoId)
+  );
   const returnResult = {
     items: [],
   };
   while (videoIds.length) {
     // modifies videoIds
     const splicedVideoIds = videoIds.splice(0, 50);
-    const playlistItemsUrl = getUrl('https://www.googleapis.com/youtube/v3/videos',
+    const playlistItemsUrl = getUrl(
+      'https://www.googleapis.com/youtube/v3/videos',
       {
         id: splicedVideoIds.join(','),
         maxResults: 50,
         part: 'contentDetails',
         key: YoutubeKey,
-      });
+      }
+    );
     const videosResult = await (await fetch(playlistItemsUrl)).json();
     Array.prototype.push.apply(returnResult.items, videosResult.items);
   }
@@ -37,22 +36,25 @@ async function getTimes(playlistItemsJson) {
 }
 
 export async function loadPlaylist(playlistId: string) {
-  const playlistItemsUrl = getUrl('https://www.googleapis.com/youtube/v3/playlistItems',
+  const playlistItemsUrl = getUrl(
+    'https://www.googleapis.com/youtube/v3/playlistItems',
     {
       playlistId,
       maxResults: 50,
       part: 'snippet',
       key: YoutubeKey,
-    });
+    }
+  );
   const playlistItemsJson = await fetchAll(playlistItemsUrl);
   const videosJson = await getTimes(playlistItemsJson);
   const contentDetailsLookup = {};
-  videosJson.items.forEach((x) => {
+  videosJson.items.forEach(x => {
     contentDetailsLookup[x.id] = x.contentDetails;
   });
   // Filter out any private/deleted videos which we can't access contentDetails for
-  const filteredPlaylistItems = playlistItemsJson.items
-    .filter(x => contentDetailsLookup[x.snippet.resourceId.videoId]);
+  const filteredPlaylistItems = playlistItemsJson.items.filter(
+    x => contentDetailsLookup[x.snippet.resourceId.videoId]
+  );
   const annotatedPlaylist = filteredPlaylistItems.map(x => ({
     youtubeId: x.snippet.resourceId.videoId,
     duration: contentDetailsLookup[x.snippet.resourceId.videoId].duration,
@@ -66,15 +68,17 @@ async function printPlaylist(playlistId) {
 }
 
 async function loadChannel(channelName, searchQuery) {
-  const channelUrl = getUrl('https://www.googleapis.com/youtube/v3/channels',
-    {
-      forUsername: channelName,
-      part: 'snippet',
-      key: YoutubeKey,
-    });
+  const channelUrl = getUrl('https://www.googleapis.com/youtube/v3/channels', {
+    forUsername: channelName,
+    part: 'snippet',
+    key: YoutubeKey,
+  });
   const channelJson = await (await fetch(channelUrl)).json();
-  const channelId = channelJson.items.length ? channelJson.items[0].id : channelName;
-  const channelSearchUrl = getUrl('https://www.googleapis.com/youtube/v3/search',
+  const channelId = channelJson.items.length
+    ? channelJson.items[0].id
+    : channelName;
+  const channelSearchUrl = getUrl(
+    'https://www.googleapis.com/youtube/v3/search',
     {
       channelId,
       part: 'id,snippet',
@@ -82,24 +86,29 @@ async function loadChannel(channelName, searchQuery) {
       key: YoutubeKey,
       maxResults: 50,
       type: 'video',
-    });
+    }
+  );
   const channelSearchJson = await fetchAll(channelSearchUrl);
   const videosJson = await getTimes(channelSearchJson);
   const contentDetailsLookup = {};
-  videosJson.items.forEach((x) => {
+  videosJson.items.forEach(x => {
     contentDetailsLookup[x.id] = x.contentDetails;
   });
-  const annotatedPlaylist = channelSearchJson.items.map((x) => {
-    const id = x.id instanceof Object ? x.id.videoId : x.snippet.resourceId.videoId;
+  const annotatedPlaylist = channelSearchJson.items.map(x => {
+    const id = x.id instanceof Object
+      ? x.id.videoId
+      : x.snippet.resourceId.videoId;
     return {
       youtubeId: id,
-      duration: contentDetailsLookup[id] ? contentDetailsLookup[id].duration : null,
+      duration: contentDetailsLookup[id]
+        ? contentDetailsLookup[id].duration
+        : null,
       title: x.snippet.title,
       publishedAt: x.snippet.publishedAt,
     };
   });
   const searchKeywords = searchQuery.split(' ');
-  const filteredPlaylist = annotatedPlaylist.filter((x) => {
+  const filteredPlaylist = annotatedPlaylist.filter(x => {
     for (const keyword of searchKeywords) {
       if (x.title.indexOf(keyword) === -1) {
         return false;
@@ -107,7 +116,9 @@ async function loadChannel(channelName, searchQuery) {
     }
     return true;
   });
-  const sortedPlaylist = _.sortBy(filteredPlaylist, 'publishedAt').map(x => _.omit(x, 'publishedAt'));
+  const sortedPlaylist = _.sortBy(filteredPlaylist, 'publishedAt').map(x =>
+    _.omit(x, 'publishedAt')
+  );
   return sortedPlaylist;
 }
 

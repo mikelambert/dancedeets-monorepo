@@ -5,23 +5,18 @@
  */
 
 import React from 'react';
-import {
-  AppState,
-} from 'react-native';
-import {
-  trackEnd,
-  trackStart,
-} from '../store/track';
+import { AppState } from 'react-native';
+import { trackEnd, trackStart } from '../store/track';
 
 type TimeTrackerProps = {
-  eventName: string;
-  eventValue: string;
+  eventName: string,
+  eventValue: string,
 };
 
 export class TimeTracker extends React.Component {
   props: TimeTrackerProps & {
-    children?: React.Element<*>;
-  }
+    children?: React.Element<*>,
+  };
 
   constructor(props: TimeTrackerProps) {
     super(props);

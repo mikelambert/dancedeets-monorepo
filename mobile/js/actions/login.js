@@ -4,32 +4,17 @@
  * @flow
  */
 
-import {
-  AccessToken,
-  LoginManager,
-} from 'react-native-fbsdk';
-import {
-  ActionSheetIOS,
-  Alert,
-  Platform,
-} from 'react-native';
-import {
-  defineMessages,
-  intlShape,
-} from 'react-intl';
+import { AccessToken, LoginManager } from 'react-native-fbsdk';
+import { ActionSheetIOS, Alert, Platform } from 'react-native';
+import { defineMessages, intlShape } from 'react-intl';
 import zip from 'lodash/zip';
 import { trackLogin, trackLogout } from '../store/track';
 import { performRequest } from '../api/fb';
-import {
-  auth,
-  userInfo,
-} from '../api/dancedeets';
+import { auth, userInfo } from '../api/dancedeets';
 import type { Action, Dispatch, ThunkAction } from './types';
 import Geocoder from '../api/geocoder';
 import { format } from '../events/formatAddress';
-import {
-  setSkippedLogin,
-} from '../login/savedState';
+import { setSkippedLogin } from '../login/savedState';
 
 const messages = defineMessages({
   logoutButton: {
@@ -48,7 +33,6 @@ const messages = defineMessages({
     description: 'Prompt to show the user before logging out',
   },
 });
-
 
 export function loginStartOnboard(): Action {
   return {
@@ -80,8 +64,15 @@ export function loginComplete(token: AccessToken): ThunkAction {
 export async function loadUserData(dispatch: Dispatch) {
   const requests = {
     profile: performRequest('GET', 'me', { fields: 'id,name' }),
-    picture: performRequest('GET', 'me/picture', { type: 'large', fields: 'url', redirect: '0' }),
-    friends: performRequest('GET', 'me/friends', { limit: '1000', fields: 'id' }),
+    picture: performRequest('GET', 'me/picture', {
+      type: 'large',
+      fields: 'url',
+      redirect: '0',
+    }),
+    friends: performRequest('GET', 'me/friends', {
+      limit: '1000',
+      fields: 'id',
+    }),
     ddUser: userInfo(),
   };
 
@@ -90,7 +81,7 @@ export async function loadUserData(dispatch: Dispatch) {
   const values = await Promise.all(promises);
   // Now await each of them and stick them in our user Object
   const user: any = {};
-  zip(keys, values).forEach((kv) => {
+  zip(keys, values).forEach(kv => {
     user[kv[0]] = kv[1];
   });
 
@@ -110,7 +101,7 @@ export async function loadUserData(dispatch: Dispatch) {
 }
 
 export function skipLogin(): ThunkAction {
-  return (dispatch) => {
+  return dispatch => {
     setSkippedLogin(true);
     return dispatch({
       type: 'LOGIN_SKIPPED',
@@ -119,7 +110,7 @@ export function skipLogin(): ThunkAction {
 }
 
 export function logOut(): ThunkAction {
-  return (dispatch) => {
+  return dispatch => {
     LoginManager.logOut();
     setSkippedLogin(false);
     trackLogout();
@@ -141,11 +132,14 @@ export function logOutWithPrompt(intl: intlShape): ThunkAction {
       ActionSheetIOS.showActionSheetWithOptions(
         {
           title: intl.formatMessage(messages.logoutPrompt, { name }),
-          options: [intl.formatMessage(messages.logoutButton), intl.formatMessage(messages.cancelButton)],
+          options: [
+            intl.formatMessage(messages.logoutButton),
+            intl.formatMessage(messages.cancelButton),
+          ],
           destructiveButtonIndex: 0,
           cancelButtonIndex: 1,
         },
-        (buttonIndex) => {
+        buttonIndex => {
           if (buttonIndex === 0) {
             dispatch(logOut());
           }
@@ -157,7 +151,10 @@ export function logOutWithPrompt(intl: intlShape): ThunkAction {
         intl.formatMessage(messages.logoutPrompt, { name }),
         [
           { text: intl.formatMessage(messages.cancelButton) },
-          { text: intl.formatMessage(messages.logoutButton), onPress: () => dispatch(logOut()) },
+          {
+            text: intl.formatMessage(messages.logoutButton),
+            onPress: () => dispatch(logOut()),
+          },
         ]
       );
     }

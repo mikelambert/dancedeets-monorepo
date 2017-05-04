@@ -11,7 +11,20 @@ function isCommonModule(module) {
     return false;
   }
   const common = [
-    'jquery', 'bootstrap', 'raven-js', '/react/', 'react-dom', 'moment', 'lodash', 'babel-polyfill', '/intl/', 'intl-', 'url', 'fbjs', 'js/messages', 'source-map',
+    'jquery',
+    'bootstrap',
+    'raven-js',
+    '/react/',
+    'react-dom',
+    'moment',
+    'lodash',
+    'babel-polyfill',
+    '/intl/',
+    'intl-',
+    'url',
+    'fbjs',
+    'js/messages',
+    'source-map',
   ];
   // Throw all CSS into the common module, so it doesn't require multiple downloads or blocking pages on subsequent navigations
   if (userRequest.endsWith('css')) {
@@ -62,12 +75,14 @@ const config = {
     new ExtractTextPlugin({
       filename: '../css/[name].css',
     }),
-    ifProd(new webpack.optimize.UglifyJsPlugin({
-      sourceMap: true,
-      compress: {
-        warnings: true
-      },
-    })),
+    ifProd(
+      new webpack.optimize.UglifyJsPlugin({
+        sourceMap: true,
+        compress: {
+          warnings: true,
+        },
+      })
+    ),
     new webpack.optimize.CommonsChunkPlugin({
       name: 'common',
       minChunks: isCommonModule,
@@ -91,17 +106,18 @@ const config = {
           loader: 'babel-loader',
           options: {
             presets: [
-              ["latest", {
-                "es2015": {
-                  "modules": false,
+              [
+                'latest',
+                {
+                  es2015: {
+                    modules: false,
+                  },
                 },
-              }],
+              ],
               'react',
               'stage-0',
             ],
-            plugins: [
-              'transform-flow-strip-types',
-            ],
+            plugins: ['transform-flow-strip-types'],
           },
         },
       },
@@ -110,7 +126,7 @@ const config = {
         use: ExtractTextPlugin.extract({
           fallback: 'style-loader',
           use: [
-            {loader: 'css-loader?sourceMap'},
+            { loader: 'css-loader?sourceMap' },
             {
               loader: 'postcss-loader',
               options: {
@@ -143,7 +159,7 @@ const config = {
                 ],
               },
             },
-            {loader: 'sass-loader?sourceMap'},
+            { loader: 'sass-loader?sourceMap' },
           ],
         }),
       },
@@ -164,7 +180,7 @@ const config = {
               optimizationLevel: 7,
               interlaced: false,
             },
-          }
+          },
         ],
       },
       {

@@ -5,27 +5,26 @@
  */
 
 import React from 'react';
-import {
-  Image,
-  Platform,
-  StyleSheet,
-} from 'react-native';
+import { Image, Platform, StyleSheet } from 'react-native';
 
 export default class LaunchScreen extends React.Component {
   props: {
-    children?: Array<React.Component<*, *, *>>;
-  }
+    children?: Array<React.Component<*, *, *>>,
+  };
 
   render() {
-    return (<Image
-      style={styles.container}
-      source={{ uri: Platform.OS === 'ios' ? 'launch_screen.jpg' : 'launch_screen' }}
-    >
-      {this.props.children}
-    </Image>);
+    return (
+      <Image
+        style={styles.container}
+        source={{
+          uri: Platform.OS === 'ios' ? 'launch_screen.jpg' : 'launch_screen',
+        }}
+      >
+        {this.props.children}
+      </Image>
+    );
   }
 }
-
 
 let styles = StyleSheet.create({
   container: {

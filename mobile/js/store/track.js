@@ -32,7 +32,7 @@ import type { Event } from 'dancedeets-common/js/events/models';
 import { performRequest } from '../api/fb';
 import type { Action } from '../actions/types';
 
-let trackingEnabled = (DeviceInfo.getModel() != 'Calypso AppCrawler');
+let trackingEnabled = DeviceInfo.getModel() != 'Calypso AppCrawler';
 
 export function disableTracking() {
   trackingEnabled = false;
@@ -51,7 +51,7 @@ function initMixpanel() {
 
   Mixpanel.sharedInstanceWithToken(mixpanelApiKey);
   if (DeviceInfo.getModel() == 'Calypso AppCrawler') {
-    Mixpanel.registerSuperProperties({'$ignore': true});
+    Mixpanel.registerSuperProperties({ $ignore: true });
   }
   // Don't use global track(), since this is a Mixpanel-only event:
   Mixpanel.track('$app_open');
@@ -59,7 +59,7 @@ function initMixpanel() {
 
 initMixpanel();
 
-type Params = {[key: string]: string | number};
+type Params = { [key: string]: string | number };
 
 function firebaseSafe(str) {
   if (str != null) {
@@ -88,7 +88,11 @@ export function track(eventName: string, params: ?Params) {
   }
 }
 
-export function trackWithEvent(eventName: string, event: Event, params: ?Params) {
+export function trackWithEvent(
+  eventName: string,
+  event: Event,
+  params: ?Params
+) {
   if (!trackingEnabled) {
     return;
   }
@@ -106,8 +110,8 @@ export function trackWithEvent(eventName: string, event: Event, params: ?Params)
 }
 
 export type TokenRegistration = {
-  os: 'android' | 'os';
-  token: string;
+  os: 'android' | 'os',
+  token: string,
 };
 
 export function setupMixpanelToken(tokenData: TokenRegistration) {
@@ -127,7 +131,9 @@ async function setupPersonProperties() {
   Mixpanel.identify(token.userID);
   Analytics.setUserId(token.userID);
 
-  const user = await performRequest('GET', 'me', { fields: 'id,name,first_name,last_name,gender,locale,timezone,email,link' });
+  const user = await performRequest('GET', 'me', {
+    fields: 'id,name,first_name,last_name,gender,locale,timezone,email,link',
+  });
   const now = new Date().toISOString().slice(0, 19); // Trim off the fractional seconds from our ISO?UTC time
 
   Crashlytics.setUserName(user.name);
@@ -175,8 +181,7 @@ export function trackLogout() {
   Analytics.setUserId(null);
 }
 
-export function trackDispatches(action: Action): void {
-}
+export function trackDispatches(action: Action): void {}
 
 export function trackStart(eventName: string) {
   Mixpanel.timeEvent(eventName);

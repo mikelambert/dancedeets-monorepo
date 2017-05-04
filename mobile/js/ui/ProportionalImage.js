@@ -4,18 +4,16 @@
  * @flow
  */
 import React from 'react';
-import {
-  Animated,
-  View,
-} from 'react-native';
-import SyntheticEvent from 'react-native/Libraries/Renderer/src/renderers/shared/stack/event/SyntheticEvent';
+import { Animated, View } from 'react-native';
+import SyntheticEvent
+  from 'react-native/Libraries/Renderer/src/renderers/shared/stack/event/SyntheticEvent';
 
 type Props = {
-  originalWidth: number;
-  originalHeight: number;
-  style?: any;
-  duration: number;
-  resizeDirection: 'width' | 'height';
+  originalWidth: number,
+  originalHeight: number,
+  style?: any,
+  duration: number,
+  resizeDirection: 'width' | 'height',
 };
 
 export default class ProportionalImage extends React.Component {
@@ -28,10 +26,10 @@ export default class ProportionalImage extends React.Component {
 
   state: {
     dimensions: ?{
-      width: number;
-      height: number;
-    };
-    opacity: any;
+      width: number,
+      height: number,
+    },
+    opacity: any,
   };
 
   constructor(props: Props) {
@@ -96,12 +94,17 @@ export default class ProportionalImage extends React.Component {
     return (
       <View
         onLayout={this.onLayout}
-        ref={(x) => { this.view = x; }}
+        ref={x => {
+          this.view = x;
+        }}
         {...this.props}
       >
         <Animated.Image
           {...this.props}
-          style={[{ opacity: this.state.opacity, ...resizedDimensions }, this.props.style]}
+          style={[
+            { opacity: this.state.opacity, ...resizedDimensions },
+            this.props.style,
+          ]}
           onLoad={this.onLoad}
         />
       </View>

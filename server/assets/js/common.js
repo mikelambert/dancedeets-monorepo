@@ -28,12 +28,12 @@ import appInstallPromos from './app-install-promo';
 import { queryOn } from './dom';
 /* eslint-enable import/first */
 
-Raven
-  .config('https://f966ae7e625249f8a36d42e8b521dc2f@sentry.io/159133', {
-    environment: window.prodMode ? 'prod' : 'dev',
-  })
-  .install();
-window.addEventListener('unhandledrejection', event => Raven.captureException(event.reason));
+Raven.config('https://f966ae7e625249f8a36d42e8b521dc2f@sentry.io/159133', {
+  environment: window.prodMode ? 'prod' : 'dev',
+}).install();
+window.addEventListener('unhandledrejection', event =>
+  Raven.captureException(event.reason)
+);
 
 fbSetup(window.fbPermissions, window.fbAppId, window.baseHostname);
 
@@ -46,7 +46,7 @@ if (window.showSmartBanner) {
 }
 
 jQuery(document).ready(() => {
-  queryOn('.mega-menu .dropdown-menu', 'click', (e) => {
+  queryOn('.mega-menu .dropdown-menu', 'click', e => {
     e.stopPropagation();
   });
 

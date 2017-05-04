@@ -5,43 +5,23 @@
  */
 
 import React from 'react';
-import {
-  Dimensions,
-  Text,
-  TouchableHighlight,
-  View,
-} from 'react-native';
-import {
-  injectIntl,
-  defineMessages,
-} from 'react-intl';
+import { Dimensions, Text, TouchableHighlight, View } from 'react-native';
+import { injectIntl, defineMessages } from 'react-intl';
 import FitImage from 'react-native-fit-image';
-import type {
-  Dispatch,
-  User,
-} from '../actions/types';
+import type { Dispatch, User } from '../actions/types';
 import { FeedListView } from '../learn/BlogList';
-import type {
-  BattleCategory,
-  BattleEvent,
-  Signup,
-} from './models';
-import {
-  getCategories,
-} from './models';
-import {
-  Button,
-} from '../ui';
+import type { BattleCategory, BattleEvent, Signup } from './models';
+import { getCategories } from './models';
+import { Button } from '../ui';
 import CategorySummaryCard from './categorySummaryCard';
 
 const boxMargin = 5;
 
-
 class _BattleEventHostView extends React.Component {
   props: {
-    battleId: string;
-    battleEvent: BattleEvent;
-    onSelected: (category: BattleCategory) => void;
+    battleId: string,
+    battleEvent: BattleEvent,
+    onSelected: (category: BattleCategory) => void,
   };
 
   constructor(props: any) {
@@ -51,39 +31,45 @@ class _BattleEventHostView extends React.Component {
   }
 
   renderHeader() {
-    return (<FitImage
-      source={{ uri: this.props.battleEvent.headerImageUrl }}
-      // TODO: set this height dynamically, perhaps from the json data
-      style={{ flex: 1, width: Dimensions.get('window').width, height: 200 }}
-    />);
+    return (
+      <FitImage
+        source={{ uri: this.props.battleEvent.headerImageUrl }}
+        // TODO: set this height dynamically, perhaps from the json data
+        style={{ flex: 1, width: Dimensions.get('window').width, height: 200 }}
+      />
+    );
   }
 
   renderRow(category: BattleCategory) {
-    return (<Button
-      onPress={() => {
-        this.props.onSelected(category);
-      }}
-      style={{
-        margin: boxMargin,
-        borderRadius: 10,
-      }}
-      caption={category.display.name}
-    />);
+    return (
+      <Button
+        onPress={() => {
+          this.props.onSelected(category);
+        }}
+        style={{
+          margin: boxMargin,
+          borderRadius: 10,
+        }}
+        caption={category.display.name}
+      />
+    );
   }
 
   render() {
     let view = null;
     if (this.props.battleEvent) {
-      view = (<FeedListView
-        items={getCategories(this.props.battleEvent)}
-        renderHeader={this.renderHeader}
-        renderRow={this.renderRow}
-        contentContainerStyle={{
-          alignSelf: 'center',
-          justifyContent: 'flex-start',
-          alignItems: 'center',
-        }}
-      />);
+      view = (
+        <FeedListView
+          items={getCategories(this.props.battleEvent)}
+          renderHeader={this.renderHeader}
+          renderRow={this.renderRow}
+          contentContainerStyle={{
+            alignSelf: 'center',
+            justifyContent: 'flex-start',
+            alignItems: 'center',
+          }}
+        />
+      );
     }
     return view;
   }

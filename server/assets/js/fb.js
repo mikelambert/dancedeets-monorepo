@@ -10,7 +10,11 @@ import { queryOn } from './dom';
 
 export const fbLoadEmitter = new EventEmitter();
 
-export function fbSetup(fbPermissions: string, fbAppId: string, baseHostname: string) {
+export function fbSetup(
+  fbPermissions: string,
+  fbAppId: string,
+  baseHostname: string
+) {
   let loginPressed = false;
 
   const cookieOptions = {
@@ -86,22 +90,30 @@ export function fbSetup(fbPermissions: string, fbAppId: string, baseHostname: st
       window.mixpanel.track('Logout');
       // Seems the logout callback isn't being called, so ensure we delete the cookie here
       deleteLoginCookies();
-      FB.getLoginStatus((response) => {
+      FB.getLoginStatus(response => {
         if (response.status === 'connected') {
-          FB.logout((/* response */) => {
-            window.location.reload();
-          });
+          FB.logout(
+            (/* response */) => {
+              window.location.reload();
+            }
+          );
         } else {
           window.location.reload();
         }
       });
     }
 
-    FB.init({ version: 'v2.8', appId: fbAppId, status: true, cookie: true, xfbml: true });
+    FB.init({
+      version: 'v2.8',
+      appId: fbAppId,
+      status: true,
+      cookie: true,
+      xfbml: true,
+    });
     window.hasCalledFbInit = true;
     fbLoadEmitter.emit('fb-load');
     FB.Event.subscribe('auth.statusChange', handleStatusChange);
-    FB.getLoginStatus((response) => {
+    FB.getLoginStatus(response => {
       handleStatusChange(response);
     });
 

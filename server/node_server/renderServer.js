@@ -17,19 +17,18 @@ import { mjml2html } from 'mjml';
 const parser = yargs()
   .option('p', {
     alias: 'port',
-    description: 'Specify the server\'s port',
+    description: "Specify the server's port",
     default: 8090,
   })
   .option('a', {
     alias: 'address',
-    description: 'Specify the server\'s address',
+    description: "Specify the server's address",
     default: '127.0.0.1',
   })
   .help('h')
   .alias('h', 'help')
   .strict();
 const argv = parser.parse(process.argv);
-
 
 // Ensure support for loading files that contain ES6+7 & JSX
 // Disabled for now, since we cannot use this in a webpack-compiled script
@@ -42,9 +41,11 @@ const PORT = argv.port;
 const app = express();
 const server = new http.Server(app);
 
-app.use(bodyParser.json({
-  limit: '10mb', // This is an internal-only server, so we can really handle arbitrary amounts of data
-}));
+app.use(
+  bodyParser.json({
+    limit: '10mb', // This is an internal-only server, so we can really handle arbitrary amounts of data
+  })
+);
 
 app.get('/', (req, res) => {
   res.end('React render server');
@@ -56,7 +57,7 @@ function serializedHead(component) {
   }
   const head = component.HelmetRewind();
   const serialized = {};
-  Object.keys(head).forEach((key) => {
+  Object.keys(head).forEach(key => {
     serialized[key] = head[key].toString();
   });
   return serialized;
@@ -125,7 +126,6 @@ app.post('/render', (req, res) => {
   });
 });
 
-
 app.post('/mjml-render', (req, res) => {
   const mjmlData = req.body.mjml;
   const html = mjml2html(mjmlData);
@@ -135,5 +135,7 @@ app.post('/mjml-render', (req, res) => {
   });
 });
 server.listen(PORT, ADDRESS, () => {
-  console.log(`Node (react, mjml) server listening at http://${ADDRESS}:${PORT}`);
+  console.log(
+    `Node (react, mjml) server listening at http://${ADDRESS}:${PORT}`
+  );
 });

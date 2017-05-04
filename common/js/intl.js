@@ -5,10 +5,7 @@
  */
 
 import React from 'react';
-import {
-  addLocaleData,
-  IntlProvider,
-} from 'react-intl';
+import { addLocaleData, IntlProvider } from 'react-intl';
 import areIntlLocalesSupported from 'intl-locales-supported';
 import moment from 'moment';
 
@@ -78,7 +75,9 @@ function intlProviderArgs(currentLocale) {
     finalLocale = defaultLocale;
   }
 
-  console.log(`Configure requested with locale ${currentLocale}, using locale: ${finalLocale}`);
+  console.log(
+    `Configure requested with locale ${currentLocale}, using locale: ${finalLocale}`
+  );
   moment.locale(finalLocale);
   return {
     defaultLocale,
@@ -94,21 +93,19 @@ function intlProviderArgs(currentLocale) {
 // intlProviderArgs('de-XX').locale == 'en' // fallback
 
 export function constructIntl(currentLocale: string) {
-  return new IntlProvider(intlProviderArgs(currentLocale), {}).getChildContext().intl;
+  return new IntlProvider(intlProviderArgs(currentLocale), {}).getChildContext()
+    .intl;
 }
-
 
 class Internationalize extends React.Component {
   props: {
-    currentLocale: string;
-    children?: Array<React.Element<*>>;
-  }
+    currentLocale: string,
+    children?: Array<React.Element<*>>,
+  };
 
   render() {
     return (
-      <IntlProvider
-        {...intlProviderArgs(this.props.currentLocale)}
-      >
+      <IntlProvider {...intlProviderArgs(this.props.currentLocale)}>
         {this.props.children}
       </IntlProvider>
     );
@@ -121,9 +118,11 @@ class Internationalize extends React.Component {
 // zh-TW
 // etc
 export function intlWeb(Wrapped: any) {
-  return (props: Object) => <Internationalize {...props}>
-    <Wrapped {...props} />
-  </Internationalize>;
+  return (props: Object) => (
+    <Internationalize {...props}>
+      <Wrapped {...props} />
+    </Internationalize>
+  );
 }
 
 // currentLocale here is of the form:
@@ -132,10 +131,12 @@ export function intlWeb(Wrapped: any) {
 // zh-Hant-US
 // etc
 export function intl(Wrapped: any, currentLocale: string) {
-  return (props: Object) => <Internationalize
-    currentLocale={currentLocale}
-    defaultLocale={defaultLocale}
-  >
-    <Wrapped {...props} />
-  </Internationalize>;
+  return (props: Object) => (
+    <Internationalize
+      currentLocale={currentLocale}
+      defaultLocale={defaultLocale}
+    >
+      <Wrapped {...props} />
+    </Internationalize>
+  );
 }

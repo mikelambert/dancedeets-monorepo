@@ -8,51 +8,45 @@ import jQuery from 'jquery';
 import React from 'react';
 import Scroll from 'react-scroll';
 import dateFormat from 'date-fns/format';
-import {
-  intlWeb,
-} from 'dancedeets-common/js/intl';
+import { intlWeb } from 'dancedeets-common/js/intl';
 import {
   MultiSelectList,
   generateUniformState,
   caseInsensitiveSort,
   getSelected,
 } from './MultiSelectList';
-import type {
-  MultiSelectState,
-} from './MultiSelectList';
+import type { MultiSelectState } from './MultiSelectList';
 
 type SerializedStudioClass = {
-  url: string;
-  name: string;
-  location: string;
-  startTime: string;
-  categories: Array<string>;
-  key: string;
-  sponsor?: string;
+  url: string,
+  name: string,
+  location: string,
+  startTime: string,
+  categories: Array<string>,
+  key: string,
+  sponsor?: string,
 };
 type StudioClassType = {
-  url: string;
-  name: string;
-  location: string;
+  url: string,
+  name: string,
+  location: string,
   // I think this eslint warning has a bug
   /* eslint-disable react/no-unused-prop-types */
-  startTime: Date;
-  categories: Array<string>;
-  key: string;
-  sponsor?: string;
+  startTime: Date,
+  categories: Array<string>,
+  key: string,
+  sponsor?: string,
   /* eslint-enable react/no-unused-prop-types */
 };
 
 class StudioImage extends React.Component {
   props: {
-    studioName: string;
-  }
+    studioName: string,
+  };
 
   render() {
     const imageSrc = `${this.context.imagePath + this.props.studioName.toLowerCase()}.png`;
-    return (
-      <img src={imageSrc} role="presentation" width="16" height="16" />
-    );
+    return <img src={imageSrc} role="presentation" width="16" height="16" />;
   }
 }
 StudioImage.contextTypes = {
@@ -65,8 +59,8 @@ function getDayId(dayName) {
 
 class DayLink extends React.Component {
   props: {
-    dayName: string;
-  }
+    dayName: string,
+  };
 
   constructor(props) {
     super(props);
@@ -84,13 +78,23 @@ class DayLink extends React.Component {
 
   render() {
     return (
-      <a href={`#${getDayId(this.props.dayName)}`} onClick={this.onClick}>{this.props.dayName}</a>
+      <a href={`#${getDayId(this.props.dayName)}`} onClick={this.onClick}>
+        {this.props.dayName}
+      </a>
     );
   }
 }
 
 // TODO: i18n?
-const dayOfWeekNames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+const dayOfWeekNames = [
+  'Sunday',
+  'Monday',
+  'Tuesday',
+  'Wednesday',
+  'Thursday',
+  'Friday',
+  'Saturday',
+];
 
 class DayNavMenu extends React.Component {
   render() {
@@ -100,16 +104,12 @@ class DayNavMenu extends React.Component {
         weeks.push(<span key={`|-${i}`}> | </span>);
       }
       const dayName = dayOfWeekNames[i];
-      weeks.push(
-        <DayLink
-          key={dayName}
-          dayName={dayName}
-        />
-      );
+      weeks.push(<DayLink key={dayName} dayName={dayName} />);
     }
     return (
-      <span className="navmenu-height headline-underline">Jump to:
-      {' '}
+      <span className="navmenu-height headline-underline">
+        Jump to:
+        {' '}
         {weeks}
       </span>
     );
@@ -118,13 +118,13 @@ class DayNavMenu extends React.Component {
 
 class SearchBar extends React.Component {
   props: {
-    initialStudios: Array<string>;
-    initialStyles: Array<string>;
-    studios: MultiSelectState;
-    styles: MultiSelectState;
-    teacher: string;
-    onChange: (key: ValidKey, newState: any) => void;
-  }
+    initialStudios: Array<string>,
+    initialStyles: Array<string>,
+    studios: MultiSelectState,
+    styles: MultiSelectState,
+    teacher: string,
+    onChange: (key: ValidKey, newState: any) => void,
+  };
   _styles: MultiSelectList;
   _studios: MultiSelectList;
   _teacher: HTMLInputElement;
@@ -137,7 +137,9 @@ class SearchBar extends React.Component {
           <MultiSelectList
             list={this.props.initialStyles}
             selected={this.props.styles}
-            ref={(x) => { this._styles = x; }}
+            ref={x => {
+              this._styles = x;
+            }}
             onChange={state => this.props.onChange('styles', state)}
           />
         </div>
@@ -146,9 +148,13 @@ class SearchBar extends React.Component {
           <MultiSelectList
             list={this.props.initialStudios}
             selected={this.props.studios}
-            ref={(x) => { this._studios = x; }}
+            ref={x => {
+              this._studios = x;
+            }}
             onChange={state => this.props.onChange('studios', state)}
-            itemRenderer={item => <span><StudioImage key="image" studioName={item} />{item}</span>}
+            itemRenderer={item => (
+              <span><StudioImage key="image" studioName={item} />{item}</span>
+            )}
           />
         </div>
         <div>
@@ -157,8 +163,11 @@ class SearchBar extends React.Component {
             className="form-control"
             type="text"
             value={this.props.teacher}
-            ref={(x) => { this._teacher = x; }}
-            onChange={state => this.props.onChange('teacher', this._teacher.value)}
+            ref={x => {
+              this._teacher = x;
+            }}
+            onChange={state =>
+              this.props.onChange('teacher', this._teacher.value)}
           />
         </div>
       </form>
@@ -168,10 +177,10 @@ class SearchBar extends React.Component {
 
 class ClassSummary extends React.Component {
   props: {
-    styles: Array<string>;
-    studios: Array<string>;
-    teacher: string;
-  }
+    styles: Array<string>,
+    studios: Array<string>,
+    teacher: string,
+  };
 
   render() {
     let classes = this.props.styles.join(', ');
@@ -197,8 +206,8 @@ class ClassSummary extends React.Component {
 
 class StudioClass extends React.Component {
   props: {
-    studio_class: StudioClassType;
-  }
+    studio_class: StudioClassType,
+  };
 
   render() {
     return (
@@ -214,18 +223,18 @@ class StudioClass extends React.Component {
 
 class DayHeader extends React.Component {
   props: {
-    date: Date;
-    useAnchor: boolean;
-  }
+    date: Date,
+    useAnchor: boolean,
+  };
 
   render() {
-    let contents = (
-      <h4>{dateFormat(this.props.date, 'ddd MMM D')}</h4>
-    );
+    let contents = <h4>{dateFormat(this.props.date, 'ddd MMM D')}</h4>;
     if (this.props.useAnchor) {
       contents = (
         <div>
-          <Scroll.Element name={getDayId(dateFormat(this.props.date, 'dddd'))} />
+          <Scroll.Element
+            name={getDayId(dateFormat(this.props.date, 'dddd'))}
+          />
           {contents}
         </div>
       );
@@ -236,36 +245,32 @@ class DayHeader extends React.Component {
 
 class TimeHeader extends React.Component {
   props: {
-    datetime: Date;
-  }
+    datetime: Date,
+  };
 
   render() {
-    return (
-      <b>{dateFormat(this.props.datetime, 'h:mma')}</b>
-    );
+    return <b>{dateFormat(this.props.datetime, 'h:mma')}</b>;
   }
 }
 
 class ClassTitle extends React.Component {
   props: {
-    filteredClasses: Array<StudioClassType>;
-  }
+    filteredClasses: Array<StudioClassType>,
+  };
   render() {
     const filteredClasses = this.props.filteredClasses;
-    return (
-      <div><b>Showing {filteredClasses.length} classes:</b></div>
-    );
+    return <div><b>Showing {filteredClasses.length} classes:</b></div>;
   }
 }
 
 class SponsoredSummary extends React.Component {
   props: {
-    classes: Array<StudioClassType>;
-  }
+    classes: Array<StudioClassType>,
+  };
 
   render() {
     const sponsoredStudios = {};
-    this.props.classes.forEach((studioClass) => {
+    this.props.classes.forEach(studioClass => {
       const sponsor = studioClass.sponsor;
       if (!sponsor) {
         return;
@@ -281,21 +286,23 @@ class SponsoredSummary extends React.Component {
       const studioList = Object.keys(sponsoredStudios.MINDBODY);
       sponsorHtml.push(
         <div key="MINDBODY" style={{ margin: '1em 0em', fontStyle: 'italic' }}>
-          Studios Powered by <a href="http://www.mindbodyonline.com">MINDBODY</a>:{' '}
+          Studios Powered by
+          {' '}
+          <a href="http://www.mindbodyonline.com">MINDBODY</a>
+          :
+          {' '}
           {studioList.join(', ')}
         </div>
       );
     }
-    return (
-      <div>{sponsorHtml}</div>
-    );
+    return <div>{sponsorHtml}</div>;
   }
 }
 
 class StudioClasses extends React.Component {
   props: {
-    filteredClasses: Array<StudioClassType>;
-  }
+    filteredClasses: Array<StudioClassType>,
+  };
 
   render() {
     const rows = [];
@@ -304,7 +311,11 @@ class StudioClasses extends React.Component {
     const aNamedDays = {};
     goodClasses.forEach((studioClass: StudioClassType) => {
       // Section header rendering
-      if (lastStudioClass === null || dateFormat(studioClass.startTime, 'YYYY-MM-DD') !== dateFormat(lastStudioClass.startTime, 'YYYY-MM-DD')) {
+      if (
+        lastStudioClass === null ||
+        dateFormat(studioClass.startTime, 'YYYY-MM-DD') !==
+          dateFormat(lastStudioClass.startTime, 'YYYY-MM-DD')
+      ) {
         const day = dateFormat(studioClass.startTime, 'dddd');
         rows.push(
           <DayHeader
@@ -315,11 +326,22 @@ class StudioClasses extends React.Component {
         );
         aNamedDays[day] = true;
       }
-      if (lastStudioClass === null || dateFormat(studioClass.startTime, 'HH:mm') !== dateFormat(lastStudioClass.startTime, 'HH:mm')) {
-        rows.push(<TimeHeader datetime={studioClass.startTime} key={dateFormat(studioClass.startTime, 'YYYY-MM-DDTHH:mm')} />);
+      if (
+        lastStudioClass === null ||
+        dateFormat(studioClass.startTime, 'HH:mm') !==
+          dateFormat(lastStudioClass.startTime, 'HH:mm')
+      ) {
+        rows.push(
+          <TimeHeader
+            datetime={studioClass.startTime}
+            key={dateFormat(studioClass.startTime, 'YYYY-MM-DDTHH:mm')}
+          />
+        );
       }
       // Class rendering
-      rows.push(<StudioClass studio_class={studioClass} key={studioClass.key} />);
+      rows.push(
+        <StudioClass studio_class={studioClass} key={studioClass.key} />
+      );
       lastStudioClass = studioClass;
     });
     return <div>{rows}</div>;
@@ -342,15 +364,22 @@ function toggleSearchBar() {
 
 function parseISO(str) {
   const s = str.split(/\D/);
-  return new Date(Number(s[0]), Number(s[1]) - 1, Number(s[2]), Number(s[3]), Number(s[4]), Number(s[5]), 0);
+  return new Date(
+    Number(s[0]),
+    Number(s[1]) - 1,
+    Number(s[2]),
+    Number(s[3]),
+    Number(s[4]),
+    Number(s[5]),
+    0
+  );
 }
 
 type AppProps = {
   imagePath: string,
-  classes: Array<SerializedStudioClass>;
-  location: string;
+  classes: Array<SerializedStudioClass>,
+  location: string,
 };
-
 
 type ValidKey = 'styles' | 'studios' | 'teacher';
 
@@ -358,27 +387,27 @@ class App extends React.Component {
   props: AppProps;
 
   state: {
-    styles: MultiSelectState;
-    studios: MultiSelectState;
-    teacher: string;
-    initialClasses: Array<StudioClassType>;
-    initialStudios: Array<string>;
-    initialStyles: Array<string>;
-  }
+    styles: MultiSelectState,
+    studios: MultiSelectState,
+    teacher: string,
+    initialClasses: Array<StudioClassType>,
+    initialStudios: Array<string>,
+    initialStyles: Array<string>,
+  };
 
   constructor(props: AppProps) {
     super(props);
     const studiosSet = {};
     const stylesSet = {};
-    this.props.classes.forEach((studioClass) => {
+    this.props.classes.forEach(studioClass => {
       studiosSet[studioClass.location] = true;
-      studioClass.categories.forEach((category) => {
+      studioClass.categories.forEach(category => {
         if (category !== 'All-Styles') {
           stylesSet[category] = true;
         }
       });
     });
-    const newClasses = this.props.classes.map((studioClass) => {
+    const newClasses = this.props.classes.map(studioClass => {
       const { startTime, ...rest } = studioClass;
       return { startTime: parseISO(startTime), ...rest };
     });
@@ -432,13 +461,22 @@ class App extends React.Component {
         const e = jqueryEvent.originalEvent;
         const touchobj = e.changedTouches[0];
         const elapsedTime = new Date().getTime() - startTime; // get time elapsed
-        const validSwipe = elapsedTime <= allowedTime && Math.abs(touchobj.pageY - startY) > 50 && Math.abs(touchobj.pageX - startX) <= 100;
+        const validSwipe =
+          elapsedTime <= allowedTime &&
+          Math.abs(touchobj.pageY - startY) > 50 &&
+          Math.abs(touchobj.pageX - startX) <= 100;
         if (validSwipe) {
-          if (jQuery('#navbar-collapsable').is(':visible') && touchobj.pageY < startY) {
+          if (
+            jQuery('#navbar-collapsable').is(':visible') &&
+            touchobj.pageY < startY
+          ) {
             toggleSearchBar();
             e.preventDefault();
           }
-          if (!jQuery('#navbar-collapsable').is(':visible') && touchobj.pageY > startY) {
+          if (
+            !jQuery('#navbar-collapsable').is(':visible') &&
+            touchobj.pageY > startY
+          ) {
             toggleSearchBar();
             e.preventDefault();
           }
@@ -463,20 +501,32 @@ class App extends React.Component {
   filteredClasses() {
     const goodClasses = [];
     const state = this.state;
-    this.state.initialClasses.forEach((studioClass) => {
+    this.state.initialClasses.forEach(studioClass => {
       // Class filtering logic
       if (state.teacher) {
-        if (studioClass.name.toLowerCase().indexOf(state.teacher.toLowerCase()) === -1) {
+        if (
+          studioClass.name
+            .toLowerCase()
+            .indexOf(state.teacher.toLowerCase()) === -1
+        ) {
           return;
         }
       }
-      if (getSelected(state.studios).filter(studio => studio === studioClass.location).length === 0) {
+      if (
+        getSelected(state.studios).filter(
+          studio => studio === studioClass.location
+        ).length === 0
+      ) {
         return;
       }
-      if (getSelected(state.styles).filter((searchStyle) => {
-        const classHasStyle = studioClass.categories.filter(classStyle => searchStyle === classStyle);
-        return classHasStyle.length > 0;
-      }).length === 0) {
+      if (
+        getSelected(state.styles).filter(searchStyle => {
+          const classHasStyle = studioClass.categories.filter(
+            classStyle => searchStyle === classStyle
+          );
+          return classHasStyle.length > 0;
+        }).length === 0
+      ) {
         return;
       }
       goodClasses.push(studioClass);
@@ -501,46 +551,46 @@ class App extends React.Component {
               zIndex: 50,
             }}
           >
-            <table><tbody><tr><td style={{ width: '100%' }}>
-              <div id="navbar-collapsable" className="navmenu-height">
-                <b>{this.props.location} Street Dance Classes</b>
-                <SearchBar
-                  initialStudios={this.state.initialStudios}
-                  initialStyles={this.state.initialStyles}
-                  location={this.props.location}
-                  styles={this.state.styles}
-                  studios={this.state.studios}
-                  teacher={this.state.teacher}
-                  onChange={this.onChange}
-                />
-              </div>
-              <div id="navbar-collapsed-summary">
-                <ClassSummary
-                  styles={getSelected(this.state.styles)}
-                  studios={getSelected(this.state.studios)}
-                  teacher={this.state.teacher}
-                />
-              </div>
-              <DayNavMenu />
-            </td><td style={{ verticalAlign: 'bottom' }}>
-              <i // eslint-disable-line jsx-a11y/no-static-element-interactions
-                id="navbar-collapse-button-icon"
-                onClick={toggleSearchBar}
-                className="fa fa-caret-square-o-up fa-lg"
-              />
-            </td></tr></tbody></table>
+            <table>
+              <tbody>
+                <tr>
+                  <td style={{ width: '100%' }}>
+                    <div id="navbar-collapsable" className="navmenu-height">
+                      <b>{this.props.location} Street Dance Classes</b>
+                      <SearchBar
+                        initialStudios={this.state.initialStudios}
+                        initialStyles={this.state.initialStyles}
+                        location={this.props.location}
+                        styles={this.state.styles}
+                        studios={this.state.studios}
+                        teacher={this.state.teacher}
+                        onChange={this.onChange}
+                      />
+                    </div>
+                    <div id="navbar-collapsed-summary">
+                      <ClassSummary
+                        styles={getSelected(this.state.styles)}
+                        studios={getSelected(this.state.studios)}
+                        teacher={this.state.teacher}
+                      />
+                    </div>
+                    <DayNavMenu />
+                  </td><td style={{ verticalAlign: 'bottom' }}>
+                    <i // eslint-disable-line jsx-a11y/no-static-element-interactions
+                      id="navbar-collapse-button-icon"
+                      onClick={toggleSearchBar}
+                      className="fa fa-caret-square-o-up fa-lg"
+                    />
+                  </td>
+                </tr>
+              </tbody>
+            </table>
           </div>
         </div>
         <div>
-          <ClassTitle
-            filteredClasses={filteredClasses}
-          />
-          <StudioClasses
-            filteredClasses={filteredClasses}
-          />
-          <SponsoredSummary
-            classes={this.state.initialClasses}
-          />
+          <ClassTitle filteredClasses={filteredClasses} />
+          <StudioClasses filteredClasses={filteredClasses} />
+          <SponsoredSummary classes={this.state.initialClasses} />
         </div>
       </div>
     );

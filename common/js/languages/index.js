@@ -7,7 +7,7 @@
 import languages from './data';
 
 const languageMap = {};
-languages.forEach((x) => {
+languages.forEach(x => {
   languageMap[x.iso] = x;
 });
 export default languageMap;

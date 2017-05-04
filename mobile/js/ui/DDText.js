@@ -12,9 +12,7 @@ import {
   StyleSheet,
 } from 'react-native';
 import RealAutolink from 'react-native-autolink';
-import {
-  semiNormalize,
-} from '../ui/normalize';
+import { semiNormalize } from '../ui/normalize';
 
 export function Text({ style, ...props }: Object): RealText {
   return <RealText style={[styles.font, styles.text, style]} {...props} />;
@@ -46,7 +44,7 @@ export function TextInput({ style, ...props }: Object): TextInput {
 export const defaultFont = {
   // Disable this due to alignment issues on iOS:
   // https://github.com/facebook/react-native/issues/8540
-  fontFamily: (Platform.OS === 'android') ? 'Roboto' : null,
+  fontFamily: Platform.OS === 'android' ? 'Roboto' : null,
   fontWeight: '300',
   color: 'white',
   backgroundColor: 'transparent',

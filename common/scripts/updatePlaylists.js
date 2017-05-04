@@ -9,29 +9,25 @@ import fetch from 'node-fetch';
 import * as fs from 'fs';
 import zip from 'lodash/zip';
 import findIndex from 'lodash/findIndex';
-import {
-  loadPlaylist,
-} from './fetchYoutubeVideos';
-import {
-  findVideoDimensions,
-  getUrl,
-  YoutubeKey,
-} from './_youtube';
+import { loadPlaylist } from './fetchYoutubeVideos';
+import { findVideoDimensions, getUrl, YoutubeKey } from './_youtube';
 
 async function loadPlaylistData(playlistIds) {
-  const playlistUrl = getUrl('https://www.googleapis.com/youtube/v3/playlists',
+  const playlistUrl = getUrl(
+    'https://www.googleapis.com/youtube/v3/playlists',
     {
       id: playlistIds.join(','),
       part: 'snippet',
       key: YoutubeKey,
-    });
+    }
+  );
   const playlistJson = await (await fetch(playlistUrl)).json();
   return playlistJson;
 }
 
 function transformTitle(title) {
   const toTrim = [
-    ' | Beginner\'s Guide',
+    " | Beginner's Guide",
     ' | Beginners Guide',
     ' | Power Move Basics',
     ' | Top Rock Basics',
@@ -42,35 +38,45 @@ function transformTitle(title) {
     'How to ',
   ];
   let newTitle = title;
-  toTrim.forEach((x) => {
+  toTrim.forEach(x => {
     newTitle = newTitle.replace(x, '');
   });
   return newTitle;
 }
 
 type PlaylistInfo = {
-  id: string;
-  name: string;
-  playlist: string;
+  id: string,
+  name: string,
+  playlist: string,
 };
 
 async function reloadPlaylists(playlistInfos: Array<PlaylistInfo>) {
-  const playlistsJson = await loadPlaylistData(playlistInfos.map(x => x.playlist));
+  const playlistsJson = await loadPlaylistData(
+    playlistInfos.map(x => x.playlist)
+  );
   for (const playlist of playlistsJson.items) {
-    const playlistInfo = playlistInfos.filter(x => x.playlist === playlist.id)[0];
+    const playlistInfo = playlistInfos.filter(
+      x => x.playlist === playlist.id
+    )[0];
 
     console.log(playlistInfo.name);
 
     const tutorialItemsJson = await loadPlaylist(playlist.id);
-    const videoDimensions = await findVideoDimensions(tutorialItemsJson.map(x => x.youtubeId));
-    const tempTutorialItems = tutorialItemsJson.map((x) => ({
+    const videoDimensions = await findVideoDimensions(
+      tutorialItemsJson.map(x => x.youtubeId)
+    );
+    const tempTutorialItems = tutorialItemsJson.map(x => ({
       ...x,
       title: transformTitle(x.title),
       ...videoDimensions[x.youtubeId],
     }));
     // De-dupe the array on ids, keeping only the first element (where pos == found-itself)
-    const finalTutorialItems = tempTutorialItems.filter(function(item, pos, self) {
-        return findIndex(self, (x) => x.id == item.id) == pos;
+    const finalTutorialItems = tempTutorialItems.filter(function(
+      item,
+      pos,
+      self
+    ) {
+      return findIndex(self, x => x.id == item.id) == pos;
     });
     const tutorial = {
       id: playlistInfo.id,
@@ -78,7 +84,10 @@ async function reloadPlaylists(playlistInfos: Array<PlaylistInfo>) {
       author: 'VincaniTV Teachers',
       style: 'break',
       language: 'en',
-      thumbnail: playlist.snippet.thumbnails.standard.url.replace('sddefault', 'mqdefault'),
+      thumbnail: playlist.snippet.thumbnails.standard.url.replace(
+        'sddefault',
+        'mqdefault'
+      ),
       sections: [
         {
           title: 'Tutorials',

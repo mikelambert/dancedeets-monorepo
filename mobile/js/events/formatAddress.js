@@ -6,27 +6,27 @@
 
 export type Address = {
   position: {
-    lat: number;
-    lng: number;
-  };
-  locale: string;
+    lat: number,
+    lng: number,
+  },
+  locale: string,
 
-  thoroughfare: string;
-  subThoroughfare: string;
+  thoroughfare: string,
+  subThoroughfare: string,
 
-  subLocality: string;
-  locality: string;
-  postalCode: string;
+  subLocality: string,
+  locality: string,
+  postalCode: string,
 
   // Why do we sometimes get one or the other?! :(
-  subAdminArea: string;
-  subAdministrativeArea: string;
+  subAdminArea: string,
+  subAdministrativeArea: string,
   // Why do we sometimes get one or the other?! :(
-  adminArea: string;
-  administrativeArea: string;
+  adminArea: string,
+  administrativeArea: string,
 
-  country: string;
-  countryCode: string;
+  country: string,
+  countryCode: string,
 };
 
 /*
@@ -64,40 +64,39 @@ export type Address = {
 }
 */
 
-
 export function format(address: Address) {
   const components = [];
   // We really need *something* smaller than the AdminArea/State level.
   // Especially since there might not be a State sometimes (ie Helsinki, Finland).
   if (address.locality != null) {
-      // Sometimes there is only a Locality:
-      // LatLong=35.6583942,139.6990928
-      // SubLocality=null
-      // Locality=Shibuya
-      // SubAdminArea=null
-      // AdminArea=Tokyo
-      //
-      // Los Altos Hills, CA (ignores Santa Clara County in subadminarea)
+    // Sometimes there is only a Locality:
+    // LatLong=35.6583942,139.6990928
+    // SubLocality=null
+    // Locality=Shibuya
+    // SubAdminArea=null
+    // AdminArea=Tokyo
+    //
+    // Los Altos Hills, CA (ignores Santa Clara County in subadminarea)
     components.push(address.locality);
   } else if (address.subAdminArea != null) {
     components.push(address.subAdminArea);
   } else if (address.subAdministrativeArea != null) {
-      // Sometimes there is only a SubAdminArea:
-      // LatLong=60.1836354,24.9206748
-      // SubLocality=null
-      // Locality=null
-      // SubAdminArea=Helsinki
-      // AdminArea=null
+    // Sometimes there is only a SubAdminArea:
+    // LatLong=60.1836354,24.9206748
+    // SubLocality=null
+    // Locality=null
+    // SubAdminArea=Helsinki
+    // AdminArea=null
     components.push(address.subAdministrativeArea);
   } else if (address.subLocality != null) {
-      // Sometimes there is only a SubLocality:
-      // LatLong=40.790278,-73.959722
-      // SubLocality=Dundas
-      // Locality=null
-      // SubAdminArea=null
-      // AdminArea=Ontario
-      // Dundas appears to be the smallest unit of geography,
-      // so we check for it in the third if-block, hoping to find a proper city first.
+    // Sometimes there is only a SubLocality:
+    // LatLong=40.790278,-73.959722
+    // SubLocality=Dundas
+    // Locality=null
+    // SubAdminArea=null
+    // AdminArea=Ontario
+    // Dundas appears to be the smallest unit of geography,
+    // so we check for it in the third if-block, hoping to find a proper city first.
     components.push(address.subLocality);
   }
   // Sometimes there is too much data, and we want to drop a lot of it:

@@ -6,23 +6,21 @@
 
 import React from 'react';
 
-import type {
-  Cover,
-} from 'dancedeets-common/js/events/models';
+import type { Cover } from 'dancedeets-common/js/events/models';
 
 export type RequiredImage = {
-  source: number; // aka required package
-  width: number;
-  height: number;
+  source: number, // aka required package
+  width: number,
+  height: number,
 };
 type ClientCover = Cover | RequiredImage;
 
 export class AmpImage extends React.Component {
   props: {
-    picture: ClientCover;
-    amp?: ?boolean;
-    width?: string;
-  }
+    picture: ClientCover,
+    amp?: ?boolean,
+    width?: string,
+  };
 
   render() {
     const { picture, amp, width, ...otherProps } = this.props;

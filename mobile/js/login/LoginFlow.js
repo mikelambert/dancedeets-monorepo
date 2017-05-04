@@ -5,10 +5,7 @@
  */
 
 import React from 'react';
-import {
-  Platform,
-  View,
-} from 'react-native';
+import { Platform, View } from 'react-native';
 import { connect } from 'react-redux';
 import LaunchScreen from './LaunchScreen';
 import OnboardingFlow from './OnboardingFlow';
@@ -17,9 +14,9 @@ import { autoLoginAtStartup } from '../actions';
 class LoginFlow extends React.Component {
   props: {
     // Self-managed props
-    isOnboarding: boolean;
-    autoLoginAtStartup: () => void;
-  }
+    isOnboarding: boolean,
+    autoLoginAtStartup: () => void,
+  };
 
   componentDidMount() {
     this.props.autoLoginAtStartup();
@@ -53,6 +50,5 @@ export default connect(
   }),
   dispatch => ({
     autoLoginAtStartup: () => autoLoginAtStartup(dispatch),
-  }),
+  })
 )(LoginFlow);
-

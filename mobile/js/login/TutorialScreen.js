@@ -5,33 +5,15 @@
  */
 
 import React from 'react';
-import {
-  Dimensions,
-  Image,
-  StyleSheet,
-  View,
-} from 'react-native';
+import { Dimensions, Image, StyleSheet, View } from 'react-native';
 import Carousel from 'react-native-carousel';
 import LinearGradient from 'react-native-linear-gradient';
-import {
-  defineMessages,
-  injectIntl,
-  intlShape,
-} from 'react-intl';
+import { defineMessages, injectIntl, intlShape } from 'react-intl';
 import LaunchScreen from './LaunchScreen';
 import LoginButtonWithAlternate from './LoginButtonWithAlternate';
-import {
-  BottomFade,
-  normalize,
-  Text,
-} from '../ui';
+import { BottomFade, normalize, Text } from '../ui';
 
-const PAGES = [
-  'Page 0',
-  'Page 1',
-  'Page 2',
-  'Page 3',
-];
+const PAGES = ['Page 0', 'Page 1', 'Page 2', 'Page 3'];
 
 const messages = defineMessages({
   'tutorial.0.header': {
@@ -61,29 +43,33 @@ const messages = defineMessages({
   },
   'tutorial.2.body': {
     id: 'tutorial.2.body',
-    defaultMessage: 'Share your event\nShare your city\'s events\nReach dancers worldwide\nand join our 90,000 events',
+    defaultMessage: "Share your event\nShare your city's events\nReach dancers worldwide\nand join our 90,000 events",
     description: 'Intro screen list of features',
   },
   nologin: {
     id: 'tutorial.nologin',
-    defaultMessage: 'Don\'t want to login?',
-    description: 'Link to a page for users who don\'t want to FB login',
+    defaultMessage: "Don't want to login?",
+    description: "Link to a page for users who don't want to FB login",
   },
 });
 
 class _TopView extends React.Component {
   props: {
-    page: number;
+    page: number,
 
     // Self-managed props
-    intl: intlShape;
-  }
+    intl: intlShape,
+  };
   render() {
     const page = this.props.page;
-    const header = this.props.intl.formatMessage(messages[`tutorial.${page}.header`]);
-    const body = this.props.intl.formatMessage(messages[`tutorial.${page}.body`]);
+    const header = this.props.intl.formatMessage(
+      messages[`tutorial.${page}.header`]
+    );
+    const body = this.props.intl.formatMessage(
+      messages[`tutorial.${page}.body`]
+    );
     return (
-      <View style={styles.centerItems} >
+      <View style={styles.centerItems}>
         <Text style={styles.onboardHeader}>{header.toUpperCase()}</Text>
         <Text style={styles.onboardListItem}>{body}</Text>
       </View>
@@ -94,30 +80,32 @@ const TopView = injectIntl(_TopView);
 
 class _TutorialScreen extends React.Component {
   props: {
-    onLogin: () => void;
-    onNoLogin: (name: string) => void;
+    onLogin: () => void,
+    onNoLogin: (name: string) => void,
 
     // Self-managed props
-    intl: intlShape;
-  }
+    intl: intlShape,
+  };
 
   renderPage(pageId: number) {
     const contents = this.renderPageContents(pageId);
-    return (<View
-      style={{
-        flex: 1,
-        // We need to have a black background,
-        // because on android there is a slight delay in loading images,
-        // and the background android style can show through.
-        backgroundColor: 'black',
-        // Explicitly set the dimensions of each page in our carousel.
-        // Without this, the layout gets wonky.
-        width: Dimensions.get('window').width,
-      }}
-      key={pageId}
-    >
-      {contents}
-    </View>);
+    return (
+      <View
+        style={{
+          flex: 1,
+          // We need to have a black background,
+          // because on android there is a slight delay in loading images,
+          // and the background android style can show through.
+          backgroundColor: 'black',
+          // Explicitly set the dimensions of each page in our carousel.
+          // Without this, the layout gets wonky.
+          width: Dimensions.get('window').width,
+        }}
+        key={pageId}
+      >
+        {contents}
+      </View>
+    );
   }
 
   renderPageContents(pageID: number) {
@@ -129,46 +117,56 @@ class _TutorialScreen extends React.Component {
     if (pageID === 0) {
       return <LaunchScreen>{bottomFade}</LaunchScreen>;
     } else if (pageID === 1) {
-      return (<Image
-        style={styles.container}
-        source={require('./images/Onboard1.jpg')}
-      >
-        {bottomFade}
-        <Image
-          style={[styles.container, styles.centerItems]}
-          source={require('./images/Onboard1Text.png')}
-        >
-          <TopView page={0} />
-        </Image>
-      </Image>);
-    } else if (pageID === 2) {
-      return (<Image
-        style={[styles.container, styles.centerItems]}
-        source={require('./images/Onboard2.jpg')}
-      >
-        {bottomFade}
-        <TopView page={1} />
-      </Image>);
-    } else if (pageID === 3) {
-      return (<View style={styles.container}>
+      return (
         <Image
           style={styles.container}
-          source={require('./images/Onboard3.jpg')}
+          source={require('./images/Onboard1.jpg')}
         >
           {bottomFade}
           <Image
-            style={[styles.container, styles.centerItems, styles.topAndBottom]}
-            source={require('./images/Onboard3Text.png')}
+            style={[styles.container, styles.centerItems]}
+            source={require('./images/Onboard1Text.png')}
           >
-            <TopView page={2} />
-            <LoginButtonWithAlternate
-              onLogin={this.props.onLogin}
-              onNoLogin={this.props.onNoLogin}
-              noLoginText={this.props.intl.formatMessage(messages.nologin)}
-            />
+            <TopView page={0} />
           </Image>
         </Image>
-      </View>);
+      );
+    } else if (pageID === 2) {
+      return (
+        <Image
+          style={[styles.container, styles.centerItems]}
+          source={require('./images/Onboard2.jpg')}
+        >
+          {bottomFade}
+          <TopView page={1} />
+        </Image>
+      );
+    } else if (pageID === 3) {
+      return (
+        <View style={styles.container}>
+          <Image
+            style={styles.container}
+            source={require('./images/Onboard3.jpg')}
+          >
+            {bottomFade}
+            <Image
+              style={[
+                styles.container,
+                styles.centerItems,
+                styles.topAndBottom,
+              ]}
+              source={require('./images/Onboard3Text.png')}
+            >
+              <TopView page={2} />
+              <LoginButtonWithAlternate
+                onLogin={this.props.onLogin}
+                onNoLogin={this.props.onNoLogin}
+                noLoginText={this.props.intl.formatMessage(messages.nologin)}
+              />
+            </Image>
+          </Image>
+        </View>
+      );
     }
     console.error('Unknown page render: ', pageID);
     return null;
@@ -176,16 +174,18 @@ class _TutorialScreen extends React.Component {
 
   render() {
     const pages = PAGES.map((val, i) => this.renderPage(i));
-    return (<Carousel
-      indicatorOffset={0}
-      indicatorColor="#FFFFFF"
-      indicatorSize={25}
-      indicatorSpace={15}
-      animate={false}
-      loop={false}
-    >
-      {pages}
-    </Carousel>);
+    return (
+      <Carousel
+        indicatorOffset={0}
+        indicatorColor="#FFFFFF"
+        indicatorSize={25}
+        indicatorSpace={15}
+        animate={false}
+        loop={false}
+      >
+        {pages}
+      </Carousel>
+    );
   }
 }
 export default injectIntl(_TutorialScreen);

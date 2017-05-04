@@ -13,10 +13,7 @@ import {
   TouchableHighlight,
   View,
 } from 'react-native';
-import {
-  injectIntl,
-  defineMessages,
-} from 'react-intl';
+import { injectIntl, defineMessages } from 'react-intl';
 import { connect } from 'react-redux';
 import { GiftedForm } from 'react-native-gifted-form';
 import type {
@@ -38,36 +35,14 @@ import {
   semiNormalize,
   Text,
 } from '../ui';
-import {
-  purpleColors,
-  yellowColors,
-} from '../Colors';
-import {
-  navigatePop,
-  navigatePush,
-} from '../actions';
-import type {
-  Dispatch,
-  User,
-} from '../actions/types';
-import {
-  categoryDisplayName,
-} from './models';
-import type {
-  BattleCategory,
-  BattleEvent,
-  Signup,
-} from './models';
-import type {
-  Navigatable,
-} from '../containers/generateNavigator';
-import {
-  eventRegister,
-  eventUnregister,
-} from '../api/dancedeets';
-import {
-  TrackFirebase,
-} from '../firestack';
+import { purpleColors, yellowColors } from '../Colors';
+import { navigatePop, navigatePush } from '../actions';
+import type { Dispatch, User } from '../actions/types';
+import { categoryDisplayName } from './models';
+import type { BattleCategory, BattleEvent, Signup } from './models';
+import type { Navigatable } from '../containers/generateNavigator';
+import { eventRegister, eventUnregister } from '../api/dancedeets';
+import { TrackFirebase } from '../firestack';
 import CategorySignupScreen from './categorySignupScreen';
 import CategoryView from './categoryView';
 import BattleEventView from './battleEventView';
@@ -81,11 +56,11 @@ type GiftedNavigationScene = NavigationScene & {
   route: GiftedNavigationRoute,
 };
 type FakeNavigator = {
-  pop: () => void;
+  pop: () => void,
 };
 type BattleNavigationRoute =
   // Choose which battle you are dealing with
-    { key: 'BattleSelector', title: string }
+  | { key: 'BattleSelector', title: string }
   // Show the list of categories at the event
   | { key: 'BattleSignups', title: string, battleId: string }
   // Show the category and its contestants
@@ -94,47 +69,62 @@ type BattleNavigationRoute =
   | { key: 'Register', title: string, battleId: string, categoryId: number };
 
 type GiftedNavigationRoute =
-    NavigationRoute
+  | NavigationRoute
   | BattleNavigationRoute
   | {
-    renderScene: (navigator: FakeNavigator) => React.Element<*>,
-  };
+      renderScene: (navigator: FakeNavigator) => React.Element<*>,
+    };
 
 class _BattleSelector extends React.Component {
   props: {
-    navigatable: Navigatable;    
-  }
+    navigatable: Navigatable,
+  };
 
   onBattleSelected(battleId: string) {
-    this.props.navigatable.onNavigate({ key: 'BattleSignups', title: `${battleId} Registration`, battleId });
+    this.props.navigatable.onNavigate({
+      key: 'BattleSignups',
+      title: `${battleId} Registration`,
+      battleId,
+    });
   }
 
   onBattleHostSelected(battleId: string) {
-    this.props.navigatable.onNavigate({ key: 'BattleHostView', title: `${battleId} MC Host View`, battleId });
+    this.props.navigatable.onNavigate({
+      key: 'BattleHostView',
+      title: `${battleId} MC Host View`,
+      battleId,
+    });
   }
 
   render() {
     const battleId = 'justeDebout';
-    return <HorizontalView style={{alignItems: 'center'}}>
-      <Text>{battleId}</Text>
-      <Button onPress={() => this.onBattleSelected(battleId)} caption="Dancer" />
-      <Button onPress={() => this.onBattleHostSelected(battleId)} caption="Host" />
-    </HorizontalView>;
+    return (
+      <HorizontalView style={{ alignItems: 'center' }}>
+        <Text>{battleId}</Text>
+        <Button
+          onPress={() => this.onBattleSelected(battleId)}
+          caption="Dancer"
+        />
+        <Button
+          onPress={() => this.onBattleHostSelected(battleId)}
+          caption="Host"
+        />
+      </HorizontalView>
+    );
   }
 }
 const BattleSelector = connect(
-  state => ({
-  }),
+  state => ({}),
   (dispatch: Dispatch, props) => ({
     navigatePop: route => dispatch(navigatePop('EVENT_SIGNUPS_NAV')),
-  }),
+  })
 )(injectIntl(_BattleSelector));
 
 class SelectedBattleBrackets extends React.Component {
   props: {
-    battleEvent: BattleEvent;
-    route: BattleNavigationRoute;
-    navigatable: Navigatable;
+    battleEvent: BattleEvent,
+    route: BattleNavigationRoute,
+    navigatable: Navigatable,
   };
 
   constructor(props) {
@@ -145,11 +135,18 @@ class SelectedBattleBrackets extends React.Component {
 
   onRegister(category) {
     const displayName = categoryDisplayName(category);
-    this.props.navigatable.onNavigate({ key: 'Register', title: `${displayName} Registration`, battleId: this.props.battleEvent.id, categoryId: category.id });
+    this.props.navigatable.onNavigate({
+      key: 'Register',
+      title: `${displayName} Registration`,
+      battleId: this.props.battleEvent.id,
+      categoryId: category.id,
+    });
   }
 
   async onUnregister(category, teamToDelete) {
-    const [teamKey] = Object.entries(category.signups || {}).filter(([key, team]) => team === teamToDelete)[0];
+    const [teamKey] = Object.entries(category.signups || {}).filter(
+      ([key, team]) => team === teamToDelete
+    )[0];
     await eventUnregister(this.props.battleEvent.id, category.id, teamKey);
   }
 
@@ -164,44 +161,60 @@ class SelectedBattleBrackets extends React.Component {
     switch (route.key) {
       // Host Views
       case 'BattleHostView':
-        return <BattleEventHostView
-          battleEvent={battleEvent}
-          onSelected={(selectedCategory) => {
-          // trackWithEvent('View Event', event);
-            const displayName = categoryDisplayName(selectedCategory);
-            this.props.navigatable.onNavigate({ key: 'BattleHostCategory', title: displayName, battleId: this.props.battleEvent.id, categoryId: selectedCategory.id });
-          }}
-          />;
+        return (
+          <BattleEventHostView
+            battleEvent={battleEvent}
+            onSelected={selectedCategory => {
+              // trackWithEvent('View Event', event);
+              const displayName = categoryDisplayName(selectedCategory);
+              this.props.navigatable.onNavigate({
+                key: 'BattleHostCategory',
+                title: displayName,
+                battleId: this.props.battleEvent.id,
+                categoryId: selectedCategory.id,
+              });
+            }}
+          />
+        );
       case 'BattleHostCategory':
         category = this.props.battleEvent.categories[route.categoryId];
-        return (<BattleHostCategoryView
-          category={category}
-        />);
+        return <BattleHostCategoryView category={category} />;
       // Dancer Views
       case 'BattleSignups':
-        return (<BattleEventView
-          battleEvent={battleEvent}
-          onSelected={(selectedCategory) => {
-          // trackWithEvent('View Event', event);
-            const displayName = categoryDisplayName(selectedCategory);
-            this.props.navigatable.onNavigate({ key: 'Category', title: displayName, battleId: this.props.battleEvent.id, categoryId: selectedCategory.id });
-          }}
-          onRegister={this.onRegister}
-          onUnregister={this.onUnregister}
-        />);
+        return (
+          <BattleEventView
+            battleEvent={battleEvent}
+            onSelected={selectedCategory => {
+              // trackWithEvent('View Event', event);
+              const displayName = categoryDisplayName(selectedCategory);
+              this.props.navigatable.onNavigate({
+                key: 'Category',
+                title: displayName,
+                battleId: this.props.battleEvent.id,
+                categoryId: selectedCategory.id,
+              });
+            }}
+            onRegister={this.onRegister}
+            onUnregister={this.onUnregister}
+          />
+        );
       case 'Category':
         category = this.props.battleEvent.categories[route.categoryId];
-        return (<CategoryView
-          category={category}
-          onRegister={this.onRegister}
-          onUnregister={this.onUnregister}
-        />);
+        return (
+          <CategoryView
+            category={category}
+            onRegister={this.onRegister}
+            onUnregister={this.onUnregister}
+          />
+        );
       case 'Register':
         category = this.props.battleEvent.categories[route.categoryId];
-        return (<CategorySignupScreen
-          battle={this.props.battleEvent}
-          category={category}
-        />);
+        return (
+          <CategorySignupScreen
+            battle={this.props.battleEvent}
+            category={category}
+          />
+        );
       default:
         return null;
     }
@@ -210,12 +223,12 @@ class SelectedBattleBrackets extends React.Component {
 
 class _BattleBrackets extends React.Component {
   props: {
-    sceneProps: GiftedNavigationSceneRendererProps;
-    navigatable: Navigatable;
+    sceneProps: GiftedNavigationSceneRendererProps,
+    navigatable: Navigatable,
 
     // Self-managed props
-    navigatePop: () => void;
-  }
+    navigatePop: () => void,
+  };
 
   fakeNavigator() {
     return {
@@ -237,32 +250,32 @@ class _BattleBrackets extends React.Component {
       case 'BattleSelector':
         return <BattleSelector navigatable={this.props.navigatable} />;
       default:
-        return <TrackFirebase
-          path={`events/${route.battleId}`}
-          renderContents={(battleEvent) => (
-            <SelectedBattleBrackets
-              battleEvent={battleEvent}
-              route={route}
-              navigatable={this.props.navigatable}
-            />)
-          }
-        />;
+        return (
+          <TrackFirebase
+            path={`events/${route.battleId}`}
+            renderContents={battleEvent => (
+              <SelectedBattleBrackets
+                battleEvent={battleEvent}
+                route={route}
+                navigatable={this.props.navigatable}
+              />
+            )}
+          />
+        );
     }
   }
 }
 export const BattleBrackets = connect(
-  state => ({
-  }),
+  state => ({}),
   (dispatch: Dispatch, props) => ({
     navigatePop: route => dispatch(navigatePop('EVENT_SIGNUPS_NAV')),
-  }),
+  })
 )(injectIntl(_BattleBrackets));
 
 const checkSize = 20;
 const checkMargin = 10;
 let styles = StyleSheet.create({
-  container: {
-  },
+  container: {},
   miniThumbnail: {
     height: 50,
     flex: 1,

@@ -5,25 +5,18 @@
  */
 
 import React from 'react';
-import {
-  StyleSheet,
-  View,
-} from 'react-native';
-import {
-  semiNormalize,
-} from './normalize';
-import {
-  Text,
-} from './DDText';
+import { StyleSheet, View } from 'react-native';
+import { semiNormalize } from './normalize';
+import { Text } from './DDText';
 
 const fontSize = semiNormalize(18);
 const degrees = 30;
 
 export default class RibbonBanner extends React.Component {
   props: {
-    text: string;
-    width: number;
-    overlayBackgroundColor: string;
+    text: string,
+    width: number,
+    overlayBackgroundColor: string,
   };
 
   static defaultProps = {
@@ -32,10 +25,10 @@ export default class RibbonBanner extends React.Component {
 
   state: {
     dimensions: ?{
-      width: number;
-      height: number;
-    };
-  }
+      width: number,
+      height: number,
+    },
+  };
 
   constructor(props: Object) {
     super(props);
@@ -69,20 +62,32 @@ export default class RibbonBanner extends React.Component {
       // To ensure that it basically touches the bottom-right corner at all times
       // But on small views, we don't want it going off to the right.
       // So only use this calculation to move things left, if we can. But clamp at 0.
-      left: Math.min(0, -dimensions.width / 2 + (dimensions.height / 2 / divisor)),
-    }
-    return <View style={placement}><View style={styles.redRibbon}>
-      <Text style={[styles.redRibbonText]}>{this.props.text}</Text>
-    </View></View>;
+      left: Math.min(
+        0,
+        -dimensions.width / 2 + dimensions.height / 2 / divisor
+      ),
+    };
+    return (
+      <View style={placement}>
+        <View style={styles.redRibbon}>
+          <Text style={[styles.redRibbonText]}>{this.props.text}</Text>
+        </View>
+      </View>
+    );
   }
 
   render() {
     const overlayStyle = {
       backgroundColor: this.props.overlayBackgroundColor,
     };
-    return <View style={[styles.disabledOverlay, overlayStyle]} onLayout={this.onLayout}>
-      {this.renderBanner()}
-    </View>;
+    return (
+      <View
+        style={[styles.disabledOverlay, overlayStyle]}
+        onLayout={this.onLayout}
+      >
+        {this.renderBanner()}
+      </View>
+    );
   }
 }
 

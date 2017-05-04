@@ -59,17 +59,18 @@ module.exports = {
           loader: 'babel-loader',
           options: {
             presets: [
-              ["latest", {
-                "es2015": {
-                  "modules": false,
+              [
+                'latest',
+                {
+                  es2015: {
+                    modules: false,
+                  },
                 },
-              }],
+              ],
               'react',
               'stage-0',
             ],
-            plugins: [
-              'transform-flow-strip-types',
-            ],
+            plugins: ['transform-flow-strip-types'],
           },
         },
       },
@@ -103,9 +104,9 @@ module.exports = {
       {
         test: /\.s?css$/,
         use: [
-          {loader: 'css-loader?sourceMap'},
-          {loader: 'postcss-loader'},
-          {loader: 'sass-loader?sourceMap'},
+          { loader: 'css-loader?sourceMap' },
+          { loader: 'postcss-loader' },
+          { loader: 'sass-loader?sourceMap' },
         ],
       },
       {

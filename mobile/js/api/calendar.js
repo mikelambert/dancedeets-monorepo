@@ -4,19 +4,13 @@
  * @flow
  */
 
-import {
-  Alert,
-  Platform,
-} from 'react-native';
+import { Alert, Platform } from 'react-native';
 import Permissions from 'react-native-permissions';
 import CalendarEventsIOS from 'react-native-calendar-events';
 import SendIntentAndroid from 'react-native-send-intent';
 import moment from 'moment';
 import { Event } from 'dancedeets-common/js/events/models';
-import {
-  OkAlert,
-  OkCancelAlert,
-} from '../ui';
+import { OkAlert, OkCancelAlert } from '../ui';
 
 function getDescription(event: Event): string {
   return `${event.getUrl()}\n\n${event.description}`;
@@ -40,7 +34,10 @@ async function addIOS(event: Event) {
   if (status === 'undetermined') {
     try {
       // TODO(localization)
-      await OkCancelAlert('Add to Calendar', 'To add this event to your calendar, you need to allow access to your calendar.');
+      await OkCancelAlert(
+        'Add to Calendar',
+        'To add this event to your calendar, you need to allow access to your calendar.'
+      );
       status = await CalendarEventsIOS.authorizeEventStore();
     } catch (error) {
       console.log('Canceled: Add to Calendar');
@@ -53,7 +50,10 @@ async function addIOS(event: Event) {
     } else if (status === 'denied') {
       try {
         // TODO(localization)
-        await OkCancelAlert('Cannot Access Calendar', 'Please open Settings to allow Calendar permissions.');
+        await OkCancelAlert(
+          'Cannot Access Calendar',
+          'Please open Settings to allow Calendar permissions.'
+        );
         if (await Permissions.canOpenSettings()) {
           Permissions.openSettings();
         }
@@ -85,9 +85,14 @@ function androidDate(date: Date) {
   // 2016-01-01 01:00
   const tzOffset = new Date().getTimezoneOffset() * 60000;
   try {
-    return new Date(date - tzOffset).toISOString().replace(/T/, ' ').slice(0, 16);
+    return new Date(date - tzOffset)
+      .toISOString()
+      .replace(/T/, ' ')
+      .slice(0, 16);
   } catch (e) {
-    throw new Error(`Date: new Date(${date.toString()} - ${tzOffset}) returned invalid date`);
+    throw new Error(
+      `Date: new Date(${date.toString()} - ${tzOffset}) returned invalid date`
+    );
   }
 }
 

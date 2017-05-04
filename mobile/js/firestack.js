@@ -21,14 +21,14 @@ firestack.onReady(() => {
 
 class _TrackFirebase extends React.Component {
   props: {
-    path: string;
-    children?: React.Element<*>;
+    path: string,
+    children?: React.Element<*>,
     // If set, render passing in the state, instead of just rendering children
-    renderContents?: (contents: any) => React.Element<*>;
+    renderContents?: (contents: any) => React.Element<*>,
 
     // Self-managed props
-    setFirebaseState: (key: string, value: any) => void;
-    firebaseData: Object;
+    setFirebaseState: (key: string, value: any) => void,
+    firebaseData: Object,
   };
 
   _setHandler: boolean;
@@ -48,11 +48,12 @@ class _TrackFirebase extends React.Component {
     }
   }
 
-
   componentWillUnmount() {
     if (this._setHandler) {
       console.log(`Uninstalling handler on path: ${this.props.path}`);
-      firestack.database.ref(this.props.path).off('value', this.handleValueChange);
+      firestack.database
+        .ref(this.props.path)
+        .off('value', this.handleValueChange);
     }
   }
 
@@ -64,7 +65,9 @@ class _TrackFirebase extends React.Component {
 
   render() {
     if (this.props.renderContents) {
-      return this.props.renderContents(this.props.firebaseData[this.props.path]);
+      return this.props.renderContents(
+        this.props.firebaseData[this.props.path]
+      );
     } else {
       return this.props.children;
     }
@@ -76,7 +79,7 @@ export const TrackFirebase = connect(
   }),
   (dispatch: Dispatch) => ({
     setFirebaseState: (key, value) => dispatch(setFirebaseState(key, value)),
-  }),
+  })
 )(_TrackFirebase);
 
 export default firestack;

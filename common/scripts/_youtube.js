@@ -24,7 +24,7 @@ export async function findVideoDimensions(videoIds: Array<string>) {
     const oEmbedUrl = `https://www.youtube.com/oembed?url=https://www.youtube.com/watch?v=${videoId}&format=json`;
     try {
       const results = await (await fetch(oEmbedUrl)).json();
-      dimensions[videoId] = {width: results.width, height: results.height};
+      dimensions[videoId] = { width: results.width, height: results.height };
     } catch (err) {
       console.error(oEmbedUrl, err);
     }
@@ -41,4 +41,3 @@ export async function fetchAll(pageUrl: string, pageToken?: string) {
   }
   return pageJson;
 }
-

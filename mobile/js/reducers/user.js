@@ -7,10 +7,10 @@
 import type { Action, User } from '../actions/types';
 
 export type State = {
-  isLoggedIn: boolean;
-  hasSkippedLogin: boolean;
-  isOnboarding: boolean;
-  userData: ?User;
+  isLoggedIn: boolean,
+  hasSkippedLogin: boolean,
+  isOnboarding: boolean,
+  userData: ?User,
 };
 
 const initialState = {

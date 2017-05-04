@@ -7,15 +7,15 @@
 import type { Action } from '../actions/types';
 
 export type TranslatedEvent = {
-  visible: boolean;
+  visible: boolean,
   translation: {
-    name: string;
-    description: string;
-  };
+    name: string,
+    description: string,
+  },
 };
 
 type State = {
-  events: {[key: string]: TranslatedEvent};
+  events: { [key: string]: TranslatedEvent },
 };
 
 const initialState = {

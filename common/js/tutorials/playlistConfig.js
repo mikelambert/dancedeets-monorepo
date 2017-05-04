@@ -10,7 +10,7 @@ import type { Style } from '../styles';
 
 export type Category = {
   style: Style,
-  tutorials: Array<Playlist>;
+  tutorials: Array<Playlist>,
 };
 
 /* eslint-disable global-require */
@@ -168,12 +168,11 @@ const defaultTutorials = [
 ];
 /* eslint-enable global-require */
 
-
 function sortedTutorials(tutorials, locale) {
   const nativeTutorials = [];
   const foreignTutorials = [];
   const language = locale.split('-')[0];
-  tutorials.forEach((tut) => {
+  tutorials.forEach(tut => {
     if (tut.language === language) {
       nativeTutorials.push(tut);
     } else {
@@ -186,7 +185,9 @@ function sortedTutorials(tutorials, locale) {
 export function getTutorials(locale: string): Array<Category> {
   const constructedPlaylists = defaultTutorials.map(style => ({
     ...style,
-    tutorials: sortedTutorials(style.tutorials, locale).map(x => new Playlist(x)),
+    tutorials: sortedTutorials(style.tutorials, locale).map(
+      x => new Playlist(x)
+    ),
   }));
   return constructedPlaylists;
 }
@@ -309,4 +310,3 @@ https://www.youtube.com/channel/UCoU_XspQfZlFy6YC7NEicoQ
 // https://www.youtube.com/channel/UCvz5hnbqACYKae6tB9DYbcg/playlists
 // https://www.youtube.com/channel/PLVY6uOsv4D9ZsP2wTgPaItzrta5AjQiTO/playlists
 // https://www.youtube.com/user/shisou3/playlists
-

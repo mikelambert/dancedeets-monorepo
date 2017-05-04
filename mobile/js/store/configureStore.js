@@ -20,7 +20,13 @@ const logger = createLogger({
   duration: true,
 });
 
-const createStoreWithMiddleware = applyMiddleware(thunk, promise, array, analytics, logger)(createStore);
+const createStoreWithMiddleware = applyMiddleware(
+  thunk,
+  promise,
+  array,
+  analytics,
+  logger
+)(createStore);
 
 export default function configureStore() {
   const store = createStoreWithMiddleware(reducers);

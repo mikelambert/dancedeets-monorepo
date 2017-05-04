@@ -4,12 +4,8 @@
  * @flow
  */
 
-import {
-  defineMessages,
-} from 'react-intl';
-import {
-  messageDescriptorPropTypes,
-} from 'react-intl/dist/react-intl';
+import { defineMessages } from 'react-intl';
+import { messageDescriptorPropTypes } from 'react-intl/dist/react-intl';
 
 export const messages = defineMessages({
   otherStylesTitle: {
@@ -100,12 +96,12 @@ export const messages = defineMessages({
 });
 
 export type Style = {
-  id: string;
-  title: string;
-  titleMessage?: messageDescriptorPropTypes;
-  imageName: string;
-  width: number;
-  height: number;
+  id: string,
+  title: string,
+  titleMessage?: messageDescriptorPropTypes,
+  imageName: string,
+  width: number,
+  height: number,
 };
 
 export default {

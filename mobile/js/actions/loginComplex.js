@@ -5,27 +5,13 @@
  */
 
 import includes from 'lodash/includes';
-import {
-  Alert,
-} from 'react-native';
-import {
-  LoginManager,
-  AccessToken,
-} from 'react-native-fbsdk';
-import {
-  defineMessages,
-  intlShape,
-} from 'react-intl';
-import {
-  loginStartOnboard,
-  loginComplete,
-  skipLogin,
-} from './login';
+import { Alert } from 'react-native';
+import { LoginManager, AccessToken } from 'react-native-fbsdk';
+import { defineMessages, intlShape } from 'react-intl';
+import { loginStartOnboard, loginComplete, skipLogin } from './login';
 import type { Dispatch } from '../actions/types';
 import { track } from '../store/track';
-import {
-  hasSkippedLogin,
-} from '../login/savedState';
+import { hasSkippedLogin } from '../login/savedState';
 
 const messages = defineMessages({
   loginTitle: {
@@ -50,7 +36,11 @@ const messages = defineMessages({
   },
 });
 
-export async function canGetValidLoginFor(feature: string, intl: intlShape, dispatch: Dispatch) {
+export async function canGetValidLoginFor(
+  feature: string,
+  intl: intlShape,
+  dispatch: Dispatch
+) {
   return new Promise((resolve, reject) => {
     const ok = async () => {
       const loggedIn = await loginButtonPressed(dispatch);
@@ -63,7 +53,11 @@ export async function canGetValidLoginFor(feature: string, intl: intlShape, disp
       intl.formatMessage(messages.loginTitle),
       intl.formatMessage(messages.loginMessage, { feature }),
       [
-        { text: intl.formatMessage(messages.promptCancel), onPress: cancel, style: 'cancel' },
+        {
+          text: intl.formatMessage(messages.promptCancel),
+          onPress: cancel,
+          style: 'cancel',
+        },
         { text: intl.formatMessage(messages.promptOk), onPress: ok },
       ]
     );
@@ -82,7 +76,10 @@ export async function loginButtonPressed(dispatch: Dispatch) {
   }
 }
 
-export async function autoLoginAtStartup(dispatch: Dispatch, secondTime: boolean = false) {
+export async function autoLoginAtStartup(
+  dispatch: Dispatch,
+  secondTime: boolean = false
+) {
   // When they open the app, check for their existing FB token.
   if (await isLoggedOut()) {
     if (await hasSkippedLogin()) {
@@ -94,9 +91,9 @@ export async function autoLoginAtStartup(dispatch: Dispatch, secondTime: boolean
       track('Login - Not Logged In');
       return await dispatch(loginStartOnboard());
     }
-  // Now let's check how old the token is. We want to refresh old tokens,
-  // but not delay/block users who have recently refreshed.
-  } else if (secondTime || await isRecentlyLoggedIn()) {
+    // Now let's check how old the token is. We want to refresh old tokens,
+    // but not delay/block users who have recently refreshed.
+  } else if (secondTime || (await isRecentlyLoggedIn())) {
     console.log('Fresh access token, completing login!');
     const token = await AccessToken.getCurrentAccessToken();
     if (token == null) {
@@ -115,7 +112,12 @@ export async function autoLoginAtStartup(dispatch: Dispatch, secondTime: boolean
 
 async function loginOrLogout(): Promise<AccessToken> {
   console.log('Presenting FB Login Dialog...');
-  const loginResult = await LoginManager.logInWithReadPermissions(['public_profile', 'email', 'user_friends', 'user_events']);
+  const loginResult = await LoginManager.logInWithReadPermissions([
+    'public_profile',
+    'email',
+    'user_friends',
+    'user_events',
+  ]);
   console.log('LoginResult is ', loginResult);
   if (loginResult.isCancelled) {
     LoginManager.logOut();
@@ -129,7 +131,6 @@ async function loginOrLogout(): Promise<AccessToken> {
   return accessToken;
 }
 
-
 async function isLoggedOut() {
   const accessToken = await AccessToken.getCurrentAccessToken();
   return !accessToken;
@@ -138,8 +139,10 @@ async function isLoggedOut() {
 async function isRecentlyLoggedIn() {
   const accessToken = await AccessToken.getCurrentAccessToken();
   if (accessToken != null) {
-    const howLongAgo = Math.round((Date.now() - accessToken.lastRefreshTime) / 1000);
-    return (howLongAgo < 24 * 60 * 60);
+    const howLongAgo = Math.round(
+      (Date.now() - accessToken.lastRefreshTime) / 1000
+    );
+    return howLongAgo < 24 * 60 * 60;
   }
   // This shouldn't happen, since we check isLoggedOut() before isRecentlyLoggedIn().
   // But let's handle it correctly anyway.
@@ -158,7 +161,7 @@ async function refreshFullToken() {
     // This has an easier API to work with too.
     const newAccessToken = await AccessToken.getCurrentAccessToken();
     // Don't want to log actual token to public log file, so check truthiness
-    console.log('Refreshed Token result:', (newAccessToken != null));
+    console.log('Refreshed Token result:', newAccessToken != null);
     // Now check if this token has user_events permission (our most important permission)
     // For awhile many iOS users were being approved without this permission due to a bug.
     // So this requests they log in again to explicitly grab that permission.
@@ -168,7 +171,10 @@ async function refreshFullToken() {
     // This != fixes Flow, but then flags with ESLint!
     // Can remove 'includes' when RN 0.27 is released:
     // https://github.com/facebook/react-native/commit/ed47efe4a17a6fa3f0a2a8a36600efdcd1c65b86
-    if (newAccessToken != null && !includes(newAccessToken.getPermissions(), 'user_events')) {
+    if (
+      newAccessToken != null &&
+      !includes(newAccessToken.getPermissions(), 'user_events')
+    ) {
       await loginOrLogout();
     }
   } catch (e) {

@@ -21,9 +21,7 @@
  *
  * @flow
  */
-import React, {
-  Element,
-} from 'react';
+import React, { Element } from 'react';
 import {
   Dimensions,
   Image,
@@ -44,15 +42,15 @@ type Layout = {
 
 export default class ZoomableImage extends React.Component {
   props: {
-    url: string;
-    width: number;
-    height: number;
+    url: string,
+    width: number,
+    height: number,
   };
 
   state: {
-    lastTapTimestamp: number;
-    isZoomed: boolean;
-    layout: ?Layout;
+    lastTapTimestamp: number,
+    isZoomed: boolean,
+    layout: ?Layout,
   };
 
   _zoomableScroll: ScrollView;
@@ -69,7 +67,7 @@ export default class ZoomableImage extends React.Component {
     (this: any).toggleZoom = this.toggleZoom.bind(this);
     (this: any).onLayout = this.onLayout.bind(this);
   }
-/*
+  /*
   componentDidMount() {
     const zoomScale = this.getNaturalZoomScale();
     console.log(zoomScale);
@@ -105,8 +103,14 @@ export default class ZoomableImage extends React.Component {
     const timestamp = new Date().getTime();
     if (timestamp - this.state.lastTapTimestamp <= 500) {
       const { locationX, locationY } = e.nativeEvent;
-      const size = this.state.isZoomed ? { width: 10000, height: 10000 } : { width: 0, height: 0 };
-      this._zoomableScroll.scrollResponderZoomTo({ x: locationX, y: locationY, ...size });
+      const size = this.state.isZoomed
+        ? { width: 10000, height: 10000 }
+        : { width: 0, height: 0 };
+      this._zoomableScroll.scrollResponderZoomTo({
+        x: locationX,
+        y: locationY,
+        ...size,
+      });
     }
     this.setState({ lastTapTimestamp: timestamp });
   }
@@ -114,7 +118,9 @@ export default class ZoomableImage extends React.Component {
   renderIOS(zoomScale: number, horizontal: boolean) {
     return (
       <ScrollView
-        ref={(x) => { this._zoomableScroll = x; }}
+        ref={x => {
+          this._zoomableScroll = x;
+        }}
         onScroll={this.onZoomChanged}
         scrollEventThrottle={100}
         scrollsToTop={false}
@@ -127,12 +133,18 @@ export default class ZoomableImage extends React.Component {
         horizontal={horizontal}
         directionalLockEnabled={false}
         centerContent
-        contentContainerStyle={{ alignItems:'center', justifyContent:'center' }}
+        contentContainerStyle={{
+          alignItems: 'center',
+          justifyContent: 'center',
+        }}
         style={{ flex: 1 }}
       >
         <TouchableWithoutFeedback onPress={this.toggleZoom} style={{ flex: 1 }}>
           <Image
-            style={[styles.image, { width: this.props.width, height: this.props.height }]}
+            style={[
+              styles.image,
+              { width: this.props.width, height: this.props.height },
+            ]}
             source={{ uri: this.props.url }}
           />
         </TouchableWithoutFeedback>
@@ -152,15 +164,21 @@ export default class ZoomableImage extends React.Component {
       const zoomScale = Math.min(widthScale, heightScale);
 
       if (Platform.OS === 'android') {
-        contents = (<PhotoView
-          maximumZoomScale={Math.max(zoomScale, 4.0)}
-          minimumZoomScale={Math.min(zoomScale, 1.0)}
-          androidScaleType="fitCenter"
-          style={[{ flex: 1 }]}
-          source={{ uri: this.props.url, width: this.props.width, height: this.props.height }}
-        />);
+        contents = (
+          <PhotoView
+            maximumZoomScale={Math.max(zoomScale, 4.0)}
+            minimumZoomScale={Math.min(zoomScale, 1.0)}
+            androidScaleType="fitCenter"
+            style={[{ flex: 1 }]}
+            source={{
+              uri: this.props.url,
+              width: this.props.width,
+              height: this.props.height,
+            }}
+          />
+        );
       } else if (Platform.OS === 'ios') {
-        const horizontal = (widthScale < heightScale);
+        const horizontal = widthScale < heightScale;
         contents = this.renderIOS(zoomScale, horizontal);
       }
     }

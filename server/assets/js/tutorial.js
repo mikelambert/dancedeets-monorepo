@@ -5,35 +5,16 @@
  */
 
 import React from 'react';
-import {
-  injectIntl,
-  intlShape,
-} from 'react-intl';
+import { injectIntl, intlShape } from 'react-intl';
 import YouTube from 'react-youtube';
 import Helmet from 'react-helmet';
 import ExecutionEnvironment from 'exenv';
-import {
-  intlWeb,
-} from 'dancedeets-common/js/intl';
-import {
-  getTutorials,
-} from 'dancedeets-common/js/tutorials/playlistConfig';
-import {
-  Playlist,
-  Video,
-} from 'dancedeets-common/js/tutorials/models';
-import {
-  formatDuration,
-} from 'dancedeets-common/js/tutorials/format';
-import {
-  Card,
-  Link,
-  ShareLinks,
-  wantsWindowSizes,
-} from './ui';
-import type {
-  windowProps,
-} from './ui';
+import { intlWeb } from 'dancedeets-common/js/intl';
+import { getTutorials } from 'dancedeets-common/js/tutorials/playlistConfig';
+import { Playlist, Video } from 'dancedeets-common/js/tutorials/models';
+import { formatDuration } from 'dancedeets-common/js/tutorials/format';
+import { Card, Link, ShareLinks, wantsWindowSizes } from './ui';
+import type { windowProps } from './ui';
 import { generateMetaTags } from './meta';
 
 // De-Dupe
@@ -45,23 +26,21 @@ const purpleColors = [
   '#222238',
   '#171728',
 ];
-const lightPurpleColors = [
-  '#E0E0F5',
-  '#D0D0F0',
-  '#C0C0D0',
-];
-
+const lightPurpleColors = ['#E0E0F5', '#D0D0F0', '#C0C0D0'];
 
 class _Duration extends React.Component {
   props: {
-    duration: number;
+    duration: number,
 
     // Self-managed props:
-    intl: intlShape;
-  }
+    intl: intlShape,
+  };
 
   render() {
-    const duration = formatDuration(this.props.intl.formatMessage, this.props.duration);
+    const duration = formatDuration(
+      this.props.intl.formatMessage,
+      this.props.duration
+    );
     return (
       <div
         style={{
@@ -78,17 +57,17 @@ const Duration = injectIntl(_Duration);
 
 class _TutorialView extends React.Component {
   props: {
-    tutorial: Playlist;
-    videoIndex: ?number;
+    tutorial: Playlist,
+    videoIndex: ?number,
 
     // Self-managed props
-    intl: intlShape;
-    window: windowProps;
+    intl: intlShape,
+    window: windowProps,
   };
 
   state: {
-    video: Video;
-  }
+    video: Video,
+  };
 
   _youtube: YouTube;
 
@@ -171,13 +150,16 @@ class _TutorialView extends React.Component {
           borderBottomColor: purpleColors[4],
         }}
       >
-        <div >
+        <div>
           <img
             style={{
               float: 'left',
               verticalAlign: 'baseline',
             }}
-            width={imageSize} height={imageSize} src={playIcon} alt="Play"
+            width={imageSize}
+            height={imageSize}
+            src={playIcon}
+            alt="Play"
           />
         </div>
         <div style={{ marginLeft: 10 }}>
@@ -198,25 +180,34 @@ class _TutorialView extends React.Component {
   }
 
   renderWholeSection(section) {
-    return (<div>
-      {this.renderSectionHeader(section)}
-      {section.videos.map((video, index) =>
-        <div key={index}>{this.renderVideoLine(video)}</div>
-      )}
-    </div>);
+    return (
+      <div>
+        {this.renderSectionHeader(section)}
+        {section.videos.map((video, index) => (
+          <div key={index}>{this.renderVideoLine(video)}</div>
+        ))}
+      </div>
+    );
   }
 
   renderHeader() {
     const tutorial = this.props.tutorial;
     const subtitle = tutorial.subtitle ? <div>{tutorial.subtitle}</div> : null;
-    const duration = formatDuration(this.props.intl.formatMessage, tutorial.getDurationSeconds());
+    const duration = formatDuration(
+      this.props.intl.formatMessage,
+      tutorial.getDurationSeconds()
+    );
     const subline = `${tutorial.author} - ${duration}`;
-    return (<div style={{ padding: 7, backgroundColor: purpleColors[4] }}>
-      <h3 style={{ marginTop: 0 }}>{tutorial.title} - <a href="/tutorials">See All Tutorials</a></h3>
-      {subtitle}
-      <div>{subline}</div>
-      <ShareLinks url={tutorial.getUrl()} />
-    </div>);
+    return (
+      <div style={{ padding: 7, backgroundColor: purpleColors[4] }}>
+        <h3 style={{ marginTop: 0 }}>
+          {tutorial.title} - <a href="/tutorials">See All Tutorials</a>
+        </h3>
+        {subtitle}
+        <div>{subline}</div>
+        <ShareLinks url={tutorial.getUrl()} />
+      </div>
+    );
   }
 
   renderPlayer() {
@@ -224,8 +215,8 @@ class _TutorialView extends React.Component {
     const video = this.state.video;
     if (this.props.window) {
       extraStyles = {
-        maxWidth: (this.props.window.height * video.width) / video.height,
-        maxHeight: (this.props.window.width * video.height) / video.width,
+        maxWidth: this.props.window.height * video.width / video.height,
+        maxHeight: this.props.window.width * video.height / video.width,
       };
     }
     return (
@@ -238,7 +229,9 @@ class _TutorialView extends React.Component {
         }}
       >
         <YouTube
-          ref={(x) => { this._youtube = x; }}
+          ref={x => {
+            this._youtube = x;
+          }}
           opts={{
             width: '100%',
             height: '100%',
@@ -256,7 +249,9 @@ class _TutorialView extends React.Component {
   render() {
     const tutorial = this.props.tutorial;
     const video = this.state.video;
-    const flexDirection = this.props.window && this.props.window.width > 1024 ? 'row' : 'column';
+    const flexDirection = this.props.window && this.props.window.width > 1024
+      ? 'row'
+      : 'column';
     return (
       <div
         style={{
@@ -273,9 +268,9 @@ class _TutorialView extends React.Component {
           }}
         >
           {this.renderHeader()}
-          {this.props.tutorial.sections.map((section, index) =>
+          {this.props.tutorial.sections.map((section, index) => (
             <div key={index}>{this.renderWholeSection(section)}</div>
-          )}
+          ))}
         </div>
       </div>
     );
@@ -285,8 +280,8 @@ const TutorialView = wantsWindowSizes(injectIntl(_TutorialView));
 
 function findTutorialById(config, id) {
   let foundTutorial = null;
-  config.forEach((style) => {
-    style.tutorials.forEach((tutorial) => {
+  config.forEach(style => {
+    style.tutorials.forEach(tutorial => {
       if (tutorial.getId() === id) {
         foundTutorial = tutorial;
       }
@@ -297,9 +292,9 @@ function findTutorialById(config, id) {
 
 class HtmlHead extends React.Component {
   props: {
-    tutorial: ?Playlist;
-    videoIndex: ?number;
-  }
+    tutorial: ?Playlist,
+    videoIndex: ?number,
+  };
 
   render() {
     const tutorial = this.props.tutorial;
@@ -322,12 +317,12 @@ class HtmlHead extends React.Component {
 
 class _TutorialPage extends React.Component {
   props: {
-    style: string;
-    tutorial: string;
-    hashLocation: string;
+    style: string,
+    tutorial: string,
+    hashLocation: string,
 
     // Self-managed props
-    intl: intlShape;
+    intl: intlShape,
   };
 
   trackTutorial(tutorial) {
@@ -348,18 +343,26 @@ class _TutorialPage extends React.Component {
     const tutorial = findTutorialById(config, this.props.tutorial);
 
     let result = null;
-    const videoIndex = this.props.hashLocation ? parseInt(this.props.hashLocation, 10) : null;
+    const videoIndex = this.props.hashLocation
+      ? parseInt(this.props.hashLocation, 10)
+      : null;
     if (tutorial) {
       this.trackTutorial(tutorial);
-      result = (<TutorialView
-        style={this.props.style}
-        tutorial={tutorial}
-        videoIndex={videoIndex}
-      />);
+      result = (
+        <TutorialView
+          style={this.props.style}
+          tutorial={tutorial}
+          videoIndex={videoIndex}
+        />
+      );
     } else {
       result = <div>Unknown tutorial!</div>;
     }
-    return <div><HtmlHead tutorial={tutorial} videoIndex={videoIndex} />{result}</div>;
+    return (
+      <div>
+        <HtmlHead tutorial={tutorial} videoIndex={videoIndex} />{result}
+      </div>
+    );
   }
 }
 

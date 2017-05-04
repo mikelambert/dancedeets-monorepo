@@ -17,7 +17,6 @@ export type PackagerAsset = {
   type: string,
 };
 
-
 const assets: Array<PackagerAsset> = [];
 
 function registerAsset(asset: PackagerAsset): number {

@@ -11,15 +11,15 @@ import type { AddEventData, AddEventList, SortOrder } from '../addEventsModels';
 export type RsvpFilter = 'attending' | 'maybe' | 'declined' | 'unsure' | null;
 
 export type DisplayOptions = {
-  onlyUnadded: boolean;
-  sortOrder: SortOrder;
+  onlyUnadded: boolean,
+  sortOrder: SortOrder,
   // rsvpFilter: RsvpFilter;
 };
 
 export type State = {
-  displayOptions: DisplayOptions;
-  loading: boolean;
-  results: ?AddEventList;
+  displayOptions: DisplayOptions,
+  loading: boolean,
+  results: ?AddEventList,
 };
 
 const initialState = {
