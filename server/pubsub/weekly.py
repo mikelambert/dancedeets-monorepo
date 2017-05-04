@@ -31,6 +31,7 @@ def _generate_post_for(city, week_start, search_results):
 
     messages = []
     messages.append(random.choice(headers) % {'location': city.city_name})
+    #TODO: add link to the week's events
     last_result = None
     for result in search_results:
         if not last_result or last_result.start_time.strftime('%A') != result.start_time.strftime('%A'):
