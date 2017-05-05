@@ -202,8 +202,8 @@ existIds = [x for x in status if status[x]]
 print '%.02f' % (1.0 * len(existIds) / len(future))
 
 
-for e in eventData:
-    if future.get(e['id']) and not status[e['id']]:
-        found_events = find_fb_ids(e)
-        print_find_status(e, found_events)
+#for e in eventData:
+#    if future.get(e['id']) and not status[e['id']]:
+#        found_events = find_fb_ids(e)
+#        print_find_status(e, found_events)
 
