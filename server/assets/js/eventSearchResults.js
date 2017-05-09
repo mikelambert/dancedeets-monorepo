@@ -284,6 +284,7 @@ class _EventsList extends React.Component {
 
   render() {
     const resultItems = [];
+    let overallEventIndex = 0;
     groupEventsByStartDate(
       this.props.intl,
       this.props.events
@@ -307,11 +308,12 @@ class _EventsList extends React.Component {
             <HorizontalEvent
               key={event.id}
               event={event}
-              lazyLoad={index > 8}
+              lazyLoad={overallEventIndex + index > 8}
             />
           </li>
         ))
       );
+      overallEventIndex += events.length;
     });
 
     return (
