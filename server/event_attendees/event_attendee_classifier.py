@@ -9,6 +9,7 @@ import fb_api
 from loc import math
 from nlp import event_classifier
 from rankings import cities
+from util import fb_events
 from . import popular_people
 
 def _find_overlap(event_attendee_ids, top_dance_attendee_ids):
@@ -67,7 +68,7 @@ def _get_location_style_attendees(fb_event, suspected_dance_event=False, max_att
 
 def is_good_event_by_attendees(fbl, fb_event, fb_event_attending_maybe=None, classified_event=None):
     matcher = get_matcher(fbl, fb_event, fb_event_attending_maybe, classified_event)
-    return matcher.matches[0].overlap_ids if matcher.matches else []
+    return matcher.matches[0].overlap_ids if matcher and matcher.matches else []
 
 def get_matcher(fbl, fb_event, fb_event_attending_maybe=None, classified_event=None):
     if classified_event is None:
@@ -80,7 +81,7 @@ def get_matcher(fbl, fb_event, fb_event_attending_maybe=None, classified_event=N
             fb_event_attending_maybe = fbl.get(fb_api.LookupEventAttendingMaybe, event_id)
         except fb_api.NoFetchedDataException:
             logging.info('Event %s could not fetch event attendees, aborting.', event_id)
-            return False
+            return None
 
     matcher = EventAttendeeMatcher(fb_event, fb_event_attending_maybe, classified_event)
     matcher.classify()
@@ -144,6 +145,11 @@ class EventAttendeeMatcher(object):
             # This will affect various club events too...
             else:
                 mult = 2.0
+
+            # If the event is private, let's make sure it's *strongly* a dance event before we give-in and add it to the site
+            # A lot of attendee-based events could be birthday parties or graduation parties or the like
+            if not fb_events.is_public(self.fb_event):
+                mult *= 2.0
 
             for name, dance_attendees in self.dance_style_attendees.iteritems():
                 # logging.info('%s Attendees Nearby:\n%s', style_name, '\n'.join(repr(x) for x in dance_attendees))

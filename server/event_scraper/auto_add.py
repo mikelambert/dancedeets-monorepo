@@ -98,16 +98,6 @@ def really_classify_events(fbl, new_pe_list, new_fb_list, allow_posting=True):
                 logging.error("Error adding event %s, no fetched data: %s", event_id, e)
             except add_entities.AddEventException as e:
                 logging.warning("Error adding event %s, no fetched data: %s", event_id, e)
-        else:
-            auto_notadd_result = event_auto_classifier.is_auto_notadd_event(classified_event, auto_add_result=auto_add_result)
-            if auto_notadd_result[0]:
-                pe2 = potential_events.PotentialEvent.get_by_key_name(event_id)
-                pe2.looked_at = True
-                pe2.auto_looked_at = True
-                pe2.put()
-                result = '-%s\n' % '\t'.join(unicode(x) for x in (event_id, fb_event['info'].get('name', '')))
-                results.append(result)
-                mr.increment('auto-notadded-dance-events')
     return results
 
 
