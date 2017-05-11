@@ -46,13 +46,19 @@ def get_json(last_id=None):
             break
     return all_events, not errored
 
-all_events, success = get_json()
-#if not success:
-#    result, success = get_json(1168)
-#    all_events.extend(result)
+success = False
+all_events = []
 
-d = datetime.datetime.now().strftime("%Y-%m-%dT%H:%M:%S")
-filename = 'events-%s.json' % (d)
-print 'Filename:', filename
-open(filename, 'w').write(json.dumps(all_events))
+backup_ids = [None, 5016, 3511, 2112]
+for backup_id in backup_ids:
+    if not success:
+        result, success = get_json(backup_id)
+        all_events.extend(result)
 
+if success:
+    d = datetime.datetime.now().strftime("%Y-%m-%dT%H:%M:%S")
+    filename = 'events-%s.json' % (d)
+    print 'Filename:', filename
+    open(filename, 'w').write(json.dumps(all_events))
+else:
+    print 'Errored on our final id attempt, aborting file save'
