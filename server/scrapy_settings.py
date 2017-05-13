@@ -15,6 +15,11 @@ SPIDER_MODULES = [
     'classes.scraper.spiders',
     'web_events.scraper.spiders',
 ]
+
+SPIDER_MIDDLEWARES_BASE = {
+    # One before 'HttpErrorMiddleware' runs at priority 50
+    'scrapy_lib.middlewares.BetterHttpErrorMiddleware': 49,
+}
 #NEWSPIDER_MODULE = 'classes.scraper.spiders'
 
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
