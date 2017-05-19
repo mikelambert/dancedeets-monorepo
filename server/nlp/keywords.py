@@ -628,6 +628,8 @@ PREPROCESS_REMOVAL = Name('PREPROCESS_REMOVAL', Any(
     'hip\W?hop\W?kempu?', # refers to hiphop music!
     'tiny\W+house',
     'log\W*house',
+    'stagehouse',
+    'stage\W*house tavern',
 
     'latin street dance',
     'marvellous dance crew',
