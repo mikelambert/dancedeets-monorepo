@@ -59,6 +59,7 @@ def add_update_event(fb_event, fbl, creating_uid=None, visible_to_fb_uids=None, 
 
 
 def crawl_event_source(fbl, event_id):
+    logging.info('Crawling sources for event %s', event_id)
     fb_event = fbl.get(fb_api.LookupEvent, event_id)
     e = eventdata.DBEvent.get_by_id(fb_event['info']['id'])
     thing_db.create_sources_from_event(fbl, e)
