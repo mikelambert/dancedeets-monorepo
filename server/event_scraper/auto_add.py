@@ -33,10 +33,11 @@ def classify_events(fbl, pe_list, fb_list):
         # Don't process events we've already looked at, or don't need to look at.
         # This doesn't happen with the mapreduce that pre-filters them out,
         # but it does happen when we scrape users potential events and throw them all in here.
-        if pe.looked_at:
-            logging.info('Already looked at event (added, or manually discarded), so no need to re-process.')
-            mr.increment('skip-due-to-looked-at')
-            continue
+        #TODO(all_events): Temporarily disable event-filtering, to grab all events
+        #if pe.looked_at:
+        #    logging.info('Already looked at event (added, or manually discarded), so no need to re-process.')
+        #    mr.increment('skip-due-to-looked-at')
+        #    continue
 
         event_id = pe.fb_event_id
         if not re.match(r'^\d+$', event_id):
@@ -110,7 +111,8 @@ map_classify_events = fb_mapreduce.mr_wrap(classify_events_with_yield)
 
 
 def mr_classify_potential_events(fbl, past_event, dancey_only):
-    filters = [('looked_at', '=', None)]
+    #TODO(all_events): Temporarily disable event-filtering, to grab all events
+    filters = []#('looked_at', '=', None)]
     if dancey_only:
         filters.append(('should_look_at', '=', True))
     if past_event is not None:
