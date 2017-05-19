@@ -254,6 +254,13 @@ class _BodyWrapper extends React.Component {
                 {this.props.user.userName}
                 , here’s what we’ve found for you this week!
               </p>
+              <p>
+                Please
+                <a href="https://www.surveymonkey.com/r/dancedeets-survey-weekly">
+                  fill out our survey
+                </a>
+                for a chance to win our raffle, and help us know how we can serve you better!
+              </p>
             </mj-text>
           </mj-column>
         </mj-section>
