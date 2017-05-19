@@ -57,7 +57,7 @@
   "profile.friendsUsing": "{count, number}人の友達がDanceDeetsを使用",
   "prompt.cancel": "キャンセル",
   "prompt.ok": "OK",
-  "search.autocompleteCurrentLocation": "現在の場所",
+  "search.autocompleteCurrentLocation": "現在地",
   "search.autocompleteLocations": "日本 東京\n日本 大阪\n大韓民国 ソウル\n香港\n台湾 台北\nシンガポール\nアメリカ合衆国 ニューヨーク市\nアメリカ合衆国 ロサンゼルス\nアメリカ合衆国 サンフランシスコ\nフランス パリ\nイギリス ロンドン",
   "search.eventsWithKeywords": "「{keywords}」を含むイベント",
   "search.eventsWithLocation": "{location}周辺のイベント",
