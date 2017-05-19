@@ -147,7 +147,7 @@ def create_source_for_id_without_feed(fbl, source_id):
     if not thing_feed['empty']:
         new_source = False
         s = create_source_for_id(source_id, thing_feed)
-        if not s.creating_fb_uid:
+        if not s.creation_time:
             new_source = True
         s.put()
         if new_source:
