@@ -1,7 +1,9 @@
 import datetime
 import logging
 
+from event_attendees import event_attendee_classifier
 from events import eventdata
+from users import users
 from util import fb_events
 from .facebook import event as facebook_event
 from .facebook import fb_util
@@ -18,6 +20,16 @@ def _should_post_event_common(auth_token, db_event):
         logging.info("Skipping event due to country filters")
         return False
     return True
+
+def _event_has_enough_attendees(db_event):
+    user = users.User.get_by_id('701004')
+    fbl = user.get_fblookup()
+    matcher = event_attendee_classifier.get_matcher(fbl, db_event.fb_event)
+    logging.info('Checking event %s and found %s overlap_ids', db_event.id, len(matcher.overlap_ids))
+    if len(matcher.overlap_ids) > 10:
+        return True
+    else:
+        return False
 
 def should_post_event_to_account(auth_token, db_event):
     if not _should_post_event_common(auth_token, db_event):
@@ -71,6 +83,10 @@ def _should_still_post_about_event(auth_token, db_event):
         return False
     if (db_event.end_time or db_event.start_time) < datetime.datetime.now():
         logging.info('Not publishing %s because it is in the past.', db_event.id)
+        return False
+    #TODO: Store the actual attendees counts and match info in the event itself,
+    # so that we don't need to recompute it here just to do this filtering.
+    if not _event_has_enough_attendees(db_event):
         return False
     return True
 
