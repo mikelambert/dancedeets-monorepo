@@ -103,7 +103,7 @@
     "fsevents": "^1.1.1"
   },
   "scripts": {
-    "start": "node dist/js-server/renderServer.js"
+    "start": "bash ./renderServer.sh"
   },
   "private": true
 }
