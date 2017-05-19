@@ -236,8 +236,6 @@ class BareBaseRequestHandler(webapp2.RequestHandler, FacebookMixinHandler):
         address = None
         ip = ips.get_remote_ip(self.request)
         try:
-            # HACK to refresh clients?
-            ip_geolocation.client = ip_geolocation.datastore.Client()
             address = ip_geolocation.get_location_string_for(ip, city=city)
         except:
             logging.exception('Failure to geolocate IP %s, falling back on old-school resolution', ip)
