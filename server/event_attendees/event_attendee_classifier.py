@@ -149,7 +149,7 @@ class EventAttendeeMatcher(object):
             # Raise the threshold for regular wrong-dance-style events.
             # They may totally be legit regardless of keywords...but we just want a higher threshold for them
             only_wrong_style_keywords = event_auto_classifier.is_bad_wrong_dance(self.classified_event)
-            logging.info('only_wrong_style_keywords %s', only_wrong_style_keywords)
+            logging.info('Is it a wrong-style event: %s: %s', only_wrong_style_keywords[0], only_wrong_style_keywords[1])
             if only_wrong_style_keywords[0]:
                 mult *= 2.0
 
