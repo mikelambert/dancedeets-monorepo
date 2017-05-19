@@ -7,6 +7,7 @@ from google.cloud import datastore
 from events import event_locations
 import fb_api
 from loc import math
+from nlp import event_auto_classifier
 from nlp import event_classifier
 from rankings import cities
 from util import fb_events
@@ -139,18 +140,25 @@ class EventAttendeeMatcher(object):
             self.dance_style_attendees = _get_location_style_attendees(self.fb_event, suspected_dance_event=suspected_dance_event, max_attendees=100)
             logging.info('Lookup for dancers in event location took %0.3f.', time.time() - start_time)
 
+            mult = 1.0
+
             # Raise the threshold for regular un-dance-y events, for what it means to 'be a dance event'
-            if suspected_dance_event:
-                mult = 1.0
-            # This will affect various club events too...
-            else:
-                mult = 2.0
+            if not suspected_dance_event:
+                mult *= 2.0
+
+            # Raise the threshold for regular wrong-dance-style events.
+            # They may totally be legit regardless of keywords...but we just want a higher threshold for them
+            only_wrong_style_keywords = event_auto_classifier.is_bad_wrong_dance(self.classified_event)
+            logging.info('only_wrong_style_keywords %s', only_wrong_style_keywords)
+            if only_wrong_style_keywords[0]:
+                mult *= 2.0
 
             # If the event is private, let's make sure it's *strongly* a dance event before we give-in and add it to the site
             # A lot of attendee-based events could be birthday parties or graduation parties or the like
             if not fb_events.is_public(self.fb_event):
                 mult *= 2.0
 
+            logging.info('Running attendee classifier with multiplier: %s', mult)
             for name, dance_attendees in self.dance_style_attendees.iteritems():
                 # logging.info('%s Attendees Nearby:\n%s', style_name, '\n'.join(repr(x) for x in dance_attendees))
                 dance_attendee_ids = [x['id'] for x in dance_attendees]
@@ -181,7 +189,7 @@ class EventAttendeeMatcher(object):
                     (fraction >= 0.05 * mult and count >= 4) or
                     (fraction >= 0.006 * mult and count >= 6) or # catches 6-or-more on events 1K-or-less
                     # Is this a good idea? Would help with 370973376344784
-                    # (fraction >= 0.002 * mult and count >= 12) or
+                    (fraction >= 0.002 * mult and count >= 15) or
                     False
                 ):
                     logging.info('%s Attendee-Detection-Top-100: Attendee-based classifier match: %s', name, reason)
