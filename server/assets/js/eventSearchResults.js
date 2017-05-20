@@ -287,7 +287,8 @@ class _EventsList extends React.Component {
     let overallEventIndex = 0;
     groupEventsByStartDate(
       this.props.intl,
-      this.props.events
+      this.props.events,
+      x => x.start_time
     ).forEach(({ header, events }) => {
       resultItems.push(
         <li

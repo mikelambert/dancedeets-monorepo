@@ -8,6 +8,7 @@ import { intlShape } from 'react-intl';
 import moment from 'moment';
 import upperFirst from 'lodash/upperFirst';
 import { weekdayDate } from '../dates';
+import { BaseEvent } from './models';
 import type { EventRsvpList } from './models';
 import messages from './messages';
 
@@ -27,11 +28,15 @@ export function formatAttending(intl: intlShape, rsvp: EventRsvpList) {
   return null;
 }
 
-export function groupEventsByStartDate(intl: intlShape, events) {
+export function groupEventsByStartDate(
+  intl: intlShape,
+  events: Array<BaseEvent>,
+  getStartTime: BaseEvent => string
+) {
   const results = [];
   let currentDate = null;
   events.forEach((event, index) => {
-    const eventStart = moment(event.start_time);
+    const eventStart = moment(getStartTime(event));
     const eventStartDate = upperFirst(
       intl.formatDate(eventStart.toDate(), weekdayDate)
     );

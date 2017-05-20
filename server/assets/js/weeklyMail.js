@@ -9,7 +9,7 @@ import { injectIntl, intlShape } from 'react-intl';
 import url from 'url';
 import { intlWeb } from 'dancedeets-common/js/intl';
 import type { Cover, JSONObject } from 'dancedeets-common/js/events/models';
-import { BaseEvent, SearchEvent } from 'dancedeets-common/js/events/models';
+import { SearchEvent } from 'dancedeets-common/js/events/models';
 import type { NewSearchResponse } from 'dancedeets-common/js/events/search';
 import {
   formatStartTime,
@@ -61,7 +61,7 @@ class SmallIcon extends React.Component {
 
 class FontAwesomeIcon extends React.Component {
   props: {
-    name: ExportedIcons,
+    name: ExportedIconsEnum,
     alt: string,
   };
 
@@ -77,7 +77,7 @@ class FontAwesomeIcon extends React.Component {
 
 class _MailEvent extends React.Component {
   props: {
-    event: BaseEvent,
+    event: SearchEvent,
 
     // Self-managed props
     intl: intlShape,
@@ -88,6 +88,8 @@ class _MailEvent extends React.Component {
     const size = 180;
     const gutter = 10;
     let flyerImage = null;
+    const eventUrl = addTrackingTags(this.props.event.getUrl());
+
     if (event.picture) {
       const coverUrl = generateCroppedCover(event.picture, size, size);
       flyerImage = (
@@ -102,7 +104,6 @@ class _MailEvent extends React.Component {
         />
       );
     }
-    const eventUrl = addTrackingTags(this.props.event.getUrl());
 
     const verticalAlign = { verticalAlign: 'top' };
     const imageAlign = { ...verticalAlign, textAlign: 'center', width: 32 };
@@ -203,9 +204,8 @@ class _BodyWrapper extends React.Component {
     );
 
     const eventDisplays = [];
-    groupEventsByStartDate(
-      this.props.intl,
-      resultEvents
+    groupEventsByStartDate(this.props.intl, resultEvents, x =>
+      x.startTimeNoTz()
     ).forEach(({ header, events }) => {
       eventDisplays.push(<DayHeader key={header} title={header} />);
       eventDisplays.push(
