@@ -427,7 +427,7 @@ def get_fb_event(fbl, event_id, lookup_type=fb_api.LookupEvent):
                     if data['empty'] != fb_api.EMPTY_CAUSE_INSUFFICIENT_PERMISSIONS:
                         break
             # Fall back to using the actual db_event's data too (in case we can't look up anything new!)
-            if not data:
+            if lookup_type == fb_api.LookupEvent and not data:
                 data = db_event.fb_event
     return data
 
