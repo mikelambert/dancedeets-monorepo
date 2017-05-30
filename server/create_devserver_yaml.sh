@@ -14,6 +14,12 @@ if [ "$USE_DATASTORE_EMULATOR" != "" ]; then
 $ENV"
 fi
 
+if [ "$DEBUG_MEMORY_LEAKS" != "" ]; then
+  echo 'Enabling memory leak debugger'
+  ENV="  DEBUG_MEMORY_LEAKS: 1
+$ENV"
+fi
+
 cat <<EOF >> app-devserver.yaml
 
 env_variables:

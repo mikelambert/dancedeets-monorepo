@@ -560,7 +560,7 @@ class BaseRequestHandler(BareBaseRequestHandler):
         # Redirect from the bare 'dancedeets.com' to the full 'www.dancedeets.com'
         url = urlparse.urlsplit(self.request.url)
         allowed_passthrough_domains = ['img.dancedeets.com']
-        if url.netloc != self._get_full_hostname() and url.netloc not in allowed_passthrough_domains:
+        if not os.environ.get('DEBUG_MEMORY_LEAKS') and url.netloc != self._get_full_hostname() and url.netloc not in allowed_passthrough_domains:
             logging.info("Redirecting from %s to %s: %s", url.netloc, self._get_full_hostname(), self.request.url)
             new_url = urlparse.urlunsplit([
                 url.scheme,

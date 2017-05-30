@@ -336,13 +336,16 @@ function executeCommand(command) {
   });
 }
 
-// We cannot use $.shell.task here because of a gcloud issue:
-// https://code.google.com/p/google-cloud-sdk/issues/detail?id=850
-// That can be resolved with these workarounds:
-// http://stackoverflow.com/questions/32623815/simple-gulp-task-to-deploy-to-google-app-engine-and-stream-output-to-console
-// At least, until/if gulp-shell is fixed to work around it:
-// https://github.com/sun-zheng-an/gulp-shell/issues/84
-gulp.task('deploy:server:toofast', () => executeCommand('./buildpush.sh'));
+gulp.task('deploy:server:toofast', $.shell.task(['./buildpush.sh']));
+gulp.task(
+  'deploy:memory_leak_server:generate_yaml',
+  $.shell.task(['./create_memory_service_yaml.sh'])
+);
+gulp.task(
+  'deploy:memory_leak_server:toofast',
+  ['deploy:memory_leak_server:generate_yaml'],
+  $.shell.task(['./buildpush_memory.sh'])
+);
 gulp.task(
   'deploy:server:prepush',
   $.shell.task(['./tools/check_for_native_modules.sh'])
@@ -352,6 +355,9 @@ gulp.task('deploy:server:fast', cb =>
 );
 gulp.task('deploy:server', cb =>
   runSequence('deploy:cleanup-files', 'compile', 'deploy:server:fast', cb)
+);
+gulp.task('deploy:memory_leak_server', cb =>
+  runSequence('deploy:server:prepush', 'deploy:memory_leak_server:toofast', cb)
 );
 
 gulp.task('deploy', ['deploy:server', 'deploy:scrapy']);
@@ -438,16 +444,6 @@ gulp.task(
   $.shell.task(['HOT_SERVER_PORT=8080 ./create_devserver_yaml.sh'])
 );
 gulp.task(
-  'dev-appserver:create-yaml:emulator-hot',
-  $.shell.task([
-    'USE_DATASTORE_EMULATOR=1 HOT_SERVER_PORT=8080 ./create_devserver_yaml.sh',
-  ])
-);
-gulp.task(
-  'dev-appserver:create-yaml:emulator',
-  $.shell.task(['USE_DATASTORE_EMULATOR=1 ./create_devserver_yaml.sh'])
-);
-gulp.task(
   'dev-appserver:create-yaml:regular',
   $.shell.task(['./create_devserver_yaml.sh'])
 );
@@ -481,7 +477,7 @@ gulp.task('dev-appserver:server:hot:force', cb =>
   runSequence('dev-appserver:kill', 'dev-appserver:server:hot', cb)
 );
 
-['hot', 'emulator-hot', 'emulator', 'regular'].forEach(x => {
+['hot', 'regular'].forEach(x => {
   const port = x.includes('hot') ? 8085 : 8080;
   gulp.task(
     `dev-appserver:server:${x}`,

@@ -27,7 +27,7 @@
     "gulp-imagemin": "^3.0.1",
     "gulp-load-plugins": "^1.2.0",
     "gulp-responsive-images": "0.0.3",
-    "gulp-shell": "^0.5.2",
+    "gulp-shell": "^0.6.3",
     "gulp-task-listing": "^1.0.1",
     "gutil": "^1.6.4",
     "image-webpack-loader": "^3.0.0",
