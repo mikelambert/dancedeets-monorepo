@@ -23,7 +23,6 @@
     "gulp-babel": "^6.1.2",
     "gulp-cache": "^0.4.2",
     "gulp-favicons": "^2.2.7",
-    "gulp-gae-improved": "0.0.4",
     "gulp-imagemin": "^3.0.1",
     "gulp-load-plugins": "^1.2.0",
     "gulp-responsive-images": "0.0.3",

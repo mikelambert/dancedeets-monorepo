@@ -458,15 +458,9 @@ gulp.task(
 );
 
 function startDevAppServer(port) {
-  return () =>
-    gulp.src('app-devserver.yaml').pipe(
-      $.gaeImproved('dev_appserver.py', {
-        port: port,
-        gae_dir: argv.gae_dir,
-        storage_path: '~/Projects/dancedeets-storage/',
-        runtime: 'python-compat',
-      })
-    );
+  return $.shell.task([
+    `${argv.gae_dir}/dev_appserver.py app-devserver.yaml --port=${port} --runtime=python-compat --storage_path=~/Projects/dancedeets-storage/ 2>&1 | technicolor-yawn`,
+  ]);
 }
 gulp.task('dev-appserver:kill', $.shell.task(['./force_kill_server.sh']));
 
