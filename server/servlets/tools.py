@@ -1,6 +1,7 @@
 import logging
 import objgraph
 import StringIO
+import sys
 import webapp2
 
 from google.appengine.api import memcache
@@ -31,7 +32,7 @@ class MemoryUsers(webapp2.RequestHandler):
         results = objgraph.most_common_types(limit=100, shortnames=False)
         self.response.headers["Content-Type"] = "text/plain"
         for i, result in enumerate(results):
-            data = "Top memory: %s" % result
+            data = "Top memory: %s" % (result,)
             logging.info(data)
             self.response.out.write(data + '\n')
 
