@@ -29,8 +29,9 @@ class SSL(webapp2.RequestHandler):
 class MemoryUsers(webapp2.RequestHandler):
     def get(self):
         results = objgraph.most_common_types(limit=100, shortnames=False)
+        self.response.headers["Content-Type"] = "text/plain"
         for i, result in enumerate(results):
-            data = "Top memory %s: %s" % (i, result)
+            data = "Top memory: %s" % result
             logging.info(data)
             self.response.out.write(data + '\n')
 
@@ -42,7 +43,12 @@ class MemoryDumper(webapp2.RequestHandler):
         max_depth = int(self.request.get('max_depth', '10'))
         type_name = self.request.get('type')
         all_objects = list(objgraph.by_type(type_name))
-        ignore = [id(all_objects)] # ignore the references from our all_objects container
+        # ignore the references from our all_objects container
+        ignore = [
+            id(all_objects),
+            id(sys._getframe(1)),
+            id(sys._getframe(1).f_locals),
+        ]
         sio = StringIO.StringIO()
         objgraph.show_backrefs(all_objects[:count], max_depth=max_depth, shortnames=False, extra_ignore=ignore, output=sio)
         self.response.headers["Content-Type"] = "text/plain"
