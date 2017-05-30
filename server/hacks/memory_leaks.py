@@ -4,6 +4,8 @@ import random
 import StringIO
 import sys
 
+NO_LEAK_TYPES = ['MultiDict', 'HTTPAdapter', 'DBEvent', 'Future', 'Context', 'EventLoop', 'google.appengine.datastore.datastore_rpc.Connection']
+
 def gc_debug_diff(since, peak_stats={}, hide_growth=False):
     sio = StringIO.StringIO()
     orig_out = sys.stdout
@@ -14,7 +16,7 @@ def gc_debug_diff(since, peak_stats={}, hide_growth=False):
         result = sio.getvalue()
         if not hide_growth:
             logging.info("Show Growth since running %s", since)
-            for x in result.strip().split('\n'):
+            for x in result.strip().split('\n')[:200]:
                 logging.info(":: %s" % x)
     finally:
         sys.stdout = orig_out
@@ -26,14 +28,9 @@ def gc_debug_backtraces(magictype=None, count=1):
     try:
         sys.stdout = sio
         all_objects = list(objgraph.by_type(magictype))
-        random.shuffle(all_objects)
-        chains = []
-        for obj in all_objects[:count]:
-            chains.append(objgraph.find_backref_chain(
-                    obj,
-                    objgraph.is_proper_module))
         sio2 = StringIO.StringIO()
-        objgraph.show_chain(*chains, output=sio2)
+        objgraph.show_backrefs(all_objects[:count], max_depth=10, shortnames=False, output=sio2)
+        #objgraph.show_chain(*chains, output=sio2)
         logging.info("%s", sio2.getvalue())
     finally:
         sys.stdout = orig_out
@@ -49,7 +46,7 @@ def leak_middleware(app):
                     yield value
         finally:
             result = gc_debug_diff('request', peak_stats=peak_stats)
-            for obj in ['MultiDict', 'HTTPAdapter', 'DBEvent', 'Future', 'Context', 'EventLoop', 'google.appengine.datastore.datastore_rpc.Connection', 'OrderedDict']:
+            for obj in NO_LEAK_TYPES:
                 if obj in result:
-                    gc_debug_backtraces(magictype=obj, count=5)
+                    gc_debug_backtraces(magictype=obj, count=40)
     return leak_wsgi_wrapper
