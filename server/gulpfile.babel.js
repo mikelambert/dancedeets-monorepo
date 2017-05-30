@@ -501,15 +501,19 @@ const dockerImages = [
   'gae-modules',
   'gae-modules-py',
 ];
-dockerImages.forEach(imageName =>
+dockerImages.forEach(imageName => {
   gulp.task(
-    `buildDocker:${imageName}`,
+    `buildDocker:one:${imageName}`,
     $.shell.task([`cd docker/${imageName} && ./build.sh`])
-  )
-);
-gulp.task('buildDocker', cb =>
-  runSequence(...dockerImages.map(x => `buildDocker:${x}`), cb)
-);
+  );
+});
+dockerImages.forEach((imageName, index) => {
+  const allFollowingImageNames = dockerImages.slice(index);
+  gulp.task(`buildDocker:${imageName}`, cb =>
+    runSequence(...allFollowingImageNames.map(x => `buildDocker:one:${x}`))
+  );
+});
+gulp.task('buildDocker', [`buildDocker:${dockerImages[0]}`]);
 
 gulp.task(
   'server:datastore:local',
