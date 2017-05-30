@@ -42,7 +42,7 @@ const $ = gulpLoadPlugins();
 
 const baseAssetsDir = `/Users/${username.sync()}/Dropbox/dancedeets/art/build-assets/`;
 
-//TODO: Support login here, so that this URL can actually run. Currently blocked by 'login: admin'
+// TODO: Support login here, so that this URL can actually run. Currently blocked by 'login: admin'
 gulp.task('web:events:resave', cb =>
   fetch(
     'http://www.dancedeets.com/tasks/reload_events?user_id=701004&allow_cache=1&disable_updates=regeocode,photo&queue=fast-queue&only_if_updated=0'
@@ -320,8 +320,8 @@ gulp.task('deploy:cleanup-files', () =>
 );
 
 function executeCommand(command) {
-  return new Promise(function(resolve, reject) {
-    var ls = childProcess.spawn('sh', ['-c', command], {
+  return new Promise((resolve, reject) => {
+    const ls = childProcess.spawn('sh', ['-c', command], {
       stdio: ['inherit', 'inherit', 'inherit'],
     });
 
