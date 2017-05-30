@@ -30,6 +30,7 @@ if not prod_mode:
 from hacks import fixed_jinja2  # noqa: ignore=E402
 from hacks import fixed_ndb  # noqa: ignore=E402
 from hacks import fixed_mapreduce_util  # noqa: ignore=E402
+from hacks import memory_leaks  # noqa: ignore=E402
 from requests_toolbelt.adapters import appengine as appengine_adapter  # noqa: ignore=E402
 from requests.packages.urllib3.contrib import appengine as appengine_manager  # noqa: ignore=E402
 
@@ -57,7 +58,10 @@ if appengine_manager.is_local_appengine():
     appengine_adapter.monkeypatch()
 
 
-def webapp_add_wsgi_middleware(app):
+# Normally we'd set this up in appengine_config.py using webapp_add_wsgi_middleware
+# But the imports haven't been properly set up by then, so we can't safely run this code there
+# So instead, let's add the middleware directly, ourselves
+def add_wsgi_middleware(app):
     # Disable appstats since it may be resulting in NDB OOM issues
     # from google.appengine.ext.appstats import recording
     # app = recording.appstats_wsgi_middleware(app)
@@ -67,8 +71,10 @@ def webapp_add_wsgi_middleware(app):
 
     # Should only use this in cases of serialized execution of requests in a multi-threaded processes.
     # So setdeploy manually, and test from there. Never a live server, as it would be both broken *and* slow.
-    # from hacks import memory_leaks
-    # app = memory_leaks.leak_middleware(app)
+    if os.environ.get('DEBUG_MEMORY_LEAKS'):
+        app = memory_leaks.leak_middleware(app)
+
+    app = memory_leaks.memory_bloat_middleware(app)
 
     return app
 
@@ -79,7 +85,7 @@ if os.environ.get('HOT_SERVER_PORT'):
 from app import app as application
 application.debug = True
 application.prod_mode = prod_mode
-
+application = add_wsgi_middleware(application)
 
 logging.info("Begin modules")
 import webapp2
