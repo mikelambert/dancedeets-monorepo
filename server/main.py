@@ -74,8 +74,6 @@ def add_wsgi_middleware(app):
     if os.environ.get('DEBUG_MEMORY_LEAKS'):
         app = memory_leaks.leak_middleware(app)
 
-    app = memory_leaks.memory_bloat_middleware(app)
-
     return app
 
 if os.environ.get('HOT_SERVER_PORT'):

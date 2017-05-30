@@ -1,5 +1,8 @@
 import logging
+import objgraph
+import StringIO
 import webapp2
+
 from google.appengine.api import memcache
 
 from mapreduce import control
@@ -21,6 +24,29 @@ from util import fb_mapreduce
 class SSL(webapp2.RequestHandler):
     def get(self):
         self.response.out.write('J2lIvB957EnuN8U4ynpr7RX_2GbgJ9v66R7k9HEXD-o.XQbaOct9vX37AOs7-ADz5xfdu5eOwjUmk3FbCoPpNw8')
+
+@app.route('/tools/memory_top_users')
+class MemoryUsers(webapp2.RequestHandler):
+    def get(self):
+        results = objgraph.most_common_types(limit=100, shortnames=False)
+        for i, result in enumerate(results):
+            data = "Top memory %s: %s" % (i, result)
+            logging.info(data)
+            self.response.out.write(data + '\n')
+
+
+@app.route('/tools/memory_dump_objgraph')
+class MemoryDumper(webapp2.RequestHandler):
+    def get(self):
+        count = int(self.request.get('count', '20'))
+        max_depth = int(self.request.get('max_depth', '10'))
+        type_name = self.request.get('type')
+        all_objects = list(objgraph.by_type(type_name))
+        ignore = [id(all_objects)] # ignore the references from our all_objects container
+        sio = StringIO.StringIO()
+        objgraph.show_backrefs(all_objects[:count], max_depth=max_depth, shortnames=False, extra_ignore=ignore, output=sio)
+        self.response.headers["Content-Type"] = "text/plain"
+        self.response.out.write(sio.getvalue())
 
 
 @app.route('/tools/unprocess_future_events')
