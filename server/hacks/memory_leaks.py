@@ -38,16 +38,3 @@ def leak_middleware(app):
                 if obj in result:
                     gc_debug_backtraces(magictype=obj, count=40)
     return leak_wsgi_wrapper
-
-def memory_bloat_middleware(app):
-    def bloat_wsgi_wrapper(environ, start_response):
-        try:
-            result = app(environ, start_response)
-            if result is not None:
-                for value in result:
-                    yield value
-        finally:
-            results = objgraph.most_common_types(limit=20, shortnames=False)
-            for i, result in enumerate(results):
-                logging.info("Top memory %s: %s", i, result)
-    return bloat_wsgi_wrapper
