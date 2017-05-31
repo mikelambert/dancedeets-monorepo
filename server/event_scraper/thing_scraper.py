@@ -139,6 +139,10 @@ def parsed_event_link(url):
         return None
 
 def process_thing_feed(source, thing_feed):
+    if source.creation_time is None:
+        source.creation_time = datetime.datetime(2010, 1, 1)
+        source.put()
+
     if thing_feed['empty']:
         logging.warning("Source %s was empty: %s", source.graph_id, thing_feed['empty'])
         return []
