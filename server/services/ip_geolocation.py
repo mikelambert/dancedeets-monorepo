@@ -3,6 +3,7 @@ import IPy
 import json
 import logging
 import os
+import time
 import urllib
 
 from google.appengine.api import memcache
@@ -47,12 +48,19 @@ def get_location_data_for(ip):
     # Check the common private IP spaces (used by Google for sending requests)
     if IPy.IP(ip).iptype() == 'PRIVATE':
         return {}
+    a = time.time()
     data = _get_cache(ip)
+    logging.info('Getting IP Cache: %0.3f seconds', time.time() - a)
     if not data:
+        #TODO: consider using http://geoiplookup.net/ , which might offer better granularity/resolution
         url = 'http://freegeoip.net/json/%s' % ip
+        a = time.time()
         results = urllib.urlopen(url).read()
+        logging.info('Getting IP Data: %0.3f seconds', time.time() - a)
         data = json.loads(results)
+        a = time.time()
         _save_cache(ip, data)
+        logging.info('Saving IP Cache: %0.3f seconds', time.time() - a)
     return data
 
 def get_location_string_for(ip, city=True):

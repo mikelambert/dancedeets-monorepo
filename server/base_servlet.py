@@ -680,7 +680,7 @@ class BaseRequestHandler(BareBaseRequestHandler):
         import time
         start = time.time()
         self.display['ip_location'] = self.get_location_from_headers()
-        logging.info('Getting city took %s seconds', time.time() - start)
+        logging.info('Getting city took %0.3f seconds', time.time() - start)
 
         self.display['styles'] = event_types.STYLES
         self.display['us_cities'] = [
