@@ -37,7 +37,8 @@ from requests.packages.urllib3.contrib import appengine as appengine_manager  # 
 try:
     from google.appengine.ext.vmruntime import middlewares
 except:
-    logging.error("Failed to import google.appengine.ext.vmruntime.middlewares")
+    if prod_mode:
+        logging.error("Failed to import google.appengine.ext.vmruntime.middlewares")
 else:
     middlewares.MAX_CONCURRENT_REQUESTS = 30 # Normally 501
 
