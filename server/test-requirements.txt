@@ -1,3 +1,6 @@
 coverage==4.2
 WebTest==2.0.23
+# Used for formatting dev_appserver output
 technicolor-yawn==0.2.0
+# Used for running scrapinghub commands
+shub
