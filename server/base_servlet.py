@@ -212,7 +212,7 @@ class BareBaseRequestHandler(webapp2.RequestHandler, FacebookMixinHandler):
             return
 
         if result.error:
-            logging.exception('Error rendering React component: %s', result.error)
+            logging.error('Error rendering React component: %s', result.error)
         # Hope that client-side rendering works and picks up the pieces of a failed server render
         self.display['react_head'] = result.head
         self.display['react_html'] = result.markup
@@ -680,7 +680,11 @@ class BaseRequestHandler(BareBaseRequestHandler):
         import time
         start = time.time()
         self.display['ip_location'] = self.get_location_from_headers()
-        logging.info('Getting city took %0.3f seconds', time.time() - start)
+        duration = time.time() - start
+        if duration > 1.0:
+            logging.error('Getting city took %0.3f seconds', duration)
+        else:
+            logging.info('Getting city took %0.3f seconds', duration)
 
         self.display['styles'] = event_types.STYLES
         self.display['us_cities'] = [
