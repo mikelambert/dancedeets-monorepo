@@ -197,9 +197,13 @@ def build_search_results_api(city_name, form, search_query, search_results, vers
                     for style in event_types.STYLES + ['']:
                         index_style_name = style.index_name if style else ''
                         public_style_name = style.public_name if style else ''
-                        summed_key = '%s: %s' % (index_style_name, popular_people.SUMMED_AREA)
-                        if summed_key in styles:
-                            new_groupings[person_type][public_style_name] = styles[summed_key][:10]
+                        good_style = None
+                        for style in styles:
+                            style_name, city = style.split(': ', 2)
+                            if popular_people.is_summed_area(city) and style_name == index_style_name:
+                                good_style = style
+                        if good_style:
+                            new_groupings[person_type][public_style_name] = styles[good_style][:10]
                 groupings = new_groupings
 
             logging.info('Person Groupings:\n%s', '\n'.join('%s: %s' % kv for kv in groupings.iteritems()))

@@ -106,9 +106,10 @@ class AttendeeMatch(object):
         client = datastore.Client()
 
         debug_keys = []
-        for person_id in self.overlap_ids:
-            debug_key = popular_people.PRDebugAttendee.generate_key(self.city_name, person_id)
-            debug_keys.append(client.key('PRDebugAttendee', debug_key))
+        for city_name in popular_people.get_summed_area_cities(self.city_name):
+            for person_id in self.overlap_ids:
+                debug_key = popular_people.PRDebugAttendee.generate_key(city_name, person_id)
+                debug_keys.append(client.key('PRDebugAttendee', debug_key))
 
         missing_keys = []
         debug_attendees = client.get_multi(debug_keys, missing_keys)

@@ -1,6 +1,7 @@
 import hashlib
 import json
 import logging
+import re
 
 from google.appengine.api import memcache
 from google.appengine.ext import ndb
@@ -15,6 +16,20 @@ from util import runtime
 TOP_N = 100
 
 SUMMED_AREA = 'Summed-Area'
+SUMMED_AREA_CITY_DELIM = '|||'
+
+def is_summed_area(city):
+    return city.startswith(SUMMED_AREA)
+
+def get_summed_area_cities(city):
+    if is_summed_area(city):
+        match = re.search(r'\((.*)\)', city)
+        if match:
+            return match.group(1).split(SUMMED_AREA_CITY_DELIM)
+        else:
+            raise ValueError('Unknown Summed Area: %s' % city)
+    else:
+        return [city]
 
 class PRDebugAttendee(ndb.Model):
     created_date = ndb.DateTimeProperty(auto_now=True)
@@ -129,7 +144,7 @@ def get_attendees_within(bounds, max_attendees):
     logging.info('Loading PRCityCategory for top 10 cities: %s', city_names)
     if not city_names:
         return {}
-    memcache_key = 'AttendeeOnly: %s' % hashlib.md5('\n'.join(city_names).encode('utf-8')).hexdigest()
+    memcache_key = 'AttendeeCache: %s' % hashlib.md5('\n'.join(city_names).encode('utf-8')).hexdigest()
     memcache_result = memcache.get(memcache_key)
     if memcache_result:
         logging.info('Reading memcache key %s with value length: %s', memcache_key, len(memcache_result))
@@ -159,13 +174,15 @@ def get_attendees_within(bounds, max_attendees):
 
 def combine_rankings(rankings, max_people=0):
     groupings = {}
+    cities = sorted(set(r.city for r in rankings))
+    summed_area_key = '%s (%s)' % (SUMMED_AREA, SUMMED_AREA_CITY_DELIM.join(cities))
     for r in rankings:
         top_people = r.worthy_top_people()
         if not top_people:
             continue
         #logging.info(r.key)
         for key in (
-            (SUMMED_AREA, r.person_type, r.category),
+            (summed_area_key, r.person_type, r.category),
             (r.city, r.person_type, r.category),
         ):
             # Make sure we use setdefault....we can have key repeats due to rankings from different cities

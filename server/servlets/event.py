@@ -351,9 +351,8 @@ class AdminEditHandler(base_servlet.BaseRequestHandler):
 
         self.display['overlap_attendee_ids'] = sorted(matcher.overlap_ids)
 
-        city_matches = [x for x in matcher.matches if x.city_name != 'Summed-Area']
-        if city_matches:
-            attendee_ids_to_admin_hash_and_event_ids = city_matches[0].get_attendee_lookups()
+        if matcher.matches:
+            attendee_ids_to_admin_hash_and_event_ids = matcher.matches[0].get_attendee_lookups()
             self.display['attendee_ids_to_admin_hash_and_event_ids'] = attendee_ids_to_admin_hash_and_event_ids
 
         self.display['event'] = e
