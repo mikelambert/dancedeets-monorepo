@@ -36,7 +36,9 @@ def _save_cache(ip, data):
 def _get_cache(ip):
     data_dump = memcache.get(_memkey(ip))
     if not data_dump:
+        a = time.time()
         obj = client.get(_dbkey(ip))
+        logging.info('Timing: Getting IP Cache DB: %0.3f seconds with client %r', time.time() - a, client)
         if not obj:
             return None
         data_dump = obj['data']
@@ -50,17 +52,17 @@ def get_location_data_for(ip):
         return {}
     a = time.time()
     data = _get_cache(ip)
-    logging.info('Getting IP Cache: %0.3f seconds', time.time() - a)
+    logging.info('Timing: Getting IP Cache: %0.3f seconds', time.time() - a)
     if not data:
         #TODO: consider using http://geoiplookup.net/ , which might offer better granularity/resolution
         url = 'http://freegeoip.net/json/%s' % ip
         a = time.time()
         results = urllib.urlopen(url).read()
-        logging.info('Getting IP Data: %0.3f seconds', time.time() - a)
+        logging.info('Timing: Getting IP Data: %0.3f seconds', time.time() - a)
         data = json.loads(results)
         a = time.time()
         _save_cache(ip, data)
-        logging.info('Saving IP Cache: %0.3f seconds', time.time() - a)
+        logging.info('Timing: Saving IP Cache: %0.3f seconds', time.time() - a)
     return data
 
 def get_location_string_for(ip, city=True):
