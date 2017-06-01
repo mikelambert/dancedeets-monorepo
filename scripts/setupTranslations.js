@@ -8,7 +8,7 @@
 
 import * as path from 'path';
 import stableJsonStringify from 'json-stable-stringify';
-import fs from 'fs-promise';
+import fs from 'mz/fs';
 
 function generateJsonFile(translations) {
   return stableJsonStringify(translations, { space: 2 });
