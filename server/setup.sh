@@ -26,7 +26,7 @@ if [ "$TRAVIS" == true ]; then
   sudo apt-get -qq update
   sudo apt-get install -y libxml2-dev
 else
-  brew install libmemcached
+  brew ls --versions libmemcached >/dev/null || brew install libmemcached
 fi
 # Things we expect to be installed in our docker container
 pip install --upgrade -t $BASE_DIR/lib-local -r $BASE_DIR/docker/gae-modules/requirements.txt
