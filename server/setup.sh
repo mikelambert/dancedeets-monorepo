@@ -54,6 +54,9 @@ echo "Installing npm modules: ../"
 cd $BASE_DIR/..
 npm install
 
+echo "Installing npm modules: ../common/"
+cd $BASE_DIR/../common
+npm install
 
 echo "Installing npm modules: ../server/"
 cd $BASE_DIR
@@ -89,6 +92,8 @@ else
   brew ls --versions homebrew/science/vips >/dev/null || brew install homebrew/science/vips --with-webp --with-graphicsmagick
   brew ls --versions graphicsmagick >/dev/null || brew install graphicsmagick
   brew ls --versions librsvg >/dev/null || brew install librsvg
+  echo "Building cities DB"
+  gulp compile:geonames
   echo "Compiling everything"
   gulp compile
 fi
