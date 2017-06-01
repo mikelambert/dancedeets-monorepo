@@ -159,7 +159,7 @@ class HealCodeScraper(StudioScraper):
     def __init__(self, *args, **kwargs):
         super(HealCodeScraper, self).__init__(*args, **kwargs)
         self.start_urls = [
-            'http://widgets.healcode.com/widgets/mb/schedules/%s/print' % self.healcode_id,
+            'https://widgets.healcode.com/widgets/schedules/%s/print' % self.healcode_id,
         ]
 
     def _valid_item(self, item, row):

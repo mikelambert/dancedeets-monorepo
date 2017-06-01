@@ -2,3 +2,5 @@ projects:
   default: 27474
 requirements:
   file: ./shub-requirements.txt
+stacks:
+  default: scrapy:1.4
