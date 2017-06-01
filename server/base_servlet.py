@@ -196,6 +196,7 @@ class BareBaseRequestHandler(webapp2.RequestHandler, FacebookMixinHandler):
             return False
 
     def write_json_response(self, arg):
+        self.response.headers['Content-Type'] = 'application/json; charset=utf-8'
         self.response.out.write(json.dumps(arg))
 
     def setup_react_template(self, template_name, props, static_html=False):
