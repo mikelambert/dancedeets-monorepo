@@ -7,7 +7,7 @@
   },
   "dependencies": {
     "cldr-data": "^29.0.1",
-    "dancedeets-common": "../common",
+    "dancedeets-common": "file:../common",
     "emoji-flags": "^1.1.0",
     "fbjs": "^0.8.6",
     "geolib": "^2.0.21",
@@ -19,7 +19,7 @@
     "querystring": "^0.2.0",
     "react": "^15.4.0-rc.4",
     "react-intl": "^2.1.5",
-    "react-native": "../../react-native",
+    "react-native": "file:../../react-native",
     "react-native-admob": "^1.0.0",
     "react-native-autolink": "^0.7.0",
     "react-native-back-android": "^2.0.1",
