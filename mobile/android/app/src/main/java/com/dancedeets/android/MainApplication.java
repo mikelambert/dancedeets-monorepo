@@ -47,56 +47,58 @@ import io.fabric.sdk.android.Fabric;
 import io.fixd.rctlocale.RCTLocalePackage;
 import io.fullstack.firestack.FirestackPackage;
 
-public class MainApplication extends MultiDexApplication implements ReactApplication {
-  private final ReactNativeHost mReactNativeHost = new ReactNativeHost(this) {
-    static CallbackManager mCallbackManager = CallbackManager.Factory.create();
+// Use a separate MyReactNativeHost class as suggested by the react-native-code-push docs:
+class MyReactNativeHost extends ReactNativeHost implements ReactInstanceHolder {
 
-    @Override
-    public boolean getUseDeveloperSupport() {
-      return BuildConfig.DEBUG;
-    }
+  protected MyReactNativeHost(Application application) {
+    super(application);
+  }
 
-    @Override
-    protected List<ReactPackage> getPackages() {
-      return Arrays.<ReactPackage>asList(
-        new MainReactPackage(),
-        new VectorIconsPackage(),
-        new RNDeviceInfo(),
-        new FirestackPackage(),
-        new ReactNativeYouTube(),
-        new GoogleApiAvailabilityPackage(),
-        new ReactNativePushNotificationPackage(),
-        new PhotoViewPackage(),
-        new ReactNativePermissionsPackage(),
-        new FirebasePackage(),
-        new RCTNativeEnvPackage(BuildConfig.class),
-        new RCTLocalePackage(),
-        new CodePush(BuildConfig.CODEPUSH_KEY, getApplication(), BuildConfig.DEBUG),
-        new RNSharePackage(),
-        new RNMail(),
-        new RNAdMobPackage(),
-        new RNMixpanel(),
-        new RNGeocoderPackage(),
-        new MapsPackage(),
-        new FabricPackage(),
-        new LinearGradientPackage(),
-        new AndroidSegmentedPackage(),
-        new RNSendIntentPackage(),
-        new FBSDKPackage(mCallbackManager)
-      );
-    }
-
-    @Override
-    protected String getJSBundleFile() {
-      return CodePush.getBundleUrl();
-    }
-  };
+  static CallbackManager mCallbackManager = CallbackManager.Factory.create();
 
   @Override
-  public ReactNativeHost getReactNativeHost() {
-    return mReactNativeHost;
+  protected boolean getUseDeveloperSupport() {
+    return BuildConfig.DEBUG;
   }
- 
+
+  @Override
+  protected List<ReactPackage> getPackages() {
+    return Arrays.<ReactPackage>asList(
+      new MainReactPackage(),
+      new VectorIconsPackage(),
+      new RNDeviceInfo(),
+      new FirestackPackage(),
+      new ReactNativeYouTube(),
+      new GoogleApiAvailabilityPackage(),
+      new ReactNativePushNotificationPackage(),
+      new PhotoViewPackage(),
+      new ReactNativePermissionsPackage(),
+      new FirebasePackage(),
+      new RCTNativeEnvPackage(BuildConfig.class),
+      new RCTLocalePackage(),
+      new CodePush(BuildConfig.CODEPUSH_KEY, getApplication(), BuildConfig.DEBUG),
+      new RNSharePackage(),
+      new RNMail(),
+      new RNAdMobPackage(),
+      new RNMixpanel(),
+      new RNGeocoderPackage(),
+      new MapsPackage(),
+      new FabricPackage(),
+      new LinearGradientPackage(),
+      new AndroidSegmentedPackage(),
+      new RNSendIntentPackage(),
+      new FBSDKPackage(mCallbackManager)
+    );
+  }
+
+  @Override
+  protected String getJSBundleFile() {
+    return CodePush.getBundleUrl();
+  }
+}
+
+public class MainApplication extends MultiDexApplication implements ReactApplication {
+  private final MyReactNativeHost mReactNativeHost = new MyReactNativeHost(this);
 
   protected static CallbackManager getCallbackManager() {
     return MyReactNativeHost.mCallbackManager;
