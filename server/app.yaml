@@ -7,7 +7,7 @@ beta_settings:
   enable_app_engine_apis: true
 
 resources:
-  memory_gb: 2.0
+  memory_gb: 3.0
   cpu: 1.0
 
 manual_scaling:
