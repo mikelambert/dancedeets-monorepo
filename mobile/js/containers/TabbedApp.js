@@ -218,6 +218,7 @@ class _TabbedAppView extends React.Component {
             this.icon(require('../containers/icons/events-highlighted.png'))}
           onPress={() => {
             if (this.props.selectedTab === 'events') {
+              console.log(this._eventNavigator);
               this._eventNavigator._navigation.goBack();
             } else {
               track('Tab Selected', { Tab: 'Events' });
@@ -226,7 +227,7 @@ class _TabbedAppView extends React.Component {
           }}
         >
           <EventScreens
-            ref={nav => {
+            navRef={nav => {
               this._eventNavigator = nav;
             }}
           />
@@ -250,7 +251,7 @@ class _TabbedAppView extends React.Component {
           }}
         >
           <LearnScreens
-            ref={nav => {
+            navRef={nav => {
               this._learnNavigator = nav;
             }}
           />

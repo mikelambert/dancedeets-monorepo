@@ -130,12 +130,16 @@ const LearnScreens = StackNavigator({
 
 class _LearnScreensView extends React.Component {
   props: {
+    navRef: (nav: StackNavigator) => void,
+
+    // Self-managed props
     intl: intlShape,
     canOpenAddEvent: (props: any) => void;
   };
 
   render() {
     return <LearnScreens
+      ref={nav => this.props.navRef(nav)}
       screenProps={{
         intl: this.props.intl,
       }}

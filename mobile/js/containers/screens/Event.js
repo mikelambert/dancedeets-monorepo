@@ -211,6 +211,9 @@ const EventScreens = StackNavigator({
 
 class _EventScreensView extends React.Component {
   props: {
+    navRef: (nav: StackNavigator) => void,
+
+    // Self-managed props
     intl: intlShape,
     canOpenAddEvent: (props: any) => void,
   };
@@ -218,6 +221,7 @@ class _EventScreensView extends React.Component {
   render() {
     return (
       <EventScreens
+        ref={nav => this.props.navRef(nav)}
         screenProps={{
           intl: this.props.intl,
           canOpenAddEvent: async () =>
