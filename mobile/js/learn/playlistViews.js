@@ -15,7 +15,7 @@ import {
   TouchableHighlight,
   View,
 } from 'react-native';
-import { injectIntl, intlShape } from 'react-intl';
+import { injectIntl, intlShape, defineMessages } from 'react-intl';
 import { connect } from 'react-redux';
 import YouTube from 'react-native-youtube';
 import shallowEqual from 'fbjs/lib/shallowEqual';
@@ -164,6 +164,10 @@ class _PlaylistStylesView extends React.Component {
   }
 }
 export const PlaylistStylesView = injectIntl(_PlaylistStylesView);
+
+PlaylistStylesView.navigationOptions = ({ screenProps }) => ({
+  title: screenProps.intl.formatMessage(messages.learnTitle),
+});
 
 type PlaylistListViewProps = {
   onSelected: (playlist: Playlist) => void,

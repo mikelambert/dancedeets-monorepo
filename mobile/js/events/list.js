@@ -68,6 +68,11 @@ import { loadSavedAddress, storeSavedAddress } from './savedAddress';
 import { openUserId } from '../util/fb';
 
 const messages = defineMessages({
+  eventsTitle: {
+    id: 'navigator.eventsTitle',
+    defaultMessage: 'Events',
+    description: 'Initial title bar for Events tab',
+  },
   fetchEventsError: {
     id: 'errors.fetchEventsError',
     defaultMessage: 'There was a problem fetching events.',
@@ -455,9 +460,6 @@ const PeopleView = connect(state => ({
 
 class _EventListContainer extends React.Component {
   props: {
-    intl: intlShape,
-    navigation: NavigationScreenProp<NavigationRoute, NavigationAction>,
-
     // Self-managed props
     search: State,
     user: ?User,
@@ -465,6 +467,8 @@ class _EventListContainer extends React.Component {
     performSearch: () => Promise<void>,
     processUrl: (url: string) => Promise<void>,
     loadUserData: () => Promise<void>,
+    intl: intlShape,
+    navigation: NavigationScreenProp<NavigationRoute, NavigationAction>,
   };
 
   state: {
@@ -816,7 +820,7 @@ class _EventListContainer extends React.Component {
     );
   }
 }
-export default connect(
+const EventListContainer = connect(
   state => ({
     search: state.search,
     user: state.user.userData,
@@ -852,6 +856,12 @@ export default connect(
     },
   })
 )(injectIntl(_EventListContainer));
+
+EventListContainer.navigationOptions = ({ screenProps }) => ({
+  title: screenProps.intl.formatMessage(messages.eventsTitle),
+});
+
+export default EventListContainer;
 
 const styles = StyleSheet.create({
   listView: {

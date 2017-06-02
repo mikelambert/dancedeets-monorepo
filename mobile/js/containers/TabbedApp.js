@@ -59,25 +59,10 @@ const messages = defineMessages({
     defaultMessage: 'About',
     description: 'Tab button to show general info about Dancedeets, Profile, and Share info',
   },
-  addEvent: {
-    id: 'navigator.addEvent',
-    defaultMessage: 'Add Event',
-    description: 'Title Bar for Adding Event',
-  },
   viewFlyer: {
     id: 'navigator.viewFlyer',
     defaultMessage: 'View Flyer',
     description: 'Title Bar for Viewing Flyer',
-  },
-  eventsTitle: {
-    id: 'navigator.eventsTitle',
-    defaultMessage: 'Events',
-    description: 'Initial title bar for Events tab',
-  },
-  learnTitle: {
-    id: 'tutorialVideos.navigatorTitle',
-    defaultMessage: 'Tutorials',
-    description: 'Initial title bar for Learn tab',
   },
   styleTutorialTitle: {
     id: 'tutorialVideos.styleTutorialTitle',
@@ -89,18 +74,6 @@ const messages = defineMessages({
     defaultMessage: 'Notification Settings',
     description: 'Titlebar for notification settings',
   },
-});
-
-const EventNavigator = View;//generateNavigator('EVENT_NAV');
-setDefaultState('EVENT_NAV', {
-  key: 'EventList',
-  message: messages.eventsTitle,
-});
-
-const LearnNavigator = View;//generateNavigator('LEARN_NAV');
-setDefaultState('LEARN_NAV', {
-  key: 'TutorialStyles',
-  message: messages.learnTitle,
 });
 
 const AboutNavigator = View;//generateNavigator('ABOUT_NAV');
@@ -140,6 +113,10 @@ type CommonProps = {
 };
 
 class FeaturedEventView extends React.Component {
+  static navigationOptions = ({ navigation }) => ({
+    title: navigation.state.params.event.name,
+  });
+
   props: {
     navigation: NavigationScreenProp<NavigationRoute, NavigationAction>,
   };
@@ -176,6 +153,10 @@ class FeaturedEventView extends React.Component {
 }
 
 class FlyerView extends React.Component {
+  static navigationOptions = ({ screenProps }) => ({
+    title: screenProps.intl.formatMessage(messages.viewFlyer),
+  });
+
   props: {
     navigation: NavigationScreenProp<NavigationRoute, NavigationAction>,
   };
@@ -192,12 +173,18 @@ class FlyerView extends React.Component {
   }
 }
 
-const EventApp = StackNavigator({
+const EventScreens = StackNavigator({
   EventList: { screen: EventListContainer },
   FeaturedEventView: { screen: FeaturedEventView },
   EventView: { screen: EventPager },
   FlyerView: { screen: FlyerView },
   AddEvent: { screen: AddEvents },
+});
+
+const LearningScreens = StackNavigator({
+  TutorialStyles: { screen: PlaylistStylesView },
+  TutorialList: { screen: PlaylistListView },
+  Tutorial: { screen: PlaylistView },
 });
 
 class _LearnView extends React.Component {
@@ -297,8 +284,8 @@ class _TabbedAppView extends React.Component {
   };
 
   _eventSignupsNavigator: BattleSignupsNavigator;
-  _eventNavigator: EventNavigator;
-  _learnNavigator: LearnNavigator;
+  _eventNavigator: StackNavigator;
+  _learnNavigator: StackNavigator;
   _aboutNavigator: AboutNavigator;
 
   constructor(props) {
@@ -382,9 +369,12 @@ class _TabbedAppView extends React.Component {
             }
           }}
         >
-          <EventApp
+          <EventScreens
             ref={nav => {
               this._eventNavigator = nav;
+            }}
+            screenProps={{
+              intl: this.props.intl,
             }}
           />
         </TabNavigator.Item>
@@ -398,7 +388,7 @@ class _TabbedAppView extends React.Component {
             this.icon(require('../containers/icons/learn-highlighted.png'))}
           onPress={() => {
             if (this.props.selectedTab === 'learn') {
-              this._learnNavigator.dispatchProps.goHome();
+              this._learnNavigator._navigation.goBack();
             } else {
               track('Tab Selected', { Tab: 'Learn' });
               this.props.selectTab('learn');
@@ -406,14 +396,13 @@ class _TabbedAppView extends React.Component {
             }
           }}
         >
-          <LearnNavigator
-            ref={x => {
-              this._learnNavigator = x;
+          <LearningScreens
+            ref={nav => {
+              this._learnNavigator = nav;
             }}
-            renderScene={(
-              sceneProps: NavigationSceneRendererProps,
-              nav: Navigatable
-            ) => <LearnView sceneProps={sceneProps} navigatable={nav} />}
+            screenProps={{
+              intl: this.props.intl,
+            }}
           />
         </TabNavigator.Item>
         <TabNavigator.Item

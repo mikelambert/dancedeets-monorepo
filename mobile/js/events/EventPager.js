@@ -21,6 +21,10 @@ import { getPosition } from '../util/geo';
 import { trackWithEvent } from '../store/track';
 
 class EventPager extends React.Component {
+  static navigationOptions = ({ navigation }) => ({
+    title: navigation.state.params.event.name,
+  });
+
   props: {
     search: State,
 
