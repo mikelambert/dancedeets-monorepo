@@ -42,6 +42,7 @@ import { BattleBrackets } from '../event_signups/views';
 import * as RemoteConfig from '../remoteConfig';
 import PositionProvider from '../providers/positionProvider';
 import { FullEventView } from '../events/uicomponents';
+import EventScreens from './screens/Event';
 
 const messages = defineMessages({
   events: {
@@ -58,11 +59,6 @@ const messages = defineMessages({
     id: 'tab.about',
     defaultMessage: 'About',
     description: 'Tab button to show general info about Dancedeets, Profile, and Share info',
-  },
-  viewFlyer: {
-    id: 'navigator.viewFlyer',
-    defaultMessage: 'View Flyer',
-    description: 'Title Bar for Viewing Flyer',
   },
   styleTutorialTitle: {
     id: 'tutorialVideos.styleTutorialTitle',
@@ -111,75 +107,6 @@ type CommonProps = {
   openAddEvent: (props: any) => void,
   intl: intlShape,
 };
-
-class FeaturedEventView extends React.Component {
-  static navigationOptions = ({ navigation }) => ({
-    title: navigation.state.params.event.name,
-  });
-
-  props: {
-    navigation: NavigationScreenProp<NavigationRoute, NavigationAction>,
-  };
-
-  constructor(props) {
-    super(props);
-    (this: any).onFlyerSelected = this.onFlyerSelected.bind(this);
-  }
-
-  onFlyerSelected() {
-    const event = this.getEvent();
-    trackWithEvent('View Flyer', event);
-    // TODO(navigation): Should we pass in an i18n'ed title?
-    this.props.navigation.navigate('FlyerView', { event });
-  }
-
-  getEvent(): any {
-    return this.props.navigation.state.params.event;
-  }
-
-  render() {
-    return (
-      <PositionProvider
-        renderWithPosition={position => (
-          <FullEventView
-            onFlyerSelected={this.onFlyerSelected}
-            event={this.getEvent()}
-            currentPosition={position}
-          />
-        )}
-      />
-    );
-  }
-}
-
-class FlyerView extends React.Component {
-  static navigationOptions = ({ screenProps }) => ({
-    title: screenProps.intl.formatMessage(messages.viewFlyer),
-  });
-
-  props: {
-    navigation: NavigationScreenProp<NavigationRoute, NavigationAction>,
-  };
-
-  render() {
-    const event: any = this.props.navigation.state.params.event;
-    return (
-      <ZoomableImage
-        url={event.picture.source}
-        width={event.picture.width}
-        height={event.picture.height}
-      />
-    );
-  }
-}
-
-const EventScreens = StackNavigator({
-  EventList: { screen: EventListContainer },
-  FeaturedEventView: { screen: FeaturedEventView },
-  EventView: { screen: EventPager },
-  FlyerView: { screen: FlyerView },
-  AddEvent: { screen: AddEvents },
-});
 
 const LearningScreens = StackNavigator({
   TutorialStyles: { screen: PlaylistStylesView },
@@ -372,9 +299,6 @@ class _TabbedAppView extends React.Component {
           <EventScreens
             ref={nav => {
               this._eventNavigator = nav;
-            }}
-            screenProps={{
-              intl: this.props.intl,
             }}
           />
         </TabNavigator.Item>

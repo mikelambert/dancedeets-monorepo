@@ -68,11 +68,6 @@ import { loadSavedAddress, storeSavedAddress } from './savedAddress';
 import { openUserId } from '../util/fb';
 
 const messages = defineMessages({
-  eventsTitle: {
-    id: 'navigator.eventsTitle',
-    defaultMessage: 'Events',
-    description: 'Initial title bar for Events tab',
-  },
   fetchEventsError: {
     id: 'errors.fetchEventsError',
     defaultMessage: 'There was a problem fetching events.',
@@ -107,11 +102,6 @@ const messages = defineMessages({
     id: 'search.eventsWithLocationKeywords',
     defaultMessage: 'Events near {location} with keywords "{keywords}"',
     description: 'Header to show with search results',
-  },
-  featureAddingEvents: {
-    id: 'feature.addingEvents',
-    defaultMessage: 'Adding Events',
-    description: 'The name of the Add Event feature when requesting permissions',
   },
 });
 
@@ -460,6 +450,10 @@ const PeopleView = connect(state => ({
 
 class _EventListContainer extends React.Component {
   props: {
+    onEventSelected: (event: Event) => void,
+    onFeaturedEventSelected: (event: Event) => void,
+    onAddEventClicked: (clickTarget: string) => void,
+
     // Self-managed props
     search: State,
     user: ?User,
@@ -468,7 +462,6 @@ class _EventListContainer extends React.Component {
     processUrl: (url: string) => Promise<void>,
     loadUserData: () => Promise<void>,
     intl: intlShape,
-    navigation: NavigationScreenProp<NavigationRoute, NavigationAction>,
   };
 
   state: {
@@ -492,11 +485,6 @@ class _EventListContainer extends React.Component {
     (this: any).renderHeader = this.renderHeader.bind(this);
     (this: any).renderRow = this.renderRow.bind(this);
     (this: any).setLocationAndSearch = this.setLocationAndSearch.bind(this);
-    (this: any).onEventSelected = this.onEventSelected.bind(this);
-    (this: any).onAddEventClicked = this.onAddEventClicked.bind(this);
-    (this: any).onFeaturedEventSelected = this.onFeaturedEventSelected.bind(
-      this
-    );
   }
 
   componentWillMount() {
@@ -512,21 +500,6 @@ class _EventListContainer extends React.Component {
     if (nextProps.search.response !== this.props.search.response) {
       this._listView.scrollTo({ x: 0, y: 0, animated: false });
     }
-  }
-
-  onEventSelected(event) {
-    trackWithEvent('View Event', event);
-    this.props.navigation.navigate('EventView', { event });
-  }
-
-  onFeaturedEventSelected(event) {
-    trackWithEvent('View Featured Event', event);
-    this.props.navigation.navigate('FeaturedEventView', { event });
-  }
-
-  onAddEventClicked(source) {
-    track('Add Event', { source });
-    this.props.openAddEvent(this.props);
   }
 
   getNewState(props) {
@@ -688,7 +661,7 @@ class _EventListContainer extends React.Component {
       return (
         <EventRow
           event={row}
-          onEventSelected={this.onEventSelected}
+          onEventSelected={this.props.onEventSelected}
           currentPosition={this.state.position}
         />
       );
@@ -741,7 +714,7 @@ class _EventListContainer extends React.Component {
       <View>
         <FeaturedEvents
           featured={response.featuredInfos}
-          onEventSelected={this.onFeaturedEventSelected}
+          onEventSelected={this.props.onFeaturedEventSelected}
         />
         <PeopleView people={response.people} />
         {header}
@@ -806,14 +779,14 @@ class _EventListContainer extends React.Component {
       <View style={styles.container}>
         <SearchHeader
           onAddEvent={() => {
-            this.onAddEventClicked('Search Header');
+            this.props.onAddEventClicked('Search Header');
           }}
         >
           {this.renderListView()}
         </SearchHeader>
         <AddEventButton
           onPress={() => {
-            this.onAddEventClicked('Floating Button');
+            this.props.onAddEventClicked('Floating Button');
           }}
         />
       </View>
@@ -838,28 +811,8 @@ const EventListContainer = connect(
     loadUserData: async () => {
       await loadUserData(dispatch);
     },
-    openAddEvent: async props => {
-      if (
-        !props.user &&
-        !await canGetValidLoginFor(
-          props.intl.formatMessage(messages.featureAddingEvents),
-          props.intl,
-          dispatch
-        )
-      ) {
-        return;
-      }
-      props.navigation.navigate('AddEvent', {
-        //TODO(navigation): Perhaps fix i18n
-        title: props.intl.formatMessage(messages.addEvent),
-      });
-    },
   })
 )(injectIntl(_EventListContainer));
-
-EventListContainer.navigationOptions = ({ screenProps }) => ({
-  title: screenProps.intl.formatMessage(messages.eventsTitle),
-});
 
 export default EventListContainer;
 

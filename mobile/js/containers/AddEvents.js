@@ -42,11 +42,6 @@ import {
 import { weekdayDateTime } from '../formats';
 
 const messages = defineMessages({
-  addEventTitle: {
-    id: 'navigator.addEvent',
-    defaultMessage: 'Add Event',
-    description: 'Title Bar for Adding Event',
-  },
   introText: {
     id: 'addEvents.introText',
     defaultMessage: 'DanceDeets works best when dancers like you, share the dance events you know about.',
@@ -373,10 +368,6 @@ const AddEventList = connect(
 )(_AddEventList);
 
 export default class AddEvents extends React.Component {
-  static navigationOptions = ({ screenProps }) => ({
-    title: screenProps.intl.formatMessage(messages.addEventTitle),
-  });
-
   render() {
     return (
       <View style={styles.container}>

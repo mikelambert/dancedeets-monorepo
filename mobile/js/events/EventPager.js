@@ -21,14 +21,13 @@ import { getPosition } from '../util/geo';
 import { trackWithEvent } from '../store/track';
 
 class EventPager extends React.Component {
-  static navigationOptions = ({ navigation }) => ({
-    title: navigation.state.params.event.name,
-  });
-
   props: {
-    search: State,
+    onFlyerSelected: (x: Event) => ThunkAction,
+    onEventNavigated: (x: Event) => void,
+    selectedEvent: Event,
 
-    navigation: NavigationScreenProp<NavigationRoute, NavigationAction>,
+    // Self-managed props
+    search: State,
   };
 
   state: {
@@ -49,8 +48,6 @@ class EventPager extends React.Component {
     };
     this.state = this.getNewState(this.props, null);
     (this: any).renderEvent = this.renderEvent.bind(this);
-    (this: any).onEventNavigated = this.onEventNavigated.bind(this);
-    (this: any).onFlyerSelected = this.onFlyerSelected.bind(this);
   }
 
   componentWillMount() {
@@ -61,30 +58,12 @@ class EventPager extends React.Component {
     this.setState(this.getNewState(nextProps, this.state.position));
   }
 
-  onEventNavigated(event) {
-    console.log(event);
-    trackWithEvent('View Event', event);
-    // TODO(navigation) : should this swap instead ofnavigate?
-    this.props.navigation.setParams({ event });
-  }
-
-  onFlyerSelected() {
-    const event = this.getEvent();
-    trackWithEvent('View Flyer', event);
-    // TODO(navigation): Should we pass in an i18n'ed title?
-    this.props.navigation.navigate('FlyerView', { event });
-  }
-
-  getEvent(): any {
-    return this.props.navigation.state.params.event;
-  }
-
   getNewState(props, position) {
     const results = props.search.response;
     let finalResults = [];
     const newPosition = position || this.state.position;
 
-    const selectedEvent = this.getEvent();
+    const selectedEvent = this.props.selectedEvent;
 
     if (results && results.results) {
       const pageIndex = results.results.findIndex(
@@ -110,7 +89,7 @@ class EventPager extends React.Component {
   }
 
   getSelectedPage() {
-    const selectedEvent = this.getEvent();
+    const selectedEvent = this.props.selectedEvent;
 
     let initialPage = null;
     if (this.props.search.response && this.props.search.response.results) {
@@ -142,7 +121,7 @@ class EventPager extends React.Component {
     }
     return (
       <FullEventView
-        onFlyerSelected={this.onFlyerSelected}
+        onFlyerSelected={this.props.onFlyerSelected}
         event={eventData.event}
         currentPosition={eventData.position}
       />
@@ -179,7 +158,7 @@ class EventPager extends React.Component {
         renderPage={this.renderEvent}
         renderPageIndicator={false}
         onChangePage={i =>
-          this.onEventNavigated(
+          this.props.onEventNavigated(
             this.state.dataSource.getPageData(i).event
           )}
         initialPage={this.getSelectedPage()}
