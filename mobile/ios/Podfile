@@ -2,7 +2,6 @@ source 'https://github.com/CocoaPods/Specs.git'
 
 platform :ios, '8.0'
 
-target 'DanceDeets' do
 [
   'Firebase',
   'Firebase/Core',
@@ -18,4 +17,6 @@ target 'DanceDeets' do
 ].each do |lib|
   pod lib
 end
+
+target 'DanceDeets' do
 end
