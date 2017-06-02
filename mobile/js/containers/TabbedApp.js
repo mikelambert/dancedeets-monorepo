@@ -17,32 +17,24 @@ import { NavigationActions, StackNavigator } from 'react-navigation';
 import LinearGradient from 'react-native-linear-gradient';
 import { connect } from 'react-redux';
 import { injectIntl, intlShape, defineMessages } from 'react-intl';
+import { Event } from 'dancedeets-common/js/events/models';
 import generateNavigator from '../containers/generateNavigator';
 import type { Navigatable } from '../containers/generateNavigator';
 import ProfilePage from '../containers/Profile';
 import { yellowColors, gradientBottom, gradientTop } from '../Colors';
-import { Event } from 'dancedeets-common/js/events/models';
-import EventListContainer from '../events/list';
-import EventPager from '../events/EventPager';
-import { BlogList, BlogPostList, BlogPostContents } from '../learn/BlogList';
 import { semiNormalize, ZoomableImage } from '../ui';
-import { selectTab, canGetValidLoginFor } from '../actions';
+import { selectTab } from '../actions';
 import type { User } from '../actions/types';
-import AddEvents from '../containers/AddEvents';
 import NotificationPreferences from '../containers/NotificationPreferences';
 import { track, trackWithEvent } from '../store/track';
 import { TimeTracker } from '../util/timeTracker';
 import { setDefaultState } from '../reducers/navigation';
-import {
-  PlaylistListView,
-  PlaylistStylesView,
-  PlaylistView,
-} from '../learn/playlistViews';
 import { BattleBrackets } from '../event_signups/views';
 import * as RemoteConfig from '../remoteConfig';
 import PositionProvider from '../providers/positionProvider';
 import { FullEventView } from '../events/uicomponents';
 import EventScreens from './screens/Event';
+import LearnScreens from './screens/Learn';
 
 const messages = defineMessages({
   events: {
@@ -59,11 +51,6 @@ const messages = defineMessages({
     id: 'tab.about',
     defaultMessage: 'About',
     description: 'Tab button to show general info about Dancedeets, Profile, and Share info',
-  },
-  styleTutorialTitle: {
-    id: 'tutorialVideos.styleTutorialTitle',
-    defaultMessage: '{style} Tutorials',
-    description: "Title Bar for viewing a given style's tutorials",
   },
   notificationsTitle: {
     id: 'navigator.notificationsTitle',
@@ -107,64 +94,6 @@ type CommonProps = {
   openAddEvent: (props: any) => void,
   intl: intlShape,
 };
-
-const LearningScreens = StackNavigator({
-  TutorialStyles: { screen: PlaylistStylesView },
-  TutorialList: { screen: PlaylistListView },
-  Tutorial: { screen: PlaylistView },
-});
-
-class _LearnView extends React.Component {
-  props: CommonProps & {};
-
-  render() {
-    const { scene } = this.props.sceneProps;
-    const { route } = scene;
-    switch (route.key) {
-      case 'TutorialStyles':
-        return (
-          <PlaylistStylesView
-            onSelected={category => {
-              track('Tutorial Style Selected', {
-                tutorialStyle: category.style.title,
-              });
-              this.props.navigatable.onNavigate({
-                key: 'TutorialList',
-                title: this.props.intl.formatMessage(
-                  messages.styleTutorialTitle,
-                  { style: category.style.title }
-                ),
-                tutorials: category.tutorials,
-              });
-            }}
-          />
-        );
-      case 'TutorialList':
-        return (
-          <PlaylistListView
-            playlists={route.tutorials}
-            onSelected={playlist => {
-              track('Tutorial Selected', {
-                tutorialName: playlist.title,
-                tutorialStyle: playlist.style,
-              });
-              this.props.navigatable.onNavigate({
-                key: 'Tutorial',
-                title: playlist.title,
-                tutorial: playlist,
-              });
-            }}
-          />
-        );
-      case 'Tutorial':
-        return <PlaylistView playlist={route.tutorial} />;
-      default:
-        console.error('Unknown case:', route.key);
-        return null;
-    }
-  }
-}
-const LearnView = injectIntl(_LearnView);
 
 class _AboutView extends React.Component {
   props: CommonProps & {};
@@ -320,12 +249,9 @@ class _TabbedAppView extends React.Component {
             }
           }}
         >
-          <LearningScreens
+          <LearnScreens
             ref={nav => {
               this._learnNavigator = nav;
-            }}
-            screenProps={{
-              intl: this.props.intl,
             }}
           />
         </TabNavigator.Item>

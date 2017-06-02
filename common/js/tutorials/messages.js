@@ -7,11 +7,6 @@
 import { defineMessages } from 'react-intl';
 
 export default defineMessages({
-  learnTitle: {
-    id: 'tutorialVideos.navigatorTitle',
-    defaultMessage: 'Tutorials',
-    description: 'Initial title bar for Learn tab',
-  },
   numTutorials: {
     id: 'tutorialVideos.numTutorials',
     defaultMessage: '{count,number} Tutorials',

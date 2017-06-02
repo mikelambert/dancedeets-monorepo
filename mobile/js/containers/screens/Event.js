@@ -56,7 +56,7 @@ class EventListScreen extends React.Component {
 
   props: {
     navigation: NavigationScreenProp<NavigationRoute, NavigationAction>,
-    screenProps: Object;
+    screenProps: Object,
   };
 
   constructor(props) {
@@ -86,11 +86,13 @@ class EventListScreen extends React.Component {
   }
 
   render() {
-    return <EventListContainer
-      onEventSelected={this.onEventSelected}
-      onAddEventClicked={this.onAddEventClicked}
-      onFeaturedEventSelected={this.onFeaturedEventSelected}
-    />;
+    return (
+      <EventListContainer
+        onEventSelected={this.onEventSelected}
+        onAddEventClicked={this.onAddEventClicked}
+        onFeaturedEventSelected={this.onFeaturedEventSelected}
+      />
+    );
   }
 }
 
@@ -210,16 +212,19 @@ const EventScreens = StackNavigator({
 class _EventScreensView extends React.Component {
   props: {
     intl: intlShape,
-    canOpenAddEvent: (props: any) => void;
+    canOpenAddEvent: (props: any) => void,
   };
 
   render() {
-    return <EventScreens
-      screenProps={{
-        intl: this.props.intl,
-        canOpenAddEvent: async () => await this.props.canOpenAddEvent(this.props),
-      }}
-    />;
+    return (
+      <EventScreens
+        screenProps={{
+          intl: this.props.intl,
+          canOpenAddEvent: async () =>
+            await this.props.canOpenAddEvent(this.props),
+        }}
+      />
+    );
   }
 }
 
