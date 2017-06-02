@@ -1,8 +1,9 @@
 {
-  "name": "DanceDeets",
+  "name": "dancedeets-mobile",
   "version": "0.0.1",
   "private": true,
   "scripts": {
+    "postinstall": "rm -f node_modules/intl/.babelrc",
     "start": "node node_modules/react-native/local-cli/cli.js start"
   },
   "dependencies": {

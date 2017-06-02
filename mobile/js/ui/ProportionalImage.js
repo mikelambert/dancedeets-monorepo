@@ -6,7 +6,7 @@
 import React from 'react';
 import { Animated, View } from 'react-native';
 import SyntheticEvent
-  from 'react-native/Libraries/Renderer/src/renderers/shared/stack/event/SyntheticEvent';
+  from 'react-native/Libraries/Renderer/src/renderers/shared/shared/event/SyntheticEvent';
 
 type Props = {
   originalWidth: number,

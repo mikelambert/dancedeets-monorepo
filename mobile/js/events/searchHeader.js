@@ -13,7 +13,7 @@ import {
   View,
 } from 'react-native';
 import SyntheticEvent
-  from 'react-native/Libraries/Renderer/src/renderers/shared/stack/event/SyntheticEvent';
+  from 'react-native/Libraries/Renderer/src/renderers/shared/shared/event/SyntheticEvent';
 import Locale from 'react-native-locale';
 import { connect } from 'react-redux';
 import { defineMessages, injectIntl, intlShape } from 'react-intl';

@@ -20,8 +20,7 @@ import type {
   NavigationSceneRendererProps,
   NavigationState,
 } from 'react-navigation/src/TypeDefinition';
-// TODO: Migrate from NavigationExperimental to react-navigation
-import { StackNavigator } from 'react-navigation';
+import { CardStack, Header } from 'react-navigation';
 import { navigatePush, navigatePop, navigateSwap } from '../actions';
 import ShareEventIcon from './ShareEventIcon';
 import { getNamedState } from '../reducers/navigation';
@@ -29,10 +28,7 @@ import type { ThunkAction, Dispatch } from '../actions/types';
 import { semiNormalize, Text } from '../ui';
 import { gradientTop, purpleColors } from '../Colors';
 
-const CardStack = null;
-const Header = null;
-
-// These are basically copied from NavigationHeader.js.
+// These are basically copied from Header.js.
 // But we made it shorter on Android for the more compact display
 const APPBAR_HEIGHT = Platform.OS === 'ios' ? 44 : 46;
 const STATUSBAR_HEIGHT = Platform.OS === 'ios' ? 20 : 0;
@@ -56,14 +52,14 @@ type CallingProps = {
   ) => Element<any>,
 };
 
-const NavigationHeaderTitle = ({ children, style, textStyle, viewProps }) => (
+const HeaderTitle = ({ children, style, textStyle, viewProps }) => (
   <View style={[styles.title, style]} {...viewProps}>
     <Text style={[styles.titleText, textStyle]} numberOfLines={1}>
       {children}
     </Text>
   </View>
 );
-NavigationHeaderTitle.propTypes = {
+HeaderTitle.propTypes = {
   children: PropTypes.string,
   style: View.propTypes.style,
   textStyle: View.propTypes.style,
@@ -116,9 +112,9 @@ class _Navigator extends React.Component {
       title = this.props.intl.formatMessage(props.scene.route.message);
     }
     return (
-      <NavigationHeaderTitle>
+      <HeaderTitle>
         {title}
-      </NavigationHeaderTitle>
+      </HeaderTitle>
     );
   }
 
@@ -136,7 +132,7 @@ class _Navigator extends React.Component {
   renderHeader(props) {
     // 0.33: Disable for now, as it doesn't appear to work: <GradientBar style={styles.navHeader}>
     return (
-      <NavigationHeader
+      <Header
         {...props}
         style={[
           styles.navHeader,
@@ -153,7 +149,7 @@ class _Navigator extends React.Component {
 
   render() {
     return (
-      <NavigationCardStack
+      <CardStack
         navigationState={this.props.navigationState}
         style={styles.outerContainer}
         onBack={this.props.onBack}
@@ -196,7 +192,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
-  // These are basically copied from NavigationHeader.js
+  // These are basically copied from Header.js
   navHeader: {
     alignItems: 'center',
     elevation: 1,

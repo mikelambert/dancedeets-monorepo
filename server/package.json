@@ -1,5 +1,5 @@
 {
-  "name": "DanceDeets",
+  "name": "dancedeets-server",
   "version": "0.0.1",
   "description": "DanceDeets Build rules",
   "devDependencies": {
