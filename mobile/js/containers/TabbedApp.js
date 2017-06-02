@@ -20,12 +20,10 @@ import { injectIntl, intlShape, defineMessages } from 'react-intl';
 import { Event } from 'dancedeets-common/js/events/models';
 import generateNavigator from '../containers/generateNavigator';
 import type { Navigatable } from '../containers/generateNavigator';
-import ProfilePage from '../containers/Profile';
 import { yellowColors, gradientBottom, gradientTop } from '../Colors';
 import { semiNormalize, ZoomableImage } from '../ui';
 import { selectTab } from '../actions';
 import type { User } from '../actions/types';
-import NotificationPreferences from '../containers/NotificationPreferences';
 import { track, trackWithEvent } from '../store/track';
 import { TimeTracker } from '../util/timeTracker';
 import { setDefaultState } from '../reducers/navigation';
@@ -35,6 +33,7 @@ import PositionProvider from '../providers/positionProvider';
 import { FullEventView } from '../events/uicomponents';
 import EventScreens from './screens/Event';
 import LearnScreens from './screens/Learn';
+import AboutScreens from './screens/About';
 
 const messages = defineMessages({
   events: {
@@ -52,15 +51,8 @@ const messages = defineMessages({
     defaultMessage: 'About',
     description: 'Tab button to show general info about Dancedeets, Profile, and Share info',
   },
-  notificationsTitle: {
-    id: 'navigator.notificationsTitle',
-    defaultMessage: 'Notification Settings',
-    description: 'Titlebar for notification settings',
-  },
 });
 
-const AboutNavigator = View;//generateNavigator('ABOUT_NAV');
-setDefaultState('ABOUT_NAV', { key: 'About', message: messages.about });
 
 const BattleSignupsNavigator = generateNavigator('EVENT_SIGNUPS_NAV');
 setDefaultState('EVENT_SIGNUPS_NAV', {
@@ -95,37 +87,6 @@ type CommonProps = {
   intl: intlShape,
 };
 
-class _AboutView extends React.Component {
-  props: CommonProps & {};
-
-  render() {
-    const { scene } = this.props.sceneProps;
-    const { route } = scene;
-    switch (route.key) {
-      case 'About':
-        return (
-          <ProfilePage
-            onNotificationPreferences={() => {
-              track('Open Notification Preferences');
-              this.props.navigatable.onNavigate({
-                key: 'NotificationPreferences',
-                title: this.props.intl.formatMessage(
-                  messages.notificationsTitle
-                ),
-              });
-            }}
-          />
-        );
-      case 'NotificationPreferences':
-        return <NotificationPreferences>Hey</NotificationPreferences>;
-      default:
-        console.error('Unknown case:', route.key);
-        return null;
-    }
-  }
-}
-const AboutView = injectIntl(_AboutView);
-
 class _TabbedAppView extends React.Component {
   props: {
     // Self-managed props
@@ -142,7 +103,7 @@ class _TabbedAppView extends React.Component {
   _eventSignupsNavigator: BattleSignupsNavigator;
   _eventNavigator: StackNavigator;
   _learnNavigator: StackNavigator;
-  _aboutNavigator: AboutNavigator;
+  _aboutNavigator: StackNavigator;
 
   constructor(props) {
     super(props);
@@ -218,7 +179,6 @@ class _TabbedAppView extends React.Component {
             this.icon(require('../containers/icons/events-highlighted.png'))}
           onPress={() => {
             if (this.props.selectedTab === 'events') {
-              console.log(this._eventNavigator);
               this._eventNavigator._navigation.goBack();
             } else {
               track('Tab Selected', { Tab: 'Events' });
@@ -266,20 +226,18 @@ class _TabbedAppView extends React.Component {
           renderSelectedIcon={() =>
             this.icon(require('../containers/icons/profile-highlighted.png'))}
           onPress={() => {
-            if (this.props.selectedTab !== 'about') {
+            if (this.props.selectedTab === 'about') {
+              this._aboutNavigator._navigation.goBack();
+            } else {
               track('Tab Selected', { Tab: 'About' });
               this.props.selectTab('about');
             }
           }}
         >
-          <AboutNavigator
-            ref={x => {
-              this._aboutNavigator = x;
+          <AboutScreens
+            navRef={nav => {
+              this._aboutNavigator = nav;
             }}
-            renderScene={(
-              sceneProps: NavigationSceneRendererProps,
-              nav: Navigatable
-            ) => <AboutView sceneProps={sceneProps} navigatable={nav} />}
           />
         </TabNavigator.Item>
         {extraTabs}

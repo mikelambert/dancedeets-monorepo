@@ -16,15 +16,7 @@ import type {
 import { NavigationActions, StackNavigator } from 'react-navigation';
 import { connect } from 'react-redux';
 import { injectIntl, intlShape, defineMessages } from 'react-intl';
-import { Event } from 'dancedeets-common/js/events/models';
-import EventListContainer from '../../events/list';
-import EventPager from '../../events/EventPager';
-import { ZoomableImage } from '../../ui';
-import { canGetValidLoginFor } from '../../actions';
-import AddEvents from '../AddEvents';
 import { track, trackWithEvent } from '../../store/track';
-import PositionProvider from '../../providers/positionProvider';
-import { FullEventView } from '../../events/uicomponents';
 import {
   PlaylistListView,
   PlaylistStylesView,
