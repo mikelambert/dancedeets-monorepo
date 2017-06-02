@@ -21,7 +21,7 @@ import type {
   NavigationScene,
   NavigationSceneRendererProps,
   NavigationState,
-} from 'react-native/Libraries/NavigationExperimental/NavigationTypeDefinition';
+} from 'react-navigation/src/TypeDefinition';
 import { track } from '../store/track';
 import { FeedListView } from '../learn/BlogList';
 import {

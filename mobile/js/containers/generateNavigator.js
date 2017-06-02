@@ -7,7 +7,6 @@
 import React, { Element, PropTypes } from 'react';
 import {
   Image,
-  NavigationExperimental,
   Platform,
   StyleSheet,
   TouchableOpacity,
@@ -20,7 +19,9 @@ import type {
   NavigationRoute,
   NavigationSceneRendererProps,
   NavigationState,
-} from 'react-native/Libraries/NavigationExperimental/NavigationTypeDefinition';
+} from 'react-navigation/src/TypeDefinition';
+// TODO: Migrate from NavigationExperimental to react-navigation
+import { StackNavigator } from 'react-navigation';
 import { navigatePush, navigatePop, navigateSwap } from '../actions';
 import ShareEventIcon from './ShareEventIcon';
 import { getNamedState } from '../reducers/navigation';
@@ -28,10 +29,8 @@ import type { ThunkAction, Dispatch } from '../actions/types';
 import { semiNormalize, Text } from '../ui';
 import { gradientTop, purpleColors } from '../Colors';
 
-const {
-  CardStack: NavigationCardStack,
-  Header: NavigationHeader,
-} = NavigationExperimental;
+const CardStack = null;
+const Header = null;
 
 // These are basically copied from NavigationHeader.js.
 // But we made it shorter on Android for the more compact display

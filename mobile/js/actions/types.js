@@ -22,9 +22,7 @@
  * @flow
  */
 
-import type {
-  NavigationRoute,
-} from 'react-native/Libraries/NavigationExperimental/NavigationTypeDefinition';
+import type { NavigationRoute } from 'react-navigation/src/TypeDefinition';
 import { AccessToken } from 'react-native-fbsdk';
 import type { SearchResponse } from 'dancedeets-common/js/events/search';
 import type { AddEventList, SortOrder } from '../addEventsModels';

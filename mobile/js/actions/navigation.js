@@ -4,9 +4,7 @@
  * @flow
  */
 
-import type {
-  NavigationRoute,
-} from 'react-native/Libraries/NavigationExperimental/NavigationTypeDefinition';
+import type { NavigationRoute } from 'react-navigation/src/TypeDefinition';
 import type { Action } from './types';
 
 // *** Action Types ***

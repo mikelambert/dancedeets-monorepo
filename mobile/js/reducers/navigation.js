@@ -4,12 +4,11 @@
  * @flow
  */
 
-import * as NavigationStateUtils
-  from 'react-native/Libraries/NavigationExperimental/NavigationStateUtils';
+import * as NavigationStateUtils from 'react-navigation/src/StateUtils';
 import type {
   NavigationState,
   NavigationRoute,
-} from 'react-native/Libraries/NavigationExperimental/NavigationTypeDefinition';
+} from 'react-navigation/src/TypeDefinition';
 
 import {
   NAV_PUSH,

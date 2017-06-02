@@ -12,7 +12,7 @@ import { GiftedForm } from 'react-native-gifted-form';
 import type {
   NavigationRoute,
   NavigationState,
-} from 'react-native/Libraries/NavigationExperimental/NavigationTypeDefinition';
+} from 'react-navigation/src/TypeDefinition';
 import { MyGiftedForm, MyGiftedSubmitWidget } from '../ui';
 import { navigatePop, navigatePush } from '../actions';
 import type { Dispatch, User } from '../actions/types';

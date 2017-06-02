@@ -9,7 +9,7 @@ import { AppState, Image, StyleSheet, View } from 'react-native';
 import TabNavigator from 'react-native-tab-navigator';
 import type {
   NavigationSceneRendererProps,
-} from 'react-native/Libraries/NavigationExperimental/NavigationTypeDefinition';
+} from 'react-navigation/src/TypeDefinition';
 import LinearGradient from 'react-native-linear-gradient';
 import { connect } from 'react-redux';
 import { injectIntl, intlShape, defineMessages } from 'react-intl';
