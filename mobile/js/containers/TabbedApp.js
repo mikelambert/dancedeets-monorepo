@@ -8,8 +8,12 @@ import React from 'react';
 import { AppState, Image, StyleSheet, View } from 'react-native';
 import TabNavigator from 'react-native-tab-navigator';
 import type {
+  NavigationAction,
+  NavigationRoute,
   NavigationSceneRendererProps,
+  NavigationScreenProp,
 } from 'react-navigation/src/TypeDefinition';
+import { NavigationActions, StackNavigator } from 'react-navigation';
 import LinearGradient from 'react-native-linear-gradient';
 import { connect } from 'react-redux';
 import { injectIntl, intlShape, defineMessages } from 'react-intl';
@@ -17,6 +21,7 @@ import generateNavigator from '../containers/generateNavigator';
 import type { Navigatable } from '../containers/generateNavigator';
 import ProfilePage from '../containers/Profile';
 import { yellowColors, gradientBottom, gradientTop } from '../Colors';
+import { Event } from 'dancedeets-common/js/events/models';
 import EventListContainer from '../events/list';
 import EventPager from '../events/EventPager';
 import { BlogList, BlogPostList, BlogPostContents } from '../learn/BlogList';
@@ -84,26 +89,21 @@ const messages = defineMessages({
     defaultMessage: 'Notification Settings',
     description: 'Titlebar for notification settings',
   },
-  featureAddingEvents: {
-    id: 'feature.addingEvents',
-    defaultMessage: 'Adding Events',
-    description: 'The name of the Add Event feature when requesting permissions',
-  },
 });
 
-const EventNavigator = generateNavigator('EVENT_NAV');
+const EventNavigator = View;//generateNavigator('EVENT_NAV');
 setDefaultState('EVENT_NAV', {
   key: 'EventList',
   message: messages.eventsTitle,
 });
 
-const LearnNavigator = generateNavigator('LEARN_NAV');
+const LearnNavigator = View;//generateNavigator('LEARN_NAV');
 setDefaultState('LEARN_NAV', {
   key: 'TutorialStyles',
   message: messages.learnTitle,
 });
 
-const AboutNavigator = generateNavigator('ABOUT_NAV');
+const AboutNavigator = View;//generateNavigator('ABOUT_NAV');
 setDefaultState('ABOUT_NAV', { key: 'About', message: messages.about });
 
 const BattleSignupsNavigator = generateNavigator('EVENT_SIGNUPS_NAV');
@@ -139,9 +139,9 @@ type CommonProps = {
   intl: intlShape,
 };
 
-class _EventView extends React.Component {
-  props: CommonProps & {
-    openAddEvent: (props: any) => void,
+class FeaturedEventView extends React.Component {
+  props: {
+    navigation: NavigationScreenProp<NavigationRoute, NavigationAction>,
   };
 
   constructor(props) {
@@ -149,113 +149,56 @@ class _EventView extends React.Component {
     (this: any).onFlyerSelected = this.onFlyerSelected.bind(this);
   }
 
-  onFlyerSelected(event) {
+  onFlyerSelected() {
+    const event = this.getEvent();
     trackWithEvent('View Flyer', event);
-    this.props.navigatable.onNavigate({
-      key: 'FlyerView',
-      title: this.props.intl.formatMessage(messages.viewFlyer),
-      image: event.picture.source,
-      width: event.picture.width,
-      height: event.picture.height,
-    });
+    // TODO(navigation): Should we pass in an i18n'ed title?
+    this.props.navigation.navigate('FlyerView', { event });
+  }
+
+  getEvent(): any {
+    return this.props.navigation.state.params.event;
   }
 
   render() {
-    const { scene } = this.props.sceneProps;
-    const { route } = scene;
-    switch (route.key) {
-      case 'EventList':
-        return (
-          <EventListContainer
-            onEventSelected={event => {
-              trackWithEvent('View Event', event);
-              this.props.navigatable.onNavigate({
-                key: 'EventView',
-                title: event.name,
-                event,
-              });
-            }}
-            onFeaturedEventSelected={event => {
-              trackWithEvent('View Featured Event', event);
-              this.props.navigatable.onNavigate({
-                key: 'FeaturedEventView',
-                title: event.name,
-                event,
-              });
-            }}
-            onAddEventClicked={source => {
-              track('Add Event', { source });
-              this.props.openAddEvent(this.props);
-            }}
-          />
-        );
-      case 'FeaturedEventView':
-        return (
-          <PositionProvider
-            renderWithPosition={position => (
-              <FullEventView
-                onFlyerSelected={this.onFlyerSelected}
-                event={route.event}
-                currentPosition={position}
-              />
-            )}
-          />
-        );
-      case 'EventView':
-        return (
-          <EventPager
-            onEventNavigated={event => {
-              console.log(event);
-              trackWithEvent('View Event', event);
-              this.props.navigatable.onSwap('EventView', {
-                key: 'EventView',
-                title: event.name,
-                event,
-              });
-            }}
+    return (
+      <PositionProvider
+        renderWithPosition={position => (
+          <FullEventView
             onFlyerSelected={this.onFlyerSelected}
-            selectedEvent={route.event}
+            event={this.getEvent()}
+            currentPosition={position}
           />
-        );
-      case 'FlyerView':
-        return (
-          <ZoomableImage
-            url={route.image}
-            width={route.width}
-            height={route.height}
-          />
-        );
-      case 'AddEvent':
-        return <AddEvents />;
-      default:
-        console.error('Unknown case:', route.key);
-        return null;
-    }
+        )}
+      />
+    );
   }
 }
-const EventView = connect(
-  state => ({
-    user: state.user.userData,
-  }),
-  dispatch => ({
-    openAddEvent: async props => {
-      if (
-        !props.user &&
-        !await canGetValidLoginFor(
-          props.intl.formatMessage(messages.featureAddingEvents),
-          props.intl,
-          dispatch
-        )
-      ) {
-        return;
-      }
-      props.navigatable.onNavigate({
-        key: 'AddEvent',
-        title: props.intl.formatMessage(messages.addEvent),
-      });
-    },
-  })
-)(injectIntl(_EventView));
+
+class FlyerView extends React.Component {
+  props: {
+    navigation: NavigationScreenProp<NavigationRoute, NavigationAction>,
+  };
+
+  render() {
+    const event: any = this.props.navigation.state.params.event;
+    return (
+      <ZoomableImage
+        url={event.picture.source}
+        width={event.picture.width}
+        height={event.picture.height}
+      />
+    );
+  }
+}
+
+const EventApp = StackNavigator({
+  EventList: { screen: EventListContainer },
+  FeaturedEventView: { screen: FeaturedEventView },
+  EventView: { screen: EventPager },
+  FlyerView: { screen: FlyerView },
+  AddEvent: { screen: AddEvents },
+});
 
 class _LearnView extends React.Component {
   props: CommonProps & {};
@@ -432,21 +375,17 @@ class _TabbedAppView extends React.Component {
             this.icon(require('../containers/icons/events-highlighted.png'))}
           onPress={() => {
             if (this.props.selectedTab === 'events') {
-              this._eventNavigator.dispatchProps.goHome();
+              this._eventNavigator._navigation.goBack();
             } else {
               track('Tab Selected', { Tab: 'Events' });
               this.props.selectTab('events');
             }
           }}
         >
-          <EventNavigator
-            ref={x => {
-              this._eventNavigator = x;
+          <EventApp
+            ref={nav => {
+              this._eventNavigator = nav;
             }}
-            renderScene={(
-              sceneProps: NavigationSceneRendererProps,
-              nav: Navigatable
-            ) => <EventView sceneProps={sceneProps} navigatable={nav} />}
           />
         </TabNavigator.Item>
         <TabNavigator.Item

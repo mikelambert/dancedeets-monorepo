@@ -24,6 +24,11 @@ import { connect } from 'react-redux';
 import Carousel from 'react-native-carousel';
 import Icon from 'react-native-vector-icons/Ionicons';
 import upperFirst from 'lodash/upperFirst';
+import type {
+  NavigationAction,
+  NavigationRoute,
+  NavigationScreenProp,
+} from 'react-navigation/src/TypeDefinition';
 import { Event } from 'dancedeets-common/js/events/models';
 import type {
   FeaturedInfo,
@@ -36,10 +41,15 @@ import Collapsible from 'react-native-collapsible';
 import { EventRow } from './uicomponents';
 import SearchHeader from './searchHeader';
 import type { State } from '../reducers/search';
-import { detectedLocation, performSearch, processUrl } from '../actions';
+import {
+  canGetValidLoginFor,
+  detectedLocation,
+  performSearch,
+  processUrl,
+} from '../actions';
 import type { User } from '../actions/types';
 import { linkColor, purpleColors } from '../Colors';
-import { auth, event, isAuthenticated } from '../api/dancedeets';
+import { auth, isAuthenticated } from '../api/dancedeets';
 import {
   BottomFade,
   Button,
@@ -49,7 +59,7 @@ import {
   semiNormalize,
   Text,
 } from '../ui';
-import { track } from '../store/track';
+import { track, trackWithEvent } from '../store/track';
 import { getAddress, getPosition } from '../util/geo';
 import { weekdayDate } from '../formats';
 import { loadUserData } from '../actions/login';
@@ -92,6 +102,11 @@ const messages = defineMessages({
     id: 'search.eventsWithLocationKeywords',
     defaultMessage: 'Events near {location} with keywords "{keywords}"',
     description: 'Header to show with search results',
+  },
+  featureAddingEvents: {
+    id: 'feature.addingEvents',
+    defaultMessage: 'Adding Events',
+    description: 'The name of the Add Event feature when requesting permissions',
   },
 });
 
@@ -441,9 +456,7 @@ const PeopleView = connect(state => ({
 class _EventListContainer extends React.Component {
   props: {
     intl: intlShape,
-    onEventSelected: (event: Event) => void,
-    onFeaturedEventSelected: (event: Event) => void,
-    onAddEventClicked: (clickTarget: string) => void,
+    navigation: NavigationScreenProp<NavigationRoute, NavigationAction>,
 
     // Self-managed props
     search: State,
@@ -475,6 +488,11 @@ class _EventListContainer extends React.Component {
     (this: any).renderHeader = this.renderHeader.bind(this);
     (this: any).renderRow = this.renderRow.bind(this);
     (this: any).setLocationAndSearch = this.setLocationAndSearch.bind(this);
+    (this: any).onEventSelected = this.onEventSelected.bind(this);
+    (this: any).onAddEventClicked = this.onAddEventClicked.bind(this);
+    (this: any).onFeaturedEventSelected = this.onFeaturedEventSelected.bind(
+      this
+    );
   }
 
   componentWillMount() {
@@ -490,6 +508,21 @@ class _EventListContainer extends React.Component {
     if (nextProps.search.response !== this.props.search.response) {
       this._listView.scrollTo({ x: 0, y: 0, animated: false });
     }
+  }
+
+  onEventSelected(event) {
+    trackWithEvent('View Event', event);
+    this.props.navigation.navigate('EventView', { event });
+  }
+
+  onFeaturedEventSelected(event) {
+    trackWithEvent('View Featured Event', event);
+    this.props.navigation.navigate('FeaturedEventView', { event });
+  }
+
+  onAddEventClicked(source) {
+    track('Add Event', { source });
+    this.props.openAddEvent(this.props);
   }
 
   getNewState(props) {
@@ -651,7 +684,7 @@ class _EventListContainer extends React.Component {
       return (
         <EventRow
           event={row}
-          onEventSelected={this.props.onEventSelected}
+          onEventSelected={this.onEventSelected}
           currentPosition={this.state.position}
         />
       );
@@ -704,7 +737,7 @@ class _EventListContainer extends React.Component {
       <View>
         <FeaturedEvents
           featured={response.featuredInfos}
-          onEventSelected={this.props.onFeaturedEventSelected}
+          onEventSelected={this.onFeaturedEventSelected}
         />
         <PeopleView people={response.people} />
         {header}
@@ -769,14 +802,14 @@ class _EventListContainer extends React.Component {
       <View style={styles.container}>
         <SearchHeader
           onAddEvent={() => {
-            this.props.onAddEventClicked('Search Header');
+            this.onAddEventClicked('Search Header');
           }}
         >
           {this.renderListView()}
         </SearchHeader>
         <AddEventButton
           onPress={() => {
-            this.props.onAddEventClicked('Floating Button');
+            this.onAddEventClicked('Floating Button');
           }}
         />
       </View>
@@ -800,6 +833,22 @@ export default connect(
     },
     loadUserData: async () => {
       await loadUserData(dispatch);
+    },
+    openAddEvent: async props => {
+      if (
+        !props.user &&
+        !await canGetValidLoginFor(
+          props.intl.formatMessage(messages.featureAddingEvents),
+          props.intl,
+          dispatch
+        )
+      ) {
+        return;
+      }
+      props.navigation.navigate('AddEvent', {
+        //TODO(navigation): Perhaps fix i18n
+        title: props.intl.formatMessage(messages.addEvent),
+      });
     },
   })
 )(injectIntl(_EventListContainer));

@@ -8,18 +8,23 @@ import React from 'react';
 import { Dimensions, InteractionManager, View } from 'react-native';
 import ViewPager from 'react-native-viewpager';
 import { connect } from 'react-redux';
+import type {
+  NavigationAction,
+  NavigationRoute,
+  NavigationScreenProp,
+} from 'react-navigation/src/TypeDefinition';
 import { Event } from 'dancedeets-common/js/events/models';
 import type { State } from '../reducers/search';
 import { FullEventView } from './uicomponents';
 import type { ThunkAction } from '../actions/types';
 import { getPosition } from '../util/geo';
+import { trackWithEvent } from '../store/track';
 
 class EventPager extends React.Component {
   props: {
-    onFlyerSelected: (x: Event) => ThunkAction,
-    onEventNavigated: (x: Event) => void,
     search: State,
-    selectedEvent: Event,
+
+    navigation: NavigationScreenProp<NavigationRoute, NavigationAction>,
   };
 
   state: {
@@ -40,6 +45,8 @@ class EventPager extends React.Component {
     };
     this.state = this.getNewState(this.props, null);
     (this: any).renderEvent = this.renderEvent.bind(this);
+    (this: any).onEventNavigated = this.onEventNavigated.bind(this);
+    (this: any).onFlyerSelected = this.onFlyerSelected.bind(this);
   }
 
   componentWillMount() {
@@ -50,14 +57,34 @@ class EventPager extends React.Component {
     this.setState(this.getNewState(nextProps, this.state.position));
   }
 
+  onEventNavigated(event) {
+    console.log(event);
+    trackWithEvent('View Event', event);
+    // TODO(navigation) : should this swap instead ofnavigate?
+    this.props.navigation.setParams({ event });
+  }
+
+  onFlyerSelected() {
+    const event = this.getEvent();
+    trackWithEvent('View Flyer', event);
+    // TODO(navigation): Should we pass in an i18n'ed title?
+    this.props.navigation.navigate('FlyerView', { event });
+  }
+
+  getEvent(): any {
+    return this.props.navigation.state.params.event;
+  }
+
   getNewState(props, position) {
     const results = props.search.response;
     let finalResults = [];
     const newPosition = position || this.state.position;
 
+    const selectedEvent = this.getEvent();
+
     if (results && results.results) {
       const pageIndex = results.results.findIndex(
-        x => x.id === this.props.selectedEvent.id
+        x => x.id === selectedEvent.id
       );
       if (pageIndex !== -1) {
         finalResults = results.results.map(event => ({ event, newPosition }));
@@ -65,7 +92,7 @@ class EventPager extends React.Component {
     }
     // If we have an event that's not in the list, it's because we're just displaying this event.
     if (!finalResults.length) {
-      finalResults = [this.props.selectedEvent].map(event => ({
+      finalResults = [selectedEvent].map(event => ({
         event,
         newPosition,
       }));
@@ -79,10 +106,12 @@ class EventPager extends React.Component {
   }
 
   getSelectedPage() {
+    const selectedEvent = this.getEvent();
+
     let initialPage = null;
     if (this.props.search.response && this.props.search.response.results) {
       initialPage = this.props.search.response.results.findIndex(
-        x => x.id === this.props.selectedEvent.id
+        x => x.id === selectedEvent.id
       );
     }
     return initialPage;
@@ -109,7 +138,7 @@ class EventPager extends React.Component {
     }
     return (
       <FullEventView
-        onFlyerSelected={this.props.onFlyerSelected}
+        onFlyerSelected={this.onFlyerSelected}
         event={eventData.event}
         currentPosition={eventData.position}
       />
@@ -146,7 +175,7 @@ class EventPager extends React.Component {
         renderPage={this.renderEvent}
         renderPageIndicator={false}
         onChangePage={i =>
-          this.props.onEventNavigated(
+          this.onEventNavigated(
             this.state.dataSource.getPageData(i).event
           )}
         initialPage={this.getSelectedPage()}
