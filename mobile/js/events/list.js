@@ -148,6 +148,10 @@ class FeaturedEvents extends React.Component {
     onEventSelected: (event: Event) => void,
   };
 
+  shouldComponentUpdate(nextProps, nextState) {
+    return this.props.featured !== nextProps.featured;
+  }
+
   renderPage(index: number) {
     const featuredInfo = this.props.featured[index];
 
@@ -214,16 +218,12 @@ class FeaturedEvents extends React.Component {
     );
   }
 
-  shouldComponentUpdate(nextProps, nextState) {
-    return this.props.featured != nextProps.featured;
-  }
-
   render() {
     if (!this.props.featured || !this.props.featured.length) {
       return null;
     }
     let carousel = null;
-    if (this.props.featured.length == 1) {
+    if (this.props.featured.length === 1) {
       carousel = this.renderPage(0);
     } else {
       carousel = (
@@ -232,8 +232,8 @@ class FeaturedEvents extends React.Component {
           indicatorColor="#FFFFFF"
           indicatorSize={CarouselDotIndicatorSize}
           indicatorSpace={15}
-          animate={true}
-          loop={true}
+          animate
+          loop
           delay={4000}
         >
           {this.props.featured.map((event, i) => this.renderPage(i))}
@@ -341,8 +341,8 @@ class PersonList extends React.Component {
 
   render() {
     const peopleList = this.props.people[this.state.category].slice(0, 10);
-    //const categories = this.props.categoryOrder.filter(x => x === '' || this.props.people[x]);
-    //{categories.map(x => <option key={x} value={x}>{x || 'Overall'}</option>)}
+    // const categories = this.props.categoryOrder.filter(x => x === '' || this.props.people[x]);
+    // {categories.map(x => <option key={x} value={x}>{x || 'Overall'}</option>)}
 
     return (
       <View>
@@ -365,14 +365,14 @@ class HeaderCollapsible extends React.Component {
     collapsed: boolean,
   };
 
+  _toggle() {
+    this.setState({ collapsed: !this.state.collapsed });
+  }
+
   constructor(props) {
     super(props);
     this.state = { collapsed: !!props.defaultCollapsed };
     (this: any)._toggle = this._toggle.bind(this);
-  }
-
-  _toggle() {
-    this.setState({ collapsed: !this.state.collapsed });
   }
 
   render() {
@@ -465,7 +465,6 @@ class _EventListContainer extends React.Component {
   };
 
   state: {
-    position: ?Object,
     dataSource: ListView.DataSource,
   };
 
@@ -478,17 +477,12 @@ class _EventListContainer extends React.Component {
       sectionHeaderHasChanged: (s1, s2) => s1 !== s2,
     });
     this.state = {
-      position: null,
       dataSource,
     };
     this.state = this.getNewState(this.props);
     (this: any).renderHeader = this.renderHeader.bind(this);
     (this: any).renderRow = this.renderRow.bind(this);
     (this: any).setLocationAndSearch = this.setLocationAndSearch.bind(this);
-  }
-
-  componentWillMount() {
-    this.loadLocation();
   }
 
   componentDidMount() {
@@ -520,12 +514,6 @@ class _EventListContainer extends React.Component {
     if (!formattedAddress) {
       return;
     }
-
-    // Reload our current location for "N miles away" info, in case we haven't loaded it yet.
-    // This could happen if we don't have a location at load time (no permissions),
-    // then the user gives us permissions for a search, and now we need to reload it here,
-    // ideally before the user's search results come back.
-    this.loadLocation();
 
     // Now do the actual search logic:
     await this.props.detectedLocation(formattedAddress);
@@ -633,18 +621,6 @@ class _EventListContainer extends React.Component {
     }
   }
 
-  async loadLocation() {
-    try {
-      const position = await getPosition();
-      this.setState({ position });
-    } catch (e) {
-      console.log(
-        'Error fetching user location for finding distance-to-event:',
-        e
-      );
-    }
-  }
-
   bannerError(e) {
     console.log('didFailToReceiveAdWithError', e);
   }
@@ -659,11 +635,7 @@ class _EventListContainer extends React.Component {
   renderRow(row) {
     if ('id' in row) {
       return (
-        <EventRow
-          event={row}
-          onEventSelected={this.props.onEventSelected}
-          currentPosition={this.state.position}
-        />
+        <EventRow event={row} onEventSelected={this.props.onEventSelected} />
       );
     } else {
       return <OneboxView onebox={row} />;

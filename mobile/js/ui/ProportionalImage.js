@@ -56,6 +56,13 @@ export default class ProportionalImage extends React.Component {
     });
   }
 
+  onLoad() {
+    Animated.timing(this.state.opacity, {
+      toValue: 1,
+      duration: this.props.duration,
+    }).start();
+  }
+
   getComputedWidthHeight() {
     const dimensions = this.state.dimensions;
     if (!dimensions) {
@@ -73,13 +80,6 @@ export default class ProportionalImage extends React.Component {
         height: dimensions.width / aspectRatio,
       };
     }
-  }
-
-  onLoad() {
-    Animated.timing(this.state.opacity, {
-      toValue: 1,
-      duration: this.props.duration,
-    }).start();
   }
 
   setNativeProps(nativeProps: Object) {

@@ -74,7 +74,7 @@ export class BattleSelector extends React.Component {
 
 const checkSize = 20;
 const checkMargin = 10;
-let styles = StyleSheet.create({
+const styles = StyleSheet.create({
   container: {},
   miniThumbnail: {
     height: 50,

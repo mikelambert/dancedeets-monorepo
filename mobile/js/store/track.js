@@ -32,7 +32,7 @@ import type { Event } from 'dancedeets-common/js/events/models';
 import { performRequest } from '../api/fb';
 import type { Action } from '../actions/types';
 
-let trackingEnabled = DeviceInfo.getModel() != 'Calypso AppCrawler';
+let trackingEnabled = DeviceInfo.getModel() !== 'Calypso AppCrawler';
 
 export function disableTracking() {
   trackingEnabled = false;
@@ -50,7 +50,7 @@ function initMixpanel() {
   }
 
   Mixpanel.sharedInstanceWithToken(mixpanelApiKey);
-  if (DeviceInfo.getModel() == 'Calypso AppCrawler') {
+  if (DeviceInfo.getModel() === 'Calypso AppCrawler') {
     Mixpanel.registerSuperProperties({ $ignore: true });
   }
   // Don't use global track(), since this is a Mixpanel-only event:

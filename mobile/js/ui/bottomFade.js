@@ -19,7 +19,7 @@ export default function BottomFade({
       end={[0.0, 1.0]}
       locations={[0.0, 0.8, 1.0]}
       colors={['#00000000', '#000000CC', '#000000CC']}
-      style={(styles.bottomFade, style, { height: height })}
+      style={(styles.bottomFade, style, { height })}
     />
   );
 }

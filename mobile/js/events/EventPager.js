@@ -54,6 +54,12 @@ class EventPager extends React.Component {
     this.loadLocation();
   }
 
+  componentDidMount() {
+    InteractionManager.runAfterInteractions(() => {
+      this.setState({ loadInProgress: false });
+    });
+  }
+
   componentWillReceiveProps(nextProps) {
     this.setState(this.getNewState(nextProps, this.state.position));
   }
@@ -126,12 +132,6 @@ class EventPager extends React.Component {
         currentPosition={eventData.position}
       />
     );
-  }
-
-  componentDidMount() {
-    InteractionManager.runAfterInteractions(() => {
-      this.setState({ loadInProgress: false });
-    });
   }
 
   render() {

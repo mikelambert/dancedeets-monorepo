@@ -37,6 +37,21 @@ class _TeamList extends React.Component {
     this.state = this.prelimsState(prelims);
   }
 
+  onSignupPressed(prelim: PrelimStatus) {
+    const prelims = [...this.state.prelims];
+    const index = prelims.findIndex(x => x.signupKey === prelim.signupKey);
+    prelims[index] = {
+      ...prelims[index],
+      auditioned: !prelims[index].auditioned,
+    };
+    this.setState(this.prelimsState(prelims));
+  }
+
+  getSignup(prelim) {
+    // TODO: Speed this up
+    return this.props.signups.find(x => x.id === prelim.signupKey);
+  }
+
   prelimsState(prelims) {
     const ds =
       (this.state && this.state.dataSource) ||
@@ -66,21 +81,6 @@ class _TeamList extends React.Component {
         </HorizontalView>
       </View>
     );
-  }
-
-  getSignup(prelim) {
-    //TODO: Speed this up
-    return this.props.signups.find(x => x.id == prelim.signupKey);
-  }
-
-  onSignupPressed(prelim: PrelimStatus) {
-    const prelims = [...this.state.prelims];
-    const index = prelims.findIndex(x => x.signupKey == prelim.signupKey);
-    prelims[index] = {
-      ...prelims[index],
-      auditioned: !prelims[index].auditioned,
-    };
-    this.setState(this.prelimsState(prelims));
   }
 
   renderRow(prelim: PrelimStatus, sectionId: string, rowId: string) {

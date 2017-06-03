@@ -171,7 +171,6 @@ const EventDateTime = injectIntl(_EventDateTime);
 class _EventDateTimeShort extends React.Component {
   props: {
     start: string,
-    end: string,
 
     // Self-managed props
     intl: intlShape,
@@ -274,15 +273,10 @@ class _EventVenue extends React.Component {
 }
 const EventVenue = injectIntl(_EventVenue);
 
-class _EventVenueShort extends React.Component {
+class EventVenueShort extends React.Component {
   props: {
     venue: Venue,
-    style: View.propTypes.style,
-
-    currentPosition: ?Object,
-
-    // Self-managed props
-    intl: intlShape,
+    style?: View.propTypes.style,
   };
 
   render() {
@@ -298,7 +292,6 @@ class _EventVenueShort extends React.Component {
     );
   }
 }
-const EventVenueShort = injectIntl(_EventVenueShort);
 
 class _EventSource extends React.Component {
   constructor(props: Object) {
@@ -309,8 +302,8 @@ class _EventSource extends React.Component {
   onPress() {
     trackWithEvent('Open Source', this.props.event);
     // Try opening the event in the facebook app
-    if (this.props.event.source.name == 'Facebook Event') {
-      if (Platform.OS == 'ios') {
+    if (this.props.event.source.name === 'Facebook Event') {
+      if (Platform.OS === 'ios') {
         if (Linking.canOpenURL('fb://')) {
           // This URL format is supposedly current as of May 2016:
           // http://stackoverflow.com/questions/34875501/opening-facebook-event-pages-in-the-facebook-app-using-swift
@@ -680,7 +673,7 @@ class _EventDescription extends React.Component {
     }
 
     let translation = null;
-    if (this.props.event.language != this.props.intl.locale) {
+    if (this.props.event.language !== this.props.intl.locale) {
       translation = <EventTranslate event={this.props.event} />;
     }
 
@@ -842,7 +835,6 @@ class _EventRow extends React.Component {
     onEventSelected: (x: Event) => void,
     event: Event,
     listLayout: boolean,
-    currentPosition: ?Object,
   };
 
   render() {
@@ -875,14 +867,8 @@ class _EventRow extends React.Component {
                 <EventCategories
                   categories={this.props.event.annotations.categories}
                 />
-                <EventDateTimeShort
-                  start={this.props.event.start_time}
-                  end={this.props.event.end_time}
-                />
-                <EventVenueShort
-                  venue={this.props.event.venue}
-                  currentPosition={this.props.currentPosition}
-                />
+                <EventDateTimeShort start={this.props.event.start_time} />
+                <EventVenueShort venue={this.props.event.venue} />
               </View>
             </HorizontalView>
           </TouchableOpacity>
@@ -912,14 +898,8 @@ class _EventRow extends React.Component {
             <EventCategories
               categories={this.props.event.annotations.categories}
             />
-            <EventDateTimeShort
-              start={this.props.event.start_time}
-              end={this.props.event.end_time}
-            />
-            <EventVenueShort
-              venue={this.props.event.venue}
-              currentPosition={this.props.currentPosition}
-            />
+            <EventDateTimeShort start={this.props.event.start_time} />
+            <EventVenueShort venue={this.props.event.venue} />
           </TouchableOpacity>
         </Card>
       );
