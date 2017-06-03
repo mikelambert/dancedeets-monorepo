@@ -75,26 +75,11 @@ type GiftedNavigationRoute =
       renderScene: (navigator: FakeNavigator) => React.Element<*>,
     };
 
-class _BattleSelector extends React.Component {
+export class BattleSelector extends React.Component {
   props: {
-    navigatable: Navigatable,
+    onBattleSelected: (battleId: string) => void,
+    onBattleHostSelected: (battleId: string) => void,
   };
-
-  onBattleSelected(battleId: string) {
-    this.props.navigatable.onNavigate({
-      key: 'BattleSignups',
-      title: `${battleId} Registration`,
-      battleId,
-    });
-  }
-
-  onBattleHostSelected(battleId: string) {
-    this.props.navigatable.onNavigate({
-      key: 'BattleHostView',
-      title: `${battleId} MC Host View`,
-      battleId,
-    });
-  }
 
   render() {
     const battleId = 'justeDebout';
@@ -102,23 +87,17 @@ class _BattleSelector extends React.Component {
       <HorizontalView style={{ alignItems: 'center' }}>
         <Text>{battleId}</Text>
         <Button
-          onPress={() => this.onBattleSelected(battleId)}
+          onPress={() => this.props.onBattleSelected(battleId)}
           caption="Dancer"
         />
         <Button
-          onPress={() => this.onBattleHostSelected(battleId)}
+          onPress={() => this.props.onBattleHostSelected(battleId)}
           caption="Host"
         />
       </HorizontalView>
     );
   }
 }
-const BattleSelector = connect(
-  state => ({}),
-  (dispatch: Dispatch, props) => ({
-    navigatePop: route => dispatch(navigatePop('EVENT_SIGNUPS_NAV')),
-  })
-)(injectIntl(_BattleSelector));
 
 class SelectedBattleBrackets extends React.Component {
   props: {

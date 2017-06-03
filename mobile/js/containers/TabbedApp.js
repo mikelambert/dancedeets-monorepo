@@ -17,9 +17,6 @@ import { NavigationActions, StackNavigator } from 'react-navigation';
 import LinearGradient from 'react-native-linear-gradient';
 import { connect } from 'react-redux';
 import { injectIntl, intlShape, defineMessages } from 'react-intl';
-import { Event } from 'dancedeets-common/js/events/models';
-import generateNavigator from '../containers/generateNavigator';
-import type { Navigatable } from '../containers/generateNavigator';
 import { yellowColors, gradientBottom, gradientTop } from '../Colors';
 import { semiNormalize, ZoomableImage } from '../ui';
 import { selectTab } from '../actions';
@@ -27,13 +24,11 @@ import type { User } from '../actions/types';
 import { track, trackWithEvent } from '../store/track';
 import { TimeTracker } from '../util/timeTracker';
 import { setDefaultState } from '../reducers/navigation';
-import { BattleBrackets } from '../event_signups/views';
 import * as RemoteConfig from '../remoteConfig';
-import PositionProvider from '../providers/positionProvider';
-import { FullEventView } from '../events/uicomponents';
 import EventScreens from './screens/Event';
 import LearnScreens from './screens/Learn';
 import AboutScreens from './screens/About';
+import BattleScreens from './screens/Battle';
 
 const messages = defineMessages({
   events: {
@@ -51,13 +46,6 @@ const messages = defineMessages({
     defaultMessage: 'About',
     description: 'Tab button to show general info about Dancedeets, Profile, and Share info',
   },
-});
-
-
-const BattleSignupsNavigator = generateNavigator('EVENT_SIGNUPS_NAV');
-setDefaultState('EVENT_SIGNUPS_NAV', {
-  key: 'BattleSelector',
-  title: 'Battle Signups',
 });
 
 class GradientTabBar extends React.Component {
@@ -80,13 +68,6 @@ class GradientTabBar extends React.Component {
   }
 }
 
-type CommonProps = {
-  sceneProps: NavigationSceneRendererProps,
-  navigatable: Navigatable,
-  openAddEvent: (props: any) => void,
-  intl: intlShape,
-};
-
 class _TabbedAppView extends React.Component {
   props: {
     // Self-managed props
@@ -100,7 +81,7 @@ class _TabbedAppView extends React.Component {
     eventSignupUserIds: Array<string>,
   };
 
-  _eventSignupsNavigator: BattleSignupsNavigator;
+  _eventSignupsNavigator: StackNavigator;
   _eventNavigator: StackNavigator;
   _learnNavigator: StackNavigator;
   _aboutNavigator: StackNavigator;
@@ -143,21 +124,17 @@ class _TabbedAppView extends React.Component {
             this.icon(require('../containers/icons/events-highlighted.png'))}
           onPress={() => {
             if (this.props.selectedTab === 'event_signups') {
-              this._eventSignupsNavigator.dispatchProps.goHome();
+              this._eventSignupsNavigator._navigation.goBack();
             } else {
               track('Tab Selected', { Tab: 'Event Signups' });
               this.props.selectTab('event_signups');
             }
           }}
         >
-          <BattleSignupsNavigator
-            ref={x => {
+          <BattleScreens
+            navRef={x => {
               this._eventSignupsNavigator = x;
             }}
-            renderScene={(
-              sceneProps: NavigationSceneRendererProps,
-              nav: Navigatable
-            ) => <BattleBrackets sceneProps={sceneProps} navigatable={nav} />}
           />
         </TabNavigator.Item>
       );

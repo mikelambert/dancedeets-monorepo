@@ -33,7 +33,7 @@ const messages = defineMessages({
   },
 });
 
-class AboutScreen extends React.Component {
+class MainScreen extends React.Component {
   static navigationOptions = ({ screenProps }) => ({
     title: screenProps.intl.formatMessage(messages.about),
   });
@@ -72,7 +72,7 @@ class NotificationScreen extends React.Component {
 }
 
 const AboutScreens = StackNavigator({
-  About: { screen: AboutScreen },
+  About: { screen: MainScreen },
   NotificationPreferences: { screen: NotificationScreen },
 });
 
