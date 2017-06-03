@@ -162,11 +162,13 @@ class EventScreen extends React.Component {
 
   render() {
     const event = this.props.navigation.state.params.event;
-    return <EventPager
-      selectedEvent={event}
-      onFlyerSelected={this.onFlyerSelected}
-      onEventNavigated={this.onEventNavigated}
-    />;
+    return (
+      <EventPager
+        selectedEvent={event}
+        onFlyerSelected={this.onFlyerSelected}
+        onEventNavigated={this.onEventNavigated}
+      />
+    );
   }
 }
 

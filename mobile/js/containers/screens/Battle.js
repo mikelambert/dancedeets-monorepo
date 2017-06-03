@@ -18,7 +18,7 @@ import { connect } from 'react-redux';
 import { injectIntl, intlShape, defineMessages } from 'react-intl';
 import { track, trackWithEvent } from '../../store/track';
 import { categoryDisplayName } from '../../event_signups/models';
-import { BattleBrackets, BattleSelector } from '../../event_signups/views';
+import { BattleSelector } from '../../event_signups/views';
 import { TrackFirebase } from '../../firestack';
 import CategorySignupScreen from '../../event_signups/categorySignupScreen';
 import CategoryView from '../../event_signups/categoryView';
@@ -27,8 +27,7 @@ import BattleEventHostView from '../../event_signups/battleEventHostView';
 import BattleHostCategoryView from '../../event_signups/battleHostCategoryView';
 import { eventRegister, eventUnregister } from '../../api/dancedeets';
 
-const messages = defineMessages({
-});
+const messages = defineMessages({});
 
 function onRegister(navigation, category) {
   const battleId = navigation.state.params.battleId;
@@ -54,10 +53,14 @@ class BattleSelectorScreen extends React.Component {
 
   render() {
     const battleId = this.props.navigation.state.params.battleId;
-    return <BattleSelector
-      onBattleSelected={() => this.props.navigation.navigate('BattleSignups', { battleId })}
-      onBattleHostSelected={() => this.props.navigation.navigate('BattleHostView', { battleId })}
-    />;
+    return (
+      <BattleSelector
+        onBattleSelected={() =>
+          this.props.navigation.navigate('BattleSignups', { battleId })}
+        onBattleHostSelected={() =>
+          this.props.navigation.navigate('BattleHostView', { battleId })}
+      />
+    );
   }
 }
 
@@ -73,24 +76,30 @@ class BattleSignupsScreen extends React.Component {
   render() {
     const battleId = this.props.navigation.state.params.battleId;
     const categoryId = this.props.navigation.state.params.categoryId;
-    return <TrackFirebase
-      path={`events/${battleId}`}
-      renderContents={battleEvent => {
-        return <BattleEventView
-          battleEvent={battleEvent}
-          onSelected={selectedCategory => {
-            // trackWithEvent('View Event', event);
-            const displayName = categoryDisplayName(selectedCategory);
-            this.props.navigation.navigate('Category', {
-              battleId: battleId,
-              categoryId: selectedCategory.id,
-            });
-          }}
-          onRegister={category => onRegister(this.props.navigation, category)}
-          onUnregister={(category, teamToDelete) => onUnregister(this.props.navigate, category, teamToDelete)}
-        />
-      }}
-    />;
+    return (
+      <TrackFirebase
+        path={`events/${battleId}`}
+        renderContents={battleEvent => {
+          return (
+            <BattleEventView
+              battleEvent={battleEvent}
+              onSelected={selectedCategory => {
+                // trackWithEvent('View Event', event);
+                const displayName = categoryDisplayName(selectedCategory);
+                this.props.navigation.navigate('Category', {
+                  battleId: battleId,
+                  categoryId: selectedCategory.id,
+                });
+              }}
+              onRegister={category =>
+                onRegister(this.props.navigation, category)}
+              onUnregister={(category, teamToDelete) =>
+                onUnregister(this.props.navigate, category, teamToDelete)}
+            />
+          );
+        }}
+      />
+    );
   }
 }
 
@@ -98,23 +107,25 @@ class RegisterScreen extends React.Component {
   static navigationOptions = ({ navigation, screenProps }) => {
     //TODO:
     // title: `${displayName} Registration`,
-  }
+  };
 
   render() {
     const battleId = this.props.navigation.state.params.battleId;
     const categoryId = this.props.navigation.state.params.categoryId;
-    return <TrackFirebase
-      path={`events/${battleId}`}
-      renderContents={battleEvent => {
-        const category = battleEvent.categories[categoryId];
-        return (
-          <CategorySignupScreen
-            battle={this.props.battleEvent}
-            category={category}
-          />
-        );
-      }}
-    />;
+    return (
+      <TrackFirebase
+        path={`events/${battleId}`}
+        renderContents={battleEvent => {
+          const category = battleEvent.categories[categoryId];
+          return (
+            <CategorySignupScreen
+              battle={this.props.battleEvent}
+              category={category}
+            />
+          );
+        }}
+      />
+    );
   }
 }
 
@@ -132,13 +143,15 @@ class BattleHostCategory extends React.Component {
   render() {
     const battleId = this.props.navigation.state.params.battleId;
     const categoryId = this.props.navigation.state.params.categoryId;
-    return <TrackFirebase
-      path={`events/${battleId}`}
-      renderContents={battleEvent => {
-        const category = battleEvent.categories[categoryId];
-        return <BattleHostCategoryView category={category} />;
-      }}
-    />;
+    return (
+      <TrackFirebase
+        path={`events/${battleId}`}
+        renderContents={battleEvent => {
+          const category = battleEvent.categories[categoryId];
+          return <BattleHostCategoryView category={category} />;
+        }}
+      />
+    );
   }
 }
 
@@ -146,17 +159,23 @@ class CategoryScreen extends React.Component {
   render() {
     const battleId = this.props.navigation.state.params.battleId;
     const categoryId = this.props.navigation.state.params.categoryId;
-    return <TrackFirebase
-      path={`events/${battleId}`}
-      renderContents={battleEvent => {
-        const category = battleEvent.categories[categoryId];
-        return <CategoryView
-          category={category}
-          onRegister={category => onRegister(this.props.navigation, category)}
-          onUnregister={(category, teamToDelete) => onUnregister(this.props.navigate, category, teamToDelete)}
-        />;
-      }}
-    />;
+    return (
+      <TrackFirebase
+        path={`events/${battleId}`}
+        renderContents={battleEvent => {
+          const category = battleEvent.categories[categoryId];
+          return (
+            <CategoryView
+              category={category}
+              onRegister={category =>
+                onRegister(this.props.navigation, category)}
+              onUnregister={(category, teamToDelete) =>
+                onUnregister(this.props.navigate, category, teamToDelete)}
+            />
+          );
+        }}
+      />
+    );
   }
 }
 
@@ -181,10 +200,9 @@ class BattleHostScreen extends React.Component {
           }}
         />
       )}
-    />
+    />;
   }
 }
-
 
 const BattleScreens = StackNavigator({
   BattleSelector: { screen: BattleSelectorScreen },

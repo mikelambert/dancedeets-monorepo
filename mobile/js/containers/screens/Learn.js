@@ -66,9 +66,9 @@ class TutorialListView extends React.Component {
   static navigationOptions = ({ navigation, screenProps }) => {
     const category = navigation.state.params.category;
     return {
-      title: screenProps.intl.formatMessage(messages.styleTutorialTitle,
-        { style: category.style.title }
-      ),
+      title: screenProps.intl.formatMessage(messages.styleTutorialTitle, {
+        style: category.style.title,
+      }),
     };
   };
 
@@ -91,10 +91,12 @@ class TutorialListView extends React.Component {
 
   render() {
     const category: any = this.props.navigation.state.params.category;
-    return <PlaylistListView
-      playlists={category.tutorials}
-      onSelected={this.onSelected}
-    />;
+    return (
+      <PlaylistListView
+        playlists={category.tutorials}
+        onSelected={this.onSelected}
+      />
+    );
   }
 }
 
@@ -126,16 +128,17 @@ class _LearnScreensView extends React.Component {
 
     // Self-managed props
     intl: intlShape,
-    canOpenAddEvent: (props: any) => void;
   };
 
   render() {
-    return <LearnScreens
-      ref={nav => this.props.navRef(nav)}
-      screenProps={{
-        intl: this.props.intl,
-      }}
-    />;
+    return (
+      <LearnScreens
+        ref={nav => this.props.navRef(nav)}
+        screenProps={{
+          intl: this.props.intl,
+        }}
+      />
+    );
   }
 }
 
