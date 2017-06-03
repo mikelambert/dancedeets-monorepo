@@ -10,6 +10,7 @@ from google.appengine.api import memcache
 from google.cloud import datastore
 
 from util import runtime
+from util import timelog
 
 if not runtime.is_appengine():
     # We need this for tests that use gcloud libraries, that need auth and app_identity.
@@ -34,11 +35,13 @@ def _save_cache(ip, data):
     client.put(obj)
 
 def _get_cache(ip):
+    start = time.time()
     data_dump = memcache.get(_memkey(ip))
+    timelog.log_time_since('Getting IP Memcache', start)
     if not data_dump:
-        a = time.time()
+        start = time.time()
         obj = client.get(_dbkey(ip))
-        logging.info('Timing: Getting IP Cache DB: %0.3f seconds with client %r', time.time() - a, client)
+        timelog.log_time_since('Getting IP DBCache', start)
         if not obj:
             return None
         data_dump = obj['data']
@@ -50,19 +53,19 @@ def get_location_data_for(ip):
     # Check the common private IP spaces (used by Google for sending requests)
     if IPy.IP(ip).iptype() == 'PRIVATE':
         return {}
-    a = time.time()
+    start = time.time()
     data = _get_cache(ip)
-    logging.info('Timing: Getting IP Cache: %0.3f seconds', time.time() - a)
+    logging.info('Getting IP Cache', start)
     if not data:
         #TODO: consider using http://geoiplookup.net/ , which might offer better granularity/resolution
         url = 'http://freegeoip.net/json/%s' % ip
-        a = time.time()
+        start = time.time()
         results = urllib.urlopen(url).read()
-        logging.info('Timing: Getting IP Data: %0.3f seconds', time.time() - a)
+        logging.info('Getting IPData', start)
         data = json.loads(results)
-        a = time.time()
+        start = time.time()
         _save_cache(ip, data)
-        logging.info('Timing: Saving IP Cache: %0.3f seconds', time.time() - a)
+        logging.info('Saving IPCache', start)
     return data
 
 def get_location_string_for(ip, city=True):
