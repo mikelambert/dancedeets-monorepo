@@ -33,61 +33,6 @@ import { gradientTop, purpleColors } from '../Colors';
 const APPBAR_HEIGHT = Platform.OS === 'ios' ? 44 : 46;
 const STATUSBAR_HEIGHT = Platform.OS === 'ios' ? 20 : 0;
 
-export type Navigatable = {
-  onNavigate: (x: NavigationRoute) => ThunkAction,
-  onBack: () => ThunkAction,
-  onSwap: (key: string, newState: NavigationRoute) => ThunkAction,
-  goHome: () => ThunkAction,
-};
-
-type NavigatorProps = {
-  navigationState: NavigationState,
-  intl: intlShape,
-};
-
-type CallingProps = {
-  renderScene: (
-    scene: NavigationSceneRendererProps,
-    nav: Navigatable
-  ) => Element<any>,
-};
-
-const HeaderTitle = ({ children, style, textStyle, viewProps }) => (
-  <View style={[styles.title, style]} {...viewProps}>
-    <Text style={[styles.titleText, textStyle]} numberOfLines={1}>
-      {children}
-    </Text>
-  </View>
-);
-HeaderTitle.propTypes = {
-  children: PropTypes.string,
-  style: View.propTypes.style,
-  textStyle: View.propTypes.style,
-  viewProps: PropTypes.shape({}),
-};
-
-class _Navigator extends React.Component {
-  props: NavigatorProps & Navigatable & CallingProps;
-
-  constructor(props) {
-    super(props);
-    (this: any).renderHeader = this.renderHeader.bind(this);
-    (this: any).renderLeft = this.renderLeft.bind(this);
-    (this: any).renderTitle = this.renderTitle.bind(this);
-    (this: any).renderRight = this.renderRight.bind(this);
-    (this: any).handleHardwareBackPress = this.handleHardwareBackPress.bind(
-      this
-    );
-  }
-
-  backToHome() {
-    this.props.goHome();
-  }
-
-  handleHardwareBackPress() {
-    this.props.onBack();
-    return true;
-  }
 
   renderLeft(props) {
     if (!props.scene.index) {
@@ -106,18 +51,6 @@ class _Navigator extends React.Component {
     );
   }
 
-  renderTitle(props) {
-    let title = props.scene.route.title;
-    if (props.scene.route.message) {
-      title = this.props.intl.formatMessage(props.scene.route.message);
-    }
-    return (
-      <HeaderTitle>
-        {title}
-      </HeaderTitle>
-    );
-  }
-
   renderRight(props) {
     if (props.scene.route.event) {
       return (
@@ -129,60 +62,16 @@ class _Navigator extends React.Component {
     return null;
   }
 
-  renderHeader(props) {
-    // 0.33: Disable for now, as it doesn't appear to work: <GradientBar style={styles.navHeader}>
-    return (
-      <Header
-        {...props}
         style={[
           styles.navHeader,
           { backgroundColor: gradientTop, borderBottomWidth: 0 },
         ]}
-        renderLeftComponent={this.renderLeft}
-        renderTitleComponent={this.renderTitle}
-        renderRightComponent={this.renderRight}
-        // Use this.props here, instead of passed-in props
-        onNavigateBack={this.props.onBack}
-      />
-    );
-  }
 
-  render() {
-    return (
-      <CardStack
-        navigationState={this.props.navigationState}
-        style={styles.outerContainer}
-        onBack={this.props.onBack}
-        renderHeader={this.renderHeader}
-        renderScene={props => this.props.renderScene(props, this.props)}
         cardStyle={{
           backgroundColor: purpleColors[4],
           marginTop: APPBAR_HEIGHT + STATUSBAR_HEIGHT,
         }}
       />
-    );
-  }
-}
-const Navigator = injectIntl(hardwareBackPress(_Navigator));
-
-export default function(navName: string) {
-  const component = connect(
-    state => ({
-      navigationState: getNamedState(state.navigationState, navName),
-    }),
-    (dispatch: Dispatch) => ({
-      onNavigate: destState => dispatch(navigatePush(navName, destState)),
-      goHome: async () => {
-        await dispatch(navigatePop(navName));
-        await dispatch(navigatePop(navName));
-      },
-      onBack: () => dispatch(navigatePop(navName)),
-      onSwap: (key, newRoute) => dispatch(navigateSwap(navName, key, newRoute)),
-    })
-  )(Navigator);
-  component.navName = navName;
-  return component;
-}
 
 const styles = StyleSheet.create({
   outerContainer: {
