@@ -36,6 +36,7 @@ from users import user_creation
 from util import dates
 from util import deferred
 from util import ips
+from util import timelog
 from util import text
 from util import urls
 
@@ -681,11 +682,7 @@ class BaseRequestHandler(BareBaseRequestHandler):
         import time
         start = time.time()
         self.display['ip_location'] = self.get_location_from_headers()
-        duration = time.time() - start
-        if duration > 1.0:
-            logging.error('Getting city took %0.3f seconds', duration)
-        else:
-            logging.info('Getting city took %0.3f seconds', duration)
+        timelog.log_time_since('Getting City from IP', start)
 
         self.display['styles'] = event_types.STYLES
         self.display['us_cities'] = [
