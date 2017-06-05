@@ -13,7 +13,7 @@ import type {
   NavigationSceneRendererProps,
   NavigationScreenProp,
 } from 'react-navigation/src/TypeDefinition';
-import { NavigationActions, StackNavigator } from 'react-navigation';
+import { NavigationActions } from 'react-navigation';
 import { connect } from 'react-redux';
 import { injectIntl, intlShape, defineMessages } from 'react-intl';
 import { track, trackWithEvent } from '../../store/track';
@@ -22,6 +22,7 @@ import {
   PlaylistStylesView,
   PlaylistView,
 } from '../../learn/playlistViews';
+import StackNavigator from './Navigator';
 
 const messages = defineMessages({
   learnTitle: {

@@ -13,7 +13,7 @@ import type {
   NavigationSceneRendererProps,
   NavigationScreenProp,
 } from 'react-navigation/src/TypeDefinition';
-import { NavigationActions, StackNavigator } from 'react-navigation';
+import { NavigationActions } from 'react-navigation';
 import { connect } from 'react-redux';
 import { injectIntl, intlShape, defineMessages } from 'react-intl';
 import { track, trackWithEvent } from '../../store/track';
@@ -26,6 +26,7 @@ import BattleEventView from '../../event_signups/battleEventView';
 import BattleEventHostView from '../../event_signups/battleEventHostView';
 import BattleHostCategoryView from '../../event_signups/battleHostCategoryView';
 import { eventRegister, eventUnregister } from '../../api/dancedeets';
+import StackNavigator from './Navigator';
 
 const messages = defineMessages({});
 

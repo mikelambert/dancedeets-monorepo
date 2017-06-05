@@ -13,7 +13,7 @@ import type {
   NavigationSceneRendererProps,
   NavigationScreenProp,
 } from 'react-navigation/src/TypeDefinition';
-import { NavigationActions, StackNavigator } from 'react-navigation';
+import { NavigationActions } from 'react-navigation';
 import { connect } from 'react-redux';
 import { injectIntl, intlShape, defineMessages } from 'react-intl';
 import { Event } from 'dancedeets-common/js/events/models';
@@ -25,6 +25,7 @@ import AddEvents from '../AddEvents';
 import { track, trackWithEvent } from '../../store/track';
 import PositionProvider from '../../providers/positionProvider';
 import { FullEventView } from '../../events/uicomponents';
+import StackNavigator from './Navigator';
 
 const messages = defineMessages({
   eventsTitle: {
