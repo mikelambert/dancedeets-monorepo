@@ -57,8 +57,8 @@ class GradientTabBar extends React.Component {
   render() {
     return (
       <LinearGradient
-        start={[0.0, 0.0]}
-        end={[0.0, 1]}
+        start={{ x: 0.0, y: 0.0 }}
+        end={{ x: 0.0, y: 1.0 }}
         colors={[gradientTop, gradientBottom]}
         style={this.props.style}
       >

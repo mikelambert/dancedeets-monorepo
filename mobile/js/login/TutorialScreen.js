@@ -7,7 +7,6 @@
 import React from 'react';
 import { Dimensions, Image, StyleSheet, View } from 'react-native';
 import Carousel from 'react-native-carousel';
-import LinearGradient from 'react-native-linear-gradient';
 import { defineMessages, injectIntl, intlShape } from 'react-intl';
 import LaunchScreen from './LaunchScreen';
 import LoginButtonWithAlternate from './LoginButtonWithAlternate';

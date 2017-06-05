@@ -112,8 +112,8 @@ class Button extends React.Component {
     }
     const buttonContents = (
       <LinearGradient
-        start={[0, 0]}
-        end={[0, 1]}
+        start={{ x: 0.0, y: 0.0 }}
+        end={{ x: 0.0, y: 1.0 }}
         locations={[0.0, 0.7, 1.0]}
         colors={colors}
         style={[styles.button, size]}
