@@ -51,7 +51,6 @@ import { performRequest } from '../api/fb';
 import RsvpOnFB from '../api/fb-event-rsvp';
 import { trackWithEvent } from '../store/track';
 import type { TranslatedEvent } from '../reducers/translate';
-import { weekdayDateTime } from '../formats';
 import { toggleEventTranslation, canGetValidLoginFor } from '../actions';
 import { openUserId } from '../util/fb';
 
@@ -157,7 +156,7 @@ class _EventDateTime extends React.Component {
     return (
       <SubEventLine icon={require('./images/datetime.png')}>
         <View style={{ alignItems: 'flex-start' }}>
-          <Text style={[eventStyles.detailText, eventStyles.rowDateTime]}>
+          <Text style={[eventStyles.detailText]}>
             {formattedText}
           </Text>
           {this.props.children}
@@ -197,7 +196,7 @@ class _EventDateTimeShort extends React.Component {
     return (
       <SubEventLine icon={require('./images/datetime.png')}>
         <View style={{ alignItems: 'flex-start' }}>
-          <Text style={[eventStyles.detailText, eventStyles.rowDateTime]}>
+          <Text style={[eventStyles.detailText]}>
             {formattedText}
           </Text>
           {this.props.children}
@@ -841,7 +840,7 @@ class _EventRow extends React.Component {
     const imageProps = this.props.event.getResponsiveFlyers();
     if (this.props.listLayout) {
       return (
-        <Card style={eventStyles.row}>
+        <View style={eventStyles.row}>
           <TouchableOpacity
             onPress={() => this.props.onEventSelected(this.props.event)}
             activeOpacity={0.5}
@@ -872,11 +871,11 @@ class _EventRow extends React.Component {
               </View>
             </HorizontalView>
           </TouchableOpacity>
-        </Card>
+        </View>
       );
     } else {
       return (
-        <Card style={eventStyles.row}>
+        <View style={eventStyles.row}>
           <TouchableOpacity
             onPress={() => this.props.onEventSelected(this.props.event)}
             activeOpacity={0.5}
@@ -901,7 +900,7 @@ class _EventRow extends React.Component {
             <EventDateTimeShort start={this.props.event.start_time} />
             <EventVenueShort venue={this.props.event.venue} />
           </TouchableOpacity>
-        </Card>
+        </View>
       );
     }
   }
@@ -1158,9 +1157,6 @@ const eventStyles = StyleSheet.create({
     fontSize: semiNormalize(18),
     lineHeight: semiNormalize(22),
     margin: 5,
-  },
-  rowDateTime: {
-    color: '#C0FFC0',
   },
   rowLink: {
     color: linkColor,
