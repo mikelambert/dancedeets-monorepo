@@ -15,6 +15,7 @@ export const weekdayDate = {
   day: 'numeric',
 };
 export const weekdayDateWithYear = {
+  year: 'numeric',
   weekday: 'long',
   month: 'long',
   day: 'numeric',
