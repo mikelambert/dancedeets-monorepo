@@ -14,17 +14,19 @@ import keys
 from mail import mandrill_api
 from util import fixed_pipelines
 
+# TODO(mindbody):
+DISABLED_SPIDERS = [
+    'EXPG', 'Boogiezone', 'IDA', 'mL', 'NeighborhoodStudio'
+]
 
 def get_spiders():
     return [
         # NY
         'PMT', 'Evolution', 'Peridance', 'BDC',
-        # TODO(mindbody):
-        #'EXPG',
+        'EXPG',
         # LA
         'Millenium', 'EDGE', 'DebbieReynolds', 'TheLab',
-        # TODO(mindbody):
-        #'Boogiezone', 'IDA', 'mL', 'NeighborhoodStudio',
+        'Boogiezone', 'IDA', 'mL', 'NeighborhoodStudio',
     ]
     # This depends on Twisted, which depends on zope.interface and lxml. And that whole ball of wax fails when run in the appengine dev sandbox.
     # We can't import any of classes/scrapers/ (since it all ultimately depends on scrapy), so there's no great way to get a list of classes.
@@ -55,7 +57,7 @@ class CrawlAndIndexClassesJob(fixed_pipelines.Pipeline):
     def run(self):
         run_time = datetime.datetime.now()
         # Find all spiders by looking at modules on disk
-        spiders = get_spiders()
+        spiders = set(get_spiders()).difference(DISABLED_SPIDERS)
 
         # Trigger new spider jobs on scrapinghub
         job_keys = start_spiders(spiders)
