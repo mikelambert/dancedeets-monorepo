@@ -27,6 +27,8 @@ import {
   Text,
 } from '../ui';
 
+export const ROW_HEIGHT = 130;
+
 class EventVenueShort extends React.Component {
   props: {
     venue: Venue,
@@ -60,7 +62,10 @@ class _EventRow extends React.Component {
           activeOpacity={0.5}
         >
           <HorizontalView>
-            <BlurredImage source={imageProps} style={{ height: 130, flex: 1 }}>
+            <BlurredImage
+              source={imageProps}
+              style={{ height: ROW_HEIGHT, flex: 1 }}
+            >
               <View style={{ flex: 1, margin: 5 }}>
                 <Text
                   numberOfLines={2}
@@ -86,7 +91,10 @@ class _EventRow extends React.Component {
                 </Text>
               </View>
             </BlurredImage>
-            <Image source={imageProps} style={{ height: 130, width: 130 }} />
+            <Image
+              source={imageProps}
+              style={{ height: ROW_HEIGHT, width: ROW_HEIGHT }}
+            />
           </HorizontalView>
         </TouchableOpacity>
       </View>
