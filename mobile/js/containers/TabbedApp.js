@@ -5,7 +5,7 @@
  */
 
 import React from 'react';
-import { AppState, Image, StyleSheet, View } from 'react-native';
+import { AppState, Image, StyleSheet, View, ViewPropTypes } from 'react-native';
 import TabNavigator from 'react-native-tab-navigator';
 import type {
   NavigationAction,
@@ -50,7 +50,7 @@ const messages = defineMessages({
 
 class GradientTabBar extends React.Component {
   props: {
-    style: View.propTypes.style,
+    style: ViewPropTypes.style,
     children: Array<React.Element<*>>,
   };
 

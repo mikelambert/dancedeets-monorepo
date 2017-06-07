@@ -5,7 +5,14 @@
  */
 
 import React from 'react';
-import { Animated, Dimensions, Image, StyleSheet, View } from 'react-native';
+import {
+  Animated,
+  Dimensions,
+  Image,
+  StyleSheet,
+  View,
+  ViewPropTypes,
+} from 'react-native';
 import { injectIntl, defineMessages } from 'react-intl';
 import { connect } from 'react-redux';
 import danceStyles from 'dancedeets-common/js/styles';
@@ -35,7 +42,7 @@ if (Dimensions.get('window').width >= 1024) {
 
 class CompactTeam extends React.Component {
   props: {
-    style: View.propTypes.style,
+    style: ViewPropTypes.style,
     team: Signup,
   };
 

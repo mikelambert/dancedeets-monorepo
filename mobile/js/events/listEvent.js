@@ -5,7 +5,13 @@
  */
 
 import React from 'react';
-import { Image, StyleSheet, TouchableOpacity, View } from 'react-native';
+import {
+  Image,
+  StyleSheet,
+  TouchableOpacity,
+  View,
+  ViewPropTypes,
+} from 'react-native';
 import { injectIntl, intlShape, defineMessages } from 'react-intl';
 import { connect } from 'react-redux';
 import {
@@ -24,7 +30,7 @@ import {
 class EventVenueShort extends React.Component {
   props: {
     venue: Venue,
-    style?: View.propTypes.style,
+    style?: ViewPropTypes.style,
   };
 
   render() {

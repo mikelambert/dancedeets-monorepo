@@ -1,12 +1,12 @@
 import React from 'react';
-import { StyleSheet, View } from 'react-native';
+import { StyleSheet, View, ViewPropTypes } from 'react-native';
 import { purpleColors } from '../Colors';
 
 export default class Card extends React.Component {
   props: {
-    style: View.propTypes.style,
-    titleBackgroundStyle: View.propTypes.style,
-    mainBackgroundStyle: View.propTypes.style,
+    style: ViewPropTypes.style,
+    titleBackgroundStyle: ViewPropTypes.style,
+    mainBackgroundStyle: ViewPropTypes.style,
     title: string,
     children: Array<React.Element<*>>,
   };

@@ -99,7 +99,7 @@ class EventCategories extends React.Component {
 class _AddToCalendarButton extends React.Component {
   props: {
     event: Event,
-    style: View.propTypes.style,
+    style: ViewPropTypes.style,
 
     // Self-managed props
     intl: intlShape,
@@ -181,7 +181,7 @@ function formatDistance(intl, distanceKm) {
 class _EventVenue extends React.Component {
   props: {
     venue: Venue,
-    style: View.propTypes.style,
+    style: ViewPropTypes.style,
 
     currentPosition: ?Object,
 

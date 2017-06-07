@@ -14,6 +14,7 @@ import {
   StyleSheet,
   TouchableHighlight,
   View,
+  ViewPropTypes,
 } from 'react-native';
 import { injectIntl, intlShape, defineMessages } from 'react-intl';
 import { connect } from 'react-redux';
@@ -371,7 +372,7 @@ export class SectionedListView extends React.Component {
 // and instead uses them to update the YouTube object directly.
 class YouTubeNoReload extends React.Component {
   props: {
-    style: View.propTypes.style,
+    style: ViewPropTypes.style,
     videoId: string,
   };
   _root: any;
