@@ -37,6 +37,7 @@ import type {
   SearchResponse,
   StylePersonLookup,
 } from 'dancedeets-common/js/events/search';
+import { formatStartDateOnly } from 'dancedeets-common/js/dates';
 import Collapsible from 'react-native-collapsible';
 import { EventRow } from './uicomponents';
 import SearchHeader from './searchHeader';
@@ -61,7 +62,6 @@ import {
 } from '../ui';
 import { track, trackWithEvent } from '../store/track';
 import { getAddress, getPosition } from '../util/geo';
-import { weekdayDate } from '../formats';
 import { loadUserData } from '../actions/login';
 import { canHandleUrl } from '../websiteUrl';
 import { loadSavedAddress, storeSavedAddress } from './savedAddress';
@@ -557,10 +557,7 @@ class _EventListContainer extends React.Component {
             continue;
           }
           const start = moment(e.start_time, moment.ISO_8601);
-          const formattedStart = this.props.intl.formatDate(
-            start.toDate(),
-            weekdayDate
-          );
+          const formattedStart = formatStartDateOnly(start, this.props.intl);
           if (!(formattedStart in dataBlob)) {
             dataBlob[formattedStart] = [];
           }

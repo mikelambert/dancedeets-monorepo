@@ -11,11 +11,7 @@ import { intlWeb } from 'dancedeets-common/js/intl';
 import type { Cover, JSONObject } from 'dancedeets-common/js/events/models';
 import { SearchEvent } from 'dancedeets-common/js/events/models';
 import type { NewSearchResponse } from 'dancedeets-common/js/events/search';
-import {
-  formatStartTime,
-  weekdayDate,
-  weekdayTime,
-} from 'dancedeets-common/js/dates';
+import { formatStartTime } from 'dancedeets-common/js/dates';
 import { groupEventsByStartDate } from 'dancedeets-common/js/events/helpers';
 import type { ExportedIconsEnum } from './exportedIcons';
 

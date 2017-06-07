@@ -26,11 +26,7 @@ import type {
   Onebox,
   StylePersonLookup,
 } from 'dancedeets-common/js/events/search';
-import {
-  formatStartTime,
-  weekdayDate,
-  weekdayTime,
-} from 'dancedeets-common/js/dates';
+import { formatStartTime } from 'dancedeets-common/js/dates';
 import {
   formatAttending,
   groupEventsByStartDate,
