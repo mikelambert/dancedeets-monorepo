@@ -37,10 +37,7 @@ export function groupEventsByStartDate(
   let currentDate = null;
   events.forEach((event, index) => {
     const eventStart = moment(getStartTime(event));
-    const eventStartDate = formatStartDateOnly(
-      eventStart.toDate(),
-      this.props.intl
-    );
+    const eventStartDate = formatStartDateOnly(eventStart.toDate(), intl);
     if (eventStartDate !== currentDate) {
       results.push({ header: eventStartDate, events: [] });
       currentDate = eventStartDate;
