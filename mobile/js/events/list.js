@@ -10,6 +10,7 @@ import {
   Image,
   Linking,
   ListView,
+  SectionList,
   Platform,
   RefreshControl,
   StyleSheet,
@@ -323,24 +324,24 @@ class _EventListContainer extends React.Component {
   };
 
   state: {
-    dataSource: ListView.DataSource,
+    data: $ReadOnlyArray<{
+      data: Array<any>,
+      title: string,
+      renderItem: ({ item: Onebox | Event }) => React.Element<*>,
+    }>,
   };
 
   _listView: ListView;
 
   constructor(props) {
     super(props);
-    const dataSource = new ListView.DataSource({
-      rowHasChanged: (row1, row2) => row1 !== row2,
-      sectionHeaderHasChanged: (s1, s2) => s1 !== s2,
-    });
     this.state = {
-      dataSource,
+      data: [],
     };
     this.state = this.getNewState(this.props);
     (this: any).renderHeader = this.renderHeader.bind(this);
-    (this: any).renderRow = this.renderRow.bind(this);
     (this: any).setLocationAndSearch = this.setLocationAndSearch.bind(this);
+    (this: any).renderEventRow = this.renderEventRow.bind(this);
   }
 
   componentDidMount() {
@@ -350,20 +351,20 @@ class _EventListContainer extends React.Component {
   componentWillReceiveProps(nextProps) {
     this.setState(this.getNewState(nextProps));
     if (nextProps.search.response !== this.props.search.response) {
-      this._listView.scrollTo({ x: 0, y: 0, animated: false });
+      /*
+      this._listView.scrollToIndex({
+        animated: false,
+        index: 0,
+      });
+      */
     }
   }
 
   getNewState(props) {
-    const { dataBlob, sectionHeaders } = this.buildDataBlobAndHeaders(
-      props.search.response
-    );
+    const data = this.getData(props.search.response);
     const state = {
       ...this.state,
-      dataSource: this.state.dataSource.cloneWithRowsAndSections(
-        dataBlob,
-        sectionHeaders
-      ),
+      data,
     };
     return state;
   }
@@ -389,15 +390,19 @@ class _EventListContainer extends React.Component {
     }
   }
 
-  buildDataBlobAndHeaders(response: ?SearchResponse) {
-    const dataBlob = {};
+  getData(response: ?SearchResponse) {
+    const sections = [];
     const sectionHeaders = [];
 
     if (response) {
       if (response.onebox_links != null && response.onebox_links.length > 0) {
         const oneboxKey = this.props.intl.formatMessage(messages.specialLinks);
-        dataBlob[oneboxKey] = response.onebox_links.map(x => x);
-        sectionHeaders.push(oneboxKey);
+        sections.push({
+          key: oneboxKey,
+          title: oneboxKey,
+          data: response.onebox_links.map(x => x),
+          renderItem: this.renderOneboxRow,
+        });
       }
       const now = moment();
       if (response.results != null && response.results.length > 0) {
@@ -416,23 +421,22 @@ class _EventListContainer extends React.Component {
           }
           const start = moment(e.start_time, moment.ISO_8601);
           const formattedStart = formatStartDateOnly(start, this.props.intl);
-          if (!(formattedStart in dataBlob)) {
-            dataBlob[formattedStart] = [];
+          let lastSection = sections[sections.length - 1];
+
+          if (!lastSection || lastSection.title !== formattedStart) {
+            sections.push({
+              key: formattedStart,
+              title: formattedStart,
+              data: [],
+              renderItem: this.renderEventRow,
+            });
           }
-          dataBlob[formattedStart].push(e);
-          if (
-            !sectionHeaders ||
-            sectionHeaders[sectionHeaders.length - 1] !== formattedStart
-          ) {
-            sectionHeaders.push(formattedStart);
-          }
+          lastSection = sections[sections.length - 1];
+          lastSection.data.push(e);
         }
       }
     }
-    return {
-      dataBlob,
-      sectionHeaders,
-    };
+    return sections;
   }
 
   async authAndReloadProfile(address) {
@@ -487,14 +491,15 @@ class _EventListContainer extends React.Component {
     return this.renderSummaryView();
   }
 
-  renderRow(row) {
-    if ('id' in row) {
-      return (
-        <EventRow event={row} onEventSelected={this.props.onEventSelected} />
-      );
-    } else {
-      return <OneboxView onebox={row} />;
-    }
+  renderEventRow(row) {
+    const item = row.item;
+    return (
+      <EventRow event={item} onEventSelected={this.props.onEventSelected} />
+    );
+  }
+
+  renderOneboxRow({ item: Onebox }) {
+    return <OneboxView onebox={item} />;
   }
 
   renderErrorView() {
@@ -575,31 +580,29 @@ class _EventListContainer extends React.Component {
 
   renderListView() {
     return (
-      <ListView
-        // TODO: removeClippedSubviews is disabled until
-        // https://github.com/facebook/react-native/issues/8088 is fixed.
-        removeClippedSubviews={false}
+      <SectionList
         ref={x => {
           this._listView = x;
         }}
         style={[styles.listView]}
-        dataSource={this.state.dataSource}
-        renderHeader={this.renderHeader}
-        refreshControl={
-          <RefreshControl
-            refreshing={this.props.search.loading}
-            onRefresh={() => this.props.performSearch()}
-          />
-        }
-        renderRow={this.renderRow}
-        renderSectionHeader={(data, sectionID) => (
-          <SectionHeader title={upperFirst(sectionID)} />
+        ListHeaderComponent={this.renderHeader}
+        // Refresher
+        onRefresh={() => this.props.performSearch()}
+        refreshing={this.props.search.loading}
+        sections={this.state.data}
+        renderSectionHeader={section => (
+          <SectionHeader title={upperFirst(section.title)} />
         )}
-        initialListSize={5}
-        pageSize={1}
-        scrollRenderAheadDistance={5000}
-        scrollsToTop={false}
-        indicatorStyle="white"
+        keyExtractor={(item: Event | Onebox) => {
+          if (item.id !== undefined) {
+            return item.id;
+          } else {
+            return item.url;
+          }
+        }}
+        stickySectionHeadersEnabled
+        initialNumToRender={5}
+        maxToRenderPerBatch={5}
       />
     );
   }

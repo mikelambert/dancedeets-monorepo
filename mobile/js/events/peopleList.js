@@ -138,6 +138,9 @@ class _PeopleView extends React.Component {
   };
 
   render() {
+    if (this.props.search.error) {
+      return null;
+    }
     // Keep in sync with web?
     const defaultCollapsed = !(this.props.search.response.results.length < 10);
     return (
