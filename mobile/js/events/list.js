@@ -360,6 +360,9 @@ class _EventListContainer extends React.Component {
         animated: false,
         itemIndex: 0,
         sectionIndex: 0,
+        // Ugly hack to get it to scroll the Header into view:
+        // https://github.com/facebook/react-native/issues/14392
+        viewPosition: 100,
       });
     }
     this.setState(this.getNewState(nextProps));
