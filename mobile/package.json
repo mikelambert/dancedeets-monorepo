@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "postinstall": "rm -f node_modules/intl/.babelrc",
+    "react-devtools": "react-devtools",
     "start": "node node_modules/react-native/local-cli/cli.js start"
   },
   "dependencies": {
@@ -74,6 +75,7 @@
     "git-clone": "^0.1.0",
     "json-stable-stringify": "^1.0.1",
     "node-fetch": "^1.6.0",
+    "react-devtools": "^2.3.1",
     "underscore": "^1.8.3"
   }
 }
