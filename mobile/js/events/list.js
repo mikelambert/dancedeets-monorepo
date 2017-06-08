@@ -9,7 +9,6 @@ import {
   Dimensions,
   Image,
   Linking,
-  ListView,
   SectionList,
   Platform,
   RefreshControl,
@@ -69,7 +68,8 @@ const messages = defineMessages({
   fetchEventsError: {
     id: 'errors.fetchEventsError',
     defaultMessage: 'There was a problem fetching events.',
-    description: 'Error message shown when there is an error loading data over the network',
+    description:
+      'Error message shown when there is an error loading data over the network',
   },
   networkRetry: {
     id: 'errors.networkRetry',
@@ -84,7 +84,8 @@ const messages = defineMessages({
   specialLinks: {
     id: 'onebox.specialLinks',
     defaultMessage: 'Additional Links',
-    description: 'Header for all the links/blogs/wikis/etc relevant to this search',
+    description:
+      'Header for all the links/blogs/wikis/etc relevant to this search',
   },
   eventsWithLocation: {
     id: 'search.eventsWithLocation',
@@ -332,7 +333,7 @@ class _EventListContainer extends React.Component {
     }>,
   };
 
-  _listView: ListView;
+  _listView: SectionList;
 
   constructor(props) {
     super(props);
@@ -350,19 +351,21 @@ class _EventListContainer extends React.Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    this.setState(this.getNewState(nextProps));
-    if (nextProps.search.response !== this.props.search.response) {
-      /*
-      this._listView.scrollToIndex({
+    // Only zoom to top, if there are existing state.sections being rendered
+    if (
+      nextProps.search.response !== this.props.search.response &&
+      this.state.sections.length > 0
+    ) {
+      this._listView.scrollToLocation({
         animated: false,
-        index: 0,
+        itemIndex: 0,
+        sectionIndex: 0,
       });
-      */
     }
+    this.setState(this.getNewState(nextProps));
   }
 
   getNewState(props) {
-    console.log('new state');
     const sections = this.getData(props.search.response);
     const state = {
       ...this.state,
@@ -404,7 +407,7 @@ class _EventListContainer extends React.Component {
           title: oneboxKey,
           data: response.onebox_links.map(onebox => ({
             onebox,
-            key: `Onebox: onebox.url`,
+            key: `Onebox: ${onebox.url}`,
           })),
         });
       }
@@ -595,9 +598,8 @@ class _EventListContainer extends React.Component {
         refreshing={this.props.search.loading}
         sections={this.state.sections}
         renderItem={this.renderItem}
-        renderSectionHeader={({ section }) => (
-          <SectionHeader title={upperFirst(section.title)} />
-        )}
+        renderSectionHeader={({ section }) =>
+          <SectionHeader title={upperFirst(section.title)} />}
         stickySectionHeadersEnabled
         initialNumToRender={5}
         maxToRenderPerBatch={5}
