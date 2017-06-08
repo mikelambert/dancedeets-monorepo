@@ -37,7 +37,7 @@ import type {
   StylePersonLookup,
 } from 'dancedeets-common/js/events/search';
 import { formatStartDateOnly } from 'dancedeets-common/js/dates';
-import { EventRow } from './listEvent';
+import { EventRow, RowHeight } from './listEvent';
 import SearchHeader from './searchHeader';
 import type { State } from '../reducers/search';
 import {
@@ -104,6 +104,8 @@ const messages = defineMessages({
 });
 
 const CarouselDotIndicatorSize = 25;
+
+const SectionHeight = semiNormalize(30);
 
 class SectionHeader extends React.Component {
   props: {
@@ -324,10 +326,9 @@ class _EventListContainer extends React.Component {
   };
 
   state: {
-    data: $ReadOnlyArray<{
+    sections: $ReadOnlyArray<{
       data: Array<any>,
       title: string,
-      renderItem: ({ item: Onebox | Event }) => React.Element<*>,
     }>,
   };
 
@@ -336,12 +337,12 @@ class _EventListContainer extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      data: [],
+      sections: [],
     };
     this.state = this.getNewState(this.props);
     (this: any).renderHeader = this.renderHeader.bind(this);
     (this: any).setLocationAndSearch = this.setLocationAndSearch.bind(this);
-    (this: any).renderEventRow = this.renderEventRow.bind(this);
+    (this: any).renderItem = this.renderItem.bind(this);
   }
 
   componentDidMount() {
@@ -361,10 +362,11 @@ class _EventListContainer extends React.Component {
   }
 
   getNewState(props) {
-    const data = this.getData(props.search.response);
+    console.log('new state');
+    const sections = this.getData(props.search.response);
     const state = {
       ...this.state,
-      data,
+      sections,
     };
     return state;
   }
@@ -400,8 +402,10 @@ class _EventListContainer extends React.Component {
         sections.push({
           key: oneboxKey,
           title: oneboxKey,
-          data: response.onebox_links.map(x => x),
-          renderItem: this.renderOneboxRow,
+          data: response.onebox_links.map(onebox => ({
+            onebox,
+            key: `Onebox: onebox.url`,
+          })),
         });
       }
       const now = moment();
@@ -422,17 +426,15 @@ class _EventListContainer extends React.Component {
           const start = moment(e.start_time, moment.ISO_8601);
           const formattedStart = formatStartDateOnly(start, this.props.intl);
           let lastSection = sections[sections.length - 1];
-
           if (!lastSection || lastSection.title !== formattedStart) {
             sections.push({
-              key: formattedStart,
+              key: `Section: ${start}`,
               title: formattedStart,
               data: [],
-              renderItem: this.renderEventRow,
             });
           }
           lastSection = sections[sections.length - 1];
-          lastSection.data.push(e);
+          lastSection.data.push({ event: e, key: `Event: ${e.id}` });
         }
       }
     }
@@ -491,15 +493,17 @@ class _EventListContainer extends React.Component {
     return this.renderSummaryView();
   }
 
-  renderEventRow(row) {
-    const item = row.item;
-    return (
-      <EventRow event={item} onEventSelected={this.props.onEventSelected} />
-    );
-  }
-
-  renderOneboxRow({ item: Onebox }) {
-    return <OneboxView onebox={item} />;
+  renderItem(row) {
+    if (row.item.event) {
+      return (
+        <EventRow
+          event={row.item.event}
+          onEventSelected={this.props.onEventSelected}
+        />
+      );
+    } else {
+      return <OneboxView onebox={row.item.onebox} />;
+    }
   }
 
   renderErrorView() {
@@ -579,6 +583,9 @@ class _EventListContainer extends React.Component {
   }
 
   renderListView() {
+    if (!this.props.search.response) {
+      return null;
+    }
     return (
       <SectionList
         ref={x => {
@@ -589,17 +596,11 @@ class _EventListContainer extends React.Component {
         // Refresher
         onRefresh={() => this.props.performSearch()}
         refreshing={this.props.search.loading}
-        sections={this.state.data}
-        renderSectionHeader={section => (
+        sections={this.state.sections}
+        renderItem={this.renderItem}
+        renderSectionHeader={({ section }) => (
           <SectionHeader title={upperFirst(section.title)} />
         )}
-        keyExtractor={(item: Event | Onebox) => {
-          if (item.id !== undefined) {
-            return item.id;
-          } else {
-            return item.url;
-          }
-        }}
         stickySectionHeadersEnabled
         initialNumToRender={5}
         maxToRenderPerBatch={5}
@@ -669,7 +670,7 @@ const styles = StyleSheet.create({
   sectionHeader: {
     borderTopWidth: 1,
     borderTopColor: purpleColors[1],
-    height: semiNormalize(30),
+    height: SectionHeight,
     alignItems: 'flex-start', // left align
     justifyContent: 'center', // vertically center
     backgroundColor: purpleColors[2],

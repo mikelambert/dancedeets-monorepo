@@ -27,7 +27,7 @@ import {
   Text,
 } from '../ui';
 
-export const ROW_HEIGHT = 130;
+export const RowHeight = 130;
 
 class EventVenueShort extends React.Component {
   props: {
@@ -64,7 +64,7 @@ class _EventRow extends React.Component {
           <HorizontalView>
             <BlurredImage
               source={imageProps}
-              style={{ height: ROW_HEIGHT, flex: 1 }}
+              style={{ height: RowHeight, flex: 1 }}
             >
               <View style={{ flex: 1, margin: 5 }}>
                 <Text
@@ -93,7 +93,7 @@ class _EventRow extends React.Component {
             </BlurredImage>
             <Image
               source={imageProps}
-              style={{ height: ROW_HEIGHT, width: ROW_HEIGHT }}
+              style={{ height: RowHeight, width: RowHeight }}
             />
           </HorizontalView>
         </TouchableOpacity>
