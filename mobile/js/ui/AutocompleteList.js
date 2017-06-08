@@ -354,7 +354,7 @@ export default class AutocompleteList extends React.Component {
       return (
         <ListView
           scrollEnabled={false}
-          keyboardShouldPersistTaps
+          keyboardShouldPersistTaps="always"
           keyboardDismissMode="on-drag"
           style={[defaultStyles.listView, this.props.styles.listView, style]}
           dataSource={this.state.dataSource}
