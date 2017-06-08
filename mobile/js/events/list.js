@@ -583,9 +583,6 @@ class _EventListContainer extends React.Component {
   }
 
   renderListView() {
-    if (!this.props.search.response) {
-      return null;
-    }
     return (
       <SectionList
         ref={x => {
