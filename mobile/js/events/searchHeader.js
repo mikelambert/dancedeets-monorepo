@@ -10,6 +10,7 @@ import SyntheticEvent from 'react-native/Libraries/Renderer/src/renderers/shared
 import Locale from 'react-native-locale';
 import { connect } from 'react-redux';
 import { defineMessages, injectIntl, intlShape } from 'react-intl';
+import Icon from 'react-native-vector-icons/Ionicons';
 import { Event } from 'dancedeets-common/js/events/models';
 import type { SearchQuery } from 'dancedeets-common/js/events/search';
 import { AutocompleteList, Button, defaultFont, HorizontalView } from '../ui';
@@ -49,6 +50,7 @@ class SearchInput extends React.Component {
     onFocus?: () => void,
     onBlur?: () => void,
     onSubmitEditing: () => void | Promise<void>,
+    iconName: string,
   };
   state: {
     focused: boolean,
@@ -80,47 +82,55 @@ class SearchInput extends React.Component {
   }
 
   render() {
-    const { style, ...otherProps } = { ...this.props };
+    const { style, iconName, ...otherProps } = { ...this.props };
     return (
-      <TextInput
-        {...otherProps}
-        ref={x => {
-          this._textInput = x;
-        }}
-        style={[defaultFont, styles.searchField, style]}
-        placeholderTextColor="rgba(255, 255, 255, 0.5)"
-        keyboardAppearance="dark"
-        selectTextOnFocus
-        autoCorrect={false}
-        autoCapitalize="none"
-        clearButtonMode="while-editing"
-        underlineColorAndroid={lightPurpleColors[2]}
-        onFocus={() => {
-          this.animatedRelayout();
-          if (this.props.onFocus) {
-            this.props.onFocus();
-          }
-        }}
-        onBlur={() => {
-          this.animatedRelayout();
-          if (this.props.onBlur) {
-            this.props.onBlur();
-          }
-        }}
-        onEndEditing={() => {
-          this.animatedRelayout();
-          if (this.props.onBlur) {
-            this.props.onBlur();
-          }
-        }}
-        onSubmitEditing={() => {
-          this.animatedRelayout();
-          if (this.props.onSubmitEditing) {
-            this.props.onSubmitEditing();
-          }
-          this._textInput.blur();
-        }}
-      />
+      <HorizontalView>
+        <Icon
+          name={iconName}
+          size={20}
+          color="#FFF"
+          style={{ marginTop: 10, width: 20, marginLeft: 10 }}
+        />
+        <TextInput
+          {...otherProps}
+          ref={x => {
+            this._textInput = x;
+          }}
+          style={[defaultFont, styles.searchField, style, { flex: 1 }]}
+          placeholderTextColor="rgba(255, 255, 255, 0.5)"
+          keyboardAppearance="dark"
+          selectTextOnFocus
+          autoCorrect={false}
+          autoCapitalize="none"
+          clearButtonMode="while-editing"
+          underlineColorAndroid={lightPurpleColors[2]}
+          onFocus={() => {
+            this.animatedRelayout();
+            if (this.props.onFocus) {
+              this.props.onFocus();
+            }
+          }}
+          onBlur={() => {
+            this.animatedRelayout();
+            if (this.props.onBlur) {
+              this.props.onBlur();
+            }
+          }}
+          onEndEditing={() => {
+            this.animatedRelayout();
+            if (this.props.onBlur) {
+              this.props.onBlur();
+            }
+          }}
+          onSubmitEditing={() => {
+            this.animatedRelayout();
+            if (this.props.onSubmitEditing) {
+              this.props.onSubmitEditing();
+            }
+            this._textInput.blur();
+          }}
+        />
+      </HorizontalView>
     );
   }
 }
@@ -168,8 +178,25 @@ class _SearchHeader extends React.Component {
       >
         <SearchInput
           ref={x => {
+            this._keywords = x;
+          }}
+          iconName={'md-search'}
+          style={{ marginTop: 5 }}
+          placeholder={this.props.intl.formatMessage(messages.keywords)}
+          returnKeyType="search"
+          onChangeText={text => {
+            if (this.props.searchQuery.keywords !== text) {
+              this.props.updateKeywords(text);
+            }
+          }}
+          onSubmitEditing={() => this.props.performSearch()}
+          value={this.props.searchQuery.keywords}
+        />
+        <SearchInput
+          ref={x => {
             this._location = x;
           }}
+          iconName={'md-locate'}
           style={{ marginTop: 5 }}
           placeholder={this.props.intl.formatMessage(messages.location)}
           returnKeyType="search"
@@ -190,21 +217,6 @@ class _SearchHeader extends React.Component {
             this.props.performSearch();
           }}
           value={this.props.searchQuery.location}
-        />
-        <SearchInput
-          ref={x => {
-            this._keywords = x;
-          }}
-          style={{ marginTop: 5 }}
-          placeholder={this.props.intl.formatMessage(messages.keywords)}
-          returnKeyType="search"
-          onChangeText={text => {
-            if (this.props.searchQuery.keywords !== text) {
-              this.props.updateKeywords(text);
-            }
-          }}
-          onSubmitEditing={() => this.props.performSearch()}
-          value={this.props.searchQuery.keywords}
         />
       </View>
     );
