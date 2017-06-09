@@ -5,6 +5,7 @@ platform :ios, '8.0'
 [
   'Firebase',
   'Firebase/Core',
+  'Firebase/Crash',
   'Firebase/Auth',
   'Firebase/Storage',
   'Firebase/Database',

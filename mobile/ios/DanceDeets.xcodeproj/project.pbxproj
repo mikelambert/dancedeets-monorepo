@@ -1095,6 +1095,7 @@
 				CF41303A6A662045F6F154CD /* [CP] Embed Pods Frameworks */,
 				2F73D197BA2817639EC2E70D /* [CP] Copy Pods Resources */,
 				1D64342B1DB7ED6400805722 /* Upload Build to Fabric/Crashlytics */,
+				1D8128A31EEA98FB008BF372 /* Upload Symbols to Firebase Crash Server */,
 			);
 			buildRules = (
 			);
@@ -1806,6 +1807,20 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = "${PODS_ROOT}/Fabric/run f827a34a7ab66071f1fc473cdfa00f94403b241b 5ca03b8142243c84d2a6de3bd37dfebc06f7b5b986ece6a61d6474b3b7d6602b";
 			shellScript = "";
+		};
+		1D8128A31EEA98FB008BF372 /* Upload Symbols to Firebase Crash Server */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Upload Symbols to Firebase Crash Server";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "# Replace this with the GOOGLE_APP_ID from your GoogleService-Info.plist file\nGOOGLE_APP_ID=1:911140565156:ios:6107244b15ef4abc\n\n# Replace the /Path/To/ServiceAccount.json with the path to the key you just downloaded\n\"${PODS_ROOT}\"/FirebaseCrash/upload-sym ~/Dropbox/dancedeets/private/ServiceAccount.json\"\n";
 		};
 		2D02E4CB1E0B4B27006451C7 /* Bundle React Native Code And Images */ = {
 			isa = PBXShellScriptBuildPhase;
