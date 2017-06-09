@@ -14,15 +14,18 @@ import {
 import RealAutolink from 'react-native-autolink';
 import { semiNormalize } from '../ui/normalize';
 
-export function Text({ style, ...props }: Object): RealText {
+export function Text({ style, ...props }: Object): React.Element<RealText> {
   return <RealText style={[styles.font, styles.text, style]} {...props} />;
 }
 
-export function Heading1({ style, ...props }: Object): RealText {
+export function Heading1({ style, ...props }: Object): React.Element<RealText> {
   return <RealText style={[styles.font, styles.h1, style]} {...props} />;
 }
 
-export function Paragraph({ style, ...props }: Object): RealText {
+export function Paragraph({
+  style,
+  ...props
+}: Object): React.Element<RealText> {
   return <RealText style={[styles.font, styles.p, style]} {...props} />;
 }
 
