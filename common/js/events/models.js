@@ -150,23 +150,43 @@ export class Event extends BaseEvent {
   admins: Array<Admin>;
   ticket_uri: string; // eslint-disable-line camelcase
 
+  getFlyer(dimensions: { width?: number, height?: number }) {
+    if (!this.picture) {
+      return null;
+    }
+
+    let { width, height } = dimensions;
+    if (!width && !height) {
+      return this.picture;
+    }
+
+    const ratio = this.picture.width / this.picture.height;
+    if (!height && width) {
+      height = Math.floor(width / ratio);
+    } else if (!width && height) {
+      width = Math.floor(height / ratio);
+    }
+    const parsedSource = url.parse(this.picture.source, true);
+    // Careful! We are re-using parsedSource here.
+    // If we do more complex things, we may need to create and modify copies...
+    parsedSource.query = { ...parsedSource.query, width, height };
+    const result = {
+      uri: url.format(parsedSource),
+      width,
+      height,
+    };
+    return result;
+  }
+
+  getSquareFlyer() {
+    const x = 180;
+    return this.getFlyer({ width: x, height: x });
+  }
+
   getResponsiveFlyers() {
     if (!this.picture) {
       return [];
     }
-    const ratio = this.picture.width / this.picture.height;
-    const parsedSource = url.parse(this.picture.source, true);
-    const results = [320, 480, 720, 1080, 1440].map(x => {
-      // Careful! We are re-using parsedSource here.
-      // If we do more complex things, we may need to create and modify copies...
-      parsedSource.query = { ...parsedSource.query, width: x };
-      const result = {
-        uri: url.format(parsedSource),
-        width: x,
-        height: Math.floor(x / ratio),
-      };
-      return result;
-    });
-    return results;
+    return [320, 480, 720, 1080, 1440].map(width => this.getFlyer({ width }));
   }
 }

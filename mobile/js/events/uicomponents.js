@@ -405,14 +405,14 @@ class _EventOrganizers extends React.Component {
       );
     } else {
       // TODO: fetch the types of each admin, and sort them with the page first (or show only the page?)
-      const organizers = this.props.event.admins.map(admin => (
+      const organizers = this.props.event.admins.map(admin =>
         <HorizontalView>
           <Text style={[eventStyles.detailText, eventStyles.detailListText]}>
             {' '}–{' '}
           </Text>
           {this.renderAdminLink(admin)}
         </HorizontalView>
-      ));
+      );
       let text = '';
       if (this.state.opened) {
         text = this.props.intl.formatMessage(messages.hideOrganizers);
@@ -920,6 +920,7 @@ class _FullEventView extends React.Component {
   render() {
     const width = Dimensions.get('window').width;
     let flyer = null;
+    const squareImageProps = this.props.event.getSquareFlyer();
     const imageProps = this.props.event.getResponsiveFlyers();
     if (imageProps.length) {
       const flyerImage = (
@@ -953,7 +954,14 @@ class _FullEventView extends React.Component {
     }
 
     return (
-      <BlurredImage source={imageProps} style={{ flex: 1 }}>
+      <BlurredImage
+        source={squareImageProps}
+        style={{
+          // Ignore the built-in image size props, so it can fully flex
+          width: null,
+          height: null,
+        }}
+      >
         <ProgressiveLayout style={[eventStyles.container, { width }]}>
           {flyer}
           <Text

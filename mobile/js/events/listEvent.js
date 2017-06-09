@@ -54,7 +54,7 @@ class _EventRow extends React.PureComponent {
   };
 
   render() {
-    const imageProps = this.props.event.getResponsiveFlyers();
+    const imageProps = this.props.event.getSquareFlyer();
     return (
       <View>
         <TouchableOpacity
@@ -64,7 +64,12 @@ class _EventRow extends React.PureComponent {
           <HorizontalView>
             <BlurredImage
               source={imageProps}
-              style={{ height: RowHeight, flex: 1 }}
+              style={{
+                // Ignore the built-in image size props, so it can fully flex
+                width: null,
+                height: null,
+                flex: 1,
+              }}
             >
               <View style={{ flex: 1, margin: 5 }}>
                 <Text
