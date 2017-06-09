@@ -62,43 +62,31 @@ class _EventRow extends React.PureComponent {
           activeOpacity={0.5}
         >
           <HorizontalView>
-            <BlurredImage
-              source={imageProps}
-              style={{
-                // Ignore the built-in image size props, so it can fully flex
-                width: null,
-                height: null,
-                flex: 1,
-              }}
-            >
-              <View style={{ flex: 1, margin: 5 }}>
-                <Text
-                  numberOfLines={2}
-                  style={[
-                    eventStyles.rowTitle,
-                    { fontWeight: 'bold', flexShrink: 1 },
-                  ]}
-                >
-                  {this.props.event.name}
-                </Text>
-                <EventVenueShort venue={this.props.event.venue} />
-                <Text
-                  style={
-                    (
-                      eventStyles.detailText,
-                      {
-                        position: 'absolute',
-                        bottom: 0,
-                      }
-                    )
-                  }
-                >
-                  {this.props.event.annotations.categories
-                    .slice(0, 8)
-                    .join(', ')}
-                </Text>
-              </View>
-            </BlurredImage>
+            <View style={{ flex: 1, margin: 5 }}>
+              <Text
+                numberOfLines={2}
+                style={[
+                  eventStyles.rowTitle,
+                  { fontWeight: 'bold', flexShrink: 1 },
+                ]}
+              >
+                {this.props.event.name}
+              </Text>
+              <EventVenueShort venue={this.props.event.venue} />
+              <Text
+                style={
+                  (
+                    eventStyles.detailText,
+                    {
+                      position: 'absolute',
+                      bottom: 0,
+                    }
+                  )
+                }
+              >
+                {this.props.event.annotations.categories.slice(0, 8).join(', ')}
+              </Text>
+            </View>
             <Image
               source={imageProps}
               style={{ height: RowHeight, width: RowHeight }}
