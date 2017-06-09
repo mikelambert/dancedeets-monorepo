@@ -261,7 +261,9 @@ export default class AutocompleteList extends React.Component {
       const query = Object.assign({}, this.props.query, {
         language: this.props.queryLanguage,
       });
-      const url = `https://maps.googleapis.com/maps/api/place/autocomplete/json?&input=${encodeURI(text)}&${Qs.stringify(query)}`;
+      const url = `https://maps.googleapis.com/maps/api/place/autocomplete/json?&input=${encodeURI(
+        text
+      )}&${Qs.stringify(query)}`;
       this.createRequest(url).then(responseJSON => {
         if (typeof responseJSON.predictions !== 'undefined') {
           this._results = responseJSON.predictions;
@@ -303,7 +305,10 @@ export default class AutocompleteList extends React.Component {
   renderRow(rowData: Result) {
     let emojiFlag = null;
     // Emojiflags don't work so well on Android?
-    if (Platform.OS === 'ios') {
+    if (
+      Platform.OS === 'ios' ||
+      (Platform.OS === 'android' && Platform.Version >= 21)
+    ) {
       emojiFlag = (
         <Text
           style={[
