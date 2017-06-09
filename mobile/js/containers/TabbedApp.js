@@ -16,6 +16,7 @@ import type {
 import { NavigationActions, StackNavigator } from 'react-navigation';
 import LinearGradient from 'react-native-linear-gradient';
 import { connect } from 'react-redux';
+import WKWebView from 'react-native-wkwebview-reborn';
 import { injectIntl, intlShape, defineMessages } from 'react-intl';
 import { yellowColors, gradientBottom, gradientTop } from '../Colors';
 import { semiNormalize, ZoomableImage } from '../ui';
@@ -29,7 +30,6 @@ import EventScreens from './screens/Event';
 import LearnScreens from './screens/Learn';
 import AboutScreens from './screens/About';
 import BattleScreens from './screens/Battle';
-import WKWebView from 'react-native-wkwebview-reborn';
 
 const messages = defineMessages({
   events: {
