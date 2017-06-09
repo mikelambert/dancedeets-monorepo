@@ -15,6 +15,7 @@ import type { SearchQuery } from 'dancedeets-common/js/events/search';
 import { AutocompleteList, Button, defaultFont, HorizontalView } from '../ui';
 import { performSearch, updateLocation, updateKeywords } from '../actions';
 import { gradientBottom, gradientTop, lightPurpleColors } from '../Colors';
+import type { State as SearchHeaderState } from '../ducks/searchHeader';
 
 const messages = defineMessages({
   location: {
@@ -132,6 +133,7 @@ class _SearchHeader extends React.Component {
     // Self-managed props
     intl: intlShape,
     searchQuery: SearchQuery,
+    searchHeader: SearchHeaderState,
     updateLocation: (location: string) => void,
     updateKeywords: (keywords: string) => void,
     performSearch: () => Promise<void>,
@@ -159,90 +161,105 @@ class _SearchHeader extends React.Component {
     this.setState({ height });
   }
 
-  render() {
+  renderHeader() {
     return (
-      <View style={{ flex: 1 }}>
-        <View
-          onLayout={this.onLayout}
-          style={[styles.floatTop, styles.statusBar]}
-        >
-          <HorizontalView>
-            <Button
-              size="small"
-              color="green"
-              style={styles.toggleButton}
-              icon={require('./images/add_calendar.png')}
-              onPress={this.props.onAddEvent}
-            />
-          </HorizontalView>
-          <SearchInput
-            ref={x => {
-              this._location = x;
-            }}
-            style={{ marginTop: 5 }}
-            placeholder={this.props.intl.formatMessage(messages.location)}
-            returnKeyType="search"
-            onChangeText={text => {
-              if (this.props.searchQuery.location !== text) {
-                this.props.updateLocation(text);
-                this._locationAutocomplete.onTextInputChangeText(text);
-              }
-            }}
-            onFocus={() => {
-              this._locationAutocomplete.onTextInputFocus();
-            }}
-            onBlur={() => {
-              this._locationAutocomplete.onTextInputBlur();
-            }}
-            onSubmitEditing={() => {
-              this._locationAutocomplete.onTextInputBlur();
-              this.props.performSearch();
-            }}
-            value={this.props.searchQuery.location}
+      <View
+        onLayout={this.onLayout}
+        style={[styles.floatTop, styles.statusBar]}
+      >
+        <HorizontalView>
+          <Button
+            size="small"
+            color="green"
+            style={styles.toggleButton}
+            icon={require('./images/add_calendar.png')}
+            onPress={this.props.onAddEvent}
           />
-          <SearchInput
-            ref={x => {
-              this._keywords = x;
-            }}
-            style={{ marginTop: 5 }}
-            placeholder={this.props.intl.formatMessage(messages.keywords)}
-            returnKeyType="search"
-            onChangeText={text => {
-              if (this.props.searchQuery.keywords !== text) {
-                this.props.updateKeywords(text);
-              }
-            }}
-            onSubmitEditing={() =>
-              this.props.performSearch(this.props.searchQuery)}
-            value={this.props.searchQuery.keywords}
-          />
-        </View>
-        {this.props.children}
-        <AutocompleteList
+        </HorizontalView>
+        <SearchInput
           ref={x => {
-            this._locationAutocomplete = x;
+            this._location = x;
           }}
-          style={{ top: this.state.height }}
-          textValue={() => this.props.searchQuery.location}
-          queryLanguage={Locale.constants().localeIdentifier}
-          currentLocationLabel={this.props.intl.formatMessage(
-            messages.currentLocation
-          )}
-          onLocationSelected={async text => {
-            await this.props.updateLocation(text);
-            this._location.blur();
-            await this.props.performSearch();
+          style={{ marginTop: 5 }}
+          placeholder={this.props.intl.formatMessage(messages.location)}
+          returnKeyType="search"
+          onChangeText={text => {
+            if (this.props.searchQuery.location !== text) {
+              this.props.updateLocation(text);
+              this._locationAutocomplete.onTextInputChangeText(text);
+            }
           }}
-          predefinedPlaces={this.props.intl
-            .formatMessage(messages.locations)
-            .split('\n')
-            .map(x => ({ description: x }))}
+          onFocus={() => {
+            this._locationAutocomplete.onTextInputFocus();
+          }}
+          onBlur={() => {
+            this._locationAutocomplete.onTextInputBlur();
+          }}
+          onSubmitEditing={() => {
+            this._locationAutocomplete.onTextInputBlur();
+            this.props.performSearch();
+          }}
+          value={this.props.searchQuery.location}
+        />
+        <SearchInput
+          ref={x => {
+            this._keywords = x;
+          }}
+          style={{ marginTop: 5 }}
+          placeholder={this.props.intl.formatMessage(messages.keywords)}
+          returnKeyType="search"
+          onChangeText={text => {
+            if (this.props.searchQuery.keywords !== text) {
+              this.props.updateKeywords(text);
+            }
+          }}
+          onSubmitEditing={() => this.props.performSearch()}
+          value={this.props.searchQuery.keywords}
         />
       </View>
     );
   }
+
+  renderAutoComplete() {
+    return (
+      <AutocompleteList
+        ref={x => {
+          this._locationAutocomplete = x;
+        }}
+        style={{ top: this.state.height }}
+        textValue={() => this.props.searchQuery.location}
+        queryLanguage={Locale.constants().localeIdentifier}
+        currentLocationLabel={this.props.intl.formatMessage(
+          messages.currentLocation
+        )}
+        onLocationSelected={async text => {
+          await this.props.updateLocation(text);
+          this._location.blur();
+          await this.props.performSearch();
+        }}
+        predefinedPlaces={this.props.intl
+          .formatMessage(messages.locations)
+          .split('\n')
+          .map(x => ({ description: x }))}
+      />
+    );
+  }
+
+  render() {
+    return (
+      <View style={{ flex: 1 }}>
+        {this.props.searchHeader.headerOpened ? this.renderHeader() : null}
+        {this.props.children}
+        {this.props.searchHeader.headerOpened
+          ? this.renderAutoComplete()
+          : null}
+      </View>
+    );
+  }
 }
-const SearchHeader = injectIntl(_SearchHeader);
+const SearchHeader = connect(state => ({
+  searchHeader: state.searchHeader,
+}))(injectIntl(_SearchHeader));
 
 const mapStateToProps = state => ({
   searchQuery: state.search.searchQuery,

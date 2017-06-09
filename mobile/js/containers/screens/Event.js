@@ -91,7 +91,7 @@ class EventListScreen extends React.Component {
     title: screenProps.intl.formatMessage(messages.eventsTitle),
     ...(screenProps.headerOpened
       ? {
-          headerTitle: <Text style={{ flex: 1, height: 200 }}>Hey</Text>,
+          headerTitle: '',
           headerLeft: (
             <TouchableItem onPress={() => screenProps.setHeaderStatus(false)}>
               <Text>Cancel</Text>
