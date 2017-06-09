@@ -56,9 +56,9 @@ class Title extends React.Component {
 
     let categoryLinks = null;
     if (event.annotations.categories) {
-      const categories = event.annotations.categories.map(x => (
+      const categories = event.annotations.categories.map(x =>
         <a key={x} href={`/?keywords=${x}`}>{x}</a>
-      ));
+      );
       categoryLinks = (
         <li key="category">categorized as: {intersperse(categories, ', ')}.</li>
       );
@@ -241,7 +241,7 @@ class _EventLinks extends React.Component {
     }
     let organizerElement = null;
     if (event.admins.length) {
-      const admins = event.admins.map(admin => (
+      const admins = event.admins.map(admin =>
         <li key={admin.id}>
           <a
             className="link-event-admin"
@@ -252,7 +252,7 @@ class _EventLinks extends React.Component {
             {admin.name}
           </a>
         </li>
-      ));
+      );
       organizerElement = (
         <ImagePrefix iconName="user">
           <Message message={messages.organizer} /><br />

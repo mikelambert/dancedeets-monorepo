@@ -265,7 +265,9 @@ class _FilterBar extends React.Component {
               onChange={state => this.props.onChange('languages', state)}
               itemRenderer={data => {
                 const x = JSON.parse(data);
-                return `${languageData[this.props.intl.locale][x.language]} (${x.count})`;
+                return `${languageData[this.props.intl.locale][
+                  x.language
+                ]} (${x.count})`;
               }}
             />
           </div>
@@ -448,14 +450,14 @@ class _TutorialFilteredLayout extends React.Component {
     });
 
     // Now let's render them
-    const tutorialComponents = filteredTutorials.map((tutorial, index) => (
+    const tutorialComponents = filteredTutorials.map((tutorial, index) =>
       <Tutorial
         key={tutorial.getId()}
         tutorial={tutorial}
         searchKeywords={keywords}
         lazyLoad={index > 30}
       />
-    ));
+    );
     const title = 'Dance Tutorials';
     const meta = generateMetaTags(
       title,

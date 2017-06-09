@@ -45,7 +45,8 @@ class StudioImage extends React.Component {
   };
 
   render() {
-    const imageSrc = `${this.context.imagePath + this.props.studioName.toLowerCase()}.png`;
+    const imageSrc = `${this.context.imagePath +
+      this.props.studioName.toLowerCase()}.png`;
     return <img src={imageSrc} role="presentation" width="16" height="16" />;
   }
 }
@@ -152,9 +153,8 @@ class SearchBar extends React.Component {
               this._studios = x;
             }}
             onChange={state => this.props.onChange('studios', state)}
-            itemRenderer={item => (
-              <span><StudioImage key="image" studioName={item} />{item}</span>
-            )}
+            itemRenderer={item =>
+              <span><StudioImage key="image" studioName={item} />{item}</span>}
           />
         </div>
         <div>
@@ -575,7 +575,8 @@ class App extends React.Component {
                       />
                     </div>
                     <DayNavMenu />
-                  </td><td style={{ verticalAlign: 'bottom' }}>
+                  </td>
+                  <td style={{ verticalAlign: 'bottom' }}>
                     <i // eslint-disable-line jsx-a11y/no-static-element-interactions
                       id="navbar-collapse-button-icon"
                       onClick={toggleSearchBar}

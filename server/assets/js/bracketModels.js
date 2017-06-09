@@ -96,8 +96,8 @@ export class BracketRenderer {
   getMatchAndPositions() {
     const results = this.matches.map((match, index) => ({
       match,
-      sortKey: -this.getColumnForMatchIndex(index) * this.matches.length +
-        index,
+      sortKey:
+        -this.getColumnForMatchIndex(index) * this.matches.length + index,
       position: this.getPositionForMatchIndex(index),
     }));
     // sort by sortKey, and then remove it from the results we return

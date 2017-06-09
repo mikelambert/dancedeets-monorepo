@@ -73,7 +73,8 @@ class Video extends React.Component {
       <div className="grid-item" style={{ width: this.props.width * 2 }}>
         <Card>
           <a
-            href={`https://www.youtube.com/watch?v=${this.props.video.id.videoId}`}
+            href={`https://www.youtube.com/watch?v=${this.props.video.id
+              .videoId}`}
           >
             <div
               style={{

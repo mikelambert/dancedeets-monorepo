@@ -300,7 +300,7 @@ class _EventsList extends React.Component {
         </li>
       );
       resultItems.push(
-        ...events.map((event, index) => (
+        ...events.map((event, index) =>
           <li key={event.id}>
             <HorizontalEvent
               key={event.id}
@@ -308,7 +308,7 @@ class _EventsList extends React.Component {
               lazyLoad={overallEventIndex + index > 8}
             />
           </li>
-        ))
+        )
       );
       overallEventIndex += events.length;
     });
@@ -333,11 +333,11 @@ class _OneboxLinks extends React.Component {
     if (!this.props.links.length) {
       return null;
     }
-    const oneboxList = this.props.links.map(onebox => (
+    const oneboxList = this.props.links.map(onebox =>
       <li key={onebox.url}>
         <a className="link-onebox" href={onebox.url}>{onebox.title}</a>
       </li>
-    ));
+    );
 
     return (
       <div>
@@ -389,9 +389,9 @@ class PersonList extends React.Component {
           className="form-control form-inline"
           onChange={e => this.setState({ category: e.target.value })}
         >
-          {categories.map(x => (
+          {categories.map(x =>
             <option key={x} value={x}>{x || 'Overall'}</option>
-          ))}
+          )}
         </select>
         <p><i>{this.props.subtitle}:</i></p>
       </form>
@@ -400,11 +400,11 @@ class PersonList extends React.Component {
       <div>
         {selector}
         <ul>
-          {peopleList.map(x => (
+          {peopleList.map(x =>
             <li key={x.id}>
               <a href={`https://www.facebook.com/${x.id}`}>{x.name}</a>
             </li>
-          ))}
+          )}
         </ul>
       </div>
     );
