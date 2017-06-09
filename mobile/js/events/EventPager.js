@@ -64,10 +64,10 @@ class EventPager extends React.Component {
     this.setState(this.getNewState(nextProps, this.state.position));
   }
 
-  getNewState(props, position) {
+  getNewState(props, oldPosition) {
     const results = props.search.response;
     let finalResults = [];
-    const newPosition = position || this.state.position;
+    const position = oldPosition || this.state.position;
 
     const selectedEvent = this.props.selectedEvent;
 
@@ -76,19 +76,19 @@ class EventPager extends React.Component {
         x => x.id === selectedEvent.id
       );
       if (pageIndex !== -1) {
-        finalResults = results.results.map(event => ({ event, newPosition }));
+        finalResults = results.results.map(event => ({ event, position }));
       }
     }
     // If we have an event that's not in the list, it's because we're just displaying this event.
     if (!finalResults.length) {
       finalResults = [selectedEvent].map(event => ({
         event,
-        newPosition,
+        position,
       }));
     }
     const state = {
       ...this.state,
-      position: newPosition,
+      position,
       dataSource: this.state.dataSource.cloneWithPages(finalResults),
     };
     return state;
