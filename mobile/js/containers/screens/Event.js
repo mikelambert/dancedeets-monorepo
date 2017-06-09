@@ -16,10 +16,12 @@ import type {
 import { NavigationActions } from 'react-navigation';
 import { connect } from 'react-redux';
 import { injectIntl, intlShape, defineMessages } from 'react-intl';
+import TouchableItem from 'react-navigation/src/views/TouchableItem';
 import { Event } from 'dancedeets-common/js/events/models';
+import type { State } from '../../reducers/search';
 import EventListContainer from '../../events/list';
 import EventPager from '../../events/EventPager';
-import { ZoomableImage } from '../../ui';
+import { Text, ZoomableImage } from '../../ui';
 import { canGetValidLoginFor } from '../../actions';
 import AddEvents from '../AddEvents';
 import { track, trackWithEvent } from '../../store/track';
@@ -41,7 +43,8 @@ const messages = defineMessages({
   featureAddingEvents: {
     id: 'feature.addingEvents',
     defaultMessage: 'Adding Events',
-    description: 'The name of the Add Event feature when requesting permissions',
+    description:
+      'The name of the Add Event feature when requesting permissions',
   },
   viewFlyer: {
     id: 'navigator.viewFlyer',
@@ -49,10 +52,63 @@ const messages = defineMessages({
     description: 'Title Bar for Viewing Flyer',
   },
 });
+class _SearchHeaderTitleSummary extends React.Component {
+  props: {
+    onClick: () => void,
+
+    // Self-managed props
+    search: State,
+  };
+
+  statusText() {
+    const searchQuery = this.props.search.searchQuery;
+    if (searchQuery.location && searchQuery.keywords) {
+      return `${searchQuery.keywords}: ${searchQuery.location}`;
+    } else if (searchQuery.location) {
+      return searchQuery.location;
+    } else if (searchQuery.keywords) {
+      return searchQuery.keywords;
+    } else {
+      return 'Events';
+    }
+  }
+
+  render() {
+    return (
+      <TouchableItem onPress={this.props.onClick}>
+        <Text>{this.statusText()}</Text>
+      </TouchableItem>
+    );
+  }
+}
+const SearchHeaderTitleSummary = connect(state => ({
+  search: state.search,
+}))(_SearchHeaderTitleSummary);
 
 class EventListScreen extends React.Component {
   static navigationOptions = ({ screenProps }) => ({
     title: screenProps.intl.formatMessage(messages.eventsTitle),
+    ...(screenProps.headerOpened
+      ? {
+          headerTitle: '',
+          headerLeft: (
+            <TouchableItem onPress={() => screenProps.closeHeader()}>
+              <Text>Cancel</Text>
+            </TouchableItem>
+          ),
+          headerRight: (
+            <TouchableItem onPress={() => screenProps.closeHeader()}>
+              <Text>Search</Text>
+            </TouchableItem>
+          ),
+        }
+      : {
+          headerTitle: (
+            <SearchHeaderTitleSummary
+              onClick={() => screenProps.openHeader()}
+            />
+          ),
+        }),
   });
 
   props: {
@@ -121,13 +177,12 @@ class FeaturedEventScreen extends React.Component {
     const event = this.props.navigation.state.params.event;
     return (
       <PositionProvider
-        renderWithPosition={position => (
+        renderWithPosition={position =>
           <FullEventView
             onFlyerSelected={this.onFlyerSelected}
             event={event}
             currentPosition={position}
-          />
-        )}
+          />}
       />
     );
   }
@@ -219,7 +274,17 @@ class _EventScreensView extends React.Component {
     // Self-managed props
     intl: intlShape,
     canOpenAddEvent: (props: any) => void,
+    search: State,
   };
+
+  state: {
+    headerOpened: boolean,
+  };
+
+  constructor(props) {
+    super(props);
+    this.state = { headerOpened: false };
+  }
 
   render() {
     return (
@@ -229,6 +294,12 @@ class _EventScreensView extends React.Component {
           intl: this.props.intl,
           canOpenAddEvent: async () =>
             await this.props.canOpenAddEvent(this.props),
+
+          // For the Event Screen
+          search: this.props.search,
+          headerOpened: this.state.headerOpened,
+          openHeader: () => this.setState({ headerOpened: true }),
+          closeHeader: () => this.setState({ headerOpened: false }),
         }}
       />
     );

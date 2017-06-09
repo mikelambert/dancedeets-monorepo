@@ -5,13 +5,7 @@
  */
 
 import React from 'react';
-import {
-  UIManager,
-  LayoutAnimation,
-  StyleSheet,
-  TextInput,
-  View,
-} from 'react-native';
+import { UIManager, StyleSheet, TextInput, View } from 'react-native';
 import SyntheticEvent from 'react-native/Libraries/Renderer/src/renderers/shared/shared/event/SyntheticEvent';
 import Locale from 'react-native-locale';
 import { connect } from 'react-redux';
@@ -66,9 +60,7 @@ class SearchInput extends React.Component {
     (this: any).focus = this.focus.bind(this);
     (this: any).blur = this.blur.bind(this);
     (this: any).animatedRelayout = this.animatedRelayout.bind(this);
-    if (UIManager.setLayoutAnimationEnabledExperimental) {
-      UIManager.setLayoutAnimationEnabledExperimental(true);
-    }
+
     this.state = {
       focused: false,
     };
@@ -76,7 +68,6 @@ class SearchInput extends React.Component {
 
   animatedRelayout() {
     this.setState({ focused: this._textInput.isFocused() });
-    LayoutAnimation.easeInEaseOut();
   }
 
   blur() {
@@ -88,19 +79,14 @@ class SearchInput extends React.Component {
   }
 
   render() {
-    const { style, ...otherProps } = { style: {}, ...this.props };
+    const { style, ...otherProps } = { ...this.props };
     return (
       <TextInput
         {...otherProps}
         ref={x => {
           this._textInput = x;
         }}
-        style={[
-          defaultFont,
-          styles.searchField,
-          this.state.focused ? styles.focusedField : {},
-          style,
-        ]}
+        style={[defaultFont, styles.searchField, style]}
         placeholderTextColor="rgba(255, 255, 255, 0.5)"
         keyboardAppearance="dark"
         selectTextOnFocus
@@ -176,15 +162,24 @@ class _SearchHeader extends React.Component {
   render() {
     return (
       <View style={{ flex: 1 }}>
-        <HorizontalView
+        <View
           onLayout={this.onLayout}
           style={[styles.floatTop, styles.statusBar]}
-          blurType="dark"
         >
+          <HorizontalView>
+            <Button
+              size="small"
+              color="green"
+              style={styles.toggleButton}
+              icon={require('./images/add_calendar.png')}
+              onPress={this.props.onAddEvent}
+            />
+          </HorizontalView>
           <SearchInput
             ref={x => {
               this._location = x;
             }}
+            style={{ marginTop: 5 }}
             placeholder={this.props.intl.formatMessage(messages.location)}
             returnKeyType="search"
             onChangeText={text => {
@@ -209,6 +204,7 @@ class _SearchHeader extends React.Component {
             ref={x => {
               this._keywords = x;
             }}
+            style={{ marginTop: 5 }}
             placeholder={this.props.intl.formatMessage(messages.keywords)}
             returnKeyType="search"
             onChangeText={text => {
@@ -220,14 +216,7 @@ class _SearchHeader extends React.Component {
               this.props.performSearch(this.props.searchQuery)}
             value={this.props.searchQuery.keywords}
           />
-          <Button
-            size="small"
-            color="green"
-            style={styles.toggleButton}
-            icon={require('./images/add_calendar.png')}
-            onPress={this.props.onAddEvent}
-          />
-        </HorizontalView>
+        </View>
         {this.props.children}
         <AutocompleteList
           ref={x => {
@@ -283,17 +272,14 @@ const styles = StyleSheet.create({
     paddingBottom: 4,
   },
   searchField: {
+    height: 30,
     padding: 4,
     color: 'white',
     borderRadius: 5,
-    flex: 1,
     marginHorizontal: 4,
     backgroundColor: 'rgba(255, 255, 255, 0.2)',
   },
   toggleButton: {
     marginHorizontal: 4,
-  },
-  focusedField: {
-    flex: 3,
   },
 });
