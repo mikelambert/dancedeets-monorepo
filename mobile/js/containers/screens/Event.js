@@ -14,6 +14,7 @@ import type {
   NavigationScreenProp,
 } from 'react-navigation/src/TypeDefinition';
 import { NavigationActions, StackNavigator } from 'react-navigation';
+import HeaderTitle from 'react-navigation/src/views/HeaderTitle';
 import { connect } from 'react-redux';
 import { injectIntl, intlShape, defineMessages } from 'react-intl';
 import TouchableItem from 'react-navigation/src/views/TouchableItem';
@@ -77,7 +78,9 @@ class _SearchHeaderTitleSummary extends React.Component {
   render() {
     return (
       <TouchableItem onPress={this.props.onClick}>
-        <Text>{this.statusText()}</Text>
+        <HeaderTitle style={{ color: 'white' }}>
+          {this.statusText()}
+        </HeaderTitle>
       </TouchableItem>
     );
   }
@@ -111,11 +114,15 @@ class EventListScreen extends React.Component {
           ),
           // onPress={this.props.onAddEvent}
           headerRight: (
-            <TouchableItem
-              onPress={() => screenProps.onAddEventClicked('Search Header')}
-            >
-              <Image source={require('../../events/images/add_calendar.png')} />
-            </TouchableItem>
+            <View style={{ marginRight: 12 }}>
+              <TouchableItem
+                onPress={() => screenProps.onAddEventClicked('Search Header')}
+              >
+                <Image
+                  source={require('../../events/images/add_calendar.png')}
+                />
+              </TouchableItem>
+            </View>
           ),
         }),
   });
