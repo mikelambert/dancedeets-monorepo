@@ -43,7 +43,7 @@ const messages = defineMessages({
   'tutorial.2.body': {
     id: 'tutorial.2.body',
     defaultMessage:
-      "Share your event\nShare your city's events\nReach dancers worldwide\nand join our 90,000 events",
+      "Share your event\nShare your city's events\nReach dancers worldwide\nand join our 200,000 events",
     description: 'Intro screen list of features',
   },
   nologin: {
