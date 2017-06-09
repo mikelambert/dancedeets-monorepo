@@ -29,6 +29,7 @@ import EventScreens from './screens/Event';
 import LearnScreens from './screens/Learn';
 import AboutScreens from './screens/About';
 import BattleScreens from './screens/Battle';
+import WKWebView from 'react-native-wkwebview-reborn';
 
 const messages = defineMessages({
   events: {
@@ -44,7 +45,14 @@ const messages = defineMessages({
   about: {
     id: 'tab.about',
     defaultMessage: 'About',
-    description: 'Tab button to show general info about Dancedeets, Profile, and Share info',
+    description:
+      'Tab button to show general info about Dancedeets, Profile, and Share info',
+  },
+  articles: {
+    id: 'tab.articles',
+    defaultMessage: 'Articles',
+    description:
+      'Tab button to show the blog articles and essays on the DanceDeets Medium page',
   },
 });
 
@@ -96,9 +104,8 @@ class _TabbedAppView extends React.Component {
   }
 
   async loadWhitelist() {
-    const eventSignupUserIds = (await RemoteConfig.get(
-      'event_signup_user_ids'
-    )) || [];
+    const eventSignupUserIds =
+      (await RemoteConfig.get('event_signup_user_ids')) || [];
     this.setState({ eventSignupUserIds });
   }
 
@@ -192,6 +199,24 @@ class _TabbedAppView extends React.Component {
               this._learnNavigator = nav;
             }}
           />
+        </TabNavigator.Item>
+        <TabNavigator.Item
+          selected={this.props.selectedTab === 'articles'}
+          title={this.props.intl.formatMessage(messages.articles)}
+          titleStyle={styles.titleStyle}
+          selectedTitleStyle={styles.selectedTitleStyle}
+          renderIcon={() =>
+            this.icon(require('../containers/icons/articles.png'))}
+          renderSelectedIcon={() =>
+            this.icon(require('../containers/icons/articles-highlighted.png'))}
+          onPress={() => {
+            if (this.props.selectedTab !== 'articles') {
+              track('Tab Selected', { Tab: 'Articles' });
+              this.props.selectTab('articles');
+            }
+          }}
+        >
+          <WKWebView source={{ uri: 'https://medium.dancedeets.com/' }} />
         </TabNavigator.Item>
         <TabNavigator.Item
           selected={this.props.selectedTab === 'about'}
