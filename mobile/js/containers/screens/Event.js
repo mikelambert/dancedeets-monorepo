@@ -23,7 +23,11 @@ import type { State } from '../../reducers/search';
 import EventListContainer from '../../events/list';
 import EventPager from '../../events/EventPager';
 import { Text, ZoomableImage } from '../../ui';
-import { canGetValidLoginFor, setHeaderStatus } from '../../actions';
+import {
+  canGetValidLoginFor,
+  performSearch,
+  setHeaderStatus,
+} from '../../actions';
 import AddEvents from '../AddEvents';
 import { track, trackWithEvent } from '../../store/track';
 import PositionProvider from '../../providers/positionProvider';
@@ -128,7 +132,10 @@ class EventListScreen extends React.Component {
           ),
           headerRight: (
             <NavButton
-              onPress={() => screenProps.setHeaderStatus(false)}
+              onPress={() => {
+                screenProps.performSearch();
+                screenProps.setHeaderStatus(false);
+              }}
               text="Search"
             />
           ),
@@ -307,6 +314,7 @@ class _EventScreensView extends React.Component {
     search: State,
     searchHeader: SearchHeaderState,
     setHeaderStatus: (status: boolean) => void,
+    performSearch: () => Promise<void>,
   };
 
   _nav: StackNavigator;
@@ -338,6 +346,7 @@ class _EventScreensView extends React.Component {
           search: this.props.search,
           headerOpened: this.props.searchHeader.headerOpened,
           setHeaderStatus: this.props.setHeaderStatus,
+          performSearch: this.props.performSearch,
           onAddEventClicked: this.onAddEventClicked,
         }}
       />
@@ -351,6 +360,9 @@ const EventScreensView = connect(
     searchHeader: state.searchHeader,
   }),
   dispatch => ({
+    performSearch: async () => {
+      await dispatch(performSearch());
+    },
     setHeaderStatus: (status: boolean) => dispatch(setHeaderStatus(status)),
     canOpenAddEvent: async props => {
       if (
