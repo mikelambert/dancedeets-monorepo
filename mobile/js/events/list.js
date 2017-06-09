@@ -609,11 +609,7 @@ class _EventListContainer extends React.Component {
   render() {
     return (
       <View style={styles.container}>
-        <SearchHeader
-          onAddEvent={() => {
-            this.props.onAddEventClicked('Search Header');
-          }}
-        >
+        <SearchHeader>
           {this.renderListView()}
         </SearchHeader>
         <AddEventButton

@@ -13,7 +13,7 @@ import type {
   NavigationSceneRendererProps,
   NavigationScreenProp,
 } from 'react-navigation/src/TypeDefinition';
-import { NavigationActions } from 'react-navigation';
+import { NavigationActions, StackNavigator } from 'react-navigation';
 import { connect } from 'react-redux';
 import { injectIntl, intlShape, defineMessages } from 'react-intl';
 import TouchableItem from 'react-navigation/src/views/TouchableItem';
@@ -27,7 +27,7 @@ import AddEvents from '../AddEvents';
 import { track, trackWithEvent } from '../../store/track';
 import PositionProvider from '../../providers/positionProvider';
 import { FullEventView } from '../../events/uicomponents';
-import StackNavigator from './Navigator';
+import MyNavigator from './Navigator';
 import type { State as SearchHeaderState } from '../../ducks/searchHeader';
 
 const messages = defineMessages({
@@ -109,6 +109,14 @@ class EventListScreen extends React.Component {
               onClick={() => screenProps.setHeaderStatus(true)}
             />
           ),
+          // onPress={this.props.onAddEvent}
+          headerRight: (
+            <TouchableItem
+              onPress={() => screenProps.onAddEventClicked('Search Header')}
+            >
+              <Image source={require('../../events/images/add_calendar.png')} />
+            </TouchableItem>
+          ),
         }),
   });
 
@@ -120,7 +128,6 @@ class EventListScreen extends React.Component {
   constructor(props) {
     super(props);
     (this: any).onEventSelected = this.onEventSelected.bind(this);
-    (this: any).onAddEventClicked = this.onAddEventClicked.bind(this);
     (this: any).onFeaturedEventSelected = this.onFeaturedEventSelected.bind(
       this
     );
@@ -129,13 +136,6 @@ class EventListScreen extends React.Component {
   onEventSelected(event) {
     trackWithEvent('View Event', event);
     this.props.navigation.navigate('EventView', { event });
-  }
-
-  async onAddEventClicked(source) {
-    track('Add Event', { source });
-    if (await this.props.screenProps.canOpenAddEvent(this.props)) {
-      this.props.navigation.navigate('AddEvents');
-    }
   }
 
   onFeaturedEventSelected(event) {
@@ -147,7 +147,7 @@ class EventListScreen extends React.Component {
     return (
       <EventListContainer
         onEventSelected={this.onEventSelected}
-        onAddEventClicked={this.onAddEventClicked}
+        onAddEventClicked={this.props.screenProps.onAddEventClicked}
         onFeaturedEventSelected={this.onFeaturedEventSelected}
       />
     );
@@ -260,7 +260,7 @@ class AddEventsScreen extends React.Component {
   }
 }
 
-const EventScreens = StackNavigator({
+const EventScreens = MyNavigator({
   EventList: { screen: EventListScreen },
   FeaturedEventView: { screen: FeaturedEventScreen },
   EventView: { screen: EventScreen },
@@ -274,25 +274,42 @@ class _EventScreensView extends React.Component {
 
     // Self-managed props
     intl: intlShape,
-    canOpenAddEvent: (props: any) => void,
+    canOpenAddEvent: (props: any) => Promise<boolean>,
     search: State,
     searchHeader: SearchHeaderState,
     setHeaderStatus: (status: boolean) => void,
   };
 
+  _nav: StackNavigator;
+
+  constructor(props) {
+    super(props);
+    (this: any).onAddEventClicked = this.onAddEventClicked.bind(this);
+  }
+
+  async onAddEventClicked(source) {
+    track('Add Event', { source });
+    console.log(this._nav);
+    if (await this.props.canOpenAddEvent(this.props)) {
+      this._nav._navigation.navigate('AddEvents');
+    }
+  }
+
   render() {
     return (
       <EventScreens
-        ref={nav => this.props.navRef(nav)}
+        ref={nav => {
+          this._nav = nav;
+          this.props.navRef(nav);
+        }}
         screenProps={{
           intl: this.props.intl,
-          canOpenAddEvent: async () =>
-            await this.props.canOpenAddEvent(this.props),
 
-          // For the Event Screen
+          // For the Event List Screen
           search: this.props.search,
           headerOpened: this.props.searchHeader.headerOpened,
           setHeaderStatus: this.props.setHeaderStatus,
+          onAddEventClicked: this.onAddEventClicked,
         }}
       />
     );

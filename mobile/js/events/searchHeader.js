@@ -127,7 +127,6 @@ class SearchInput extends React.Component {
 
 class _SearchHeader extends React.Component {
   props: {
-    onAddEvent: () => void,
     children: Array<React.Element<*>>,
 
     // Self-managed props
@@ -167,15 +166,6 @@ class _SearchHeader extends React.Component {
         onLayout={this.onLayout}
         style={[styles.floatTop, styles.statusBar]}
       >
-        <HorizontalView>
-          <Button
-            size="small"
-            color="green"
-            style={styles.toggleButton}
-            icon={require('./images/add_calendar.png')}
-            onPress={this.props.onAddEvent}
-          />
-        </HorizontalView>
         <SearchInput
           ref={x => {
             this._location = x;
@@ -295,8 +285,5 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     marginHorizontal: 4,
     backgroundColor: 'rgba(255, 255, 255, 0.2)',
-  },
-  toggleButton: {
-    marginHorizontal: 4,
   },
 });
