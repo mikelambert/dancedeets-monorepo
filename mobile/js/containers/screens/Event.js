@@ -205,7 +205,6 @@ class FeaturedEventScreen extends React.Component {
 
   onFlyerSelected(event) {
     trackWithEvent('View Flyer', event);
-    // TODO(navigation): Should we pass in an i18n'ed title?
     this.props.navigation.navigate('FlyerView', { event });
   }
 
@@ -242,13 +241,11 @@ class EventScreen extends React.Component {
   onEventNavigated(event) {
     console.log(event);
     trackWithEvent('View Event', event);
-    // TODO(navigation) : should this swap instead ofnavigate?
     this.props.navigation.setParams({ event });
   }
 
   onFlyerSelected(event) {
     trackWithEvent('View Flyer', event);
-    // TODO(navigation): Should we pass in an i18n'ed title?
     this.props.navigation.navigate('FlyerView', { event });
   }
 
