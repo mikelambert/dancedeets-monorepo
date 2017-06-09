@@ -22,12 +22,13 @@ import type { State } from '../../reducers/search';
 import EventListContainer from '../../events/list';
 import EventPager from '../../events/EventPager';
 import { Text, ZoomableImage } from '../../ui';
-import { canGetValidLoginFor } from '../../actions';
+import { canGetValidLoginFor, setHeaderStatus } from '../../actions';
 import AddEvents from '../AddEvents';
 import { track, trackWithEvent } from '../../store/track';
 import PositionProvider from '../../providers/positionProvider';
 import { FullEventView } from '../../events/uicomponents';
 import StackNavigator from './Navigator';
+import type { State as SearchHeaderState } from '../../ducks/searchHeader';
 
 const messages = defineMessages({
   eventsTitle: {
@@ -90,14 +91,14 @@ class EventListScreen extends React.Component {
     title: screenProps.intl.formatMessage(messages.eventsTitle),
     ...(screenProps.headerOpened
       ? {
-          headerTitle: '',
+          headerTitle: <Text style={{ flex: 1, height: 200 }}>Hey</Text>,
           headerLeft: (
-            <TouchableItem onPress={() => screenProps.closeHeader()}>
+            <TouchableItem onPress={() => screenProps.setHeaderStatus(false)}>
               <Text>Cancel</Text>
             </TouchableItem>
           ),
           headerRight: (
-            <TouchableItem onPress={() => screenProps.closeHeader()}>
+            <TouchableItem onPress={() => screenProps.setHeaderStatus(false)}>
               <Text>Search</Text>
             </TouchableItem>
           ),
@@ -105,7 +106,7 @@ class EventListScreen extends React.Component {
       : {
           headerTitle: (
             <SearchHeaderTitleSummary
-              onClick={() => screenProps.openHeader()}
+              onClick={() => screenProps.setHeaderStatus(true)}
             />
           ),
         }),
@@ -275,16 +276,9 @@ class _EventScreensView extends React.Component {
     intl: intlShape,
     canOpenAddEvent: (props: any) => void,
     search: State,
+    searchHeader: SearchHeaderState,
+    setHeaderStatus: (status: boolean) => void,
   };
-
-  state: {
-    headerOpened: boolean,
-  };
-
-  constructor(props) {
-    super(props);
-    this.state = { headerOpened: false };
-  }
 
   render() {
     return (
@@ -297,21 +291,21 @@ class _EventScreensView extends React.Component {
 
           // For the Event Screen
           search: this.props.search,
-          headerOpened: this.state.headerOpened,
-          openHeader: () => this.setState({ headerOpened: true }),
-          closeHeader: () => this.setState({ headerOpened: false }),
+          headerOpened: this.props.searchHeader.headerOpened,
+          setHeaderStatus: this.props.setHeaderStatus,
         }}
       />
     );
   }
 }
-
 const EventScreensView = connect(
   state => ({
     search: state.search,
     user: state.user.userData,
+    searchHeader: state.searchHeader,
   }),
   dispatch => ({
+    setHeaderStatus: (status: boolean) => dispatch(setHeaderStatus(status)),
     canOpenAddEvent: async props => {
       if (
         !props.user &&

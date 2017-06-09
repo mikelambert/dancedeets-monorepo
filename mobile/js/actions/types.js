@@ -62,6 +62,7 @@ export type Action =
   | { type: 'START_SEARCH' }
   | { type: 'SEARCH_COMPLETE', response: SearchResponse }
   | { type: 'SEARCH_FAILED' }
+  | { type: 'searchHeader/SET_STATUS', status: boolean }
   | { type: 'ADD_EVENTS_RELOAD' }
   | { type: 'ADD_EVENTS_RELOAD_COMPLETE', results: AddEventList }
   | { type: 'ADD_EVENTS_RELOAD_FAILED' }

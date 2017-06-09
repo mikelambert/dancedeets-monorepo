@@ -14,6 +14,7 @@ import * as navigation from './navigation';
 import * as search from './search';
 import * as translate from './translate';
 import * as tutorials from './tutorials';
+import * as searchHeader from '../ducks/searchHeader';
 
 module.exports = {
   ...addEvents,
@@ -24,6 +25,7 @@ module.exports = {
   ...mainTabs,
   ...navigation,
   ...search,
+  ...searchHeader,
   ...translate,
   ...tutorials,
 };

@@ -13,6 +13,7 @@ import { search } from './search';
 import { translate } from './translate';
 import { tutorials } from './tutorials';
 import { user } from './user';
+import searchHeader from '../ducks/searchHeader';
 
 export default combineReducers({
   addEvents,
@@ -20,6 +21,7 @@ export default combineReducers({
   mainTabs,
   navigationState,
   search,
+  searchHeader,
   translate,
   tutorials,
   user,
