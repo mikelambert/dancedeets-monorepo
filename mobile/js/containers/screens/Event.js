@@ -89,6 +89,31 @@ const SearchHeaderTitleSummary = connect(state => ({
   search: state.search,
 }))(_SearchHeaderTitleSummary);
 
+class NavButton extends React.PureComponent {
+  props: {
+    onPress: () => void,
+    imageSource?: number,
+    text?: string,
+  };
+
+  render() {
+    return (
+      <View style={{ marginLeft: 10, marginRight: 10 }}>
+        <TouchableItem onPress={() => this.props.onPress()}>
+          {this.props.imageSource
+            ? <Image source={this.props.imageSource} />
+            : null}
+          {this.props.text
+            ? <Text style={{ fontSize: 17 }}>
+                {this.props.text}
+              </Text>
+            : null}
+        </TouchableItem>
+      </View>
+    );
+  }
+}
+
 class EventListScreen extends React.Component {
   static navigationOptions = ({ screenProps }) => ({
     title: screenProps.intl.formatMessage(messages.eventsTitle),
@@ -96,14 +121,16 @@ class EventListScreen extends React.Component {
       ? {
           headerTitle: '',
           headerLeft: (
-            <TouchableItem onPress={() => screenProps.setHeaderStatus(false)}>
-              <Text>Cancel</Text>
-            </TouchableItem>
+            <NavButton
+              onPress={() => screenProps.setHeaderStatus(false)}
+              text="Cancel"
+            />
           ),
           headerRight: (
-            <TouchableItem onPress={() => screenProps.setHeaderStatus(false)}>
-              <Text>Search</Text>
-            </TouchableItem>
+            <NavButton
+              onPress={() => screenProps.setHeaderStatus(false)}
+              text="Search"
+            />
           ),
         }
       : {
@@ -114,15 +141,10 @@ class EventListScreen extends React.Component {
           ),
           // onPress={this.props.onAddEvent}
           headerRight: (
-            <View style={{ marginRight: 12 }}>
-              <TouchableItem
-                onPress={() => screenProps.onAddEventClicked('Search Header')}
-              >
-                <Image
-                  source={require('../../events/images/add_calendar.png')}
-                />
-              </TouchableItem>
-            </View>
+            <NavButton
+              onPress={() => screenProps.onAddEventClicked('Search Header')}
+              imageSource={require('../../events/images/add_calendar.png')}
+            />
           ),
         }),
   });
