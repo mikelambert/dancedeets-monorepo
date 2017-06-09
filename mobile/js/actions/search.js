@@ -10,6 +10,7 @@ import type { Action, ThunkAction, Dispatch } from './types';
 import { search } from '../api/dancedeets';
 import { track } from '../store/track';
 import { storeSavedAddress } from '../events/savedAddress';
+import { setHeaderStatus } from '../ducks/searchHeader';
 
 export function performSearch(): ThunkAction {
   return async (dispatch: Dispatch, getState) => {
@@ -20,6 +21,7 @@ export function performSearch(): ThunkAction {
     });
     await storeSavedAddress(searchQuery.location);
     await dispatch(searchStart());
+    await dispatch(setHeaderStatus(false));
     try {
       const responseData = await search(
         searchQuery.location,

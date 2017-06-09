@@ -132,10 +132,7 @@ class EventListScreen extends React.Component {
           ),
           headerRight: (
             <NavButton
-              onPress={() => {
-                screenProps.performSearch();
-                screenProps.setHeaderStatus(false);
-              }}
+              onPress={() => screenProps.performSearch()}
               text="Search"
             />
           ),
