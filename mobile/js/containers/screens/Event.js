@@ -67,7 +67,9 @@ class _SearchHeaderTitleSummary extends React.Component {
   };
 
   statusText() {
-    const searchQuery = this.props.search.searchQuery;
+    const searchQuery = this.props.search.response
+      ? this.props.search.response.query
+      : this.props.search.searchQuery;
     if (searchQuery.location && searchQuery.keywords) {
       return `${searchQuery.keywords}: ${searchQuery.location}`;
     } else if (searchQuery.location) {
