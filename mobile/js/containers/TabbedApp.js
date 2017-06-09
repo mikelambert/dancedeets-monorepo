@@ -56,6 +56,8 @@ const messages = defineMessages({
   },
 });
 
+const mediumUrl = 'https://medium.dancedeets.com/';
+
 class GradientTabBar extends React.Component {
   props: {
     style: ViewPropTypes.style,
@@ -92,6 +94,7 @@ class _TabbedAppView extends React.Component {
   _eventSignupsNavigator: StackNavigator;
   _eventNavigator: StackNavigator;
   _learnNavigator: StackNavigator;
+  _articlesWebView: WKWebView;
   _aboutNavigator: StackNavigator;
 
   constructor(props) {
@@ -210,13 +213,22 @@ class _TabbedAppView extends React.Component {
           renderSelectedIcon={() =>
             this.icon(require('../containers/icons/articles-highlighted.png'))}
           onPress={() => {
-            if (this.props.selectedTab !== 'articles') {
+            if (this.props.selectedTab === 'articles') {
+              this._articlesWebView.evaluateJavaScript(
+                `window.location = "${mediumUrl}"`
+              );
+            } else {
               track('Tab Selected', { Tab: 'Articles' });
               this.props.selectTab('articles');
             }
           }}
         >
-          <WKWebView source={{ uri: 'https://medium.dancedeets.com/' }} />
+          <WKWebView
+            ref={webView => {
+              this._articlesWebView = webView;
+            }}
+            source={{ uri: mediumUrl }}
+          />
         </TabNavigator.Item>
         <TabNavigator.Item
           selected={this.props.selectedTab === 'about'}
