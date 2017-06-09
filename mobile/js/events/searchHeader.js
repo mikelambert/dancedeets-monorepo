@@ -12,8 +12,7 @@ import {
   TextInput,
   View,
 } from 'react-native';
-import SyntheticEvent
-  from 'react-native/Libraries/Renderer/src/renderers/shared/shared/event/SyntheticEvent';
+import SyntheticEvent from 'react-native/Libraries/Renderer/src/renderers/shared/shared/event/SyntheticEvent';
 import Locale from 'react-native-locale';
 import { connect } from 'react-redux';
 import { defineMessages, injectIntl, intlShape } from 'react-intl';
@@ -27,22 +26,26 @@ const messages = defineMessages({
   location: {
     id: 'search.locationPlaceholder',
     defaultMessage: 'Location',
-    description: 'The placeholder for the text field where you enter the location',
+    description:
+      'The placeholder for the text field where you enter the location',
   },
   keywords: {
     id: 'search.keywordsPlaceholder',
     defaultMessage: 'Keywords',
-    description: 'The placeholder for the text field where you enter the keywords',
+    description:
+      'The placeholder for the text field where you enter the keywords',
   },
   locations: {
     id: 'search.autocompleteLocations',
-    defaultMessage: 'New York City, United States\nLos Angeles, United States\nSan Francisco, United States\nWashington DC, United States\nLondon, United Kingdom\nParis, France\nTokyo, Japan\nTaipei, Taiwan\nSeoul, South Korea',
+    defaultMessage:
+      'New York City, United States\nLos Angeles, United States\nSan Francisco, United States\nWashington DC, United States\nLondon, United Kingdom\nParis, France\nTokyo, Japan\nTaipei, Taiwan\nSeoul, South Korea',
     description: 'A list of locations that we should show in our autocomplete',
   },
   currentLocation: {
     id: 'search.autocompleteCurrentLocation',
     defaultMessage: 'Current Location',
-    description: 'The autocomplete item that will ask the GPS for the current location to perform a search with',
+    description:
+      'The autocomplete item that will ask the GPS for the current location to perform a search with',
   },
 });
 
@@ -276,7 +279,7 @@ const styles = StyleSheet.create({
   },
   statusBar: {
     justifyContent: 'space-between',
-    backgroundColor: gradientBottom,
+    backgroundColor: gradientTop,
     paddingBottom: 4,
   },
   searchField: {
