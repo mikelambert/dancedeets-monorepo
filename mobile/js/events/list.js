@@ -108,7 +108,7 @@ const CarouselDotIndicatorSize = 25;
 
 const SectionHeight = semiNormalize(30);
 
-class SectionHeader extends React.Component {
+class SectionHeader extends React.PureComponent {
   props: {
     title: string,
   };
@@ -122,7 +122,7 @@ class SectionHeader extends React.Component {
   }
 }
 
-class FeaturedEvent extends React.Component {
+class FeaturedEvent extends React.PureComponent {
   props: {
     event: Event,
   };
@@ -143,15 +143,11 @@ class FeaturedEvent extends React.Component {
   }
 }
 
-class FeaturedEvents extends React.Component {
+class FeaturedEvents extends React.PureComponent {
   props: {
     featured: Array<FeaturedInfo>,
     onEventSelected: (event: Event) => void,
   };
-
-  shouldComponentUpdate(nextProps, nextState) {
-    return this.props.featured !== nextProps.featured;
-  }
 
   renderPage(index: number) {
     const featuredInfo = this.props.featured[index];
@@ -249,7 +245,7 @@ class FeaturedEvents extends React.Component {
   }
 }
 
-class OneboxView extends React.Component {
+class OneboxView extends React.PureComponent {
   props: {
     onebox: Onebox,
   };
@@ -288,7 +284,7 @@ class OneboxView extends React.Component {
   }
 }
 
-class _AddEventButton extends React.Component {
+class _AddEventButton extends React.PureComponent {
   props: {
     intl: intlShape,
     onPress: () => void,

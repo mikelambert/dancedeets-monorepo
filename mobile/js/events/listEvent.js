@@ -29,7 +29,7 @@ import {
 
 export const RowHeight = 130;
 
-class EventVenueShort extends React.Component {
+class EventVenueShort extends React.PureComponent {
   props: {
     venue: Venue,
     style?: ViewPropTypes.style,
@@ -47,7 +47,7 @@ class EventVenueShort extends React.Component {
   }
 }
 
-class _EventRow extends React.Component {
+class _EventRow extends React.PureComponent {
   props: {
     onEventSelected: (x: Event) => void,
     event: Event,
@@ -79,10 +79,13 @@ class _EventRow extends React.Component {
                 <EventVenueShort venue={this.props.event.venue} />
                 <Text
                   style={
-                    (eventStyles.detailText, {
-                      position: 'absolute',
-                      bottom: 0,
-                    })
+                    (
+                      eventStyles.detailText,
+                      {
+                        position: 'absolute',
+                        bottom: 0,
+                      }
+                    )
                   }
                 >
                   {this.props.event.annotations.categories
