@@ -7,6 +7,7 @@
 import React from 'react';
 import {
   AppState,
+  Dimensions,
   Image,
   StyleSheet,
   Text as RealText,
@@ -85,7 +86,7 @@ class _SearchHeaderTitleSummary extends React.Component {
       ? this.props.search.response.query
       : this.props.search.searchQuery;
     const keywords = searchQuery.keywords
-      ? <RealText>
+      ? <RealText numberOfLines={1}>
           {searchQuery.keywords}
         </RealText>
       : null;
@@ -99,18 +100,28 @@ class _SearchHeaderTitleSummary extends React.Component {
             fontSize: semiNormalize(12),
             lineHeight: semiNormalize(16),
           }}
+          numberOfLines={1}
         >
           {searchQuery.location}
         </RealText>
       : null;
+    const sideMargin = 40;
     return (
-      <TouchableWithoutFeedback onPress={() => this.props.onPress()}>
+      <TouchableWithoutFeedback
+        style={{
+          maxWidth: Dimensions.get('window').width - sideMargin * 2,
+        }}
+        onPress={() => this.props.onPress()}
+      >
         <HorizontalView
           style={{
             borderRadius: 5,
             backgroundColor: 'white',
             alignItems: 'center',
             paddingHorizontal: 5,
+            overflow: 'hidden',
+            marginHorizontal: 20,
+            maxWidth: Dimensions.get('window').width - sideMargin * 2,
           }}
         >
           <Icon
