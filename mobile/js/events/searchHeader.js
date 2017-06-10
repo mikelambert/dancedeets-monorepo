@@ -102,7 +102,7 @@ class SearchInput extends React.Component {
           selectTextOnFocus
           autoCorrect={false}
           autoCapitalize="none"
-          clearButtonMode="while-editing"
+          clearButtonMode="always"
           underlineColorAndroid={lightPurpleColors[2]}
           onFocus={() => {
             this.animatedRelayout();
