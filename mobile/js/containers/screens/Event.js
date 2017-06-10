@@ -5,7 +5,14 @@
  */
 
 import React from 'react';
-import { AppState, Image, StyleSheet, View } from 'react-native';
+import {
+  AppState,
+  Image,
+  StyleSheet,
+  Text as RealText,
+  TouchableWithoutFeedback,
+  View,
+} from 'react-native';
 import TabNavigator from 'react-native-tab-navigator';
 import type {
   NavigationAction,
@@ -18,11 +25,18 @@ import HeaderTitle from 'react-navigation/src/views/HeaderTitle';
 import { connect } from 'react-redux';
 import { injectIntl, intlShape, defineMessages } from 'react-intl';
 import TouchableItem from 'react-navigation/src/views/TouchableItem';
+import Icon from 'react-native-vector-icons/Ionicons';
 import { Event } from 'dancedeets-common/js/events/models';
 import type { State } from '../../reducers/search';
 import EventListContainer from '../../events/list';
 import EventPager from '../../events/EventPager';
-import { Text, ZoomableImage } from '../../ui';
+import {
+  HorizontalView,
+  semiNormalize,
+  Text,
+  TextInput,
+  ZoomableImage,
+} from '../../ui';
 import {
   canGetValidLoginFor,
   performSearch,
@@ -60,34 +74,55 @@ const messages = defineMessages({
 });
 class _SearchHeaderTitleSummary extends React.Component {
   props: {
-    onClick: () => void,
+    onPress: () => void,
 
     // Self-managed props
     search: State,
   };
 
-  statusText() {
+  render() {
     const searchQuery = this.props.search.response
       ? this.props.search.response.query
       : this.props.search.searchQuery;
-    if (searchQuery.location && searchQuery.keywords) {
-      return `${searchQuery.keywords}: ${searchQuery.location}`;
-    } else if (searchQuery.location) {
-      return searchQuery.location;
-    } else if (searchQuery.keywords) {
-      return searchQuery.keywords;
-    } else {
-      return 'Events';
-    }
-  }
-
-  render() {
+    const keywords = searchQuery.keywords
+      ? <RealText>
+          {searchQuery.keywords}
+        </RealText>
+      : null;
+    const spacer = searchQuery.location && searchQuery.keywords
+      ? <View style={{ paddingRight: 5 }} />
+      : null;
+    const location = searchQuery.location
+      ? <RealText
+          style={{
+            color: 'grey',
+            fontSize: semiNormalize(12),
+            lineHeight: semiNormalize(16),
+          }}
+        >
+          {searchQuery.location}
+        </RealText>
+      : null;
     return (
-      <TouchableItem onPress={this.props.onClick}>
-        <HeaderTitle style={{ color: 'white' }}>
-          {this.statusText()}
-        </HeaderTitle>
-      </TouchableItem>
+      <TouchableWithoutFeedback onPress={() => this.props.onPress()}>
+        <HorizontalView
+          style={{
+            borderRadius: 5,
+            backgroundColor: 'white',
+            alignItems: 'center',
+            paddingHorizontal: 5,
+          }}
+        >
+          <Icon
+            name="md-search"
+            size={20}
+            style={{ marginTop: 4, width: 20 }}
+          />
+          {keywords}
+          {spacer}
+          {location}
+        </HorizontalView>
+      </TouchableWithoutFeedback>
     );
   }
 }
@@ -142,7 +177,7 @@ class EventListScreen extends React.Component {
       : {
           headerTitle: (
             <SearchHeaderTitleSummary
-              onClick={() => screenProps.setHeaderStatus(true)}
+              onPress={() => screenProps.setHeaderStatus(true)}
             />
           ),
           // onPress={this.props.onAddEvent}
