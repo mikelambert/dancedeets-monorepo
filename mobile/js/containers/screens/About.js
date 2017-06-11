@@ -73,13 +73,13 @@ class NotificationScreen extends React.Component {
 }
 
 export const AboutScreensNavigator = StackNavigator('about', {
-  About: { screen: MainScreen },
+  AboutMain: { screen: MainScreen },
   NotificationPreferences: { screen: NotificationScreen },
 });
 
 class _AboutScreensView extends React.Component {
   props: {
-    navRef: (nav: StackNavigator) => void,
+    navRef?: (nav: StackNavigator) => void,
 
     // Self-managed props
     intl: intlShape,
@@ -88,7 +88,11 @@ class _AboutScreensView extends React.Component {
   render() {
     return (
       <AboutScreensNavigator
-        ref={nav => this.props.navRef(nav)}
+        ref={nav => {
+          if (this.props.navRef != null) {
+            this.props.navRef(nav);
+          }
+        }}
         screenProps={{
           intl: this.props.intl,
         }}

@@ -214,7 +214,7 @@ export const BattleScreensNavigator = StackNavigator('battle', {
 
 class _BattleScreensView extends React.Component {
   props: {
-    navRef: (nav: StackNavigator) => void,
+    navRef?: (nav: StackNavigator) => void,
 
     // Self-managed props
     intl: intlShape,
@@ -223,7 +223,11 @@ class _BattleScreensView extends React.Component {
   render() {
     return (
       <BattleScreensNavigator
-        ref={nav => this.props.navRef(nav)}
+        ref={nav => {
+          if (this.props.navRef != null) {
+            this.props.navRef(nav);
+          }
+        }}
         screenProps={{
           intl: this.props.intl,
         }}

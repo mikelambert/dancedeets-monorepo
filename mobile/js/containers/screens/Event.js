@@ -197,7 +197,6 @@ class NavButton extends React.PureComponent {
 
 class EventListScreen extends React.Component {
   static navigationOptions = ({ screenProps }) => ({
-    title: screenProps.intl.formatMessage(messages.eventsTitle),
     ...(screenProps.searchHeader.navbarTitleVisible
       ? {
           headerTitle: (
@@ -379,7 +378,7 @@ export const EventScreensNavigator = MyNavigator('events', {
 
 class _EventScreensView extends React.Component {
   props: {
-    navRef: (nav: StackNavigator) => void,
+    navRef?: (nav: StackNavigator) => void,
 
     // Self-managed props
     intl: intlShape,
@@ -411,7 +410,9 @@ class _EventScreensView extends React.Component {
       <EventScreensNavigator
         ref={nav => {
           this._nav = nav;
-          this.props.navRef(nav);
+          if (this.props.navRef != null) {
+            this.props.navRef(nav);
+          }
         }}
         screenProps={{
           intl: this.props.intl,
