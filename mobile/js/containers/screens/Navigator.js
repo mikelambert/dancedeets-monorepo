@@ -5,12 +5,8 @@
  */
 
 import { NavigationActions, StackNavigator } from 'react-navigation';
-import type {
-  NavigationRouteConfigMap,
-} from 'react-navigation/src/TypeDefinition';
-import type {
-  StackNavigatorConfig,
-} from 'react-navigation/src/navigators/StackNavigator';
+import type { NavigationRouteConfigMap } from 'react-navigation/src/TypeDefinition';
+import type { StackNavigatorConfig } from 'react-navigation/src/navigators/StackNavigator';
 import { gradientTop, purpleColors } from '../../Colors';
 
 export default (

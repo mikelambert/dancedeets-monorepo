@@ -13,6 +13,7 @@ import { search } from './search';
 import { translate } from './translate';
 import { tutorials } from './tutorials';
 import { user } from './user';
+import screens from './screens';
 import searchHeader from '../ducks/searchHeader';
 
 export default combineReducers({
@@ -20,6 +21,7 @@ export default combineReducers({
   firebase,
   mainTabs,
   navigationState,
+  screens,
   search,
   searchHeader,
   translate,

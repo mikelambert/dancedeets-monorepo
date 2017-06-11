@@ -72,7 +72,7 @@ class NotificationScreen extends React.Component {
   }
 }
 
-const AboutScreens = StackNavigator({
+export const AboutScreensNavigator = StackNavigator({
   About: { screen: MainScreen },
   NotificationPreferences: { screen: NotificationScreen },
 });
@@ -87,7 +87,7 @@ class _AboutScreensView extends React.Component {
 
   render() {
     return (
-      <AboutScreens
+      <AboutScreensNavigator
         ref={nav => this.props.navRef(nav)}
         screenProps={{
           intl: this.props.intl,
@@ -97,4 +97,4 @@ class _AboutScreensView extends React.Component {
   }
 }
 
-export default injectIntl(_AboutScreensView);
+export const AboutScreensView = injectIntl(_AboutScreensView);

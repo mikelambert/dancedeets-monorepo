@@ -13,7 +13,11 @@ import type {
   NavigationSceneRendererProps,
   NavigationScreenProp,
 } from 'react-navigation/src/TypeDefinition';
-import { NavigationActions, StackNavigator } from 'react-navigation';
+import {
+  addNavigationHelpers,
+  NavigationActions,
+  StackNavigator,
+} from 'react-navigation';
 import LinearGradient from 'react-native-linear-gradient';
 import { connect } from 'react-redux';
 import WKWebView from 'react-native-wkwebview-reborn';
@@ -21,15 +25,17 @@ import { injectIntl, intlShape, defineMessages } from 'react-intl';
 import { yellowColors, gradientBottom, gradientTop } from '../Colors';
 import { semiNormalize, ZoomableImage } from '../ui';
 import { selectTab } from '../actions';
-import type { User } from '../actions/types';
+import type { Dispatch, User } from '../actions/types';
 import { track, trackWithEvent } from '../store/track';
 import { TimeTracker } from '../util/timeTracker';
 import { setDefaultState } from '../reducers/navigation';
 import * as RemoteConfig from '../remoteConfig';
-import EventScreens from './screens/Event';
-import LearnScreens from './screens/Learn';
-import AboutScreens from './screens/About';
-import BattleScreens from './screens/Battle';
+import {
+  EventScreensView,
+  LearnScreensView,
+  AboutScreensView,
+  BattleScreensView,
+} from './screens';
 
 const messages = defineMessages({
   events: {
@@ -85,6 +91,8 @@ class _TabbedAppView extends React.Component {
     selectedTab: string,
     selectTab: (tab: string) => void,
     intl: intlShape,
+    screens: any,
+    dispatch: Dispatch,
   };
 
   state: {
@@ -141,10 +149,14 @@ class _TabbedAppView extends React.Component {
             }
           }}
         >
-          <BattleScreens
+          <BattleScreensView
             navRef={x => {
               this._eventSignupsNavigator = x;
             }}
+            navigation={addNavigationHelpers({
+              dispatch: this.props.dispatch,
+              state: this.props.screens.battle,
+            })}
           />
         </TabNavigator.Item>
       );
@@ -173,10 +185,14 @@ class _TabbedAppView extends React.Component {
             }
           }}
         >
-          <EventScreens
+          <EventScreensView
             navRef={nav => {
               this._eventNavigator = nav;
             }}
+            navigation={addNavigationHelpers({
+              dispatch: this.props.dispatch,
+              state: this.props.screens.event,
+            })}
           />
         </TabNavigator.Item>
         <TabNavigator.Item
@@ -197,10 +213,14 @@ class _TabbedAppView extends React.Component {
             }
           }}
         >
-          <LearnScreens
+          <LearnScreensView
             navRef={nav => {
               this._learnNavigator = nav;
             }}
+            navigation={addNavigationHelpers({
+              dispatch: this.props.dispatch,
+              state: this.props.screens.learn,
+            })}
           />
         </TabNavigator.Item>
         <TabNavigator.Item
@@ -248,10 +268,14 @@ class _TabbedAppView extends React.Component {
             }
           }}
         >
-          <AboutScreens
+          <AboutScreensView
             navRef={nav => {
               this._aboutNavigator = nav;
             }}
+            navigation={addNavigationHelpers({
+              dispatch: this.props.dispatch,
+              state: this.props.screens.about,
+            })}
           />
         </TabNavigator.Item>
         {extraTabs}
@@ -271,6 +295,7 @@ export default connect(
   state => ({
     user: state.user.userData,
     selectedTab: state.mainTabs.selectedTab,
+    screens: state.screens,
   }),
   dispatch => ({
     selectTab: x => dispatch(selectTab(x)),

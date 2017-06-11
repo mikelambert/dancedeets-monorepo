@@ -117,7 +117,7 @@ class TutorialView extends React.Component {
   }
 }
 
-const LearnScreens = StackNavigator({
+export const LearnScreensNavigator = StackNavigator({
   TutorialStyles: { screen: TutorialStylesView },
   TutorialList: { screen: TutorialListView },
   Tutorial: { screen: TutorialView },
@@ -133,7 +133,7 @@ class _LearnScreensView extends React.Component {
 
   render() {
     return (
-      <LearnScreens
+      <LearnScreensNavigator
         ref={nav => this.props.navRef(nav)}
         screenProps={{
           intl: this.props.intl,
@@ -143,4 +143,4 @@ class _LearnScreensView extends React.Component {
   }
 }
 
-export default injectIntl(_LearnScreensView);
+export const LearnScreensView = injectIntl(_LearnScreensView);

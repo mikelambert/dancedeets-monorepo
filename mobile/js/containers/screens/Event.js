@@ -369,7 +369,7 @@ class AddEventsScreen extends React.Component {
   }
 }
 
-const EventScreens = MyNavigator({
+export const EventScreensNavigator = MyNavigator({
   EventList: { screen: EventListScreen },
   FeaturedEventView: { screen: FeaturedEventScreen },
   EventView: { screen: EventScreen },
@@ -408,7 +408,7 @@ class _EventScreensView extends React.Component {
 
   render() {
     return (
-      <EventScreens
+      <EventScreensNavigator
         ref={nav => {
           this._nav = nav;
           this.props.navRef(nav);
@@ -428,7 +428,7 @@ class _EventScreensView extends React.Component {
     );
   }
 }
-const EventScreensView = connect(
+export const EventScreensView = connect(
   state => ({
     search: state.search,
     user: state.user.userData,
@@ -438,8 +438,8 @@ const EventScreensView = connect(
     performSearch: async () => {
       await dispatch(performSearch());
     },
-    showSearchForm: (status: boolean) => dispatch(showSearchForm(status)),
-    hideSearchForm: (status: boolean) => dispatch(hideSearchForm(status)),
+    showSearchForm: (status: boolean) => dispatch(showSearchForm()),
+    hideSearchForm: (status: boolean) => dispatch(hideSearchForm()),
     canOpenAddEvent: async props => {
       if (
         !props.user &&
@@ -455,5 +455,3 @@ const EventScreensView = connect(
     },
   })
 )(injectIntl(_EventScreensView));
-
-export default EventScreensView;

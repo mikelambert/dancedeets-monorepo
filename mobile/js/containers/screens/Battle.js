@@ -189,7 +189,7 @@ class BattleHostScreen extends React.Component {
     const battleId = this.props.navigation.state.params.battleId;
     <TrackFirebase
       path={`events/${battleId}`}
-      renderContents={battleEvent => (
+      renderContents={battleEvent =>
         <BattleEventHostView
           battleEvent={battleEvent}
           onSelected={selectedCategory => {
@@ -199,13 +199,12 @@ class BattleHostScreen extends React.Component {
               categoryId: selectedCategory.id,
             });
           }}
-        />
-      )}
+        />}
     />;
   }
 }
 
-const BattleScreens = StackNavigator({
+export const BattleScreensNavigator = StackNavigator({
   BattleSelector: { screen: BattleSelectorScreen },
   BattleSignups: { screen: BattleSignupsScreen },
   Category: { screen: CategoryScreen },
@@ -223,7 +222,7 @@ class _BattleScreensView extends React.Component {
 
   render() {
     return (
-      <BattleScreens
+      <BattleScreensNavigator
         ref={nav => this.props.navRef(nav)}
         screenProps={{
           intl: this.props.intl,
@@ -233,4 +232,4 @@ class _BattleScreensView extends React.Component {
   }
 }
 
-export default injectIntl(_BattleScreensView);
+export const BattleScreensView = injectIntl(_BattleScreensView);
