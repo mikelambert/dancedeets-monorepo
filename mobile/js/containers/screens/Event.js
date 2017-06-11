@@ -6,6 +6,7 @@
 
 import React from 'react';
 import {
+  Animated,
   AppState,
   Dimensions,
   Image,
@@ -41,7 +42,8 @@ import {
 import {
   canGetValidLoginFor,
   performSearch,
-  setHeaderStatus,
+  hideSearchForm,
+  showSearchForm,
 } from '../../actions';
 import AddEvents from '../AddEvents';
 import { track, trackWithEvent } from '../../store/track';
@@ -78,6 +80,7 @@ class _SearchHeaderTitleSummary extends React.Component {
     onPress: () => void,
 
     // Self-managed props
+    searchHeader: any,
     search: State,
   };
 
@@ -107,38 +110,64 @@ class _SearchHeaderTitleSummary extends React.Component {
       : null;
     const sideMargin = 40;
     return (
-      <TouchableWithoutFeedback
+      <Animated.View
         style={{
-          maxWidth: Dimensions.get('window').width - sideMargin * 2,
+          opacity: this.props.searchHeader.headerAnim.interpolate({
+            inputRange: [0, 0.5],
+            outputRange: [1, 0],
+          }),
+          transform: [
+            {
+              translateY: this.props.searchHeader.headerAnim.interpolate({
+                inputRange: [0, 1],
+                outputRange: [0, 50],
+              }),
+            },
+            {
+              scaleX: this.props.searchHeader.headerAnim.interpolate({
+                inputRange: [0, 1],
+                outputRange: [1, 2],
+              }),
+            },
+          ],
         }}
-        onPress={() => this.props.onPress()}
       >
-        <HorizontalView
+        <TouchableWithoutFeedback
           style={{
-            borderRadius: 5,
-            backgroundColor: 'white',
-            alignItems: 'center',
-            paddingHorizontal: 5,
-            overflow: 'hidden',
-            marginHorizontal: 20,
             maxWidth: Dimensions.get('window').width - sideMargin * 2,
           }}
+          onPress={() => {
+            this.props.onPress();
+          }}
         >
-          <Icon
-            name="md-search"
-            size={20}
-            style={{ marginTop: 4, width: 20 }}
-          />
-          {keywords}
-          {spacer}
-          {location}
-        </HorizontalView>
-      </TouchableWithoutFeedback>
+          <HorizontalView
+            style={{
+              borderRadius: 5,
+              backgroundColor: 'white',
+              alignItems: 'center',
+              paddingHorizontal: 5,
+              overflow: 'hidden',
+              marginHorizontal: 20,
+              maxWidth: Dimensions.get('window').width - sideMargin * 2,
+            }}
+          >
+            <Icon
+              name="md-search"
+              size={20}
+              style={{ marginTop: 4, width: 20 }}
+            />
+            {keywords}
+            {spacer}
+            {location}
+          </HorizontalView>
+        </TouchableWithoutFeedback>
+      </Animated.View>
     );
   }
 }
 const SearchHeaderTitleSummary = connect(state => ({
   search: state.search,
+  searchHeader: state.searchHeader,
 }))(_SearchHeaderTitleSummary);
 
 class NavButton extends React.PureComponent {
@@ -169,12 +198,20 @@ class NavButton extends React.PureComponent {
 class EventListScreen extends React.Component {
   static navigationOptions = ({ screenProps }) => ({
     title: screenProps.intl.formatMessage(messages.eventsTitle),
-    ...(screenProps.headerOpened
+    ...(screenProps.searchHeader.navbarTitleVisible
       ? {
-          headerTitle: '',
+          headerTitle: (
+            <SearchHeaderTitleSummary
+              onPress={() => screenProps.showSearchForm()}
+            />
+          ),
+        }
+      : { headerTitle: '' }),
+    ...(screenProps.searchHeader.searchFormVisible
+      ? {
           headerLeft: (
             <NavButton
-              onPress={() => screenProps.setHeaderStatus(false)}
+              onPress={() => screenProps.hideSearchForm()}
               text="Cancel"
             />
           ),
@@ -186,12 +223,6 @@ class EventListScreen extends React.Component {
           ),
         }
       : {
-          headerTitle: (
-            <SearchHeaderTitleSummary
-              onPress={() => screenProps.setHeaderStatus(true)}
-            />
-          ),
-          // onPress={this.props.onAddEvent}
           headerRight: (
             <NavButton
               onPress={() => screenProps.onAddEventClicked('Search Header')}
@@ -355,7 +386,8 @@ class _EventScreensView extends React.Component {
     canOpenAddEvent: (props: any) => Promise<boolean>,
     search: State,
     searchHeader: SearchHeaderState,
-    setHeaderStatus: (status: boolean) => void,
+    showSearchForm: () => void,
+    hideSearchForm: () => void,
     performSearch: () => Promise<void>,
   };
 
@@ -386,8 +418,9 @@ class _EventScreensView extends React.Component {
 
           // For the Event List Screen
           search: this.props.search,
-          headerOpened: this.props.searchHeader.headerOpened,
-          setHeaderStatus: this.props.setHeaderStatus,
+          searchHeader: this.props.searchHeader,
+          showSearchForm: this.props.showSearchForm,
+          hideSearchForm: this.props.hideSearchForm,
           performSearch: this.props.performSearch,
           onAddEventClicked: this.onAddEventClicked,
         }}
@@ -405,7 +438,8 @@ const EventScreensView = connect(
     performSearch: async () => {
       await dispatch(performSearch());
     },
-    setHeaderStatus: (status: boolean) => dispatch(setHeaderStatus(status)),
+    showSearchForm: (status: boolean) => dispatch(showSearchForm(status)),
+    hideSearchForm: (status: boolean) => dispatch(hideSearchForm(status)),
     canOpenAddEvent: async props => {
       if (
         !props.user &&

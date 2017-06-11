@@ -5,7 +5,7 @@
  */
 
 import React from 'react';
-import { UIManager, StyleSheet, TextInput, View } from 'react-native';
+import { Animated, StyleSheet, TextInput, View } from 'react-native';
 import SyntheticEvent from 'react-native/Libraries/Renderer/src/renderers/shared/shared/event/SyntheticEvent';
 import Locale from 'react-native-locale';
 import { connect } from 'react-redux';
@@ -172,9 +172,22 @@ class _SearchHeader extends React.Component {
 
   renderHeader() {
     return (
-      <View
+      <Animated.View
         onLayout={this.onLayout}
-        style={[styles.floatTop, styles.statusBar]}
+        style={[
+          styles.floatTop,
+          styles.statusBar,
+          {
+            transform: [
+              {
+                translateY: this.props.searchHeader.headerAnim.interpolate({
+                  inputRange: [0, 1],
+                  outputRange: [-200, 0],
+                }),
+              },
+            ],
+          },
+        ]}
       >
         <SearchInput
           ref={x => {
@@ -218,7 +231,7 @@ class _SearchHeader extends React.Component {
           }}
           value={this.props.searchQuery.location}
         />
-      </View>
+      </Animated.View>
     );
   }
 
@@ -250,9 +263,9 @@ class _SearchHeader extends React.Component {
   render() {
     return (
       <View style={{ flex: 1 }}>
-        {this.props.searchHeader.headerOpened ? this.renderHeader() : null}
+        {this.props.searchHeader.searchFormVisible ? this.renderHeader() : null}
         {this.props.children}
-        {this.props.searchHeader.headerOpened
+        {this.props.searchHeader.searchFormVisible
           ? this.renderAutoComplete()
           : null}
       </View>
