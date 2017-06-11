@@ -72,7 +72,7 @@ class NotificationScreen extends React.Component {
   }
 }
 
-export const AboutScreensNavigator = StackNavigator({
+export const AboutScreensNavigator = StackNavigator('about', {
   About: { screen: MainScreen },
   NotificationPreferences: { screen: NotificationScreen },
 });

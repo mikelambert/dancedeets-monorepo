@@ -204,7 +204,7 @@ class BattleHostScreen extends React.Component {
   }
 }
 
-export const BattleScreensNavigator = StackNavigator({
+export const BattleScreensNavigator = StackNavigator('battle', {
   BattleSelector: { screen: BattleSelectorScreen },
   BattleSignups: { screen: BattleSignupsScreen },
   Category: { screen: CategoryScreen },

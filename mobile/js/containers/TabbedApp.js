@@ -13,11 +13,7 @@ import type {
   NavigationSceneRendererProps,
   NavigationScreenProp,
 } from 'react-navigation/src/TypeDefinition';
-import {
-  addNavigationHelpers,
-  NavigationActions,
-  StackNavigator,
-} from 'react-navigation';
+import { NavigationActions, StackNavigator } from 'react-navigation';
 import LinearGradient from 'react-native-linear-gradient';
 import { connect } from 'react-redux';
 import WKWebView from 'react-native-wkwebview-reborn';
@@ -153,10 +149,6 @@ class _TabbedAppView extends React.Component {
             navRef={x => {
               this._eventSignupsNavigator = x;
             }}
-            navigation={addNavigationHelpers({
-              dispatch: this.props.dispatch,
-              state: this.props.screens.battle,
-            })}
           />
         </TabNavigator.Item>
       );
@@ -189,10 +181,6 @@ class _TabbedAppView extends React.Component {
             navRef={nav => {
               this._eventNavigator = nav;
             }}
-            navigation={addNavigationHelpers({
-              dispatch: this.props.dispatch,
-              state: this.props.screens.event,
-            })}
           />
         </TabNavigator.Item>
         <TabNavigator.Item
@@ -217,10 +205,6 @@ class _TabbedAppView extends React.Component {
             navRef={nav => {
               this._learnNavigator = nav;
             }}
-            navigation={addNavigationHelpers({
-              dispatch: this.props.dispatch,
-              state: this.props.screens.learn,
-            })}
           />
         </TabNavigator.Item>
         <TabNavigator.Item
@@ -272,10 +256,6 @@ class _TabbedAppView extends React.Component {
             navRef={nav => {
               this._aboutNavigator = nav;
             }}
-            navigation={addNavigationHelpers({
-              dispatch: this.props.dispatch,
-              state: this.props.screens.about,
-            })}
           />
         </TabNavigator.Item>
         {extraTabs}

@@ -369,7 +369,7 @@ class AddEventsScreen extends React.Component {
   }
 }
 
-export const EventScreensNavigator = MyNavigator({
+export const EventScreensNavigator = MyNavigator('events', {
   EventList: { screen: EventListScreen },
   FeaturedEventView: { screen: FeaturedEventScreen },
   EventView: { screen: EventScreen },

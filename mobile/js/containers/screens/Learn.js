@@ -117,7 +117,7 @@ class TutorialView extends React.Component {
   }
 }
 
-export const LearnScreensNavigator = StackNavigator({
+export const LearnScreensNavigator = StackNavigator('learn', {
   TutorialStyles: { screen: TutorialStylesView },
   TutorialList: { screen: TutorialListView },
   Tutorial: { screen: TutorialView },
