@@ -35,22 +35,6 @@ export type User = {
 };
 
 export type Action =
-  | { type: 'NAV_PUSH', navigator: string, state: NavigationRoute }
-  | { type: 'NAV_POP', navigator: string }
-  | { type: 'NAV_JUMP_TO_KEY', navigator: string, key: string }
-  | { type: 'NAV_JUMP_TO_INDEX', navigator: string, index: number }
-  | {
-      type: 'NAV_RESET',
-      navigator: string,
-      index: number,
-      routes: Array<NavigationRoute>,
-    }
-  | {
-      type: 'NAV_SWAP',
-      navigator: string,
-      key: string,
-      newRoute: NavigationRoute,
-    }
   | { type: 'LOGIN_START_ONBOARD' }
   | { type: 'LOGIN_LOGGED_IN', token: AccessToken }
   | { type: 'LOGIN_LOGGED_OUT' }
@@ -75,7 +59,6 @@ export type Action =
   | { type: 'ADD_EVENTS_SET_ONLY_UNADDED', value: boolean }
   | { type: 'ADD_EVENTS_SET_SORT_ORDER', value: SortOrder }
   | { type: 'SET_CURRENT_LOCALE', locale: string }
-  | { type: 'TAB_SELECT', tab: string }
   | { type: 'TRANSLATE_EVENT_TOGGLE', eventId: string }
   | { type: 'TRANSLATE_EVENT_DONE', eventId: string, translations: Object }
   | { type: 'TUTORIAL_SET_VIDEO_INDEX', index: number }

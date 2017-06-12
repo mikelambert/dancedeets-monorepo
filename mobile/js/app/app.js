@@ -11,7 +11,6 @@ import { connect } from 'react-redux';
 import storeShape from 'react-redux/lib/utils/storeShape';
 import { intlShape } from 'react-intl';
 import LoginFlow from '../login/LoginFlow';
-import TabbedApp from '../containers/TabbedApp';
 import TabApp from '../containers/TabApp';
 import { gradientTop } from '../Colors';
 import { setup as setupNotifications } from '../notifications/setup';

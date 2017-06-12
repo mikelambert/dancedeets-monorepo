@@ -11,7 +11,7 @@ import {
   AboutScreensNavigator,
   BattleScreensNavigator,
 } from '../containers/screens';
-import TabNavigator from '../containers/TabBar';
+import TabNavigator from '../containers/TabNavigator';
 
 export default combineReducers({
   overall: (state, action) =>

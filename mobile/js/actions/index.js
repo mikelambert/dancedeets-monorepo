@@ -9,7 +9,6 @@ import * as appNavigation from './appNavigation';
 import * as firebase from './firebase';
 import * as login from './login';
 import * as loginComplex from './loginComplex';
-import * as mainTabs from './mainTabs';
 import * as search from './search';
 import * as translate from './translate';
 import * as tutorials from './tutorials';
@@ -21,7 +20,6 @@ module.exports = {
   ...firebase,
   ...login,
   ...loginComplex,
-  ...mainTabs,
   ...search,
   ...searchHeader,
   ...translate,
