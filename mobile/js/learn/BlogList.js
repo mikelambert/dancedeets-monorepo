@@ -26,7 +26,6 @@ export class BlogPostContents extends React.Component {
           videoId={this.props.post.youtubeId}
           play
           hidden
-          playsInline
           loop={false}
           style={{ alignSelf: 'stretch', height: 300 }}
         />
