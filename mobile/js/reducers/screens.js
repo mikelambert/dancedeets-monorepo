@@ -11,9 +11,12 @@ import {
   AboutScreensNavigator,
   BattleScreensNavigator,
 } from '../containers/screens';
+import TabNavigator from '../containers/TabBar';
 
 export default combineReducers({
-  // TODO: tabBar: (state, action) => TabBar.router.getStateForAction(action, state),
+  overall: (state, action) =>
+    TabNavigator.router.getStateForAction(action, state),
+
   events: (state, action) =>
     EventScreensNavigator.router.getStateForAction(action, state),
   learn: (state, action) =>

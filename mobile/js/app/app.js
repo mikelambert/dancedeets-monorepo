@@ -12,6 +12,7 @@ import storeShape from 'react-redux/lib/utils/storeShape';
 import { intlShape } from 'react-intl';
 import LoginFlow from '../login/LoginFlow';
 import TabbedApp from '../containers/TabbedApp';
+import TabApp from '../containers/TabApp';
 import { gradientTop } from '../Colors';
 import { setup as setupNotifications } from '../notifications/setup';
 import { processUrl } from '../actions';
@@ -71,7 +72,7 @@ class App extends React.Component {
           backgroundColor={gradientTop}
           barStyle="light-content"
         />
-        <TabbedApp />
+        <TabApp />
       </View>
     );
   }

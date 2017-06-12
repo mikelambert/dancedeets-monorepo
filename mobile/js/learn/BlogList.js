@@ -108,6 +108,7 @@ export class FeedListView extends React.Component {
         pageSize={5}
         scrollRenderAheadDistance={10000}
         indicatorStyle="white"
+        removeClippedSubviews={false}
       />
     );
   }
