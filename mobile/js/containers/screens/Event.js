@@ -15,7 +15,6 @@ import {
   TouchableWithoutFeedback,
   View,
 } from 'react-native';
-import TabNavigator from 'react-native-tab-navigator';
 import type {
   NavigationAction,
   NavigationRoute,

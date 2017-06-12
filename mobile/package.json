@@ -54,8 +54,6 @@
     "react-native-send-intent": "^1.0.13",
     "react-native-share": "^1.0.20",
     "react-native-tab-view": "^0.0.65",
-    "react-native-tab-navigator": "github:mikelambert/react-native-tab-navigator",
-    "react-native-tab-view": "^0.0.65",
     "react-native-trackjs": "^0.1.2",
     "react-native-vector-icons": "^4.2.0",
     "react-native-viewpager": "github:mikelambert/react-native-viewpager",

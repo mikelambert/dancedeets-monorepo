@@ -6,7 +6,6 @@
 
 import React from 'react';
 import { AppState, Image, StyleSheet, View } from 'react-native';
-import TabNavigator from 'react-native-tab-navigator';
 import type {
   NavigationAction,
   NavigationRoute,

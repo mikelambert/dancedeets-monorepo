@@ -49,7 +49,7 @@ const routeConfiguration = {
         ),
     },
   },
-  Tutorials: {
+  Learn: {
     screen: LearnScreensView,
     onSameTabClick: ({ navigation }) => navigation.goBack(),
     navigationOptions: {
