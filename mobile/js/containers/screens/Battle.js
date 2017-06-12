@@ -110,6 +110,10 @@ class RegisterScreen extends React.Component {
     // title: `${displayName} Registration`,
   };
 
+  props: {
+    navigation: NavigationScreenProp<NavigationRoute, NavigationAction>,
+  };
+
   render() {
     const battleId = this.props.navigation.state.params.battleId;
     const categoryId = this.props.navigation.state.params.categoryId;
@@ -122,6 +126,7 @@ class RegisterScreen extends React.Component {
             <CategorySignupScreen
               battle={this.props.battleEvent}
               category={category}
+              navigation={navigation}
             />
           );
         }}

@@ -36,7 +36,6 @@ import {
   Text,
 } from '../ui';
 import { purpleColors, yellowColors } from '../Colors';
-import { navigatePop, navigatePush } from '../actions';
 import type { Dispatch, User } from '../actions/types';
 import { categoryDisplayName } from './models';
 import type { BattleCategory, BattleEvent, Signup } from './models';

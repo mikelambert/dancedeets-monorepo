@@ -10,11 +10,12 @@ import { injectIntl, defineMessages } from 'react-intl';
 import { connect } from 'react-redux';
 import { GiftedForm } from 'react-native-gifted-form';
 import type {
+  NavigationAction,
   NavigationRoute,
+  NavigationScreenProp,
   NavigationState,
 } from 'react-navigation/src/TypeDefinition';
 import { MyGiftedForm, MyGiftedSubmitWidget } from '../ui';
-import { navigatePop, navigatePush } from '../actions';
 import type { Dispatch, User } from '../actions/types';
 import type { BattleCategory, BattleEvent } from './models';
 import { eventRegister } from '../api/dancedeets';
@@ -26,8 +27,7 @@ class _CategorySignupScreen extends React.Component {
     category: BattleCategory,
 
     // Self-managed props
-    navigatePush: (route: NavigationRoute) => void,
-    navigatePop: () => void,
+    navigation: NavigationScreenProp<NavigationRoute, NavigationAction>,
   };
 
   state: {
@@ -74,7 +74,7 @@ class _CategorySignupScreen extends React.Component {
   }
 
   teamWidgets() {
-    return this.teamIndices().map(index => (
+    return this.teamIndices().map(index =>
       <GiftedForm.TextInputWidget
         key={index}
         name={`dancer_name_${index + 1}`}
@@ -82,7 +82,7 @@ class _CategorySignupScreen extends React.Component {
         placeholder=""
         {...this.textInputProps()}
       />
-    ));
+    );
   }
 
   teamValidators() {
@@ -110,7 +110,7 @@ class _CategorySignupScreen extends React.Component {
 
   fakeNavigator() {
     return {
-      pop: () => this.props.navigatePop(),
+      pop: () => this.props.navigation.goBack(),
     };
   }
 
@@ -157,7 +157,7 @@ class _CategorySignupScreen extends React.Component {
         navigator={this.fakeNavigator()}
         scrollEnabled={false}
         formName="signupForm" // GiftedForm instances that use the same name will also share the same states
-        openModal={route => this.props.navigatePush(route)}
+        openModal={route => this.props.navigation.navigate(route)}
         defaults={this.state.values}
         validators={{
           team_name: {
@@ -221,14 +221,8 @@ class _CategorySignupScreen extends React.Component {
     );
   }
 }
-const CategorySignupScreen = connect(
-  state => ({
-    user: state.user.userData,
-  }),
-  (dispatch: Dispatch, props) => ({
-    navigatePush: route => dispatch(navigatePush('EVENT_SIGNUPS_NAV', route)),
-    navigatePop: route => dispatch(navigatePop('EVENT_SIGNUPS_NAV')),
-  })
-)(injectIntl(_CategorySignupScreen));
+const CategorySignupScreen = connect(state => ({
+  user: state.user.userData,
+}))(injectIntl(_CategorySignupScreen));
 
 export default CategorySignupScreen;

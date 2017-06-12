@@ -24,7 +24,6 @@ import { selectTab } from '../actions';
 import type { Dispatch, User } from '../actions/types';
 import { track, trackWithEvent } from '../store/track';
 import { TimeTracker } from '../util/timeTracker';
-import { setDefaultState } from '../reducers/navigation';
 import * as RemoteConfig from '../remoteConfig';
 import {
   EventScreensView,

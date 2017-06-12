@@ -14,12 +14,7 @@ import type { TokenRegistration } from '../store/track';
 import { setupMixpanelToken } from '../store/track';
 import { saveToken, event as fetchEvent } from '../api/dancedeets';
 import { purpleColors } from '../Colors';
-import {
-  navigatePush,
-  navigatePop,
-  appNavigateToEvent,
-  selectTab,
-} from '../actions';
+import { appNavigateToEvent, selectTab } from '../actions';
 import { time as timeFormat } from '../formats';
 import { PreferenceNames, getPreference } from './prefs';
 import { getCurrentLocale } from '../locale';

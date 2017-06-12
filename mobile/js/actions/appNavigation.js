@@ -7,7 +7,6 @@
 import { Event } from 'dancedeets-common/js/events/models';
 import type { ThunkAction, Dispatch } from './types';
 import { selectTab } from './mainTabs';
-import { navigatePop, navigatePush } from './navigation';
 import WebsiteUrl from '../websiteUrl';
 import { event } from '../api/dancedeets';
 import { performSearch, updateKeywords, updateLocation } from './search';
@@ -21,10 +20,12 @@ export function processUrl(url: string) {
       const eventData = await event(eventId);
       dispatch(appNavigateToEvent(eventData));
     } else if (processedUrl && processedUrl.isSearchUrl()) {
-      const navName = 'EVENT_NAV';
+      /*
+      TODO(navigation): navigate to Events tab, then go to top-level, then do a serach
       await dispatch(selectTab('events'));
       await dispatch(navigatePop(navName));
       await dispatch(navigatePop(navName));
+      */
       await dispatch(updateLocation(processedUrl.location()));
       await dispatch(updateKeywords(processedUrl.keywords()));
       dispatch(performSearch());
@@ -40,9 +41,12 @@ export function appNavigateToEvent(navigateEvent: Event): ThunkAction {
       title: navigateEvent.name,
       event: navigateEvent,
     };
+    /*
+    TODO(navigation): navigate to Events tab, then go to top-level, then open an event
     await dispatch(selectTab('events'));
     await dispatch(navigatePop(navName));
     await dispatch(navigatePop(navName));
     await dispatch(navigatePush(navName, destState));
+    */
   };
 }
