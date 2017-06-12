@@ -368,56 +368,6 @@ export class SectionedListView extends React.Component {
   }
 }
 
-// This is a wrapper around <YouTube> that ignores any changes to the videoId,
-// and instead uses them to update the YouTube object directly.
-class YouTubeNoReload extends React.Component {
-  props: {
-    style: ViewPropTypes.style,
-    videoId: string,
-  };
-  _root: any;
-
-  shouldComponentUpdate(nextProps, nextState) {
-    if (Platform.OS === 'ios') {
-      return true;
-    }
-    const style = this.props.style;
-    const nextStyle = nextProps.style;
-    const trimmedProps = { ...this.props, style: null, videoId: null };
-    const trimmedNextProps = { ...nextProps, style: null, videoId: null };
-    const diff =
-      !styleEqual(style, nextStyle) ||
-      !shallowEqual(trimmedProps, trimmedNextProps) ||
-      !shallowEqual(this.state, nextState);
-    if (!diff && this.props.videoId !== nextProps.videoId) {
-      // setNativeProps only exists on Android, be careful!
-      this.setNativeProps({
-        videoId: nextProps.videoId,
-        play: false,
-      });
-      this.setNativeProps({
-        play: true,
-      });
-    }
-    return diff;
-  }
-
-  setNativeProps(props) {
-    this._root.setNativeProps(props);
-  }
-
-  render() {
-    return (
-      <YouTube
-        ref={x => {
-          this._root = x;
-        }}
-        {...this.props}
-      />
-    );
-  }
-}
-
 type PlaylistViewProps = {
   playlist: Playlist,
 };
@@ -427,7 +377,6 @@ class _PlaylistView extends React.Component {
     isPlaying: boolean,
   };
 
-  _youtubePlayer: YouTubeNoReload;
   _sectionedListView: SectionedListView;
   _cachedLayout: Array<Array<{ top: number, bottom: number }>>;
   _viewDimensions: { top: number, bottom: number };
@@ -445,13 +394,12 @@ class _PlaylistView extends React.Component {
   }
 
   componentWillReceiveProps(nextProps: any) {
-    if (nextProps.selectedTab !== 'learn') {
+    const screensOverall = nextProps.screensOverall;
+    console.log(screensOverall, screensOverall.routes[screensOverall.index]);
+    if (screensOverall.routes[screensOverall.index].key !== 'Tutorials') {
       this.setState({ isPlaying: false });
-      this._youtubePlayer.setNativeProps({
-        play: false,
-      });
     } else {
-      this.setState({ isPlaying: true });
+      //this.setState({ isPlaying: true });
     }
   }
 
@@ -467,6 +415,12 @@ class _PlaylistView extends React.Component {
   }
 
   onChangeState(props: Object) {
+    // Keep our internal state (and the props we set on the player) up-to-date
+    if (props.state === 'playing') {
+      this.setState({ isPlaying: true });
+    } else {
+      this.setState({ isPlaying: false });
+    }
     if (props.state === 'ended') {
       // next video, if we're not at the end!
       const newIndex = this.props.tutorialVideoIndex + 1;
@@ -616,25 +570,17 @@ class _PlaylistView extends React.Component {
   }
 
   render() {
-    // TODO: fix videoID on the main youtube docs?
-    // also explain setNativeProps
-    // push up our fixes?
-    //
     // for my client feature-bar (if i support scrub bar):
     // speed-rate, play/pause, back-ten-seconds, airplay
     const video = this.getSelectedVideo();
     const height = Dimensions.get('window').width * video.height / video.width;
     return (
       <View style={styles.container}>
-        <YouTubeNoReload
-          ref={x => {
-            this._youtubePlayer = x;
-          }}
+        <YouTube
           apiKey={googleKey}
           videoId={video.youtubeId}
           play={this.state.isPlaying} // auto-play when loading a tutorial
           hidden={false}
-          playsInline
           loop={false}
           rel={false}
           showinfo
@@ -665,6 +611,7 @@ export const PlaylistView = connect(
   state => ({
     tutorialVideoIndex: state.tutorials.videoIndex,
     selectedTab: state.mainTabs.selectedTab,
+    screensOverall: state.screens.overall,
   }),
   (dispatch: Dispatch) => ({
     setTutorialVideoIndex: (eventId, language) =>
