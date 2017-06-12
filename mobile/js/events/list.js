@@ -87,21 +87,6 @@ const messages = defineMessages({
     description:
       'Header for all the links/blogs/wikis/etc relevant to this search',
   },
-  eventsWithLocation: {
-    id: 'search.eventsWithLocation',
-    defaultMessage: 'Events near {location}',
-    description: 'Header to show with search results',
-  },
-  eventsWithKeywords: {
-    id: 'search.eventsWithKeywords',
-    defaultMessage: 'Events with keywords "{keywords}"',
-    description: 'Header to show with search results',
-  },
-  eventsWithLocationKeywords: {
-    id: 'search.eventsWithLocationKeywords',
-    defaultMessage: 'Events near {location} with keywords "{keywords}"',
-    description: 'Header to show with search results',
-  },
 });
 
 const CarouselDotIndicatorSize = 25;
@@ -525,29 +510,6 @@ class _EventListContainer extends React.Component {
       return null;
     }
     const query = response.query;
-    let header = null;
-    if (query) {
-      let message = null;
-      if (query.location && query.keywords) {
-        message = messages.eventsWithLocationKeywords;
-      } else if (query.location) {
-        message = messages.eventsWithLocation;
-      } else if (query.keywords) {
-        message = messages.eventsWithKeywords;
-      } else {
-        // Don't show any header for non-existent search queries/results
-      }
-      if (message) {
-        header = (
-          <Text style={styles.listHeader}>
-            {this.props.intl.formatMessage(message, {
-              location: query.location,
-              keywords: query.keywords,
-            })}
-          </Text>
-        );
-      }
-    }
     return (
       <View>
         <FeaturedEvents
@@ -558,7 +520,6 @@ class _EventListContainer extends React.Component {
           people={response.people}
           headerStyle={styles.sectionHeader}
         />
-        {header}
       </View>
     );
   }

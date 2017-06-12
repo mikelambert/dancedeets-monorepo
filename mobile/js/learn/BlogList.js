@@ -26,7 +26,6 @@ export class BlogPostContents extends React.Component {
           videoId={this.props.post.youtubeId}
           play
           hidden
-          playsInline
           loop={false}
           style={{ alignSelf: 'stretch', height: 300 }}
         />
@@ -108,6 +107,7 @@ export class FeedListView extends React.Component {
         pageSize={5}
         scrollRenderAheadDistance={10000}
         indicatorStyle="white"
+        removeClippedSubviews={false}
       />
     );
   }

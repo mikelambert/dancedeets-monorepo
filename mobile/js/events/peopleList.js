@@ -64,10 +64,10 @@ class PersonList extends React.Component {
     const id = peopleList[0].id;
     const url = `https://graph.facebook.com/${id}/picture?type=large`;
     return (
-      <BlurredImage source={{ uri: url }}>
+      <View>
         <Text style={{ fontStyle: 'italic' }}>{this.props.subtitle}:</Text>
         {peopleList.map(x => this.renderLink(x))}
-      </BlurredImage>
+      </View>
     );
   }
 }

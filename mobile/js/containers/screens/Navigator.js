@@ -54,6 +54,9 @@ export default (
   const result = connect(state => ({
     screens: state.screens,
   }))(WrappedNavigator);
+  // Copy this over:
   result.router = Navigator.router;
+  // Add this ourselves, since it's useful for us for others to be able to find the 'zeroth index route name'
+  result.routeConfig = routeConfigMap;
   return result;
 };
