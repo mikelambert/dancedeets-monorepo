@@ -23,6 +23,7 @@ import {
 } from './screens';
 import { semiNormalize } from '../ui';
 import type { Dispatch } from '../actions/types';
+import { purpleColors } from '../Colors';
 
 function image(focused, focusedSource, unfocusedSource) {
   return (
@@ -62,7 +63,8 @@ const routeConfiguration = {
   },
   Articles: {
     screen: () => <WKWebView source={{ uri: mediumUrl }} />,
-    onSameTabClick: obj => navigation.goBack(),
+    onSameTabClick: ({ navigation }) =>
+      console.log('Cannot go back on Articles tab'),
     navigationOptions: {
       tabBarIcon: ({ focused }) =>
         image(
@@ -118,11 +120,11 @@ const tabBarConfiguration = {
 
   tabBarOptions: {
     // tint color is passed to text and icons (if enabled) on the tab bar
-    //activeTintColor: 'white',
-    //inactiveTintColor: 'blue',
+    activeTintColor: purpleColors[2],
+    inactiveTintColor: '#909090',
     // background color is for the tab component
-    //activeBackgroundColor: 'blue',
-    //inactiveBackgroundColor: 'white',
+    activeBackgroundColor: '#F2F2F2',
+    inactiveBackgroundColor: '#F2F2F2',
   },
   backBehavior: 'none',
 };
