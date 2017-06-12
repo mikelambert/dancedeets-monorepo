@@ -6,7 +6,7 @@
 
 import React from 'react';
 import { Image, StyleSheet } from 'react-native';
-import { addNavigationHelpers, TabNavigator } from 'react-navigation';
+import { addNavigationHelpers } from 'react-navigation';
 import type {
   NavigationAction,
   NavigationParams,
@@ -21,11 +21,11 @@ import {
 } from './screens';
 import { semiNormalize } from '../ui';
 import type { Dispatch } from '../actions/types';
-import TabBar from './TabBar';
+import TabNavigator from './TabNavigator';
 import { TimeTracker } from '../util/timeTracker';
 import { track } from '../store/track';
 
-class TabBarView extends React.Component {
+class TabApp extends React.Component {
   props: {
     dispatch: Dispatch,
     screensOverall: any,
@@ -42,7 +42,7 @@ class TabBarView extends React.Component {
     ].key;
     return (
       <TimeTracker eventName="Tab Time" eventValue={routeKey}>
-        <TabBar
+        <TabNavigator
           navigation={{
             ...navigation,
             navigate: (
@@ -63,4 +63,4 @@ class TabBarView extends React.Component {
 }
 export default connect(store => ({
   screensOverall: store.screens.overall,
-}))(TabBarView);
+}))(TabApp);
