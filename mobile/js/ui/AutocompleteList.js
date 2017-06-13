@@ -244,8 +244,9 @@ export default class AutocompleteList extends React.Component {
         if (request.status === 200) {
           const responseJSON = JSON.parse(request.responseText);
           resolve(responseJSON);
-        } else {
-          reject(request.status);
+        } else if (!request._aborted) {
+          // Ignore errors due to intentionally-aborted requests
+          reject({ request });
         }
       };
 
@@ -264,21 +265,25 @@ export default class AutocompleteList extends React.Component {
       const url = `https://maps.googleapis.com/maps/api/place/autocomplete/json?&input=${encodeURI(
         text
       )}&${Qs.stringify(query)}`;
-      this.createRequest(url).then(responseJSON => {
-        if (typeof responseJSON.predictions !== 'undefined') {
-          this._results = responseJSON.predictions;
-          this.setState({
-            dataSource: this.state.dataSource.cloneWithRows(
-              this.buildRowsFromResults(responseJSON.predictions)
-            ),
-          });
-        }
-        if (typeof responseJSON.error_message !== 'undefined') {
-          console.warn(
-            `google places autocomplete: ${responseJSON.error_message}`
-          );
-        }
-      });
+      this.createRequest(url)
+        .then(responseJSON => {
+          if (typeof responseJSON.predictions !== 'undefined') {
+            this._results = responseJSON.predictions;
+            this.setState({
+              dataSource: this.state.dataSource.cloneWithRows(
+                this.buildRowsFromResults(responseJSON.predictions)
+              ),
+            });
+          }
+          if (typeof responseJSON.error_message !== 'undefined') {
+            console.warn(
+              `google places autocomplete: ${responseJSON.error_message}`
+            );
+          }
+        })
+        .catch(request => {
+          console.warn('AutoComplete Http Error', request);
+        });
     } else {
       this._results = [];
       this.setState({
