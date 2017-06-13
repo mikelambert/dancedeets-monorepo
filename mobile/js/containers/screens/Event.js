@@ -387,6 +387,7 @@ class _EventScreensNavigator extends React.Component {
     navRef?: (nav: StackNavigator) => void,
 
     // Self-managed props
+    navigation: NavigationScreenProp<NavigationRoute, NavigationAction>,
     intl: intlShape,
     canOpenAddEvent: (props: any) => Promise<boolean>,
     search: State,
@@ -431,6 +432,7 @@ class _EventScreensNavigator extends React.Component {
           performSearch: this.props.performSearch,
           onAddEventClicked: this.onAddEventClicked,
         }}
+        navigation={this.props.navigation}
       />
     );
   }
