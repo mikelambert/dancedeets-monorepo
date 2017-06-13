@@ -204,6 +204,7 @@ class _SearchHeader extends React.Component {
           }}
           onSubmitEditing={() => this.props.performSearch()}
           value={this.props.searchQuery.keywords}
+          autoFocus
         />
         <SearchInput
           ref={x => {
