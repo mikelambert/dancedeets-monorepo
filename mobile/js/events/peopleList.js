@@ -138,33 +138,42 @@ class _PeopleView extends React.Component {
   };
 
   render() {
-    if (this.props.search.error) {
+    if (this.props.search.error || !this.props.search.response) {
+      return null;
+    }
+    const admins = this.props.search.response.people.ADMIN;
+    const attendees = this.props.search.response.people.ATTENDEE;
+    if (!admins && !attendees) {
       return null;
     }
     // Keep in sync with web?
     const defaultCollapsed = !(this.props.search.response.results.length < 10);
     return (
       <View>
-        <HeaderCollapsible
-          title="Nearby Promoters"
-          defaultCollapsed={defaultCollapsed}
-        >
-          <PersonList
-            subtitle="If you want to organize an event, work with these folks"
-            people={this.props.people.ADMIN}
-          />
-        </HeaderCollapsible>
-        <HeaderCollapsible
-          title="Nearby Dancers"
-          defaultCollapsed={defaultCollapsed}
-          style={this.props.headerStyle}
-        >
-          <PersonList
-            subtitle="If you want to connect with the dance scene, hit these folks up"
-            people={this.props.people.ATTENDEE}
-            defaultCollapsed={defaultCollapsed}
-          />
-        </HeaderCollapsible>
+        {admins
+          ? <HeaderCollapsible
+              title="Nearby Promoters"
+              defaultCollapsed={defaultCollapsed}
+            >
+              <PersonList
+                subtitle="If you want to organize an event, work with these folks"
+                people={admins}
+              />
+            </HeaderCollapsible>
+          : null}
+        {attendees
+          ? <HeaderCollapsible
+              title="Nearby Dancers"
+              defaultCollapsed={defaultCollapsed}
+              style={this.props.headerStyle}
+            >
+              <PersonList
+                subtitle="If you want to connect with the dance scene, hit these folks up"
+                people={this.props.people.ATTENDEE}
+                defaultCollapsed={defaultCollapsed}
+              />
+            </HeaderCollapsible>
+          : null}
       </View>
     );
   }
