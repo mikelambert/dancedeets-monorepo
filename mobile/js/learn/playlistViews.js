@@ -610,7 +610,6 @@ class _PlaylistView extends React.Component {
 export const PlaylistView = connect(
   state => ({
     tutorialVideoIndex: state.tutorials.videoIndex,
-    selectedTab: state.mainTabs.selectedTab,
     screensOverall: state.screens.overall,
   }),
   (dispatch: Dispatch) => ({
