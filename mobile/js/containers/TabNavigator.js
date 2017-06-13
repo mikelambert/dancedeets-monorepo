@@ -9,6 +9,7 @@ import { Image, StyleSheet } from 'react-native';
 import { TabBarBottom, TabNavigator } from 'react-navigation';
 import type { SceneRendererProps } from 'react-native-tab-view/src/TabViewTypeDefinitions';
 import { connect } from 'react-redux';
+import { defineMessages } from 'react-intl';
 import WKWebView from 'react-native-wkwebview-reborn';
 import {
   EventScreensNavigator,
@@ -19,6 +20,31 @@ import {
 import { semiNormalize } from '../ui';
 import type { Dispatch } from '../actions/types';
 import { purpleColors } from '../Colors';
+
+const messages = defineMessages({
+  events: {
+    id: 'tab.events',
+    defaultMessage: 'Events',
+    description: 'Tab button to show list of events',
+  },
+  learn: {
+    id: 'tab.learn',
+    defaultMessage: 'Tutorials',
+    description: 'Tab button to help folks learn about dance',
+  },
+  about: {
+    id: 'tab.about',
+    defaultMessage: 'About',
+    description:
+      'Tab button to show general info about Dancedeets, Profile, and Share info',
+  },
+  articles: {
+    id: 'tab.articles',
+    defaultMessage: 'Articles',
+    description:
+      'Tab button to show the blog articles and essays on the DanceDeets Medium page',
+  },
+});
 
 function image(focused, focusedSource, unfocusedSource) {
   return (
@@ -35,51 +61,55 @@ const routeConfiguration = {
   Events: {
     screen: EventScreensNavigator,
     onSameTabClick: ({ navigation }) => navigation.goBack(),
-    navigationOptions: {
+    navigationOptions: ({ screenProps }) => ({
+      title: screenProps.intl.formatMessage(messages.events),
       tabBarIcon: ({ focused }) =>
         image(
           focused,
           require('../containers/icons/events-highlighted.png'),
           require('../containers/icons/events.png')
         ),
-    },
+    }),
   },
   Learn: {
     screen: LearnScreensNavigator,
     onSameTabClick: ({ navigation }) => navigation.goBack(),
-    navigationOptions: {
+    navigationOptions: ({ screenProps }) => ({
+      title: screenProps.intl.formatMessage(messages.learn),
       tabBarIcon: ({ focused }) =>
         image(
           focused,
           require('../containers/icons/learn-highlighted.png'),
           require('../containers/icons/learn.png')
         ),
-    },
+    }),
   },
   Articles: {
     screen: () => <WKWebView source={{ uri: mediumUrl }} />,
     onSameTabClick: ({ navigation }) =>
       console.log('Cannot go back on Articles tab'),
-    navigationOptions: {
+    navigationOptions: ({ screenProps }) => ({
+      title: screenProps.intl.formatMessage(messages.articles),
       tabBarIcon: ({ focused }) =>
         image(
           focused,
           require('../containers/icons/articles-highlighted.png'),
           require('../containers/icons/articles.png')
         ),
-    },
+    }),
   },
   About: {
     screen: AboutScreensNavigator,
     onSameTabClick: ({ navigation }) => navigation.goBack(),
-    navigationOptions: {
+    navigationOptions: ({ screenProps }) => ({
+      title: screenProps.intl.formatMessage(messages.about),
       tabBarIcon: ({ focused }) =>
         image(
           focused,
           require('../containers/icons/profile-highlighted.png'),
           require('../containers/icons/profile.png')
         ),
-    },
+    }),
   },
 };
 
