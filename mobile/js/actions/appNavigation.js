@@ -4,6 +4,7 @@
  * @flow
  */
 
+import { NavigationActions } from 'react-navigation';
 import { Event } from 'dancedeets-common/js/events/models';
 import type { ThunkAction, Dispatch } from './types';
 import WebsiteUrl from '../websiteUrl';
@@ -19,12 +20,15 @@ export function processUrl(url: string) {
       const eventData = await event(eventId);
       dispatch(appNavigateToEvent(eventData));
     } else if (processedUrl && processedUrl.isSearchUrl()) {
-      /*
-      TODO(navigation): navigate to Events tab, then go to top-level, then do a serach
-      await dispatch(selectTab('events'));
-      await dispatch(navigatePop(navName));
-      await dispatch(navigatePop(navName));
-      */
+      await dispatch(
+        NavigationActions.navigate({
+          routeName: 'Events',
+          params: {},
+          action: NavigationActions.navigate({
+            routeName: 'EventList',
+          }),
+        })
+      );
       await dispatch(updateLocation(processedUrl.location()));
       await dispatch(updateKeywords(processedUrl.keywords()));
       dispatch(performSearch());
@@ -34,18 +38,15 @@ export function processUrl(url: string) {
 
 export function appNavigateToEvent(navigateEvent: Event): ThunkAction {
   return async (dispatch: Dispatch) => {
-    const navName = 'EVENT_NAV';
-    const destState = {
-      key: 'EventView',
-      title: navigateEvent.name,
-      event: navigateEvent,
-    };
-    /*
-    TODO(navigation): navigate to Events tab, then go to top-level, then open an event
-    await dispatch(selectTab('events'));
-    await dispatch(navigatePop(navName));
-    await dispatch(navigatePop(navName));
-    await dispatch(navigatePush(navName, destState));
-    */
+    await dispatch(
+      NavigationActions.navigate({
+        routeName: 'Events',
+        params: {},
+        action: NavigationActions.navigate({
+          routeName: 'EventView',
+          params: { event: navigateEvent },
+        }),
+      })
+    );
   };
 }
