@@ -71,12 +71,12 @@ async function performRequest(
       const json = JSON.parse(buffer);
       // 'undefined' means success, 'false' means error
       if (json.success === false) {
-        throw new Error(`Server Error: ${json.errors}`);
+        throw new Error(`${json.errors}`);
       } else {
         return json;
       }
     } catch (e) {
-      console.warn('Un-parseable page:', buffer);
+      console.warn('Server Error:', buffer);
       throw e;
     }
   } catch (e) {
