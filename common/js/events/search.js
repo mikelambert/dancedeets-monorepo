@@ -42,8 +42,8 @@ type Style = string;
 export type StylePersonLookup = { [style: Style]: Array<Person> };
 
 export type PeopleListing = {
-  ADMIN: StylePersonLookup,
-  ATTENDEE: StylePersonLookup,
+  ADMIN?: StylePersonLookup,
+  ATTENDEE?: StylePersonLookup,
 };
 
 // API Requests 1.x

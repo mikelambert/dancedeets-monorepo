@@ -426,22 +426,22 @@ class _ResultsList extends React.Component {
     const admins = this.props.response.people.ADMIN;
     const attendees = this.props.response.people.ATTENDEE;
     if (admins || attendees) {
-      const adminsList = (
-        <PersonList
-          title="Promoters"
-          subtitle="If you want to organize an event, work with these folks"
-          people={admins}
-          categoryOrder={this.props.categoryOrder}
-        />
-      );
-      const attendeesList = (
-        <PersonList
-          title="Dancers"
-          subtitle="If you want to connect with the dance scene, hit these folks up"
-          people={attendees}
-          categoryOrder={this.props.categoryOrder}
-        />
-      );
+      const adminsList = admins
+        ? <PersonList
+            title="Promoters"
+            subtitle="If you want to organize an event, work with these folks"
+            people={admins}
+            categoryOrder={this.props.categoryOrder}
+          />
+        : null;
+      const attendeesList = attendees
+        ? <PersonList
+            title="Dancers"
+            subtitle="If you want to connect with the dance scene, hit these folks up"
+            people={attendees}
+            categoryOrder={this.props.categoryOrder}
+          />
+        : null;
 
       if (this.props.window && this.props.window.width < 768) {
         if (admins) {
