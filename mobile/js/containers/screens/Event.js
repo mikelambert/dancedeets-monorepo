@@ -54,6 +54,7 @@ import PositionProvider from '../../providers/positionProvider';
 import { FullEventView } from '../../events/uicomponents';
 import MyNavigator from './Navigator';
 import type { State as SearchHeaderState } from '../../ducks/searchHeader';
+import ShareEventIcon from '../ShareEventIcon';
 
 const messages = defineMessages({
   eventsTitle: {
@@ -274,6 +275,7 @@ class EventListScreen extends React.Component {
 class FeaturedEventScreen extends React.Component {
   static navigationOptions = ({ navigation }) => ({
     title: navigation.state.params.event.name,
+    headerRight: <ShareEventIcon event={navigation.state.params.event} />,
   });
 
   props: {
@@ -308,6 +310,7 @@ class FeaturedEventScreen extends React.Component {
 class EventScreen extends React.Component {
   static navigationOptions = ({ navigation }) => ({
     title: navigation.state.params.event.name,
+    headerRight: <ShareEventIcon event={navigation.state.params.event} />,
   });
 
   props: {
