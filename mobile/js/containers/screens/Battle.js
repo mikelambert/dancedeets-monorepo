@@ -215,29 +215,3 @@ export const BattleScreensNavigator = StackNavigator('battle', {
   Register: { screen: RegisterScreen },
   BattleHostView: { screen: BattleHostScreen },
 });
-
-class _BattleScreensView extends React.Component {
-  props: {
-    navRef?: (nav: StackNavigator) => void,
-
-    // Self-managed props
-    intl: intlShape,
-  };
-
-  render() {
-    return (
-      <BattleScreensNavigator
-        ref={nav => {
-          if (this.props.navRef != null) {
-            this.props.navRef(nav);
-          }
-        }}
-        screenProps={{
-          intl: this.props.intl,
-        }}
-      />
-    );
-  }
-}
-
-export const BattleScreensView = injectIntl(_BattleScreensView);

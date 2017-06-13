@@ -21,7 +21,11 @@ import type {
   NavigationSceneRendererProps,
   NavigationScreenProp,
 } from 'react-navigation/src/TypeDefinition';
-import { NavigationActions, StackNavigator } from 'react-navigation';
+import {
+  createNavigator,
+  NavigationActions,
+  StackNavigator,
+} from 'react-navigation';
 import HeaderTitle from 'react-navigation/src/views/HeaderTitle';
 import { connect } from 'react-redux';
 import { injectIntl, intlShape, defineMessages } from 'react-intl';
@@ -195,40 +199,43 @@ class NavButton extends React.PureComponent {
 }
 
 class EventListScreen extends React.Component {
-  static navigationOptions = ({ screenProps }) => ({
-    ...(screenProps.searchHeader.navbarTitleVisible
-      ? {
-          headerTitle: (
-            <SearchHeaderTitleSummary
-              onPress={() => screenProps.showSearchForm()}
-            />
-          ),
-        }
-      : { headerTitle: '' }),
-    ...(screenProps.searchHeader.searchFormVisible
-      ? {
-          headerLeft: (
-            <NavButton
-              onPress={() => screenProps.hideSearchForm()}
-              text="Cancel"
-            />
-          ),
-          headerRight: (
-            <NavButton
-              onPress={() => screenProps.performSearch()}
-              text="Search"
-            />
-          ),
-        }
-      : {
-          headerRight: (
-            <NavButton
-              onPress={() => screenProps.onAddEventClicked('Search Header')}
-              imageSource={require('../../events/images/add_calendar.png')}
-            />
-          ),
-        }),
-  });
+  static navigationOptions = ({ screenProps }) => {
+    // These screens need to be okay runing without a searchHeader (or anything other than intl, really)
+    // The outermost TabView computes navigationOptions to request some tabBar* properties
+    // We don't override them at all, or ever, so safely returning null here works.
+    // But we need to be careful in all our navigationOptions functions, that they never depend on too many things.
+    // I described the issue in more detail here:
+    // https://github.com/react-community/react-navigation/issues/1848
+    if (!screenProps.searchHeader) {
+      return null;
+    }
+    return {
+      ...(screenProps.searchHeader.navbarTitleVisible
+        ? {
+            headerTitle: (
+              <SearchHeaderTitleSummary onPress={screenProps.showSearchForm} />
+            ),
+          }
+        : { headerTitle: '' }),
+      ...(screenProps.searchHeader.searchFormVisible
+        ? {
+            headerLeft: (
+              <NavButton onPress={screenProps.hideSearchForm} text="Cancel" />
+            ),
+            headerRight: (
+              <NavButton onPress={screenProps.performSearch} text="Search" />
+            ),
+          }
+        : {
+            headerRight: (
+              <NavButton
+                onPress={() => screenProps.onAddEventClicked('Search Header')}
+                imageSource={require('../../events/images/add_calendar.png')}
+              />
+            ),
+          }),
+    };
+  };
 
   props: {
     navigation: NavigationScreenProp<NavigationRoute, NavigationAction>,
@@ -367,7 +374,7 @@ class AddEventsScreen extends React.Component {
   }
 }
 
-export const EventScreensNavigator = MyNavigator('events', {
+const RealEventScreensNavigator = MyNavigator('events', {
   EventList: { screen: EventListScreen },
   FeaturedEventView: { screen: FeaturedEventScreen },
   EventView: { screen: EventScreen },
@@ -375,7 +382,7 @@ export const EventScreensNavigator = MyNavigator('events', {
   AddEvents: { screen: AddEventsScreen },
 });
 
-class _EventScreensView extends React.Component {
+class _EventScreensNavigator extends React.Component {
   props: {
     navRef?: (nav: StackNavigator) => void,
 
@@ -406,7 +413,7 @@ class _EventScreensView extends React.Component {
 
   render() {
     return (
-      <EventScreensNavigator
+      <RealEventScreensNavigator
         ref={nav => {
           this._nav = nav;
           if (this.props.navRef != null) {
@@ -428,7 +435,7 @@ class _EventScreensView extends React.Component {
     );
   }
 }
-export const EventScreensView = connect(
+export const EventScreensNavigator = connect(
   state => ({
     search: state.search,
     user: state.user.userData,
@@ -454,4 +461,5 @@ export const EventScreensView = connect(
       return true;
     },
   })
-)(injectIntl(_EventScreensView));
+)(injectIntl(_EventScreensNavigator));
+EventScreensNavigator.router = RealEventScreensNavigator.router;

@@ -12,13 +12,7 @@ import type {
   NavigationParams,
 } from 'react-navigation/src/TypeDefinition';
 import { connect } from 'react-redux';
-import WKWebView from 'react-native-wkwebview-reborn';
-import {
-  EventScreensView,
-  LearnScreensView,
-  AboutScreensView,
-  BattleScreensView,
-} from './screens';
+import { injectIntl, intlShape } from 'react-intl';
 import { semiNormalize } from '../ui';
 import type { Dispatch } from '../actions/types';
 import TabNavigator from './TabNavigator';
@@ -27,22 +21,26 @@ import { track } from '../store/track';
 
 class TabApp extends React.Component {
   props: {
+    // Self-managed props
     dispatch: Dispatch,
-    screensOverall: any,
+    screens: any,
+    intl: intlShape,
   };
   render() {
-    const { dispatch, screensOverall, ...props } = this.props;
+    const { dispatch, screens, intl, ...props } = this.props;
     const navigation = addNavigationHelpers({
       dispatch,
-      state: screensOverall,
+      state: screens,
     });
 
-    const routeKey = this.props.screensOverall.routes[
-      this.props.screensOverall.index
-    ].key;
+    const routeKey = this.props.screens.routes[this.props.screens.index].key;
+    console.log(routeKey);
     return (
       <TimeTracker eventName="Tab Time" eventValue={routeKey}>
         <TabNavigator
+          screenProps={{
+            intl,
+          }}
           navigation={{
             ...navigation,
             navigate: (
@@ -62,5 +60,5 @@ class TabApp extends React.Component {
   }
 }
 export default connect(store => ({
-  screensOverall: store.screens.overall,
-}))(TabApp);
+  screens: store.screens,
+}))(injectIntl(TabApp));

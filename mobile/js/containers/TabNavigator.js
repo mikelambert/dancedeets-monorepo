@@ -6,20 +6,15 @@
 
 import React from 'react';
 import { Image, StyleSheet } from 'react-native';
-import {
-  addNavigationHelpers,
-  TabBarBottom,
-  TabNavigator,
-} from 'react-navigation';
+import { TabBarBottom, TabNavigator } from 'react-navigation';
 import type { SceneRendererProps } from 'react-native-tab-view/src/TabViewTypeDefinitions';
 import { connect } from 'react-redux';
 import WKWebView from 'react-native-wkwebview-reborn';
 import {
   EventScreensNavigator,
-  EventScreensView,
-  LearnScreensView,
-  AboutScreensView,
-  BattleScreensView,
+  LearnScreensNavigator,
+  AboutScreensNavigator,
+  BattleScreensNavigator,
 } from './screens';
 import { semiNormalize } from '../ui';
 import type { Dispatch } from '../actions/types';
@@ -38,7 +33,7 @@ const mediumUrl = 'https://medium.dancedeets.com/';
 
 const routeConfiguration = {
   Events: {
-    screen: EventScreensView,
+    screen: EventScreensNavigator,
     onSameTabClick: ({ navigation }) => navigation.goBack(),
     navigationOptions: {
       tabBarIcon: ({ focused }) =>
@@ -50,7 +45,7 @@ const routeConfiguration = {
     },
   },
   Learn: {
-    screen: LearnScreensView,
+    screen: LearnScreensNavigator,
     onSameTabClick: ({ navigation }) => navigation.goBack(),
     navigationOptions: {
       tabBarIcon: ({ focused }) =>
@@ -75,7 +70,7 @@ const routeConfiguration = {
     },
   },
   About: {
-    screen: AboutScreensView,
+    screen: AboutScreensNavigator,
     onSameTabClick: ({ navigation }) => navigation.goBack(),
     navigationOptions: {
       tabBarIcon: ({ focused }) =>

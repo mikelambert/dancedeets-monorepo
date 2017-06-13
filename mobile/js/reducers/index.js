@@ -11,8 +11,13 @@ import { search } from './search';
 import { translate } from './translate';
 import { tutorials } from './tutorials';
 import { user } from './user';
-import screens from './screens';
 import searchHeader from '../ducks/searchHeader';
+import TabNavigator from '../containers/TabNavigator';
+
+function screens(state, action) {
+  // Reverse ordering: (state, action) => (action, state)
+  return TabNavigator.router.getStateForAction(action, state);
+}
 
 export default combineReducers({
   addEvents,

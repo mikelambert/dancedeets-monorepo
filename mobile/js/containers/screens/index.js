@@ -4,18 +4,14 @@
  * @flow
  */
 
-import { EventScreensView, EventScreensNavigator } from './Event';
-import { LearnScreensView, LearnScreensNavigator } from './Learn';
-import { AboutScreensView, AboutScreensNavigator } from './About';
-import { BattleScreensView, BattleScreensNavigator } from './Battle';
+import { EventScreensNavigator } from './Event';
+import { LearnScreensNavigator } from './Learn';
+import { AboutScreensNavigator } from './About';
+import { BattleScreensNavigator } from './Battle';
 
 export {
-  EventScreensView,
   EventScreensNavigator,
-  LearnScreensView,
   LearnScreensNavigator,
-  AboutScreensView,
   AboutScreensNavigator,
-  BattleScreensView,
   BattleScreensNavigator,
 };

@@ -33,30 +33,7 @@ export default (
     },
     ...stackConfig,
   });
-  class WrappedNavigator extends React.Component {
-    props: {
-      screens: any,
-      dispatch: Dispatch,
-    };
-    render() {
-      const { screens, dispatch, ...props } = this.props;
-      return (
-        <Navigator
-          navigation={addNavigationHelpers({
-            dispatch: this.props.dispatch,
-            state: this.props.screens[stateName],
-          })}
-          {...props}
-        />
-      );
-    }
-  }
-  const result = connect(state => ({
-    screens: state.screens,
-  }))(WrappedNavigator);
-  // Copy this over:
-  result.router = Navigator.router;
   // Add this ourselves, since it's useful for us for others to be able to find the 'zeroth index route name'
-  result.routeConfig = routeConfigMap;
-  return result;
+  Navigator.routeConfig = routeConfigMap;
+  return Navigator;
 };

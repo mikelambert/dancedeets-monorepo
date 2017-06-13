@@ -121,29 +121,3 @@ export const LearnScreensNavigator = StackNavigator('learn', {
   TutorialList: { screen: TutorialListView },
   Tutorial: { screen: TutorialView },
 });
-
-class _LearnScreensView extends React.Component {
-  props: {
-    navRef?: (nav: StackNavigator) => void,
-
-    // Self-managed props
-    intl: intlShape,
-  };
-
-  render() {
-    return (
-      <LearnScreensNavigator
-        ref={nav => {
-          if (this.props.navRef != null) {
-            this.props.navRef(nav);
-          }
-        }}
-        screenProps={{
-          intl: this.props.intl,
-        }}
-      />
-    );
-  }
-}
-
-export const LearnScreensView = injectIntl(_LearnScreensView);
