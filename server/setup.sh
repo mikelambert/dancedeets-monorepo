@@ -34,14 +34,10 @@ pip install --upgrade -t $BASE_DIR/lib-local -r $BASE_DIR/docker/gae-modules-py/
 
 echo "Installing test libraries"
 # For testing, just install them locally (not in the lib/ dir).
-pip install --upgrade $USER_FLAG -r $BASE_DIR/test-requirements.txt
+pip install --upgrade -t $BASE_DIR/lib-local -r $BASE_DIR/test-requirements.txt
 
 echo "Installing the libraries which don't work with gae-modules*"
 pip install --upgrade -t $BASE_DIR/lib-both -r $BASE_DIR/setup-requirements.txt
-
-# This seems to be necessary to fix this error:
-# DistributionNotFound: The 'google-cloud-datastore' distribution was not found and is required by the application
-pip install $USER_FLAG google-cloud-datastore
 
 # We need technicolor-yawn binary, which only exists when we install it in the system
 pip install $USER_FLAG technicolor-yawn==0.2.0

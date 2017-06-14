@@ -368,7 +368,7 @@ gulp.task('deployScrapy', ['deploy:scrapy']);
 // If this fails due to google imports, make sure to delete site-packages/.../proto* modules
 gulp.task(
   'generate-amp-sources',
-  $.shell.task(['./amp/generate_amp_sources.py'])
+  $.shell.task(['PYTHONPATH=lib-local:. ./amp/generate_amp_sources.py'])
 );
 
 function webpack(configName, dependencies = []) {
