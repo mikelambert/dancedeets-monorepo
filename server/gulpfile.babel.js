@@ -546,7 +546,6 @@ gulp.task('server:hot:force', [
   'server:hot:node',
   'server:hot:python:force',
   'server:hot:frontend',
-  'server:datastore:local',
 ]);
 
 // Workable Dev Server (2) Prod-like JS/CSS setup
