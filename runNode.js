@@ -1,5 +1,8 @@
 #!/usr/local/bin/node
 
+// A script that will run the passed-in script within node, with support for ES6-et-al
+// Can be used in the hash-bang script line.
+
 process.on('unhandledRejection', (reason, p) => {
   console.error('Unhandled Rejection at: Promise ', p, ' reason: ', reason);
   throw reason;
