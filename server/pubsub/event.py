@@ -22,9 +22,10 @@ def _should_post_event_common(auth_token, db_event):
     return True
 
 def _event_has_enough_attendees(db_event):
-    # If it's a web event without any attendee data, make it a pass-through
+    # Ignore web events, since Japan/Korea web_events probably take up too much of the feed,
+    # and there are already existing ways those people are likely to find local events
     if not db_event.is_fb_event:
-        return True
+        return False
     user = users.User.get_by_id('701004')
     fbl = user.get_fblookup()
     matcher = event_attendee_classifier.get_matcher(fbl, db_event.fb_event)
