@@ -122,6 +122,7 @@ def email_for_user(user, fbl, should_send=True):
         'tags': tags,
     }
     if should_send:
+        logging.info('Sending weekly mail for user %s (%s)', user.fb_uid, user.full_name)
         # Update the last-sent-time here, so we any retryable errors don't cause emails to be multi-sent
         user = users.User.get_by_id(user.fb_uid)
         user.weekly_email_send_date = datetime.datetime.now()
