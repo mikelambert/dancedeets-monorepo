@@ -84,6 +84,7 @@ if [ "$TRAVIS" != true ]; then
   fi
   # Install the modules that make frankenserver amazing
   cd $BASE_DIR/frankenserver && pip install $USER_FLAG -r requirements.txt
+  pip install -t $BASE_DIR/lib-local -r $BASE_DIR/frankenserver/requirements.txt
 fi
 
 cd $BASE_DIR
