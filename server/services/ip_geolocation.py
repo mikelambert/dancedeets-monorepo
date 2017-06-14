@@ -55,17 +55,17 @@ def get_location_data_for(ip):
         return {}
     start = time.time()
     data = _get_cache(ip)
-    logging.info('Getting IP Cache', start)
+    timelog.log_time_since('Getting IP Cache', start)
     if not data:
         #TODO: consider using http://geoiplookup.net/ , which might offer better granularity/resolution
         url = 'http://freegeoip.net/json/%s' % ip
         start = time.time()
         results = urllib.urlopen(url).read()
-        logging.info('Getting IPData', start)
+        timelog.log_time_since('Getting IPData', start)
         data = json.loads(results)
         start = time.time()
         _save_cache(ip, data)
-        logging.info('Saving IPCache', start)
+        timelog.log_time_since('Saving IPCache', start)
     return data
 
 def get_location_string_for(ip, city=True):
