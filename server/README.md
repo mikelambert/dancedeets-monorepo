@@ -10,7 +10,7 @@ The magic behind <http://www.dancedeets.com/>.
 
 First, download and install appengine libraries here:
 <https://developers.google.com/appengine/downloads>
-...and open the AppEngine app at least once, to set up /usr/local/google_appengine.
+...and open the AppEngine app at least once, to set up `/usr/local/google_appengine`.
 
 Second, setup gcloud:
 ```
@@ -22,7 +22,7 @@ gcloud app run app.yaml
 ```
 
 Third, to setup dancedeets, run `./setup.sh`. It will download and install libraries,
-and setup some in our lib/ directory for uploading to appengine.
+and setup some in our `lib/` directory for uploading to appengine.
 
 You can run a variety of commands from gulp:
 - `gulp test` to run all of the included tests.
