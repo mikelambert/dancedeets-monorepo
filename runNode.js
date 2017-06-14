@@ -1,4 +1,4 @@
-#!/usr/local/bin/node
+#!/usr/bin/env node
 
 // A script that will run the passed-in script within node, with support for ES6-et-al
 // Can be used in the hash-bang script line.
