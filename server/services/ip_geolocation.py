@@ -12,7 +12,11 @@ from google.cloud import datastore
 from util import runtime
 from util import timelog
 
-client = datastore.Client('dancedeets-hrd')
+def generate_client():
+    global client
+    client = datastore.Client('dancedeets-hrd')
+
+generate_client()
 
 def _memkey(ip):
     return 'IpGeolocation: %s' % ip
