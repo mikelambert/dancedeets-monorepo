@@ -62,7 +62,8 @@ const config = {
   devtool: prod ? 'source-map' : 'debug',
   plugins: [
     new webpack.ProvidePlugin({
-      fetch: 'imports-loader?this=>global!exports-loader?global.fetch!whatwg-fetch',
+      fetch:
+        'imports-loader?this=>global!exports-loader?global.fetch!whatwg-fetch',
     }),
     // Only import the english locale for moment.js:
     new webpack.ContextReplacementPlugin(/moment[/\\]locale$/, /en$/),
@@ -177,8 +178,14 @@ const config = {
             loader: 'image-webpack-loader',
             options: {
               bypassOnDebug: true,
-              optimizationLevel: 7,
-              interlaced: false,
+              query: {
+                optipng: {
+                  optimizationLevel: 7,
+                },
+                gifsicle: {
+                  interlaced: false,
+                },
+              },
             },
           },
         ],
