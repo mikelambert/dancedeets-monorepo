@@ -291,7 +291,7 @@ class _AddEventButton extends React.PureComponent {
 }
 const AddEventButton = injectIntl(_AddEventButton);
 
-class _EventListContainer extends React.Component {
+class _EventListContainer extends React.PureComponent {
   props: {
     onEventSelected: (event: Event) => void,
     onFeaturedEventSelected: (event: Event) => void,
@@ -307,21 +307,10 @@ class _EventListContainer extends React.Component {
     intl: intlShape,
   };
 
-  state: {
-    sections: $ReadOnlyArray<{
-      data: Array<any>,
-      title: string,
-    }>,
-  };
-
   _listView: SectionList;
 
   constructor(props) {
     super(props);
-    this.state = {
-      sections: [],
-    };
-    this.state = this.getNewState(this.props);
     (this: any).renderHeader = this.renderHeader.bind(this);
     (this: any).setLocationAndSearch = this.setLocationAndSearch.bind(this);
     (this: any).renderItem = this.renderItem.bind(this);
@@ -335,7 +324,8 @@ class _EventListContainer extends React.Component {
     // Only zoom to top, if there are existing state.sections being rendered
     if (
       nextProps.search.response !== this.props.search.response &&
-      this.state.sections.length > 0
+      this.props.search.response &&
+      nextProps.search.response
     ) {
       this._listView.scrollToLocation({
         animated: false,
@@ -346,16 +336,6 @@ class _EventListContainer extends React.Component {
         viewPosition: 100,
       });
     }
-    this.setState(this.getNewState(nextProps));
-  }
-
-  getNewState(props) {
-    const sections = this.getData(props.search.response);
-    const state = {
-      ...this.state,
-      sections,
-    };
-    return state;
   }
 
   async setLocationAndSearch(formattedAddress: string) {
@@ -546,6 +526,7 @@ class _EventListContainer extends React.Component {
   }
 
   renderListView() {
+    const sections = this.getData(this.props.search.response);
     return (
       <SectionList
         ref={x => {
@@ -556,7 +537,7 @@ class _EventListContainer extends React.Component {
         // Refresher
         onRefresh={() => this.props.performSearch()}
         refreshing={this.props.search.loading}
-        sections={this.state.sections}
+        sections={sections}
         renderItem={this.renderItem}
         renderSectionHeader={({ section }) =>
           <SectionHeader title={upperFirst(section.title)} />}

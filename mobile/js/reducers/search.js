@@ -62,6 +62,7 @@ export function search(state: State = initialState, action: Action): State {
       ...state,
       loading: true,
       error: false,
+      response: null,
     };
   }
   if (action.type === 'SEARCH_COMPLETE') {
