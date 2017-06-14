@@ -20,6 +20,6 @@ We could alternately (un)comment the `React-Native-Compile:` sections and build 
 
 ## Code Layout
 
-- `js/`: All our JS code, and 99% of the real codebase
-- `ios/` and `android/`: Any platform-specific code, where our RN-integrations go. Basically just wrapper and skeleton framework code.
-- `scripts/`: Some old scripts that operate on this project. Some might need to be moved up a directory (ie translation scripts).
+- [`js/`](js): All our JS code, and 99% of the real codebase
+- [`ios/`](ios) and [`android/`](android): Any platform-specific code, where our RN-integrations go. Basically just wrapper and skeleton framework code.
+- [`scripts/`](scripts): Some old scripts that operate on this project. Some might need to be moved up a directory (ie translation scripts).
