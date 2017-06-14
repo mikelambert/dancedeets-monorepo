@@ -11,7 +11,10 @@ import { intlWeb } from 'dancedeets-common/js/intl';
 import type { Cover, JSONObject } from 'dancedeets-common/js/events/models';
 import { SearchEvent } from 'dancedeets-common/js/events/models';
 import type { NewSearchResponse } from 'dancedeets-common/js/events/search';
-import { formatStartTime } from 'dancedeets-common/js/dates';
+import {
+  formatStartDateOnly,
+  formatStartTime,
+} from 'dancedeets-common/js/dates';
 import { groupEventsByStartDate } from 'dancedeets-common/js/events/helpers';
 import type { ExportedIconsEnum } from './exportedIcons';
 
@@ -143,6 +146,7 @@ class _MailEvent extends React.Component {
                 <FontAwesomeIcon name="clock-o" alt="Time" />
               </td>
               <td style={verticalAlign}>
+                {formatStartDateOnly(event.startTimeNoTz(), this.props.intl)},
                 {formatStartTime(event.startTimeNoTz(), this.props.intl)}
               </td>
             </tr>
