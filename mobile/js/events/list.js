@@ -307,7 +307,10 @@ class _EventListContainer extends React.PureComponent {
     intl: intlShape,
   };
 
-  _listView: SectionList;
+  _listView: SectionList<{
+    event: Event,
+    key?: string,
+  }>;
 
   constructor(props) {
     super(props);

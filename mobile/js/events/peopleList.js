@@ -104,21 +104,19 @@ class HeaderCollapsible extends React.Component {
           onPress={this._toggle}
           underlayColor={this.props.underlayColor}
         >
-          <View style={styles.sectionHeader}>
-            <HorizontalView>
-              <View
-                style={{
-                  width: 20,
-                  height: 20,
-                  alignItems: 'center',
-                  alignSelf: 'center',
-                }}
-              >
-                <Icon name={iconName} size={15} color="#FFF" />
-              </View>
-              <Text>{this.props.title}</Text>
-            </HorizontalView>
-          </View>
+          <HorizontalView>
+            <View
+              style={{
+                width: 20,
+                height: 20,
+                alignItems: 'center',
+                alignSelf: 'center',
+              }}
+            >
+              <Icon name={iconName} size={15} color="#FFF" />
+            </View>
+            <Text>{this.props.title}</Text>
+          </HorizontalView>
         </TouchableHighlight>
         <Collapsible collapsed={this.state.collapsed}>
           {this.props.children}
