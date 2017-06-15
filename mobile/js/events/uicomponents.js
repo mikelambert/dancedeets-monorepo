@@ -113,8 +113,8 @@ class _AddToCalendarButton extends React.Component {
         size="small"
         onPress={async () => {
           trackWithEvent('Add to Calendar', this.props.event);
-          await CalendarAdd(this.props.event);
-          if (Platform.OS === 'ios') {
+          const added = await CalendarAdd(this.props.event);
+          if (added && Platform.OS === 'ios') {
             AlertIOS.alert(
               this.props.intl.formatMessage(messages.addedToCalendar)
             );
