@@ -502,6 +502,7 @@
 		1D449AA91D04A69300195AF6 /* libz.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libz.tbd; path = usr/lib/libz.tbd; sourceTree = SDKROOT; };
 		1D449B2F1D04D70400195AF6 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = DanceDeets/Images.xcassets; sourceTree = "<group>"; };
 		1D5EA49F1DE990E80081C5A0 /* RCTAnimation.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTAnimation.xcodeproj; path = "../node_modules/react-native/Libraries/NativeAnimation/RCTAnimation.xcodeproj"; sourceTree = "<group>"; };
+		1D6CD4891EF3C9A9001DC8C7 /* DanceDeets.profdata */ = {isa = PBXFileReference; lastKnownFileType = file; path = DanceDeets.profdata; sourceTree = "<group>"; };
 		1D902A631D42B7FB00B938F3 /* DanceDeetsUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = DanceDeetsUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		1D902A651D42B7FB00B938F3 /* DanceDeetsUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DanceDeetsUITests.swift; sourceTree = "<group>"; };
 		1D902A671D42B7FB00B938F3 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -837,6 +838,14 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
+		1D6CD4881EF3C9A9001DC8C7 /* OptimizationProfiles */ = {
+			isa = PBXGroup;
+			children = (
+				1D6CD4891EF3C9A9001DC8C7 /* DanceDeets.profdata */,
+			);
+			path = OptimizationProfiles;
+			sourceTree = "<group>";
+		};
 		1D8958291CF910B20029E37E /* Products */ = {
 			isa = PBXGroup;
 			children = (
@@ -1071,6 +1080,7 @@
 				83CBBA001A601CBA00E9B192 /* Products */,
 				6DD4C3E63C393B4CADD50C49 /* Pods */,
 				136FAF4864664CF199019F77 /* Resources */,
+				1D6CD4881EF3C9A9001DC8C7 /* OptimizationProfiles */,
 			);
 			indentWidth = 2;
 			sourceTree = "<group>";
