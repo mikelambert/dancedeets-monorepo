@@ -10,6 +10,7 @@ import {
   TouchableHighlight,
   TouchableOpacity,
   View,
+  ViewPropTypes,
 } from 'react-native';
 import { connect } from 'react-redux';
 import Collapsible from 'react-native-collapsible';
@@ -98,25 +99,29 @@ class HeaderCollapsible extends React.Component {
     const iconName = this.state.collapsed
       ? 'md-arrow-dropright'
       : 'md-arrow-dropdown';
+    // The TouchableHighlight needs a native component that takes a ref.
+    // Unfortunately the stateless HorizontalView component cannot take a ref, so we have a View wrapper.
     return (
       <View>
         <TouchableHighlight
           onPress={this._toggle}
           underlayColor={this.props.underlayColor}
         >
-          <HorizontalView>
-            <View
-              style={{
-                width: 20,
-                height: 20,
-                alignItems: 'center',
-                alignSelf: 'center',
-              }}
-            >
-              <Icon name={iconName} size={15} color="#FFF" />
-            </View>
-            <Text>{this.props.title}</Text>
-          </HorizontalView>
+          <View>
+            <HorizontalView>
+              <View
+                style={{
+                  width: 20,
+                  height: 20,
+                  alignItems: 'center',
+                  alignSelf: 'center',
+                }}
+              >
+                <Icon name={iconName} size={15} color="#FFF" />
+              </View>
+              <Text>{this.props.title}</Text>
+            </HorizontalView>
+          </View>
         </TouchableHighlight>
         <Collapsible collapsed={this.state.collapsed}>
           {this.props.children}
@@ -129,7 +134,7 @@ class HeaderCollapsible extends React.Component {
 class _PeopleView extends React.Component {
   props: {
     people: PeopleListing,
-    headerStyle: View.propTypes,
+    headerStyle: ViewPropTypes.style,
 
     // Self-managed props
     search: State,
