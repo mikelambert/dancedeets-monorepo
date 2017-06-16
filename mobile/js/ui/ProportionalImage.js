@@ -7,16 +7,18 @@ import React from 'react';
 import { Animated, View } from 'react-native';
 import SyntheticEvent from 'react-native/Libraries/Renderer/src/renderers/shared/shared/event/SyntheticEvent';
 
+type Dimension = {
+  width: number,
+  height: number,
+};
+
 type Props = {
   originalWidth: number,
   originalHeight: number,
   style?: any,
   duration: number,
   resizeDirection: 'width' | 'height',
-  initialDimensions?: {
-    width: number,
-    height: number,
-  },
+  initialDimensions?: Dimension,
 };
 
 export default class ProportionalImage extends React.Component {
@@ -28,10 +30,7 @@ export default class ProportionalImage extends React.Component {
   props: Props;
 
   state: {
-    dimensions: ?{
-      width: number,
-      height: number,
-    },
+    dimensions: ?Dimension,
     opacity: any,
   };
 
