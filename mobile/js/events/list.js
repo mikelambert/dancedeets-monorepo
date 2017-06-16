@@ -291,7 +291,7 @@ class _AddEventButton extends React.PureComponent {
 }
 const AddEventButton = injectIntl(_AddEventButton);
 
-class _EventListContainer extends React.PureComponent {
+class _EventListContainer extends React.Component {
   props: {
     onEventSelected: (event: Event) => void,
     onFeaturedEventSelected: (event: Event) => void,

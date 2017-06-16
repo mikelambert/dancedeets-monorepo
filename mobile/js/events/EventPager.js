@@ -102,7 +102,6 @@ class EventPager extends React.Component {
 
   render() {
     const position = this.state.position;
-    const selectedEvent = this.props.selectedEvent;
     if (!this.props.search.response) {
       console.log('No response!', this.props);
       return null;
