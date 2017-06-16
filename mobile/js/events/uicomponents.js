@@ -922,13 +922,17 @@ class _FullEventView extends React.Component {
     let flyer = null;
     const squareImageProps = this.props.event.getSquareFlyer();
     const imageProps = this.props.event.getResponsiveFlyers();
-    if (imageProps.length) {
+    if (imageProps.length && imageProps[0]) {
       const flyerImage = (
         <ProportionalImage
           source={imageProps}
           originalWidth={imageProps[0].width}
           originalHeight={imageProps[0].height}
           style={eventStyles.thumbnail}
+          initialDimensions={{
+            width: Dimensions.get('window').width,
+            height: 0,
+          }}
         />
       );
 
@@ -962,7 +966,7 @@ class _FullEventView extends React.Component {
           height: null,
         }}
       >
-        <ProgressiveLayout style={[eventStyles.container, { width }]}>
+        <View style={[eventStyles.container, { width }]}>
           {flyer}
           <Text
             numberOfLines={2}
@@ -1002,7 +1006,7 @@ class _FullEventView extends React.Component {
             <TranslateButton event={this.props.event} />
           </HorizontalView>
           <EventDescription event={this.props.event} />
-        </ProgressiveLayout>
+        </View>
       </BlurredImage>
     );
   }
