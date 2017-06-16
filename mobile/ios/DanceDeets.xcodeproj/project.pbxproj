@@ -1970,6 +1970,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = "AppIcon$(BUNDLE_ID_SUFFIX)";
 				BUNDLE_ID_SUFFIX = .debug;
+				CLANG_USE_OPTIMIZATION_PROFILE = YES;
 				CODEPUSH_KEY = "r4NM-JbW51dZpxOLKsxdcbaa4mOn4kVrpLamW";
 				CODE_SIGN_ENTITLEMENTS = "DanceDeets/DanceDeets Debug.entitlements";
 				CODE_SIGN_IDENTITY = "iPhone Developer";
@@ -2029,6 +2030,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = "AppIcon$(BUNDLE_ID_SUFFIX)";
 				BUNDLE_ID_SUFFIX = "";
+				CLANG_USE_OPTIMIZATION_PROFILE = YES;
 				CODEPUSH_KEY = nSe0bduDlntez8TJPtgg7O_6ocKs4kVrpLamW;
 				CODE_SIGN_ENTITLEMENTS = "DanceDeets/DanceDeets Debug.entitlements";
 				CODE_SIGN_IDENTITY = "iPhone Developer";
