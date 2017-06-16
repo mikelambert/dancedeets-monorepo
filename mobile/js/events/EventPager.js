@@ -50,10 +50,8 @@ class EventPager extends React.Component {
   }
 
   componentDidMount() {
-    console.log('hey');
     InteractionManager.runAfterInteractions(() => {
-      console.log('hey2');
-      //this.setState({ loadInProgress: false });
+      this.setState({ loadInProgress: false });
     });
   }
 
@@ -145,17 +143,17 @@ class EventPager extends React.Component {
     // (as opposed to a fully rendered pageable/scrollable view, which will scale poorly)
     return (
       <FlatList
-        debug
         data={data}
         horizontal
         pagingEnabled
         renderItem={this.renderEvent}
-        onChangePage={this.onChangePage}
+        // This doesn't work! Use https://stackoverflow.com/questions/43370807/react-native-get-current-page-in-flatlist-when-using-pagingenabled !
+        // onChangePage={this.onChangePage}
         initialScrollIndex={this.getSelectedPage()}
         getItemLayout={this.getItemLayout}
-        windowSize={this.state.loadInProgress ? 1 : 4}
+        windowSize={5}
         initialNumToRender={1}
-        maxToRenderPerBatch={1}
+        maxToRenderPerBatch={2}
         removeClippedSubviews={false}
         showsHorizontalScrollIndicator={false}
       />
