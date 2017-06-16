@@ -31,23 +31,38 @@ class EventPager extends React.Component {
 
   state: {
     position: ?Object,
+    loadInProgress: boolean,
   };
 
   constructor(props) {
     super(props);
     this.state = {
       position: null,
+      loadInProgress: true,
     };
     this.state = this.getNewState(this.props, null);
     (this: any).renderEvent = this.renderEvent.bind(this);
+    (this: any).onChangePage = this.onChangePage.bind(this);
   }
 
   componentWillMount() {
     this.loadLocation();
   }
 
+  componentDidMount() {
+    console.log('hey');
+    InteractionManager.runAfterInteractions(() => {
+      console.log('hey2');
+      //this.setState({ loadInProgress: false });
+    });
+  }
+
   componentWillReceiveProps(nextProps) {
     this.setState(this.getNewState(nextProps, this.state.position));
+  }
+
+  onChangePage(i) {
+    return this.props.onEventNavigated(this.props.search.response.results[i]);
   }
 
   getNewState(props, oldPosition) {
@@ -69,6 +84,20 @@ class EventPager extends React.Component {
       );
     }
     return initialPage;
+  }
+
+  getItemLayout(itemData, index) {
+    /* console.log({
+      itemData,
+      index,
+      length: Dimensions.get('window').width,
+      offset: Dimensions.get('window').width * index,
+    }); */
+    return {
+      length: Dimensions.get('window').width,
+      offset: Dimensions.get('window').width * index,
+      index,
+    };
   }
 
   async loadLocation() {
@@ -116,30 +145,19 @@ class EventPager extends React.Component {
     // (as opposed to a fully rendered pageable/scrollable view, which will scale poorly)
     return (
       <FlatList
+        debug
         data={data}
         horizontal
         pagingEnabled
         renderItem={this.renderEvent}
-        onChangePage={i =>
-          this.props.onEventNavigated(this.props.search.response.results[i])}
+        onChangePage={this.onChangePage}
         initialScrollIndex={this.getSelectedPage()}
-        getItemLayout={(itemData, index) => {
-          /* console.log({
-            itemData,
-            index,
-            length: Dimensions.get('window').width,
-            offset: Dimensions.get('window').width * index,
-          });*/
-          return {
-            length: Dimensions.get('window').width,
-            offset: Dimensions.get('window').width * index,
-            index,
-          };
-        }}
-        windowSize={4}
+        getItemLayout={this.getItemLayout}
+        windowSize={this.state.loadInProgress ? 1 : 4}
         initialNumToRender={1}
         maxToRenderPerBatch={1}
         removeClippedSubviews={false}
+        showsHorizontalScrollIndicator={false}
       />
     );
   }

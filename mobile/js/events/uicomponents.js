@@ -938,7 +938,7 @@ class _FullEventView extends React.Component {
           originalHeight={imageProps[0].height}
           style={eventStyles.thumbnail}
           initialDimensions={{
-            width: Dimensions.get('window').width,
+            width,
             height: 0,
           }}
         />
@@ -965,15 +965,9 @@ class _FullEventView extends React.Component {
       name = translatedEvent.translation.name;
     }
 
+    console.log('render', this.props.event.name);
     return (
-      <BlurredImage
-        source={squareImageProps}
-        style={{
-          // Ignore the built-in image size props, so it can fully flex
-          width: null,
-          height: null,
-        }}
-      >
+      <BlurredImage source={squareImageProps} style={eventStyles.blurredImage}>
         <ScrollView style={[eventStyles.container, { width }]}>
           {flyer}
           <Text
@@ -991,7 +985,7 @@ class _FullEventView extends React.Component {
           >
             <AddToCalendarButton
               event={this.props.event}
-              style={{ marginTop: 5 }}
+              style={eventStyles.addToCalendarButton}
             />
           </EventDateTime>
           <EventRsvp event={this.props.event} />
@@ -1082,5 +1076,13 @@ const eventStyles = StyleSheet.create({
     flexGrow: 1,
     marginLeft: 10,
     height: normalize(150),
+  },
+  addToCalendarButton: {
+    marginTop: 5,
+  },
+  blurredImage: {
+    // Ignore the built-in image size props, so it can fully flex
+    width: null,
+    height: null,
   },
 });
