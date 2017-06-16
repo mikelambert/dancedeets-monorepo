@@ -5,7 +5,7 @@ EVENT_ID_REGEX = r'(?:\d+|[^/?#]+:[^/?#]+)'
 
 def dd_event_url(eid, kwargs=None):
     kwarg_string = '?%s' % urlencode(kwargs) if kwargs else ''
-    return 'http://www.dancedeets.com%s%s' % (dd_relative_event_url(eid), kwarg_string)
+    return 'https://www.dancedeets.com%s%s' % (dd_relative_event_url(eid), kwarg_string)
 
 
 def dd_relative_event_url(eid):
@@ -17,20 +17,20 @@ def dd_short_event_url(eid):
 
 
 def raw_fb_event_url(eid):
-    return 'http://www.facebook.com/events/%s/' % eid
+    return 'https://www.facebook.com/events/%s/' % eid
 
 
 def dd_admin_event_url(eid):
-    return 'http://www.dancedeets.com/events/admin_edit?event_id=%s' % eid
+    return 'https://www.dancedeets.com/events/admin_edit?event_id=%s' % eid
 
 
 def dd_admin_source_url(eid):
-    return 'http://www.dancedeets.com/sources/admin_edit?source_id=%s' % eid
+    return 'https://www.dancedeets.com/sources/admin_edit?source_id=%s' % eid
 
 
 def event_image_url(eid, **kwargs):
     encoded_kwargs = urlencode(kwargs)
-    url = 'http://img.dancedeets.com/events/image_proxy/%s' % eid
+    url = 'https://img.dancedeets.com/events/image_proxy/%s' % eid
     if encoded_kwargs:
         return '%s?%s' % (url, encoded_kwargs)
     else:
