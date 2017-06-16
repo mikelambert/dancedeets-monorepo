@@ -12,7 +12,6 @@ import {
   ScrollView,
   View,
 } from 'react-native';
-import ViewPager from 'react-native-viewpager';
 import { connect } from 'react-redux';
 import type {
   NavigationAction,
@@ -126,15 +125,12 @@ class EventPager extends React.Component {
     // (as opposed to a fully rendered pageable/scrollable view, which will scale poorly)
     return (
       <FlatList
-        debug
         data={data}
         horizontal
         pagingEnabled
         renderItem={this.renderEvent}
         onChangePage={i =>
-          this.props.onEventNavigated(
-            this.state.dataSource.getPageData(i).event
-          )}
+          this.props.onEventNavigated(this.props.search.response.results[i])}
         initialScrollIndex={this.getSelectedPage()}
         getItemLayout={(itemData, index) => {
           /* console.log({
