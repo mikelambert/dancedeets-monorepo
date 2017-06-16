@@ -5,7 +5,13 @@
  */
 
 import React from 'react';
-import { Dimensions, InteractionManager, View } from 'react-native';
+import {
+  Dimensions,
+  FlatList,
+  InteractionManager,
+  ScrollView,
+  View,
+} from 'react-native';
 import ViewPager from 'react-native-viewpager';
 import { connect } from 'react-redux';
 import type {
@@ -31,20 +37,13 @@ class EventPager extends React.Component {
   };
 
   state: {
-    dataSource: ViewPager.DataSource,
     position: ?Object,
-    loadInProgress: boolean,
   };
 
   constructor(props) {
     super(props);
-    const dataSource = new ViewPager.DataSource({
-      pageHasChanged: (row1, row2) => row1 !== row2,
-    });
     this.state = {
       position: null,
-      dataSource,
-      loadInProgress: true,
     };
     this.state = this.getNewState(this.props, null);
     (this: any).renderEvent = this.renderEvent.bind(this);
@@ -54,42 +53,15 @@ class EventPager extends React.Component {
     this.loadLocation();
   }
 
-  componentDidMount() {
-    InteractionManager.runAfterInteractions(() => {
-      this.setState({ loadInProgress: false });
-    });
-  }
-
   componentWillReceiveProps(nextProps) {
     this.setState(this.getNewState(nextProps, this.state.position));
   }
 
   getNewState(props, oldPosition) {
-    const results = props.search.response;
-    let finalResults = [];
     const position = oldPosition || this.state.position;
-
-    const selectedEvent = this.props.selectedEvent;
-
-    if (results && results.results) {
-      const pageIndex = results.results.findIndex(
-        x => x.id === selectedEvent.id
-      );
-      if (pageIndex !== -1) {
-        finalResults = results.results.map(event => ({ event, position }));
-      }
-    }
-    // If we have an event that's not in the list, it's because we're just displaying this event.
-    if (!finalResults.length) {
-      finalResults = [selectedEvent].map(event => ({
-        event,
-        position,
-      }));
-    }
     const state = {
       ...this.state,
       position,
-      dataSource: this.state.dataSource.cloneWithPages(finalResults),
     };
     return state;
   }
@@ -111,7 +83,8 @@ class EventPager extends React.Component {
     this.setState(this.getNewState(this.props, position));
   }
 
-  renderEvent(eventData: Object, pageID: number | string) {
+  renderEvent(info) {
+    const eventData = info.item;
     // This can happen when we're animating in,
     // and have passed in some almost-entirely-empty dataSource.
     // We don't want to render anything for the hidden pages
@@ -126,42 +99,60 @@ class EventPager extends React.Component {
       return <View style={{ width }} />;
     }
     return (
-      <FullEventView
-        onFlyerSelected={this.props.onFlyerSelected}
-        event={eventData.event}
-        currentPosition={eventData.position}
-      />
+      <ScrollView>
+        <FullEventView
+          onFlyerSelected={this.props.onFlyerSelected}
+          event={eventData.event}
+          currentPosition={eventData.position}
+        />
+      </ScrollView>
     );
   }
 
   render() {
-    // We only show the "first" element in the dataSource, until we've finished our animation in
-    // This should help speed up the event-view transition.
-    let dataSource = this.state.dataSource;
-    if (this.state.loadInProgress) {
-      const selectedIndex = this.getSelectedPage();
-      if (selectedIndex == null) {
-        return null;
-      }
-      const selectedPage = dataSource.getPageData(selectedIndex);
-      const tempData = Array.from(new Array(dataSource.getPageCount()));
-      tempData[selectedIndex] = selectedPage;
-      dataSource = this.state.dataSource.cloneWithPages(tempData);
+    const position = this.state.position;
+    const selectedEvent = this.props.selectedEvent;
+    if (!this.props.search.response) {
+      console.log('No response!', this.props);
+      return null;
     }
-
+    const data = this.props.search.response.results.map(event => ({
+      key: event.id,
+      event,
+      position,
+    }));
     // We use react-native-viewpager instead of react-native-carousel,
     // because we only want to render a few pages in the big list
     // (as opposed to a fully rendered pageable/scrollable view, which will scale poorly)
     return (
-      <ViewPager
-        dataSource={dataSource}
-        renderPage={this.renderEvent}
-        renderPageIndicator={false}
+      <FlatList
+        debug
+        data={data}
+        horizontal
+        pagingEnabled
+        renderItem={this.renderEvent}
         onChangePage={i =>
           this.props.onEventNavigated(
             this.state.dataSource.getPageData(i).event
           )}
-        initialPage={this.getSelectedPage()}
+        initialScrollIndex={this.getSelectedPage()}
+        getItemLayout={(itemData, index) => {
+          /* console.log({
+            itemData,
+            index,
+            length: Dimensions.get('window').width,
+            offset: Dimensions.get('window').width * index,
+          });*/
+          return {
+            length: Dimensions.get('window').width,
+            offset: Dimensions.get('window').width * index,
+            index,
+          };
+        }}
+        windowSize={4}
+        initialNumToRender={1}
+        maxToRenderPerBatch={2}
+        removeClippedSubviews={false}
       />
     );
   }
