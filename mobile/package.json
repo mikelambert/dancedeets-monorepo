@@ -70,6 +70,7 @@
   },
   "devDependencies": {
     "babel-core": "^6.10.4",
+    "babel-plugin-transform-remove-console": "^6.8.4",
     "babel-polyfill": "^6.9.1",
     "git-clone": "^0.1.0",
     "json-stable-stringify": "^1.0.1",
