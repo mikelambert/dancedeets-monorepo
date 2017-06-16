@@ -9,6 +9,7 @@ import {
   AlertIOS,
   Dimensions,
   Image,
+  InteractionManager,
   Linking,
   Platform,
   ScrollView,
@@ -127,7 +128,7 @@ class _AddToCalendarButton extends React.PureComponent {
 }
 const AddToCalendarButton = injectIntl(_AddToCalendarButton);
 
-class _EventDateTime extends React.PureComponent {
+class _EventDateTime extends React.Component {
   props: {
     start: string,
     end: string,
@@ -682,12 +683,17 @@ class EventMap extends React.PureComponent {
 
   constructor(props) {
     super(props);
-    if (Platform.OS === 'ios') {
-      this.state = { mapOk: true };
-    } else {
-      this.state = { mapOk: false };
-      this.checkAndroidMaps();
-    }
+    this.state = { mapOk: false };
+  }
+
+  componentDidMount() {
+    InteractionManager.runAfterInteractions(() => {
+      if (Platform.OS === 'ios') {
+        this.state = { mapOk: true };
+      } else {
+        this.checkAndroidMaps();
+      }
+    });
   }
 
   async checkAndroidMaps() {
@@ -702,6 +708,9 @@ class EventMap extends React.PureComponent {
     if (!this.props.venue.geocode) {
       return null;
     }
+    // Rendering this map on iOS can cause some big hiccups on the Navigation swipe-in
+    // So we instead delay it until after the interactions (animations) have completed,
+    // to avoid any jank. It's often hidden below the fold anyway...
     return (
       <MapView
         liteMode // Android-only, uses a simpler view that scrolls better.
