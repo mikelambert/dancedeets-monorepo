@@ -313,7 +313,10 @@ function getScrapyKey() {
 
 gulp.task(
   'deploy:scrapy',
-  $.shell.task([`echo ${getScrapyKey()} | shub login`, 'shub deploy'])
+  $.shell.task([
+    `echo ${getScrapyKey()} | PYTHONPATH=lib-local:. shub login`,
+    'PYTHONPATH=lib-local:. shub deploy',
+  ])
 );
 gulp.task('deploy:cleanup-files', () =>
   del.sync('lib/setuptools/script (dev).tmpl')
