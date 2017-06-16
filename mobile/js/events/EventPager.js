@@ -138,7 +138,7 @@ class EventPager extends React.Component {
         }}
         windowSize={4}
         initialNumToRender={1}
-        maxToRenderPerBatch={2}
+        maxToRenderPerBatch={1}
         removeClippedSubviews={false}
       />
     );
