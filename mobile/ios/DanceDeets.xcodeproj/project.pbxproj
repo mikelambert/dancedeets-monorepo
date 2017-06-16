@@ -266,6 +266,13 @@
 			remoteGlobalIDString = 5DBEB1501B18CEA900B34395;
 			remoteInfo = RNVectorIcons;
 		};
+		1D6CD4511EF3B564001DC8C7 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 146833FF1AC3E56700842450 /* React.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = 83CBBA2D1A601D0E00E9B192;
+			remoteInfo = React;
+		};
 		1D8958321CF910B20029E37E /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 179107B6F87A4081B9E9E42C /* RNMixpanel.xcodeproj */;
@@ -1100,6 +1107,7 @@
 			buildRules = (
 			);
 			dependencies = (
+				1D6CD4521EF3B564001DC8C7 /* PBXTargetDependency */,
 			);
 			name = DanceDeets;
 			productName = "DanceDeets Debug";
@@ -1919,6 +1927,11 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
+		1D6CD4521EF3B564001DC8C7 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = React;
+			targetProxy = 1D6CD4511EF3B564001DC8C7 /* PBXContainerItemProxy */;
+		};
 		1D902A691D42B7FB00B938F3 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 13B07F861A680F5B00A75B9A /* DanceDeets */;
