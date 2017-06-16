@@ -11,6 +11,7 @@ import {
   Image,
   Linking,
   Platform,
+  ScrollView,
   StyleSheet,
   TouchableOpacity,
   View,
@@ -966,7 +967,7 @@ class _FullEventView extends React.Component {
           height: null,
         }}
       >
-        <View style={[eventStyles.container, { width }]}>
+        <ScrollView style={[eventStyles.container, { width }]}>
           {flyer}
           <Text
             numberOfLines={2}
@@ -1006,7 +1007,7 @@ class _FullEventView extends React.Component {
             <TranslateButton event={this.props.event} />
           </HorizontalView>
           <EventDescription event={this.props.event} />
-        </View>
+        </ScrollView>
       </BlurredImage>
     );
   }

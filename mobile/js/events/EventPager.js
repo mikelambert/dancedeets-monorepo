@@ -5,13 +5,7 @@
  */
 
 import React from 'react';
-import {
-  Dimensions,
-  FlatList,
-  InteractionManager,
-  ScrollView,
-  View,
-} from 'react-native';
+import { Dimensions, FlatList, InteractionManager, View } from 'react-native';
 import { connect } from 'react-redux';
 import type {
   NavigationAction,
@@ -98,13 +92,11 @@ class EventPager extends React.Component {
       return <View style={{ width }} />;
     }
     return (
-      <ScrollView>
-        <FullEventView
-          onFlyerSelected={this.props.onFlyerSelected}
-          event={eventData.event}
-          currentPosition={eventData.position}
-        />
-      </ScrollView>
+      <FullEventView
+        onFlyerSelected={this.props.onFlyerSelected}
+        event={eventData.event}
+        currentPosition={eventData.position}
+      />
     );
   }
 
