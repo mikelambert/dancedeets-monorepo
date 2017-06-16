@@ -77,7 +77,7 @@ class SubEventLine extends React.Component {
   }
 }
 
-class EventCategories extends React.Component {
+class EventCategories extends React.PureComponent {
   props: {
     categories: Array<string>,
   };
@@ -97,7 +97,7 @@ class EventCategories extends React.Component {
   }
 }
 
-class _AddToCalendarButton extends React.Component {
+class _AddToCalendarButton extends React.PureComponent {
   props: {
     event: Event,
     style: ViewPropTypes.style,
@@ -127,7 +127,7 @@ class _AddToCalendarButton extends React.Component {
 }
 const AddToCalendarButton = injectIntl(_AddToCalendarButton);
 
-class _EventDateTime extends React.Component {
+class _EventDateTime extends React.PureComponent {
   props: {
     start: string,
     end: string,
@@ -179,7 +179,7 @@ function formatDistance(intl, distanceKm) {
   }
 }
 
-class _EventVenue extends React.Component {
+class _EventVenue extends React.PureComponent {
   props: {
     venue: Venue,
     style: ViewPropTypes.style,
@@ -244,7 +244,14 @@ class _EventVenue extends React.Component {
 }
 const EventVenue = injectIntl(_EventVenue);
 
-class _EventSource extends React.Component {
+class _EventSource extends React.PureComponent {
+  props: {
+    event: Ebent,
+
+    // Self-managed props
+    intl: intlShape,
+  };
+
   constructor(props: Object) {
     super(props);
     (this: any).onPress = this.onPress.bind(this);
@@ -299,7 +306,7 @@ class _EventSource extends React.Component {
 }
 const EventSource = injectIntl(_EventSource);
 
-class _EventAddedBy extends React.Component {
+class _EventAddedBy extends React.PureComponent {
   props: {
     event: Event,
 
@@ -359,7 +366,7 @@ class _EventAddedBy extends React.Component {
 }
 const EventAddedBy = injectIntl(_EventAddedBy);
 
-class _EventOrganizers extends React.Component {
+class _EventOrganizers extends React.PureComponent {
   props: {
     event: Event,
 
@@ -459,7 +466,7 @@ class _EventOrganizers extends React.Component {
 }
 const EventOrganizers = injectIntl(_EventOrganizers);
 
-class _EventRsvpControl extends React.Component {
+class _EventRsvpControl extends React.PureComponent {
   props: {
     event: Event,
 
@@ -609,7 +616,7 @@ class _EventRsvp extends React.Component {
 }
 const EventRsvp = injectIntl(_EventRsvp);
 
-class _EventDescription extends React.Component {
+class _EventDescription extends React.PureComponent {
   props: {
     event: Event,
 
@@ -645,7 +652,7 @@ const EventDescription = connect(state => ({
   translatedEvents: state.translate.events,
 }))(_EventDescription);
 
-class _TranslateButton extends React.Component {
+class _TranslateButton extends React.PureComponent {
   props: {
     event: Event,
 
@@ -663,7 +670,7 @@ class _TranslateButton extends React.Component {
 }
 const TranslateButton = injectIntl(_TranslateButton);
 
-class EventMap extends React.Component {
+class EventMap extends React.PureComponent {
   props: {
     venue: Venue,
     defaultSize: number,
@@ -777,7 +784,7 @@ async function openVenueWithApp(venue: Venue) {
   }
 }
 
-class EventShare extends React.Component {
+class EventShare extends React.PureComponent {
   props: {
     event: Event,
   };
@@ -795,7 +802,7 @@ class EventShare extends React.Component {
   }
 }
 
-class _EventTranslate extends React.Component {
+class _EventTranslate extends React.PureComponent {
   props: {
     event: Event,
 
@@ -841,7 +848,7 @@ const EventTranslate = connect(
   })
 )(injectIntl(_EventTranslate));
 
-class _EventTickets extends React.Component {
+class _EventTickets extends React.PureComponent {
   props: {
     event: Event,
 

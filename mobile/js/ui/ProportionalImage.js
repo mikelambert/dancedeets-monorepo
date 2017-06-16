@@ -21,7 +21,7 @@ type Props = {
   initialDimensions?: Dimension,
 };
 
-export default class ProportionalImage extends React.Component {
+export default class ProportionalImage extends React.PureComponent {
   static defaultProps = {
     duration: 200,
     resizeDirection: 'height',
