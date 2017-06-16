@@ -152,7 +152,7 @@ class _SearchHeaderTitleSummary extends React.Component {
               paddingHorizontal: 5,
               overflow: 'hidden',
               marginHorizontal: 20,
-              minWidth: 100,
+              minWidth: 200,
               maxWidth: Dimensions.get('window').width - sideMargin * 2,
             }}
           >
