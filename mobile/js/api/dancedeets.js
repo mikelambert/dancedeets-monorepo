@@ -66,18 +66,15 @@ async function performRequest(
       },
       body: JSON.stringify(fullPostData),
     });
-    const buffer = await result.text();
-    try {
-      const json = JSON.parse(buffer);
-      // 'undefined' means success, 'false' means error
-      if (json.success === false) {
-        throw new Error(`${json.errors}`);
-      } else {
-        return json;
-      }
-    } catch (e) {
-      console.warn('Server Error:', buffer);
-      throw e;
+    // This setTimeout kicks the eventloop so it doesn't fall asleep.
+    // Workaround for https://github.com/facebook/react-native/issues/14391
+    setTimeout(() => null, 0);
+    const json = await result.json();
+    // 'undefined' means success, 'false' means error
+    if (json.success === false) {
+      throw new Error(`${json.errors}`);
+    } else {
+      return json;
     }
   } catch (e) {
     console.warn(
