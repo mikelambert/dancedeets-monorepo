@@ -36,7 +36,10 @@ export function formatStartDateOnly(startString: string, intl: intlShape) {
   const diff = start.diff(now);
   let format = weekdayDate;
   // Use a year for faraway dates
-  if (diff < 0 || diff > moment.duration(6, 'months')) {
+  if (
+    diff < moment.duration(-3, 'months') ||
+    diff > moment.duration(6, 'months')
+  ) {
     format = weekdayDateWithYear;
   }
   return upperFirst(intl.formatDate(start.toDate(), format));
