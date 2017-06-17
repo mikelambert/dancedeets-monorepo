@@ -7,8 +7,10 @@
 import { Animated } from 'react-native';
 import type { Action, Dispatch, ThunkAction } from '../actions/types';
 
-const SET_FORM_STATUS = 'searchHeader/SET_FORM_STATUS';
-const SET_TITLE_STATUS = 'searchHeader/SET_TITLE_STATUS';
+const START_OPEN = 'searchHeader/START_OPEN';
+const FINISH_OPEN = 'searchHeader/FINISH_OPEN';
+const START_CLOSE = 'searchHeader/START_CLOSE';
+const FINISH_CLOSE = 'searchHeader/FINISH_CLOSE';
 
 export type State = {
   navbarTitleVisible: boolean,
@@ -25,10 +27,14 @@ const initialState = {
 export default function reducer(state: State = initialState, action: Action) {
   switch (action.type) {
     // do reducer stuff
-    case SET_TITLE_STATUS:
-      return { ...state, navbarTitleVisible: action.status };
-    case SET_FORM_STATUS:
-      return { ...state, searchFormVisible: action.status };
+    case START_OPEN:
+      return { ...state, navbarTitleVisible: true, searchFormVisible: true };
+    case FINISH_OPEN:
+      return { ...state, navbarTitleVisible: false, searchFormVisible: true };
+    case START_CLOSE:
+      return { ...state, navbarTitleVisible: true, searchFormVisible: true };
+    case FINISH_CLOSE:
+      return { ...state, navbarTitleVisible: true, searchFormVisible: false };
     default:
       return state;
   }
@@ -36,30 +42,30 @@ export default function reducer(state: State = initialState, action: Action) {
 
 export function showSearchForm(): ThunkAction {
   return async (dispatch: Dispatch, getState) => {
-    await dispatch({ type: SET_FORM_STATUS, status: true });
     const state = getState();
+    await dispatch({ type: START_OPEN });
 
     Animated.timing(state.searchHeader.headerAnim, {
       toValue: 1,
       duration: 200,
       useNativeDriver: true,
     }).start(result => {
-      dispatch({ type: SET_TITLE_STATUS, status: false });
+      dispatch({ type: FINISH_OPEN });
     });
   };
 }
 
 export function hideSearchForm(): ThunkAction {
   return async (dispatch: Dispatch, getState) => {
-    await dispatch({ type: SET_TITLE_STATUS, status: true });
     const state = getState();
+    await dispatch({ type: START_CLOSE });
 
     Animated.timing(state.searchHeader.headerAnim, {
       toValue: 0,
       duration: 100,
       useNativeDriver: true,
     }).start(result => {
-      dispatch({ type: SET_FORM_STATUS, status: false });
+      dispatch({ type: FINISH_CLOSE });
     });
   };
 }

@@ -46,8 +46,10 @@ export type Action =
   | { type: 'START_SEARCH' }
   | { type: 'SEARCH_COMPLETE', response: SearchResponse }
   | { type: 'SEARCH_FAILED' }
-  | { type: 'searchHeader/SET_FORM_STATUS', status: boolean }
-  | { type: 'searchHeader/SET_TITLE_STATUS', status: boolean }
+  | { type: 'searchHeader/START_OPEN' }
+  | { type: 'searchHeader/FINISH_OPEN' }
+  | { type: 'searchHeader/START_CLOSE' }
+  | { type: 'searchHeader/FINISH_CLOSE' }
   | { type: 'ADD_EVENTS_RELOAD' }
   | { type: 'ADD_EVENTS_RELOAD_COMPLETE', results: AddEventList }
   | { type: 'ADD_EVENTS_RELOAD_FAILED' }
