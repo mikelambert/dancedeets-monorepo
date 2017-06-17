@@ -38,16 +38,20 @@ handlers:
 # My Admin Tools
 - url: /tools/.*
   script: admin_apps.authorized_main_app
+  secure: always
 - url: /admin.*
   script: admin_apps.authorized_admin_app
+  secure: always
 - url: /events/admin.*
   script: admin_apps.authorized_main_app
+  secure: always
 - url: /tasks/.*
   script: admin_apps.authorized_main_app
 - url: /_ah/warmup
   script: main.application
 - url: .*
   script: main.application
+  secure: always
 
 skip_files:
 # This is here so that the GAE dev_appserver's mtime_watcher will ignore this directory
