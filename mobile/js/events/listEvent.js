@@ -74,6 +74,7 @@ class _EventRow extends React.PureComponent {
               </Text>
               <EventVenueShort venue={this.props.event.venue} />
               <Text
+                numberOfLines={2}
                 style={
                   (
                     eventStyles.detailText,
