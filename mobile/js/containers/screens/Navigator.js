@@ -16,6 +16,15 @@ import type { StackNavigatorConfig } from 'react-navigation/src/navigators/Stack
 import { gradientTop, purpleColors } from '../../Colors';
 import type { Dispatch } from '../../actions/types';
 
+const navigateOnce = getStateForAction => (action, state) => {
+  const { type, routeName } = action;
+  return state &&
+    type === NavigationActions.NAVIGATE &&
+    routeName === state.routes[state.routes.length - 1].routeName
+    ? state
+    : getStateForAction(action, state);
+};
+
 export default (
   stateName: string,
   routeConfigMap: NavigationRouteConfigMap,
@@ -33,7 +42,9 @@ export default (
     },
     ...stackConfig,
   });
-  // Add this ourselves, since it's useful for us for others to be able to find the 'zeroth index route name'
-  Navigator.routeConfig = routeConfigMap;
+
+  Navigator.router.getStateForAction = navigateOnce(
+    Navigator.router.getStateForAction
+  );
   return Navigator;
 };

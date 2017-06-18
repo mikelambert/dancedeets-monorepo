@@ -33,7 +33,7 @@ class TabApp extends React.Component {
       state: screens,
     });
 
-    const routeKey = this.props.screens.routes[this.props.screens.index].key;
+    const routeKey = screens.routes[screens.index].key;
     return (
       <TimeTracker eventName="Tab Time" eventValue={routeKey}>
         <TabNavigator
