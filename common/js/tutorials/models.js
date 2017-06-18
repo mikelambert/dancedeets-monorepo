@@ -44,20 +44,17 @@ export class Playlist {
     return `http://www.dancedeets.com/tutorials/${this.getId()}`;
   }
 
-  getItems(selectedIndex: number) {
-    const selectedVideo = this.getVideo(selectedIndex);
-    const items = {};
-    this.sections.forEach((section, i) => {
-      items[section.key(i)] = section.videos.map(video => ({
+  getSectionListData() {
+    return this.sections.map(section => ({
+      data: section.videos.map(video => ({
+        key: video.youtubeId,
         video,
-        selected: video === selectedVideo,
-      }));
-    });
-    return items;
-  }
-
-  getSectionHeaders() {
-    return this.sections.map((x, i) => x.key(i));
+      })),
+      realSection: section,
+      // We add a youtubeId juuuuust in case:
+      key: section.title + section.videos[0].youtubeId,
+      title: section.title,
+    }));
   }
 
   getVideo(index: number): Video {
