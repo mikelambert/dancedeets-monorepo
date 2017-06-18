@@ -974,7 +974,6 @@ class _FullEventView extends React.Component {
       name = translatedEvent.translation.name;
     }
 
-    console.log('render', this.props.event.name);
     return (
       <BlurredImage source={squareImageProps} style={eventStyles.blurredImage}>
         <ScrollView style={[eventStyles.container, { width }]}>

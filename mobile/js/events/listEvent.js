@@ -40,7 +40,7 @@ class EventVenueShort extends React.PureComponent {
       return null;
     }
     return (
-      <Text style={[eventStyles.detailText, this.props.style]}>
+      <Text style={[eventStyles.cityText, this.props.style]}>
         {this.props.venue.cityState()}
       </Text>
     );
@@ -73,18 +73,7 @@ class _EventRow extends React.PureComponent {
                 {this.props.event.name}
               </Text>
               <EventVenueShort venue={this.props.event.venue} />
-              <Text
-                numberOfLines={2}
-                style={
-                  (
-                    eventStyles.detailText,
-                    {
-                      position: 'absolute',
-                      bottom: 0,
-                    }
-                  )
-                }
-              >
+              <Text numberOfLines={2} style={eventStyles.styleList}>
                 {this.props.event.annotations.categories.slice(0, 8).join(', ')}
               </Text>
             </View>
@@ -111,8 +100,14 @@ const eventStyles = StyleSheet.create({
     fontSize: semiNormalize(18),
     lineHeight: semiNormalize(22),
   },
-  detailText: {
+  cityText: {
     fontSize: semiNormalize(detailHeight),
     lineHeight: semiNormalize(detailHeight + 2),
+  },
+  styleList: {
+    position: 'absolute',
+    bottom: 0,
+    fontSize: semiNormalize(detailHeight - 3),
+    lineHeight: semiNormalize(detailHeight - 3 + 2),
   },
 });
