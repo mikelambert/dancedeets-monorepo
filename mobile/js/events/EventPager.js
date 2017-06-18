@@ -42,7 +42,7 @@ class EventPager extends React.Component {
     };
     this.state = this.getNewState(this.props, null);
     (this: any).renderEvent = this.renderEvent.bind(this);
-    (this: any).onChangePage = this.onChangePage.bind(this);
+    (this: any).onScrollEnd = this.onScrollEnd.bind(this);
   }
 
   componentWillMount() {
@@ -59,8 +59,15 @@ class EventPager extends React.Component {
     this.setState(this.getNewState(nextProps, this.state.position));
   }
 
-  onChangePage(i) {
-    return this.props.onEventNavigated(this.props.search.response.results[i]);
+  // From https://stackoverflow.com/questions/43370807/react-native-get-current-page-in-flatlist-when-using-pagingenabled
+  onScrollEnd(e) {
+    const contentOffset = e.nativeEvent.contentOffset;
+    const viewSize = e.nativeEvent.layoutMeasurement;
+
+    // Divide the horizontal offset by the width of the view to see which page is visible
+    const pageIndex = Math.floor(contentOffset.x / viewSize.width);
+    const event = this.props.search.response.results[pageIndex];
+    return this.props.onEventNavigated(event);
   }
 
   getNewState(props, oldPosition) {
@@ -147,8 +154,7 @@ class EventPager extends React.Component {
         horizontal
         pagingEnabled
         renderItem={this.renderEvent}
-        // This doesn't work! Use https://stackoverflow.com/questions/43370807/react-native-get-current-page-in-flatlist-when-using-pagingenabled !
-        // onChangePage={this.onChangePage}
+        onMomentumScrollEnd={this.onScrollEnd}
         initialScrollIndex={this.getSelectedPage()}
         getItemLayout={this.getItemLayout}
         windowSize={5}
