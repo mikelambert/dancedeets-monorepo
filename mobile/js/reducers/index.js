@@ -16,7 +16,12 @@ import TabNavigator from '../containers/TabNavigator';
 
 function screens(state, action) {
   // Reverse ordering: (state, action) => (action, state)
-  return TabNavigator.router.getStateForAction(action, state);
+  const nextState = TabNavigator.router.getStateForAction(action, state);
+
+  // If nextState is null, it means no-action. So let's return the existing state.
+  // https://github.com/react-community/react-navigation/issues/271#issuecomment-309482910
+  // https://reactnavigation.org/docs/guides/redux#Redux-Integration
+  return nextState || state;
 }
 
 export default combineReducers({
