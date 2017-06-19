@@ -40,7 +40,7 @@ import type { Dispatch, User } from '../actions/types';
 import { categoryDisplayName } from './models';
 import type { BattleCategory, BattleEvent, Signup } from './models';
 import { eventRegister, eventUnregister } from '../api/dancedeets';
-import { TrackFirebase } from '../firestack';
+import { TrackFirebase } from '../firebase';
 import CategorySignupScreen from './categorySignupScreen';
 import CategoryView from './categoryView';
 import BattleEventView from './battleEventView';

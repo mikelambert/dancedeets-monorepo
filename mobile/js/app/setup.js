@@ -14,8 +14,8 @@ import { intl } from 'dancedeets-common/js/intl';
 import App from './app';
 import configureStore from '../store/configureStore';
 import ScreenshotSlideshow from '../ScreenshotSlideshow';
-// Initialize firestack
-import firestack from '../firestack';
+// Initialize firebase
+import firebase from '../firebase';
 import { getCurrentLocale } from '../locale';
 
 export default function setup() {

@@ -18,7 +18,7 @@ import { injectIntl, intlShape, defineMessages } from 'react-intl';
 import { track, trackWithEvent } from '../../store/track';
 import { categoryDisplayName } from '../../event_signups/models';
 import { BattleSelector } from '../../event_signups/views';
-import { TrackFirebase } from '../../firestack';
+import { TrackFirebase } from '../../firebase';
 import CategorySignupScreen from '../../event_signups/categorySignupScreen';
 import CategoryView from '../../event_signups/categoryView';
 import BattleEventView from '../../event_signups/battleEventView';
