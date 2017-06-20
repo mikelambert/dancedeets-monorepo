@@ -50,6 +50,14 @@ type Props = {
   queryLanguage: string,
 };
 
+function sleep(seconds) {
+  return new Promise((resolve, reject) => {
+    setTimeout(() => {
+      resolve();
+    }, seconds * 1000);
+  });
+}
+
 export default class AutocompleteList extends React.Component {
   static defaultProps: Props = {
     onLocationSelected: x => {},
@@ -143,8 +151,9 @@ export default class AutocompleteList extends React.Component {
       const address = await getAddress();
       this.props.onLocationSelected(address);
     } catch (e) {
-      this.disableRowLoaders();
       console.warn(e);
+      await sleep(0.5);
+      this.disableRowLoaders();
     }
   }
 
