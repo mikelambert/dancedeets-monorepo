@@ -30,7 +30,7 @@ const STATUSBAR_HEIGHT = Platform.OS === 'ios' ? 20 : 0;
 const messages = defineMessages({
   credits: {
     id: 'credits.title',
-    defaultMessage: 'Dancedeets Credits',
+    defaultMessage: 'Dancedeets {version} Credits',
     description: 'Header of our Credits section',
   },
   tagline: {
@@ -102,67 +102,6 @@ const messages = defineMessages({
     description: 'Details about the user',
   },
 });
-
-const credits = [
-  ['Web & App Programming', ['Mike Lambert']],
-  ['Logo', ['James "Cricket" Colter']],
-  ['App Login Photos', ['dancephotos.ch']],
-  [
-    'Translations',
-    [
-      'French: Mai Le, Hayet',
-      'Japanese: Huu Rock',
-      'Chinese: Wei, King Kong, Zoe',
-    ],
-  ],
-];
-
-class CreditSubList extends React.Component {
-  props: {
-    list: Array<string>,
-  };
-
-  render() {
-    const subcreditGroups = this.props.list.map(x =>
-      <Text key={x} style={{ left: 5 }}>- {x}</Text>
-    );
-    return <View>{subcreditGroups}</View>;
-  }
-}
-
-class _Credits extends React.Component {
-  props: {
-    intl: intlShape,
-    style: Object,
-  };
-
-  render() {
-    const creditHeader = (
-      <Heading1 style={{ marginBottom: 5 }}>
-        {this.props.intl.formatMessage(messages.credits)}
-      </Heading1>
-    );
-    const creditGroups = credits.map(x =>
-      <View key={x[0]}>
-        <Text style={{ fontWeight: 'bold' }}>{x[0]}:</Text>
-        <CreditSubList list={x[1]} />
-      </View>
-    );
-    const version = (
-      <Text style={styles.versionStyle}>
-        Version: {NativeEnv.get('VERSION_NAME')}
-      </Text>
-    );
-    return (
-      <View style={this.props.style}>
-        {creditHeader}
-        {version}
-        {creditGroups}
-      </View>
-    );
-  }
-}
-const Credits = injectIntl(_Credits);
 
 const shareLinkContent = {
   contentType: 'link',
@@ -344,7 +283,6 @@ class HorizontalRule extends React.Component {
           borderColor: purpleColors[0],
           borderTopWidth: 0.5,
           height: 0,
-          //width: 200,
           marginVertical: 10,
           marginHorizontal: 10,
         }}
@@ -353,10 +291,17 @@ class HorizontalRule extends React.Component {
   }
 }
 
+export function getVersionTitle(intl) {
+  return intl.formatMessage(messages.credits, {
+    version: `v${NativeEnv.get('VERSION_NAME')}`,
+  });
+}
+
 class _Profile extends React.Component {
   props: {
     intl: intlShape,
     onNotificationPreferences: () => void,
+    openCredits: () => void,
   };
 
   render() {
@@ -410,7 +355,12 @@ class _Profile extends React.Component {
 
         <HorizontalRule />
 
-        <Credits />
+        <Button
+          size="small"
+          caption={getVersionTitle(this.props.intl)}
+          onPress={this.props.openCredits}
+          style={styles.noFlexButton}
+        />
 
       </ScrollView>
     );
@@ -458,8 +408,5 @@ const styles = StyleSheet.create({
   },
   link: {
     color: linkColor,
-  },
-  versionStyle: {
-    fontStyle: 'italic',
   },
 });

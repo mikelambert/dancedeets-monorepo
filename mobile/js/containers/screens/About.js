@@ -16,9 +16,10 @@ import { NavigationActions } from 'react-navigation';
 import { connect } from 'react-redux';
 import { injectIntl, intlShape, defineMessages } from 'react-intl';
 import { track, trackWithEvent } from '../../store/track';
-import ProfilePage from '../Profile';
+import ProfilePage, { getVersionTitle } from '../Profile';
 import NotificationPreferences from '../NotificationPreferences';
 import StackNavigator from './Navigator';
+import Credits from '../Credits';
 
 const messages = defineMessages({
   notificationsTitle: {
@@ -30,6 +31,11 @@ const messages = defineMessages({
     id: 'tab.about',
     defaultMessage: 'About',
     description: 'Tab button to show general info, as well as panel title',
+  },
+  credits: {
+    id: 'credits.title',
+    defaultMessage: 'Dancedeets Credits',
+    description: 'Header of our Credits section',
   },
 });
 
@@ -56,8 +62,21 @@ class MainScreen extends React.Component {
 
   render() {
     return (
-      <ProfilePage onNotificationPreferences={this.onNotificationPreferences} />
+      <ProfilePage
+        onNotificationPreferences={this.onNotificationPreferences}
+        openCredits={() => this.props.navigation.navigate('Credits')}
+      />
     );
+  }
+}
+
+class CreditsScreen extends React.Component {
+  static navigationOptions = ({ screenProps }) => ({
+    headerTitle: screenProps.intl.formatMessage(messages.credits),
+  });
+
+  render() {
+    return <Credits />;
   }
 }
 
@@ -73,6 +92,6 @@ class NotificationScreen extends React.Component {
 
 export const AboutScreensNavigator = StackNavigator('about', {
   AboutMain: { screen: MainScreen },
+  Credits: { screen: CreditsScreen },
   NotificationPreferences: { screen: NotificationScreen },
 });
-
