@@ -27,7 +27,7 @@ function getUrl(path: string, args: Object) {
   const version = '1.4';
   const baseUrl = DEV_SERVER
     ? `http://dev.dancedeets.com:8080/api/v${version}/`
-    : `http://www.dancedeets.com/api/v${version}/`;
+    : `https://www.dancedeets.com/api/v${version}/`;
   const formattedArgs = querystring.stringify(args);
   let fullPath = baseUrl + path;
   if (formattedArgs) {
