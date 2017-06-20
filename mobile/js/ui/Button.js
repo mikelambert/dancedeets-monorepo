@@ -26,7 +26,7 @@ type Props = {
   onPress: () => Promise<void> | void,
   size: 'small' | 'large',
   textStyle: any,
-  color: 'purple' | 'yellow' | 'red' | 'green',
+  color: 'translucent' | 'purple' | 'yellow' | 'red' | 'green',
   testID: ?string,
   isLoading: boolean,
   enabled: ?boolean,
@@ -42,7 +42,7 @@ class Button extends React.Component {
     onPress: () => {},
     size: 'large',
     textStyle: {},
-    color: 'purple',
+    color: 'translucent',
     testID: null,
     isLoading: false,
     enabled: true,
@@ -112,17 +112,26 @@ class Button extends React.Component {
     } else if (this.props.color === 'green') {
       colors = [greenColors[0], greenColors[1], greenColors[1]];
     }
-    const buttonContents = (
-      <LinearGradient
-        start={{ x: 0.0, y: 0.0 }}
-        end={{ x: 0.0, y: 1.0 }}
-        locations={[0.0, 0.7, 1.0]}
-        colors={colors}
-        style={[styles.button, size]}
-      >
-        {this.renderContent()}
-      </LinearGradient>
-    );
+    const buttonContents = this.props.color === 'translucent'
+      ? <View
+          style={{
+            padding: 5,
+            borderColor: purpleColors[0],
+            borderWidth: 1,
+            borderRadius: 5,
+          }}
+        >
+          {this.renderContent()}
+        </View>
+      : <LinearGradient
+          start={{ x: 0.0, y: 0.0 }}
+          end={{ x: 0.0, y: 1.0 }}
+          locations={[0.0, 0.7, 1.0]}
+          colors={colors}
+          style={[styles.button, size]}
+        >
+          {this.renderContent()}
+        </LinearGradient>;
 
     if (this.props.enabled) {
       return (
