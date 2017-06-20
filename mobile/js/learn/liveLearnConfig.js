@@ -4,18 +4,22 @@
  * @flow
  */
 
-import { RemoteConfig } from 'react-native-firebase3';
+import firebase from '../firebase';
 
 async function loadConfig() {
   if (__DEV__) {
-    RemoteConfig.setDeveloperMode(true);
+    firebase.config().setDeveloperMode(true);
   }
-  await RemoteConfig.fetchWithExpirationDuration(60 * 10);
-  await RemoteConfig.activateFetched();
+  await firebase.config().fetch(60 * 10); // 10 minutes
+  await firebase.config().activateFetched();
 }
 
 // loadConfig();
 
 export async function getRemoteBlogs() {
-  return JSON.parse(await RemoteConfig.getNamespacedString('blogs', 'Learn'));
+  const snapshot = await firebase.config().getValue('blogs/Learn');
+  if (snapshot && snapshot.val()) {
+    return JSON.parse(snapshot.val());
+  }
+  return null;
 }
