@@ -397,7 +397,7 @@ class _EventListContainer extends React.Component {
     const sectionHeaders = [];
 
     if (response) {
-      if (response.featuredInfos) {
+      if (response.featuredInfos && response.featuredInfos.length) {
         const featuredTitle = this.props.intl.formatMessage(
           messages.featuredEvent
         );
@@ -418,7 +418,7 @@ class _EventListContainer extends React.Component {
         const defaultCollapsed = !(response.results.length < 10);
 
         const peopleData = [];
-        if (response.people.ADMIN) {
+        if (response.people.ADMIN && response.people.ADMIN.length) {
           peopleData.push({
             key: 'Admin Row',
             renderClass: OrganizerView,
@@ -426,7 +426,7 @@ class _EventListContainer extends React.Component {
             defaultCollapsed,
           });
         }
-        if (response.people.ATTENDEE) {
+        if (response.people.ATTENDEE && response.people.ATTENDEE.length) {
           peopleData.push({
             key: 'Attendee Row',
             renderClass: AttendeeView,

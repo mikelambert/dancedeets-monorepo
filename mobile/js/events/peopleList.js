@@ -135,6 +135,7 @@ export class OrganizerView extends React.Component {
   props: {
     defaultCollapsed: boolean,
     headerStyle: ViewPropTypes.style,
+    people: StylePersonLookup,
   };
 
   render() {
@@ -142,10 +143,11 @@ export class OrganizerView extends React.Component {
       <HeaderCollapsible
         title="Nearby Promoters"
         defaultCollapsed={this.props.defaultCollapsed}
+        style={this.props.headerStyle}
       >
         <PersonList
           subtitle="If you want to organize an event, work with these folks"
-          people={admins}
+          people={this.props.people}
         />
       </HeaderCollapsible>
     );
@@ -156,6 +158,7 @@ export class AttendeeView extends React.Component {
   props: {
     defaultCollapsed: boolean,
     headerStyle: ViewPropTypes.style,
+    people: StylePersonLookup,
   };
 
   render() {
@@ -167,7 +170,7 @@ export class AttendeeView extends React.Component {
       >
         <PersonList
           subtitle="If you want to connect with the dance scene, hit these folks up"
-          people={this.props.people.ATTENDEE}
+          people={this.props.people}
         />
       </HeaderCollapsible>
     );
