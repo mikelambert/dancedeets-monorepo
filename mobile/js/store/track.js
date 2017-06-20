@@ -23,12 +23,11 @@
  */
 
 import Mixpanel from 'react-native-mixpanel';
-// TODO(lambert): Eventually migrate this to react-native-firestack
-import { Analytics } from 'react-native-firebase3';
 import { AccessToken, AppEventsLogger } from 'react-native-fbsdk';
 import { Crashlytics } from 'react-native-fabric';
 import DeviceInfo from 'react-native-device-info';
 import type { Event } from 'dancedeets-common/js/events/models';
+import firebase from '../firebase';
 import { performRequest } from '../api/fb';
 import type { Action } from '../actions/types';
 
@@ -80,11 +79,11 @@ export function track(eventName: string, params: ?Params) {
     }
     AppEventsLogger.logEvent(eventName, 1, params);
     Mixpanel.trackWithProperties(eventName, params);
-    Analytics.logEvent(firebaseSafe(eventName), firebaseSafeParams);
+    firebase.analytics().logEvent(firebaseSafe(eventName), firebaseSafeParams);
   } else {
     AppEventsLogger.logEvent(eventName, 1);
     Mixpanel.track(eventName);
-    Analytics.logEvent(firebaseSafe(eventName));
+    firebase.analytics().logEvent(firebaseSafe(eventName));
   }
 }
 
@@ -129,7 +128,7 @@ async function setupPersonProperties() {
   }
   Crashlytics.setUserIdentifier(token.userID);
   Mixpanel.identify(token.userID);
-  Analytics.setUserId(token.userID);
+  firebase.analytics().setUserId(token.userID);
 
   const user = await performRequest('GET', 'me', {
     fields: 'id,name,first_name,last_name,gender,locale,timezone,email,link',
@@ -149,7 +148,7 @@ async function setupPersonProperties() {
   });
   Mixpanel.setOnce({ $created: now });
 
-  Analytics.setUserProperties({
+  const fbProperties = {
     FBFirstName: user.first_name,
     FBLastName: user.last_name,
     FBGender: user.gender,
@@ -157,7 +156,10 @@ async function setupPersonProperties() {
     FBTimezone: user.timezone.toString(),
     FBEmail: user.email,
     LastLogin: now,
-  });
+  };
+  Object.keys(fbProperties).forEach(key =>
+    firebase.analytics().setUserProperty(key, fbProperties[key])
+  );
 }
 
 export async function trackLogin() {
@@ -178,7 +180,7 @@ export function trackLogout() {
   track('Logout');
   // Mixpanel.removePushToken();
   Mixpanel.reset();
-  Analytics.setUserId(null);
+  firebase.analytics().setUserId(null);
 }
 
 export function trackDispatches(action: Action): void {}
