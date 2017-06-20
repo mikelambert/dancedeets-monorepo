@@ -28,6 +28,7 @@ import type {
   NavigationRoute,
   NavigationScreenProp,
 } from 'react-navigation/src/TypeDefinition';
+import Icon from 'react-native-vector-icons/Ionicons';
 import { Event } from 'dancedeets-common/js/events/models';
 import type {
   FeaturedInfo,
@@ -45,6 +46,7 @@ import {
   performSearch,
   processUrl,
   setWaitingForLocationPermission,
+  showSearchForm,
 } from '../actions';
 import type { User } from '../actions/types';
 import { linkColor, purpleColors } from '../Colors';
@@ -98,18 +100,16 @@ const messages = defineMessages({
     defaultMessage: 'Local Dance Scene',
     description: 'Header for the nearby dancers and nearby people',
   },
-  askForLocationPermissionText: {
-    id: 'eventList.askForLocationPermissionText',
-    defaultMessage:
-      'Please enter a location or search keywords above.\nOr you can use GPS to find events near you.',
-    description:
-      'Text to display for our intro screen when we do not have location permissions',
+  openSearchHeaderButton: {
+    id: 'eventList.openSearchHeaderButton',
+    defaultMessage: 'Enter a location or search keywords above',
+    description: 'Will pop-open the search header for manual entry',
   },
-  askForLocationPermissionButton: {
-    id: 'eventList.askForLocationPermissionButton',
-    defaultMessage: 'Find events near me',
+  useGpsLocation: {
+    id: 'eventList.useGpsLocation',
+    defaultMessage: 'Use my GPS to find events near me',
     description:
-      'Button to display for our intro screen when we do not have location permissions',
+      'Will prompt user for Location permissions and then do a search',
   },
 });
 
@@ -304,6 +304,7 @@ class _EventListContainer extends React.Component {
     detectedLocation: (location: string) => Promise<void>,
     performSearch: () => Promise<void>,
     setWaitingForLocationPermission: (waiting: boolean) => Promise<void>,
+    showSearchForm: () => Promise<void>,
     processUrl: (url: string) => Promise<void>,
     loadUserData: () => Promise<void>,
     intl: intlShape,
@@ -620,15 +621,25 @@ class _EventListContainer extends React.Component {
 
   renderWaitingForLocationPermission() {
     return (
-      <View>
-        <Text>
-          {this.props.intl.formatMessage(messages.askForLocationPermissionText)}
-        </Text>
+      <View style={{ justifyContent: 'center', alignItems: 'center', flex: 1 }}>
+        <Button
+          style={{ marginBottom: 50 }}
+          onPress={this.props.showSearchForm}
+          caption={this.props.intl.formatMessage(
+            messages.openSearchHeaderButton
+          )}
+        />
         <Button
           onPress={this.fetchLocationAndSearch}
-          caption={this.props.intl.formatMessage(
-            messages.askForLocationPermissionButton
-          )}
+          iconView={
+            <Icon
+              name="md-locate"
+              size={20}
+              style={{ marginRight: 5 }}
+              color="#FFF"
+            />
+          }
+          caption={this.props.intl.formatMessage(messages.useGpsLocation)}
         />
       </View>
     );
@@ -637,6 +648,7 @@ class _EventListContainer extends React.Component {
   renderListView() {
     const search = this.props.search;
 
+    return this.renderWaitingForLocationPermission();
     if (
       search.waitingForLocationPermission &&
       !search.response &&
@@ -696,6 +708,9 @@ const EventListContainer = connect(
     },
     loadUserData: async () => {
       await loadUserData(dispatch);
+    },
+    showSearchForm: async () => {
+      await dispatch(showSearchForm());
     },
   })
 )(injectIntl(_EventListContainer));
