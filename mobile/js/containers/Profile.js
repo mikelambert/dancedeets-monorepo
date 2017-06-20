@@ -307,7 +307,7 @@ class _Profile extends React.Component {
   render() {
     // iOS handles notification settings automatically for us, so let's offer this there
     let notificationButton = null;
-    if (Platform.OS !== 'android') {
+    if (Platform.OS === 'android') {
       notificationButton = (
         <Button
           key="Button"
