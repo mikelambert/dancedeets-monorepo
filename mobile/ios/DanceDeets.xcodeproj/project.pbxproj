@@ -26,7 +26,6 @@
 		1A5B7FC4903A4658B4A31643 /* SimpleLineIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 1F9C0C3BB16246CEA54A2023 /* SimpleLineIcons.ttf */; };
 		1D17D43C1D9102E000CE92FD /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 1D17D43E1D9102E000CE92FD /* InfoPlist.strings */; };
 		1D1BE72B1EE91F96006A7D2E /* libRCTPushNotification.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1D1BE7281EE91F2D006A7D2E /* libRCTPushNotification.a */; };
-		1D2694F31D077C5F000E1BD3 /* launch_screen.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 1D2694F21D077C5F000E1BD3 /* launch_screen.jpg */; };
 		1D2F15E61D48015600BA0D43 /* CoreFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1D2F15E41D4800D000BA0D43 /* CoreFoundation.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
 		1D449AAA1D04A69300195AF6 /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 1D449AA91D04A69300195AF6 /* libz.tbd */; };
 		1D449B301D04D70500195AF6 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1D449B2F1D04D70400195AF6 /* Images.xcassets */; };
@@ -497,7 +496,6 @@
 		1D17D4401D9102EF00CE92FD /* zh-Hant */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hant"; path = "zh-Hant.lproj/InfoPlist.strings"; sourceTree = "<group>"; };
 		1D17D4421D9102F500CE92FD /* ja */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ja; path = ja.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		1D1BE7221EE91F2D006A7D2E /* RCTPushNotification.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTPushNotification.xcodeproj; path = "../node_modules/react-native/Libraries/PushNotificationIOS/RCTPushNotification.xcodeproj"; sourceTree = "<group>"; };
-		1D2694F21D077C5F000E1BD3 /* launch_screen.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = launch_screen.jpg; sourceTree = "<group>"; };
 		1D2F15E41D4800D000BA0D43 /* CoreFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreFoundation.framework; path = System/Library/Frameworks/CoreFoundation.framework; sourceTree = SDKROOT; };
 		1D449AA91D04A69300195AF6 /* libz.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libz.tbd; path = usr/lib/libz.tbd; sourceTree = SDKROOT; };
 		1D449B2F1D04D70400195AF6 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = DanceDeets/Images.xcassets; sourceTree = "<group>"; };
@@ -741,7 +739,6 @@
 			isa = PBXGroup;
 			children = (
 				1DE1FE1C1D8E7C5F00795B27 /* DanceDeets Debug.entitlements */,
-				1D2694F21D077C5F000E1BD3 /* launch_screen.jpg */,
 				1D449B2F1D04D70400195AF6 /* Images.xcassets */,
 				008F07F21AC5B25A0029DE68 /* main.jsbundle */,
 				13B07FAF1A68108700A75B9A /* AppDelegate.h */,
@@ -1748,7 +1745,6 @@
 			files = (
 				1DC888C71D631661001FAFF3 /* YTPlayerView-iframe-player.html in Resources */,
 				1DC8881E1D5D451F001FAFF3 /* GoogleService-Info.plist in Resources */,
-				1D2694F31D077C5F000E1BD3 /* launch_screen.jpg in Resources */,
 				1D449B301D04D70500195AF6 /* Images.xcassets in Resources */,
 				13B07FBD1A68108700A75B9A /* LaunchScreen.xib in Resources */,
 				1D17D43C1D9102E000CE92FD /* InfoPlist.strings in Resources */,
