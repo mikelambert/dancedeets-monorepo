@@ -44,6 +44,7 @@ import {
   detectedLocation,
   performSearch,
   processUrl,
+  setWaitingForLocationPermission,
 } from '../actions';
 import type { User } from '../actions/types';
 import { linkColor, purpleColors } from '../Colors';
@@ -58,7 +59,7 @@ import {
   Text,
 } from '../ui';
 import { track, trackWithEvent } from '../store/track';
-import { getAddress } from '../util/geo';
+import { hasLocationPermission, getAddress } from '../util/geo';
 import { loadUserData } from '../actions/login';
 import { canHandleUrl } from '../websiteUrl';
 import { loadSavedAddress, storeSavedAddress } from './savedAddress';
@@ -312,6 +313,7 @@ class _EventListContainer extends React.Component {
     user: ?User,
     detectedLocation: (location: string) => Promise<void>,
     performSearch: () => Promise<void>,
+    setWaitingForLocationPermission: (waiting: boolean) => Promise<void>,
     processUrl: (url: string) => Promise<void>,
     loadUserData: () => Promise<void>,
     intl: intlShape,
@@ -346,6 +348,7 @@ class _EventListContainer extends React.Component {
     (this: any).renderHeader = this.renderHeader.bind(this);
     (this: any).setLocationAndSearch = this.setLocationAndSearch.bind(this);
     (this: any).renderItem = this.renderItem.bind(this);
+    (this: any).fetchLocationAndSearch = this.fetchLocationAndSearch.bind(this);
   }
 
   componentDidMount() {
@@ -508,11 +511,20 @@ class _EventListContainer extends React.Component {
   }
 
   async fetchLocationAndSearch() {
-    // Get the address from GPS
-    let address = await getAddress();
-    // Save this location in the user's profile
-    this.authAndReloadProfile(address);
+    // If we are showing the "prompt for location", let's disable it now
+    if (this.props.search.waitingForLocationPermission) {
+      this.props.setWaitingForLocationPermission(false);
+    }
 
+    // Get the address from GPS
+    let address = null;
+    try {
+      address = await getAddress();
+      // Save this location in the user's profile
+      this.authAndReloadProfile(address);
+    } catch (error) {
+      console.log('Error loading GPS address:', error);
+    }
     // Otherwise, fall back to the last-searched address
     if (!address) {
       address = await loadSavedAddress();
@@ -530,9 +542,15 @@ class _EventListContainer extends React.Component {
     const url: ?string = await Linking.getInitialURL();
     if (url != null && canHandleUrl(url)) {
       this.props.processUrl(url);
-    } else {
+    } else if (await hasLocationPermission()) {
       this.fetchLocationAndSearch();
+    } else {
+      this.promptForLocation();
     }
+  }
+
+  promptForLocation() {
+    this.props.setWaitingForLocationPermission(true);
   }
 
   bannerError(e) {
@@ -578,7 +596,7 @@ class _EventListContainer extends React.Component {
     }
   }
 
-  renderErrorView(error: string) {
+  renderErrorView(error: ?string) {
     return (
       <View style={styles.errorView}>
         <Text style={styles.errorText}>
@@ -610,8 +628,36 @@ class _EventListContainer extends React.Component {
     );
   }
 
+  renderWaitingForLocationPermission() {
+    return (
+      <Text>
+        Please enter a location or search keywords above.
+        {' '}
+        Or{' '}
+        <Button
+          style={{ width: 100, height: 50 }}
+          onPress={this.fetchLocationAndSearch}
+        >
+          use GPS
+        </Button>{' '}
+        to
+        find
+        events near you.
+      </Text>
+    );
+  }
+
   renderListView() {
-    const sections = this.getData(this.props.search.response);
+    const search = this.props.search;
+
+    if (
+      search.waitingForLocationPermission &&
+      !search.response &&
+      !search.loading
+    ) {
+      return this.renderWaitingForLocationPermission();
+    }
+    const sections = this.getData(search.response);
     // TODO: SectionList is a PureComponent, so we should avoid passing dynamic closures
     return (
       <SectionList
@@ -622,7 +668,7 @@ class _EventListContainer extends React.Component {
         ListHeaderComponent={this.renderHeader}
         // Refresher
         onRefresh={() => this.props.performSearch()}
-        refreshing={this.props.search.loading}
+        refreshing={search.loading}
         sections={sections}
         renderItem={this.renderItem}
         renderSectionHeader={({ section }) =>
@@ -655,6 +701,8 @@ const EventListContainer = connect(
     user: state.user.userData,
   }),
   dispatch => ({
+    setWaitingForLocationPermission: async waiting =>
+      await dispatch(setWaitingForLocationPermission(waiting)),
     detectedLocation: async location => {
       await dispatch(detectedLocation(location));
     },

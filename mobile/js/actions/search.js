@@ -44,6 +44,13 @@ export function performSearch(): ThunkAction {
   };
 }
 
+export function setWaitingForLocationPermission(waiting: boolean): Action {
+  return {
+    type: 'WAITING_FOR_LOCATION',
+    waiting,
+  };
+}
+
 export function detectedLocation(location: string): ThunkAction {
   return async (dispatch: Dispatch) => {
     await dispatch({

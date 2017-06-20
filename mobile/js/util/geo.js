@@ -36,6 +36,11 @@ export async function getPosition() {
   return await getCurrentPosition();
 }
 
+export async function hasLocationPermission() {
+  const status = await Permissions.getPermissionStatus('location');
+  return status === Permissions.StatusAuthorized;
+}
+
 export async function getAddress() {
   if (Platform.OS === 'ios') {
     const status = await Permissions.requestPermission('location');

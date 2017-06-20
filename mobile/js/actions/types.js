@@ -45,7 +45,8 @@ export type Action =
   | { type: 'UPDATE_KEYWORDS', keywords: string }
   | { type: 'START_SEARCH' }
   | { type: 'SEARCH_COMPLETE', response: SearchResponse }
-  | { type: 'SEARCH_FAILED' }
+  | { type: 'SEARCH_FAILED', errorString: ?string }
+  | { type: 'WAITING_FOR_LOCATION', waiting: boolean }
   | { type: 'searchHeader/START_OPEN' }
   | { type: 'searchHeader/FINISH_OPEN' }
   | { type: 'searchHeader/START_CLOSE' }

@@ -17,6 +17,7 @@ export type State = {
   response: ?SearchResponse, // our last-searched response
   error: boolean, // whether there was an error fetching the current results
   errorString: ?string, // the error message to display to the user, if we have one
+  waitingForLocationPermission: boolean, // are we waiitng for the user to grant the location permission
 };
 
 const initialState = {
@@ -29,13 +30,13 @@ const initialState = {
   response: null,
   error: false,
   errorString: null,
+  waitingForLocationPermission: false,
 };
 
 export function search(state: State = initialState, action: Action): State {
   if (action.type === 'LOGIN_LOGGED_OUT') {
     return initialState;
-  }
-  if (
+  } else if (
     action.type === 'UPDATE_LOCATION' ||
     // Only set location from GPS if user hasn't entered any location
     (action.type === 'DETECTED_LOCATION' && state.searchQuery.location === '')
@@ -48,8 +49,7 @@ export function search(state: State = initialState, action: Action): State {
       ...state,
       searchQuery,
     };
-  }
-  if (action.type === 'UPDATE_KEYWORDS') {
+  } else if (action.type === 'UPDATE_KEYWORDS') {
     const searchQuery = {
       ...state.searchQuery,
       keywords: action.keywords,
@@ -58,29 +58,31 @@ export function search(state: State = initialState, action: Action): State {
       ...state,
       searchQuery,
     };
-  }
-  if (action.type === 'START_SEARCH') {
+  } else if (action.type === 'START_SEARCH') {
     return {
       ...state,
       loading: true,
       error: false,
       response: null,
     };
-  }
-  if (action.type === 'SEARCH_COMPLETE') {
+  } else if (action.type === 'SEARCH_COMPLETE') {
     return {
       ...state,
       loading: false,
       response: action.response,
     };
-  }
-  if (action.type === 'SEARCH_FAILED') {
+  } else if (action.type === 'SEARCH_FAILED') {
     return {
       ...state,
       loading: false,
       response: null,
       error: true,
       errorString: action.errorString,
+    };
+  } else if (action.type === 'WAITING_FOR_LOCATION') {
+    return {
+      ...state,
+      waitingForLocationPermission: action.waiting,
     };
   }
   return state;
