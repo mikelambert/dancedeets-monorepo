@@ -12,15 +12,17 @@ import {
   ProgressBarAndroid,
   TouchableHighlight,
   View,
+  ViewPropTypes,
 } from 'react-native';
 import Qs from 'qs';
 import emojiFlags from 'emoji-flags';
 import { HorizontalView } from './Misc';
+import { OkAlert } from './alerts';
 import { Text } from './DDText';
 import { googleKey } from '../keys';
 import { semiNormalize } from '../ui/normalize';
 import lookupCountryCode from '../util/lookupCountryCode';
-import { getAddress } from '../util/geo';
+import { hasLocationPermission, getAddress } from '../util/geo';
 
 type Term = {
   value: string,
@@ -34,8 +36,8 @@ type Result = {
 };
 
 type Props = {
-  style?: View.PropTypes.style, // style for FlatList
-  styles?: { [name: string]: View.PropTypes.style }, // styles for subcomponents
+  style?: ViewPropTypes.style, // style for FlatList
+  styles?: { [name: string]: ViewPropTypes.style }, // styles for subcomponents
   onLocationSelected: (location: string) => void | Promise<void>,
   minLength: number,
   fetchDetails: boolean,
@@ -140,11 +142,16 @@ export default class AutocompleteList extends React.Component {
     this.abortRequests();
     try {
       const address = await getAddress();
-      this.props.onLocationSelected(address);
+      if (address) {
+        this.props.onLocationSelected(address);
+      } else {
+        await OkAlert('GPS Error', 'Error accessing GPS');
+      }
     } catch (e) {
       console.warn(e);
       await sleep(0.5);
       this.disableRowLoaders();
+      await OkAlert('Network Error', 'Error accessing network');
     }
   }
 
@@ -277,7 +284,7 @@ export default class AutocompleteList extends React.Component {
     return null;
   }
 
-  renderRow(row) {
+  renderRow(row: { item: any }) {
     const rowData = row.item;
     let emojiFlag = null;
     // Emojiflags don't work so well on Android?
