@@ -8,6 +8,7 @@ import React from 'react';
 import {
   AlertIOS,
   Dimensions,
+  FlatList,
   Image,
   ListView,
   Platform,
@@ -32,7 +33,6 @@ import messages from 'dancedeets-common/js/tutorials/messages';
 import languages from 'dancedeets-common/js/languages';
 import { formatDuration } from 'dancedeets-common/js/tutorials/format';
 import { track } from '../store/track';
-import { FeedListView } from './BlogList';
 import { Button, HorizontalView, Text } from '../ui';
 import { purpleColors } from '../Colors';
 import { semiNormalize, normalize } from '../ui/normalize';
@@ -80,7 +80,8 @@ class _PlaylistStylesView extends React.Component {
     };
   }
 
-  renderRow(category: any) {
+  renderRow(row) {
+    const category = row.item;
     const imageWidth = boxWidth - 30;
     const durationSeconds = category.tutorials.reduce(
       (prev, current) => prev + current.getDurationSeconds(),
@@ -147,9 +148,9 @@ class _PlaylistStylesView extends React.Component {
 
   render() {
     return (
-      <FeedListView
-        items={this.state.stylePlaylists}
-        renderRow={this.renderRow}
+      <FlatList
+        data={this.state.stylePlaylists}
+        renderItem={this.renderRow}
         renderHeader={this.renderHeader}
         contentContainerStyle={{
           alignSelf: 'center',
@@ -198,7 +199,8 @@ class _PlaylistListView extends React.Component {
     });
   }
 
-  renderRow(playlist: Playlist) {
+  renderRow(row) {
+    const playlist = row.item;
     const duration = formatDuration(
       this.props.intl.formatMessage,
       playlist.getDurationSeconds()
@@ -286,9 +288,9 @@ class _PlaylistListView extends React.Component {
 
   render() {
     return (
-      <FeedListView
-        items={this.props.playlists}
-        renderRow={this.renderRow}
+      <FlatList
+        data={this.props.playlists}
+        renderItem={this.renderRow}
         renderHeader={this.renderHeader}
         renderFooter={this.renderFooter}
         contentContainerStyle={{
