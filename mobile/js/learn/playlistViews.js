@@ -61,7 +61,7 @@ function listViewWidth() {
 
 class _PlaylistStylesView extends React.Component {
   props: {
-    onSelected: (style: Style, playlists: Array<Playlist>) => void,
+    onSelected: (category: Category) => void,
 
     // Self-managed props
     intl: intlShape,
@@ -71,7 +71,7 @@ class _PlaylistStylesView extends React.Component {
     stylePlaylists: Array<Category>,
   };
 
-  constructor(props: PlaylistStylesViewProps) {
+  constructor(props) {
     super(props);
     (this: any).renderRow = this.renderRow.bind(this);
     (this: any).renderHeader = this.renderHeader.bind(this);
@@ -97,19 +97,16 @@ class _PlaylistStylesView extends React.Component {
     return (
       <TouchableHighlight
         onPress={() => {
-          this.props.onSelected(category, this.state.stylePlaylists[category]);
+          this.props.onSelected(category);
         }}
         style={{
           margin: boxMargin,
-          borderRadius: 10,
         }}
       >
         <View
           style={{
             width: boxWidth,
             padding: 5,
-            backgroundColor: purpleColors[2],
-            borderRadius: 10,
             alignItems: 'center',
           }}
         >
@@ -185,7 +182,7 @@ class _PlaylistListView extends React.Component {
     intl: intlShape,
   };
 
-  constructor(props: PlaylistListViewProps) {
+  constructor(props) {
     super(props);
     (this: any).renderRow = this.renderRow.bind(this);
     (this: any).renderHeader = this.renderHeader.bind(this);
@@ -226,15 +223,12 @@ class _PlaylistListView extends React.Component {
         }}
         style={{
           margin: boxMargin,
-          borderRadius: 10,
         }}
       >
         <View
           style={{
             width: boxWidth,
-            backgroundColor: purpleColors[2],
             padding: 5,
-            borderRadius: 10,
           }}
         >
           <Image
