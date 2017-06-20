@@ -280,33 +280,10 @@ class OneboxView extends React.PureComponent {
   }
 }
 
-class _AddEventButton extends React.PureComponent {
-  props: {
-    intl: intlShape,
-    onPress: () => void,
-  };
-
-  render() {
-    return (
-      <Button
-        icon={require('./images/add_calendar.png')}
-        caption={this.props.intl.formatMessage(messages.addEvent)}
-        color="green"
-        textStyle={{ fontWeight: 'bold' }}
-        style={styles.addEventButton}
-        onPress={this.props.onPress}
-        testID="addEvents"
-      />
-    );
-  }
-}
-const AddEventButton = injectIntl(_AddEventButton);
-
 class _EventListContainer extends React.Component {
   props: {
     onEventSelected: (event: Event) => void,
     onFeaturedEventSelected: (event: Event) => void,
-    onAddEventClicked: (clickTarget: string) => void,
 
     // Self-managed props
     search: State,
@@ -630,20 +607,19 @@ class _EventListContainer extends React.Component {
 
   renderWaitingForLocationPermission() {
     return (
-      <Text>
-        Please enter a location or search keywords above.
-        {' '}
-        Or{' '}
+      <View>
+        <Text>
+          Please enter a location or search keywords above.
+        </Text>
+        <Text>
+          Or you can use GPS to find events near you.
+        </Text>
         <Button
           style={{ width: 100, height: 50 }}
           onPress={this.fetchLocationAndSearch}
-        >
-          use GPS
-        </Button>{' '}
-        to
-        find
-        events near you.
-      </Text>
+          text="Find events near me"
+        />
+      </View>
     );
   }
 
@@ -686,11 +662,6 @@ class _EventListContainer extends React.Component {
         <SearchHeader>
           {this.renderListView()}
         </SearchHeader>
-        <AddEventButton
-          onPress={() => {
-            this.props.onAddEventClicked('Floating Button');
-          }}
-        />
       </View>
     );
   }

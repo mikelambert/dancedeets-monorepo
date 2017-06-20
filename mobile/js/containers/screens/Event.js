@@ -285,7 +285,6 @@ class EventListScreen extends React.Component {
     return (
       <EventListContainer
         onEventSelected={this.onEventSelected}
-        onAddEventClicked={this.props.screenProps.onAddEventClicked}
         onFeaturedEventSelected={this.onFeaturedEventSelected}
       />
     );
