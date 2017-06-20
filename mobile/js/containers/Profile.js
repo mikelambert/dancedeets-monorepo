@@ -41,7 +41,8 @@ const messages = defineMessages({
   shareTitle: {
     id: 'share.title',
     defaultMessage: 'Share DanceDeets',
-    description: 'Title for our card with all the share buttons, to share the app',
+    description:
+      'Title for our card with all the share buttons, to share the app',
   },
   shareFacebook: {
     id: 'share.facebook',
@@ -86,7 +87,8 @@ const messages = defineMessages({
   buttonAdvertisePromote: {
     id: 'buttons.advertisePromote',
     defaultMessage: 'Advertise/Promote',
-    description: 'Button to contact DanceDeets about advertising/promoting events in the app',
+    description:
+      'Button to contact DanceDeets about advertising/promoting events in the app',
   },
   profileDetailsHeader: {
     id: 'profile.detailsHeader',
@@ -95,7 +97,8 @@ const messages = defineMessages({
   },
   profileDetailsContents: {
     id: 'profile.detailsContents',
-    defaultMessage: '– Added: {handAdded, number}\n– Auto-contributed: {autoAdded, number}',
+    defaultMessage:
+      '– Added: {handAdded, number}\n– Auto-contributed: {autoAdded, number}',
     description: 'Details about the user',
   },
 });
@@ -120,9 +123,9 @@ class CreditSubList extends React.Component {
   };
 
   render() {
-    const subcreditGroups = this.props.list.map(x => (
+    const subcreditGroups = this.props.list.map(x =>
       <Text key={x} style={{ left: 5 }}>- {x}</Text>
-    ));
+    );
     return <View>{subcreditGroups}</View>;
   }
 }
@@ -139,23 +142,23 @@ class _Credits extends React.Component {
         {this.props.intl.formatMessage(messages.credits)}
       </Heading1>
     );
-    const creditGroups = credits.map(x => (
+    const creditGroups = credits.map(x =>
       <View key={x[0]}>
         <Text style={{ fontWeight: 'bold' }}>{x[0]}:</Text>
         <CreditSubList list={x[1]} />
       </View>
-    ));
+    );
     const version = (
       <Text style={styles.versionStyle}>
         Version: {NativeEnv.get('VERSION_NAME')}
       </Text>
     );
     return (
-      <Card style={this.props.style}>
+      <View style={this.props.style}>
         {creditHeader}
         {version}
         {creditGroups}
-      </Card>
+      </View>
     );
   }
 }
@@ -180,7 +183,7 @@ class _ShareButtons extends React.Component {
 
   render() {
     return (
-      <Card>
+      <View>
         <Heading1>
           {this.props.intl.formatMessage(messages.shareTitle)}
         </Heading1>
@@ -219,7 +222,7 @@ class _ShareButtons extends React.Component {
           }}
           style={styles.noFlexButton}
         />
-      </Card>
+      </View>
     );
   }
 }
@@ -258,7 +261,6 @@ class _UserProfile extends React.Component {
       const loginButton = (
         <Button
           icon={require('../login/icons/facebook.png')}
-          style={{ margin: 10 }}
           size="small"
           caption={this.props.intl.formatMessage(messages.login)}
           onPress={this.props.logIn}
@@ -300,7 +302,7 @@ class _UserProfile extends React.Component {
     // By just using an absolutely positioned element with a margin to manually flow,
     // things work so much better.
     return (
-      <Card>
+      <View>
         <View style={styles.profileLeft}>{image}</View>
         <View style={styles.profileRight}>
           <Heading1>{user.profile.name || ' '}</Heading1>
@@ -319,7 +321,7 @@ class _UserProfile extends React.Component {
             autoAdded: user.ddUser.num_auto_added_events || 0,
           })}
         </Text>
-      </Card>
+      </View>
     );
   }
 }
@@ -333,6 +335,24 @@ const UserProfile = connect(
   })
 )(injectIntl(_UserProfile));
 
+class HorizontalRule extends React.Component {
+  render() {
+    return (
+      <View
+        style={{
+          flex: 1,
+          borderColor: purpleColors[0],
+          borderTopWidth: 0.5,
+          height: 0,
+          //width: 200,
+          marginVertical: 10,
+          marginHorizontal: 10,
+        }}
+      />
+    );
+  }
+}
+
 class _Profile extends React.Component {
   props: {
     intl: intlShape,
@@ -343,15 +363,17 @@ class _Profile extends React.Component {
     // iOS handles notification settings automatically for us, so let's offer this there
     let notificationButton = null;
     if (Platform.OS === 'android') {
-      notificationButton = (
+      notificationButton = [
         <Button
+          key="Button"
           size="small"
           caption={this.props.intl.formatMessage(
             messages.buttonNotificationSettings
           )}
           onPress={this.props.onNotificationPreferences}
-        />
-      );
+        />,
+        <HorizontalRule key="Rule" />,
+      ];
     }
 
     return (
@@ -362,9 +384,13 @@ class _Profile extends React.Component {
 
         <UserProfile />
 
+        <HorizontalRule />
+
         {notificationButton}
 
         <ShareButtons />
+
+        <HorizontalRule />
 
         <Button
           size="small"
@@ -381,6 +407,8 @@ class _Profile extends React.Component {
           onPress={sendAdvertisingEmail}
           style={styles.noFlexButton}
         />
+
+        <HorizontalRule />
 
         <Credits />
 
@@ -401,7 +429,7 @@ const styles = StyleSheet.create({
   },
   containerContent: {
     top: STATUSBAR_HEIGHT,
-    alignItems: 'center',
+    alignItems: 'stretch',
     justifyContent: 'space-around',
   },
   profileName: {
