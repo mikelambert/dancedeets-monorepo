@@ -4,9 +4,6 @@ PODS:
   - Fabric (1.6.11)
   - Firebase (4.0.0):
     - Firebase/Core (= 4.0.0)
-  - Firebase/AdMob (4.0.0):
-    - Firebase/Core
-    - Google-Mobile-Ads-SDK (= 7.20.0)
   - Firebase/Auth (4.0.0):
     - Firebase/Core
     - FirebaseAuth (= 4.0.0)
@@ -63,7 +60,6 @@ PODS:
     - FirebaseAnalytics (~> 4.0)
     - FirebaseCore (~> 4.0)
     - GTMSessionFetcher/Core (~> 1.1)
-  - Google-Mobile-Ads-SDK (7.20.0)
   - GoogleToolboxForMac/DebugUtils (2.1.1):
     - GoogleToolboxForMac/Defines (= 2.1.1)
   - GoogleToolboxForMac/Defines (2.1.1)
@@ -84,7 +80,6 @@ DEPENDENCIES:
   - Crashlytics
   - Fabric
   - Firebase
-  - Firebase/AdMob
   - Firebase/Auth
   - Firebase/Core
   - Firebase/Crash
@@ -107,12 +102,11 @@ SPEC CHECKSUMS:
   FirebaseMessaging: 227406c05b0dc9290702d2e9f18ab5528f0c2cf2
   FirebaseRemoteConfig: b1bde8c572a1ca13558b5b179f4563cb877aa34b
   FirebaseStorage: 8110a1ed2034c8fbfd83890d2acc9cdbbd99afec
-  Google-Mobile-Ads-SDK: 168312cdc167fa22746d4ea8e839fc4825dd2966
   GoogleToolboxForMac: 8e329f1b599f2512c6b10676d45736bcc2cbbeb0
   GTMSessionFetcher: 30d874b96d0d76028f61fbd122801e3f030d47db
   Mixpanel: 9b33e5de998cd42597767f67e2b8fcd1d158c71d
   Protobuf: d582fecf68201eac3d79ed61369ef45734394b9c
 
-PODFILE CHECKSUM: ff167a08f753fb0d5685e01087e47d5890bb8b1c
+PODFILE CHECKSUM: 0b57bd038322d7320777849ec95629d23b33c406
 
 COCOAPODS: 1.2.1

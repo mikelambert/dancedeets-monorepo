@@ -32,7 +32,6 @@ import com.kevinejohn.RNMixpanel.RNMixpanel;
 import com.microsoft.codepush.react.CodePush;
 import com.microsoft.codepush.react.ReactInstanceHolder;
 import com.reactnative.photoview.PhotoViewPackage;
-import com.sbugert.rnadmob.RNAdMobPackage;
 import com.smixx.fabric.FabricPackage;
 import com.xgfe.reactnativeenv.RCTNativeEnvPackage;
 
