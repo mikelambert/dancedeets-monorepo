@@ -180,21 +180,36 @@ class NavButton extends React.PureComponent {
     onPress: () => void,
     imageSource?: number,
     text?: string,
+    disabled?: boolean,
   };
 
   render() {
+    let contents = [
+      this.props.imageSource
+        ? <Image key="image" source={this.props.imageSource} />
+        : null,
+      this.props.text
+        ? <Text
+            key="text"
+            style={{
+              fontSize: 17,
+              color: this.props.disabled ? '#bbb' : 'white',
+            }}
+          >
+            {this.props.text}
+          </Text>
+        : null,
+    ];
+    if (!this.props.disabled) {
+      contents = (
+        <TouchableItem onPress={() => this.props.onPress()}>
+          {contents}
+        </TouchableItem>
+      );
+    }
     return (
       <View style={{ marginLeft: 10, marginRight: 10 }}>
-        <TouchableItem onPress={() => this.props.onPress()}>
-          {this.props.imageSource
-            ? <Image source={this.props.imageSource} />
-            : null}
-          {this.props.text
-            ? <Text style={{ fontSize: 17 }}>
-                {this.props.text}
-              </Text>
-            : null}
-        </TouchableItem>
+        {contents}
       </View>
     );
   }
@@ -225,7 +240,11 @@ class EventListScreen extends React.Component {
               <NavButton onPress={screenProps.hideSearchForm} text="Cancel" />
             ),
             headerRight: (
-              <NavButton onPress={screenProps.performSearch} text="Search" />
+              <NavButton
+                onPress={screenProps.performSearch}
+                text="Search"
+                disabled={!screenProps.canSearch}
+              />
             ),
           }
         : {
@@ -416,6 +435,9 @@ class _EventScreensNavigator extends React.Component {
   }
 
   render() {
+    const canSearch =
+      this.props.search.searchQuery.location ||
+      this.props.search.searchQuery.keywords;
     return (
       <RealEventScreensNavigator
         ref={nav => {
@@ -434,6 +456,7 @@ class _EventScreensNavigator extends React.Component {
           hideSearchForm: this.props.hideSearchForm,
           performSearch: this.props.performSearch,
           onAddEventClicked: this.onAddEventClicked,
+          canSearch,
         }}
         navigation={this.props.navigation}
       />
