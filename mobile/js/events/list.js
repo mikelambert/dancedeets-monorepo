@@ -58,7 +58,7 @@ import {
   Text,
 } from '../ui';
 import { track, trackWithEvent } from '../store/track';
-import { getAddress, getPosition } from '../util/geo';
+import { getAddress } from '../util/geo';
 import { loadUserData } from '../actions/login';
 import { canHandleUrl } from '../websiteUrl';
 import { loadSavedAddress, storeSavedAddress } from './savedAddress';
@@ -358,7 +358,8 @@ class _EventListContainer extends React.Component {
       this.props.user.ddUser &&
       !this.props.user.ddUser.location
     ) {
-      await storeSavedAddress(formattedAddress);
+      // Run this out-of-band, so don't await on it
+      this.authAndReloadProfile(formattedAddress);
     }
   }
 
