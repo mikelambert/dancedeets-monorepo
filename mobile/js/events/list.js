@@ -102,7 +102,7 @@ const messages = defineMessages({
   },
   openSearchHeaderButton: {
     id: 'eventList.openSearchHeaderButton',
-    defaultMessage: 'Enter a location or search keywords above',
+    defaultMessage: 'Enter a location or search keywords',
     description: 'Will pop-open the search header for manual entry',
   },
   useGpsLocation: {
