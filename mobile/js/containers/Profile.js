@@ -241,7 +241,7 @@ class _UserProfile extends React.Component {
     // By just using an absolutely positioned element with a margin to manually flow,
     // things work so much better.
     return (
-      <View>
+      <Card>
         <View style={styles.profileLeft}>{image}</View>
         <View style={styles.profileRight}>
           <Heading1>{user.profile.name || ' '}</Heading1>
@@ -260,7 +260,7 @@ class _UserProfile extends React.Component {
             autoAdded: user.ddUser.num_auto_added_events || 0,
           })}
         </Text>
-      </View>
+      </Card>
     );
   }
 }
@@ -291,7 +291,7 @@ class HorizontalRule extends React.Component {
   }
 }
 
-export function getVersionTitle(intl) {
+export function getVersionTitle(intl: intlShape) {
   return intl.formatMessage(messages.credits, {
     version: `v${NativeEnv.get('VERSION_NAME')}`,
   });
@@ -307,11 +307,12 @@ class _Profile extends React.Component {
   render() {
     // iOS handles notification settings automatically for us, so let's offer this there
     let notificationButton = null;
-    if (Platform.OS === 'android') {
+    if (Platform.OS !== 'android') {
       notificationButton = (
         <Button
           key="Button"
           size="small"
+          style={styles.noFlexButton}
           caption={this.props.intl.formatMessage(
             messages.buttonNotificationSettings
           )}
