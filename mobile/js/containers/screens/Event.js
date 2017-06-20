@@ -443,7 +443,7 @@ class _EventScreensNavigator extends React.Component {
 export const EventScreensNavigator = connect(
   state => ({
     search: state.search,
-    user: state.user.userData,
+    isLoggedIn: state.user.isLoggedIn,
     searchHeader: state.searchHeader,
   }),
   dispatch => ({
@@ -454,7 +454,7 @@ export const EventScreensNavigator = connect(
     hideSearchForm: (status: boolean) => dispatch(hideSearchForm()),
     canOpenAddEvent: async props => {
       if (
-        !props.user &&
+        !props.isLoggedIn &&
         !await canGetValidLoginFor(
           props.intl.formatMessage(messages.featureAddingEvents),
           props.intl,
