@@ -541,7 +541,7 @@ class _EventListContainer extends React.Component {
 
   renderHeader() {
     if (this.props.search.error) {
-      return this.renderErrorView();
+      return this.renderErrorView(this.props.search.errorString);
     }
     return null;
   }
@@ -578,12 +578,12 @@ class _EventListContainer extends React.Component {
     }
   }
 
-  renderErrorView() {
+  renderErrorView(error: string) {
     return (
       <View style={styles.errorView}>
         <Text style={styles.errorText}>
           {this.props.intl.formatMessage(messages.fetchEventsError)}{' '}
-          {this.props.intl.formatMessage(messages.networkRetry)}
+          {error || this.props.intl.formatMessage(messages.networkRetry)}
         </Text>
       </View>
     );

@@ -16,6 +16,7 @@ export type State = {
   searchQuery: SearchQuery, // our current search query
   response: ?SearchResponse, // our last-searched response
   error: boolean, // whether there was an error fetching the current results
+  errorString: ?string, // the error message to display to the user, if we have one
 };
 
 const initialState = {
@@ -27,6 +28,7 @@ const initialState = {
   },
   response: null,
   error: false,
+  errorString: null,
 };
 
 export function search(state: State = initialState, action: Action): State {
@@ -78,6 +80,7 @@ export function search(state: State = initialState, action: Action): State {
       loading: false,
       response: null,
       error: true,
+      errorString: action.errorString,
     };
   }
   return state;

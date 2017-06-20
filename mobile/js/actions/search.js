@@ -39,7 +39,7 @@ export function performSearch(): ThunkAction {
     } catch (e) {
       // TODO: error fetching events.
       console.log('Error fetching events', e.message, e, e.stack);
-      await dispatch(searchFailed());
+      await dispatch(searchFailed(e.message));
     }
   };
 }
@@ -80,8 +80,9 @@ function searchComplete(response: SearchResponse): Action {
   };
 }
 
-function searchFailed(): Action {
+function searchFailed(errorString: string): Action {
   return {
     type: 'SEARCH_FAILED',
+    errorString,
   };
 }
