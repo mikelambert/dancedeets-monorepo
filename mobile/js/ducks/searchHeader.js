@@ -43,6 +43,9 @@ export default function reducer(state: State = initialState, action: Action) {
 export function showSearchForm(): ThunkAction {
   return async (dispatch: Dispatch, getState) => {
     const state = getState();
+    if (!state.searchHeader.navbarTitleVisible) {
+      return;
+    }
     await dispatch({ type: START_OPEN });
 
     Animated.timing(state.searchHeader.headerAnim, {
@@ -58,6 +61,9 @@ export function showSearchForm(): ThunkAction {
 export function hideSearchForm(): ThunkAction {
   return async (dispatch: Dispatch, getState) => {
     const state = getState();
+    if (!state.searchHeader.searchFormVisible) {
+      return;
+    }
     await dispatch({ type: START_CLOSE });
 
     Animated.timing(state.searchHeader.headerAnim, {
