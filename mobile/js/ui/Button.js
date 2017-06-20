@@ -26,7 +26,13 @@ type Props = {
   onPress: () => Promise<void> | void,
   size: 'small' | 'large',
   textStyle: any,
-  color: 'translucent' | 'purple' | 'yellow' | 'red' | 'green',
+  color:
+    | 'translucent'
+    | 'purple'
+    | 'purple-gradient'
+    | 'yellow'
+    | 'red'
+    | 'green',
   testID: ?string,
   isLoading: boolean,
   enabled: ?boolean,
@@ -102,28 +108,33 @@ class Button extends React.Component {
     const size = this.props.size === 'small'
       ? styles.smallButton
       : styles.largeButton;
-    let colors = null;
-    if (this.props.color === 'purple') {
-      colors = [purpleColors[1], purpleColors[3], purpleColors[3]];
-    } else if (this.props.color === 'yellow') {
-      colors = [yellowColors[1], yellowColors[4], yellowColors[4]];
-    } else if (this.props.color === 'red') {
-      colors = [redColors[0], redColors[1], redColors[1]];
-    } else if (this.props.color === 'green') {
-      colors = [greenColors[0], greenColors[1], greenColors[1]];
-    }
-    const buttonContents = this.props.color === 'translucent'
-      ? <View
-          style={{
-            padding: 5,
-            borderColor: purpleColors[0],
-            borderWidth: 1,
-            borderRadius: 5,
-          }}
-        >
+
+    let buttonContents = null;
+    if (this.props.color === 'translucent') {
+      buttonContents = (
+        <View style={[styles.regularButton, styles.translucentButton]}>
           {this.renderContent()}
         </View>
-      : <LinearGradient
+      );
+    } else if (this.props.color === 'purple') {
+      buttonContents = (
+        <View style={[styles.regularButton, styles.purpleButton]}>
+          {this.renderContent()}
+        </View>
+      );
+    } else {
+      let colors = null;
+      if (this.props.color === 'purple-gradient') {
+        colors = [purpleColors[1], purpleColors[3], purpleColors[3]];
+      } else if (this.props.color === 'yellow') {
+        colors = [yellowColors[1], yellowColors[4], yellowColors[4]];
+      } else if (this.props.color === 'red') {
+        colors = [redColors[0], redColors[1], redColors[1]];
+      } else if (this.props.color === 'green') {
+        colors = [greenColors[0], greenColors[1], greenColors[1]];
+      }
+      buttonContents = (
+        <LinearGradient
           start={{ x: 0.0, y: 0.0 }}
           end={{ x: 0.0, y: 1.0 }}
           locations={[0.0, 0.7, 1.0]}
@@ -131,8 +142,9 @@ class Button extends React.Component {
           style={[styles.button, size]}
         >
           {this.renderContent()}
-        </LinearGradient>;
-
+        </LinearGradient>
+      );
+    }
     if (this.props.enabled) {
       return (
         <TouchableOpacity
@@ -152,6 +164,20 @@ class Button extends React.Component {
 }
 
 let styles = StyleSheet.create({
+  regularButton: {
+    padding: 5,
+  },
+  translucentButton: {
+    borderColor: purpleColors[0],
+    borderWidth: 1,
+    borderRadius: 5,
+  },
+  purpleButton: {
+    borderColor: purpleColors[2],
+    borderWidth: 1,
+    borderRadius: 5,
+    backgroundColor: purpleColors[3],
+  },
   button: {
     flexDirection: 'row',
     alignItems: 'center',
