@@ -20,6 +20,7 @@ import { semiNormalize } from './normalize';
 
 type Props = {
   icon: ?number,
+  iconView: ?React.Element<*>,
   caption: string,
   style: any,
   onPress: () => Promise<void> | void,
@@ -36,6 +37,7 @@ class Button extends React.Component {
   static defaultProps: Props = {
     caption: '',
     icon: null,
+    iconView: null,
     style: {},
     onPress: () => {},
     size: 'large',
@@ -51,7 +53,7 @@ class Button extends React.Component {
 
   renderRealContent() {
     const caption = this.props.caption;
-    let icon;
+    let icon = this.props.iconView;
     if (this.props.icon) {
       icon = (
         <Image
