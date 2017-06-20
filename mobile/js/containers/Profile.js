@@ -308,7 +308,7 @@ class _Profile extends React.Component {
     // iOS handles notification settings automatically for us, so let's offer this there
     let notificationButton = null;
     if (Platform.OS === 'android') {
-      notificationButton = [
+      notificationButton = (
         <Button
           key="Button"
           size="small"
@@ -316,9 +316,8 @@ class _Profile extends React.Component {
             messages.buttonNotificationSettings
           )}
           onPress={this.props.onNotificationPreferences}
-        />,
-        <HorizontalRule key="Rule" />,
-      ];
+        />
+      );
     }
 
     return (
@@ -329,9 +328,9 @@ class _Profile extends React.Component {
 
         <UserProfile />
 
-        <HorizontalRule />
-
         {notificationButton}
+
+        <HorizontalRule />
 
         <ShareButtons />
 
@@ -352,8 +351,6 @@ class _Profile extends React.Component {
           onPress={sendAdvertisingEmail}
           style={styles.noFlexButton}
         />
-
-        <HorizontalRule />
 
         <Button
           size="small"
