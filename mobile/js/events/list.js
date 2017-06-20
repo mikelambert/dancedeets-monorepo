@@ -664,6 +664,7 @@ class _EventListContainer extends React.Component {
         }}
         style={[styles.listView]}
         ListHeaderComponent={this.renderHeader}
+        ItemSeparatorComponent={() => <View style={styles.separator} />}
         // Refresher
         onRefresh={() => this.props.performSearch()}
         refreshing={search.loading}
@@ -717,6 +718,12 @@ const EventListContainer = connect(
 export default EventListContainer;
 
 const styles = StyleSheet.create({
+  separator: {
+    flex: 1,
+    height: 0,
+    borderTopWidth: 0.5,
+    borderColor: purpleColors[0],
+  },
   listView: {
     flex: 1,
     top: 0,
