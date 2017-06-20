@@ -131,61 +131,48 @@ class HeaderCollapsible extends React.Component {
   }
 }
 
-class _PeopleView extends React.Component {
+export class OrganizerView extends React.Component {
   props: {
-    people: PeopleListing,
+    defaultCollapsed: boolean,
     headerStyle: ViewPropTypes.style,
-
-    // Self-managed props
-    search: State,
   };
 
   render() {
-    if (this.props.search.error || !this.props.search.response) {
-      return null;
-    }
-    const admins = this.props.search.response.people.ADMIN;
-    const attendees = this.props.search.response.people.ATTENDEE;
-    if (!admins && !attendees) {
-      return null;
-    }
-    // Keep in sync with web?
-    const defaultCollapsed = !(this.props.search.response.results.length < 10);
     return (
-      <View>
-        {admins
-          ? <HeaderCollapsible
-              title="Nearby Promoters"
-              defaultCollapsed={defaultCollapsed}
-            >
-              <PersonList
-                subtitle="If you want to organize an event, work with these folks"
-                people={admins}
-              />
-            </HeaderCollapsible>
-          : null}
-        {attendees
-          ? <HeaderCollapsible
-              title="Nearby Dancers"
-              defaultCollapsed={defaultCollapsed}
-              style={this.props.headerStyle}
-            >
-              <PersonList
-                subtitle="If you want to connect with the dance scene, hit these folks up"
-                people={this.props.people.ATTENDEE}
-                defaultCollapsed={defaultCollapsed}
-              />
-            </HeaderCollapsible>
-          : null}
-      </View>
+      <HeaderCollapsible
+        title="Nearby Promoters"
+        defaultCollapsed={this.props.defaultCollapsed}
+      >
+        <PersonList
+          subtitle="If you want to organize an event, work with these folks"
+          people={admins}
+        />
+      </HeaderCollapsible>
     );
   }
 }
-const PeopleView = connect(state => ({
-  search: state.search,
-}))(_PeopleView);
 
-export default PeopleView;
+export class AttendeeView extends React.Component {
+  props: {
+    defaultCollapsed: boolean,
+    headerStyle: ViewPropTypes.style,
+  };
+
+  render() {
+    return (
+      <HeaderCollapsible
+        title="Nearby Dancers"
+        defaultCollapsed={this.props.defaultCollapsed}
+        style={this.props.headerStyle}
+      >
+        <PersonList
+          subtitle="If you want to connect with the dance scene, hit these folks up"
+          people={this.props.people.ATTENDEE}
+        />
+      </HeaderCollapsible>
+    );
+  }
+}
 
 const styles = StyleSheet.create({
   rowLink: {

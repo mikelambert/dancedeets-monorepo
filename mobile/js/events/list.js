@@ -62,7 +62,7 @@ import { getAddress } from '../util/geo';
 import { loadUserData } from '../actions/login';
 import { canHandleUrl } from '../websiteUrl';
 import { loadSavedAddress, storeSavedAddress } from './savedAddress';
-import PeopleView from './peopleList';
+import { AttendeeView, OrganizerView } from './peopleList';
 
 const messages = defineMessages({
   fetchEventsError: {
@@ -86,6 +86,16 @@ const messages = defineMessages({
     defaultMessage: 'Additional Links',
     description:
       'Header for all the links/blogs/wikis/etc relevant to this search',
+  },
+  featuredEvent: {
+    id: 'eventList.featuredEvent',
+    defaultMessage: 'Featured Event',
+    description: 'Title of the section header above our featured event',
+  },
+  peopleHeader: {
+    id: 'eventList.peopleHeader',
+    defaultMessage: 'Local Dance Scene',
+    description: 'Header for the nearby dancers and nearby people',
   },
 });
 
@@ -307,10 +317,29 @@ class _EventListContainer extends React.Component {
     intl: intlShape,
   };
 
-  _listView: SectionList<{
-    event: Event,
-    key?: string,
-  }>;
+  _listView: SectionList<*>;
+  /* TODO: Figure out how to typecheck with this:
+  {
+    item:
+      | {
+          event: Event,
+          key: string,
+        }
+      | {
+          onebox: Onebox,
+          key: string,
+        }
+      | {
+          featuredInfos: Array<FeaturedInfo>,
+          key: string,
+        }
+      | {
+          people: StylePersonLookup,
+          defaultCollapsed: boolean,
+          renderClass: React.Class,
+          key: string,
+        },
+  }*/
 
   constructor(props) {
     super(props);
@@ -368,11 +397,64 @@ class _EventListContainer extends React.Component {
     const sectionHeaders = [];
 
     if (response) {
-      if (response.onebox_links != null && response.onebox_links.length > 0) {
-        const oneboxKey = this.props.intl.formatMessage(messages.specialLinks);
+      if (response.featuredInfos) {
+        const featuredTitle = this.props.intl.formatMessage(
+          messages.featuredEvent
+        );
         sections.push({
-          key: oneboxKey,
-          title: oneboxKey,
+          key: 'Featured Event Header',
+          title: featuredTitle,
+          data: [
+            {
+              key: 'Featured Event',
+              featuredInfos: response.featuredInfos,
+            },
+          ],
+        });
+      }
+
+      if (response.people) {
+        // Keep in sync with web?
+        const defaultCollapsed = !(response.results.length < 10);
+
+        const peopleData = [];
+        if (response.people.ADMIN) {
+          peopleData.push({
+            key: 'Admin Row',
+            renderClass: OrganizerView,
+            people: response.people,
+            defaultCollapsed,
+          });
+        }
+        if (response.people.ATTENDEE) {
+          peopleData.push({
+            key: 'Attendee Row',
+            renderClass: AttendeeView,
+            people: response.people,
+            defaultCollapsed,
+          });
+        }
+
+        if (peopleData.length) {
+          const peopleTitle = this.props.intl.formatMessage(
+            messages.peopleHeader
+          );
+
+          sections.push({
+            key: 'People Header',
+            title: peopleTitle,
+            data: peopleData,
+          });
+        }
+      }
+
+      if (response.onebox_links != null && response.onebox_links.length > 0) {
+        const oneboxTitle = this.props.intl.formatMessage(
+          messages.specialLinks
+        );
+        sections.push({
+          key: 'Onebox Header',
+          title: oneboxTitle,
           data: response.onebox_links.map(onebox => ({
             onebox,
             key: `Onebox: ${onebox.url}`,
@@ -461,7 +543,7 @@ class _EventListContainer extends React.Component {
     if (this.props.search.error) {
       return this.renderErrorView();
     }
-    return this.renderSummaryView();
+    return null;
   }
 
   renderItem(row) {
@@ -472,8 +554,27 @@ class _EventListContainer extends React.Component {
           onEventSelected={this.props.onEventSelected}
         />
       );
-    } else {
+    } else if (row.item.onebox) {
       return <OneboxView onebox={row.item.onebox} />;
+    } else if (row.item.featuredInfos) {
+      return (
+        <FeaturedEvents
+          featured={row.item.featuredInfos}
+          onEventSelected={this.props.onFeaturedEventSelected}
+        />
+      );
+    } else if (row.item.people) {
+      const PeopleView = row.item.renderClass;
+      return (
+        <PeopleView
+          people={row.item.people}
+          headerStyle={styles.sectionHeader}
+          defaultCollapsed={row.item.defaultCollapsed}
+        />
+      );
+    } else {
+      console.error('Unknown row: ', row);
+      return null;
     }
   }
 
@@ -484,26 +585,6 @@ class _EventListContainer extends React.Component {
           {this.props.intl.formatMessage(messages.fetchEventsError)}{' '}
           {this.props.intl.formatMessage(messages.networkRetry)}
         </Text>
-      </View>
-    );
-  }
-
-  renderSummaryView() {
-    const response = this.props.search.response;
-    if (!response) {
-      return null;
-    }
-    const query = response.query;
-    return (
-      <View>
-        <FeaturedEvents
-          featured={response.featuredInfos}
-          onEventSelected={this.props.onFeaturedEventSelected}
-        />
-        <PeopleView
-          people={response.people}
-          headerStyle={styles.sectionHeader}
-        />
       </View>
     );
   }
@@ -531,6 +612,7 @@ class _EventListContainer extends React.Component {
 
   renderListView() {
     const sections = this.getData(this.props.search.response);
+    // TODO: SectionList is a PureComponent, so we should avoid passing dynamic closures
     return (
       <SectionList
         ref={x => {
