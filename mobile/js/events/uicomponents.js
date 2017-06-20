@@ -570,12 +570,12 @@ class _EventRsvpControl extends React.PureComponent {
 }
 const EventRsvpControl = connect(
   state => ({
-    user: state.user.userData,
+    isLoggedIn: state.user.isLoggedIn,
   }),
   dispatch => ({
     canGetValidLoginFor: async (feature, props) => {
       if (
-        !props.user &&
+        !props.isLoggedIn &&
         !await canGetValidLoginFor(feature, props.intl, dispatch)
       ) {
         return false;
