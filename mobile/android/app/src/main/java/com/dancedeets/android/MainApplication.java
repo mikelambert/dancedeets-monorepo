@@ -16,6 +16,7 @@ import com.facebook.CallbackManager;
 import com.facebook.FacebookSdk;
 import com.facebook.appevents.AppEventsLogger;
 import com.facebook.react.ReactApplication;
+import io.invertase.firebase.RNFirebaseAdMobPackage;
 import com.cmcewen.blurview.BlurViewPackage;
 import com.oblador.vectoricons.VectorIconsPackage;
 import com.learnium.RNDeviceInfo.RNDeviceInfo;
@@ -66,6 +67,7 @@ class MyReactNativeHost extends ReactNativeHost implements ReactInstanceHolder {
   protected List<ReactPackage> getPackages() {
     return Arrays.<ReactPackage>asList(
       new MainReactPackage(),
+            new RNFirebaseAdMobPackage(),
       new BlurViewPackage(),
       new VectorIconsPackage(),
       new RNDeviceInfo(),

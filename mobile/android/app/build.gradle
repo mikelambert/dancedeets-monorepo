@@ -193,6 +193,7 @@ configurations.all {
 }
 
 dependencies {
+    compile project(':react-native-firebase')
     compile project(':react-native-blur')
     compile project(':react-native-vector-icons')
     compile project(':react-native-send-intent')

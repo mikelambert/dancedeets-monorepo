@@ -5,7 +5,6 @@
 	};
 	objectVersion = 46;
 	objects = {
-
 /* Begin PBXBuildFile section */
 		00C302E51ABCBA2D00DB3ED1 /* libRCTActionSheet.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 00C302AC1ABCB8CE00DB3ED1 /* libRCTActionSheet.a */; };
 		00C302E71ABCBA2D00DB3ED1 /* libRCTGeolocation.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 00C302BA1ABCB90400DB3ED1 /* libRCTGeolocation.a */; };
@@ -74,6 +73,7 @@
 		DD59D63343E94D6D8944B63C /* libSMXCrashlytics.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 313C3BEEBF0E44A6A00988F5 /* libSMXCrashlytics.a */; };
 		F40FFD9BFCDC46148C69F041 /* Foundation.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F348A7FE1F3948AA99F95376 /* Foundation.ttf */; };
 		FBBD7E3449F246CAAF149818 /* libBVLinearGradient.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8153A686C12B4C4581BC7BC5 /* libBVLinearGradient.a */; };
+		3ED2DB6BB3FE4CDFB93578BC /* libRNFirebase.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1ED320B33F174B4C95E8DB8C /* libRNFirebase.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -562,6 +562,8 @@
 		F33F4F5DCEB28B5ACFB6FDF7 /* Pods-DanceDeets.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-DanceDeets.debug.xcconfig"; path = "Pods/Target Support Files/Pods-DanceDeets/Pods-DanceDeets.debug.xcconfig"; sourceTree = "<group>"; };
 		F348A7FE1F3948AA99F95376 /* Foundation.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Foundation.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Foundation.ttf"; sourceTree = "<group>"; };
 		FE3208D676EE4DD8846E3AEC /* FontAwesome.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = FontAwesome.ttf; path = "../node_modules/react-native-vector-icons/Fonts/FontAwesome.ttf"; sourceTree = "<group>"; };
+		50199E996F424D678BD4B570 /* RNFirebase.xcodeproj */ = {isa = PBXFileReference; name = "RNFirebase.xcodeproj"; path = "../node_modules/react-native-firebase/ios/RNFirebase.xcodeproj"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = wrapper.pb-project; explicitFileType = undefined; includeInIndex = 0; };
+		1ED320B33F174B4C95E8DB8C /* libRNFirebase.a */ = {isa = PBXFileReference; name = "libRNFirebase.a"; path = "libRNFirebase.a"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = archive.ar; explicitFileType = undefined; includeInIndex = 0; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -609,6 +611,7 @@
 				A07FE5C6992048358576867B /* libRNDeviceInfo.a in Frameworks */,
 				4F04519A9DA6495A8F96288B /* libRNVectorIcons.a in Frameworks */,
 				836DC410423042CA8CFAD2E2 /* libRNBlur.a in Frameworks */,
+				3ED2DB6BB3FE4CDFB93578BC /* libRNFirebase.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1045,6 +1048,7 @@
 				B90504D487714E6B9C75C71E /* RNDeviceInfo.xcodeproj */,
 				273EE70FA8574B55B89F4220 /* RNVectorIcons.xcodeproj */,
 				A33AA87AB83640A58BB46EE0 /* RNBlur.xcodeproj */,
+				50199E996F424D678BD4B570 /* RNFirebase.xcodeproj */,
 			);
 			name = Libraries;
 			sourceTree = "<group>";
@@ -2004,11 +2008,13 @@
 					"$(SRCROOT)/../node_modules/react-native-device-info/RNDeviceInfo",
 					"$(SRCROOT)/../node_modules/react-native-vector-icons/RNVectorIconsManager",
 					"$(SRCROOT)/../node_modules/react-native-blur/ios",
+					"$(SRCROOT)/../node_modules/react-native-firebase/ios/RNFirebase/**",
 				);
 				INFOPLIST_FILE = DanceDeets/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
+					"\"$(SRCROOT)/DanceDeets Debug\"",
 					"\"$(SRCROOT)/DanceDeets Debug\"",
 				);
 				OTHER_LDFLAGS = (
@@ -2063,6 +2069,7 @@
 					"$(SRCROOT)/../node_modules/react-native-device-info/RNDeviceInfo",
 					"$(SRCROOT)/../node_modules/react-native-vector-icons/RNVectorIconsManager",
 					"$(SRCROOT)/../node_modules/react-native-blur/ios",
+					"$(SRCROOT)/../node_modules/react-native-firebase/ios/RNFirebase/**",
 				);
 				INFOPLIST_FILE = DanceDeets/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -2150,6 +2157,7 @@
 					"$(SRCROOT)/../node_modules/react-native-device-info/RNDeviceInfo",
 					"$(SRCROOT)/../node_modules/react-native-vector-icons/RNVectorIconsManager",
 					"$(SRCROOT)/../node_modules/react-native-blur/ios",
+					"$(SRCROOT)/../node_modules/react-native-firebase/ios/RNFirebase/**",
 				);
 				INFOPLIST_FILE = "DanceDeets-tvOS/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -2201,6 +2209,7 @@
 					"$(SRCROOT)/../node_modules/react-native-device-info/RNDeviceInfo",
 					"$(SRCROOT)/../node_modules/react-native-vector-icons/RNVectorIconsManager",
 					"$(SRCROOT)/../node_modules/react-native-blur/ios",
+					"$(SRCROOT)/../node_modules/react-native-firebase/ios/RNFirebase/**",
 				);
 				INFOPLIST_FILE = "DanceDeets-tvOS/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
