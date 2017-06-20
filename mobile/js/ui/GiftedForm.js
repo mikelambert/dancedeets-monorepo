@@ -9,7 +9,6 @@ import { View } from 'react-native';
 import { GiftedForm } from 'react-native-gifted-form';
 import { purpleColors, yellowColors } from '../Colors';
 import Button from './Button';
-import Card from './Card';
 import { defaultFont } from './DDText';
 
 export class MyGiftedSubmitWidget extends GiftedForm.SubmitWidget {

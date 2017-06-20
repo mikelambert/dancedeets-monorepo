@@ -7,7 +7,7 @@
 import React from 'react';
 import { Platform, ScrollView, StyleSheet, Switch } from 'react-native';
 import { injectIntl, intlShape, defineMessages } from 'react-intl';
-import { Card, HorizontalView, Text } from '../ui';
+import { HorizontalView, Text } from '../ui';
 import { purpleColors } from '../Colors';
 import {
   PreferenceNames,
