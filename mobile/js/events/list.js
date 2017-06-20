@@ -98,6 +98,19 @@ const messages = defineMessages({
     defaultMessage: 'Local Dance Scene',
     description: 'Header for the nearby dancers and nearby people',
   },
+  askForLocationPermissionText: {
+    id: 'eventList.askForLocationPermissionText',
+    defaultMessage:
+      'Please enter a location or search keywords above.\nOr you can use GPS to find events near you.',
+    description:
+      'Text to display for our intro screen when we do not have location permissions',
+  },
+  askForLocationPermissionButton: {
+    id: 'eventList.askForLocationPermissionButton',
+    defaultMessage: 'Find events near me',
+    description:
+      'Button to display for our intro screen when we do not have location permissions',
+  },
 });
 
 const CarouselDotIndicatorSize = 25;
@@ -609,15 +622,13 @@ class _EventListContainer extends React.Component {
     return (
       <View>
         <Text>
-          Please enter a location or search keywords above.
-        </Text>
-        <Text>
-          Or you can use GPS to find events near you.
+          {this.props.intl.formatMessage(messages.askForLocationPermissionText)}
         </Text>
         <Button
-          style={{ width: 100, height: 50 }}
           onPress={this.fetchLocationAndSearch}
-          text="Find events near me"
+          caption={this.props.intl.formatMessage(
+            messages.askForLocationPermissionButton
+          )}
         />
       </View>
     );
