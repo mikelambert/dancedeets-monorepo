@@ -36,6 +36,8 @@
   "event.tickets": "Tickets:",
   "event.translate": "Translate",
   "event.untranslate": "Original",
+  "eventList.featuredEvent": "Featured Event",
+  "eventList.peopleHeader": "Local Dance Scene",
   "feature.RSVP": "RSVP",
   "feature.addingEvents": "Adding Events",
   "feature.translation": "Translation",

@@ -36,6 +36,8 @@
   "event.tickets": "チケット:",
   "event.translate": "翻訳",
   "event.untranslate": "原文",
+  "eventList.featuredEvent": "Featured Event",
+  "eventList.peopleHeader": "Local Dance Scene",
   "feature.RSVP": "出欠確認",
   "feature.addingEvents": "イベントを追加",
   "feature.translation": "翻訳",
