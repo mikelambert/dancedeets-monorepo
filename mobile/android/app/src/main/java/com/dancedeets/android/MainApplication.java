@@ -36,7 +36,6 @@ import com.sbugert.rnadmob.RNAdMobPackage;
 import com.smixx.fabric.FabricPackage;
 import com.xgfe.reactnativeenv.RCTNativeEnvPackage;
 
-import org.jall.reactnative.firebase.FirebasePackage;
 import org.jall.reactnative.googleapiavailability.GoogleApiAvailabilityPackage;
 import org.json.JSONException;
 import org.json.JSONObject;
