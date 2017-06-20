@@ -47,7 +47,6 @@ import java.util.List;
 import cl.json.RNSharePackage;
 import io.fabric.sdk.android.Fabric;
 import io.fixd.rctlocale.RCTLocalePackage;
-import io.fullstack.firestack.FirestackPackage;
 
 // Use a separate MyReactNativeHost class as suggested by the react-native-code-push docs:
 class MyReactNativeHost extends ReactNativeHost implements ReactInstanceHolder {

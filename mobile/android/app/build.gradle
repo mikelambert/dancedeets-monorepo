@@ -198,7 +198,6 @@ dependencies {
     compile project(':react-native-vector-icons')
     compile project(':react-native-send-intent')
     compile project(':react-native-device-info')
-    compile project(':react-native-firestack')
     compile project(':react-native-youtube')
     compile project(':react-native-google-api-availability')
     compile project(':react-native-push-notification')
