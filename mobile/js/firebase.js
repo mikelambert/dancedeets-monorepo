@@ -6,9 +6,9 @@
 
 import React from 'react';
 import RNFirebase from 'react-native-firebase';
+import Snapshot from 'react-native-firebase/lib/modules/database/snapshot';
 import { connect } from 'react-redux';
 import type { Dispatch } from './actions/types';
-import { setFirebaseState } from './actions';
 
 const configurationOptions = {
   debug: true,
@@ -16,68 +16,49 @@ const configurationOptions = {
 };
 const firebase = RNFirebase.initializeApp(configurationOptions);
 
-class _TrackFirebase extends React.Component {
+export class TrackFirebase extends React.Component {
   props: {
     path: string,
     children?: React.Element<*>,
     // If set, render passing in the state, instead of just rendering children
     renderContents?: (contents: any) => React.Element<*>,
-
-    // Self-managed props
-    setFirebaseState: (key: string, value: any) => void,
-    firebaseData: Object,
   };
 
-  _setHandler: boolean;
+  state: {
+    firebase: any,
+  };
+
+  _dbRef: Object;
 
   constructor(props: any) {
     super(props);
     (this: any).handleValueChange = this.handleValueChange.bind(this);
-    this._setHandler = false;
   }
 
   componentWillMount() {
-    const dbRef = firebase.database().ref(this.props.path);
-    if (!dbRef.listeners) {
-      console.log(`Installing handler on path: ${this.props.path}`);
-      dbRef.on('value', this.handleValueChange);
-      this._setHandler = true;
-    }
+    this._dbRef = firebase.database().ref(this.props.path);
+    this._dbRef.on('value', this.handleValueChange);
+    console.log(`Installing handler on path: ${this.props.path}`);
   }
 
   componentWillUnmount() {
-    if (this._setHandler) {
-      console.log(`Uninstalling handler on path: ${this.props.path}`);
-      firebase
-        .database()
-        .ref(this.props.path)
-        .off('value', this.handleValueChange);
-    }
+    console.log(`Uninstalling handler on path: ${this.props.path}`);
+    this._dbRef.off('value', this.handleValueChange);
   }
 
-  handleValueChange(snapshot) {
+  handleValueChange(snapshot: Snapshot) {
     if (snapshot.val()) {
-      this.props.setFirebaseState(this.props.path, snapshot.val());
+      this.setState({ firebase: snapshot.val() });
     }
   }
 
   render() {
     if (this.props.renderContents) {
-      return this.props.renderContents(
-        this.props.firebaseData[this.props.path]
-      );
+      return this.props.renderContents(this.state.firebase);
     } else {
       return this.props.children;
     }
   }
 }
-export const TrackFirebase = connect(
-  state => ({
-    firebaseData: state.firebase,
-  }),
-  (dispatch: Dispatch) => ({
-    setFirebaseState: (key, value) => dispatch(setFirebaseState(key, value)),
-  })
-)(_TrackFirebase);
 
 export default firebase;
