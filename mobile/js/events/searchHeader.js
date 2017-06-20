@@ -273,25 +273,25 @@ class _SearchHeader extends React.Component {
     );
   }
 }
-const SearchHeader = connect(state => ({
-  searchHeader: state.searchHeader,
-}))(injectIntl(_SearchHeader));
+const SearchHeader = connect(
+  state => ({
+    searchQuery: state.search.searchQuery,
+    searchHeader: state.searchHeader,
+  }),
+  dispatch => ({
+    updateLocation: async location => {
+      await dispatch(updateLocation(location));
+    },
+    updateKeywords: async keywords => {
+      await dispatch(updateKeywords(keywords));
+    },
+    performSearch: async () => {
+      await dispatch(performSearch());
+    },
+  })
+)(injectIntl(_SearchHeader));
 
-const mapStateToProps = state => ({
-  searchQuery: state.search.searchQuery,
-});
-const mapDispatchToProps = dispatch => ({
-  updateLocation: async location => {
-    await dispatch(updateLocation(location));
-  },
-  updateKeywords: async keywords => {
-    await dispatch(updateKeywords(keywords));
-  },
-  performSearch: async () => {
-    await dispatch(performSearch());
-  },
-});
-export default connect(mapStateToProps, mapDispatchToProps)(SearchHeader);
+export default SearchHeader;
 
 const styles = StyleSheet.create({
   floatTop: {
