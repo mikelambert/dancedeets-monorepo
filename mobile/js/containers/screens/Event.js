@@ -414,7 +414,7 @@ class _EventScreensNavigator extends React.Component {
     intl: intlShape,
     canOpenAddEvent: (props: any) => Promise<boolean>,
     search: State,
-    searchQuery: SearchQuery,
+    canSearch: boolean,
     searchHeader: SearchHeaderState,
     showSearchForm: () => void,
     hideSearchForm: () => void,
@@ -436,8 +436,6 @@ class _EventScreensNavigator extends React.Component {
   }
 
   render() {
-    const canSearch =
-      this.props.searchQuery.location || this.props.searchQuery.keywords;
     return (
       <RealEventScreensNavigator
         ref={nav => {
@@ -456,7 +454,7 @@ class _EventScreensNavigator extends React.Component {
           hideSearchForm: this.props.hideSearchForm,
           performSearch: this.props.performSearch,
           onAddEventClicked: this.onAddEventClicked,
-          canSearch,
+          canSearch: this.props.canSearch,
         }}
         navigation={this.props.navigation}
       />
@@ -466,7 +464,7 @@ class _EventScreensNavigator extends React.Component {
 export const EventScreensNavigator = connect(
   state => ({
     search: state.search,
-    searchQuery: state.searchQuery,
+    canSearch: state.searchQuery.location || state.searchQuery.keywords,
     isLoggedIn: state.user.isLoggedIn,
     searchHeader: state.searchHeader,
   }),
