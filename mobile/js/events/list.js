@@ -648,7 +648,6 @@ class _EventListContainer extends React.Component {
   renderListView() {
     const search = this.props.search;
 
-    return this.renderWaitingForLocationPermission();
     if (
       search.waitingForLocationPermission &&
       !search.response &&
