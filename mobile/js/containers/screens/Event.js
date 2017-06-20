@@ -86,13 +86,11 @@ class _SearchHeaderTitleSummary extends React.Component {
 
     // Self-managed props
     searchHeader: any,
-    search: State,
+    query: SearchQuery,
   };
 
   render() {
-    const searchQuery = this.props.search.response
-      ? this.props.search.response.query
-      : this.props.searchQuery;
+    const searchQuery = this.props.query;
     const keywords = searchQuery.keywords
       ? <RealText numberOfLines={1}>
           {searchQuery.keywords}
@@ -172,8 +170,9 @@ class _SearchHeaderTitleSummary extends React.Component {
   }
 }
 const SearchHeaderTitleSummary = connect(state => ({
-  search: state.search,
-  searchQuery: state.searchQuery,
+  query: state.search.response
+    ? state.search.response.query
+    : state.searchQuery,
   searchHeader: state.searchHeader,
 }))(_SearchHeaderTitleSummary);
 
@@ -467,6 +466,7 @@ class _EventScreensNavigator extends React.Component {
 export const EventScreensNavigator = connect(
   state => ({
     search: state.search,
+    searchQuery: state.searchQuery,
     isLoggedIn: state.user.isLoggedIn,
     searchHeader: state.searchHeader,
   }),
