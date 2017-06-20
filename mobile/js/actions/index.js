@@ -13,6 +13,7 @@ import * as search from './search';
 import * as translate from './translate';
 import * as tutorials from './tutorials';
 import * as searchHeader from '../ducks/searchHeader';
+import * as searchQuery from '../ducks/searchQuery';
 
 module.exports = {
   ...addEvents,
@@ -22,6 +23,7 @@ module.exports = {
   ...loginComplex,
   ...search,
   ...searchHeader,
+  ...searchQuery,
   ...translate,
   ...tutorials,
 };

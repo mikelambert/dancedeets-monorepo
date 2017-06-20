@@ -12,6 +12,7 @@ import { translate } from './translate';
 import { tutorials } from './tutorials';
 import { user } from './user';
 import searchHeader from '../ducks/searchHeader';
+import searchQuery from '../ducks/searchQuery';
 import TabNavigator from '../containers/TabNavigator';
 
 function screens(state, action) {
@@ -30,6 +31,7 @@ export default combineReducers({
   screens,
   search,
   searchHeader,
+  searchQuery,
   translate,
   tutorials,
   user,

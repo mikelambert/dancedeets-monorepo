@@ -41,8 +41,6 @@ export type Action =
   | { type: 'LOGIN_LOADED_USER', user: User }
   | { type: 'LOGIN_SKIPPED' }
   | { type: 'DETECTED_LOCATION', location: string }
-  | { type: 'UPDATE_LOCATION', location: string }
-  | { type: 'UPDATE_KEYWORDS', keywords: string }
   | { type: 'START_SEARCH' }
   | { type: 'SEARCH_COMPLETE', response: SearchResponse }
   | { type: 'SEARCH_FAILED', errorString: ?string }
@@ -51,6 +49,9 @@ export type Action =
   | { type: 'searchHeader/FINISH_OPEN' }
   | { type: 'searchHeader/START_CLOSE' }
   | { type: 'searchHeader/FINISH_CLOSE' }
+  | { type: 'textInputs/DETECTED_LOCATION', location: string }
+  | { type: 'textInputs/UPDATE_LOCATION', location: string }
+  | { type: 'textInputs/UPDATE_KEYWORDS', keywords: string }
   | { type: 'ADD_EVENTS_RELOAD' }
   | { type: 'ADD_EVENTS_RELOAD_COMPLETE', results: AddEventList }
   | { type: 'ADD_EVENTS_RELOAD_FAILED' }

@@ -275,7 +275,7 @@ class _SearchHeader extends React.Component {
 }
 const SearchHeader = connect(
   state => ({
-    searchQuery: state.search.searchQuery,
+    searchQuery: state.searchQuery,
     searchHeader: state.searchHeader,
   }),
   dispatch => ({

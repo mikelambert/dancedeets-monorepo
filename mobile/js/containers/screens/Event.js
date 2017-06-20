@@ -32,6 +32,7 @@ import { injectIntl, intlShape, defineMessages } from 'react-intl';
 import TouchableItem from 'react-navigation/src/views/TouchableItem';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { Event } from 'dancedeets-common/js/events/models';
+import type { SearchQuery } from 'dancedeets-common/js/events/search';
 import type { State } from '../../reducers/search';
 import EventListContainer from '../../events/list';
 import EventPager from '../../events/EventPager';
@@ -91,7 +92,7 @@ class _SearchHeaderTitleSummary extends React.Component {
   render() {
     const searchQuery = this.props.search.response
       ? this.props.search.response.query
-      : this.props.search.searchQuery;
+      : this.props.searchQuery;
     const keywords = searchQuery.keywords
       ? <RealText numberOfLines={1}>
           {searchQuery.keywords}
@@ -172,6 +173,7 @@ class _SearchHeaderTitleSummary extends React.Component {
 }
 const SearchHeaderTitleSummary = connect(state => ({
   search: state.search,
+  searchQuery: state.searchQuery,
   searchHeader: state.searchHeader,
 }))(_SearchHeaderTitleSummary);
 
@@ -413,6 +415,7 @@ class _EventScreensNavigator extends React.Component {
     intl: intlShape,
     canOpenAddEvent: (props: any) => Promise<boolean>,
     search: State,
+    searchQuery: SearchQuery,
     searchHeader: SearchHeaderState,
     showSearchForm: () => void,
     hideSearchForm: () => void,
@@ -435,8 +438,7 @@ class _EventScreensNavigator extends React.Component {
 
   render() {
     const canSearch =
-      this.props.search.searchQuery.location ||
-      this.props.search.searchQuery.keywords;
+      this.props.searchQuery.location || this.props.searchQuery.keywords;
     return (
       <RealEventScreensNavigator
         ref={nav => {

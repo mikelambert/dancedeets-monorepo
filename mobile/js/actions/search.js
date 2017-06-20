@@ -14,7 +14,7 @@ import { hideSearchForm } from '../ducks/searchHeader';
 
 export function performSearch(): ThunkAction {
   return async (dispatch: Dispatch, getState) => {
-    const searchQuery = getState().search.searchQuery;
+    const searchQuery = getState().searchQuery;
     track('Search Events', {
       Location: searchQuery.location,
       Keywords: searchQuery.keywords,
@@ -48,29 +48,6 @@ export function setWaitingForLocationPermission(waiting: boolean): Action {
   return {
     type: 'WAITING_FOR_LOCATION',
     waiting,
-  };
-}
-
-export function detectedLocation(location: string): ThunkAction {
-  return async (dispatch: Dispatch) => {
-    await dispatch({
-      type: 'DETECTED_LOCATION',
-      location,
-    });
-  };
-}
-
-export function updateLocation(location: string): Action {
-  return {
-    type: 'UPDATE_LOCATION',
-    location,
-  };
-}
-
-export function updateKeywords(keywords: string): Action {
-  return {
-    type: 'UPDATE_KEYWORDS',
-    keywords,
   };
 }
 

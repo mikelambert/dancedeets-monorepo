@@ -5,15 +5,11 @@
  */
 
 import { Dimensions } from 'react-native';
-import type {
-  SearchQuery,
-  SearchResponse,
-} from 'dancedeets-common/js/events/search';
+import type { SearchResponse } from 'dancedeets-common/js/events/search';
 import type { Action } from '../actions/types';
 
 export type State = {
   loading: boolean, // loading indicator
-  searchQuery: SearchQuery, // our current search query
   response: ?SearchResponse, // our last-searched response
   error: boolean, // whether there was an error fetching the current results
   errorString: ?string, // the error message to display to the user, if we have one
@@ -22,11 +18,6 @@ export type State = {
 
 const initialState = {
   loading: false,
-  searchQuery: {
-    location: '',
-    keywords: '',
-    timePeriod: 'ALL_FUTURE',
-  },
   response: null,
   error: false,
   errorString: null,
@@ -36,28 +27,6 @@ const initialState = {
 export function search(state: State = initialState, action: Action): State {
   if (action.type === 'LOGIN_LOGGED_OUT') {
     return initialState;
-  } else if (
-    action.type === 'UPDATE_LOCATION' ||
-    // Only set location from GPS if user hasn't entered any location
-    (action.type === 'DETECTED_LOCATION' && state.searchQuery.location === '')
-  ) {
-    const searchQuery = {
-      ...state.searchQuery,
-      location: action.location,
-    };
-    return {
-      ...state,
-      searchQuery,
-    };
-  } else if (action.type === 'UPDATE_KEYWORDS') {
-    const searchQuery = {
-      ...state.searchQuery,
-      keywords: action.keywords,
-    };
-    return {
-      ...state,
-      searchQuery,
-    };
   } else if (action.type === 'START_SEARCH') {
     return {
       ...state,
