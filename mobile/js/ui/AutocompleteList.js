@@ -142,16 +142,20 @@ export default class AutocompleteList extends React.Component {
     this.abortRequests();
     try {
       const address = await getAddress();
+      this.disableRowLoaders();
       if (address) {
         this.props.onLocationSelected(address);
       } else {
-        await OkAlert('GPS Error', 'Error accessing GPS');
+        await OkAlert('Could not detect location', 'Could not access your GPS');
       }
     } catch (e) {
       console.warn(e);
       await sleep(0.5);
       this.disableRowLoaders();
-      await OkAlert('Network Error', 'Error accessing network');
+      await OkAlert(
+        'Could not detect location',
+        'Could not access the network'
+      );
     }
   }
 
