@@ -316,6 +316,7 @@ class _PlaylistView extends React.Component {
     // Self-managed props
     intl: intlShape,
     setTutorialVideoIndex: (x: number) => void,
+    mainScreenKey: string,
   };
 
   state: {
@@ -338,9 +339,8 @@ class _PlaylistView extends React.Component {
     this.state = { isPlaying: true };
   }
 
-  componentWillReceiveProps(nextProps: any) {
-    const screensOverall = nextProps.screensOverall;
-    if (screensOverall.routes[screensOverall.index].key !== 'Tutorials') {
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.mainScreenKey !== 'Tutorials') {
       this.setState({ isPlaying: false });
     } else {
       // this.setState({ isPlaying: true });
@@ -532,7 +532,9 @@ class _PlaylistView extends React.Component {
             ref={x => {
               this._sectionedListView = x;
             }}
-            sections={this.props.playlist.getSectionListData()}
+            sections={this.props.playlist.getSectionListData(
+              this.props.tutorialVideoIndex
+            )}
             renderItem={this.renderRow}
             renderSectionHeader={this.renderSectionHeader}
             renderHeader={this.renderHeader}
@@ -548,7 +550,7 @@ class _PlaylistView extends React.Component {
 export const PlaylistView = connect(
   state => ({
     tutorialVideoIndex: state.tutorials.videoIndex,
-    screensOverall: state.screens,
+    mainScreenKey: state.screens.routes[state.screens.index].key,
   }),
   (dispatch: Dispatch) => ({
     setTutorialVideoIndex: eventId => dispatch(setTutorialVideoIndex(eventId)),

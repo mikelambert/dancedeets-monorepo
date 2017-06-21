@@ -46,11 +46,14 @@ export class Playlist {
     return `http://www.dancedeets.com/tutorials/${this.getId()}`;
   }
 
-  getSectionListData() {
-    return this.sections.map(section => ({
-      data: section.videos.map(video => ({
+  getSectionListData(index: number) {
+    const realIndex = this.getVideoSectionRow(index);
+    return this.sections.map((section, sectionIndex) => ({
+      data: section.videos.map((video, videoIndex) => ({
         key: video.youtubeId,
         video,
+        selected:
+          realIndex.section === sectionIndex && realIndex.row === videoIndex,
       })),
       realSection: section,
       // We add a youtubeId juuuuust in case:
