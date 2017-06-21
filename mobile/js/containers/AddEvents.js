@@ -174,6 +174,7 @@ class _AddEventRow extends React.Component {
       tempOverlay = (
         <View style={{ position: 'absolute', top: 20, left: 0 }}>
           <Button
+            color="purple"
             size="small"
             caption={this.props.intl.formatMessage(messages.addEventButton)}
             onPress={() => {
