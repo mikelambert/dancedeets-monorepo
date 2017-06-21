@@ -75,7 +75,10 @@ class _PlaylistStylesView extends React.Component {
     (this: any).renderRow = this.renderRow.bind(this);
     (this: any).renderHeader = this.renderHeader.bind(this);
     this.state = {
-      stylePlaylists: getTutorials(this.props.intl.locale),
+      stylePlaylists: getTutorials(this.props.intl.locale).map(x => ({
+        ...x,
+        key: x.style.id,
+      })),
     };
   }
 
@@ -394,22 +397,25 @@ class _PlaylistView extends React.Component {
     // {top, bottom} of the containing view's current scroll position
     const view = this._viewDimensions;
 
-    let newScroll = null;
+    let viewPosition = null;
     // if we're off the bottom of the screen
     if (element.bottom > view.bottom) {
       // figure out the proper scroll amount to fit it on the screen
-      newScroll = view.top + (element.bottom - view.bottom);
+      viewPosition = 1;
     }
     // or if we're off the top of the screen
     if (element.top < view.top) {
       // ensure we stick it at the top
-      newScroll = element.top;
+      viewPosition = 0;
     }
     // only scroll if necessary
-    if (newScroll !== null) {
-      this._sectionedListView.scrollTo({
-        y: newScroll,
+    if (viewPosition !== null) {
+      const { section, row } = this.props.playlist.getVideoSectionRow(index);
+      this._sectionedListView.scrollToLocation({
+        itemIndex: row,
+        sectionIndex: section,
         animated: true,
+        viewPosition,
       });
     }
   }

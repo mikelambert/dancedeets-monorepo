@@ -8,6 +8,7 @@ import moment from 'moment';
 
 export class Playlist {
   id: string;
+  key: string;
   title: string;
   subtitle: string;
   keywords: string;
@@ -19,6 +20,7 @@ export class Playlist {
 
   constructor(json: any) {
     this.id = json.id;
+    this.key = this.id; // Important for use in FlatLists
     this.title = json.title;
     this.subtitle = json.subtitle;
     this.keywords = json.keywords;
