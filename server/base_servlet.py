@@ -574,6 +574,22 @@ class BaseRequestHandler(BareBaseRequestHandler):
             self.run_handler = False
             self.redirect(new_url, abort=True)
             return
+
+        # Always turn https on! For now, let's use a short expiry
+        # This only 'takes effect' when it is returned on an https domain,
+        # so we still need to make sure to add an https redirect.
+        self.response.headers.add_header('Strict-Transport-Security', 'max-age=60; includeSubDomains')
+        if request.method == 'GET' and url.scheme == 'http':
+            new_url = urlparse.urlunsplit([
+                'https',
+                url.netloc,
+                url.path,
+                url.query,
+                url.fragment,
+            ])
+            self.run_handler = False
+            self.redirect(new_url, abort=True)
+
         login_url = self.get_login_url()
         redirect_url = self.handle_alternate_login(request)
         if redirect_url:
