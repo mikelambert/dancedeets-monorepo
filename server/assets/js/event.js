@@ -414,7 +414,7 @@ class MapWithLinks extends React.Component {
 
     const size = 450;
     const staticMapImageUrl: string =
-      `http://www.google.com/maps/api/staticmap?key=AIzaSyAvvrWfamjBD6LqCURkATAWEovAoBm1xNQ&size=${size}x${size}&scale=2&zoom=13&` +
+      `//www.google.com/maps/api/staticmap?key=AIzaSyAvvrWfamjBD6LqCURkATAWEovAoBm1xNQ&size=${size}x${size}&scale=2&zoom=13&` +
       `center=${geocode.latitude},${geocode.longitude}&` +
       `markers=color:blue%7C${geocode.latitude},${geocode.longitude}`;
 
