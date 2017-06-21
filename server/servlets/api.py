@@ -93,7 +93,7 @@ class ApiHandler(base_servlet.BareBaseRequestHandler):
             elif self.requires_auth:
                 self.add_error("Needs access_token parameter")
 
-    def handle_error_response(self):
+    def handle_error_response(self, errors):
         # We don't handle errors, but instead just pass them onto the client in our json responses
         return False
 
