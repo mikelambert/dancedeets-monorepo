@@ -5,7 +5,7 @@
  */
 
 import React from 'react';
-import { ListView, StyleSheet, TouchableHighlight, View } from 'react-native';
+import { FlatList, StyleSheet, TouchableHighlight, View } from 'react-native';
 import WKWebView from 'react-native-wkwebview-reborn';
 import YouTube from 'react-native-youtube';
 import { Text } from '../ui';
@@ -62,57 +62,6 @@ export class BlogPostTitle extends React.Component {
   }
 }
 
-type FeedProps = {
-  items: Array<any>,
-  renderRow: (post: any) => any,
-  renderHeader?: () => any,
-  contentContainerStyle?: any,
-};
-
-export class FeedListView extends React.Component {
-  state: {
-    dataSource: ListView.DataSource,
-  };
-
-  constructor(props: FeedProps) {
-    super(props);
-    const dataSource = new ListView.DataSource({
-      rowHasChanged: (row1, row2) => row1 !== row2,
-    });
-    this.state = { dataSource };
-    this.state = this.getNewState(this.props.items);
-  }
-
-  componentWillReceiveProps(nextProps: FeedProps) {
-    this.setState(this.getNewState(nextProps.items));
-  }
-
-  getNewState(items: Array<any>) {
-    const results = items || [];
-    const state = {
-      ...this.state,
-      dataSource: this.state.dataSource.cloneWithRows(results),
-    };
-    return state;
-  }
-
-  render() {
-    const { items, ...otherProps } = this.props;
-    return (
-      <ListView
-        style={[styles.listView]}
-        {...otherProps}
-        dataSource={this.state.dataSource}
-        initialListSize={10}
-        pageSize={5}
-        scrollRenderAheadDistance={10000}
-        indicatorStyle="white"
-        removeClippedSubviews={false}
-      />
-    );
-  }
-}
-
 type BlogPostProps = {
   blog: Blog,
   onSelected: (post: BlogPost) => void,
@@ -124,13 +73,14 @@ export class BlogPostList extends React.Component {
     (this: any).renderRow = this.renderRow.bind(this);
   }
 
-  renderRow(post: BlogPost) {
+  renderRow(row) {
+    const post = row.item;
     return <BlogPostTitle post={post} onPress={this.props.onSelected} />;
   }
 
   render() {
     return (
-      <FeedListView items={this.props.blog.posts} renderRow={this.renderRow} />
+      <FlatList data={this.props.blog.posts} renderItem={this.renderRow} />
     );
   }
 }

@@ -5,9 +5,8 @@
  */
 
 import React from 'react';
-import { View } from 'react-native';
+import { FlatList, View } from 'react-native';
 import { injectIntl, defineMessages } from 'react-intl';
-import { FeedListView } from '../learn/BlogList';
 import { Card, Text } from '../ui';
 import type { BattleCategory, Signup } from './models';
 import { getCategorySignups } from './models';
@@ -19,7 +18,8 @@ class _TeamList extends React.Component {
     (this: any).renderRow = this.renderRow.bind(this);
   }
 
-  renderRow(signup: Signup) {
+  renderRow(row) {
+    const signup = row.item;
     const dancers = (signup.dancers || [])
       .map(x => <Text key={x.id} style={{ marginLeft: 20 }}>{x.name}</Text>);
     return (
@@ -32,9 +32,9 @@ class _TeamList extends React.Component {
 
   render() {
     return (
-      <FeedListView
-        items={this.props.signups}
-        renderRow={this.renderRow}
+      <FlatList
+        data={this.props.signups}
+        renderItem={this.renderRow}
         renderHeader={this.props.renderHeader}
       />
     );
@@ -54,7 +54,7 @@ class _CategoryView extends React.Component {
     return (
       <TeamList
         signups={signups}
-        renderHeader={() => (
+        renderHeader={() =>
           <View
             style={{
               alignSelf: 'center',
@@ -67,8 +67,7 @@ class _CategoryView extends React.Component {
               onUnregister={this.props.onUnregister}
             />
             <Text>{signups.length} competitors:</Text>
-          </View>
-        )}
+          </View>}
       />
     );
   }

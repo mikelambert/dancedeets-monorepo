@@ -39,7 +39,6 @@ import {
   FBShareButton,
   HorizontalView,
   normalize,
-  ProgressiveLayout,
   ProportionalImage,
   SegmentedControl,
   semiNormalize,

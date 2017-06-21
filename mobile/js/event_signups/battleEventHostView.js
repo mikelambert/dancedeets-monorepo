@@ -5,11 +5,16 @@
  */
 
 import React from 'react';
-import { Dimensions, Text, TouchableHighlight, View } from 'react-native';
+import {
+  Dimensions,
+  FlatList,
+  Text,
+  TouchableHighlight,
+  View,
+} from 'react-native';
 import { injectIntl, defineMessages } from 'react-intl';
 import FitImage from 'react-native-fit-image';
 import type { Dispatch, User } from '../actions/types';
-import { FeedListView } from '../learn/BlogList';
 import type { BattleCategory, BattleEvent, Signup } from './models';
 import { getCategories } from './models';
 import { Button } from '../ui';
@@ -40,7 +45,8 @@ class _BattleEventHostView extends React.Component {
     );
   }
 
-  renderRow(category: BattleCategory) {
+  renderRow(row) {
+    const category = row.item;
     return (
       <Button
         onPress={() => {
@@ -59,10 +65,10 @@ class _BattleEventHostView extends React.Component {
     let view = null;
     if (this.props.battleEvent) {
       view = (
-        <FeedListView
-          items={getCategories(this.props.battleEvent)}
+        <FlatList
+          data={getCategories(this.props.battleEvent)}
           renderHeader={this.renderHeader}
-          renderRow={this.renderRow}
+          renderItem={this.renderRow}
           contentContainerStyle={{
             alignSelf: 'center',
             justifyContent: 'flex-start',

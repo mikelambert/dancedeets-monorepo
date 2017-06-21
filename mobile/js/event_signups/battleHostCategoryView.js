@@ -5,9 +5,8 @@
  */
 
 import React from 'react';
-import { ListView, TouchableOpacity, View } from 'react-native';
+import { FlatList, TouchableOpacity, View } from 'react-native';
 import { injectIntl, defineMessages } from 'react-intl';
-import { FeedListView } from '../learn/BlogList';
 import { Card, defaultFont, HorizontalView, RibbonBanner, Text } from '../ui';
 import type { BattleCategory, PrelimStatus, Signup } from './models';
 import { getCategorySignups } from './models';
@@ -20,7 +19,6 @@ class _TeamList extends React.Component {
 
   state: {
     prelims: Array<PrelimStatus>,
-    dataSource: ListView.DataSource,
   };
 
   constructor(props: any) {
@@ -53,14 +51,8 @@ class _TeamList extends React.Component {
   }
 
   prelimsState(prelims) {
-    const ds =
-      (this.state && this.state.dataSource) ||
-      new ListView.DataSource({
-        rowHasChanged: (r1, r2) => r1 !== r2,
-      });
     return {
       prelims,
-      dataSource: ds.cloneWithRows(prelims, null, null),
     };
   }
 
@@ -83,7 +75,8 @@ class _TeamList extends React.Component {
     );
   }
 
-  renderRow(prelim: PrelimStatus, sectionId: string, rowId: string) {
+  renderRow(row) {
+    const { prelim, index } = row.item;
     const signup = this.getSignup(prelim);
     if (!signup) {
       console.error(
@@ -95,7 +88,6 @@ class _TeamList extends React.Component {
       return null;
     }
 
-    const rowIndex = parseInt(rowId, 10) + 1;
     const width = 50;
     const banner = prelim.auditioned
       ? <RibbonBanner text="Auditioned" width={width} />
@@ -106,7 +98,7 @@ class _TeamList extends React.Component {
         <Card>
           <View>
             <HorizontalView>
-              <Text style={{ marginRight: 10 }}>{rowIndex}:</Text>
+              <Text style={{ marginRight: 10 }}>{index + 1}:</Text>
               {this.renderSignup(signup)}
             </HorizontalView>
           </View>
@@ -118,10 +110,10 @@ class _TeamList extends React.Component {
 
   render() {
     return (
-      <ListView
+      <FlatList
         maxSwipeDistance={120}
-        renderRow={this.renderRow}
-        dataSource={this.state.dataSource}
+        renderItem={this.renderRow}
+        data={this.state.prelims}
         onScroll={e => {}}
       />
     );
@@ -139,7 +131,7 @@ class _BattleHostCategoryView extends React.Component {
     return (
       <TeamList
         signups={signups}
-        renderHeader={() => (
+        renderHeader={() =>
           <View
             style={{
               alignSelf: 'center',
@@ -147,8 +139,7 @@ class _BattleHostCategoryView extends React.Component {
             }}
           >
             <Text>{signups.length} competitors:</Text>
-          </View>
-        )}
+          </View>}
       />
     );
   }

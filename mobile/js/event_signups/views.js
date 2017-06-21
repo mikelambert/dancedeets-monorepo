@@ -23,7 +23,6 @@ import type {
   NavigationState,
 } from 'react-navigation/src/TypeDefinition';
 import { track } from '../store/track';
-import { FeedListView } from '../learn/BlogList';
 import {
   Button,
   Card,

@@ -10,7 +10,6 @@ import {
   Dimensions,
   FlatList,
   Image,
-  ListView,
   Platform,
   SectionList,
   StyleSheet,
