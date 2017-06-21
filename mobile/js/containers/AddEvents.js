@@ -7,9 +7,8 @@
 import React from 'react';
 import {
   ActivityIndicator,
+  FlatList,
   Image,
-  RefreshControl,
-  ListView,
   PixelRatio,
   StyleSheet,
   TouchableOpacity,
@@ -44,13 +43,16 @@ import { weekdayDateTime } from '../formats';
 const messages = defineMessages({
   introText: {
     id: 'addEvents.introText',
-    defaultMessage: 'DanceDeets works best when dancers like you, share the dance events you know about.',
-    description: 'At the top of the Add Event panel, explaining how things work.',
+    defaultMessage:
+      'DanceDeets works best when dancers like you, share the dance events you know about.',
+    description:
+      'At the top of the Add Event panel, explaining how things work.',
   },
   showEvents: {
     id: 'addEvents.showEvents',
     defaultMessage: 'Show events:',
-    description: 'The filter setting before offering All and Not-yet-added-only filters.',
+    description:
+      'The filter setting before offering All and Not-yet-added-only filters.',
   },
   showEventsAll: {
     id: 'addEvents.showEvents.all',
@@ -65,7 +67,8 @@ const messages = defineMessages({
   sort: {
     id: 'addEvents.sort',
     defaultMessage: 'Sort:',
-    description: 'The filter setting before offering All and Not-yet-added-only filters.',
+    description:
+      'The filter setting before offering All and Not-yet-added-only filters.',
   },
   sortByStartDate: {
     id: 'addEvents.sort.byStartDate',
@@ -164,7 +167,8 @@ class _AddEventRow extends React.Component {
 
   render() {
     const width = semiNormalize(75);
-    const imageUrl = `https://graph.facebook.com/${this.props.event.id}/picture?type=large&access_token=${this.props.token.accessToken}`;
+    const imageUrl = `https://graph.facebook.com/${this.props.event
+      .id}/picture?type=large&access_token=${this.props.token.accessToken}`;
     let tempOverlay = null;
     if (this.props.event.clickedConfirming) {
       tempOverlay = (
@@ -269,22 +273,15 @@ class _AddEventList extends React.Component {
   };
 
   state: {
-    dataSource: ListView.DataSource,
     token: ?AccessToken,
   };
 
   constructor(props) {
     super(props);
-    const dataSource = new ListView.DataSource({
-      rowHasChanged: (row1, row2) => row1 !== row2,
-      sectionHeaderHasChanged: (s1, s2) => s1 !== s2,
-    });
     this.state = {
-      dataSource,
       token: null,
     };
     this.loadToken();
-    this.state = this.getNewState(this.props);
     (this: any).renderRow = this.renderRow.bind(this);
   }
 
@@ -294,22 +291,6 @@ class _AddEventList extends React.Component {
     }
   }
 
-  componentWillReceiveProps(nextProps) {
-    this.setState(this.getNewState(nextProps));
-  }
-
-  getNewState(props) {
-    const results = AddEventList.applyFilterSorts(
-      props,
-      props.addEvents.results || []
-    );
-    const state = {
-      ...this.state,
-      dataSource: this.state.dataSource.cloneWithRows(results),
-    };
-    return state;
-  }
-
   async loadToken() {
     const token = await AccessToken.getCurrentAccessToken();
     this.setState({
@@ -317,10 +298,11 @@ class _AddEventList extends React.Component {
     });
   }
 
-  renderRow(row: AddEventData) {
+  renderRow(row) {
+    const item = row.item;
     return (
       <AddEventRow
-        event={row}
+        event={item}
         token={this.state.token}
         onEventClicked={(event: AddEventData) =>
           this.props.clickEvent(event.id)}
@@ -336,20 +318,17 @@ class _AddEventList extends React.Component {
     if (!this.state.token) {
       return null;
     }
+    const results = AddEventList.applyFilterSorts(
+      this.props,
+      this.props.addEvents.results || []
+    );
     return (
-      <ListView
+      <FlatList
         style={[styles.listView]}
-        dataSource={this.state.dataSource}
-        refreshControl={
-          <RefreshControl
-            refreshing={this.props.addEvents.loading}
-            onRefresh={() => this.props.reloadAddEvents()}
-          />
-        }
-        renderRow={this.renderRow}
-        initialListSize={10}
-        pageSize={5}
-        scrollRenderAheadDistance={10000}
+        data={results}
+        refreshing={this.props.addEvents.loading}
+        onRefresh={() => this.props.reloadAddEvents()}
+        renderItem={this.renderRow}
         scrollsToTop={false}
         indicatorStyle="white"
       />
