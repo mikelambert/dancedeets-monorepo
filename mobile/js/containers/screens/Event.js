@@ -429,9 +429,10 @@ class _EventScreensNavigator extends React.Component {
   }
 
   async onAddEventClicked(source) {
+    console.log(this, source);
     track('Add Event', { source });
     if (await this.props.canOpenAddEvent(this.props)) {
-      this._nav._navigation.navigate('AddEvents');
+      this.props.navigation.navigate('AddEvents');
     }
   }
 
