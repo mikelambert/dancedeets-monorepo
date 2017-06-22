@@ -407,24 +407,33 @@ class _EventListContainer extends React.Component {
         });
       }
 
+      console.log(response.people.ADMIN, response.people.ADMIN.length);
       if (response.people) {
         // Keep in sync with web?
         const defaultCollapsed = !(response.results.length < 10);
 
         const peopleData = [];
-        if (response.people.ADMIN && response.people.ADMIN.length) {
+        if (
+          response.people.ADMIN &&
+          response.people.ADMIN[''] &&
+          response.people.ADMIN[''].length
+        ) {
           peopleData.push({
             key: 'Admin Row',
             renderClass: OrganizerView,
-            people: response.people,
+            people: response.people.ADMIN,
             defaultCollapsed,
           });
         }
-        if (response.people.ATTENDEE && response.people.ATTENDEE.length) {
+        if (
+          response.people.ATTENDEE &&
+          response.people.ATTENDEE[''] &&
+          response.people.ATTENDEE[''].length
+        ) {
           peopleData.push({
             key: 'Attendee Row',
             renderClass: AttendeeView,
-            people: response.people,
+            people: response.people.ATTENDEE,
             defaultCollapsed,
           });
         }
