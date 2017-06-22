@@ -20,7 +20,7 @@ import type {
   StylePersonLookup,
 } from 'dancedeets-common/js/events/search';
 import { formatStartDateOnly } from 'dancedeets-common/js/dates';
-import { BlurredImage, HorizontalView, Text } from '../ui';
+import { HorizontalView, semiNormalize, Text } from '../ui';
 import type { State } from '../reducers/search';
 import { openUserId } from '../util/fb';
 import { linkColor } from '../Colors';
@@ -107,7 +107,12 @@ class HeaderCollapsible extends React.Component {
           onPress={this._toggle}
           underlayColor={this.props.underlayColor}
         >
-          <View>
+          <View
+            style={{
+              justifyContent: 'center',
+              height: semiNormalize(50),
+            }}
+          >
             <HorizontalView>
               <View
                 style={{

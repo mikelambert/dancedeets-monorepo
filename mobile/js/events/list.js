@@ -407,7 +407,6 @@ class _EventListContainer extends React.Component {
         });
       }
 
-      console.log(response.people.ADMIN, response.people.ADMIN.length);
       if (response.people) {
         // Keep in sync with web?
         const defaultCollapsed = !(response.results.length < 10);
