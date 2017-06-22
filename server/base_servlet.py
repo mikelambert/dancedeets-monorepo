@@ -581,7 +581,7 @@ class BaseRequestHandler(BareBaseRequestHandler):
         https_redirect_duration = 60 * 60 * 24 * 7
         self.response.headers.add_header('Strict-Transport-Security', 'max-age=%s; includeSubDomains' % https_redirect_duration)
         # This is how we detect if the incoming url is on https in GAE Flex (we cannot trust request.url)
-        if request.method == 'GET' and request.environ.get('HTTP_X_FORWARDED_PROTO') == 'https':
+        if request.method == 'GET' and request.environ.get('HTTP_X_FORWARDED_PROTO') == 'http':
             new_url = urlparse.urlunsplit([
                 'https',
                 url.netloc,
