@@ -19,13 +19,7 @@ import {
   formatStartDateOnly,
 } from 'dancedeets-common/js/dates';
 import { Event, Venue } from 'dancedeets-common/js/events/models';
-import {
-  BlurredImage,
-  HorizontalView,
-  normalize,
-  semiNormalize,
-  Text,
-} from '../ui';
+import { HorizontalView, normalize, semiNormalize, Text } from '../ui';
 
 export const RowHeight = 130;
 

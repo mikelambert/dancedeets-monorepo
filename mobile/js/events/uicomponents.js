@@ -33,7 +33,6 @@ import messages from 'dancedeets-common/js/events/messages';
 import { formatAttending } from 'dancedeets-common/js/events/helpers';
 import {
   Autolink,
-  BlurredImage,
   Button,
   Card,
   FBShareButton,
@@ -965,51 +964,65 @@ class _FullEventView extends React.Component {
       name = translatedEvent.translation.name;
     }
 
-    return (
-      <BlurredImage source={squareImageProps} style={eventStyles.blurredImage}>
-        <ScrollView style={[eventStyles.container, { width }]}>
-          {flyer}
-          <Text
-            numberOfLines={2}
-            style={[eventStyles.rowTitle, eventStyles.rowTitlePadding]}
-          >
-            {name}
-          </Text>
-          <EventCategories
-            categories={this.props.event.annotations.categories}
+    const eventView = (
+      <ScrollView style={[eventStyles.container, { width }]}>
+        {flyer}
+        <Text
+          numberOfLines={2}
+          style={[eventStyles.rowTitle, eventStyles.rowTitlePadding]}
+        >
+          {name}
+        </Text>
+        <EventCategories categories={this.props.event.annotations.categories} />
+        <EventDateTime
+          start={this.props.event.start_time}
+          end={this.props.event.end_time}
+        >
+          <AddToCalendarButton
+            event={this.props.event}
+            style={eventStyles.addToCalendarButton}
           />
-          <EventDateTime
-            start={this.props.event.start_time}
-            end={this.props.event.end_time}
-          >
-            <AddToCalendarButton
-              event={this.props.event}
-              style={eventStyles.addToCalendarButton}
-            />
-          </EventDateTime>
-          <EventRsvp event={this.props.event} />
-          <EventTickets event={this.props.event} />
-          <TouchableOpacity
-            onPress={this.onLocationClicked}
-            activeOpacity={0.5}
-          >
-            <EventVenue
-              style={eventStyles.rowLink}
-              venue={this.props.event.venue}
-              currentPosition={this.props.currentPosition}
-            />
-          </TouchableOpacity>
-          <EventSource event={this.props.event} />
-          <EventAddedBy event={this.props.event} />
-          <EventOrganizers event={this.props.event} />
-          <HorizontalView style={eventStyles.splitButtons}>
-            <EventShare event={this.props.event} />
-            <TranslateButton event={this.props.event} />
-          </HorizontalView>
-          <EventDescription event={this.props.event} />
-        </ScrollView>
-      </BlurredImage>
+        </EventDateTime>
+        <EventRsvp event={this.props.event} />
+        <EventTickets event={this.props.event} />
+        <TouchableOpacity onPress={this.onLocationClicked} activeOpacity={0.5}>
+          <EventVenue
+            style={eventStyles.rowLink}
+            venue={this.props.event.venue}
+            currentPosition={this.props.currentPosition}
+          />
+        </TouchableOpacity>
+        <EventSource event={this.props.event} />
+        <EventAddedBy event={this.props.event} />
+        <EventOrganizers event={this.props.event} />
+        <HorizontalView style={eventStyles.splitButtons}>
+          <EventShare event={this.props.event} />
+          <TranslateButton event={this.props.event} />
+        </HorizontalView>
+        <EventDescription event={this.props.event} />
+      </ScrollView>
     );
+    if (squareImageProps) {
+      // Android and iOS blurRadius act differently, as noticed here:
+      // https://github.com/facebook/react-native/commit/fc09c54324ff7fcec41e4f55edcca3854c9fa76b
+      // TODO: At some point this will be remedied, and we'll need to adjust here.
+      const blurRadius =
+        3 *
+        (Platform.OS === 'android'
+          ? 1
+          : 2 * Dimensions.get('window').width / squareImageProps.width);
+      return (
+        <Image
+          source={squareImageProps}
+          style={eventStyles.blurredImage}
+          blurRadius={blurRadius}
+        >
+          {eventView}
+        </Image>
+      );
+    } else {
+      return eventView;
+    }
   }
 }
 export const FullEventView = connect(state => ({
@@ -1023,7 +1036,9 @@ const eventStyles = StyleSheet.create({
     flexGrow: 1,
     borderRadius: 5,
   },
-  container: {},
+  container: {
+    backgroundColor: 'rgba(0, 0, 0, .6)',
+  },
   splitButtons: {
     justifyContent: 'space-between',
   },
