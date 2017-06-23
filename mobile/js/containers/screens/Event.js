@@ -204,7 +204,7 @@ class NavButton extends React.PureComponent {
     if (!this.props.disabled) {
       contents = (
         <TouchableItem onPress={() => this.props.onPress()}>
-          {contents}
+          <View>{contents}</View>
         </TouchableItem>
       );
     }

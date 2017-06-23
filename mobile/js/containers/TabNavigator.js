@@ -5,7 +5,7 @@
  */
 
 import React from 'react';
-import { Image, StyleSheet } from 'react-native';
+import { Image, Platform, StyleSheet, WebView } from 'react-native';
 import { TabBarBottom, TabNavigator } from 'react-navigation';
 import type { SceneRendererProps } from 'react-native-tab-view/src/TabViewTypeDefinitions';
 import { connect } from 'react-redux';
@@ -57,6 +57,16 @@ function image(focused, focusedSource, unfocusedSource) {
 
 const mediumUrl = 'https://medium.dancedeets.com/';
 
+class ArticlesScreensNavigator extends React.Component {
+  render() {
+    if (Platform.OS === 'ios') {
+      return <WKWebView source={{ uri: mediumUrl }} />;
+    } else {
+      return <WebView source={{ uri: mediumUrl }} />;
+    }
+  }
+}
+
 const routeConfiguration = {
   Events: {
     screen: EventScreensNavigator,
@@ -85,7 +95,7 @@ const routeConfiguration = {
     }),
   },
   Articles: {
-    screen: () => <WKWebView source={{ uri: mediumUrl }} />,
+    screen: ArticlesScreensNavigator,
     onSameTabClick: ({ navigation }) =>
       console.log('Cannot go back on Articles tab'),
     navigationOptions: ({ screenProps }) => ({
