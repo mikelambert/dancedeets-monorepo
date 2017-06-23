@@ -1,3 +1,9 @@
+/**
+ * Copyright 2016 DanceDeets.
+ *
+ * @flow
+ */
+
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
 import { Heading1, normalize, Text } from '../ui';
