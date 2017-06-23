@@ -5,7 +5,12 @@
  */
 
 import React from 'react';
-import { Image, findNodeHandle, StyleSheet } from 'react-native';
+import {
+  Image,
+  InteractionManager,
+  findNodeHandle,
+  StyleSheet,
+} from 'react-native';
 import { BlurView } from 'react-native-blur';
 
 export default class BlurredImage extends React.Component {
@@ -21,14 +26,19 @@ export default class BlurredImage extends React.Component {
     super(props);
 
     this.state = {
-      viewRef: 0,
+      viewRef: null,
     };
 
     (this: any).imageLoaded = this.imageLoaded.bind(this);
   }
 
   imageLoaded() {
-    this.setState({ viewRef: findNodeHandle(this._imageRef) });
+    // Workaround for a tricky race condition on initial load.
+    InteractionManager.runAfterInteractions(() => {
+      setTimeout(() => {
+        this.setState({ viewRef: findNodeHandle(this._imageRef) });
+      }, 500);
+    });
   }
 
   render() {
@@ -37,19 +47,23 @@ export default class BlurredImage extends React.Component {
       <Image
         {...props}
         ref={x => (this._imageRef = x)}
+        //TODO(android): Seems this doesn't actually get called for our images,
+        // so it's probably better to just disable blurred images on android altogether
         onLoadEnd={this.imageLoaded}
       >
-        <BlurView
-          // iOS props
-          blurType="dark"
-          blurAmount={30}
-          // Android props
-          blurRadius={15}
-          downsampleFactor={5}
-          overlayColor={'rgba(255, 255, 255, .25)'}
-          style={styles.blurView}
-          viewRef={this.state.viewRef}
-        />
+        {this.state.viewRef
+          ? <BlurView
+              // iOS props
+              blurType="dark"
+              blurAmount={30}
+              // Android props
+              blurRadius={15}
+              downsampleFactor={5}
+              overlayColor={'rgba(255, 255, 255, .25)'}
+              style={styles.blurView}
+              viewRef={this.state.viewRef}
+            />
+          : null}
         {children}
       </Image>
     );
