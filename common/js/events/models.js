@@ -15,6 +15,8 @@ type MiniImageProp = {
   height: number,
 };
 
+const squareImageSize = 180;
+
 export type Cover = {
   source: string,
   height: number,
@@ -150,14 +152,18 @@ export class Event extends BaseEvent {
   admins: Array<Admin>;
   ticket_uri: string; // eslint-disable-line camelcase
 
-  getFlyer(dimensions: { width?: number, height?: number }) {
+  getFlyer(dimensions: { width?: number, height?: number }): ?MiniImageProp {
     if (!this.picture) {
       return null;
     }
 
     let { width, height } = dimensions;
     if (!width && !height) {
-      return this.picture;
+      return {
+        uri: this.picture.source,
+        width: this.picture.width,
+        height: this.picture.height,
+      };
     }
 
     const ratio = this.picture.width / this.picture.height;
@@ -178,12 +184,11 @@ export class Event extends BaseEvent {
     return result;
   }
 
-  getSquareFlyer() {
-    const x = 180;
-    return this.getFlyer({ width: x, height: x });
+  getSquareFlyer(): ?MiniImageProp {
+    return this.getFlyer({ width: squareImageSize, height: squareImageSize });
   }
 
-  getResponsiveFlyers() {
+  getResponsiveFlyers(): Array<MiniImageProp> {
     if (!this.picture) {
       return [];
     }
