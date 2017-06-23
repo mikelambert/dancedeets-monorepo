@@ -227,16 +227,16 @@ class _EventVenue extends React.PureComponent {
       ? <EventMap venue={this.props.venue} defaultSize={0.005} />
       : null;
 
-    const maxWidth = Dimensions.get('window').width - normalize(100);
-
     return (
       <SubEventLine icon={require('./images/location.png')}>
         <HorizontalView>
-          <View style={{ maxWidth }}>
+          <View style={{ flexShrink: 1 }}>
             {components}
             {distanceComponent}
           </View>
-          {map}
+          <View style={{ minWidth: normalize(150), flexGrow: 1 }}>
+            {map}
+          </View>
         </HorizontalView>
       </SubEventLine>
     );
@@ -246,7 +246,7 @@ const EventVenue = injectIntl(_EventVenue);
 
 class _EventSource extends React.PureComponent {
   props: {
-    event: Ebent,
+    event: Event,
 
     // Self-managed props
     intl: intlShape,
@@ -958,14 +958,6 @@ class _FullEventView extends React.Component {
         </TouchableOpacity>
       );
     }
-
-    const map = this.props.event.venue.geocode
-      ? <EventMap
-          venue={this.props.event.venue}
-          style={eventStyles.eventMap}
-          defaultSize={0.005}
-        />
-      : null;
 
     let name = this.props.event.name;
     const translatedEvent = this.props.translatedEvents[this.props.event.id];
