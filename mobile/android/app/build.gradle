@@ -117,7 +117,7 @@ android {
         }
         multiDexEnabled true
         // Add these lines below the existing config
-        renderscriptTargetApi 23
+        renderscriptTargetApi 16
         renderscriptSupportModeEnabled true
     }
     splits {
