@@ -15,6 +15,7 @@ import {
 import { connect } from 'react-redux';
 import Collapsible from 'react-native-collapsible';
 import Icon from 'react-native-vector-icons/Ionicons';
+import { injectIntl, intlShape, defineMessages } from 'react-intl';
 import type {
   PeopleListing,
   StylePersonLookup,
@@ -25,6 +26,30 @@ import type { State } from '../reducers/search';
 import { openUserId } from '../util/fb';
 import { linkColor } from '../Colors';
 
+const messages = defineMessages({
+  nearbyPromoters: {
+    id: 'peopleList.nearbyPromoters',
+    defaultMessage: 'Nearby Promoters',
+    description: 'Title for pop-open list of promoters/organizers in the scene',
+  },
+  nearbyPromotersMessage: {
+    id: 'peopleList.nearbyPromotersMessage',
+    defaultMessage: 'If you want to organize an event, work with these folks',
+    description:
+      'Subtitle for pop-open list of promoters/organizers in the scene',
+  },
+  nearbyDancers: {
+    id: 'peopleList.nearbyDancers',
+    defaultMessage: 'Nearby Dancers',
+    description: 'Title for pop-open list of dancers in the scene',
+  },
+  nearbyDancersMessage: {
+    id: 'peopleList.nearbyDancersMessage',
+    defaultMessage:
+      'If you want to connect with the dance scene, hit these folks up',
+    description: 'Subtitle for pop-open list of dancers in the scene',
+  },
+});
 class PersonList extends React.Component {
   props: {
     subtitle: string,
@@ -136,51 +161,63 @@ class HeaderCollapsible extends React.Component {
   }
 }
 
-export class OrganizerView extends React.Component {
+class _OrganizerView extends React.Component {
   props: {
     defaultCollapsed: boolean,
     headerStyle: ViewPropTypes.style,
     people: StylePersonLookup,
+
+    // Self-managed props
+    intl: intlShape,
   };
 
   render() {
     return (
       <HeaderCollapsible
-        title="Nearby Promoters"
+        title={this.props.intl.formatMessage(messages.nearbyPromoters)}
         defaultCollapsed={this.props.defaultCollapsed}
         style={this.props.headerStyle}
       >
         <PersonList
-          subtitle="If you want to organize an event, work with these folks"
+          subtitle={this.props.intl.formatMessage(
+            messages.nearbyPromotersMessage
+          )}
           people={this.props.people}
         />
       </HeaderCollapsible>
     );
   }
 }
+export const OrganizerView = injectIntl(_OrganizerView);
 
-export class AttendeeView extends React.Component {
+export class _AttendeeView extends React.Component {
   props: {
     defaultCollapsed: boolean,
     headerStyle: ViewPropTypes.style,
     people: StylePersonLookup,
+
+    // Self-managed props
+    intl: intlShape,
   };
 
   render() {
     return (
       <HeaderCollapsible
-        title="Nearby Dancers"
+        title={this.props.intl.formatMessage(messages.nearbyDancers)}
         defaultCollapsed={this.props.defaultCollapsed}
         style={this.props.headerStyle}
       >
         <PersonList
-          subtitle="If you want to connect with the dance scene, hit these folks up"
+          subtitle={this.props.intl.formatMessage(
+            messages.nearbyDancersMessage
+          )}
           people={this.props.people}
         />
       </HeaderCollapsible>
     );
   }
 }
+export const AttendeeView = injectIntl(_AttendeeView);
 
 const styles = StyleSheet.create({
   rowLink: {
