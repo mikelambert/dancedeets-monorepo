@@ -58,7 +58,7 @@ class MyReactNativeHost extends ReactNativeHost implements ReactInstanceHolder {
   static CallbackManager mCallbackManager = CallbackManager.Factory.create();
 
   @Override
-  protected boolean getUseDeveloperSupport() {
+  public boolean getUseDeveloperSupport() {
     return BuildConfig.DEBUG;
   }
 

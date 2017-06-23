@@ -28,7 +28,7 @@
     "react-native-blur": "^3.0.0-alpha",
     "react-native-calendar-events": "github:mikelambert/react-native-calendar-events",
     "react-native-carousel": "^0.10.0",
-    "react-native-code-push": "^2.0.3-beta",
+    "react-native-code-push": "^2.1.0-beta",
     "react-native-collapsible": "^0.8.0",
     "react-native-device-info": "^0.9.9",
     "react-native-fabric": "github:corymsmith/react-native-fabric",
