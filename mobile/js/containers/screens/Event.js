@@ -158,6 +158,7 @@ class _SearchHeaderTitleSummary extends React.Component {
             <Icon
               name="md-search"
               size={20}
+              color="black"
               style={{ marginTop: 4, width: 20 }}
             />
             {keywords}
