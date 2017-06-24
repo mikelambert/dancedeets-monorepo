@@ -18,6 +18,7 @@ import { ShareDialog, MessageDialog } from 'react-native-fbsdk';
 import Share from 'react-native-share';
 import { injectIntl, intlShape, defineMessages } from 'react-intl';
 import NativeEnv from 'react-native-native-env';
+import Icon from 'react-native-vector-icons/Ionicons';
 import { logOutWithPrompt, loginButtonPressed } from '../actions';
 import { Button, Card, Heading1, HorizontalView, normalize, Text } from '../ui';
 import { linkColor, purpleColors } from '../Colors';
@@ -131,7 +132,7 @@ class _ShareButtons extends React.Component {
             track('Share DanceDeets', { Button: 'Share FB Post' });
             ShareDialog.show(this.getShareLinkContent());
           }}
-          style={styles.noFlexButtonHorizontal}
+          style={[styles.noFlexButtonHorizontal, { marginRight: 10 }]}
         />
         <Button
           size="small"
@@ -293,6 +294,26 @@ export function getVersionTitle(intl: intlShape) {
   });
 }
 
+class ButtonIcon extends React.Component {
+  props: {
+    iconName: string,
+  };
+
+  render() {
+    return (
+      <Icon
+        name={
+          Platform.OS === 'android'
+            ? `md-${this.props.iconName}`
+            : `ios-${this.props.iconName}`
+        }
+        size={20}
+        style={{ width: 19, textAlign: 'center', marginRight: 9 }}
+        color="#FFF"
+      />
+    );
+  }
+}
 class _Profile extends React.Component {
   props: {
     intl: intlShape,
@@ -309,6 +330,7 @@ class _Profile extends React.Component {
           key="Button"
           size="small"
           style={styles.noFlexButton}
+          iconView={<ButtonIcon iconName="notifications" />}
           caption={this.props.intl.formatMessage(
             messages.buttonNotificationSettings
           )}
@@ -331,6 +353,7 @@ class _Profile extends React.Component {
 
         <Button
           size="small"
+          iconView={<ButtonIcon iconName="mail" />}
           caption={this.props.intl.formatMessage(messages.buttonSendFeedback)}
           onPress={sendEmail}
           style={styles.noFlexButton}
@@ -338,6 +361,7 @@ class _Profile extends React.Component {
 
         <Button
           size="small"
+          iconView={<ButtonIcon iconName="speedometer" />}
           caption={this.props.intl.formatMessage(
             messages.buttonAdvertisePromote
           )}
@@ -347,6 +371,7 @@ class _Profile extends React.Component {
 
         <Button
           size="small"
+          iconView={<ButtonIcon iconName="people" />}
           caption={getVersionTitle(this.props.intl)}
           onPress={this.props.openCredits}
           style={[styles.noFlexButton, { marginBottom: 30 }]}
