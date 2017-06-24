@@ -345,7 +345,6 @@ class EventScreen extends React.Component {
   }
 
   onEventNavigated(event) {
-    console.log(event);
     trackWithEvent('View Event', event);
     this.props.navigation.setParams({ event });
   }
