@@ -143,7 +143,8 @@ android {
         release {
             minifyEnabled enableProguardInReleaseBuilds
             proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
-            shrinkResources true
+            //minifyEnabled true
+            //shrinkResources true
             zipAlignEnabled true
             manifestPlaceholders = [applicationIdSuffix: ""]
             signingConfig signingConfigs.release
