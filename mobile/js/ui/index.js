@@ -8,6 +8,7 @@ import AutocompleteList from './AutocompleteList';
 import BottomFade from './bottomFade';
 import Button from './Button';
 import Card from './Card';
+import Collapsible from './Collapsible';
 import ProgressiveLayout from './ProgressiveLayout';
 import ProportionalImage from './ProportionalImage';
 import RibbonBanner from './ribbonBanner';
@@ -25,6 +26,7 @@ module.exports = {
   BottomFade,
   Button,
   Card,
+  Collapsible,
   ProgressiveLayout,
   ProportionalImage,
   RibbonBanner,

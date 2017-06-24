@@ -13,7 +13,6 @@ import {
   ViewPropTypes,
 } from 'react-native';
 import { connect } from 'react-redux';
-import Collapsible from 'react-native-collapsible';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { injectIntl, intlShape, defineMessages } from 'react-intl';
 import type {
@@ -21,7 +20,7 @@ import type {
   StylePersonLookup,
 } from 'dancedeets-common/js/events/search';
 import { formatStartDateOnly } from 'dancedeets-common/js/dates';
-import { HorizontalView, semiNormalize, Text } from '../ui';
+import { Collapsible, HorizontalView, semiNormalize, Text } from '../ui';
 import type { State } from '../reducers/search';
 import { openUserId } from '../util/fb';
 import { linkColor } from '../Colors';
@@ -153,7 +152,7 @@ class HeaderCollapsible extends React.Component {
             </HorizontalView>
           </View>
         </TouchableHighlight>
-        <Collapsible collapsed={this.state.collapsed}>
+        <Collapsible collapsed={this.state.collapsed} align="center">
           {this.props.children}
         </Collapsible>
       </View>
