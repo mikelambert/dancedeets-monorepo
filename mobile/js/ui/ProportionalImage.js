@@ -4,7 +4,7 @@
  * @flow
  */
 import React from 'react';
-import { Animated, View } from 'react-native';
+import { Animated, Platform, View } from 'react-native';
 import SyntheticEvent from 'react-native/Libraries/Renderer/src/renderers/shared/shared/event/SyntheticEvent';
 
 type Dimension = {
@@ -36,9 +36,15 @@ export default class ProportionalImage extends React.PureComponent {
 
   constructor(props: Props) {
     super(props);
+    let initialValue = 0;
+    // TODO(android): It seems that onLoad/onLoadEnd doesn't register on android
+    // So we disable this animation altogether
+    if (Platform.OS === 'android') {
+      initialValue = 1.0;
+    }
     this.state = {
       dimensions: this.props.initialDimensions,
-      opacity: new Animated.Value(0),
+      opacity: new Animated.Value(initialValue),
     };
     (this: any).onLayout = this.onLayout.bind(this);
     (this: any).onLoad = this.onLoad.bind(this);
@@ -62,6 +68,7 @@ export default class ProportionalImage extends React.PureComponent {
     Animated.timing(this.state.opacity, {
       toValue: 1,
       duration: this.props.duration,
+      useNativeDriver: true,
     }).start();
   }
 
