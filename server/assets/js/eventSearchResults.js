@@ -8,6 +8,7 @@ import React from 'react';
 import url from 'url';
 import FormatText from 'react-format-text';
 import moment from 'moment';
+import ExecutionEnvironment from 'exenv';
 import upperFirst from 'lodash/upperFirst';
 import { injectIntl, intlShape } from 'react-intl';
 import { StickyContainer, Sticky } from 'react-sticky';
@@ -131,7 +132,12 @@ class _EventDescription extends React.Component {
           {keywords.join(', ')}
         </ImagePrefix>
         <ImagePrefix iconName="clock-o">
-          {formatStartTime(event.start_time, this.props.intl)}
+          {formatStartTime(
+            ExecutionEnvironment.canUseDOM
+              ? event.start_time
+              : event.startTimeNoTz(),
+            this.props.intl
+          )}
         </ImagePrefix>
         <ImagePrefix iconName="map-marker">
           <div>{event.venue.name}</div>

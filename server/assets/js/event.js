@@ -322,11 +322,20 @@ class _EventLinks extends React.Component {
       );
     }
 
-    const formattedStartEndText = formatStartEnd(
-      event.start_time,
-      event.end_time,
-      this.props.intl
-    );
+    let formattedStartEndText = null;
+    if (ExecutionEnvironment.canUseDOM) {
+      formattedStartEndText = formatStartEnd(
+        event.start_time,
+        event.end_time,
+        this.props.intl
+      );
+    } else {
+      formattedStartEndText = formatStartEnd(
+        event.startTimeNoTz(),
+        event.endTimeNoTz(),
+        this.props.intl
+      );
+    }
     let sourceName = event.source.name;
     // Only add the a-href on the client, not the server.
     // This makes it mildly harder for scrapers to scrape us.
