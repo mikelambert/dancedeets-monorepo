@@ -76,11 +76,11 @@ export class Venue extends JsonDerivedObject {
     }
   }
 
-  cityStateCountry() {
+  cityStateCountry(separator: string = ', ') {
     if (this.address) {
       return [this.address.city, this.address.state, this.address.country]
         .filter(x => x)
-        .join(', ');
+        .join(separator);
     } else {
       return null;
     }
