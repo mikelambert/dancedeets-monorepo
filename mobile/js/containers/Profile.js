@@ -19,7 +19,7 @@ import Share from 'react-native-share';
 import { injectIntl, intlShape, defineMessages } from 'react-intl';
 import NativeEnv from 'react-native-native-env';
 import { logOutWithPrompt, loginButtonPressed } from '../actions';
-import { Button, Card, Heading1, normalize, Text } from '../ui';
+import { Button, Card, Heading1, HorizontalView, normalize, Text } from '../ui';
 import { linkColor, purpleColors } from '../Colors';
 import { track } from '../store/track';
 import type { Dispatch, User } from '../actions/types';
@@ -122,11 +122,7 @@ class _ShareButtons extends React.Component {
 
   render() {
     return (
-      <View>
-        <Heading1>
-          {this.props.intl.formatMessage(messages.shareTitle)}
-        </Heading1>
-
+      <HorizontalView>
         <Button
           size="small"
           caption={this.props.intl.formatMessage(messages.shareFacebook)}
@@ -135,7 +131,7 @@ class _ShareButtons extends React.Component {
             track('Share DanceDeets', { Button: 'Share FB Post' });
             ShareDialog.show(this.getShareLinkContent());
           }}
-          style={styles.noFlexButton}
+          style={styles.noFlexButtonHorizontal}
         />
         <Button
           size="small"
@@ -159,9 +155,9 @@ class _ShareButtons extends React.Component {
               }
             );
           }}
-          style={styles.noFlexButton}
+          style={styles.noFlexButtonHorizontal}
         />
-      </View>
+      </HorizontalView>
     );
   }
 }
@@ -331,11 +327,7 @@ class _Profile extends React.Component {
 
         {notificationButton}
 
-        <HorizontalRule />
-
         <ShareButtons />
-
-        <HorizontalRule />
 
         <Button
           size="small"
@@ -357,7 +349,7 @@ class _Profile extends React.Component {
           size="small"
           caption={getVersionTitle(this.props.intl)}
           onPress={this.props.openCredits}
-          style={styles.noFlexButton}
+          style={[styles.noFlexButton, { marginBottom: 30 }]}
         />
 
       </ScrollView>
@@ -369,6 +361,10 @@ export default injectIntl(_Profile);
 const styles = StyleSheet.create({
   noFlexButton: {
     flex: 0,
+    marginTop: normalize(10),
+  },
+  noFlexButtonHorizontal: {
+    flex: 1,
     marginTop: normalize(10),
   },
   container: {
