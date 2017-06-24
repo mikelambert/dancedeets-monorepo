@@ -26,7 +26,7 @@ if [ "$TRAVIS" == true ]; then
   sudo apt-get -qq update
   sudo apt-get install -y libxml2-dev
 else
-  brew install libmemcached
+  brew ls --versions libmemcached >/dev/null || brew install libmemcached
 fi
 # Things we expect to be installed in our docker container
 pip install --upgrade -t $BASE_DIR/lib-local -r $BASE_DIR/docker/gae-modules/requirements.txt
@@ -34,14 +34,13 @@ pip install --upgrade -t $BASE_DIR/lib-local -r $BASE_DIR/docker/gae-modules-py/
 
 echo "Installing test libraries"
 # For testing, just install them locally (not in the lib/ dir).
-pip install --upgrade $USER_FLAG -r $BASE_DIR/test-requirements.txt
+pip install --upgrade -t $BASE_DIR/lib-local -r $BASE_DIR/test-requirements.txt
 
 echo "Installing the libraries which don't work with gae-modules*"
 pip install --upgrade -t $BASE_DIR/lib-both -r $BASE_DIR/setup-requirements.txt
 
-# This seems to be necessary to fix this error:
-# DistributionNotFound: The 'google-cloud-datastore' distribution was not found and is required by the application
-pip install $USER_FLAG google-cloud-datastore
+# We need technicolor-yawn binary, which only exists when we install it in the system
+pip install $USER_FLAG technicolor-yawn==0.2.0
 
 # TODO: install node
 # TODO: install npm?
@@ -54,6 +53,9 @@ echo "Installing npm modules: ../"
 cd $BASE_DIR/..
 npm install
 
+echo "Installing npm modules: ../common/"
+cd $BASE_DIR/../common
+npm install
 
 echo "Installing npm modules: ../server/"
 cd $BASE_DIR
@@ -78,6 +80,7 @@ if [ "$TRAVIS" != true ]; then
   fi
   # Install the modules that make frankenserver amazing
   cd $BASE_DIR/frankenserver && pip install $USER_FLAG -r requirements.txt
+  pip install -t $BASE_DIR/lib-local -r $BASE_DIR/frankenserver/requirements.txt
 fi
 
 cd $BASE_DIR
@@ -89,6 +92,8 @@ else
   brew ls --versions homebrew/science/vips >/dev/null || brew install homebrew/science/vips --with-webp --with-graphicsmagick
   brew ls --versions graphicsmagick >/dev/null || brew install graphicsmagick
   brew ls --versions librsvg >/dev/null || brew install librsvg
+  echo "Building cities DB"
+  gulp compile:geonames
   echo "Compiling everything"
   gulp compile
 fi

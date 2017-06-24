@@ -9,7 +9,7 @@ import {
   Dimensions,
   Image,
   Linking,
-  ListView,
+  SectionList,
   Platform,
   RefreshControl,
   StyleSheet,
@@ -22,24 +22,35 @@ import { injectIntl, intlShape, defineMessages } from 'react-intl';
 import moment from 'moment';
 import { connect } from 'react-redux';
 import Carousel from 'react-native-carousel';
-import Icon from 'react-native-vector-icons/Ionicons';
 import upperFirst from 'lodash/upperFirst';
+import type {
+  NavigationAction,
+  NavigationRoute,
+  NavigationScreenProp,
+} from 'react-navigation/src/TypeDefinition';
+import Icon from 'react-native-vector-icons/Ionicons';
 import { Event } from 'dancedeets-common/js/events/models';
 import type {
   FeaturedInfo,
   Onebox,
-  PeopleListing,
   SearchResponse,
   StylePersonLookup,
 } from 'dancedeets-common/js/events/search';
-import Collapsible from 'react-native-collapsible';
-import { EventRow } from './uicomponents';
+import { formatStartDateOnly } from 'dancedeets-common/js/dates';
+import { EventRow, RowHeight } from './listEvent';
 import SearchHeader from './searchHeader';
 import type { State } from '../reducers/search';
-import { detectedLocation, performSearch, processUrl } from '../actions';
+import {
+  canGetValidLoginFor,
+  detectedLocation,
+  performSearch,
+  processUrl,
+  setWaitingForLocationPermission,
+  showSearchForm,
+} from '../actions';
 import type { User } from '../actions/types';
 import { linkColor, purpleColors } from '../Colors';
-import { auth, event, isAuthenticated } from '../api/dancedeets';
+import { auth, isAuthenticated } from '../api/dancedeets';
 import {
   BottomFade,
   Button,
@@ -49,19 +60,19 @@ import {
   semiNormalize,
   Text,
 } from '../ui';
-import { track } from '../store/track';
-import { getAddress, getPosition } from '../util/geo';
-import { weekdayDate } from '../formats';
+import { track, trackWithEvent } from '../store/track';
+import { hasLocationPermission, getAddress } from '../util/geo';
 import { loadUserData } from '../actions/login';
 import { canHandleUrl } from '../websiteUrl';
 import { loadSavedAddress, storeSavedAddress } from './savedAddress';
-import { openUserId } from '../util/fb';
+import { AttendeeView, OrganizerView } from './peopleList';
 
 const messages = defineMessages({
   fetchEventsError: {
     id: 'errors.fetchEventsError',
     defaultMessage: 'There was a problem fetching events.',
-    description: 'Error message shown when there is an error loading data over the network',
+    description:
+      'Error message shown when there is an error loading data over the network',
   },
   networkRetry: {
     id: 'errors.networkRetry',
@@ -76,28 +87,37 @@ const messages = defineMessages({
   specialLinks: {
     id: 'onebox.specialLinks',
     defaultMessage: 'Additional Links',
-    description: 'Header for all the links/blogs/wikis/etc relevant to this search',
+    description:
+      'Header for all the links/blogs/wikis/etc relevant to this search',
   },
-  eventsWithLocation: {
-    id: 'search.eventsWithLocation',
-    defaultMessage: 'Events near {location}',
-    description: 'Header to show with search results',
+  featuredEvent: {
+    id: 'eventList.featuredEvent',
+    defaultMessage: 'Featured Event',
+    description: 'Title of the section header above our featured event',
   },
-  eventsWithKeywords: {
-    id: 'search.eventsWithKeywords',
-    defaultMessage: 'Events with keywords "{keywords}"',
-    description: 'Header to show with search results',
+  peopleHeader: {
+    id: 'eventList.peopleHeader',
+    defaultMessage: 'Local Dance Scene',
+    description: 'Header for the nearby dancers and nearby people',
   },
-  eventsWithLocationKeywords: {
-    id: 'search.eventsWithLocationKeywords',
-    defaultMessage: 'Events near {location} with keywords "{keywords}"',
-    description: 'Header to show with search results',
+  openSearchHeaderButton: {
+    id: 'eventList.openSearchHeaderButton',
+    defaultMessage: 'Enter a location or keyword above',
+    description: 'Will pop-open the search header for manual entry',
+  },
+  useGpsLocation: {
+    id: 'eventList.useGpsLocation',
+    defaultMessage: 'Use GPS to find events near you',
+    description:
+      'Will prompt user for Location permissions and then do a search',
   },
 });
 
 const CarouselDotIndicatorSize = 25;
 
-class SectionHeader extends React.Component {
+const SectionHeight = semiNormalize(30);
+
+class SectionHeader extends React.PureComponent {
   props: {
     title: string,
   };
@@ -111,7 +131,7 @@ class SectionHeader extends React.Component {
   }
 }
 
-class FeaturedEvent extends React.Component {
+class FeaturedEvent extends React.PureComponent {
   props: {
     event: Event,
   };
@@ -132,7 +152,7 @@ class FeaturedEvent extends React.Component {
   }
 }
 
-class FeaturedEvents extends React.Component {
+class FeaturedEvents extends React.PureComponent {
   props: {
     featured: Array<FeaturedInfo>,
     onEventSelected: (event: Event) => void,
@@ -204,16 +224,12 @@ class FeaturedEvents extends React.Component {
     );
   }
 
-  shouldComponentUpdate(nextProps, nextState) {
-    return this.props.featured != nextProps.featured;
-  }
-
   render() {
     if (!this.props.featured || !this.props.featured.length) {
       return null;
     }
     let carousel = null;
-    if (this.props.featured.length == 1) {
+    if (this.props.featured.length === 1) {
       carousel = this.renderPage(0);
     } else {
       carousel = (
@@ -222,8 +238,8 @@ class FeaturedEvents extends React.Component {
           indicatorColor="#FFFFFF"
           indicatorSize={CarouselDotIndicatorSize}
           indicatorSpace={15}
-          animate={true}
-          loop={true}
+          animate
+          loop
           delay={4000}
         >
           {this.props.featured.map((event, i) => this.renderPage(i))}
@@ -238,7 +254,7 @@ class FeaturedEvents extends React.Component {
   }
 }
 
-class OneboxView extends React.Component {
+class OneboxView extends React.PureComponent {
   props: {
     onebox: Onebox,
   };
@@ -277,208 +293,53 @@ class OneboxView extends React.Component {
   }
 }
 
-class _AddEventButton extends React.Component {
-  props: {
-    intl: intlShape,
-    onPress: () => void,
-  };
-
-  render() {
-    return (
-      <Button
-        icon={require('./images/add_calendar.png')}
-        caption={this.props.intl.formatMessage(messages.addEvent)}
-        color="green"
-        textStyle={{ fontWeight: 'bold' }}
-        style={styles.addEventButton}
-        onPress={this.props.onPress}
-        testID="addEvents"
-      />
-    );
-  }
-}
-const AddEventButton = injectIntl(_AddEventButton);
-
-class PersonList extends React.Component {
-  props: {
-    title: string,
-    subtitle: string,
-    categoryOrder?: Array<string>,
-    people: StylePersonLookup,
-  };
-
-  state: {
-    category: string,
-  };
-
-  constructor(props) {
-    super(props);
-    this.state = {
-      category: '',
-    };
-  }
-
-  renderLink(user) {
-    return (
-      <HorizontalView key={user.id}>
-        <Text> – </Text>
-        <TouchableOpacity key={user.id} onPress={() => openUserId(user.id)}>
-          <Text style={[styles.rowLink]}>{user.name}</Text>
-        </TouchableOpacity>
-      </HorizontalView>
-    );
-  }
-
-  render() {
-    const peopleList = this.props.people[this.state.category].slice(0, 10);
-    //const categories = this.props.categoryOrder.filter(x => x === '' || this.props.people[x]);
-    //{categories.map(x => <option key={x} value={x}>{x || 'Overall'}</option>)}
-
-    return (
-      <View>
-        <Text style={{ fontStyle: 'italic' }}>{this.props.subtitle}:</Text>
-        {peopleList.map(x => this.renderLink(x))}
-      </View>
-    );
-  }
-}
-
-class HeaderCollapsible extends React.Component {
-  props: {
-    defaultCollapsed: boolean,
-    title: string,
-    children?: React.Element<*>,
-    underlayColor?: string,
-  };
-
-  state: {
-    collapsed: boolean,
-  };
-
-  constructor(props) {
-    super(props);
-    this.state = { collapsed: !!props.defaultCollapsed };
-    (this: any)._toggle = this._toggle.bind(this);
-  }
-
-  _toggle() {
-    this.setState({ collapsed: !this.state.collapsed });
-  }
-
-  render() {
-    const iconName = this.state.collapsed
-      ? 'md-arrow-dropright'
-      : 'md-arrow-dropdown';
-    return (
-      <View>
-        <TouchableHighlight
-          onPress={this._toggle}
-          underlayColor={this.props.underlayColor}
-        >
-          <View style={styles.sectionHeader}>
-            <HorizontalView>
-              <View
-                style={{
-                  width: 20,
-                  height: 20,
-                  alignItems: 'center',
-                  alignSelf: 'center',
-                }}
-              >
-                <Icon name={iconName} size={15} color="#FFF" />
-              </View>
-              <Text>{this.props.title}</Text>
-            </HorizontalView>
-          </View>
-        </TouchableHighlight>
-        <Collapsible collapsed={this.state.collapsed}>
-          {this.props.children}
-        </Collapsible>
-      </View>
-    );
-  }
-}
-
-class _PeopleView extends React.Component {
-  props: {
-    people: PeopleListing,
-  };
-
-  render() {
-    // Keep in sync with web?
-    const defaultCollapsed = !(this.props.search.response.results.length < 10);
-    return (
-      <View>
-        <HeaderCollapsible
-          title="Nearby Promoters"
-          defaultCollapsed={defaultCollapsed}
-        >
-          <PersonList
-            title="Promoters"
-            subtitle="If you want to organize an event, work with these folks"
-            people={this.props.people.ADMIN}
-          />
-        </HeaderCollapsible>
-        <HeaderCollapsible
-          title="Nearby Dancers"
-          defaultCollapsed={defaultCollapsed}
-        >
-          <PersonList
-            title="Dancers"
-            subtitle="If you want to connect with the dance scene, hit these folks up"
-            people={this.props.people.ATTENDEE}
-            defaultCollapsed={defaultCollapsed}
-          />
-        </HeaderCollapsible>
-      </View>
-    );
-  }
-}
-const PeopleView = connect(state => ({
-  search: state.search,
-}))(_PeopleView);
-
 class _EventListContainer extends React.Component {
   props: {
-    intl: intlShape,
     onEventSelected: (event: Event) => void,
     onFeaturedEventSelected: (event: Event) => void,
-    onAddEventClicked: (clickTarget: string) => void,
 
     // Self-managed props
     search: State,
     user: ?User,
     detectedLocation: (location: string) => Promise<void>,
     performSearch: () => Promise<void>,
+    setWaitingForLocationPermission: (waiting: boolean) => Promise<void>,
+    showSearchForm: () => Promise<void>,
     processUrl: (url: string) => Promise<void>,
     loadUserData: () => Promise<void>,
+    intl: intlShape,
   };
 
-  state: {
-    position: ?Object,
-    dataSource: ListView.DataSource,
-  };
-
-  _listView: ListView;
+  _listView: SectionList<*>;
+  /* TODO: Figure out how to typecheck with this:
+  {
+    item:
+      | {
+          event: Event,
+          key: string,
+        }
+      | {
+          onebox: Onebox,
+          key: string,
+        }
+      | {
+          featuredInfos: Array<FeaturedInfo>,
+          key: string,
+        }
+      | {
+          people: StylePersonLookup,
+          defaultCollapsed: boolean,
+          renderClass: React.Class,
+          key: string,
+        },
+  }*/
 
   constructor(props) {
     super(props);
-    const dataSource = new ListView.DataSource({
-      rowHasChanged: (row1, row2) => row1 !== row2,
-      sectionHeaderHasChanged: (s1, s2) => s1 !== s2,
-    });
-    this.state = {
-      position: null,
-      dataSource,
-    };
-    this.state = this.getNewState(this.props);
     (this: any).renderHeader = this.renderHeader.bind(this);
-    (this: any).renderRow = this.renderRow.bind(this);
     (this: any).setLocationAndSearch = this.setLocationAndSearch.bind(this);
-  }
-
-  componentWillMount() {
-    this.loadLocation();
+    (this: any).renderItem = this.renderItem.bind(this);
+    (this: any).fetchLocationAndSearch = this.fetchLocationAndSearch.bind(this);
   }
 
   componentDidMount() {
@@ -486,36 +347,27 @@ class _EventListContainer extends React.Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    this.setState(this.getNewState(nextProps));
-    if (nextProps.search.response !== this.props.search.response) {
-      this._listView.scrollTo({ x: 0, y: 0, animated: false });
+    // Only zoom to top, if there are existing state.sections being rendered
+    if (
+      nextProps.search.response !== this.props.search.response &&
+      this.props.search.response &&
+      nextProps.search.response
+    ) {
+      this._listView.scrollToLocation({
+        animated: false,
+        itemIndex: 0,
+        sectionIndex: 0,
+        // Ugly hack to get it to scroll the Header into view:
+        // https://github.com/facebook/react-native/issues/14392
+        viewPosition: 100,
+      });
     }
-  }
-
-  getNewState(props) {
-    const { dataBlob, sectionHeaders } = this.buildDataBlobAndHeaders(
-      props.search.response
-    );
-    const state = {
-      ...this.state,
-      dataSource: this.state.dataSource.cloneWithRowsAndSections(
-        dataBlob,
-        sectionHeaders
-      ),
-    };
-    return state;
   }
 
   async setLocationAndSearch(formattedAddress: string) {
     if (!formattedAddress) {
       return;
     }
-
-    // Reload our current location for "N miles away" info, in case we haven't loaded it yet.
-    // This could happen if we don't have a location at load time (no permissions),
-    // then the user gives us permissions for a search, and now we need to reload it here,
-    // ideally before the user's search results come back.
-    this.loadLocation();
 
     // Now do the actual search logic:
     await this.props.detectedLocation(formattedAddress);
@@ -529,19 +381,87 @@ class _EventListContainer extends React.Component {
       this.props.user.ddUser &&
       !this.props.user.ddUser.location
     ) {
-      await storeSavedAddress(formattedAddress);
+      // Run this out-of-band, so don't await on it
+      this.authAndReloadProfile(formattedAddress);
     }
   }
 
-  buildDataBlobAndHeaders(response: ?SearchResponse) {
-    const dataBlob = {};
+  getData(response: ?SearchResponse) {
+    const sections = [];
     const sectionHeaders = [];
 
     if (response) {
+      if (response.featuredInfos && response.featuredInfos.length) {
+        const featuredTitle = this.props.intl.formatMessage(
+          messages.featuredEvent
+        );
+        sections.push({
+          key: 'Featured Event Header',
+          title: featuredTitle,
+          data: [
+            {
+              key: 'Featured Event',
+              featuredInfos: response.featuredInfos,
+            },
+          ],
+        });
+      }
+
+      if (response.people) {
+        // Keep in sync with web?
+        const defaultCollapsed = !(response.results.length < 10);
+
+        const peopleData = [];
+        if (
+          response.people.ADMIN &&
+          response.people.ADMIN[''] &&
+          response.people.ADMIN[''].length
+        ) {
+          peopleData.push({
+            key: 'Admin Row',
+            renderClass: OrganizerView,
+            people: response.people.ADMIN,
+            defaultCollapsed,
+          });
+        }
+        if (
+          response.people.ATTENDEE &&
+          response.people.ATTENDEE[''] &&
+          response.people.ATTENDEE[''].length
+        ) {
+          peopleData.push({
+            key: 'Attendee Row',
+            renderClass: AttendeeView,
+            people: response.people.ATTENDEE,
+            defaultCollapsed,
+          });
+        }
+
+        if (peopleData.length) {
+          const peopleTitle = this.props.intl.formatMessage(
+            messages.peopleHeader
+          );
+
+          sections.push({
+            key: 'People Header',
+            title: peopleTitle,
+            data: peopleData,
+          });
+        }
+      }
+
       if (response.onebox_links != null && response.onebox_links.length > 0) {
-        const oneboxKey = this.props.intl.formatMessage(messages.specialLinks);
-        dataBlob[oneboxKey] = response.onebox_links.map(x => x);
-        sectionHeaders.push(oneboxKey);
+        const oneboxTitle = this.props.intl.formatMessage(
+          messages.specialLinks
+        );
+        sections.push({
+          key: 'Onebox Header',
+          title: oneboxTitle,
+          data: response.onebox_links.map(onebox => ({
+            onebox,
+            key: `Onebox: ${onebox.url}`,
+          })),
+        });
       }
       const now = moment();
       if (response.results != null && response.results.length > 0) {
@@ -559,27 +479,21 @@ class _EventListContainer extends React.Component {
             continue;
           }
           const start = moment(e.start_time, moment.ISO_8601);
-          const formattedStart = this.props.intl.formatDate(
-            start.toDate(),
-            weekdayDate
-          );
-          if (!(formattedStart in dataBlob)) {
-            dataBlob[formattedStart] = [];
+          const formattedStart = formatStartDateOnly(start, this.props.intl);
+          let lastSection = sections[sections.length - 1];
+          if (!lastSection || lastSection.title !== formattedStart) {
+            sections.push({
+              key: `Section: ${start}`,
+              title: formattedStart,
+              data: [],
+            });
           }
-          dataBlob[formattedStart].push(e);
-          if (
-            !sectionHeaders ||
-            sectionHeaders[sectionHeaders.length - 1] !== formattedStart
-          ) {
-            sectionHeaders.push(formattedStart);
-          }
+          lastSection = sections[sections.length - 1];
+          lastSection.data.push({ event: e, key: `Event: ${e.id}` });
         }
       }
     }
-    return {
-      dataBlob,
-      sectionHeaders,
-    };
+    return sections;
   }
 
   async authAndReloadProfile(address) {
@@ -596,11 +510,20 @@ class _EventListContainer extends React.Component {
   }
 
   async fetchLocationAndSearch() {
-    // Get the address from GPS
-    let address = await getAddress();
-    // Save this location in the user's profile
-    this.authAndReloadProfile(address);
+    // If we are showing the "prompt for location", let's disable it now
+    if (this.props.search.waitingForLocationPermission) {
+      this.props.setWaitingForLocationPermission(false);
+    }
 
+    // Get the address from GPS
+    let address = null;
+    try {
+      address = await getAddress();
+      // Save this location in the user's profile
+      this.authAndReloadProfile(address);
+    } catch (error) {
+      console.log('Error loading GPS address:', error);
+    }
     // Otherwise, fall back to the last-searched address
     if (!address) {
       address = await loadSavedAddress();
@@ -618,21 +541,15 @@ class _EventListContainer extends React.Component {
     const url: ?string = await Linking.getInitialURL();
     if (url != null && canHandleUrl(url)) {
       this.props.processUrl(url);
-    } else {
+    } else if (await hasLocationPermission()) {
       this.fetchLocationAndSearch();
+    } else {
+      this.promptForLocation();
     }
   }
 
-  async loadLocation() {
-    try {
-      const position = await getPosition();
-      this.setState({ position });
-    } catch (e) {
-      console.log(
-        'Error fetching user location for finding distance-to-event:',
-        e
-      );
-    }
+  promptForLocation() {
+    this.props.setWaitingForLocationPermission(true);
   }
 
   bannerError(e) {
@@ -641,73 +558,50 @@ class _EventListContainer extends React.Component {
 
   renderHeader() {
     if (this.props.search.error) {
-      return this.renderErrorView();
+      return this.renderErrorView(this.props.search.errorString);
     }
-    return this.renderSummaryView();
+    return null;
   }
 
-  renderRow(row) {
-    if ('id' in row) {
+  renderItem(row) {
+    if (row.item.event) {
       return (
         <EventRow
-          event={row}
+          event={row.item.event}
           onEventSelected={this.props.onEventSelected}
-          currentPosition={this.state.position}
+        />
+      );
+    } else if (row.item.onebox) {
+      return <OneboxView onebox={row.item.onebox} />;
+    } else if (row.item.featuredInfos) {
+      return (
+        <FeaturedEvents
+          featured={row.item.featuredInfos}
+          onEventSelected={this.props.onFeaturedEventSelected}
+        />
+      );
+    } else if (row.item.people) {
+      const PeopleView = row.item.renderClass;
+      return (
+        <PeopleView
+          people={row.item.people}
+          headerStyle={styles.sectionHeader}
+          defaultCollapsed={row.item.defaultCollapsed}
         />
       );
     } else {
-      return <OneboxView onebox={row} />;
+      console.error('Unknown row: ', row);
+      return null;
     }
   }
 
-  renderErrorView() {
+  renderErrorView(error: ?string) {
     return (
       <View style={styles.errorView}>
         <Text style={styles.errorText}>
           {this.props.intl.formatMessage(messages.fetchEventsError)}{' '}
-          {this.props.intl.formatMessage(messages.networkRetry)}
+          {error || this.props.intl.formatMessage(messages.networkRetry)}
         </Text>
-      </View>
-    );
-  }
-
-  renderSummaryView() {
-    const response = this.props.search.response;
-    if (!response) {
-      return null;
-    }
-    const query = response.query;
-    let header = null;
-    if (query) {
-      let message = null;
-      if (query.location && query.keywords) {
-        message = messages.eventsWithLocationKeywords;
-      } else if (query.location) {
-        message = messages.eventsWithLocation;
-      } else if (query.keywords) {
-        message = messages.eventsWithKeywords;
-      } else {
-        // Don't show any header for non-existent search queries/results
-      }
-      if (message) {
-        header = (
-          <Text style={styles.listHeader}>
-            {this.props.intl.formatMessage(message, {
-              location: query.location,
-              keywords: query.keywords,
-            })}
-          </Text>
-        );
-      }
-    }
-    return (
-      <View>
-        <FeaturedEvents
-          featured={response.featuredInfos}
-          onEventSelected={this.props.onFeaturedEventSelected}
-        />
-        <PeopleView people={response.people} />
-        {header}
       </View>
     );
   }
@@ -733,33 +627,62 @@ class _EventListContainer extends React.Component {
     );
   }
 
-  renderListView() {
+  renderWaitingForLocationPermission() {
     return (
-      <ListView
-        // TODO: removeClippedSubviews is disabled until
-        // https://github.com/facebook/react-native/issues/8088 is fixed.
-        removeClippedSubviews={false}
+      <View style={{ justifyContent: 'center', alignItems: 'center', flex: 1 }}>
+        <Button
+          style={{ marginBottom: 50 }}
+          onPress={this.props.showSearchForm}
+          caption={this.props.intl.formatMessage(
+            messages.openSearchHeaderButton
+          )}
+        />
+        <Button
+          onPress={this.fetchLocationAndSearch}
+          iconView={
+            <Icon
+              name="md-locate"
+              size={20}
+              style={{ marginRight: 5 }}
+              color="#FFF"
+            />
+          }
+          caption={this.props.intl.formatMessage(messages.useGpsLocation)}
+        />
+      </View>
+    );
+  }
+
+  renderListView() {
+    const search = this.props.search;
+
+    if (
+      search.waitingForLocationPermission &&
+      !search.response &&
+      !search.loading
+    ) {
+      return this.renderWaitingForLocationPermission();
+    }
+    const sections = this.getData(search.response);
+    // TODO: SectionList is a PureComponent, so we should avoid passing dynamic closures
+    return (
+      <SectionList
         ref={x => {
           this._listView = x;
         }}
         style={[styles.listView]}
-        dataSource={this.state.dataSource}
-        renderHeader={this.renderHeader}
-        refreshControl={
-          <RefreshControl
-            refreshing={this.props.search.loading}
-            onRefresh={() => this.props.performSearch()}
-          />
-        }
-        renderRow={this.renderRow}
-        renderSectionHeader={(data, sectionID) => (
-          <SectionHeader title={upperFirst(sectionID)} />
-        )}
-        initialListSize={5}
-        pageSize={1}
-        scrollRenderAheadDistance={5000}
-        scrollsToTop={false}
-        indicatorStyle="white"
+        ListHeaderComponent={this.renderHeader}
+        ItemSeparatorComponent={() => <View style={styles.separator} />}
+        // Refresher
+        onRefresh={() => this.props.performSearch()}
+        refreshing={search.loading}
+        sections={sections}
+        renderItem={this.renderItem}
+        renderSectionHeader={({ section }) =>
+          <SectionHeader title={upperFirst(section.title)} />}
+        stickySectionHeadersEnabled
+        initialNumToRender={10}
+        maxToRenderPerBatch={10}
       />
     );
   }
@@ -767,28 +690,21 @@ class _EventListContainer extends React.Component {
   render() {
     return (
       <View style={styles.container}>
-        <SearchHeader
-          onAddEvent={() => {
-            this.props.onAddEventClicked('Search Header');
-          }}
-        >
+        <SearchHeader>
           {this.renderListView()}
         </SearchHeader>
-        <AddEventButton
-          onPress={() => {
-            this.props.onAddEventClicked('Floating Button');
-          }}
-        />
       </View>
     );
   }
 }
-export default connect(
+const EventListContainer = connect(
   state => ({
     search: state.search,
     user: state.user.userData,
   }),
   dispatch => ({
+    setWaitingForLocationPermission: async waiting =>
+      await dispatch(setWaitingForLocationPermission(waiting)),
     detectedLocation: async location => {
       await dispatch(detectedLocation(location));
     },
@@ -801,10 +717,21 @@ export default connect(
     loadUserData: async () => {
       await loadUserData(dispatch);
     },
+    showSearchForm: async () => {
+      await dispatch(showSearchForm());
+    },
   })
 )(injectIntl(_EventListContainer));
 
+export default EventListContainer;
+
 const styles = StyleSheet.create({
+  separator: {
+    flex: 1,
+    height: 0,
+    borderTopWidth: 0.5,
+    borderColor: purpleColors[0],
+  },
   listView: {
     flex: 1,
     top: 0,
@@ -824,7 +751,7 @@ const styles = StyleSheet.create({
   sectionHeader: {
     borderTopWidth: 1,
     borderTopColor: purpleColors[1],
-    height: semiNormalize(30),
+    height: SectionHeight,
     alignItems: 'flex-start', // left align
     justifyContent: 'center', // vertically center
     backgroundColor: purpleColors[2],

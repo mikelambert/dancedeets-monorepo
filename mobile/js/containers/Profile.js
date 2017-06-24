@@ -19,7 +19,7 @@ import Share from 'react-native-share';
 import { injectIntl, intlShape, defineMessages } from 'react-intl';
 import NativeEnv from 'react-native-native-env';
 import { logOutWithPrompt, loginButtonPressed } from '../actions';
-import { Button, Card, Heading1, normalize, Text } from '../ui';
+import { Button, Card, Heading1, HorizontalView, normalize, Text } from '../ui';
 import { linkColor, purpleColors } from '../Colors';
 import { track } from '../store/track';
 import type { Dispatch, User } from '../actions/types';
@@ -30,7 +30,7 @@ const STATUSBAR_HEIGHT = Platform.OS === 'ios' ? 20 : 0;
 const messages = defineMessages({
   credits: {
     id: 'credits.title',
-    defaultMessage: 'Dancedeets Credits',
+    defaultMessage: 'Dancedeets {version} Credits',
     description: 'Header of our Credits section',
   },
   tagline: {
@@ -41,7 +41,8 @@ const messages = defineMessages({
   shareTitle: {
     id: 'share.title',
     defaultMessage: 'Share DanceDeets',
-    description: 'Title for our card with all the share buttons, to share the app',
+    description:
+      'Title for our card with all the share buttons, to share the app',
   },
   shareFacebook: {
     id: 'share.facebook',
@@ -86,7 +87,8 @@ const messages = defineMessages({
   buttonAdvertisePromote: {
     id: 'buttons.advertisePromote',
     defaultMessage: 'Advertise/Promote',
-    description: 'Button to contact DanceDeets about advertising/promoting events in the app',
+    description:
+      'Button to contact DanceDeets about advertising/promoting events in the app',
   },
   profileDetailsHeader: {
     id: 'profile.detailsHeader',
@@ -95,71 +97,11 @@ const messages = defineMessages({
   },
   profileDetailsContents: {
     id: 'profile.detailsContents',
-    defaultMessage: '– Added: {handAdded, number}\n– Auto-contributed: {autoAdded, number}',
+    defaultMessage:
+      '– Added: {handAdded, number}\n– Auto-contributed: {autoAdded, number}',
     description: 'Details about the user',
   },
 });
-
-const credits = [
-  ['Web & App Programming', ['Mike Lambert']],
-  ['Logo', ['James "Cricket" Colter']],
-  ['App Login Photos', ['dancephotos.ch']],
-  [
-    'Translations',
-    [
-      'French: Mai Le, Hayet',
-      'Japanese: Huu Rock',
-      'Chinese: Wei, King Kong, Zoe',
-    ],
-  ],
-];
-
-class CreditSubList extends React.Component {
-  props: {
-    list: Array<string>,
-  };
-
-  render() {
-    const subcreditGroups = this.props.list.map(x => (
-      <Text key={x} style={{ left: 5 }}>- {x}</Text>
-    ));
-    return <View>{subcreditGroups}</View>;
-  }
-}
-
-class _Credits extends React.Component {
-  props: {
-    intl: intlShape,
-    style: Object,
-  };
-
-  render() {
-    const creditHeader = (
-      <Heading1 style={{ marginBottom: 5 }}>
-        {this.props.intl.formatMessage(messages.credits)}
-      </Heading1>
-    );
-    const creditGroups = credits.map(x => (
-      <View key={x[0]}>
-        <Text style={{ fontWeight: 'bold' }}>{x[0]}:</Text>
-        <CreditSubList list={x[1]} />
-      </View>
-    ));
-    const version = (
-      <Text style={styles.versionStyle}>
-        Version: {NativeEnv.get('VERSION_NAME')}
-      </Text>
-    );
-    return (
-      <Card style={this.props.style}>
-        {creditHeader}
-        {version}
-        {creditGroups}
-      </Card>
-    );
-  }
-}
-const Credits = injectIntl(_Credits);
 
 const shareLinkContent = {
   contentType: 'link',
@@ -180,11 +122,7 @@ class _ShareButtons extends React.Component {
 
   render() {
     return (
-      <Card>
-        <Heading1>
-          {this.props.intl.formatMessage(messages.shareTitle)}
-        </Heading1>
-
+      <HorizontalView>
         <Button
           size="small"
           caption={this.props.intl.formatMessage(messages.shareFacebook)}
@@ -193,7 +131,7 @@ class _ShareButtons extends React.Component {
             track('Share DanceDeets', { Button: 'Share FB Post' });
             ShareDialog.show(this.getShareLinkContent());
           }}
-          style={styles.noFlexButton}
+          style={styles.noFlexButtonHorizontal}
         />
         <Button
           size="small"
@@ -217,9 +155,9 @@ class _ShareButtons extends React.Component {
               }
             );
           }}
-          style={styles.noFlexButton}
+          style={styles.noFlexButtonHorizontal}
         />
-      </Card>
+      </HorizontalView>
     );
   }
 }
@@ -258,7 +196,6 @@ class _UserProfile extends React.Component {
       const loginButton = (
         <Button
           icon={require('../login/icons/facebook.png')}
-          style={{ margin: 10 }}
           size="small"
           caption={this.props.intl.formatMessage(messages.login)}
           onPress={this.props.logIn}
@@ -333,10 +270,34 @@ const UserProfile = connect(
   })
 )(injectIntl(_UserProfile));
 
+class HorizontalRule extends React.Component {
+  render() {
+    return (
+      <View
+        style={{
+          flex: 1,
+          borderColor: purpleColors[0],
+          borderTopWidth: 0.5,
+          height: 0,
+          marginVertical: 10,
+          marginHorizontal: 10,
+        }}
+      />
+    );
+  }
+}
+
+export function getVersionTitle(intl: intlShape) {
+  return intl.formatMessage(messages.credits, {
+    version: `v${NativeEnv.get('VERSION_NAME')}`,
+  });
+}
+
 class _Profile extends React.Component {
   props: {
     intl: intlShape,
     onNotificationPreferences: () => void,
+    openCredits: () => void,
   };
 
   render() {
@@ -345,7 +306,9 @@ class _Profile extends React.Component {
     if (Platform.OS === 'android') {
       notificationButton = (
         <Button
+          key="Button"
           size="small"
+          style={styles.noFlexButton}
           caption={this.props.intl.formatMessage(
             messages.buttonNotificationSettings
           )}
@@ -382,7 +345,12 @@ class _Profile extends React.Component {
           style={styles.noFlexButton}
         />
 
-        <Credits />
+        <Button
+          size="small"
+          caption={getVersionTitle(this.props.intl)}
+          onPress={this.props.openCredits}
+          style={[styles.noFlexButton, { marginBottom: 30 }]}
+        />
 
       </ScrollView>
     );
@@ -395,13 +363,17 @@ const styles = StyleSheet.create({
     flex: 0,
     marginTop: normalize(10),
   },
+  noFlexButtonHorizontal: {
+    flex: 1,
+    marginTop: normalize(10),
+  },
   container: {
     flex: 1,
     backgroundColor: purpleColors[4],
   },
   containerContent: {
     top: STATUSBAR_HEIGHT,
-    alignItems: 'center',
+    alignItems: 'stretch',
     justifyContent: 'space-around',
   },
   profileName: {
@@ -430,8 +402,5 @@ const styles = StyleSheet.create({
   },
   link: {
     color: linkColor,
-  },
-  versionStyle: {
-    fontStyle: 'italic',
   },
 });

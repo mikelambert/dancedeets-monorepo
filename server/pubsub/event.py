@@ -22,14 +22,15 @@ def _should_post_event_common(auth_token, db_event):
     return True
 
 def _event_has_enough_attendees(db_event):
-    # If it's a web event without any attendee data, make it a pass-through
+    # Ignore web events, since Japan/Korea web_events probably take up too much of the feed,
+    # and there are already existing ways those people are likely to find local events
     if not db_event.is_fb_event:
-        return True
+        return False
     user = users.User.get_by_id('701004')
     fbl = user.get_fblookup()
     matcher = event_attendee_classifier.get_matcher(fbl, db_event.fb_event)
     logging.info('Checking event %s and found %s overlap_ids', db_event.id, len(matcher.overlap_ids))
-    if len(matcher.overlap_ids) > 20:
+    if len(matcher.overlap_ids) > 30:
         return True
     else:
         return False
@@ -59,13 +60,6 @@ def should_post_on_event_wall(auth_token, db_event):
     if db_event.attendee_count > 600:
         logging.warning("Skipping event due to 600+ attendees: %s", db_event.attendee_count)
         return False
-    invited = fb_events.get_all_members_count(db_event.fb_event)
-    if invited < 200:
-        logging.warning("Skipping event due to <200 invitees: %s", invited)
-        return False
-    if invited > 2000:
-        logging.warning("Skipping event due to 2000+ invitees: %s", invited)
-        return False
     return True
 
 
@@ -89,13 +83,14 @@ def _should_still_post_about_event(auth_token, db_event):
         return False
     #TODO: Store the actual attendees counts and match info in the event itself,
     # so that we don't need to recompute it here just to do this filtering.
-    if not _event_has_enough_attendees(db_event):
-        return False
+    if not auth_token.application == db.APP_TWITTER:
+        if not _event_has_enough_attendees(db_event):
+            return False
     return True
 
 def _post_event(auth_token, db_event):
     if auth_token.application == db.APP_TWITTER:
-        twitter_event.twitter_post(auth_token, db_event)
+        return twitter_event.twitter_post(auth_token, db_event)
     elif auth_token.application == db.APP_FACEBOOK:
         result = facebook_event.facebook_post(auth_token, db_event)
         return fb_util.processed_task(auth_token, result)

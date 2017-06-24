@@ -1,22 +1,27 @@
 apply plugin: "com.android.application"
+apply plugin: 'com.google.firebase.firebase-crash'
+
 import com.android.build.OutputFile
 
 
 buildscript {
     repositories {
         maven { url 'https://maven.fabric.io/public' }
+        maven { url 'https://github.com/500px/500px-android-blur/raw/master/releases/' }
     }
     dependencies {
         // The Fabric Gradle plugin uses an open ended version to react
         // quickly to Android tooling updates
         classpath 'io.fabric.tools:gradle:1.+'
+        // For our blurring view
+        classpath 'com.fivehundredpx:blurringview:1.0.0'
     }
 }
 apply plugin: 'io.fabric'
 repositories {
     maven { url 'https://maven.fabric.io/public' }
+    maven { url 'https://github.com/500px/500px-android-blur/raw/master/releases/' }
 }
-
 
 /**
  * The react.gradle file registers a task for each build variant (e.g. bundleDebugJsAndAssets
@@ -25,7 +30,7 @@ repositories {
  * cycle. By default, bundleDebugJsAndAssets is skipped, as in debug/dev mode we prefer to load the
  * bundle directly from the development server. Below you can see all the possible configurations
  * and their defaults. If you decide to add a configuration block, make sure to add it before the
- * `apply from: "react.gradle"` line.
+ * `apply from: "../../node_modules/react-native/react.gradle"` line.
  *
  * project.ext.react = [
  *   // the name of the generated asset file containing your JS bundle
@@ -71,12 +76,18 @@ repositories {
  *   // date; if you have any other folders that you want to ignore for performance reasons (gradle
  *   // indexes the entire tree), add them here. Alternatively, if you have JS files in android/
  *   // for example, you might want to remove it from here.
- *   inputExcludes: ["android/**", "ios/**"]
+ *   inputExcludes: ["android/**", "ios/**"],
+ *
+ *   // override which node gets called and with what additional arguments
+ *   nodeExecutableAndArgs: ["node"],
+ *
+ *   // supply additional arguments to the packager
+ *   extraPackagerArgs: []
  * ]
  */
 
-apply from: "react.gradle"
 apply from: "../../node_modules/react-native-code-push/android/codepush.gradle"
+apply from: "../../node_modules/react-native/react.gradle"
 
 /**
  * Set this to true to create two separate APKs instead of one:
@@ -105,6 +116,9 @@ android {
             abiFilters "armeabi-v7a", "x86"
         }
         multiDexEnabled true
+        // Add these lines below the existing config
+        renderscriptTargetApi 16
+        renderscriptSupportModeEnabled true
     }
     splits {
         abi {
@@ -129,7 +143,8 @@ android {
         release {
             minifyEnabled enableProguardInReleaseBuilds
             proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
-            shrinkResources true
+            //minifyEnabled true
+            //shrinkResources true
             zipAlignEnabled true
             manifestPlaceholders = [applicationIdSuffix: ""]
             signingConfig signingConfigs.release
@@ -161,18 +176,19 @@ configurations.all {
     // React-Native-Compile:
     // exclude group: 'com.facebook.react', module: 'react-native'
     resolutionStrategy {
-        force 'com.google.android.gms:play-services-ads:9.6.0+'
-        force 'com.google.android.gms:play-services-base:9.6.0+'
-        force 'com.google.android.gms:play-services-location:9.6.0+'
-        force 'com.google.android.gms:play-services-maps:9.6.0+'
-        force 'com.google.android.gms:play-services-gcm:9.6.0+'
-        force 'com.google.firebase:firebase-core:9.6.0+'
-        force 'com.google.firebase:firebase-config:9.6.0+'
-        force 'com.google.firebase:firebase-auth:9.6.0+'
-        force 'com.google.firebase:firebase-analytics:9.6.0+'
-        force 'com.google.firebase:firebase-database:9.6.0+'
-        force 'com.google.firebase:firebase-storage:9.6.0+'
-        force 'com.google.firebase:firebase-messaging:9.6.0+'
+        force 'com.google.android.gms:play-services-ads:10.2.6+'
+        force 'com.google.android.gms:play-services-base:10.2.6+'
+        force 'com.google.android.gms:play-services-location:10.2.6+'
+        force 'com.google.android.gms:play-services-maps:10.2.6+'
+        force 'com.google.android.gms:play-services-gcm:10.2.6+'
+        force 'com.google.firebase:firebase-core:10.2.6+'
+        force 'com.google.firebase:firebase-config:10.2.6+'
+        force 'com.google.firebase:firebase-creash:10.2.6+'
+        force 'com.google.firebase:firebase-auth:10.2.6+'
+        force 'com.google.firebase:firebase-analytics:10.2.6+'
+        force 'com.google.firebase:firebase-database:10.2.6+'
+        force 'com.google.firebase:firebase-storage:10.2.6+'
+        force 'com.google.firebase:firebase-messaging:10.2.6+'
         force 'com.android.support:appcompat-v7:23.+'
     }
 }
@@ -202,19 +218,16 @@ dependencies {
     compile project(':react-native-maps')
     compile project(':react-native-segmented-android')
     //compile "com.mixpanel.android:mixpanel-android:4.+"
-    compile fileTree(dir: "libs", include: ["*.jar"])
     compile 'com.facebook.android:facebook-android-sdk:4.+'
     compile('com.crashlytics.sdk.android:crashlytics:2.+@aar') {
         transitive = true;
     }
 
+    compile fileTree(dir: "libs", include: ["*.jar"])
+
     // We need this for multidex support, or it may break crash reporting on samsung devices
     compile 'com.android.support:multidex:'
 
-    // React-Native-Compile:
-    // compile project(':ReactAndroid')
-    // React-Native-Compile:
-    compile 'com.facebook.react:react-native:+' // from node_modules
 
     compile 'com.google.firebase:firebase-core:9.4.0+'
     compile 'com.google.firebase:firebase-config:9.4.0+'
@@ -224,13 +237,18 @@ dependencies {
     compile 'com.google.android.gms:play-services-base:9.4.0+'
     compile 'com.google.android.gms:play-services-ads:9.4.0+'
     compile 'com.google.android.gms:play-services-maps:9.4.0+'
+
+    // React-Native-Compile:
+    // compile project(':ReactAndroid')
+    // React-Native-Compile:
+    compile "com.facebook.react:react-native:+"  // From node_modules
 }
 
 // Run this once to be able to run the application with BUCK
 // puts all compile dependencies into folder libs for BUCK to use
 task copyDownloadableDepsToLibs(type: Copy) {
-  from configurations.compile
-  into 'libs'
+    from configurations.compile
+    into 'libs'
 }
 
 apply plugin: 'com.google.gms.google-services'

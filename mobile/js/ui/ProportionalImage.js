@@ -4,9 +4,13 @@
  * @flow
  */
 import React from 'react';
-import { Animated, View } from 'react-native';
-import SyntheticEvent
-  from 'react-native/Libraries/Renderer/src/renderers/shared/stack/event/SyntheticEvent';
+import { Animated, Platform, View } from 'react-native';
+import SyntheticEvent from 'react-native/Libraries/Renderer/src/renderers/shared/shared/event/SyntheticEvent';
+
+type Dimension = {
+  width: number,
+  height: number,
+};
 
 type Props = {
   originalWidth: number,
@@ -14,9 +18,10 @@ type Props = {
   style?: any,
   duration: number,
   resizeDirection: 'width' | 'height',
+  initialDimensions?: Dimension,
 };
 
-export default class ProportionalImage extends React.Component {
+export default class ProportionalImage extends React.PureComponent {
   static defaultProps = {
     duration: 200,
     resizeDirection: 'height',
@@ -25,18 +30,21 @@ export default class ProportionalImage extends React.Component {
   props: Props;
 
   state: {
-    dimensions: ?{
-      width: number,
-      height: number,
-    },
+    dimensions: ?Dimension,
     opacity: any,
   };
 
   constructor(props: Props) {
     super(props);
+    let initialValue = 0;
+    // TODO(android): It seems that onLoad/onLoadEnd doesn't register on android
+    // So we disable this animation altogether
+    if (Platform.OS === 'android') {
+      initialValue = 1.0;
+    }
     this.state = {
-      dimensions: null,
-      opacity: new Animated.Value(0),
+      dimensions: this.props.initialDimensions,
+      opacity: new Animated.Value(initialValue),
     };
     (this: any).onLayout = this.onLayout.bind(this);
     (this: any).onLoad = this.onLoad.bind(this);
@@ -56,6 +64,14 @@ export default class ProportionalImage extends React.Component {
     });
   }
 
+  onLoad() {
+    Animated.timing(this.state.opacity, {
+      toValue: 1,
+      duration: this.props.duration,
+      useNativeDriver: true,
+    }).start();
+  }
+
   getComputedWidthHeight() {
     const dimensions = this.state.dimensions;
     if (!dimensions) {
@@ -73,13 +89,6 @@ export default class ProportionalImage extends React.Component {
         height: dimensions.width / aspectRatio,
       };
     }
-  }
-
-  onLoad() {
-    Animated.timing(this.state.opacity, {
-      toValue: 1,
-      duration: this.props.duration,
-    }).start();
   }
 
   setNativeProps(nativeProps: Object) {

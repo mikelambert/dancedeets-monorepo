@@ -11,34 +11,11 @@ import { trackEnd, trackStart } from '../store/track';
 type TimeTrackerProps = {
   eventName: string,
   eventValue: string,
+  children?: React.Element<*>,
 };
 
 export class TimeTracker extends React.Component {
-  props: TimeTrackerProps & {
-    children?: React.Element<*>,
-  };
-
-  constructor(props: TimeTrackerProps) {
-    super(props);
-    (this: any)._handleAppStateChange = this._handleAppStateChange.bind(this);
-  }
-
-  componentWillMount() {
-    trackStart(this._formatEvent());
-    AppState.addEventListener('change', this._handleAppStateChange);
-  }
-
-  componentWillReceiveProps(nextProps: TimeTrackerProps) {
-    if (this.props.eventValue != nextProps.eventValue) {
-      trackEnd(this._formatEvent()); // Can't use track properties()
-      trackStart(this._formatEvent(nextProps.eventValue));
-    }
-  }
-
-  componentWillUnmount() {
-    trackEnd(this._formatEvent()); // Track against old tab
-    AppState.removeEventListener('change', this._handleAppStateChange);
-  }
+  props: TimeTrackerProps;
 
   _formatEvent(value: ?string = null) {
     const trackValue = value || this.props.eventValue;
@@ -52,6 +29,28 @@ export class TimeTracker extends React.Component {
     if (currentAppState === 'inactive') {
       trackEnd(this._formatEvent());
     }
+  }
+
+  constructor(props: TimeTrackerProps) {
+    super(props);
+    (this: any)._handleAppStateChange = this._handleAppStateChange.bind(this);
+  }
+
+  componentWillMount() {
+    trackStart(this._formatEvent());
+    AppState.addEventListener('change', this._handleAppStateChange);
+  }
+
+  componentWillReceiveProps(nextProps: TimeTrackerProps) {
+    if (this.props.eventValue !== nextProps.eventValue) {
+      trackEnd(this._formatEvent()); // Can't use track properties()
+      trackStart(this._formatEvent(nextProps.eventValue));
+    }
+  }
+
+  componentWillUnmount() {
+    trackEnd(this._formatEvent()); // Track against old tab
+    AppState.removeEventListener('change', this._handleAppStateChange);
   }
 
   render() {

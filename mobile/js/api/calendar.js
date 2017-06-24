@@ -41,12 +41,14 @@ async function addIOS(event: Event) {
       status = await CalendarEventsIOS.authorizeEventStore();
     } catch (error) {
       console.log('Canceled: Add to Calendar');
+      return false;
     }
   }
 
   if (status !== 'authorized') {
     if (status === 'restricted') {
       OkAlert('Cannot Access Calendar', 'Could not access calendar.');
+      return false;
     } else if (status === 'denied') {
       try {
         // TODO(localization)
@@ -107,11 +109,13 @@ function addAndroid(event: Event) {
     location: event.venue.fullAddress(),
     recurrence: '',
   });
+  return true;
 }
+
 export async function add(event: Event) {
   if (Platform.OS === 'ios') {
-    await addIOS(event);
+    return await addIOS(event);
   } else {
-    addAndroid(event);
+    return addAndroid(event);
   }
 }

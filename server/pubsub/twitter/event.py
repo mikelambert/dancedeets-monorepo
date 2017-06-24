@@ -102,4 +102,4 @@ def twitter_post(auth_token, db_event):
     config = get_twitter_config(t)
     status = format_twitter_post(config, db_event, media, handles=handles)
     t.statuses.update(status=status, **update_params)
-
+    return True

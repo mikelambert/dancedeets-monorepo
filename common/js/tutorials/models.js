@@ -8,6 +8,7 @@ import moment from 'moment';
 
 export class Playlist {
   id: string;
+  key: string;
   title: string;
   subtitle: string;
   keywords: string;
@@ -19,6 +20,7 @@ export class Playlist {
 
   constructor(json: any) {
     this.id = json.id;
+    this.key = this.id; // Important for use in FlatLists
     this.title = json.title;
     this.subtitle = json.subtitle;
     this.keywords = json.keywords;
@@ -44,20 +46,20 @@ export class Playlist {
     return `http://www.dancedeets.com/tutorials/${this.getId()}`;
   }
 
-  getItems(selectedIndex: number) {
-    const selectedVideo = this.getVideo(selectedIndex);
-    const items = {};
-    this.sections.forEach((section, i) => {
-      items[section.key(i)] = section.videos.map(video => ({
+  getSectionListData(index: number) {
+    const realIndex = this.getVideoSectionRow(index);
+    return this.sections.map((section, sectionIndex) => ({
+      data: section.videos.map((video, videoIndex) => ({
+        key: video.youtubeId,
         video,
-        selected: video === selectedVideo,
-      }));
-    });
-    return items;
-  }
-
-  getSectionHeaders() {
-    return this.sections.map((x, i) => x.key(i));
+        selected:
+          realIndex.section === sectionIndex && realIndex.row === videoIndex,
+      })),
+      realSection: section,
+      // We add a youtubeId juuuuust in case:
+      key: section.title + section.videos[0].youtubeId,
+      title: section.title,
+    }));
   }
 
   getVideo(index: number): Video {

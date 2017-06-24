@@ -7,7 +7,6 @@
 import React from 'react';
 import { Dimensions, Image, StyleSheet, View } from 'react-native';
 import Carousel from 'react-native-carousel';
-import LinearGradient from 'react-native-linear-gradient';
 import { defineMessages, injectIntl, intlShape } from 'react-intl';
 import LaunchScreen from './LaunchScreen';
 import LoginButtonWithAlternate from './LoginButtonWithAlternate';
@@ -43,7 +42,8 @@ const messages = defineMessages({
   },
   'tutorial.2.body': {
     id: 'tutorial.2.body',
-    defaultMessage: "Share your event\nShare your city's events\nReach dancers worldwide\nand join our 90,000 events",
+    defaultMessage:
+      "Share your event\nShare your city's events\nReach dancers worldwide\nand join our 200,000 events",
     description: 'Intro screen list of features',
   },
   nologin: {
@@ -150,19 +150,10 @@ class _TutorialScreen extends React.Component {
           >
             {bottomFade}
             <Image
-              style={[
-                styles.container,
-                styles.centerItems,
-                styles.topAndBottom,
-              ]}
+              style={[styles.container, styles.centerItems]}
               source={require('./images/Onboard3Text.png')}
             >
               <TopView page={2} />
-              <LoginButtonWithAlternate
-                onLogin={this.props.onLogin}
-                onNoLogin={this.props.onNoLogin}
-                noLoginText={this.props.intl.formatMessage(messages.nologin)}
-              />
             </Image>
           </Image>
         </View>
@@ -175,16 +166,25 @@ class _TutorialScreen extends React.Component {
   render() {
     const pages = PAGES.map((val, i) => this.renderPage(i));
     return (
-      <Carousel
-        indicatorOffset={0}
-        indicatorColor="#FFFFFF"
-        indicatorSize={25}
-        indicatorSpace={15}
-        animate={false}
-        loop={false}
-      >
-        {pages}
-      </Carousel>
+      <View style={{ flex: 1, alignItems: 'center' }}>
+        <Carousel
+          indicatorOffset={0}
+          indicatorColor="#FFFFFF"
+          indicatorSize={25}
+          indicatorSpace={15}
+          animate={false}
+          loop={false}
+        >
+          {pages}
+        </Carousel>
+        <View style={{ position: 'absolute', bottom: 0 }}>
+          <LoginButtonWithAlternate
+            onLogin={this.props.onLogin}
+            onNoLogin={this.props.onNoLogin}
+            noLoginText={this.props.intl.formatMessage(messages.nologin)}
+          />
+        </View>
+      </View>
     );
   }
 }

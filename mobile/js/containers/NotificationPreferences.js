@@ -7,7 +7,7 @@
 import React from 'react';
 import { Platform, ScrollView, StyleSheet, Switch } from 'react-native';
 import { injectIntl, intlShape, defineMessages } from 'react-intl';
-import { Card, HorizontalView, Text } from '../ui';
+import { HorizontalView, Text } from '../ui';
 import { purpleColors } from '../Colors';
 import {
   PreferenceNames,
@@ -101,35 +101,27 @@ class _NotificationPreferences extends React.Component {
         style={styles.container}
         contentContainerStyle={styles.containerContent}
       >
-        <Card
-          title={
-            <NamedSwitch
-              text={this.props.intl.formatMessage(messages.notificationHeader)}
-              style={{
-                margin: 5,
-                alignItems: 'center',
-              }}
-              value={this.state.overall}
-              onValueChange={value =>
-                this.onChange(PreferenceNames.overall, value)}
-            />
-          }
-        >
-          <NamedSwitch
-            disabled={!this.state.overall}
-            text={this.props.intl.formatMessage(messages.notificationSounds)}
-            value={this.state.sounds}
-            onValueChange={value =>
-              this.onChange(PreferenceNames.sounds, value)}
-          />
-          <NamedSwitch
-            disabled={!this.state.overall}
-            text={this.props.intl.formatMessage(messages.notificationVibration)}
-            value={this.state.vibration}
-            onValueChange={value =>
-              this.onChange(PreferenceNames.vibration, value)}
-          />
-        </Card>
+        <NamedSwitch
+          text={this.props.intl.formatMessage(messages.notificationHeader)}
+          style={styles.regularSwitch}
+          value={this.state.overall}
+          onValueChange={value => this.onChange(PreferenceNames.overall, value)}
+        />
+        <NamedSwitch
+          disabled={!this.state.overall}
+          style={styles.indentedSwitch}
+          text={this.props.intl.formatMessage(messages.notificationSounds)}
+          value={this.state.sounds}
+          onValueChange={value => this.onChange(PreferenceNames.sounds, value)}
+        />
+        <NamedSwitch
+          disabled={!this.state.overall}
+          style={styles.indentedSwitch}
+          text={this.props.intl.formatMessage(messages.notificationVibration)}
+          value={this.state.vibration}
+          onValueChange={value =>
+            this.onChange(PreferenceNames.vibration, value)}
+        />
       </ScrollView>
     );
   }
@@ -145,5 +137,15 @@ const styles = StyleSheet.create({
     top: STATUSBAR_HEIGHT,
     alignItems: 'stretch',
     justifyContent: 'space-around',
+  },
+  regularSwitch: {
+    marginVertical: 5,
+    marginLeft: 5,
+    alignItems: 'center',
+  },
+  indentedSwitch: {
+    marginVertical: 5,
+    marginLeft: 20,
+    alignItems: 'center',
   },
 });

@@ -12,9 +12,8 @@ import type { Cover, JSONObject } from 'dancedeets-common/js/events/models';
 import { SearchEvent } from 'dancedeets-common/js/events/models';
 import type { NewSearchResponse } from 'dancedeets-common/js/events/search';
 import {
+  formatStartDateOnly,
   formatStartTime,
-  weekdayDate,
-  weekdayTime,
 } from 'dancedeets-common/js/dates';
 import { groupEventsByStartDate } from 'dancedeets-common/js/events/helpers';
 import type { ExportedIconsEnum } from './exportedIcons';
@@ -68,7 +67,8 @@ class FontAwesomeIcon extends React.Component {
   render() {
     return (
       <SmallIcon
-        url={`http://www.dancedeets.com/dist/img/font-awesome/black/png/16/${this.props.name}.png`}
+        url={`http://www.dancedeets.com/dist/img/font-awesome/black/png/16/${this
+          .props.name}.png`}
         alt={this.props.alt}
       />
     );
@@ -146,6 +146,7 @@ class _MailEvent extends React.Component {
                 <FontAwesomeIcon name="clock-o" alt="Time" />
               </td>
               <td style={verticalAlign}>
+                {formatStartDateOnly(event.startTimeNoTz(), this.props.intl)},
                 {formatStartTime(event.startTimeNoTz(), this.props.intl)}
               </td>
             </tr>
@@ -253,13 +254,6 @@ class _BodyWrapper extends React.Component {
                 {' '}
                 {this.props.user.userName}
                 , here’s what we’ve found for you this week!
-              </p>
-              <p>
-                Please
-                <a href="https://www.surveymonkey.com/r/dancedeets-survey-weekly">
-                  fill out our survey
-                </a>
-                for a chance to win our raffle, and help us know how we can serve you better!
               </p>
             </mj-text>
           </mj-column>

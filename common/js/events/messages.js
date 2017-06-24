@@ -20,7 +20,8 @@ export default defineMessages({
   translate: {
     id: 'event.translate',
     defaultMessage: 'Translate',
-    description: "Button to translate the event into the device's native language",
+    description:
+      "Button to translate the event into the device's native language",
   },
   untranslate: {
     id: 'event.untranslate',
@@ -74,7 +75,8 @@ export default defineMessages({
   },
   attendingMaybeCount: {
     id: 'event.attendingMaybeCount',
-    defaultMessage: '{attendingCount, number} attending, {maybeCount, number} maybe',
+    defaultMessage:
+      '{attendingCount, number} attending, {maybeCount, number} maybe',
     description: 'Count of people maybe-attending this event',
   },
   attending: {
@@ -94,7 +96,8 @@ export default defineMessages({
   },
   milesAway: {
     id: 'distance.miles',
-    defaultMessage: '{miles, number} {miles, plural, one {mile} other {miles}} away',
+    defaultMessage:
+      '{miles, number} {miles, plural, one {mile} other {miles}} away',
     description: 'Distance of something from the user',
   },
   kmAway: {

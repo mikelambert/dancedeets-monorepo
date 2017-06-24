@@ -8,6 +8,7 @@ import React from 'react';
 import url from 'url';
 import FormatText from 'react-format-text';
 import moment from 'moment';
+import ExecutionEnvironment from 'exenv';
 import upperFirst from 'lodash/upperFirst';
 import { injectIntl, intlShape } from 'react-intl';
 import { StickyContainer, Sticky } from 'react-sticky';
@@ -26,11 +27,7 @@ import type {
   Onebox,
   StylePersonLookup,
 } from 'dancedeets-common/js/events/search';
-import {
-  formatStartTime,
-  weekdayDate,
-  weekdayTime,
-} from 'dancedeets-common/js/dates';
+import { formatStartTime } from 'dancedeets-common/js/dates';
 import {
   formatAttending,
   groupEventsByStartDate,
@@ -135,7 +132,12 @@ class _EventDescription extends React.Component {
           {keywords.join(', ')}
         </ImagePrefix>
         <ImagePrefix iconName="clock-o">
-          {formatStartTime(event.start_time, this.props.intl)}
+          {formatStartTime(
+            ExecutionEnvironment.canUseDOM
+              ? event.start_time
+              : event.startTimeNoTz(),
+            this.props.intl
+          )}
         </ImagePrefix>
         <ImagePrefix iconName="map-marker">
           <div>{event.venue.name}</div>
@@ -304,7 +306,7 @@ class _EventsList extends React.Component {
         </li>
       );
       resultItems.push(
-        ...events.map((event, index) => (
+        ...events.map((event, index) =>
           <li key={event.id}>
             <HorizontalEvent
               key={event.id}
@@ -312,7 +314,7 @@ class _EventsList extends React.Component {
               lazyLoad={overallEventIndex + index > 8}
             />
           </li>
-        ))
+        )
       );
       overallEventIndex += events.length;
     });
@@ -337,11 +339,11 @@ class _OneboxLinks extends React.Component {
     if (!this.props.links.length) {
       return null;
     }
-    const oneboxList = this.props.links.map(onebox => (
+    const oneboxList = this.props.links.map(onebox =>
       <li key={onebox.url}>
         <a className="link-onebox" href={onebox.url}>{onebox.title}</a>
       </li>
-    ));
+    );
 
     return (
       <div>
@@ -393,9 +395,9 @@ class PersonList extends React.Component {
           className="form-control form-inline"
           onChange={e => this.setState({ category: e.target.value })}
         >
-          {categories.map(x => (
+          {categories.map(x =>
             <option key={x} value={x}>{x || 'Overall'}</option>
-          ))}
+          )}
         </select>
         <p><i>{this.props.subtitle}:</i></p>
       </form>
@@ -404,11 +406,11 @@ class PersonList extends React.Component {
       <div>
         {selector}
         <ul>
-          {peopleList.map(x => (
+          {peopleList.map(x =>
             <li key={x.id}>
               <a href={`https://www.facebook.com/${x.id}`}>{x.name}</a>
             </li>
-          ))}
+          )}
         </ul>
       </div>
     );
@@ -430,22 +432,22 @@ class _ResultsList extends React.Component {
     const admins = this.props.response.people.ADMIN;
     const attendees = this.props.response.people.ATTENDEE;
     if (admins || attendees) {
-      const adminsList = (
-        <PersonList
-          title="Promoters"
-          subtitle="If you want to organize an event, work with these folks"
-          people={admins}
-          categoryOrder={this.props.categoryOrder}
-        />
-      );
-      const attendeesList = (
-        <PersonList
-          title="Dancers"
-          subtitle="If you want to connect with the dance scene, hit these folks up"
-          people={attendees}
-          categoryOrder={this.props.categoryOrder}
-        />
-      );
+      const adminsList = admins
+        ? <PersonList
+            title="Promoters"
+            subtitle="If you want to organize an event, work with these folks"
+            people={admins}
+            categoryOrder={this.props.categoryOrder}
+          />
+        : null;
+      const attendeesList = attendees
+        ? <PersonList
+            title="Dancers"
+            subtitle="If you want to connect with the dance scene, hit these folks up"
+            people={attendees}
+            categoryOrder={this.props.categoryOrder}
+          />
+        : null;
 
       if (this.props.window && this.props.window.width < 768) {
         if (admins) {

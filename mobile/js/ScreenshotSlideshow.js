@@ -15,7 +15,6 @@ import { disableWrites, event } from './api/dancedeets';
 import {
   logOut,
   loginComplete,
-  navigatePush,
   performSearch,
   updateLocation,
 } from './actions';
@@ -23,7 +22,8 @@ import {
 const messages = defineMessages({
   locations: {
     id: 'search.autocompleteLocations',
-    defaultMessage: 'New York City, United States\nLos Angeles, United States\nSan Francisco, United States\nWashington DC, United States\nLondon, United Kingdom\nParis, France\nTokyo, Japan\nTaipei, Taiwan\nSeoul, South Korea',
+    defaultMessage:
+      'New York City, United States\nLos Angeles, United States\nSan Francisco, United States\nWashington DC, United States\nLondon, United Kingdom\nParis, France\nTokyo, Japan\nTaipei, Taiwan\nSeoul, South Korea',
     description: 'A list of locations that we should show in our autocomplete',
   },
 });
@@ -79,13 +79,14 @@ class _ScreenshotSlideshow extends React.Component {
 
   async setupEventView(dispatch) {
     const fetchedEvent = await event('397757633752918'); // SYGU 2015
-    await dispatch(
+    await dispatch();
+    /*
       navigatePush('EVENT_NAV', {
         key: 'EventView',
         title: fetchedEvent.name,
         event: fetchedEvent,
       })
-    );
+    */
   }
 
   async logout(dispatch) {

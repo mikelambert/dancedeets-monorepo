@@ -467,7 +467,6 @@ EASY_CLUB = Any(
 EASY_SESSION = Any(
     'open sessions?',
     u'오픈 ?세션', # open session
-    'training',
     u'buổi', # vietnamese sessions
 )
 EASY_EVENT = Name('EASY_EVENT', Any(

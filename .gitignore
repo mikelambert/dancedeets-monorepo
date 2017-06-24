@@ -6,3 +6,6 @@ build/
 
 *.swp
 *.pyc
+
+# per-user sublime files:
+*.sublime-workspace

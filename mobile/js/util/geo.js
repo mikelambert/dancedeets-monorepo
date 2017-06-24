@@ -10,6 +10,8 @@ import type { Address } from '../events/formatAddress';
 import Geocoder from '../api/geocoder';
 import { format } from '../events/formatAddress';
 
+const locationPermission = 'location';
+
 function getCurrentPosition() {
   return new Promise((resolve, reject) => {
     const highAccuracy = Platform.OS === 'ios';
@@ -24,8 +26,8 @@ function getCurrentPosition() {
 export async function getPosition() {
   //  Permissions.openSettings();
   if (Platform.OS === 'ios') {
-    const status = await Permissions.requestPermission('location');
-    if (status !== 'authorized') {
+    const status = await Permissions.requestPermission(locationPermission);
+    if (status !== Permissions.StatusAuthorized) {
       // No location permission. Let's ignore it for now since the app will work fine
       // But if we ever change our mind, we can prompt and run:
       // Permissions.openSettings();
@@ -36,10 +38,21 @@ export async function getPosition() {
   return await getCurrentPosition();
 }
 
+export async function hasLocationPermission() {
+  if (Platform.OS === 'ios') {
+    const status = await Permissions.getPermissionStatus(locationPermission);
+    return status === Permissions.StatusAuthorized;
+  } else {
+    // TODO(permissions): The Permissions.getPermissionStatus checks for FINE_LOCATION.
+    // So wait until we fetch that new permission, to start using the above code paths.
+    return true;
+  }
+}
+
 export async function getAddress() {
   if (Platform.OS === 'ios') {
-    const status = await Permissions.requestPermission('location');
-    if (status !== 'authorized') {
+    const status = await Permissions.requestPermission(locationPermission);
+    if (status !== Permissions.StatusAuthorized) {
       // No location permission. Let's ignore it for now since the app will work fine
       // But if we ever change our mind, we can prompt and run:
       // Permissions.openSettings();

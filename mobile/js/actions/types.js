@@ -22,9 +22,7 @@
  * @flow
  */
 
-import type {
-  NavigationRoute,
-} from 'react-native/Libraries/NavigationExperimental/NavigationTypeDefinition';
+import type { NavigationRoute } from 'react-navigation/src/TypeDefinition';
 import { AccessToken } from 'react-native-fbsdk';
 import type { SearchResponse } from 'dancedeets-common/js/events/search';
 import type { AddEventList, SortOrder } from '../addEventsModels';
@@ -37,34 +35,23 @@ export type User = {
 };
 
 export type Action =
-  | { type: 'NAV_PUSH', navigator: string, state: NavigationRoute }
-  | { type: 'NAV_POP', navigator: string }
-  | { type: 'NAV_JUMP_TO_KEY', navigator: string, key: string }
-  | { type: 'NAV_JUMP_TO_INDEX', navigator: string, index: number }
-  | {
-      type: 'NAV_RESET',
-      navigator: string,
-      index: number,
-      routes: Array<NavigationRoute>,
-    }
-  | {
-      type: 'NAV_SWAP',
-      navigator: string,
-      key: string,
-      newRoute: NavigationRoute,
-    }
   | { type: 'LOGIN_START_ONBOARD' }
   | { type: 'LOGIN_LOGGED_IN', token: AccessToken }
   | { type: 'LOGIN_LOGGED_OUT' }
   | { type: 'LOGIN_LOADED_USER', user: User }
   | { type: 'LOGIN_SKIPPED' }
   | { type: 'DETECTED_LOCATION', location: string }
-  | { type: 'TOGGLE_LAYOUT' }
-  | { type: 'UPDATE_LOCATION', location: string }
-  | { type: 'UPDATE_KEYWORDS', keywords: string }
   | { type: 'START_SEARCH' }
   | { type: 'SEARCH_COMPLETE', response: SearchResponse }
-  | { type: 'SEARCH_FAILED' }
+  | { type: 'SEARCH_FAILED', errorString: ?string }
+  | { type: 'WAITING_FOR_LOCATION', waiting: boolean }
+  | { type: 'searchHeader/START_OPEN' }
+  | { type: 'searchHeader/FINISH_OPEN' }
+  | { type: 'searchHeader/START_CLOSE' }
+  | { type: 'searchHeader/FINISH_CLOSE' }
+  | { type: 'textInputs/DETECTED_LOCATION', location: string }
+  | { type: 'textInputs/UPDATE_LOCATION', location: string }
+  | { type: 'textInputs/UPDATE_KEYWORDS', keywords: string }
   | { type: 'ADD_EVENTS_RELOAD' }
   | { type: 'ADD_EVENTS_RELOAD_COMPLETE', results: AddEventList }
   | { type: 'ADD_EVENTS_RELOAD_FAILED' }
@@ -76,7 +63,6 @@ export type Action =
   | { type: 'ADD_EVENTS_SET_ONLY_UNADDED', value: boolean }
   | { type: 'ADD_EVENTS_SET_SORT_ORDER', value: SortOrder }
   | { type: 'SET_CURRENT_LOCALE', locale: string }
-  | { type: 'TAB_SELECT', tab: string }
   | { type: 'TRANSLATE_EVENT_TOGGLE', eventId: string }
   | { type: 'TRANSLATE_EVENT_DONE', eventId: string, translations: Object }
   | { type: 'TUTORIAL_SET_VIDEO_INDEX', index: number }

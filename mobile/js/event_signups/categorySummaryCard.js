@@ -5,14 +5,20 @@
  */
 
 import React from 'react';
-import { Animated, Dimensions, Image, StyleSheet, View } from 'react-native';
+import {
+  Animated,
+  Dimensions,
+  Image,
+  StyleSheet,
+  View,
+  ViewPropTypes,
+} from 'react-native';
 import { injectIntl, defineMessages } from 'react-intl';
 import { connect } from 'react-redux';
 import danceStyles from 'dancedeets-common/js/styles';
 import danceStyleIcons from 'dancedeets-common/js/styles/icons';
 import type { Dispatch, User } from '../actions/types';
 import { categoryDisplayName, getCategorySignups } from './models';
-import { FeedListView } from '../learn/BlogList';
 import { purpleColors } from '../Colors';
 import {
   Button,
@@ -35,7 +41,7 @@ if (Dimensions.get('window').width >= 1024) {
 
 class CompactTeam extends React.Component {
   props: {
-    style: View.propTypes.style,
+    style: ViewPropTypes.style,
     team: Signup,
   };
 
@@ -86,7 +92,7 @@ class _UserRegistrationStatus extends React.Component {
         return dancerIds.includes(userId);
       });
       if (signedUpTeams.length) {
-        const teamTexts = signedUpTeams.map(team => (
+        const teamTexts = signedUpTeams.map(team =>
           <HorizontalView style={styles.registrationLineOuter} key={team}>
             <CompactTeam team={team} style={styles.registrationIndent} />
             <Button
@@ -99,7 +105,7 @@ class _UserRegistrationStatus extends React.Component {
               isLoading={this.state.isLoading}
             />
           </HorizontalView>
-        ));
+        );
         return (
           <View>
             <HorizontalView style={styles.registrationLine}>

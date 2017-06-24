@@ -5,11 +5,10 @@
  */
 
 import React from 'react';
-import { Dimensions, TouchableHighlight, View } from 'react-native';
+import { Dimensions, FlatList, TouchableHighlight, View } from 'react-native';
 import { injectIntl, defineMessages } from 'react-intl';
 import FitImage from 'react-native-fit-image';
 import type { Dispatch, User } from '../actions/types';
-import { FeedListView } from '../learn/BlogList';
 import type { BattleCategory, BattleEvent, Signup } from './models';
 import CategorySummaryCard from './categorySummaryCard';
 
@@ -40,7 +39,8 @@ class _BattleEventView extends React.Component {
     );
   }
 
-  renderRow(category: BattleCategory) {
+  renderRow(row) {
+    const category = row.item;
     return (
       <TouchableHighlight
         onPress={() => {
@@ -64,10 +64,10 @@ class _BattleEventView extends React.Component {
     let view = null;
     if (this.props.battleEvent) {
       view = (
-        <FeedListView
-          items={this.props.battleEvent.categories}
+        <FlatList
+          data={this.props.battleEvent.categories}
           renderHeader={this.renderHeader}
-          renderRow={this.renderRow}
+          renderItem={this.renderRow}
           contentContainerStyle={{
             alignSelf: 'center',
             justifyContent: 'flex-start',

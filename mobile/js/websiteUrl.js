@@ -24,7 +24,11 @@ export default class WebsiteUrl {
   }
 
   isEventUrl() {
-    return this.url && this.url.pathname.startsWith('/events/');
+    return (
+      this.url &&
+      this.url.pathname.startsWith('/events/') &&
+      !this.url.pathname.startsWith('/events/relevant')
+    );
   }
 
   eventId(): string {

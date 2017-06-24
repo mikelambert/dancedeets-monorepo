@@ -11,7 +11,12 @@ import { intlShape } from 'react-intl';
 // TODO: combine this with mobile's formats.js
 export const weekdayDate = {
   weekday: 'long',
+  month: 'long',
+  day: 'numeric',
+};
+export const weekdayDateWithYear = {
   year: 'numeric',
+  weekday: 'long',
   month: 'long',
   day: 'numeric',
 };
@@ -28,7 +33,16 @@ export const weekdayDateTime = {
 export function formatStartDateOnly(startString: string, intl: intlShape) {
   const now = moment(intl.now());
   const start = moment(startString, moment.ISO_8601);
-  return upperFirst(intl.formatDate(start.toDate(), weekdayDate));
+  const diff = start.diff(now);
+  let format = weekdayDate;
+  // Use a year for faraway dates
+  if (
+    diff < moment.duration(-3, 'months') ||
+    diff > moment.duration(6, 'months')
+  ) {
+    format = weekdayDateWithYear;
+  }
+  return upperFirst(intl.formatDate(start.toDate(), format));
 }
 
 export function formatStartTime(startString: string, intl: intlShape) {

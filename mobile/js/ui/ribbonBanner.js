@@ -13,14 +13,14 @@ const fontSize = semiNormalize(18);
 const degrees = 30;
 
 export default class RibbonBanner extends React.Component {
+  static defaultProps = {
+    overlayBackgroundColor: '#00000044',
+  };
+
   props: {
     text: string,
     width: number,
     overlayBackgroundColor: string,
-  };
-
-  static defaultProps = {
-    overlayBackgroundColor: '#00000044',
   };
 
   state: {

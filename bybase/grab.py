@@ -4,6 +4,7 @@ import datetime
 import getpass
 import logging
 import json
+import os
 import urllib
 import urllib2
 
@@ -58,7 +59,8 @@ for backup_id in backup_ids:
 if success:
     d = datetime.datetime.now().strftime("%Y-%m-%dT%H:%M:%S")
     filename = 'events-%s.json' % (d)
-    print 'Filename:', filename
-    open(filename, 'w').write(json.dumps(all_events))
+    full_filename = os.path.join(os.path.dirname(os.path.realpath(__file__))), filename)
+    print 'Filename:', full_filename
+    open(full_filename, 'w').write(json.dumps(all_events))
 else:
     print 'Errored on our final id attempt, aborting file save'

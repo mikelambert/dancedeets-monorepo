@@ -74,6 +74,7 @@ class MandrillWebhookPageHandler(webapp2.RequestHandler):
                 user = users.User.get_by_id(user_id)
                 if metadata['email_type'] == 'weekly':
                     user.send_email = False
+                    logging.info('Unsubscribing user %s (%s) in response to Mandrill request', user.fb_uid, user.full_name)
                 user.put()
 
     get=handle

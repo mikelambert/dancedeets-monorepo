@@ -240,7 +240,7 @@ class BareBaseRequestHandler(webapp2.RequestHandler, FacebookMixinHandler):
         try:
             # HACK(gcloud): refresh clients with expired tokens. In theory, this is fixed in:
             # https://github.com/GoogleCloudPlatform/google-auth-library-python/releases/tag/v1.0.1
-            ip_geolocation.client = ip_geolocation.datastore.Client()
+            ip_geolocation.generate_client()
             address = ip_geolocation.get_location_string_for(ip, city=city)
         except:
             logging.exception('Failure to geolocate IP %s, falling back on old-school resolution', ip)
@@ -574,6 +574,24 @@ class BaseRequestHandler(BareBaseRequestHandler):
             self.run_handler = False
             self.redirect(new_url, abort=True)
             return
+
+        # Always turn https on! For now, let's use a short expiry
+        # This only 'takes effect' when it is returned on an https domain,
+        # so we still need to make sure to add an https redirect.
+        https_redirect_duration = 60 * 60 * 24 * 7
+        self.response.headers.add_header('Strict-Transport-Security', 'max-age=%s; includeSubDomains' % https_redirect_duration)
+        # This is how we detect if the incoming url is on https in GAE Flex (we cannot trust request.url)
+        if request.method == 'GET' and request.environ.get('HTTP_X_FORWARDED_PROTO') == 'http':
+            new_url = urlparse.urlunsplit([
+                'https',
+                url.netloc,
+                url.path,
+                url.query,
+                url.fragment,
+            ])
+            self.run_handler = False
+            self.redirect(new_url, abort=True)
+
         login_url = self.get_login_url()
         redirect_url = self.handle_alternate_login(request)
         if redirect_url:

@@ -9,7 +9,7 @@ import fetch from 'node-fetch';
 import querystring from 'querystring';
 import parseJson from 'parse-json';
 import areEqual from 'fbjs/lib/areEqual';
-import fs from 'fs-promise';
+import fs from 'mz/fs';
 import { findVideoDimensions, getUrl, YoutubeKey } from './_youtube';
 
 async function findVideoItems(inVideoIds): Promise<Object[]> {

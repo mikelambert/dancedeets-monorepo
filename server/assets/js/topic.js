@@ -11,7 +11,7 @@ import upperFirst from 'lodash/upperFirst';
 import { injectIntl, intlShape } from 'react-intl';
 import { SearchEvent } from 'dancedeets-common/js/events/models';
 import type { NewSearchResponse } from 'dancedeets-common/js/events/search';
-import { weekdayDate } from 'dancedeets-common/js/dates';
+import { formatStartDateOnly } from 'dancedeets-common/js/dates';
 import { intlWeb } from 'dancedeets-common/js/intl';
 import { SquareEventFlyer } from './eventCommon';
 import { Card, ImagePrefix, wantsWindowSizes } from './ui';
@@ -32,8 +32,9 @@ export class _TopicEvent extends React.Component {
     const event = this.props.event;
 
     const eventStart = moment(event.start_time);
-    const eventStartDate = upperFirst(
-      this.props.intl.formatDate(eventStart.toDate(), weekdayDate)
+    const eventStartDate = formatStartDateOnly(
+      eventStart.toDate(),
+      this.props.intl
     );
 
     return (
@@ -72,7 +73,8 @@ class Video extends React.Component {
       <div className="grid-item" style={{ width: this.props.width * 2 }}>
         <Card>
           <a
-            href={`https://www.youtube.com/watch?v=${this.props.video.id.videoId}`}
+            href={`https://www.youtube.com/watch?v=${this.props.video.id
+              .videoId}`}
           >
             <div
               style={{

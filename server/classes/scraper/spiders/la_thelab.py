@@ -3,16 +3,15 @@
 import dateparser
 import datetime
 import json
+import logging
 import re
 import scrapy
 
 from .. import items
 
-import facebook
-token = facebook._PROD_FACEBOOK_CONFIG['app_access_token']
-
-
-def parse_times(times):
+def parse_times(dt):
+    day, times = dt.split(' ', 1)
+    date = dateparser.parse(day)
     start_time_string, end_time_string = re.split(r'-', times, 1)
     start_time = dateparser.parse(start_time_string).time()
     end_time = dateparser.parse(end_time_string).time()
@@ -20,20 +19,20 @@ def parse_times(times):
         start_time = start_time.replace(start_time.hour + 12)
     if end_time.hour < 12:
         end_time = end_time.replace(end_time.hour + 12)
-    return start_time, end_time
+    return (
+        datetime.datetime.combine(date, start_time),
+        datetime.datetime.combine(date, end_time),
+    )
 
 
 class TheLab(items.StudioScraper):
     name = 'TheLab'
-    allowed_domains = ['graph.facebook.com']
+    allowed_domains = ['www.tlxwc.com']
     latlong = (34.080570991151, -117.90854036514)
     address = '541 N Azusa Ave, West Covina, CA'
 
     def start_requests(self):
-        yield scrapy.Request('https://graph.facebook.com/v2.8/InTheLab247?fields=general_info&access_token=' + token)
-
-    def _get_url(self, response):
-        return 'https://www.facebook.com/InTheLab247'
+        yield scrapy.Request('http://www.tlxwc.com/wp/?page_id=79')
 
     def _valid_item(self, item):
         if not self._street_style(item['style']):
@@ -41,23 +40,30 @@ class TheLab(items.StudioScraper):
         return True
 
     def parse_classes(self, response):
-        classes = json.loads(response.body)
-        for line in classes['general_info'].splitlines():
-            if u' – ' not in line:
-                continue
-            daytimes, description = line.split(u' – ', 1)
-            match = re.search('\((.*?)\)', description)
-            teacher = match.group(1)
-            description = description.replace('(%s)' % teacher, '')
-            item = items.StudioClass()
-            item['style'] = description.title().strip()
-            item['teacher'] = teacher.title()
-            day, times = daytimes.split(' ')
-            start_time, end_time = parse_times(times)
-            date = dateparser.parse(day).date()
-            item['start_time'] = datetime.datetime.combine(date, start_time)
-            item['end_time'] = datetime.datetime.combine(date, end_time)
-            if not self._valid_item(item):
-                continue
-            for new_item in self._repeated_items_iterator(item):
-                yield new_item
+        logging.info(response)
+        for col in response.css('div.wpb_text_column'):
+            col_text = self._extract_text(col)
+            if 'BEGINNING' in col_text or 'ADVANCED' in col_text:
+                for row in col.css('p'):
+                    text = self._extract_text(row)
+                    if u'–' in text and re.search('\d:\d\d', text):
+                        datetime, class_details = text.split(u'–', 1)
+
+                        teacher_match = re.search(r'\((.+?)\)', class_details.strip())
+                        if teacher_match:
+                            teacher = teacher_match.group(1)
+                        else:
+                            logging.error('Could not find teacher: %s', class_details)
+                            teacher = ''
+                        class_details = re.sub('\(%s\)' % teacher, '', class_details)
+
+                        item = items.StudioClass()
+                        item['style'] = class_details.title()
+                        item['teacher'] = teacher.title()
+                        # do we care?? row[4]
+                        start_time, end_time = parse_times(datetime.strip())
+                        item['start_time'] = start_time
+                        item['end_time'] = end_time
+                        if self._valid_item(item):
+                            for new_item in self._repeated_items_iterator(item):
+                                yield new_item

@@ -24,15 +24,18 @@ DerivedData
 # xcodebuild: error: 'project.xcworkspace' does not exist.
 # xcodebuild: error: The workspace named "DanceDeets" does not contain a scheme named "project". The "-list" option can be used to find the names of the schemes in the workspace
 # project.xcworkspace
+# Don't check in our optimization profiles that are used for profile-guided optimization
+OptimizationProfiles
 
 # CocoaPods
 Pods
 
 # Android/IJ
 #
-*.iml
+build/
 .idea
 .gradle
+*.iml
 local.properties
 crashlytics-build.properties
 com_crashlytics_export_strings.xml
@@ -41,13 +44,22 @@ com_crashlytics_export_strings.xml
 #
 node_modules/
 npm-debug.log
+yarn-error.log
 
 # BUCK
 buck-out/
 \.buckd/
-android/app/libs
-android/keystores/debug.keystore
 
-# Fastlane
-report.xml
-screenshots
+android/app/libs
+*.keystore
+
+# fastlane
+#
+# It is recommended to not store the screenshots in the git repo. Instead, use fastlane to re-generate the
+# screenshots whenever they are needed.
+# For more information about the recommended setup visit:
+# https://github.com/fastlane/fastlane/blob/master/fastlane/docs/Gitignore.md
+
+fastlane/report.xml
+fastlane/Preview.html
+fastlane/screenshots

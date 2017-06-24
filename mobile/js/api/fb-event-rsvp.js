@@ -41,7 +41,7 @@ export default class RsvpOnFB {
       return result;
     } catch (error) {
       if (error.code === '403' || error.code === 'ECOM.FACEBOOK.SDK.CORE8') {
-        await RsvpOnFB.getPermissionsAndTryAgain(eventId, rsvpApiValue);
+        return await RsvpOnFB.getPermissionsAndTryAgain(eventId, rsvpApiValue);
       } else {
         throw error;
       }

@@ -32,7 +32,12 @@ export default class ShareEventIcon extends React.Component {
         }}
       >
         <Image
-          style={{ height: 28, width: 28 }}
+          style={{
+            height: 28,
+            width: 28,
+            marginLeft: 10,
+            marginRight: 10,
+          }}
           source={
             Platform.OS === 'ios'
               ? require('./share-icons/share-ios.png')

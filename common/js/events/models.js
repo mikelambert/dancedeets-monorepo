@@ -15,6 +15,8 @@ type MiniImageProp = {
   height: number,
 };
 
+const squareImageSize = 180;
+
 export type Cover = {
   source: string,
   height: number,
@@ -74,11 +76,11 @@ export class Venue extends JsonDerivedObject {
     }
   }
 
-  cityStateCountry() {
+  cityStateCountry(separator: string = ', ') {
     if (this.address) {
       return [this.address.city, this.address.state, this.address.country]
         .filter(x => x)
-        .join(', ');
+        .join(separator);
     } else {
       return null;
     }
@@ -150,23 +152,46 @@ export class Event extends BaseEvent {
   admins: Array<Admin>;
   ticket_uri: string; // eslint-disable-line camelcase
 
-  getResponsiveFlyers() {
+  getFlyer(dimensions: { width?: number, height?: number }): ?MiniImageProp {
+    if (!this.picture) {
+      return null;
+    }
+
+    let { width, height } = dimensions;
+    if (!width && !height) {
+      return {
+        uri: this.picture.source,
+        width: this.picture.width,
+        height: this.picture.height,
+      };
+    }
+
+    const ratio = this.picture.width / this.picture.height;
+    if (!height && width) {
+      height = Math.floor(width / ratio);
+    } else if (!width && height) {
+      width = Math.floor(height / ratio);
+    }
+    const parsedSource = url.parse(this.picture.source, true);
+    // Careful! We are re-using parsedSource here.
+    // If we do more complex things, we may need to create and modify copies...
+    parsedSource.query = { ...parsedSource.query, width, height };
+    const result = {
+      uri: url.format(parsedSource),
+      width,
+      height,
+    };
+    return result;
+  }
+
+  getSquareFlyer(): ?MiniImageProp {
+    return this.getFlyer({ width: squareImageSize, height: squareImageSize });
+  }
+
+  getResponsiveFlyers(): Array<MiniImageProp> {
     if (!this.picture) {
       return [];
     }
-    const ratio = this.picture.width / this.picture.height;
-    const parsedSource = url.parse(this.picture.source, true);
-    const results = [320, 480, 720, 1080, 1440].map(x => {
-      // Careful! We are re-using parsedSource here.
-      // If we do more complex things, we may need to create and modify copies...
-      parsedSource.query = { ...parsedSource.query, width: x };
-      const result = {
-        uri: url.format(parsedSource),
-        width: x,
-        height: Math.floor(x / ratio),
-      };
-      return result;
-    });
-    return results;
+    return [320, 480, 720, 1080, 1440].map(width => this.getFlyer({ width }));
   }
 }

@@ -10,16 +10,18 @@ import type { Action, ThunkAction, Dispatch } from './types';
 import { search } from '../api/dancedeets';
 import { track } from '../store/track';
 import { storeSavedAddress } from '../events/savedAddress';
+import { hideSearchForm } from '../ducks/searchHeader';
 
 export function performSearch(): ThunkAction {
   return async (dispatch: Dispatch, getState) => {
-    const searchQuery = getState().search.searchQuery;
+    const searchQuery = getState().searchQuery;
     track('Search Events', {
       Location: searchQuery.location,
       Keywords: searchQuery.keywords,
     });
     await storeSavedAddress(searchQuery.location);
     await dispatch(searchStart());
+    await dispatch(hideSearchForm());
     try {
       const responseData = await search(
         searchQuery.location,
@@ -37,37 +39,15 @@ export function performSearch(): ThunkAction {
     } catch (e) {
       // TODO: error fetching events.
       console.log('Error fetching events', e.message, e, e.stack);
-      await dispatch(searchFailed());
+      await dispatch(searchFailed(e.message));
     }
   };
 }
 
-export function toggleLayout(): Action {
+export function setWaitingForLocationPermission(waiting: boolean): Action {
   return {
-    type: 'TOGGLE_LAYOUT',
-  };
-}
-
-export function detectedLocation(location: string): ThunkAction {
-  return async (dispatch: Dispatch) => {
-    await dispatch({
-      type: 'DETECTED_LOCATION',
-      location,
-    });
-  };
-}
-
-export function updateLocation(location: string): Action {
-  return {
-    type: 'UPDATE_LOCATION',
-    location,
-  };
-}
-
-export function updateKeywords(keywords: string): Action {
-  return {
-    type: 'UPDATE_KEYWORDS',
-    keywords,
+    type: 'WAITING_FOR_LOCATION',
+    waiting,
   };
 }
 
@@ -84,8 +64,9 @@ function searchComplete(response: SearchResponse): Action {
   };
 }
 
-function searchFailed(): Action {
+function searchFailed(errorString: string): Action {
   return {
     type: 'SEARCH_FAILED',
+    errorString,
   };
 }

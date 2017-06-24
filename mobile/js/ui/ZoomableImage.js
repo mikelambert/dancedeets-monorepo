@@ -95,6 +95,10 @@ export default class ZoomableImage extends React.Component {
   }
 */
 
+  onLayout(e: SyntheticEvent) {
+    this.setState({ layout: e.nativeEvent.layout });
+  }
+
   onZoomChanged(e: any) {
     this.setState({ isZoomed: e.nativeEvent.zoomScale > 1 });
   }
@@ -150,10 +154,6 @@ export default class ZoomableImage extends React.Component {
         </TouchableWithoutFeedback>
       </ScrollView>
     );
-  }
-
-  onLayout(e: SyntheticEvent) {
-    this.setState({ layout: e.nativeEvent.layout });
   }
 
   render() {

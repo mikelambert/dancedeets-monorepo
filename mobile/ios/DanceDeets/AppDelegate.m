@@ -9,10 +9,11 @@
 
 #import "AppDelegate.h"
 #import <CodePush/CodePush.h>
-#import "RCTLog.h"
-#import "RCTLinkingManager.h"
-#import "RCTPushNotificationManager.h"
-#import "RCTRootView.h"
+#import <React/RCTLog.h>
+#import <React/RCTLinkingManager.h>
+#import <React/RCTPushNotificationManager.h>
+#import <React/RCTBundleURLProvider.h>
+#import <React/RCTRootView.h>
 
 #include <asl.h>
 #import <Crashlytics/Crashlytics.h>
@@ -46,7 +47,7 @@
    */
 
   #ifdef DEBUG
-    jsCodeLocation = [NSURL URLWithString:@"http://localhost:8081/index.ios.bundle?platform=ios&dev=true"];
+    jsCodeLocation = [[RCTBundleURLProvider sharedSettings] jsBundleURLForBundleRoot:@"index.ios" fallbackResource:nil];
   #else
   /**
    * OPTION 2

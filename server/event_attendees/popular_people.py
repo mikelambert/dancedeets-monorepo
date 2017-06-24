@@ -111,7 +111,7 @@ def get_people_rankings_for_city_names(city_names, attendees_only=False):
 
 def load_from_dev(city_names, attendees_only):
     rankings = []
-    client = datastore.Client()
+    client = datastore.Client('dancedeets-hrd')
 
     for city_name in city_names:
         q = client.query(kind='PRCityCategory')

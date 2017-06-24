@@ -5,87 +5,104 @@
  */
 
 import React from 'react';
-import { Dimensions, InteractionManager, View } from 'react-native';
-import ViewPager from 'react-native-viewpager';
+import { Dimensions, FlatList, InteractionManager, View } from 'react-native';
 import { connect } from 'react-redux';
+import type {
+  NavigationAction,
+  NavigationRoute,
+  NavigationScreenProp,
+} from 'react-navigation/src/TypeDefinition';
 import { Event } from 'dancedeets-common/js/events/models';
 import type { State } from '../reducers/search';
 import { FullEventView } from './uicomponents';
 import type { ThunkAction } from '../actions/types';
 import { getPosition } from '../util/geo';
+import { trackWithEvent } from '../store/track';
 
 class EventPager extends React.Component {
   props: {
     onFlyerSelected: (x: Event) => ThunkAction,
     onEventNavigated: (x: Event) => void,
-    search: State,
     selectedEvent: Event,
+
+    // Self-managed props
+    search: State,
   };
 
   state: {
-    dataSource: ViewPager.DataSource,
     position: ?Object,
     loadInProgress: boolean,
   };
 
   constructor(props) {
     super(props);
-    const dataSource = new ViewPager.DataSource({
-      pageHasChanged: (row1, row2) => row1 !== row2,
-    });
     this.state = {
       position: null,
-      dataSource,
       loadInProgress: true,
     };
     this.state = this.getNewState(this.props, null);
     (this: any).renderEvent = this.renderEvent.bind(this);
+    (this: any).onScrollEnd = this.onScrollEnd.bind(this);
   }
 
   componentWillMount() {
     this.loadLocation();
   }
 
+  componentDidMount() {
+    InteractionManager.runAfterInteractions(() => {
+      this.setState({ loadInProgress: false });
+    });
+  }
+
   componentWillReceiveProps(nextProps) {
     this.setState(this.getNewState(nextProps, this.state.position));
   }
 
-  getNewState(props, position) {
-    const results = props.search.response;
-    let finalResults = [];
-    const newPosition = position || this.state.position;
+  // From https://stackoverflow.com/questions/43370807/react-native-get-current-page-in-flatlist-when-using-pagingenabled
+  onScrollEnd(e) {
+    const contentOffset = e.nativeEvent.contentOffset;
+    const viewSize = e.nativeEvent.layoutMeasurement;
 
-    if (results && results.results) {
-      const pageIndex = results.results.findIndex(
-        x => x.id === this.props.selectedEvent.id
-      );
-      if (pageIndex !== -1) {
-        finalResults = results.results.map(event => ({ event, newPosition }));
-      }
-    }
-    // If we have an event that's not in the list, it's because we're just displaying this event.
-    if (!finalResults.length) {
-      finalResults = [this.props.selectedEvent].map(event => ({
-        event,
-        newPosition,
-      }));
-    }
+    // Divide the horizontal offset by the width of the view to see which page is visible
+    const pageIndex = Math.floor(contentOffset.x / viewSize.width);
+    const event = this.props.search.response.results[pageIndex];
+    return this.props.onEventNavigated(event);
+  }
+
+  getNewState(props, oldPosition) {
+    const position = oldPosition || this.state.position;
     const state = {
       ...this.state,
-      position: newPosition,
-      dataSource: this.state.dataSource.cloneWithPages(finalResults),
+      position,
     };
     return state;
   }
 
   getSelectedPage() {
+    const selectedEvent = this.props.selectedEvent;
+
     let initialPage = null;
     if (this.props.search.response && this.props.search.response.results) {
       initialPage = this.props.search.response.results.findIndex(
-        x => x.id === this.props.selectedEvent.id
+        x => x.id === selectedEvent.id
       );
     }
     return initialPage;
+  }
+
+  getItemLayout(itemData, index) {
+    /* console.log({
+      itemData,
+      index,
+      length: Dimensions.get('window').width,
+      offset: Dimensions.get('window').width * index,
+    }); */
+    return {
+      length: Dimensions.get('window').width,
+      offset: Dimensions.get('window').width * index,
+      index,
+    };
   }
 
   async loadLocation() {
@@ -93,7 +110,8 @@ class EventPager extends React.Component {
     this.setState(this.getNewState(this.props, position));
   }
 
-  renderEvent(eventData: Object, pageID: number | string) {
+  renderEvent(info) {
+    const eventData = info.item;
     // This can happen when we're animating in,
     // and have passed in some almost-entirely-empty dataSource.
     // We don't want to render anything for the hidden pages
@@ -116,40 +134,34 @@ class EventPager extends React.Component {
     );
   }
 
-  componentDidMount() {
-    InteractionManager.runAfterInteractions(() => {
-      this.setState({ loadInProgress: false });
-    });
-  }
-
   render() {
-    // We only show the "first" element in the dataSource, until we've finished our animation in
-    // This should help speed up the event-view transition.
-    let dataSource = this.state.dataSource;
-    if (this.state.loadInProgress) {
-      const selectedIndex = this.getSelectedPage();
-      if (selectedIndex == null) {
-        return null;
-      }
-      const selectedPage = dataSource.getPageData(selectedIndex);
-      const tempData = Array.from(new Array(dataSource.getPageCount()));
-      tempData[selectedIndex] = selectedPage;
-      dataSource = this.state.dataSource.cloneWithPages(tempData);
+    const position = this.state.position;
+    if (!this.props.search.response) {
+      console.log('No response!', this.props);
+      return null;
     }
-
+    const data = this.props.search.response.results.map(event => ({
+      key: event.id,
+      event,
+      position,
+    }));
     // We use react-native-viewpager instead of react-native-carousel,
     // because we only want to render a few pages in the big list
     // (as opposed to a fully rendered pageable/scrollable view, which will scale poorly)
     return (
-      <ViewPager
-        dataSource={dataSource}
-        renderPage={this.renderEvent}
-        renderPageIndicator={false}
-        onChangePage={i =>
-          this.props.onEventNavigated(
-            this.state.dataSource.getPageData(i).event
-          )}
-        initialPage={this.getSelectedPage()}
+      <FlatList
+        data={data}
+        horizontal
+        pagingEnabled
+        renderItem={this.renderEvent}
+        onMomentumScrollEnd={this.onScrollEnd}
+        initialScrollIndex={this.getSelectedPage()}
+        getItemLayout={this.getItemLayout}
+        windowSize={5}
+        initialNumToRender={1}
+        maxToRenderPerBatch={2}
+        removeClippedSubviews={false}
+        showsHorizontalScrollIndicator={false}
       />
     );
   }

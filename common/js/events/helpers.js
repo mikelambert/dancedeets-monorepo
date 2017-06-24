@@ -7,7 +7,7 @@
 import { intlShape } from 'react-intl';
 import moment from 'moment';
 import upperFirst from 'lodash/upperFirst';
-import { weekdayDate } from '../dates';
+import { formatStartDateOnly } from '../dates';
 import { BaseEvent } from './models';
 import type { EventRsvpList } from './models';
 import messages from './messages';
@@ -37,9 +37,7 @@ export function groupEventsByStartDate(
   let currentDate = null;
   events.forEach((event, index) => {
     const eventStart = moment(getStartTime(event));
-    const eventStartDate = upperFirst(
-      intl.formatDate(eventStart.toDate(), weekdayDate)
-    );
+    const eventStartDate = formatStartDateOnly(eventStart.toDate(), intl);
     if (eventStartDate !== currentDate) {
       results.push({ header: eventStartDate, events: [] });
       currentDate = eventStartDate;

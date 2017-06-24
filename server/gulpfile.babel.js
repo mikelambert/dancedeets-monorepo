@@ -313,7 +313,10 @@ function getScrapyKey() {
 
 gulp.task(
   'deploy:scrapy',
-  $.shell.task([`echo ${getScrapyKey()} | shub login`, 'shub deploy'])
+  $.shell.task([
+    `echo ${getScrapyKey()} | PYTHONPATH=lib-local:. shub login`,
+    'PYTHONPATH=lib-local:. shub deploy',
+  ])
 );
 gulp.task('deploy:cleanup-files', () =>
   del.sync('lib/setuptools/script (dev).tmpl')
@@ -368,7 +371,7 @@ gulp.task('deployScrapy', ['deploy:scrapy']);
 // If this fails due to google imports, make sure to delete site-packages/.../proto* modules
 gulp.task(
   'generate-amp-sources',
-  $.shell.task(['./amp/generate_amp_sources.py'])
+  $.shell.task(['PYTHONPATH=lib-local:. ./amp/generate_amp_sources.py'])
 );
 
 function webpack(configName, dependencies = []) {
@@ -455,7 +458,7 @@ gulp.task(
 
 function startDevAppServer(port) {
   return $.shell.task([
-    `${argv.gae_dir}/dev_appserver.py app-devserver.yaml --port=${port} --runtime=python-compat --storage_path=~/Projects/dancedeets-storage/ 2>&1 | technicolor-yawn`,
+    `PYTHONPATH=lib-local ${argv.gae_dir}/dev_appserver.py app-devserver.yaml --port=${port} --runtime=python-compat --storage_path=~/Projects/dancedeets-storage/ 2>&1 | technicolor-yawn`,
   ]);
 }
 gulp.task('dev-appserver:kill', $.shell.task(['./force_kill_server.sh']));
@@ -546,7 +549,6 @@ gulp.task('server:hot:force', [
   'server:hot:node',
   'server:hot:python:force',
   'server:hot:frontend',
-  'server:datastore:local',
 ]);
 
 // Workable Dev Server (2) Prod-like JS/CSS setup

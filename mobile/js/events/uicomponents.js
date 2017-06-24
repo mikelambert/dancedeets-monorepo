@@ -9,11 +9,14 @@ import {
   AlertIOS,
   Dimensions,
   Image,
+  InteractionManager,
   Linking,
   Platform,
+  ScrollView,
   StyleSheet,
   TouchableOpacity,
   View,
+  ViewPropTypes,
 } from 'react-native';
 import { injectIntl, intlShape, defineMessages } from 'react-intl';
 import Locale from 'react-native-locale';
@@ -24,10 +27,7 @@ import moment from 'moment';
 import geolib from 'geolib';
 import url from 'url';
 import querystring from 'querystring';
-import {
-  formatStartEnd,
-  formatStartDateOnly,
-} from 'dancedeets-common/js/dates';
+import { formatStartEnd } from 'dancedeets-common/js/dates';
 import { Event, Venue } from 'dancedeets-common/js/events/models';
 import messages from 'dancedeets-common/js/events/messages';
 import { formatAttending } from 'dancedeets-common/js/events/helpers';
@@ -38,7 +38,6 @@ import {
   FBShareButton,
   HorizontalView,
   normalize,
-  ProgressiveLayout,
   ProportionalImage,
   SegmentedControl,
   semiNormalize,
@@ -51,7 +50,6 @@ import { performRequest } from '../api/fb';
 import RsvpOnFB from '../api/fb-event-rsvp';
 import { trackWithEvent } from '../store/track';
 import type { TranslatedEvent } from '../reducers/translate';
-import { weekdayDateTime } from '../formats';
 import { toggleEventTranslation, canGetValidLoginFor } from '../actions';
 import { openUserId } from '../util/fb';
 
@@ -59,11 +57,12 @@ class SubEventLine extends React.Component {
   props: {
     icon: any,
     children?: React.Element<*>,
+    style?: ViewPropTypes.style,
   };
 
   render() {
     return (
-      <HorizontalView style={eventStyles.detailLine}>
+      <HorizontalView style={[eventStyles.detailLine, this.props.style]}>
         <Image
           key="image"
           source={this.props.icon}
@@ -77,7 +76,7 @@ class SubEventLine extends React.Component {
   }
 }
 
-class EventCategories extends React.Component {
+class EventCategories extends React.PureComponent {
   props: {
     categories: Array<string>,
   };
@@ -97,10 +96,10 @@ class EventCategories extends React.Component {
   }
 }
 
-class _AddToCalendarButton extends React.Component {
+class _AddToCalendarButton extends React.PureComponent {
   props: {
     event: Event,
-    style: View.propTypes.style,
+    style: ViewPropTypes.style,
 
     // Self-managed props
     intl: intlShape,
@@ -114,8 +113,8 @@ class _AddToCalendarButton extends React.Component {
         size="small"
         onPress={async () => {
           trackWithEvent('Add to Calendar', this.props.event);
-          await CalendarAdd(this.props.event);
-          if (Platform.OS === 'ios') {
+          const added = await CalendarAdd(this.props.event);
+          if (added && Platform.OS === 'ios') {
             AlertIOS.alert(
               this.props.intl.formatMessage(messages.addedToCalendar)
             );
@@ -156,10 +155,10 @@ class _EventDateTime extends React.Component {
     );
     return (
       <SubEventLine icon={require('./images/datetime.png')}>
-        <View style={{ alignItems: 'flex-start' }}>
-          <Text style={[eventStyles.detailText, eventStyles.rowDateTime]}>
-            {formattedText}
-          </Text>
+        <View
+          style={{ flexGrow: 1, alignItems: 'flex-start', paddingRight: 10 }}
+        >
+          <Text style={eventStyles.detailText}>{formattedText}</Text>
           {this.props.children}
         </View>
       </SubEventLine>
@@ -167,47 +166,6 @@ class _EventDateTime extends React.Component {
   }
 }
 const EventDateTime = injectIntl(_EventDateTime);
-
-class _EventDateTimeShort extends React.Component {
-  props: {
-    start: string,
-    end: string,
-
-    // Self-managed props
-    intl: intlShape,
-    children: Array<React.Element<*>>,
-  };
-
-  _interval: number;
-
-  componentDidMount() {
-    // refresh our 'relative start offset' every minute
-    this._interval = setInterval(() => this.forceUpdate(), 60 * 1000);
-  }
-
-  componentWillUnmount() {
-    clearInterval(this._interval);
-  }
-
-  render() {
-    // Explicitly ignore the endtime in calling formatStartTime.
-    const formattedText = formatStartDateOnly(
-      this.props.start,
-      this.props.intl
-    );
-    return (
-      <SubEventLine icon={require('./images/datetime.png')}>
-        <View style={{ alignItems: 'flex-start' }}>
-          <Text style={[eventStyles.detailText, eventStyles.rowDateTime]}>
-            {formattedText}
-          </Text>
-          {this.props.children}
-        </View>
-      </SubEventLine>
-    );
-  }
-}
-const EventDateTimeShort = injectIntl(_EventDateTimeShort);
 
 function formatDistance(intl, distanceKm) {
   const useKm = Locale.constants().usesMetricSystem;
@@ -220,10 +178,10 @@ function formatDistance(intl, distanceKm) {
   }
 }
 
-class _EventVenue extends React.Component {
+class _EventVenue extends React.PureComponent {
   props: {
     venue: Venue,
-    style: View.propTypes.style,
+    style: ViewPropTypes.style,
 
     currentPosition: ?Object,
 
@@ -264,43 +222,35 @@ class _EventVenue extends React.Component {
         ) / 1000;
       distanceComponent = <Text>{formatDistance(this.props.intl, km)}</Text>;
     }
+    const map = this.props.venue.geocode
+      ? <EventMap venue={this.props.venue} defaultSize={0.005} />
+      : null;
+
     return (
       <SubEventLine icon={require('./images/location.png')}>
-        {components}
-        {distanceComponent}
+        <HorizontalView>
+          <View style={{ flexShrink: 1 }}>
+            {components}
+            {distanceComponent}
+          </View>
+          <View style={{ minWidth: normalize(150), flexGrow: 1 }}>
+            {map}
+          </View>
+        </HorizontalView>
       </SubEventLine>
     );
   }
 }
 const EventVenue = injectIntl(_EventVenue);
 
-class _EventVenueShort extends React.Component {
+class _EventSource extends React.PureComponent {
   props: {
-    venue: Venue,
-    style: View.propTypes.style,
-
-    currentPosition: ?Object,
+    event: Event,
 
     // Self-managed props
     intl: intlShape,
   };
 
-  render() {
-    if (!this.props.venue.address) {
-      return null;
-    }
-    return (
-      <SubEventLine icon={require('./images/location.png')}>
-        <Text style={[eventStyles.detailText, this.props.style]}>
-          {this.props.venue.cityState()}
-        </Text>
-      </SubEventLine>
-    );
-  }
-}
-const EventVenueShort = injectIntl(_EventVenueShort);
-
-class _EventSource extends React.Component {
   constructor(props: Object) {
     super(props);
     (this: any).onPress = this.onPress.bind(this);
@@ -309,8 +259,8 @@ class _EventSource extends React.Component {
   onPress() {
     trackWithEvent('Open Source', this.props.event);
     // Try opening the event in the facebook app
-    if (this.props.event.source.name == 'Facebook Event') {
-      if (Platform.OS == 'ios') {
+    if (this.props.event.source.name === 'Facebook Event') {
+      if (Platform.OS === 'ios') {
         if (Linking.canOpenURL('fb://')) {
           // This URL format is supposedly current as of May 2016:
           // http://stackoverflow.com/questions/34875501/opening-facebook-event-pages-in-the-facebook-app-using-swift
@@ -355,7 +305,7 @@ class _EventSource extends React.Component {
 }
 const EventSource = injectIntl(_EventSource);
 
-class _EventAddedBy extends React.Component {
+class _EventAddedBy extends React.PureComponent {
   props: {
     event: Event,
 
@@ -415,7 +365,7 @@ class _EventAddedBy extends React.Component {
 }
 const EventAddedBy = injectIntl(_EventAddedBy);
 
-class _EventOrganizers extends React.Component {
+class _EventOrganizers extends React.PureComponent {
   props: {
     event: Event,
 
@@ -462,14 +412,14 @@ class _EventOrganizers extends React.Component {
       );
     } else {
       // TODO: fetch the types of each admin, and sort them with the page first (or show only the page?)
-      const organizers = this.props.event.admins.map(admin => (
+      const organizers = this.props.event.admins.map(admin =>
         <HorizontalView>
           <Text style={[eventStyles.detailText, eventStyles.detailListText]}>
             {' '}–{' '}
           </Text>
           {this.renderAdminLink(admin)}
         </HorizontalView>
-      ));
+      );
       let text = '';
       if (this.state.opened) {
         text = this.props.intl.formatMessage(messages.hideOrganizers);
@@ -515,7 +465,7 @@ class _EventOrganizers extends React.Component {
 }
 const EventOrganizers = injectIntl(_EventOrganizers);
 
-class _EventRsvpControl extends React.Component {
+class _EventRsvpControl extends React.PureComponent {
   props: {
     event: Event,
 
@@ -618,12 +568,12 @@ class _EventRsvpControl extends React.Component {
 }
 const EventRsvpControl = connect(
   state => ({
-    user: state.user.userData,
+    isLoggedIn: state.user.isLoggedIn,
   }),
   dispatch => ({
     canGetValidLoginFor: async (feature, props) => {
       if (
-        !props.user &&
+        !props.isLoggedIn &&
         !await canGetValidLoginFor(feature, props.intl, dispatch)
       ) {
         return false;
@@ -650,7 +600,10 @@ class _EventRsvp extends React.Component {
         ? <EventRsvpControl event={this.props.event} />
         : null;
       return (
-        <SubEventLine icon={require('./images/attending.png')}>
+        <SubEventLine
+          icon={require('./images/attending.png')}
+          style={{ marginRight: 20 }}
+        >
           {countsText}
           {rsvpControl}
         </SubEventLine>
@@ -662,13 +615,11 @@ class _EventRsvp extends React.Component {
 }
 const EventRsvp = injectIntl(_EventRsvp);
 
-class _EventDescription extends React.Component {
+class _EventDescription extends React.PureComponent {
   props: {
     event: Event,
-    children: Array<React.Element<*>>,
 
     // Self-managed props
-    intl: intlShape,
     translatedEvents: { [id: string]: TranslatedEvent },
   };
 
@@ -679,31 +630,8 @@ class _EventDescription extends React.Component {
       description = translatedEvent.translation.description;
     }
 
-    let translation = null;
-    if (this.props.event.language != this.props.intl.locale) {
-      translation = <EventTranslate event={this.props.event} />;
-    }
-
     return (
-      <Card
-        title={
-          <HorizontalView
-            style={[
-              eventStyles.splitButtons,
-              {
-                margin: 5,
-                alignItems: 'center',
-              },
-            ]}
-          >
-            <Text style={eventStyles.rowTitle}>
-              {this.props.intl.formatMessage(messages.eventDetails)}
-            </Text>
-            {translation}
-          </HorizontalView>
-        }
-      >
-        {this.props.children}
+      <View style={{ margin: 5 }}>
         <Autolink
           linkStyle={eventStyles.rowLink}
           style={eventStyles.description}
@@ -714,20 +642,38 @@ class _EventDescription extends React.Component {
           hashtag="instagram"
           twitter
         />
-      </Card>
+      </View>
     );
   }
 }
 
 const EventDescription = connect(state => ({
   translatedEvents: state.translate.events,
-}))(injectIntl(_EventDescription));
+}))(_EventDescription);
 
-class EventMap extends React.Component {
+class _TranslateButton extends React.PureComponent {
+  props: {
+    event: Event,
+
+    // Self-managed props
+    intl: intlShape,
+  };
+
+  render() {
+    if (this.props.event.language !== this.props.intl.locale) {
+      return <EventTranslate event={this.props.event} />;
+    } else {
+      return null;
+    }
+  }
+}
+const TranslateButton = injectIntl(_TranslateButton);
+
+class EventMap extends React.PureComponent {
   props: {
     venue: Venue,
     defaultSize: number,
-    style: View.propTypes.style,
+    style?: ViewPropTypes.style,
   };
   state: {
     mapOk: boolean,
@@ -735,12 +681,17 @@ class EventMap extends React.Component {
 
   constructor(props) {
     super(props);
-    if (Platform.OS === 'ios') {
-      this.state = { mapOk: true };
-    } else {
-      this.state = { mapOk: false };
-      this.checkAndroidMaps();
-    }
+    this.state = { mapOk: false };
+  }
+
+  componentDidMount() {
+    InteractionManager.runAfterInteractions(() => {
+      if (Platform.OS === 'ios') {
+        this.state = { mapOk: true };
+      } else {
+        this.checkAndroidMaps();
+      }
+    });
   }
 
   async checkAndroidMaps() {
@@ -755,6 +706,9 @@ class EventMap extends React.Component {
     if (!this.props.venue.geocode) {
       return null;
     }
+    // Rendering this map on iOS can cause some big hiccups on the Navigation swipe-in
+    // So we instead delay it until after the interactions (animations) have completed,
+    // to avoid any jank. It's often hidden below the fold anyway...
     return (
       <MapView
         liteMode // Android-only, uses a simpler view that scrolls better.
@@ -837,100 +791,7 @@ async function openVenueWithApp(venue: Venue) {
   }
 }
 
-class _EventRow extends React.Component {
-  props: {
-    onEventSelected: (x: Event) => void,
-    event: Event,
-    listLayout: boolean,
-    currentPosition: ?Object,
-  };
-
-  render() {
-    const imageProps = this.props.event.getResponsiveFlyers();
-    if (this.props.listLayout) {
-      return (
-        <Card style={eventStyles.row}>
-          <TouchableOpacity
-            onPress={() => this.props.onEventSelected(this.props.event)}
-            activeOpacity={0.5}
-          >
-            <Text
-              numberOfLines={2}
-              style={[eventStyles.rowTitle, eventStyles.rowLink]}
-            >
-              {this.props.event.name}
-            </Text>
-            <HorizontalView>
-              <View style={{ width: 100 }}>
-                {imageProps.length
-                  ? <ProportionalImage
-                      source={imageProps}
-                      originalWidth={imageProps[imageProps.length - 1].width}
-                      originalHeight={imageProps[imageProps.length - 1].height}
-                      style={eventStyles.thumbnail}
-                    />
-                  : null}
-              </View>
-              <View style={{ flex: 1 }}>
-                <EventCategories
-                  categories={this.props.event.annotations.categories}
-                />
-                <EventDateTimeShort
-                  start={this.props.event.start_time}
-                  end={this.props.event.end_time}
-                />
-                <EventVenueShort
-                  venue={this.props.event.venue}
-                  currentPosition={this.props.currentPosition}
-                />
-              </View>
-            </HorizontalView>
-          </TouchableOpacity>
-        </Card>
-      );
-    } else {
-      return (
-        <Card style={eventStyles.row}>
-          <TouchableOpacity
-            onPress={() => this.props.onEventSelected(this.props.event)}
-            activeOpacity={0.5}
-          >
-            {imageProps.length
-              ? <ProportionalImage
-                  source={imageProps}
-                  originalWidth={imageProps[imageProps.length - 1].width}
-                  originalHeight={imageProps[imageProps.length - 1].height}
-                  style={eventStyles.thumbnail}
-                />
-              : null}
-            <Text
-              numberOfLines={2}
-              style={[eventStyles.rowTitle, eventStyles.rowLink]}
-            >
-              {this.props.event.name}
-            </Text>
-            <EventCategories
-              categories={this.props.event.annotations.categories}
-            />
-            <EventDateTimeShort
-              start={this.props.event.start_time}
-              end={this.props.event.end_time}
-            />
-            <EventVenueShort
-              venue={this.props.event.venue}
-              currentPosition={this.props.currentPosition}
-            />
-          </TouchableOpacity>
-        </Card>
-      );
-    }
-  }
-}
-export const EventRow = connect(state => ({
-  listLayout: state.search.listLayout,
-}))(_EventRow);
-
-class EventShare extends React.Component {
+class EventShare extends React.PureComponent {
   props: {
     event: Event,
   };
@@ -942,13 +803,13 @@ class EventShare extends React.Component {
     };
     return (
       <View style={eventStyles.shareIndent}>
-        <FBShareButton shareContent={shareContent} />
+        <FBShareButton shareContent={shareContent} event={this.props.event} />
       </View>
     );
   }
 }
 
-class _EventTranslate extends React.Component {
+class _EventTranslate extends React.PureComponent {
   props: {
     event: Event,
 
@@ -994,7 +855,7 @@ const EventTranslate = connect(
   })
 )(injectIntl(_EventTranslate));
 
-class _EventTickets extends React.Component {
+class _EventTickets extends React.PureComponent {
   props: {
     event: Event,
 
@@ -1074,14 +935,19 @@ class _FullEventView extends React.Component {
   render() {
     const width = Dimensions.get('window').width;
     let flyer = null;
+    const squareImageProps = this.props.event.getSquareFlyer();
     const imageProps = this.props.event.getResponsiveFlyers();
-    if (imageProps.length) {
+    if (imageProps.length && imageProps[0]) {
       const flyerImage = (
         <ProportionalImage
           source={imageProps}
           originalWidth={imageProps[0].width}
           originalHeight={imageProps[0].height}
           style={eventStyles.thumbnail}
+          initialDimensions={{
+            width,
+            height: 0,
+          }}
         />
       );
 
@@ -1092,65 +958,71 @@ class _FullEventView extends React.Component {
       );
     }
 
-    const map = this.props.event.venue.geocode
-      ? <EventMap
-          venue={this.props.event.venue}
-          style={eventStyles.eventMap}
-          defaultSize={0.005}
-        />
-      : null;
-
     let name = this.props.event.name;
     const translatedEvent = this.props.translatedEvents[this.props.event.id];
     if (translatedEvent && translatedEvent.visible) {
       name = translatedEvent.translation.name;
     }
 
-    return (
-      <ProgressiveLayout style={[eventStyles.container, { width }]}>
+    const eventView = (
+      <ScrollView style={[eventStyles.container, { width }]}>
         {flyer}
-        <Card
-          title={
-            <Text numberOfLines={2} style={eventStyles.rowTitle}>{name}</Text>
-          }
+        <Text
+          numberOfLines={2}
+          style={[eventStyles.rowTitle, eventStyles.rowTitlePadding]}
         >
-          <ProgressiveLayout>
-            <EventCategories
-              categories={this.props.event.annotations.categories}
-            />
-            <EventRsvp event={this.props.event} />
-            <EventDateTime
-              start={this.props.event.start_time}
-              end={this.props.event.end_time}
-            >
-              <AddToCalendarButton
-                event={this.props.event}
-                style={{ marginTop: 5 }}
-              />
-            </EventDateTime>
-            <TouchableOpacity
-              onPress={this.onLocationClicked}
-              activeOpacity={0.5}
-            >
-              <EventVenue
-                style={eventStyles.rowLink}
-                venue={this.props.event.venue}
-                currentPosition={this.props.currentPosition}
-              />
-              {map}
-            </TouchableOpacity>
-            <EventTickets event={this.props.event} />
-            <EventSource event={this.props.event} />
-            <EventAddedBy event={this.props.event} />
-            <EventOrganizers event={this.props.event} />
-            <HorizontalView style={eventStyles.splitButtons}>
-              <EventShare event={this.props.event} />
-            </HorizontalView>
-          </ProgressiveLayout>
-        </Card>
+          {name}
+        </Text>
+        <EventCategories categories={this.props.event.annotations.categories} />
+        <EventDateTime
+          start={this.props.event.start_time}
+          end={this.props.event.end_time}
+        >
+          <AddToCalendarButton
+            event={this.props.event}
+            style={eventStyles.addToCalendarButton}
+          />
+        </EventDateTime>
+        <EventRsvp event={this.props.event} />
+        <EventTickets event={this.props.event} />
+        <TouchableOpacity onPress={this.onLocationClicked} activeOpacity={0.5}>
+          <EventVenue
+            style={eventStyles.rowLink}
+            venue={this.props.event.venue}
+            currentPosition={this.props.currentPosition}
+          />
+        </TouchableOpacity>
+        <EventSource event={this.props.event} />
+        <EventAddedBy event={this.props.event} />
+        <EventOrganizers event={this.props.event} />
+        <HorizontalView style={eventStyles.splitButtons}>
+          <EventShare event={this.props.event} />
+          <TranslateButton event={this.props.event} />
+        </HorizontalView>
         <EventDescription event={this.props.event} />
-      </ProgressiveLayout>
+      </ScrollView>
     );
+    if (squareImageProps) {
+      // Android and iOS blurRadius act differently, as noticed here:
+      // https://github.com/facebook/react-native/commit/fc09c54324ff7fcec41e4f55edcca3854c9fa76b
+      // TODO: At some point this will be remedied, and we'll need to adjust here.
+      const blurRadius =
+        3 *
+        (Platform.OS === 'android'
+          ? 1
+          : 2 * Dimensions.get('window').width / squareImageProps.width);
+      return (
+        <Image
+          source={squareImageProps}
+          style={eventStyles.blurredImage}
+          blurRadius={blurRadius}
+        >
+          {eventView}
+        </Image>
+      );
+    } else {
+      return eventView;
+    }
   }
 }
 export const FullEventView = connect(state => ({
@@ -1164,7 +1036,9 @@ const eventStyles = StyleSheet.create({
     flexGrow: 1,
     borderRadius: 5,
   },
-  container: {},
+  container: {
+    backgroundColor: 'rgba(0, 0, 0, .6)',
+  },
   splitButtons: {
     justifyContent: 'space-between',
   },
@@ -1177,10 +1051,9 @@ const eventStyles = StyleSheet.create({
   rowTitle: {
     fontSize: semiNormalize(18),
     lineHeight: semiNormalize(22),
-    margin: 5,
   },
-  rowDateTime: {
-    color: '#C0FFC0',
+  rowTitlePadding: {
+    margin: 5,
   },
   rowLink: {
     color: linkColor,
@@ -1215,10 +1088,15 @@ const eventStyles = StyleSheet.create({
   },
   eventMap: {
     flexGrow: 1,
-    paddingHorizontal: 10,
+    marginLeft: 10,
     height: normalize(150),
-    marginLeft: 25,
-    marginBottom: 10,
-    borderRadius: 5,
+  },
+  addToCalendarButton: {
+    marginTop: 5,
+  },
+  blurredImage: {
+    // Ignore the built-in image size props, so it can fully flex
+    width: null,
+    height: null,
   },
 });
