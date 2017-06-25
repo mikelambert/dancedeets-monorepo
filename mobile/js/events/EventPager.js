@@ -92,12 +92,6 @@ class EventPager extends React.Component {
   }
 
   getItemLayout(itemData, index) {
-    /* console.log({
-      itemData,
-      index,
-      length: Dimensions.get('window').width,
-      offset: Dimensions.get('window').width * index,
-    }); */
     return {
       length: Dimensions.get('window').width,
       offset: Dimensions.get('window').width * index,
@@ -137,8 +131,18 @@ class EventPager extends React.Component {
   render() {
     const position = this.state.position;
     if (!this.props.search.response) {
-      console.log('No response!', this.props);
-      return null;
+      if (this.props.selectedEvent) {
+        // Navigation to a single event URL. Just render the singular event.
+        return this.renderEvent({
+          item: {
+            event: this.props.selectedEvent,
+            position: this.state.position,
+          },
+        });
+      } else {
+        console.log('No response!', this.props);
+        return null;
+      }
     }
     const data = this.props.search.response.results.map(event => ({
       key: event.id,
