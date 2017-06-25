@@ -9,7 +9,8 @@ import { Event } from 'dancedeets-common/js/events/models';
 import type { ThunkAction, Dispatch } from './types';
 import WebsiteUrl from '../websiteUrl';
 import { event } from '../api/dancedeets';
-import { performSearch, updateKeywords, updateLocation } from './search';
+import { performSearch } from './search';
+import { updateKeywords, updateLocation } from '../ducks/searchQuery';
 
 export function processUrl(url: string) {
   console.log(url);
