@@ -101,7 +101,7 @@ export class BaseEvent extends JsonDerivedObject {
   id: string;
   name: string;
   start_time: string; // eslint-disable-line camelcase
-  end_time: string; // eslint-disable-line camelcase
+  end_time: ?string; // eslint-disable-line camelcase
   picture: ?Cover;
   venue: Venue;
 
@@ -118,7 +118,7 @@ export class BaseEvent extends JsonDerivedObject {
     return this.start_time.substr(0, 19);
   }
   endTimeNoTz() {
-    return this.end_time.substr(0, 19);
+    return this.end_time ? this.end_time.substr(0, 19) : null;
   }
 }
 
