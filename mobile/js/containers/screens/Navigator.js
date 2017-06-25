@@ -13,6 +13,7 @@ import {
 import { connect } from 'react-redux';
 import type { NavigationRouteConfigMap } from 'react-navigation/src/TypeDefinition';
 import type { StackNavigatorConfig } from 'react-navigation/src/navigators/StackNavigator';
+import { hardwareBackPress } from 'react-native-back-android';
 import { gradientTop, purpleColors } from '../../Colors';
 import type { Dispatch } from '../../actions/types';
 
@@ -30,7 +31,20 @@ export default (
   routeConfigMap: NavigationRouteConfigMap,
   stackConfig: StackNavigatorConfig = {}
 ) => {
-  const Navigator = StackNavigator(routeConfigMap, {
+  const newRouteConfigMap = { ...routeConfigMap };
+  Object.keys(newRouteConfigMap).forEach(key => {
+    const newScreen = hardwareBackPress(routeConfigMap[key].screen, props =>
+      props.navigation.goBack()
+    );
+    // TODO: This is necessary until https://github.com/awesomejerry/react-native-back-android/issues/11 is fixed/deployed:
+    newScreen.navigationOptions = routeConfigMap[key].screen.navigationOptions;
+    newRouteConfigMap[key] = {
+      ...routeConfigMap[key],
+      screen: newScreen,
+    };
+  });
+
+  const Navigator = StackNavigator(newRouteConfigMap, {
     navigationOptions: {
       headerTintColor: 'white',
       headerStyle: {
