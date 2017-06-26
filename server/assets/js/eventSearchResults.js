@@ -17,6 +17,7 @@ import Slider from 'react-slick';
 import Collapse, { Panel } from 'rc-collapse';
 import { intlWeb } from 'dancedeets-common/js/intl';
 import type { Cover, JSONObject } from 'dancedeets-common/js/events/models';
+import { messages } from 'dancedeets-common/js/events/people';
 import {
   BaseEvent,
   Event,
@@ -425,6 +426,7 @@ class _ResultsList extends React.Component {
 
     // Self-managed props
     window: windowProps,
+    intl: intlShape,
   };
 
   getPeoplePanel() {
@@ -434,16 +436,20 @@ class _ResultsList extends React.Component {
     if (admins || attendees) {
       const adminsList = admins
         ? <PersonList
-            title="Promoters"
-            subtitle="If you want to organize an event, work with these folks"
+            title={this.props.intl.formatMessage(messages.nearbyPromoters)}
+            subtitle={this.props.intl.formatMessage(
+              messages.nearbyPromotersMessage
+            )}
             people={admins}
             categoryOrder={this.props.categoryOrder}
           />
         : null;
       const attendeesList = attendees
         ? <PersonList
-            title="Dancers"
-            subtitle="If you want to connect with the dance scene, hit these folks up"
+            title={this.props.intl.formatMessage(messages.nearbyDancers)}
+            subtitle={this.props.intl.formatMessage(
+              messages.nearbyDancersMessage
+            )}
             people={attendees}
             categoryOrder={this.props.categoryOrder}
           />
@@ -452,12 +458,22 @@ class _ResultsList extends React.Component {
       if (this.props.window && this.props.window.width < 768) {
         if (admins) {
           peoplePanel.push(
-            <Panel key="people1" header="Nearby Promoters">{adminsList}</Panel>
+            <Panel
+              key="people1"
+              header={this.props.intl.formatMessage(messages.nearbyPromoters)}
+            >
+              {adminsList}
+            </Panel>
           );
         }
         if (attendees) {
           peoplePanel.push(
-            <Panel key="people2" header="Nearby Dancers">{attendeesList}</Panel>
+            <Panel
+              key="people2"
+              header={this.props.intl.formatMessage(messages.nearbyDancers)}
+            >
+              {attendeesList}
+            </Panel>
           );
         }
       } else {
@@ -565,6 +581,6 @@ class _ResultsList extends React.Component {
     );
   }
 }
-const ResultsList = wantsWindowSizes(_ResultsList);
+const ResultsList = wantsWindowSizes(injectIntl(_ResultsList));
 
 export default intlWeb(ResultsList);

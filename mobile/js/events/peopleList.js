@@ -19,36 +19,13 @@ import type {
   PeopleListing,
   StylePersonLookup,
 } from 'dancedeets-common/js/events/search';
+import { messages } from 'dancedeets-common/js/events/people';
 import { formatStartDateOnly } from 'dancedeets-common/js/dates';
 import { Collapsible, HorizontalView, semiNormalize, Text } from '../ui';
 import type { State } from '../reducers/search';
 import { openUserId } from '../util/fb';
 import { linkColor } from '../Colors';
 
-const messages = defineMessages({
-  nearbyPromoters: {
-    id: 'peopleList.nearbyPromoters',
-    defaultMessage: 'Nearby Promoters',
-    description: 'Title for pop-open list of promoters/organizers in the scene',
-  },
-  nearbyPromotersMessage: {
-    id: 'peopleList.nearbyPromotersMessage',
-    defaultMessage: 'If you want to organize an event, work with these folks',
-    description:
-      'Subtitle for pop-open list of promoters/organizers in the scene',
-  },
-  nearbyDancers: {
-    id: 'peopleList.nearbyDancers',
-    defaultMessage: 'Nearby Dancers',
-    description: 'Title for pop-open list of dancers in the scene',
-  },
-  nearbyDancersMessage: {
-    id: 'peopleList.nearbyDancersMessage',
-    defaultMessage:
-      'If you want to connect with the dance scene, hit these folks up',
-    description: 'Subtitle for pop-open list of dancers in the scene',
-  },
-});
 class PersonList extends React.Component {
   props: {
     subtitle: string,
