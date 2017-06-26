@@ -57,7 +57,7 @@
   "notifications.vibration": "Vibrate:",
   "onebox.specialLinks": "Additional Links",
   "peopleList.nearbyDancers": "Nearby Dancers",
-  "peopleList.nearbyDancersMessage": "If you want to connect with the dance scene, hit these folks up",
+  "peopleList.nearbyDancersMessage": "These people are active in the local scene",
   "peopleList.nearbyPromoters": "Nearby Promoters",
   "peopleList.nearbyPromotersMessage": "If you want to organize an event, work with these folks",
   "profile.detailsContents": "– Added: {handAdded, number}\n– Auto-contributed: {autoAdded, number}",
