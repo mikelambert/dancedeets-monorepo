@@ -57,7 +57,7 @@
   "notifications.vibration": "震動:",
   "onebox.specialLinks": "特別的珍藏",
   "peopleList.nearbyDancers": "附近周圍舞者",   
-  "peopleList.nearbyDancersMessage": "想要知道附近dancing community消息， 請message這些舞者", 
+  "peopleList.nearbyDancersMessage": "當地event參與者",
   "peopleList.nearbyPromoters": "附近活動宣傳", 
   "peopleList.nearbyPromotersMessage": "想要辦活動？ 可以和這些活動宣傳合作",
   "profile.detailsContents": "– 已新增: {handAdded, number}\n– 搜尋到: {autoAdded, number}",
