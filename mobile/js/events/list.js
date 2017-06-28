@@ -17,7 +17,6 @@ import {
   TouchableHighlight,
   View,
 } from 'react-native';
-import { AdMobBanner } from 'react-native-admob';
 import { injectIntl, intlShape, defineMessages } from 'react-intl';
 import moment from 'moment';
 import { connect } from 'react-redux';
@@ -618,13 +617,15 @@ class _EventListContainer extends React.Component {
     } else {
       return null;
     }
-    return (
+    return null;
+    /*(
       <AdMobBanner
         bannerSize={'smartBannerPortrait'}
         adUnitID={adUnitID}
         didFailToReceiveAdWithError={this.bannerError}
       />
     );
+    */
   }
 
   renderWaitingForLocationPermission() {

@@ -208,7 +208,6 @@ dependencies {
     compile project(':react-native-code-push')
     compile project(':react-native-share')
     compile project(':react-native-mail')
-    compile project(':react-native-admob')
     compile project(':react-native-mixpanel')
     compile project(':react-native-fabric')
     compile project(':react-native-fbsdk')

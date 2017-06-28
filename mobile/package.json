@@ -22,7 +22,6 @@
     "react": "^16.0.0-alpha.12",
     "react-intl": "^2.1.5",
     "react-native": "file:../../react-native",
-    "react-native-admob": "^1.0.0",
     "react-native-autolink": "^0.7.0",
     "react-native-back-android": "^3.0.0",
     "react-native-calendar-events": "github:mikelambert/react-native-calendar-events",

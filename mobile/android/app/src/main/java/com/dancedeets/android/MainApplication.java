@@ -30,7 +30,6 @@ import com.kevinejohn.RNMixpanel.RNMixpanel;
 import com.microsoft.codepush.react.CodePush;
 import com.microsoft.codepush.react.ReactInstanceHolder;
 import com.reactnative.photoview.PhotoViewPackage;
-import com.sbugert.rnadmob.RNAdMobPackage;
 import com.smixx.fabric.FabricPackage;
 import com.xgfe.reactnativeenv.RCTNativeEnvPackage;
 
@@ -79,7 +78,6 @@ class MyReactNativeHost extends ReactNativeHost implements ReactInstanceHolder {
       new CodePush(BuildConfig.CODEPUSH_KEY, getApplication(), BuildConfig.DEBUG),
       new RNSharePackage(),
       new RNMail(),
-      new RNAdMobPackage(),
       new RNMixpanel(),
       new RNGeocoderPackage(),
       new MapsPackage(),
