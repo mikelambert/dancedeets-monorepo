@@ -19,7 +19,7 @@
     "moment": "^2.13.0",
     "qs": "^6.3.0",
     "querystring": "^0.2.0",
-    "react": "^16.0.0-alpha.12",
+    "react": "16.0.0-alpha.12",
     "react-intl": "^2.1.5",
     "react-native": "file:../../react-native",
     "react-native-autolink": "^0.7.0",
