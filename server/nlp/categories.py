@@ -26,7 +26,7 @@ ANY_POP = Any(
     # since they are not strong enough on their own.
     # But given a dance event, they can be a very strong classifier.
     keywords.STYLE_POP_WEAK,
-    "pop", # dangerous one due to pop music
+    #"pop", # dangerous one due to pop music
 )
 
 ANY_LOCK_STRICT = Any(
@@ -37,8 +37,8 @@ ANY_LOCK_STRICT = Any(
 
 ANY_LOCK = Any(
     ANY_LOCK_STRICT,
-    'funk\w*',
-    'funky',
+    #'funk\w*',
+    #'funky',
 )
 
 # No extras needed here
@@ -53,7 +53,7 @@ ANY_WAACK_STRICT = Any(
 ANY_WAACK = Any(
     ANY_WAACK_STRICT,
     "punk\w+",
-    'disco',
+    #'disco',
 )
 
 ANY_HOUSE = Any(
