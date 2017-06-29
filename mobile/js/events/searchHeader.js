@@ -15,7 +15,7 @@ import { Event } from 'dancedeets-common/js/events/models';
 import type { SearchQuery } from 'dancedeets-common/js/events/search';
 import { AutocompleteList, Button, defaultFont, HorizontalView } from '../ui';
 import { performSearch, updateLocation, updateKeywords } from '../actions';
-import { gradientBottom, gradientTop, lightPurpleColors } from '../Colors';
+import { gradientTop, lightPurpleColors } from '../Colors';
 import type { State as SearchHeaderState } from '../ducks/searchHeader';
 
 const messages = defineMessages({

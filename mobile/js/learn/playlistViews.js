@@ -573,6 +573,7 @@ let styles = StyleSheet.create({
   listViewWrapper: {
     flex: 1,
     borderTopWidth: 1,
+    backgroundColor: 'black',
   },
   boxTitle: {
     fontWeight: 'bold',

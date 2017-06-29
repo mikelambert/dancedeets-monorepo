@@ -22,6 +22,7 @@ import {
   PlaylistView,
 } from '../../learn/playlistViews';
 import StackNavigator from './Navigator';
+import { gradientBottom, purpleColors } from '../../Colors';
 
 const messages = defineMessages({
   learnTitle: {
@@ -116,8 +117,16 @@ class TutorialView extends React.Component {
   }
 }
 
-export const LearnScreensNavigator = StackNavigator('learn', {
-  TutorialStyles: { screen: TutorialStylesView },
-  TutorialList: { screen: TutorialListView },
-  Tutorial: { screen: TutorialView },
-});
+export const LearnScreensNavigator = StackNavigator(
+  'learn',
+  {
+    TutorialStyles: { screen: TutorialStylesView },
+    TutorialList: { screen: TutorialListView },
+    Tutorial: { screen: TutorialView },
+  },
+  {
+    cardStyle: {
+      backgroundColor: gradientBottom,
+    },
+  }
+);

@@ -394,7 +394,6 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
-    backgroundColor: purpleColors[4],
   },
   containerContent: {
     top: STATUSBAR_HEIGHT,

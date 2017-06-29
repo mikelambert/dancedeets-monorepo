@@ -52,7 +52,7 @@ export default (
       },
     },
     cardStyle: {
-      backgroundColor: purpleColors[4],
+      backgroundColor: 'black',
     },
     ...stackConfig,
   });

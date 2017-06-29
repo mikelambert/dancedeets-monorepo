@@ -1,6 +1,6 @@
 import React from 'react';
 import { StyleSheet, View, ViewPropTypes } from 'react-native';
-import { purpleColors } from '../Colors';
+import { gradientBottom, purpleColors } from '../Colors';
 
 export default class Card extends React.Component {
   props: {
@@ -46,7 +46,7 @@ const styles = StyleSheet.create({
     padding: 10,
   },
   card: {
-    backgroundColor: purpleColors[2],
+    backgroundColor: gradientBottom,
     borderColor: purpleColors[0],
     // borderWidth: 1,
     borderRadius: 10,

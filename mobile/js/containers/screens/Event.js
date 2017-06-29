@@ -397,21 +397,13 @@ class AddEventsScreen extends React.Component {
   }
 }
 
-const RealEventScreensNavigator = MyNavigator(
-  'events',
-  {
-    EventList: { screen: EventListScreen },
-    FeaturedEventView: { screen: FeaturedEventScreen },
-    EventView: { screen: EventScreen },
-    FlyerView: { screen: FlyerScreen },
-    AddEvents: { screen: AddEventsScreen },
-  },
-  {
-    cardStyle: {
-      backgroundColor: 'black',
-    },
-  }
-);
+const RealEventScreensNavigator = MyNavigator('events', {
+  EventList: { screen: EventListScreen },
+  FeaturedEventView: { screen: FeaturedEventScreen },
+  EventView: { screen: EventScreen },
+  FlyerView: { screen: FlyerScreen },
+  AddEvents: { screen: AddEventsScreen },
+});
 
 class _EventScreensNavigator extends React.Component {
   props: {
