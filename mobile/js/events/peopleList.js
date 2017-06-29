@@ -7,7 +7,6 @@
 import React from 'react';
 import {
   StyleSheet,
-  TouchableHighlight,
   TouchableOpacity,
   View,
   ViewPropTypes,
@@ -104,7 +103,7 @@ class HeaderCollapsible extends React.Component {
     // Unfortunately the stateless HorizontalView component cannot take a ref, so we have a View wrapper.
     return (
       <View>
-        <TouchableHighlight
+        <TouchableOpacity
           onPress={this._toggle}
           underlayColor={this.props.underlayColor}
         >
@@ -128,7 +127,7 @@ class HeaderCollapsible extends React.Component {
               <Text>{this.props.title}</Text>
             </HorizontalView>
           </View>
-        </TouchableHighlight>
+        </TouchableOpacity>
         <Collapsible collapsed={this.state.collapsed} align="center">
           {this.props.children}
         </Collapsible>

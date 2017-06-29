@@ -14,6 +14,7 @@ import {
   SectionList,
   StyleSheet,
   TouchableHighlight,
+  TouchableOpacity,
   View,
   ViewPropTypes,
 } from 'react-native';
@@ -98,7 +99,7 @@ class _PlaylistStylesView extends React.Component {
       styleTitle = this.props.intl.formatMessage(category.style.titleMessage);
     }
     return (
-      <TouchableHighlight
+      <TouchableOpacity
         onPress={() => {
           this.props.onSelected(category);
         }}
@@ -130,7 +131,7 @@ class _PlaylistStylesView extends React.Component {
             })}
           </Text>
         </View>
-      </TouchableHighlight>
+      </TouchableOpacity>
     );
   }
 
@@ -221,7 +222,7 @@ class _PlaylistListView extends React.Component {
       { count: playlist.getVideoCount(), duration }
     );
     return (
-      <TouchableHighlight
+      <TouchableOpacity
         onPress={() => {
           this.props.onSelected(playlist);
         }}
@@ -243,7 +244,7 @@ class _PlaylistListView extends React.Component {
           <Text style={[styles.boxTitle, styles.boxText]}>{title}</Text>
           <Text style={styles.boxText}>{numVideosDuration}</Text>
         </View>
-      </TouchableHighlight>
+      </TouchableOpacity>
     );
   }
 
