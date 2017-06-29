@@ -731,7 +731,7 @@ const styles = StyleSheet.create({
     flex: 1,
     height: 0,
     borderTopWidth: 0.5,
-    borderColor: purpleColors[0],
+    borderColor: '#555555',
   },
   listView: {
     flex: 1,
@@ -788,10 +788,5 @@ const styles = StyleSheet.create({
     position: 'absolute',
     right: normalize(10),
     bottom: normalize(20),
-  },
-  listHeader: {
-    fontWeight: 'bold',
-    fontSize: semiNormalize(18),
-    lineHeight: semiNormalize(24),
   },
 });

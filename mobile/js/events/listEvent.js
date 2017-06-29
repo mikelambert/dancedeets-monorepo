@@ -63,13 +63,7 @@ class _EventRow extends React.PureComponent {
               style={{ height: RowHeight, width: RowHeight }}
             />
             <View style={{ flex: 1, margin: 5 }}>
-              <Text
-                numberOfLines={2}
-                style={[
-                  eventStyles.rowTitle,
-                  { fontWeight: 'bold', flexShrink: 1 },
-                ]}
-              >
+              <Text numberOfLines={2} style={eventStyles.rowTitle}>
                 {this.props.event.name}
               </Text>
               <EventVenueShort venue={this.props.event.venue} />
@@ -95,6 +89,8 @@ const eventStyles = StyleSheet.create({
   rowTitle: {
     fontSize: semiNormalize(18),
     lineHeight: semiNormalize(22),
+    fontWeight: 'bold',
+    flexShrink: 1,
   },
   cityText: {
     fontSize: semiNormalize(detailHeight),
