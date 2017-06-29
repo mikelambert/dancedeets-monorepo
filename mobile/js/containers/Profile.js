@@ -400,6 +400,7 @@ const styles = StyleSheet.create({
     top: STATUSBAR_HEIGHT,
     alignItems: 'stretch',
     justifyContent: 'space-around',
+    margin: 5,
   },
   profileName: {
     fontSize: 22,
