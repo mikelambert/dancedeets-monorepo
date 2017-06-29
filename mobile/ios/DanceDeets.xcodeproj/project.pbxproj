@@ -172,20 +172,6 @@
 			remoteGlobalIDString = 15DB09E51D2A5E390039C4E8;
 			remoteInfo = LRDRCTNativeEnv;
 		};
-		1D315A571F0390BE00A4FBA7 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 1D315A511F0390BE00A4FBA7 /* ART.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 0CF68AC11AF0540F00FF9E5C;
-			remoteInfo = ART;
-		};
-		1D315A591F0390BE00A4FBA7 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 1D315A511F0390BE00A4FBA7 /* ART.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 323A12871E5F266B004975B8;
-			remoteInfo = "ART-tvOS";
-		};
 		1D449A941D04A65F00195AF6 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 9FB17C7A31CC407198A9ECFB /* CodePush.xcodeproj */;
@@ -494,7 +480,6 @@
 		1D17D4421D9102F500CE92FD /* ja */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ja; path = ja.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		1D1BE7221EE91F2D006A7D2E /* RCTPushNotification.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTPushNotification.xcodeproj; path = "../node_modules/react-native/Libraries/PushNotificationIOS/RCTPushNotification.xcodeproj"; sourceTree = "<group>"; };
 		1D2F15E41D4800D000BA0D43 /* CoreFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreFoundation.framework; path = System/Library/Frameworks/CoreFoundation.framework; sourceTree = SDKROOT; };
-		1D315A511F0390BE00A4FBA7 /* ART.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = ART.xcodeproj; path = "../node_modules/react-native/Libraries/ART/ART.xcodeproj"; sourceTree = "<group>"; };
 		1D449AA91D04A69300195AF6 /* libz.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libz.tbd; path = usr/lib/libz.tbd; sourceTree = SDKROOT; };
 		1D449B2F1D04D70400195AF6 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = DanceDeets/Images.xcassets; sourceTree = "<group>"; };
 		1D5EA49F1DE990E80081C5A0 /* RCTAnimation.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTAnimation.xcodeproj; path = "../node_modules/react-native/Libraries/NativeAnimation/RCTAnimation.xcodeproj"; sourceTree = "<group>"; };
@@ -786,15 +771,6 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
-		1D315A521F0390BE00A4FBA7 /* Products */ = {
-			isa = PBXGroup;
-			children = (
-				1D315A581F0390BE00A4FBA7 /* libART.a */,
-				1D315A5A1F0390BE00A4FBA7 /* libART-tvOS.a */,
-			);
-			name = Products;
-			sourceTree = "<group>";
-		};
 		1D449A8F1D04A65F00195AF6 /* Products */ = {
 			isa = PBXGroup;
 			children = (
@@ -994,7 +970,6 @@
 		832341AE1AAA6A7D00B99B32 /* Libraries */ = {
 			isa = PBXGroup;
 			children = (
-				1D315A511F0390BE00A4FBA7 /* ART.xcodeproj */,
 				1D1BE7221EE91F2D006A7D2E /* RCTPushNotification.xcodeproj */,
 				1D5EA49F1DE990E80081C5A0 /* RCTAnimation.xcodeproj */,
 				146833FF1AC3E56700842450 /* React.xcodeproj */,
@@ -1206,10 +1181,6 @@
 				{
 					ProductGroup = 1DACC81C1EE116D700CAA59F /* Products */;
 					ProjectRef = 1DACC81B1EE116D700CAA59F /* AirMaps.xcodeproj */;
-				},
-				{
-					ProductGroup = 1D315A521F0390BE00A4FBA7 /* Products */;
-					ProjectRef = 1D315A511F0390BE00A4FBA7 /* ART.xcodeproj */;
 				},
 				{
 					ProductGroup = 1D9EDD031CF9089400871235 /* Products */;
@@ -1443,20 +1414,6 @@
 			fileType = archive.ar;
 			path = libLRDRCTNativeEnv.a;
 			remoteRef = 1D2F164B1D4C06A100BA0D43 /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		1D315A581F0390BE00A4FBA7 /* libART.a */ = {
-			isa = PBXReferenceProxy;
-			fileType = archive.ar;
-			path = libART.a;
-			remoteRef = 1D315A571F0390BE00A4FBA7 /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		1D315A5A1F0390BE00A4FBA7 /* libART-tvOS.a */ = {
-			isa = PBXReferenceProxy;
-			fileType = archive.ar;
-			path = "libART-tvOS.a";
-			remoteRef = 1D315A591F0390BE00A4FBA7 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 		1D449A951D04A65F00195AF6 /* libCodePush.a */ = {
