@@ -6,7 +6,6 @@
 
 import React from 'react';
 import {
-  ART,
   Image,
   StyleSheet,
   TouchableOpacity,
@@ -15,14 +14,13 @@ import {
 } from 'react-native';
 import { injectIntl, intlShape, defineMessages } from 'react-intl';
 import { connect } from 'react-redux';
+import LinearGradient from 'react-native-linear-gradient';
 import {
   formatStartEnd,
   formatStartDateOnly,
 } from 'dancedeets-common/js/dates';
 import { Event, Venue } from 'dancedeets-common/js/events/models';
 import { HorizontalView, normalize, semiNormalize, Text } from '../ui';
-
-const { Surface, LinearGradient, Shape } = ART;
 
 export const RowHeight = 130;
 
@@ -53,17 +51,6 @@ class _EventRow extends React.PureComponent {
   render() {
     const imageProps = this.props.event.getSquareFlyer();
 
-    const linearGradient = new LinearGradient(
-      {
-        '.1': 'blue', // blue in 1% position
-        '1': 'rgba(255, 255, 255, 0)', // opacity white in 100% position
-      },
-      '0',
-      '0',
-      '0',
-      '400'
-    );
-
     return (
       <View>
         <TouchableOpacity
@@ -71,6 +58,10 @@ class _EventRow extends React.PureComponent {
           activeOpacity={0.5}
         >
           <HorizontalView>
+            <Image
+              source={imageProps}
+              style={{ height: RowHeight, width: RowHeight }}
+            />
             <View style={{ flex: 1, margin: 5 }}>
               <Text
                 numberOfLines={2}
@@ -86,13 +77,6 @@ class _EventRow extends React.PureComponent {
                 {this.props.event.annotations.categories.slice(0, 8).join(', ')}
               </Text>
             </View>
-            <Surface width={RowHeight} height={RowHeight}>
-              <Shape fill="#c00" />
-            </Surface>
-            <Image
-              source={imageProps}
-              style={{ height: RowHeight, width: RowHeight }}
-            />
           </HorizontalView>
         </TouchableOpacity>
       </View>
