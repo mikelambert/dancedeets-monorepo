@@ -33,7 +33,7 @@ import messages from 'dancedeets-common/js/tutorials/messages';
 import languages from 'dancedeets-common/js/languages';
 import { formatDuration } from 'dancedeets-common/js/tutorials/format';
 import { track } from '../store/track';
-import { Button, HorizontalView, Text } from '../ui';
+import { Button, DarkText, HorizontalView, Text } from '../ui';
 import { purpleColors } from '../Colors';
 import { semiNormalize, normalize } from '../ui/normalize';
 import type { Dispatch } from '../actions/types';
@@ -119,17 +119,19 @@ class _PlaylistStylesView extends React.Component {
             resizeMode="contain"
             style={{ width: imageWidth, height: imageWidth }}
           />
-          <Text style={[styles.boxTitle, styles.boxText]}>{styleTitle}</Text>
-          <Text style={styles.boxText}>
+          <DarkText style={[styles.boxTitle, styles.boxText]}>
+            {styleTitle}
+          </DarkText>
+          <DarkText style={styles.boxText}>
             {this.props.intl.formatMessage(messages.numTutorials, {
               count: category.tutorials.length,
             })}
-          </Text>
-          <Text style={styles.boxText}>
+          </DarkText>
+          <DarkText style={styles.boxText}>
             {this.props.intl.formatMessage(messages.totalTime, {
               time: length,
             })}
-          </Text>
+          </DarkText>
         </View>
       </TouchableOpacity>
     );
@@ -137,7 +139,7 @@ class _PlaylistStylesView extends React.Component {
 
   renderHeader() {
     return (
-      <Text
+      <DarkText
         style={{
           textAlign: 'center',
           margin: 10,
@@ -145,7 +147,7 @@ class _PlaylistStylesView extends React.Component {
         }}
       >
         {this.props.intl.formatMessage(messages.chooseStyle)}
-      </Text>
+      </DarkText>
     );
   }
 
@@ -241,8 +243,8 @@ class _PlaylistListView extends React.Component {
             resizeMode="cover"
             style={styles.thumbnail}
           />
-          <Text style={[styles.boxTitle, styles.boxText]}>{title}</Text>
-          <Text style={styles.boxText}>{numVideosDuration}</Text>
+          <DarkText style={[styles.boxTitle, styles.boxText]}>{title}</DarkText>
+          <DarkText style={styles.boxText}>{numVideosDuration}</DarkText>
         </View>
       </TouchableOpacity>
     );
@@ -250,7 +252,7 @@ class _PlaylistListView extends React.Component {
 
   renderHeader() {
     return (
-      <Text
+      <DarkText
         style={{
           textAlign: 'center',
           margin: 10,
@@ -258,7 +260,7 @@ class _PlaylistListView extends React.Component {
         }}
       >
         {this.props.intl.formatMessage(messages.chooseTutorial)}
-      </Text>
+      </DarkText>
     );
   }
 
@@ -270,9 +272,9 @@ class _PlaylistListView extends React.Component {
           width: listViewWidth(),
         }}
       >
-        <Text>
+        <DarkText>
           {this.props.intl.formatMessage(messages.tutorialFooter)}
-        </Text>
+        </DarkText>
         <HorizontalView style={{ alignItems: 'center' }}>
           <Button
             size="small"
@@ -281,9 +283,9 @@ class _PlaylistListView extends React.Component {
           >
             Contact Us
           </Button>
-          <Text>
+          <DarkText>
             {' '}{this.props.intl.formatMessage(messages.contactSuffix)}
-          </Text>
+          </DarkText>
         </HorizontalView>
       </View>
     );

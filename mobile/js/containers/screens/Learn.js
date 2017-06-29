@@ -126,7 +126,7 @@ export const LearnScreensNavigator = StackNavigator(
   },
   {
     cardStyle: {
-      backgroundColor: gradientBottom,
+      backgroundColor: 'transparent',
     },
   }
 );

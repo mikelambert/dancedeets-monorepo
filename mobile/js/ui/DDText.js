@@ -18,6 +18,10 @@ export function Text({ style, ...props }: Object): React.Element<RealText> {
   return <RealText style={[styles.font, styles.text, style]} {...props} />;
 }
 
+export function DarkText({ style, ...props }: Object): React.Element<RealText> {
+  return <RealText style={[styles.darkFont, styles.text, style]} {...props} />;
+}
+
 export function Heading1({ style, ...props }: Object): React.Element<RealText> {
   return <RealText style={[styles.font, styles.h1, style]} {...props} />;
 }
@@ -53,8 +57,14 @@ export const defaultFont = {
   backgroundColor: 'transparent',
 };
 
+export const defaultDarkFont = {
+  ...defaultFont,
+  color: 'black',
+};
+
 const styles = StyleSheet.create({
   font: Object.assign({}, defaultFont),
+  darkFont: Object.assign({}, defaultDarkFont),
   text: {
     fontSize: semiNormalize(15),
     lineHeight: semiNormalize(21),

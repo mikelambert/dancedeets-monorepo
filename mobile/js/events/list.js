@@ -48,7 +48,12 @@ import {
   showSearchForm,
 } from '../actions';
 import type { User } from '../actions/types';
-import { linkColor, purpleColors } from '../Colors';
+import {
+  gradientBottom,
+  gradientTop,
+  linkColor,
+  purpleColors,
+} from '../Colors';
 import { auth, isAuthenticated } from '../api/dancedeets';
 import {
   BottomFade,
@@ -750,12 +755,12 @@ const styles = StyleSheet.create({
     marginBottom: 50,
   },
   sectionHeader: {
-    borderTopWidth: 1,
-    borderTopColor: purpleColors[1],
+    borderTopWidth: 0.5,
+    borderTopColor: gradientBottom,
     height: SectionHeight,
     alignItems: 'flex-start', // left align
     justifyContent: 'center', // vertically center
-    backgroundColor: purpleColors[2],
+    backgroundColor: gradientTop,
   },
   sectionHeaderText: {
     color: 'white',
