@@ -11,6 +11,7 @@ import type { SceneRendererProps } from 'react-native-tab-view/src/TabViewTypeDe
 import { connect } from 'react-redux';
 import { defineMessages } from 'react-intl';
 import WKWebView from 'react-native-wkwebview-reborn';
+import Icon from 'react-native-vector-icons/Ionicons';
 import {
   EventScreensNavigator,
   LearnScreensNavigator,
@@ -46,13 +47,19 @@ const messages = defineMessages({
   },
 });
 
-function image(focused, focusedSource, unfocusedSource) {
-  return (
-    <Image
-      source={focused ? focusedSource : unfocusedSource}
-      style={styles.icon}
-    />
-  );
+function image(focused, name) {
+  let imageName = null;
+  if (Platform.OS === 'android') {
+    imageName = `md-${name}`;
+  } else if (Platform.OS === 'ios') {
+    if (focused) {
+      imageName = `ios-${name}`;
+    } else {
+      imageName = `ios-${name}-outline`;
+    }
+  }
+  const color = focused ? purpleColors[2] : '#909090';
+  return <Icon name={imageName} size={30} style={styles.icon} color={color} />;
 }
 
 const mediumUrl = 'https://medium.dancedeets.com/';
@@ -73,12 +80,7 @@ const routeConfiguration = {
     onSameTabClick: ({ navigation }) => navigation.goBack(),
     navigationOptions: ({ screenProps }) => ({
       title: screenProps.intl.formatMessage(messages.events),
-      tabBarIcon: ({ focused }) =>
-        image(
-          focused,
-          require('../containers/icons/events-highlighted.png'),
-          require('../containers/icons/events.png')
-        ),
+      tabBarIcon: ({ focused }) => image(focused, 'calendar'),
     }),
   },
   Learn: {
@@ -86,12 +88,7 @@ const routeConfiguration = {
     onSameTabClick: ({ navigation }) => navigation.goBack(),
     navigationOptions: ({ screenProps }) => ({
       title: screenProps.intl.formatMessage(messages.learn),
-      tabBarIcon: ({ focused }) =>
-        image(
-          focused,
-          require('../containers/icons/learn-highlighted.png'),
-          require('../containers/icons/learn.png')
-        ),
+      tabBarIcon: ({ focused }) => image(focused, 'school'),
     }),
   },
   Articles: {
@@ -100,12 +97,7 @@ const routeConfiguration = {
       console.log('Cannot go back on Articles tab'),
     navigationOptions: ({ screenProps }) => ({
       title: screenProps.intl.formatMessage(messages.articles),
-      tabBarIcon: ({ focused }) =>
-        image(
-          focused,
-          require('../containers/icons/articles-highlighted.png'),
-          require('../containers/icons/articles.png')
-        ),
+      tabBarIcon: ({ focused }) => image(focused, 'paper'),
     }),
   },
   About: {
@@ -113,12 +105,7 @@ const routeConfiguration = {
     onSameTabClick: ({ navigation }) => navigation.goBack(),
     navigationOptions: ({ screenProps }) => ({
       title: screenProps.intl.formatMessage(messages.about),
-      tabBarIcon: ({ focused }) =>
-        image(
-          focused,
-          require('../containers/icons/profile-highlighted.png'),
-          require('../containers/icons/profile.png')
-        ),
+      tabBarIcon: ({ focused }) => image(focused, 'person'),
     }),
   },
 };
@@ -168,6 +155,7 @@ export default TabNavigator(routeConfiguration, tabBarConfiguration);
 
 let styles = StyleSheet.create({
   icon: {
+    textAlign: 'center',
     width: semiNormalize(28),
     height: semiNormalize(28),
   },
