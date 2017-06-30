@@ -56,11 +56,12 @@ for backup_id in backup_ids:
         result, success = get_json(backup_id)
         all_events.extend(result)
 
+d = datetime.datetime.now().strftime("%Y-%m-%dT%H:%M:%S")
 if success:
-    d = datetime.datetime.now().strftime("%Y-%m-%dT%H:%M:%S")
     filename = 'events-%s.json' % (d)
-    full_filename = os.path.join(os.path.dirname(os.path.realpath(__file__))), filename)
-    print 'Filename:', full_filename
-    open(full_filename, 'w').write(json.dumps(all_events))
 else:
-    print 'Errored on our final id attempt, aborting file save'
+    filename = 'eventsPartial-%s.json' % (d)
+
+full_filename = os.path.join(os.path.dirname(os.path.realpath(__file__))), filename)
+print 'Filename:', full_filename
+open(full_filename, 'w').write(json.dumps(all_events))
