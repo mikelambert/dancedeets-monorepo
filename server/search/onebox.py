@@ -1,4 +1,8 @@
 
+SouthAfrica = {
+    'South Africa Events & Sesssions: Rocka-Fella': 'http://rocka-fella.com/'
+}
+
 ONEBOX_DATA = {
     (40.7029741, -74.2598655): {
         'NYC Studio Classes': 'http://www.dancedeets.com/classes/nyc',
@@ -10,18 +14,22 @@ ONEBOX_DATA = {
     },
     (1.3147298, 103.7769793): {
         'Singapore Blog: Dance Meets': 'http://www.dancemeets.com/',
-    }
+    },
+    # Pretoria
+    (-27.7426843, 25.9248568): SouthAfrica,
+    # Cape Town
+    (-33.9144804, 18.375196): SouthAfrica,
 }
 
 
 def get_links_for_query(query):
-    onebox_links = []
+    onebox_links = {}
 
     if not query.bounds:
         # This will happen on location-less searches (worldwide)
         return onebox_links
 
-    # We try to keep searches as simple as possible, 
+    # We try to keep searches as simple as possible,
     # using just AND queries on latitude/longitude.
     # But for stuff crossing +/-180 degrees,
     # we need to do an OR longitude query on each side.
@@ -35,6 +43,5 @@ def get_links_for_query(query):
         else:
             good_longitude = longitude >= search_longitudes[0] or longitude <= search_longitudes[1]
         if good_latitude and good_longitude:
-            for title, url in links.iteritems():
-                onebox_links.append({'title': title, 'url': url})
-    return sorted(onebox_links)
+            onebox_links.update(links)
+    return [{'title': x, 'url': onebox_links[x]} for x in sorted(onebox_links)]
