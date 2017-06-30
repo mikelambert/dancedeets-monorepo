@@ -1,6 +1,6 @@
 
 SouthAfrica = {
-    'South Africa Events & Sesssions: Rocka-Fella': 'http://rocka-fella.com/'
+    'South Africa Events & Sesssions: Rocka-Fella': 'http://rocka-fella.com/find-bboying-breaking-events-in-south-africa-and-africa/'
 }
 
 ONEBOX_DATA = {
