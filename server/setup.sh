@@ -39,8 +39,9 @@ pip install --upgrade -t $BASE_DIR/lib-local -r $BASE_DIR/test-requirements.txt
 echo "Installing the libraries which don't work with gae-modules*"
 pip install --upgrade -t $BASE_DIR/lib-both -r $BASE_DIR/setup-requirements.txt
 
-# We need technicolor-yawn binary, which only exists when we install it in the system
+# We need these binaries, which only exist if we install them system-wide
 pip install $USER_FLAG technicolor-yawn==0.2.0
+pip install $USER_FLAG coverage==4.2
 
 # TODO: install node
 # TODO: install npm?
