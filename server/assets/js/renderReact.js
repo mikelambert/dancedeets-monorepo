@@ -7,10 +7,9 @@
 import 'babel-polyfill';
 import React from 'react';
 import ReactDOM from 'react-dom';
-import type { ReactClass } from 'react/lib/ReactClass';
 import { AppContainer } from 'react-hot-loader';
 
-export default function(Component: ReactClass, props?: Object) {
+export default function(Component: React$Component<*, *, *>, props?: Object) {
   ReactDOM.render(
     <AppContainer>
       <Component {...window._REACT_PROPS} {...props} />
