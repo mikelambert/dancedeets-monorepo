@@ -62,6 +62,6 @@ if success:
 else:
     filename = 'eventsPartial-%s.json' % (d)
 
-full_filename = os.path.join(os.path.dirname(os.path.realpath(__file__))), filename)
+full_filename = os.path.join(os.path.dirname(os.path.realpath(__file__)), filename)
 print 'Filename:', full_filename
 open(full_filename, 'w').write(json.dumps(all_events))
