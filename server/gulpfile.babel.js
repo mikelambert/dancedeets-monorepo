@@ -101,6 +101,12 @@ gulp.task('compile:images:favicons', () =>
     .pipe(gulp.dest('./dist/img/favicons/'))
 );
 
+gulp.task(
+  'compile:manifest',
+  ['compile:images:favicons'],
+  $.shell.task('python ./tools/update_manifest.py')
+);
+
 // These are images we grab expanded versions from font-awesome, for uploading to the site.
 // In particular, these are used by the mail we send out.
 gulp.task('compile:images:font-awesome', cb =>
@@ -236,6 +242,7 @@ gulp.task('compile:images', [
   'compile:images:resize',
   'compile:images:shared-resize',
   'compile:images:svg',
+  'compile:manifest',
 ]);
 
 gulp.task('compile:fonts', () =>
