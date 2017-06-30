@@ -23,4 +23,4 @@ esac
 shift # past argument or value
 done
 
-$COVERAGE_PREFIX ./testrunner.py $ARGS
+APPLICATION_ID=dancedeets-hrd $COVERAGE_PREFIX ./testrunner.py $ARGS

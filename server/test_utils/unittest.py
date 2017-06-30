@@ -31,7 +31,6 @@ class TestCase(RealTestCase):
         # mapreduce requires a DEFAULT_VERSION_HOSTNAME
         self.testbed.setup_env(overwrite=True,
             DEFAULT_VERSION_HOSTNAME='localhost',
-            APPLICATION_ID='dancedeets-hrd',
         )
         gcs.test_mode = True
 
