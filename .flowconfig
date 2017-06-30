@@ -7,6 +7,8 @@
 
 ; Ignore unexpected extra "@providesModule"
 .*/node_modules/.*/node_modules/fbjs/.*
+.*/common/node_modules/fbjs/.*
+.*/server/node_modules/fbjs/.*
 
 ; Ignore duplicate module providers
 ; For RN Apps installed via npm, "Libraries" folder is inside
@@ -14,12 +16,19 @@
 .*/Libraries/react-native/React.js
 .*/Libraries/react-native/ReactNative.js
 
+.*/node_modules/config-chain/test/.*\.json
+.*/node_modules/npmconf/test/fixtures/.*\.json
+.*/node_modules/google-app-engine/composer\.json
+
+.*/CodePushHash.json
+
 [include]
 
 [libs]
 node_modules/react-native/Libraries/react-native/react-native-interface.js
 node_modules/react-native/flow
 flow/
+server/assets/js/util/flow/lib.js
 
 [options]
 emoji=true
@@ -44,4 +53,5 @@ suppress_comment=\\(.\\|\n\\)*\\$FlowExpectedError
 unsafe.enable_getters_and_setters=true
 
 [version]
-^0.47.0
+^0.49.1
+
