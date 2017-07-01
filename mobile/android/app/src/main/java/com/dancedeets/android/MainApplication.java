@@ -16,6 +16,7 @@ import com.facebook.CallbackManager;
 import com.facebook.FacebookSdk;
 import com.facebook.appevents.AppEventsLogger;
 import com.facebook.react.ReactApplication;
+import io.sentry.RNSentryPackage;
 import com.oblador.vectoricons.VectorIconsPackage;
 import com.learnium.RNDeviceInfo.RNDeviceInfo;
 import com.facebook.react.ReactNativeHost;
@@ -64,6 +65,7 @@ class MyReactNativeHost extends ReactNativeHost implements ReactInstanceHolder {
   protected List<ReactPackage> getPackages() {
     return Arrays.<ReactPackage>asList(
       new MainReactPackage(),
+      new RNSentryPackage((ReactApplication)getApplication()),
       new VectorIconsPackage(),
       new RNDeviceInfo(),
       new FirestackPackage(),
