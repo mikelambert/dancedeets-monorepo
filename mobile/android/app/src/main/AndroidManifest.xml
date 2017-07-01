@@ -79,7 +79,7 @@
             android:name="com.mixpanel.android.MPConfig.ResourcePackageName"
             android:value="com.dancedeets.android"
             />
-        <metadata
+        <meta-data
             android:name="com.mixpanel.android.MPConfig.DisableViewCrawler"
             android:value="false"
             />
