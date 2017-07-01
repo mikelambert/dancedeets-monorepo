@@ -166,7 +166,7 @@ class _TutorialScreen extends React.Component {
   render() {
     const pages = PAGES.map((val, i) => this.renderPage(i));
     return (
-      <View style={{ flex: 1, alignItems: 'center' }}>
+      <View style={{ flex: 1 }}>
         <Carousel
           indicatorOffset={0}
           indicatorColor="#FFFFFF"
@@ -177,7 +177,7 @@ class _TutorialScreen extends React.Component {
         >
           {pages}
         </Carousel>
-        <View style={{ position: 'absolute', bottom: 0 }}>
+        <View style={{ alignSelf: 'center', position: 'absolute', bottom: 0 }}>
           <LoginButtonWithAlternate
             onLogin={this.props.onLogin}
             onNoLogin={this.props.onNoLogin}
