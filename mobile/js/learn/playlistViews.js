@@ -343,10 +343,10 @@ class _PlaylistView extends React.Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    if (nextProps.mainScreenKey !== 'Tutorials') {
+    if (nextProps.mainScreenKey !== 'Learn') {
       this.setState({ isPlaying: false });
     } else {
-      // this.setState({ isPlaying: true });
+      this.setState({ isPlaying: true });
     }
   }
 
@@ -378,6 +378,10 @@ class _PlaylistView extends React.Component {
         this.props.setTutorialVideoIndex(newIndex);
       }
     }
+  }
+
+  onError(event) {
+    console.log('Youtube Error', event);
   }
 
   onListViewLayout(e) {
@@ -456,14 +460,17 @@ class _PlaylistView extends React.Component {
         activeOpacity={0.5}
         onPress={() => {
           const videoIndex = this.props.playlist.getVideoIndex(video);
+          if (videoIndex === this.props.tutorialVideoIndex) {
+            this.setState({ isPlaying: !this.state.isPlaying });
+          } else {
+            track('Tutorial Video Selected', {
+              tutorialName: this.props.playlist.title,
+              tutorialStyle: this.props.playlist.style,
+              tutorialVideoIndex: videoIndex,
+            });
 
-          track('Tutorial Video Selected', {
-            tutorialName: this.props.playlist.title,
-            tutorialStyle: this.props.playlist.style,
-            tutorialVideoIndex: videoIndex,
-          });
-
-          this.props.setTutorialVideoIndex(videoIndex);
+            this.props.setTutorialVideoIndex(videoIndex);
+          }
         }}
         onLayout={e => {
           const top = e.nativeEvent.layout.y;
@@ -521,14 +528,14 @@ class _PlaylistView extends React.Component {
           apiKey={googleKey}
           videoId={video.youtubeId}
           play={this.state.isPlaying} // auto-play when loading a tutorial
-          hidden={false}
           loop={false}
-          rel={false}
           showinfo
-          // controls={0}
           modestbranding
+          controls={1}
+          showFullscreenButton
           style={{ alignSelf: 'stretch', height }}
           onChangeState={this.onChangeState}
+          onError={this.onError}
         />
         <View style={styles.listViewWrapper}>
           <SectionList
