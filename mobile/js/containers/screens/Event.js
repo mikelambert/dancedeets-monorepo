@@ -159,7 +159,7 @@ class _SearchHeaderTitleSummary extends React.Component {
               name="md-search"
               size={20}
               color="black"
-              style={{ marginTop: 4, width: 20 }}
+              style={{ marginVertical: 2, width: 20 }}
             />
             {keywords}
             {spacer}
