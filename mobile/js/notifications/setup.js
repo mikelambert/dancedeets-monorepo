@@ -47,7 +47,7 @@ class Handler {
   }
 
   async shouldVibrate() {
-    const vibratePermission = await PermissionsAndroid.checkPermission(
+    const vibratePermission = await PermissionsAndroid.check(
       'android.permission.VIBRATE'
     );
     const platformSupportsDefaultVibration =
