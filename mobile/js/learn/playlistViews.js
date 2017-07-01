@@ -24,6 +24,7 @@ import YouTube from 'react-native-youtube';
 import shallowEqual from 'fbjs/lib/shallowEqual';
 import styleEqual from 'style-equal';
 import upperFirst from 'lodash/upperFirst';
+import Icon from 'react-native-vector-icons/FontAwesome';
 import type { Style } from 'dancedeets-common/js/styles';
 import { Playlist, Video } from 'dancedeets-common/js/tutorials/models';
 import styleIcons from 'dancedeets-common/js/styles/icons';
@@ -485,9 +486,15 @@ class _PlaylistView extends React.Component {
               selected ? styles.videoActiveRow : styles.videoInactiveRow,
             ]}
           >
-            <Image
-              source={require('./images/play.png')}
+            <Icon
+              name={
+                this.state.isPlaying && selected
+                  ? 'pause-circle'
+                  : 'play-circle'
+              }
+              size={20}
               style={styles.videoPlay}
+              color="white"
             />
             <View style={{ flex: 1 }}>
               <Text style={styles.videoTitle}>{video.title}</Text>
