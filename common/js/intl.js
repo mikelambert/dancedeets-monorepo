@@ -6,9 +6,7 @@
 
 import React from 'react';
 import { addLocaleData, IntlProvider } from 'react-intl';
-import areIntlLocalesSupported from 'intl-locales-supported';
 import moment from 'moment';
-
 import 'moment/locale/fr';
 import 'moment/locale/ja';
 import 'moment/locale/zh-tw';
@@ -18,39 +16,17 @@ import zh from './messages/zh.json';
 
 export const defaultLocale = 'en';
 
+// TODO: Keep in sync with mobile/js/intlPolyfill.js
 const messages = {
   en: null, // use built-ins...but ensure we have an entry so we don't have undefined flow errors
   fr,
   ja,
   'zh-tw': zh,
 };
-const supportedLocales = Object.keys(messages);
 
-/* eslint-disable global-require, import/no-extraneous-dependencies */
-// https://github.com/yahoo/intl-locales-supported#usage
-if (global.Intl) {
-  // Determine if the built-in `Intl` has the locale data we need.
-  if (!areIntlLocalesSupported(supportedLocales)) {
-    // `Intl` exists, but it doesn't have the data we need, so load the
-    // polyfill and replace the constructors we need with the polyfill's.
-    require('intl');
-    global.Intl.NumberFormat = global.IntlPolyfill.NumberFormat; // eslint-disable-line no-undef
-    global.Intl.DateTimeFormat = global.IntlPolyfill.DateTimeFormat; // eslint-disable-line no-undef
-  }
-} else {
-  // No `Intl`, so use and load the polyfill.
-  global.Intl = require('intl');
+if (!global.Intl) {
+  console.error('Tried to load common/js/intl.js prior to the Intl Polyfill');
 }
-
-// Only load these if we're using the polyfill (that exposes this function)
-if (global.Intl.__addLocaleData) {
-  // These have number formtting, useful for NumberFormat and DateTimeFormat
-  require('intl/locale-data/jsonp/en');
-  require('intl/locale-data/jsonp/fr');
-  require('intl/locale-data/jsonp/ja');
-  require('intl/locale-data/jsonp/zh');
-}
-/* eslint-enable global-require, import/no-extraneous-dependencies */
 
 // These has pluralRuleFunction, necessary for react-intl's use of intl-messageformat
 addLocaleData(require('react-intl/locale-data/en'));
