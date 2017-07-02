@@ -166,9 +166,10 @@ def build_search_results_api(city_name, form, search_query, search_results, vers
     except Exception as e:
         logging.exception("Error building featured event listing: %s", e)
 
+    include_people = True
     groupings = {}
     if skip_people:
-        pass
+        include_people = False
     elif not center_latlng:
         # keyword-only search, no location to give promoters for
         logging.info('No center latlng, skipping person groupings')
@@ -216,12 +217,13 @@ def build_search_results_api(city_name, form, search_query, search_results, vers
     for field in form:
         query[field.name] = getattr(field, '_value', lambda: field.data)()
     json_response = {
-        'people': groupings,
         'results': json_results,
         'onebox_links': onebox_links,
         'location': city_name,
         'query': query,
     }
+    if include_people:
+        json_response['people'] = groupings
     if version <= (1, 3):
         json_response['featured'] = [x['event'] for x in real_featured_infos]
     else:

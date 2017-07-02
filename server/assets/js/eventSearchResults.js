@@ -26,6 +26,7 @@ import {
 import type {
   NewSearchResponse,
   Onebox,
+  PeopleListing,
   StylePersonLookup,
 } from 'dancedeets-common/js/events/search';
 import { formatStartTime } from 'dancedeets-common/js/dates';
@@ -418,10 +419,25 @@ class PersonList extends React.Component {
   }
 }
 
+class CallbackOnRender extends React.Component {
+  props: {
+    callback: () => void | (() => Promise<void>),
+    children?: React.Element<*>,
+  };
+
+  render() {
+    if (this.props.callback) {
+      this.props.callback();
+    }
+    return this.props.children;
+  }
+}
+
 class _ResultsList extends React.Component {
   props: {
     response: NewSearchResponse,
     past: boolean,
+    showPeople: boolean,
     categoryOrder: Array<string>,
 
     // Self-managed props
@@ -429,12 +445,36 @@ class _ResultsList extends React.Component {
     intl: intlShape,
   };
 
-  getPeoplePanel() {
+  state: {
+    people: PeopleListing,
+  };
+
+  _loadingPeople: boolean;
+
+  constructor(props) {
+    super(props);
+    this.state = { people: props.response.people };
+    (this: any).loadPeopleIfNeeded = this.loadPeopleIfNeeded.bind(this);
+  }
+
+  async loadPeopleIfNeeded() {
+    if (this.state.people || this._loadingPeople) {
+      return;
+    }
+    this._loadingPeople = true;
+    console.log('loaaaaading!');
+    // const results = await this.apiCall();
+    // this.setState({ people: results.people });
+  }
+
+  renderPeoplePanel() {
     let peoplePanel = [];
-    const admins = this.props.response.people.ADMIN;
-    const attendees = this.props.response.people.ATTENDEE;
-    if (admins || attendees) {
-      const adminsList = admins
+    let adminContents = null;
+    let attendeeContents = null;
+    if (this.state.people) {
+      const admins = this.state.people.ADMIN;
+      const attendees = this.state.people.ATTENDEE;
+      adminContents = admins
         ? <PersonList
             title={this.props.intl.formatMessage(messages.nearbyPromoters)}
             subtitle={this.props.intl.formatMessage(
@@ -444,7 +484,7 @@ class _ResultsList extends React.Component {
             categoryOrder={this.props.categoryOrder}
           />
         : null;
-      const attendeesList = attendees
+      attendeeContents = attendees
         ? <PersonList
             title={this.props.intl.formatMessage(messages.nearbyDancers)}
             subtitle={this.props.intl.formatMessage(
@@ -454,42 +494,60 @@ class _ResultsList extends React.Component {
             categoryOrder={this.props.categoryOrder}
           />
         : null;
+    } else {
+      adminContents = (
+        <CallbackOnRender callback={this.loadPeopleIfNeeded}>
+          <span>Loading...</span>
+        </CallbackOnRender>
+      );
+      attendeeContents = (
+        <CallbackOnRender callback={this.loadPeopleIfNeeded}>
+          <span>Loading...</span>
+        </CallbackOnRender>
+      );
+    }
 
-      if (this.props.window && this.props.window.width < 768) {
-        if (admins) {
-          peoplePanel.push(
-            <Panel
-              key="people1"
-              header={this.props.intl.formatMessage(messages.nearbyPromoters)}
-            >
-              {adminsList}
-            </Panel>
-          );
-        }
-        if (attendees) {
-          peoplePanel.push(
-            <Panel
-              key="people2"
-              header={this.props.intl.formatMessage(messages.nearbyDancers)}
-            >
-              {attendeesList}
-            </Panel>
-          );
-        }
-      } else {
-        const adminsDiv = admins
-          ? <div className="col-sm-6">{adminsList}</div>
-          : null;
-        const attendeesDiv = attendees
-          ? <div className="col-sm-6">{attendeesList}</div>
-          : null;
-        peoplePanel = (
-          <Panel key="people" header="Nearby Promoters & Dancers">
-            <div className="row">{adminsDiv}{attendeesDiv}</div>
+    if (this.props.window && this.props.window.width < 768) {
+      if (adminContents) {
+        peoplePanel.push(
+          <Panel
+            key="people1"
+            header={this.props.intl.formatMessage(messages.nearbyPromoters)}
+            onItemClick={this.loadPeopleIfNeeded}
+          >
+            {adminContents}
           </Panel>
         );
       }
+      if (attendeeContents) {
+        peoplePanel.push(
+          <Panel
+            key="people2"
+            header={this.props.intl.formatMessage(messages.nearbyDancers)}
+            onItemClick={this.loadPeopleIfNeeded}
+          >
+            {attendeeContents}
+          </Panel>
+        );
+      }
+    } else {
+      const adminsDiv = adminContents
+        ? <div className="col-sm-6">{adminContents}</div>
+        : null;
+      const attendeesDiv = attendeeContents
+        ? <div className="col-sm-6">{attendeeContents}</div>
+        : null;
+      peoplePanel = (
+        <Panel
+          key="people"
+          header="Nearby Promoters & Dancers"
+          onItemClick={this.loadPeopleIfNeeded}
+        >
+          <div className="row">{adminsDiv}{attendeesDiv}</div>
+        </Panel>
+      );
     }
+
     return peoplePanel;
   }
 
@@ -549,7 +607,7 @@ class _ResultsList extends React.Component {
         </Panel>
       );
     }
-    const peoplePanel = this.getPeoplePanel();
+    const peoplePanel = this.renderPeoplePanel();
 
     let oneboxPanel = null;
     if (this.props.response.onebox_links.length) {
@@ -566,8 +624,7 @@ class _ResultsList extends React.Component {
       'currentEvents',
       'futureEvents',
     ];
-    // Keep in sync with mobile?
-    if (eventCount < 10) {
+    if (this.props.showPeople) {
       defaultKeys.push('people', 'people1', 'people2');
     }
 
