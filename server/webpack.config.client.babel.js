@@ -11,7 +11,8 @@ function isCommonModule(module) {
     return false;
   }
   const common = [
-    'assets/js/',
+    // TODO: Grab more of the common assets/ code
+    'assets/js/ui',
     'jquery',
     'bootstrap',
     'raven-js',

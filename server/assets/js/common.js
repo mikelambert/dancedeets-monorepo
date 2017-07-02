@@ -18,7 +18,14 @@ global.$ = global.jQuery = jQuery;
 // These depend on a jQuery being implicitly in scope,
 // so we need to require them instead of importing them.
 require('jquery.smartbanner');
-require('bootstrap');
+
+// Used for collapsing alert message boxes with data-dismiss
+require('bootstrap/js/alert');
+// Used for the top nav menus with data-toggle
+require('bootstrap/js/collapse');
+require('bootstrap/js/dropdown');
+// Used by above plugins, possibly
+require('bootstrap/js/transition');
 
 // Now let's import the rest normally.
 import './all-css';
