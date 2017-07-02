@@ -403,6 +403,13 @@ function webpack(configName, dependencies = []) {
     dependencies,
     $.shell.task([`${webpackCommand} --watch --debug`])
   );
+  gulp.task(
+    `compile:webpack:${configName}:size`,
+    dependencies,
+    $.shell.task([
+      `${webpackCommand} --json | ./node_modules/webpack-bundle-size-analyzer/webpack-bundle-size-analyzer`,
+    ])
+  );
 }
 // Generate rules for our three webpack configs
 webpack('server');

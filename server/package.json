@@ -54,13 +54,13 @@
     "url-loader": "^0.5.7",
     "username": "^2.1.0",
     "webpack": "^2.4.1",
+    "webpack-bundle-size-analyzer": "^2.7.0",
     "webpack-combine-loaders": "^2.0.3",
     "webpack-dev-middleware": "^1.8.4",
     "webpack-hot-middleware": "^2.13.2",
     "yargs": "^6.5.0"
   },
   "dependencies": {
-    "animate.css": "^3.5.1",
     "babel-polyfill": "^6.16.0",
     "bootstrap": "^3.3.7",
     "bootstrap-sass": "^3.3.6",
