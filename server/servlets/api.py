@@ -139,10 +139,9 @@ def retryable(func):
     return wrapped_func
 
 def people_groupings(southwest, northeast, center_latlng, skip_people):
-    include_people = True
-    groupings = {}
+    groupings = None
     if skip_people:
-        include_people = False
+        groupings = {}
     elif not center_latlng:
         # keyword-only search, no location to give promoters for
         logging.info('No center latlng, skipping person groupings')
@@ -185,10 +184,7 @@ def people_groupings(southwest, northeast, center_latlng, skip_people):
                 groupings = new_groupings
 
             logging.info('Person Groupings:\n%s', '\n'.join('%s: %s' % kv for kv in groupings.iteritems()))
-    if include_people:
-        return groupings
-    else:
-        return None
+    return groupings
 
 def build_search_results_api(city_name, form, search_query, search_results, version, need_full_event, center_latlng, southwest, northeast, skip_people=False):
     onebox_links = []

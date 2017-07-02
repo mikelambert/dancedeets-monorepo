@@ -460,7 +460,14 @@ class _ResultsList extends React.Component {
   }
 
   async loadPeopleIfNeeded() {
-    if (this.state.people || this._loadingPeople) {
+    if (
+      // This search area was too large, and we didn't want to do a people calculation
+      !this.state.people ||
+      // We already have some people loaded, no need to load them again
+      Object.keys(this.state.people).length ||
+      // We have an in-progress pending load
+      this._loadingPeople
+    ) {
       return;
     }
     try {
@@ -477,6 +484,7 @@ class _ResultsList extends React.Component {
       console.error(e);
       this.setState({ failed: true });
     }
+    this._loadingPeople = false;
   }
 
   renderPeoplePanel() {
@@ -495,7 +503,9 @@ class _ResultsList extends React.Component {
             people={admins}
             categoryOrder={this.props.categoryOrder}
           />
-        : null;
+        : <CallbackOnRender callback={this.loadPeopleIfNeeded}>
+            <span>Loading...</span>
+          </CallbackOnRender>;
       attendeeContents = attendees
         ? <PersonList
             title={this.props.intl.formatMessage(messages.nearbyDancers)}
@@ -505,21 +515,15 @@ class _ResultsList extends React.Component {
             people={attendees}
             categoryOrder={this.props.categoryOrder}
           />
-        : null;
+        : <CallbackOnRender callback={this.loadPeopleIfNeeded}>
+            <span>Loading...</span>
+          </CallbackOnRender>;
     } else if (this.state.failed) {
       adminContents = <span>Error Loading People</span>;
       attendeeContents = <span>Error Loading People</span>;
     } else {
-      adminContents = (
-        <CallbackOnRender callback={this.loadPeopleIfNeeded}>
-          <span>Loading...</span>
-        </CallbackOnRender>
-      );
-      attendeeContents = (
-        <CallbackOnRender callback={this.loadPeopleIfNeeded}>
-          <span>Loading...</span>
-        </CallbackOnRender>
-      );
+      adminContents = null;
+      attendeeContents = null;
     }
 
     if (this.props.window && this.props.window.width < 768) {
