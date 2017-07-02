@@ -138,34 +138,7 @@ def retryable(func):
             raise
     return wrapped_func
 
-def build_search_results_api(city_name, form, search_query, search_results, version, need_full_event, center_latlng, southwest, northeast, skip_people=False):
-    onebox_links = []
-    if search_query:
-        onebox_links = onebox.get_links_for_query(search_query)
-
-    json_results = []
-    for result in search_results:
-        try:
-            if need_full_event:
-                json_result = canonicalize_event_data(result.db_event, result.event_keywords, version)
-            else:
-                json_result = canonicalize_search_event_data(result, version)
-            json_results.append(json_result)
-        except Exception as e:
-            logging.exception("Error processing event %s: %s" % (result.event_id, e))
-
-    real_featured_infos = []
-    try:
-        featured_infos = featured.get_featured_events_for(southwest, northeast)
-        for featured_info in featured_infos:
-            try:
-                featured_info['event'] = canonicalize_event_data(featured_info['event'], [], version)
-                real_featured_infos.append(featured_info)
-            except Exception as e:
-                logging.exception("Error processing event %s: %s" % (result.event_id, e))
-    except Exception as e:
-        logging.exception("Error building featured event listing: %s", e)
-
+def people_groupings(southwest, northeast, center_latlng, skip_people):
     include_people = True
     groupings = {}
     if skip_people:
@@ -212,7 +185,40 @@ def build_search_results_api(city_name, form, search_query, search_results, vers
                 groupings = new_groupings
 
             logging.info('Person Groupings:\n%s', '\n'.join('%s: %s' % kv for kv in groupings.iteritems()))
+    if include_people:
+        return groupings
+    else:
+        return None
 
+def build_search_results_api(city_name, form, search_query, search_results, version, need_full_event, center_latlng, southwest, northeast, skip_people=False):
+    onebox_links = []
+    if search_query:
+        onebox_links = onebox.get_links_for_query(search_query)
+
+    json_results = []
+    for result in search_results:
+        try:
+            if need_full_event:
+                json_result = canonicalize_event_data(result.db_event, result.event_keywords, version)
+            else:
+                json_result = canonicalize_search_event_data(result, version)
+            json_results.append(json_result)
+        except Exception as e:
+            logging.exception("Error processing event %s: %s" % (result.event_id, e))
+
+    real_featured_infos = []
+    try:
+        featured_infos = featured.get_featured_events_for(southwest, northeast)
+        for featured_info in featured_infos:
+            try:
+                featured_info['event'] = canonicalize_event_data(featured_info['event'], [], version)
+                real_featured_infos.append(featured_info)
+            except Exception as e:
+                logging.exception("Error processing event %s: %s" % (result.event_id, e))
+    except Exception as e:
+        logging.exception("Error building featured event listing: %s", e)
+
+    groupings = people_groupings(southwest, northeast, center_latlng, skip_people=skip_people)
     query = {}
     for field in form:
         query[field.name] = getattr(field, '_value', lambda: field.data)()
@@ -222,7 +228,7 @@ def build_search_results_api(city_name, form, search_query, search_results, vers
         'location': city_name,
         'query': query,
     }
-    if include_people:
+    if groupings is not None:
         json_response['people'] = groupings
     if version <= (1, 3):
         json_response['featured'] = [x['event'] for x in real_featured_infos]
@@ -240,6 +246,37 @@ def build_search_results_api(city_name, form, search_query, search_results, vers
             },
         }
     return json_response
+
+@apiroute('/people')
+class PeopleHandler(ApiHandler):
+    def get(self):
+        data = {
+            'location': self.request.get('location'),
+            'locale': self.request.get('locale'),
+        }
+        logging.info(data)
+        form = search_base.SearchForm(data=data)
+
+        if not form.validate():
+            for field, errors in form.errors.items():
+                for error in errors:
+                    self.add_error(u"%s error: %s" % (
+                        getattr(form, field).label.text,
+                        error
+                    ))
+
+        if not form.location.data:
+            self.add_error('Need location')
+        else:
+            try:
+                city_name, center_latlng, southwest, northeast = search_base.normalize_location(form)
+            except:
+                self.add_error('Could not geocode location')
+        self.errors_are_fatal()
+
+
+        groupings = people_groupings(southwest, northeast, center_latlng, skip_people=False)
+        self.write_json_success({'people': groupings})
 
 @apiroute('/search')
 class SearchHandler(ApiHandler):

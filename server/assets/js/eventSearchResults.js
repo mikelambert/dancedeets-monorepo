@@ -15,6 +15,7 @@ import { StickyContainer, Sticky } from 'react-sticky';
 import Masonry from 'react-masonry-component';
 import Slider from 'react-slick';
 import Collapse, { Panel } from 'rc-collapse';
+import querystring from 'querystring';
 import { intlWeb } from 'dancedeets-common/js/intl';
 import type { Cover, JSONObject } from 'dancedeets-common/js/events/models';
 import { messages } from 'dancedeets-common/js/events/people';
@@ -421,7 +422,7 @@ class PersonList extends React.Component {
 
 class CallbackOnRender extends React.Component {
   props: {
-    callback: () => void | (() => Promise<void>),
+    callback: () => void | Promise<void>,
     children?: React.Element<*>,
   };
 
@@ -447,13 +448,14 @@ class _ResultsList extends React.Component {
 
   state: {
     people: PeopleListing,
+    failed: boolean,
   };
 
   _loadingPeople: boolean;
 
   constructor(props) {
     super(props);
-    this.state = { people: props.response.people };
+    this.state = { people: props.response.people, failed: false };
     (this: any).loadPeopleIfNeeded = this.loadPeopleIfNeeded.bind(this);
   }
 
@@ -461,10 +463,20 @@ class _ResultsList extends React.Component {
     if (this.state.people || this._loadingPeople) {
       return;
     }
-    this._loadingPeople = true;
-    console.log('loaaaaading!');
-    // const results = await this.apiCall();
-    // this.setState({ people: results.people });
+    try {
+      this._loadingPeople = true;
+      const formattedArgs = querystring.stringify({
+        location: this.props.response.query.location,
+        locale: this.props.response.query.locale,
+      });
+
+      const result = await fetch(`/api/v2.0/people?${formattedArgs}`);
+      const resultJson = await result.json();
+      this.setState({ people: resultJson.people });
+    } catch (e) {
+      console.error(e);
+      this.setState({ failed: true });
+    }
   }
 
   renderPeoplePanel() {
@@ -494,6 +506,9 @@ class _ResultsList extends React.Component {
             categoryOrder={this.props.categoryOrder}
           />
         : null;
+    } else if (this.state.failed) {
+      adminContents = <span>Error Loading People</span>;
+      attendeeContents = <span>Error Loading People</span>;
     } else {
       adminContents = (
         <CallbackOnRender callback={this.loadPeopleIfNeeded}>
