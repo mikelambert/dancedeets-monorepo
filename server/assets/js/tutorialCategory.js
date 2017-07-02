@@ -7,7 +7,6 @@
 import React from 'react';
 import uniq from 'lodash/uniq';
 import countBy from 'lodash/countBy';
-import includes from 'lodash/includes';
 import { defineMessages, injectIntl, intlShape } from 'react-intl';
 import Helmet from 'react-helmet';
 import Masonry from 'react-masonry-component';
@@ -419,7 +418,7 @@ class _TutorialFilteredLayout extends React.Component {
       x => JSON.parse(x).categoryId
     );
     const selectedCategories = this.props.categories.filter(x =>
-      includes(selectedCategoryNames, x.style.id)
+      selectedCategoryNames.includes(x.style.id)
     );
     const tutorials = [].concat(...selectedCategories.map(x => x.tutorials));
 
