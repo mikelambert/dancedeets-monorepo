@@ -11,11 +11,13 @@ function isCommonModule(module) {
     return false;
   }
   const common = [
+    'assets/js/',
     'jquery',
     'bootstrap',
     'raven-js',
     '/react/',
     'react-dom',
+    'react-intl',
     'moment',
     'lodash',
     'babel-polyfill',
