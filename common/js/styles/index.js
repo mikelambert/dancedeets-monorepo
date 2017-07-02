@@ -5,7 +5,13 @@
  */
 
 import { defineMessages } from 'react-intl';
-import { messageDescriptorPropTypes } from 'react-intl/dist/react-intl';
+
+// Copied from react-intl, though we don't want a dependency on the full thing just for type-checking
+type messageDescriptorPropTypes = {
+  id: string,
+  description?: string,
+  defaultMessage?: string,
+};
 
 export const messages = defineMessages({
   otherStylesTitle: {
