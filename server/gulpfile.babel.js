@@ -403,13 +403,6 @@ function webpack(configName, dependencies = []) {
     dependencies,
     $.shell.task([`${webpackCommand} --watch --debug`])
   );
-  gulp.task(
-    `compile:webpack:${configName}:size`,
-    dependencies,
-    $.shell.task([
-      `${webpackCommand} --json | ./node_modules/webpack-bundle-size-analyzer/webpack-bundle-size-analyzer`,
-    ])
-  );
 }
 // Generate rules for our three webpack configs
 webpack('server');
@@ -439,6 +432,15 @@ gulp.task('compile', [
   'compile:fonts',
   'compile:geonames',
 ]);
+
+['common', 'eventSearchResultsExec'].forEach(filename =>
+  gulp.task(
+    `js:size:${filename}`,
+    $.shell.task(
+      `./node_modules/source-map-explorer/index.js dist/js/${filename}.js{,.map}`
+    )
+  )
+);
 
 gulp.task('clean', () => del.sync('dist'));
 
