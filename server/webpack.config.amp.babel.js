@@ -43,12 +43,12 @@ module.exports = {
       {
         test: /\.jsx?$/,
         use: 'eslint-loader',
-        exclude: /node_modules/,
+        exclude: /node_modules(?!\/dancedeets-common)/,
         enforce: 'pre',
       },
       {
         test: /\.jsx?$/,
-        exclude: /(node_modules|bower_components)/,
+        exclude: /node_modules(?!\/dancedeets-common)/,
         use: {
           loader: 'babel-loader',
           options: {
