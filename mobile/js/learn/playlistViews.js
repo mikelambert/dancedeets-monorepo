@@ -244,6 +244,7 @@ class _PlaylistListView extends React.Component {
             {
               width: boxWidth,
               padding: 5,
+              elevation: 5,
             },
             styles.shadowed,
           ]}
@@ -601,7 +602,6 @@ let styles = StyleSheet.create({
     shadowOpacity: 0.4,
     shadowRadius: 10,
     overflow: 'visible', // Let the shadow bleed out on iOS
-    elevation: 5,
   },
   listViewWrapper: {
     flex: 1,
