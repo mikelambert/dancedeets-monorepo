@@ -8,6 +8,7 @@
 // We need to import the two error handlers first
 import Raven from 'raven-js';
 import fixStickyTouch from './sticky-touch';
+import 'console-polyfill';
 
 // Then we need to import jQuery and set it up,
 // before we important any jquery-dependent libraries.
