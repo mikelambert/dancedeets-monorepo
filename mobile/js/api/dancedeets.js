@@ -15,7 +15,7 @@ import { sortString } from 'dancedeets-common/js/util/sort';
 import type { TokenRegistration } from '../store/track';
 import { timeout, retryWithBackoff } from './timeouts';
 
-const DEV_SERVER = false;
+const DEV_SERVER = true;
 
 let writesDisabled = false;
 
@@ -182,6 +182,18 @@ export async function search(
   response.results = response.results.map(x => new Event(x));
   response.results = sortString(response.results, resultEvent =>
     moment(resultEvent.start_time).toISOString()
+  );
+  return response;
+}
+
+export async function people(
+  location: string,
+) {
+  const response = await timeout(
+    10000,
+    performRequest('people', {
+      location,
+    })
   );
   return response;
 }

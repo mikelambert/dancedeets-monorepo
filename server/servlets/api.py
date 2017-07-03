@@ -273,6 +273,7 @@ class PeopleHandler(ApiHandler):
 
         groupings = people_groupings(southwest, northeast, center_latlng, skip_people=False)
         self.write_json_success({'people': groupings})
+    post = get
 
 @apiroute('/search')
 class SearchHandler(ApiHandler):
@@ -344,7 +345,9 @@ class SearchHandler(ApiHandler):
 
         logging.info("Found %s keyword=%r events within %s %s of %s", len(search_results), form.keywords.data, form.distance.data, form.distance_units.data, form.location.data)
 
-        json_response = build_search_results_api(city_name, form, search_query, search_results, self.version, need_full_event, center_latlng, southwest, northeast)
+        # Keep in sync with mobile react code? And search_servlets
+        skip_people = len(search_results) >= 10
+        json_response = build_search_results_api(city_name, form, search_query, search_results, self.version, need_full_event, center_latlng, southwest, northeast, skip_people=skip_people)
         if self.request.get('client') == 'react-android' and self.version <= (1, 3):
             json_response['featured'] = []
         self.write_json_success(json_response)

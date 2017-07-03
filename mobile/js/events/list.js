@@ -54,7 +54,7 @@ import {
   linkColor,
   purpleColors,
 } from '../Colors';
-import { auth, isAuthenticated } from '../api/dancedeets';
+import { auth, isAuthenticated, people } from '../api/dancedeets';
 import {
   BottomFade,
   Button,
@@ -422,7 +422,7 @@ class _EventListContainer extends React.Component {
         });
       }
 
-      if (response.people) {
+      if (this.state.people) {
         // Keep in sync with web?
         const defaultCollapsed = !(response.results.length < 10);
 
@@ -430,13 +430,13 @@ class _EventListContainer extends React.Component {
         peopleData.push({
           key: 'Admin Row',
           renderClass: OrganizerView,
-          people: response.people.ADMIN,
+          people: this.state.people.ADMIN,
           defaultCollapsed,
         });
         peopleData.push({
           key: 'Attendee Row',
           renderClass: AttendeeView,
-          people: response.people.ATTENDEE,
+          people: this.state.people.ATTENDEE,
           defaultCollapsed,
         });
 
@@ -572,13 +572,8 @@ class _EventListContainer extends React.Component {
     }
     try {
       this._loadingPeople = true;
-      const formattedArgs = querystring.stringify({
-        location: this.props.search.response.query.location,
-        locale: this.props.search.response.query.locale,
-      });
-
-      const result = await fetch(`/api/v2.0/people?${formattedArgs}`);
-      const resultJson = await result.json();
+      //locale: this.props.search.response.query.locale,
+      const resultJson = await people(this.props.search.response.query.location);
       this.setState({ people: resultJson.people });
     } catch (e) {
       console.error(e);
