@@ -103,7 +103,7 @@ class AttendeeMatch(object):
         return '%s(**%r)' % (self.__class__.__name__, self.__dict__)
 
     def get_attendee_lookups(self):
-        client = datastore.Client()
+        client = datastore.Client('dancedeets-hrd')
 
         debug_keys = []
         for city_name in popular_people.get_summed_area_cities(self.city_name):
