@@ -433,6 +433,8 @@ gulp.task('compile', [
   'compile:geonames',
 ]);
 
+// When debugging webpack bundle sizes, we can use js:size:* here
+// as well as track who references what, with http://webpack.github.io/analyse
 ['common', 'eventSearchResultsExec'].forEach(filename =>
   gulp.task(
     `js:size:${filename}`,
