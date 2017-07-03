@@ -444,7 +444,7 @@ class _Loading extends React.Component {
   render() {
     return (
       <div>
-        <Spinner name="circle" color="white" />
+        <Spinner name="circle" color="white" noFadeIn />
       </div>
     );
   }
