@@ -35,7 +35,9 @@ OBJ_EVENT_FIELDS = ('description', 'end_time', 'id', 'name', 'owner', 'type', 's
 
 OBJ_USER_FIELDS = ('name', 'email', 'first_name', 'last_name', 'locale', 'gender', 'picture', 'link', 'timezone')
 
-OBJ_SOURCE_FIELDS = ('about', 'cover', 'category', 'category_list', 'general_info', 'likes', 'location', 'name', 'phone', 'website')
+OBJ_SOURCE_USER_FIELDS = ('name', 'updated_time', 'link', 'first_name', 'last_name')
+OBJ_SOURCE_GROUP_FIELDS = ('name', 'updated_time', 'link', 'cover', 'email', 'description', 'parent', 'privacy', 'icon', 'link', 'venue', 'owner')
+OBJ_SOURCE_PAGE_FIELDS = ('name', 'updated_time', 'link', 'cover', 'emails', 'about', 'category', 'category_list', 'current_location', 'hometown', 'general_info', 'likes', 'location', 'phone', 'username', 'website')
 
 USERLESS_UID = '701004'
 
