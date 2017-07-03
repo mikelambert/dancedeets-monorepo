@@ -6,6 +6,7 @@
 
 import React from 'react';
 import {
+  ActivityIndicator,
   StyleSheet,
   TouchableOpacity,
   View,
@@ -147,7 +148,7 @@ class _Loading extends React.Component {
   };
 
   render() {
-    return <Text>{this.props.intl.formatMessage(messages.loading)}</Text>;
+    return <ActivityIndicator style={{ marginLeft: 20, marginBottom: 20 }} />;
   }
 }
 const Loading = injectIntl(_Loading);
