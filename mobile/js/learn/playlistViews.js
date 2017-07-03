@@ -16,7 +16,6 @@ import {
   TouchableHighlight,
   TouchableOpacity,
   View,
-  ViewPropTypes,
 } from 'react-native';
 import { injectIntl, intlShape, defineMessages } from 'react-intl';
 import { connect } from 'react-redux';
