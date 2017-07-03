@@ -13,8 +13,8 @@ install:
 - rm -rf google_appengine/lib/fancy_urllib/__init__.py
 # Install latest version of node
 - ". $HOME/.nvm/nvm.sh"
-- nvm install 6
-- nvm use 6
+- nvm install 7
+- nvm use 7
 # Set up and compile our project
 - npm install
 - cd common && npm install ; cd ..
