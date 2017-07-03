@@ -478,6 +478,8 @@ class _ResultsList extends React.Component {
 
   async loadPeopleIfNeeded() {
     if (
+      // If we're rendering on the server, ignore loading anything
+      !ExecutionEnvironment.canUseDOM ||
       // This search area was too large, and we didn't want to do a people calculation
       !this.state.people ||
       // We already have some people loaded, no need to load them again
