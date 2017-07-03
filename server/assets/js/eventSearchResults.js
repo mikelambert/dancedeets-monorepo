@@ -14,6 +14,7 @@ import { injectIntl, intlShape } from 'react-intl';
 import { StickyContainer, Sticky } from 'react-sticky';
 import Masonry from 'react-masonry-component';
 import Slider from 'react-slick';
+import Spinner from 'react-spinkit';
 import Collapse, { Panel } from 'rc-collapse';
 import querystring from 'querystring';
 import { intlWeb } from 'dancedeets-common/js/intl';
@@ -434,6 +435,22 @@ class CallbackOnRender extends React.Component {
   }
 }
 
+class _Loading extends React.Component {
+  props: {
+    // Self-managed props
+    intl: intlShape,
+  };
+
+  render() {
+    return (
+      <div>
+        <Spinner name="circle" color="white" />
+      </div>
+    );
+  }
+}
+const Loading = injectIntl(_Loading);
+
 class _ResultsList extends React.Component {
   props: {
     response: NewSearchResponse,
@@ -504,7 +521,7 @@ class _ResultsList extends React.Component {
             categoryOrder={this.props.categoryOrder}
           />
         : <CallbackOnRender callback={this.loadPeopleIfNeeded}>
-            <span>{this.props.intl.formatMessage(messages.loading)}</span>
+            <Loading />
           </CallbackOnRender>;
       attendeeContents = attendees
         ? <PersonList
@@ -516,7 +533,7 @@ class _ResultsList extends React.Component {
             categoryOrder={this.props.categoryOrder}
           />
         : <CallbackOnRender callback={this.loadPeopleIfNeeded}>
-            <span>{this.props.intl.formatMessage(messages.loading)}</span>
+            <Loading />
           </CallbackOnRender>;
     } else if (this.state.failed) {
       adminContents = <span>Error Loading People</span>;
