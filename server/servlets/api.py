@@ -183,7 +183,7 @@ def people_groupings(southwest, northeast, center_latlng, skip_people):
                             new_groupings[person_type][public_style_name] = styles[good_style][:10]
                 groupings = new_groupings
 
-            logging.info('Person Groupings:\n%s', '\n'.join('%s: %s' % kv for kv in groupings.iteritems()))
+                logging.info('Person Groupings:\n%s', '\n'.join('%s: %s' % kv for kv in groupings.iteritems()))
     return groupings
 
 def build_search_results_api(city_name, form, search_query, search_results, version, need_full_event, center_latlng, southwest, northeast, skip_people=False):
