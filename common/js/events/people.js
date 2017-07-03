@@ -22,4 +22,9 @@ export const messages = defineMessages({
     defaultMessage: 'These people are active in the local dance scene',
     description: 'Subtitle for pop-open list of dancers in the scene',
   },
+  loading: {
+    id: 'peopleList.loading',
+    defaultMessage: 'Loading...',
+    description: 'Message to display while loading people lists',
+  },
 });

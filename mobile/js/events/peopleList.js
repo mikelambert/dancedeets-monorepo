@@ -79,6 +79,7 @@ class HeaderCollapsible extends React.Component {
     title: string,
     children?: React.Element<*>,
     underlayColor?: string,
+    onPress?: () => void | Promise<void>,
   };
 
   state: {
@@ -86,6 +87,9 @@ class HeaderCollapsible extends React.Component {
   };
 
   _toggle() {
+    if (this.props.onPress) {
+      this.props.onPress();
+    }
     this.setState({ collapsed: !this.state.collapsed });
   }
 
@@ -136,29 +140,47 @@ class HeaderCollapsible extends React.Component {
   }
 }
 
+class _Loading extends React.Component {
+  props: {
+    // Self-managed props
+    intl: intlShape,
+  };
+
+  render() {
+    return <Text>{this.props.intl.formatMessage(messages.loading)}</Text>;
+  }
+}
+const Loading = injectIntl(_Loading);
+
 class _OrganizerView extends React.Component {
   props: {
     defaultCollapsed: boolean,
     headerStyle: ViewPropTypes.style,
-    people: StylePersonLookup,
+    people: ?StylePersonLookup,
+    onPress?: () => void | Promise<void>,
 
     // Self-managed props
     intl: intlShape,
   };
 
   render() {
-    return (
-      <HeaderCollapsible
-        title={this.props.intl.formatMessage(messages.nearbyPromoters)}
-        defaultCollapsed={this.props.defaultCollapsed}
-        style={this.props.headerStyle}
-      >
-        <PersonList
+    const personList = this.props.people
+      ? <PersonList
           subtitle={this.props.intl.formatMessage(
             messages.nearbyPromotersMessage
           )}
           people={this.props.people}
         />
+      : <Loading />;
+
+    return (
+      <HeaderCollapsible
+        title={this.props.intl.formatMessage(messages.nearbyPromoters)}
+        defaultCollapsed={this.props.defaultCollapsed}
+        style={this.props.headerStyle}
+        onPress={this.props.onPress}
+      >
+        {personList}
       </HeaderCollapsible>
     );
   }
@@ -169,25 +191,31 @@ export class _AttendeeView extends React.Component {
   props: {
     defaultCollapsed: boolean,
     headerStyle: ViewPropTypes.style,
-    people: StylePersonLookup,
+    people: ?StylePersonLookup,
+    onPress?: () => void | Promise<void>,
 
     // Self-managed props
     intl: intlShape,
   };
 
   render() {
-    return (
-      <HeaderCollapsible
-        title={this.props.intl.formatMessage(messages.nearbyDancers)}
-        defaultCollapsed={this.props.defaultCollapsed}
-        style={this.props.headerStyle}
-      >
-        <PersonList
+    const personList = this.props.people
+      ? <PersonList
           subtitle={this.props.intl.formatMessage(
             messages.nearbyDancersMessage
           )}
           people={this.props.people}
         />
+      : <Loading />;
+
+    return (
+      <HeaderCollapsible
+        title={this.props.intl.formatMessage(messages.nearbyDancers)}
+        defaultCollapsed={this.props.defaultCollapsed}
+        style={this.props.headerStyle}
+        onPress={this.props.onPress}
+      >
+        {personList}
       </HeaderCollapsible>
     );
   }

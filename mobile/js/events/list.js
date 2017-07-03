@@ -314,6 +314,13 @@ class _EventListContainer extends React.Component {
     intl: intlShape,
   };
 
+  state: {
+    people: PeopleListing,
+    failed: boolean,
+  };
+
+  _loadingPeople: boolean;
+
   _listView: SectionList<*>;
   /* TODO: Figure out how to typecheck with this:
   {
@@ -344,6 +351,7 @@ class _EventListContainer extends React.Component {
     (this: any).setLocationAndSearch = this.setLocationAndSearch.bind(this);
     (this: any).renderItem = this.renderItem.bind(this);
     (this: any).fetchLocationAndSearch = this.fetchLocationAndSearch.bind(this);
+    (this: any).loadPeopleIfNeeded = this.loadPeopleIfNeeded.bind(this);
   }
 
   componentDidMount() {
@@ -365,6 +373,9 @@ class _EventListContainer extends React.Component {
         // https://github.com/facebook/react-native/issues/14392
         viewPosition: 100,
       });
+    }
+    if (nextProps.search.response) {
+      this.setState({ people: nextProps.search.response.people, failed: false });
     }
   }
 
@@ -416,30 +427,18 @@ class _EventListContainer extends React.Component {
         const defaultCollapsed = !(response.results.length < 10);
 
         const peopleData = [];
-        if (
-          response.people.ADMIN &&
-          response.people.ADMIN[''] &&
-          response.people.ADMIN[''].length
-        ) {
-          peopleData.push({
-            key: 'Admin Row',
-            renderClass: OrganizerView,
-            people: response.people.ADMIN,
-            defaultCollapsed,
-          });
-        }
-        if (
-          response.people.ATTENDEE &&
-          response.people.ATTENDEE[''] &&
-          response.people.ATTENDEE[''].length
-        ) {
-          peopleData.push({
-            key: 'Attendee Row',
-            renderClass: AttendeeView,
-            people: response.people.ATTENDEE,
-            defaultCollapsed,
-          });
-        }
+        peopleData.push({
+          key: 'Admin Row',
+          renderClass: OrganizerView,
+          people: response.people.ADMIN,
+          defaultCollapsed,
+        });
+        peopleData.push({
+          key: 'Attendee Row',
+          renderClass: AttendeeView,
+          people: response.people.ATTENDEE,
+          defaultCollapsed,
+        });
 
         if (peopleData.length) {
           const peopleTitle = this.props.intl.formatMessage(
@@ -560,6 +559,34 @@ class _EventListContainer extends React.Component {
     console.log('didFailToReceiveAdWithError', e);
   }
 
+  async loadPeopleIfNeeded() {
+    if (
+      // This search area was too large, and we didn't want to do a people calculation
+      !this.state.people ||
+      // We already have some people loaded, no need to load them again
+      Object.keys(this.state.people).length ||
+      // We have an in-progress pending load
+      this._loadingPeople
+    ) {
+      return;
+    }
+    try {
+      this._loadingPeople = true;
+      const formattedArgs = querystring.stringify({
+        location: this.props.search.response.query.location,
+        locale: this.props.search.response.query.locale,
+      });
+
+      const result = await fetch(`/api/v2.0/people?${formattedArgs}`);
+      const resultJson = await result.json();
+      this.setState({ people: resultJson.people });
+    } catch (e) {
+      console.error(e);
+      this.setState({ failed: true });
+    }
+    this._loadingPeople = false;
+  }
+
   renderHeader() {
     if (this.props.search.error) {
       return this.renderErrorView(this.props.search.errorString);
@@ -584,13 +611,14 @@ class _EventListContainer extends React.Component {
           onEventSelected={this.props.onFeaturedEventSelected}
         />
       );
-    } else if (row.item.people) {
+    } else if (row.item.renderClass) {
       const PeopleView = row.item.renderClass;
       return (
         <PeopleView
           people={row.item.people}
           headerStyle={styles.sectionHeader}
           defaultCollapsed={row.item.defaultCollapsed}
+          onPress={this.loadPeopleIfNeeded}
         />
       );
     } else {

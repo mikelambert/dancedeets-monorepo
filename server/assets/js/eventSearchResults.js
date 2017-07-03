@@ -504,7 +504,7 @@ class _ResultsList extends React.Component {
             categoryOrder={this.props.categoryOrder}
           />
         : <CallbackOnRender callback={this.loadPeopleIfNeeded}>
-            <span>Loading...</span>
+            <span>{this.props.intl.formatMessage(messages.loading)}</span>
           </CallbackOnRender>;
       attendeeContents = attendees
         ? <PersonList
@@ -516,7 +516,7 @@ class _ResultsList extends React.Component {
             categoryOrder={this.props.categoryOrder}
           />
         : <CallbackOnRender callback={this.loadPeopleIfNeeded}>
-            <span>Loading...</span>
+            <span>{this.props.intl.formatMessage(messages.loading)}</span>
           </CallbackOnRender>;
     } else if (this.state.failed) {
       adminContents = <span>Error Loading People</span>;
