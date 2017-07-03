@@ -21,7 +21,7 @@ module.exports = {
     path: path.join(__dirname, 'dist/js-server'),
     filename: '[name].js',
   },
-  devtool: prod ? 'source-map' : 'eval',
+  devtool: prod ? 'source-map' : 'cheap-eval-source-map',
   plugins: [
     new webpack.DefinePlugin({
       'process.env': {

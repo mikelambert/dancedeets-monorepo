@@ -62,7 +62,7 @@ const config = {
     path: path.join(__dirname, 'dist/js'),
     filename: '[name].js',
   },
-  devtool: prod ? 'source-map' : 'debug',
+  devtool: prod ? 'source-map' : 'cheap-eval-source-map',
   plugins: [
     new webpack.ProvidePlugin({
       fetch:
