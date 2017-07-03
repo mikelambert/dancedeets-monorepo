@@ -35,7 +35,7 @@ import appInstallPromos from './app-install-promo';
 import { queryOn } from './dom';
 /* eslint-enable import/first */
 
-if (window.prodMode == 'prod') {
+if (window.prodMode === 'prod') {
   Raven.config('https://f966ae7e625249f8a36d42e8b521dc2f@sentry.io/159133', {
     environment: window.prodMode ? 'prod' : 'dev',
   }).install();
