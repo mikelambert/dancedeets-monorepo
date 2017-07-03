@@ -386,7 +386,7 @@ function webpack(configName, dependencies = []) {
   gulp.task(
     `compile:webpack:${configName}:prod:once`,
     dependencies,
-    $.shell.task([webpackCommand])
+    $.shell.task([`${webpackCommand}`])
   );
   gulp.task(
     `compile:webpack:${configName}:prod:watch`,
@@ -402,6 +402,13 @@ function webpack(configName, dependencies = []) {
     `compile:webpack:${configName}:debug:watch`,
     dependencies,
     $.shell.task([`${webpackCommand} --watch --debug`])
+  );
+  gulp.task(
+    `compile:webpack:${configName}:json`,
+    dependencies,
+    $.shell.task([
+      `${webpackCommand} --json > webpack-${configName}-output.json`,
+    ])
   );
 }
 // Generate rules for our three webpack configs
