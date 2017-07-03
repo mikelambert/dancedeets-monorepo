@@ -221,7 +221,7 @@ class _EventLinks extends React.Component {
     let rsvpElement = null;
     if (event.rsvp && (event.rsvp.attending_count || event.rsvp.maybe_count)) {
       let rsvpAction = null;
-      if (this.props.userId != null && this.props.userRsvp && !this.props.amp) {
+      if (this.props.userId != null && !this.props.amp) {
         rsvpAction = (
           <div>
             RSVP:{' '}
