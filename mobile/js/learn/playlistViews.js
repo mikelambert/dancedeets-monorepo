@@ -114,10 +114,17 @@ class _PlaylistStylesView extends React.Component {
             alignItems: 'center',
           }}
         >
+
           <Image
             source={styleIcons[category.style.id]}
             resizeMode="contain"
-            style={{ width: imageWidth, height: imageWidth }}
+            style={[
+              styles.shadowed,
+              {
+                width: imageWidth,
+                height: imageWidth,
+              },
+            ]}
           />
           <DarkText style={[styles.boxTitle, styles.boxText]}>
             {styleTitle}
@@ -233,10 +240,13 @@ class _PlaylistListView extends React.Component {
         }}
       >
         <View
-          style={{
-            width: boxWidth,
-            padding: 5,
-          }}
+          style={[
+            {
+              width: boxWidth,
+              padding: 5,
+            },
+            styles.shadowed,
+          ]}
         >
           <Image
             source={{ uri: playlist.thumbnail }}
@@ -584,6 +594,14 @@ let styles = StyleSheet.create({
   thumbnail: {
     borderRadius: 10,
     height: semiNormalize(100),
+  },
+  shadowed: {
+    shadowColor: 'black',
+    shadowOffset: { width: 0, height: 0 },
+    shadowOpacity: 0.4,
+    shadowRadius: 10,
+    overflow: 'visible', // Let the shadow bleed out on iOS
+    elevation: 5,
   },
   listViewWrapper: {
     flex: 1,
