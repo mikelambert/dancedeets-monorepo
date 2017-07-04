@@ -145,7 +145,7 @@ class _EventDescription extends React.Component {
         </ImagePrefix>
         <ImagePrefix iconName="map-marker">
           <div>{event.venue.name}</div>
-          <FormatText>{event.venue.cityStateCountry('\n')}</FormatText>
+          <FormatText>{event.venue.cityStateCountry()}</FormatText>
         </ImagePrefix>
       </div>
     );
@@ -200,7 +200,7 @@ class VerticalEvent extends React.Component {
         </h3>
         <div className="event-city">
           <div>{event.venue.name}</div>
-          <FormatText>{event.venue.cityStateCountry('\n')}</FormatText>
+          <FormatText>{event.venue.cityStateCountry()}</FormatText>
         </div>
       </Card>
     );
