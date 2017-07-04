@@ -415,6 +415,13 @@ class _PlaylistView extends React.Component {
     // {top, bottom} of the containing view's current scroll position
     const view = this._viewDimensions;
 
+    if (!view || !element) {
+      console.error(`Ensuring Tutorial ${index} visible, but: `, {
+        view,
+        element,
+      });
+    }
+
     let viewPosition = null;
     // if we're off the bottom of the screen
     if (element.bottom > view.bottom) {
