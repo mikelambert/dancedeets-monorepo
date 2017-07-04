@@ -28,6 +28,7 @@ import { formatAttending } from 'dancedeets-common/js/events/helpers';
 import messages from 'dancedeets-common/js/events/messages';
 import { RsvpComponent } from './eventRsvp';
 import type { RsvpValue } from './eventRsvp';
+import GoogleAd from './googleAd';
 import { getReactEventSchema, getReactArticleSchema } from './eventSchema';
 import { Message } from './intl';
 import { AmpImage, Card, ImagePrefix } from './ui';
@@ -603,6 +604,7 @@ export class EventPage extends React.Component {
 
   render() {
     const event = new Event(this.props.event);
+
     return (
       <div className="container">
         <HtmlHead event={event} />
@@ -622,6 +624,11 @@ export class EventPage extends React.Component {
         <div className="row">
           <div className="col-sm-5">
             <ImageWithLinks event={event} amp={this.props.amp} />
+            <GoogleAd
+              style={{ display: 'inline-block', width: 320, height: 100 }}
+              data-ad-slot="6741973779"
+            />
+
             <EventLinks
               event={event}
               amp={this.props.amp}

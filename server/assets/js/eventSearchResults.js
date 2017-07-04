@@ -39,6 +39,7 @@ import {
 import { Card, ImagePrefix, wantsWindowSizes } from './ui';
 import type { windowProps } from './ui';
 import { SquareEventFlyer } from './eventCommon';
+import GoogleAd from './googleAd';
 
 require('slick-carousel/slick/slick.css');
 require('slick-carousel/slick/slick-theme.css');
@@ -291,6 +292,7 @@ class _EventsList extends React.Component {
   render() {
     const resultItems = [];
     let overallEventIndex = 0;
+    let eventsSinceAd = 0;
     groupEventsByStartDate(
       this.props.intl,
       this.props.events,
@@ -321,6 +323,19 @@ class _EventsList extends React.Component {
         )
       );
       overallEventIndex += events.length;
+      eventsSinceAd += events.length;
+      if (eventsSinceAd > 10) {
+        // Show an ad every so often...
+        eventsSinceAd = 0;
+        // Google Ad: search-inline
+        resultItems.push(
+          <GoogleAd
+            style={{ display: 'block' }}
+            data-ad-slot="8358307776"
+            data-ad-format="auto"
+          />
+        );
+      }
     });
 
     return (
