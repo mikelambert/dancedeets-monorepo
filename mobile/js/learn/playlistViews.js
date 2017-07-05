@@ -370,6 +370,7 @@ class _PlaylistView extends React.Component {
   }
 
   onChangeState(props: Object) {
+    console.log('Video: onChangeState: ', props);
     // Keep our internal state (and the props we set on the player) up-to-date
     this.setState({ isPlaying: props.state !== 'paused' });
     if (props.state === 'ended') {
@@ -480,6 +481,7 @@ class _PlaylistView extends React.Component {
               tutorialVideoIndex: videoIndex,
             });
 
+            this.setState({ isPlaying: true });
             this.props.setTutorialVideoIndex(videoIndex);
           }
         }}
@@ -548,7 +550,9 @@ class _PlaylistView extends React.Component {
           loop={false}
           showinfo
           modestbranding
-          controls={1}
+          // TODO: Improve our controls situation on Android:
+          // https://github.com/inProgress-team/react-native-youtube/issues/131
+          controls={Platform.OS === 'ios' ? 1 : 2}
           showFullscreenButton
           style={{ alignSelf: 'stretch', height }}
           onChangeState={this.onChangeState}
