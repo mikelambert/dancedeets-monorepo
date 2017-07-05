@@ -1,4 +1,4 @@
-set -e
+set -euo pipefail
 cd `dirname $0`
 export NAME=gae-modules
 export LOCAL_IMAGE=mlambert/$NAME
