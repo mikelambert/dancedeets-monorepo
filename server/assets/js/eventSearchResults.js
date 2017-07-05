@@ -36,6 +36,7 @@ import {
   formatAttending,
   groupEventsByStartDate,
 } from 'dancedeets-common/js/events/helpers';
+import { getReactEventSchema } from './eventSchema';
 import { Card, ImagePrefix, wantsWindowSizes } from './ui';
 import type { windowProps } from './ui';
 import { SquareEventFlyer } from './eventCommon';
@@ -293,6 +294,7 @@ class _EventsList extends React.Component {
     const resultItems = [];
     let overallEventIndex = 0;
     let eventsSinceAd = 0;
+    let adIndex = 0;
     groupEventsByStartDate(
       this.props.intl,
       this.props.events,
@@ -330,11 +332,13 @@ class _EventsList extends React.Component {
         // Google Ad: search-inline
         resultItems.push(
           <GoogleAd
+            key={`ad-${adIndex}`}
             style={{ display: 'block' }}
             data-ad-slot="8358307776"
             data-ad-format="auto"
           />
         );
+        adIndex += 1;
       }
     });
 
@@ -687,6 +691,9 @@ class _ResultsList extends React.Component {
         {peoplePanel}
         {oneboxPanel}
         {eventPanels}
+        {ExecutionEnvironment.canUseDOM
+          ? null
+          : resultEvents.map(getReactEventSchema)}
       </Collapse>
     );
   }

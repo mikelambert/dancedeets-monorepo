@@ -19,10 +19,12 @@ function getEventSchema(event: Event) {
     name: event.name,
     mainEntityOfPage: event.getUrl(),
     url: event.getUrl(),
-    organizer: event.admins.map(x => x.name).join(', '),
     startDate: formatSchemaDate(event.start_time),
     description: event.description,
   };
+  if (event.admins) {
+    schema.organizer = event.admins.map(x => x.name).join(', ');
+  }
   if (event.end_time) {
     schema.endDate = formatSchemaDate(event.end_time);
   }
@@ -60,6 +62,7 @@ export function getReactEventSchema(event) {
   const jsonMetadata = getEventSchema(event);
   return (
     <script
+      key={event.id}
       type="application/ld+json"
       dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonMetadata) }} // eslint-disable-line react/no-danger
     />
