@@ -335,6 +335,7 @@ class _PlaylistView extends React.Component {
 
   state: {
     isPlaying: boolean,
+    onScreen: boolean,
   };
 
   _sectionedListView: SectionList<*>;
@@ -350,15 +351,11 @@ class _PlaylistView extends React.Component {
     (this: any).onListViewLayout = this.onListViewLayout.bind(this);
     (this: any).onListViewScroll = this.onListViewScroll.bind(this);
     this._cachedLayout = [];
-    this.state = { isPlaying: true };
+    this.state = { onScreen: true, isPlaying: true };
   }
 
   componentWillReceiveProps(nextProps) {
-    if (nextProps.mainScreenKey !== 'Learn') {
-      this.setState({ isPlaying: false });
-    } else {
-      this.setState({ isPlaying: true });
-    }
+    this.setState({ onScreen: nextProps.mainScreenKey === 'Learn' });
   }
 
   componentWillUnmount() {
@@ -374,11 +371,7 @@ class _PlaylistView extends React.Component {
 
   onChangeState(props: Object) {
     // Keep our internal state (and the props we set on the player) up-to-date
-    if (props.state === 'playing') {
-      this.setState({ isPlaying: true });
-    } else {
-      this.setState({ isPlaying: false });
-    }
+    this.setState({ isPlaying: props.state !== 'paused' });
     if (props.state === 'ended') {
       // next video, if we're not at the end!
       const newIndex = this.props.tutorialVideoIndex + 1;
@@ -551,7 +544,7 @@ class _PlaylistView extends React.Component {
         <YouTube
           apiKey={googleKey}
           videoId={video.youtubeId}
-          play={this.state.isPlaying} // auto-play when loading a tutorial
+          play={this.state.isPlaying && this.state.onScreen} // auto-play when loading a tutorial
           loop={false}
           showinfo
           modestbranding
