@@ -604,7 +604,18 @@ export class EventPage extends React.Component {
 
   render() {
     const event = new Event(this.props.event);
-
+    // Google Ad: event-header
+    const googleAd = (
+      <GoogleAd
+        style={{
+          display: 'inline-block',
+          width: this.props.amp ? 300 : '100%',
+          height: 100,
+        }}
+        data-ad-slot="6741973779"
+        amp={this.props.amp}
+      />
+    );
     return (
       <div className="container">
         <HtmlHead event={event} />
@@ -624,11 +635,7 @@ export class EventPage extends React.Component {
         <div className="row">
           <div className="col-sm-5">
             <ImageWithLinks event={event} amp={this.props.amp} />
-            <GoogleAd
-              style={{ display: 'inline-block', width: 320, height: 100 }}
-              data-ad-slot="6741973779"
-            />
-
+            {googleAd}
             <EventLinks
               event={event}
               amp={this.props.amp}
