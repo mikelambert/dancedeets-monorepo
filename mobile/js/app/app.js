@@ -10,7 +10,6 @@ import CodePush from 'react-native-code-push';
 import { connect } from 'react-redux';
 import storeShape from 'react-redux/lib/utils/storeShape';
 import { intlShape } from 'react-intl';
-import intlPolyfill from '../intlPolyfill';
 import LoginFlow from '../login/LoginFlow';
 import TabApp from '../containers/TabApp';
 import { gradientTop } from '../Colors';
