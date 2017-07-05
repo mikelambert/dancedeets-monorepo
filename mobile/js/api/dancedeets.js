@@ -109,9 +109,9 @@ export async function isAuthenticated() {
   return await AccessToken.getCurrentAccessToken();
 }
 
-async function verifyAuthenticated() {
+async function verifyAuthenticated(location: string) {
   if (!await isAuthenticated()) {
-    throw new Error('Not authenticated!');
+    throw new Error(`Not authenticated in ${location}`);
   }
 }
 
@@ -137,7 +137,7 @@ export async function auth(data: ?Object) {
   if (writesDisabled) {
     return null;
   }
-  await verifyAuthenticated();
+  await verifyAuthenticated('auth');
 
   // Grab any saveForAuth data and pass it in to the auth() call
   const finalData = { ...saveForAuth, ...data };
@@ -202,12 +202,12 @@ export async function event(id: string) {
 }
 
 export async function getAddEvents(): Promise<> {
-  await verifyAuthenticated();
+  await verifyAuthenticated('getAddEvents');
   return await timeout(10000, performRequest('events_list_to_add', {}));
 }
 
 export async function userInfo() {
-  await verifyAuthenticated();
+  await verifyAuthenticated('userInfo');
   return await retryWithBackoff(2000, 2, 5, createRequest('user/info', {}));
 }
 
@@ -215,7 +215,7 @@ export async function addEvent(eventId: string) {
   if (writesDisabled) {
     return null;
   }
-  await verifyAuthenticated();
+  await verifyAuthenticated('addEvent');
   return await retryWithBackoff(
     2000,
     2,
@@ -225,7 +225,7 @@ export async function addEvent(eventId: string) {
 }
 
 export async function translateEvent(eventId: string) {
-  await verifyAuthenticated();
+  await verifyAuthenticated('translateEvent');
   const params = { event_id: eventId };
   return await timeout(
     10000,
@@ -238,7 +238,7 @@ export async function eventRegister(
   categoryId: string,
   values: Object
 ) {
-  await verifyAuthenticated();
+  await verifyAuthenticated('eventRegister');
   const params = { event_id: eventId, category_id: categoryId, ...values };
   return await performRequest('event_signups/register', params, params);
 }
@@ -248,7 +248,7 @@ export async function eventUnregister(
   categoryId: string,
   signupId: string
 ) {
-  await verifyAuthenticated();
+  await verifyAuthenticated('eventUnregister');
   const params = {
     event_id: eventId,
     category_id: categoryId,
