@@ -687,7 +687,7 @@ class EventMap extends React.PureComponent {
   componentDidMount() {
     InteractionManager.runAfterInteractions(() => {
       if (Platform.OS === 'ios') {
-        this.state = { mapOk: true };
+        this.setState({ mapOk: true });
       } else {
         this.checkAndroidMaps();
       }
