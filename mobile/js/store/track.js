@@ -97,7 +97,6 @@ export function trackWithEvent(
   if (!trackingEnabled) {
     return;
   }
-  console.log('Tracking', eventName, params, event);
   const venue = event.venue || null;
   let city = venue.address ? venue.cityStateCountry() : '';
   if (!city) {
