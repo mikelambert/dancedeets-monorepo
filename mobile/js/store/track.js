@@ -73,6 +73,7 @@ export function track(eventName: string, params: ?Params) {
   if (!trackingEnabled) {
     return;
   }
+  console.log('Tracking', eventName, params);
   if (params != null) {
     const firebaseSafeParams = {};
     for (const key of Object.keys(params)) {
@@ -96,6 +97,7 @@ export function trackWithEvent(
   if (!trackingEnabled) {
     return;
   }
+  console.log('Tracking', eventName, params, event);
   const venue = event.venue || null;
   let city = venue.address ? venue.cityStateCountry() : '';
   if (!city) {
