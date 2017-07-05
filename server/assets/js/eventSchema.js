@@ -13,7 +13,7 @@ function formatSchemaDate(dateTime) {
 }
 
 function getEventSchema(event: Event) {
-  const schema = {
+  const schema: Object = {
     '@context': 'http://schema.org/',
     '@type': 'Event',
     name: event.name,
@@ -58,7 +58,7 @@ function getEventSchema(event: Event) {
   return schema;
 }
 
-export function getReactEventSchema(event) {
+export function getReactEventSchema(event: Event) {
   const jsonMetadata = getEventSchema(event);
   return (
     <script
@@ -111,7 +111,7 @@ function getArticleSchema(event: Event) {
   return schema;
 }
 
-export function getReactArticleSchema(event) {
+export function getReactArticleSchema(event: Event) {
   const jsonMetadata = getArticleSchema(event);
   return (
     <script
