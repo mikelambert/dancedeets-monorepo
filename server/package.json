@@ -78,6 +78,7 @@
     "lodash": "^4.17.2",
     "moment": "^2.11.2",
     "pleeease": "^4.1.0",
+    "prop-types": "^15.5.10",
     "querystring": "^0.2.0",
     "raven-js": "^3.14.2",
     "rc-collapse": "^1.6.12",

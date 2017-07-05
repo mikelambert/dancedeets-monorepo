@@ -6,6 +6,7 @@
 
 import jQuery from 'jquery';
 import React from 'react';
+import PropTypes from 'prop-types';
 import Scroll from 'react-scroll';
 import dateFormat from 'date-fns/format';
 import { intlWeb } from 'dancedeets-common/js/intl';
@@ -51,7 +52,7 @@ class StudioImage extends React.Component {
   }
 }
 StudioImage.contextTypes = {
-  imagePath: React.PropTypes.string,
+  imagePath: PropTypes.string,
 };
 
 function getDayId(dayName) {
@@ -598,7 +599,7 @@ class App extends React.Component {
   }
 }
 App.childContextTypes = {
-  imagePath: React.PropTypes.string,
+  imagePath: PropTypes.string,
 };
 
 export default intlWeb(App);
