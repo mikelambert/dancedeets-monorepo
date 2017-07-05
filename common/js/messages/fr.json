@@ -14,7 +14,7 @@
   "buttons.notificationSettings": "Paramètres de notification",
   "buttons.sendFeedback": "Envoyer vos suggestions",
   "buttons.share": "Partager",
-  "credits.title": "Crédits Dancedeets",
+  "credits.title": "Crédits Dancedeets {version}",
   "dancedeets.tagline": "Street Dance Events. Worldwide.",
   "distance.km": "Distance : à {km, number} km",
   "distance.miles": "Distance : à {miles, number} {miles, plural, one {mile} other {miles}}",

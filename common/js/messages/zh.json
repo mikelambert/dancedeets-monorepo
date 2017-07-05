@@ -14,7 +14,7 @@
   "buttons.notificationSettings": "通知設定",
   "buttons.sendFeedback": "傳送意見",
   "buttons.share": "分享",
-  "credits.title": "Dancedeets的製作群",
+  "credits.title": "Dancedeets的{version}的製作群",
   "dancedeets.tagline": "Street Dance Events. Worldwide.",
   "distance.km": "{km, number}公里遠",
   "distance.miles": "{miles, number}英里遠",

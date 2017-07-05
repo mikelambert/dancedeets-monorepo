@@ -14,7 +14,7 @@
   "buttons.notificationSettings": "通知設定",
   "buttons.sendFeedback": "フィードバックの送信",
   "buttons.share": "共有",
-  "credits.title": "Dancedeetsのクレジット",
+  "credits.title": "Dancedeetsの{version}のクレジット",
   "dancedeets.tagline": "Street Dance Events. Worldwide.",
   "distance.km": "{km, number}キロ",
   "distance.miles": "{miles, number}マイル",
