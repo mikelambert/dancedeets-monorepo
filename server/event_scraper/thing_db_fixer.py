@@ -11,7 +11,7 @@ def function_migrate_thing_to_new_id(fbapi_obj, old_source_id, new_source_id):
     if not old_source:
         return
 
-    key = (fb_api.LookupThingFeed, new_source_id)
+    key = (fb_api.LookupThingCommon, new_source_id)
 
     fbapi_obj.raise_on_page_redirect = True
     try:

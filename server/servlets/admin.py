@@ -43,7 +43,10 @@ class FBDataHandler(base_servlet.BareBaseRequestHandler):
                 'OBJ_FRIEND_LIST': fb_api.LookupFriendList,
                 'OBJ_EVENT': fb_api.LookupEvent,
                 'OBJ_EVENT_MEMBERS': fb_api.LookupEventMembers,
-                'OBJ_THING_FEED': fb_api.LookupThingFeed,
+                'OBJ_THING_FEED': fb_api.LookupThingCommon,
+                'OBJ_THING_USER': fb_api.LookupThingUser,
+                'OBJ_THING_GROUP': fb_api.LookupThingGroup,
+                'OBJ_THING_PAGE': fb_api.LookupThingPage,
             }
             req_type = self.request.get('type')
             if req_type in fbtype_lookup:
