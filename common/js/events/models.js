@@ -111,7 +111,7 @@ export class BaseEvent extends JsonDerivedObject {
   }
 
   getUrl() {
-    return `http://www.dancedeets.com/events/${this.id}/`;
+    return `https://www.dancedeets.com/events/${this.id}/`;
   }
 
   startTimeNoTz() {

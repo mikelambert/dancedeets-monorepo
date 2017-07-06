@@ -48,7 +48,7 @@ def has_list_of_good_classes(classified_event):
 
     # if title is good strong keyword, and we have a list of classes:
     # why doesn't this get found by the is_workshop title classifier? where is our "camp" keyword
-    # http://www.dancedeets.com/events/admin_edit?event_id=317006008387038
+    # https://www.dancedeets.com/events/admin_edit?event_id=317006008387038
 
     # (?!20[01][05])
     time = r'\b[012]?\d[:.,h]?(?:[0-5][05])?(?:am|pm)?\b'

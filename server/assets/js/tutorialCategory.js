@@ -287,7 +287,7 @@ class _FilterBar extends React.Component {
           </div>
         </form>
         <div style={{ float: 'right' }}>
-          <ShareLinks url={'http://www.dancedeets.com/tutorials'} />
+          <ShareLinks url={'https://www.dancedeets.com/tutorials'} />
         </div>
         <div style={{ clear: 'both' }} />
       </Card>
@@ -460,8 +460,8 @@ class _TutorialFilteredLayout extends React.Component {
     const title = 'Dance Tutorials';
     const meta = generateMetaTags(
       title,
-      'http://www.dancedeets.com/tutorials/',
-      'http://www.dancedeets.com/dist/img/screenshot-tutorial.jpg'
+      'https://www.dancedeets.com/tutorials/',
+      'https://www.dancedeets.com/dist/img/screenshot-tutorial.jpg'
     );
     return (
       <div>

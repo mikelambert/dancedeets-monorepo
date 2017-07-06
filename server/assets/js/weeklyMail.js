@@ -67,7 +67,7 @@ class FontAwesomeIcon extends React.Component {
   render() {
     return (
       <SmallIcon
-        url={`http://www.dancedeets.com/dist/img/font-awesome/black/png/16/${this
+        url={`https://www.dancedeets.com/dist/img/font-awesome/black/png/16/${this
           .props.name}.png`}
         alt={this.props.alt}
       />
@@ -114,7 +114,7 @@ class _MailEvent extends React.Component {
         <tr>
           <td style={imageAlign} padding-el>
             <SmallIcon
-              url="http://www.dancedeets.com/dist/img/categories-black.png"
+              url="https://www.dancedeets.com/dist/img/categories-black.png"
               alt="Categories"
             />
           </td>
@@ -231,7 +231,7 @@ class _BodyWrapper extends React.Component {
         <mj-section full-width="full-width">
           <mj-column>
             <mj-image
-              src="http://www.dancedeets.com/images/mail-top.png"
+              src="https://www.dancedeets.com/images/mail-top.png"
               alt="top border"
             />
           </mj-column>
@@ -240,7 +240,7 @@ class _BodyWrapper extends React.Component {
           <mj-column width="40%">
             <mj-image
               align="center"
-              src="http://www.dancedeets.com/dist-400780539943311269/img/deets-head-and-title-on-black@2x.png"
+              src="https://www.dancedeets.com/dist-400780539943311269/img/deets-head-and-title-on-black@2x.png"
               alt="logo"
               padding="0 0 30px 0"
             />
@@ -291,7 +291,7 @@ class _BodyWrapper extends React.Component {
         <mj-section>
           <mj-column>
             <mj-image
-              src="http://www.dancedeets.com/images/mail-bottom.png"
+              src="https://www.dancedeets.com/images/mail-bottom.png"
               alt="bottom border"
               align="center"
               border="none"
@@ -305,11 +305,11 @@ class _BodyWrapper extends React.Component {
             <mj-text align="center">
               You may also
               {' '}
-              <a href="*|UNSUB:http://www.dancedeets.com|*">unsubscribe</a>
+              <a href="*|UNSUB:https://www.dancedeets.com|*">unsubscribe</a>
               {' '}
               or
               {' '}
-              <a href="http://www.dancedeets.com/user/edit">
+              <a href="https://www.dancedeets.com/user/edit">
                 change your preferred city
               </a>
               .

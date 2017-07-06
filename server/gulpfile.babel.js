@@ -45,7 +45,7 @@ const baseAssetsDir = `/Users/${username.sync()}/Dropbox/dancedeets/art/build-as
 // TODO: Support login here, so that this URL can actually run. Currently blocked by 'login: admin'
 gulp.task('web:events:resave', cb =>
   fetch(
-    'http://www.dancedeets.com/tasks/reload_events?user_id=701004&allow_cache=1&disable_updates=regeocode,photo&queue=fast-queue&only_if_updated=0'
+    'https://www.dancedeets.com/tasks/reload_events?user_id=701004&allow_cache=1&disable_updates=regeocode,photo&queue=fast-queue&only_if_updated=0'
   ).then(x => console.log(x))
 );
 
@@ -80,10 +80,10 @@ gulp.task('compile:images:favicons', () =>
         appName: 'DanceDeets',
         appDescription: 'Street Dance Events. Worldwide.',
         developerName: 'DanceDeets',
-        developerURL: 'http://www.dancedeets.com/',
+        developerURL: 'https://www.dancedeets.com/',
         background: '#fff',
         path: '/dist/img/favicons/',
-        url: 'http://www.dancedeets.com/',
+        url: 'https://www.dancedeets.com/',
         display: 'standalone',
         orientation: 'portrait',
         version: 1.0,
@@ -255,7 +255,7 @@ gulp.task('compile:fonts', () =>
 gulp.task('pagespeed', cb =>
   // Update the below URL to the public URL of your site
   pagespeed(
-    'http://www.dancedeets.com/new_homepage',
+    'https://www.dancedeets.com/new_homepage',
     {
       strategy: 'mobile',
       // By default we use the PageSpeed Insights free (no API key) tier.
@@ -293,7 +293,7 @@ gulp.task('scrape:web:scrapy', webEventNames.map(x => `scrape:one:${x}`));
 gulp.task('scrape:classes:scrapy', classesNames.map(x => `scrape:one:${x}`));
 gulp.task(
   'scrape:classes:index:prod',
-  $.shell.task(['curl http://www.dancedeets.com/classes/reindex'])
+  $.shell.task(['curl https://www.dancedeets.com/classes/reindex'])
 );
 gulp.task(
   'scrape:classes:index:dev',

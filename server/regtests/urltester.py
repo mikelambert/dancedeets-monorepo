@@ -5,33 +5,33 @@ import json
 import urllib2
 
 URLS = [
-    'http://www.dancedeets.com/login?next=%2F%3F',
-    'http://www.dancedeets.com/?location=USA',
-    'http://www.dancedeets.com/?location=Europe',
-    'http://www.dancedeets.com/?location=Asia',
-    'http://www.dancedeets.com/events/386287078085795/', # no amp page
-    'http://www.dancedeets.com/events/1171204409564075/',
-    'http://www.dancedeets.com/events/1171204409564075/?amp=1',
-    'http://www.dancedeets.com/events/dance-delight:20554/',
-    'http://www.dancedeets.com/events/dance-delight:20554/?amp=1',
-    'http://www.dancedeets.com/events/street-dance-korea:190/',
-    'http://www.dancedeets.com/events/street-dance-korea:190/?amp=1',
-    'http://www.dancedeets.com/events/image_proxy/dance-delight:20554/',
-    'http://www.dancedeets.com/events/image_proxy/1459851027584883',
-    'http://www.dancedeets.com/events/image_proxy/1459851027584883/',
-    'http://www.dancedeets.com/events/250492048363697/',
-    'http://www.dancedeets.com/events/421615758038730',
-    'http://www.dancedeets.com/events/246367547151/', # no venue
-    'http://www.dancedeets.com/events/412709132257891/', # no description
-    'http://www.dancedeets.com/events/106615749421406/', # no location
+    'https://www.dancedeets.com/login?next=%2F%3F',
+    'https://www.dancedeets.com/?location=USA',
+    'https://www.dancedeets.com/?location=Europe',
+    'https://www.dancedeets.com/?location=Asia',
+    'https://www.dancedeets.com/events/386287078085795/', # no amp page
+    'https://www.dancedeets.com/events/1171204409564075/',
+    'https://www.dancedeets.com/events/1171204409564075/?amp=1',
+    'https://www.dancedeets.com/events/dance-delight:20554/',
+    'https://www.dancedeets.com/events/dance-delight:20554/?amp=1',
+    'https://www.dancedeets.com/events/street-dance-korea:190/',
+    'https://www.dancedeets.com/events/street-dance-korea:190/?amp=1',
+    'https://www.dancedeets.com/events/image_proxy/dance-delight:20554/',
+    'https://www.dancedeets.com/events/image_proxy/1459851027584883',
+    'https://www.dancedeets.com/events/image_proxy/1459851027584883/',
+    'https://www.dancedeets.com/events/250492048363697/',
+    'https://www.dancedeets.com/events/421615758038730',
+    'https://www.dancedeets.com/events/246367547151/', # no venue
+    'https://www.dancedeets.com/events/412709132257891/', # no description
+    'https://www.dancedeets.com/events/106615749421406/', # no location
 ]
 API_URLS = [
-    'http://www.dancedeets.com/api/v1.2/search?location=USA&time_period=UPCOMING',
-    'http://www.dancedeets.com/api/v1.2/search?location=Europe&time_period=UPCOMING',
-    'http://www.dancedeets.com/api/v1.2/search?location=Asia&time_period=UPCOMING',
-    'http://www.dancedeets.com/api/v1.2/events/1171204409564075',
-    'http://www.dancedeets.com/api/v1.2/events/dance-delight:20554',
-    'http://www.dancedeets.com/api/v1.2/events/street-dance-korea:178',
+    'https://www.dancedeets.com/api/v1.2/search?location=USA&time_period=UPCOMING',
+    'https://www.dancedeets.com/api/v1.2/search?location=Europe&time_period=UPCOMING',
+    'https://www.dancedeets.com/api/v1.2/search?location=Asia&time_period=UPCOMING',
+    'https://www.dancedeets.com/api/v1.2/events/1171204409564075',
+    'https://www.dancedeets.com/api/v1.2/events/dance-delight:20554',
+    'https://www.dancedeets.com/api/v1.2/events/street-dance-korea:178',
 ]
 
 

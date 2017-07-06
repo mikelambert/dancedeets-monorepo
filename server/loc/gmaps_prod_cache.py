@@ -16,7 +16,7 @@ class ProdServerBackend(gmaps_backends.GMapsBackend):
             'lookup_type': self.lookup_type,
             'lookup': kwargs,
         })
-        url = 'http://www.dancedeets.com/_gmaps_api'
+        url = 'https://www.dancedeets.com/_gmaps_api'
         file = urllib.urlopen(url, post_data)
         try:
             response = file.read()

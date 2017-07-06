@@ -340,7 +340,7 @@ STYLE_HIPHOP = Name('STYLE_HIPHOP', Any(
     'lyrical\Whip\W?hop',
     'hip\W?hop dance',
     'hip\W?hop\Wheels',
-    # only do la-style if not salsa? http://www.dancedeets.com/events/admin_edit?event_id=292605290807447
+    # only do la-style if not salsa? https://www.dancedeets.com/events/admin_edit?event_id=292605290807447
     # 'l\W?a\W?\Wstyle',
     'l\W?a\W?\Wdance',
     'n(?:ew|u)\W?style?\Whip\W?hop',
@@ -431,7 +431,7 @@ DANCE = Name('DANCE', Any(*(legit_dance + [x + 'u' for x in legit_dance])))
 
 # hiphop dance. hiphop dans?
 
-# house battles http://www.dancedeets.com/events/admin_edit?event_id=240788332653377
+# house battles https://www.dancedeets.com/events/admin_edit?event_id=240788332653377
 HOUSE = Name('HOUSE', Any(
     'house',
     u'하우스', # korean house
@@ -676,7 +676,7 @@ PREPROCESS_REMOVAL = Name('PREPROCESS_REMOVAL', Any(
 # battle freestyle ?
 # dj battle
 # battle royale
-# http://www.dancedeets.com/events/admin_edit?event_id=208662995897296
+# https://www.dancedeets.com/events/admin_edit?event_id=208662995897296
 # mc performances
 # beatbox performances
 # beat

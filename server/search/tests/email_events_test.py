@@ -55,5 +55,5 @@ class TestSearch(unittest.TestCase):
 
         message = email_events.email_for_user(user, fbl, should_send=False)
         self.assertTrue(message, "Emailer did not email the user")
-        self.assertIn('http://www.dancedeets.com/events/%s/' % event.fb_event_id, message['html'])
+        self.assertIn('https://www.dancedeets.com/events/%s/' % event.fb_event_id, message['html'])
 
