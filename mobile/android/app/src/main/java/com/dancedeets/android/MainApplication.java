@@ -107,6 +107,9 @@ public class MainApplication extends MultiDexApplication implements ReactApplica
   @Override
   public void onCreate() {
     super.onCreate();
+    if (BuildConfig.DEBUG) {
+      FirebaseCrash.enableCrash(false);
+    }
     // If we want to have Crashlytics report the version of our JS (and not our app),
     // because we are using CodePush or AppHub, then we need to pass in a stubbed Context.
     // It will wrap-and-delegate-to-"this", except for:
