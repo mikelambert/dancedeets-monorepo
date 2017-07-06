@@ -30,6 +30,10 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
+  #ifdef DEBUG
+    [FIRCrash sharedInstance].crashCollectionEnabled = NO;
+  #endif
+
   [Fabric with:@[[Crashlytics class]]];
   RCTSetLogThreshold(RCTLogLevelInfo);
   RCTSetLogFunction(CrashlyticsReactLogFunction);
