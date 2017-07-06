@@ -176,19 +176,19 @@ configurations.all {
     // React-Native-Compile:
     // exclude group: 'com.facebook.react', module: 'react-native'
     resolutionStrategy {
-        force 'com.google.android.gms:play-services-ads:10.2.6+'
-        force 'com.google.android.gms:play-services-base:10.2.6+'
-        force 'com.google.android.gms:play-services-location:10.2.6+'
-        force 'com.google.android.gms:play-services-maps:10.2.6+'
-        force 'com.google.android.gms:play-services-gcm:10.2.6+'
-        force 'com.google.firebase:firebase-core:10.2.6+'
-        force 'com.google.firebase:firebase-config:10.2.6+'
-        force 'com.google.firebase:firebase-creash:10.2.6+'
-        force 'com.google.firebase:firebase-auth:10.2.6+'
-        force 'com.google.firebase:firebase-analytics:10.2.6+'
-        force 'com.google.firebase:firebase-database:10.2.6+'
-        force 'com.google.firebase:firebase-storage:10.2.6+'
-        force 'com.google.firebase:firebase-messaging:10.2.6+'
+        force 'com.google.android.gms:play-services-ads:11.0.+'
+        force 'com.google.android.gms:play-services-base:11.0.+'
+        force 'com.google.android.gms:play-services-location:11.0.+'
+        force 'com.google.android.gms:play-services-maps:11.0.+'
+        force 'com.google.android.gms:play-services-gcm:11.0.+'
+        force 'com.google.firebase:firebase-core:11.0.+'
+        force 'com.google.firebase:firebase-config:11.0.+'
+        force 'com.google.firebase:firebase-crash:11.0.+'
+        force 'com.google.firebase:firebase-auth:11.0.+'
+        force 'com.google.firebase:firebase-analytics:11.0.+'
+        force 'com.google.firebase:firebase-database:11.0.+'
+        force 'com.google.firebase:firebase-storage:11.0.+'
+        force 'com.google.firebase:firebase-messaging:11.0.+'
         force 'com.android.support:appcompat-v7:23.+'
     }
 }
@@ -229,14 +229,12 @@ dependencies {
     compile 'com.android.support:multidex:'
 
 
-    compile 'com.google.firebase:firebase-core:9.4.0+'
-    compile 'com.google.firebase:firebase-config:9.4.0+'
-    // The excludes above and includes below are due to version incompatibilities
-    // between 8.4 and 9.0 libraries.
-    // https://github.com/lelandrichardson/react-native-maps/issues/249
-    compile 'com.google.android.gms:play-services-base:9.4.0+'
-    compile 'com.google.android.gms:play-services-ads:9.4.0+'
-    compile 'com.google.android.gms:play-services-maps:9.4.0+'
+    compile 'com.google.firebase:firebase-core:11.0.+'
+    compile 'com.google.firebase:firebase-config:11.0.+'
+    compile 'com.google.firebase:firebase-crash:11.0.+'
+    compile 'com.google.android.gms:play-services-base:11.0.+'
+    compile 'com.google.android.gms:play-services-ads:11.0.+'
+    compile 'com.google.android.gms:play-services-maps:11.0.+'
 
     // React-Native-Compile:
     // compile project(':ReactAndroid')
