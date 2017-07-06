@@ -61,14 +61,16 @@ class Title extends React.Component {
         <a key={x} href={`/?keywords=${x}`}>{x}</a>
       );
       categoryLinks = (
-        <li key="category">categorized as: {intersperse(categories, ', ')}.</li>
+        <li key="category" id="more-from-keyword">
+          categorized as: {intersperse(categories, ', ')}.
+        </li>
       );
     }
     let locationLinks = null;
     const cityStateCountry = event.venue.cityStateCountry();
     if (cityStateCountry) {
       locationLinks = (
-        <li key="location">
+        <li key="location" id="more-from-location">
           in <a href={`/?location=${cityStateCountry}`}>{cityStateCountry}</a>.
         </li>
       );
@@ -134,7 +136,12 @@ class ImageWithLinks extends React.Component {
     );
 
     const link = (
-      <a className="link-event-flyer" href={imageUrl} onClick={this.onClick}>
+      <a
+        id="view-flyer"
+        className="link-event-flyer"
+        href={imageUrl}
+        onClick={this.onClick}
+      >
         {image}
       </a>
     );
@@ -159,6 +166,7 @@ class ImageWithLinks extends React.Component {
         <ImagePrefix iconName="picture-o">
           <a
             className="link-event-flyer"
+            id="view-flyer-image"
             href={imageUrl}
             onClick={this.onClick}
           >
@@ -257,7 +265,7 @@ class _EventLinks extends React.Component {
       organizerElement = (
         <ImagePrefix iconName="user">
           <Message message={messages.organizer} /><br />
-          <ul>
+          <ul id="view-event-admin">
             {admins}
           </ul>
         </ImagePrefix>
@@ -271,6 +279,7 @@ class _EventLinks extends React.Component {
           <Message message={messages.ticketsLink} />
           {' '}
           <a
+            id="view-tickets"
             href={this.props.event.ticket_uri}
             rel="noopener noreferrer"
             target="_blank"
@@ -355,6 +364,7 @@ class _EventLinks extends React.Component {
       sourceName = (
         <a
           className="link-event-source"
+          id="view-source"
           href={event.source.url}
           rel="noopener noreferrer"
           target="_blank"
@@ -386,6 +396,7 @@ class _EventLinks extends React.Component {
         </ImagePrefix>
         <ImagePrefix iconName="calendar-plus-o">
           <a
+            id="add-to-calendar"
             href={getAddToCalendarLink(event)}
             rel="noopener noreferrer"
             target="_blank"
@@ -431,6 +442,7 @@ class MapWithLinks extends React.Component {
     const mapContents = (
       <a
         className="link-event-map"
+        id="view-map"
         href={mapUrl}
         rel="noopener noreferrer"
         target="_blank"
@@ -454,6 +466,7 @@ class MapWithLinks extends React.Component {
           {' '}
           <a
             className="link-event-map"
+            id="view-map-link"
             href={mapUrl}
             rel="noopener noreferrer"
             target="_blank"
@@ -480,7 +493,9 @@ class MapWithLinks extends React.Component {
       let locationName = <FormatText>{venue.name}</FormatText>;
       if (venue.id) {
         locationName = (
-          <a href={`https://www.facebook.com/${venue.id}`}>{locationName}</a>
+          <a id="view-venue" href={`https://www.facebook.com/${venue.id}`}>
+            {locationName}
+          </a>
         );
       }
       return (
