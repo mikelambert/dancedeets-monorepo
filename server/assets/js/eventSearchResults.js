@@ -55,6 +55,20 @@ import {
 // TODO: Copies from mobile/js/ui/Colors.js
 const yellowColors = ['#FFF3B0', '#FFEA73', '#FFD802', '#FFCA01', '#C0A000'];
 
+function insertEvery<T>(
+  array: Array<T>,
+  insertion: (origIndex: number) => T,
+  n: number
+) {
+  return array.reduce(
+    (newArray, member, i) =>
+      i % n === n - 1 // If it's our n'th element
+        ? newArray.concat(member, insertion(i))
+        : newArray.concat(member),
+    []
+  );
+}
+
 export class HorizontalEventFlyer extends React.Component {
   props: {
     event: BaseEvent,
@@ -228,6 +242,7 @@ class FeaturedEvent extends React.Component {
     );
   }
 }
+
 class FeaturedEvents extends React.Component {
   props: {
     events: Array<BaseEvent>,
@@ -293,8 +308,6 @@ class _EventsList extends React.Component {
   render() {
     const resultItems = [];
     let overallEventIndex = 0;
-    let eventsSinceAd = 0;
-    let adIndex = 0;
     groupEventsByStartDate(
       this.props.intl,
       this.props.events,
@@ -325,29 +338,56 @@ class _EventsList extends React.Component {
         )
       );
       overallEventIndex += events.length;
-      eventsSinceAd += events.length;
-      if (eventsSinceAd > 7) {
-        // Show an ad every so often...
-        eventsSinceAd = 0;
-        // Google Ad: search-inline
-        resultItems.push(
-          <GoogleAd
-            key={`ad-${adIndex}`}
-            style={{ display: 'block' }}
-            data-ad-format="fluid"
-            data-ad-layout="image-side"
-            data-ad-layout-key="-ef+s-31-bl+wx"
-            data-ad-slot="7215991777"
-          />
-        );
-        adIndex += 1;
-      }
     });
+
+    // Make some arbitrary determination on what kinds of ads to use.
+    // In this case, we use the very-last-event's id's even/odd bits.
+    // It's also far enough off-screen to not influence any behavior.
+    const lastEvent = this.props.events[this.props.events.length - 1];
+    const adType = lastEvent
+      ? Number(lastEvent.id[lastEvent.id.length - 1]) % 3
+      : null;
+    function adItem(origIndex) {
+      switch (adType) {
+        case 0:
+          return (
+            <GoogleAd
+              key={`ad-${origIndex}`}
+              style={{ display: 'block' }}
+              data-ad-format="fluid"
+              data-ad-layout="image-side"
+              data-ad-layout-key="-ef+o-2p-9x+sk"
+              data-ad-slot="7215991777"
+            />
+          );
+        case 1:
+          return (
+            <GoogleAd
+              key={`ad-${origIndex}`}
+              style={{ display: 'block' }}
+              data-ad-format="auto"
+              data-ad-slot="8358307776"
+            />
+          );
+        case 2:
+          return (
+            <GoogleAd
+              key={`ad-${origIndex}`}
+              style={{ display: 'inline-block', width: 320, height: 100 }}
+              data-ad-format="auto"
+              data-ad-slot="6502811377"
+            />
+          );
+        default:
+          return null;
+      }
+    }
+    const monetizedResultItems = insertEvery(resultItems, adItem, 10);
 
     return (
       <StickyContainer>
         <ol className="events-list">
-          {resultItems}
+          {monetizedResultItems}
         </ol>
       </StickyContainer>
     );
