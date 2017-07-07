@@ -336,7 +336,7 @@ class _EventsList extends React.Component {
             style={{ display: 'block' }}
             data-ad-format="fluid"
             data-ad-layout="image-side"
-            data-ad-layout-key="-ef+f-23-5i+i7"
+            data-ad-layout-key="-ef+s-31-bl+wx"
             data-ad-slot="7215991777"
           />
         );
