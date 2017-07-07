@@ -326,7 +326,7 @@ class _EventsList extends React.Component {
       );
       overallEventIndex += events.length;
       eventsSinceAd += events.length;
-      if (eventsSinceAd > 10) {
+      if (eventsSinceAd > 7) {
         // Show an ad every so often...
         eventsSinceAd = 0;
         // Google Ad: search-inline
@@ -334,8 +334,10 @@ class _EventsList extends React.Component {
           <GoogleAd
             key={`ad-${adIndex}`}
             style={{ display: 'block' }}
-            data-ad-slot="8358307776"
-            data-ad-format="auto"
+            data-ad-format="fluid"
+            data-ad-layout="image-side"
+            data-ad-layout-key="-du+d-39-1h+fi"
+            data-ad-slot="7215991777"
           />
         );
         adIndex += 1;
