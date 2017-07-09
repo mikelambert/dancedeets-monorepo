@@ -137,7 +137,7 @@ def _type_for_fb_source(fb_source_common):
         logging.info("cannot classify object type for id %s", source_type)
         return None
 
-def _get_lookup_for_graph_type(graph_type):
+def get_lookup_for_graph_type(graph_type):
     if graph_type == GRAPH_TYPE_FANPAGE:
         return fb_api.LookupThingPage
     elif graph_type == GRAPH_TYPE_GROUP:
@@ -161,7 +161,7 @@ def create_source_from_id(fbl, source_id):
 
     if not thing_feed['empty']:
         graph_type = _type_for_fb_source(fb_source_common)
-        fb_source_data = fbl.get(_get_lookup_for_graph_type(graph_type)), source_id)
+        fb_source_data = fbl.get(get_lookup_for_graph_type(graph_type)), source_id)
 
         source = Source.get_by_key_name(source_id) or Source(key_name=source_id, street_dance_related=False)
         logging.info('Getting source for id %s: %s', source.graph_id, source.name)

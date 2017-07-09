@@ -79,7 +79,10 @@ def discover_events_from_sources(fbl, sources):
         logging.error('discover_events_from_sources unexpectedly called with a disabled cache!')
 
     logging.info("Looking up sources: %s", [x.graph_id for x in sources])
-    fbl.request_multi(fb_api.LookupThingFeed, [x.graph_id for x in sources])
+    fbl.request_multi(fb_api.LookupThingCommon, [x.graph_id for x in sources])
+    # Now based on the sources we know, grab the appropriate fb data
+    for s in sources:
+        fbl.request(get_lookup_for_graph_type(s.graph_type), s.graph_id)
     fbl.batch_fetch()
 
     logging.info("Fetched %s URLs, saved %s updates", fbl.fb_fetches, fbl.db_updates)
@@ -87,8 +90,7 @@ def discover_events_from_sources(fbl, sources):
     discovered_list = set()
     for source in sources:
         try:
-            thing_feed = fbl.fetched_data(fb_api.LookupThingFeed, source.graph_id)
-            discovered_list.update(process_thing_feed(source, thing_feed))
+            discovered_list.update(_process_thing_feed(fbl, source))
         except fb_api.NoFetchedDataException, e:
             logging.warning("Failed to fetch data for thing: %s", str(e))
     logging.info("Discovered %s items: %s", len(discovered_list), discovered_list)
@@ -138,17 +140,18 @@ def parsed_event_link(url):
     else:
         return None
 
-def process_thing_feed(source, thing_feed):
+def _process_thing_feed(fbl, source):
+    fb_source_common = fbl.fetched_data(fb_api.LookupThingFeed, source.graph_id)
     if source.creation_time is None:
         source.creation_time = datetime.datetime(2010, 1, 1)
         source.put()
 
-    if thing_feed['empty']:
-        logging.warning("Source %s was empty: %s", source.graph_id, thing_feed['empty'])
+    if fb_source_common['empty']:
+        logging.warning("Source %s was empty: %s", source.graph_id, fb_source_common['empty'])
         return []
     # TODO(lambert): do we really need to scrape the 'info' to get the id, or we can we half the number of calls by just getting the feed? should we trust that the type-of-the-thing-is-legit for all time, which is one case we use 'info'?
-    if 'data' not in thing_feed['feed']:
-        logging.error("No 'data' found in: %s", thing_feed['feed'])
+    if 'data' not in fb_source_common['feed']:
+        logging.error("No 'data' found in: %s", fb_source_common['feed'])
         return []
 
     # In case any of our MR's failed and updated the last_scrape_time prematurely,
@@ -160,8 +163,9 @@ def process_thing_feed(source, thing_feed):
         post_high_watermark = datetime.datetime.min
 
     logging.info('Finding events on source %s, using high watermark %s', source.graph_id, post_high_watermark)
+    fb_source_data = fbl.fetched_data(get_lookup_for_graph_type(s.graph_type), s.graph_id)
+    source.compute_derived_properties(fb_source_common, fb_source_data)
     # save new name, feed_history_in_seconds
-    source.compute_derived_properties(thing_feed)
     source.last_scrape_time = datetime.datetime.now()
     source.put()
 
