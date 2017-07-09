@@ -283,7 +283,7 @@ class AdminEditHandler(base_servlet.BaseRequestHandler):
         owner_location = None
         if 'owner' in fb_event['info']:
             owner_id = fb_event['info']['owner']['id']
-            location = self._get_location(owner_id, fb_api.LookupProfile, 'profile') or self._get_location(owner_id, fb_api.LookupThingFeed, 'info')
+            location = self._get_location(owner_id, fb_api.LookupProfile, 'profile') or self._get_location(owner_id, fb_api.LookupThingPage, 'info')
             if location:
                 owner_location = event_locations.city_for_fb_location(location)
         self.display['owner_location'] = owner_location

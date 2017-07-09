@@ -35,6 +35,7 @@ OBJ_EVENT_FIELDS = ('description', 'end_time', 'id', 'name', 'owner', 'type', 's
 
 OBJ_USER_FIELDS = ('name', 'email', 'first_name', 'last_name', 'locale', 'gender', 'picture', 'link', 'timezone')
 
+OBJ_SOURCE_COMMON_FIELDS = ('id', 'name', 'link')
 OBJ_SOURCE_USER_FIELDS = ('id', 'name', 'updated_time', 'link', 'first_name', 'last_name')
 OBJ_SOURCE_GROUP_FIELDS = ('id', 'name', 'updated_time', 'link', 'cover', 'email', 'description', 'parent', 'privacy', 'icon', 'link', 'venue', 'owner')
 OBJ_SOURCE_PAGE_FIELDS = ('id', 'name', 'updated_time', 'link', 'cover', 'emails', 'about', 'category', 'category_list', 'current_location', 'hometown', 'general_info', 'likes', 'location', 'phone', 'username', 'website')
@@ -277,7 +278,7 @@ class LookupThingCommon(LookupType):
         return [
             # TODO: Deprecate and delete this...
             # Can't pass fields=OBJ_SOURCE_FIELDS, because we can't guarantee it has all these fields (groups vs pages vs profiles etc)
-            ('info', cls.url('%s' % object_id, fields=['id', 'name', 'link'])),
+            ('info', cls.url('%s' % object_id, fields=OBJ_SOURCE_COMMON_FIELDS)),
             ('metadata', cls.url('%s' % object_id, metadata=1)),
             # We need to use limit=10, otherwise we trigger "Please reduce the amount of data you're asking for, then retry your request"
             # on pages that have a feed full of events.
