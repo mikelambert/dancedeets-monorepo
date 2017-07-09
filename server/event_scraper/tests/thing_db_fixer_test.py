@@ -58,8 +58,7 @@ class TestThingDBFixer(unittest.TestCase):
         }
 
         # Fetch it and construct a source
-        result = fbl.get(fb_api.LookupThingFeed, '111')
-        source = thing_db.create_source_for_id('111', result)
+        source = thing_db.create_source_from_id(fbl, '111')
         source.num_all_events = 5
         source.put()
 
@@ -83,7 +82,7 @@ class TestThingDBFixer(unittest.TestCase):
             URL_111: (200, {'id': '111', 'name': 'page 1', 'likes': 1}),
             URL_111_FEED: (200, {'data': []}),
         })
-        source = thing_db.create_source_for_id('111', result)
+        source = thing_db.create_source_from_id(fbl, '111')
         source.num_all_events = 5
         source.put()
 
