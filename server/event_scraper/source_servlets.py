@@ -53,7 +53,7 @@ class AdminEditHandler(base_servlet.BaseRequestHandler):
 
     def post(self):
         source_id = self.request.get('source_id')
-        s = thing_db.create_source_for_id(self.fbl, source_id)
+        s = thing_db.create_source_from_id(self.fbl, source_id)
 
         if self.request.get('delete'):
             s.delete()

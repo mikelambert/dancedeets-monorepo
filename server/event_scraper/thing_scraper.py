@@ -223,7 +223,7 @@ def process_event_source_ids(discovered_list, fbl):
         existing_source_ids = set([x.graph_id for x in thing_db.Source.get_by_key_name(potential_new_source_ids) if x])
         new_source_ids = set([x for x in potential_new_source_ids if x not in existing_source_ids])
         for source_id in new_source_ids:
-            #TODO(lambert): we know it doesn't exist, why does create_source_for_id check datastore?
+            #TODO(lambert): we know it doesn't exist, why does create_source_from_id check datastore?
             s = thing_db.Source(key_name=source_id)
             s.put()
         logging.info("Found %s new sources", len(new_source_ids))

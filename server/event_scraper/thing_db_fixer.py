@@ -11,20 +11,18 @@ def function_migrate_thing_to_new_id(fbapi_obj, old_source_id, new_source_id):
     if not old_source:
         return
 
-    key = (fb_api.LookupThingCommon, new_source_id)
+    fbl = fb_api.FBLookup(None, fb_api_obj.access_token_list)
 
-    fbapi_obj.raise_on_page_redirect = True
+    fbl.fb.raise_on_page_redirect = True
     try:
-        results = fbapi_obj.fetch_keys([key])
+        results = fbl.get(fb_api.LookupThingCommon, new_source_id)
     except fb_api.PageRedirectException as e:
         # If our forwarding address in turn has its own forwarding address,
         # repoint the old thing further down the chain
-        deferred.defer(function_migrate_thing_to_new_id, fbapi_obj, old_source_id, e.to_id)
+        deferred.defer(function_migrate_thing_to_new_id, fbl.fb, old_source_id, e.to_id)
         return
 
-    thing_feed = results[key]
-
-    new_source = thing_db.create_source_for_id(new_source_id, thing_feed)
+    new_source = thing_db.create_source_from_id(fb_api, new_source_id)
     new_source.creating_fb_uid = new_source.creating_fb_uid or old_source.creating_fb_uid
     new_source.creation_time = new_source.creation_time or old_source.creation_time
     new_source.last_scrape_time = new_source.last_scrape_time or old_source.last_scrape_time
