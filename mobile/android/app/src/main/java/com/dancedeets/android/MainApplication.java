@@ -24,6 +24,7 @@ import com.facebook.react.ReactPackage;
 import com.facebook.react.shell.MainReactPackage;
 import com.facebook.reactnative.androidsdk.FBSDKPackage;
 import com.facebook.soloader.SoLoader;
+import com.google.firebase.crash.FirebaseCrash;
 import com.higo.zhangyp.segmented.AndroidSegmentedPackage;
 import com.inprogress.reactnativeyoutube.ReactNativeYouTube;
 import com.joshblour.reactnativepermissions.ReactNativePermissionsPackage;
@@ -107,6 +108,9 @@ public class MainApplication extends MultiDexApplication implements ReactApplica
   @Override
   public void onCreate() {
     super.onCreate();
+    if (BuildConfig.DEBUG) {
+      FirebaseCrash.setCrashCollectionEnabled(false);
+    }
     // If we want to have Crashlytics report the version of our JS (and not our app),
     // because we are using CodePush or AppHub, then we need to pass in a stubbed Context.
     // It will wrap-and-delegate-to-"this", except for:

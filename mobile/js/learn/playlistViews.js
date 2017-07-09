@@ -552,7 +552,7 @@ class _PlaylistView extends React.Component {
           modestbranding
           // TODO: Improve our controls situation on Android:
           // https://github.com/inProgress-team/react-native-youtube/issues/131
-          controls={1}
+          controls={Platform.OS === 'android' ? 2 : 1}
           showFullscreenButton
           style={{ alignSelf: 'stretch', height }}
           onChangeState={this.onChangeState}

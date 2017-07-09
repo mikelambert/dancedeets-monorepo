@@ -365,17 +365,26 @@ class _EventListContainer extends React.Component {
       this.props.search.response &&
       nextProps.search.response
     ) {
-      this._listView.scrollToLocation({
-        animated: false,
-        itemIndex: 0,
-        sectionIndex: 0,
-        // Ugly hack to get it to scroll the Header into view:
-        // https://github.com/facebook/react-native/issues/14392
-        viewPosition: 100,
-      });
+      // Only scroll if there are rendered items we can use to compute.
+      // Otherwise we get errors since it doesn't know where "item 0" is.
+      if (
+        this._listView._wrapperListRef.getListRef()._highestMeasuredFrameIndex
+      ) {
+        this._listView.scrollToLocation({
+          animated: false,
+          itemIndex: 0,
+          sectionIndex: 0,
+          // Ugly hack to get it to scroll the Header into view:
+          // https://github.com/facebook/react-native/issues/14392
+          viewPosition: 100,
+        });
+      }
     }
     if (nextProps.search.response) {
-      this.setState({ people: nextProps.search.response.people, failed: false });
+      this.setState({
+        people: nextProps.search.response.people,
+        failed: false,
+      });
     }
   }
 
@@ -573,7 +582,9 @@ class _EventListContainer extends React.Component {
     try {
       this._loadingPeople = true;
       //locale: this.props.search.response.query.locale,
-      const resultJson = await people(this.props.search.response.query.location);
+      const resultJson = await people(
+        this.props.search.response.query.location
+      );
       this.setState({ people: resultJson.people });
     } catch (e) {
       console.error(e);
