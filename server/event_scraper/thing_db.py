@@ -79,27 +79,18 @@ class Source(db.Model):
         else:
             return 0
 
-    def compute_derived_properties(self, fb_data):
+    def compute_derived_properties(self, fb_source_common, fb_source_data):
         if fb_data:
-            if fb_data['empty']: # only update these when we have feed data
+            if fb_source_common['empty']: # only update these when we have feed data
                 self.fb_info = {}
             else:
-                self.fb_info = fb_data['info']
-                if 'likes' in fb_data['info']:
-                    self.graph_type = GRAPH_TYPE_FANPAGE
-                elif 'locale' in fb_data['info'] or 'first_name' in fb_data['info']:
-                    self.graph_type = GRAPH_TYPE_PROFILE
-                elif 'groups.facebook.com' in fb_data['info'].get('email', []):
-                    self.graph_type = GRAPH_TYPE_GROUP
-                elif 'start_time' in fb_data['info']:
-                    self.graph_type = GRAPH_TYPE_EVENT
-                else:
-                    logging.info("cannot classify object type for id %s", fb_data['info']['id'])
-                if 'name' not in fb_data['info']:
-                    logging.error('cannot find name for fb event data: %s, cannot update source data...', fb_data)
+                self.fb_info = fb_source_data['info'] # LookupThing* (and all fb_info dependencies). Only used for /search_pages functionality
+                self.graph_type = _type_for_fb_source(fb_source_common)
+                if 'name' not in fb_source_common['info']:
+                    logging.error('cannot find name for fb event data: %s, cannot update source data...', fb_source_common)
                     return
-                self.name = fb_data['info']['name']
-                feed = fb_data['feed']['data']
+                self.name = fb_source_common['info']['name']
+                feed = fb_source_common['feed']['data']
                 if len(feed):
                     dt = datetime.datetime.strptime(feed[-1]['created_time'], '%Y-%m-%dT%H:%M:%S+0000')
                     td = datetime.datetime.now() - dt
@@ -108,7 +99,7 @@ class Source(db.Model):
                     #logging.info('feed time delta is %s', self.feed_history_in_seconds)
                 else:
                     self.feed_history_in_seconds = 0
-                location = fb_data['info'].get('location')
+                location = fb_source_data['info'].get('location')
                 if location:
                     if location.get('latitude'):
                         self.latitude = float(location.get('latitude'))
@@ -132,27 +123,51 @@ def link_for_fb_source(data):
     else:
         return 'http://www.facebook.com/%s/' % data['info']['id']
 
-def create_source_for_id(source_id, fb_data):
-    source = Source.get_by_key_name(source_id) or Source(key_name=source_id, street_dance_related=False)
-    source.compute_derived_properties(fb_data)
-    logging.info('Getting source for id %s: %s', source.graph_id, source.name)
-    return source
+def _type_for_fb_source(fb_source_common):
+    source_type = fb_source_common['metadata']['type']
+    if source_type == 'page':
+        return GRAPH_TYPE_FANPAGE
+    elif source_type == 'user':
+        return GRAPH_TYPE_PROFILE
+    elif source_type == 'group':
+        return GRAPH_TYPE_GROUP
+    elif source_type == 'event':
+        return GRAPH_TYPE_EVENT
+    else:
+        logging.info("cannot classify object type for id %s", source_type)
+        return None
 
-def create_source_for_id_without_feed(fbl, source_id):
-    logging.info('create_source_for_id_without_feed: %s', source_id)
+def _get_lookup_for_graph_type(graph_type):
+    if graph_type == GRAPH_TYPE_FANPAGE:
+        return fb_api.LookupThingPage
+    elif graph_type == GRAPH_TYPE_GROUP:
+        return fb_api.LookupThingGroup
+    elif graph_type == GRAPH_TYPE_PROFILE:
+        return fb_api.LookupThingUser
+    else:
+        logging.info("cannot find LookupType for id %s", source_type)
+        return None
+
+def create_source_from_id(fbl, source_id):
+    logging.info('create_source_from_id: %s', source_id)
     if not source_id:
         return None
     # technically we could check if the object exists in the db, before we bother fetching the feed
-    thing_feed = fbl.get(fb_api.LookupThingFeed, source_id)
+    fb_source_common = fbl.get(fb_api.LookupThingCommon, source_id)
+
     if not thing_feed['empty']:
-        new_source = False
-        s = create_source_for_id(source_id, thing_feed)
-        if not s.creation_time:
-            new_source = True
-        s.put()
+        graph_type = _type_for_fb_source(fb_source_common)
+        fb_soure_data = fbl.get(_get_lookup_for_graph_type(graph_type)), source_id)
+
+        source = Source.get_by_key_name(source_id) or Source(key_name=source_id, street_dance_related=False)
+        logging.info('Getting source for id %s: %s', source.graph_id, source.name)
+        new_source = (not s.creation_time)
+        source.compute_derived_properties(fb_source_common, fb_source_data)
+        source.put()
         if new_source:
             backgrounder.load_sources([source_id], fb_uid=fbl.fb_uid)
-        return s
+        return source
+    return None
 
 def create_sources_from_event(fbl, db_event):
     logging.info('create_sources_from_event: %s', db_event.id)

@@ -277,7 +277,7 @@ class LookupThingCommon(LookupType):
         return [
             # TODO: Deprecate and delete this...
             # Can't pass fields=OBJ_SOURCE_FIELDS, because we can't guarantee it has all these fields (groups vs pages vs profiles etc)
-            ('info', cls.url('%s' % object_id, fields=['id', 'name'])),
+            ('info', cls.url('%s' % object_id, fields=['id', 'name', 'link'])),
             ('metadata', cls.url('%s' % object_id, metadata=1)),
             # We need to use limit=10, otherwise we trigger "Please reduce the amount of data you're asking for, then retry your request"
             # on pages that have a feed full of events.
