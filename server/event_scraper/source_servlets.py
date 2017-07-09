@@ -44,8 +44,7 @@ class AdminEditHandler(base_servlet.BaseRequestHandler):
         self.display['no_good_event_ids'] = sorted(list(set(x.fb_event_id for x in source_potential_events).difference(found_db_event_ids)))
 
         self.display['source'] = s
-        self.display['fb_source'] = s.fb_info
-        self.display['fb_source_data'] = pprint.pformat(s.fb_info['feed']['data'])
+        self.display['fb_source'] = {'info': s.fb_info}
         self.jinja_env.globals['link_for_fb_source'] = thing_db.link_for_fb_source
 
         self.display['track_analytics'] = False

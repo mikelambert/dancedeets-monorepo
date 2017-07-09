@@ -38,7 +38,7 @@ OBJ_USER_FIELDS = ('name', 'email', 'first_name', 'last_name', 'locale', 'gender
 OBJ_SOURCE_COMMON_FIELDS = ('id', 'name', 'link')
 OBJ_SOURCE_USER_FIELDS = ('id', 'name', 'updated_time', 'link', 'first_name', 'last_name')
 OBJ_SOURCE_GROUP_FIELDS = ('id', 'name', 'updated_time', 'link', 'cover', 'email', 'description', 'parent', 'privacy', 'icon', 'link', 'venue', 'owner')
-OBJ_SOURCE_PAGE_FIELDS = ('id', 'name', 'updated_time', 'link', 'cover', 'emails', 'about', 'category', 'category_list', 'current_location', 'hometown', 'general_info', 'likes', 'location', 'phone', 'username', 'website')
+OBJ_SOURCE_PAGE_FIELDS = ('id', 'name', 'link', 'cover', 'emails', 'about', 'category', 'category_list', 'current_location', 'hometown', 'general_info', 'likes', 'location', 'phone', 'username', 'website')
 
 USERLESS_UID = '701004'
 
@@ -281,7 +281,7 @@ class LookupThingCommon(LookupType):
         ]
     @classmethod
     def cache_key(cls, object_id, fetching_uid):
-        return ('None', object_id, 'OBJ_THING_FEED')
+        return ('None', object_id, 'OBJ_THING_COMMON')
 
 class LookupThingUser(LookupType):
     @classmethod
