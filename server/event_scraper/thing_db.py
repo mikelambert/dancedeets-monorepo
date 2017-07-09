@@ -80,37 +80,36 @@ class Source(db.Model):
             return 0
 
     def compute_derived_properties(self, fb_source_common, fb_source_data):
-        if fb_data:
-            if fb_source_common['empty']: # only update these when we have feed data
-                self.fb_info = {}
+        if fb_source_common['empty']: # only update these when we have feed data
+            self.fb_info = {}
+        else:
+            self.fb_info = fb_source_data['info'] # LookupThing* (and all fb_info dependencies). Only used for /search_pages functionality
+            self.graph_type = _type_for_fb_source(fb_source_common)
+            if 'name' not in fb_source_common['info']:
+                logging.error('cannot find name for fb event data: %s, cannot update source data...', fb_source_common)
+                return
+            self.name = fb_source_common['info']['name']
+            feed = fb_source_common['feed']['data']
+            if len(feed):
+                dt = datetime.datetime.strptime(feed[-1]['created_time'], '%Y-%m-%dT%H:%M:%S+0000')
+                td = datetime.datetime.now() - dt
+                total_seconds = td.seconds + td.days * 24 * 3600
+                self.feed_history_in_seconds = total_seconds
+                #logging.info('feed time delta is %s', self.feed_history_in_seconds)
             else:
-                self.fb_info = fb_source_data['info'] # LookupThing* (and all fb_info dependencies). Only used for /search_pages functionality
-                self.graph_type = _type_for_fb_source(fb_source_common)
-                if 'name' not in fb_source_common['info']:
-                    logging.error('cannot find name for fb event data: %s, cannot update source data...', fb_source_common)
-                    return
-                self.name = fb_source_common['info']['name']
-                feed = fb_source_common['feed']['data']
-                if len(feed):
-                    dt = datetime.datetime.strptime(feed[-1]['created_time'], '%Y-%m-%dT%H:%M:%S+0000')
-                    td = datetime.datetime.now() - dt
-                    total_seconds = td.seconds + td.days * 24 * 3600
-                    self.feed_history_in_seconds = total_seconds
-                    #logging.info('feed time delta is %s', self.feed_history_in_seconds)
+                self.feed_history_in_seconds = 0
+            location = fb_source_data['info'].get('location')
+            if location:
+                if location.get('latitude'):
+                    self.latitude = float(location.get('latitude'))
+                    self.longitude = float(location.get('longitude'))
                 else:
-                    self.feed_history_in_seconds = 0
-                location = fb_source_data['info'].get('location')
-                if location:
-                    if location.get('latitude'):
-                        self.latitude = float(location.get('latitude'))
-                        self.longitude = float(location.get('longitude'))
-                    else:
-                        component_names = ['street', 'city', 'state', 'zip', 'region', 'country']
-                        components = [location.get(x) for x in component_names if location.get(x)]
-                        address = ', '.join(components)
-                        geocode = gmaps_api.lookup_address(address)
-                        if geocode:
-                            self.latitude, self.longitude = geocode.latlng()
+                    component_names = ['street', 'city', 'state', 'zip', 'region', 'country']
+                    components = [location.get(x) for x in component_names if location.get(x)]
+                    address = ', '.join(components)
+                    geocode = gmaps_api.lookup_address(address)
+                    if geocode:
+                        self.latitude, self.longitude = geocode.latlng()
         #TODO(lambert): at some point we need to calculate all potential events, and all real events, and update the numbers with values from them. and all fake events. we have a problem where a new source gets added, adds in the potential events and/or real events, but doesn't properly tally them all. can fix this one-off, but it's too-late now, and i imagine our data will grow inaccurate over time anyway.
 
 def link_for_fb_source(data):
@@ -159,13 +158,13 @@ def create_source_from_id(fbl, source_id):
         source_id = fb_source_common['info']['id']
         logging.info('found proper id for source: %s', source_id)
 
-    if not thing_feed['empty']:
+    if not fb_source_common['empty']:
         graph_type = _type_for_fb_source(fb_source_common)
-        fb_source_data = fbl.get(get_lookup_for_graph_type(graph_type)), source_id)
+        fb_source_data = fbl.get(get_lookup_for_graph_type(graph_type), source_id)
 
         source = Source.get_by_key_name(source_id) or Source(key_name=source_id, street_dance_related=False)
         logging.info('Getting source for id %s: %s', source.graph_id, source.name)
-        new_source = (not s.creation_time)
+        new_source = (not source.creation_time)
         source.compute_derived_properties(fb_source_common, fb_source_data)
         source.put()
         if new_source:

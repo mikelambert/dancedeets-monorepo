@@ -263,12 +263,6 @@ class LookupEventMembers(LookupType):
         return (USERLESS_UID, object_id, 'OBJ_EVENT_MEMBERS')
 
 class LookupThingCommon(LookupType):
-    # TODO: We cannot upgrade to latest, until we specify a list of fields=
-    # Unfortunately, since different objects are different types (groups, pages, profiles, event?)
-    # It's hard to pass a singular "list of fields"
-    # We may need to store the type itself in our ThingFeed object, and use it when querying the FB data
-    version = "v2.3"
-
     @classmethod
     def track_lookup(cls):
         mr.increment('fb-lookups-source-feed', 1)
@@ -289,10 +283,7 @@ class LookupThingCommon(LookupType):
     def cache_key(cls, object_id, fetching_uid):
         return ('None', object_id, 'OBJ_THING_FEED')
 
-LookupThingFeed = LookupThingCommon
-
 class LookupThingUser(LookupType):
-
     @classmethod
     def track_lookup(cls):
         mr.increment('fb-lookups-source', 1)
@@ -308,7 +299,6 @@ class LookupThingUser(LookupType):
         return ('None', object_id, 'OBJ_THING_USER')
 
 class LookupThingGroup(LookupType):
-
     @classmethod
     def track_lookup(cls):
         mr.increment('fb-lookups-source', 1)
@@ -324,7 +314,6 @@ class LookupThingGroup(LookupType):
         return ('None', object_id, 'OBJ_THING_GROUP')
 
 class LookupThingPage(LookupType):
-
     @classmethod
     def track_lookup(cls):
         mr.increment('fb-lookups-source', 1)

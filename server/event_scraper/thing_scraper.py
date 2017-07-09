@@ -141,7 +141,7 @@ def parsed_event_link(url):
         return None
 
 def _process_thing_feed(fbl, source):
-    fb_source_common = fbl.fetched_data(fb_api.LookupThingFeed, source.graph_id)
+    fb_source_common = fbl.fetched_data(fb_api.LookupThingCommon, source.graph_id)
     if source.creation_time is None:
         source.creation_time = datetime.datetime(2010, 1, 1)
         source.put()

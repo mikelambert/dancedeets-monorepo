@@ -6,10 +6,13 @@ from event_scraper import thing_db
 from test_utils import unittest
 from util import deferred
 
-fields_str = '%2C'.join(fb_api.OBJ_SOURCE_COMMON_FIELDS)
+common_fields_str = '%2C'.join(fb_api.OBJ_SOURCE_COMMON_FIELDS)
+page_fields_str = '%2C'.join(fb_api.OBJ_SOURCE_PAGE_FIELDS)
 VERSION = fb_api.LookupThingCommon.version
-URL_111 = '/%s/111?fields=%s' % fields_str' % VERSION
-URL_222 = '/%s/222?fields=%s' % fields_str' % VERSION
+URL_111 = '/%s/111?fields=%s' % (VERSION, common_fields_str)
+URL_222 = '/%s/222?fields=%s' % (VERSION, common_fields_str)
+URL_111_INFO2 = '/%s/111?fields=%s' % (VERSION, page_fields_str)
+URL_222_INFO2 = '/%s/222?fields=%s' % (VERSION, page_fields_str)
 URL_111_FEED = '/%s/111/feed?%s' % (VERSION, urllib.urlencode(dict(fields='created_time,updated_time,from,link,message', limit=10)))
 URL_222_FEED = '/%s/222/feed?%s' % (VERSION, urllib.urlencode(dict(fields='created_time,updated_time,from,link,message', limit=10)))
 URL_111_EVENTS = '/%s/111/events?%s' % (VERSION, urllib.urlencode(dict(fields='id,updated_time')))
@@ -49,12 +52,16 @@ class TestThingDBFixer(unittest.TestCase):
 
         # Set up our facebook backend
         fb_api.FBAPI.results = {
-            URL_111: (200, {'id': '111', 'name': 'page 1', 'likes': 1}),
+            URL_111: (200, {'id': '111', 'name': 'page 1'}),
             URL_111_FEED: (200, {'data': []}),
             URL_111_EVENTS: (200, {'data': []}),
-            URL_222: (200, {'id': '222', 'name': 'page 2', 'likes': 1}),
+            URL_111_INFO2: (200, {}),
+            URL_222: (200, {'id': '222', 'name': 'page 2'}),
             URL_222_FEED: (200, {'data': []}),
             URL_222_EVENTS: (200, {'data': []}),
+            URL_222_INFO2: (200, {}),
+            '/v2.8/111?metadata=1': (200, {'type': 'page'}),
+            '/v2.8/222?metadata=1': (200, {'type': 'page'}),
         }
 
         # Fetch it and construct a source
@@ -79,7 +86,7 @@ class TestThingDBFixer(unittest.TestCase):
 
         # Now let's create 111 again, to verify merge works
         fb_api.FBAPI.results.update({
-            URL_111: (200, {'id': '111', 'name': 'page 1', 'likes': 1}),
+            URL_111: (200, {'id': '111', 'name': 'page 1'}),
             URL_111_FEED: (200, {'data': []}),
         })
         source = thing_db.create_source_from_id(fbl, '111')
