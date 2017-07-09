@@ -414,6 +414,7 @@ class _PlaylistView extends React.Component {
         view,
         element,
       });
+      return;
     }
 
     let viewPosition = null;
