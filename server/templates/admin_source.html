@@ -10,14 +10,6 @@ Edit Source
 			<a href="{{ link_for_fb_source(fb_source) }}">See on Facebook</a> (<a href="http://graph.facebook.com/{{ fb_source.info.id }}">Graph</a>)
 			<br><br>
 
-			<div class="goog-trans-section">
-			<table><tr><td>Description:</td><td class="goog-trans-control"></td></tr></table>
-			{% set description = fb_source.info.personal_info or fb_source.info.description or 'None!' %}
-
-			<div id="description" style="padding: 20px; width: 600px; height:150px; overflow:scroll; border: 1px solid black">
-			{{ description|format_html|linkify }}</div>
-			</div>
-
 			<p>
 			{% if creating_user %}
 				Submitted by <a href="{{ creating_user.profile.link }}">{{ creating_user.profile.name }}</a>.<br>
@@ -64,18 +56,4 @@ Edit Source
 
 		</form>
   </body>
-{% endblock %}
-
-{% block bottom_javascript %}
-<script>
-function googleSectionalElementInit() {
-  new google.translate.SectionalElement({
-    sectionalNodeClassName: 'goog-trans-section',
-    controlNodeClassName: 'goog-trans-control',
-    background: 'transparent'
-  }, 'google_sectional_element');
-}
-</script>
-<script src="//translate.google.com/translate_a/element.js?cb=googleSectionalElementInit&ug=section&hl=en" crossorigin="anonymous"></script>
-</script>
 {% endblock %}

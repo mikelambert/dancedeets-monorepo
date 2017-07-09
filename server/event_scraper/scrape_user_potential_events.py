@@ -13,7 +13,7 @@ def get_potential_dance_events(fbl, user_id, fb_user_events):
 
     logging.info("For user id %s, found %s invited events %s", user_id, len(event_ids), event_ids)
 
-    source = thing_db.create_source_for_id(user_id, fb_data=None)
+    source = thing_db.create_source_from_id(fbl, user_id)
     source.put()
 
     discovered_list = [potential_events.DiscoveredEvent(x, source, thing_db.FIELD_INVITES) for x in event_ids]

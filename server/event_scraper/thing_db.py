@@ -155,9 +155,13 @@ def create_source_from_id(fbl, source_id):
     # technically we could check if the object exists in the db, before we bother fetching the feed
     fb_source_common = fbl.get(fb_api.LookupThingCommon, source_id)
 
+    if source_id != fb_source_common['info']['id']:
+        source_id = fb_source_common['info']['id']
+        logging.info('found proper id for source: %s', source_id)
+
     if not thing_feed['empty']:
         graph_type = _type_for_fb_source(fb_source_common)
-        fb_soure_data = fbl.get(_get_lookup_for_graph_type(graph_type)), source_id)
+        fb_source_data = fbl.get(_get_lookup_for_graph_type(graph_type)), source_id)
 
         source = Source.get_by_key_name(source_id) or Source(key_name=source_id, street_dance_related=False)
         logging.info('Getting source for id %s: %s', source.graph_id, source.name)
@@ -171,10 +175,10 @@ def create_source_from_id(fbl, source_id):
 
 def create_sources_from_event(fbl, db_event):
     logging.info('create_sources_from_event: %s', db_event.id)
-    create_source_for_id_without_feed(fbl, db_event.owner_fb_uid)
+    create_source_from_id(fbl, db_event.owner_fb_uid)
     for admin in db_event.admins:
         if admin['id'] != db_event.owner_fb_uid:
-            create_source_for_id_without_feed(fbl, admin['id'])
+            create_source_from_id(fbl, admin['id'])
 
 map_create_sources_from_event = fb_mapreduce.mr_wrap(create_sources_from_event)
 

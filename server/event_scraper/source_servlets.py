@@ -26,13 +26,7 @@ class AdminEditHandler(base_servlet.BaseRequestHandler):
             source_id = get_id_from_url(self.request.get('source_url'))
         elif self.request.get('source_id'):
             source_id = self.request.get('source_id')
-        fb_source = self.fbl.get(fb_api.LookupThingFeed, source_id)
-
-        if fb_source['empty']:
-            self.response.out.write(fb_source['empty'])
-            return
-        real_source_id = fb_source['info']['id']
-        s = thing_db.create_source_for_id(real_source_id, fb_source)
+        s = thing_db.create_source_from_id(self.fbl, source_id)
 
         #STR_ID_MIGRATE
         source_potential_events = potential_events.PotentialEvent.gql('WHERE source_ids = :graph_id', graph_id=long(s.graph_id)).fetch(1000)
@@ -50,8 +44,8 @@ class AdminEditHandler(base_servlet.BaseRequestHandler):
         self.display['no_good_event_ids'] = sorted(list(set(x.fb_event_id for x in source_potential_events).difference(found_db_event_ids)))
 
         self.display['source'] = s
-        self.display['fb_source'] = fb_source
-        self.display['fb_source_data'] = pprint.pformat(fb_source['feed']['data'])
+        self.display['fb_source'] = s.fb_info
+        self.display['fb_source_data'] = pprint.pformat(s.fb_info['feed']['data'])
         self.jinja_env.globals['link_for_fb_source'] = thing_db.link_for_fb_source
 
         self.display['track_analytics'] = False
@@ -59,9 +53,7 @@ class AdminEditHandler(base_servlet.BaseRequestHandler):
 
     def post(self):
         source_id = self.request.get('source_id')
-        fb_source = self.fbl.get(fb_api.LookupThingFeed, source_id, allow_cache=False)
-
-        s = thing_db.create_source_for_id(source_id, fb_source)
+        s = thing_db.create_source_for_id(self.fbl, source_id)
 
         if self.request.get('delete'):
             s.delete()
