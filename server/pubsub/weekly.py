@@ -121,7 +121,7 @@ def _facebook_weekly_post(db_auth_token, city_data):
         #  u'error_data': {u'blame_field': u'targeting'}}}
         post_values['targeting'] = json.dumps(feed_targeting)
     logging.info("FB Feed Post Values: %s", post_values)
-    endpoint = 'v2.8/%s/feed' % page_id
+    endpoint = 'v2.9/%s/feed' % page_id
     result = fbl.fb.post(endpoint, None, post_values)
     logging.info('Post Result for %s: %s', city.display_name(), result)
     return result

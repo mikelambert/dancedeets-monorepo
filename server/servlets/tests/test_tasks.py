@@ -45,7 +45,7 @@ class TestReloadPastEvents(TestTasks):
 class TestTrackNewUserFriends(TestTasks):
     def runTest(self):
         fb_api.FBAPI.results = {
-            '/v2.8/701004/friends':
+            '/v2.9/701004/friends':
             (200, {
                 "data": [
                     {"id": "703278"},

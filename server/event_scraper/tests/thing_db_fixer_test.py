@@ -60,8 +60,8 @@ class TestThingDBFixer(unittest.TestCase):
             URL_222_FEED: (200, {'data': []}),
             URL_222_EVENTS: (200, {'data': []}),
             URL_222_INFO2: (200, {}),
-            '/v2.8/111?metadata=1': (200, {'type': 'page'}),
-            '/v2.8/222?metadata=1': (200, {'type': 'page'}),
+            '/%s/111?metadata=1' % fb_api.LookupThingCommon.version: (200, {'type': 'page'}),
+            '/%s/222?metadata=1' % fb_api.LookupThingCommon.version: (200, {'type': 'page'}),
         }
 
         # Fetch it and construct a source

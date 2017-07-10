@@ -68,7 +68,7 @@ class PageRedirectException(Exception):
 class LookupType(object):
     optional_keys = []
     use_access_token = True
-    version = "v2.8"
+    version = "v2.9"
 
     @classmethod
     def url(cls, path, fields=None, **kwargs):

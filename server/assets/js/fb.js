@@ -104,7 +104,7 @@ export function fbSetup(
     }
 
     FB.init({
-      version: 'v2.8',
+      version: 'v2.9',
       appId: fbAppId,
       status: true,
       cookie: true,
