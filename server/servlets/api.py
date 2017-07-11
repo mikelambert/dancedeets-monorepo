@@ -168,8 +168,11 @@ def people_groupings(southwest, northeast, center_latlng, skip_people):
                     groupings = popular_people.combine_rankings(people_rankings, max_people=10)
                 except:
                     logging.exception('Error creating combined people rankings')
+                new_groupings = {
+                    'ADMIN': {},
+                    'ATTENDEE': {},
+                }
                 # These lists can get huge now...make sure we trim them down for what clients need!
-                new_groupings = dict((x, {}) for x in groupings)
                 for person_type, styles in groupings.iteritems():
                     for style in event_types.STYLES + ['']:
                         index_style_name = style.index_name if style else ''
