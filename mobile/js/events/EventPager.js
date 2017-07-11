@@ -64,9 +64,27 @@ class EventPager extends React.Component {
     const contentOffset = e.nativeEvent.contentOffset;
     const viewSize = e.nativeEvent.layoutMeasurement;
 
+    const results = this.props.search.response.results;
+
     // Divide the horizontal offset by the width of the view to see which page is visible
     const pageIndex = Math.floor(contentOffset.x / viewSize.width);
-    const event = this.props.search.response.results[pageIndex];
+    const event = results[pageIndex];
+    if (event == null) {
+      console.error('Found empty event for onEventNavigated.');
+      console.error({
+        pageIndex,
+        contentOffsetX: contentOffset.x,
+        viewSizeWidth: viewSize.width,
+      });
+      if (results) {
+        console.error(`Response results has ${results.length} elements`);
+      } else {
+        const response = this.props.search.response;
+        console.error(`Response is non-empty? ${String(response != null)}`);
+        console.error(`Response error: ${response.error}`);
+        console.error(`Response errorString: ${response.errorString}`);
+      }
+    }
     return this.props.onEventNavigated(event);
   }
 
