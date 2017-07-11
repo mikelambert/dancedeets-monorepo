@@ -82,7 +82,7 @@ def discover_events_from_sources(fbl, sources):
     fbl.request_multi(fb_api.LookupThingCommon, [x.graph_id for x in sources])
     # Now based on the sources we know, grab the appropriate fb data
     for s in sources:
-        fbl.request(get_lookup_for_graph_type(s.graph_type), s.graph_id)
+        fbl.request(thing_db.get_lookup_for_graph_type(s.graph_type), s.graph_id)
     fbl.batch_fetch()
 
     logging.info("Fetched %s URLs, saved %s updates", fbl.fb_fetches, fbl.db_updates)
@@ -163,16 +163,16 @@ def _process_thing_feed(fbl, source):
         post_high_watermark = datetime.datetime.min
 
     logging.info('Finding events on source %s, using high watermark %s', source.graph_id, post_high_watermark)
-    fb_source_data = fbl.fetched_data(get_lookup_for_graph_type(s.graph_type), s.graph_id)
+    fb_source_data = fbl.fetched_data(thing_db.get_lookup_for_graph_type(source.graph_type), source.graph_id)
     source.compute_derived_properties(fb_source_common, fb_source_data)
     # save new name, feed_history_in_seconds
     source.last_scrape_time = datetime.datetime.now()
     source.put()
 
-    discovered_list = build_discovered_from_feed(source, thing_feed['feed']['data'], post_high_watermark)
+    discovered_list = build_discovered_from_feed(source, fb_source_common['feed']['data'], post_high_watermark)
 
     # Now also grab the events that the page owns/manages itself:
-    for event in thing_feed['events']['data']:
+    for event in fb_source_common['events']['data']:
         updated_time = dateparser.parse(event['updated_time'])
         if post_high_watermark < updated_time:
             discovered = potential_events.DiscoveredEvent(event['id'], source, thing_db.FIELD_FEED)

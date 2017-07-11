@@ -133,7 +133,7 @@ def _type_for_fb_source(fb_source_common):
     elif source_type == 'event':
         return GRAPH_TYPE_EVENT
     else:
-        logging.info("cannot classify object type for id %s", source_type)
+        logging.info("cannot classify object type for metadata type %s", source_type)
         return None
 
 def get_lookup_for_graph_type(graph_type):
@@ -144,8 +144,8 @@ def get_lookup_for_graph_type(graph_type):
     elif graph_type == GRAPH_TYPE_PROFILE:
         return fb_api.LookupThingUser
     else:
-        logging.info("cannot find LookupType for id %s", source_type)
-        return None
+        logging.error("cannot find LookupType for graph type %s", graph_type)
+        raise ValueError('Unknown graph type %s' % graph_type)
 
 def create_source_from_id(fbl, source_id):
     logging.info('create_source_from_id: %s', source_id)
