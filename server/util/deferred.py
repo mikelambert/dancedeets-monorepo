@@ -3,4 +3,7 @@ from google.appengine.ext import deferred
 
 def defer(*args, **kwargs):
     kwargs['_target'] = taskqueue.DEFAULT_APP_VERSION
+    kwargs['_headers'] = {
+        'Host': 'batch.dancedeets-hrd.appspot.com',
+    }
     return deferred.defer(*args, **kwargs)
