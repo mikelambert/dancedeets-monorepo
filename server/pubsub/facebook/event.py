@@ -197,7 +197,7 @@ def post_on_event_wall(db_event):
     ]
     message = random.choice(messages) % {'name': name, 'url': url}
     logging.info("Attempting to post on event wall for %s", db_event.id)
-    result = fbl.fb.post('v2.5/%s/feed' % db_event.fb_event_id, None, {
+    result = fbl.fb.post('v2.9/%s/feed' % db_event.fb_event_id, None, {
         'message': message,
         'link': url,
     })

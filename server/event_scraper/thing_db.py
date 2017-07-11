@@ -123,7 +123,7 @@ def link_for_fb_source(data):
         return 'http://www.facebook.com/%s/' % data['info']['id']
 
 def _type_for_fb_source(fb_source_common):
-    source_type = fb_source_common['metadata']['metadata']['type']
+    source_type = fb_source_common['metadata']['type']
     if source_type == 'page':
         return GRAPH_TYPE_FANPAGE
     elif source_type == 'user':
