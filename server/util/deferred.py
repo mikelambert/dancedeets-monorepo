@@ -2,8 +2,7 @@ from google.appengine.ext.deferred import *
 from google.appengine.ext import deferred
 
 def defer(*args, **kwargs):
-    #kwargs['_target'] = taskqueue.DEFAULT_APP_VERSION
-    kwargs['_headers'] = {
-        'Host': 'batch.dancedeets-hrd.appspot.com',
-    }
+    # Since defer() itself adds in a target header regardlesss,
+    # we cannot pass in a hostname here at all.
+    kwargs['_target'] = taskqueue.DEFAULT_APP_VERSION
     return deferred.defer(*args, **kwargs)
