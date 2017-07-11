@@ -669,7 +669,14 @@ class _EventListContainer extends React.Component {
 
   renderWaitingForLocationPermission() {
     return (
-      <View style={{ justifyContent: 'center', alignItems: 'center', flex: 1 }}>
+      <View
+        style={{
+          justifyContent: 'center',
+          alignItems: 'center',
+          flex: 1,
+          margin: 20,
+        }}
+      >
         <Button
           style={{ marginBottom: 50 }}
           onPress={this.props.showSearchForm}
