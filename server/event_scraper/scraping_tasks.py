@@ -26,12 +26,6 @@ class AutoAddPotentialEventsHandler(base_servlet.BaseTaskFacebookRequestHandler)
 class MaybeAddEventsHandler(base_servlet.EventIdOperationHandler):
     event_id_operation = staticmethod(auto_add.maybe_add_events)
 
-@app.route('/tools/export_sources')
-class ExportSourcesHandler(base_servlet.BaseTaskFacebookRequestHandler):
-    def get(self):
-        queue = self.request.get('queue', 'fast-queue')
-        thing_db.mapreduce_export_sources(self.fbl, queue=queue)
-
 @app.route('/tasks/count_source_stats')
 class CountSourceStatsHandler(base_servlet.BaseTaskFacebookRequestHandler):
     def get(self):

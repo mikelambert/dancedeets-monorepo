@@ -4,9 +4,8 @@ from util import text
 
 class TestLinkify(unittest.TestCase):
     def testLinkify(self):
-        link = '<a href="https://www.dancedeets.com/">'
-        self.assertRegexpMatches(text.linkify('Check out https://www.dancedeets.com/ for events.'), link)
-        self.assertRegexpMatches(text.linkify('Check out www.dancedeets.com/ for events.'), link)
+        self.assertRegexpMatches(text.linkify('Check out https://www.dancedeets.com/ for events.'), '<a href="https://www.dancedeets.com/">')
+        self.assertRegexpMatches(text.linkify('Check out www.dancedeets.com/ for events.'), '<a href="http://www.dancedeets.com/">')
 
 
 class TestHumanList(unittest.TestCase):

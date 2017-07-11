@@ -35,9 +35,10 @@ OBJ_EVENT_FIELDS = ('description', 'end_time', 'id', 'name', 'owner', 'type', 's
 
 OBJ_USER_FIELDS = ('name', 'email', 'first_name', 'last_name', 'locale', 'gender', 'picture', 'link', 'timezone')
 
-OBJ_SOURCE_USER_FIELDS = ('name', 'updated_time', 'link', 'first_name', 'last_name')
-OBJ_SOURCE_GROUP_FIELDS = ('name', 'updated_time', 'link', 'cover', 'email', 'description', 'parent', 'privacy', 'icon', 'link', 'venue', 'owner')
-OBJ_SOURCE_PAGE_FIELDS = ('name', 'updated_time', 'link', 'cover', 'emails', 'about', 'category', 'category_list', 'current_location', 'hometown', 'general_info', 'likes', 'location', 'phone', 'username', 'website')
+OBJ_SOURCE_COMMON_FIELDS = ('id', 'name', 'link')
+OBJ_SOURCE_USER_FIELDS = ('id', 'name', 'updated_time', 'link', 'first_name', 'last_name')
+OBJ_SOURCE_GROUP_FIELDS = ('id', 'name', 'updated_time', 'link', 'cover', 'email', 'description', 'parent', 'privacy', 'icon', 'link', 'venue', 'owner')
+OBJ_SOURCE_PAGE_FIELDS = ('id', 'name', 'link', 'cover', 'emails', 'about', 'category', 'category_list', 'current_location', 'hometown', 'general_info', 'likes', 'location', 'phone', 'username', 'website')
 
 USERLESS_UID = '701004'
 
@@ -67,7 +68,7 @@ class PageRedirectException(Exception):
 class LookupType(object):
     optional_keys = []
     use_access_token = True
-    version = "v2.8"
+    version = "v2.9"
 
     @classmethod
     def url(cls, path, fields=None, **kwargs):
@@ -261,22 +262,18 @@ class LookupEventMembers(LookupType):
     def cache_key(cls, object_id, fetching_uid):
         return (USERLESS_UID, object_id, 'OBJ_EVENT_MEMBERS')
 
-class LookupThingFeed(LookupType):
-    # TODO: We cannot upgrade to latest, until we specify a list of fields=
-    # Unfortunately, since different objects are different types (groups, pages, profiles, event?)
-    # It's hard to pass a singular "list of fields"
-    # We may need to store the type itself in our ThingFeed object, and use it when querying the FB data
-    version = "v2.3"
-
+class LookupThingCommon(LookupType):
     @classmethod
     def track_lookup(cls):
-        mr.increment('fb-lookups-source', 1)
+        mr.increment('fb-lookups-source-feed', 1)
 
     @classmethod
     def get_lookups(cls, object_id):
         return [
+            # TODO: Deprecate and delete this...
             # Can't pass fields=OBJ_SOURCE_FIELDS, because we can't guarantee it has all these fields (groups vs pages vs profiles etc)
-            ('info', cls.url('%s' % object_id)),
+            ('info', cls.url('%s' % object_id, fields=OBJ_SOURCE_COMMON_FIELDS)),
+            ('metadata', cls.url('%s' % object_id, metadata=1)),
             # We need to use limit=10, otherwise we trigger "Please reduce the amount of data you're asking for, then retry your request"
             # on pages that have a feed full of events.
             ('feed', cls.url('%s/feed' % object_id, fields=['created_time', 'updated_time', 'from', 'link', 'message'], limit=10)),
@@ -284,7 +281,53 @@ class LookupThingFeed(LookupType):
         ]
     @classmethod
     def cache_key(cls, object_id, fetching_uid):
-        return ('None', object_id, 'OBJ_THING_FEED')
+        return ('None', object_id, 'OBJ_THING_COMMON')
+
+class LookupThingUser(LookupType):
+    @classmethod
+    def track_lookup(cls):
+        mr.increment('fb-lookups-source', 1)
+
+    @classmethod
+    def get_lookups(cls, object_id):
+        return [
+            ('info', cls.url('%s' % object_id, fields=OBJ_SOURCE_USER_FIELDS)),
+        ]
+
+    @classmethod
+    def cache_key(cls, object_id, fetching_uid):
+        return ('None', object_id, 'OBJ_THING_USER')
+
+class LookupThingGroup(LookupType):
+    @classmethod
+    def track_lookup(cls):
+        mr.increment('fb-lookups-source', 1)
+
+    @classmethod
+    def get_lookups(cls, object_id):
+        return [
+            ('info', cls.url('%s' % object_id, fields=OBJ_SOURCE_GROUP_FIELDS)),
+        ]
+
+    @classmethod
+    def cache_key(cls, object_id, fetching_uid):
+        return ('None', object_id, 'OBJ_THING_GROUP')
+
+class LookupThingPage(LookupType):
+    @classmethod
+    def track_lookup(cls):
+        mr.increment('fb-lookups-source', 1)
+
+    @classmethod
+    def get_lookups(cls, object_id):
+        return [
+            ('info', cls.url('%s' % object_id, fields=OBJ_SOURCE_PAGE_FIELDS)),
+        ]
+
+    @classmethod
+    def cache_key(cls, object_id, fetching_uid):
+        return ('None', object_id, 'OBJ_THING_PAGE')
+
 
 class CacheSystem(object):
     def fetch_keys(self, keys):

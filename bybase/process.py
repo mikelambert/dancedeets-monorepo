@@ -95,7 +95,7 @@ def find_fb_ids(e):
     if not fb_results:
         access_token = fb_access_token
         logging.info('Searching for event id %s on FB', e['id'])
-        fb_search_url = 'https://graph.facebook.com/v2.8/search?type=event&q=%s&access_token=%s' % (urllib.quote(title.encode('utf-8')), access_token)
+        fb_search_url = 'https://graph.facebook.com/v2.9/search?type=event&q=%s&access_token=%s' % (urllib.quote(title.encode('utf-8')), access_token)
         data = urllib2.urlopen(fb_search_url, timeout=2).read()
         fb_results = json.loads(data)
         if 'error' in fb_results:

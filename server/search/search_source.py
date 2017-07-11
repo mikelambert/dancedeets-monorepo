@@ -20,7 +20,7 @@ class SourceIndex(index.BaseIndex):
 
         # Only index fan pages for now:
         # - Profiles are not public or indexable.
-        # - Groups don't have a location.
+        # - Groups don't have a location. (but they do!?)
         # - Fan Pages are both.
         if source.graph_type != thing_db.GRAPH_TYPE_FANPAGE:
             return None

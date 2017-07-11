@@ -16,7 +16,7 @@ def create_event(event_id='1000001', start_time=None, location='NYC'):
     if not start_time:
         start_time = datetime.datetime.now()
     fields_str = '%2C'.join(fb_api.OBJ_EVENT_FIELDS)
-    base_url = '/v2.8/%s' % event_id
+    base_url = '/v2.9/%s' % event_id
     url = '%s?fields=%s' % (base_url, fields_str)
 
     picture_url = '%s/picture?redirect=false&type=large' % base_url
@@ -28,7 +28,7 @@ def create_event(event_id='1000001', start_time=None, location='NYC'):
                     "start_time": start_time.strftime("%Y-%m-%dT%H:%M:%S-0400"),
                     "id": event_id,
                 }),
-            '/v2.8/?fields=images%2Cwidth%2Cheight&ids=%7Bresult%3Dinfo%3A%24.cover.id%7D':
+            '/v2.9/?fields=images%2Cwidth%2Cheight&ids=%7Bresult%3Dinfo%3A%24.cover.id%7D':
                 (400, {'error': {'message': 'Cannot specify an empty identifier', 'code': 2500, 'type': 'OAuthException'}}),
             picture_url:
                 (200, {
@@ -75,7 +75,7 @@ def index_events(testbed_instance):
 
 def create_user(user_id='701004', access_token='Access Token', access_token_expires=None, location='NYC'):
     fields_str = '%2C'.join(fb_api.OBJ_USER_FIELDS)
-    base_url = '/v2.8/%s' % user_id
+    base_url = '/v2.9/%s' % user_id
     url = '%s?fields=%s' % (base_url, fields_str)
 
     fb_api.FBAPI.results.update({
