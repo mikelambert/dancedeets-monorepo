@@ -22,6 +22,8 @@ require('jquery.smartbanner');
 
 // Used for collapsing alert message boxes with data-dismiss
 require('bootstrap/js/alert');
+// Called via jquery(elem).modal();
+require('bootstrap/js/modal');
 // Used for the top nav menus with data-toggle
 require('bootstrap/js/collapse');
 require('bootstrap/js/dropdown');
