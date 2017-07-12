@@ -619,14 +619,15 @@ export class EventPage extends React.Component {
 
   render() {
     const event = new Event(this.props.event);
+    const adStyle = {
+      display: 'inline-block',
+      width: this.props.amp ? 300 : '100%',
+      height: 100,
+    };
     // Google Ad: event-inline
     const adInline = (
       <GoogleAd
-        style={{
-          display: 'inline-block',
-          width: this.props.amp ? 300 : '100%',
-          height: 100,
-        }}
+        style={adStyle}
         data-ad-slot="6741973779"
         amp={this.props.amp}
       />
@@ -634,15 +635,17 @@ export class EventPage extends React.Component {
     // Google Ad: event-header
     const adHeader = (
       <GoogleAd
-        style={{ display: 'inline-block', width: '100%', height: 100 }}
+        style={adStyle}
         data-ad-slot="8283608975"
+        amp={this.props.amp}
       />
     );
     // Google Ad: event-footer
     const adFooter = (
       <GoogleAd
-        style={{ display: 'inline-block', width: '100%', height: 100 }}
+        style={adStyle}
         data-ad-slot="5190541772"
+        amp={this.props.amp}
       />
     );
 
