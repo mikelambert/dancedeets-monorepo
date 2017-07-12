@@ -619,8 +619,8 @@ export class EventPage extends React.Component {
 
   render() {
     const event = new Event(this.props.event);
-    // Google Ad: event-header
-    const googleAd = (
+    // Google Ad: event-inline
+    const adInline = (
       <GoogleAd
         style={{
           display: 'inline-block',
@@ -631,12 +631,28 @@ export class EventPage extends React.Component {
         amp={this.props.amp}
       />
     );
+    // Google Ad: event-header
+    const adHeader = (
+      <GoogleAd
+        style={{ display: 'inline-block', width: '100%', height: 100 }}
+        data-ad-slot="8283608975"
+      />
+    );
+    // Google Ad: event-footer
+    const adFooter = (
+      <GoogleAd
+        style={{ display: 'inline-block', width: '100%', height: 100 }}
+        data-ad-slot="5190541772"
+      />
+    );
+
     return (
       <div className="container">
         <HtmlHead event={event} />
         {this.props.amp
           ? getReactArticleSchema(event)
           : getReactEventSchema(event)}
+        {adHeader}
         <div className="row">
           <div className="col-xs-12">
             <Title event={event} />
@@ -650,7 +666,7 @@ export class EventPage extends React.Component {
         <div className="row">
           <div className="col-sm-5">
             <ImageWithLinks event={event} amp={this.props.amp} />
-            {googleAd}
+            {adInline}
             <EventLinks
               event={event}
               amp={this.props.amp}
@@ -663,6 +679,7 @@ export class EventPage extends React.Component {
             <Description event={event} />
           </div>
         </div>
+        {adFooter}
       </div>
     );
   }
