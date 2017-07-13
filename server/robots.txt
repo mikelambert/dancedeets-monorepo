@@ -9,7 +9,27 @@ Disallow:
 User-agent: Facebot
 Disallow:
 User-agent: ia_archiver
-Disllow:
+Disallow:
+
+#Baidu (CN) http://www.baidu.com/search/spider.htm
+User-agent: Baiduspider
+Disallow:
+
+# Yandex (RU) https://yandex.com/support/webmaster/controlling-robot/robots-txt.xml
+User-agent: Yandex
+Disallow:
+
+# Naver (KR) http://help.naver.com/customer/etc/webDocument02.nhn
+User-agent: NaverBot
+Disallow:
+
+# Sogou http://www.sogou.com/docs/help/webmasters.htm#07
+User-agent: sogou spider
+Disallow:
+
+# Youdao (CN) http://www.youdao.com/help/webmaster/spider/
+User-agent: YoudaoBot
+Disallow:
 
 # Too often caught hammering my site, too fast, using up resources I pay for
 # And given the lack of any benefit I see from them in terms of incoming traffic
