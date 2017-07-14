@@ -1,0 +1,14 @@
+{% extends "_bigbox_base.html" %}
+
+{% block title %}
+Unsubscribe
+{% endblock %}
+
+{% block inner_body %}
+<form action="/user/unsubscribe" method="post" accept-charset="UTF-8" class="form-inline">
+<p>Please enter the email address you'd like to unsubscribe: <input name="email" class="form-control" placeholder="name@domain.com">
+<p><button class="btn btn-primary">Unsubscribe</button>
+</form>
+{% endblock %}
+
+

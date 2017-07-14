@@ -305,7 +305,9 @@ class _BodyWrapper extends React.Component {
             <mj-text align="center">
               You may also
               {' '}
-              <a href="*|UNSUB:https://www.dancedeets.com|*">unsubscribe</a>
+              <a href="*|UNSUB:https://www.dancedeets.com/user/unsubscribe|*">
+                unsubscribe
+              </a>
               {' '}
               or
               {' '}

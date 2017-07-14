@@ -6,6 +6,26 @@ import base_servlet
 import fb_api
 from . import users
 
+@app.route('/user/unsubscribe')
+class UserHandler(base_servlet.BaseRequestHandler):
+    def get(self):
+        self.finish_preload()
+        self.render_template('user_unsubscribe')
+
+    def post(self):
+        self.finish_preload()
+        self.errors_are_fatal()
+        email = self.request.get('email')
+        user = users.User.query(users.User.email == email).get()
+        if not user:
+            self.display['errors'] = ['Sorry, we could not find an account with that email address!']
+            self.render_template('user_unsubscribe')
+            return
+        user.send_email = False
+        user.put()
+        self.user.add_message("Successfully unsubscribed!")
+        self.redirect('/user/edit')
+
 @app.route('/user/edit')
 class UserHandler(base_servlet.BaseRequestHandler):
     def get(self):
