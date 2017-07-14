@@ -11,7 +11,7 @@ Disallow:
 User-agent: ia_archiver
 Disallow:
 
-#Baidu (CN) http://www.baidu.com/search/spider.htm
+# Baidu (CN) http://www.baidu.com/search/spider.htm
 User-agent: Baiduspider
 Disallow:
 
