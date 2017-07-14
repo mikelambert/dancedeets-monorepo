@@ -191,23 +191,6 @@ class _SearchHeader extends React.Component {
       >
         <SearchInput
           ref={x => {
-            this._keywords = x;
-          }}
-          iconName={'md-search'}
-          style={{ marginTop: 5 }}
-          placeholder={this.props.intl.formatMessage(messages.keywords)}
-          returnKeyType="search"
-          onChangeText={text => {
-            if (this.props.searchQuery.keywords !== text) {
-              this.props.updateKeywords(text);
-            }
-          }}
-          onSubmitEditing={() => this.props.performSearch()}
-          value={this.props.searchQuery.keywords}
-          autoFocus
-        />
-        <SearchInput
-          ref={x => {
             this._location = x;
           }}
           iconName={'md-locate'}
@@ -231,6 +214,23 @@ class _SearchHeader extends React.Component {
             this.props.performSearch();
           }}
           value={this.props.searchQuery.location}
+          autoFocus
+        />
+        <SearchInput
+          ref={x => {
+            this._keywords = x;
+          }}
+          iconName={'md-search'}
+          style={{ marginTop: 5 }}
+          placeholder={this.props.intl.formatMessage(messages.keywords)}
+          returnKeyType="search"
+          onChangeText={text => {
+            if (this.props.searchQuery.keywords !== text) {
+              this.props.updateKeywords(text);
+            }
+          }}
+          onSubmitEditing={() => this.props.performSearch()}
+          value={this.props.searchQuery.keywords}
         />
       </Animated.View>
     );
