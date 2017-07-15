@@ -728,8 +728,8 @@ class _EventListContainer extends React.Component {
         renderSectionHeader={({ section }) =>
           <SectionHeader title={upperFirst(section.title)} />}
         stickySectionHeadersEnabled
-        initialNumToRender={10}
-        maxToRenderPerBatch={10}
+        initialNumToRender={20}
+        maxToRenderPerBatch={2}
       />
     );
   }
