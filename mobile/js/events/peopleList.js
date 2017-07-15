@@ -26,10 +26,13 @@ import type { State } from '../reducers/search';
 import { openUserId } from '../util/fb';
 import { linkColor } from '../Colors';
 
-class PersonList extends React.Component {
+class _PersonList extends React.Component {
   props: {
     subtitle: string,
     people: StylePersonLookup,
+
+    // Self-managed props
+    intl: intlShape,
   };
 
   state: {
@@ -55,6 +58,13 @@ class PersonList extends React.Component {
   }
 
   render() {
+    if (!this.props.people[this.state.category]) {
+      return (
+        <Text style={{ marginLeft: 20, marginBottom: 10 }}>
+          {this.props.intl.formatMessage(messages.nooneNearby)}
+        </Text>
+      );
+    }
     const peopleList = this.props.people[this.state.category].slice(0, 10);
     // const categories = this.props.categoryOrder.filter(x => x === '' || this.props.people[x]);
     // {categories.map(x => <option key={x} value={x}>{x || 'Overall'}</option>)}
@@ -73,6 +83,7 @@ class PersonList extends React.Component {
     );
   }
 }
+const PersonList = injectIntl(_PersonList);
 
 class HeaderCollapsible extends React.Component {
   props: {

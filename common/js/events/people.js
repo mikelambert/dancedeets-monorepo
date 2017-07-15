@@ -22,4 +22,10 @@ export const messages = defineMessages({
     defaultMessage: 'These people are active in the local dance scene',
     description: 'Subtitle for pop-open list of dancers in the scene',
   },
+  nooneNearby: {
+    id: 'peopleList.nooneNearby',
+    defaultMessage: 'No one found nearby.',
+    description:
+      'Error message shown when there are no people to recommend in this area',
+  },
 });
