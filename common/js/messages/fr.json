@@ -62,6 +62,7 @@
   "peopleList.nearbyDancersMessage": "Ces personnes semblent actives dans la scene locale :",
   "peopleList.nearbyPromoters": "Organisateurs à proximité",
   "peopleList.nearbyPromotersMessage": "Si vous souhaitez organiser un événement, travaillez avec :",
+  "peopleList.nooneNearby": "Aucune personne à proximité.",
   "profile.detailsContents": "– {handAdded, plural, one {Ajouté} other {Ajoutés}} manuellement : {handAdded, number}\n– {autoAdded, plural, one {Ajouté} other {Ajoutés}} automatiquement : {autoAdded, number}",
   "profile.detailsHeader": "Événements :",
   "profile.friendsUsing": "{count, number} {count, plural, one {ami} other {amis}} sur DanceDeets",

@@ -62,6 +62,7 @@
   "peopleList.nearbyDancersMessage": "イベントによく行く人:",
   "peopleList.nearbyPromoters": "近くのプロモーター",
   "peopleList.nearbyPromotersMessage": "一緒にイベント企画に参加したいなら彼らに連絡ください",
+  "peopleList.nooneNearby": "近くに誰も見つかりませんでした.",
   "profile.detailsContents": "– 追加した数: {handAdded, number}\n– DanceDeetsが見つけた数: {autoAdded, number}",
   "profile.detailsHeader": "ダンスイベント:",
   "profile.friendsUsing": "{count, number}人の友達がDanceDeetsを使用",

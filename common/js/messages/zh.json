@@ -62,6 +62,7 @@
   "peopleList.nearbyDancersMessage": "當地event參與者",
   "peopleList.nearbyPromoters": "附近活動宣傳",
   "peopleList.nearbyPromotersMessage": "想要辦活動？ 可以和這些活動宣傳合作",
+  "peopleList.nooneNearby": "附沒有任何人",
   "profile.detailsContents": "– 已新增: {handAdded, number}\n– 搜尋到: {autoAdded, number}",
   "profile.detailsHeader": "街舞活動:",
   "profile.friendsUsing": "{count, number}個朋友在DanceDeets",

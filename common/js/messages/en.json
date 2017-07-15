@@ -62,6 +62,7 @@
   "peopleList.nearbyDancersMessage": "These people are active in the local dance scene",
   "peopleList.nearbyPromoters": "Nearby Promoters",
   "peopleList.nearbyPromotersMessage": "If you want to organize an event, work with these folks",
+  "peopleList.nooneNearby": "No one found nearby.",
   "profile.detailsContents": "– Added: {handAdded, number}\n– Auto-contributed: {autoAdded, number}",
   "profile.detailsHeader": "Dance Events:",
   "profile.friendsUsing": "{count} friends using DanceDeets",
