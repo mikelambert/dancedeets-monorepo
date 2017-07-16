@@ -26,7 +26,30 @@ def get_id(id):
         event = json_data['data']
         print event['id'], event['title'].encode('utf-8')
         return event
-id = 1
-while True:
-    get_id(id)
-    id += 1
+
+trailing_count = 5
+
+def grab_all():
+    id = 2860
+    missing = 0
+    while True:
+        event = get_id(id)
+        id += 1
+
+        if event:
+            missing = 0
+        else:
+            missing += 1
+        if missing > trailing_count:
+            break
+    return id - missing
+
+def delete_past(id):
+    for i in range(0, trailing_count):
+        json_filename = 'download/%s.json' % (id + i)
+        os.remove(json_filename)
+
+# This will accidentally create a few 'empty' files at the very end..
+last_id = grab_all()
+# And this will then clean them all up
+delete_past(last_id)
