@@ -373,7 +373,7 @@ class _EventsList extends React.Component {
           return (
             <GoogleAd
               key={`ad-${origIndex}`}
-              style={{ display: 'inline-block', width: 320, height: 100 }}
+              style={{ display: 'inline-block', width: '100%', height: 100 }}
               data-ad-format="auto"
               data-ad-slot="6502811377"
             />
