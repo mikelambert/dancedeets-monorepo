@@ -341,9 +341,7 @@ class _EventsList extends React.Component {
     });
 
     // Make some arbitrary determination on what kinds of ads to use.
-    // In this case, we use the very-last-event's id's even/odd bits.
-    // It's also far enough off-screen to not influence any behavior.
-    const lastEvent = this.props.events[this.props.events.length - 1];
+    const lastEvent = this.props.events[0];
     const adType = lastEvent
       ? Number(lastEvent.id[lastEvent.id.length - 1]) % 3
       : null;
