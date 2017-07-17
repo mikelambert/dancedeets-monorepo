@@ -219,8 +219,9 @@ def build_search_results_api(city_name, form, search_query, search_results, vers
 
     groupings = people_groupings(southwest, northeast, center_latlng, skip_people=skip_people)
     query = {}
-    for field in form:
-        query[field.name] = getattr(field, '_value', lambda: field.data)()
+    if form:
+        for field in form:
+            query[field.name] = getattr(field, '_value', lambda: field.data)()
     json_response = {
         'results': json_results,
         'onebox_links': onebox_links,
