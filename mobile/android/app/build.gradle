@@ -194,6 +194,7 @@ configurations.all {
 }
 
 dependencies {
+    compile project(':react-native-video')
     compile project(':react-native-sentry')
     compile project(':react-native-vector-icons')
     compile project(':react-native-send-intent')
