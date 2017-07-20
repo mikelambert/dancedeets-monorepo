@@ -17,7 +17,7 @@ import type { NewSearchResponse } from 'dancedeets-common/js/events/search';
 import { formatStartDateOnly } from 'dancedeets-common/js/dates';
 import { intlWeb } from 'dancedeets-common/js/intl';
 import { SquareEventFlyer } from './eventCommon';
-import { Card, ImagePrefix, wantsWindowSizes } from './ui';
+import { Card, ImagePrefix, Truncate, wantsWindowSizes } from './ui';
 import type { windowProps } from './ui';
 import { SelectButton } from './MultiSelectList';
 
@@ -163,18 +163,16 @@ class SocialLink extends React.Component {
   }
 }
 
-class Social extends React.Component {
+class SocialLinks extends React.Component {
   props: {
     topic: Topic,
   };
 
   render() {
     const socialLinks = Object.keys(this.props.topic.social).map(key =>
-      <SocialLink
-        key={key}
-        platform={key}
-        username={this.props.topic.social[key]}
-      />
+      <div key={key}>
+        <SocialLink platform={key} username={this.props.topic.social[key]} />
+      </div>
     );
     return <div>{socialLinks}</div>;
   }
@@ -304,21 +302,21 @@ class TopicPage extends React.Component {
         <h2>{this.props.topic.title}</h2>
         <table>
           <tbody>
-            <tr>
+            <tr style={{ verticalAlign: 'top' }}>
               <td>
                 <img
-                  width="300"
+                  width={300}
                   role="presentation"
                   src={this.props.topic.image_url}
                 />
               </td>
               <td>
-                <ShowMore>
+                <Truncate height={300}>
                   <FormatText>{this.props.topic.description}</FormatText>
-                </ShowMore>
+                </Truncate>
               </td>
               <td>
-                <Social topic={this.props.topic} />
+                <SocialLinks topic={this.props.topic} />
               </td>
             </tr>
           </tbody>

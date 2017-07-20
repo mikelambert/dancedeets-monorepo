@@ -283,3 +283,35 @@ h6 {
 .google-translate {
   height: 25px;
 }
+
+button.link-button, button.link-button:focus, button.link-button:active {
+  /* Remove all decorations to look like normal text */
+  background: none;
+  border: none;
+  display: inline;
+  font: inherit;
+  margin: 0;
+  padding: 0;
+  outline: none;
+  outline-offset: 0;
+  /* Additional styles to look like a link */
+  color: $blue-link;
+  cursor: pointer;
+  text-decoration: underline;
+}
+/* Remove extra space inside buttons in Firefox */
+button.link-button::-moz-focus-inner {
+  border: none;
+  padding: 0;
+}
+
+.fade-out-body:after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: hsla(0, 0%, 100%, .2);
+  background: linear-gradient(180deg, hsla(0, 0%, 100%, 0) 0, $body-bg);
+  height: 100px;
+}
