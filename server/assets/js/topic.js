@@ -7,6 +7,7 @@
 import React from 'react';
 import Masonry from 'react-masonry-component';
 import moment from 'moment';
+import Helmet from 'react-helmet';
 import upperFirst from 'lodash/upperFirst';
 import { injectIntl, intlShape } from 'react-intl';
 import { SearchEvent } from 'dancedeets-common/js/events/models';
@@ -17,6 +18,8 @@ import { SquareEventFlyer } from './eventCommon';
 import { Card, ImagePrefix, wantsWindowSizes } from './ui';
 import type { windowProps } from './ui';
 import { SelectButton } from './MultiSelectList';
+
+type Topic = Object;
 
 export class _TopicEvent extends React.Component {
   props: {
@@ -100,10 +103,49 @@ class Video extends React.Component {
   }
 }
 
+class SocialLink extends React.Component {
+  static Platforms = {
+    fb: {
+      link: 'https://www.facebook.com/',
+      image: 'FB',
+    },
+  };
+
+  props: {
+    platform: string,
+    username: string,
+  };
+
+  render() {
+    const platform = SocialLink.Platforms[this.props.platform];
+    const link = platform.link + this.props.username;
+    console.log(platform);
+    return <a href={link}>{platform.image}</a>;
+  }
+}
+
+class Social extends React.Component {
+  props: {
+    topic: Topic,
+  };
+
+  render() {
+    const socialLinks = Object.keys(this.props.topic.social).map(key =>
+      <SocialLink
+        key={key}
+        platform={key}
+        username={this.props.topic.social[key]}
+      />
+    );
+    return <div>{socialLinks}</div>;
+  }
+}
+
 class _EventList extends React.Component {
   props: {
     response: NewSearchResponse,
     videos: Object,
+    topic: Topic,
 
     // Self-managed props
     window: windowProps,
@@ -180,6 +222,8 @@ class _EventList extends React.Component {
 
     return (
       <div style={{ display: 'flex' }}>
+        <Helmet title={this.props.topic.title} />
+        <Social topic={this.props.topic} />
         <div style={{ flex: 1, padding: 10 }}>
           <Card>
             Show:{' '}
@@ -210,4 +254,5 @@ class _EventList extends React.Component {
 }
 const EventList = wantsWindowSizes(_EventList);
 
+export const HelmetRewind = Helmet.rewind;
 export default intlWeb(EventList);
