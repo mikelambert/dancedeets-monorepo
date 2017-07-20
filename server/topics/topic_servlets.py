@@ -137,22 +137,6 @@ class TopicHandler(base_servlet.BaseRequestHandler):
         )
 
         self.setup_react_template('topic.js', props)
-        self.display['all_results'] = search_results
-
-        by_year = []
-        for year, month_events in sorted(grouping.group_results_by_date(search_results).items()):
-            by_year.append((year, sorted(month_events.items())))
-        self.display['group_by_date'] = by_year
-        by_country = sorted(grouping.group_results_by_location(search_results).items(), key=lambda x: (-len(x[1]), x[0]))
-        self.display['group_by_location'] = by_country
-
-        # TODO:
-        # show points on map (future and past?)
-        # show future events
-        # show past events
-        # show high quality and low quality events (most viable with 'past')
-        # have an ajax filter on the page that lets me filter by location?
-
         self.render_template('topic')
 
 
