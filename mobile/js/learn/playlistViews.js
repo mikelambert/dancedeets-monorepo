@@ -19,13 +19,13 @@ import {
 } from 'react-native';
 import { injectIntl, intlShape, defineMessages } from 'react-intl';
 import { connect } from 'react-redux';
-import YouTube from 'react-native-youtube';
 import shallowEqual from 'fbjs/lib/shallowEqual';
 import styleEqual from 'style-equal';
 import upperFirst from 'lodash/upperFirst';
+import Video from 'react-native-video-controls';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import type { Style } from 'dancedeets-common/js/styles';
-import { Playlist, Video } from 'dancedeets-common/js/tutorials/models';
+import { Playlist } from 'dancedeets-common/js/tutorials/models';
 import styleIcons from 'dancedeets-common/js/styles/icons';
 import { getTutorials } from 'dancedeets-common/js/tutorials/playlistConfig';
 import type { Category } from 'dancedeets-common/js/tutorials/playlistConfig';
@@ -38,8 +38,8 @@ import { purpleColors } from '../Colors';
 import { semiNormalize, normalize } from '../ui/normalize';
 import type { Dispatch } from '../actions/types';
 import { setTutorialVideoIndex } from '../actions';
-import { googleKey } from '../keys';
 import sendMail from '../util/sendMail';
+import getYoutubeInfo from '../api/youtubeVideoInfo';
 
 type PlaylistStylesViewProps = {
   onSelected: (playlist: Playlist) => void,
@@ -336,6 +336,7 @@ class _PlaylistView extends React.Component {
   state: {
     isPlaying: boolean,
     onScreen: boolean,
+    videoUrl: ?string,
   };
 
   _sectionedListView: SectionList<*>;
@@ -347,15 +348,24 @@ class _PlaylistView extends React.Component {
     (this: any).renderRow = this.renderRow.bind(this);
     (this: any).renderHeader = this.renderHeader.bind(this);
     (this: any).renderSectionHeader = this.renderSectionHeader.bind(this);
-    (this: any).onChangeState = this.onChangeState.bind(this);
+    (this: any).onEnd = this.onEnd.bind(this);
     (this: any).onListViewLayout = this.onListViewLayout.bind(this);
     (this: any).onListViewScroll = this.onListViewScroll.bind(this);
     this._cachedLayout = [];
-    this.state = { onScreen: true, isPlaying: true };
+    this.state = { onScreen: true, isPlaying: true, videoUrl: null };
+    this.updateFromProps(props);
+  }
+
+  updateFromProps(props) {
+    if (!this.state.videoUrl || this.props.tutorialVideoIndex != props.tutorialVideoIndex) {
+      const video = props.playlist.getVideo(props.tutorialVideoIndex);
+      this.loadPlayerUrl(video);
+    }
   }
 
   componentWillReceiveProps(nextProps) {
     this.setState({ onScreen: nextProps.mainScreenKey === 'Learn' });
+    this.updateFromProps(nextProps);
   }
 
   componentWillUnmount() {
@@ -369,34 +379,25 @@ class _PlaylistView extends React.Component {
     this._viewDimensions = { top, bottom };
   }
 
-  onChangeState(props: Object) {
-    console.log('Video: onChangeState: ', props);
-    // Keep our internal state (and the props we set on the player) up-to-date
-    this.setState({ isPlaying: props.state !== 'paused' });
-    if (props.state === 'ended') {
-      // next video, if we're not at the end!
-      const newIndex = this.props.tutorialVideoIndex + 1;
-      if (newIndex < this.props.playlist.getVideoCount()) {
-        // scroll it into view
-        this.ensureTutorialVisible(newIndex);
-        // and select it, playing the video
-        this.props.setTutorialVideoIndex(newIndex);
-      }
-    }
-  }
-
   onError(event) {
     console.log('Youtube Error', event);
+  }
+
+  onEnd() {
+    // next video, if we're not at the end!
+    const newIndex = this.props.tutorialVideoIndex + 1;
+    if (newIndex < this.props.playlist.getVideoCount()) {
+      // scroll it into view
+      this.ensureTutorialVisible(newIndex);
+      // and select it, playing the video
+      this.props.setTutorialVideoIndex(newIndex);
+    }
   }
 
   onListViewLayout(e) {
     const top = e.nativeEvent.layout.y;
     const bottom = top + e.nativeEvent.layout.height;
     this._viewDimensions = { top, bottom };
-  }
-
-  getSelectedVideo() {
-    return this.props.playlist.getVideo(this.props.tutorialVideoIndex);
   }
 
   setCachedLayoutForRow(index, top, bottom) {
@@ -537,27 +538,47 @@ class _PlaylistView extends React.Component {
     );
   }
 
+  async loadPlayerUrl(video) {
+    try {
+      const youtubeInfo = await getYoutubeInfo(video.youtubeId);
+      const videoUrl = youtubeInfo.formats.find(x => x.itag == 22).url;
+      console.log(videoUrl);
+      this.setState({ videoUrl });
+    } catch (err) {
+      console.error('Error loading video', err);
+    }
+  }
+
   render() {
+    // TODO: when going to end of video, we need to catch (fix onChangeState) and play the next one
+
+    // TODO: respect the play/pause on the row clicks (need to re-update from props)
+
     // for my client feature-bar (if i support scrub bar):
     // speed-rate, play/pause, back-ten-seconds, airplay
-    const video = this.getSelectedVideo();
+    const { videoUrl } = this.state;
+    if (!videoUrl) {
+      return null;
+    }
+    const video = this.props.playlist.getVideo(this.props.tutorialVideoIndex);
     const height = Dimensions.get('window').width * video.height / video.width;
     return (
       <View style={styles.container}>
-        <YouTube
-          apiKey={googleKey}
-          videoId={video.youtubeId}
-          play={this.state.isPlaying && this.state.onScreen} // auto-play when loading a tutorial
+        <Video
+          source={{ uri: videoUrl }}
+          controlTimeout={4000}
+          paused={!this.state.isPlaying || !this.state.onScreen} // auto-play when loading a tutorial
           loop={false}
-          showinfo
-          modestbranding
-          // TODO: Improve our controls situation on Android:
-          // https://github.com/inProgress-team/react-native-youtube/issues/131
-          controls={Platform.OS === 'android' ? 2 : 1}
           showFullscreenButton
+          ignoreSilentSwitch="ignore"
           style={{ alignSelf: 'stretch', height }}
-          onChangeState={this.onChangeState}
           onError={this.onError}
+          onEnd={this.onEnd}
+          onPlay={() => this.setState({isPlaying: true})}
+          onPause={() => {
+            console.log('a');
+            this.setState({isPlaying: false})
+          }}
         />
         <View style={styles.listViewWrapper}>
           <SectionList
