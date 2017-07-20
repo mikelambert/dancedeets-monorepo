@@ -357,7 +357,10 @@ class _PlaylistView extends React.Component {
   }
 
   updateFromProps(props) {
-    if (!this.state.videoUrl || this.props.tutorialVideoIndex != props.tutorialVideoIndex) {
+    if (
+      !this.state.videoUrl ||
+      this.props.tutorialVideoIndex != props.tutorialVideoIndex
+    ) {
       const video = props.playlist.getVideo(props.tutorialVideoIndex);
       this.loadPlayerUrl(video);
     }
@@ -542,7 +545,6 @@ class _PlaylistView extends React.Component {
     try {
       const youtubeInfo = await getYoutubeInfo(video.youtubeId);
       const videoUrl = youtubeInfo.formats.find(x => x.itag == 22).url;
-      console.log(videoUrl);
       this.setState({ videoUrl });
     } catch (err) {
       console.error('Error loading video', err);
@@ -550,10 +552,6 @@ class _PlaylistView extends React.Component {
   }
 
   render() {
-    // TODO: when going to end of video, we need to catch (fix onChangeState) and play the next one
-
-    // TODO: respect the play/pause on the row clicks (need to re-update from props)
-
     // for my client feature-bar (if i support scrub bar):
     // speed-rate, play/pause, back-ten-seconds, airplay
     const { videoUrl } = this.state;
@@ -574,10 +572,9 @@ class _PlaylistView extends React.Component {
           style={{ alignSelf: 'stretch', height }}
           onError={this.onError}
           onEnd={this.onEnd}
-          onPlay={() => this.setState({isPlaying: true})}
+          onPlay={() => this.setState({ isPlaying: true })}
           onPause={() => {
-            console.log('a');
-            this.setState({isPlaying: false})
+            this.setState({ isPlaying: false });
           }}
         />
         <View style={styles.listViewWrapper}>
