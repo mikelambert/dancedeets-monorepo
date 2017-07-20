@@ -79,14 +79,7 @@ class TopicHandler(base_servlet.BaseRequestHandler):
             return
 
         topic = topics[0]
-
-        if topic.graph_id:
-            # We shouldn't need any tokens to access pages
-            fbl = fb_api.FBLookup(None, None)
-            fb_source = fbl.get(topic_db.LookupTopicPage, topic.graph_id)
-        else:
-            fb_source = None
-
+        topic.init()
 
         def prefilter(doc_event):
             """Function for fitlering doc results, before we spend the energy to load the corresponding DBEvents.
@@ -126,17 +119,21 @@ class TopicHandler(base_servlet.BaseRequestHandler):
         search_query.extra_fields = ['name', 'description']
         search_results = search.Search(search_query).get_search_results(prefilter=prefilter)
 
-        self.display['topic_title'] = topic.override_title or (fb_source and fb_source['info']['name'])
-        self.display['topic_image'] = topic.override_image or (fb_source and fb_source['picture']['data']['url'])
-        self.display['topic_description'] = topic.override_description or (fb_source and fb_source['info'].get('about')) or ''
-
         json_search_response = api.build_search_results_api(None, None, search_query, search_results, (2, 0), need_full_event=False, center_latlng=None, southwest=None, northeast=None)
 
         videos = get_videos_for(topic.youtube_query)
 
+        topic_json = {
+            'title': topic.title(),
+            'description': topic.description(),
+            'image_url': topic.image_url(),
+            'social': topic.social(),
+        }
+
         props = dict(
             response=json_search_response,
             videos=videos,
+            topic=topic_json,
         )
 
         self.setup_react_template('topic.js', props)
@@ -149,14 +146,12 @@ class TopicHandler(base_servlet.BaseRequestHandler):
         by_country = sorted(grouping.group_results_by_location(search_results).items(), key=lambda x: (-len(x[1]), x[0]))
         self.display['group_by_location'] = by_country
 
-
         # TODO:
         # show points on map (future and past?)
         # show future events
         # show past events
         # show high quality and low quality events (most viable with 'past')
         # have an ajax filter on the page that lets me filter by location?
-        self.display['fb_page'] = fb_source
 
         self.render_template('topic')
 
