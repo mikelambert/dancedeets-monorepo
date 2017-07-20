@@ -48,6 +48,7 @@ export class _TopicEvent extends React.Component {
           <SquareEventFlyer event={event} lazyLoad={this.props.lazyLoad} />
           <h3 className="event-title" style={{ marginTop: 10 }}>
             <a href={event.getUrl()}>
+              <ImagePrefix iconName="calendar" />
               <span>{event.name}</span>
             </a>
           </h3>
@@ -96,6 +97,7 @@ class Video extends React.Component {
               />
             </div>
             <h3 className="event-title" style={{ marginTop: 10 }}>
+              <ImagePrefix iconName="youtube" />
               {this.props.video.snippet.title}
             </h3>
           </a>
@@ -142,6 +144,7 @@ class Instagram extends React.Component {
               />
             </div>
             <h3 className="event-title" style={{ marginTop: 10 }}>
+              <ImagePrefix iconName="instagram" />
               {title}
             </h3>
           </a>
