@@ -107,8 +107,41 @@ class SocialLink extends React.Component {
   static Platforms = {
     fb: {
       link: 'https://www.facebook.com/',
-      image: 'FB',
+      imageName: 'facebook',
     },
+    twitter: {
+      link: 'https://www.twitter.com/',
+      imageName: 'twitter',
+    },
+    instagram: {
+      link: 'https://www.instagram.com/',
+      imageName: 'instagram',
+    },
+    snapchat: {
+      link: 'https://www.snapchat.com/add/',
+      imageName: 'snapchat',
+    },
+    linkedin: {
+      link: 'https://www.linkedin.com/in/',
+      imageName: 'linkedin',
+    },
+    soundcloud: {
+      link: 'https://www.soundcloud.com/',
+      imageName: 'soundcloud',
+    },
+    medium: {
+      link: 'https://www.medium.com/',
+      imageName: 'medium',
+    },
+    youtube: {
+      link: 'https://www.youtube.com/',
+      imageName: 'youtube',
+    },
+    vimeo: {
+      link: 'https://www.vimeo.com/',
+      imageName: 'vimeo',
+    },
+    // tumblr, skype, whatsapp, medium, reddit, pinterest, wechat, vimeo,
   };
 
   props: {
@@ -119,8 +152,8 @@ class SocialLink extends React.Component {
   render() {
     const platform = SocialLink.Platforms[this.props.platform];
     const link = platform.link + this.props.username;
-    console.log(platform);
-    return <a href={link}>{platform.image}</a>;
+    const image = <ImagePrefix iconName={platform.imageName} />;
+    return <a href={link}>{image}</a>;
   }
 }
 
