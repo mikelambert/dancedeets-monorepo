@@ -105,6 +105,52 @@ class Video extends React.Component {
   }
 }
 
+class Instagram extends React.Component {
+  props: {
+    instagram: Object,
+    width: number,
+    // lazyLoad: boolean,
+  };
+
+  processTitle(text) {
+    let newText = text;
+    newText = newText.split('\n')[0];
+    newText = newText.split('. ')[0];
+    newText = newText.split(' ').splice(0, 20).join(' ');
+    return newText;
+  }
+
+  render() {
+    const scaledHeight = Math.floor(100);
+    const title = this.processTitle(this.props.instagram.caption.text);
+    return (
+      <div className="grid-item" style={{ width: this.props.width * 2 }}>
+        <Card>
+          <a href={`https://www.instagram.com/p/${this.props.instagram.code}`}>
+            <div
+              style={{
+                height: 0,
+                paddingBottom: `${scaledHeight}%`,
+              }}
+            >
+              <img
+                src={this.props.instagram.images.low_resolution.url}
+                role="presentation"
+                style={{
+                  width: '100%',
+                }}
+              />
+            </div>
+            <h3 className="event-title" style={{ marginTop: 10 }}>
+              {title}
+            </h3>
+          </a>
+        </Card>
+      </div>
+    );
+  }
+}
+
 class SocialLink extends React.Component {
   static Platforms = {
     fb: {
@@ -182,6 +228,7 @@ class _EventList extends React.Component {
   props: {
     response: NewSearchResponse,
     videos: Object,
+    instagrams: Object,
 
     // Self-managed props
     window: windowProps,
@@ -190,6 +237,7 @@ class _EventList extends React.Component {
   state: {
     showVideos: boolean,
     showEvents: boolean,
+    showInstagrams: boolean,
   };
 
   constructor(props) {
@@ -197,6 +245,7 @@ class _EventList extends React.Component {
     this.state = {
       showVideos: true,
       showEvents: true,
+      showInstagrams: true,
     };
   }
 
@@ -206,6 +255,9 @@ class _EventList extends React.Component {
       .reverse();
 
     const resultVideos = this.props.videos.items.filter(x => x.id.videoId);
+    const resultInstagramVideos = this.props.instagrams.items.filter(
+      x => x.type === 'video'
+    );
 
     const dateMap = {};
     if (this.state.showEvents) {
@@ -217,6 +269,14 @@ class _EventList extends React.Component {
       resultVideos.forEach(video => {
         dateMap[`${video.snippet.publishedAt}video${video.id.videoId}`] = {
           video,
+        };
+      });
+    }
+    if (this.state.showInstagrams) {
+      resultInstagramVideos.forEach(instagram => {
+        const timestamp = new Date(instagram.created_time * 1000).toISOString();
+        dateMap[`${timestamp}instagram${instagram.id}`] = {
+          instagram,
         };
       });
     }
@@ -250,6 +310,15 @@ class _EventList extends React.Component {
             width={width}
           />
         );
+      } else if (item.instagram) {
+        return (
+          <Instagram
+            key={item.instagram.id}
+            instagram={item.instagram}
+            lazyLoad={index < 50}
+            width={width}
+          />
+        );
       } else {
         console.log('Error unknown item:', item);
         return null;
@@ -262,20 +331,35 @@ class _EventList extends React.Component {
           <Card>
             Show:{' '}
             <div className="btn-group" role="group">
-              <SelectButton
-                toggleState={() => {
-                  this.setState({ showEvents: !this.state.showEvents });
-                }}
-                active={this.state.showEvents}
-                item={`${resultEvents.length} Events`}
-              />
-              <SelectButton
-                toggleState={() => {
-                  this.setState({ showVideos: !this.state.showVideos });
-                }}
-                active={this.state.showVideos}
-                item={`${resultVideos.length} Videos`}
-              />
+              {resultEvents.length
+                ? <SelectButton
+                    toggleState={() => {
+                      this.setState({ showEvents: !this.state.showEvents });
+                    }}
+                    active={this.state.showEvents}
+                    item={`${resultEvents.length} Events`}
+                  />
+                : null}
+              {resultVideos.length
+                ? <SelectButton
+                    toggleState={() => {
+                      this.setState({ showVideos: !this.state.showVideos });
+                    }}
+                    active={this.state.showVideos}
+                    item={`${resultVideos.length} Videos`}
+                  />
+                : null}
+              {resultInstagramVideos.length
+                ? <SelectButton
+                    toggleState={() => {
+                      this.setState({
+                        showInstagrams: !this.state.showInstagrams,
+                      });
+                    }}
+                    active={this.state.showInstagrams}
+                    item={`${resultInstagramVideos.length} Instagram Videos`}
+                  />
+                : null}
             </div>
           </Card>
           <Masonry>
@@ -292,6 +376,7 @@ class TopicPage extends React.Component {
   props: {
     response: NewSearchResponse,
     videos: Object,
+    instagrams: Object,
     topic: Topic,
   };
 
@@ -321,7 +406,11 @@ class TopicPage extends React.Component {
             </tr>
           </tbody>
         </table>
-        <EventList response={this.props.response} videos={this.props.videos} />
+        <EventList
+          response={this.props.response}
+          videos={this.props.videos}
+          instagrams={this.props.instagrams}
+        />
       </div>
     );
   }

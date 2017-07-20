@@ -1,17 +1,19 @@
+import json
 import logging
 import re
+import urllib2
+
+from apiclient.discovery import build
 
 import app
 import base_servlet
 import fb_api
+import keys
 from topics import grouping
 from topics import topic_db
 from search import search
 from search import search_base
 from servlets import api
-
-import keys
-from apiclient.discovery import build
 
 # Set DEVELOPER_KEY to the "API key" value from the Google Developers Console:
 # https://console.developers.google.com/project/_/apiui/credential
@@ -32,6 +34,11 @@ class TopicListHandler(base_servlet.BaseRequestHandler):
 
         self.render_template('topic_list')
 
+def get_instagrams_for(username):
+    text = urllib2.urlopen('https://www.instagram.com/%s/media/' % username).read()
+    json_data = json.loads(text)
+    return json_data
+
 def get_videos_for(keyword, recent=False):
     youtube = build(
         YOUTUBE_API_SERVICE_NAME,
@@ -40,28 +47,6 @@ def get_videos_for(keyword, recent=False):
     search_response = youtube.search().list(
         q=keyword,
         part="id,snippet",
-        maxResults=50,
-    ).execute()
-    return decorate_with_topic_details(search_response)
-
-def decorate_with_topic_details(search_response):
-    topic_response = get_topic_details_for(search_response)
-    topic_lookup = dict((x['id'], x) for x in topic_response['items'])
-    full_response = search_response.copy()
-    for video in full_response['items']:
-        if video['id']['kind'] == 'youtube#video':
-            video['topicDetails'] = topic_lookup[video['id']['videoId']].get('topicDetails')
-    return full_response
-
-def get_topic_details_for(search_response):
-    videoIds = [x['id']['videoId'] for x in search_response['items'] if x['id']['kind'] == 'youtube#video']
-    youtube = build(
-        YOUTUBE_API_SERVICE_NAME,
-        YOUTUBE_API_VERSION,
-        developerKey=DEVELOPER_KEY)
-    search_response = youtube.videos().list(
-        id=','.join(videoIds),
-        part="topicDetails",
         maxResults=50,
     ).execute()
     return search_response
@@ -123,6 +108,11 @@ class TopicHandler(base_servlet.BaseRequestHandler):
 
         videos = get_videos_for(topic.youtube_query)
 
+        if topic.social().get('instagram'):
+            instagrams = get_instagrams_for(topic.social()['instagram'])
+        else:
+            instagrams = {'items': []}
+
         topic_json = {
             'title': topic.title(),
             'description': topic.description(),
@@ -133,6 +123,7 @@ class TopicHandler(base_servlet.BaseRequestHandler):
         props = dict(
             response=json_search_response,
             videos=videos,
+            instagrams=instagrams,
             topic=topic_json,
         )
 
