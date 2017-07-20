@@ -563,13 +563,16 @@ class _PlaylistView extends React.Component {
     return (
       <View style={styles.container}>
         <Video
+          // Updating params
           source={{ uri: videoUrl }}
-          controlTimeout={4000}
           paused={!this.state.isPlaying || !this.state.onScreen} // auto-play when loading a tutorial
+          // Steady params
+          controlTimeout={4000}
+          showFullscreenButton={false}
           loop={false}
-          showFullscreenButton
           ignoreSilentSwitch="ignore"
           style={{ alignSelf: 'stretch', height }}
+          // Callbacks
           onError={this.onError}
           onEnd={this.onEnd}
           onPlay={() => this.setState({ isPlaying: true })}

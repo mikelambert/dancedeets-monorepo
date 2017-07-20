@@ -58,7 +58,7 @@
     "react-native-trackjs": "^0.1.2",
     "react-native-vector-icons": "^4.2.0",
     "react-native-video": "^1.0.0",
-    "react-native-video-controls": "^1.3.0",
+    "react-native-video-controls": "github:mikelambert/react-native-video-controls",
     "react-native-wkwebview-reborn": "^1.4.0",
     "react-native-youtube": "1.0.0-alpha.6",
     "react-navigation": "^1.0.0-beta.11",
