@@ -6,8 +6,10 @@
 
 import React from 'react';
 import Masonry from 'react-masonry-component';
+import FormatText from 'react-format-text';
 import moment from 'moment';
 import Helmet from 'react-helmet';
+import ShowMore from 'react-show-more';
 import upperFirst from 'lodash/upperFirst';
 import { injectIntl, intlShape } from 'react-intl';
 import { SearchEvent } from 'dancedeets-common/js/events/models';
@@ -150,9 +152,13 @@ class SocialLink extends React.Component {
   };
 
   render() {
-    const platform = SocialLink.Platforms[this.props.platform];
-    const link = platform.link + this.props.username;
-    const image = <ImagePrefix iconName={platform.imageName} />;
+    const platformData = SocialLink.Platforms[this.props.platform];
+    const link = platformData.link + this.props.username;
+    const image = (
+      <ImagePrefix iconName={platformData.imageName}>
+        {this.props.username}
+      </ImagePrefix>
+    );
     return <a href={link}>{image}</a>;
   }
 }
@@ -178,7 +184,6 @@ class _EventList extends React.Component {
   props: {
     response: NewSearchResponse,
     videos: Object,
-    topic: Topic,
 
     // Self-managed props
     window: windowProps,
@@ -255,8 +260,6 @@ class _EventList extends React.Component {
 
     return (
       <div style={{ display: 'flex' }}>
-        <Helmet title={this.props.topic.title} />
-        <Social topic={this.props.topic} />
         <div style={{ flex: 1, padding: 10 }}>
           <Card>
             Show:{' '}
@@ -287,5 +290,44 @@ class _EventList extends React.Component {
 }
 const EventList = wantsWindowSizes(_EventList);
 
+class TopicPage extends React.Component {
+  props: {
+    response: NewSearchResponse,
+    videos: Object,
+    topic: Topic,
+  };
+
+  render() {
+    return (
+      <div>
+        <Helmet title={this.props.topic.title} />
+        <h2>{this.props.topic.title}</h2>
+        <table>
+          <tbody>
+            <tr>
+              <td>
+                <img
+                  width="300"
+                  role="presentation"
+                  src={this.props.topic.image_url}
+                />
+              </td>
+              <td>
+                <ShowMore>
+                  <FormatText>{this.props.topic.description}</FormatText>
+                </ShowMore>
+              </td>
+              <td>
+                <Social topic={this.props.topic} />
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        <EventList response={this.props.response} videos={this.props.videos} />
+      </div>
+    );
+  }
+}
+
 export const HelmetRewind = Helmet.rewind;
-export default intlWeb(EventList);
+export default intlWeb(TopicPage);
