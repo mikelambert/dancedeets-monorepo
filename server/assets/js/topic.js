@@ -388,27 +388,20 @@ class TopicPage extends React.Component {
       <div>
         <Helmet title={this.props.topic.title} />
         <h2>{this.props.topic.title}</h2>
-        <table>
-          <tbody>
-            <tr style={{ verticalAlign: 'top' }}>
-              <td>
-                <img
-                  width={300}
-                  role="presentation"
-                  src={this.props.topic.image_url}
-                />
-              </td>
-              <td>
-                <Truncate height={300}>
-                  <FormatText>{this.props.topic.description}</FormatText>
-                </Truncate>
-              </td>
-              <td>
-                <SocialLinks topic={this.props.topic} />
-              </td>
-            </tr>
-          </tbody>
-        </table>
+        <div style={{ float: 'left' }}>
+          <img
+            height={300}
+            role="presentation"
+            src={this.props.topic.image_url}
+          />
+        </div>
+        <div style={{ float: 'right' }}>
+          <SocialLinks topic={this.props.topic} />
+        </div>
+        <Truncate height={250}>
+          <FormatText>{this.props.topic.description}</FormatText>
+        </Truncate>
+        <div style={{ clear: 'both' }} />
         <EventList
           response={this.props.response}
           videos={this.props.videos}

@@ -305,6 +305,10 @@ button.link-button::-moz-focus-inner {
   padding: 0;
 }
 
+.fade-out-body {
+  position: 'relative';
+}
+
 .fade-out-body:after {
   content: '';
   position: absolute;

@@ -81,7 +81,6 @@ export default class Truncate extends React.Component {
                 ref={measureRef}
                 className="fade-out-body"
                 style={{
-                  position: 'relative',
                   overflow: 'hidden',
                   height: '100%',
                 }}
