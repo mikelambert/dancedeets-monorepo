@@ -59,7 +59,10 @@ class Topic(ndb.Model):
     search_keywords = ndb.StringProperty(repeated=True)
 
     def social(self):
-        return self.json_data.get('social', {})
+        try:
+            return self.json_data.get('social', {})
+        except AttributeError:
+            return {}
 
     youtube_channel = ndb.StringProperty()
     youtube_query = ndb.StringProperty()
