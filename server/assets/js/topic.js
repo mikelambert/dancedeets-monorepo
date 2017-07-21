@@ -180,10 +180,6 @@ class SocialLink extends React.Component {
       link: 'https://www.soundcloud.com/',
       imageName: 'soundcloud',
     },
-    medium: {
-      link: 'https://www.medium.com/',
-      imageName: 'medium',
-    },
     youtube: {
       link: 'https://www.youtube.com/',
       imageName: 'youtube',
@@ -191,6 +187,10 @@ class SocialLink extends React.Component {
     vimeo: {
       link: 'https://www.vimeo.com/',
       imageName: 'vimeo',
+    },
+    website: {
+      link: '',
+      imageName: 'external-link',
     },
     // tumblr, skype, whatsapp, medium, reddit, pinterest, wechat, vimeo,
   };
