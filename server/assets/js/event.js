@@ -624,30 +624,33 @@ export class EventPage extends React.Component {
       width: this.props.amp ? 300 : '100%',
       height: 100,
     };
+
+    const adsenseSafe = !event.description.includes('twerk');
+
     // Google Ad: event-inline
-    const adInline = (
-      <GoogleAd
-        style={adStyle}
-        data-ad-slot="6741973779"
-        amp={this.props.amp}
-      />
-    );
+    const adInline = adsenseSafe
+      ? <GoogleAd
+          style={adStyle}
+          data-ad-slot="6741973779"
+          amp={this.props.amp}
+        />
+      : null;
     // Google Ad: event-header
-    const adHeader = (
-      <GoogleAd
-        style={adStyle}
-        data-ad-slot="8283608975"
-        amp={this.props.amp}
-      />
-    );
+    const adHeader = adsenseSafe
+      ? <GoogleAd
+          style={adStyle}
+          data-ad-slot="8283608975"
+          amp={this.props.amp}
+        />
+      : null;
     // Google Ad: event-footer
-    const adFooter = (
-      <GoogleAd
-        style={adStyle}
-        data-ad-slot="5190541772"
-        amp={this.props.amp}
-      />
-    );
+    const adFooter = adsenseSafe
+      ? <GoogleAd
+          style={adStyle}
+          data-ad-slot="5190541772"
+          amp={this.props.amp}
+        />
+      : null;
 
     return (
       <div className="container">
