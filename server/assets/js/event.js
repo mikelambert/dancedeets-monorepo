@@ -625,7 +625,7 @@ export class EventPage extends React.Component {
       height: 100,
     };
 
-    const adsenseSafe = !event.description.includes('twerk');
+    const adsenseSafe = !event.description.toLowerCase().includes('twerk');
 
     // Google Ad: event-inline
     const adInline = adsenseSafe
