@@ -146,23 +146,29 @@ class _EventDescription extends React.Component {
             <span>{event.name}</span>
           </a>
         </h3>
-        <ImagePrefix
-          icon={require('../img/categories-white.png')} // eslint-disable-line global-require
-        >
-          {keywords.join(', ')}
-        </ImagePrefix>
-        <ImagePrefix iconName="clock-o">
-          {formatStartTime(
-            ExecutionEnvironment.canUseDOM
-              ? event.start_time
-              : event.startTimeNoTz(),
-            this.props.intl
-          )}
-        </ImagePrefix>
-        <ImagePrefix iconName="map-marker">
-          <div>{event.venue.name}</div>
-          <FormatText>{event.venue.cityStateCountry()}</FormatText>
-        </ImagePrefix>
+        <div style={{ marginTop: 10 }}>
+          <ImagePrefix
+            icon={require('../img/categories-white.png')} // eslint-disable-line global-require
+          >
+            {keywords.join(', ')}
+          </ImagePrefix>
+        </div>
+        <div>
+          <ImagePrefix iconName="clock-o">
+            {formatStartTime(
+              ExecutionEnvironment.canUseDOM
+                ? event.start_time
+                : event.startTimeNoTz(),
+              this.props.intl
+            )}
+          </ImagePrefix>
+        </div>
+        <div>
+          <ImagePrefix iconName="map-marker">
+            <div>{event.venue.name}</div>
+            <FormatText>{event.venue.cityStateCountry()}</FormatText>
+          </ImagePrefix>
+        </div>
       </div>
     );
   }

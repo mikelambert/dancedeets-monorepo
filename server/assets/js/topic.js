@@ -196,7 +196,7 @@ class SocialLink extends React.Component {
       link: 'mailto:',
       imageName: 'envelope',
     },
-    // tumblr, skype, whatsapp, medium, reddit, pinterest, wechat, vimeo,
+    // tumblr, skype, whatsapp, medium, reddit, pinterest, wechat, line, vimeo,
   };
 
   props: {
