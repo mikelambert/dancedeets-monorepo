@@ -44,7 +44,7 @@
   "feature.RSVP": "出欠確認",
   "feature.addingEvents": "イベントを追加",
   "feature.translation": "翻訳",
-  "login.loggingIn": "Logging In...",
+  "login.loggingIn": "ログインしています...",
   "login.login": "ログイン",
   "login.logout": "ログアウト",
   "login.logoutPrompt": "{name}からログアウト",

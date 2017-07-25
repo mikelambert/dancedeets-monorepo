@@ -44,7 +44,7 @@
   "feature.RSVP": "RSVP",
   "feature.addingEvents": "Ajouter un événement",
   "feature.translation": "Traduction",
-  "login.loggingIn": "ログインしています...",
+  "login.loggingIn": "Se connecter...",
   "login.login": "Login",
   "login.logout": "Se déconnecter",
   "login.logoutPrompt": "Se déconnecter de mon compte",
