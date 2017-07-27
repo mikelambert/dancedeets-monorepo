@@ -18,6 +18,7 @@ Disallow:
 # Yandex (RU) https://yandex.com/support/webmaster/controlling-robot/robots-txt.xml
 User-agent: Yandex
 Disallow:
+Host: https://www.dancedeets.com
 
 # Naver (KR) http://help.naver.com/customer/etc/webDocument02.nhn
 User-agent: NaverBot
