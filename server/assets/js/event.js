@@ -526,14 +526,7 @@ class Description extends React.Component {
   render() {
     return (
       <Card style={{ padding: 0 }}>
-        <div
-          style={{
-            padding: '12px 12px 10px',
-            display: 'flex',
-            flexDirection: 'horizontal',
-            justifyContent: 'space-between',
-          }}
-        >
+        <div className="card-header">
           <span
             className="bold"
             style={{

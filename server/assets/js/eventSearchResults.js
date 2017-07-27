@@ -31,7 +31,6 @@ import type {
   PeopleListing,
   StylePersonLookup,
 } from 'dancedeets-common/js/events/search';
-import { formatStartTime } from 'dancedeets-common/js/dates';
 import {
   formatAttending,
   groupEventsByStartDate,
@@ -46,14 +45,6 @@ require('slick-carousel/slick/slick.css');
 require('slick-carousel/slick/slick-theme.css');
 require('../css/slick.scss');
 require('../css/rc-collapse.scss');
-
-/*
-import {
-  yellowColors,
-} from '../ui/Colors';
-*/
-// TODO: Copies from mobile/js/ui/Colors.js
-const yellowColors = ['#FFF3B0', '#FFEA73', '#FFD802', '#FFCA01', '#C0A000'];
 
 function insertEvery<T>(
   array: Array<T>,
@@ -123,13 +114,10 @@ export class HorizontalEventFlyer extends React.Component {
   }
 }
 
-class _EventDescription extends React.Component {
+class EventDescription extends React.Component {
   props: {
     event: SearchEvent,
-    indexingBot: boolean,
-
-    // Self-managed props
-    intl: intlShape,
+    indexingBot?: boolean,
   };
 
   render() {
@@ -154,16 +142,6 @@ class _EventDescription extends React.Component {
           </ImagePrefix>
         </div>
         <div>
-          <ImagePrefix iconName="clock-o">
-            {formatStartTime(
-              ExecutionEnvironment.canUseDOM
-                ? event.start_time
-                : event.startTimeNoTz(),
-              this.props.intl
-            )}
-          </ImagePrefix>
-        </div>
-        <div>
           <ImagePrefix iconName="map-marker">
             <div>{event.venue.name}</div>
             <FormatText>{event.venue.cityStateCountry()}</FormatText>
@@ -173,7 +151,6 @@ class _EventDescription extends React.Component {
     );
   }
 }
-const EventDescription = injectIntl(_EventDescription);
 
 class HorizontalEvent extends React.Component {
   props: {
@@ -184,16 +161,35 @@ class HorizontalEvent extends React.Component {
   render() {
     const event = this.props.event;
     return (
-      <div className="wide-event clearfix">
-        <div className="event-image">
-          <SquareEventFlyer
-            event={this.props.event}
-            lazyLoad={this.props.lazyLoad}
-          />
-        </div>
-        <div className="event-description">
-          <EventDescription event={this.props.event} />
-        </div>
+      <div
+        style={{
+          float: 'left',
+          borderColor: '#e9ebee',
+          borderWidth: 1,
+          borderStyle: 'solid',
+          width: '50%', // TODO FIXME1
+          margin: 10,
+        }}
+      >
+        <table>
+          <tbody>
+            <tr>
+              <td>
+                <div className="event-image">
+                  <SquareEventFlyer
+                    event={this.props.event}
+                    lazyLoad={this.props.lazyLoad}
+                  />
+                </div>
+              </td>
+              <td>
+                <div className="event-description">
+                  <EventDescription event={this.props.event} />
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
       </div>
     );
   }
@@ -319,30 +315,28 @@ class _EventsList extends React.Component {
       this.props.events,
       x => x.start_time
     ).forEach(({ header, events }) => {
+      const renderedEvents = events.map((event, index) =>
+        <HorizontalEvent
+          key={event.id}
+          event={event}
+          lazyLoad={overallEventIndex + index > 8}
+        />
+      );
+
       resultItems.push(
-        <li
-          key={header}
-          className="day-header"
+        <Card key={header} className="clearfix" style={{ padding: 0 }}>
+          <div className="card-header bold">{header}</div>
+          {renderedEvents}
+        </Card>
+      );
+      /* className="day-header"
           style={{
             marginTop: '30px',
             marginBottom: '10px',
             borderBottom: '1px solid white',
           }}
         >
-          <Sticky className="opaque">{header}</Sticky>
-        </li>
-      );
-      resultItems.push(
-        ...events.map((event, index) =>
-          <li key={event.id}>
-            <HorizontalEvent
-              key={event.id}
-              event={event}
-              lazyLoad={overallEventIndex + index > 8}
-            />
-          </li>
-        )
-      );
+*/
       overallEventIndex += events.length;
     });
 
@@ -390,9 +384,7 @@ class _EventsList extends React.Component {
 
     return (
       <StickyContainer>
-        <ol className="events-list">
-          {monetizedResultItems}
-        </ol>
+        {monetizedResultItems}
       </StickyContainer>
     );
   }
