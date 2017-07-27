@@ -40,6 +40,7 @@ import { Card, ImagePrefix, wantsWindowSizes } from './ui';
 import type { windowProps } from './ui';
 import { SquareEventFlyer } from './eventCommon';
 import GoogleAd from './googleAd';
+import { SearchBox } from './resultsCommon';
 
 require('slick-carousel/slick/slick.css');
 require('slick-carousel/slick/slick-theme.css');
@@ -738,4 +739,36 @@ class _ResultsList extends React.Component {
 }
 const ResultsList = wantsWindowSizes(injectIntl(_ResultsList));
 
-export default intlWeb(ResultsList);
+class ResultsPage extends React.Component {
+  props: {
+    response: NewSearchResponse,
+    past: boolean,
+    showPeople: boolean,
+    categoryOrder: Array<string>,
+    query: Object,
+  };
+
+  render() {
+    const query = querystring.stringify(this.props.query);
+    const calendarUrl = `/events/relevant?calendar=1&${query}`;
+    return (
+      <div className="col-md-9">
+        <SearchBox query={this.props.query} />
+
+        <div style={{ textAlign: 'right' }}>
+          <a href={calendarUrl}>
+            <ImagePrefix iconName="calendar">View on Calendar</ImagePrefix>
+          </a>
+        </div>
+        <ResultsList
+          response={this.props.response}
+          past={this.props.past}
+          showPeople={this.props.showPeople}
+          categoryOrder={this.props.categoryOrder}
+        />
+      </div>
+    );
+  }
+}
+
+export default intlWeb(ResultsPage);

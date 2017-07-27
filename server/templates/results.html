@@ -15,153 +15,45 @@
 
 {% block body %}
 <div class="container">
-<div class="row">
-<div class="col-md-9">
-<div style="margin-bottom: 25px">
-  <table><tr><td>
-  	<img class="hidden-xs" id="penguin" src="/images/full_penguin_240.png" height="120" width="120">
-  </td><td>
-  <form id="search-form" class="form-inline" role="search" action="/" accept-charset="UTF-8">
-    <div class="form-group">
-      <div style="font-weight: bold">Where will you dance next?</div>
-      <div class="input-group">
-		<span class="input-group-addon"><i class="fa fa-globe fa-fw"></i></span>
-        <input id="location_input" type="text" name="location" placeholder="everywhere" value="{{ form.location.data }}" class="form-control">
-      </div>
-    </div>
-    <div class="form-group">
-      <div style="font-weight: bold">Looking for anything in particular?</div>
-      <div style="font-style: italic; font-size: 70%">You can enter a dance style, dancer, event name, or leave it blank!</div>
-      <div class="input-group">
-        <span class="input-group-addon"><i class="fa fa-search fa-fw"></i></span>
-        <input id="keywords_input" type="text" name="keywords" placeholder="all events" value="{{ form.keywords.data }}" class="form-control">
-      </div>
-    </div>
-    {% if form.deb.data %}
-	    <input type="hidden" name="deb" value="{{ form.deb.data }}">
-	{% endif %}
-    <button type="submit" class="btn btn-default btn-block" style="margin-top: 1em">
-      <i class="fa fa-search fa-fw"></i>
-      Search our {{ total_events }} Events
-    </button>
-  {# maybe make a small hourglass icon search box ?
-   # jQuery("#search-button").click(function(e){ if (jQuery("#location_input").val()) jQuery("#search-form").submit(); });
-   #}
-  </form>
-  </td></tr></table>
-</div>{# margin-bottom: 25px #}
-
-<div style="min-height:300px">
-
-<ul class="nav nav-tabs nav-justified" data-tabs="tabs">
-	<li
-	{% if selected_tab == 'past' %}
-		class="active"
-	{% endif %}
-	><a
-	{% if selected_tab == 'past' %}
-		href="#"
-	{% else %}
-		href="{{ past_view_url }}"
-	{% endif %}
-	><span><i class="fa fa-history fa-lg"></i>
-	{% if selected_tab == 'past' %}
-		{% set num_past_results = len(past_results) %}
-		{% if num_past_results %}
-			{{ num_past_results }}
-		{% endif %}
-	{% endif %}
-	Past Events</span></a></li>
-
-	<li
-	{% if selected_tab == 'present' %}
-		class="active"
-	{% endif %}
-	><a
-	{% if selected_tab == 'present' %}
-		href="#"
-	{% else %}
-		href="{{ upcoming_view_url }}"
-	{% endif %}
-	><span>
-	{% if selected_tab == 'present' %}
-		{% if num_upcoming_results %}
-			{{ num_upcoming_results }}
-		{% endif %}
-	{% endif %}
-	Upcoming Events</span></a></li>
-
-	<li
-	{% if selected_tab == 'calendar' %}
-		class="active"
-	{% endif %}
-	><a
-	{% if selected_tab == 'calendar' %}
-		href="#"
-	{% else %}
-		href="{{ calendar_view_url }}"
-	{% endif %}
-	><span><i class="fa fa-calendar fa-lg"></i> Calendar</span></a></li>
-</ul>
-<div class="tabs-after row">
-  {% if selected_tab == 'past' %}
-    <div class="cold-md-8 col-xs-12">
-      <div id="react-parent">
-        {{ react_html|safe }}
-      </div>
+  <div class="row">
+    <div id="react-parent">
+      {{ react_html|safe }}
     </div>
     <script type="text/javascript">
       window._REACT_PROPS = {{ react_props|safe }};
       window._REACT_ID = 'react-parent';
     </script>
-  {% elif selected_tab == 'present' %}
-    <div class="cold-md-8 col-xs-12">
-      <div id="react-parent">
-        {{ react_html|safe }}
+    <div class="col-md-3">
+      <a href="/events_add" class="btn btn-primary" style="margin-bottom: 10px"><i class="fa fa-calendar-plus-o fa-lg"></i> Add Dance Event</a>
+      <button type="button" class="btn btn-primary" style="margin-bottom: 10px" onclick="share(); return true;"><i class="fa fa-user-plus fa-lg"></i> Share on Facebook</button>
+      <div class="rankings" style="margin-bottom: 10px">
+      <a href="/rankings"><i class="fa fa-list-ol fa-lg"></i> City Rankings</a>.
+      </div>
+      <div class="fb-like" data-href="https://www.facebook.com/dancedeets/" data-width="225" data-layout="standard" data-action="like" data-size="small" data-show-faces="true" data-colorscheme="dark"><blockquote cite="https://www.facebook.com/dancedeets/" class="fb-xfbml-parse-ignore"><a href="https://www.facebook.com/dancedeets/">DanceDeets</a></blockquote></div>
+
+      <div style="margin-top: 20px">
+        <!-- Google Ad: search-right -->
+        <ins class="adsbygoogle"
+             style="display:inline-block;width:300px;height:600px"
+             data-ad-client="ca-pub-9162736050652644"
+             data-ad-slot="6881574572">
+        </ins>
+        <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
       </div>
     </div>
-    <script type="text/javascript">
-      window._REACT_PROPS = {{ react_props|safe }};
-      window._REACT_ID = 'react-parent';
-    </script>
-	{% elif selected_tab == 'calendar' %}
-		<div id="calendar" style="margin-top: 10px"></div>
-	{% endif %}
-</div>{# min-height:300px #}
-</div>{# col-md-9 #}
-</div>{# row #}
-
-<div class="col-md-3">
-	<a href="/events_add" class="btn btn-primary" style="margin-bottom: 10px"><i class="fa fa-calendar-plus-o fa-lg"></i> Add Dance Event</a>
-	<button type="button" class="btn btn-primary" style="margin-bottom: 10px" onclick="share(); return true;"><i class="fa fa-user-plus fa-lg"></i> Share on Facebook</button>
-  <div class="rankings" style="margin-bottom: 10px">
-  <a href="/rankings"><i class="fa fa-list-ol fa-lg"></i> City Rankings</a>.
-  </div>
-  <div class="fb-like" data-href="https://www.facebook.com/dancedeets/" data-width="225" data-layout="standard" data-action="like" data-size="small" data-show-faces="true" data-colorscheme="dark"><blockquote cite="https://www.facebook.com/dancedeets/" class="fb-xfbml-parse-ignore"><a href="https://www.facebook.com/dancedeets/">DanceDeets</a></blockquote></div>
-
-  <div style="margin-top: 20px">
-    <!-- Google Ad: search-right -->
-    <ins class="adsbygoogle"
-         style="display:inline-block;width:300px;height:600px"
-         data-ad-client="ca-pub-9162736050652644"
-         data-ad-slot="6881574572">
-    </ins>
-    <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
-  </div>
-</div>
-
-</div> {# row #}
+  </div> {# row #}
 </div> {# container #}
 {% endblock %}
 
 {% block bottom_javascript %}
 {% if selected_tab == 'calendar' %}
-<script type="text/javascript" src="{{static_dir}}/js/calendar.js"></script>
+<script src="{{static_dir}}/js/calendarExec.js"></script>
 {% else %}
 <script src="{{static_dir}}/js/eventSearchResultsExec.js"></script>
 {% endif %}
 
 <script type="text/javascript">
+/*
 jQuery(document).ready(function(event) {
   jQuery("body").delegate("#location_input", "click", function() { return false; });
   jQuery('#keywords_input').keydown(function(event) {
@@ -177,18 +69,18 @@ jQuery(document).ready(function(event) {
        }
   });
 });
-
+*/
 function initializeLocationAutocomplete() {
   var autocomplete = new google.maps.places.Autocomplete(jQuery('#location_input').get(0));
-  autocomplete.setTypes(['(regions)'])
+  autocomplete.setTypes(['(regions)']);
 }
 
 function share() {
-	FB.ui({
-		method: 'share',
-		mobile_iframe: true,
-		href: 'https://www.dancedeets.com/',
-	}, function(response){});
+  FB.ui({
+    method: 'share',
+    mobile_iframe: true,
+    href: 'https://www.dancedeets.com/',
+  }, function(response){});
 }
 
 </script>
@@ -204,7 +96,7 @@ function share() {
   * https://code.google.com/p/fullcalendar/issues/detail?id=1992
   **/
 .fc-day-grid-event > .fc-content {
-	white-space: normal;
+  white-space: normal;
 }
 </style>
 
@@ -218,31 +110,6 @@ mixpanel.track("Searched Results", {
   "Location": {{ form.location.data|tojson }},
   "Keywords": {{ form.keywords.data|tojson }},
   "Tab": "CALENDAR"
-});
-
-jQuery(document).ready(function() {
-	jQuery('#calendar').fullCalendar({
-		aspectRatio: 1.8,
-		header: {
-			left: 'prev,next today',
-			center: 'title',
-			right: 'month,basicWeek,basicDay'
-		},
-		views: {
-			month: {
-				eventLimit: 4,
-				eventLimitClick: 'day',
-			},
-			week: {
-				eventLimit: 8,
-				eventLimitClick: 'day',
-			}
-		},
-		ignoreTimezone: true,
-		allDayDefault: false,
-		defaultView: 'basicWeek',
-		events: '{{ calendar_feed_url|format_js|safe }}'
-	});
 });
 </script>
 {% else %}
@@ -275,12 +142,6 @@ mixpanel.track_links(".link-onebox", "Onebox");
 </script>
 
 {{ rsvp.rsvp_script() }}
-
-<script type="text/javascript">
-jQuery(document).ready(function() {
-});
-
-</script>
 #}
 {% endif %}
 {% endblock %}

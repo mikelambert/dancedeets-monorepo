@@ -56,7 +56,12 @@ class RelevantHandler(SearchHandler):
                         error
                     ))
 
-        if not self.request.get('calendar'):
+        if self.request.get('calendar'):
+            props = dict(
+                query=form.url_params(),
+            )
+            self.setup_react_template('calendar.js', props)
+        else:
             search_query = None
 
             search_results = []
@@ -95,7 +100,8 @@ class RelevantHandler(SearchHandler):
                 response=json_search_response,
                 past=(form.time_period.data == search_base.TIME_PAST),
                 showPeople=not skip_people,
-                categoryOrder=[''] + [x.public_name for x in event_types.STYLES]
+                categoryOrder=[''] + [x.public_name for x in event_types.STYLES],
+                query=form.url_params(),
             )
             self.setup_react_template('eventSearchResults.js', props)
 
@@ -131,7 +137,6 @@ class RelevantHandler(SearchHandler):
         self.display['past_view_url'] = '/events/relevant?past=1&%s' % urls.urlencode(request_params)
         self.display['upcoming_view_url'] = '/events/relevant?%s' % urls.urlencode(request_params)
         self.display['calendar_view_url'] = '/events/relevant?calendar=1&%s' % urls.urlencode(request_params)
-        self.display['calendar_feed_url'] = '/calendar/feed?%s' % urls.urlencode(request_params)
         self.jinja_env.globals['CHOOSE_RSVPS'] = rsvp.CHOOSE_RSVPS
         self.render_template(self.template_name)
 
