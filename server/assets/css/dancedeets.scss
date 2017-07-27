@@ -44,6 +44,19 @@ body {
   height: auto;
 }
 
+.grey-top-border {
+  position: relative;
+}
+.grey-top-border::before {
+  position: absolute;
+  border-top: 1px solid #e9ebee;
+  display: block;
+  top: 0;
+  left: 0;
+  right: 0;
+  content: '';
+}
+
 .product-social-links {
   padding-bottom: 0 1em;
   height: 20px;

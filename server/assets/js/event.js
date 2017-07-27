@@ -544,15 +544,7 @@ class Description extends React.Component {
           </span>
           <span className="google-translate" id="google_translate_element" />
         </div>
-        <span
-          style={{
-            borderTop: '1px solid #e9ebee',
-            display: 'block',
-            left: 0,
-            right: 0,
-          }}
-        />
-        <div style={{ padding: 12 }}>
+        <div className="grey-top-border" style={{ padding: 12 }}>
           <FormatText>
             {this.props.event.description}
           </FormatText>
