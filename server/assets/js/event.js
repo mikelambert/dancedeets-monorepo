@@ -377,49 +377,51 @@ class _EventLinks extends React.Component {
             Details
           </span>
         </div>
-        <div className="grey-top-border" style={{ paddingTop: 10 }}>
-          <ImagePrefix
-            iconName={
-              event.source.name === 'Facebook Event'
-                ? 'facebook-square'
-                : 'external-link'
-            }
-          >
-            <Message message={messages.source} />{' '}
-            {sourceName}
-          </ImagePrefix>
-        </div>
-        <div>
-          <ImagePrefix
-            icon={require('../img/categories-white.png')} // eslint-disable-line global-require
-            amp={this.props.amp}
-          >
-            {event.annotations.categories.join(', ')}
-          </ImagePrefix>
-        </div>
-        <div>
-          <ImagePrefix iconName="clock-o">
-            <FormatText>{formattedStartEndText}</FormatText>
-          </ImagePrefix>
-        </div>
-        <div>
-          <ImagePrefix iconName="calendar-plus-o">
-            <a
-              id="add-to-calendar"
-              href={getAddToCalendarLink(event)}
-              rel="noopener noreferrer"
-              target="_blank"
-              className="link-event-add-to-calendar"
+        <div className="grey-top-border" style={{ padding: 10 }}>
+          <div>
+            <ImagePrefix
+              iconName={
+                event.source.name === 'Facebook Event'
+                  ? 'facebook-square'
+                  : 'external-link'
+              }
             >
-              <Message message={messages.addToCalendar} />
-            </a>
-          </ImagePrefix>
+              <Message message={messages.source} />{' '}
+              {sourceName}
+            </ImagePrefix>
+          </div>
+          <div>
+            <ImagePrefix
+              icon={require('../img/categories-white.png')} // eslint-disable-line global-require
+              amp={this.props.amp}
+            >
+              {event.annotations.categories.join(', ')}
+            </ImagePrefix>
+          </div>
+          <div>
+            <ImagePrefix iconName="clock-o">
+              <FormatText>{formattedStartEndText}</FormatText>
+            </ImagePrefix>
+          </div>
+          <div>
+            <ImagePrefix iconName="calendar-plus-o">
+              <a
+                id="add-to-calendar"
+                href={getAddToCalendarLink(event)}
+                rel="noopener noreferrer"
+                target="_blank"
+                className="link-event-add-to-calendar"
+              >
+                <Message message={messages.addToCalendar} />
+              </a>
+            </ImagePrefix>
+          </div>
+          {rsvpElement}
+          {ticketElement}
+          {addedByElement}
+          {organizerElement}
+          {shareLinks}
         </div>
-        {rsvpElement}
-        {ticketElement}
-        {addedByElement}
-        {organizerElement}
-        {shareLinks}
       </Card>
     );
   }
