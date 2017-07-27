@@ -65,44 +65,10 @@ class Title extends React.Component {
   render() {
     const event = this.props.event;
 
-    let categoryLinks = null;
-    if (event.annotations.categories) {
-      const categories = event.annotations.categories.map(x =>
-        <a key={x} href={`/?keywords=${x}`}>{x}</a>
-      );
-      categoryLinks = (
-        <li key="category" id="more-from-keyword">
-          categorized as: {intersperse(categories, ', ')}.
-        </li>
-      );
-    }
-    let locationLinks = null;
-    const cityStateCountry = event.venue.cityStateCountry();
-    if (cityStateCountry) {
-      locationLinks = (
-        <li key="location" id="more-from-location">
-          in <a href={`/?location=${cityStateCountry}`}>{cityStateCountry}</a>.
-        </li>
-      );
-    }
-    let moreLinks = null;
-    if (categoryLinks || locationLinks) {
-      moreLinks = (
-        <div>
-          See more events:
-          <ul>
-            {locationLinks}
-            {categoryLinks}
-          </ul>
-        </div>
-      );
-    }
-
     return (
-      <Card>
-        {moreLinks}
-        <h2>{this.props.event.name}</h2>
-      </Card>
+      <h2 style={{ paddingLeft: 10, paddingRight: 10 }}>
+        {this.props.event.name}
+      </h2>
     );
   }
 }
@@ -495,7 +461,7 @@ class MapWithLinks extends React.Component {
 
     return (
       <div>
-        <p>
+        <p style={{ paddingLeft: 10, paddingRight: 0 }}>
           Open in
           {' '}
           <a
@@ -510,7 +476,10 @@ class MapWithLinks extends React.Component {
           .
         </p>
         {this.props.event.description
-          ? <div className="visible-xs italics">
+          ? <div
+              className="visible-xs italics"
+              style={{ paddingLeft: 10, paddingRight: 0 }}
+            >
               Event description is below the map.
             </div>
           : null}
@@ -533,8 +502,11 @@ class MapWithLinks extends React.Component {
         );
       }
       return (
-        <Card>
-          <ImagePrefix iconName="map-marker">
+        <Card style={{ padding: 0 }}>
+          <ImagePrefix
+            iconName="map-marker"
+            style={{ padding: 10, paddingBottom: 0 }}
+          >
             <div>{locationName}</div>
             <FormatText>{venue.streetCityStateCountry('\n')}</FormatText>
           </ImagePrefix>
@@ -553,10 +525,38 @@ class Description extends React.Component {
 
   render() {
     return (
-      <Card>
-        <div className="bold">Description:</div>
-        <div className="google-translate" id="google_translate_element" />
-        <FormatText>{this.props.event.description}</FormatText>
+      <Card style={{ padding: 0 }}>
+        <div
+          style={{
+            padding: '12px 12px 10px',
+            display: 'flex',
+            flexDirection: 'horizontal',
+            justifyContent: 'space-between',
+          }}
+        >
+          <span
+            className="bold"
+            style={{
+              lineHeight: '25px',
+            }}
+          >
+            Description
+          </span>
+          <span className="google-translate" id="google_translate_element" />
+        </div>
+        <span
+          style={{
+            borderTop: '1px solid #e9ebee',
+            display: 'block',
+            left: 0,
+            right: 0,
+          }}
+        />
+        <div style={{ padding: 12 }}>
+          <FormatText>
+            {this.props.event.description}
+          </FormatText>
+        </div>
       </Card>
     );
   }
@@ -660,7 +660,7 @@ export class EventPage extends React.Component {
     // Google Ad: event-header
     const adHeader = adsenseSafe
       ? <GoogleAd
-          style={adsenseStyle}
+          style={{ ...adsenseStyle }}
           data-ad-slot="8283608975"
           amp={this.props.amp}
         />
@@ -668,7 +668,7 @@ export class EventPage extends React.Component {
     // Google Ad: event-footer
     const adFooter = adsenseSafe
       ? <GoogleAd
-          style={adsenseStyle}
+          style={{ ...adsenseStyle }}
           data-ad-slot="5190541772"
           amp={this.props.amp}
         />
@@ -680,8 +680,10 @@ export class EventPage extends React.Component {
         {this.props.amp
           ? getReactArticleSchema(event)
           : getReactEventSchema(event)}
-        {adHeader}
         <div className="row">
+          <div className="col-xs-12">
+            {adHeader}
+          </div>
           <div className="col-xs-12">
             <Title event={event} />
             <AdminPanel
@@ -706,7 +708,9 @@ export class EventPage extends React.Component {
             <Description event={event} />
           </div>
         </div>
-        {adFooter}
+        <div className="col-xs-12">
+          {adFooter}
+        </div>
       </div>
     );
   }
