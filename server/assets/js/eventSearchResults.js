@@ -35,6 +35,7 @@ import {
   formatAttending,
   groupEventsByStartDate,
 } from 'dancedeets-common/js/events/helpers';
+import { formatStartDateOnly } from 'dancedeets-common/js/dates';
 import { getReactEventSchema } from './eventSchema';
 import { Card, ImagePrefix, wantsWindowSizes } from './ui';
 import type { windowProps } from './ui';
@@ -115,10 +116,13 @@ export class HorizontalEventFlyer extends React.Component {
   }
 }
 
-class EventDescription extends React.Component {
+class _EventDescription extends React.Component {
   props: {
     event: SearchEvent,
     indexingBot?: boolean,
+
+    // Self-managed props
+    intl: intlShape,
   };
 
   render() {
@@ -128,6 +132,7 @@ class EventDescription extends React.Component {
       keywords.push(...event.annotations.keywords);
     }
 
+    const startTime = moment(event.start_time).toDate();
     return (
       <div>
         <h3 className="event-title">
@@ -143,6 +148,12 @@ class EventDescription extends React.Component {
           </ImagePrefix>
         </div>
         <div>
+          <ImagePrefix iconName="clock-o">
+            {formatStartDateOnly(startTime, this.props.intl)}
+          </ImagePrefix>
+        </div>
+
+        <div>
           <ImagePrefix iconName="map-marker">
             <div>{event.venue.name}</div>
             <FormatText>{event.venue.cityStateCountry()}</FormatText>
@@ -152,6 +163,7 @@ class EventDescription extends React.Component {
     );
   }
 }
+const EventDescription = injectIntl(_EventDescription);
 
 class HorizontalEvent extends React.Component {
   props: {
@@ -162,35 +174,33 @@ class HorizontalEvent extends React.Component {
   render() {
     const event = this.props.event;
     return (
-      <div
-        style={{
-          float: 'left',
-          borderColor: '#e9ebee',
-          borderWidth: 1,
-          borderStyle: 'solid',
-          width: '50%', // TODO FIXME1
-          margin: 10,
-        }}
-      >
-        <table>
-          <tbody>
-            <tr>
-              <td>
-                <div className="event-image">
-                  <SquareEventFlyer
-                    event={this.props.event}
-                    lazyLoad={this.props.lazyLoad}
-                  />
-                </div>
-              </td>
-              <td>
-                <div className="event-description">
-                  <EventDescription event={this.props.event} />
-                </div>
-              </td>
-            </tr>
-          </tbody>
-        </table>
+      <div>
+        <div className="grey-top-border">{' '}</div>
+        <div
+          style={{
+            padding: 10,
+          }}
+        >
+          <table>
+            <tbody>
+              <tr>
+                <td>
+                  <div className="event-image">
+                    <SquareEventFlyer
+                      event={this.props.event}
+                      lazyLoad={this.props.lazyLoad}
+                    />
+                  </div>
+                </td>
+                <td style={{ verticalAlign: 'top' }}>
+                  <div className="event-description">
+                    <EventDescription event={this.props.event} />
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
       </div>
     );
   }
@@ -325,11 +335,13 @@ class _EventsList extends React.Component {
       );
 
       resultItems.push(
-        <Card key={header} className="clearfix" style={{ padding: 0 }}>
-          <div className="card-header bold">{header}</div>
-          {renderedEvents}
-        </Card>
+        <Sticky>
+          <div className="bold" style={{ backgroundColor: 'white' }}>
+            {header}
+          </div>
+        </Sticky>
       );
+      resultItems.push(...renderedEvents);
       /* className="day-header"
           style={{
             marginTop: '30px',
@@ -502,7 +514,7 @@ class _Loading extends React.Component {
   render() {
     return (
       <div>
-        <Spinner name="circle" color="white" noFadeIn />
+        <Spinner name="circle" color="black" noFadeIn />
       </div>
     );
   }
@@ -725,7 +737,10 @@ class _ResultsList extends React.Component {
     }
 
     return (
-      <Collapse defaultActiveKey={defaultKeys}>
+      <Collapse
+        defaultActiveKey={defaultKeys}
+        style={{ backgroundColor: 'white' }}
+      >
         {featuredPanel}
         {peoplePanel}
         {oneboxPanel}

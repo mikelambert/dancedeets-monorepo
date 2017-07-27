@@ -2,14 +2,17 @@
 
 .rc-collapse {
   border-radius: 3px;
-  border: 1px solid $purple-lightest;
+  border-width: 1px;
+  border-style: solid;
+  border-color: #e5e6e9 #dfe0e4 #d0d1d5;
 }
+
 .rc-collapse-anim-active {
   -webkit-transition: height 0.2s ease-out;
   transition: height 0.2s ease-out;
 }
 .rc-collapse > .rc-collapse-item {
-  border-top: 1px solid $purple-lightest;
+  border-top: 1px solid #e9ebee;
 }
 .rc-collapse > .rc-collapse-item:first-child {
   border-top: none;

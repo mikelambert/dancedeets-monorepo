@@ -11,7 +11,7 @@ import ExecutionEnvironment from 'exenv';
 import type { NewSearchResponse } from 'dancedeets-common/js/events/search';
 import { intlWeb } from 'dancedeets-common/js/intl';
 import FullCalendar from './FullCalendar';
-import { ImagePrefix } from './ui';
+import { Card, ImagePrefix } from './ui';
 import { SearchBox } from './resultsCommon';
 
 class CalendarPage extends React.Component {
@@ -55,7 +55,7 @@ class CalendarPage extends React.Component {
           </a>
         </div>
         {ExecutionEnvironment.canUseDOM
-          ? <FullCalendar options={options} />
+          ? <Card><FullCalendar options={options} /></Card>
           : null}
       </div>
     );
