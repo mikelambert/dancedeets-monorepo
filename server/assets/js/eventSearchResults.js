@@ -178,13 +178,14 @@ class HorizontalEvent extends React.Component {
         <div className="grey-top-border">{' '}</div>
         <div
           style={{
-            padding: 10,
+            paddingTop: 10,
+            paddingBottom: 10,
           }}
         >
           <table>
             <tbody>
               <tr>
-                <td>
+                <td style={{ verticalAlign: 'top' }}>
                   <div className="event-image">
                     <SquareEventFlyer
                       event={this.props.event}
