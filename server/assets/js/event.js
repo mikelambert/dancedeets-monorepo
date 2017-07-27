@@ -159,7 +159,7 @@ class ImageWithLinks extends React.Component {
     */
 
     return (
-      <Card>
+      <Card style={{ padding: 0 }}>
         {link}
         {lightbox}
         <br />

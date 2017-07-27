@@ -44,7 +44,7 @@ class _Duration extends React.Component {
     return (
       <div
         style={{
-          color: '#ccc',
+          color: '#777',
           fontSize: '80%',
         }}
       >
@@ -130,7 +130,7 @@ class _TutorialView extends React.Component {
 
   renderVideoLine(video) {
     const activeRow = this.state.video.youtubeId === video.youtubeId;
-    const backgroundColor = activeRow ? purpleColors[0] : purpleColors[3];
+    const backgroundColor = activeRow ? 'white' : '#e9ebee';
     const imageSize = 30;
     const playIcon = require('../img/play.png'); // eslint-disable-line global-require
     return (
@@ -151,15 +151,10 @@ class _TutorialView extends React.Component {
         }}
       >
         <div>
-          <img
-            style={{
-              float: 'left',
-              verticalAlign: 'baseline',
-            }}
-            width={imageSize}
-            height={imageSize}
-            src={playIcon}
-            alt="Play"
+          <i
+            className="fa fa-play-circle"
+            aria-hidden="true"
+            style={{ fontSize: '200%' }}
           />
         </div>
         <div style={{ marginLeft: 10 }}>
@@ -172,7 +167,7 @@ class _TutorialView extends React.Component {
 
   renderSectionHeader(section) {
     return (
-      <div style={{ padding: 7, backgroundColor: purpleColors[4] }}>
+      <div style={{ padding: 7, backgroundColor: '#dddfe2' }}>
         <div>{section.title}</div>
         <Duration duration={section.getDurationSeconds()} />
       </div>
@@ -199,7 +194,7 @@ class _TutorialView extends React.Component {
     );
     const subline = `${tutorial.author} - ${duration}`;
     return (
-      <div style={{ padding: 7, backgroundColor: purpleColors[4] }}>
+      <div style={{ padding: 7 }}>
         <h3 style={{ marginTop: 0 }}>
           {tutorial.title} - <a href="/tutorials">See All Tutorials</a>
         </h3>

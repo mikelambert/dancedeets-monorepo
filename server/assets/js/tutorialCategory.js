@@ -38,17 +38,6 @@ import {
   MultiSelectState,
 } from './MultiSelectList';
 
-// De-Dupe
-const purpleColors = [
-  '#8283A9',
-  '#656595',
-  '#4C4D81',
-  '#333452',
-  '#222238',
-  '#171728',
-];
-const lightPurpleColors = ['#E0E0F5', '#D0D0F0', '#C0C0D0'];
-
 class MatchedVideo extends React.Component {
   props: {
     tutorial: Playlist,
@@ -62,12 +51,9 @@ class MatchedVideo extends React.Component {
     return (
       <div
         style={{
-          backgroundColor: purpleColors[1],
-
           paddingLeft: 15,
           borderBottomWidth: 0.5,
           borderBottomStyle: 'solid',
-          borderBottomColor: purpleColors[0],
         }}
       >
         <a href={url}>
@@ -92,7 +78,7 @@ class MatchedSection extends React.Component {
     );
     const url = `${tutorialUrl}#${videoIndex}`;
     return (
-      <div style={{ backgroundColor: purpleColors[2] }}>
+      <div>
         <div><a href={url}>{this.props.section.title}</a></div>
         {this.props.children}
       </div>
@@ -206,7 +192,7 @@ class _Tutorial extends React.Component {
       <Card style={{ width: cardSize }}>
         <a href={`/tutorials/${tutorial.getId()}`}>
           {imageTag}
-          <div style={{ backgroundColor: purpleColors[2] }}>
+          <div>
             <div>{tutorial.title}</div>
             <div>{numVideosDuration}</div>
           </div>

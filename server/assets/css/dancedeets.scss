@@ -41,6 +41,8 @@ body {
 .event-flyer {
   position: relative;
   margin-bottom: 1em;
+  width: 100%;
+  height: auto;
 }
 
 .product-social-links {
@@ -217,18 +219,6 @@ h6 {
   background-color: darken($brand-primary, 10%);
 }
 
-// Color the text of the tabs to not look like blue links
-.nav {
-  > li {
-    > a {
-      color: white;
-      &:hover, &:focus {
-        color: $yellow-lighter;
-      }
-    }
-  }
-}
-
 .no-border {
   border: 0;
 }
@@ -239,11 +229,27 @@ h6 {
 }
 
 // Pulled from the event.jsx page
+.card::before {
+  border: 1px solid;
+  border-color: #e5e6e9 #dfe0e4 #d0d1d5;
+  border-radius: 4px;
+  bottom: -1px;
+  top: -1px;
+  left: -1px;
+  right: -1px;
+  content: '';
+  position: absolute;
+  pointer-events: none; // avoid capturing mouse events
+}
+
 .card {
-  border-radius: 15px;
-  background-color: #4C4D81;
+  border: 1px solid;
+  border-color: transparent;
+  border-radius: 3px;
+  background-color: white;
   padding: 10px;
   margin: 10px;
+  position: relative;
 }
 
 .image-prefix {
@@ -264,12 +270,6 @@ h6 {
 
 .image-prefix-contents {
   display: table-cell;
-}
-
-.event-flyer {
-  width: 100%;
-  height: auto;
-  border-radius: 5px;
 }
 
 .italics {
