@@ -366,8 +366,18 @@ class _EventLinks extends React.Component {
       );
     }
     return (
-      <Card>
-        <div>
+      <Card style={{ padding: 0 }}>
+        <div className="card-header">
+          <span
+            className="bold"
+            style={{
+              lineHeight: '25px',
+            }}
+          >
+            Details
+          </span>
+        </div>
+        <div className="grey-top-border" style={{ paddingTop: 10 }}>
           <ImagePrefix
             iconName={
               event.source.name === 'Facebook Event'
