@@ -18,8 +18,6 @@ import url from 'url';
 import Helmet from 'react-helmet';
 import { Share as TwitterShare } from 'react-twitter-widgets';
 import ExecutionEnvironment from 'exenv';
-// TODO: Lightbox
-// import Lightbox from 'react-image-lightbox';
 import { intlWeb } from 'dancedeets-common/js/intl';
 import { formatStartEnd } from 'dancedeets-common/js/dates';
 import { Event } from 'dancedeets-common/js/events/models';
@@ -45,6 +43,18 @@ function intersperse(arr: Array<any>, sep: string) {
   }
 
   return arr.slice(1).reduce((xs, x) => xs.concat([sep, x]), [arr[0]]);
+}
+
+function getAdsenseStyle(amp) {
+  return {
+    display: 'inline-block',
+    width: amp ? 300 : '100%',
+    height: 100,
+  };
+}
+
+function isEventAdsenseSafe(event) {
+  return !event.description.toLowerCase().includes('twerk');
 }
 
 class Title extends React.Component {
@@ -127,6 +137,18 @@ class ImageWithLinks extends React.Component {
     // const imageUrl = (this.props.amp || !ExecutionEnvironment.canUseDOM) ? picture.source : '#';
     const imageUrl = picture.source; // (this.props.amp || !ExecutionEnvironment.canUseDOM) ? picture.source : '#';
 
+    const adsenseSafe = isEventAdsenseSafe(this.props.event);
+    const adsenseStyle = getAdsenseStyle(this.props.amp);
+
+    // Google Ad: event-inline
+    const adInline = adsenseSafe
+      ? <GoogleAd
+          style={adsenseStyle}
+          data-ad-slot="6741973779"
+          amp={this.props.amp}
+        />
+      : null;
+
     const image = (
       <AmpImage
         picture={picture}
@@ -159,21 +181,10 @@ class ImageWithLinks extends React.Component {
     */
 
     return (
-      <Card style={{ padding: 0 }}>
+      <div style={{ margin: 10 }}>
         {link}
-        {lightbox}
-        <br />
-        <ImagePrefix iconName="picture-o">
-          <a
-            className="link-event-flyer"
-            id="view-flyer-image"
-            href={imageUrl}
-            onClick={this.onClick}
-          >
-            See Full Flyer
-          </a>
-        </ImagePrefix>
-      </Card>
+        {adInline}
+      </div>
     );
   }
 }
@@ -642,26 +653,14 @@ export class EventPage extends React.Component {
 
   render() {
     const event = new Event(this.props.event);
-    const adStyle = {
-      display: 'inline-block',
-      width: this.props.amp ? 300 : '100%',
-      height: 100,
-    };
 
-    const adsenseSafe = !event.description.toLowerCase().includes('twerk');
+    const adsenseSafe = isEventAdsenseSafe(event);
+    const adsenseStyle = getAdsenseStyle(this.props.amp);
 
-    // Google Ad: event-inline
-    const adInline = adsenseSafe
-      ? <GoogleAd
-          style={adStyle}
-          data-ad-slot="6741973779"
-          amp={this.props.amp}
-        />
-      : null;
     // Google Ad: event-header
     const adHeader = adsenseSafe
       ? <GoogleAd
-          style={adStyle}
+          style={adsenseStyle}
           data-ad-slot="8283608975"
           amp={this.props.amp}
         />
@@ -669,7 +668,7 @@ export class EventPage extends React.Component {
     // Google Ad: event-footer
     const adFooter = adsenseSafe
       ? <GoogleAd
-          style={adStyle}
+          style={adsenseStyle}
           data-ad-slot="5190541772"
           amp={this.props.amp}
         />
@@ -695,7 +694,6 @@ export class EventPage extends React.Component {
         <div className="row">
           <div className="col-sm-5">
             <ImageWithLinks event={event} amp={this.props.amp} />
-            {adInline}
             <EventLinks
               event={event}
               amp={this.props.amp}
