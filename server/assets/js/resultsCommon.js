@@ -49,6 +49,57 @@ class DatePicker extends React.Component {
   }
 }
 
+class TextInput extends React.Component {
+  props: {
+    iconName: string,
+    id: string,
+    name: string,
+    placeholder: string,
+    defaultValue: string,
+    style?: object,
+  };
+
+  render() {
+    return (
+      <div
+        style={{
+          display: 'table-cell',
+          color: '#484848',
+
+          ...this.props.style,
+        }}
+      >
+        <span>
+          <i
+            className={`fa fa-fw fa-${this.props.iconName}`}
+            style={{
+              verticalAlign: 'top',
+              paddingLeft: 7,
+              paddingTop: 7,
+            }}
+          />
+        </span>
+        <input
+          id={this.props.id}
+          type="text"
+          className="top-search"
+          name={this.props.name}
+          placeholder={this.props.placeholder}
+          defaultValue={this.props.defaultValue}
+          style={{
+            border: 0,
+            textOverflow: 'ellipsis',
+            backgroundColor: 'transparent',
+            padding: 7,
+            fontSize: 15,
+            lineHeight: '18px',
+          }}
+        />
+      </div>
+    );
+  }
+}
+
 class _SearchBox extends React.Component {
   props: {
     query: Object,
@@ -57,7 +108,7 @@ class _SearchBox extends React.Component {
     // intl: intlShape,
   };
 
-  render() {
+  render2() {
     const form = this.props.query;
     const hiddenFields = form.deb
       ? <input type="hidden" name="deb" value={form.deb} />
@@ -97,7 +148,7 @@ class _SearchBox extends React.Component {
                         id="location_input"
                         type="text"
                         name="location"
-                        placeholder="everywhere"
+                        placeholder="Anywhere"
                         defaultValue={form.location}
                         className="form-control"
                       />
@@ -120,7 +171,7 @@ class _SearchBox extends React.Component {
                         id="keywords_input"
                         type="text"
                         name="keywords"
-                        placeholder="all events"
+                        placeholder="Any Style"
                         defaultValue={form.keywords}
                         className="form-control"
                       />
@@ -147,6 +198,67 @@ class _SearchBox extends React.Component {
             </tr>
           </tbody>
         </table>
+      </div>
+    );
+  }
+
+  render() {
+    const form = this.props.query;
+    return (
+      <div>
+        <form
+          id="search-form"
+          classNameName="form-inline"
+          role="search"
+          action="/"
+          acceptCharset="UTF-8"
+        >
+          <div
+            style={{
+              fontSize: 19,
+              lineHeight: '24px',
+              letterSpacing: null,
+              paddingTop: 0,
+              paddingBottom: 0,
+              color: '#484848',
+              borderRadius: 4,
+              border: '1px solid #DBDBDB',
+              boxShadow: '0 1px 3px 0px rgba(0, 0, 0, 0.08)',
+              padding: 0,
+              display: 'table',
+              tableLayout: 'fixed',
+              width: '100%',
+              position: 'relative',
+              backgroundColor: 'white',
+            }}
+          >
+            <TextInput
+              iconName="globe"
+              id="location_input"
+              name="location"
+              placeholder="Anywhere"
+              defaultValue={form.location}
+            />
+            <TextInput
+              iconName="search"
+              id="keywords_input"
+              name="keywords"
+              placeholder="Any style"
+              defaultValue={form.keywords}
+              style={{
+                borderLeft: '1px solid #e4e4e4',
+                borderRight: '1px solid #e4e4e4',
+              }}
+            />
+            <TextInput
+              iconName="dates"
+              id="dates_input"
+              name="dates"
+              placeholder="Anytime"
+              defaultValue={''}
+            />
+          </div>
+        </form>
       </div>
     );
   }

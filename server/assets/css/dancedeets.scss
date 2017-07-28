@@ -352,3 +352,29 @@ button.link-button::-moz-focus-inner {
 .fc-event {
   border: 1px solid $purple-lightest !important;
 }
+
+// Top Search Field
+$top-search-placeholder-color: #484848;
+
+.top-search::-webkit-input-placeholder {
+  /* WebKit, Blink, Edge */
+  color: $top-search-placeholder-color;
+}
+.top-search:-moz-placeholder {
+  /* Mozilla Firefox 4 to 18 */
+  color: $top-search-placeholder-color;
+  opacity: 1;
+}
+.top-search::-moz-placeholder {
+  /* Mozilla Firefox 19+ */
+  color: $top-search-placeholder-color;
+  opacity: 1;
+}
+.top-search:-ms-input-placeholder {
+  /* Internet Explorer 10-11 */
+  color: $top-search-placeholder-color;
+}
+.top-search::-ms-input-placeholder {
+  /* Microsoft Edge */
+  color: $top-search-placeholder-color;
+}
