@@ -72,8 +72,8 @@ class SearchForm(wtforms.Form):
     deb = wtforms.StringField(default='')
 
     # For calendaring datetime-range queries:
-    start = wtforms.DateField()
-    end = wtforms.DateField()
+    start = wtforms.DateField(default=None)
+    end = wtforms.DateField(default=None)
 
     def distance_in_km(self):
         if self.distance_units.data == 'miles':
@@ -94,6 +94,10 @@ class SearchForm(wtforms.Form):
         d['distance'] = self.distance.data
         d['distance_units'] = self.distance_units.data
         d['locale'] = self.locale.data
+        if self.start.data:
+            d['start'] = self.start.data.strftime("%Y-%m-%d")
+        if self.end.data:
+            d['end'] = self.end.data.strftime("%Y-%m-%d")
         return d
 
     def validate(self):
@@ -102,7 +106,7 @@ class SearchForm(wtforms.Form):
             return False
         success = True
         if self.start.data and self.end.data:
-            if self.start.data >= self.end.data:
+            if not self.start.data < self.end.data:
                 self.start.errors.append('start must be less than end')
                 self.end.errors.append('start must be less than end')
                 success = False
@@ -119,10 +123,7 @@ class SearchForm(wtforms.Form):
         bounds = self._get_bounds()
         keywords = _get_parsed_keywords(self.keywords.data)
         common_fields = dict(bounds=bounds, min_attendees=self.min_attendees.data, keywords=keywords)
-        if start_end_query:
-            query = SearchQuery(start_date=self.start.data, end_date=self.end.data, **common_fields)
-        else:
-            query = SearchQuery(time_period=self.time_period.data, **common_fields)
+        query = SearchQuery(start_date=self.start.data, end_date=self.end.data, time_period=self.time_period.data, **common_fields)
         return query
 
 def normalize_location(form):

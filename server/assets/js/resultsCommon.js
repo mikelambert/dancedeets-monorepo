@@ -5,7 +5,49 @@
  */
 
 import React from 'react';
+import moment from 'moment';
 import { injectIntl, intlShape } from 'react-intl';
+import { DateRangePicker } from 'react-dates';
+import 'react-dates/lib/css/_datepicker.css';
+
+class DatePicker extends React.Component {
+  props: {
+    query: Object,
+  };
+
+  state: {
+    startDate: Moment,
+    endDate: Moment,
+    focusedInput: any,
+  };
+
+  constructor(props) {
+    super(props);
+    this.state = {
+      startDate: props.query.start ? moment(props.query.start) : null,
+      endDate: props.query.end ? moment(props.query.end) : null,
+      focusedInput: null,
+    };
+    console.log(this.props.query, this.state);
+  }
+
+  render() {
+    return (
+      <DateRangePicker
+        startDateId="start"
+        endDateId="end"
+        isOutsideRange={day => false}
+        // Update internal state
+        startDate={this.state.startDate}
+        endDate={this.state.endDate}
+        onDatesChange={({ startDate, endDate }) =>
+          this.setState({ startDate, endDate })}
+        focusedInput={this.state.focusedInput}
+        onFocusChange={focusedInput => this.setState({ focusedInput })}
+      />
+    );
+  }
+}
 
 class _SearchBox extends React.Component {
   props: {
@@ -83,6 +125,12 @@ class _SearchBox extends React.Component {
                         className="form-control"
                       />
                     </div>
+                  </div>
+                  <div className="form-group">
+                    <div style={{ fontWeight: 'bold' }}>
+                      When will you be there?
+                    </div>
+                    <DatePicker query={this.props.query} />
                   </div>
                   {hiddenFields}
                   <button
