@@ -66,7 +66,7 @@ jQuery(document).ready(function(event) {
 });
 */
 function initializeLocationAutocomplete() {
-  var autocomplete = new google.maps.places.Autocomplete(jQuery('#location_input').get(0));
+  var autocomplete = new google.maps.places.Autocomplete(document.getElementById('location'));
   autocomplete.setTypes(['(regions)']);
 }
 
@@ -79,9 +79,7 @@ function share() {
 }
 
 </script>
-{#
 <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&amp;key=AIzaSyAvvrWfamjBD6LqCURkATAWEovAoBm1xNQ&amp;libraries=places&amp;callback=initializeLocationAutocomplete"></script>
-#}
 
 {% if selected_tab == 'calendar' %}
 

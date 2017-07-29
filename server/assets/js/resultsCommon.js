@@ -53,8 +53,8 @@ class TextInput extends React.Component {
   props: {
     iconName: string,
     id: string,
-    name: string,
     placeholder: string,
+    focused_placeholder: string,
     defaultValue: string,
     style?: object,
   };
@@ -104,8 +104,12 @@ class TextInput extends React.Component {
             id={this.props.id}
             type="text"
             className="top-search"
-            name={this.props.name}
-            placeholder={this.props.placeholder}
+            name={this.props.id}
+            placeholder={
+              this.state.focused
+                ? this.props.focused_placeholder
+                : this.props.placeholder
+            }
             defaultValue={this.props.defaultValue}
             onFocus={() => this.setState({ focused: true })}
             onBlur={() => this.setState({ focused: false })}
@@ -170,7 +174,7 @@ class _SearchBox extends React.Component {
                         <i className="fa fa-globe fa-fw" />
                       </span>
                       <input
-                        id="location_input"
+                        id="location"
                         type="text"
                         name="location"
                         placeholder="Anywhere"
@@ -193,7 +197,7 @@ class _SearchBox extends React.Component {
                         <i className="fa fa-search fa-fw" />
                       </span>
                       <input
-                        id="keywords_input"
+                        id="keywords"
                         type="text"
                         name="keywords"
                         placeholder="Any Style"
@@ -259,16 +263,16 @@ class _SearchBox extends React.Component {
           >
             <TextInput
               iconName="globe"
-              id="location_input"
-              name="location"
+              id="location"
               placeholder="Anywhere"
+              focused_placeholder="City, Region, or Country"
               defaultValue={form.location}
             />
             <TextInput
               iconName="search"
-              id="keywords_input"
-              name="keywords"
+              id="keywords"
               placeholder="Any style"
+              focused_placeholder="Dance style, event name, etc"
               defaultValue={form.keywords}
               style={{
                 borderLeft: '1px solid #e4e4e4',
@@ -277,8 +281,7 @@ class _SearchBox extends React.Component {
             />
             <TextInput
               iconName="dates"
-              id="dates_input"
-              name="dates"
+              id="dates"
               placeholder="Anytime"
               defaultValue={''}
             />
