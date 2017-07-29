@@ -29,7 +29,6 @@ class DatePicker extends React.Component {
       endDate: props.query.end ? moment(props.query.end) : null,
       focusedInput: null,
     };
-    console.log(this.props.query, this.state);
   }
 
   render() {
@@ -57,8 +56,8 @@ class TextInput extends React.Component {
     iconName: string,
     id: string,
     placeholder: string,
-    focused_placeholder: string,
-    defaultValue: string,
+    focusedPlaceholder: string,
+    value: string,
     style?: object,
 
     autocomplete?: boolean,
@@ -66,54 +65,31 @@ class TextInput extends React.Component {
 
   state: {
     focused: boolean,
-    value: string,
   };
 
   constructor(props) {
     super(props);
-    this.state = { focused: false, value: this.props.defaultValue };
-  }
-
-  autocompleteItems() {
-    return [
-      { label: 'breaking', initial: true },
-      { label: 'bboying' },
-      { label: 'bgirling' },
-      { label: 'b-boying' },
-      { label: 'b-girling' },
-      { label: 'hiphop' },
-      { label: 'hip-hop', initial: true },
-      { label: 'house', initial: true },
-      { label: 'popping', initial: true },
-      { label: 'locking', initial: true },
-      { label: 'waacking', initial: true },
-      { label: 'whacking' },
-      { label: 'dancehall', initial: true },
-      { label: 'vogue', initial: true },
-      { label: 'krump', initial: true },
-      { label: 'turfing' },
-      { label: 'litefeet' },
-      { label: 'flexing' },
-      { label: 'bebop' },
-      { label: 'all-styles', initial: true },
-      { label: 'kids' },
-      // event types
-      { label: 'battle' },
-      { label: 'workshop' },
-      { label: 'performance' },
-      { label: 'competition' },
-      { label: 'class' },
-    ];
+    this.state = { focused: false };
   }
 
   renderInput() {
+    const {
+      iconName,
+      id,
+      placeholder,
+      focusedPlaceholder,
+      value,
+      style,
+      ...otherProps
+    } = this.props;
+
     const inputProps = {
       id: this.props.id,
       type: 'text',
       className: 'top-search',
       name: this.props.id,
       placeholder: this.state.focused
-        ? this.props.focused_placeholder
+        ? this.props.focusedPlaceholder
         : this.props.placeholder,
       style: {
         border: 0,
@@ -137,16 +113,13 @@ class TextInput extends React.Component {
         fontSize: '90%',
         position: 'absolute',
         width: '100%',
+        zIndex: 10,
       };
       return (
         <Autocomplete
           wrapperStyle={{}}
           inputProps={inputProps}
-          value={this.state.value}
-          onChange={e => this.setState({ value: e.target.value })}
-          onSelect={(value, item) => this.setState({ value })}
-          getItemValue={item => item.label}
-          items={this.autocompleteItems()}
+          value={this.props.value}
           renderItem={(item, isHighlighted) =>
             <div
               key={item.label}
@@ -154,25 +127,15 @@ class TextInput extends React.Component {
             >
               {item.label}
             </div>}
-          renderMenu={(items, value, style) =>
-            <div style={menuStyle}>{items}</div>}
-          shouldItemRender={(item, value) => {
-            if (value.length) {
-              return (
-                item.label.toLowerCase().indexOf(value.toLowerCase()) !== -1
-              );
-            } else {
-              return item.initial;
-            }
-          }}
+          renderMenu={items => <div style={menuStyle}>{items}</div>}
+          {...otherProps}
         />
       );
     } else {
       return (
         <input
           {...inputProps}
-          value={this.state.value}
-          onChange={e => this.setState({ value: e.target.value })}
+          value={this.props.value}
           onFocus={() => this.setState({ focused: true })}
           onBlur={() => this.setState({ focused: false })}
         />
@@ -215,6 +178,8 @@ class TextInput extends React.Component {
   }
 }
 
+function performLocationLookup(value, itemsCallback) {}
+
 class _SearchBox extends React.Component {
   props: {
     query: Object,
@@ -223,108 +188,77 @@ class _SearchBox extends React.Component {
     // intl: intlShape,
   };
 
-  render2() {
-    const form = this.props.query;
-    const hiddenFields = form.deb
-      ? <input type="hidden" name="deb" value={form.deb} />
-      : null;
-    return (
-      <div style={{ marginBottom: 25 }}>
-        <table>
-          <tbody>
-            <tr>
-              <td>
-                <img
-                  role="presentation"
-                  className="hidden-xs"
-                  id="penguin"
-                  src="/images/full_penguin_240.png"
-                  height="120"
-                  width="120"
-                />
-              </td>
-              <td>
-                <form
-                  id="search-form"
-                  classNameName="form-inline"
-                  role="search"
-                  action="/"
-                  acceptCharset="UTF-8"
-                >
-                  <div className="form-group">
-                    <div style={{ fontWeight: 'bold' }}>
-                      Where will you dance next?
-                    </div>
-                    <div className="input-group">
-                      <span className="input-group-addon">
-                        <i className="fa fa-globe fa-fw" />
-                      </span>
-                      <input
-                        id="location"
-                        type="text"
-                        name="location"
-                        placeholder="Anywhere"
-                        defaultValue={form.location}
-                        className="form-control"
-                      />
-                    </div>
-                  </div>
-                  <div className="form-group">
-                    <div style={{ fontWeight: 'bold' }}>
-                      Looking for anything in particular?
-                    </div>
-                    <div style={{ fontStyle: 'italic', fontSize: '70%' }}>
-                      You can enter a dance style, dancer, event name, or leave
-                      it
-                      blank!
-                    </div>
-                    <div className="input-group">
-                      <span className="input-group-addon">
-                        <i className="fa fa-search fa-fw" />
-                      </span>
-                      <input
-                        id="keywords"
-                        type="text"
-                        name="keywords"
-                        placeholder="Any Style"
-                        defaultValue={form.keywords}
-                        className="form-control"
-                      />
-                    </div>
-                  </div>
-                  <div className="form-group">
-                    <div style={{ fontWeight: 'bold' }}>
-                      When will you be there?
-                    </div>
-                    <DatePicker query={this.props.query} />
-                  </div>
-                  {hiddenFields}
-                  <button
-                    type="submit"
-                    className="btn btn-default btn-block"
-                    style={{ marginTop: '1em' }}
-                  >
-                    <i className="fa fa-search fa-fw" />
-                    Search our Events
-                  </button>
+  state: {
+    location: string,
+    keywords: string,
+    locationItems: Array<string>,
+  };
 
-                </form>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-    );
+  _autoCompleteService: object;
+
+  constructor(props) {
+    super(props);
+    this.state = {
+      keywords: this.props.query.keywords,
+      location: this.props.query.location,
+      locationItems: [],
+    };
+  }
+
+  getAutocompleteService() {
+    if (this._autoCompleteService) {
+      return this._autoCompleteService;
+    }
+    this._autoCompleteService = new window.google.maps.places
+      .AutocompleteService();
+    return this._autoCompleteService;
+  }
+
+  autocompleteKeywords() {
+    return [
+      { label: 'breaking', initial: true },
+      { label: 'bboying' },
+      { label: 'bgirling' },
+      { label: 'b-boying' },
+      { label: 'b-girling' },
+      { label: 'hip-hop', initial: true },
+      { label: 'hiphop' },
+      { label: 'house', initial: true },
+      { label: 'popping', initial: true },
+      { label: 'locking', initial: true },
+      { label: 'waacking', initial: true },
+      { label: 'whacking' },
+      { label: 'dancehall', initial: true },
+      { label: 'vogue', initial: true },
+      { label: 'krump', initial: true },
+      { label: 'all-styles', initial: true },
+      { label: 'turfing' },
+      { label: 'litefeet' },
+      { label: 'flexing' },
+      { label: 'bebop' },
+      { label: 'kids' },
+      // event types
+      { label: 'battle' },
+      { label: 'workshop' },
+      { label: 'performance' },
+      { label: 'competition' },
+      { label: 'class' },
+    ];
   }
 
   render() {
     const form = this.props.query;
+
+    const hiddenFields = form.deb
+      ? <input type="hidden" name="deb" value={form.deb} />
+      : null;
+
     return (
       <div>
         <form
           id="search-form"
-          classNameName="form-inline"
           role="search"
+          className="form-inline"
           action="/"
           acceptCharset="UTF-8"
         >
@@ -348,31 +282,82 @@ class _SearchBox extends React.Component {
             }}
           >
             <TextInput
+              autocomplete
               iconName="globe"
               id="location"
               placeholder="Anywhere"
-              focused_placeholder="City, Region, or Country"
-              defaultValue={form.location}
+              focusedPlaceholder="City, Region, or Country"
+              value={this.state.location}
+              items={this.state.locationItems}
+              onChange={(event, value) => {
+                this.setState({ location: value });
+                if (!value) {
+                  return;
+                }
+                clearTimeout(this.requestTimer);
+                this.getAutocompleteService().getQueryPredictions(
+                  {
+                    input: value,
+                    types: ['(regions)'],
+                  },
+                  (predictions, status) => {
+                    let items = [];
+                    if (
+                      status ===
+                      window.google.maps.places.PlacesServiceStatus.OK
+                    ) {
+                      items = predictions.map(x => ({ label: x.description }));
+                    }
+                    this.setState({ locationItems: items });
+                  }
+                );
+              }}
+              getItemValue={item => item.label}
+              onSelect={(value, item) => {
+                this.setState({ location: value });
+              }}
             />
             <TextInput
               autocomplete
               iconName="search"
               id="keywords"
               placeholder="Any style"
-              focused_placeholder="Dance style, event name, etc"
-              defaultValue={form.keywords}
+              focusedPlaceholder="Dance style, event name, etc"
               style={{
                 borderLeft: '1px solid #e4e4e4',
                 borderRight: '1px solid #e4e4e4',
+              }}
+              value={this.state.keywords}
+              onChange={(event, value) => this.setState({ keywords: value })}
+              onSelect={(value, item) => this.setState({ keywords: value })}
+              items={this.autocompleteKeywords()}
+              getItemValue={item => item.label}
+              shouldItemRender={(item, value) => {
+                if (value.length) {
+                  return (
+                    item.label.toLowerCase().indexOf(value.toLowerCase()) !== -1
+                  );
+                } else {
+                  return item.initial;
+                }
               }}
             />
             <TextInput
               iconName="clock-o"
               id="dates"
               placeholder="Anytime"
-              defaultValue={''}
+              value={''}
             />
           </div>
+          {hiddenFields}
+          <button
+            type="submit"
+            className="btn btn-default btn-block"
+            style={{ marginTop: '1em' }}
+          >
+            <i className="fa fa-search fa-fw" />
+            Search our Events
+          </button>
         </form>
       </div>
     );
