@@ -378,3 +378,7 @@ $top-search-placeholder-color: #484848;
   /* Microsoft Edge */
   color: $top-search-placeholder-color;
 }
+
+.top-search:focus {
+  outline-width: 0;
+}

@@ -59,6 +59,15 @@ class TextInput extends React.Component {
     style?: object,
   };
 
+  state: {
+    focused: boolean,
+  };
+
+  constructor(props) {
+    super(props);
+    this.state = { focused: false };
+  }
+
   render() {
     return (
       <div
@@ -66,10 +75,16 @@ class TextInput extends React.Component {
           display: 'table-cell',
           color: '#484848',
 
+          transition: 'border 500ms ease-out',
+
+          borderBottomWidth: 2,
+          borderBottomStyle: 'solid',
+          borderBottomColor: this.state.focused ? '#4C4D81' : 'transparent',
+
           ...this.props.style,
         }}
       >
-        <span>
+        <span style={{ float: 'left' }}>
           <i
             className={`fa fa-fw fa-${this.props.iconName}`}
             style={{
@@ -79,22 +94,31 @@ class TextInput extends React.Component {
             }}
           />
         </span>
-        <input
-          id={this.props.id}
-          type="text"
-          className="top-search"
-          name={this.props.name}
-          placeholder={this.props.placeholder}
-          defaultValue={this.props.defaultValue}
+        <div
           style={{
-            border: 0,
-            textOverflow: 'ellipsis',
-            backgroundColor: 'transparent',
-            padding: 7,
-            fontSize: 15,
-            lineHeight: '18px',
+            overflow: 'hidden',
           }}
-        />
+        >
+          <input
+            id={this.props.id}
+            type="text"
+            className="top-search"
+            name={this.props.name}
+            placeholder={this.props.placeholder}
+            defaultValue={this.props.defaultValue}
+            onFocus={() => this.setState({ focused: true })}
+            onBlur={() => this.setState({ focused: false })}
+            style={{
+              border: 0,
+              textOverflow: 'ellipsis',
+              backgroundColor: 'transparent',
+              padding: 7,
+              fontSize: 15,
+              lineHeight: '18px',
+              width: '100%',
+            }}
+          />
+        </div>
       </div>
     );
   }
