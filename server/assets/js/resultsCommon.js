@@ -150,7 +150,7 @@ class TextInput extends React.Component {
           renderItem={(item, isHighlighted) =>
             <div
               key={item.label}
-              style={{ background: isHighlighted ? 'lightgray' : 'white' }}
+              style={{ background: isHighlighted ? '#C0C0E8' : 'white' }}
             >
               {item.label}
             </div>}
