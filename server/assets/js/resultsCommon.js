@@ -76,26 +76,26 @@ class TextInput extends React.Component {
 
   autocompleteItems() {
     return [
-      { label: 'breaking' },
+      { label: 'breaking', initial: true },
       { label: 'bboying' },
       { label: 'bgirling' },
       { label: 'b-boying' },
       { label: 'b-girling' },
       { label: 'hiphop' },
-      { label: 'hip-hop' },
-      { label: 'house' },
-      { label: 'popping' },
-      { label: 'locking' },
-      { label: 'waacking' },
+      { label: 'hip-hop', initial: true },
+      { label: 'house', initial: true },
+      { label: 'popping', initial: true },
+      { label: 'locking', initial: true },
+      { label: 'waacking', initial: true },
       { label: 'whacking' },
-      { label: 'dancehall' },
-      { label: 'vogue' },
-      { label: 'krump' },
+      { label: 'dancehall', initial: true },
+      { label: 'vogue', initial: true },
+      { label: 'krump', initial: true },
       { label: 'turfing' },
       { label: 'litefeet' },
       { label: 'flexing' },
       { label: 'bebop' },
-      { label: 'all-styles' },
+      { label: 'all-styles', initial: true },
       { label: 'kids' },
       // event types
       { label: 'battle' },
@@ -144,10 +144,7 @@ class TextInput extends React.Component {
           inputProps={inputProps}
           value={this.state.value}
           onChange={e => this.setState({ value: e.target.value })}
-          onSelect={(a, b) => {
-            console.log(a, b);
-            this.setState({ value: a });
-          }}
+          onSelect={(value, item) => this.setState({ value })}
           getItemValue={item => item.label}
           items={this.autocompleteItems()}
           renderItem={(item, isHighlighted) =>
@@ -159,8 +156,15 @@ class TextInput extends React.Component {
             </div>}
           renderMenu={(items, value, style) =>
             <div style={menuStyle}>{items}</div>}
-          shouldItemRender={(item, value) =>
-            item.label.toLowerCase().indexOf(value.toLowerCase()) !== -1}
+          shouldItemRender={(item, value) => {
+            if (value.length) {
+              return (
+                item.label.toLowerCase().indexOf(value.toLowerCase()) !== -1
+              );
+            } else {
+              return item.initial;
+            }
+          }}
         />
       );
     } else {
