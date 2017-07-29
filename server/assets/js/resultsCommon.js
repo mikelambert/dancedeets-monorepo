@@ -7,6 +7,7 @@
 import React from 'react';
 import moment from 'moment';
 import { injectIntl, intlShape } from 'react-intl';
+import Autocomplete from 'react-autocomplete';
 import { DateRangePicker } from 'react-dates';
 import 'react-dates/lib/css/_datepicker.css';
 
@@ -50,6 +51,8 @@ class DatePicker extends React.Component {
 }
 
 class TextInput extends React.Component {
+  static underlineWidth = 2;
+
   props: {
     iconName: string,
     id: string,
@@ -57,15 +60,120 @@ class TextInput extends React.Component {
     focused_placeholder: string,
     defaultValue: string,
     style?: object,
+
+    autocomplete?: boolean,
   };
 
   state: {
     focused: boolean,
+    value: string,
   };
 
   constructor(props) {
     super(props);
-    this.state = { focused: false };
+    this.state = { focused: false, value: this.props.defaultValue };
+  }
+
+  autocompleteItems() {
+    return [
+      { label: 'breaking' },
+      { label: 'bboying' },
+      { label: 'bgirling' },
+      { label: 'b-boying' },
+      { label: 'b-girling' },
+      { label: 'hiphop' },
+      { label: 'hip-hop' },
+      { label: 'house' },
+      { label: 'popping' },
+      { label: 'locking' },
+      { label: 'waacking' },
+      { label: 'whacking' },
+      { label: 'dancehall' },
+      { label: 'vogue' },
+      { label: 'krump' },
+      { label: 'turfing' },
+      { label: 'litefeet' },
+      { label: 'flexing' },
+      { label: 'bebop' },
+      { label: 'all-styles' },
+      { label: 'kids' },
+      // event types
+      { label: 'battle' },
+      { label: 'workshop' },
+      { label: 'performance' },
+      { label: 'competition' },
+      { label: 'class' },
+    ];
+  }
+
+  renderInput() {
+    const inputProps = {
+      id: this.props.id,
+      type: 'text',
+      className: 'top-search',
+      name: this.props.id,
+      placeholder: this.state.focused
+        ? this.props.focused_placeholder
+        : this.props.placeholder,
+      style: {
+        border: 0,
+        textOverflow: 'ellipsis',
+        backgroundColor: 'transparent',
+        padding: 7,
+        fontSize: 15,
+        lineHeight: '18px',
+        width: '100%',
+      },
+      onFocus: () => this.setState({ focused: true }),
+      onBlur: () => this.setState({ focused: false }),
+    };
+    if (this.props.autocomplete) {
+      const menuStyle = {
+        marginTop: TextInput.underlineWidth,
+        borderRadius: '3px',
+        boxShadow: '0 2px 12px rgba(0, 0, 0, 0.1)',
+        background: 'rgba(255, 255, 255, 0.9)',
+        padding: '2px 0',
+        fontSize: '90%',
+        position: 'absolute',
+        width: '100%',
+      };
+      return (
+        <Autocomplete
+          wrapperStyle={{}}
+          inputProps={inputProps}
+          value={this.state.value}
+          onChange={e => this.setState({ value: e.target.value })}
+          onSelect={(a, b) => {
+            console.log(a, b);
+            this.setState({ value: a });
+          }}
+          getItemValue={item => item.label}
+          items={this.autocompleteItems()}
+          renderItem={(item, isHighlighted) =>
+            <div
+              key={item.label}
+              style={{ background: isHighlighted ? 'lightgray' : 'white' }}
+            >
+              {item.label}
+            </div>}
+          renderMenu={(items, value, style) =>
+            <div style={menuStyle}>{items}</div>}
+          shouldItemRender={(item, value) =>
+            item.label.toLowerCase().indexOf(value.toLowerCase()) !== -1}
+        />
+      );
+    } else {
+      return (
+        <input
+          {...inputProps}
+          value={this.state.value}
+          onChange={e => this.setState({ value: e.target.value })}
+          onFocus={() => this.setState({ focused: true })}
+          onBlur={() => this.setState({ focused: false })}
+        />
+      );
+    }
   }
 
   render() {
@@ -77,7 +185,7 @@ class TextInput extends React.Component {
 
           transition: 'border 500ms ease-out, width 300ms ease-out',
 
-          borderBottomWidth: 2,
+          borderBottomWidth: TextInput.underlineWidth,
           borderBottomStyle: 'solid',
           borderBottomColor: this.state.focused ? '#4C4D81' : 'transparent',
 
@@ -85,7 +193,7 @@ class TextInput extends React.Component {
           ...this.props.style,
         }}
       >
-        <span style={{ float: 'left' }}>
+        <div style={{ display: 'flex' }}>
           <i
             className={`fa fa-fw fa-${this.props.iconName}`}
             style={{
@@ -94,35 +202,9 @@ class TextInput extends React.Component {
               paddingTop: 7,
             }}
           />
-        </span>
-        <div
-          style={{
-            overflow: 'hidden',
-          }}
-        >
-          <input
-            id={this.props.id}
-            type="text"
-            className="top-search"
-            name={this.props.id}
-            placeholder={
-              this.state.focused
-                ? this.props.focused_placeholder
-                : this.props.placeholder
-            }
-            defaultValue={this.props.defaultValue}
-            onFocus={() => this.setState({ focused: true })}
-            onBlur={() => this.setState({ focused: false })}
-            style={{
-              border: 0,
-              textOverflow: 'ellipsis',
-              backgroundColor: 'transparent',
-              padding: 7,
-              fontSize: 15,
-              lineHeight: '18px',
-              width: '100%',
-            }}
-          />
+          <div style={{ position: 'relative', flexGrow: 1 }}>
+            {this.renderInput()}
+          </div>
         </div>
       </div>
     );
@@ -269,6 +351,7 @@ class _SearchBox extends React.Component {
               defaultValue={form.location}
             />
             <TextInput
+              autocomplete
               iconName="search"
               id="keywords"
               placeholder="Any style"
@@ -280,7 +363,7 @@ class _SearchBox extends React.Component {
               }}
             />
             <TextInput
-              iconName="dates"
+              iconName="clock-o"
               id="dates"
               placeholder="Anytime"
               defaultValue={''}
