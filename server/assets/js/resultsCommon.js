@@ -75,12 +75,13 @@ class TextInput extends React.Component {
           display: 'table-cell',
           color: '#484848',
 
-          transition: 'border 500ms ease-out',
+          transition: 'border 500ms ease-out, width 300ms ease-out',
 
           borderBottomWidth: 2,
           borderBottomStyle: 'solid',
           borderBottomColor: this.state.focused ? '#4C4D81' : 'transparent',
 
+          width: this.state.focused ? '200%' : '100%',
           ...this.props.style,
         }}
       >
