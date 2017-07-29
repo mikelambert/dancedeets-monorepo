@@ -37,9 +37,9 @@ class SearchHandler(base_servlet.BaseRequestHandler):
             return
 
         get_data = self.request.GET.copy()
-        if get_data['start'] == '':
+        if get_data.get('start') == '':
             del get_data['start']
-        if get_data['end'] == '':
+        if get_data.get('end') == '':
             del get_data['end']
         form = search_base.HtmlSearchForm(get_data, data=self.user.dict_for_form() if self.user else None)
         form.validated = form.validate()
