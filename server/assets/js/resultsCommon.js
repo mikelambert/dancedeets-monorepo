@@ -123,9 +123,23 @@ class TextInput extends React.Component {
           renderItem={(item, isHighlighted) =>
             <div
               key={item.label}
-              style={{ background: isHighlighted ? '#C0C0E8' : 'white' }}
+              style={{
+                background: isHighlighted ? '#C0C0E8' : 'white',
+                padding: 12,
+              }}
             >
-              {item.label}
+              {item.main
+                ? <div>
+                    <i
+                      className="fa fa-map-marker"
+                      style={{ paddingRight: 12 }}
+                    />
+                    <strong>{item.main}</strong>{' '}
+                    <small style={{ color: 'grey' }}>
+                      {item.secondary}
+                    </small>
+                  </div>
+                : item.label}
             </div>}
           renderMenu={items => <div style={menuStyle}>{items}</div>}
           {...otherProps}
@@ -295,7 +309,7 @@ class _SearchBox extends React.Component {
                   return;
                 }
                 clearTimeout(this.requestTimer);
-                this.getAutocompleteService().getQueryPredictions(
+                this.getAutocompleteService().getPlacePredictions(
                   {
                     input: value,
                     types: ['(regions)'],
@@ -306,7 +320,11 @@ class _SearchBox extends React.Component {
                       status ===
                       window.google.maps.places.PlacesServiceStatus.OK
                     ) {
-                      items = predictions.map(x => ({ label: x.description }));
+                      items = predictions.map(x => ({
+                        label: x.description,
+                        main: x.structured_formatting.main_text,
+                        secondary: x.structured_formatting.secondary_text,
+                      }));
                     }
                     this.setState({ locationItems: items });
                   }
