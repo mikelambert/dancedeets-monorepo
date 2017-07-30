@@ -46,6 +46,7 @@ class DatePicker extends React.Component {
         focusedInput={this.state.focusedInput}
         onFocusChange={focusedInput => this.setState({ focusedInput })}
         onClose={this.props.onBlur}
+        minimumNights={0}
       />
     );
   }
@@ -76,9 +77,10 @@ class TextInput extends React.Component {
         textOverflow: 'ellipsis',
         backgroundColor: 'transparent',
         padding: 7,
-        fontSize: 15,
-        lineHeight: '18px',
+        fontSize: 18,
+        lineHeight: '24px',
         width: '100%',
+        fontWeight: 200,
       },
       onFocus: this.props.onFocus,
       onBlur: this.props.onBlur,
@@ -388,14 +390,18 @@ class _SearchBox extends React.Component {
                 borderRight: '1px solid #e4e4e4',
               }}
               renderItem={({ focused, onFocus, onBlur }) =>
-                focused
-                  ? <DatePicker query={this.props.query} onBlur={onBlur} />
-                  : <button
+                <div>
+                  <div style={{ display: focused ? 'block' : 'none' }}>
+                    <DatePicker query={this.props.query} onBlur={onBlur} />
+                  </div>
+                  <div style={{ display: focused ? 'none' : 'block' }}>
+                    <button
                       type="button"
                       className="top-search"
                       style={{
-                        fontSize: 15,
-                        lineHeight: '18px',
+                        fontSize: 18,
+                        lineHeight: '24px',
+                        fontWeight: 200,
                         padding: 7,
 
                         backgroundColor: 'transparent',
@@ -406,7 +412,9 @@ class _SearchBox extends React.Component {
                       onFocus={onFocus}
                     >
                       Anytime
-                    </button>}
+                    </button>
+                  </div>
+                </div>}
             />
           </div>
           {hiddenFields}
