@@ -17,8 +17,8 @@ class DatePicker extends React.Component {
   };
 
   state: {
-    startDate: Moment,
-    endDate: Moment,
+    startDate: ?moment,
+    endDate: ?moment,
     focusedInput: any,
   };
 
@@ -34,6 +34,7 @@ class DatePicker extends React.Component {
   render() {
     return (
       <DateRangePicker
+        // orientation="vertical"
         startDateId="start"
         endDateId="end"
         isOutsideRange={day => false}
@@ -50,47 +51,25 @@ class DatePicker extends React.Component {
 }
 
 class TextInput extends React.Component {
-  static underlineWidth = 2;
-
   props: {
-    iconName: string,
     id: string,
     placeholder: string,
-    focusedPlaceholder: string,
     value: string,
-    style?: object,
+    onFocus: () => void,
+    onBlur: () => void,
 
     autocomplete?: boolean,
   };
 
-  state: {
-    focused: boolean,
-  };
-
-  constructor(props) {
-    super(props);
-    this.state = { focused: false };
-  }
-
-  renderInput() {
-    const {
-      iconName,
-      id,
-      placeholder,
-      focusedPlaceholder,
-      value,
-      style,
-      ...otherProps
-    } = this.props;
+  render() {
+    const { id, placeholder, value, ...otherProps } = this.props;
 
     const inputProps = {
       id: this.props.id,
       type: 'text',
       className: 'top-search',
       name: this.props.id,
-      placeholder: this.state.focused
-        ? this.props.focusedPlaceholder
-        : this.props.placeholder,
+      placeholder: this.props.placeholder,
       style: {
         border: 0,
         textOverflow: 'ellipsis',
@@ -100,12 +79,12 @@ class TextInput extends React.Component {
         lineHeight: '18px',
         width: '100%',
       },
-      onFocus: () => this.setState({ focused: true }),
-      onBlur: () => this.setState({ focused: false }),
+      onFocus: this.props.onFocus,
+      onBlur: this.props.onBlur,
     };
     if (this.props.autocomplete) {
       const menuStyle = {
-        marginTop: TextInput.underlineWidth,
+        marginTop: SearchBoxItem.underlineWidth,
         borderRadius: '3px',
         boxShadow: '0 2px 12px rgba(0, 0, 0, 0.1)',
         background: 'rgba(255, 255, 255, 0.9)',
@@ -150,11 +129,34 @@ class TextInput extends React.Component {
         <input
           {...inputProps}
           value={this.props.value}
-          onFocus={() => this.setState({ focused: true })}
-          onBlur={() => this.setState({ focused: false })}
+          onFocus={this.props.onFocus}
+          onBlur={this.props.onBlur}
         />
       );
     }
+  }
+}
+
+class SearchBoxItem extends React.Component {
+  static underlineWidth = 2;
+
+  props: {
+    iconName: string,
+    style?: Object,
+    renderItem: ({
+      focused: boolean,
+      onFocus: () => void,
+      onBlur: () => void,
+    }) => React.Element<*>,
+  };
+
+  state: {
+    focused: boolean,
+  };
+
+  constructor(props) {
+    super(props);
+    this.state = { focused: false };
   }
 
   render() {
@@ -162,11 +164,12 @@ class TextInput extends React.Component {
       <div
         style={{
           display: 'table-cell',
+          verticalAlign: 'bottom',
           color: '#484848',
 
           transition: 'border 500ms ease-out, width 300ms ease-out',
 
-          borderBottomWidth: TextInput.underlineWidth,
+          borderBottomWidth: SearchBoxItem.underlineWidth,
           borderBottomStyle: 'solid',
           borderBottomColor: this.state.focused ? '#4C4D81' : 'transparent',
 
@@ -184,7 +187,11 @@ class TextInput extends React.Component {
             }}
           />
           <div style={{ position: 'relative', flexGrow: 1 }}>
-            {this.renderInput()}
+            {this.props.renderItem({
+              focused: this.state.focused,
+              onFocus: () => this.setState({ focused: true }),
+              onBlur: () => this.setState({ focused: false }),
+            })}
           </div>
         </div>
       </div>
@@ -208,7 +215,7 @@ class _SearchBox extends React.Component {
     locationItems: Array<string>,
   };
 
-  _autoCompleteService: object;
+  _autoCompleteService: Object;
 
   constructor(props) {
     super(props);
@@ -261,10 +268,8 @@ class _SearchBox extends React.Component {
   }
 
   render() {
-    const form = this.props.query;
-
-    const hiddenFields = form.deb
-      ? <input type="hidden" name="deb" value={form.deb} />
+    const hiddenFields = this.props.query.deb
+      ? <input type="hidden" name="deb" value={this.props.query.deb} />
       : null;
 
     return (
@@ -295,76 +300,112 @@ class _SearchBox extends React.Component {
               backgroundColor: 'white',
             }}
           >
-            <TextInput
-              autocomplete
+            <SearchBoxItem
               iconName="globe"
-              id="location"
-              placeholder="Anywhere"
-              focusedPlaceholder="City, Region, or Country"
-              value={this.state.location}
-              items={this.state.locationItems}
-              onChange={(event, value) => {
-                this.setState({ location: value });
-                if (!value) {
-                  return;
-                }
-                clearTimeout(this.requestTimer);
-                this.getAutocompleteService().getPlacePredictions(
-                  {
-                    input: value,
-                    types: ['(regions)'],
-                  },
-                  (predictions, status) => {
-                    let items = [];
-                    if (
-                      status ===
-                      window.google.maps.places.PlacesServiceStatus.OK
-                    ) {
-                      items = predictions.map(x => ({
-                        label: x.description,
-                        main: x.structured_formatting.main_text,
-                        secondary: x.structured_formatting.secondary_text,
-                      }));
-                    }
-                    this.setState({ locationItems: items });
+              renderItem={({ focused, onFocus, onBlur }) =>
+                <TextInput
+                  autocomplete
+                  id="location"
+                  placeholder={
+                    focused ? 'City, Region, or Country' : 'Anywhere'
                   }
-                );
-              }}
-              getItemValue={item => item.label}
-              onSelect={(value, item) => {
-                this.setState({ location: value });
-              }}
+                  value={this.state.location}
+                  items={this.state.locationItems}
+                  onChange={(event, value) => {
+                    this.setState({ location: value });
+                    if (!value) {
+                      return;
+                    }
+                    // TODO: Cancel/ignore old prediction requests, in case they arrive out-of-order
+                    this.getAutocompleteService().getPlacePredictions(
+                      {
+                        input: value,
+                        types: ['(regions)'],
+                      },
+                      (predictions, status) => {
+                        let items = [];
+                        if (
+                          status ===
+                          window.google.maps.places.PlacesServiceStatus.OK
+                        ) {
+                          items = predictions.map(x => ({
+                            label: x.description,
+                            main: x.structured_formatting.main_text,
+                            secondary: x.structured_formatting.secondary_text,
+                          }));
+                        }
+                        this.setState({ locationItems: items });
+                      }
+                    );
+                  }}
+                  getItemValue={item => item.label}
+                  onSelect={(value, item) => {
+                    this.setState({ location: value });
+                  }}
+                  onFocus={onFocus}
+                  onBlur={onBlur}
+                />}
             />
-            <TextInput
-              autocomplete
+            <SearchBoxItem
               iconName="search"
-              id="keywords"
-              placeholder="Any style"
-              focusedPlaceholder="Dance style, event name, etc"
               style={{
                 borderLeft: '1px solid #e4e4e4',
                 borderRight: '1px solid #e4e4e4',
               }}
-              value={this.state.keywords}
-              onChange={(event, value) => this.setState({ keywords: value })}
-              onSelect={(value, item) => this.setState({ keywords: value })}
-              items={this.autocompleteKeywords()}
-              getItemValue={item => item.label}
-              shouldItemRender={(item, value) => {
-                if (value.length) {
-                  return (
-                    item.label.toLowerCase().indexOf(value.toLowerCase()) !== -1
-                  );
-                } else {
-                  return item.initial;
-                }
-              }}
+              renderItem={({ focused, onFocus, onBlur }) =>
+                <TextInput
+                  autocomplete
+                  id="keywords"
+                  placeholder={
+                    focused ? 'Dance style, event name, etc' : 'Any style'
+                  }
+                  value={this.state.keywords}
+                  onChange={(event, value) =>
+                    this.setState({ keywords: value })}
+                  onSelect={(value, item) => this.setState({ keywords: value })}
+                  items={this.autocompleteKeywords()}
+                  getItemValue={item => item.label}
+                  shouldItemRender={(item, value) => {
+                    if (value.length) {
+                      return (
+                        item.label
+                          .toLowerCase()
+                          .indexOf(value.toLowerCase()) !== -1
+                      );
+                    } else {
+                      return item.initial;
+                    }
+                  }}
+                  onFocus={onFocus}
+                  onBlur={onBlur}
+                />}
             />
-            <TextInput
+            <SearchBoxItem
               iconName="clock-o"
-              id="dates"
-              placeholder="Anytime"
-              value={''}
+              style={{
+                borderLeft: '1px solid #e4e4e4',
+                borderRight: '1px solid #e4e4e4',
+              }}
+              renderItem={({ focused, onFocus, onBlur }) =>
+                // <DatePicker query={this.props.query} />}
+                <button
+                  type="button"
+                  className="top-search"
+                  style={{
+                    fontSize: 15,
+                    lineHeight: '18px',
+                    padding: 7,
+
+                    backgroundColor: 'transparent',
+                    border: 0,
+                    textAlign: 'left',
+                    width: '100%',
+                  }}
+                  onClick={onFocus}
+                  onBlur={onBlur}
+                >
+                  Anytime
+                </button>}
             />
           </div>
           {hiddenFields}

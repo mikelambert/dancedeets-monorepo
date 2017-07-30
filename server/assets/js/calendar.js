@@ -46,7 +46,7 @@ class CalendarPage extends React.Component {
       events: eventUrl,
     };
     return (
-      <div className="col-md-9">
+      <div className="col-xs-12">
         <SearchBox query={this.props.query} />
 
         <div style={{ textAlign: 'right' }}>

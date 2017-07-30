@@ -768,7 +768,7 @@ class ResultsPage extends React.Component {
     const query = querystring.stringify(this.props.query);
     const calendarUrl = `/events/relevant?calendar=1&${query}`;
     return (
-      <div className="col-md-9">
+      <div className="col-xs-12">
         <SearchBox query={this.props.query} />
 
         <div style={{ textAlign: 'right' }}>
