@@ -9,11 +9,11 @@ import moment from 'moment';
 import { injectIntl, intlShape } from 'react-intl';
 import Autocomplete from 'react-autocomplete';
 import { DateRangePicker } from 'react-dates';
-import 'react-dates/lib/css/_datepicker.css';
 
 class DatePicker extends React.Component {
   props: {
     query: Object,
+    onBlur: () => void,
   };
 
   state: {
@@ -27,7 +27,7 @@ class DatePicker extends React.Component {
     this.state = {
       startDate: props.query.start ? moment(props.query.start) : null,
       endDate: props.query.end ? moment(props.query.end) : null,
-      focusedInput: null,
+      focusedInput: 'startDate',
     };
   }
 
@@ -45,6 +45,7 @@ class DatePicker extends React.Component {
           this.setState({ startDate, endDate })}
         focusedInput={this.state.focusedInput}
         onFocusChange={focusedInput => this.setState({ focusedInput })}
+        onClose={this.props.onBlur}
       />
     );
   }
@@ -387,25 +388,25 @@ class _SearchBox extends React.Component {
                 borderRight: '1px solid #e4e4e4',
               }}
               renderItem={({ focused, onFocus, onBlur }) =>
-                // <DatePicker query={this.props.query} />}
-                <button
-                  type="button"
-                  className="top-search"
-                  style={{
-                    fontSize: 15,
-                    lineHeight: '18px',
-                    padding: 7,
+                focused
+                  ? <DatePicker query={this.props.query} onBlur={onBlur} />
+                  : <button
+                      type="button"
+                      className="top-search"
+                      style={{
+                        fontSize: 15,
+                        lineHeight: '18px',
+                        padding: 7,
 
-                    backgroundColor: 'transparent',
-                    border: 0,
-                    textAlign: 'left',
-                    width: '100%',
-                  }}
-                  onClick={onFocus}
-                  onBlur={onBlur}
-                >
-                  Anytime
-                </button>}
+                        backgroundColor: 'transparent',
+                        border: 0,
+                        textAlign: 'left',
+                        width: '100%',
+                      }}
+                      onFocus={onFocus}
+                    >
+                      Anytime
+                    </button>}
             />
           </div>
           {hiddenFields}
