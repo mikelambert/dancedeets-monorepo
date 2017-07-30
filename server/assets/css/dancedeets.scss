@@ -1,5 +1,17 @@
 @import 'config.scss';
 
+$react-dates-color-primary: #4C4D81;
+$react-dates-color-secondary: #4C4D81;
+$react-dates-color-focus: #C0C0E8;
+$react-dates-color-text-focus: black;
+// $react-dates-color-primary-shade-1: #C0C0E8;
+// $react-dates-color-primary-shade-2: #C0C0E8;
+$react-dates-color-primary-shade-3: #9090D0;
+$react-dates-color-primary-shade-4: #C0C0E8;
+$react-dates-color-border: transparent;
+@import '~react-dates/css/variables.scss';
+@import '~react-dates/css/styles.scss';
+
 #navbar-collapse-button-icon {
   color: $headline-underline-main-color;
 }
@@ -385,4 +397,14 @@ $top-search-placeholder-color: #484848;
 
 .top-search:focus {
   outline-width: 0;
+}
+
+.DateRangePicker {
+  width: 100%;
+}
+
+.DateRangePickerInput {
+  background-color: 'transparent';
+  border: 0;
+  width: 100%;
 }
