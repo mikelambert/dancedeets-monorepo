@@ -34,7 +34,7 @@ class _DatePicker extends React.Component {
     this.state = {
       startDate: props.query.start ? moment(props.query.start) : null,
       endDate: props.query.end ? moment(props.query.end) : null,
-      focusedInput: 'startDate',
+      focusedInput: null,
     };
   }
 
@@ -369,6 +369,10 @@ class _SearchBox extends React.Component {
     ];
   }
 
+  performSearch() {
+    console.log('search!');
+  }
+
   render() {
     const hiddenFields = this.props.query.deb
       ? <input type="hidden" name="deb" value={this.props.query.deb} />
@@ -445,7 +449,10 @@ class _SearchBox extends React.Component {
                     this.setState({ location: value });
                   }}
                   onFocus={onFocus}
-                  onBlur={onBlur}
+                  onBlur={() => {
+                    this.performSearch();
+                    onBlur();
+                  }}
                 />}
             />
             <SearchBoxItem
@@ -479,7 +486,10 @@ class _SearchBox extends React.Component {
                     }
                   }}
                   onFocus={onFocus}
-                  onBlur={onBlur}
+                  onBlur={() => {
+                    this.performSearch();
+                    onBlur();
+                  }}
                 />}
             />
             <SearchBoxItem
@@ -493,19 +503,23 @@ class _SearchBox extends React.Component {
                   query={this.props.query}
                   focused={focused}
                   onFocus={onFocus}
-                  onBlur={onBlur}
+                  onBlur={() => {
+                    this.performSearch();
+                    onBlur();
+                  }}
                 />}
             />
+
           </div>
-          {hiddenFields}
           <button
             type="submit"
-            className="btn btn-default btn-block"
-            style={{ marginTop: '1em' }}
+            className="btn btn-default"
+            style={{ display: 'table-cell', marginTop: '1em' }}
           >
             <i className="fa fa-search fa-fw" />
             Search our Events
           </button>
+          {hiddenFields}
         </form>
       </div>
     );
