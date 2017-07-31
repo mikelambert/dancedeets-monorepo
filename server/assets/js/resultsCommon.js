@@ -13,6 +13,8 @@ import { DateRangePicker } from 'react-dates';
 class DatePicker extends React.Component {
   props: {
     query: Object,
+    focused: boolean,
+    onFocus: () => void,
     onBlur: () => void,
   };
 
@@ -31,23 +33,63 @@ class DatePicker extends React.Component {
     };
   }
 
+  getShortSummary() {
+    if (this.state.startDate && this.state.endDate) {
+      return `${this.state.startDate} - ${this.state.endDate}`;
+    } else if (this.state.startDate) {
+      return `After ${this.state.startDate}`;
+    } else if (this.state.endDate) {
+      return `Before ${this.state.endDate}`;
+    } else {
+      return 'Anytime';
+    }
+  }
+
   render() {
     return (
-      <DateRangePicker
-        // orientation="vertical"
-        startDateId="start"
-        endDateId="end"
-        isOutsideRange={day => false}
-        // Update internal state
-        startDate={this.state.startDate}
-        endDate={this.state.endDate}
-        onDatesChange={({ startDate, endDate }) =>
-          this.setState({ startDate, endDate })}
-        focusedInput={this.state.focusedInput}
-        onFocusChange={focusedInput => this.setState({ focusedInput })}
-        onClose={this.props.onBlur}
-        minimumNights={0}
-      />
+      <div>
+        <div style={{ display: this.props.focused ? 'none' : 'block' }}>
+          <button
+            type="button"
+            className="top-search"
+            style={{
+              fontSize: 18,
+              lineHeight: '24px',
+              fontWeight: 200,
+              padding: 7,
+
+              backgroundColor: 'transparent',
+              border: 0,
+              textAlign: 'left',
+              width: '100%',
+            }}
+            onFocus={() => {
+              this.props.onFocus();
+              this.setState({ focusedInput: 'startDate' });
+            }}
+          >
+            {this.getShortSummary()}
+          </button>
+        </div>
+        <div style={{ display: this.props.focused ? 'block' : 'none' }}>
+          <DateRangePicker
+            // orientation="vertical"
+            startDateId="start"
+            endDateId="end"
+            isOutsideRange={day => false}
+            // Update internal state
+            startDate={this.state.startDate}
+            endDate={this.state.endDate}
+            onDatesChange={({ startDate, endDate }) =>
+              this.setState({ startDate, endDate })}
+            focusedInput={this.state.focusedInput}
+            onFocusChange={focusedInput => this.setState({ focusedInput })}
+            onClose={this.props.onBlur}
+            minimumNights={0}
+          />
+        </div>
+
+      </div>
     );
   }
 }
@@ -390,31 +432,12 @@ class _SearchBox extends React.Component {
                 borderRight: '1px solid #e4e4e4',
               }}
               renderItem={({ focused, onFocus, onBlur }) =>
-                <div>
-                  <div style={{ display: focused ? 'block' : 'none' }}>
-                    <DatePicker query={this.props.query} onBlur={onBlur} />
-                  </div>
-                  <div style={{ display: focused ? 'none' : 'block' }}>
-                    <button
-                      type="button"
-                      className="top-search"
-                      style={{
-                        fontSize: 18,
-                        lineHeight: '24px',
-                        fontWeight: 200,
-                        padding: 7,
-
-                        backgroundColor: 'transparent',
-                        border: 0,
-                        textAlign: 'left',
-                        width: '100%',
-                      }}
-                      onFocus={onFocus}
-                    >
-                      Anytime
-                    </button>
-                  </div>
-                </div>}
+                <DatePicker
+                  query={this.props.query}
+                  focused={focused}
+                  onFocus={onFocus}
+                  onBlur={onBlur}
+                />}
             />
           </div>
           {hiddenFields}
