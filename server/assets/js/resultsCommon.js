@@ -447,11 +447,12 @@ class _SearchBox extends React.Component {
                   getItemValue={item => item.label}
                   onSelect={(value, item) => {
                     this.setState({ location: value });
+                    this.performSearch();
                   }}
                   onFocus={onFocus}
                   onBlur={() => {
-                    this.performSearch();
                     onBlur();
+                    this.performSearch();
                   }}
                 />}
             />
@@ -471,7 +472,10 @@ class _SearchBox extends React.Component {
                   value={this.state.keywords}
                   onChange={(event, value) =>
                     this.setState({ keywords: value })}
-                  onSelect={(value, item) => this.setState({ keywords: value })}
+                  onSelect={(value, item) => {
+                    this.setState({ keywords: value });
+                    this.performSearch();
+                  }}
                   items={this.autocompleteKeywords()}
                   getItemValue={item => item.label}
                   shouldItemRender={(item, value) => {
@@ -487,8 +491,8 @@ class _SearchBox extends React.Component {
                   }}
                   onFocus={onFocus}
                   onBlur={() => {
-                    this.performSearch();
                     onBlur();
+                    this.performSearch();
                   }}
                 />}
             />
