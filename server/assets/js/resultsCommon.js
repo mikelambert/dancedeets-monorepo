@@ -10,12 +10,17 @@ import { injectIntl, intlShape } from 'react-intl';
 import Autocomplete from 'react-autocomplete';
 import { DateRangePicker } from 'react-dates';
 
-class DatePicker extends React.Component {
+class _DatePicker extends React.Component {
+  static DateFormat = 'MMM Do';
+
   props: {
     query: Object,
     focused: boolean,
     onFocus: () => void,
     onBlur: () => void,
+
+    // Self-managed props
+    // intl: intlShape,
   };
 
   state: {
@@ -34,65 +39,117 @@ class DatePicker extends React.Component {
   }
 
   getShortSummary() {
-    if (this.state.startDate && this.state.endDate) {
-      return `${this.state.startDate} - ${this.state.endDate}`;
-    } else if (this.state.startDate) {
-      return `After ${this.state.startDate}`;
-    } else if (this.state.endDate) {
-      return `Before ${this.state.endDate}`;
+    const { startDate, endDate } = this.state;
+    if (startDate && endDate) {
+      if (
+        startDate.year === endDate.year &&
+        startDate.month === endDate.month
+      ) {
+        return `${startDate.format(_DatePicker.DateFormat)}—${endDate.format(
+          'Do'
+        )}`;
+      } else {
+        return `${startDate.format(_DatePicker.DateFormat)}—${endDate.format(
+          _DatePicker.DateFormat
+        )}`;
+      }
+    } else if (startDate) {
+      return `After ${startDate.format(_DatePicker.DateFormat)}`;
+    } else if (endDate) {
+      return `Before ${endDate.format(_DatePicker.DateFormat)}`;
     } else {
       return 'Anytime';
     }
   }
 
   render() {
+    const dateDisplay = (
+      <div key="date-display">
+        <button
+          type="button"
+          className="top-search"
+          style={{
+            fontSize: 18,
+            lineHeight: '24px',
+            fontWeight: 200,
+            padding: 7,
+
+            backgroundColor: 'transparent',
+            border: 0,
+            textAlign: 'left',
+            width: '100%',
+          }}
+          onFocus={() => {
+            this.props.onFocus();
+            this.setState({ focusedInput: 'startDate' });
+          }}
+        >
+          {this.getShortSummary()}
+        </button>
+      </div>
+    );
+    const datePicker = (
+      <div key="date-picker">
+        <DateRangePicker
+          // orientation="vertical"
+          startDateId="start"
+          endDateId="end"
+          isOutsideRange={day => false}
+          // Update internal state
+          startDate={this.state.startDate}
+          endDate={this.state.endDate}
+          onDatesChange={({ startDate, endDate }) =>
+            this.setState({ startDate, endDate })}
+          focusedInput={this.state.focusedInput}
+          onFocusChange={focusedInput => {
+            this.props.onFocus();
+            this.setState({ focusedInput });
+          }}
+          onClose={this.props.onBlur}
+          minimumNights={0}
+          displayFormat={_DatePicker.DateFormat}
+          hideKeyboardShortcutsPanel
+        />
+      </div>
+    );
     return (
-      <div>
-        <div style={{ display: this.props.focused ? 'none' : 'block' }}>
-          <button
-            type="button"
-            className="top-search"
-            style={{
-              fontSize: 18,
-              lineHeight: '24px',
-              fontWeight: 200,
-              padding: 7,
-
-              backgroundColor: 'transparent',
-              border: 0,
-              textAlign: 'left',
-              width: '100%',
-            }}
-            onFocus={() => {
-              this.props.onFocus();
-              this.setState({ focusedInput: 'startDate' });
-            }}
-          >
-            {this.getShortSummary()}
-          </button>
-        </div>
-        <div style={{ display: this.props.focused ? 'block' : 'none' }}>
-          <DateRangePicker
-            // orientation="vertical"
-            startDateId="start"
-            endDateId="end"
-            isOutsideRange={day => false}
-            // Update internal state
-            startDate={this.state.startDate}
-            endDate={this.state.endDate}
-            onDatesChange={({ startDate, endDate }) =>
-              this.setState({ startDate, endDate })}
-            focusedInput={this.state.focusedInput}
-            onFocusChange={focusedInput => this.setState({ focusedInput })}
-            onClose={this.props.onBlur}
-            minimumNights={0}
-          />
-        </div>
-
+      <div style={{ position: 'relative' }}>
+        {this.props.focused
+          ? [
+              <div
+                style={{
+                  position: 'absolute',
+                  zIndex: -1,
+                  top: 0,
+                  bottom: 0,
+                  left: 0,
+                  right: 0,
+                }}
+              >
+                {dateDisplay}
+              </div>,
+              datePicker,
+            ]
+          : [
+              <div
+                style={{
+                  position: 'absolute',
+                  zIndex: -1,
+                  top: 0,
+                  bottom: 0,
+                  left: 0,
+                  right: 0,
+                }}
+              >
+                {datePicker}
+              </div>,
+              dateDisplay,
+            ]}
       </div>
     );
   }
 }
+const DatePicker = injectIntl(_DatePicker);
 
 class TextInput extends React.Component {
   props: {
