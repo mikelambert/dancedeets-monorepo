@@ -8,6 +8,7 @@ import React from 'react';
 import { injectIntl, intlShape } from 'react-intl';
 import querystring from 'querystring';
 import ExecutionEnvironment from 'exenv';
+import createBrowserHistory from 'history/createBrowserHistory';
 import type { NewSearchResponse } from 'dancedeets-common/js/events/search';
 import { intlWeb } from 'dancedeets-common/js/intl';
 import FullCalendar from './FullCalendar';
@@ -19,10 +20,33 @@ class CalendarPage extends React.Component {
     query: Object,
   };
 
+  state: {
+    queryString: string,
+  };
+
+  constructor(props) {
+    super(props);
+    const queryString = querystring.stringify(this.props.query);
+    this.state = { queryString };
+    (this: any).onNewSearch = this.onNewSearch.bind(this);
+  }
+
+  async onNewSearch(form) {
+    const newForm = Object.assign({}, form, {
+      calendar: '1',
+    });
+    const newQueryString = querystring.stringify(newForm);
+    const history = createBrowserHistory();
+    history.replace(`/?${newQueryString}`);
+
+    const queryString = querystring.stringify(form);
+    this.setState({ queryString });
+  }
+
   render() {
-    const query = querystring.stringify(this.props.query);
-    const resultsUrl = `/events/relevant?${query}`;
-    const eventUrl = `/calendar/feed?${query}`;
+    const queryString = this.state.queryString;
+    const resultsUrl = `/events/relevant?${queryString}`;
+    const eventUrl = `/calendar/feed?${queryString}`;
     const options = {
       aspectRatio: 1.8,
       header: {
@@ -45,9 +69,10 @@ class CalendarPage extends React.Component {
       defaultView: 'basicWeek',
       events: eventUrl,
     };
+    console.log(resultsUrl);
     return (
       <div className="col-xs-12">
-        <SearchBox query={this.props.query} />
+        <SearchBox query={this.props.query} onNewSearch={this.onNewSearch} />
 
         <div style={{ textAlign: 'right' }}>
           <a href={resultsUrl}>

@@ -17,6 +17,10 @@ import Slider from 'react-slick';
 import Spinner from 'react-spinkit';
 import Collapse, { Panel } from 'rc-collapse';
 import querystring from 'querystring';
+import createBrowserHistory from 'history/createBrowserHistory';
+import { performRequest } from 'dancedeets-common/js/api/dancedeets';
+import { timeout } from 'dancedeets-common/js/api/timeouts';
+import { sortString } from 'dancedeets-common/js/util/sort';
 import { intlWeb } from 'dancedeets-common/js/intl';
 import type { Cover, JSONObject } from 'dancedeets-common/js/events/models';
 import { messages } from 'dancedeets-common/js/events/people';
@@ -755,6 +759,37 @@ class _ResultsList extends React.Component {
 }
 const ResultsList = wantsWindowSizes(injectIntl(_ResultsList));
 
+export async function search(
+  location: string,
+  keywords: string,
+  startDate: string,
+  endDate: string
+) {
+  const response = await timeout(
+    10000,
+    performRequest(
+      'search',
+      {
+        location,
+        keywords,
+        start: startDate,
+        end: endDate,
+      },
+      {},
+      '2.0'
+    )
+  );
+  response.featuredInfos = response.featuredInfos.map(x => ({
+    ...x,
+    event: new SearchEvent(x.event),
+  }));
+  response.results = response.results.map(x => new SearchEvent(x));
+  response.results = sortString(response.results, resultEvent =>
+    moment(resultEvent.start_time).toISOString()
+  );
+  return response;
+}
+
 class ResultsPage extends React.Component {
   props: {
     response: NewSearchResponse,
@@ -771,10 +806,20 @@ class ResultsPage extends React.Component {
   constructor(props) {
     super(props);
     this.state = { response: this.props.response };
-    (this: any).onNewResults = this.onNewResults.bind(this);
+    (this: any).onNewSearch = this.onNewSearch.bind(this);
   }
 
-  onNewResults(response) {
+  async onNewSearch(form) {
+    const query = querystring.stringify(form);
+    const history = createBrowserHistory();
+    history.replace(`/?${query}`);
+
+    const response = await search(
+      form.location,
+      form.keywords,
+      form.start,
+      form.end
+    );
     this.setState({ response });
   }
 
@@ -783,7 +828,7 @@ class ResultsPage extends React.Component {
     const calendarUrl = `/events/relevant?calendar=1&${query}`;
     return (
       <div className="col-xs-12">
-        <SearchBox query={this.props.query} onNewResults={this.onNewResults} />
+        <SearchBox query={this.props.query} onNewSearch={this.onNewSearch} />
 
         <div style={{ textAlign: 'right' }}>
           <a href={calendarUrl}>

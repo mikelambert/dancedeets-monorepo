@@ -9,44 +9,6 @@ import moment from 'moment';
 import { injectIntl, intlShape } from 'react-intl';
 import Autocomplete from 'react-autocomplete';
 import { DateRangePicker } from 'react-dates';
-import createBrowserHistory from 'history/createBrowserHistory';
-import querystring from 'querystring';
-import { performRequest } from 'dancedeets-common/js/api/dancedeets';
-import { timeout } from 'dancedeets-common/js/api/timeouts';
-import { sortString } from 'dancedeets-common/js/util/sort';
-import { SearchEvent } from 'dancedeets-common/js/events/models';
-import type { NewSearchResponse } from 'dancedeets-common/js/events/search';
-
-export async function search(
-  location: string,
-  keywords: string,
-  startDate: string,
-  endDate: string
-) {
-  const response = await timeout(
-    10000,
-    performRequest(
-      'search',
-      {
-        location,
-        keywords,
-        start: startDate,
-        end: endDate,
-      },
-      {},
-      '2.0'
-    )
-  );
-  response.featuredInfos = response.featuredInfos.map(x => ({
-    ...x,
-    event: new SearchEvent(x.event),
-  }));
-  response.results = response.results.map(x => new SearchEvent(x));
-  response.results = sortString(response.results, resultEvent =>
-    moment(resultEvent.start_time).toISOString()
-  );
-  return response;
-}
 
 class _DatePicker extends React.Component {
   static DateFormat = 'MMM Do';
@@ -344,7 +306,7 @@ function performLocationLookup(value, itemsCallback) {}
 class _SearchBox extends React.Component {
   props: {
     query: Object,
-    onNewResults: (results: NewSearchResponse) => void,
+    onNewSearch: (form: Object) => void,
     // Self-managed props
     // intl: intlShape,
   };
@@ -410,23 +372,13 @@ class _SearchBox extends React.Component {
   }
 
   async performSearch() {
-    const history = createBrowserHistory();
     const formData = new FormData(this._form);
 
     const form = {};
     [...formData.entries()].forEach(kv => {
       form[kv[0]] = kv[1];
     });
-    const query = querystring.stringify(form);
-    history.replace(`/?${query}`);
-
-    const response = await search(
-      form.location,
-      form.keywords,
-      form.start,
-      form.end
-    );
-    this.props.onNewResults(response);
+    this.props.onNewSearch(form);
   }
 
   render() {
