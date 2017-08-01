@@ -764,12 +764,26 @@ class ResultsPage extends React.Component {
     query: Object,
   };
 
+  state: {
+    response: NewSearchResponse,
+  };
+
+  constructor(props) {
+    super(props);
+    this.state = { response: this.props.response };
+    (this: any).onNewResults = this.onNewResults.bind(this);
+  }
+
+  onNewResults(response) {
+    this.setState({ response });
+  }
+
   render() {
     const query = querystring.stringify(this.props.query);
     const calendarUrl = `/events/relevant?calendar=1&${query}`;
     return (
       <div className="col-xs-12">
-        <SearchBox query={this.props.query} />
+        <SearchBox query={this.props.query} onNewResults={this.onNewResults} />
 
         <div style={{ textAlign: 'right' }}>
           <a href={calendarUrl}>
@@ -777,7 +791,7 @@ class ResultsPage extends React.Component {
           </a>
         </div>
         <ResultsList
-          response={this.props.response}
+          response={this.state.response}
           past={this.props.past}
           showPeople={this.props.showPeople}
           categoryOrder={this.props.categoryOrder}

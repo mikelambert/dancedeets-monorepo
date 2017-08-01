@@ -15,6 +15,7 @@ import { performRequest } from 'dancedeets-common/js/api/dancedeets';
 import { timeout } from 'dancedeets-common/js/api/timeouts';
 import { sortString } from 'dancedeets-common/js/util/sort';
 import { SearchEvent } from 'dancedeets-common/js/events/models';
+import type { NewSearchResponse } from 'dancedeets-common/js/events/search';
 
 export async function search(
   location: string,
@@ -343,7 +344,7 @@ function performLocationLookup(value, itemsCallback) {}
 class _SearchBox extends React.Component {
   props: {
     query: Object,
-
+    onNewResults: (results: NewSearchResponse) => void,
     // Self-managed props
     // intl: intlShape,
   };
@@ -419,14 +420,13 @@ class _SearchBox extends React.Component {
     const query = querystring.stringify(form);
     history.replace(`/?${query}`);
 
-    const result = await search(
+    const response = await search(
       form.location,
       form.keywords,
       form.start,
       form.end
     );
-    console.log(result);
-    // TODO: Do actual search and repopulate the results below
+    this.props.onNewResults(response);
   }
 
   render() {
@@ -504,8 +504,8 @@ class _SearchBox extends React.Component {
                     );
                   }}
                   getItemValue={item => item.label}
-                  onSelect={(value, item) => {
-                    this.setState({ location: value });
+                  onSelect={async (value, item) => {
+                    await this.setState({ location: value });
                     this.performSearch();
                   }}
                   onFocus={onFocus}
@@ -531,8 +531,8 @@ class _SearchBox extends React.Component {
                   value={this.state.keywords}
                   onChange={(event, value) =>
                     this.setState({ keywords: value })}
-                  onSelect={(value, item) => {
-                    this.setState({ keywords: value });
+                  onSelect={async (value, item) => {
+                    await this.setState({ keywords: value });
                     this.performSearch();
                   }}
                   items={this.autocompleteKeywords()}
