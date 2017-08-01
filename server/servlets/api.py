@@ -254,7 +254,6 @@ class PeopleHandler(ApiHandler):
             'location': self.request.get('location'),
             'locale': self.request.get('locale'),
         }
-        logging.info(data)
         form = search_base.SearchForm(data=data)
 
         if not form.validate():
@@ -286,14 +285,16 @@ class SearchHandler(ApiHandler):
         data = {
             'location': self.request.get('location'),
             'keywords': self.request.get('keywords'),
-            'locale': self.request.get('locale'),
         }
+        if self.request.get('locale'):
+            data['locale'] = self.request.get('locale')
         # If it's 1.0 clients, or web clients, then grab all data
         if self.version == (1, 0):
             time_period = search_base.TIME_UPCOMING
         else:
             time_period = self.request.get('time_period')
-        data['time_period'] = time_period
+        if time_period:
+            data['time_period'] = time_period
         return data
 
     def get(self):
