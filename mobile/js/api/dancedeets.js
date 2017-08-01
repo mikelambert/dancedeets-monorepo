@@ -12,10 +12,13 @@ import moment from 'moment';
 import { Event } from 'dancedeets-common/js/events/models';
 import type { TimePeriod } from 'dancedeets-common/js/events/search';
 import { sortString } from 'dancedeets-common/js/util/sort';
+import {
+  createRequest,
+  idempotentRetry,
+  performRequest as realPerformRequest,
+} from 'dancedeets-common/js/api/dancedeets';
+import { timeout, retryWithBackoff } from 'dancedeets-common/js/api/timeouts';
 import type { TokenRegistration } from '../store/track';
-import { timeout, retryWithBackoff } from './timeouts';
-
-const DEV_SERVER = false;
 
 let writesDisabled = false;
 
@@ -23,86 +26,27 @@ export function disableWrites() {
   writesDisabled = true;
 }
 
-function getUrl(path: string, args: Object) {
-  const version = '1.4';
-  const baseUrl = DEV_SERVER
-    ? `http://dev.dancedeets.com:8080/api/v${version}/`
-    : `https://www.dancedeets.com/api/v${version}/`;
-  const formattedArgs = querystring.stringify(args);
-  let fullPath = baseUrl + path;
-  if (formattedArgs) {
-    fullPath += `?${formattedArgs}`;
-  }
-  return fullPath;
-}
-
 async function performRequest(
   path: string,
   args: Object,
   postArgs: ?Object | null
 ): Promise<Object> {
-  try {
-    // Standardize our API args with additional data
-    const client = `react-${Platform.OS}`;
-    const locale = Locale.constants()
-      .localeIdentifier.split('_')[0]
-      .split('-')[0];
-    const fullArgs = Object.assign({}, args, {
-      client,
-      locale,
-    });
-    const token = await AccessToken.getCurrentAccessToken();
-    const fullPostData = Object.assign({}, postArgs, {
-      client,
-      locale,
-      access_token: token ? token.accessToken : null,
-    });
-
-    console.log('JSON API:', getUrl(path, fullArgs));
-    const result = await fetch(getUrl(path, fullArgs), {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(fullPostData),
-    });
-    // This setTimeout kicks the eventloop so it doesn't fall asleep.
-    // Workaround for https://github.com/facebook/react-native/issues/14391
-    setTimeout(() => null, 0);
-    const json = await result.json();
-    // 'undefined' means success, 'false' means error
-    if (json.success === false) {
-      throw new Error(`${json.errors}`);
-    } else {
-      return json;
-    }
-  } catch (e) {
-    console.warn(
-      'Error on API call:',
-      path,
-      'withArgs:',
-      args,
-      '. Error:',
-      e.message,
-      e
-    );
-    throw e;
-  }
-}
-
-function createRequest(
-  path: string,
-  args: Object,
-  postArgs: ?Object | null
-): () => Promise<Object> {
-  return () => performRequest(path, args, postArgs);
-}
-
-function idempotentRetry(
-  timeoutMs: number,
-  promiseGenerator: () => Promise<() => Promise<Object>>
-) {
-  return retryWithBackoff(timeoutMs, 2, 5, promiseGenerator);
+  // Standardize our API args with additional data
+  const client = `react-${Platform.OS}`;
+  const locale = Locale.constants()
+    .localeIdentifier.split('_')[0]
+    .split('-')[0];
+  const newArgs = Object.assign({}, args, {
+    client,
+    locale,
+  });
+  const token = await AccessToken.getCurrentAccessToken();
+  const newPostArgs = Object.assign({}, postArgs, {
+    client,
+    locale,
+    access_token: token ? token.accessToken : null,
+  });
+  return await realPerformRequest(path, newArgs, newPostArgs, '1.4');
 }
 
 export async function isAuthenticated() {
