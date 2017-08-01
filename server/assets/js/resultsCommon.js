@@ -9,6 +9,8 @@ import moment from 'moment';
 import { injectIntl, intlShape } from 'react-intl';
 import Autocomplete from 'react-autocomplete';
 import { DateRangePicker } from 'react-dates';
+import createBrowserHistory from 'history/createBrowserHistory';
+import querystring from 'querystring';
 
 class _DatePicker extends React.Component {
   static DateFormat = 'MMM Do';
@@ -319,6 +321,8 @@ class _SearchBox extends React.Component {
 
   _autoCompleteService: Object;
 
+  _form: Object;
+
   constructor(props) {
     super(props);
     this.state = {
@@ -370,7 +374,17 @@ class _SearchBox extends React.Component {
   }
 
   performSearch() {
-    console.log('search!');
+    const history = createBrowserHistory();
+    const formData = new FormData(this._form);
+
+    const form = {};
+    [...formData.entries()].forEach(kv => {
+      form[kv[0]] = kv[1];
+    });
+    const query = querystring.stringify(form);
+    history.replace(`/?${query}`);
+
+    // TODO: Do actual search and repopulate the results below
   }
 
   render() {
@@ -382,6 +396,9 @@ class _SearchBox extends React.Component {
       <div>
         <form
           id="search-form"
+          ref={x => {
+            this._form = x;
+          }}
           role="search"
           className="form-inline"
           action="/"

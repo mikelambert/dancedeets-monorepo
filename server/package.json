@@ -72,6 +72,7 @@
     "exenv": "^1.2.1",
     "font-awesome": "^4.5.0",
     "fullcalendar": "^3.0.1",
+    "history": "^4.6.3",
     "jquery": "^3.0.0",
     "jquery-backstretch": "^2.1.1",
     "jquery.smartbanner": "^0.1.0",
