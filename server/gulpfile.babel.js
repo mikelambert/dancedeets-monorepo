@@ -72,7 +72,12 @@ gulp.task(
 );
 gulp.task('compile:test-geonames', ['compile:test-geonames:build_cities_db']);
 
-gulp.task('compile:images:favicons', () =>
+const faviconsFilename = './dist/templates/favicon_tags.html';
+gulp.task(
+  'compile:images:favicons:delete',
+  $.shell.task(`rm ${faviconsFilename}`)
+);
+gulp.task('compile:images:favicons', ['compile:images:favicons:delete'], () =>
   gulp
     .src('assets/img/deets-head.png')
     .pipe(
@@ -93,7 +98,7 @@ gulp.task('compile:images:favicons', () =>
           opengraph: false,
           twitter: false,
         },
-        html: './dist/templates/favicon_tags.html',
+        html: faviconsFilename,
         replace: true,
       })
     )

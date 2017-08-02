@@ -73,6 +73,8 @@ class ApiHandler(base_servlet.BareBaseRequestHandler):
             self.response.out.write(')')
 
     def _initialize(self, request):
+        self.response.headers.add_header('Access-Control-Allow-Headers', 'Content-Type')
+
         # We use _initialize instead of webapp2's initialize, so that exceptions can be caught easily
         self.fbl = fb_api.FBLookup(None, None)
 
