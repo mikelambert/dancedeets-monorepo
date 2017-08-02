@@ -39,6 +39,9 @@ class CalendarPage extends React.Component {
     const history = createBrowserHistory();
     history.replace(`/?${newQueryString}`);
 
+    const calendarForm = form;
+    delete calendarForm.start;
+    delete calendarForm.end;
     const queryString = querystring.stringify(form);
     this.setState({ queryString });
   }
@@ -69,7 +72,6 @@ class CalendarPage extends React.Component {
       defaultView: 'basicWeek',
       events: eventUrl,
     };
-    console.log(resultsUrl);
     return (
       <div className="col-xs-12">
         <SearchBox query={this.props.query} onNewSearch={this.onNewSearch} />
@@ -80,7 +82,9 @@ class CalendarPage extends React.Component {
           </a>
         </div>
         {ExecutionEnvironment.canUseDOM
-          ? <Card><FullCalendar options={options} /></Card>
+          ? <Card>
+              <FullCalendar key={queryString} options={options} />
+            </Card>
           : null}
       </div>
     );

@@ -416,3 +416,7 @@ $top-search-placeholder-color: #484848;
   width: 100%;
   padding: 3px; // 3px + DateInput__display-text' 4px == 7px padding in resultsCommon.js
 }
+
+.DateRangePicker__picker {
+  z-index: 10;
+}
