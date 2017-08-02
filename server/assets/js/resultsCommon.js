@@ -18,6 +18,7 @@ class _DatePicker extends React.Component {
     focused: boolean,
     onFocus: () => void,
     onBlur: () => void,
+    onComplete: () => void,
 
     // Self-managed props
     // intl: intlShape,
@@ -36,6 +37,14 @@ class _DatePicker extends React.Component {
       endDate: props.query.end ? moment(props.query.end) : null,
       focusedInput: null,
     };
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    // Once the component has been updated, and re-rendered the <input>s with new values
+    // Let's perform a search based off them
+    if (prevState.focusedInput !== null && this.state.focusedInput === null) {
+      this.props.onComplete();
+    }
   }
 
   getShortSummary() {
@@ -102,8 +111,8 @@ class _DatePicker extends React.Component {
             this.setState({ startDate, endDate })}
           focusedInput={this.state.focusedInput}
           onFocusChange={focusedInput => {
-            this.props.onFocus();
             this.setState({ focusedInput });
+            this.props.onFocus();
           }}
           onClose={this.props.onBlur}
           minimumNights={0}
@@ -118,6 +127,7 @@ class _DatePicker extends React.Component {
           ? [
               <div
                 style={{
+                  visibility: 'hidden',
                   position: 'absolute',
                   zIndex: -1,
                   top: 0,
@@ -133,6 +143,7 @@ class _DatePicker extends React.Component {
           : [
               <div
                 style={{
+                  visibility: 'hidden',
                   position: 'absolute',
                   zIndex: -1,
                   top: 0,
@@ -372,6 +383,10 @@ class _SearchBox extends React.Component {
   }
 
   async performSearch() {
+    if (!this._form) {
+      console.warn('Error, called performSearch before form has been setup');
+      return;
+    }
     const formData = new FormData(this._form);
 
     const form = {};
@@ -518,10 +533,8 @@ class _SearchBox extends React.Component {
                   query={this.props.query}
                   focused={focused}
                   onFocus={onFocus}
-                  onBlur={() => {
-                    this.performSearch();
-                    onBlur();
-                  }}
+                  onBlur={onBlur}
+                  onComplete={() => this.performSearch()}
                 />}
             />
 
