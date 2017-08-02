@@ -42,8 +42,8 @@ class _DatePicker extends React.Component {
     const { startDate, endDate } = this.state;
     if (startDate && endDate) {
       if (
-        startDate.year === endDate.year &&
-        startDate.month === endDate.month
+        startDate.year() === endDate.year() &&
+        startDate.month() === endDate.month()
       ) {
         return `${startDate.format(_DatePicker.DateFormat)}—${endDate.format(
           'Do'
@@ -526,14 +526,6 @@ class _SearchBox extends React.Component {
             />
 
           </div>
-          <button
-            type="submit"
-            className="btn btn-default"
-            style={{ display: 'table-cell', marginTop: '1em' }}
-          >
-            <i className="fa fa-search fa-fw" />
-            Search our Events
-          </button>
           {hiddenFields}
         </form>
       </div>
