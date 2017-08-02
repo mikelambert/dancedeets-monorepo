@@ -21,7 +21,9 @@
 /* bootstrap.css overrides */
 .navbar-brand {
   /* our image is larger, so we need less padding */
-  padding: 8px;
+  padding: 0px;
+  /* but we still want it to take up the full height of what is available */
+  height: 100%;
 }
 /* these all relate to giving regular text a proper display color/padding */
 .nav-text {

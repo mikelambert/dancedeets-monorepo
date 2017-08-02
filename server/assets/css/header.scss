@@ -106,9 +106,6 @@ $header-link-color: white;
 
 /*Navbar Brand*/
 .header-v6 .navbar-brand {
-  height: 93px;
-  max-height: 93px;
-  line-height: 65px;
 }
 
 .header-v6 .navbar-brand img {
@@ -357,8 +354,7 @@ $header-link-color: white;
   }
 
   .header-v6 .navbar-nav > li > a {
-    padding: 20px;
-    line-height: 54px;
+    padding: 30px 15px 15px 15px;
   }
 
   .header-v6 .navbar-nav > li > a,
