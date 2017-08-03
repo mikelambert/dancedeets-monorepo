@@ -87,7 +87,7 @@
     "react-addons-shallow-compare": "^15.6.0",
     "react-autocomplete": "^1.5.10",
     "react-cookie": "^1.0.4",
-    "react-dates": "^12.3.0",
+    "react-dates": "github:mikelambert/react-dates#patch-1",
     "react-dom": "^15.4.1",
     "react-format-text": "^1.1.0",
     "react-helmet": "^3.2.3",

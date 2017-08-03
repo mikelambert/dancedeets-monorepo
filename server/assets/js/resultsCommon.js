@@ -9,6 +9,8 @@ import moment from 'moment';
 import { injectIntl, intlShape } from 'react-intl';
 import Autocomplete from 'react-autocomplete';
 import { DateRangePicker } from 'react-dates';
+import { wantsWindowSizes } from './ui';
+import type { windowProps } from './ui';
 
 class _DatePicker extends React.Component {
   static DateFormat = 'MMM Do';
@@ -21,6 +23,7 @@ class _DatePicker extends React.Component {
     onComplete: () => void,
 
     // Self-managed props
+    window: windowProps,
     // intl: intlShape,
   };
 
@@ -98,6 +101,13 @@ class _DatePicker extends React.Component {
         </button>
       </div>
     );
+    const narrowScreen = this.props.window && this.props.window.width < 768;
+    const orientationProps = narrowScreen
+      ? {
+          orientation: 'vertical',
+          withFullScreenPortal: true,
+        }
+      : { orientation: 'horizontal' };
     const datePicker = (
       <div key="date-picker">
         <DateRangePicker
@@ -121,6 +131,7 @@ class _DatePicker extends React.Component {
           minimumNights={0}
           displayFormat={_DatePicker.DateFormat}
           hideKeyboardShortcutsPanel
+          {...orientationProps}
         />
       </div>
     );
@@ -156,7 +167,7 @@ class _DatePicker extends React.Component {
     );
   }
 }
-const DatePicker = injectIntl(_DatePicker);
+const DatePicker = wantsWindowSizes(injectIntl(_DatePicker));
 
 // Make Tab button behave like Enter button
 Autocomplete.keyDownHandlers.Tab = Autocomplete.keyDownHandlers.Enter;
