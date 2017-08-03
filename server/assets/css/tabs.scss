@@ -1,6 +1,4 @@
 .react-tabs {
-  margin-top: 20px;
-
   &__tab-list {
     margin: 0;
     margin-bottom: 10px;
@@ -17,6 +15,7 @@
     margin: 0px 12px;
     cursor: pointer;
     text-transform: uppercase;
+    font-weight: bold;
 
     &--selected {
       color: #4C4D81;

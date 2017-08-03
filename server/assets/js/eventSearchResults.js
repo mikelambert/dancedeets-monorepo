@@ -779,7 +779,7 @@ class ResultTabs extends React.Component {
       <Tabs>
         <TabList>
           <Tab>Events List</Tab>
-          <Tab>Events Calendar</Tab>
+          <Tab>Calendar</Tab>
           {peopleTab}
         </TabList>
 
