@@ -52,7 +52,6 @@ require('slick-carousel/slick/slick.css');
 require('slick-carousel/slick/slick-theme.css');
 require('../css/slick.scss');
 require('../css/rc-collapse.scss');
-require('react-tabs/style/react-tabs.scss');
 
 type SearchQuery = Object;
 
@@ -778,12 +777,26 @@ class ResultTabs extends React.Component {
   };
 
   render() {
+    let peopleTab = null;
+    let peopleTabPanel = null;
+    // Only show People tab if we have chosen a location
+    if (this.props.query.location) {
+      peopleTab = <Tab>People</Tab>;
+      peopleTabPanel = (
+        <TabPanel>
+          <PeopleList
+            response={this.props.response}
+            categoryOrder={this.props.categoryOrder}
+          />
+        </TabPanel>
+      );
+    }
     return (
       <Tabs>
         <TabList>
           <Tab>Events List</Tab>
           <Tab>Events Calendar</Tab>
-          <Tab>People</Tab>
+          {peopleTab}
         </TabList>
 
         <TabPanel>
@@ -792,12 +805,7 @@ class ResultTabs extends React.Component {
         <TabPanel>
           <Calendar query={this.props.query} />
         </TabPanel>
-        <TabPanel>
-          <PeopleList
-            response={this.props.response}
-            categoryOrder={this.props.categoryOrder}
-          />
-        </TabPanel>
+        {peopleTabPanel}
       </Tabs>
     );
   }

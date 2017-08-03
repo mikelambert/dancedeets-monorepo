@@ -12,6 +12,8 @@ $react-dates-color-border: transparent;
 @import '~react-dates/css/variables.scss';
 @import '~react-dates/css/styles.scss';
 
+@import 'tabs.scss';
+
 #navbar-collapse-button-icon {
   color: $headline-underline-main-color;
 }
