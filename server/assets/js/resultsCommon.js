@@ -12,6 +12,8 @@ import { DateRangePicker } from 'react-dates';
 import { wantsWindowSizes } from './ui';
 import type { windowProps } from './ui';
 
+const NarrowWindowSize = 768;
+
 class _DatePicker extends React.Component {
   static DateFormat = 'MMM Do';
 
@@ -101,7 +103,8 @@ class _DatePicker extends React.Component {
         </button>
       </div>
     );
-    const narrowScreen = this.props.window && this.props.window.width < 768;
+    const narrowScreen =
+      this.props.window && this.props.window.width < NarrowWindowSize;
     const orientationProps = narrowScreen
       ? {
           orientation: 'vertical',
@@ -262,17 +265,21 @@ class TextInput extends React.Component {
   }
 }
 
-class SearchBoxItem extends React.Component {
+class _SearchBoxItem extends React.Component {
   static underlineWidth = 2;
 
   props: {
     iconName: string,
-    style?: Object,
     renderItem: ({
       focused: boolean,
       onFocus: () => void,
       onBlur: () => void,
     }) => React.Element<*>,
+    borderPrev?: boolean,
+    borderNext?: boolean,
+
+    // Self-managed props
+    window: windowProps,
   };
 
   state: {
@@ -285,10 +292,29 @@ class SearchBoxItem extends React.Component {
   }
 
   render() {
+    const vertical =
+      this.props.window && this.props.window.width < NarrowWindowSize;
+    const layoutParams = {};
+    if (vertical) {
+      if (this.props.borderPrev) {
+        layoutParams.borderTop = '1px solid #e4e4e4';
+      }
+      if (this.props.borderNext) {
+        layoutParams.borderBottom = '1px solid #e4e4e4';
+      }
+    } else {
+      layoutParams.display = 'table-cell';
+      if (this.props.borderPrev) {
+        layoutParams.borderLeft = '1px solid #e4e4e4';
+      }
+      if (this.props.borderNext) {
+        layoutParams.borderRight = '1px solid #e4e4e4';
+      }
+    }
+
     return (
       <div
         style={{
-          display: 'table-cell',
           verticalAlign: 'bottom',
           color: '#484848',
 
@@ -299,7 +325,7 @@ class SearchBoxItem extends React.Component {
           borderBottomColor: this.state.focused ? '#4C4D81' : 'transparent',
 
           width: this.state.focused ? '200%' : '100%',
-          ...this.props.style,
+          ...layoutParams,
         }}
       >
         <div
@@ -314,7 +340,7 @@ class SearchBoxItem extends React.Component {
             style={{
               verticalAlign: 'top',
               paddingLeft: 7,
-              paddingTop: 7,
+              paddingTop: 10,
             }}
           />
           <div style={{ position: 'relative', flexGrow: 1 }}>
@@ -329,8 +355,7 @@ class SearchBoxItem extends React.Component {
     );
   }
 }
-
-function performLocationLookup(value, itemsCallback) {}
+const SearchBoxItem = wantsWindowSizes(_SearchBoxItem);
 
 class _SearchBox extends React.Component {
   props: {
@@ -452,6 +477,7 @@ class _SearchBox extends React.Component {
           >
             <SearchBoxItem
               iconName="globe"
+              borderNext
               renderItem={({ focused, onFocus, onBlur }) =>
                 <TextInput
                   autocomplete
@@ -502,10 +528,8 @@ class _SearchBox extends React.Component {
             />
             <SearchBoxItem
               iconName="search"
-              style={{
-                borderLeft: '1px solid #e4e4e4',
-                borderRight: '1px solid #e4e4e4',
-              }}
+              borderPrev
+              borderNext
               renderItem={({ focused, onFocus, onBlur }) =>
                 <TextInput
                   autocomplete
@@ -542,10 +566,7 @@ class _SearchBox extends React.Component {
             />
             <SearchBoxItem
               iconName="clock-o"
-              style={{
-                borderLeft: '1px solid #e4e4e4',
-                borderRight: '1px solid #e4e4e4',
-              }}
+              borderPrev
               renderItem={({ focused, onFocus, onBlur }) =>
                 <DatePicker
                   query={this.props.query}
