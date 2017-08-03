@@ -616,6 +616,7 @@ export async function search(
         keywords,
         start: startDate,
         end: endDate,
+        skipPeople: 1, // We don't need to auto-fetch people, since it is on a different tab
       },
       {},
       '2.0'
