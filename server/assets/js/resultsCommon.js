@@ -212,7 +212,7 @@ class TextInput extends React.Component {
     };
     if (this.props.autocomplete) {
       const menuStyle = {
-        marginTop: SearchBoxItem.underlineWidth,
+        marginTop: _SearchBoxItem.underlineWidth,
         borderRadius: '3px',
         boxShadow: '0 2px 12px rgba(0, 0, 0, 0.1)',
         background: 'rgba(255, 255, 255, 0.9)',
@@ -320,7 +320,7 @@ class _SearchBoxItem extends React.Component {
 
           transition: 'border 500ms ease-out, width 300ms ease-out',
 
-          borderBottomWidth: SearchBoxItem.underlineWidth,
+          borderBottomWidth: _SearchBoxItem.underlineWidth,
           borderBottomStyle: 'solid',
           borderBottomColor: this.state.focused ? '#4C4D81' : 'transparent',
 
