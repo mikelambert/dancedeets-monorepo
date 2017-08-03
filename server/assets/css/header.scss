@@ -43,6 +43,13 @@
   }
 }
 
+@media (max-width: $grid-float-breakpoint-max) {
+  .dropdown-submenu > .dropdown-menu {
+    margin-left: 15px !important;
+    display: block;
+  }
+}
+
 .dropdown-submenu {
   position: relative;
 }

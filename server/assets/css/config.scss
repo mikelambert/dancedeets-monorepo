@@ -54,14 +54,16 @@ $hr-border: $purple-lightest;
 
 $flyer-border-color: $purple-lightest;
 
+$navbar-inverse-color: white;
 $navbar-inverse-bg: $purple-light;
-$nav-link-hover-bg: transparent;
+$nav-link-hover-bg: $purple-medium;
 $navbar-inverse-border: white;
 $navbar-inverse-link-color: white;
 $navbar-inverse-link-hover-color: $deetsYellowColor;
+$navbar-inverse-link-active-bg: $purple-medium;
+$navbar-inverse-toggle-hover-bg: $purple-medium;
 $dropdown-divider-bg: $purple-lightest;
 
-$nav-disabled-link-color: $yellow-lightest;
 $nav-disabled-link-hover-color: $yellow-lightest;
 
 $nav-tabs-border-color: $text-on-grey-background;
@@ -91,3 +93,8 @@ $panel-default-border: $blue-link;
 
 $link-color: $blue-link;
 $link-hover-color: lighten($link-color, 10%);
+
+// We have to stick this at the bottom,
+// since it defines a lot of variables "if they don't yet exist".
+// So ensure the above variables are populated first
+@import '~bootstrap-sass/assets/stylesheets/bootstrap/_variables.scss';
