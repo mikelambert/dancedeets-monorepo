@@ -15,6 +15,7 @@ import { StickyContainer, Sticky } from 'react-sticky';
 import Masonry from 'react-masonry-component';
 import Slider from 'react-slick';
 import Spinner from 'react-spinkit';
+import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
 import Collapse, { Panel } from 'rc-collapse';
 import querystring from 'querystring';
 import createBrowserHistory from 'history/createBrowserHistory';
@@ -51,6 +52,7 @@ require('slick-carousel/slick/slick.css');
 require('slick-carousel/slick/slick-theme.css');
 require('../css/slick.scss');
 require('../css/rc-collapse.scss');
+require('react-tabs/style/react-tabs.scss');
 
 function insertEvery<T>(
   array: Array<T>,
@@ -529,7 +531,6 @@ const Loading = injectIntl(_Loading);
 class _ResultsList extends React.Component {
   props: {
     response: NewSearchResponse,
-    past: boolean,
     showPeople: boolean,
     categoryOrder: Array<string>,
 
@@ -674,43 +675,29 @@ class _ResultsList extends React.Component {
     const now = moment();
     const eventPanels = [];
     let eventCount = null;
-    if (this.props.past) {
-      const pastEvents = resultEvents.filter(
-        event => moment(event.start_time) < now
+    // DEBUG CODE:
+    // const currentEvents = resultEvents.filter(event => moment(event.start_time) > now);
+    const currentEvents = resultEvents.filter(
+      event => moment(event.start_time) < now && moment(event.end_time) > now
+    );
+    const futureEvents = resultEvents.filter(
+      event => moment(event.start_time) > now
+    );
+    if (currentEvents.length) {
+      eventPanels.push(
+        <Panel key="currentEvents" header="Events Happening Now">
+          <CurrentEvents events={currentEvents} />
+        </Panel>
       );
-      if (pastEvents.length) {
-        eventPanels.push(
-          <Panel key="pastEvents" header="Past Events">
-            <EventsList events={pastEvents} />
-          </Panel>
-        );
-      }
-      eventCount = pastEvents.length;
-    } else {
-      // DEBUG CODE:
-      // const currentEvents = resultEvents.filter(event => moment(event.start_time) > now);
-      const currentEvents = resultEvents.filter(
-        event => moment(event.start_time) < now && moment(event.end_time) > now
-      );
-      const futureEvents = resultEvents.filter(
-        event => moment(event.start_time) > now
-      );
-      if (currentEvents.length) {
-        eventPanels.push(
-          <Panel key="currentEvents" header="Events Happening Now">
-            <CurrentEvents events={currentEvents} />
-          </Panel>
-        );
-      }
-      if (futureEvents.length) {
-        eventPanels.push(
-          <Panel key="futureEvents" header="Upcoming Events">
-            <EventsList events={futureEvents} />
-          </Panel>
-        );
-      }
-      eventCount = currentEvents.length + futureEvents.length;
     }
+    if (futureEvents.length) {
+      eventPanels.push(
+        <Panel key="futureEvents" header="Upcoming Events">
+          <EventsList events={futureEvents} />
+        </Panel>
+      );
+    }
+    eventCount = currentEvents.length + futureEvents.length;
 
     let featuredPanel = null;
     if (featuredInfos.length) {
@@ -730,13 +717,7 @@ class _ResultsList extends React.Component {
         </Panel>
       );
     }
-    const defaultKeys = [
-      'featured',
-      'onebox',
-      'pastEvents',
-      'currentEvents',
-      'futureEvents',
-    ];
+    const defaultKeys = ['featured', 'onebox', 'currentEvents', 'futureEvents'];
     if (this.props.showPeople) {
       defaultKeys.push('people', 'people1', 'people2');
     }
@@ -790,11 +771,42 @@ export async function search(
   return response;
 }
 
+class ResultTabs extends React.Component {
+  props: {
+    response: NewSearchResponse,
+    categoryOrder: Array<string>,
+  };
+
+  render() {
+    return (
+      <Tabs>
+        <TabList>
+          <Tab>Events List</Tab>
+          <Tab>Events Calendar</Tab>
+          <Tab>People</Tab>
+        </TabList>
+
+        <TabPanel>
+          <ResultsList
+            response={this.props.response}
+            showPeople={false}
+            categoryOrder={this.props.categoryOrder}
+          />
+        </TabPanel>
+        <TabPanel>
+          Calendar
+        </TabPanel>
+        <TabPanel>
+          People
+        </TabPanel>
+      </Tabs>
+    );
+  }
+}
+
 class ResultsPage extends React.Component {
   props: {
     response: NewSearchResponse,
-    past: boolean,
-    showPeople: boolean,
     categoryOrder: Array<string>,
     query: Object,
   };
@@ -830,15 +842,9 @@ class ResultsPage extends React.Component {
       <div className="col-xs-12">
         <SearchBox query={this.props.query} onNewSearch={this.onNewSearch} />
 
-        <div style={{ textAlign: 'right' }}>
-          <a href={calendarUrl}>
-            <ImagePrefix iconName="calendar">View on Calendar</ImagePrefix>
-          </a>
-        </div>
-        <ResultsList
-          response={this.state.response}
-          past={this.props.past}
-          showPeople={this.props.showPeople}
+        <ResultTabs
+          query={this.props.query}
+          response={this.props.response}
           categoryOrder={this.props.categoryOrder}
         />
       </div>

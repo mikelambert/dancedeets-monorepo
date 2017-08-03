@@ -101,6 +101,7 @@
     "react-slick": "^0.14.5",
     "react-spinkit": "^3.0.0",
     "react-sticky": "^5.0.5",
+    "react-tabs": "^1.1.0",
     "react-twitter-widgets": "^1.2.0",
     "react-youtube": "^7.3.0",
     "slick-carousel": "^1.6.0",
