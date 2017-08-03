@@ -158,6 +158,9 @@ class _DatePicker extends React.Component {
 }
 const DatePicker = injectIntl(_DatePicker);
 
+// Make Tab button behave like Enter button
+Autocomplete.keyDownHandlers.Tab = Autocomplete.keyDownHandlers.Enter;
+
 class TextInput extends React.Component {
   props: {
     id: string,
