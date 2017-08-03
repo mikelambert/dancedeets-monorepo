@@ -18,29 +18,6 @@
   white-space: nowrap;
 }
 
-/* bootstrap.css overrides */
-.navbar-brand {
-  /* our image is larger, so we need less padding */
-  padding: 0px;
-  /* but we still want it to take up the full height of what is available */
-  height: 100%;
-}
-/* these all relate to giving regular text a proper display color/padding */
-.nav-text {
-  position: relative;
-  padding: 10px;
-  line-height: 20px;
-
-  color: #fff;
-  background-color: transparent;
-}
-@media (min-width: 768px) {
-  .nav-text {
-    padding-top: 15px;
-    padding-bottom: 15px;
-  }
-}
-
 .fb_button-nav {
   padding: 10px 10px 0px;
   width: 200px;
@@ -296,103 +273,10 @@ ul.feature-list {
   vertical-align: middle;
 }
 
-/* http://work.smarchal.com/twbscolor/scss/8bc34a689f38ffffffffff8d1*/
-.navbar-default {
-  background-color: #8bc34a;
-  border-color: #689f38;
-}
-.navbar-default .navbar-brand {
-  color: #ffffff;
-}
-.navbar-default .navbar-brand:hover, .navbar-default .navbar-brand:focus {
-  color: #ffff8d;
-}
-.navbar-default .navbar-text {
-  color: #ffffff;
-}
-.navbar-default .navbar-nav > li > a {
-  color: #ffffff;
-}
-.navbar-default .navbar-nav > li > a:hover,
-.navbar-default .navbar-nav > li > a:focus {
-  color: #ffff8d;
-}
-.navbar-default .navbar-nav > li > .dropdown-menu {
-  background-color: #8bc34a;
-}
-.navbar-default .navbar-nav > li > .dropdown-menu > li > a {
-  color: #ffffff;
-}
-.navbar-default .navbar-nav > li > .dropdown-menu > li > a:hover,
-.navbar-default .navbar-nav > li > .dropdown-menu > li > a:focus {
-  color: #ffff8d;
-  background-color: #689f38;
-}
-.navbar-default .navbar-nav > li > .dropdown-menu > li > .divider {
-  background-color: #8bc34a;
-}
-.navbar-default .navbar-nav > .active > a,
-.navbar-default .navbar-nav > .active > a:hover,
-.navbar-default .navbar-nav > .active > a:focus {
-  color: #ffff8d;
-  background-color: #689f38;
-}
-.navbar-default .navbar-nav > .open > a,
-.navbar-default .navbar-nav > .open > a:hover,
-.navbar-default .navbar-nav > .open > a:focus {
-  color: #ffff8d;
-  background-color: #689f38;
-}
-.navbar-default .navbar-toggle {
-  border-color: #689f38;
-}
-.navbar-default .navbar-toggle:hover, .navbar-default .navbar-toggle:focus {
-  background-color: #689f38;
-}
-.navbar-default .navbar-toggle .icon-bar {
-  background-color: #ffffff;
-}
-.navbar-default .navbar-collapse, .navbar-default .navbar-form {
-  border-color: #ffffff;
-}
-.navbar-default .navbar-link {
-  color: #ffffff;
-}
-.navbar-default .navbar-link:hover {
-  color: #ffff8d;
-}
-
-@media (max-width: $breakpoint-medium-minus-one) {
-  .navbar-default .navbar-nav .open .dropdown-menu > li > a {
-    color: #ffffff;
-  }
-  .navbar-default .navbar-nav .open .dropdown-menu > li > a:hover,
-  .navbar-default .navbar-nav .open .dropdown-menu > li > a:focus {
-    color: #ffff8d;
-  }
-  .navbar-default .navbar-nav .open .dropdown-menu > .active > a,
-  .navbar-default .navbar-nav .open .dropdown-menu > .active > a:hover,
-  .navbar-default .navbar-nav .open .dropdown-menu > .active > a:focus {
-    color: #ffff8d;
-    background-color: #689f38;
-  }
-}
-
 .event-sidebar-icon {
   float: left;
   text-align: center;
   width: 1.5em;
-}
-
-.nav > li > a.nav-icon {
-  font-size: 20px;
-  padding: 10px 5px;
-  line-height: 30px;
-  display: inline;
-}
-
-.nav > .nav-icon-row {
-  padding: 10px 15px;
 }
 
 /* We don't want the banner on top of our full screen modal dialogs */
@@ -434,11 +318,6 @@ ul.feature-list {
 }
 #app-install .download-app {
   width: 100%;
-}
-
-.nav li a {
-  padding-left: 8px;
-  padding-right: 8px;
 }
 
 /* for add_event/promote pages */

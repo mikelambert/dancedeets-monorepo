@@ -68,142 +68,119 @@
 {# conditionally show this with some "close" rememberance via cookies or local storage #}
 {% endif %}
 
-<!--=== Header v6 ===-->
-<nav class="header-v6 header-classic-dark header-sticky">
-    <!-- Navbar -->
-    <div class="navbar mega-menu" role="navigation">
-        <div class="container-fluid">
-            <!-- Brand and toggle get grouped for better mobile display -->
-            <div class="menu-container">
-                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-responsive-collapse">
-                    <span class="sr-only">Toggle navigation</span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
+<nav class="navbar navbar-inverse navbar-static-top" role="navigation">
+    <div class="container-fluid">
+        <div class="menu-container">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar-responsive-collapse-id">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
 
-                <!-- Navbar Brand -->
-                <div class="navbar-brand">
-                    <a href="/">
-                        <span class="dancedeets-logo"
-                        ><img class="default-logo"
-                        srcset="
+            <div class="navbar-brand">
+                <a href="/">
+                    <img class="dancedeets-logo"
+                    srcset="
 {{static_dir}}/img/deets-head-and-title-on-black.png 1x,
 {{static_dir}}/img/deets-head-and-title-on-black@2x.png 2x"
-                        src="{{static_dir}}/img/deets-head-and-title-on-black.png" alt="DanceDeets"
-                        ><img class="shrink-logo"
-                        srcset="
-{{static_dir}}/img/deets-head-and-title-on-black.png 1x,
-{{static_dir}}/img/deets-head-and-title-on-black@2x.png 2x"
-                         src="{{static_dir}}/img/deets-head-and-title-on-black.png" alt="DanceDeets"
-                        ></span>
-                    </a>
-                </div>
-                <!-- ENd Navbar Brand -->
-
-                <!-- Header Inner Right -->
-                <div class="header-inner-right">
-                </div>
-                <!-- End Header Inner Right -->
+                    src="{{static_dir}}/img/deets-head-and-title-on-black.png" alt="DanceDeets"
+                    >
+                </a>
             </div>
+        </div>
 
-            <!-- Collect the nav links, forms, and other content for toggling -->
-            <div class="collapse navbar-collapse navbar-responsive-collapse">
-                <div class="menu-container">
-                    <ul class="nav navbar-nav navbar-right">
-
-                        <li class="dropdown">
-                            <a href="javascript:void(0);" class="dropdown-toggle" data-toggle="dropdown">
-                                Events
-                            </a>
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="navbar-responsive-collapse-id">
+            <ul class="nav navbar-nav navbar-right">
+                <li class="dropdown">
+                    <a href="javascript:void(0);" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+                        Events
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li class="dropdown-submenu">
+                            <a href="javascript:void(0);">US/Canada/Mexico</a>
                             <ul class="dropdown-menu">
-                                <li class="dropdown-submenu">
-                                    <a href="javascript:void(0);">US/Canada/Mexico</a>
-                                    <ul class="dropdown-menu">
-                                    {% for city in us_cities %}
-                                        <li>{% if city %}<a href="/?location={{ city }}">{{ city }}</a>{% else %}&nbsp;{% endif %}</li>
-                                    {% endfor %}
-                                    </ul>
-                                </li>
-                                <li class="dropdown-submenu">
-                                    <a href="javascript:void(0);">Europe</a>
-                                    <ul class="dropdown-menu">
-                                    {% for city in eu_cities %}
-                                        <li>{% if city %}<a href="/?location={{ city }}">{{ city }}</a>{% else %}&nbsp;{% endif %}</li>
-                                    {% endfor %}
-                                    </ul>
-                                </li>
-                                <li class="dropdown-submenu">
-                                    <a href="javascript:void(0);">World</a>
-                                    <ul class="dropdown-menu">
-                                    {% for city in other %}
-                                        <li>{% if city %}<a href="/?location={{ city }}">{{ city }}</a>{% else %}&nbsp;{% endif %}</li>
-                                    {% endfor %}
-                                    </ul>
-                                </li>
-                                <li>&nbsp;</li>
-                                <li>
-                                  <a href="/events_add">
-                                      Add Event
-                                  </a>
-                                </li>
-                            </ul>
-                        </li>
-
-                        <li class="dropdown">
-                            <a href="javascript:void(0);" class="dropdown-toggle" data-toggle="dropdown">
-                                Styles
-                            </a>
-                            <ul class="dropdown-menu">
-                            {% for style in styles %}
-                                <li><a href="/style/{{ style.url_name }}">{{ style.public_name }}</a></li>
+                            {% for city in us_cities %}
+                                <li>{% if city %}<a href="/?location={{ city }}">{{ city }}</a>{% else %}&nbsp;{% endif %}</li>
                             {% endfor %}
                             </ul>
                         </li>
-
-                        <li>
-                            <a href="/tutorials">
-                                Tutorials
-                            </a>
-                        </li>
-
-                        <li>
-                            <a href="https://medium.dancedeets.com/">
-                                Articles
-                            </a>
-                        </li>
-
-                        <li class="dropdown">
-                            <a href="javascript:void(0);" class="dropdown-toggle" data-toggle="dropdown">
-                                Classes
-                            </a>
+                        <li class="dropdown-submenu">
+                            <a href="javascript:void(0);">Europe</a>
                             <ul class="dropdown-menu">
-                                <li><a href="/classes/la">Los Angeles</a></li>
-                                <li><a href="/classes/nyc">New York</a></li>
+                            {% for city in eu_cities %}
+                                <li>{% if city %}<a href="/?location={{ city }}">{{ city }}</a>{% else %}&nbsp;{% endif %}</li>
+                            {% endfor %}
                             </ul>
                         </li>
-
-                        <li>
+                        <li class="dropdown-submenu">
+                            <a href="javascript:void(0);">World</a>
+                            <ul class="dropdown-menu">
+                            {% for city in other %}
+                                <li>{% if city %}<a href="/?location={{ city }}">{{ city }}</a>{% else %}&nbsp;{% endif %}</li>
+                            {% endfor %}
+                            </ul>
                         </li>
+                        <li class="divider" role="separator">&nbsp;</li>
                         <li>
-                            {% if user %}
-                              <a href="javascript:void(0)" class="onclick-logout">
-                                  Logout
-                              </a>
-                            {% else %}
-                              <a href="javascript:void(0)" class="onclick-login">
-                                <img src="{{static_dir}}/img/fb-login.png" alt="FB Login" width="64" height="22">
-                              </a>
-                            {% endif %}
+                          <a href="/events_add">
+                              Add Event
+                          </a>
                         </li>
                     </ul>
-                </div>
-            </div><!--/navbar-collapse-->
+                </li>
+
+                <li class="dropdown">
+                    <a href="javascript:void(0);" class="dropdown-toggle" data-toggle="dropdown" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+                        Styles
+                    </a>
+                    <ul class="dropdown-menu">
+                    {% for style in styles %}
+                        <li><a href="/style/{{ style.url_name }}">{{ style.public_name }}</a></li>
+                    {% endfor %}
+                    </ul>
+                </li>
+
+                <li>
+                    <a href="/tutorials">
+                        Tutorials
+                    </a>
+                </li>
+
+                <li>
+                    <a href="https://medium.dancedeets.com/">
+                        Articles
+                    </a>
+                </li>
+
+                <li class="dropdown">
+                    <a href="javascript:void(0);" class="dropdown-toggle" data-toggle="dropdown" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+                        Classes
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><a href="/classes/la">Los Angeles</a></li>
+                        <li><a href="/classes/nyc">New York</a></li>
+                    </ul>
+                </li>
+
+                <li>
+                </li>
+                <li>
+                    {% if user %}
+                      <a href="javascript:void(0)" class="onclick-logout">
+                          Logout
+                      </a>
+                    {% else %}
+                      <a href="javascript:void(0)" class="onclick-login">
+                        <img src="{{static_dir}}/img/fb-login.png" alt="FB Login" width="64" height="22">
+                      </a>
+                    {% endif %}
+                </li>
+            </ul>
         </div>
     </div>
-    <!-- End Navbar -->
 </nav>
-<!--=== End Header v6 ===-->
 
 {% if errors %}
 <div class="alert alert-danger"><ul>

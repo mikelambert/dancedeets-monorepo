@@ -54,6 +54,12 @@ $hr-border: $purple-lightest;
 
 $flyer-border-color: $purple-lightest;
 
+$navbar-inverse-bg: $purple-light;
+$nav-link-hover-bg: transparent;
+$navbar-inverse-border: white;
+$navbar-inverse-link-color: white;
+$navbar-inverse-link-hover-color: $deetsYellowColor;
+
 $nav-disabled-link-color: $yellow-lightest;
 $nav-disabled-link-hover-color: $yellow-lightest;
 
@@ -69,8 +75,6 @@ $nav-tabs-justified-link-border-color: $text-on-grey-background;
 $nav-tabs-justified-active-link-border-color: $body-bg;
 
 $header-menu-hover-color: $deetsYellowColor;
-$header-background-color: $purple-light;
-$nav-link-hover-bg: $header-background-color;
 
 $footer-color: #e0e0f0;
 $footer-border-color: $purple-medium;

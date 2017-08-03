@@ -14,19 +14,6 @@ $react-dates-color-border: transparent;
 
 @import 'tabs.scss';
 
-#navbar-collapse-button-icon {
-  color: $headline-underline-main-color;
-}
-#navbar {
-  background-color: $body-bg;
-}
-
-// Ensure our container-fluid navbar header never grows too much
-.navbar {
-  max-width: 1138px;
-  margin: auto;
-}
-
 body {
   font-weight: 'lighter';
 }
@@ -357,10 +344,6 @@ button.link-button::-moz-focus-inner {
   background: hsla(0, 0%, 100%, .2);
   background: linear-gradient(180deg, hsla(0, 0%, 100%, 0) 0, $body-bg);
   height: 100px;
-}
-
-nav {
-  background: $header-background-color;
 }
 
 /** We want to see the whole city and title, so let's ensure we override 'white-space: nowrap'.
