@@ -76,6 +76,7 @@ class _DatePicker extends React.Component {
       <div key="date-display">
         <button
           type="button"
+          zIndex="-1"
           className="top-search"
           style={{
             fontSize: 18,
@@ -88,7 +89,7 @@ class _DatePicker extends React.Component {
             textAlign: 'left',
             width: '100%',
           }}
-          onFocus={() => {
+          onClick={() => {
             this.props.onFocus();
             this.setState({ focusedInput: 'startDate' });
           }}
@@ -114,48 +115,43 @@ class _DatePicker extends React.Component {
             this.setState({ focusedInput });
             this.props.onFocus();
           }}
-          onClose={this.props.onBlur}
+          onClose={() => {
+            this.props.onBlur();
+          }}
           minimumNights={0}
           displayFormat={_DatePicker.DateFormat}
           hideKeyboardShortcutsPanel
         />
       </div>
     );
+    const invisibleProps = {
+      visibility: 'hidden',
+      zIndex: -1,
+    };
+    const fullsizeProps = {
+      position: 'absolute',
+      top: 0,
+      bottom: 0,
+      left: 0,
+      right: 0,
+      backgroundColor: 'white',
+    };
+
     return (
       <div style={{ position: 'relative' }}>
-        {this.props.focused
-          ? [
-              <div
-                style={{
-                  visibility: 'hidden',
-                  position: 'absolute',
-                  zIndex: -1,
-                  top: 0,
-                  bottom: 0,
-                  left: 0,
-                  right: 0,
-                }}
-              >
-                {dateDisplay}
-              </div>,
-              datePicker,
-            ]
-          : [
-              <div
-                style={{
-                  visibility: 'hidden',
-                  position: 'absolute',
-                  zIndex: -1,
-                  top: 0,
-                  bottom: 0,
-                  left: 0,
-                  right: 0,
-                }}
-              >
-                {datePicker}
-              </div>,
-              dateDisplay,
-            ]}
+        <div key="picker">
+          {datePicker}
+        </div>
+        <div
+          key="display"
+          style={
+            this.props.focused
+              ? { ...invisibleProps, ...fullsizeProps }
+              : fullsizeProps
+          }
+        >
+          {dateDisplay}
+        </div>
       </div>
     );
   }
@@ -192,7 +188,9 @@ class TextInput extends React.Component {
         width: '100%',
         fontWeight: 200,
       },
-      onFocus: this.props.onFocus,
+      onFocus: () => {
+        this.props.onFocus();
+      },
       onBlur: this.props.onBlur,
     };
     if (this.props.autocomplete) {
@@ -290,7 +288,13 @@ class SearchBoxItem extends React.Component {
           ...this.props.style,
         }}
       >
-        <div style={{ display: 'flex' }}>
+        <div
+          style={{
+            display: 'flex',
+            height: 38,
+            overflow: this.state.focused ? 'inherit' : 'hidden',
+          }}
+        >
           <i
             className={`fa fa-fw fa-${this.props.iconName}`}
             style={{
