@@ -2,7 +2,8 @@
 
 // Ensure our logo is 100% of the menu height, without any padding
 .navbar-brand {
-  padding: 0;
+  padding-top: 0;
+  padding-bottom: 0;
 
   .dancedeets-logo {
     height: 100%;
