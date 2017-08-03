@@ -429,6 +429,7 @@ class _OneboxLinks extends React.Component {
 
     return (
       <div>
+        Featured Sites:
         <ul>{oneboxList}</ul>
       </div>
     );
@@ -553,52 +554,35 @@ class ResultsList extends React.Component {
       event => moment(event.start_time) > now
     );
     if (currentEvents.length) {
-      eventPanels.push(
-        <Panel key="currentEvents" header="Events Happening Now">
-          <CurrentEvents events={currentEvents} />
-        </Panel>
-      );
+      eventPanels.push(<CurrentEvents events={currentEvents} />);
     }
     if (futureEvents.length) {
-      eventPanels.push(
-        <Panel key="futureEvents" header="Upcoming Events">
-          <EventsList events={futureEvents} />
-        </Panel>
-      );
+      eventPanels.push(<EventsList events={futureEvents} />);
     }
     eventCount = currentEvents.length + futureEvents.length;
 
     let featuredPanel = null;
     if (featuredInfos.length) {
       featuredPanel = (
-        <Panel key="featured" header="Featured Event">
-          <FeaturedEvents events={featuredInfos.map(x => x.event)} />
-        </Panel>
+        <FeaturedEvents events={featuredInfos.map(x => x.event)} />
       );
     }
 
     let oneboxPanel = null;
     if (this.props.response.onebox_links.length) {
-      oneboxPanel = (
-        <Panel key="onebox" header="Related Links">
-          <OneboxLinks links={this.props.response.onebox_links} />
-        </Panel>
-      );
+      oneboxPanel = <OneboxLinks links={this.props.response.onebox_links} />;
     }
     const defaultKeys = ['featured', 'onebox', 'currentEvents', 'futureEvents'];
 
     return (
-      <Collapse
-        defaultActiveKey={defaultKeys}
-        style={{ backgroundColor: 'white' }}
-      >
+      <div style={{ backgroundColor: 'white', padding: 10 }}>
         {featuredPanel}
         {oneboxPanel}
         {eventPanels}
         {ExecutionEnvironment.canUseDOM
           ? null
           : resultEvents.map(getReactEventSchema)}
-      </Collapse>
+      </div>
     );
   }
 }
@@ -856,13 +840,13 @@ class ResultsPage extends React.Component {
           </div>
           <div className="row">
             <div className="col-xs-12">
-              <div style={{ backgroundColor: 'white' }}>
+              <Card style={{ margin: 0, padding: 0 }}>
                 <ResultTabs
                   query={this.props.query}
                   response={this.state.response}
                   categoryOrder={this.props.categoryOrder}
                 />
-              </div>
+              </Card>
             </div>
           </div>
         </div>
