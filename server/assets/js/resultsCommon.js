@@ -104,7 +104,7 @@ class _DatePicker extends React.Component {
       </div>
     );
     const narrowScreen =
-      this.props.window && this.props.window.width < NarrowWindowSize;
+      !this.props.window || this.props.window.width < NarrowWindowSize;
     const orientationProps = narrowScreen
       ? {
           orientation: 'vertical',
@@ -293,7 +293,7 @@ class _SearchBoxItem extends React.Component {
 
   render() {
     const vertical =
-      this.props.window && this.props.window.width < NarrowWindowSize;
+      !this.props.window || this.props.window.width < NarrowWindowSize;
     const layoutParams = {};
     if (vertical) {
       if (this.props.borderPrev) {
