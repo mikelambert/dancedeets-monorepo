@@ -19,6 +19,12 @@ $react-dates-color-border: transparent;
   background-color: $body-bg;
 }
 
+// Ensure our container-fluid navbar header never grows too much
+.navbar {
+  max-width: 1138px;
+  margin: auto;
+}
+
 body {
   font-weight: 'lighter';
 }
