@@ -35,6 +35,12 @@ $state-info-text: #000;
 $state-info-bg: $yellow-lightest;
 $state-info-border: darken(adjust-hue($state-info-bg, -10), 7%);
 
+$breakpoint-large: 850px;
+$breakpoint-large-minus-one: 849px;
+$breakpoint-medium: 768px;
+$breakpoint-medium-minus-one: 767px;
+$breakpoint-medium-minus-some: 737px;
+
 //TODO: Fix the form colors
 $btn-default-color: white;
 $btn-default-bg: $brand-primary;

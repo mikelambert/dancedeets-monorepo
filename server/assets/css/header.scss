@@ -40,7 +40,7 @@ $header-link-color: white;
 /*--------------------------------------------------
   [1. Header - Navbar]
 ----------------------------------------------------*/
-@media (min-width: 992px) {
+@media (min-width: $breakpoint-large) {
   body.header-fixed-space {
     padding-top: 94px;
   }
@@ -52,7 +52,7 @@ $header-link-color: white;
   position: relative;
 }
 
-@media (max-width: 991px) {
+@media (max-width: $breakpoint-large-minus-one) {
   .header-v6 {
     position: static;
   }
@@ -60,13 +60,7 @@ $header-link-color: white;
 
 /*Containers
 ------------------------------------*/
-@media (min-width: 768px) and (max-width: 991px) {
-  .header-v6 .menu-container {
-    width: 750px;
-  }
-}
-
-@media (max-width: 991px) {
+@media (max-width: $breakpoint-large-minus-one) {
   .header-v6 .menu-container:before, .header-v6 .menu-container:after {
     content: " ";
     display: table;
@@ -126,7 +120,7 @@ $header-link-color: white;
 }
 
 /*Media Queries*/
-@media (max-width: 991px) {
+@media (max-width: $breakpoint-large-minus-one) {
   .header-v6 .navbar-brand {
     padding-top: 20px;
   }
@@ -182,7 +176,7 @@ $header-link-color: white;
   background: inherit;
 }
 
-@media (min-width: 992px) {
+@media (min-width: $breakpoint-large) {
   .navbar {
     border-radius: 0;
   }
@@ -197,8 +191,8 @@ $header-link-color: white;
 ----------------------------------------------------*/
 
 /*Responsive Navbar*/
-@media (max-width: 991px) {
-  /*Responsive code for max-width: 991px*/
+@media (max-width: $breakpoint-large-minus-one) {
+  /*Responsive code for max-width: $breakpoint-large-minus-one*/
   .header-v6 .navbar-header {
     float: none;
   }
@@ -293,7 +287,7 @@ $header-link-color: white;
     padding-bottom: 0;
   }
 
-  /*Design for max-width: 991px*/
+  /*Design for max-width: $breakpoint-large-minus-one*/
   .header-v6 .navbar-collapse, .header-v6 .navbar-collapse .container {
     padding-left: 0 !important;
     padding-right: 0 !important;
@@ -330,7 +324,7 @@ $header-link-color: white;
   }
 }
 
-@media (min-width: 992px) {
+@media (min-width: $breakpoint-large) {
   /*Navbar Collapse*/
   .header-v6 .navbar-collapse {
     padding: 0;
@@ -435,7 +429,7 @@ $header-link-color: white;
   font-family: FontAwesome;
 }
 
-@media (max-width: 991px) {
+@media (max-width: $breakpoint-large-minus-one) {
   .header-v6 .dropdown-submenu > a:after {
     content: " ";
   }
@@ -456,7 +450,7 @@ $header-link-color: white;
   display: block;
 }
 
-@media (max-width: 991px) {
+@media (max-width: $breakpoint-large-minus-one) {
   .header-v6 .dropdown-submenu > .dropdown-menu {
     display: block;
     margin-left: 15px;
@@ -547,7 +541,7 @@ $header-link-color: white;
   overflow: hidden;
 }
 
-@media (min-width: 992px) {
+@media (min-width: $breakpoint-large) {
   .header-v6 .mega-menu .dropdown.mega-menu-fullwidth .dropdown-menu {
     margin-left: 10px;
     margin-right: 15px;
@@ -555,7 +549,7 @@ $header-link-color: white;
 }
 
 /*Equal Height Lists*/
-@media (min-width: 992px) {
+@media (min-width: $breakpoint-large) {
   .header-v6 .mega-menu .equal-height {
     display: -webkit-flex;
     display: -ms-flexbox;
@@ -578,14 +572,14 @@ $header-link-color: white;
 }
 
 /*Space for only Big Resolution*/
-@media (min-width: 992px) {
+@media (min-width: $breakpoint-large) {
   .header-v6 .mega-menu .big-screen-space {
     margin-bottom: 20px;
   }
 }
 
 /*Mega Menu Content*/
-@media (min-width: 992px) {
+@media (min-width: $breakpoint-large) {
   .header-v6 .mega-menu .equal-height-in {
     padding: 20px 0;
     border-left: 1px solid #bbb;
@@ -638,7 +632,7 @@ $header-link-color: white;
 }
 
 /*Space Effect inside the container to avoid scroll bar*/
-@media (min-width: 737px) and (max-width: 991px) {
+@media (min-width: $breakpoint-medium-minus-some) and (max-width: $breakpoint-large-minus-one) {
   .header-v6 .mega-menu .mega-menu-content .container {
     width: 690px !important;
   }
@@ -653,7 +647,7 @@ $header-link-color: white;
   }
 }
 
-@media (max-width: 991px) {
+@media (max-width: $breakpoint-large-minus-one) {
   .header-v6 .mega-menu .equal-height {
     margin-right: 0;
   }
@@ -665,7 +659,7 @@ $header-link-color: white;
 }
 
 /*Equal Hight List Style*/
-@media (max-width: 991px) {
+@media (max-width: $breakpoint-large-minus-one) {
   .header-v6 .mega-menu .dropdown.mega-menu-fullwidth .dropdown-menu {
     width: auto;
   }
@@ -722,7 +716,7 @@ $header-link-color: white;
 }
 
 /*Media Queries*/
-@media (min-width: 992px) {
+@media (min-width: $breakpoint-large) {
   .header-v6.header-border-bottom .navbar {
     background: transparent;
   }
@@ -733,7 +727,7 @@ $header-link-color: white;
 ----------------------------------------------------*/
 
 /*Media Queries*/
-@media (min-width: 992px) {
+@media (min-width: $breakpoint-large) {
   /*Header*/
   .header-v6.header-classic-dark,
   .header-fixed .header-v6.header-classic-dark.header-fixed-shrink {

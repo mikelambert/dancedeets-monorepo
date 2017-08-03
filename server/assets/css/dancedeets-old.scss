@@ -362,7 +362,7 @@ ul.feature-list {
   color: #ffff8d;
 }
 
-@media (max-width: 767px) {
+@media (max-width: $breakpoint-medium-minus-one) {
   .navbar-default .navbar-nav .open .dropdown-menu > li > a {
     color: #ffffff;
   }
