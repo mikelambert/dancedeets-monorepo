@@ -121,10 +121,6 @@ $header-link-color: white;
 
 /*Media Queries*/
 @media (max-width: $breakpoint-large-minus-one) {
-  .header-v6 .navbar-brand {
-    padding-top: 20px;
-  }
-
   .header-v6 .navbar-brand img.shrink-logo {
     display: inherit;
   }
@@ -137,7 +133,7 @@ $header-link-color: white;
 /*Navbar Toggle*/
 .header-v6 .navbar-toggle {
   border: none;
-  margin: 31px 0 31px 15px;
+  margin: 15px 0 15px 15px;
 }
 
 .header-v6 .navbar-toggle .icon-bar {
