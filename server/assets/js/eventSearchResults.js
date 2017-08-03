@@ -844,14 +844,28 @@ class ResultsPage extends React.Component {
 
   render() {
     return (
-      <div className="col-xs-12">
-        <SearchBox query={this.props.query} onNewSearch={this.onNewSearch} />
-
-        <ResultTabs
-          query={this.props.query}
-          response={this.state.response}
-          categoryOrder={this.props.categoryOrder}
-        />
+      <div>
+        <div className="container">
+          <div className="row" style={{ marginBottom: 20 }}>
+            <div className="col-xs-12">
+              <SearchBox
+                query={this.props.query}
+                onNewSearch={this.onNewSearch}
+              />
+            </div>
+          </div>
+          <div className="row">
+            <div className="col-xs-12">
+              <div style={{ backgroundColor: 'white' }}>
+                <ResultTabs
+                  query={this.props.query}
+                  response={this.state.response}
+                  categoryOrder={this.props.categoryOrder}
+                />
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     );
   }

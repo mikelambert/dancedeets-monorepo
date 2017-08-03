@@ -1,0 +1,38 @@
+.react-tabs {
+  margin-top: 20px;
+
+  &__tab-list {
+    margin: 0;
+    margin-bottom: 10px;
+    padding: 0;
+    box-shadow: 0 1px 5px rgba(0, 0, 0, 0.1);
+    background: #fff;
+  }
+
+  &__tab {
+    display: inline-block;
+    position: relative;
+    list-style: none;
+    padding: 6px 12px;
+    cursor: pointer;
+    text-transform: uppercase;
+
+    &--selected {
+      color: #4C4D81;
+      border-bottom: 2px solid #4C4D81;
+    }
+  }
+
+  &__tab-panel {
+    display: none;
+
+    &--selected {
+      display: block;
+    }
+
+    &--disabled {
+      color: GrayText;
+      cursor: default;
+    }
+  }
+}

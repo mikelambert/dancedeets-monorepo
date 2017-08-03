@@ -14,17 +14,13 @@
 {% endblock %}
 
 {% block body %}
-<div class="container">
-  <div class="row">
-    <div id="react-parent">
-      {{ react_html|safe }}
-    </div>
-    <script type="text/javascript">
-      window._REACT_PROPS = {{ react_props|safe }};
-      window._REACT_ID = 'react-parent';
-    </script>
-  </div> {# row #}
-</div> {# container #}
+<div id="react-parent">
+  {{ react_html|safe }}
+</div>
+<script type="text/javascript">
+  window._REACT_PROPS = {{ react_props|safe }};
+  window._REACT_ID = 'react-parent';
+</script>
 {% endblock %}
 
 {% block bottom_javascript %}
