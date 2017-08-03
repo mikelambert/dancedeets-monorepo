@@ -446,6 +446,7 @@ class _SearchBox extends React.Component {
 
     return (
       <div>
+        <strong style={{ fontSize: '120%' }}>Find the Dance Scene:</strong>
         <form
           id="search-form"
           ref={x => {
