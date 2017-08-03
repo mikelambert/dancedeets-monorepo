@@ -14,6 +14,8 @@ import type { windowProps } from './ui';
 
 const NarrowWindowSize = 768;
 
+export const CalendarRatio = 1.8;
+
 class _DatePicker extends React.Component {
   static DateFormat = 'MMM Do';
 

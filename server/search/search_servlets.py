@@ -64,6 +64,7 @@ class CalendarHandler(SearchHandler):
             query=form.url_params(),
         )
         self.setup_react_template('calendar.js', props)
+        self.render_template(self.template_name)
 
 @app.route('/')
 @app.route('/events/relevant')

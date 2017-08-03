@@ -42,10 +42,11 @@ import {
 } from 'dancedeets-common/js/events/helpers';
 import { formatStartDateOnly } from 'dancedeets-common/js/dates';
 import { getReactEventSchema } from './eventSchema';
-import { Card, ImagePrefix } from './ui';
+import { Card, ImagePrefix, wantsWindowSizes } from './ui';
+import type { windowProps } from './ui';
 import { SquareEventFlyer } from './eventCommon';
 import GoogleAd from './googleAd';
-import { SearchBox } from './resultsCommon';
+import { SearchBox, CalendarRatio } from './resultsCommon';
 
 require('slick-carousel/slick/slick.css');
 require('slick-carousel/slick/slick-theme.css');
@@ -740,6 +741,35 @@ class _PeopleList extends React.Component {
 }
 const PeopleList = injectIntl(_PeopleList);
 
+class _Calendar extends React.Component {
+  props: {
+    query: SearchQuery,
+
+    // Self-managed props
+    window: windowProps,
+  };
+
+  render() {
+    const query = querystring.stringify(this.props.query);
+    const calendarUrl = `/calendar/iframe?${query}`;
+    const height = this.props.window
+      ? this.props.window.width / CalendarRatio
+      : 500;
+    return (
+      <iframe
+        src={calendarUrl}
+        style={{
+          width: '100%',
+          height,
+          border: 0,
+          borderBottom: '1px solid lightgrey',
+        }}
+      />
+    );
+  }
+}
+const Calendar = wantsWindowSizes(_Calendar);
+
 class ResultTabs extends React.Component {
   props: {
     response: NewSearchResponse,
@@ -748,8 +778,6 @@ class ResultTabs extends React.Component {
   };
 
   render() {
-    const query = querystring.stringify(this.props.query);
-    const calendarUrl = `/calendar/iframe/?${query}`;
     return (
       <Tabs>
         <TabList>
@@ -762,7 +790,7 @@ class ResultTabs extends React.Component {
           <ResultsList response={this.props.response} />
         </TabPanel>
         <TabPanel>
-          <iframe src={calendarUrl} />
+          <Calendar query={this.props.query} />
         </TabPanel>
         <TabPanel>
           <PeopleList
@@ -807,8 +835,6 @@ class ResultsPage extends React.Component {
   }
 
   render() {
-    const query = querystring.stringify(this.props.query);
-    const calendarUrl = `/events/relevant?calendar=1&${query}`;
     return (
       <div className="col-xs-12">
         <SearchBox query={this.props.query} onNewSearch={this.onNewSearch} />
