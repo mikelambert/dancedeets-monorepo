@@ -1,11 +1,43 @@
+@import 'config.scss';
+
+// Ensure our logo is 100% of the menu height, without any padding
 .navbar-brand {
   padding: 0;
+
+  .dancedeets-logo {
+    height: 100%;
+  }
 }
 
-.navbar-brand .dancedeets-logo {
-  height: 100%;
+.navbar-inverse {
+  // No white border on the bottom of our inverse menu
+  border: 0;
 }
 
-.nav > li > a {
-  text-transform: uppercase;
+.nav {
+  // Ensure all our direct top-links are uppercased
+  > li > a {
+    text-transform: uppercase;
+  }
+
+  // We want our dropdown menus to have the same color scheme
+  .dropdown-menu {
+    background-color: $navbar-inverse-bg;
+    // This is a nice carryover from the old theme we used
+    border-top: 2px solid $deetsYellowColor;
+
+    > li > a {
+      color: $navbar-inverse-link-color;
+
+      &:hover, &:focus {
+        color: $deetsYellowColor;
+        background-color: transparent;
+      }
+    }
+    > .active > a {
+      &, &:hover, &:focus {
+        color: $deetsYellowColor;
+      }
+    }
+  }
 }
