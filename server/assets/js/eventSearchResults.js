@@ -528,10 +528,114 @@ class _Loading extends React.Component {
 }
 const Loading = injectIntl(_Loading);
 
-class _ResultsList extends React.Component {
+class ResultsList extends React.Component {
   props: {
     response: NewSearchResponse,
-    showPeople: boolean,
+  };
+
+  render() {
+    const resultEvents = this.props.response.results.map(
+      eventData => new SearchEvent(eventData)
+    );
+    const featuredInfos = (this.props.response.featuredInfos || [])
+      .map(x => ({ ...x, event: new Event(x.event) }));
+
+    const now = moment();
+    const eventPanels = [];
+    let eventCount = null;
+    // DEBUG CODE:
+    // const currentEvents = resultEvents.filter(event => moment(event.start_time) > now);
+    const currentEvents = resultEvents.filter(
+      event => moment(event.start_time) < now && moment(event.end_time) > now
+    );
+    const futureEvents = resultEvents.filter(
+      event => moment(event.start_time) > now
+    );
+    if (currentEvents.length) {
+      eventPanels.push(
+        <Panel key="currentEvents" header="Events Happening Now">
+          <CurrentEvents events={currentEvents} />
+        </Panel>
+      );
+    }
+    if (futureEvents.length) {
+      eventPanels.push(
+        <Panel key="futureEvents" header="Upcoming Events">
+          <EventsList events={futureEvents} />
+        </Panel>
+      );
+    }
+    eventCount = currentEvents.length + futureEvents.length;
+
+    let featuredPanel = null;
+    if (featuredInfos.length) {
+      featuredPanel = (
+        <Panel key="featured" header="Featured Event">
+          <FeaturedEvents events={featuredInfos.map(x => x.event)} />
+        </Panel>
+      );
+    }
+
+    let oneboxPanel = null;
+    if (this.props.response.onebox_links.length) {
+      oneboxPanel = (
+        <Panel key="onebox" header="Related Links">
+          <OneboxLinks links={this.props.response.onebox_links} />
+        </Panel>
+      );
+    }
+    const defaultKeys = ['featured', 'onebox', 'currentEvents', 'futureEvents'];
+
+    return (
+      <Collapse
+        defaultActiveKey={defaultKeys}
+        style={{ backgroundColor: 'white' }}
+      >
+        {featuredPanel}
+        {oneboxPanel}
+        {eventPanels}
+        {ExecutionEnvironment.canUseDOM
+          ? null
+          : resultEvents.map(getReactEventSchema)}
+      </Collapse>
+    );
+  }
+}
+
+export async function search(
+  location: string,
+  keywords: string,
+  startDate: string,
+  endDate: string
+) {
+  const response = await timeout(
+    10000,
+    performRequest(
+      'search',
+      {
+        location,
+        keywords,
+        start: startDate,
+        end: endDate,
+      },
+      {},
+      '2.0'
+    )
+  );
+  response.featuredInfos = response.featuredInfos.map(x => ({
+    ...x,
+    event: new SearchEvent(x.event),
+  }));
+  response.results = response.results.map(x => new SearchEvent(x));
+  response.results = sortString(response.results, resultEvent =>
+    moment(resultEvent.start_time).toISOString()
+  );
+  return response;
+}
+
+class _PeopleList extends React.Component {
+  props: {
+    response: NewSearchResponse,
     categoryOrder: Array<string>,
 
     // Self-managed props
@@ -582,8 +686,7 @@ class _ResultsList extends React.Component {
     this._loadingPeople = false;
   }
 
-  renderPeoplePanel() {
-    let peoplePanel = [];
+  render() {
     let adminContents = null;
     let attendeeContents = null;
     if (this.state.people) {
@@ -622,28 +725,7 @@ class _ResultsList extends React.Component {
     }
 
     if (this.props.window && this.props.window.width < 768) {
-      if (adminContents) {
-        peoplePanel.push(
-          <Panel
-            key="people1"
-            header={this.props.intl.formatMessage(messages.nearbyPromoters)}
-            onItemClick={this.loadPeopleIfNeeded}
-          >
-            {adminContents}
-          </Panel>
-        );
-      }
-      if (attendeeContents) {
-        peoplePanel.push(
-          <Panel
-            key="people2"
-            header={this.props.intl.formatMessage(messages.nearbyDancers)}
-            onItemClick={this.loadPeopleIfNeeded}
-          >
-            {attendeeContents}
-          </Panel>
-        );
-      }
+      return <div>{adminContents}{attendeeContents}</div>;
     } else {
       const adminsDiv = adminContents
         ? <div className="col-sm-6">{adminContents}</div>
@@ -651,125 +733,11 @@ class _ResultsList extends React.Component {
       const attendeesDiv = attendeeContents
         ? <div className="col-sm-6">{attendeeContents}</div>
         : null;
-      peoplePanel = (
-        <Panel
-          key="people"
-          header="Nearby Promoters & Dancers"
-          onItemClick={this.loadPeopleIfNeeded}
-        >
-          <div className="row">{adminsDiv}{attendeesDiv}</div>
-        </Panel>
-      );
+      return <div className="row">{adminsDiv}{attendeesDiv}</div>;
     }
-
-    return peoplePanel;
-  }
-
-  render() {
-    const resultEvents = this.props.response.results.map(
-      eventData => new SearchEvent(eventData)
-    );
-    const featuredInfos = (this.props.response.featuredInfos || [])
-      .map(x => ({ ...x, event: new Event(x.event) }));
-
-    const now = moment();
-    const eventPanels = [];
-    let eventCount = null;
-    // DEBUG CODE:
-    // const currentEvents = resultEvents.filter(event => moment(event.start_time) > now);
-    const currentEvents = resultEvents.filter(
-      event => moment(event.start_time) < now && moment(event.end_time) > now
-    );
-    const futureEvents = resultEvents.filter(
-      event => moment(event.start_time) > now
-    );
-    if (currentEvents.length) {
-      eventPanels.push(
-        <Panel key="currentEvents" header="Events Happening Now">
-          <CurrentEvents events={currentEvents} />
-        </Panel>
-      );
-    }
-    if (futureEvents.length) {
-      eventPanels.push(
-        <Panel key="futureEvents" header="Upcoming Events">
-          <EventsList events={futureEvents} />
-        </Panel>
-      );
-    }
-    eventCount = currentEvents.length + futureEvents.length;
-
-    let featuredPanel = null;
-    if (featuredInfos.length) {
-      featuredPanel = (
-        <Panel key="featured" header="Featured Event">
-          <FeaturedEvents events={featuredInfos.map(x => x.event)} />
-        </Panel>
-      );
-    }
-    const peoplePanel = this.renderPeoplePanel();
-
-    let oneboxPanel = null;
-    if (this.props.response.onebox_links.length) {
-      oneboxPanel = (
-        <Panel key="onebox" header="Related Links">
-          <OneboxLinks links={this.props.response.onebox_links} />
-        </Panel>
-      );
-    }
-    const defaultKeys = ['featured', 'onebox', 'currentEvents', 'futureEvents'];
-    if (this.props.showPeople) {
-      defaultKeys.push('people', 'people1', 'people2');
-    }
-
-    return (
-      <Collapse
-        defaultActiveKey={defaultKeys}
-        style={{ backgroundColor: 'white' }}
-      >
-        {featuredPanel}
-        {peoplePanel}
-        {oneboxPanel}
-        {eventPanels}
-        {ExecutionEnvironment.canUseDOM
-          ? null
-          : resultEvents.map(getReactEventSchema)}
-      </Collapse>
-    );
   }
 }
-const ResultsList = wantsWindowSizes(injectIntl(_ResultsList));
-
-export async function search(
-  location: string,
-  keywords: string,
-  startDate: string,
-  endDate: string
-) {
-  const response = await timeout(
-    10000,
-    performRequest(
-      'search',
-      {
-        location,
-        keywords,
-        start: startDate,
-        end: endDate,
-      },
-      {},
-      '2.0'
-    )
-  );
-  response.featuredInfos = response.featuredInfos.map(x => ({
-    ...x,
-    event: new SearchEvent(x.event),
-  }));
-  response.results = response.results.map(x => new SearchEvent(x));
-  response.results = sortString(response.results, resultEvent =>
-    moment(resultEvent.start_time).toISOString()
-  );
-  return response;
-}
+const PeopleList = wantsWindowSizes(injectIntl(_PeopleList));
 
 class ResultTabs extends React.Component {
   props: {
@@ -787,17 +755,16 @@ class ResultTabs extends React.Component {
         </TabList>
 
         <TabPanel>
-          <ResultsList
-            response={this.props.response}
-            showPeople={false}
-            categoryOrder={this.props.categoryOrder}
-          />
+          <ResultsList response={this.props.response} />
         </TabPanel>
         <TabPanel>
           Calendar
         </TabPanel>
         <TabPanel>
-          People
+          <PeopleList
+            response={this.props.response}
+            categoryOrder={this.props.categoryOrder}
+          />
         </TabPanel>
       </Tabs>
     );
@@ -844,7 +811,7 @@ class ResultsPage extends React.Component {
 
         <ResultTabs
           query={this.props.query}
-          response={this.props.response}
+          response={this.state.response}
           categoryOrder={this.props.categoryOrder}
         />
       </div>
