@@ -353,7 +353,7 @@ class SearchHandler(ApiHandler):
         logging.info("Found %s keyword=%r events within %s %s of %s", len(search_results), form.keywords.data, form.distance.data, form.distance_units.data, form.location.data)
 
         # Keep in sync with mobile react code? And search_servlets
-        skip_people = len(search_results) >= 10 or form.skipPeople.data
+        skip_people = len(search_results) >= 10 or form.skip_people.data
         json_response = build_search_results_api(city_name, form, search_query, search_results, self.version, need_full_event, center_latlng, southwest, northeast, skip_people=skip_people)
         if self.request.get('client') == 'react-android' and self.version <= (1, 3):
             json_response['featured'] = []

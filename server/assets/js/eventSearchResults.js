@@ -53,6 +53,8 @@ require('../css/slick.scss');
 require('../css/rc-collapse.scss');
 require('react-tabs/style/react-tabs.scss');
 
+type SearchQuery = Object;
+
 function insertEvery<T>(
   array: Array<T>,
   insertion: (origIndex: number) => T,
@@ -520,7 +522,7 @@ class _Loading extends React.Component {
   render() {
     return (
       <div>
-        <Spinner name="circle" color="black" noFadeIn />
+        <Spinner name="circle" color="black" fadeIn="none" />
       </div>
     );
   }
@@ -616,7 +618,7 @@ export async function search(
         keywords,
         start: startDate,
         end: endDate,
-        skipPeople: 1, // We don't need to auto-fetch people, since it is on a different tab
+        skip_people: 1, // We don't need to auto-fetch people, since it is on a different tab
       },
       {},
       '2.0'
@@ -691,30 +693,34 @@ class _PeopleList extends React.Component {
     if (this.state.people) {
       const admins = this.state.people.ADMIN;
       const attendees = this.state.people.ATTENDEE;
-      adminContents = admins
-        ? <PersonList
-            title={this.props.intl.formatMessage(messages.nearbyPromoters)}
-            subtitle={this.props.intl.formatMessage(
-              messages.nearbyPromotersMessage
-            )}
-            people={admins}
-            categoryOrder={this.props.categoryOrder}
-          />
-        : <CallbackOnRender callback={this.loadPeopleIfNeeded}>
+      if (!admins && !attendees) {
+        return (
+          <CallbackOnRender callback={this.loadPeopleIfNeeded}>
             <Loading />
-          </CallbackOnRender>;
-      attendeeContents = attendees
-        ? <PersonList
-            title={this.props.intl.formatMessage(messages.nearbyDancers)}
-            subtitle={this.props.intl.formatMessage(
-              messages.nearbyDancersMessage
-            )}
-            people={attendees}
-            categoryOrder={this.props.categoryOrder}
-          />
-        : <CallbackOnRender callback={this.loadPeopleIfNeeded}>
-            <Loading />
-          </CallbackOnRender>;
+          </CallbackOnRender>
+        );
+      } else {
+        adminContents = admins
+          ? <PersonList
+              title={this.props.intl.formatMessage(messages.nearbyPromoters)}
+              subtitle={this.props.intl.formatMessage(
+                messages.nearbyPromotersMessage
+              )}
+              people={admins}
+              categoryOrder={this.props.categoryOrder}
+            />
+          : null;
+        attendeeContents = attendees
+          ? <PersonList
+              title={this.props.intl.formatMessage(messages.nearbyDancers)}
+              subtitle={this.props.intl.formatMessage(
+                messages.nearbyDancersMessage
+              )}
+              people={attendees}
+              categoryOrder={this.props.categoryOrder}
+            />
+          : null;
+      }
     } else if (this.state.failed) {
       adminContents = <span>Error Loading People</span>;
       attendeeContents = <span>Error Loading People</span>;
@@ -737,10 +743,13 @@ const PeopleList = injectIntl(_PeopleList);
 class ResultTabs extends React.Component {
   props: {
     response: NewSearchResponse,
+    query: SearchQuery,
     categoryOrder: Array<string>,
   };
 
   render() {
+    const query = querystring.stringify(this.props.query);
+    const calendarUrl = `/calendar/iframe/?${query}`;
     return (
       <Tabs>
         <TabList>
@@ -753,7 +762,7 @@ class ResultTabs extends React.Component {
           <ResultsList response={this.props.response} />
         </TabPanel>
         <TabPanel>
-          Calendar
+          <iframe src={calendarUrl} />
         </TabPanel>
         <TabPanel>
           <PeopleList
@@ -770,7 +779,7 @@ class ResultsPage extends React.Component {
   props: {
     response: NewSearchResponse,
     categoryOrder: Array<string>,
-    query: Object,
+    query: SearchQuery,
   };
 
   state: {

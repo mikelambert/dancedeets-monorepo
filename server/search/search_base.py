@@ -71,6 +71,9 @@ class SearchForm(wtforms.Form):
     time_period = wtforms.SelectField(choices=[(x, x) for x in TIME_LIST], default=TIME_ALL_FUTURE)
     deb = wtforms.StringField(default='')
 
+    # Only used by API
+    skip_people = wtforms.IntegerField(default=0)
+
     # For calendaring datetime-range queries:
     start = wtforms.DateField(default=None)
     end = wtforms.DateField(default=None)

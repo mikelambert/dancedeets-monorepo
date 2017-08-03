@@ -45,6 +45,26 @@ class SearchHandler(base_servlet.BaseRequestHandler):
         form.validated = form.validate()
         self.handle_search(form)
 
+@app.route('/calendar/iframe')
+class CalendarHandler(SearchHandler):
+    template_name = 'calendar_iframe'
+    search_class = search.Search
+
+    def handle_search(self, form):
+        validated = form.validate()
+        if not validated:
+            for field, errors in form.errors.items():
+                for error in errors:
+                    self.add_error(u"%s error: %s" % (
+                        getattr(form, field).label.text,
+                        error
+                    ))
+
+        props = dict(
+            query=form.url_params(),
+        )
+        self.setup_react_template('calendar.js', props)
+
 @app.route('/')
 @app.route('/events/relevant')
 class RelevantHandler(SearchHandler):
