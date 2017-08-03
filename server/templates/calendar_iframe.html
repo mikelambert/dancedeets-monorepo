@@ -1,0 +1,16 @@
+<html>
+<head>
+  <link rel="stylesheet" href="{{static_dir}}/css/common.css">
+</head>
+<body>
+  <div id="react-parent">
+    {{ react_html|safe }}
+  </div>
+  <script type="text/javascript">
+    window._REACT_PROPS = {{ react_props|safe }};
+    window._REACT_ID = 'react-parent';
+  </script>
+  <script src="{{static_dir}}/js/common.js"></script>
+  <script src="{{static_dir}}/js/calendarExec.js"></script>
+</body>
+</html>
