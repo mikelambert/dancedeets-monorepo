@@ -42,8 +42,7 @@ import {
 } from 'dancedeets-common/js/events/helpers';
 import { formatStartDateOnly } from 'dancedeets-common/js/dates';
 import { getReactEventSchema } from './eventSchema';
-import { Card, ImagePrefix, wantsWindowSizes } from './ui';
-import type { windowProps } from './ui';
+import { Card, ImagePrefix } from './ui';
 import { SquareEventFlyer } from './eventCommon';
 import GoogleAd from './googleAd';
 import { SearchBox } from './resultsCommon';
@@ -639,7 +638,6 @@ class _PeopleList extends React.Component {
     categoryOrder: Array<string>,
 
     // Self-managed props
-    window: windowProps,
     intl: intlShape,
   };
 
@@ -724,20 +722,16 @@ class _PeopleList extends React.Component {
       attendeeContents = null;
     }
 
-    if (this.props.window && this.props.window.width < 768) {
-      return <div>{adminContents}{attendeeContents}</div>;
-    } else {
-      const adminsDiv = adminContents
-        ? <div className="col-sm-6">{adminContents}</div>
-        : null;
-      const attendeesDiv = attendeeContents
-        ? <div className="col-sm-6">{attendeeContents}</div>
-        : null;
-      return <div className="row">{adminsDiv}{attendeesDiv}</div>;
-    }
+    const adminsDiv = adminContents
+      ? <div className="col-sm-6">{adminContents}</div>
+      : null;
+    const attendeesDiv = attendeeContents
+      ? <div className="col-sm-6">{attendeeContents}</div>
+      : null;
+    return <div className="row">{adminsDiv}{attendeesDiv}</div>;
   }
 }
-const PeopleList = wantsWindowSizes(injectIntl(_PeopleList));
+const PeopleList = injectIntl(_PeopleList);
 
 class ResultTabs extends React.Component {
   props: {
