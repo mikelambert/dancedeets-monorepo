@@ -514,21 +514,19 @@ class CallbackOnRender extends React.Component {
   }
 }
 
-class _Loading extends React.Component {
+class Loading extends React.Component {
   props: {
-    // Self-managed props
-    intl: intlShape,
+    style?: Object,
   };
 
   render() {
     return (
-      <div>
+      <div style={this.props.style}>
         <Spinner name="circle" color="black" fadeIn="none" />
       </div>
     );
   }
 }
-const Loading = injectIntl(_Loading);
 
 class ResultsList extends React.Component {
   props: {
@@ -593,20 +591,17 @@ export async function search(
   startDate: string,
   endDate: string
 ) {
-  const response = await timeout(
-    10000,
-    performRequest(
-      'search',
-      {
-        location,
-        keywords,
-        start: startDate,
-        end: endDate,
-        skip_people: 1, // We don't need to auto-fetch people, since it is on a different tab
-      },
-      {},
-      '2.0'
-    )
+  const response = await performRequest(
+    'search',
+    {
+      location,
+      keywords,
+      start: startDate,
+      end: endDate,
+      skip_people: 1, // We don't need to auto-fetch people, since it is on a different tab
+    },
+    {},
+    '2.0'
   );
   response.featuredInfos = response.featuredInfos.map(x => ({
     ...x,
@@ -656,14 +651,12 @@ class _PeopleList extends React.Component {
     }
     try {
       this._loadingPeople = true;
-      const formattedArgs = querystring.stringify({
+      const args = {
         location: this.props.response.query.location,
         locale: this.props.response.query.locale,
-      });
-
-      const result = await fetch(`/api/v2.0/people?${formattedArgs}`);
-      const resultJson = await result.json();
-      this.setState({ people: resultJson.people });
+      };
+      const response = await performRequest('people', args, args, '2.0');
+      this.setState({ people: response.people });
     } catch (e) {
       console.error(e);
       this.setState({ failed: true });
@@ -680,7 +673,7 @@ class _PeopleList extends React.Component {
       if (!admins && !attendees) {
         return (
           <CallbackOnRender callback={this.loadPeopleIfNeeded}>
-            <Loading />
+            <Loading style={{ margin: 50 }} />
           </CallbackOnRender>
         );
       } else {
@@ -803,12 +796,13 @@ class ResultsPage extends React.Component {
   };
 
   state: {
+    loading: boolean,
     response: NewSearchResponse,
   };
 
   constructor(props) {
     super(props);
-    this.state = { response: this.props.response };
+    this.state = { response: this.props.response, loading: false };
     (this: any).onNewSearch = this.onNewSearch.bind(this);
   }
 
@@ -817,13 +811,14 @@ class ResultsPage extends React.Component {
     const history = createBrowserHistory();
     history.replace(`/?${query}`);
 
+    await this.setState({ loading: true });
     const response = await search(
       form.location,
       form.keywords,
       form.start,
       form.end
     );
-    this.setState({ response });
+    await this.setState({ response, loading: false });
   }
 
   render() {
