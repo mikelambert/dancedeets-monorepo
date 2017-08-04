@@ -37,8 +37,12 @@ export function performSearch(): ThunkAction {
       });
       await dispatch(searchComplete(responseData));
     } catch (e) {
-      // TODO: error fetching events.
-      console.log('Error fetching events', e.message, e, e.stack);
+      console.error('Error fetching events', e.message, e, e.stack);
+      track('Search Error', {
+        Location: searchQuery.location,
+        Keywords: searchQuery.keywords,
+        Error: e.message,
+      });
       await dispatch(searchFailed(e.message));
     }
   };
