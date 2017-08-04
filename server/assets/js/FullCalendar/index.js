@@ -5,14 +5,18 @@
  */
 
 import React from 'react';
-
-/* eslint-disable import/no-unresolved */
 import $ from 'jquery';
-import 'fullcalendar';
 import 'fullcalendar/dist/fullcalendar.css';
-/* eslint-disable import/no-unresolved */
-
+import ExecutionEnvironment from 'exenv';
 import { isOption } from './utils';
+
+if (ExecutionEnvironment.canUseDOM) {
+  // This has errors when imported on an uninitialized jquery
+  // In particular, it wants to do $.fn.fullCalendar =
+  // and it seems $.fn is undefined at the time it runs.
+  // So let's conditionally require/import it at runtime, only on the client.
+  require('fullcalendar'); // eslint-disable-line global-require
+}
 
 class FullCalendar extends React.Component {
   props: {
