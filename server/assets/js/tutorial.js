@@ -22,6 +22,8 @@ const backgroundSectionHeaderColor = '#656595';
 const backgroundVideoColor = 'white';
 const backgroundVideoColorActive = '#E0E0F5';
 
+const headerHeight = 50;
+
 class _Duration extends React.Component {
   props: {
     duration: number,
@@ -219,7 +221,10 @@ class _TutorialView extends React.Component {
     const video = this.state.video;
     if (this.props.window) {
       extraStyles = {
-        maxWidth: this.props.window.height * video.width / video.height,
+        maxWidth:
+          (this.props.window.height - headerHeight) *
+            video.width /
+            video.height,
         maxHeight: this.props.window.width * video.height / video.width,
       };
     }
@@ -256,11 +261,14 @@ class _TutorialView extends React.Component {
     const flexDirection = this.props.window && this.props.window.width > 1024
       ? 'row'
       : 'column';
+    const height = this.props.window
+      ? this.props.window.height - headerHeight
+      : '100vh';
     return (
       <div
         style={{
-          height: '100vh',
           display: 'flex',
+          height,
           flexDirection,
         }}
       >
