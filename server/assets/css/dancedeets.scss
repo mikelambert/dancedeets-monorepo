@@ -389,25 +389,3 @@ $top-search-placeholder-color: #484848;
 .top-search:focus {
   outline-width: 0;
 }
-
-.DateInput {
-  //  font-size: 15px;
-  //  line-height: 18px;
-  padding: 0 !important;
-  width: auto !important;
-}
-
-.DateRangePicker {
-  width: 100%;
-}
-
-.DateRangePickerInput {
-  background-color: 'transparent';
-  border: 0;
-  width: 100%;
-  padding: 3px; // 3px + DateInput__display-text' 4px == 7px padding in resultsCommon.js
-}
-
-.DateRangePicker__picker {
-  z-index: 10;
-}

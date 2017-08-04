@@ -6,3 +6,23 @@ $NarrowWindowSize: 768px;
     display: table-cell;
   }
 }
+
+.DateInput {
+  padding: 0 !important;
+  width: auto !important;
+}
+
+.DateRangePicker {
+  width: 100%;
+}
+
+.DateRangePickerInput {
+  background-color: 'transparent';
+  border: 0;
+  width: 100%;
+  padding: 3px; // 3px + DateInput__display-text' 4px == 7px padding in resultsCommon.js
+}
+
+.DateRangePicker__picker {
+  z-index: 1001; // Needs to be above the navbar-static-top's z-index: 1000
+}
