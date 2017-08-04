@@ -258,18 +258,15 @@ class _TutorialView extends React.Component {
   render() {
     const tutorial = this.props.tutorial;
     const video = this.state.video;
-    const flexDirection = this.props.window && this.props.window.width > 1024
-      ? 'row'
-      : 'column';
     const height = this.props.window
       ? this.props.window.height - headerHeight
       : '100vh';
     return (
       <div
+        className="media-width-row-or-column"
         style={{
           display: 'flex',
           height,
-          flexDirection,
         }}
       >
         {this.renderPlayer()}
