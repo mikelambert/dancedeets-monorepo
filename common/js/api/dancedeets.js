@@ -11,11 +11,16 @@ import { timeout, retryWithBackoff } from './timeouts';
 const DEV_SERVER = false;
 
 function getUrl(version: string, path: string, args: Object) {
-  const baseUrl = DEV_SERVER
-    ? `http://dev.dancedeets.com:8080/api/v${version}/`
-    : `https://www.dancedeets.com/api/v${version}/`;
+  let schemeHost = null;
+  if (global.window.navigator.product === 'ReactNative') {
+    schemeHost = DEV_SERVER
+      ? 'http://dev.dancedeets.com:8080'
+      : 'https://www.dancedeets.com';
+  } else {
+    schemeHost = window.location.origin;
+  }
+  let fullPath = `${schemeHost}/api/v${version}/${path}`;
   const formattedArgs = querystring.stringify(args);
-  let fullPath = baseUrl + path;
   if (formattedArgs) {
     fullPath += `?${formattedArgs}`;
   }
