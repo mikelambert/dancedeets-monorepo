@@ -6,6 +6,7 @@
 
 import React from 'react';
 import moment from 'moment';
+import classNames from 'classnames';
 import { injectIntl, intlShape } from 'react-intl';
 import Autocomplete from 'react-autocomplete';
 import { DateRangePicker } from 'react-dates';
@@ -84,7 +85,6 @@ class _DatePicker extends React.Component {
       <div key="date-display">
         <button
           type="button"
-          zIndex="-1"
           className="top-search"
           style={{
             fontSize: 18,
@@ -304,10 +304,11 @@ class SearchBoxItem extends React.Component {
           borderBottomWidth: SearchBoxItem.underlineWidth,
           borderBottomStyle: 'solid',
           borderBottomColor: this.state.focused ? '#4C4D81' : 'transparent',
-
-          width: this.state.focused ? '200%' : '100%',
         }}
-        className="media-query-display-table-cell"
+        className={classNames(
+          'media-query-search-layout',
+          this.state.focused ? 'media-query-search-focused' : ''
+        )}
       >
         <div
           style={{

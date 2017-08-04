@@ -65,6 +65,7 @@
     "babel-polyfill": "^6.16.0",
     "bootstrap": "^3.3.7",
     "bootstrap-sass": "^3.3.6",
+    "classnames": "^2.2.5",
     "console-polyfill": "^0.3.0",
     "dancedeets-common": "file:../common",
     "date-fns": "^1.3.0",

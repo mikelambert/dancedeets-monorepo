@@ -340,7 +340,7 @@ class _EventsList extends React.Component {
       );
 
       resultItems.push(
-        <Sticky>
+        <Sticky key={header}>
           <div className="bold" style={{ backgroundColor: 'white' }}>
             {header}
           </div>
@@ -547,10 +547,10 @@ class ResultsList extends React.Component {
       event => moment(event.start_time) > now
     );
     if (currentEvents.length) {
-      eventPanels.push(<CurrentEvents events={currentEvents} />);
+      eventPanels.push(<CurrentEvents key="Current" events={currentEvents} />);
     }
     if (futureEvents.length) {
-      eventPanels.push(<EventsList events={futureEvents} />);
+      eventPanels.push(<EventsList key="future" events={futureEvents} />);
     }
     eventCount = currentEvents.length + futureEvents.length;
 
