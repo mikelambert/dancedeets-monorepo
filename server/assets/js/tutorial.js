@@ -17,20 +17,15 @@ import { Card, Link, ShareLinks, wantsWindowSizes } from './ui';
 import type { windowProps } from './ui';
 import { generateMetaTags } from './meta';
 
-// De-Dupe
-const purpleColors = [
-  '#8283A9',
-  '#656595',
-  '#4C4D81',
-  '#333452',
-  '#222238',
-  '#171728',
-];
-const lightPurpleColors = ['#E0E0F5', '#D0D0F0', '#C0C0D0'];
+const backgroundPlaylistHeaderColor = 'white';
+const backgroundSectionHeaderColor = '#E0E0F5';
+const backgroundVideoColor = 'white';
+const backgroundVideoColorInverse = '#656595'; // purple-lightest
 
 class _Duration extends React.Component {
   props: {
     duration: number,
+    style?: Object,
 
     // Self-managed props:
     intl: intlShape,
@@ -44,8 +39,8 @@ class _Duration extends React.Component {
     return (
       <div
         style={{
-          color: '#777',
           fontSize: '80%',
+          ...this.props.style,
         }}
       >
         {duration}
@@ -130,7 +125,12 @@ class _TutorialView extends React.Component {
 
   renderVideoLine(video) {
     const activeRow = this.state.video.youtubeId === video.youtubeId;
-    const backgroundColor = activeRow ? 'white' : '#e9ebee';
+    const backgroundColor = activeRow
+      ? backgroundVideoColorInverse
+      : backgroundVideoColor;
+    const textColor = activeRow ? 'white' : 'inherit';
+    const durationTextColor = activeRow ? 'white' : '#777';
+
     const imageSize = 30;
     const playIcon = require('../img/play.png'); // eslint-disable-line global-require
     return (
@@ -144,10 +144,11 @@ class _TutorialView extends React.Component {
           alignItems: 'center',
 
           padding: 7,
+          color: textColor,
 
           borderBottomWidth: 0.5,
           borderBottomStyle: 'solid',
-          borderBottomColor: purpleColors[4],
+          borderBottomColor: backgroundSectionHeaderColor,
         }}
       >
         <div>
@@ -159,7 +160,10 @@ class _TutorialView extends React.Component {
         </div>
         <div style={{ marginLeft: 10 }}>
           <div style={{ fontWeight: 'bold' }}>{video.title}</div>
-          <Duration duration={video.getDurationSeconds()} />
+          <Duration
+            duration={video.getDurationSeconds()}
+            style={{ color: durationTextColor }}
+          />
         </div>
       </Link>
     );
@@ -167,7 +171,9 @@ class _TutorialView extends React.Component {
 
   renderSectionHeader(section) {
     return (
-      <div style={{ padding: 7, backgroundColor: '#dddfe2' }}>
+      <div
+        style={{ padding: 7, backgroundColor: backgroundSectionHeaderColor }}
+      >
         <div>{section.title}</div>
         <Duration duration={section.getDurationSeconds()} />
       </div>
@@ -194,7 +200,9 @@ class _TutorialView extends React.Component {
     );
     const subline = `${tutorial.author} - ${duration}`;
     return (
-      <div style={{ padding: 7 }}>
+      <div
+        style={{ padding: 7, backgroundColor: backgroundPlaylistHeaderColor }}
+      >
         <h3 style={{ marginTop: 0 }}>
           {tutorial.title} - <a href="/tutorials">See All Tutorials</a>
         </h3>
