@@ -347,14 +347,6 @@ class _EventsList extends React.Component {
         </Sticky>
       );
       resultItems.push(...renderedEvents);
-      /* className="day-header"
-          style={{
-            marginTop: '30px',
-            marginBottom: '10px',
-            borderBottom: '1px solid white',
-          }}
-        >
-*/
       overallEventIndex += events.length;
     });
 

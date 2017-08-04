@@ -2,46 +2,6 @@
 
 /* Convert to less for some of those 5px vars, then compile it together with bootstrap.css into a single css file */
 
-/* lazy loaded images on the results pages */
-.lazy-narrow {
-  display: none;
-}
-.lazy-wide {
-  display: none;
-}
-
-/* username in upper right corner */
-.user-name {
-  max-width: 120px;
-  text-overflow: ellipsis;
-  overflow: hidden;
-  white-space: nowrap;
-}
-
-.fb_button-nav {
-  padding: 10px 10px 0px;
-  width: 200px;
-  text-align: right;
-}
-
-.event-page-title {
-  font-size: 2em;
-  font-weight: 500;
-}
-
-.responsive-map-wrapper {
-  position: relative;
-  padding-top: 25px;
-  height: 0;
-  padding-bottom: 100%; /* square...but only because width is 80% below, with our 80% here */
-  margin-bottom: 0%;
-}
-
-/* on event page */
-.product-social-links {
-  line-height: 10px;
-}
-
 /* on every page, for mobile overlays */
 .feature-list {
   float: left;
@@ -51,15 +11,6 @@
 /* all select boxes should autosize */
 select {
   width: auto;
-}
-
-.tabs-after {
-  min-height: 100px;
-}
-
-#ongoing_events {
-  border-left: 1px solid $hr-border;
-  padding-left: 5px;
 }
 
 .event-image {
@@ -74,11 +25,6 @@ select {
 .event-image img {
   margin-bottom: -2px;
 }
-.day-header {
-  margin-top: 30px;
-  font-size: 120%;
-  font-weight: bold; /* inherited from H3 anyway */
-}
 .event-title {
   font-size: 120%;
   font-weight: bold; /* inherited from H3 anyway */
@@ -89,16 +35,8 @@ table.rankings td {
   padding: 5px;
 }
 
-#location_form {
-  width: 170px;
-}
-
 .ranking-title {
   font-weight: bold;
-}
-
-#upcoming_events {
-  float: left;
 }
 
 /* for ongoing events*/
@@ -106,33 +44,11 @@ h3.event-title {
   line-height: 1.3;
 }
 
-.narrow-event {
-  padding-bottom: 5px;
-  border-bottom: 1px solid $hr-border;
-  margin-bottom: 5px;
-  float: left;
-  width: 100%;
-}
-
-.wide-event {
-  padding-bottom: 5px;
-  padding-top: 5px;
-}
-
-.big-font {
-  font-size: 200%;
-}
-
 .bad-matched-text {
   background-color: pink;
 }
 .matched-text {
   background-color: lightgreen;
-}
-
-footer.old {
-  text-align: center;
-  margin-top: 30px;
 }
 
 .big-facebook-login-button {
@@ -172,112 +88,6 @@ ul.feature-list {
 
 #penguin {
   position: relative; /* so it can move */
-}
-
-@-webkit-keyframes bounce {
-  0% {
-    width: 140px;
-    height: 140px;
-    top: 0px;
-  }
-  40% {
-    width: 140px;
-    height: 120px;
-    top: 20px;
-    -webkit-animation-timing-function: ease-out;
-    animation-timing-function: ease-out;
-  }
-  50% {
-    top: 0px;
-    width: 140px;
-    height: 140px;
-    -webkit-animation-timing-function: cubic-bezier(
-      0.33333,
-      0.66667,
-      0.66667,
-      1
-    );
-    animation-timing-function: cubic-bezier(0.33333, 0, 0.66667, 0.33333);
-  }
-  75% {
-    top: -30px;
-    width: 140px;
-    height: 140px;
-    -webkit-animation-timing-function: cubic-bezier(
-      0.33333,
-      0,
-      0.66667,
-      0.33333
-    );
-    animation-timing-function: cubic-bezier(0.33333, 0, 0.66667, 0.33333);
-  }
-  100% {
-    top: 0px;
-    width: 140px;
-    height: 140px;
-  }
-}
-@keyframes bounce {
-  0% {
-    width: 140px;
-    height: 140px;
-    top: 0px;
-  }
-  40% {
-    width: 140px;
-    height: 120px;
-    top: 20px;
-    -webkit-animation-timing-function: ease-out;
-    animation-timing-function: ease-out;
-  }
-  50% {
-    top: 0px;
-    width: 140px;
-    height: 140px;
-    -webkit-animation-timing-function: cubic-bezier(
-      0.33333,
-      0.66667,
-      0.66667,
-      1
-    );
-    animation-timing-function: cubic-bezier(0.33333, 0, 0.66667, 0.33333);
-  }
-  75% {
-    top: -30px;
-    -webkit-animation-timing-function: cubic-bezier(
-      0.33333,
-      0,
-      0.66667,
-      0.33333
-    );
-    animation-timing-function: cubic-bezier(0.33333, 0, 0.66667, 0.33333);
-    /* These seem to be required in Safari to keep the thing from shrinking horizontally */
-    width: 140px;
-    height: 140px;
-  }
-  100% {
-    top: 0px;
-    width: 140px;
-    height: 140px;
-  }
-}
-
-/* Handle our search form */
-#search-form .form-group {
-  display: block;
-  margin-bottom: 0;
-  vertical-align: middle;
-}
-#search-form .form-control {
-  width: 250px;
-  display: inline-block;
-  vertical-align: middle;
-}
-
-.event-sidebar-icon {
-  float: left;
-  text-align: center;
-  width: 1.5em;
 }
 
 /* We don't want the banner on top of our full screen modal dialogs */
