@@ -12,6 +12,7 @@ import { DateRangePicker } from 'react-dates';
 import { wantsWindowSizes } from './ui';
 import type { windowProps } from './ui';
 
+// Keep in sync with results.scss's NarrowWindowSize
 const NarrowWindowSize = 768;
 
 export const CalendarRatio = 1.8;
@@ -214,7 +215,7 @@ class TextInput extends React.Component {
     };
     if (this.props.autocomplete) {
       const menuStyle = {
-        marginTop: _SearchBoxItem.underlineWidth,
+        marginTop: SearchBoxItem.underlineWidth,
         borderRadius: '3px',
         boxShadow: '0 2px 12px rgba(0, 0, 0, 0.1)',
         background: 'rgba(255, 255, 255, 0.9)',
@@ -269,7 +270,7 @@ class TextInput extends React.Component {
   }
 }
 
-class _SearchBoxItem extends React.Component {
+class SearchBoxItem extends React.Component {
   static underlineWidth = 2;
 
   props: {
@@ -279,11 +280,6 @@ class _SearchBoxItem extends React.Component {
       onFocus: () => void,
       onBlur: () => void,
     }) => React.Element<*>,
-    borderPrev?: boolean,
-    borderNext?: boolean,
-
-    // Self-managed props
-    window: windowProps,
   };
 
   state: {
@@ -296,26 +292,6 @@ class _SearchBoxItem extends React.Component {
   }
 
   render() {
-    const vertical =
-      !this.props.window || this.props.window.width < NarrowWindowSize;
-    const layoutParams = {};
-    if (vertical) {
-      if (this.props.borderPrev) {
-        layoutParams.borderTop = '1px solid #e4e4e4';
-      }
-      if (this.props.borderNext) {
-        layoutParams.borderBottom = '1px solid #e4e4e4';
-      }
-    } else {
-      layoutParams.display = 'table-cell';
-      if (this.props.borderPrev) {
-        layoutParams.borderLeft = '1px solid #e4e4e4';
-      }
-      if (this.props.borderNext) {
-        layoutParams.borderRight = '1px solid #e4e4e4';
-      }
-    }
-
     return (
       <div
         style={{
@@ -324,13 +300,14 @@ class _SearchBoxItem extends React.Component {
 
           transition: 'border 500ms ease-out, width 300ms ease-out',
 
-          borderBottomWidth: _SearchBoxItem.underlineWidth,
+          border: '1px solid #e4e4e4',
+          borderBottomWidth: SearchBoxItem.underlineWidth,
           borderBottomStyle: 'solid',
           borderBottomColor: this.state.focused ? '#4C4D81' : 'transparent',
 
           width: this.state.focused ? '200%' : '100%',
-          ...layoutParams,
         }}
+        className="media-query-display-table-cell"
       >
         <div
           style={{
@@ -359,7 +336,6 @@ class _SearchBoxItem extends React.Component {
     );
   }
 }
-const SearchBoxItem = wantsWindowSizes(_SearchBoxItem);
 
 class _SearchBox extends React.Component {
   props: {
@@ -490,7 +466,6 @@ class _SearchBox extends React.Component {
           >
             <SearchBoxItem
               iconName="globe"
-              borderNext
               renderItem={({ focused, onFocus, onBlur }) =>
                 <TextInput
                   autocomplete
@@ -541,8 +516,6 @@ class _SearchBox extends React.Component {
             />
             <SearchBoxItem
               iconName="search"
-              borderPrev
-              borderNext
               renderItem={({ focused, onFocus, onBlur }) =>
                 <TextInput
                   autocomplete
@@ -579,7 +552,6 @@ class _SearchBox extends React.Component {
             />
             <SearchBoxItem
               iconName="clock-o"
-              borderPrev
               renderItem={({ focused, onFocus, onBlur }) =>
                 <DatePicker
                   query={this.props.query}

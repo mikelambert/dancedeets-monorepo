@@ -1,0 +1,8 @@
+$NarrowWindowSize: 768px;
+
+// Keep in sync with resultsCommon.js's NarrowWindowSize
+@media (min-width: $NarrowWindowSize) {
+  .media-query-display-table-cell {
+    display: table-cell;
+  }
+}
