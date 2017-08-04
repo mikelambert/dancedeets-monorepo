@@ -193,27 +193,18 @@ class HorizontalEvent extends React.Component {
           style={{
             paddingTop: 10,
             paddingBottom: 10,
+            display: 'flex',
           }}
         >
-          <table>
-            <tbody>
-              <tr>
-                <td style={{ verticalAlign: 'top' }}>
-                  <div className="event-image">
-                    <SquareEventFlyer
-                      event={this.props.event}
-                      lazyLoad={this.props.lazyLoad}
-                    />
-                  </div>
-                </td>
-                <td style={{ verticalAlign: 'top' }}>
-                  <div className="event-description">
-                    <EventDescription event={this.props.event} />
-                  </div>
-                </td>
-              </tr>
-            </tbody>
-          </table>
+          <div className="event-image" style={{ maxWidth: 180 + 2 }}>
+            <SquareEventFlyer
+              event={this.props.event}
+              lazyLoad={this.props.lazyLoad}
+            />
+          </div>
+          <div className="event-description" style={{ flex: 1 }}>
+            <EventDescription event={this.props.event} />
+          </div>
         </div>
       </div>
     );
