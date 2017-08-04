@@ -10,6 +10,7 @@ require('../css/bootstrap-custom.scss');
 
 // media queries to complement our React JS
 require('../css/tutorials.scss');
+require('../css/results.scss');
 
 require('../css/fonts.scss');
 require('../css/dancedeets.scss');
