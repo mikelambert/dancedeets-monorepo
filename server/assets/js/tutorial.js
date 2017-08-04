@@ -18,9 +18,9 @@ import type { windowProps } from './ui';
 import { generateMetaTags } from './meta';
 
 const backgroundPlaylistHeaderColor = 'white';
-const backgroundSectionHeaderColor = '#E0E0F5';
+const backgroundSectionHeaderColor = '#656595';
 const backgroundVideoColor = 'white';
-const backgroundVideoColorInverse = '#656595'; // purple-lightest
+const backgroundVideoColorActive = '#E0E0F5';
 
 class _Duration extends React.Component {
   props: {
@@ -126,10 +126,8 @@ class _TutorialView extends React.Component {
   renderVideoLine(video) {
     const activeRow = this.state.video.youtubeId === video.youtubeId;
     const backgroundColor = activeRow
-      ? backgroundVideoColorInverse
+      ? backgroundVideoColorActive
       : backgroundVideoColor;
-    const textColor = activeRow ? 'white' : 'inherit';
-    const durationTextColor = activeRow ? 'white' : '#777';
 
     const imageSize = 30;
     const playIcon = require('../img/play.png'); // eslint-disable-line global-require
@@ -144,7 +142,6 @@ class _TutorialView extends React.Component {
           alignItems: 'center',
 
           padding: 7,
-          color: textColor,
 
           borderBottomWidth: 0.5,
           borderBottomStyle: 'solid',
@@ -162,7 +159,7 @@ class _TutorialView extends React.Component {
           <div style={{ fontWeight: 'bold' }}>{video.title}</div>
           <Duration
             duration={video.getDurationSeconds()}
-            style={{ color: durationTextColor }}
+            style={{ color: '#777' }}
           />
         </div>
       </Link>
@@ -172,7 +169,11 @@ class _TutorialView extends React.Component {
   renderSectionHeader(section) {
     return (
       <div
-        style={{ padding: 7, backgroundColor: backgroundSectionHeaderColor }}
+        style={{
+          color: 'white',
+          padding: 7,
+          backgroundColor: backgroundSectionHeaderColor,
+        }}
       >
         <div>{section.title}</div>
         <Duration duration={section.getDurationSeconds()} />
