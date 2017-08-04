@@ -98,30 +98,20 @@
                         Events
                     </a>
                     <ul class="dropdown-menu">
+                      {% for name, name_cities in cities %}
                         <li class="dropdown-submenu">
-                            <a href="javascript:void(0);">US/Canada/Mexico</a>
+                            <a href="javascript:void(0);">{{name}}</a>
                             <ul class="dropdown-menu">
-                            {% for city in us_cities %}
-                                <li>{% if city %}<a href="/?location={{ city }}">{{ city }}</a>{% else %}&nbsp;{% endif %}</li>
+                            {% for city in name_cities %}
+                                {% if city %}
+                                  <li><a href="/?location={{ city }}">{{ city }}</a></li>
+                                {% else %}
+                                  <li class="divider" role="separator">&nbsp;</li>
+                                {% endif %}
                             {% endfor %}
                             </ul>
                         </li>
-                        <li class="dropdown-submenu">
-                            <a href="javascript:void(0);">Europe</a>
-                            <ul class="dropdown-menu">
-                            {% for city in eu_cities %}
-                                <li>{% if city %}<a href="/?location={{ city }}">{{ city }}</a>{% else %}&nbsp;{% endif %}</li>
-                            {% endfor %}
-                            </ul>
-                        </li>
-                        <li class="dropdown-submenu">
-                            <a href="javascript:void(0);">World</a>
-                            <ul class="dropdown-menu">
-                            {% for city in other %}
-                                <li>{% if city %}<a href="/?location={{ city }}">{{ city }}</a>{% else %}&nbsp;{% endif %}</li>
-                            {% endfor %}
-                            </ul>
-                        </li>
+                      {% endfor %}
                         <li class="divider" role="separator">&nbsp;</li>
                         <li>
                           <a href="/events_add">
