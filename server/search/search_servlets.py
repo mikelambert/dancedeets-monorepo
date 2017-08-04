@@ -120,7 +120,7 @@ class RelevantHandler(SearchHandler):
 
             need_full_event = False
             # Keep in sync with mobile react code? And api.py
-            skip_people = len(search_results) >= 10
+            skip_people = True
             json_search_response = api.build_search_results_api(city_name, form, search_query, search_results, (2, 0), need_full_event, center_latlng, southwest, northeast, skip_people=skip_people)
             props = dict(
                 response=json_search_response,

@@ -93,10 +93,14 @@ class SearchForm(wtforms.Form):
             d['keywords'] = self.keywords.data
         if self.min_attendees.data:
             d['min_attendees'] = self.min_attendees.data
-        d['location'] = self.location.data or ''
-        d['distance'] = self.distance.data
-        d['distance_units'] = self.distance_units.data
-        d['locale'] = self.locale.data
+        if self.location.data:
+            d['location'] = self.location.data
+        if self.distance.data:
+            d['distance'] = self.distance.data
+        if self.distance_units.data:
+            d['distance_units'] = self.distance_units.data
+        if self.locale.data:
+            d['locale'] = self.locale.data
         if self.start.data:
             d['start'] = self.start.data.strftime("%Y-%m-%d")
         if self.end.data:
