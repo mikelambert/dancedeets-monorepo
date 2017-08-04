@@ -60,6 +60,4 @@ if (window.showSmartBanner) {
 jQuery(document).ready(() => {
   fixStickyTouch();
   appInstallPromos();
-
-  jQuery('#location_submit').click(() => Boolean(jQuery('#location').val()));
 });

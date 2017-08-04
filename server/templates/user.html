@@ -53,8 +53,10 @@ with
 {% block bottom_javascript %}
 <script type="text/javascript">
 function initializeLocationAutocomplete() {
-  var autocomplete = new google.maps.places.Autocomplete(jQuery('#location_input').get(0));
-  autocomplete.setTypes(['(regions)'])
+  const autocomplete = new google.maps.places.Autocomplete(
+    document.getElementById('location_input')
+  );
+  autocomplete.setTypes(['(regions)']);
 }
 </script>
 

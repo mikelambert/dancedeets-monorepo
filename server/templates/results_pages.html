@@ -14,94 +14,6 @@
 <div class="container">
 <div class="row">
 <div class="col-md-9">
-<div style="margin-bottom: 25px">
-  <table><tr><td>
-  <div>
-  	<img id="penguin" src="/images/full_penguin_240.png" height="120" width="120">
-  </div>
-  </td><td>
-  <form id="search-form" class="form-inline" role="search" action="/" accept-charset="UTF-8">
-    <div style="font-weight: bold">Searching {{ total_events }} dance events worldwide:</div>
-    <div class="form-group">
-      <label for="keywords_input">Keywords</label>
-      {# We don't use a placeholder on keyword field, since it interacts differently with bootstrap-tokentext #}
-      <div class="input-group">
-        <span class="input-group-addon"><i class="fa fa-search fa-fw"></i></span>
-        <input id="keywords_input" type="text" name="keywords" placeholder="all events" value="{{ form.keywords.value }}" class="form-control">
-      </div>
-    </div>
-    <div class="form-group">
-      <label for="location_input">near location</label>
-      <div class="input-group">
-		<span class="input-group-addon"><i class="fa fa-globe fa-fw"></i></span>
-        <input id="location_input" type="text" name="location" placeholder="everywhere" value="{{ form.location.value }}" class="form-control">
-      </div>
-    </div>
-    {% if form.deb.value %}
-	    <input type="hidden" name="deb" value="{{ form.deb.value }}">
-	{% endif %}
-    <button type="submit" class="btn btn-default">
-      <i class="fa fa-search fa-fw"></i>
-      Search Events
-    </button>
-  {# maybe make a small hourglass icon search box ?
-   # jQuery("#search-button").click(function(e){ if (jQuery("#location_input").val()) jQuery("#search-form").submit(); });
-   #}
-  </form>
-  </td></tr></table>
-</div>{# margin-bottom: 25px #}
-
-<div style="min-height:300px">
-<ul class="nav nav-tabs" data-tabs="tabs">
-	<li
-	{% if selected_tab == 'past' %}
-		class="active"
-	{% endif %}
-	><a
-	{% if selected_tab == 'past' %}
-		href="#"
-	{% else %}
-		href="{{ past_view_url }}"
-	{% endif %}
-	><span><i class="fa fa-history fa-lg"></i>
-	{% if selected_tab == 'past' %}
-		{% set num_past_results = len(past_results) %}
-		{% if num_past_results %}
-			{{ num_past_results }}
-		{% endif %}
-	{% endif %}
-	Past Events</span></a></li>
-
-	<li
-	{% if selected_tab == 'present' %}
-		class="active"
-	{% endif %}
-	><a
-	{% if selected_tab == 'present' %}
-		href="#"
-	{% else %}
-		href="{{ upcoming_view_url }}"
-	{% endif %}
-	><span>
-	{% if selected_tab == 'present' %}
-		{% if num_upcoming_results %}
-			{{ num_upcoming_results }}
-		{% endif %}
-	{% endif %}
-	Upcoming Events</span></a></li>
-
-	<li
-	{% if selected_tab == 'calendar' %}
-		class="active"
-	{% endif %}
-	><a
-	{% if selected_tab == 'calendar' %}
-		href="#"
-	{% else %}
-		href="{{ calendar_view_url }}"
-	{% endif %}
-	><span><i class="fa fa-calendar fa-lg"></i> Calendar</span></a></li>
-</ul>
 <div class="tabs-after">
 	{% for page_result in page_results %}
 	<p>
@@ -112,54 +24,16 @@
 		{{ page_result.category }}
 		{{ page_result.category_list }}
 		{{ page_result.id }}
-{#	<div class="fb-like" data-href="http://www.facebook.com/{{ page_result.id }}" data-layout="button_count" data-action="like" data-show-faces="false" data-share="false"></div> #}
-
     <br>
 	{% endfor %}
-</div>{# min-height:300px #}
+</div>{# tabs-after #}
 </div>{# col-md-9 #}
 </div>{# row #}
-
-<div class="col-md-3">
-	<a href="/events_add" class="btn btn-primary"><i class="fa fa-calendar-plus-o fa-lg"></i> Add Dance Event</a>
-	<button type="button" class="btn btn-primary" onclick="share(); return true;"><i class="fa fa-user-plus fa-lg"></i> Share on Facebook</button>
-	<div class="fb-like" data-href="https://www.facebook.com/dancedeets" data-layout="standard" data-width="190" data-action="like" data-show-faces="true" style="margin: 10px 0;"></div>
-
-	<hr>
-	<div class="rankings">
-	See <a href="/rankings">All Rankings</a>.
-	</div>
-</div>
-
-</div> {# row #}
-</div> {# container #}
+</div>{# container #}
 {# endblock #}
 
 {# block bottom_javascript #}
 
-<script src="https://maps.googleapis.com/maps/api/js?v=3.exp&amp;key=AIzaSyAvvrWfamjBD6LqCURkATAWEovAoBm1xNQ&amp;libraries=places&amp;callback=initializeLocationAutocomplete"></script>
-
-<script type="text/javascript">
-jQuery(document).ready(function(event) {
-  jQuery("body").delegate("#location_input", "click", function() { return false; });
-  jQuery('#keywords_input').keydown(function(event) {
-      if (event.keyCode == 13) {
-          this.form.submit();
-          return false;
-       }
-  });
-  jQuery('#location_input').keydown(function(event) {
-      if (event.keyCode == 13) {
-          this.form.submit();
-          return false;
-       }
-  });
-});
-
-function initializeLocationAutocomplete() {
-  var autocomplete = new google.maps.places.Autocomplete(jQuery('#location_input').get(0));
-  autocomplete.setTypes(['(regions)'])
-}
-</script>
+<script src="https://maps.googleapis.com/maps/api/js?v=3.exp&amp;key=AIzaSyAvvrWfamjBD6LqCURkATAWEovAoBm1xNQ&amp;libraries=places"></script>
 
 {% endblock %}
