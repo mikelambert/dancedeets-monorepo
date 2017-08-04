@@ -56,7 +56,7 @@ body {
 }
 .grey-top-border::before {
   position: absolute;
-  border-top: 1px solid #e9ebee;
+  border-top: 1px solid $grey-background;
   display: block;
   top: 0;
   left: 0;

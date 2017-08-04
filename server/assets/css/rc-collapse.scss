@@ -12,7 +12,7 @@
   transition: height 0.2s ease-out;
 }
 .rc-collapse > .rc-collapse-item {
-  border-top: 1px solid #e9ebee;
+  border-top: 1px solid $grey-background;
 }
 .rc-collapse > .rc-collapse-item:first-child {
   border-top: none;

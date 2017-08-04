@@ -26,7 +26,8 @@ $brand-warning: #f0ad4e;
 $brand-danger: #d9534f;
 
 $text-color: black;
-$body-bg: #e9ebee;
+$grey-background: #e9ebee;
+$body-bg: $grey-background;
 
 $text-on-white-background: #90949c;
 $text-on-grey-background: #333;
