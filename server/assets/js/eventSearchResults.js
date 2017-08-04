@@ -10,6 +10,7 @@ import FormatText from 'react-format-text';
 import moment from 'moment';
 import ExecutionEnvironment from 'exenv';
 import upperFirst from 'lodash/upperFirst';
+import isEqual from 'lodash/isEqual';
 import { injectIntl, intlShape } from 'react-intl';
 import { StickyContainer, Sticky } from 'react-sticky';
 import Masonry from 'react-masonry-component';
@@ -53,7 +54,12 @@ require('slick-carousel/slick/slick-theme.css');
 require('../css/slick.scss');
 require('../css/rc-collapse.scss');
 
-type SearchQuery = Object;
+type FormSearchQuery = {
+  location?: string, // eslint-disable-line react/no-unused-prop-types
+  keywords?: string, // eslint-disable-line react/no-unused-prop-types
+  start?: string, // eslint-disable-line react/no-unused-prop-types
+  end?: string, // eslint-disable-line react/no-unused-prop-types
+};
 
 function insertEvery<T>(
   array: Array<T>,
@@ -588,16 +594,27 @@ class ResultsList extends React.Component {
 export async function search(
   location: string,
   keywords: string,
-  startDate: string,
-  endDate: string
+  start: string,
+  end: string
 ) {
+  const args = {};
+  if (location) {
+    args.location = location;
+  }
+  if (keywords) {
+    args.keywords = keywords;
+  }
+  if (start) {
+    args.start = start;
+  }
+  if (end) {
+    args.end = end;
+  }
+
   const response = await performRequest(
     'search',
     {
-      location,
-      keywords,
-      start: startDate,
-      end: endDate,
+      ...args,
       skip_people: 1, // We don't need to auto-fetch people, since it is on a different tab
     },
     {},
@@ -719,7 +736,7 @@ const PeopleList = injectIntl(_PeopleList);
 
 class _Calendar extends React.Component {
   props: {
-    query: SearchQuery,
+    query: FormSearchQuery,
 
     // Self-managed props
     window: windowProps,
@@ -749,25 +766,43 @@ const Calendar = wantsWindowSizes(_Calendar);
 class ResultTabs extends React.Component {
   props: {
     response: NewSearchResponse,
-    query: SearchQuery,
+    query: FormSearchQuery,
+    loading: boolean,
     categoryOrder: Array<string>,
   };
 
   render() {
+    const overlayDiv = this.props.loading
+      ? <div
+          style={{
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            backgroundColor: 'rgba(255, 255, 255, 0.7)',
+          }}
+        />
+      : null;
+    const tabPanelStyle = {
+      position: 'relative',
+    };
     let peopleTab = null;
     let peopleTabPanel = null;
     // Only show People tab if we have chosen a location
     if (this.props.query.location) {
       peopleTab = <Tab>People</Tab>;
       peopleTabPanel = (
-        <TabPanel>
+        <TabPanel style={tabPanelStyle}>
           <PeopleList
             response={this.props.response}
             categoryOrder={this.props.categoryOrder}
           />
+          {overlayDiv}
         </TabPanel>
       );
     }
+
     return (
       <Tabs>
         <TabList>
@@ -776,11 +811,13 @@ class ResultTabs extends React.Component {
           {peopleTab}
         </TabList>
 
-        <TabPanel>
+        <TabPanel style={tabPanelStyle}>
           <ResultsList response={this.props.response} />
+          {overlayDiv}
         </TabPanel>
-        <TabPanel>
+        <TabPanel style={tabPanelStyle}>
           <Calendar query={this.props.query} />
+          {overlayDiv}
         </TabPanel>
         {peopleTabPanel}
       </Tabs>
@@ -788,35 +825,56 @@ class ResultTabs extends React.Component {
   }
 }
 
+function canonicalizeQuery(query) {
+  const newQuery = {};
+  ['location', 'keywords', 'start', 'end'].forEach(key => {
+    if (query[key] && query[key].length) {
+      newQuery[key] = query[key];
+    }
+  });
+  return newQuery;
+}
+
 class ResultsPage extends React.Component {
   props: {
     response: NewSearchResponse,
     categoryOrder: Array<string>,
-    query: SearchQuery,
+    query: Object,
   };
 
   state: {
     loading: boolean,
+    query: FormSearchQuery,
     response: NewSearchResponse,
   };
 
   constructor(props) {
     super(props);
-    this.state = { response: this.props.response, loading: false };
+    this.state = {
+      response: this.props.response,
+      query: canonicalizeQuery(this.props.query),
+      loading: false,
+    };
     (this: any).onNewSearch = this.onNewSearch.bind(this);
   }
 
-  async onNewSearch(form) {
-    const query = querystring.stringify(form);
-    const history = createBrowserHistory();
-    history.replace(`/?${query}`);
+  async onNewSearch(query: Object) {
+    const newQuery = canonicalizeQuery(query);
+    // Only re-search when the query has changed
+    if (isEqual(newQuery, this.state.query)) {
+      return;
+    }
 
-    await this.setState({ loading: true });
+    const queryString = querystring.stringify(newQuery);
+    const history = createBrowserHistory();
+    history.replace(`/?${queryString}`);
+
+    await this.setState({ query: newQuery, loading: true });
     const response = await search(
-      form.location,
-      form.keywords,
-      form.start,
-      form.end
+      query.location,
+      query.keywords,
+      query.start,
+      query.end
     );
     await this.setState({ response, loading: false });
   }
@@ -837,7 +895,8 @@ class ResultsPage extends React.Component {
             <div className="col-xs-12">
               <Card style={{ margin: 0, padding: 0 }}>
                 <ResultTabs
-                  query={this.props.query}
+                  query={this.state.query}
+                  loading={this.state.loading}
                   response={this.state.response}
                   categoryOrder={this.props.categoryOrder}
                 />
