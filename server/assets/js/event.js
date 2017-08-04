@@ -365,6 +365,18 @@ class _EventLinks extends React.Component {
         </a>
       );
     }
+
+    const adsenseSafe = isEventAdsenseSafe(this.props.event);
+    const adsenseStyle = getAdsenseStyle(this.props.amp);
+    // Google Ad: event-inline
+    const adInline = adsenseSafe
+      ? <GoogleAd
+          style={adsenseStyle}
+          data-ad-slot="6741973779"
+          amp={this.props.amp}
+        />
+      : null;
+
     return (
       <Card style={{ padding: 0 }}>
         <div className="card-header">
@@ -422,6 +434,9 @@ class _EventLinks extends React.Component {
           {organizerElement}
           {shareLinks}
         </div>
+        {
+          null /* TODO: Enable adInline once we've established the baseline effect on our redesign */
+        }
       </Card>
     );
   }
