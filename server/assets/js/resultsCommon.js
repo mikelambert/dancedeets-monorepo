@@ -250,7 +250,9 @@ class TextInput extends React.Component {
                   </div>
                 : item.label}
             </div>}
-          renderMenu={items => <div style={menuStyle}>{items}</div>}
+          // Only show the menu if we have items to show
+          renderMenu={items =>
+            items.length ? <div style={menuStyle}>{items}</div> : <div />}
           {...otherProps}
         />
       );
