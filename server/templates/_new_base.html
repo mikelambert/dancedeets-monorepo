@@ -68,6 +68,7 @@
 {# conditionally show this with some "close" rememberance via cookies or local storage #}
 {% endif %}
 
+{% block header %}
 <nav class="navbar navbar-inverse navbar-static-top" role="navigation">
     <div class="container-fluid">
         <div class="navbar-header">
@@ -171,7 +172,9 @@
         </div>
     </div>
 </nav>
+{% endblock %}
 
+{% block promo_messages %}
 {% if errors %}
 <div class="alert alert-danger"><ul>
 {% for error in errors %}
@@ -203,12 +206,15 @@
 {% endif %}
 </ul></div>
 {% endif %}
+{% endblock %}
 
-
+{% block fullbody %}
 <div class="body-contents margin-bottom-60">
 {% block body %}{% endblock %}
 </div>
+{% endblock %}
 
+{% block footer %}
 <footer>
     <!--=== Footer v2 ===-->
     <div class="footer">
@@ -265,6 +271,7 @@
     </div><!--/copyright-->
     <!--=== End Footer v2 ===-->
 </footer>
+{% endblock %}
 
 <script type="text/javascript">
 /* <![CDATA[ */
