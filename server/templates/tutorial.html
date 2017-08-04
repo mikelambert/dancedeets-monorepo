@@ -1,4 +1,4 @@
-{% extends "_new_base_webview.html" %}
+{% extends class_base_template %}
 
 {% block title %}
 {{ tutorial.name|e }}
@@ -13,6 +13,15 @@
 {% endblock %}
 
 {% block body %}
+<style type="text/css">
+.navbar {
+  margin-bottom: 0;
+}
+.body-contents {
+  margin-top: 0;
+  margin-bottom: 0 !important;
+}
+</style>
 <div id="react-parent">
   {{ react_html|safe }}
 </div>
@@ -21,6 +30,8 @@
   window._REACT_ID = 'react-parent';
 </script>
 {% endblock %}
+
+{% block footer %}{% endblock %}
 
 {% block bottom_javascript %}
 <script src="{{static_dir}}/js/tutorialExec.js"></script>

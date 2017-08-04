@@ -1,0 +1,9 @@
+.media-width-row-or-column {
+  flex-direction: row;
+}
+
+@media (max-width: 1024px) {
+  .media-width-row-or-column {
+    flex-direction: column;
+  }
+}

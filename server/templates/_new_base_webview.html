@@ -1,64 +1,15 @@
-{% extends "_real_base.html" %}
+{% extends "_new_base.html" %}
 
-{% block headbody %}
-<head>
-<meta charset="utf-8">
-<meta http-equiv="X-UA-Compatible" content="IE=edge">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+{# eliminate major sections of the page #}
 
-<link rel="stylesheet" href="{{static_dir}}/css/common.css">
-{% include "favicon_tags.html" %}
+{% block header %}{% endblock %}
 
-{% if react_head %}
-  {{ react_head.title|safe }}
-  {{ react_head.meta|safe }}
-  {{ react_head.link|safe }}
-{% else %}
-  <title>{% block title %}{% endblock %}</title>
-{% endif %}
+{% block promo_messages %}{% endblock %}
 
-{% block head_metatags %}{% endblock %}
-{% block head_stylesheet %}{% endblock %}
-<script type="text/javascript">
-{{
-  analytics_javascript(
-    {}
-  )
-}}
-{% block head_javascript %}{% endblock %}
-</script>
-</head>
-<body>
+{% block fullbody %}
 {% block body %}{% endblock %}
-
-<script type="text/javascript">
-{% if prod_mode %}
-window._trackJs = {
-{% if user %}
-  userId: "{{ user.fb_uid }} - {{ user.full_name }}",
-{% endif %}
-  token: '77a8a7079d734df7a94150f8f0d7e16f'
-};
-{% endif %}
-window.fbPermissions = {{ fb_permissions|tojson }};
-window.fbAppId = {{ app_id|tojson }};
-window.baseHostname = {{ base_hostname|tojson }};
-window.prodMode = {{ prod_mode|tojson }};
-window.showSmartBanner = {{ mobile_show_smartbanner|tojson }};
-
-var google_conversion_id = 992860743;
-var google_conversion_language = "en";
-var google_conversion_format = "3";
-var google_conversion_color = "ffffff";
-var google_conversion_label = "Q-eJCImZgQIQx7S32QM";
-var google_remarketing_only = false;
-</script>
-
-{% if not hot_reloading %}
-<script type="text/javascript" src="{{static_dir}}/js/common.js"></script>
-{% endif %}
-
-{% block bottom_javascript %}{% endblock %}
-</body>
 {% endblock %}
+
+{% block footer %}{% endblock %}
+
 

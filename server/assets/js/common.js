@@ -58,10 +58,6 @@ if (window.showSmartBanner) {
 }
 
 jQuery(document).ready(() => {
-  queryOn('.mega-menu .dropdown-menu', 'click', e => {
-    e.stopPropagation();
-  });
-
   fixStickyTouch();
   appInstallPromos();
 

@@ -8,6 +8,7 @@ const prod = !env.debug;
 module.exports = {
   entry: {
     brackets: './assets/js/brackets.js',
+    calendar: './assets/js/calendar.js',
     classResults: './assets/js/classResults.js',
     event: './assets/js/event.js',
     eventSearchResults: './assets/js/eventSearchResults.js',

@@ -10,13 +10,19 @@ import FormatText from 'react-format-text';
 import moment from 'moment';
 import ExecutionEnvironment from 'exenv';
 import upperFirst from 'lodash/upperFirst';
+import isEqual from 'lodash/isEqual';
 import { injectIntl, intlShape } from 'react-intl';
 import { StickyContainer, Sticky } from 'react-sticky';
 import Masonry from 'react-masonry-component';
 import Slider from 'react-slick';
 import Spinner from 'react-spinkit';
+import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
 import Collapse, { Panel } from 'rc-collapse';
 import querystring from 'querystring';
+import createBrowserHistory from 'history/createBrowserHistory';
+import { performRequest } from 'dancedeets-common/js/api/dancedeets';
+import { timeout } from 'dancedeets-common/js/api/timeouts';
+import { sortString } from 'dancedeets-common/js/util/sort';
 import { intlWeb } from 'dancedeets-common/js/intl';
 import type { Cover, JSONObject } from 'dancedeets-common/js/events/models';
 import { messages } from 'dancedeets-common/js/events/people';
@@ -31,29 +37,29 @@ import type {
   PeopleListing,
   StylePersonLookup,
 } from 'dancedeets-common/js/events/search';
-import { formatStartTime } from 'dancedeets-common/js/dates';
 import {
   formatAttending,
   groupEventsByStartDate,
 } from 'dancedeets-common/js/events/helpers';
+import { formatStartDateOnly } from 'dancedeets-common/js/dates';
 import { getReactEventSchema } from './eventSchema';
 import { Card, ImagePrefix, wantsWindowSizes } from './ui';
 import type { windowProps } from './ui';
 import { SquareEventFlyer } from './eventCommon';
 import GoogleAd from './googleAd';
+import { SearchBox, CalendarRatio } from './resultsCommon';
 
 require('slick-carousel/slick/slick.css');
 require('slick-carousel/slick/slick-theme.css');
 require('../css/slick.scss');
 require('../css/rc-collapse.scss');
 
-/*
-import {
-  yellowColors,
-} from '../ui/Colors';
-*/
-// TODO: Copies from mobile/js/ui/Colors.js
-const yellowColors = ['#FFF3B0', '#FFEA73', '#FFD802', '#FFCA01', '#C0A000'];
+type FormSearchQuery = {
+  location?: string, // eslint-disable-line react/no-unused-prop-types
+  keywords?: string, // eslint-disable-line react/no-unused-prop-types
+  start?: string, // eslint-disable-line react/no-unused-prop-types
+  end?: string, // eslint-disable-line react/no-unused-prop-types
+};
 
 function insertEvery<T>(
   array: Array<T>,
@@ -126,7 +132,7 @@ export class HorizontalEventFlyer extends React.Component {
 class _EventDescription extends React.Component {
   props: {
     event: SearchEvent,
-    indexingBot: boolean,
+    indexingBot?: boolean,
 
     // Self-managed props
     intl: intlShape,
@@ -139,6 +145,7 @@ class _EventDescription extends React.Component {
       keywords.push(...event.annotations.keywords);
     }
 
+    const startTime = moment(event.start_time).toDate();
     return (
       <div>
         <h3 className="event-title">
@@ -148,21 +155,17 @@ class _EventDescription extends React.Component {
         </h3>
         <div style={{ marginTop: 10 }}>
           <ImagePrefix
-            icon={require('../img/categories-white.png')} // eslint-disable-line global-require
+            icon={require('../img/categories-black.png')} // eslint-disable-line global-require
           >
             {keywords.join(', ')}
           </ImagePrefix>
         </div>
         <div>
           <ImagePrefix iconName="clock-o">
-            {formatStartTime(
-              ExecutionEnvironment.canUseDOM
-                ? event.start_time
-                : event.startTimeNoTz(),
-              this.props.intl
-            )}
+            {formatStartDateOnly(startTime, this.props.intl)}
           </ImagePrefix>
         </div>
+
         <div>
           <ImagePrefix iconName="map-marker">
             <div>{event.venue.name}</div>
@@ -184,15 +187,24 @@ class HorizontalEvent extends React.Component {
   render() {
     const event = this.props.event;
     return (
-      <div className="wide-event clearfix">
-        <div className="event-image">
-          <SquareEventFlyer
-            event={this.props.event}
-            lazyLoad={this.props.lazyLoad}
-          />
-        </div>
-        <div className="event-description">
-          <EventDescription event={this.props.event} />
+      <div>
+        <div className="grey-top-border">{' '}</div>
+        <div
+          style={{
+            paddingTop: 10,
+            paddingBottom: 10,
+            display: 'flex',
+          }}
+        >
+          <div className="event-image" style={{ maxWidth: 180 + 2 }}>
+            <SquareEventFlyer
+              event={this.props.event}
+              lazyLoad={this.props.lazyLoad}
+            />
+          </div>
+          <div className="event-description" style={{ flex: 1 }}>
+            <EventDescription event={this.props.event} />
+          </div>
         </div>
       </div>
     );
@@ -319,30 +331,22 @@ class _EventsList extends React.Component {
       this.props.events,
       x => x.start_time
     ).forEach(({ header, events }) => {
-      resultItems.push(
-        <li
-          key={header}
-          className="day-header"
-          style={{
-            marginTop: '30px',
-            marginBottom: '10px',
-            borderBottom: '1px solid white',
-          }}
-        >
-          <Sticky className="opaque">{header}</Sticky>
-        </li>
+      const renderedEvents = events.map((event, index) =>
+        <HorizontalEvent
+          key={event.id}
+          event={event}
+          lazyLoad={overallEventIndex + index > 8}
+        />
       );
+
       resultItems.push(
-        ...events.map((event, index) =>
-          <li key={event.id}>
-            <HorizontalEvent
-              key={event.id}
-              event={event}
-              lazyLoad={overallEventIndex + index > 8}
-            />
-          </li>
-        )
+        <Sticky>
+          <div className="bold" style={{ backgroundColor: 'white' }}>
+            {header}
+          </div>
+        </Sticky>
       );
+      resultItems.push(...renderedEvents);
       overallEventIndex += events.length;
     });
 
@@ -390,9 +394,7 @@ class _EventsList extends React.Component {
 
     return (
       <StickyContainer>
-        <ol className="events-list">
-          {monetizedResultItems}
-        </ol>
+        {monetizedResultItems}
       </StickyContainer>
     );
   }
@@ -416,6 +418,7 @@ class _OneboxLinks extends React.Component {
 
     return (
       <div>
+        Featured Sites:
         <ul>{oneboxList}</ul>
       </div>
     );
@@ -500,31 +503,123 @@ class CallbackOnRender extends React.Component {
   }
 }
 
-class _Loading extends React.Component {
+class Loading extends React.Component {
   props: {
-    // Self-managed props
-    intl: intlShape,
+    style?: Object,
   };
 
   render() {
     return (
-      <div>
-        <Spinner name="circle" color="white" noFadeIn />
+      <div style={this.props.style}>
+        <Spinner name="circle" color="black" fadeIn="none" />
       </div>
     );
   }
 }
-const Loading = injectIntl(_Loading);
 
-class _ResultsList extends React.Component {
+class ResultsList extends React.Component {
   props: {
     response: NewSearchResponse,
-    past: boolean,
-    showPeople: boolean,
+  };
+
+  render() {
+    const resultEvents = this.props.response.results.map(
+      eventData => new SearchEvent(eventData)
+    );
+    const featuredInfos = (this.props.response.featuredInfos || [])
+      .map(x => ({ ...x, event: new Event(x.event) }));
+
+    const now = moment();
+    const eventPanels = [];
+    let eventCount = null;
+    // DEBUG CODE:
+    // const currentEvents = resultEvents.filter(event => moment(event.start_time) > now);
+    const currentEvents = resultEvents.filter(
+      event => moment(event.start_time) < now && moment(event.end_time) > now
+    );
+    const futureEvents = resultEvents.filter(
+      event => moment(event.start_time) > now
+    );
+    if (currentEvents.length) {
+      eventPanels.push(<CurrentEvents events={currentEvents} />);
+    }
+    if (futureEvents.length) {
+      eventPanels.push(<EventsList events={futureEvents} />);
+    }
+    eventCount = currentEvents.length + futureEvents.length;
+
+    let featuredPanel = null;
+    if (featuredInfos.length) {
+      featuredPanel = (
+        <FeaturedEvents events={featuredInfos.map(x => x.event)} />
+      );
+    }
+
+    let oneboxPanel = null;
+    if (this.props.response.onebox_links.length) {
+      oneboxPanel = <OneboxLinks links={this.props.response.onebox_links} />;
+    }
+    const defaultKeys = ['featured', 'onebox', 'currentEvents', 'futureEvents'];
+
+    return (
+      <div style={{ backgroundColor: 'white', padding: 10 }}>
+        {featuredPanel}
+        {oneboxPanel}
+        {eventPanels}
+        {ExecutionEnvironment.canUseDOM
+          ? null
+          : resultEvents.map(getReactEventSchema)}
+      </div>
+    );
+  }
+}
+
+export async function search(
+  location: string,
+  keywords: string,
+  start: string,
+  end: string
+) {
+  const args = {};
+  if (location) {
+    args.location = location;
+  }
+  if (keywords) {
+    args.keywords = keywords;
+  }
+  if (start) {
+    args.start = start;
+  }
+  if (end) {
+    args.end = end;
+  }
+
+  const response = await performRequest(
+    'search',
+    {
+      ...args,
+      skip_people: 1, // We don't need to auto-fetch people, since it is on a different tab
+    },
+    {},
+    '2.0'
+  );
+  response.featuredInfos = response.featuredInfos.map(x => ({
+    ...x,
+    event: new SearchEvent(x.event),
+  }));
+  response.results = response.results.map(x => new SearchEvent(x));
+  response.results = sortString(response.results, resultEvent =>
+    moment(resultEvent.start_time).toISOString()
+  );
+  return response;
+}
+
+class _PeopleList extends React.Component {
+  props: {
+    response: NewSearchResponse,
     categoryOrder: Array<string>,
 
     // Self-managed props
-    window: windowProps,
     intl: intlShape,
   };
 
@@ -556,14 +651,12 @@ class _ResultsList extends React.Component {
     }
     try {
       this._loadingPeople = true;
-      const formattedArgs = querystring.stringify({
+      const args = {
         location: this.props.response.query.location,
         locale: this.props.response.query.locale,
-      });
-
-      const result = await fetch(`/api/v2.0/people?${formattedArgs}`);
-      const resultJson = await result.json();
-      this.setState({ people: resultJson.people });
+      };
+      const response = await performRequest('people', args, args, '2.0');
+      this.setState({ people: response.people });
     } catch (e) {
       console.error(e);
       this.setState({ failed: true });
@@ -571,37 +664,40 @@ class _ResultsList extends React.Component {
     this._loadingPeople = false;
   }
 
-  renderPeoplePanel() {
-    let peoplePanel = [];
+  render() {
     let adminContents = null;
     let attendeeContents = null;
     if (this.state.people) {
       const admins = this.state.people.ADMIN;
       const attendees = this.state.people.ATTENDEE;
-      adminContents = admins
-        ? <PersonList
-            title={this.props.intl.formatMessage(messages.nearbyPromoters)}
-            subtitle={this.props.intl.formatMessage(
-              messages.nearbyPromotersMessage
-            )}
-            people={admins}
-            categoryOrder={this.props.categoryOrder}
-          />
-        : <CallbackOnRender callback={this.loadPeopleIfNeeded}>
-            <Loading />
-          </CallbackOnRender>;
-      attendeeContents = attendees
-        ? <PersonList
-            title={this.props.intl.formatMessage(messages.nearbyDancers)}
-            subtitle={this.props.intl.formatMessage(
-              messages.nearbyDancersMessage
-            )}
-            people={attendees}
-            categoryOrder={this.props.categoryOrder}
-          />
-        : <CallbackOnRender callback={this.loadPeopleIfNeeded}>
-            <Loading />
-          </CallbackOnRender>;
+      if (!admins && !attendees) {
+        return (
+          <CallbackOnRender callback={this.loadPeopleIfNeeded}>
+            <Loading style={{ margin: 50 }} />
+          </CallbackOnRender>
+        );
+      } else {
+        adminContents = admins
+          ? <PersonList
+              title={this.props.intl.formatMessage(messages.nearbyPromoters)}
+              subtitle={this.props.intl.formatMessage(
+                messages.nearbyPromotersMessage
+              )}
+              people={admins}
+              categoryOrder={this.props.categoryOrder}
+            />
+          : null;
+        attendeeContents = attendees
+          ? <PersonList
+              title={this.props.intl.formatMessage(messages.nearbyDancers)}
+              subtitle={this.props.intl.formatMessage(
+                messages.nearbyDancersMessage
+              )}
+              people={attendees}
+              categoryOrder={this.props.categoryOrder}
+            />
+          : null;
+      }
     } else if (this.state.failed) {
       adminContents = <span>Error Loading People</span>;
       attendeeContents = <span>Error Loading People</span>;
@@ -610,140 +706,190 @@ class _ResultsList extends React.Component {
       attendeeContents = null;
     }
 
-    if (this.props.window && this.props.window.width < 768) {
-      if (adminContents) {
-        peoplePanel.push(
-          <Panel
-            key="people1"
-            header={this.props.intl.formatMessage(messages.nearbyPromoters)}
-            onItemClick={this.loadPeopleIfNeeded}
-          >
-            {adminContents}
-          </Panel>
-        );
-      }
-      if (attendeeContents) {
-        peoplePanel.push(
-          <Panel
-            key="people2"
-            header={this.props.intl.formatMessage(messages.nearbyDancers)}
-            onItemClick={this.loadPeopleIfNeeded}
-          >
-            {attendeeContents}
-          </Panel>
-        );
-      }
-    } else {
-      const adminsDiv = adminContents
-        ? <div className="col-sm-6">{adminContents}</div>
-        : null;
-      const attendeesDiv = attendeeContents
-        ? <div className="col-sm-6">{attendeeContents}</div>
-        : null;
-      peoplePanel = (
-        <Panel
-          key="people"
-          header="Nearby Promoters & Dancers"
-          onItemClick={this.loadPeopleIfNeeded}
-        >
-          <div className="row">{adminsDiv}{attendeesDiv}</div>
-        </Panel>
-      );
-    }
-
-    return peoplePanel;
+    const adminsDiv = adminContents
+      ? <div className="col-sm-6">{adminContents}</div>
+      : null;
+    const attendeesDiv = attendeeContents
+      ? <div className="col-sm-6">{attendeeContents}</div>
+      : null;
+    return <div className="row">{adminsDiv}{attendeesDiv}</div>;
   }
+}
+const PeopleList = injectIntl(_PeopleList);
+
+class _Calendar extends React.Component {
+  props: {
+    query: FormSearchQuery,
+
+    // Self-managed props
+    window: windowProps,
+  };
 
   render() {
-    const resultEvents = this.props.response.results.map(
-      eventData => new SearchEvent(eventData)
-    );
-    const featuredInfos = (this.props.response.featuredInfos || [])
-      .map(x => ({ ...x, event: new Event(x.event) }));
-
-    const now = moment();
-    const eventPanels = [];
-    let eventCount = null;
-    if (this.props.past) {
-      const pastEvents = resultEvents.filter(
-        event => moment(event.start_time) < now
-      );
-      if (pastEvents.length) {
-        eventPanels.push(
-          <Panel key="pastEvents" header="Past Events">
-            <EventsList events={pastEvents} />
-          </Panel>
-        );
-      }
-      eventCount = pastEvents.length;
-    } else {
-      // DEBUG CODE:
-      // const currentEvents = resultEvents.filter(event => moment(event.start_time) > now);
-      const currentEvents = resultEvents.filter(
-        event => moment(event.start_time) < now && moment(event.end_time) > now
-      );
-      const futureEvents = resultEvents.filter(
-        event => moment(event.start_time) > now
-      );
-      if (currentEvents.length) {
-        eventPanels.push(
-          <Panel key="currentEvents" header="Events Happening Now">
-            <CurrentEvents events={currentEvents} />
-          </Panel>
-        );
-      }
-      if (futureEvents.length) {
-        eventPanels.push(
-          <Panel key="futureEvents" header="Upcoming Events">
-            <EventsList events={futureEvents} />
-          </Panel>
-        );
-      }
-      eventCount = currentEvents.length + futureEvents.length;
-    }
-
-    let featuredPanel = null;
-    if (featuredInfos.length) {
-      featuredPanel = (
-        <Panel key="featured" header="Featured Event">
-          <FeaturedEvents events={featuredInfos.map(x => x.event)} />
-        </Panel>
-      );
-    }
-    const peoplePanel = this.renderPeoplePanel();
-
-    let oneboxPanel = null;
-    if (this.props.response.onebox_links.length) {
-      oneboxPanel = (
-        <Panel key="onebox" header="Related Links">
-          <OneboxLinks links={this.props.response.onebox_links} />
-        </Panel>
-      );
-    }
-    const defaultKeys = [
-      'featured',
-      'onebox',
-      'pastEvents',
-      'currentEvents',
-      'futureEvents',
-    ];
-    if (this.props.showPeople) {
-      defaultKeys.push('people', 'people1', 'people2');
-    }
-
+    const query = querystring.stringify(this.props.query);
+    const calendarUrl = `/calendar/iframe?${query}`;
+    const height = this.props.window
+      ? this.props.window.width / CalendarRatio
+      : 500;
     return (
-      <Collapse defaultActiveKey={defaultKeys}>
-        {featuredPanel}
-        {peoplePanel}
-        {oneboxPanel}
-        {eventPanels}
-        {ExecutionEnvironment.canUseDOM
-          ? null
-          : resultEvents.map(getReactEventSchema)}
-      </Collapse>
+      <iframe
+        src={calendarUrl}
+        style={{
+          width: '100%',
+          height,
+          border: 0,
+          borderBottom: '1px solid lightgrey',
+        }}
+      />
     );
   }
 }
-const ResultsList = wantsWindowSizes(injectIntl(_ResultsList));
+const Calendar = wantsWindowSizes(_Calendar);
 
-export default intlWeb(ResultsList);
+class ResultTabs extends React.Component {
+  props: {
+    response: NewSearchResponse,
+    query: FormSearchQuery,
+    loading: boolean,
+    categoryOrder: Array<string>,
+  };
+
+  render() {
+    const overlayDiv = this.props.loading
+      ? <div
+          style={{
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            backgroundColor: 'rgba(255, 255, 255, 0.7)',
+          }}
+        />
+      : null;
+    const tabPanelStyle = {
+      position: 'relative',
+    };
+    let peopleTab = null;
+    let peopleTabPanel = null;
+    // Only show People tab if we have chosen a location
+    if (this.props.query.location) {
+      peopleTab = <Tab>People</Tab>;
+      peopleTabPanel = (
+        <TabPanel style={tabPanelStyle}>
+          <PeopleList
+            response={this.props.response}
+            categoryOrder={this.props.categoryOrder}
+          />
+          {overlayDiv}
+        </TabPanel>
+      );
+    }
+
+    return (
+      <Tabs>
+        <TabList>
+          <Tab>Events List</Tab>
+          <Tab>Calendar</Tab>
+          {peopleTab}
+        </TabList>
+
+        <TabPanel style={tabPanelStyle}>
+          <ResultsList response={this.props.response} />
+          {overlayDiv}
+        </TabPanel>
+        <TabPanel style={tabPanelStyle}>
+          <Calendar query={this.props.query} />
+          {overlayDiv}
+        </TabPanel>
+        {peopleTabPanel}
+      </Tabs>
+    );
+  }
+}
+
+function canonicalizeQuery(query) {
+  const newQuery = {};
+  ['location', 'keywords', 'start', 'end'].forEach(key => {
+    if (query[key] && query[key].length) {
+      newQuery[key] = query[key];
+    }
+  });
+  return newQuery;
+}
+
+class ResultsPage extends React.Component {
+  props: {
+    response: NewSearchResponse,
+    categoryOrder: Array<string>,
+    query: Object,
+  };
+
+  state: {
+    loading: boolean,
+    query: FormSearchQuery,
+    response: NewSearchResponse,
+  };
+
+  constructor(props) {
+    super(props);
+    this.state = {
+      response: this.props.response,
+      query: canonicalizeQuery(this.props.query),
+      loading: false,
+    };
+    (this: any).onNewSearch = this.onNewSearch.bind(this);
+  }
+
+  async onNewSearch(query: Object) {
+    const newQuery = canonicalizeQuery(query);
+    // Only re-search when the query has changed
+    if (isEqual(newQuery, this.state.query)) {
+      return;
+    }
+
+    const queryString = querystring.stringify(newQuery);
+    const history = createBrowserHistory();
+    history.replace(`/?${queryString}`);
+
+    await this.setState({ query: newQuery, loading: true });
+    const response = await search(
+      query.location,
+      query.keywords,
+      query.start,
+      query.end
+    );
+    await this.setState({ response, loading: false });
+  }
+
+  render() {
+    return (
+      <div>
+        <div className="container">
+          <div className="row" style={{ marginBottom: 20 }}>
+            <div className="col-xs-12">
+              <SearchBox
+                query={this.props.query}
+                onNewSearch={this.onNewSearch}
+              />
+            </div>
+          </div>
+          <div className="row">
+            <div className="col-xs-12">
+              <Card style={{ margin: 0, padding: 0 }}>
+                <ResultTabs
+                  query={this.state.query}
+                  loading={this.state.loading}
+                  response={this.state.response}
+                  categoryOrder={this.props.categoryOrder}
+                />
+              </Card>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+}
+
+export default intlWeb(ResultsPage);

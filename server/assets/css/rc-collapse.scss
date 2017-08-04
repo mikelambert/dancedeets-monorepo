@@ -2,14 +2,17 @@
 
 .rc-collapse {
   border-radius: 3px;
-  border: 1px solid $purple-lightest;
+  border-width: 1px;
+  border-style: solid;
+  border-color: #e5e6e9 #dfe0e4 #d0d1d5;
 }
+
 .rc-collapse-anim-active {
   -webkit-transition: height 0.2s ease-out;
   transition: height 0.2s ease-out;
 }
 .rc-collapse > .rc-collapse-item {
-  border-top: 1px solid $purple-lightest;
+  border-top: 1px solid $grey-background;
 }
 .rc-collapse > .rc-collapse-item:first-child {
   border-top: none;
@@ -29,7 +32,7 @@
   line-height: 0;
   border-top: 4px solid transparent;
   border-bottom: 4px solid transparent;
-  border-left: 5px solid $yellow-medium;
+  border-left: 5px solid $text-on-grey-background;
   vertical-align: middle;
   margin-right: 8px;
 }
@@ -50,6 +53,6 @@
 .rc-collapse > .rc-collapse-item-active > .rc-collapse-header .arrow {
   border-left: 4px solid transparent;
   border-right: 4px solid transparent;
-  border-top: 5px solid $yellow-medium;
+  border-top: 5px solid $text-on-grey-background;
   margin-right: 5px;
 }

@@ -3,34 +3,32 @@
 /* Custom CSS */
 
 body, h1, h2, h3, h4, h5, h6 {
-    font-family: 'Roboto', 'Arial', sans-serif;
+  font-family: 'Roboto', 'Arial', sans-serif;
 }
 
 .header-v6 .dancedeets-logo {
-    position: relative;
-    top: -6px;
+  position: relative;
 }
 
 .dancedeets-tagline {
-    font-size: 55px;
-    font-weight: 600;
-    line-height: 63px;
-    text-transform: uppercase;
+  font-size: 55px;
+  font-weight: 600;
+  line-height: 63px;
+  text-transform: uppercase;
 }
 
 .dancedeets-tagline-small {
-    font-size: 20px;
-    display: inline-block;
+  font-size: 20px;
+  display: inline-block;
 }
 
 .deets-activity-image {
-    height: 100px;
+  height: 100px;
 }
-
 
 /* Buttons Color */
 .btn-u-split.dropdown-toggle {
-   border-left: solid 1px #8283A9;
+  border-left: solid 1px #8283A9;
 }
 
 /* Bordered Buttons */
@@ -46,50 +44,80 @@ body, h1, h2, h3, h4, h5, h6 {
 }
 
 .panel {
-    position: relative;
-    overflow: hidden;
-    display: block;
-    margin-bottom: 10px;
+  position: relative;
+  overflow: hidden;
+  display: block;
+  margin-bottom: 10px;
 }
-.panel .panel-body { position: relative; padding: 0 !important; overflow: hidden; height: auto; }
-.panel .panel-body a { overflow: hidden; }
-.panel .panel-body a img { display: block; margin: 0; width: 100%; height: auto;
-    transition: all 0.5s;
+.panel .panel-body {
+  position: relative;
+  padding: 0 !important;
+  overflow: hidden;
+  height: auto;
 }
-.panel .panel-body a.zoom:hover img { transform: scale(1.2); }
-.panel .panel-body a.zoom span.overlay { position: absolute; top: 0; left: 0; visibility: visible; height: 100%; width: 100%; background-color: #000; opacity: 0.55;
-    transition: opacity .25s ease-out;
+.panel .panel-body a {
+  overflow: hidden;
 }
-.panel .panel-body a.zoom:hover span.overlay { display: block; visibility: hidden; opacity: 0;  }
-.panel .panel-body a.zoom:hover span.overlay i { position: absolute; top: 45%; left: 0%; width: 100%; font-size: 2.25em; color: #fff !important; text-align: center;
-    opacity: 1;
-    filter: alpha(opacity=1);
+.panel .panel-body a img {
+  display: block;
+  margin: 0;
+  width: 100%;
+  height: auto;
+  transition: all 0.5s;
+}
+.panel .panel-body a.zoom:hover img {
+  transform: scale(1.2);
+}
+.panel .panel-body a.zoom span.overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  visibility: visible;
+  height: 100%;
+  width: 100%;
+  background-color: #000;
+  opacity: 0.55;
+  transition: opacity .25s ease-out;
+}
+.panel .panel-body a.zoom:hover span.overlay {
+  display: block;
+  visibility: hidden;
+  opacity: 0;
+}
+.panel .panel-body a.zoom:hover span.overlay i {
+  position: absolute;
+  top: 45%;
+  left: 0%;
+  width: 100%;
+  font-size: 2.25em;
+  color: #fff !important;
+  text-align: center;
+  opacity: 1;
+  filter: alpha(opacity=1);
 }
 
 .zoom img {
-    filter: brightness(0.7);
+  filter: brightness(0.7);
 }
 
 .text-overlay {
-    /* vertical align */
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
+  /* vertical align */
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
 
-    /* horizontal align */
-    text-align: center;
-    width: 100%;
+  /* horizontal align */
+  text-align: center;
+  width: 100%;
 
-    z-index: 1;
-    color: white;
-    font-size: 2.5em;
-    font-weight: 700;
-    text-transform: uppercase;
+  z-index: 1;
+  color: white;
+  font-size: 2.5em;
+  font-weight: 700;
+  text-transform: uppercase;
 }
 
 /* Found this in our main page. Where does it go? */
 .dropdown-submenu.last-menu > .dropdown-menu {
-    left: -100% !important;
+  left: -100% !important;
 }
-
-

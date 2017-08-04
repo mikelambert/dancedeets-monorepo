@@ -12,7 +12,7 @@ function formatSchemaDate(dateTime) {
   return moment(dateTime).format('YYYY-MM-DD[T]HH:mm:ss');
 }
 
-function getEventSchema(event: Event) {
+function getEventSchema(event: Event | SearchEvent) {
   const schema: Object = {
     '@context': 'http://schema.org/',
     '@type': 'Event',
@@ -58,7 +58,7 @@ function getEventSchema(event: Event) {
   return schema;
 }
 
-export function getReactEventSchema(event: Event) {
+export function getReactEventSchema(event: Event | SearchEvent) {
   const jsonMetadata = getEventSchema(event);
   return (
     <script
@@ -75,6 +75,7 @@ function getArticleSchema(event: Event) {
   if (!event.picture) {
     return null;
   }
+  const picture = event.picture;
 
   const datePublished = event.annotations.creation
     ? event.annotations.creation.time
@@ -86,9 +87,9 @@ function getArticleSchema(event: Event) {
     headline: event.name,
     image: {
       '@type': 'ImageObject',
-      url: event.picture.source,
-      height: event.picture.height,
-      width: event.picture.width,
+      url: picture.source,
+      height: picture.height,
+      width: picture.width,
     },
     publisher: {
       '@type': 'Organization',

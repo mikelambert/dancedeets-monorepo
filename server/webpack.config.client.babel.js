@@ -48,7 +48,7 @@ const ifProd = plugin => (prod ? plugin : null);
 const config = {
   entry: {
     bracketsExec: './assets/js/bracketsExec.js',
-    calendar: './assets/js/calendar.js',
+    calendarExec: './assets/js/calendarExec.js',
     homepage: './assets/js/homepage.js',
     normalPage: './assets/js/normalPage.js',
     classResultsExec: './assets/js/classResultsExec.js',

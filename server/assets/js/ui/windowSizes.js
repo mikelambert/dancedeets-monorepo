@@ -6,13 +6,15 @@
 
 import React from 'react';
 
+export type windowProps = {
+  width: number,
+  height: number,
+};
+
 export function wantsWindowSizes(WrappedComponent: Object) {
   class WindowSizes extends React.Component {
     state: {
-      window: ?{
-        width: number,
-        height: number,
-      },
+      window: ?windowProps,
     };
 
     constructor(props: Object) {
@@ -71,8 +73,3 @@ export function wantsWindowSizes(WrappedComponent: Object) {
   }
   return WindowSizes;
 }
-
-export type windowProps = {
-  width: number,
-  height: number,
-};
