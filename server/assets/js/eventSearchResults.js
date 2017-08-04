@@ -358,9 +358,11 @@ class _EventsList extends React.Component {
     function adItem(origIndex) {
       switch (adType) {
         case 0:
+          // Google Ad: search-inline-native
           return (
             <GoogleAd
               key={`ad-${origIndex}`}
+              id={`ad-${origIndex}-adType-inline-native`}
               style={{ display: 'block' }}
               data-ad-format="fluid"
               data-ad-layout="image-side"
@@ -369,18 +371,22 @@ class _EventsList extends React.Component {
             />
           );
         case 1:
+          // Google Ad: search-inline
           return (
             <GoogleAd
               key={`ad-${origIndex}`}
+              id={`ad-${origIndex}-adType-inline`}
               style={{ display: 'block' }}
               data-ad-format="auto"
               data-ad-slot="8358307776"
             />
           );
         case 2:
+          // Google Ad: search-inline-banner
           return (
             <GoogleAd
               key={`ad-${origIndex}`}
+              id={`ad-${origIndex}-adType-inline-banner`}
               style={{ display: 'inline-block', width: '100%', height: 100 }}
               data-ad-format="auto"
               data-ad-slot="6502811377"
