@@ -5,6 +5,9 @@ $NarrowWindowSize: 768px;
   .media-query-search-layout {
     display: table-cell;
   }
+  .media-query-search-not-focused {
+    width: 100%;
+  }
   .media-query-search-focused {
     width: 200%;
   }

@@ -307,7 +307,9 @@ class SearchBoxItem extends React.Component {
         }}
         className={classNames(
           'media-query-search-layout',
-          this.state.focused ? 'media-query-search-focused' : ''
+          this.state.focused
+            ? 'media-query-search-focused'
+            : 'media-query-search-not-focused'
         )}
       >
         <div
