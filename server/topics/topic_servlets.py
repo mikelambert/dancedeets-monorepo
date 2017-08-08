@@ -22,7 +22,7 @@ DEVELOPER_KEY = keys.get('google_server_key')
 YOUTUBE_API_SERVICE_NAME = 'youtube'
 YOUTUBE_API_VERSION = 'v3'
 
-
+@app.bio_route('/?')
 @app.route('/topic/?')
 class TopicListHandler(base_servlet.BaseRequestHandler):
     def requires_login(self):
@@ -52,7 +52,9 @@ def get_videos_for(keyword, recent=False):
     return search_response
 
 
-@app.route('/topic/([^/]+)/?')
+topic_regex = '([^/]+)'
+@app.bio_route('/%s' % topic_regex)
+@app.route('/topic/%s/?' % topic_regex)
 class TopicHandler(base_servlet.BaseRequestHandler):
     def requires_login(self):
         return False

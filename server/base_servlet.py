@@ -12,6 +12,7 @@ import humanize
 import logging
 import random
 import os
+import re
 import traceback
 import urllib
 import urlparse
@@ -77,14 +78,6 @@ class BareBaseRequestHandler(webapp2.RequestHandler, FacebookMixinHandler):
         self.jinja_env.globals['zip'] = zip
         self.jinja_env.globals['len'] = len
 
-        # If we are running behind a 'hot' server, let's point the static_dir appropriately
-        if os.environ.get('HOT_SERVER_PORT'):
-            # This must match the value we use in hotServer.j's staticPath
-            self.display['static_dir'] = '/dist'
-            self.display['hot_reloading'] = True
-        else:
-            self.display['static_dir'] = '/dist-%s' % self._get_static_version()
-            self.display['hot_reloading'] = False
         # We can safely do this since there are very few ways others can modify self._errors
         self.display['errors'] = self._errors
         # functions, add these to some base display setup
@@ -141,6 +134,16 @@ class BareBaseRequestHandler(webapp2.RequestHandler, FacebookMixinHandler):
         self.display['needs_polyfill'] = 'fb_iab' in user_agent or 'ucbrowser' in user_agent
 
         self.display['mixpanel_api_key'] = 'f5d9d18ed1bbe3b190f9c7c7388df243' if self.request.app.prod_mode else '668941ad91e251d2ae9408b1ea80f67b'
+
+        # If we are running behind a 'hot' server, let's point the static_dir appropriately
+        base_server = 'https://www.dancedeets.com' if self.request.app.prod_mode else 'http://dev.dancedeets.com:8080'
+        if os.environ.get('HOT_SERVER_PORT'):
+            # This must match the value we use in hotServer.j's staticPath
+            self.display['static_dir'] = '%s/dist' % base_server
+            self.display['hot_reloading'] = True
+        else:
+            self.display['static_dir'] = '%s/dist-%s' % (base_server, self._get_static_version())
+            self.display['hot_reloading'] = False
 
         logging.info("Appengine Request Headers:")
         for x in request.headers:
@@ -562,8 +565,10 @@ class BaseRequestHandler(BareBaseRequestHandler):
 
         # Redirect from the bare 'dancedeets.com' to the full 'www.dancedeets.com'
         url = urlparse.urlsplit(self.request.url)
-        allowed_passthrough_domains = ['img.dancedeets.com']
-        if not os.environ.get('DEBUG_MEMORY_LEAKS') and url.netloc != self._get_full_hostname() and url.netloc not in allowed_passthrough_domains:
+        # We technically don't need dd.events in here, since its handler is a BareBonesRequestHandler...but it include it to be safe.
+        allowed_passthrough_domains = [r'img.dancedeets.com$', r'dd\.events$', r'dancer?\.bio$']
+        matches_passthrough_domain = [re.search(x, url.netloc) for x in allowed_passthrough_domains]
+        if not os.environ.get('DEBUG_MEMORY_LEAKS') and url.netloc != self._get_full_hostname() and not matches_passthrough_domain:
             logging.info("Redirecting from %s to %s: %s", url.netloc, self._get_full_hostname(), self.request.url)
             new_url = urlparse.urlunsplit([
                 url.scheme,
