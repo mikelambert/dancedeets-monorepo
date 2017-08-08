@@ -87,7 +87,7 @@ gulp.task('compile:images:favicons', ['compile:images:favicons:delete'], () =>
         developerName: 'DanceDeets',
         developerURL: 'https://www.dancedeets.com/',
         background: '#fff',
-        path: '/dist/img/favicons/',
+        path: 'https://www.dancedeets.com/dist/img/favicons/',
         url: 'https://www.dancedeets.com/',
         display: 'standalone',
         orientation: 'portrait',
