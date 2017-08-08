@@ -48,7 +48,7 @@ class Topic(ndb.Model):
         return self.overrides().get('title') or (self.fb_data and self.fb_data['info']['name'])
 
     def description(self):
-        return self.overrides().get('description') or (self.fb_data and self.fb_data['info']['about']) or ''
+        return self.overrides().get('description') or (self.fb_data and self.fb_data['info'].get('about', '')) or ''
 
     def image_url(self):
         return self.overrides().get('image_url') or (self.fb_data and self.fb_data['info']['cover']['source'])
