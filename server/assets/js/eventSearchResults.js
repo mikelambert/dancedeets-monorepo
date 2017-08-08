@@ -353,7 +353,7 @@ class _EventsList extends React.Component {
     // Make some arbitrary determination on what kinds of ads to use.
     const lastEvent = this.props.events[0];
     const adType = lastEvent
-      ? Number(lastEvent.id[lastEvent.id.length - 1]) % 3
+      ? Number(lastEvent.id[lastEvent.id.length - 1]) % 2
       : null;
     function adItem(origIndex) {
       switch (adType) {
@@ -379,17 +379,6 @@ class _EventsList extends React.Component {
               style={{ display: 'block' }}
               data-ad-format="auto"
               data-ad-slot="8358307776"
-            />
-          );
-        case 2:
-          // Google Ad: search-inline-banner
-          return (
-            <GoogleAd
-              key={`ad-${origIndex}`}
-              id={`ad-${origIndex}-adType-inline-banner`}
-              style={{ display: 'inline-block', width: '100%', height: 100 }}
-              data-ad-format="auto"
-              data-ad-slot="6502811377"
             />
           );
         default:

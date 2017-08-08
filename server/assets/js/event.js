@@ -434,9 +434,7 @@ class _EventLinks extends React.Component {
           {organizerElement}
           {shareLinks}
         </div>
-        {
-          null /* TODO: Enable adInline once we've established the baseline effect on our redesign */
-        }
+        {adInline}
       </Card>
     );
   }
