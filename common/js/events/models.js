@@ -133,6 +133,25 @@ export class BaseEvent extends JsonDerivedObject {
       return null;
     }
   }
+
+  getListDateMoment(): moment {
+    const start = this.getStartMoment();
+    const end = this.getEndMoment();
+    if (!end) {
+      return start;
+    }
+    if (start.weekday() === end.weekday()) {
+      // Assume it's a weekly event!
+      const nowDiff = moment().diff(start);
+      const weeksUntilNow =
+        nowDiff / moment.duration(1, 'week').asMilliseconds();
+      const nextStart = start.clone().add(Math.ceil(weeksUntilNow), 'week');
+      if (nextStart.isBefore(end)) {
+        return nextStart;
+      }
+    }
+    return start;
+  }
 }
 
 export class SearchEvent extends BaseEvent {

@@ -491,7 +491,7 @@ class _EventListContainer extends React.Component {
             continue;
           }
           const formattedStart = formatStartDateOnly(
-            e.getStartMoment(),
+            e.getListDateMoment(),
             this.props.intl
           );
           let lastSection = sections[sections.length - 1];

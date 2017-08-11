@@ -22,7 +22,7 @@ import querystring from 'querystring';
 import createBrowserHistory from 'history/createBrowserHistory';
 import { performRequest } from 'dancedeets-common/js/api/dancedeets';
 import { timeout } from 'dancedeets-common/js/api/timeouts';
-import { sortString } from 'dancedeets-common/js/util/sort';
+import { sortNumber } from 'dancedeets-common/js/util/sort';
 import { intlWeb } from 'dancedeets-common/js/intl';
 import type { Cover, JSONObject } from 'dancedeets-common/js/events/models';
 import { messages } from 'dancedeets-common/js/events/people';
@@ -161,7 +161,7 @@ class _EventDescription extends React.Component {
         </div>
         <div>
           <ImagePrefix iconName="clock-o">
-            {formatStartDateOnly(event.getStartMoment(), this.props.intl)}
+            {formatStartDateOnly(event.getListDateMoment(), this.props.intl)}
           </ImagePrefix>
         </div>
 
@@ -516,8 +516,11 @@ class ResultsList extends React.Component {
   };
 
   render() {
-    const resultEvents = this.props.response.results.map(
+    let resultEvents = this.props.response.results.map(
       eventData => new SearchEvent(eventData)
+    );
+    resultEvents = sortNumber(resultEvents, resultEvent =>
+      resultEvent.getListDateMoment().valueOf()
     );
     const featuredInfos = (this.props.response.featuredInfos || [])
       .map(x => ({ ...x, event: new Event(x.event) }));
@@ -527,11 +530,15 @@ class ResultsList extends React.Component {
     let eventCount = null;
     // DEBUG CODE:
     // const currentEvents = resultEvents.filter(event => event.getStartMoment() > now);
-    const currentEvents = resultEvents.filter(
-      event => event.getStartMoment() < now && event.getEndMoment() > now
-    );
-    const futureEvents = resultEvents.filter(
-      event => event.getStartMoment() > now
+    const currentEvents = resultEvents.filter(event => {
+      let end = event.getEndMoment();
+      if (!end) {
+        end = event.getStartMoment().add(2, 'hours');
+      }
+      return event.getListDateMoment().isBefore(now) && now.isBefore(end);
+    });
+    const futureEvents = resultEvents.filter(event =>
+      event.getListDateMoment().isAfter(now)
     );
     if (currentEvents.length) {
       eventPanels.push(<CurrentEvents key="current" events={currentEvents} />);
@@ -601,10 +608,6 @@ export async function search(
     event: new SearchEvent(x.event),
   }));
   response.results = response.results.map(x => new SearchEvent(x));
-  response.results = sortString(
-    response.results,
-    resultEvent => resultEvent.start_time
-  );
   return response;
 }
 
