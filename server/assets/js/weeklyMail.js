@@ -125,6 +125,7 @@ class _MailEvent extends React.Component {
       );
     }
 
+    const start = event.getStartMoment();
     return (
       <mj-section
         background-color="#ffffff"
@@ -146,8 +147,8 @@ class _MailEvent extends React.Component {
                 <FontAwesomeIcon name="clock-o" alt="Time" />
               </td>
               <td style={verticalAlign}>
-                {formatStartDateOnly(event.startTimeNoTz(), this.props.intl)},
-                {formatStartTime(event.startTimeNoTz(), this.props.intl)}
+                {formatStartDateOnly(start, this.props.intl)},
+                {formatStartTime(start, this.props.intl)}
               </td>
             </tr>
             <tr>
@@ -205,8 +206,9 @@ class _BodyWrapper extends React.Component {
     );
 
     const eventDisplays = [];
-    groupEventsByStartDate(this.props.intl, resultEvents, x =>
-      x.startTimeNoTz()
+    groupEventsByStartDate(
+      this.props.intl,
+      resultEvents
     ).forEach(({ header, events }) => {
       eventDisplays.push(<DayHeader key={header} title={header} />);
       eventDisplays.push(

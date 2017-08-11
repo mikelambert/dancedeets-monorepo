@@ -36,9 +36,8 @@ export class _TopicEvent extends React.Component {
   render() {
     const event = this.props.event;
 
-    const eventStart = moment(event.start_time);
     const eventStartDate = formatStartDateOnly(
-      eventStart.toDate(),
+      event.getStartMoment(),
       this.props.intl
     );
 

@@ -5,6 +5,7 @@
  */
 
 import url from 'url';
+import moment from 'moment';
 
 type JSON = string | number | boolean | null | JSONObject | JSONArray;
 export type JSONObject = { [key: string]: JSON };
@@ -119,6 +120,18 @@ export class BaseEvent extends JsonDerivedObject {
   }
   endTimeNoTz() {
     return this.end_time ? this.end_time.substr(0, 19) : null;
+  }
+
+  getStartMoment(): moment {
+    return moment(this.startTimeNoTz());
+  }
+
+  getEndMoment(): ?moment {
+    if (this.end_time) {
+      return moment(this.endTimeNoTz());
+    } else {
+      return null;
+    }
   }
 }
 

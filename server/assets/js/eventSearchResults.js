@@ -145,7 +145,6 @@ class _EventDescription extends React.Component {
       keywords.push(...event.annotations.keywords);
     }
 
-    const startTime = moment(event.start_time).toDate();
     return (
       <div>
         <h3 className="event-title">
@@ -162,7 +161,7 @@ class _EventDescription extends React.Component {
         </div>
         <div>
           <ImagePrefix iconName="clock-o">
-            {formatStartDateOnly(startTime, this.props.intl)}
+            {formatStartDateOnly(event.getStartMoment(), this.props.intl)}
           </ImagePrefix>
         </div>
 
@@ -328,8 +327,7 @@ class _EventsList extends React.Component {
     let overallEventIndex = 0;
     groupEventsByStartDate(
       this.props.intl,
-      this.props.events,
-      x => x.start_time
+      this.props.events
     ).forEach(({ header, events }) => {
       const renderedEvents = events.map((event, index) =>
         <HorizontalEvent
@@ -528,15 +526,15 @@ class ResultsList extends React.Component {
     const eventPanels = [];
     let eventCount = null;
     // DEBUG CODE:
-    // const currentEvents = resultEvents.filter(event => moment(event.start_time) > now);
+    // const currentEvents = resultEvents.filter(event => event.getStartMoment() > now);
     const currentEvents = resultEvents.filter(
-      event => moment(event.start_time) < now && moment(event.end_time) > now
+      event => event.getStartMoment() < now && event.getEndMoment() > now
     );
     const futureEvents = resultEvents.filter(
-      event => moment(event.start_time) > now
+      event => event.getStartMoment() > now
     );
     if (currentEvents.length) {
-      eventPanels.push(<CurrentEvents key="Current" events={currentEvents} />);
+      eventPanels.push(<CurrentEvents key="current" events={currentEvents} />);
     }
     if (futureEvents.length) {
       eventPanels.push(<EventsList key="future" events={futureEvents} />);
@@ -603,8 +601,9 @@ export async function search(
     event: new SearchEvent(x.event),
   }));
   response.results = response.results.map(x => new SearchEvent(x));
-  response.results = sortString(response.results, resultEvent =>
-    moment(resultEvent.start_time).toISOString()
+  response.results = sortString(
+    response.results,
+    resultEvent => resultEvent.start_time
   );
   return response;
 }

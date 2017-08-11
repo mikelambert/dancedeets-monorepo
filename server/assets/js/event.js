@@ -157,10 +157,11 @@ class ImageWithLinks extends React.Component {
 
 function googleCalendarStartEndFormat(event) {
   const fmt = 'YYYYMMDDTHHmmss[Z]';
-  const start = moment(event.start_time).utc().format(fmt);
-  const endTime = event.end_time
-    ? moment(event.end_time)
-    : moment(event.start_time).add(2, 'hours');
+  const start = event.getStartMoment().utc().format(fmt);
+  let endTime = event.getEndMoment();
+  if (!endTime) {
+    endTime = event.getStartMoment().add(2, 'hours');
+  }
   const end = endTime.utc().format(fmt);
   return `${start}/${end}`;
 }
@@ -324,20 +325,11 @@ class _EventLinks extends React.Component {
       );
     }
 
-    let formattedStartEndText = null;
-    if (ExecutionEnvironment.canUseDOM) {
-      formattedStartEndText = formatStartEnd(
-        event.start_time,
-        event.end_time,
-        this.props.intl
-      );
-    } else {
-      formattedStartEndText = formatStartEnd(
-        event.startTimeNoTz(),
-        event.endTimeNoTz(),
-        this.props.intl
-      );
-    }
+    const formattedStartEndText = formatStartEnd(
+      event.getStartMoment(),
+      event.getEndMoment(),
+      this.props.intl
+    );
     let sourceName = event.source.name;
     // Only add the a-href on the client, not the server.
     // This makes it mildly harder for scrapers to scrape us.

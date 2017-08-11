@@ -975,8 +975,8 @@ class _FullEventView extends React.Component {
         </Text>
         <EventCategories categories={this.props.event.annotations.categories} />
         <EventDateTime
-          start={this.props.event.start_time}
-          end={this.props.event.end_time}
+          start={this.props.event.getStartMoment()}
+          end={this.props.event.getEndMoment()}
         >
           <AddToCalendarButton
             event={this.props.event}

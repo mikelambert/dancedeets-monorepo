@@ -475,27 +475,29 @@ class _EventListContainer extends React.Component {
           })),
         });
       }
-      const now = moment();
+      const now = moment(this.props.intl.now());
       if (response.results != null && response.results.length > 0) {
         for (const e of response.results) {
           // TODO: Due to some ancient bad design decisions,
           // it's surprisingly difficult to to do
           // time-zone-aware date manipulation on the server,
           // so instead let's filter out those events here.
-          let end = moment(e.end_time, moment.ISO_8601);
+          let end = e.getEndMoment();
           // If it's an endtime-less event, compute a fallback endtime here.
-          if (!end.isValid()) {
-            end = moment(e.start_time, moment.ISO_8601).add(2, 'hours');
+          if (!end || !end.isValid()) {
+            end = e.getStartMoment().add(2, 'hours');
           }
           if (end.isBefore(now)) {
             continue;
           }
-          const start = moment(e.start_time, moment.ISO_8601);
-          const formattedStart = formatStartDateOnly(start, this.props.intl);
+          const formattedStart = formatStartDateOnly(
+            e.getStartMoment(),
+            this.props.intl
+          );
           let lastSection = sections[sections.length - 1];
           if (!lastSection || lastSection.title !== formattedStart) {
             sections.push({
-              key: `Section: ${start}`,
+              key: `Section: ${formattedStart}`,
               title: formattedStart,
               data: [],
             });

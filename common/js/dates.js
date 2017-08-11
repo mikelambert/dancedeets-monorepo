@@ -30,42 +30,34 @@ export const weekdayDateTime = {
   minute: 'numeric',
 };
 
-export function formatStartDateOnly(startString: string, intl: intlShape) {
+export function formatStartDateOnly(start: moment, intl: intlShape) {
   const now = moment(intl.now());
-  const start = moment(startString, moment.ISO_8601);
   const diff = start.diff(now);
   let format = weekdayDate;
   // Use a year for faraway dates
   if (
-    diff < moment.duration(-3, 'months') ||
-    diff > moment.duration(6, 'months')
+    diff < moment.duration(-3, 'months').asMilliseconds() ||
+    diff > moment.duration(6, 'months').asMilliseconds()
   ) {
     format = weekdayDateWithYear;
   }
   return upperFirst(intl.formatDate(start.toDate(), format));
 }
 
-export function formatStartTime(startString: string, intl: intlShape) {
-  const start = moment(startString, moment.ISO_8601);
+export function formatStartTime(start: moment, intl: intlShape) {
   const formattedStartTime = intl.formatTime(start);
   return formattedStartTime;
 }
 
-export function formatStartEnd(
-  startString: string,
-  endString: ?string,
-  intl: intlShape
-) {
+export function formatStartEnd(start: moment, end: ?moment, intl: intlShape) {
   const textFields = [];
   const now = moment(intl.now());
-  const start = moment(startString, moment.ISO_8601);
   const formattedStart = upperFirst(
     intl.formatDate(start.toDate(), weekdayDateTime)
   );
-  if (endString) {
-    const end = moment(endString, moment.ISO_8601);
+  if (end) {
     const duration = end.diff(start);
-    if (duration > moment.duration(1, 'days')) {
+    if (duration > moment.duration(1, 'days').asMilliseconds()) {
       const formattedEnd = upperFirst(intl.formatDate(end, weekdayDateTime));
       textFields.push(`${formattedStart} - \n${formattedEnd}`);
     } else {
@@ -79,7 +71,10 @@ export function formatStartEnd(
   }
   // Ensure we do some sort of timer refresh update on this
   const relativeStart = start.diff(now);
-  if (relativeStart > 0 && relativeStart < moment.duration(2, 'weeks')) {
+  if (
+    relativeStart > 0 &&
+    relativeStart < moment.duration(2, 'weeks').asMilliseconds()
+  ) {
     const relativeStartOffset = upperFirst(
       moment.duration(relativeStart).humanize(true)
     );

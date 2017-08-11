@@ -198,7 +198,7 @@ class _AddEventRow extends React.Component {
       : null;
     const textColor = this.props.event.loaded || tempOverlay ? '#888' : 'white';
 
-    const start = moment(this.props.event.start_time, moment.ISO_8601);
+    const start = moment.parseZone(this.props.event.start_time);
     const formattedStart = this.props.intl.formatDate(
       start.toDate(),
       weekdayDateTime

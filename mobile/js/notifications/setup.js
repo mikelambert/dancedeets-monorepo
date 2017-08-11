@@ -69,7 +69,7 @@ class Handler {
     // TODO: Make this notification expire after the end date of the event:
     // http://stackoverflow.com/questions/23874203/create-an-android-notification-with-expiration-date
 
-    const start = moment(event.start_time, moment.ISO_8601);
+    const start = event.getStartMoment();
     const eventTime = this.intl.formatTime(start.toDate(), timeFormat);
     const eventLocation = event.venue.name;
     const notificationTitle = event.name;

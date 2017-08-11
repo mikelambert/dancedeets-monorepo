@@ -15,10 +15,6 @@ import {
 import { injectIntl, intlShape, defineMessages } from 'react-intl';
 import { connect } from 'react-redux';
 import LinearGradient from 'react-native-linear-gradient';
-import {
-  formatStartEnd,
-  formatStartDateOnly,
-} from 'dancedeets-common/js/dates';
 import { Event, Venue } from 'dancedeets-common/js/events/models';
 import { HorizontalView, normalize, semiNormalize, Text } from '../ui';
 

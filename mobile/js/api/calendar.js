@@ -17,12 +17,9 @@ function getDescription(event: Event): string {
 }
 
 function getStartEndTime(event: Event) {
-  // Parse dates-with-timezones, and use them to construct an event
-  const start = moment(event.start_time, moment.ISO_8601);
-  let end = null;
-  if (event.end_time) {
-    end = moment(event.end_time, moment.ISO_8601);
-  } else {
+  const start = event.getStartMoment();
+  let end = event.getEndMoment();
+  if (!end) {
     end = start.add(1.5, 'hours');
   }
   return { start, end };
