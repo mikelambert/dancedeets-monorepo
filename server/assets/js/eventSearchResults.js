@@ -845,9 +845,14 @@ class ResultsPage extends React.Component {
       return;
     }
 
-    const queryString = querystring.stringify(newQuery);
-    const history = createBrowserHistory();
-    history.replace(`/?${queryString}`);
+    const newQueryString = querystring.stringify(newQuery);
+    const oldQueryString = new URL(window.location.href).search;
+    // Try to avoid calling history.replace if the query string is the same
+    // Each new location change, triggers a reload of the page favicons
+    if (newQueryString !== oldQueryString) {
+      const history = createBrowserHistory();
+      history.replace(`/?${newQueryString}`);
+    }
 
     await this.setState({ query: newQuery, loading: true });
     const response = await search(
