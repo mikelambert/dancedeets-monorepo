@@ -344,15 +344,15 @@ class AdminEditHandler(base_servlet.BaseRequestHandler):
         fb_event_attending_maybe = get_fb_event(self.fbl, event_id, lookup_type=fb_api.LookupEventAttendingMaybe)
         matcher = event_attendee_classifier.get_matcher(self.fbl, fb_event, fb_event_attending_maybe)
         # print '\n'.join(matcher.results)
-        matched_overlap_ids = matcher.matches[0].overlap_ids if matcher.matches else []
-        self.display['auto_add_attendee_ids'] = sorted(matched_overlap_ids)
         sorted_matches = sorted(matcher.matches, key=lambda x: -len(x.overlap_ids))
+        matched_overlap_ids = sorted_matches[0].overlap_ids if matcher.matches else []
+        self.display['auto_add_attendee_ids'] = sorted(matched_overlap_ids)
         self.display['overlap_results'] = ['%s %s: %s' % (x.top_n, x.name, x.reason) for x in sorted_matches]
 
         self.display['overlap_attendee_ids'] = sorted(matcher.overlap_ids)
 
         if matcher.matches:
-            attendee_ids_to_admin_hash_and_event_ids = matcher.matches[0].get_attendee_lookups()
+            attendee_ids_to_admin_hash_and_event_ids = sorted_matches[0].get_attendee_lookups()
             self.display['attendee_ids_to_admin_hash_and_event_ids'] = attendee_ids_to_admin_hash_and_event_ids
 
         self.display['event'] = e
