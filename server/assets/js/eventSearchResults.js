@@ -860,6 +860,22 @@ class ResultsPage extends React.Component {
   }
 
   render() {
+    const resultsCard = (
+      <Card style={{ margin: 0, padding: 0 }}>
+        <ResultTabs
+          query={this.state.query}
+          loading={this.state.loading}
+          response={this.state.response}
+          categoryOrder={this.props.categoryOrder}
+        />
+      </Card>
+    );
+    const sideAd = (
+      <GoogleAd
+        style={{ display: 'inline-block', width: 300, height: 600 }}
+        data-ad-slot="6881574572"
+      />
+    );
     return (
       <div>
         <div className="container">
@@ -872,15 +888,11 @@ class ResultsPage extends React.Component {
             </div>
           </div>
           <div className="row">
-            <div className="col-xs-12">
-              <Card style={{ margin: 0, padding: 0 }}>
-                <ResultTabs
-                  query={this.state.query}
-                  loading={this.state.loading}
-                  response={this.state.response}
-                  categoryOrder={this.props.categoryOrder}
-                />
-              </Card>
+            <div className="col-md-8">
+              {resultsCard}
+            </div>
+            <div className="col-md-4 hidden-xs hidden-sm">
+              {sideAd}
             </div>
           </div>
         </div>
