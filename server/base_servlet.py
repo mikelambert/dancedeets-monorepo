@@ -566,8 +566,8 @@ class BaseRequestHandler(BareBaseRequestHandler):
         # Redirect from the bare 'dancedeets.com' to the full 'www.dancedeets.com'
         url = urlparse.urlsplit(self.request.url)
         # We technically don't need dd.events in here, since its handler is a BareBonesRequestHandler...but it include it to be safe.
-        allowed_passthrough_domains = [r'img.dancedeets.com$', r'dd\.events$', r'dancer?\.bio$']
-        matches_passthrough_domain = [re.search(x, url.netloc) for x in allowed_passthrough_domains]
+        allowed_passthrough_domains = [r'img\.dancedeets\.com$', r'dd\.events$', r'dancer?\.bio$']
+        matches_passthrough_domain = [x for x in allowed_passthrough_domains if re.search(x, url.netloc)]
         if not os.environ.get('DEBUG_MEMORY_LEAKS') and url.netloc != self._get_full_hostname() and not matches_passthrough_domain:
             logging.info("Redirecting from %s to %s: %s", url.netloc, self._get_full_hostname(), self.request.url)
             new_url = urlparse.urlunsplit([
