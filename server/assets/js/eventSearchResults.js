@@ -635,6 +635,10 @@ class _PeopleList extends React.Component {
     (this: any).loadPeopleIfNeeded = this.loadPeopleIfNeeded.bind(this);
   }
 
+  componentWillReceiveProps(nextProps) {
+    this.setState({ people: nextProps.response.people, failed: false });
+  }
+
   async loadPeopleIfNeeded() {
     if (
       // If we're rendering on the server, ignore loading anything
