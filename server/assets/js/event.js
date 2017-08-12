@@ -27,7 +27,8 @@ import messages from 'dancedeets-common/js/events/messages';
 import { RsvpComponent } from './eventRsvp';
 import type { RsvpValue } from './eventRsvp';
 import GoogleAd from './googleAd';
-import { getReactEventSchema, getReactArticleSchema } from './eventSchema';
+import { JsonSchema } from './schema';
+import { getEventSchema, getArticleSchema } from './schema/event';
 import { Message } from './intl';
 import { AmpImage, Card, ImagePrefix } from './ui';
 
@@ -679,9 +680,11 @@ export class EventPage extends React.Component {
     return (
       <div className="container">
         <HtmlHead event={event} />
-        {this.props.amp
-          ? getReactArticleSchema(event)
-          : getReactEventSchema(event)}
+        <JsonSchema
+          json={
+            this.props.amp ? getArticleSchema(event) : getEventSchema(event)
+          }
+        />
         <div className="row">
           <div className="col-xs-12">
             {adHeader}

@@ -4,7 +4,6 @@
  * @flow
  */
 
-import React from 'react';
 import moment from 'moment';
 import { SearchEvent, Event } from 'dancedeets-common/js/events/models';
 
@@ -12,7 +11,7 @@ function formatSchemaDate(dateTime) {
   return moment(dateTime).format('YYYY-MM-DD[T]HH:mm:ss');
 }
 
-function getEventSchema(event: Event | SearchEvent) {
+export function getEventSchema(event: Event | SearchEvent) {
   const schema: Object = {
     '@context': 'http://schema.org/',
     '@type': 'Event',
@@ -58,18 +57,7 @@ function getEventSchema(event: Event | SearchEvent) {
   return schema;
 }
 
-export function getReactEventSchema(event: Event | SearchEvent) {
-  const jsonMetadata = getEventSchema(event);
-  return (
-    <script
-      key={event.id}
-      type="application/ld+json"
-      dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonMetadata) }} // eslint-disable-line react/no-danger
-    />
-  );
-}
-
-function getArticleSchema(event: Event) {
+export function getArticleSchema(event: Event) {
   // NewsArticles require an image:
   // https://developers.google.com/structured-data/rich-snippets/articles#article_markup_properties
   if (!event.picture) {
@@ -110,14 +98,4 @@ function getArticleSchema(event: Event) {
     description: event.description,
   };
   return schema;
-}
-
-export function getReactArticleSchema(event: Event) {
-  const jsonMetadata = getArticleSchema(event);
-  return (
-    <script
-      type="application/ld+json"
-      dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonMetadata) }} // eslint-disable-line react/no-danger
-    />
-  );
 }
