@@ -870,7 +870,10 @@ class ResultsPage extends React.Component {
     const resultsCard = (
       <Card style={{ margin: 0, padding: 0 }}>
         <JsonSchema
-          json={getBreadcrumbsForSearch(this.state.response.address)}
+          json={getBreadcrumbsForSearch(
+            this.state.response.address,
+            this.state.response.query.keywords
+          )}
         />
         <ResultTabs
           query={this.state.query}

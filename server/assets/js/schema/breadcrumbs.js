@@ -65,9 +65,12 @@ export function getBreadcrumbsForEvent(
   return generateBreadcrumbs(listItems);
 }
 
-export function getBreadcrumbsForSearch(address: Address): BreadcrumbsSchema {
+export function getBreadcrumbsForSearch(
+  address: Address,
+  keywords: string
+): BreadcrumbsSchema {
   const listItems = [];
-  if (address) {
+  if (Object.keys(address).length) {
     if (address.country) {
       listItems.push({
         url: locationFor([address.country]),
@@ -88,6 +91,13 @@ export function getBreadcrumbsForSearch(address: Address): BreadcrumbsSchema {
     }
     // } else if (keywords) {
     //   listItems.push({});
+  } else if (keywords) {
+    const query = { keywords };
+    const url = `/?${querystring.stringify(query)}`;
+    listItems.push({
+      url,
+      name: `Keywords: ${keywords}`,
+    });
   }
   return generateBreadcrumbs(listItems);
 }

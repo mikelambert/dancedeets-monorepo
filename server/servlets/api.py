@@ -144,7 +144,6 @@ def retryable(func):
     return wrapped_func
 
 def people_groupings(geocode, distance, skip_people):
-    center_latlng, southwest, northeast = search_base.get_center_and_bounds(geocode, distance)
     groupings = None
     if skip_people:
         groupings = {}
@@ -152,6 +151,7 @@ def people_groupings(geocode, distance, skip_people):
         # keyword-only search, no location to give promoters for
         logging.info('No center latlng, skipping person groupings')
     else:
+        center_latlng, southwest, northeast = search_base.get_center_and_bounds(geocode, distance)
         distance_km = math.get_inner_box_radius_km(southwest, northeast)
         if distance_km > 1000:
             logging.info('Search area >1000km, skipping person groupings')
@@ -196,7 +196,12 @@ def people_groupings(geocode, distance, skip_people):
     return groupings
 
 def build_search_results_api(form, search_query, search_results, version, need_full_event, geocode, distance, skip_people=False):
-    center_latlng, southwest, northeast = search_base.get_center_and_bounds(geocode, distance)
+    if geocode:
+        center_latlng, southwest, northeast = search_base.get_center_and_bounds(geocode, distance)
+    else:
+        center_latlng = None
+        southwest = None
+        northeast = None
 
     onebox_links = []
     if search_query:
@@ -231,12 +236,15 @@ def build_search_results_api(form, search_query, search_results, version, need_f
         for field in form:
             query[field.name] = getattr(field, '_value', lambda: field.data)()
 
-    address_geocode = gmaps_api.lookup_address(geocode.formatted_address())
+    if geocode:
+        address_geocode = gmaps_api.lookup_address(geocode.formatted_address())
+    else:
+        address_geocode = None
 
     json_response = {
         'results': json_results,
         'onebox_links': onebox_links,
-        'location': geocode.formatted_address(),
+        'location': geocode.formatted_address() if geocode else None,
         'address': address.get_address_from_geocode(address_geocode),
         'query': query,
     }
