@@ -42,7 +42,7 @@ import {
   groupEventsByStartDate,
 } from 'dancedeets-common/js/events/helpers';
 import { formatStartDateOnly } from 'dancedeets-common/js/dates';
-import { JsonSchema } from './schema/event';
+import { JsonSchema } from './schema';
 import { getEventSchema } from './schema/event';
 import { Card, ImagePrefix, wantsWindowSizes } from './ui';
 import type { windowProps } from './ui';
