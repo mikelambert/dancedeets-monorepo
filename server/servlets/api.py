@@ -306,6 +306,7 @@ class SearchHandler(ApiHandler):
         data = {
             'location': self.request.get('location'),
             'keywords': self.request.get('keywords'),
+            'skip_people': self.request.get('skip_people'),
         }
         if self.request.get('locale'):
             data['locale'] = self.request.get('locale')
