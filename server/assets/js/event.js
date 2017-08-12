@@ -68,7 +68,7 @@ class Title extends React.Component {
     const event = this.props.event;
 
     return (
-      <h2 style={{ paddingLeft: 10, paddingRight: 10 }}>
+      <h2 className="event-page-header">
         {this.props.event.name}
       </h2>
     );
@@ -149,7 +149,7 @@ class ImageWithLinks extends React.Component {
     */
 
     return (
-      <div style={{ margin: 10 }}>
+      <div className="event-page-image-box">
         {link}
         {adInline}
       </div>
@@ -372,18 +372,13 @@ class _EventLinks extends React.Component {
       : null;
 
     return (
-      <Card style={{ padding: 0 }}>
+      <Card newStyle>
         <div className="card-header">
-          <span
-            className="bold"
-            style={{
-              lineHeight: '25px',
-            }}
-          >
+          <span className="card-header-text">
             Details
           </span>
         </div>
-        <div className="grey-top-border" style={{ padding: 10 }}>
+        <div className="grey-top-border card-contents">
           <div>
             <ImagePrefix
               iconName={
@@ -441,16 +436,53 @@ class MapWithLinks extends React.Component {
     amp: ?boolean,
   };
 
-  map() {
-    const venueName = this.props.event.venue.name;
-    if (!venueName) {
-      return null;
-    }
+  mapUrl() {
     const geocode = this.props.event.venue.geocode;
     if (!geocode || !geocode.latitude) {
       return null;
     }
-    const mapUrl = `http://maps.google.com/?daddr=${geocode.latitude},${geocode.longitude}`;
+    return `http://maps.google.com/?daddr=${geocode.latitude},${geocode.longitude}`;
+  }
+
+  mapHeader() {
+    const geocode = this.props.event.venue.geocode;
+    if (!geocode || !geocode.latitude) {
+      return null;
+    }
+    const venueName = this.props.event.venue.name;
+    if (!venueName) {
+      return null;
+    }
+    return (
+      <div>
+        <div>
+          Open in
+          {' '}
+          <a
+            className="link-event-map"
+            id="view-map-link"
+            href={this.mapUrl()}
+            rel="noopener noreferrer"
+            target="_blank"
+          >
+            Google Maps
+          </a>
+          .
+        </div>
+        {this.props.event.description
+          ? <div className="visible-xs italics">
+              Event description is below the map.
+            </div>
+          : null}
+      </div>
+    );
+  }
+
+  map() {
+    const geocode = this.props.event.venue.geocode;
+    if (!geocode || !geocode.latitude) {
+      return null;
+    }
 
     const size = 450;
     const staticMapImageUrl: string =
@@ -458,11 +490,11 @@ class MapWithLinks extends React.Component {
       `center=${geocode.latitude},${geocode.longitude}&` +
       `markers=color:blue%7C${geocode.latitude},${geocode.longitude}`;
 
-    const mapContents = (
+    return (
       <a
         className="link-event-map"
         id="view-map"
-        href={mapUrl}
+        href={this.mapUrl()}
         rel="noopener noreferrer"
         target="_blank"
       >
@@ -476,36 +508,6 @@ class MapWithLinks extends React.Component {
           style={{ width: '100%' }}
         />
       </a>
-    );
-
-    return (
-      <div>
-        <p style={{ paddingLeft: 10, paddingRight: 0 }}>
-          Open in
-          {' '}
-          <a
-            className="link-event-map"
-            id="view-map-link"
-            href={mapUrl}
-            rel="noopener noreferrer"
-            target="_blank"
-          >
-            Google Maps
-          </a>
-          .
-        </p>
-        {this.props.event.description
-          ? <div
-              className="visible-xs italics"
-              style={{ paddingLeft: 10, paddingRight: 0 }}
-            >
-              Event description is below the map.
-            </div>
-          : null}
-        <div>
-          {mapContents}
-        </div>
-      </div>
     );
   }
 
@@ -521,14 +523,14 @@ class MapWithLinks extends React.Component {
         );
       }
       return (
-        <Card style={{ padding: 0 }}>
-          <ImagePrefix
-            iconName="map-marker"
-            style={{ padding: 10, paddingBottom: 0 }}
-          >
-            <div>{locationName}</div>
-            <FormatText>{venue.streetCityStateCountry('\n')}</FormatText>
-          </ImagePrefix>
+        <Card newStyle>
+          <div className="card-contents">
+            <ImagePrefix iconName="map-marker">
+              <div>{locationName}</div>
+              <FormatText>{venue.streetCityStateCountry('\n')}</FormatText>
+            </ImagePrefix>
+            {this.mapHeader()}
+          </div>
           {this.map()}
         </Card>
       );
@@ -544,19 +546,14 @@ class Description extends React.Component {
 
   render() {
     return (
-      <Card style={{ padding: 0 }}>
+      <Card newStyle>
         <div className="card-header">
-          <span
-            className="bold"
-            style={{
-              lineHeight: '25px',
-            }}
-          >
+          <span className="card-header-text">
             Description
           </span>
           <span className="google-translate" id="google_translate_element" />
         </div>
-        <div className="grey-top-border" style={{ padding: 12 }}>
+        <div className="grey-top-border card-contents">
           <FormatText>
             {this.props.event.description}
           </FormatText>

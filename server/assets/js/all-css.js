@@ -14,6 +14,8 @@ require('../css/results.scss');
 
 require('../css/fonts.scss');
 require('../css/dancedeets.scss');
+require('../css/tabs.scss');
+require('../css/eventPage.scss');
 require('../css/social-hovers.scss');
 require('../css/header.scss');
 require('../css/footer.scss');
