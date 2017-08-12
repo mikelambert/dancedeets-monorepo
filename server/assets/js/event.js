@@ -29,6 +29,7 @@ import type { RsvpValue } from './eventRsvp';
 import GoogleAd from './googleAd';
 import { JsonSchema } from './schema';
 import { getEventSchema, getArticleSchema } from './schema/event';
+import { getBreadcrumbsForEvent } from './schema/breadcrumbs';
 import { Message } from './intl';
 import { AmpImage, Card, ImagePrefix } from './ui';
 
@@ -685,6 +686,7 @@ export class EventPage extends React.Component {
             this.props.amp ? getArticleSchema(event) : getEventSchema(event)
           }
         />
+        <JsonSchema json={getBreadcrumbsForEvent(event)} />
         <div className="row">
           <div className="col-xs-12">
             {adHeader}
