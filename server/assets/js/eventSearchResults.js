@@ -567,11 +567,9 @@ class ResultsList extends React.Component {
         {featuredPanel}
         {oneboxPanel}
         {eventPanels}
-        {ExecutionEnvironment.canUseDOM
-          ? null
-          : resultEvents.map(x =>
-              <JsonSchema key={x.id} json={getEventSchema(x)} />
-            )}
+        {resultEvents.map(x =>
+          <JsonSchema key={x.id} json={getEventSchema(x)} />
+        )}
       </div>
     );
   }
