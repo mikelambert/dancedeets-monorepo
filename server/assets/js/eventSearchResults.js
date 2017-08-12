@@ -42,7 +42,8 @@ import {
   groupEventsByStartDate,
 } from 'dancedeets-common/js/events/helpers';
 import { formatStartDateOnly } from 'dancedeets-common/js/dates';
-import { getReactEventSchema } from './eventSchema';
+import { JsonSchema } from './schema/event';
+import { getEventSchema } from './schema/event';
 import { Card, ImagePrefix, wantsWindowSizes } from './ui';
 import type { windowProps } from './ui';
 import { SquareEventFlyer } from './eventCommon';
@@ -568,7 +569,9 @@ class ResultsList extends React.Component {
         {eventPanels}
         {ExecutionEnvironment.canUseDOM
           ? null
-          : resultEvents.map(getReactEventSchema)}
+          : resultEvents.map(x =>
+              <JsonSchema key={x.id} json={getEventSchema(x)} />
+            )}
       </div>
     );
   }
