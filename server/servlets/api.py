@@ -2,6 +2,7 @@ import datetime
 import feedparser
 import json
 import logging
+from slugify import slugify
 import time
 import urllib
 
@@ -493,6 +494,7 @@ def canonicalize_search_event_data(result, version):
     event_api = {}
     event_api['id'] = result.event_id
     event_api['name'] = result.data['name']
+    event_api['slugged_name'] = slugify(unicode(result.data['name']))
     event_api['start_time'] = result.data['start_time']
     event_api['end_time'] = result.data['end_time']
 
@@ -533,6 +535,7 @@ def canonicalize_event_data(db_event, event_keywords, version):
     event_api = {}
     event_api['id'] = db_event.id
     event_api['name'] = db_event.name
+    event_api['slugged_name'] = slugify(unicode(db_event.name))
     event_api['start_time'] = db_event.start_time_with_tz.strftime(DATETIME_FORMAT_TZ)
     event_api['description'] = db_event.description
     # end time can be optional, especially on single-day events that are whole-day events

@@ -1,5 +1,6 @@
 import re
 import urllib
+from slugify import slugify
 
 EVENT_ID_REGEX = r'(?:\d+|[^/?#]+:[^/?#]+)'
 
@@ -7,9 +8,13 @@ def dd_event_url(eid, kwargs=None):
     kwarg_string = '?%s' % urlencode(kwargs) if kwargs else ''
     return 'https://www.dancedeets.com%s%s' % (dd_relative_event_url(eid), kwarg_string)
 
-
 def dd_relative_event_url(eid):
-    return '/events/%s/' % eid
+    if isinstance(eid, basestring):
+        return '/events/%s/' % eid
+    else:
+        event = eid
+        slug = slugify(unicode(event.name))
+        return '/events/%s/%s' % (event.id, slug)
 
 
 def dd_short_event_url(eid):

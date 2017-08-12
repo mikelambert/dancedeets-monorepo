@@ -101,6 +101,7 @@ export type EventRsvpList = {
 export class BaseEvent extends JsonDerivedObject {
   id: string;
   name: string;
+  slugged_name: string; // eslint-disable-line camelcase
   start_time: string; // eslint-disable-line camelcase
   end_time: ?string; // eslint-disable-line camelcase
   picture: ?Cover;
@@ -112,7 +113,7 @@ export class BaseEvent extends JsonDerivedObject {
   }
 
   getUrl() {
-    return `https://www.dancedeets.com/events/${this.id}/`;
+    return `https://www.dancedeets.com/events/${this.id}/${this.slugged_name}`;
   }
 
   startTimeNoTz() {
