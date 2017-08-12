@@ -778,6 +778,9 @@ class ResultTabs extends React.Component {
     // Only show People tab if we have chosen a location
     if (this.props.query.location) {
       peopleTab = <Tab>People</Tab>;
+      // It seems every time we re-render this tab...it is fully reconstructed,
+      // and loses its state (and the associated downloaded People data).
+      // TODO: We should do a better job of preserving Tab state (redux?).
       peopleTabPanel = (
         <TabPanel style={tabPanelStyle}>
           <PeopleList
