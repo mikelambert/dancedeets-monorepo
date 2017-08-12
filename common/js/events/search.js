@@ -55,6 +55,12 @@ export type SearchResponse = {
   query: SearchQuery,
 };
 
+export type Address = {
+  city?: string,
+  state?: string,
+  country?: string,
+};
+
 // API Requests 2.0+
 export type NewSearchResponse = {
   people: PeopleListing,
@@ -66,6 +72,7 @@ export type NewSearchResponse = {
   // They aren't necessary here (yet), but this helps document the schema.
   title: string,
   location: string,
+  address: Address,
   location_box?: {
     southwest: LatLong,
     northeast: LatLong,

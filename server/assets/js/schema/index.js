@@ -8,10 +8,13 @@ import React from 'react';
 
 export class JsonSchema extends React.Component {
   props: {
-    json: Object,
+    json: ?Object,
   };
 
   render() {
+    if (!this.props.json) {
+      return null;
+    }
     return (
       <script
         type="application/ld+json"

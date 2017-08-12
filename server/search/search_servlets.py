@@ -108,20 +108,18 @@ class RelevantHandler(SearchHandler):
                     search_results.sort(key=lambda x: (x.start_time, x.actual_city_name, x.name))
                 onebox_links = onebox.get_links_for_query(search_query)
 
-            city_name = None
-            center_latlng = None
-            southwest = None
-            northeast = None
+            geocode = None
+            distance = None
             if form.location.data:
                 try:
-                    city_name, center_latlng, southwest, northeast = search_base.normalize_location(form)
+                    geocode, distance = search_base.get_geocode_with_distance(form)
                 except:
                     self.add_error('Unknown location: %s' % form.location.data)
 
             need_full_event = False
             # Keep in sync with mobile react code? And api.py
             skip_people = True
-            json_search_response = api.build_search_results_api(city_name, form, search_query, search_results, (2, 0), need_full_event, center_latlng, southwest, northeast, skip_people=skip_people)
+            json_search_response = api.build_search_results_api(form, search_query, search_results, (2, 0), need_full_event, geocode, distance, skip_people=skip_people)
             props = dict(
                 response=json_search_response,
                 past=(form.time_period.data == search_base.TIME_PAST),

@@ -18,6 +18,8 @@ from events import eventdata
 from events import featured
 import fb_api
 import keys
+from loc import address
+from loc import gmaps_api
 from loc import math
 from event_attendees import popular_people
 from rankings import cities
@@ -141,7 +143,8 @@ def retryable(func):
             raise
     return wrapped_func
 
-def people_groupings(southwest, northeast, center_latlng, skip_people):
+def people_groupings(geocode, distance, skip_people):
+    center_latlng, southwest, northeast = search_base.get_center_and_bounds(geocode, distance)
     groupings = None
     if skip_people:
         groupings = {}
@@ -192,7 +195,9 @@ def people_groupings(southwest, northeast, center_latlng, skip_people):
                 logging.info('Person Groupings:\n%s', '\n'.join('%s: %s' % kv for kv in groupings.iteritems()))
     return groupings
 
-def build_search_results_api(city_name, form, search_query, search_results, version, need_full_event, center_latlng, southwest, northeast, skip_people=False):
+def build_search_results_api(form, search_query, search_results, version, need_full_event, geocode, distance, skip_people=False):
+    center_latlng, southwest, northeast = search_base.get_center_and_bounds(geocode, distance)
+
     onebox_links = []
     if search_query:
         onebox_links = onebox.get_links_for_query(search_query)
@@ -220,15 +225,19 @@ def build_search_results_api(city_name, form, search_query, search_results, vers
     except Exception as e:
         logging.exception("Error building featured event listing: %s", e)
 
-    groupings = people_groupings(southwest, northeast, center_latlng, skip_people=skip_people)
+    groupings = people_groupings(geocode, distance, skip_people=skip_people)
     query = {}
     if form:
         for field in form:
             query[field.name] = getattr(field, '_value', lambda: field.data)()
+
+    address_geocode = gmaps_api.lookup_address(geocode.formatted_address())
+
     json_response = {
         'results': json_results,
         'onebox_links': onebox_links,
-        'location': city_name,
+        'location': geocode.formatted_address(),
+        'address': address.get_address_from_geocode(address_geocode),
         'query': query,
     }
     if groupings is not None:
@@ -271,13 +280,13 @@ class PeopleHandler(ApiHandler):
             self.add_error('Need location')
         else:
             try:
-                city_name, center_latlng, southwest, northeast = search_base.normalize_location(form)
+                geocode, distance = search_base.get_geocode_with_distance(form)
             except:
                 self.add_error('Could not geocode location')
         self.errors_are_fatal()
 
 
-        groupings = people_groupings(southwest, northeast, center_latlng, skip_people=False)
+        groupings = people_groupings(geocode, distance, skip_people=False)
         self.write_json_success({'people': groupings})
     post = get
 
@@ -312,16 +321,14 @@ class SearchHandler(ApiHandler):
                         error
                     ))
 
+        geocode = None
+        distance = None
         if not form.location.data:
-            city_name = None
-            center_latlng = None
-            southwest = None
-            northeast = None
             if not form.keywords.data:
                 self.add_error('Please enter a location or keywords')
         else:
             try:
-                city_name, center_latlng, southwest, northeast = search_base.normalize_location(form)
+                geocode, distance = search_base.get_geocode_with_distance(form)
             except:
                 self.add_error('Could not geocode location')
 
@@ -355,7 +362,7 @@ class SearchHandler(ApiHandler):
 
         # Keep in sync with mobile react code? And search_servlets
         skip_people = len(search_results) >= 10 or form.skip_people.data
-        json_response = build_search_results_api(city_name, form, search_query, search_results, self.version, need_full_event, center_latlng, southwest, northeast, skip_people=skip_people)
+        json_response = build_search_results_api(city_name, form, search_query, search_results, self.version, need_full_event, geocode, distance, skip_people=skip_people)
         if self.request.get('client') == 'react-android' and self.version <= (1, 3):
             json_response['featured'] = []
         self.write_json_success(json_response)

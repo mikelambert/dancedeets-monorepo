@@ -55,6 +55,7 @@ class _GMapsResult(object):
 class GMapsGeocode(_GMapsResult):
     def __init__(self, json_data):
         self.json_data = json_data
+        logging.info(self.json_data)
 
     def country(self, long=False):
         return self.get_component('country', long=long)

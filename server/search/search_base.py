@@ -133,17 +133,25 @@ class SearchForm(wtforms.Form):
         query = SearchQuery(start_date=self.start.data, end_date=self.end.data, time_period=self.time_period.data, **common_fields)
         return query
 
-def normalize_location(form):
+
+def _get_geocode_from_form(form):
     place = gmaps_api.fetch_place_as_json(query=form.location.data, language=form.locale.data)
     if place['status'] == 'OK' and place['results']:
         geocode = gmaps_api.GMapsGeocode(place['results'][0])
-        southwest, northeast = math.expand_bounds(geocode.latlng_bounds(), form.distance_in_km())
-        city_name = place['results'][0]['formatted_address']
-        # This will fail on a bad location, so let's verify the location is geocodable above first.
-        return city_name, geocode.latlng(), southwest, northeast
+        return geocode
     else:
         raise Exception('Error geocoding search address')
 
+
+def get_geocode_with_distance(form):
+    geocode = _get_geocode_from_form(form)
+    distance = form.distance_in_km()
+    return geocode, distance
+
+
+def get_center_and_bounds(geocode, distance):
+    southwest, northeast = math.expand_bounds(geocode.latlng_bounds(), distance)
+    return geocode.latlng(), southwest, northeast
 
 
 class HtmlSearchForm(SearchForm):

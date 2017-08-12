@@ -44,6 +44,7 @@ import {
 import { formatStartDateOnly } from 'dancedeets-common/js/dates';
 import { JsonSchema } from './schema';
 import { getEventSchema } from './schema/event';
+import { getBreadcrumbsForSearch } from './schema/breadcrumbs';
 import { Card, ImagePrefix, wantsWindowSizes } from './ui';
 import type { windowProps } from './ui';
 import { SquareEventFlyer } from './eventCommon';
@@ -868,6 +869,9 @@ class ResultsPage extends React.Component {
   render() {
     const resultsCard = (
       <Card style={{ margin: 0, padding: 0 }}>
+        <JsonSchema
+          json={getBreadcrumbsForSearch(this.state.response.address)}
+        />
         <ResultTabs
           query={this.state.query}
           loading={this.state.loading}
