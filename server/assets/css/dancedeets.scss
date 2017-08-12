@@ -246,6 +246,10 @@ h6 {
   background-color: $body-bg;
 }
 
+.inline-block {
+  display: inline-block;
+}
+
 // Pulled from the event.jsx page
 .card::before {
   border: 1px solid;

@@ -303,7 +303,7 @@ class _EventLinks extends React.Component {
             iconName="share-square-o"
             className="product-social-links"
           >
-            <div style={{ display: 'inline-block' }}>
+            <div className="inline-block">
               <TwitterShare url={event.getUrl()} />
             </div>
             <div
@@ -505,7 +505,7 @@ class MapWithLinks extends React.Component {
             width: size,
             height: size,
           }}
-          style={{ width: '100%' }}
+          style={{ width: '100%' }} // Only used in non-amp pages
         />
       </a>
     );
