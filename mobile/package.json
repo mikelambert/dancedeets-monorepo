@@ -13,8 +13,6 @@
     "emoji-flags": "^1.1.0",
     "fbjs": "^0.8.6",
     "geolib": "^2.0.21",
-    "intl": "^1.2.5",
-    "intl-locales-supported": "^1.0.0",
     "json-prune": "^1.0.1",
     "lodash": "^4.13.1",
     "moment": "^2.13.0",
