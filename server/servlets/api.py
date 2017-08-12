@@ -145,54 +145,55 @@ def retryable(func):
 
 def people_groupings(geocode, distance, skip_people):
     groupings = None
-    if skip_people:
+    if skip_people or not geocode:
         groupings = {}
-    elif not center_latlng:
-        # keyword-only search, no location to give promoters for
-        logging.info('No center latlng, skipping person groupings')
     else:
         center_latlng, southwest, northeast = search_base.get_center_and_bounds(geocode, distance)
-        distance_km = math.get_inner_box_radius_km(southwest, northeast)
-        if distance_km > 1000:
-            logging.info('Search area >1000km, skipping person groupings')
-            # Too big a search area, not worth showing promoters or dancers
+        if not center_latlng:
+            # keyword-only search, no location to give promoters for
+            logging.info('No center latlng, skipping person groupings')
         else:
-            # TODO: Replace with a call to get_attendees_within (that also gets ADMIN people)
-            southwest_baseline, northeast_baseline = math.expand_bounds((center_latlng, center_latlng), cities.NEARBY_DISTANCE_KM)
-            distance_km_baseline = math.get_inner_box_radius_km(southwest_baseline, northeast_baseline)
-            if distance_km < distance_km_baseline:
-                southwest = southwest_baseline
-                northeast = northeast_baseline
-            logging.info('Searching for cities within %s', (southwest, northeast))
-            included_cities = cities.get_nearby_cities((southwest, northeast), only_populated=True)
-            biggest_cities = sorted(included_cities, key=lambda x: -x.population)[:10]
-            city_names = [city.display_name() for city in biggest_cities]
-            logging.info('City names: %s', city_names)
-            if city_names:
-                try:
-                    people_rankings = popular_people.get_people_rankings_for_city_names(city_names)
-                    groupings = popular_people.combine_rankings(people_rankings, max_people=10)
-                except:
-                    logging.exception('Error creating combined people rankings')
-                new_groupings = {
-                    'ADMIN': {},
-                    'ATTENDEE': {},
-                }
-                # These lists can get huge now...make sure we trim them down for what clients need!
-                for person_type, styles in groupings.iteritems():
-                    for style in event_types.STYLES + ['']:
-                        index_style_name = style.index_name if style else ''
-                        public_style_name = style.public_name if style else ''
-                        good_style = None
-                        for style in styles:
-                            style_name, city = style.split(': ', 2)
-                            if popular_people.is_summed_area(city) and style_name == index_style_name:
-                                good_style = style
-                        if good_style:
-                            new_groupings[person_type][public_style_name] = styles[good_style][:10]
-                groupings = new_groupings
+            distance_km = math.get_inner_box_radius_km(southwest, northeast)
+            if distance_km > 1000:
+                logging.info('Search area >1000km, skipping person groupings')
+                # Too big a search area, not worth showing promoters or dancers
+            else:
+                # TODO: Replace with a call to get_attendees_within (that also gets ADMIN people)
+                southwest_baseline, northeast_baseline = math.expand_bounds((center_latlng, center_latlng), cities.NEARBY_DISTANCE_KM)
+                distance_km_baseline = math.get_inner_box_radius_km(southwest_baseline, northeast_baseline)
+                if distance_km < distance_km_baseline:
+                    southwest = southwest_baseline
+                    northeast = northeast_baseline
+                logging.info('Searching for cities within %s', (southwest, northeast))
+                included_cities = cities.get_nearby_cities((southwest, northeast), only_populated=True)
+                biggest_cities = sorted(included_cities, key=lambda x: -x.population)[:10]
+                city_names = [city.display_name() for city in biggest_cities]
+                logging.info('City names: %s', city_names)
+                if city_names:
+                    try:
+                        people_rankings = popular_people.get_people_rankings_for_city_names(city_names)
+                        groupings = popular_people.combine_rankings(people_rankings, max_people=10)
+                    except:
+                        logging.exception('Error creating combined people rankings')
+                    new_groupings = {
+                        'ADMIN': {},
+                        'ATTENDEE': {},
+                    }
+                    # These lists can get huge now...make sure we trim them down for what clients need!
+                    for person_type, styles in groupings.iteritems():
+                        for style in event_types.STYLES + ['']:
+                            index_style_name = style.index_name if style else ''
+                            public_style_name = style.public_name if style else ''
+                            good_style = None
+                            for style in styles:
+                                style_name, city = style.split(': ', 2)
+                                if popular_people.is_summed_area(city) and style_name == index_style_name:
+                                    good_style = style
+                            if good_style:
+                                new_groupings[person_type][public_style_name] = styles[good_style][:10]
+                    groupings = new_groupings
 
-                logging.info('Person Groupings:\n%s', '\n'.join('%s: %s' % kv for kv in groupings.iteritems()))
+                    logging.info('Person Groupings:\n%s', '\n'.join('%s: %s' % kv for kv in groupings.iteritems()))
     return groupings
 
 def build_search_results_api(form, search_query, search_results, version, need_full_event, geocode, distance, skip_people=False):
