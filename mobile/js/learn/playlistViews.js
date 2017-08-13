@@ -543,13 +543,8 @@ class _PlaylistView extends React.Component {
   }
 
   async loadPlayerUrl(video) {
-    let videoUrl = null;
-    try {
-      const youtubeInfo = await getYoutubeInfo(video.youtubeId);
-      videoUrl = youtubeInfo.formats.find(x => x.itag == 22).url;
-    } catch (err) {
-      console.error('Error loading video', err);
-    }
+    const youtubeInfo = await getYoutubeInfo(video.youtubeId);
+    const videoUrl = youtubeInfo.formats.find(x => x.itag === '22').url;
     if (videoUrl) {
       this.setState({ videoUrl });
     }
