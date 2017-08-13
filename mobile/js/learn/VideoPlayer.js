@@ -18,6 +18,12 @@ import VideoPlayer from 'react-native-video-controls';
 export default class MyVideoPlayer extends VideoPlayer {
   constructor(props) {
     super(props);
+
+    this.events.onScreenPress = () => {};
+  }
+
+  setControlTimeout() {
+    // Disable the timeout that hides the controls
   }
 
   /**
@@ -97,9 +103,13 @@ export default class MyVideoPlayer extends VideoPlayer {
           style={[
             styles.seek.handle,
             {
-              left: this.state.seekerPosition,
+              left: this.state.seekerPosition - 10,
+              padding: 10,
             },
           ]}
+          // Necessary on android to ensure this View doesn't get "collapsed"
+          // If it does get collapsed, the panresponder only applies to our tiny circle
+          collapsable={false}
           {...this.player.seekPanResponder.panHandlers}
         >
           <View style={[styles.seek.circle, { backgroundColor: '#FFF' }]} />
@@ -270,6 +280,7 @@ const styles = {
     playPause: {
       position: 'relative',
       zIndex: 0,
+      width: 40,
     },
     title: {
       alignItems: 'center',
