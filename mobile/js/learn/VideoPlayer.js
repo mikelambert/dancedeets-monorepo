@@ -15,6 +15,8 @@ import {
 } from 'react-native';
 import VideoPlayer from 'react-native-video-controls';
 
+const ThumbRadius = 8;
+
 export default class MyVideoPlayer extends VideoPlayer {
   constructor(props) {
     super(props);
@@ -103,7 +105,7 @@ export default class MyVideoPlayer extends VideoPlayer {
           style={[
             styles.seek.handle,
             {
-              left: this.state.seekerPosition - 10,
+              left: this.state.seekerPosition - 10 - ThumbRadius,
               padding: 10,
             },
           ]}
@@ -183,8 +185,8 @@ const styles = {
     trackOuter: {
       alignSelf: 'stretch',
       justifyContent: 'center',
-      marginLeft: 8,
-      marginRight: 8,
+      marginLeft: ThumbRadius,
+      marginRight: ThumbRadius,
     },
     track: {
       backgroundColor: '#333',
@@ -201,8 +203,8 @@ const styles = {
     },
     circle: {
       borderRadius: 20,
-      height: 12,
-      width: 12,
+      height: ThumbRadius * 2,
+      width: ThumbRadius * 2,
     },
   }),
   controls: StyleSheet.create({
