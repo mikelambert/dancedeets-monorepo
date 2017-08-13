@@ -5,7 +5,14 @@
  */
 
 import React from 'react';
-import { Animated, Image, Platform, StyleSheet, View } from 'react-native';
+import {
+  Animated,
+  Image,
+  Platform,
+  StyleSheet,
+  Text,
+  View,
+} from 'react-native';
 import VideoPlayer from 'react-native-video-controls';
 
 export default class MyVideoPlayer extends VideoPlayer {
@@ -53,6 +60,71 @@ export default class MyVideoPlayer extends VideoPlayer {
     return null;
   }
 
+  renderPlayPause() {
+    let source = this.state.paused === true
+      ? require('react-native-video-controls/assets/img/play.png')
+      : require('react-native-video-controls/assets/img/pause.png');
+    return this.renderControl(
+      <Image source={source} />,
+      this.methods.togglePlayPause,
+      styles.controls.playPause
+    );
+  }
+
+  /**
+     * Render the seekbar and attach its handlers
+     */
+  renderSeekbar() {
+    return (
+      <View
+        style={styles.seek.track}
+        onLayout={event => {
+          this.player.seekerWidth = event.nativeEvent.layout.width;
+        }}
+      >
+        <View
+          style={[
+            styles.seek.fill,
+            {
+              width: this.state.seekerFillWidth,
+              backgroundColor: this.props.seekColor || '#FFF',
+            },
+          ]}
+          {...this.player.seekPanResponder.panHandlers}
+        >
+          <View
+            style={[
+              styles.seek.handle,
+              {
+                left: this.state.seekerPosition,
+              },
+            ]}
+          >
+            <View
+              style={[
+                styles.seek.circle,
+                { backgroundColor: this.props.seekColor || '#FFF' },
+              ]}
+            />
+          </View>
+        </View>
+      </View>
+    );
+  }
+
+  /**
+     * Show our timer.
+     */
+  renderTimer() {
+    return this.renderControl(
+      <Text style={styles.controls.timerText}>
+        {this.calculateTime()}
+      </Text>,
+      this.methods.toggleTimer,
+      styles.controls.timer
+    );
+  }
+
   /**
      * Render bottom control group and wrap it in a holder
      */
@@ -75,14 +147,11 @@ export default class MyVideoPlayer extends VideoPlayer {
           source={require('react-native-video-controls/assets/img/bottom-vignette.png')}
           style={[styles.controls.column, styles.controls.vignette]}
         >
-          <View style={[styles.player.container, styles.controls.seekbar]}>
-            {this.renderSeekbar()}
-          </View>
           <View
             style={[styles.controls.column, styles.controls.bottomControlGroup]}
           >
             {this.renderPlayPause()}
-            {this.renderTitle()}
+            <View style={styles.controls.seekbar}>{this.renderSeekbar()}</View>
             {this.renderTimer()}
           </View>
         </Image>
@@ -104,7 +173,33 @@ const styles = {
       justifyContent: 'space-between',
     },
   }),
-
+  seek: StyleSheet.create({
+    track: {
+      alignSelf: 'stretch',
+      justifyContent: 'center',
+      backgroundColor: '#333',
+      height: 4,
+      marginLeft: 8,
+      marginRight: 8,
+    },
+    fill: {
+      alignSelf: 'flex-start',
+      height: 2,
+      width: 1,
+    },
+    handle: {
+      position: 'absolute',
+      marginTop: -21,
+      marginLeft: -24,
+      padding: 16,
+      paddingBottom: 4,
+    },
+    circle: {
+      borderRadius: 20,
+      height: 12,
+      width: 12,
+    },
+  }),
   controls: StyleSheet.create({
     row: {
       flexDirection: 'row',
@@ -124,7 +219,7 @@ const styles = {
       resizeMode: 'stretch',
     },
     control: {
-      padding: 16,
+      padding: 8,
     },
     text: {
       backgroundColor: 'transparent',
@@ -151,9 +246,9 @@ const styles = {
       alignSelf: 'stretch',
       alignItems: 'center',
       justifyContent: 'center',
+      flex: 1,
+      flexDirection: 'column',
       zIndex: 100,
-      marginTop: 24,
-      marginBottom: 8,
     },
     topControlGroup: {
       alignSelf: 'stretch',
@@ -169,8 +264,6 @@ const styles = {
       alignItems: 'center',
       justifyContent: 'space-between',
       flexDirection: 'row',
-      marginLeft: 12,
-      marginRight: 12,
       marginBottom: 0,
     },
     volume: {
@@ -181,7 +274,6 @@ const styles = {
     },
     playPause: {
       position: 'relative',
-      width: 80,
       zIndex: 0,
     },
     title: {
@@ -193,9 +285,7 @@ const styles = {
     titleText: {
       textAlign: 'center',
     },
-    timer: {
-      width: 80,
-    },
+    timer: {},
     timerText: {
       backgroundColor: 'transparent',
       color: '#FFF',
