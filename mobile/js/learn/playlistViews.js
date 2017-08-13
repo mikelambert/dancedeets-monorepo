@@ -7,6 +7,7 @@
 import React from 'react';
 import {
   AlertIOS,
+  Animated,
   Dimensions,
   FlatList,
   Image,
@@ -22,7 +23,7 @@ import { connect } from 'react-redux';
 import shallowEqual from 'fbjs/lib/shallowEqual';
 import styleEqual from 'style-equal';
 import upperFirst from 'lodash/upperFirst';
-import Video from 'react-native-video-controls';
+import VideoPlayer from './VideoPlayer';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import type { Style } from 'dancedeets-common/js/styles';
 import { Playlist } from 'dancedeets-common/js/tutorials/models';
@@ -542,12 +543,15 @@ class _PlaylistView extends React.Component {
   }
 
   async loadPlayerUrl(video) {
+    let videoUrl = null;
     try {
       const youtubeInfo = await getYoutubeInfo(video.youtubeId);
-      const videoUrl = youtubeInfo.formats.find(x => x.itag == 22).url;
-      this.setState({ videoUrl });
+      videoUrl = youtubeInfo.formats.find(x => x.itag == 22).url;
     } catch (err) {
       console.error('Error loading video', err);
+    }
+    if (videoUrl) {
+      this.setState({ videoUrl });
     }
   }
 
@@ -562,13 +566,12 @@ class _PlaylistView extends React.Component {
     const height = Dimensions.get('window').width * video.height / video.width;
     return (
       <View style={styles.container}>
-        <Video
+        <VideoPlayer
           // Updating params
           source={{ uri: videoUrl }}
           paused={!this.state.isPlaying || !this.state.onScreen} // auto-play when loading a tutorial
           // Steady params
           controlTimeout={4000}
-          showFullscreenButton={false}
           loop={false}
           ignoreSilentSwitch="ignore"
           style={{ alignSelf: 'stretch', height }}
