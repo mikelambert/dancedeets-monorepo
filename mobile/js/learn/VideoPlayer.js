@@ -8,6 +8,7 @@ import React from 'react';
 import {
   Animated,
   Image,
+  PanResponder,
   Platform,
   StyleSheet,
   Text,
@@ -64,6 +65,28 @@ export default class MyVideoPlayer extends VideoPlayer {
     ]).start();
   }
 
+  initSeekPanResponder() {
+    this.player.seekPanResponder = PanResponder.create({
+      onStartShouldSetPanResponder: (evt, gestureState) => true,
+      onMoveShouldSetPanResponder: (evt, gestureState) => true,
+      onPanResponderGrant: (evt, gestureState) =>
+        this.setState({ seeking: true }),
+      onPanResponderMove: (evt, gestureState) => {
+        const position = this.state.seekerOffset + gestureState.dx;
+        this.setSeekerPosition(position);
+      },
+      onPanResponderRelease: (evt, gestureState) => {
+        const time = this.calculateTimeFromSeekerPosition();
+        if (time >= this.state.duration && !this.state.loading) {
+          this.events.onEnd();
+          this.setState({ seeking: false, paused: true });
+        } else {
+          this.seekTo(time);
+          this.setState({ seeking: false });
+        }
+      },
+    });
+  }
   renderTopControls() {
     return null;
   }
