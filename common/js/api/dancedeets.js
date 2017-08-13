@@ -5,10 +5,11 @@
  */
 
 import querystring from 'querystring';
-import fetch from 'node-fetch';
 import { timeout, retryWithBackoff } from './timeouts';
 
 const DEV_SERVER = false;
+
+type FetchFunction = (url: string, params: Object) => Promise<Object>;
 
 function getUrl(version: string, path: string, args: Object) {
   let schemeHost = null;
@@ -28,6 +29,7 @@ function getUrl(version: string, path: string, args: Object) {
 }
 
 export async function performRequest(
+  fetch: FetchFunction,
   path: string,
   args: Object,
   postArgs: ?Object | null,
@@ -65,14 +67,6 @@ export async function performRequest(
     );
     throw e;
   }
-}
-
-export function createRequest(
-  path: string,
-  args: Object,
-  postArgs: ?Object | null
-): () => Promise<Object> {
-  return () => performRequest(path, args, postArgs);
 }
 
 export function idempotentRetry(

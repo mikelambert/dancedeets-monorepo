@@ -13,7 +13,6 @@ import { Event } from 'dancedeets-common/js/events/models';
 import type { TimePeriod } from 'dancedeets-common/js/events/search';
 import { sortString } from 'dancedeets-common/js/util/sort';
 import {
-  createRequest,
   idempotentRetry,
   performRequest as realPerformRequest,
 } from 'dancedeets-common/js/api/dancedeets';
@@ -46,7 +45,7 @@ async function performRequest(
     locale,
     access_token: token ? token.accessToken : null,
   });
-  return await realPerformRequest(path, newArgs, newPostArgs, '1.4');
+  return await realPerformRequest(fetch, path, newArgs, newPostArgs, '1.4');
 }
 
 export async function isAuthenticated() {
@@ -87,7 +86,7 @@ export async function auth(data: ?Object) {
   const finalData = { ...saveForAuth, ...data };
   saveForAuth = {};
 
-  return idempotentRetry(2000, createRequest('auth', {}, finalData));
+  return idempotentRetry(2000, () => performRequest('auth', {}, finalData));
 }
 
 export async function feed(url: string) {
@@ -150,7 +149,9 @@ export async function getAddEvents(): Promise<> {
 
 export async function userInfo() {
   await verifyAuthenticated('userInfo');
-  return await retryWithBackoff(2000, 2, 5, createRequest('user/info', {}));
+  return await retryWithBackoff(2000, 2, 5, () =>
+    performRequest('user/info', {})
+  );
 }
 
 export async function addEvent(eventId: string) {
@@ -158,11 +159,8 @@ export async function addEvent(eventId: string) {
     return null;
   }
   await verifyAuthenticated('addEvent');
-  return await retryWithBackoff(
-    2000,
-    2,
-    3,
-    createRequest('events_add', { event_id: eventId }, { event_id: eventId })
+  return await retryWithBackoff(2000, 2, 3, () =>
+    performRequest('events_add', { event_id: eventId }, { event_id: eventId })
   );
 }
 

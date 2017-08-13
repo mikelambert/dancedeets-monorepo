@@ -20,7 +20,7 @@ import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
 import Collapse, { Panel } from 'rc-collapse';
 import querystring from 'querystring';
 import createBrowserHistory from 'history/createBrowserHistory';
-import { performRequest } from 'dancedeets-common/js/api/dancedeets';
+import { performRequest as realPerformRequest } from 'dancedeets-common/js/api/dancedeets';
 import { timeout } from 'dancedeets-common/js/api/timeouts';
 import { sortNumber } from 'dancedeets-common/js/util/sort';
 import { intlWeb } from 'dancedeets-common/js/intl';
@@ -74,6 +74,20 @@ function insertEvery<T>(
         ? newArray.concat(member, insertion(i))
         : newArray.concat(member),
     []
+  );
+}
+
+async function performRequest(
+  path: string,
+  args: Object,
+  postArgs: ?Object | null
+): Promise<Object> {
+  return await realPerformRequest(
+    window.fetch,
+    path,
+    newArgs,
+    newPostArgs,
+    '2.0'
   );
 }
 
@@ -602,8 +616,7 @@ export async function search(
       ...args,
       skip_people: 1, // We don't need to auto-fetch people, since it is on a different tab
     },
-    {},
-    '2.0'
+    {}
   );
   response.featuredInfos = response.featuredInfos.map(x => ({
     ...x,
@@ -658,7 +671,7 @@ class _PeopleList extends React.Component {
         location: this.props.response.query.location,
         locale: this.props.response.query.locale,
       };
-      const response = await performRequest('people', args, args, '2.0');
+      const response = await performRequest('people', args, args);
       this.setState({ people: response.people });
     } catch (e) {
       console.error(e);
