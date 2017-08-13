@@ -76,37 +76,33 @@ export default class MyVideoPlayer extends VideoPlayer {
      */
   renderSeekbar() {
     return (
-      <View
-        style={styles.seek.track}
-        onLayout={event => {
-          this.player.seekerWidth = event.nativeEvent.layout.width;
-        }}
-      >
+      <View style={styles.seek.trackOuter}>
+        <View
+          style={styles.seek.track}
+          onLayout={event => {
+            this.player.seekerWidth = event.nativeEvent.layout.width;
+          }}
+        >
+          <View
+            style={[
+              styles.seek.fill,
+              {
+                width: this.state.seekerFillWidth,
+                backgroundColor: this.props.seekColor || '#FFF',
+              },
+            ]}
+          />
+        </View>
         <View
           style={[
-            styles.seek.fill,
+            styles.seek.handle,
             {
-              width: this.state.seekerFillWidth,
-              backgroundColor: this.props.seekColor || '#FFF',
+              left: this.state.seekerPosition,
             },
           ]}
           {...this.player.seekPanResponder.panHandlers}
         >
-          <View
-            style={[
-              styles.seek.handle,
-              {
-                left: this.state.seekerPosition,
-              },
-            ]}
-          >
-            <View
-              style={[
-                styles.seek.circle,
-                { backgroundColor: this.props.seekColor || '#FFF' },
-              ]}
-            />
-          </View>
+          <View style={[styles.seek.circle, { backgroundColor: '#FFF' }]} />
         </View>
       </View>
     );
@@ -174,25 +170,24 @@ const styles = {
     },
   }),
   seek: StyleSheet.create({
-    track: {
+    trackOuter: {
       alignSelf: 'stretch',
       justifyContent: 'center',
-      backgroundColor: '#333',
-      height: 4,
       marginLeft: 8,
       marginRight: 8,
     },
+    track: {
+      backgroundColor: '#333',
+      height: 4,
+    },
     fill: {
       alignSelf: 'flex-start',
+      marginTop: 1,
       height: 2,
       width: 1,
     },
     handle: {
       position: 'absolute',
-      marginTop: -21,
-      marginLeft: -24,
-      padding: 16,
-      paddingBottom: 4,
     },
     circle: {
       borderRadius: 20,
