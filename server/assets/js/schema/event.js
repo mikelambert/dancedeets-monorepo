@@ -8,7 +8,7 @@ import moment from 'moment';
 import { SearchEvent, Event } from 'dancedeets-common/js/events/models';
 
 function formatSchemaDate(dateTime) {
-  return moment(dateTime).format('YYYY-MM-DD[T]HH:mm:ss');
+  return dateTime.format('YYYY-MM-DD[T]HH:mm:ss');
 }
 
 export function getEventSchema(event: Event | SearchEvent) {
@@ -18,14 +18,14 @@ export function getEventSchema(event: Event | SearchEvent) {
     name: event.name,
     mainEntityOfPage: event.getUrl(),
     url: event.getUrl(),
-    startDate: formatSchemaDate(event.start_time),
+    startDate: formatSchemaDate(event.getStartMoment()),
     description: event.description,
   };
   if (event.admins) {
     schema.organizer = event.admins.map(x => x.name).join(', ');
   }
   if (event.end_time) {
-    schema.endDate = formatSchemaDate(event.end_time);
+    schema.endDate = formatSchemaDate(event.getEndMoment());
   }
   if (event.picture) {
     schema.image = event.picture.source;
