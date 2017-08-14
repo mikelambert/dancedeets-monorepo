@@ -85,8 +85,8 @@ async function performRequest(
   return await realPerformRequest(
     window.fetch,
     path,
-    newArgs,
-    newPostArgs,
+    args,
+    postArgs,
     '2.0'
   );
 }
