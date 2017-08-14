@@ -82,13 +82,7 @@ async function performRequest(
   args: Object,
   postArgs: ?Object | null
 ): Promise<Object> {
-  return await realPerformRequest(
-    window.fetch,
-    path,
-    args,
-    postArgs,
-    '2.0'
-  );
+  return await realPerformRequest(window.fetch, path, args, postArgs, '2.0');
 }
 
 export class HorizontalEventFlyer extends React.Component {
