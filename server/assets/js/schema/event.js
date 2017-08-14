@@ -90,7 +90,7 @@ export function getArticleSchema(event: Event) {
         height: 60,
       },
     },
-    datePublished: formatSchemaDate(datePublished),
+    datePublished: formatSchemaDate(moment(datePublished)),
     author: {
       '@type': 'Organization',
       name: 'DanceDeets',
