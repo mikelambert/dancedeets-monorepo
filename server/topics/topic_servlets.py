@@ -106,7 +106,7 @@ class TopicHandler(base_servlet.BaseRequestHandler):
         search_query.extra_fields = ['name', 'description']
         search_results = search.Search(search_query).get_search_results(prefilter=prefilter)
 
-        json_search_response = api.build_search_results_api(None, search_query, search_results, (2, 0), need_full_event=False, center_latlng=None, southwest=None, northeast=None)
+        json_search_response = api.build_search_results_api(None, search_query, search_results, (2, 0), need_full_event=False, geocode=None, distance=None)
 
         videos = get_videos_for(topic.youtube_query)
 
