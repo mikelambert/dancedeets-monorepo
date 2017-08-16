@@ -54,8 +54,8 @@ def should_post_on_event_wall(auth_token, db_event):
     if not db_event.public:
         logging.info("Event is not public")
         return False
-    if db_event.attendee_count < 20:
-        logging.warning("Skipping event due to <20 attendees: %s", db_event.attendee_count)
+    if db_event.attendee_count < 10:
+        logging.warning("Skipping event due to <10 attendees: %s", db_event.attendee_count)
         return False
     if db_event.attendee_count > 600:
         logging.warning("Skipping event due to 600+ attendees: %s", db_event.attendee_count)
