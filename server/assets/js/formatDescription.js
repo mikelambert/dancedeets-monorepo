@@ -85,12 +85,41 @@ class Formatter {
     this.splitNewlines(this.str.slice(index), matches.length);
   }
 
+  addText(str) {
+    if (!str) {
+      return;
+    }
+    const remappers = {
+      snapchat: username =>
+        <a href={`http://www.snapchat.com/add/${username}`}>{username}</a>,
+    };
+    let found = false;
+    for (const keyword of Object.keys(remappers)) {
+      const reString = `^(\\b${keyword}\\s*[:-]\\s*)([\\w._-]+)`;
+      const re = new RegExp(reString, 'i');
+      const m = re.exec(str);
+      if (m) {
+        const fullMatchedString = m[1] + m[2];
+        const startIndex = m.indexOf(fullMatchedString);
+        const endIndex = startIndex + fullMatchedString.length;
+        this.addText(str.slice(0, startIndex));
+        this.elements.push(m[1]);
+        this.elements.push(remappers[keyword](m[2]));
+        this.addText(str.slice(endIndex, str.length));
+        found = true;
+        break;
+      }
+    }
+    if (!found) {
+      this.elements.push(str);
+    }
+  }
   splitNewlines(str, i) {
     const parts = str.split(/\n|\r/);
 
     parts.forEach((part, j) => {
       if (part) {
-        this.elements.push(part);
+        this.addText(part);
       }
       if (j < parts.length - 1) {
         this.elements.push(<br key={`${i}.${j}`} />);
