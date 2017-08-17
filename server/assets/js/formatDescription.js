@@ -86,6 +86,26 @@ class Formatter {
         </div>
       );
     } else if (
+      parsedUrl.host === 'www.youtube.com' &&
+      parsedUrl.pathname === '/playlist' &&
+      parsedUrl.query &&
+      parsedUrl.query.list
+    ) {
+      const playlistId = parsedUrl.query.list;
+      this.elements.push(
+        <div key={i} className="video-container">
+          <iframe
+            id="ytplayer"
+            type="text/html"
+            width="640"
+            height="360"
+            src={`https://www.youtube.com/embed/videoseries?list=${playlistId}`}
+            frameBorder="0"
+            allowFullscreen
+          />
+        </div>
+      );
+    } else if (
       parsedUrl.host === 'www.facebook.com' ||
       (parsedUrl.pathname && !/^\/(?:events|groups|)/.test(parsedUrl.pathname))
     ) {
