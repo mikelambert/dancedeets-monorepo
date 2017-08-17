@@ -48,11 +48,30 @@ class SoundCloud extends React.Component {
 
   render() {
     if (this.state.embedCode) {
-      console.log(this.state.embedCode);
-      return <div dangerouslySetInnerHTML={{ __html: this.state.embedCode }} />;
+      return <div dangerouslySetInnerHTML={{ __html: this.state.embedCode }} />; // eslint-disable-line react/no-danger
     } else {
       return <a href={this.props.url}>{this.props.url}</a>;
     }
+  }
+}
+
+class FacebookPage extends React.Component {
+  props: {
+    username: string,
+  };
+
+  render() {
+    return (
+      <FBPage
+        appId={this.props.username}
+        href={`https://www.facebook.com/${this.props.username}/`}
+        height={300}
+        smallHeader={false}
+        adaptContainerWidth
+        showFacepile
+        tabs={['messages']}
+      />
+    );
   }
 }
 
@@ -92,10 +111,20 @@ class Formatter {
     const remappers = {
       snapchat: username =>
         <a href={`http://www.snapchat.com/add/${username}`}>{username}</a>,
+      facebook: username =>
+        <a href={`https://www.facebook.com/${username}`}>{username}</a>,
+      instagram: username =>
+        <a href={`https://instagram.com/${username.replace('@', '')}`}>
+          {username}
+        </a>,
+      twitter: username =>
+        <a href={`https://twitter.com/${username.replace('@', '')}`}>
+          {username}
+        </a>,
     };
     let found = false;
     for (const keyword of Object.keys(remappers)) {
-      const reString = `^(\\b${keyword}\\s*[:-]\\s*)([\\w._-]+)`;
+      const reString = `^(\\b${keyword}\\s*[:-]\\s*)(@?[\\w._-]+)`;
       const re = new RegExp(reString, 'i');
       const m = re.exec(str);
       if (m) {
@@ -189,18 +218,7 @@ class Formatter {
         const splits = username.split('-');
         username = splits[splits.length - 1];
       }
-      this.elements.push(
-        <FBPage
-          key={i}
-          appId={username}
-          href={`https://www.facebook.com/${username}/`}
-          height={300}
-          smallHeader={false}
-          adaptContainerWidth
-          showFacepile
-          tabs={['messages']}
-        />
-      );
+      this.elements.push(<FacebookPage key={i} username={username} />);
     } else {
       this.elements.push(
         <a key={i} target={target} rel={rel} href={match.url}>{match.text}</a>
