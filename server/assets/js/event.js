@@ -32,6 +32,7 @@ import { getEventSchema, getArticleSchema } from './schema/event';
 import { getBreadcrumbsForEvent } from './schema/breadcrumbs';
 import { Message } from './intl';
 import { AmpImage, Card, ImagePrefix } from './ui';
+import FormatDescription from './formatDescription';
 
 /* intersperse: Return an array with the separator interspersed between
  * each element of the input array.
@@ -554,9 +555,7 @@ class Description extends React.Component {
           <span className="google-translate" id="google_translate_element" />
         </div>
         <div className="grey-top-border card-contents">
-          <FormatText>
-            {this.props.event.description}
-          </FormatText>
+          <FormatDescription>{this.props.event.description}</FormatDescription>
         </div>
       </Card>
     );
