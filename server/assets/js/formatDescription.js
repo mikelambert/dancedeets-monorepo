@@ -9,9 +9,52 @@ import Linkify from 'linkify-it';
 import tlds from 'tlds';
 import url from 'url';
 import FBPage from 'facebook-plugins/lib/FBPage';
+import querystring from 'querystring';
 
 const linkify = Linkify();
 linkify.tlds(tlds);
+
+class SoundCloud extends React.Component {
+  props: {
+    url: string,
+  };
+
+  state: {
+    embedCode: ?string,
+  };
+
+  constructor(props) {
+    super(props);
+    this.state = {
+      embedCode: null,
+    };
+  }
+
+  componentWillMount() {
+    this.loadEmbed();
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    this.loadEmbed();
+  }
+
+  async loadEmbed() {
+    const args = querystring.stringify({ url: this.props.url, format: 'json' });
+    const oembedUrl = `https://soundcloud.com/oembed?${args}`;
+    const result = await fetch(oembedUrl);
+    const data = await result.json();
+    this.setState({ embedCode: data.html });
+  }
+
+  render() {
+    if (this.state.embedCode) {
+      console.log(this.state.embedCode);
+      return <div dangerouslySetInnerHTML={{ __html: this.state.embedCode }} />;
+    } else {
+      return <a href={this.props.url}>{this.props.url}</a>;
+    }
+  }
+}
 
 class Formatter {
   str: string;
@@ -101,10 +144,12 @@ class Formatter {
             height="360"
             src={`https://www.youtube.com/embed/videoseries?list=${playlistId}`}
             frameBorder="0"
-            allowFullscreen
+            allowFullScreen
           />
         </div>
       );
+    } else if (parsedUrl.host === 'www.soundcloud.com') {
+      this.elements.push(<SoundCloud key={i} url={match.url} />);
     } else if (
       parsedUrl.host === 'www.facebook.com' ||
       (parsedUrl.pathname && !/^\/(?:events|groups|)/.test(parsedUrl.pathname))
@@ -120,7 +165,7 @@ class Formatter {
           key={i}
           appId={username}
           href={`https://www.facebook.com/${username}/`}
-          height="300"
+          height={300}
           smallHeader={false}
           adaptContainerWidth
           showFacepile
