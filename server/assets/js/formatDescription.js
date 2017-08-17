@@ -8,6 +8,7 @@ import React from 'react';
 import Linkify from 'linkify-it';
 import tlds from 'tlds';
 import url from 'url';
+import FBPage from 'facebook-plugins/lib/FBPage';
 
 const linkify = Linkify();
 linkify.tlds(tlds);
@@ -65,7 +66,6 @@ class Formatter {
     }
 
     const parsedUrl = url.parse(match.url, true);
-    console.log(parsedUrl);
     if (
       parsedUrl.host === 'www.youtube.com' &&
       parsedUrl.pathname === '/watch' &&
@@ -84,6 +84,28 @@ class Formatter {
             frameBorder="0"
           />
         </div>
+      );
+    } else if (
+      parsedUrl.host === 'www.facebook.com' ||
+      (parsedUrl.pathname && !/^\/(?:events|groups|)/.test(parsedUrl.pathname))
+    ) {
+      const pathname = parsedUrl.pathname;
+      let username = pathname.split('/')[1];
+      if (username.includes('-')) {
+        const splits = username.split('-');
+        username = splits[splits.length - 1];
+      }
+      this.elements.push(
+        <FBPage
+          key={i}
+          appId={username}
+          href={`https://www.facebook.com/${username}/`}
+          height="300"
+          smallHeader={false}
+          adaptContainerWidth
+          showFacepile
+          tabs={['messages']}
+        />
       );
     } else {
       this.elements.push(
