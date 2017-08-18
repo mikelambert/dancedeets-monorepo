@@ -75,7 +75,7 @@ gulp.task('compile:test-geonames', ['compile:test-geonames:build_cities_db']);
 const faviconsFilename = './dist/templates/favicon_tags.html';
 gulp.task(
   'compile:images:favicons:delete',
-  $.shell.task(`rm ${faviconsFilename}`)
+  $.shell.task(`rm -f ${faviconsFilename}`)
 );
 gulp.task('compile:images:favicons', ['compile:images:favicons:delete'], () =>
   gulp

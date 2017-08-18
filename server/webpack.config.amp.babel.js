@@ -38,6 +38,9 @@ module.exports = {
       canPrint: true,
     }),
   ],
+  resolve: {
+    extensions: ['.js', '.jsx'],
+  },
   module: {
     rules: [
       {
