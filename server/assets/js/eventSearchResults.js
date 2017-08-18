@@ -906,7 +906,7 @@ class ResultsPage extends React.Component {
     return (
       <div>
         <div className="container">
-          <div className="row" style={{ marginBottom: 20 }}>
+          <div className="row" style={{ marginTop: 20, marginBottom: 50 }}>
             <div className="col-xs-12">
               <SearchBox
                 query={this.props.query}
