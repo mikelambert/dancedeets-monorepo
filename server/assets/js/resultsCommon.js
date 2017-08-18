@@ -416,8 +416,10 @@ class _SearchBox extends React.Component {
     const formData = new FormData(this._form);
 
     const form = {};
-    [...formData.entries()].forEach(kv => {
-      form[kv[0]] = kv[1];
+    [...this._form.elements].forEach(field => {
+      if (field.name !== '') {
+        form[field.name] = field.value;
+      }
     });
     this.props.onNewSearch(form);
   }
