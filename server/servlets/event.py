@@ -133,11 +133,15 @@ class ShowEventHandler(base_servlet.BaseRequestHandler):
                 # Because minification interferes with html-validity when producing:
                 # <meta name=viewport content=width=device-width,minimum-scale=1,initial-scale=1,maximum-scale=1,user-scalable=no>
                 self.allow_minify = False
-                event_amp_css_filename = os.path.join(os.path.dirname(__file__), '..', 'dist-includes/css/eventAmp.css')
-                event_amp_css = open(event_amp_css_filename).read()
-                event_amp_css = re.sub(r'@-ms-viewport\s*{.*?}', '', event_amp_css)
-                event_amp_css = re.sub(r'!important', '', event_amp_css)
-                event_amp_css = event_amp_css.replace('url(..', 'url(/dist-' + self._get_static_version())
+                try:
+                    event_amp_css_filename = os.path.join(os.path.dirname(__file__), '..', 'dist-includes/css/eventAmp.css')
+                    event_amp_css = open(event_amp_css_filename).read()
+                    event_amp_css = re.sub(r'@-ms-viewport\s*{.*?}', '', event_amp_css)
+                    event_amp_css = re.sub(r'!important', '', event_amp_css)
+                    event_amp_css = event_amp_css.replace('url(..', 'url(/dist-' + self._get_static_version())
+                except IOError as e:
+                    logging.exception('Failed to load AMP CSS')
+                    event_amp_css = ''
                 self.display['event_amp_stylesheet'] = event_amp_css
                 self.render_template('event_amp')
             else:
