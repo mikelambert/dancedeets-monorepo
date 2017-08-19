@@ -25,9 +25,9 @@
 
 {% block bottom_javascript %}
 {% if selected_tab == 'calendar' %}
-<script src="{{static_dir}}/js/calendarExec.js"></script>
+<script src="{{ static_path('calendarExec.js') }}"></script>
 {% else %}
-<script src="{{static_dir}}/js/eventSearchResultsExec.js"></script>
+<script src="{{ static_path('eventSearchResultsExec.js') }}"></script>
 {% endif %}
 
 <script type="text/javascript">

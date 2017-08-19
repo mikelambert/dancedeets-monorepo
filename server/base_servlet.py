@@ -85,7 +85,6 @@ class BareBaseRequestHandler(webapp2.RequestHandler, FacebookMixinHandler):
         self.jinja_env.filters['format_html'] = text.format_html
         self.jinja_env.filters['linkify'] = text.linkify
         self.jinja_env.filters['format_js'] = text.format_js
-        self.display['jsonify'] = json.dumps
         self.display['urllib_quote_plus'] = urllib.quote_plus
         self.display['urlencode'] = lambda x: urllib.quote_plus(x.encode('utf8'))
 
@@ -144,11 +143,22 @@ class BareBaseRequestHandler(webapp2.RequestHandler, FacebookMixinHandler):
         else:
             self.display['static_dir'] = '%s/dist-%s' % (base_server, self._get_static_version())
             self.display['hot_reloading'] = False
+            self.display['webpack_manifest'] = open('dist/chunk-manifest.json').read()
+        self.display['static_func'] = self._get_static_path_for
 
         logging.info("Appengine Request Headers:")
         for x in request.headers:
             if x.lower().startswith('x-'):
                 logging.info("%s: %s", x, request.headers[x])
+
+    def _get_static_path_for(self, path):
+        if os.environ.get('HOT_SERVER_PORT'):
+            return '%s/dist/js/%s' % (base_server, path)
+        else:
+            manifest = json.loads(open('dist/manifest.json').read())
+            chunked_filename = manifest[path]
+            final_path = '/dist/js/%s' % chunked_filename
+            return final_path
 
     def set_cookie(self, name, value, expires=None):
         cookie = Cookie.SimpleCookie()
