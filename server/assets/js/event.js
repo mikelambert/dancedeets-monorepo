@@ -330,7 +330,7 @@ class _EventLinks extends React.Component {
 
     const formattedStartEndText = formatStartEnd(
       event.getStartMoment(),
-      event.getEndMoment(),
+      event.end_time ? event.getEndMoment() : null,
       this.props.intl
     );
     let sourceName = event.source.name;
@@ -402,7 +402,8 @@ class _EventLinks extends React.Component {
           </div>
           <div>
             <ImagePrefix iconName="clock-o">
-              <FormatText>{formattedStartEndText}</FormatText>
+              <FormatText>{formattedStartEndText.first}</FormatText>
+              <FormatText>{formattedStartEndText.second}</FormatText>
             </ImagePrefix>
           </div>
           <div>

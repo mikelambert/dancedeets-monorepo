@@ -21,7 +21,6 @@ import {
 import { injectIntl, intlShape, defineMessages } from 'react-intl';
 import Locale from 'react-native-locale';
 import { connect } from 'react-redux';
-import MapView from 'react-native-maps';
 import GoogleApiAvailability from 'react-native-google-api-availability';
 import moment from 'moment';
 import geolib from 'geolib';
@@ -128,8 +127,8 @@ const AddToCalendarButton = injectIntl(_AddToCalendarButton);
 
 class _EventDateTime extends React.Component {
   props: {
-    start: string,
-    end: string,
+    start: moment,
+    end: moment,
 
     // Self-managed props
     intl: intlShape,
@@ -148,7 +147,7 @@ class _EventDateTime extends React.Component {
   }
 
   render() {
-    const formattedText = formatStartEnd(
+    const formattedLines = formatStartEnd(
       this.props.start,
       this.props.end,
       this.props.intl
@@ -158,7 +157,8 @@ class _EventDateTime extends React.Component {
         <View
           style={{ flexGrow: 1, alignItems: 'flex-start', paddingRight: 10 }}
         >
-          <Text style={eventStyles.detailText}>{formattedText}</Text>
+          <Text style={eventStyles.detailText}>{formattedLines.first}</Text>
+          <Text style={eventStyles.detailText}>{formattedLines.second}</Text>
           {this.props.children}
         </View>
       </SubEventLine>
@@ -222,21 +222,12 @@ class _EventVenue extends React.PureComponent {
         ) / 1000;
       distanceComponent = <Text>{formatDistance(this.props.intl, km)}</Text>;
     }
-    const map = this.props.venue.geocode
-      ? <EventMap venue={this.props.venue} defaultSize={0.005} />
-      : null;
-
     return (
       <SubEventLine icon={require('./images/location.png')}>
-        <HorizontalView>
-          <View style={{ flexShrink: 1 }}>
-            {components}
-            {distanceComponent}
-          </View>
-          <View style={{ minWidth: normalize(150), flexGrow: 1 }}>
-            {map}
-          </View>
-        </HorizontalView>
+        <View>
+          {components}
+          {distanceComponent}
+        </View>
       </SubEventLine>
     );
   }
@@ -973,7 +964,6 @@ class _FullEventView extends React.Component {
         >
           {name}
         </Text>
-        <EventCategories categories={this.props.event.annotations.categories} />
         <EventDateTime
           start={this.props.event.getStartMoment()}
           end={this.props.event.getEndMoment()}
@@ -983,8 +973,6 @@ class _FullEventView extends React.Component {
             style={eventStyles.addToCalendarButton}
           />
         </EventDateTime>
-        <EventRsvp event={this.props.event} />
-        <EventTickets event={this.props.event} />
         <TouchableOpacity onPress={this.onLocationClicked} activeOpacity={0.5}>
           <EventVenue
             style={eventStyles.rowLink}
@@ -992,9 +980,12 @@ class _FullEventView extends React.Component {
             currentPosition={this.props.currentPosition}
           />
         </TouchableOpacity>
+        <EventRsvp event={this.props.event} />
+        <EventTickets event={this.props.event} />
         <EventSource event={this.props.event} />
         <EventAddedBy event={this.props.event} />
         <EventOrganizers event={this.props.event} />
+        <EventCategories categories={this.props.event.annotations.categories} />
         <HorizontalView style={eventStyles.splitButtons}>
           <EventShare event={this.props.event} />
           <TranslateButton event={this.props.event} />
@@ -1050,6 +1041,8 @@ const eventStyles = StyleSheet.create({
   rowTitle: {
     fontSize: semiNormalize(18),
     lineHeight: semiNormalize(22),
+    fontWeight: 'bold',
+    marginBottom: 20,
   },
   rowTitlePadding: {
     margin: 5,
