@@ -140,15 +140,14 @@ class BareBaseRequestHandler(webapp2.RequestHandler, FacebookMixinHandler):
         self.display['mixpanel_api_key'] = 'f5d9d18ed1bbe3b190f9c7c7388df243' if self.request.app.prod_mode else '668941ad91e251d2ae9408b1ea80f67b'
 
         # If we are running behind a 'hot' server, let's point the static_dir appropriately
-        base_server = 'https://www.dancedeets.com' if self.request.app.prod_mode else 'http://dev.dancedeets.com:8080'
         if os.environ.get('HOT_SERVER_PORT'):
             # This must match the value we use in hotServer.j's staticPath
-            self.display['static_dir'] = '%s/dist' % base_server
+            self.display['static_dir'] = '%s/dist' % self._get_base_server()
             self.display['hot_reloading'] = True
         else:
-            self.display['static_dir'] = '%s/dist-%s' % (base_server, self._get_static_version())
+            self.display['static_dir'] = '%s/dist-%s' % (self._get_base_server(), self._get_static_version())
             self.display['hot_reloading'] = False
-        self.display['static_func'] = self._get_static_path_for
+        self.display['static_path'] = self._get_static_path_for
 
         logging.info("Appengine Request Headers:")
         for x in request.headers:
@@ -157,11 +156,15 @@ class BareBaseRequestHandler(webapp2.RequestHandler, FacebookMixinHandler):
 
     def _get_static_path_for(self, path):
         if os.environ.get('HOT_SERVER_PORT'):
-            return '%s/dist/js/%s' % (base_server, path)
+            extension = path.split('.')[-1]
+            return '%s/dist/%s/%s' % (self._get_base_server(), extension, path)
         else:
             chunked_filename = self.full_manifest[path]
             final_path = '/dist/js/%s' % chunked_filename
             return final_path
+
+    def _get_base_server(self):
+        return 'https://www.dancedeets.com' if self.request.app.prod_mode else 'http://dev.dancedeets.com:8080'
 
     def set_cookie(self, name, value, expires=None):
         cookie = Cookie.SimpleCookie()
