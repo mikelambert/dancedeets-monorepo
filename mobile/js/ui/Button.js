@@ -4,7 +4,6 @@
  * @flow
  */
 
-import LinearGradient from 'react-native-linear-gradient';
 import React from 'react';
 import {
   ActivityIndicator,
@@ -121,28 +120,6 @@ class Button extends React.Component {
         <View style={[styles.regularButton, styles.purpleButton]}>
           {this.renderContent()}
         </View>
-      );
-    } else {
-      let colors = null;
-      if (this.props.color === 'purple-gradient') {
-        colors = [purpleColors[1], purpleColors[3], purpleColors[3]];
-      } else if (this.props.color === 'yellow') {
-        colors = [yellowColors[1], yellowColors[4], yellowColors[4]];
-      } else if (this.props.color === 'red') {
-        colors = [redColors[0], redColors[1], redColors[1]];
-      } else if (this.props.color === 'green') {
-        colors = [greenColors[0], greenColors[1], greenColors[1]];
-      }
-      buttonContents = (
-        <LinearGradient
-          start={{ x: 0.0, y: 0.0 }}
-          end={{ x: 0.0, y: 1.0 }}
-          locations={[0.0, 0.7, 1.0]}
-          colors={colors}
-          style={[styles.button, size]}
-        >
-          {this.renderContent()}
-        </LinearGradient>
       );
     }
     if (this.props.enabled) {
