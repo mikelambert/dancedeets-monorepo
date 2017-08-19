@@ -155,13 +155,13 @@ class BareBaseRequestHandler(webapp2.RequestHandler, FacebookMixinHandler):
                 logging.info("%s: %s", x, request.headers[x])
 
     def _get_static_path_for(self, path):
-        if os.environ.get('HOT_SERVER_PORT'):
+        if self.request.app.prod_mode:
+            chunked_filename = self.full_manifest[path]
+            final_path = 'https://storage.googleapis.com/dancedeets-static/js/%s.gz' % chunked_filename
+            return final_path
+        else:
             extension = path.split('.')[-1]
             return '%s/dist/%s/%s' % (self._get_base_server(), extension, path)
-        else:
-            chunked_filename = self.full_manifest[path]
-            final_path = '/dist/js/%s' % chunked_filename
-            return final_path
 
     def _get_base_server(self):
         return 'https://www.dancedeets.com' if self.request.app.prod_mode else 'http://dev.dancedeets.com:8080'
