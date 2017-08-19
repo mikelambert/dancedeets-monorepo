@@ -1,5 +1,6 @@
 import webpack from 'webpack';
 import ExtractTextPlugin from 'extract-text-webpack-plugin';
+import OptimizeCssAssetsPlugin from 'optimize-css-assets-webpack-plugin';
 import path from 'path';
 import uncss from 'uncss';
 import { argv as env } from 'yargs';
@@ -91,6 +92,9 @@ const config = {
     new webpack.optimize.CommonsChunkPlugin({
       name: 'common',
       minChunks: isCommonModule,
+    }),
+    new OptimizeCssAssetsPlugin({
+      canPrint: true,
     }),
   ].filter(x => x),
   resolve: {
