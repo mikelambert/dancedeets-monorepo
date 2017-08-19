@@ -94,6 +94,11 @@ class BareBaseRequestHandler(webapp2.RequestHandler, FacebookMixinHandler):
 
         # set to false on various admin pages
         self.display['track_analytics'] = True
+
+        if not os.environ.get('HOT_SERVER_PORT'):
+            self.display['webpack_manifest'] = open('dist/chunk-manifest.json').read()
+        self.full_manifest = json.loads(open('dist/manifest.json').read())
+
         super(BareBaseRequestHandler, self).__init__(*args, **kwargs)
 
     def get(self, *args, **kwargs):
@@ -143,7 +148,6 @@ class BareBaseRequestHandler(webapp2.RequestHandler, FacebookMixinHandler):
         else:
             self.display['static_dir'] = '%s/dist-%s' % (base_server, self._get_static_version())
             self.display['hot_reloading'] = False
-            self.display['webpack_manifest'] = open('dist/chunk-manifest.json').read()
         self.display['static_func'] = self._get_static_path_for
 
         logging.info("Appengine Request Headers:")
@@ -155,8 +159,7 @@ class BareBaseRequestHandler(webapp2.RequestHandler, FacebookMixinHandler):
         if os.environ.get('HOT_SERVER_PORT'):
             return '%s/dist/js/%s' % (base_server, path)
         else:
-            manifest = json.loads(open('dist/manifest.json').read())
-            chunked_filename = manifest[path]
+            chunked_filename = self.full_manifest[path]
             final_path = '/dist/js/%s' % chunked_filename
             return final_path
 
