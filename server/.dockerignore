@@ -18,6 +18,9 @@ build
 # as they're never accessed or used...
 dist/js-server/*.map
 dist-includes/*/*.map
+# We have moved these all over to GCS
+dist/js
+dist/css
 
 # Source bits, that we actually don't need to run on the server
 amp/

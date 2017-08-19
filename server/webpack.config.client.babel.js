@@ -1,5 +1,9 @@
 import webpack from 'webpack';
 import ExtractTextPlugin from 'extract-text-webpack-plugin';
+import OptimizeCssAssetsPlugin from 'optimize-css-assets-webpack-plugin';
+import ManifestPlugin from 'webpack-manifest-plugin';
+import ChunkManifestPlugin from 'chunk-manifest-webpack2-plugin';
+import WebpackMd5Hash from 'webpack-md5-hash';
 import path from 'path';
 import uncss from 'uncss';
 import { argv as env } from 'yargs';
@@ -60,7 +64,8 @@ const config = {
   },
   output: {
     path: path.join(__dirname, 'dist/js'),
-    filename: '[name].js',
+    filename: prod ? '[name].[chunkhash].js' : '[name].js',
+    chunkFilename: prod ? '[name].[chunkhash].js' : '[name].js',
   },
   devtool: prod ? 'source-map' : 'cheap-eval-source-map',
   plugins: [
@@ -78,7 +83,7 @@ const config = {
       },
     }),
     new ExtractTextPlugin({
-      filename: '../css/[name].css',
+      filename: prod ? '../css/[name].[contenthash].css' : '../css/[name].css',
     }),
     ifProd(
       new webpack.optimize.UglifyJsPlugin({
@@ -92,6 +97,22 @@ const config = {
       name: 'common',
       minChunks: isCommonModule,
     }),
+    new OptimizeCssAssetsPlugin({
+      canPrint: true,
+    }),
+    ifProd(new webpack.HashedModuleIdsPlugin()),
+    ifProd(new WebpackMd5Hash()),
+    ifProd(
+      new ManifestPlugin({
+        fileName: '../manifest.json',
+      })
+    ),
+    ifProd(
+      new ChunkManifestPlugin({
+        filename: '../chunk-manifest.json',
+        manifestVariable: 'webpackManifest',
+      })
+    ),
   ].filter(x => x),
   resolve: {
     extensions: ['.js', '.jsx'],

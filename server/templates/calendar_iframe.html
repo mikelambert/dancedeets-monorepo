@@ -1,6 +1,6 @@
 <html>
 <head>
-  <link rel="stylesheet" href="{{static_dir}}/css/common.css">
+  <link rel="stylesheet" href="{{ static_path('common.css') }}">
 </head>
 <body style="background-color: white">
   <div id="react-parent">
@@ -10,7 +10,7 @@
     window._REACT_PROPS = {{ react_props|safe }};
     window._REACT_ID = 'react-parent';
   </script>
-  <script src="{{static_dir}}/js/common.js"></script>
-  <script src="{{static_dir}}/js/calendarExec.js"></script>
+  <script src="{{ static_path('common.js') }}"></script>
+  <script src="{{ static_path('calendarExec.js') }}"></script>
 </body>
 </html>
