@@ -54,7 +54,7 @@ export function formatStartTime(start: moment, intl: intlShape) {
   return formatTime(start, intl);
 }
 
-export function formatStartEnd(start: moment, end: moment, intl: intlShape) {
+export function formatStartEnd(start: moment, end: ?moment, intl: intlShape) {
   if (end) {
     const duration = end.diff(start);
     if (duration < moment.duration(1, 'days').asMilliseconds()) {

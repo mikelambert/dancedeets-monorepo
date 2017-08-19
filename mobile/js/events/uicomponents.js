@@ -43,7 +43,7 @@ import {
   Text,
 } from '../ui';
 import type { User, ThunkAction, Dispatch } from '../actions/types';
-import { linkColor, yellowColors } from '../Colors';
+import { linkColor, purpleColors } from '../Colors';
 import { add as CalendarAdd } from '../api/calendar';
 import { performRequest } from '../api/fb';
 import RsvpOnFB from '../api/fb-event-rsvp';
@@ -204,12 +204,7 @@ class _EventVenue extends React.PureComponent {
       const country = this.props.venue.address.country;
       components.push(
         <Text key="line2" style={[eventStyles.detailText, this.props.style]}>
-          {this.props.venue.cityState()}
-        </Text>
-      );
-      components.push(
-        <Text key="line3" style={[eventStyles.detailText, this.props.style]}>
-          {country}
+          {this.props.venue.cityStateCountry()}
         </Text>
       );
     }
@@ -459,6 +454,7 @@ const EventOrganizers = injectIntl(_EventOrganizers);
 class _EventRsvpControl extends React.PureComponent {
   props: {
     event: Event,
+    style?: Object,
 
     // Self-managed props
     intl: intlShape,
@@ -550,8 +546,8 @@ class _EventRsvpControl extends React.PureComponent {
           this.props.intl.formatMessage(messages[x])
         )}
         defaultIndex={this.state.defaultRsvp}
-        tintColor={yellowColors[0]}
-        style={{ marginTop: 5, flexGrow: 1 }}
+        tintColor={purpleColors[0]}
+        style={[{ marginTop: 5, flexGrow: 1 }, this.props.style]}
         tryOnChange={this.onRsvpChange}
       />
     );
@@ -588,13 +584,13 @@ class _EventRsvp extends React.Component {
       // TODO: Maybe make a pop-out to show the list-of-users-attending prepended by DD users
       const countsText = <Text style={eventStyles.detailText}>{counts}</Text>;
       const rsvpControl = this.props.event.source.name === 'Facebook Event'
-        ? <EventRsvpControl event={this.props.event} />
+        ? <EventRsvpControl
+            event={this.props.event}
+            style={{ marginRight: 20 }}
+          />
         : null;
       return (
-        <SubEventLine
-          icon={require('./images/attending.png')}
-          style={{ marginRight: 20 }}
-        >
+        <SubEventLine icon={require('./images/attending.png')}>
           {countsText}
           {rsvpControl}
         </SubEventLine>
@@ -659,72 +655,6 @@ class _TranslateButton extends React.PureComponent {
   }
 }
 const TranslateButton = injectIntl(_TranslateButton);
-
-class EventMap extends React.PureComponent {
-  props: {
-    venue: Venue,
-    defaultSize: number,
-    style?: ViewPropTypes.style,
-  };
-  state: {
-    mapOk: boolean,
-  };
-
-  constructor(props) {
-    super(props);
-    this.state = { mapOk: false };
-  }
-
-  componentDidMount() {
-    InteractionManager.runAfterInteractions(() => {
-      if (Platform.OS === 'ios') {
-        this.setState({ mapOk: true });
-      } else {
-        this.checkAndroidMaps();
-      }
-    });
-  }
-
-  async checkAndroidMaps() {
-    const available = await GoogleApiAvailability.isGooglePlayServicesAvailable();
-    this.setState({ mapOk: available });
-  }
-
-  render() {
-    if (!this.state.mapOk) {
-      return null;
-    }
-    if (!this.props.venue.geocode) {
-      return null;
-    }
-    // Rendering this map on iOS can cause some big hiccups on the Navigation swipe-in
-    // So we instead delay it until after the interactions (animations) have completed,
-    // to avoid any jank. It's often hidden below the fold anyway...
-    return (
-      <MapView
-        liteMode // Android-only, uses a simpler view that scrolls better.
-        style={[eventStyles.eventMap, this.props.style]}
-        region={{
-          latitude: this.props.venue.geocode.latitude,
-          longitude: this.props.venue.geocode.longitude,
-          latitudeDelta: this.props.defaultSize,
-          longitudeDelta: this.props.defaultSize,
-        }}
-        zoomEnabled={false}
-        rotateEnabled={false}
-        scrollEnabled={false}
-        pitchEnabled={false}
-      >
-        <MapView.Marker
-          coordinate={{
-            latitude: this.props.venue.geocode.latitude,
-            longitude: this.props.venue.geocode.longitude,
-          }}
-        />
-      </MapView>
-    );
-  }
-}
 
 async function openVenueWithApp(venue: Venue) {
   const latLong = `${venue.geocode.latitude},${venue.geocode.longitude}`;
@@ -1062,8 +992,12 @@ const eventStyles = StyleSheet.create({
   },
   shareIndent: {},
   detailLine: {
-    marginLeft: 5,
-    marginBottom: 10,
+    marginLeft: 10,
+    marginRight: 10,
+    marginBottom: 5,
+    paddingBottom: 5,
+    borderBottomColor: 'rgba(255, 255, 255, 0.3)',
+    borderBottomWidth: StyleSheet.hairlineWidth,
   },
   detailIcon: {
     marginTop: 2,
