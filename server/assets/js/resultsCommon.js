@@ -608,7 +608,9 @@ class _SearchBox extends React.Component {
                   autocomplete
                   id="keywords"
                   placeholder={
-                    focused ? 'Dance style, event name, etc' : 'Any style'
+                    focused
+                      ? 'Dance style, event name, dancer name, etc'
+                      : 'All styles and event types'
                   }
                   value={this.state.keywords}
                   onChange={(event, value) =>
