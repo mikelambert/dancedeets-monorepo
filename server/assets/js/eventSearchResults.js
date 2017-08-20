@@ -599,6 +599,9 @@ class ResultsList extends React.Component {
   }
 
   filterResults(events) {
+    if (!this.state.filters.length) {
+      return events;
+    }
     const filterSet = new Set(this.state.filters);
     const foundEvents = events.filter(e => {
       const overlapCategories = e.annotations.categories.filter(cat =>
@@ -660,9 +663,10 @@ class ResultsList extends React.Component {
     }
     const defaultKeys = ['featured', 'onebox', 'currentEvents', 'futureEvents'];
 
-    const eventFilters = (
-      <EventFilters events={resultEvents} onChange={this.onChange} />
-    );
+    const eventFilters = global.window &&
+      global.window.location.hash.includes('filter')
+      ? <EventFilters events={resultEvents} onChange={this.onChange} />
+      : null;
 
     return (
       <div style={{ backgroundColor: 'white', padding: 10 }}>
