@@ -175,8 +175,91 @@ class _DatePicker extends React.Component {
 }
 const DatePicker = wantsWindowSizes(injectIntl(_DatePicker));
 
+function findNextTabStop(el) {
+  const universe = global.window.document.querySelectorAll(
+    'input, button, select, textarea, a[href]'
+  );
+  const list = Array.prototype.filter.call(
+    universe,
+    item => item.tabIndex >= '0'
+  );
+  const index = list.indexOf(el);
+  return list[index + 1] || list[0];
+}
+
+function HandleSelection(event) {
+  const target = event.target;
+  const key = event.key;
+  if (!this.isOpen() || this.state.highlightedIndex == null) {
+    // menu is closed so there is no selection to accept -> do nothing
+    this.setState({ isOpen: false }, () => {
+      this.props.onSelect(target.value);
+      if (key === 'Enter') {
+        // Don't run this code for Tab, or it will double-Tab
+        findNextTabStop(target).focus();
+      }
+    });
+  } else {
+    // text entered + menu item has been highlighted + enter is hit -> update value to that of selected menu item, close the menu
+    event.preventDefault();
+    const item = this.getFilteredItems(this.props)[this.state.highlightedIndex];
+    const value = this.props.getItemValue(item);
+    this.setState(
+      {
+        isOpen: false,
+        highlightedIndex: null,
+      },
+      () => {
+        // this.refs.input.focus() // TODO: file issue
+        this.refs.input.setSelectionRange(value.length, value.length);
+        this.props.onSelect(value, item);
+      }
+    );
+  }
+}
+
+function HandleArrowDown(event) {
+  event.preventDefault();
+  const itemsLength = this.getFilteredItems(this.props).length;
+  if (!itemsLength) return;
+  const { highlightedIndex } = this.state;
+  let index;
+  if (highlightedIndex === itemsLength - 1) {
+    index = null;
+  } else if (highlightedIndex === null) {
+    index = 0;
+  } else {
+    index = highlightedIndex + 1;
+  }
+  this.setState({
+    highlightedIndex: index,
+    isOpen: true,
+  });
+}
+
+function HandleArrowUp(event) {
+  event.preventDefault();
+  const itemsLength = this.getFilteredItems(this.props).length;
+  if (!itemsLength) return;
+  const { highlightedIndex } = this.state;
+  let index;
+  if (highlightedIndex === 0) {
+    index = null;
+  } else if (highlightedIndex === null) {
+    index = itemsLength - 1;
+  } else {
+    index = highlightedIndex - 1;
+  }
+  this.setState({
+    highlightedIndex: index,
+    isOpen: true,
+  });
+}
+
 // Make Tab button behave like Enter button
-Autocomplete.keyDownHandlers.Tab = Autocomplete.keyDownHandlers.Enter;
+Autocomplete.keyDownHandlers.Tab = Autocomplete.keyDownHandlers.Enter = HandleSelection;
+Autocomplete.keyDownHandlers.ArrowDown = HandleArrowDown;
+Autocomplete.keyDownHandlers.ArrowUp = HandleArrowUp;
 
 class TextInput extends React.Component {
   props: {
