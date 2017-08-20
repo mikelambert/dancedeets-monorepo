@@ -158,7 +158,7 @@ class _EventDateTime extends React.Component {
           style={{ flexGrow: 1, alignItems: 'flex-start', paddingRight: 10 }}
         >
           <Text style={eventStyles.detailText}>{formattedLines.first}</Text>
-          <Text style={eventStyles.detailText}>{formattedLines.second}</Text>
+          <Text style={eventStyles.detailSubText}>{formattedLines.second}</Text>
           {this.props.children}
         </View>
       </SubEventLine>
@@ -215,7 +215,11 @@ class _EventVenue extends React.PureComponent {
           this.props.currentPosition.coords,
           this.props.venue.geocode
         ) / 1000;
-      distanceComponent = <Text>{formatDistance(this.props.intl, km)}</Text>;
+      distanceComponent = (
+        <Text style={eventStyles.detailSubText}>
+          {formatDistance(this.props.intl, km)}
+        </Text>
+      );
     }
     return (
       <SubEventLine icon={require('./images/location.png')}>
@@ -988,7 +992,12 @@ const eventStyles = StyleSheet.create({
   },
   detailText: {
     fontSize: semiNormalize(detailHeight),
-    lineHeight: semiNormalize(detailHeight + 2),
+    lineHeight: semiNormalize(detailHeight + 4),
+  },
+  detailSubText: {
+    fontSize: semiNormalize(detailHeight - 2),
+    lineHeight: semiNormalize(detailHeight - 2 + 4),
+    color: '#bbbbbb',
   },
   shareIndent: {},
   detailLine: {
