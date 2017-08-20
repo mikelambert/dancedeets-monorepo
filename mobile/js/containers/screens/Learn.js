@@ -5,7 +5,7 @@
  */
 
 import React from 'react';
-import { AppState, Image, StyleSheet, View } from 'react-native';
+import { AppState, Image, Platform, StyleSheet, View } from 'react-native';
 import type {
   NavigationAction,
   NavigationRoute,
@@ -126,7 +126,7 @@ export const LearnScreensNavigator = StackNavigator(
   },
   {
     cardStyle: {
-      backgroundColor: 'transparent',
+      backgroundColor: '#E9E9EF',
     },
   }
 );

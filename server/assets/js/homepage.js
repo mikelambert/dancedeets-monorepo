@@ -35,16 +35,4 @@ function setupHomepage() {
     duration: 8000,
     fade: 1500,
   });
-
-  // animate-on-hover
-  jQuery('.animate-on-hover').hover(e => {
-    const action = e.currentTarget.dataset.action;
-    jQuery(e.currentTarget).addClass(`animated ${action}`);
-  });
-  jQuery(
-    '.animate-on-hover'
-  ).bind('animationend webkitAnimationEnd oAnimationEnd MSAnimationEnd', e => {
-    const action = e.currentTarget.dataset.action;
-    jQuery(e.currentTarget).removeClass(`animated ${action}`);
-  });
 }

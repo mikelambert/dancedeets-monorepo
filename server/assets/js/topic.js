@@ -6,7 +6,10 @@
 
 import React from 'react';
 import Masonry from 'react-masonry-component';
+import FormatText from 'react-format-text';
 import moment from 'moment';
+import Helmet from 'react-helmet';
+import ShowMore from 'react-show-more';
 import upperFirst from 'lodash/upperFirst';
 import { injectIntl, intlShape } from 'react-intl';
 import { SearchEvent } from 'dancedeets-common/js/events/models';
@@ -14,9 +17,11 @@ import type { NewSearchResponse } from 'dancedeets-common/js/events/search';
 import { formatStartDateOnly } from 'dancedeets-common/js/dates';
 import { intlWeb } from 'dancedeets-common/js/intl';
 import { SquareEventFlyer } from './eventCommon';
-import { Card, ImagePrefix, wantsWindowSizes } from './ui';
+import { Card, ImagePrefix, Truncate, wantsWindowSizes } from './ui';
 import type { windowProps } from './ui';
 import { SelectButton } from './MultiSelectList';
+
+type Topic = Object;
 
 export class _TopicEvent extends React.Component {
   props: {
@@ -31,9 +36,8 @@ export class _TopicEvent extends React.Component {
   render() {
     const event = this.props.event;
 
-    const eventStart = moment(event.start_time);
     const eventStartDate = formatStartDateOnly(
-      eventStart.toDate(),
+      event.getStartMoment(),
       this.props.intl
     );
 
@@ -43,6 +47,7 @@ export class _TopicEvent extends React.Component {
           <SquareEventFlyer event={event} lazyLoad={this.props.lazyLoad} />
           <h3 className="event-title" style={{ marginTop: 10 }}>
             <a href={event.getUrl()}>
+              <ImagePrefix iconName="calendar" />
               <span>{event.name}</span>
             </a>
           </h3>
@@ -91,6 +96,7 @@ class Video extends React.Component {
               />
             </div>
             <h3 className="event-title" style={{ marginTop: 10 }}>
+              <ImagePrefix iconName="youtube" />
               {this.props.video.snippet.title}
             </h3>
           </a>
@@ -100,10 +106,135 @@ class Video extends React.Component {
   }
 }
 
+class Instagram extends React.Component {
+  props: {
+    instagram: Object,
+    width: number,
+    // lazyLoad: boolean,
+  };
+
+  processTitle(text) {
+    let newText = text;
+    newText = newText.split('\n')[0];
+    newText = newText.split('. ')[0];
+    newText = newText.split(' ').splice(0, 20).join(' ');
+    return newText;
+  }
+
+  render() {
+    const scaledHeight = Math.floor(100);
+    const title = this.processTitle(this.props.instagram.caption.text);
+    return (
+      <div className="grid-item" style={{ width: this.props.width * 2 }}>
+        <Card>
+          <a href={`https://www.instagram.com/p/${this.props.instagram.code}`}>
+            <div
+              style={{
+                height: 0,
+                paddingBottom: `${scaledHeight}%`,
+              }}
+            >
+              <img
+                src={this.props.instagram.images.low_resolution.url}
+                role="presentation"
+                style={{
+                  width: '100%',
+                }}
+              />
+            </div>
+            <h3 className="event-title" style={{ marginTop: 10 }}>
+              <ImagePrefix iconName="instagram" />
+              {title}
+            </h3>
+          </a>
+        </Card>
+      </div>
+    );
+  }
+}
+
+class SocialLink extends React.Component {
+  static Platforms = {
+    fb: {
+      link: 'https://www.facebook.com/',
+      imageName: 'facebook',
+    },
+    twitter: {
+      link: 'https://www.twitter.com/',
+      imageName: 'twitter',
+    },
+    instagram: {
+      link: 'https://www.instagram.com/',
+      imageName: 'instagram',
+    },
+    snapchat: {
+      link: 'https://www.snapchat.com/add/',
+      imageName: 'snapchat',
+    },
+    linkedin: {
+      link: 'https://www.linkedin.com/in/',
+      imageName: 'linkedin',
+    },
+    soundcloud: {
+      link: 'https://www.soundcloud.com/',
+      imageName: 'soundcloud',
+    },
+    youtube: {
+      link: 'https://www.youtube.com/',
+      imageName: 'youtube',
+    },
+    vimeo: {
+      link: 'https://www.vimeo.com/',
+      imageName: 'vimeo',
+    },
+    website: {
+      link: '',
+      imageName: 'external-link',
+    },
+    email: {
+      link: 'mailto:',
+      imageName: 'envelope',
+    },
+    // tumblr, skype, whatsapp, medium, reddit, pinterest, wechat, line, vimeo,
+  };
+
+  props: {
+    platform: string,
+    username: string,
+  };
+
+  render() {
+    const platformData = SocialLink.Platforms[this.props.platform];
+    const link = platformData.link + this.props.username;
+    const image = (
+      <ImagePrefix iconName={platformData.imageName}>
+        {this.props.username}
+      </ImagePrefix>
+    );
+    return <a href={link}>{image}</a>;
+  }
+}
+
+class SocialLinks extends React.Component {
+  props: {
+    topic: Topic,
+  };
+
+  render() {
+    const socialLinks = Object.keys(this.props.topic.social).map(key =>
+      <div key={key}>
+        <SocialLink platform={key} username={this.props.topic.social[key]} />
+      </div>
+    );
+    return <div>{socialLinks}</div>;
+  }
+}
+
 class _EventList extends React.Component {
   props: {
     response: NewSearchResponse,
     videos: Object,
+    instagrams: Object,
 
     // Self-managed props
     window: windowProps,
@@ -112,6 +243,7 @@ class _EventList extends React.Component {
   state: {
     showVideos: boolean,
     showEvents: boolean,
+    showInstagrams: boolean,
   };
 
   constructor(props) {
@@ -119,6 +251,7 @@ class _EventList extends React.Component {
     this.state = {
       showVideos: true,
       showEvents: true,
+      showInstagrams: true,
     };
   }
 
@@ -128,6 +261,9 @@ class _EventList extends React.Component {
       .reverse();
 
     const resultVideos = this.props.videos.items.filter(x => x.id.videoId);
+    const resultInstagramVideos = this.props.instagrams.items.filter(
+      x => x.type === 'video'
+    );
 
     const dateMap = {};
     if (this.state.showEvents) {
@@ -139,6 +275,14 @@ class _EventList extends React.Component {
       resultVideos.forEach(video => {
         dateMap[`${video.snippet.publishedAt}video${video.id.videoId}`] = {
           video,
+        };
+      });
+    }
+    if (this.state.showInstagrams) {
+      resultInstagramVideos.forEach(instagram => {
+        const timestamp = new Date(instagram.created_time * 1000).toISOString();
+        dateMap[`${timestamp}instagram${instagram.id}`] = {
+          instagram,
         };
       });
     }
@@ -172,6 +316,15 @@ class _EventList extends React.Component {
             width={width}
           />
         );
+      } else if (item.instagram) {
+        return (
+          <Instagram
+            key={item.instagram.id}
+            instagram={item.instagram}
+            lazyLoad={index < 50}
+            width={width}
+          />
+        );
       } else {
         console.log('Error unknown item:', item);
         return null;
@@ -184,20 +337,35 @@ class _EventList extends React.Component {
           <Card>
             Show:{' '}
             <div className="btn-group" role="group">
-              <SelectButton
-                toggleState={() => {
-                  this.setState({ showEvents: !this.state.showEvents });
-                }}
-                active={this.state.showEvents}
-                item={`${resultEvents.length} Events`}
-              />
-              <SelectButton
-                toggleState={() => {
-                  this.setState({ showVideos: !this.state.showVideos });
-                }}
-                active={this.state.showVideos}
-                item={`${resultVideos.length} Videos`}
-              />
+              {resultEvents.length
+                ? <SelectButton
+                    toggleState={() => {
+                      this.setState({ showEvents: !this.state.showEvents });
+                    }}
+                    active={this.state.showEvents}
+                    item={`${resultEvents.length} Events`}
+                  />
+                : null}
+              {resultVideos.length
+                ? <SelectButton
+                    toggleState={() => {
+                      this.setState({ showVideos: !this.state.showVideos });
+                    }}
+                    active={this.state.showVideos}
+                    item={`${resultVideos.length} Videos`}
+                  />
+                : null}
+              {resultInstagramVideos.length
+                ? <SelectButton
+                    toggleState={() => {
+                      this.setState({
+                        showInstagrams: !this.state.showInstagrams,
+                      });
+                    }}
+                    active={this.state.showInstagrams}
+                    item={`${resultInstagramVideos.length} Instagram Videos`}
+                  />
+                : null}
             </div>
           </Card>
           <Masonry>
@@ -210,4 +378,42 @@ class _EventList extends React.Component {
 }
 const EventList = wantsWindowSizes(_EventList);
 
-export default intlWeb(EventList);
+class TopicPage extends React.Component {
+  props: {
+    response: NewSearchResponse,
+    videos: Object,
+    instagrams: Object,
+    topic: Topic,
+  };
+
+  render() {
+    return (
+      <div>
+        <Helmet title={this.props.topic.title} />
+        <h2>{this.props.topic.title}</h2>
+        <div style={{ float: 'left' }}>
+          <img
+            height={300}
+            role="presentation"
+            src={this.props.topic.image_url}
+          />
+        </div>
+        <div style={{ float: 'right' }}>
+          <SocialLinks topic={this.props.topic} />
+        </div>
+        <Truncate height={250}>
+          <FormatText>{this.props.topic.description}</FormatText>
+        </Truncate>
+        <div style={{ clear: 'both' }} />
+        <EventList
+          response={this.props.response}
+          videos={this.props.videos}
+          instagrams={this.props.instagrams}
+        />
+      </div>
+    );
+  }
+}
+
+export const HelmetRewind = Helmet.rewind;
+export default intlWeb(TopicPage);

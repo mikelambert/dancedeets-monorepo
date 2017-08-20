@@ -23,11 +23,11 @@ class LookupGeoTarget(fb_api.LookupType):
         return (fb_api.USERLESS_UID, json.dumps(query, sort_keys=True), 'OBJ_GEO_TARGET')
 
 def facebook_post(auth_token, db_event):
-    link = common.campaign_url(db_event.id, 'fb_feed')
+    link = common.campaign_url(db_event, 'fb_feed')
     datetime_string = db_event.start_time.strftime('%s @ %s' % (common.DATE_FORMAT, common.TIME_FORMAT))
 
     page_id = auth_token.token_nickname
-    endpoint = 'v2.8/%s/feed' % page_id
+    endpoint = 'v2.9/%s/feed' % page_id
     fbl = fb_api.FBLookup(None, auth_token.oauth_token)
 
     post_values = {}
@@ -183,7 +183,7 @@ def post_on_event_wall(db_event):
         logging.error("Failed to find DanceDeets page access token.")
         return
 
-    url = common.campaign_url(db_event.id, 'fb_event_wall')
+    url = common.campaign_url(db_event, 'fb_event_wall')
     name = _get_posting_user(db_event) or "we've"
     messages = [
         ('Congrats, %(name)s added this dance event to DanceDeets, the site for street dance events worldwide! '
@@ -197,7 +197,7 @@ def post_on_event_wall(db_event):
     ]
     message = random.choice(messages) % {'name': name, 'url': url}
     logging.info("Attempting to post on event wall for %s", db_event.id)
-    result = fbl.fb.post('v2.5/%s/feed' % db_event.fb_event_id, None, {
+    result = fbl.fb.post('v2.9/%s/feed' % db_event.fb_event_id, None, {
         'message': message,
         'link': url,
     })

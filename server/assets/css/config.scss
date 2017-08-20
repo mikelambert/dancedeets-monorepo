@@ -17,26 +17,36 @@ $purple-light: #4C4D81;
 $purple-lighter: #656595;
 $purple-lightest: #8283A9;
 
-$blue-link: #70C0FF;
+$blue-link: #365899;
 
-$brand-primary:         $purple-lighter;
-$brand-success:         #5cb85c;
-$brand-info:            #5bc0de;
-$brand-warning:         #f0ad4e;
-$brand-danger:          #d9534f;
+$brand-primary: $purple-lighter;
+$brand-success: #5cb85c;
+$brand-info: #5bc0de;
+$brand-warning: #f0ad4e;
+$brand-danger: #d9534f;
 
-$text-color: white;
-$body-bg: $purple-dark;
+$text-color: black;
+$grey-background: #e9ebee;
+$body-bg: $grey-background;
 
-$state-info-text:                #000;
-$state-info-bg:                  $yellow-lightest;
-$state-info-border:              darken(adjust-hue($state-info-bg, -10), 7%);
+$text-on-white-background: #90949c;
+$text-on-grey-background: #333;
+
+$state-info-text: #000;
+$state-info-bg: $yellow-lightest;
+$state-info-border: darken(adjust-hue($state-info-bg, -10), 7%);
+
+$breakpoint-large: 850px;
+$breakpoint-large-minus-one: 849px;
+$breakpoint-medium: 768px;
+$breakpoint-medium-minus-one: 767px;
+$breakpoint-medium-minus-some: 737px;
 
 //TODO: Fix the form colors
-$btn-default-color:              $text-color;
-$btn-default-bg:                 $brand-primary;
-$btn-default-border:             lighten($brand-primary, 10%);
-$btn-primary-border:             lighten($brand-primary, 10%);
+$btn-default-color: white;
+$btn-default-bg: $brand-primary;
+$btn-default-border: lighten($brand-primary, 10%);
+$btn-primary-border: lighten($brand-primary, 10%);
 
 $input-bg: white;
 $input-bg-disabled: darken(white, 30%);
@@ -45,36 +55,38 @@ $hr-border: $purple-lightest;
 
 $flyer-border-color: $purple-lightest;
 
-$nav-link-hover-bg:                         $body-bg;
+$navbar-inverse-color: white;
+$navbar-inverse-bg: $purple-light;
+$nav-link-hover-bg: $purple-medium;
+$navbar-inverse-border: white;
+$navbar-inverse-link-color: white;
+$navbar-inverse-link-hover-color: $deetsYellowColor;
+$navbar-inverse-link-active-bg: $purple-medium;
+$navbar-inverse-toggle-hover-bg: $purple-medium;
+$dropdown-divider-bg: $purple-lightest;
 
-$nav-disabled-link-color:                   $yellow-lightest;
-$nav-disabled-link-hover-color:             $yellow-lightest;
+$nav-disabled-link-hover-color: $yellow-lightest;
 
+$nav-tabs-border-color: $text-on-grey-background;
 
-$nav-tabs-border-color:                     $yellow-medium;
+$nav-tabs-link-hover-border-color: $text-on-grey-background;
 
-$nav-tabs-link-hover-border-color:          $yellow-medium;
+$nav-tabs-active-link-hover-bg: $body-bg;
+$nav-tabs-active-link-hover-color: $text-on-grey-background;
+$nav-tabs-active-link-hover-border-color: $text-on-grey-background;
 
-$nav-tabs-active-link-hover-bg:             $body-bg;
-$nav-tabs-active-link-hover-color:          $yellow-medium;
-$nav-tabs-active-link-hover-border-color:   $yellow-medium;
-
-$nav-tabs-justified-link-border-color: $yellow-medium;
+$nav-tabs-justified-link-border-color: $text-on-grey-background;
 $nav-tabs-justified-active-link-border-color: $body-bg;
 
+$header-menu-hover-color: $deetsYellowColor;
 
-$header-menu-hover-color: $yellow-lighter;
-$header-background-color: $purple-darkest;
-
-$footer-color: $purple-darkest;
+$footer-color: #e0e0f0;
 $footer-border-color: $purple-medium;
-$footer-text-color: #fff;
+$footer-text-color: black;
 $footer-accent-color: $purple-medium;
 
 $headline-underline-main-color: $yellow-medium;
 $headline-underline-secondary-color: $purple-medium;
-
-
 
 $event-info-icon-color: white;
 $panel-default-text: white;
@@ -82,3 +94,8 @@ $panel-default-border: $blue-link;
 
 $link-color: $blue-link;
 $link-hover-color: lighten($link-color, 10%);
+
+// We have to stick this at the bottom,
+// since it defines a lot of variables "if they don't yet exist".
+// So ensure the above variables are populated first
+@import '~bootstrap-sass/assets/stylesheets/bootstrap/_variables.scss';

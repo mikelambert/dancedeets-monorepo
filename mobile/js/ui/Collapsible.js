@@ -3,13 +3,13 @@
  * @flow
  */
 
-import React, { Component, PropTypes } from 'react';
-
+import React from 'react';
+import PropTypes from 'prop-types';
 import { Animated, Easing, View } from 'react-native';
 
 const ANIMATED_EASING_PREFIXES = ['easeInOut', 'easeOut', 'easeIn'];
 
-class Collapsible extends Component {
+class Collapsible extends React.Component {
   static propTypes = {
     align: PropTypes.oneOf(['top', 'center', 'bottom']),
     collapsed: PropTypes.bool,

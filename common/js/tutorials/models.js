@@ -43,7 +43,7 @@ export class Playlist {
   }
 
   getUrl() {
-    return `http://www.dancedeets.com/tutorials/${this.getId()}`;
+    return `https://www.dancedeets.com/tutorials/${this.getId()}`;
   }
 
   getSectionListData(index: number) {

@@ -49,9 +49,8 @@ class City(object):
         return city_name
 
     def closer_than(self, latlng, distance):
-        lat_diff = (self.latitude - latlng[0])
-        lng_diff = (self.longitude - latlng[1])
-        return distance * distance > lat_diff * lat_diff + lng_diff * lng_diff
+        real_distance = math.get_distance(latlng, (self.latitude, self.longitude), use_km=True)
+        return real_distance < distance
 
 def _get_contained_cities(points, country=None):
     logging.info("citiesdb search location is %s", points)

@@ -79,7 +79,18 @@ const messages = defineMessages({
     defaultMessage: 'View Flyer',
     description: 'Title Bar for Viewing Flyer',
   },
+  cancelButton: {
+    id: 'buttons.cancel',
+    defaultMessage: 'Cancel',
+    description: 'Cancel button',
+  },
+  searchButton: {
+    id: 'buttons.search',
+    defaultMessage: 'Search',
+    description: 'Button to do the search',
+  },
 });
+
 class _SearchHeaderTitleSummary extends React.Component {
   props: {
     onPress: () => void,
@@ -159,7 +170,7 @@ class _SearchHeaderTitleSummary extends React.Component {
               name="md-search"
               size={20}
               color="black"
-              style={{ marginTop: 4, width: 20 }}
+              style={{ marginVertical: 2, width: 20 }}
             />
             {keywords}
             {spacer}
@@ -239,12 +250,15 @@ class EventListScreen extends React.Component {
       ...(screenProps.searchHeader.searchFormVisible
         ? {
             headerLeft: (
-              <NavButton onPress={screenProps.hideSearchForm} text="Cancel" />
+              <NavButton
+                onPress={screenProps.hideSearchForm}
+                text={screenProps.intl.formatMessage(messages.cancelButton)}
+              />
             ),
             headerRight: (
               <NavButton
                 onPress={screenProps.performSearch}
-                text="Search"
+                text={screenProps.intl.formatMessage(messages.searchButton)}
                 disabled={!screenProps.canSearch}
               />
             ),

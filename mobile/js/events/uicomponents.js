@@ -21,7 +21,6 @@ import {
 import { injectIntl, intlShape, defineMessages } from 'react-intl';
 import Locale from 'react-native-locale';
 import { connect } from 'react-redux';
-import MapView from 'react-native-maps';
 import GoogleApiAvailability from 'react-native-google-api-availability';
 import moment from 'moment';
 import geolib from 'geolib';
@@ -44,7 +43,7 @@ import {
   Text,
 } from '../ui';
 import type { User, ThunkAction, Dispatch } from '../actions/types';
-import { linkColor, yellowColors } from '../Colors';
+import { linkColor, purpleColors } from '../Colors';
 import { add as CalendarAdd } from '../api/calendar';
 import { performRequest } from '../api/fb';
 import RsvpOnFB from '../api/fb-event-rsvp';
@@ -128,8 +127,8 @@ const AddToCalendarButton = injectIntl(_AddToCalendarButton);
 
 class _EventDateTime extends React.Component {
   props: {
-    start: string,
-    end: string,
+    start: moment,
+    end: moment,
 
     // Self-managed props
     intl: intlShape,
@@ -148,7 +147,7 @@ class _EventDateTime extends React.Component {
   }
 
   render() {
-    const formattedText = formatStartEnd(
+    const formattedLines = formatStartEnd(
       this.props.start,
       this.props.end,
       this.props.intl
@@ -158,7 +157,8 @@ class _EventDateTime extends React.Component {
         <View
           style={{ flexGrow: 1, alignItems: 'flex-start', paddingRight: 10 }}
         >
-          <Text style={eventStyles.detailText}>{formattedText}</Text>
+          <Text style={eventStyles.detailText}>{formattedLines.first}</Text>
+          <Text style={eventStyles.detailSubText}>{formattedLines.second}</Text>
           {this.props.children}
         </View>
       </SubEventLine>
@@ -204,12 +204,7 @@ class _EventVenue extends React.PureComponent {
       const country = this.props.venue.address.country;
       components.push(
         <Text key="line2" style={[eventStyles.detailText, this.props.style]}>
-          {this.props.venue.cityState()}
-        </Text>
-      );
-      components.push(
-        <Text key="line3" style={[eventStyles.detailText, this.props.style]}>
-          {country}
+          {this.props.venue.cityStateCountry()}
         </Text>
       );
     }
@@ -220,23 +215,18 @@ class _EventVenue extends React.PureComponent {
           this.props.currentPosition.coords,
           this.props.venue.geocode
         ) / 1000;
-      distanceComponent = <Text>{formatDistance(this.props.intl, km)}</Text>;
+      distanceComponent = (
+        <Text style={eventStyles.detailSubText}>
+          {formatDistance(this.props.intl, km)}
+        </Text>
+      );
     }
-    const map = this.props.venue.geocode
-      ? <EventMap venue={this.props.venue} defaultSize={0.005} />
-      : null;
-
     return (
       <SubEventLine icon={require('./images/location.png')}>
-        <HorizontalView>
-          <View style={{ flexShrink: 1 }}>
-            {components}
-            {distanceComponent}
-          </View>
-          <View style={{ minWidth: normalize(150), flexGrow: 1 }}>
-            {map}
-          </View>
-        </HorizontalView>
+        <View>
+          {components}
+          {distanceComponent}
+        </View>
       </SubEventLine>
     );
   }
@@ -468,6 +458,7 @@ const EventOrganizers = injectIntl(_EventOrganizers);
 class _EventRsvpControl extends React.PureComponent {
   props: {
     event: Event,
+    style?: Object,
 
     // Self-managed props
     intl: intlShape,
@@ -559,8 +550,8 @@ class _EventRsvpControl extends React.PureComponent {
           this.props.intl.formatMessage(messages[x])
         )}
         defaultIndex={this.state.defaultRsvp}
-        tintColor={yellowColors[0]}
-        style={{ marginTop: 5, flexGrow: 1 }}
+        tintColor={purpleColors[0]}
+        style={[{ marginTop: 5, flexGrow: 1 }, this.props.style]}
         tryOnChange={this.onRsvpChange}
       />
     );
@@ -597,13 +588,13 @@ class _EventRsvp extends React.Component {
       // TODO: Maybe make a pop-out to show the list-of-users-attending prepended by DD users
       const countsText = <Text style={eventStyles.detailText}>{counts}</Text>;
       const rsvpControl = this.props.event.source.name === 'Facebook Event'
-        ? <EventRsvpControl event={this.props.event} />
+        ? <EventRsvpControl
+            event={this.props.event}
+            style={{ marginRight: 20 }}
+          />
         : null;
       return (
-        <SubEventLine
-          icon={require('./images/attending.png')}
-          style={{ marginRight: 20 }}
-        >
+        <SubEventLine icon={require('./images/attending.png')}>
           {countsText}
           {rsvpControl}
         </SubEventLine>
@@ -668,72 +659,6 @@ class _TranslateButton extends React.PureComponent {
   }
 }
 const TranslateButton = injectIntl(_TranslateButton);
-
-class EventMap extends React.PureComponent {
-  props: {
-    venue: Venue,
-    defaultSize: number,
-    style?: ViewPropTypes.style,
-  };
-  state: {
-    mapOk: boolean,
-  };
-
-  constructor(props) {
-    super(props);
-    this.state = { mapOk: false };
-  }
-
-  componentDidMount() {
-    InteractionManager.runAfterInteractions(() => {
-      if (Platform.OS === 'ios') {
-        this.state = { mapOk: true };
-      } else {
-        this.checkAndroidMaps();
-      }
-    });
-  }
-
-  async checkAndroidMaps() {
-    const available = await GoogleApiAvailability.isGooglePlayServicesAvailable();
-    this.setState({ mapOk: available });
-  }
-
-  render() {
-    if (!this.state.mapOk) {
-      return null;
-    }
-    if (!this.props.venue.geocode) {
-      return null;
-    }
-    // Rendering this map on iOS can cause some big hiccups on the Navigation swipe-in
-    // So we instead delay it until after the interactions (animations) have completed,
-    // to avoid any jank. It's often hidden below the fold anyway...
-    return (
-      <MapView
-        liteMode // Android-only, uses a simpler view that scrolls better.
-        style={[eventStyles.eventMap, this.props.style]}
-        region={{
-          latitude: this.props.venue.geocode.latitude,
-          longitude: this.props.venue.geocode.longitude,
-          latitudeDelta: this.props.defaultSize,
-          longitudeDelta: this.props.defaultSize,
-        }}
-        zoomEnabled={false}
-        rotateEnabled={false}
-        scrollEnabled={false}
-        pitchEnabled={false}
-      >
-        <MapView.Marker
-          coordinate={{
-            latitude: this.props.venue.geocode.latitude,
-            longitude: this.props.venue.geocode.longitude,
-          }}
-        />
-      </MapView>
-    );
-  }
-}
 
 async function openVenueWithApp(venue: Venue) {
   const latLong = `${venue.geocode.latitude},${venue.geocode.longitude}`;
@@ -973,18 +898,15 @@ class _FullEventView extends React.Component {
         >
           {name}
         </Text>
-        <EventCategories categories={this.props.event.annotations.categories} />
         <EventDateTime
-          start={this.props.event.start_time}
-          end={this.props.event.end_time}
+          start={this.props.event.getStartMoment()}
+          end={this.props.event.getEndMoment()}
         >
           <AddToCalendarButton
             event={this.props.event}
             style={eventStyles.addToCalendarButton}
           />
         </EventDateTime>
-        <EventRsvp event={this.props.event} />
-        <EventTickets event={this.props.event} />
         <TouchableOpacity onPress={this.onLocationClicked} activeOpacity={0.5}>
           <EventVenue
             style={eventStyles.rowLink}
@@ -992,9 +914,14 @@ class _FullEventView extends React.Component {
             currentPosition={this.props.currentPosition}
           />
         </TouchableOpacity>
+        <EventCategories categories={this.props.event.annotations.categories} />
+        <EventTickets event={this.props.event} />
+
+        <EventRsvp event={this.props.event} />
         <EventSource event={this.props.event} />
         <EventAddedBy event={this.props.event} />
         <EventOrganizers event={this.props.event} />
+
         <HorizontalView style={eventStyles.splitButtons}>
           <EventShare event={this.props.event} />
           <TranslateButton event={this.props.event} />
@@ -1034,13 +961,14 @@ const detailHeight = 15;
 const eventStyles = StyleSheet.create({
   thumbnail: {
     flexGrow: 1,
-    borderRadius: 5,
   },
   container: {
     backgroundColor: 'rgba(0, 0, 0, .6)',
   },
   splitButtons: {
     justifyContent: 'space-between',
+    marginTop: 20,
+    marginHorizontal: 10,
   },
   row: {
     justifyContent: 'flex-start',
@@ -1051,6 +979,8 @@ const eventStyles = StyleSheet.create({
   rowTitle: {
     fontSize: semiNormalize(18),
     lineHeight: semiNormalize(22),
+    fontWeight: 'bold',
+    marginBottom: 20,
   },
   rowTitlePadding: {
     margin: 5,
@@ -1066,12 +996,21 @@ const eventStyles = StyleSheet.create({
   },
   detailText: {
     fontSize: semiNormalize(detailHeight),
-    lineHeight: semiNormalize(detailHeight + 2),
+    lineHeight: semiNormalize(detailHeight + 4),
+  },
+  detailSubText: {
+    fontSize: semiNormalize(detailHeight - 2),
+    lineHeight: semiNormalize(detailHeight - 2 + 4),
+    color: '#bbbbbb',
   },
   shareIndent: {},
   detailLine: {
-    marginLeft: 5,
-    marginBottom: 10,
+    marginLeft: 10,
+    marginRight: 10,
+    marginBottom: 5,
+    paddingBottom: 5,
+    borderBottomColor: 'rgba(255, 255, 255, 0.3)',
+    borderBottomWidth: StyleSheet.hairlineWidth,
   },
   detailIcon: {
     marginTop: 2,

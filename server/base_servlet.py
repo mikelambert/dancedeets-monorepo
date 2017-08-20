@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+# -*-*- encoding: utf-8 -*-*-
 
 import base64
 import Cookie
@@ -11,6 +12,7 @@ import humanize
 import logging
 import random
 import os
+import re
 import traceback
 import urllib
 import urlparse
@@ -76,14 +78,6 @@ class BareBaseRequestHandler(webapp2.RequestHandler, FacebookMixinHandler):
         self.jinja_env.globals['zip'] = zip
         self.jinja_env.globals['len'] = len
 
-        # If we are running behind a 'hot' server, let's point the static_dir appropriately
-        if os.environ.get('HOT_SERVER_PORT'):
-            # This must match the value we use in hotServer.j's staticPath
-            self.display['static_dir'] = '/dist'
-            self.display['hot_reloading'] = True
-        else:
-            self.display['static_dir'] = '/dist-%s' % self._get_static_version()
-            self.display['hot_reloading'] = False
         # We can safely do this since there are very few ways others can modify self._errors
         self.display['errors'] = self._errors
         # functions, add these to some base display setup
@@ -91,7 +85,6 @@ class BareBaseRequestHandler(webapp2.RequestHandler, FacebookMixinHandler):
         self.jinja_env.filters['format_html'] = text.format_html
         self.jinja_env.filters['linkify'] = text.linkify
         self.jinja_env.filters['format_js'] = text.format_js
-        self.display['jsonify'] = json.dumps
         self.display['urllib_quote_plus'] = urllib.quote_plus
         self.display['urlencode'] = lambda x: urllib.quote_plus(x.encode('utf8'))
 
@@ -101,6 +94,11 @@ class BareBaseRequestHandler(webapp2.RequestHandler, FacebookMixinHandler):
 
         # set to false on various admin pages
         self.display['track_analytics'] = True
+
+        if not os.environ.get('HOT_SERVER_PORT'):
+            self.display['webpack_manifest'] = open('dist/chunk-manifest.json').read()
+        self.full_manifest = json.loads(open('dist/manifest.json').read())
+
         super(BareBaseRequestHandler, self).__init__(*args, **kwargs)
 
     def get(self, *args, **kwargs):
@@ -141,10 +139,32 @@ class BareBaseRequestHandler(webapp2.RequestHandler, FacebookMixinHandler):
 
         self.display['mixpanel_api_key'] = 'f5d9d18ed1bbe3b190f9c7c7388df243' if self.request.app.prod_mode else '668941ad91e251d2ae9408b1ea80f67b'
 
+        # If we are running behind a 'hot' server, let's point the static_dir appropriately
+        if os.environ.get('HOT_SERVER_PORT'):
+            # This must match the value we use in hotServer.j's staticPath
+            self.display['static_dir'] = '%s/dist' % self._get_base_server()
+            self.display['hot_reloading'] = True
+        else:
+            self.display['static_dir'] = '%s/dist-%s' % (self._get_base_server(), self._get_static_version())
+            self.display['hot_reloading'] = False
+        self.display['static_path'] = self._get_static_path_for
+
         logging.info("Appengine Request Headers:")
         for x in request.headers:
             if x.lower().startswith('x-'):
                 logging.info("%s: %s", x, request.headers[x])
+
+    def _get_static_path_for(self, path):
+        if self.request.app.prod_mode:
+            chunked_filename = self.full_manifest[path]
+            final_path = 'https://storage.googleapis.com/dancedeets-static/js/%s.gz' % chunked_filename
+            return final_path
+        else:
+            extension = path.split('.')[-1]
+            return '%s/dist/%s/%s' % (self._get_base_server(), extension, path)
+
+    def _get_base_server(self):
+        return 'https://www.dancedeets.com' if self.request.app.prod_mode else 'http://dev.dancedeets.com:8080'
 
     def set_cookie(self, name, value, expires=None):
         cookie = Cookie.SimpleCookie()
@@ -561,8 +581,10 @@ class BaseRequestHandler(BareBaseRequestHandler):
 
         # Redirect from the bare 'dancedeets.com' to the full 'www.dancedeets.com'
         url = urlparse.urlsplit(self.request.url)
-        allowed_passthrough_domains = ['img.dancedeets.com']
-        if not os.environ.get('DEBUG_MEMORY_LEAKS') and url.netloc != self._get_full_hostname() and url.netloc not in allowed_passthrough_domains:
+        # We technically don't need dd.events in here, since its handler is a BareBonesRequestHandler...but it include it to be safe.
+        allowed_passthrough_domains = [r'dev\.dancedeets\.com$', r'img\.dancedeets\.com$', r'dd\.events$', r'dancer?\.bio$']
+        matches_passthrough_domain = [x for x in allowed_passthrough_domains if re.search(x, url.netloc)]
+        if not os.environ.get('DEBUG_MEMORY_LEAKS') and url.netloc != self._get_full_hostname() and not matches_passthrough_domain:
             logging.info("Redirecting from %s to %s: %s", url.netloc, self._get_full_hostname(), self.request.url)
             new_url = urlparse.urlunsplit([
                 url.scheme,
@@ -579,7 +601,8 @@ class BaseRequestHandler(BareBaseRequestHandler):
         # This only 'takes effect' when it is returned on an https domain,
         # so we still need to make sure to add an https redirect.
         https_redirect_duration = 60 * 60 * 24 * 7
-        self.response.headers.add_header('Strict-Transport-Security', 'max-age=%s; includeSubDomains' % https_redirect_duration)
+        if url.netloc != 'dev.dancedeets.com':
+            self.response.headers.add_header('Strict-Transport-Security', 'max-age=%s' % https_redirect_duration)
         # This is how we detect if the incoming url is on https in GAE Flex (we cannot trust request.url)
         if request.method == 'GET' and request.environ.get('HTTP_X_FORWARDED_PROTO') == 'http':
             new_url = urlparse.urlunsplit([
@@ -703,69 +726,97 @@ class BaseRequestHandler(BareBaseRequestHandler):
         timelog.log_time_since('Getting City from IP', start)
 
         self.display['styles'] = event_types.STYLES
-        self.display['us_cities'] = [
-            'New York, NY',
-            'Los Angeles, CA',
-            'San Francisco, CA',
-            '',
-            'Anaheim, CA',
-            'Boston, MA',
-            'Chicago, IL',
-            'Detroit, MI',
-            'Las Vegas, CA',
-            'Montreal, Canada',
-            'Ottawa, Canada',
-            'Philadelphia, PA',
-            'Phoenix, AZ',
-            'Portland, OR',
-            'Sacramento, CA',
-            'San Diego, CA',
-            'Seattle, WA',
-            'Toronto, Canada',
-            'Vancouver, Canada',
-            'Washington, DC',
-        ]
-        self.display['eu_cities'] = [
-            'Amsterdam, Netherlands',
-            'Barcelona, Spain',
-            'Berlin, Germany',
-            'Bratislava, Slovakia',
-            'Brno, Czech Republic',
-            'Brussels, Belgium',
-            'Copenhagen, Denmark',
-            'Frankfurt, Germany',
-            'Geneva, Switzerland',
-            'Helsinki, Finland',
-            'London, UK',
-            'Lyon, France',
-            'Manchester, United Kingdom',
-            'Marseille, France',
-            'Milan, Italy',
-            'Oslo, Norway',
-            'Paris, France',
-            'Rome, Italy',
-            'Stockholm, Sweden',
-            'Vienna, Austria',
-            'Warsaw, Poland',
-            'Zurich, Switzerland',
-
-        ]
-        self.display['other'] = [
-            'Argentina',
-            'Australia',
-            'Brasil: Minas Gerais',
-            'Colombia',
-            'Hong Kong',
-            'India',
-            'Japan: Osaka',
-            'Japan: Tokyo',
-            'Korea',
-            'Malaysia',
-            'New Zealand',
-            'Peru',
-            'Philippines',
-            'Singapore',
-            'Taiwan',
+        self.display['cities'] = [
+            ('North America', [
+                'Albuquerque',
+                'Austin',
+                'Baltimore',
+                'Boston',
+                'Chicago',
+                'Detroit',
+                'Houston',
+                'Las Vegas',
+                'Los Angeles',
+                'Miami',
+                'New York City',
+                'Orlando',
+                'Philadelphia',
+                'Portland',
+                'San Francisco',
+                'San Jose',
+                'San Diego',
+                'Seattle',
+                'Washington DC',
+                '',
+                'Calgary',
+                'Edmonton',
+                'Montreal',
+                'Ottawa',
+                'Toronto',
+                'Vancouver',
+                ''
+                'Mexico: Mexico City',
+            ]),
+            ('Latin/South America', [
+                'Argentina: Buenos Aires',
+                'Argentina: Neuquen',
+                'Brazil: Belo Horizonte',
+                'Brazil: Brasilia',
+                'Brazil: Cruitiba',
+                'Brazil: Porto Alegre',
+                'Brazil: Rio de Janeiro',
+                'Brazil: Sao Paulo',
+                'Colombia',
+                'Chile: Santiago',
+                'Peru: Lima',
+            ]),
+            ('Europe', [
+                'Austria: Vienna',
+                'Belgium: Brussels',
+                'Czech: Prague Republic',
+                'Denmark: Copenhagen',
+                'Estonia: Tallinn',
+                'Finland: Helsinki',
+                'France: Nantes',
+                'France: Paris',
+                'France: Perpignan',
+                'Germany: Berlin',
+                'Germany: Hamburg',
+                u'Germany: Köln/Cologne',
+                'Germany: Leipzig',
+                u'Germany: München/Munich',
+                'Italy: Milan',
+                'Italy: Rome',
+                'Netherlands: Amsterdam',
+                'Norway: Oslo',
+                'Poland: Warsaw',
+                'Poland: Wroclaw',
+                'Russia: Moscow',
+                'Slovakia: Bratislava',
+                'Spain: Barcelona',
+                'Sweden: Malmoe',
+                'Sweden: Stockholm',
+                'Switzerland: Basel',
+                'Switzerland: Geneve',
+                'Switzerland: Zurich',
+                'United Kingdom: Leeds',
+                'United Kingdom: London',
+            ]),
+            ('Asia', [
+                'Hong Kong',
+                'India',
+                u'Japan: Tokyo (日本東京)',
+                u'Japan: Osaka (日本大阪)',
+                'Korea',
+                u'Taiwan: Kaohsiung (台灣高雄市)',
+                u'Taiwan: Taipei (台灣台北市)',
+                u'Taiwan: Taichung (台灣臺中市)',
+                'Philippines',
+                'Singapore',
+                'Australia: Melbourne',
+                'Australia: Perth',
+                'Australia: Sydney',
+            ])
         ]
 
         self.display['deb'] = self.request.get('deb')

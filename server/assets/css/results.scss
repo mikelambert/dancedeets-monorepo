@@ -1,0 +1,35 @@
+$NarrowWindowSize: 768px;
+
+// Keep in sync with resultsCommon.js's NarrowWindowSize
+@media (min-width: $NarrowWindowSize) {
+  .media-query-search-layout {
+    display: table-cell;
+  }
+  .media-query-search-not-focused {
+    width: 100%;
+  }
+  .media-query-search-focused {
+    width: 200%;
+  }
+}
+
+.DateInput {
+  padding: 0 !important;
+  width: auto !important;
+}
+
+.DateRangePicker {
+  width: 100%;
+}
+
+.DateRangePickerInput {
+  background-color: 'transparent';
+  border: 0 !important; // Override the grey border
+  width: 100%;
+  padding: 3px; // 3px + DateInput__display-text' 4px == 7px padding in resultsCommon.js
+}
+
+.DateRangePicker__picker {
+  // Needs to be above the navbar-static-top's z-index: 1000
+  z-index: 1001 !important; // Override the z-index 1
+}

@@ -6,10 +6,13 @@ from event_scraper import thing_db
 from test_utils import unittest
 from util import deferred
 
-fields_str = '%2C'.join(fb_api.OBJ_SOURCE_FIELDS)
-VERSION = fb_api.LookupThingFeed.version
-URL_111 = '/%s/111' % VERSION # ?fields=%s' % fields_str
-URL_222 = '/%s/222' % VERSION # ?fields=%s' % fields_str
+common_fields_str = '%2C'.join(fb_api.OBJ_SOURCE_COMMON_FIELDS)
+page_fields_str = '%2C'.join(fb_api.OBJ_SOURCE_PAGE_FIELDS)
+VERSION = fb_api.LookupThingCommon.version
+URL_111 = '/%s/111?fields=%s' % (VERSION, common_fields_str)
+URL_222 = '/%s/222?fields=%s' % (VERSION, common_fields_str)
+URL_111_INFO2 = '/%s/111?fields=%s' % (VERSION, page_fields_str)
+URL_222_INFO2 = '/%s/222?fields=%s' % (VERSION, page_fields_str)
 URL_111_FEED = '/%s/111/feed?%s' % (VERSION, urllib.urlencode(dict(fields='created_time,updated_time,from,link,message', limit=10)))
 URL_222_FEED = '/%s/222/feed?%s' % (VERSION, urllib.urlencode(dict(fields='created_time,updated_time,from,link,message', limit=10)))
 URL_111_EVENTS = '/%s/111/events?%s' % (VERSION, urllib.urlencode(dict(fields='id,updated_time')))
@@ -29,7 +32,7 @@ class TestThingDBFixer(unittest.TestCase):
 
         # Loading it again should trigger a deferred task to rename to 222
         try:
-            fbl.get(fb_api.LookupThingFeed, '111')
+            fbl.get(fb_api.LookupThingCommon, '111')
             self.fail("Fetching renamed ID unexpectedly worked")
         except fb_api.NoFetchedDataException:
             pass
@@ -49,17 +52,20 @@ class TestThingDBFixer(unittest.TestCase):
 
         # Set up our facebook backend
         fb_api.FBAPI.results = {
-            URL_111: (200, {'id': '111', 'name': 'page 1', 'likes': 1}),
+            URL_111: (200, {'id': '111', 'name': 'page 1'}),
             URL_111_FEED: (200, {'data': []}),
             URL_111_EVENTS: (200, {'data': []}),
-            URL_222: (200, {'id': '222', 'name': 'page 2', 'likes': 1}),
+            URL_111_INFO2: (200, {}),
+            URL_222: (200, {'id': '222', 'name': 'page 2'}),
             URL_222_FEED: (200, {'data': []}),
             URL_222_EVENTS: (200, {'data': []}),
+            URL_222_INFO2: (200, {}),
+            '/%s/111?metadata=1' % fb_api.LookupThingCommon.version: (200, {'metadata': {'type': 'page'}}),
+            '/%s/222?metadata=1' % fb_api.LookupThingCommon.version: (200, {'metadata': {'type': 'page'}}),
         }
 
         # Fetch it and construct a source
-        result = fbl.get(fb_api.LookupThingFeed, '111')
-        source = thing_db.create_source_for_id('111', result)
+        source = thing_db.create_source_from_id(fbl, '111')
         source.num_all_events = 5
         source.put()
 
@@ -80,10 +86,10 @@ class TestThingDBFixer(unittest.TestCase):
 
         # Now let's create 111 again, to verify merge works
         fb_api.FBAPI.results.update({
-            URL_111: (200, {'id': '111', 'name': 'page 1', 'likes': 1}),
+            URL_111: (200, {'id': '111', 'name': 'page 1'}),
             URL_111_FEED: (200, {'data': []}),
         })
-        source = thing_db.create_source_for_id('111', result)
+        source = thing_db.create_source_from_id(fbl, '111')
         source.num_all_events = 5
         source.put()
 

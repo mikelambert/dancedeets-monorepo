@@ -4,7 +4,7 @@ import express from 'express';
 import proxyMiddleware from 'http-proxy-middleware';
 import devMiddleware from 'webpack-dev-middleware';
 import hotMiddleware from 'webpack-hot-middleware';
-import config from './webpack.config.client.babel';
+import webpackConfig from './webpack.config.client.babel';
 import yargs from 'yargs';
 
 const argv =
@@ -53,7 +53,7 @@ function enableHotReloading(config) {
         Object.getPrototypeOf(plugin) !==
         webpack.optimize.CommonsChunkPlugin.prototype
     );
-  config = {
+  const newConfig = {
     ...config,
     entry: newEntry,
     output: {
@@ -62,11 +62,11 @@ function enableHotReloading(config) {
     },
     plugins: newPlugins,
   };
-  return config;
+  return newConfig;
 }
 
 const app = express();
-const compiler = webpack(enableHotReloading(config));
+const compiler = webpack(enableHotReloading(webpackConfig));
 
 app.use(
   devMiddleware(compiler, {
@@ -94,10 +94,9 @@ app.use(
   })
 );
 
-app.listen(port, function(err) {
+app.listen(port, err => {
   if (err) {
-    return console.error(err);
+    console.error(err);
   }
-
   console.log(`Listening at http://localhost:${port}/`);
 });

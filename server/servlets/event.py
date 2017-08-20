@@ -8,8 +8,6 @@ import pprint
 import re
 import urllib
 
-from slugify import slugify
-
 import app
 import base_servlet
 from event_attendees import event_attendee_classifier
@@ -112,7 +110,7 @@ class ShowEventHandler(base_servlet.BaseRequestHandler):
         self.display['show_mobile_app_promo'] = True
         self.jinja_env.filters['make_category_link'] = lambda lst: [jinja2.Markup('<a href="/?keywords=%s">%s</a>') % (x, x) for x in lst]
 
-        self.display['canonical_url'] = 'http://%s/events/%s/%s' % (self._get_full_hostname(), db_event.id, slugify(unicode(db_event.name)))
+        self.display['canonical_url'] = urls.dd_event_url(db_event)
 
         self.display['email_suffix'] = '+event-%s' % db_event.id
 
@@ -135,11 +133,15 @@ class ShowEventHandler(base_servlet.BaseRequestHandler):
                 # Because minification interferes with html-validity when producing:
                 # <meta name=viewport content=width=device-width,minimum-scale=1,initial-scale=1,maximum-scale=1,user-scalable=no>
                 self.allow_minify = False
-                event_amp_css_filename = os.path.join(os.path.dirname(__file__), '..', 'dist-includes/css/eventAmp.css')
-                event_amp_css = open(event_amp_css_filename).read()
-                event_amp_css = re.sub(r'@-ms-viewport\s*{.*?}', '', event_amp_css)
-                event_amp_css = re.sub(r'!important', '', event_amp_css)
-                event_amp_css = event_amp_css.replace('url(..', 'url(/dist-' + self._get_static_version())
+                try:
+                    event_amp_css_filename = os.path.join(os.path.dirname(__file__), '..', 'dist-includes/css/eventAmp.css')
+                    event_amp_css = open(event_amp_css_filename).read()
+                    event_amp_css = re.sub(r'@-ms-viewport\s*{.*?}', '', event_amp_css)
+                    event_amp_css = re.sub(r'!important', '', event_amp_css)
+                    event_amp_css = event_amp_css.replace('url(..', 'url(/dist-' + self._get_static_version())
+                except IOError as e:
+                    logging.exception('Failed to load AMP CSS')
+                    event_amp_css = ''
                 self.display['event_amp_stylesheet'] = event_amp_css
                 self.render_template('event_amp')
             else:
@@ -283,7 +285,7 @@ class AdminEditHandler(base_servlet.BaseRequestHandler):
         owner_location = None
         if 'owner' in fb_event['info']:
             owner_id = fb_event['info']['owner']['id']
-            location = self._get_location(owner_id, fb_api.LookupProfile, 'profile') or self._get_location(owner_id, fb_api.LookupThingFeed, 'info')
+            location = self._get_location(owner_id, fb_api.LookupProfile, 'profile') or self._get_location(owner_id, fb_api.LookupThingPage, 'info')
             if location:
                 owner_location = event_locations.city_for_fb_location(location)
         self.display['owner_location'] = owner_location
@@ -344,15 +346,15 @@ class AdminEditHandler(base_servlet.BaseRequestHandler):
         fb_event_attending_maybe = get_fb_event(self.fbl, event_id, lookup_type=fb_api.LookupEventAttendingMaybe)
         matcher = event_attendee_classifier.get_matcher(self.fbl, fb_event, fb_event_attending_maybe)
         # print '\n'.join(matcher.results)
-        matched_overlap_ids = matcher.matches[0].overlap_ids if matcher.matches else []
-        self.display['auto_add_attendee_ids'] = sorted(matched_overlap_ids)
         sorted_matches = sorted(matcher.matches, key=lambda x: -len(x.overlap_ids))
+        matched_overlap_ids = sorted_matches[0].overlap_ids if matcher.matches else []
+        self.display['auto_add_attendee_ids'] = sorted(matched_overlap_ids)
         self.display['overlap_results'] = ['%s %s: %s' % (x.top_n, x.name, x.reason) for x in sorted_matches]
 
         self.display['overlap_attendee_ids'] = sorted(matcher.overlap_ids)
 
         if matcher.matches:
-            attendee_ids_to_admin_hash_and_event_ids = matcher.matches[0].get_attendee_lookups()
+            attendee_ids_to_admin_hash_and_event_ids = sorted_matches[0].get_attendee_lookups()
             self.display['attendee_ids_to_admin_hash_and_event_ids'] = attendee_ids_to_admin_hash_and_event_ids
 
         self.display['event'] = e

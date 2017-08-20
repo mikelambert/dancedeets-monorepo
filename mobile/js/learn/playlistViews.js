@@ -7,6 +7,7 @@
 import React from 'react';
 import {
   AlertIOS,
+  Animated,
   Dimensions,
   FlatList,
   Image,
@@ -16,16 +17,16 @@ import {
   TouchableHighlight,
   TouchableOpacity,
   View,
-  ViewPropTypes,
 } from 'react-native';
 import { injectIntl, intlShape, defineMessages } from 'react-intl';
 import { connect } from 'react-redux';
-import YouTube from 'react-native-youtube';
 import shallowEqual from 'fbjs/lib/shallowEqual';
 import styleEqual from 'style-equal';
 import upperFirst from 'lodash/upperFirst';
+import VideoPlayer from './VideoPlayer';
+import Icon from 'react-native-vector-icons/FontAwesome';
 import type { Style } from 'dancedeets-common/js/styles';
-import { Playlist, Video } from 'dancedeets-common/js/tutorials/models';
+import { Playlist } from 'dancedeets-common/js/tutorials/models';
 import styleIcons from 'dancedeets-common/js/styles/icons';
 import { getTutorials } from 'dancedeets-common/js/tutorials/playlistConfig';
 import type { Category } from 'dancedeets-common/js/tutorials/playlistConfig';
@@ -38,8 +39,8 @@ import { purpleColors } from '../Colors';
 import { semiNormalize, normalize } from '../ui/normalize';
 import type { Dispatch } from '../actions/types';
 import { setTutorialVideoIndex } from '../actions';
-import { googleKey } from '../keys';
 import sendMail from '../util/sendMail';
+import getYoutubeInfo from '../api/youtubeVideoInfo';
 
 type PlaylistStylesViewProps = {
   onSelected: (playlist: Playlist) => void,
@@ -114,10 +115,17 @@ class _PlaylistStylesView extends React.Component {
             alignItems: 'center',
           }}
         >
+
           <Image
             source={styleIcons[category.style.id]}
             resizeMode="contain"
-            style={{ width: imageWidth, height: imageWidth }}
+            style={[
+              styles.shadowed,
+              {
+                width: imageWidth,
+                height: imageWidth,
+              },
+            ]}
           />
           <DarkText style={[styles.boxTitle, styles.boxText]}>
             {styleTitle}
@@ -233,10 +241,14 @@ class _PlaylistListView extends React.Component {
         }}
       >
         <View
-          style={{
-            width: boxWidth,
-            padding: 5,
-          }}
+          style={[
+            {
+              width: boxWidth,
+              padding: 5,
+              elevation: 5,
+            },
+            styles.shadowed,
+          ]}
         >
           <Image
             source={{ uri: playlist.thumbnail }}
@@ -324,6 +336,8 @@ class _PlaylistView extends React.Component {
 
   state: {
     isPlaying: boolean,
+    onScreen: boolean,
+    videoUrl: ?string,
   };
 
   _sectionedListView: SectionList<*>;
@@ -335,19 +349,27 @@ class _PlaylistView extends React.Component {
     (this: any).renderRow = this.renderRow.bind(this);
     (this: any).renderHeader = this.renderHeader.bind(this);
     (this: any).renderSectionHeader = this.renderSectionHeader.bind(this);
-    (this: any).onChangeState = this.onChangeState.bind(this);
+    (this: any).onEnd = this.onEnd.bind(this);
     (this: any).onListViewLayout = this.onListViewLayout.bind(this);
     (this: any).onListViewScroll = this.onListViewScroll.bind(this);
     this._cachedLayout = [];
-    this.state = { isPlaying: true };
+    this.state = { onScreen: true, isPlaying: true, videoUrl: null };
+    this.updateFromProps(props);
+  }
+
+  updateFromProps(props) {
+    if (
+      !this.state.videoUrl ||
+      this.props.tutorialVideoIndex != props.tutorialVideoIndex
+    ) {
+      const video = props.playlist.getVideo(props.tutorialVideoIndex);
+      this.loadPlayerUrl(video);
+    }
   }
 
   componentWillReceiveProps(nextProps) {
-    if (nextProps.mainScreenKey !== 'Tutorials') {
-      this.setState({ isPlaying: false });
-    } else {
-      // this.setState({ isPlaying: true });
-    }
+    this.setState({ onScreen: nextProps.mainScreenKey === 'Learn' });
+    this.updateFromProps(nextProps);
   }
 
   componentWillUnmount() {
@@ -361,22 +383,18 @@ class _PlaylistView extends React.Component {
     this._viewDimensions = { top, bottom };
   }
 
-  onChangeState(props: Object) {
-    // Keep our internal state (and the props we set on the player) up-to-date
-    if (props.state === 'playing') {
-      this.setState({ isPlaying: true });
-    } else {
-      this.setState({ isPlaying: false });
-    }
-    if (props.state === 'ended') {
-      // next video, if we're not at the end!
-      const newIndex = this.props.tutorialVideoIndex + 1;
-      if (newIndex < this.props.playlist.getVideoCount()) {
-        // scroll it into view
-        this.ensureTutorialVisible(newIndex);
-        // and select it, playing the video
-        this.props.setTutorialVideoIndex(newIndex);
-      }
+  onError(event) {
+    console.log('Youtube Error', event);
+  }
+
+  onEnd() {
+    // next video, if we're not at the end!
+    const newIndex = this.props.tutorialVideoIndex + 1;
+    if (newIndex < this.props.playlist.getVideoCount()) {
+      // scroll it into view
+      this.ensureTutorialVisible(newIndex);
+      // and select it, playing the video
+      this.props.setTutorialVideoIndex(newIndex);
     }
   }
 
@@ -384,10 +402,6 @@ class _PlaylistView extends React.Component {
     const top = e.nativeEvent.layout.y;
     const bottom = top + e.nativeEvent.layout.height;
     this._viewDimensions = { top, bottom };
-  }
-
-  getSelectedVideo() {
-    return this.props.playlist.getVideo(this.props.tutorialVideoIndex);
   }
 
   setCachedLayoutForRow(index, top, bottom) {
@@ -399,6 +413,14 @@ class _PlaylistView extends React.Component {
     const element = this._cachedLayout[index];
     // {top, bottom} of the containing view's current scroll position
     const view = this._viewDimensions;
+
+    if (!view || !element) {
+      console.error(`Ensuring Tutorial ${index} visible, but: `, {
+        view,
+        element,
+      });
+      return;
+    }
 
     let viewPosition = null;
     // if we're off the bottom of the screen
@@ -456,14 +478,18 @@ class _PlaylistView extends React.Component {
         activeOpacity={0.5}
         onPress={() => {
           const videoIndex = this.props.playlist.getVideoIndex(video);
+          if (videoIndex === this.props.tutorialVideoIndex) {
+            this.setState({ isPlaying: !this.state.isPlaying });
+          } else {
+            track('Tutorial Video Selected', {
+              tutorialName: this.props.playlist.title,
+              tutorialStyle: this.props.playlist.style,
+              tutorialVideoIndex: videoIndex,
+            });
 
-          track('Tutorial Video Selected', {
-            tutorialName: this.props.playlist.title,
-            tutorialStyle: this.props.playlist.style,
-            tutorialVideoIndex: videoIndex,
-          });
-
-          this.props.setTutorialVideoIndex(videoIndex);
+            this.setState({ isPlaying: true });
+            this.props.setTutorialVideoIndex(videoIndex);
+          }
         }}
         onLayout={e => {
           const top = e.nativeEvent.layout.y;
@@ -478,9 +504,15 @@ class _PlaylistView extends React.Component {
               selected ? styles.videoActiveRow : styles.videoInactiveRow,
             ]}
           >
-            <Image
-              source={require('./images/play.png')}
+            <Icon
+              name={
+                this.state.isPlaying && selected
+                  ? 'pause-circle'
+                  : 'play-circle'
+              }
+              size={20}
               style={styles.videoPlay}
+              color="white"
             />
             <View style={{ flex: 1 }}>
               <Text style={styles.videoTitle}>{video.title}</Text>
@@ -510,25 +542,44 @@ class _PlaylistView extends React.Component {
     );
   }
 
+  async loadPlayerUrl(video) {
+    const youtubeInfo = await getYoutubeInfo(video.youtubeId);
+    let videoData = youtubeInfo.formats.find(x => x.itag === '22');
+    if (!videoData) {
+      videoData = youtubeInfo.formats.find(x => x.itag === '18');
+    }
+    if (videoData) {
+      this.setState({ videoUrl: videoData.url });
+    }
+  }
+
   render() {
     // for my client feature-bar (if i support scrub bar):
     // speed-rate, play/pause, back-ten-seconds, airplay
-    const video = this.getSelectedVideo();
+    const { videoUrl } = this.state;
+    if (!videoUrl) {
+      return null;
+    }
+    const video = this.props.playlist.getVideo(this.props.tutorialVideoIndex);
     const height = Dimensions.get('window').width * video.height / video.width;
     return (
       <View style={styles.container}>
-        <YouTube
-          apiKey={googleKey}
-          videoId={video.youtubeId}
-          play={this.state.isPlaying} // auto-play when loading a tutorial
-          hidden={false}
+        <VideoPlayer
+          // Updating params
+          source={{ uri: videoUrl }}
+          paused={!this.state.isPlaying || !this.state.onScreen} // auto-play when loading a tutorial
+          // Steady params
+          controlTimeout={4000}
           loop={false}
-          rel={false}
-          showinfo
-          // controls={0}
-          modestbranding
+          ignoreSilentSwitch="ignore"
           style={{ alignSelf: 'stretch', height }}
-          onChangeState={this.onChangeState}
+          // Callbacks
+          onError={this.onError}
+          onEnd={this.onEnd}
+          onPlay={() => this.setState({ isPlaying: true })}
+          onPause={() => {
+            this.setState({ isPlaying: false });
+          }}
         />
         <View style={styles.listViewWrapper}>
           <SectionList
@@ -571,6 +622,13 @@ let styles = StyleSheet.create({
   thumbnail: {
     borderRadius: 10,
     height: semiNormalize(100),
+  },
+  shadowed: {
+    shadowColor: 'black',
+    shadowOffset: { width: 0, height: 0 },
+    shadowOpacity: 0.4,
+    shadowRadius: 10,
+    overflow: 'visible', // Let the shadow bleed out on iOS
   },
   listViewWrapper: {
     flex: 1,

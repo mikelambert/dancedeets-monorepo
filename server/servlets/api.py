@@ -2,6 +2,7 @@ import datetime
 import feedparser
 import json
 import logging
+from slugify import slugify
 import time
 import urllib
 
@@ -17,6 +18,8 @@ from events import eventdata
 from events import featured
 import fb_api
 import keys
+from loc import address
+from loc import gmaps_api
 from loc import math
 from event_attendees import popular_people
 from rankings import cities
@@ -73,6 +76,8 @@ class ApiHandler(base_servlet.BareBaseRequestHandler):
             self.response.out.write(')')
 
     def _initialize(self, request):
+        self.response.headers.add_header('Access-Control-Allow-Headers', 'Content-Type')
+
         # We use _initialize instead of webapp2's initialize, so that exceptions can be caught easily
         self.fbl = fb_api.FBLookup(None, None)
 
@@ -138,7 +143,67 @@ def retryable(func):
             raise
     return wrapped_func
 
-def build_search_results_api(city_name, form, search_query, search_results, version, need_full_event, center_latlng, southwest, northeast, skip_people=False):
+def people_groupings(geocode, distance, skip_people):
+    groupings = None
+    if skip_people or not geocode:
+        groupings = {}
+    else:
+        center_latlng, southwest, northeast = search_base.get_center_and_bounds(geocode, distance)
+        if not center_latlng:
+            # keyword-only search, no location to give promoters for
+            logging.info('No center latlng, skipping person groupings')
+        else:
+            distance_km = math.get_inner_box_radius_km(southwest, northeast)
+            if distance_km > 1000:
+                logging.info('Search area >1000km, skipping person groupings')
+                # Too big a search area, not worth showing promoters or dancers
+            else:
+                # TODO: Replace with a call to get_attendees_within (that also gets ADMIN people)
+                southwest_baseline, northeast_baseline = math.expand_bounds((center_latlng, center_latlng), cities.NEARBY_DISTANCE_KM)
+                distance_km_baseline = math.get_inner_box_radius_km(southwest_baseline, northeast_baseline)
+                if distance_km < distance_km_baseline:
+                    southwest = southwest_baseline
+                    northeast = northeast_baseline
+                logging.info('Searching for cities within %s', (southwest, northeast))
+                included_cities = cities.get_nearby_cities((southwest, northeast), only_populated=True)
+                biggest_cities = sorted(included_cities, key=lambda x: -x.population)[:10]
+                city_names = [city.display_name() for city in biggest_cities]
+                logging.info('City names: %s', city_names)
+                if city_names:
+                    try:
+                        people_rankings = popular_people.get_people_rankings_for_city_names(city_names)
+                        groupings = popular_people.combine_rankings(people_rankings, max_people=10)
+                    except:
+                        logging.exception('Error creating combined people rankings')
+                    new_groupings = {
+                        'ADMIN': {},
+                        'ATTENDEE': {},
+                    }
+                    # These lists can get huge now...make sure we trim them down for what clients need!
+                    for person_type, styles in groupings.iteritems():
+                        for style in event_types.STYLES + ['']:
+                            index_style_name = style.index_name if style else ''
+                            public_style_name = style.public_name if style else ''
+                            good_style = None
+                            for style in styles:
+                                style_name, city = style.split(': ', 2)
+                                if popular_people.is_summed_area(city) and style_name == index_style_name:
+                                    good_style = style
+                            if good_style:
+                                new_groupings[person_type][public_style_name] = styles[good_style][:10]
+                    groupings = new_groupings
+
+                    logging.info('Person Groupings:\n%s', '\n'.join('%s: %s' % kv for kv in groupings.iteritems()))
+    return groupings
+
+def build_search_results_api(form, search_query, search_results, version, need_full_event, geocode, distance, skip_people=False):
+    if geocode:
+        center_latlng, southwest, northeast = search_base.get_center_and_bounds(geocode, distance)
+    else:
+        center_latlng = None
+        southwest = None
+        northeast = None
+
     onebox_links = []
     if search_query:
         onebox_links = onebox.get_links_for_query(search_query)
@@ -166,62 +231,26 @@ def build_search_results_api(city_name, form, search_query, search_results, vers
     except Exception as e:
         logging.exception("Error building featured event listing: %s", e)
 
-    groupings = {}
-    if skip_people:
-        pass
-    elif not center_latlng:
-        # keyword-only search, no location to give promoters for
-        logging.info('No center latlng, skipping person groupings')
-    else:
-        distance_km = math.get_inner_box_radius_km(southwest, northeast)
-        if distance_km > 1000:
-            logging.info('Search area >1000km, skipping person groupings')
-            # Too big a search area, not worth showing promoters or dancers
-        else:
-            # TODO: Replace with a call to get_attendees_within (that also gets ADMIN people)
-            southwest_baseline, northeast_baseline = math.expand_bounds((center_latlng, center_latlng), cities.NEARBY_DISTANCE_KM)
-            distance_km_baseline = math.get_inner_box_radius_km(southwest_baseline, northeast_baseline)
-            if distance_km < distance_km_baseline:
-                southwest = southwest_baseline
-                northeast = northeast_baseline
-            logging.info('Searching for cities within %s', (southwest, northeast))
-            included_cities = cities.get_nearby_cities((southwest, northeast), only_populated=True)
-            biggest_cities = sorted(included_cities, key=lambda x: -x.population)[:10]
-            city_names = [city.display_name() for city in biggest_cities]
-            logging.info('City names: %s', city_names)
-            if city_names:
-                try:
-                    people_rankings = popular_people.get_people_rankings_for_city_names(city_names)
-                    groupings = popular_people.combine_rankings(people_rankings, max_people=10)
-                except:
-                    logging.exception('Error creating combined people rankings')
-                # These lists can get huge now...make sure we trim them down for what clients need!
-                new_groupings = dict((x, {}) for x in groupings)
-                for person_type, styles in groupings.iteritems():
-                    for style in event_types.STYLES + ['']:
-                        index_style_name = style.index_name if style else ''
-                        public_style_name = style.public_name if style else ''
-                        good_style = None
-                        for style in styles:
-                            style_name, city = style.split(': ', 2)
-                            if popular_people.is_summed_area(city) and style_name == index_style_name:
-                                good_style = style
-                        if good_style:
-                            new_groupings[person_type][public_style_name] = styles[good_style][:10]
-                groupings = new_groupings
-
-            logging.info('Person Groupings:\n%s', '\n'.join('%s: %s' % kv for kv in groupings.iteritems()))
-
+    groupings = people_groupings(geocode, distance, skip_people=skip_people)
     query = {}
-    for field in form:
-        query[field.name] = getattr(field, '_value', lambda: field.data)()
+    if form:
+        for field in form:
+            query[field.name] = getattr(field, '_value', lambda: field.data)()
+
+    if geocode:
+        address_geocode = gmaps_api.lookup_address(geocode.formatted_address())
+    else:
+        address_geocode = None
+
     json_response = {
-        'people': groupings,
         'results': json_results,
         'onebox_links': onebox_links,
-        'location': city_name,
+        'location': geocode.formatted_address() if geocode else None,
+        'address': address.get_address_from_geocode(address_geocode),
         'query': query,
     }
+    if groupings is not None:
+        json_response['people'] = groupings
     if version <= (1, 3):
         json_response['featured'] = [x['event'] for x in real_featured_infos]
     else:
@@ -239,6 +268,37 @@ def build_search_results_api(city_name, form, search_query, search_results, vers
         }
     return json_response
 
+@apiroute('/people')
+class PeopleHandler(ApiHandler):
+    def get(self):
+        data = {
+            'location': self.request.get('location'),
+            'locale': self.request.get('locale'),
+        }
+        form = search_base.SearchForm(data=data)
+
+        if not form.validate():
+            for field, errors in form.errors.items():
+                for error in errors:
+                    self.add_error(u"%s error: %s" % (
+                        getattr(form, field).label.text,
+                        error
+                    ))
+
+        if not form.location.data:
+            self.add_error('Need location')
+        else:
+            try:
+                geocode, distance = search_base.get_geocode_with_distance(form)
+            except:
+                self.add_error('Could not geocode location')
+        self.errors_are_fatal()
+
+
+        groupings = people_groupings(geocode, distance, skip_people=False)
+        self.write_json_success({'people': groupings})
+    post = get
+
 @apiroute('/search')
 class SearchHandler(ApiHandler):
 
@@ -246,14 +306,17 @@ class SearchHandler(ApiHandler):
         data = {
             'location': self.request.get('location'),
             'keywords': self.request.get('keywords'),
-            'locale': self.request.get('locale'),
+            'skip_people': self.request.get('skip_people'),
         }
+        if self.request.get('locale'):
+            data['locale'] = self.request.get('locale')
         # If it's 1.0 clients, or web clients, then grab all data
         if self.version == (1, 0):
             time_period = search_base.TIME_UPCOMING
         else:
             time_period = self.request.get('time_period')
-        data['time_period'] = time_period
+        if time_period:
+            data['time_period'] = time_period
         return data
 
     def get(self):
@@ -268,16 +331,14 @@ class SearchHandler(ApiHandler):
                         error
                     ))
 
+        geocode = None
+        distance = None
         if not form.location.data:
-            city_name = None
-            center_latlng = None
-            southwest = None
-            northeast = None
             if not form.keywords.data:
                 self.add_error('Please enter a location or keywords')
         else:
             try:
-                city_name, center_latlng, southwest, northeast = search_base.normalize_location(form)
+                geocode, distance = search_base.get_geocode_with_distance(form)
             except:
                 self.add_error('Could not geocode location')
 
@@ -309,7 +370,9 @@ class SearchHandler(ApiHandler):
 
         logging.info("Found %s keyword=%r events within %s %s of %s", len(search_results), form.keywords.data, form.distance.data, form.distance_units.data, form.location.data)
 
-        json_response = build_search_results_api(city_name, form, search_query, search_results, self.version, need_full_event, center_latlng, southwest, northeast)
+        # Keep in sync with mobile react code? And search_servlets
+        skip_people = len(search_results) >= 10 or form.skip_people.data
+        json_response = build_search_results_api(form, search_query, search_results, self.version, need_full_event, geocode, distance, skip_people=skip_people)
         if self.request.get('client') == 'react-android' and self.version <= (1, 3):
             json_response['featured'] = []
         self.write_json_success(json_response)
@@ -448,6 +511,7 @@ def canonicalize_search_event_data(result, version):
     event_api = {}
     event_api['id'] = result.event_id
     event_api['name'] = result.data['name']
+    event_api['slugged_name'] = slugify(unicode(result.data['name']))
     event_api['start_time'] = result.data['start_time']
     event_api['end_time'] = result.data['end_time']
 
@@ -488,6 +552,7 @@ def canonicalize_event_data(db_event, event_keywords, version):
     event_api = {}
     event_api['id'] = db_event.id
     event_api['name'] = db_event.name
+    event_api['slugged_name'] = slugify(unicode(db_event.name))
     event_api['start_time'] = db_event.start_time_with_tz.strftime(DATETIME_FORMAT_TZ)
     event_api['description'] = db_event.description
     # end time can be optional, especially on single-day events that are whole-day events

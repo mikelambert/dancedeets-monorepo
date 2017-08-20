@@ -5,7 +5,7 @@
 {% endblock %}
 
 {% block head_metatags %}
-    <meta property="og:image" content="http://www.dancedeets.com/images/deet-city.jpg" />
+    <meta property="og:image" content="https://www.dancedeets.com/images/deet-city.jpg" />
     <meta property="og:type" content="website" />
     <meta property="og:title" content="{{ result_title }}" />
     <meta property="og:site_name" content="DanceDeets"/>
@@ -72,44 +72,38 @@ body.header-fixed-space {
             <!--TODO: some sort of effect for our characters-->
             <div class="row text-center">
                 <div class="col-md-4 md-margin-bottom-50">
-                    <a href="javscript:void(0);" class="animate-on-hover" data-action="flip">
-                        <img alt=""
-                        srcset="
+                    <img alt=""
+                    srcset="
 {{static_dir}}/img/deets-activity-dancing.png 1x,
 {{static_dir}}/img/deets-activity-dancing.svg 2x"
-                        src="{{static_dir}}/img/deets-activity-dancing.png"
-                        class="deets-activity-image margin-bottom-20">
-                    </a>
+                    src="{{static_dir}}/img/deets-activity-dancing.png"
+                    class="deets-activity-image margin-bottom-20">
                     <h2 class="title-v3-md margin-bottom-10">Learning to dance?</h2>
                     <p>Want to go beyond the classroom?<br/>
                     Find all the battles, shows,<br/>
                     parties, workshops, and more!</p>
                 </div>
                 <div class="col-md-4 md-margin-bottom-50">
-                    <a href="javscript:void(0);" class="animate-on-hover" data-action="flip">
-                        <img alt=""
-                        srcset="
+                    <img alt=""
+                    srcset="
 {{static_dir}}/img/deets-activity-traveling.png 1x,
 {{static_dir}}/img/deets-activity-traveling.svg 2x"
-                        src="{{static_dir}}/img/deets-activity-traveling.png"
-                        class="deets-activity-image margin-bottom-20"
-                        >
-                    </a>
+                    src="{{static_dir}}/img/deets-activity-traveling.png"
+                    class="deets-activity-image margin-bottom-20"
+                    >
                     <h2 class="title-v3-md margin-bottom-10">Going on a trip?</h2>
                     <p>Want to meet other dancers?<br/>
                     Quickly ﬁnd the dance scene anywhere,<br/>
                     and start connecting in real-life!</p>
                 </div>
                 <div class="col-md-4">
-                    <a href="javscript:void(0);" class="animate-on-hover" data-action="flip">
-                        <img alt=""
-                        srcset="
+                    <img alt=""
+                    srcset="
 {{static_dir}}/img/deets-activity-flyering.png 1x,
 {{static_dir}}/img/deets-activity-flyering.svg 2x"
-                        src="{{static_dir}}/img/deets-activity-flyering.png"
-                        class="deets-activity-image margin-bottom-20"
-                        >
-                    </a>
+                    src="{{static_dir}}/img/deets-activity-flyering.png"
+                    class="deets-activity-image margin-bottom-20"
+                    >
                     <h2 class="title-v3-md margin-bottom-10">Promoting events?</h2>
                     <p>With over 20,000 dancers monthly,<br/>
                     and 80,000 dance events since 2010,<br/>
@@ -237,7 +231,7 @@ body.header-fixed-space {
 {% endblock %}
 
 {% block bottom_javascript %}
-<script type="text/javascript" src="{{static_dir}}/js/homepage.js"></script>
+<script type="text/javascript" src="{{ static_path('homepage.js') }}"></script>
 <script type="text/javascript">
 mixpanel.track("Homepage");
 </script>

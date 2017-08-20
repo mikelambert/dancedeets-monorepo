@@ -12,10 +12,12 @@ import moment from 'moment';
 import { Event } from 'dancedeets-common/js/events/models';
 import type { TimePeriod } from 'dancedeets-common/js/events/search';
 import { sortString } from 'dancedeets-common/js/util/sort';
+import {
+  idempotentRetry,
+  performRequest as realPerformRequest,
+} from 'dancedeets-common/js/api/dancedeets';
+import { timeout, retryWithBackoff } from 'dancedeets-common/js/api/timeouts';
 import type { TokenRegistration } from '../store/track';
-import { timeout, retryWithBackoff } from './timeouts';
-
-const DEV_SERVER = false;
 
 let writesDisabled = false;
 
@@ -23,95 +25,36 @@ export function disableWrites() {
   writesDisabled = true;
 }
 
-function getUrl(path: string, args: Object) {
-  const version = '1.4';
-  const baseUrl = DEV_SERVER
-    ? `http://dev.dancedeets.com:8080/api/v${version}/`
-    : `https://www.dancedeets.com/api/v${version}/`;
-  const formattedArgs = querystring.stringify(args);
-  let fullPath = baseUrl + path;
-  if (formattedArgs) {
-    fullPath += `?${formattedArgs}`;
-  }
-  return fullPath;
-}
-
 async function performRequest(
   path: string,
   args: Object,
   postArgs: ?Object | null
 ): Promise<Object> {
-  try {
-    // Standardize our API args with additional data
-    const client = `react-${Platform.OS}`;
-    const locale = Locale.constants()
-      .localeIdentifier.split('_')[0]
-      .split('-')[0];
-    const fullArgs = Object.assign({}, args, {
-      client,
-      locale,
-    });
-    const token = await AccessToken.getCurrentAccessToken();
-    const fullPostData = Object.assign({}, postArgs, {
-      client,
-      locale,
-      access_token: token ? token.accessToken : null,
-    });
-
-    console.log('JSON API:', getUrl(path, fullArgs));
-    const result = await fetch(getUrl(path, fullArgs), {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(fullPostData),
-    });
-    // This setTimeout kicks the eventloop so it doesn't fall asleep.
-    // Workaround for https://github.com/facebook/react-native/issues/14391
-    setTimeout(() => null, 0);
-    const json = await result.json();
-    // 'undefined' means success, 'false' means error
-    if (json.success === false) {
-      throw new Error(`${json.errors}`);
-    } else {
-      return json;
-    }
-  } catch (e) {
-    console.warn(
-      'Error on API call:',
-      path,
-      'withArgs:',
-      args,
-      '. Error:',
-      e.message,
-      e
-    );
-    throw e;
-  }
-}
-
-function createRequest(
-  path: string,
-  args: Object,
-  postArgs: ?Object | null
-): () => Promise<Object> {
-  return () => performRequest(path, args, postArgs);
-}
-
-function idempotentRetry(
-  timeoutMs: number,
-  promiseGenerator: () => Promise<() => Promise<Object>>
-) {
-  return retryWithBackoff(timeoutMs, 2, 5, promiseGenerator);
+  // Standardize our API args with additional data
+  const client = `react-${Platform.OS}`;
+  const locale = Locale.constants()
+    .localeIdentifier.split('_')[0]
+    .split('-')[0];
+  const newArgs = Object.assign({}, args, {
+    client,
+    locale,
+  });
+  const token = await AccessToken.getCurrentAccessToken();
+  const newPostArgs = Object.assign({}, postArgs, {
+    client,
+    locale,
+    access_token: token ? token.accessToken : null,
+  });
+  return await realPerformRequest(fetch, path, newArgs, newPostArgs, '1.4');
 }
 
 export async function isAuthenticated() {
   return await AccessToken.getCurrentAccessToken();
 }
 
-async function verifyAuthenticated() {
+async function verifyAuthenticated(location: string) {
   if (!await isAuthenticated()) {
-    throw new Error('Not authenticated!');
+    throw new Error(`Not authenticated in ${location}`);
   }
 }
 
@@ -137,13 +80,13 @@ export async function auth(data: ?Object) {
   if (writesDisabled) {
     return null;
   }
-  await verifyAuthenticated();
+  await verifyAuthenticated('auth');
 
   // Grab any saveForAuth data and pass it in to the auth() call
   const finalData = { ...saveForAuth, ...data };
   saveForAuth = {};
 
-  return idempotentRetry(2000, createRequest('auth', {}, finalData));
+  return idempotentRetry(2000, () => performRequest('auth', {}, finalData));
 }
 
 export async function feed(url: string) {
@@ -180,8 +123,16 @@ export async function search(
     event: new Event(x.event),
   }));
   response.results = response.results.map(x => new Event(x));
-  response.results = sortString(response.results, resultEvent =>
-    moment(resultEvent.start_time).toISOString()
+  response.results = sortString(response.results, x => x.getStartMoment());
+  return response;
+}
+
+export async function people(location: string) {
+  const response = await timeout(
+    10000,
+    performRequest('people', {
+      location,
+    })
   );
   return response;
 }
@@ -192,30 +143,29 @@ export async function event(id: string) {
 }
 
 export async function getAddEvents(): Promise<> {
-  await verifyAuthenticated();
+  await verifyAuthenticated('getAddEvents');
   return await timeout(10000, performRequest('events_list_to_add', {}));
 }
 
 export async function userInfo() {
-  await verifyAuthenticated();
-  return await retryWithBackoff(2000, 2, 5, createRequest('user/info', {}));
+  await verifyAuthenticated('userInfo');
+  return await retryWithBackoff(2000, 2, 5, () =>
+    performRequest('user/info', {})
+  );
 }
 
 export async function addEvent(eventId: string) {
   if (writesDisabled) {
     return null;
   }
-  await verifyAuthenticated();
-  return await retryWithBackoff(
-    2000,
-    2,
-    3,
-    createRequest('events_add', { event_id: eventId }, { event_id: eventId })
+  await verifyAuthenticated('addEvent');
+  return await retryWithBackoff(2000, 2, 3, () =>
+    performRequest('events_add', { event_id: eventId }, { event_id: eventId })
   );
 }
 
 export async function translateEvent(eventId: string) {
-  await verifyAuthenticated();
+  await verifyAuthenticated('translateEvent');
   const params = { event_id: eventId };
   return await timeout(
     10000,
@@ -228,7 +178,7 @@ export async function eventRegister(
   categoryId: string,
   values: Object
 ) {
-  await verifyAuthenticated();
+  await verifyAuthenticated('eventRegister');
   const params = { event_id: eventId, category_id: categoryId, ...values };
   return await performRequest('event_signups/register', params, params);
 }
@@ -238,7 +188,7 @@ export async function eventUnregister(
   categoryId: string,
   signupId: string
 ) {
-  await verifyAuthenticated();
+  await verifyAuthenticated('eventUnregister');
   const params = {
     event_id: eventId,
     category_id: categoryId,

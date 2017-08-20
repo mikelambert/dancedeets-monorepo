@@ -7,7 +7,6 @@
 import React from 'react';
 import uniq from 'lodash/uniq';
 import countBy from 'lodash/countBy';
-import includes from 'lodash/includes';
 import { defineMessages, injectIntl, intlShape } from 'react-intl';
 import Helmet from 'react-helmet';
 import Masonry from 'react-masonry-component';
@@ -39,17 +38,6 @@ import {
   MultiSelectState,
 } from './MultiSelectList';
 
-// De-Dupe
-const purpleColors = [
-  '#8283A9',
-  '#656595',
-  '#4C4D81',
-  '#333452',
-  '#222238',
-  '#171728',
-];
-const lightPurpleColors = ['#E0E0F5', '#D0D0F0', '#C0C0D0'];
-
 class MatchedVideo extends React.Component {
   props: {
     tutorial: Playlist,
@@ -63,12 +51,9 @@ class MatchedVideo extends React.Component {
     return (
       <div
         style={{
-          backgroundColor: purpleColors[1],
-
           paddingLeft: 15,
           borderBottomWidth: 0.5,
           borderBottomStyle: 'solid',
-          borderBottomColor: purpleColors[0],
         }}
       >
         <a href={url}>
@@ -93,7 +78,7 @@ class MatchedSection extends React.Component {
     );
     const url = `${tutorialUrl}#${videoIndex}`;
     return (
-      <div style={{ backgroundColor: purpleColors[2] }}>
+      <div>
         <div><a href={url}>{this.props.section.title}</a></div>
         {this.props.children}
       </div>
@@ -207,7 +192,7 @@ class _Tutorial extends React.Component {
       <Card style={{ width: cardSize }}>
         <a href={`/tutorials/${tutorial.getId()}`}>
           {imageTag}
-          <div style={{ backgroundColor: purpleColors[2] }}>
+          <div>
             <div>{tutorial.title}</div>
             <div>{numVideosDuration}</div>
           </div>
@@ -288,7 +273,7 @@ class _FilterBar extends React.Component {
           </div>
         </form>
         <div style={{ float: 'right' }}>
-          <ShareLinks url={'http://www.dancedeets.com/tutorials'} />
+          <ShareLinks url={'https://www.dancedeets.com/tutorials'} />
         </div>
         <div style={{ clear: 'both' }} />
       </Card>
@@ -419,7 +404,7 @@ class _TutorialFilteredLayout extends React.Component {
       x => JSON.parse(x).categoryId
     );
     const selectedCategories = this.props.categories.filter(x =>
-      includes(selectedCategoryNames, x.style.id)
+      selectedCategoryNames.includes(x.style.id)
     );
     const tutorials = [].concat(...selectedCategories.map(x => x.tutorials));
 
@@ -461,8 +446,8 @@ class _TutorialFilteredLayout extends React.Component {
     const title = 'Dance Tutorials';
     const meta = generateMetaTags(
       title,
-      'http://www.dancedeets.com/tutorials/',
-      'http://www.dancedeets.com/dist/img/screenshot-tutorial.jpg'
+      'https://www.dancedeets.com/tutorials/',
+      'https://www.dancedeets.com/dist/img/screenshot-tutorial.jpg'
     );
     return (
       <div>

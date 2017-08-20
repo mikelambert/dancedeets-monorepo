@@ -27,7 +27,7 @@ export default function reducer(state: State = initialState, action: Action) {
     (action.type === DETECTED_LOCATION && state.location === '')
   ) {
     return { ...state, location: action.location };
-  } else if (action.type === 'UPDATE_KEYWORDS') {
+  } else if (action.type === UPDATE_KEYWORDS) {
     return { ...state, keywords: action.keywords };
   } else {
     return state;

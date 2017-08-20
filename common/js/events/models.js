@@ -5,6 +5,7 @@
  */
 
 import url from 'url';
+import moment from 'moment';
 
 type JSON = string | number | boolean | null | JSONObject | JSONArray;
 export type JSONObject = { [key: string]: JSON };
@@ -100,6 +101,7 @@ export type EventRsvpList = {
 export class BaseEvent extends JsonDerivedObject {
   id: string;
   name: string;
+  slugged_name: string; // eslint-disable-line camelcase
   start_time: string; // eslint-disable-line camelcase
   end_time: ?string; // eslint-disable-line camelcase
   picture: ?Cover;
@@ -111,7 +113,7 @@ export class BaseEvent extends JsonDerivedObject {
   }
 
   getUrl() {
-    return `http://www.dancedeets.com/events/${this.id}/`;
+    return `https://www.dancedeets.com/events/${this.id}/${this.slugged_name}`;
   }
 
   startTimeNoTz() {
@@ -119,6 +121,37 @@ export class BaseEvent extends JsonDerivedObject {
   }
   endTimeNoTz() {
     return this.end_time ? this.end_time.substr(0, 19) : null;
+  }
+
+  getStartMoment(): moment {
+    return moment(this.startTimeNoTz());
+  }
+
+  getEndMoment(): ?moment {
+    if (this.end_time) {
+      return moment(this.endTimeNoTz());
+    } else {
+      return null;
+    }
+  }
+
+  getListDateMoment(): moment {
+    const start = this.getStartMoment();
+    const end = this.getEndMoment();
+    if (!end) {
+      return start;
+    }
+    if (start.weekday() === end.weekday()) {
+      // Assume it's a weekly event!
+      const nowDiff = moment().diff(start);
+      const weeksUntilNow =
+        nowDiff / moment.duration(1, 'week').asMilliseconds();
+      const nextStart = start.clone().add(Math.ceil(weeksUntilNow), 'week');
+      if (nextStart.isBefore(end)) {
+        return nextStart;
+      }
+    }
+    return start;
   }
 }
 

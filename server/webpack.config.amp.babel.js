@@ -3,7 +3,10 @@ import ExtractTextPlugin from 'extract-text-webpack-plugin';
 import path from 'path';
 import uncss from 'uncss';
 import pleeease from 'pleeease';
+import { argv as env } from 'yargs';
 import OptimizeCssAssetsPlugin from 'optimize-css-assets-webpack-plugin';
+
+const prod = !env.debug;
 
 module.exports = {
   entry: {
@@ -13,7 +16,7 @@ module.exports = {
     path: path.join(__dirname, 'dist-includes/js'),
     filename: '[name].js',
   },
-  devtool: 'source-map',
+  devtool: prod ? 'source-map' : 'cheap-eval-source-map',
   plugins: [
     new webpack.DefinePlugin({
       'process.env': {
@@ -35,17 +38,20 @@ module.exports = {
       canPrint: true,
     }),
   ],
+  resolve: {
+    extensions: ['.js', '.jsx'],
+  },
   module: {
     rules: [
       {
         test: /\.jsx?$/,
         use: 'eslint-loader',
-        exclude: /node_modules/,
+        exclude: /node_modules(?!\/dancedeets-common)/,
         enforce: 'pre',
       },
       {
         test: /\.jsx?$/,
-        exclude: /(node_modules|bower_components)/,
+        exclude: /node_modules(?!\/dancedeets-common)/,
         use: {
           loader: 'babel-loader',
           options: {

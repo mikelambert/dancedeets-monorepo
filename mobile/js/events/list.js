@@ -54,7 +54,7 @@ import {
   linkColor,
   purpleColors,
 } from '../Colors';
-import { auth, isAuthenticated } from '../api/dancedeets';
+import { auth, isAuthenticated, people } from '../api/dancedeets';
 import {
   BottomFade,
   Button,
@@ -314,6 +314,13 @@ class _EventListContainer extends React.Component {
     intl: intlShape,
   };
 
+  state: {
+    people: PeopleListing,
+    failed: boolean,
+  };
+
+  _loadingPeople: boolean;
+
   _listView: SectionList<*>;
   /* TODO: Figure out how to typecheck with this:
   {
@@ -344,6 +351,7 @@ class _EventListContainer extends React.Component {
     (this: any).setLocationAndSearch = this.setLocationAndSearch.bind(this);
     (this: any).renderItem = this.renderItem.bind(this);
     (this: any).fetchLocationAndSearch = this.fetchLocationAndSearch.bind(this);
+    (this: any).loadPeopleIfNeeded = this.loadPeopleIfNeeded.bind(this);
   }
 
   componentDidMount() {
@@ -357,13 +365,25 @@ class _EventListContainer extends React.Component {
       this.props.search.response &&
       nextProps.search.response
     ) {
-      this._listView.scrollToLocation({
-        animated: false,
-        itemIndex: 0,
-        sectionIndex: 0,
-        // Ugly hack to get it to scroll the Header into view:
-        // https://github.com/facebook/react-native/issues/14392
-        viewPosition: 100,
+      // Only scroll if there are rendered items we can use to compute.
+      // Otherwise we get errors since it doesn't know where "item 0" is.
+      if (
+        this._listView._wrapperListRef.getListRef()._highestMeasuredFrameIndex
+      ) {
+        this._listView.scrollToLocation({
+          animated: false,
+          itemIndex: 0,
+          sectionIndex: 0,
+          // Ugly hack to get it to scroll the Header into view:
+          // https://github.com/facebook/react-native/issues/14392
+          viewPosition: 100,
+        });
+      }
+    }
+    if (nextProps.search.response) {
+      this.setState({
+        people: nextProps.search.response.people,
+        failed: false,
       });
     }
   }
@@ -411,35 +431,23 @@ class _EventListContainer extends React.Component {
         });
       }
 
-      if (response.people) {
+      if (this.state.people) {
         // Keep in sync with web?
         const defaultCollapsed = !(response.results.length < 10);
 
         const peopleData = [];
-        if (
-          response.people.ADMIN &&
-          response.people.ADMIN[''] &&
-          response.people.ADMIN[''].length
-        ) {
-          peopleData.push({
-            key: 'Admin Row',
-            renderClass: OrganizerView,
-            people: response.people.ADMIN,
-            defaultCollapsed,
-          });
-        }
-        if (
-          response.people.ATTENDEE &&
-          response.people.ATTENDEE[''] &&
-          response.people.ATTENDEE[''].length
-        ) {
-          peopleData.push({
-            key: 'Attendee Row',
-            renderClass: AttendeeView,
-            people: response.people.ATTENDEE,
-            defaultCollapsed,
-          });
-        }
+        peopleData.push({
+          key: 'Admin Row',
+          renderClass: OrganizerView,
+          people: this.state.people.ADMIN,
+          defaultCollapsed,
+        });
+        peopleData.push({
+          key: 'Attendee Row',
+          renderClass: AttendeeView,
+          people: this.state.people.ATTENDEE,
+          defaultCollapsed,
+        });
 
         if (peopleData.length) {
           const peopleTitle = this.props.intl.formatMessage(
@@ -467,27 +475,29 @@ class _EventListContainer extends React.Component {
           })),
         });
       }
-      const now = moment();
+      const now = moment(this.props.intl.now());
       if (response.results != null && response.results.length > 0) {
         for (const e of response.results) {
           // TODO: Due to some ancient bad design decisions,
           // it's surprisingly difficult to to do
           // time-zone-aware date manipulation on the server,
           // so instead let's filter out those events here.
-          let end = moment(e.end_time, moment.ISO_8601);
+          let end = e.getEndMoment();
           // If it's an endtime-less event, compute a fallback endtime here.
-          if (!end.isValid()) {
-            end = moment(e.start_time, moment.ISO_8601).add(2, 'hours');
+          if (!end || !end.isValid()) {
+            end = e.getStartMoment().add(2, 'hours');
           }
           if (end.isBefore(now)) {
             continue;
           }
-          const start = moment(e.start_time, moment.ISO_8601);
-          const formattedStart = formatStartDateOnly(start, this.props.intl);
+          const formattedStart = formatStartDateOnly(
+            e.getListDateMoment(),
+            this.props.intl
+          );
           let lastSection = sections[sections.length - 1];
           if (!lastSection || lastSection.title !== formattedStart) {
             sections.push({
-              key: `Section: ${start}`,
+              key: `Section: ${formattedStart}`,
               title: formattedStart,
               data: [],
             });
@@ -560,6 +570,31 @@ class _EventListContainer extends React.Component {
     console.log('didFailToReceiveAdWithError', e);
   }
 
+  async loadPeopleIfNeeded() {
+    if (
+      // This search area was too large, and we didn't want to do a people calculation
+      !this.state.people ||
+      // We already have some people loaded, no need to load them again
+      Object.keys(this.state.people).length ||
+      // We have an in-progress pending load
+      this._loadingPeople
+    ) {
+      return;
+    }
+    try {
+      this._loadingPeople = true;
+      //locale: this.props.search.response.query.locale,
+      const resultJson = await people(
+        this.props.search.response.query.location
+      );
+      this.setState({ people: resultJson.people });
+    } catch (e) {
+      console.error(e);
+      this.setState({ failed: true });
+    }
+    this._loadingPeople = false;
+  }
+
   renderHeader() {
     if (this.props.search.error) {
       return this.renderErrorView(this.props.search.errorString);
@@ -584,13 +619,14 @@ class _EventListContainer extends React.Component {
           onEventSelected={this.props.onFeaturedEventSelected}
         />
       );
-    } else if (row.item.people) {
+    } else if (row.item.renderClass) {
       const PeopleView = row.item.renderClass;
       return (
         <PeopleView
           people={row.item.people}
           headerStyle={styles.sectionHeader}
           defaultCollapsed={row.item.defaultCollapsed}
+          onPress={this.loadPeopleIfNeeded}
         />
       );
     } else {
@@ -635,7 +671,14 @@ class _EventListContainer extends React.Component {
 
   renderWaitingForLocationPermission() {
     return (
-      <View style={{ justifyContent: 'center', alignItems: 'center', flex: 1 }}>
+      <View
+        style={{
+          justifyContent: 'center',
+          alignItems: 'center',
+          flex: 1,
+          margin: 20,
+        }}
+      >
         <Button
           style={{ marginBottom: 50 }}
           onPress={this.props.showSearchForm}
@@ -687,8 +730,8 @@ class _EventListContainer extends React.Component {
         renderSectionHeader={({ section }) =>
           <SectionHeader title={upperFirst(section.title)} />}
         stickySectionHeadersEnabled
-        initialNumToRender={10}
-        maxToRenderPerBatch={10}
+        initialNumToRender={20}
+        maxToRenderPerBatch={2}
       />
     );
   }

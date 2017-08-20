@@ -30,7 +30,7 @@ def _event_has_enough_attendees(db_event):
     fbl = user.get_fblookup()
     matcher = event_attendee_classifier.get_matcher(fbl, db_event.fb_event)
     logging.info('Checking event %s and found %s overlap_ids', db_event.id, len(matcher.overlap_ids))
-    if len(matcher.overlap_ids) > 30:
+    if len(matcher.overlap_ids) > 10:
         return True
     else:
         return False
@@ -54,8 +54,8 @@ def should_post_on_event_wall(auth_token, db_event):
     if not db_event.public:
         logging.info("Event is not public")
         return False
-    if db_event.attendee_count < 20:
-        logging.warning("Skipping event due to <20 attendees: %s", db_event.attendee_count)
+    if db_event.attendee_count < 10:
+        logging.warning("Skipping event due to <10 attendees: %s", db_event.attendee_count)
         return False
     if db_event.attendee_count > 600:
         logging.warning("Skipping event due to 600+ attendees: %s", db_event.attendee_count)

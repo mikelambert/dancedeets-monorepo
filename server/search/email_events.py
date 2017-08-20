@@ -48,13 +48,11 @@ def email_for_user(user, fbl, should_send=True):
     }
     form = search_base.SearchForm(data=data)
 
-    city_name = None
-    center_latlng = None
-    southwest = None
-    northeast = None
+    geocode = None
+    distance = None
     if form.location.data:
         try:
-            city_name, center_latlng, southwest, northeast = search_base.normalize_location(form)
+            geocode, distance = search_base.get_geocode_with_distance(form)
         except Exception as e:
             raise NoEmailException('Could not normalize user location: %s: %s', data, e)
 
@@ -71,7 +69,7 @@ def email_for_user(user, fbl, should_send=True):
     fb_user = fbl.fetched_data(fb_api.LookupUser, fbl.fb_uid)
 
     need_full_event = False
-    json_search_response = api.build_search_results_api(user_location, form, search_query, search_results, (2, 0), need_full_event, center_latlng, southwest, northeast, skip_people=True)
+    json_search_response = api.build_search_results_api(form, search_query, search_results, (2, 0), need_full_event, geocode, distance, skip_people=True)
     locale = user.locale or 'en_US'
     props = {
         'currentLocale': locale.replace('_', '-'),

@@ -5,7 +5,7 @@
 {% endblock %}
 
 {% block head_stylesheet %}
-    <meta property="og:image" content="http://www.dancedeets.com/images/deet-city.jpg" />
+    <meta property="og:image" content="https://www.dancedeets.com/images/deet-city.jpg" />
     <meta property="og:type" content="website" />
     <meta property="og:title" content="{{ result_title }}" />
     <meta property="og:site_name" content="DanceDeets"/>
@@ -64,7 +64,7 @@ window._REACT_PROPS = {{ react_props|safe }};
 window._REACT_ID = 'react-parent';
 </script>
 
-<script src="{{static_dir}}/js/classResultsExec.js"></script>
+<script src="{{ static_path('classResultsExec.js') }}"></script>
 
 <script type="text/javascript">
 

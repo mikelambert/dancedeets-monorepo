@@ -71,9 +71,12 @@ class SearchForm(wtforms.Form):
     time_period = wtforms.SelectField(choices=[(x, x) for x in TIME_LIST], default=TIME_ALL_FUTURE)
     deb = wtforms.StringField(default='')
 
+    # Only used by API
+    skip_people = wtforms.IntegerField(default=0)
+
     # For calendaring datetime-range queries:
-    start = wtforms.DateField()
-    end = wtforms.DateField()
+    start = wtforms.DateField(default=None)
+    end = wtforms.DateField(default=None)
 
     def distance_in_km(self):
         if self.distance_units.data == 'miles':
@@ -90,10 +93,18 @@ class SearchForm(wtforms.Form):
             d['keywords'] = self.keywords.data
         if self.min_attendees.data:
             d['min_attendees'] = self.min_attendees.data
-        d['location'] = self.location.data or ''
-        d['distance'] = self.distance.data
-        d['distance_units'] = self.distance_units.data
-        d['locale'] = self.locale.data
+        if self.location.data:
+            d['location'] = self.location.data
+        if self.distance.data:
+            d['distance'] = self.distance.data
+        if self.distance_units.data:
+            d['distance_units'] = self.distance_units.data
+        if self.locale.data:
+            d['locale'] = self.locale.data
+        if self.start.data:
+            d['start'] = self.start.data.strftime("%Y-%m-%d")
+        if self.end.data:
+            d['end'] = self.end.data.strftime("%Y-%m-%d")
         return d
 
     def validate(self):
@@ -102,7 +113,7 @@ class SearchForm(wtforms.Form):
             return False
         success = True
         if self.start.data and self.end.data:
-            if self.start.data >= self.end.data:
+            if not self.start.data < self.end.data:
                 self.start.errors.append('start must be less than end')
                 self.end.errors.append('start must be less than end')
                 success = False
@@ -119,23 +130,28 @@ class SearchForm(wtforms.Form):
         bounds = self._get_bounds()
         keywords = _get_parsed_keywords(self.keywords.data)
         common_fields = dict(bounds=bounds, min_attendees=self.min_attendees.data, keywords=keywords)
-        if start_end_query:
-            query = SearchQuery(start_date=self.start.data, end_date=self.end.data, **common_fields)
-        else:
-            query = SearchQuery(time_period=self.time_period.data, **common_fields)
+        query = SearchQuery(start_date=self.start.data, end_date=self.end.data, time_period=self.time_period.data, **common_fields)
         return query
 
-def normalize_location(form):
+
+def _get_geocode_from_form(form):
     place = gmaps_api.fetch_place_as_json(query=form.location.data, language=form.locale.data)
     if place['status'] == 'OK' and place['results']:
         geocode = gmaps_api.GMapsGeocode(place['results'][0])
-        southwest, northeast = math.expand_bounds(geocode.latlng_bounds(), form.distance_in_km())
-        city_name = place['results'][0]['formatted_address']
-        # This will fail on a bad location, so let's verify the location is geocodable above first.
-        return city_name, geocode.latlng(), southwest, northeast
+        return geocode
     else:
         raise Exception('Error geocoding search address')
 
+
+def get_geocode_with_distance(form):
+    geocode = _get_geocode_from_form(form)
+    distance = form.distance_in_km()
+    return geocode, distance
+
+
+def get_center_and_bounds(geocode, distance):
+    southwest, northeast = math.expand_bounds(geocode.latlng_bounds(), distance)
+    return geocode.latlng(), southwest, northeast
 
 
 class HtmlSearchForm(SearchForm):

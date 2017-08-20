@@ -1,0 +1,16 @@
+<html>
+<head>
+  <link rel="stylesheet" href="{{ static_path('common.css') }}">
+</head>
+<body style="background-color: white">
+  <div id="react-parent">
+    {{ react_html|safe }}
+  </div>
+  <script type="text/javascript">
+    window._REACT_PROPS = {{ react_props|safe }};
+    window._REACT_ID = 'react-parent';
+  </script>
+  <script src="{{ static_path('common.js') }}"></script>
+  <script src="{{ static_path('calendarExec.js') }}"></script>
+</body>
+</html>

@@ -12,7 +12,7 @@ export const yellowColors = [
   '#C0A000',
 ];
 
-export const lightPurpleColors = ['#E0E0F5', '#D0D0F0', '#C0C0D0'];
+export const lightPurpleColors = ['#E0E0F5', '#D0D0F0', '#C0C0E8'];
 
 export const purpleColors = [
   '#8283A9',

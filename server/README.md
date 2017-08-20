@@ -4,7 +4,7 @@
 
 # DanceDeets
 
-The magic behind <http://www.dancedeets.com/>.
+The magic behind <https://www.dancedeets.com/>.
 
 ## Setup
 

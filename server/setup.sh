@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -e
+set -euo pipefail
 
 BASE_DIR=$(pwd)
 
@@ -10,6 +10,8 @@ mkdir -p $TMP_DIR
 cd $TMP_DIR
 echo "Downloading get-pip"
 curl https://bootstrap.pypa.io/get-pip.py --output $TMP_DIR/get-pip.py
+
+TRAVIS=${TRAVIS:-false}
 
 if [ "$TRAVIS" == true ]; then
   USER_FLAG=''

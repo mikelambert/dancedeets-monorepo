@@ -65,6 +65,15 @@ class _DDApplication(webapp2.WSGIApplication):
             return func
         return wrapper
 
+    def bio_route(self, *args, **kwargs):
+        def wrapper(func):
+            # Do we want to extend this to full Routes someday?
+            # Won't work with batched_mapperworker's slurp-all-but-pass-no-args approach, so need bwcompat
+            self.router.add(HostRoute(r'dancer?\.bio$', handler=func, *args, **kwargs))
+            return func
+        return wrapper
+
 app = _DDApplication()
 route = app.route
 short_route = app.short_route
+bio_route = app.bio_route

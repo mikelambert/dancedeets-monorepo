@@ -30,14 +30,12 @@ export function formatAttending(intl: intlShape, rsvp: EventRsvpList) {
 
 export function groupEventsByStartDate(
   intl: intlShape,
-  events: Array<BaseEvent>,
-  getStartTime: BaseEvent => string
+  events: Array<BaseEvent>
 ) {
   const results = [];
   let currentDate = null;
   events.forEach((event, index) => {
-    const eventStart = moment(getStartTime(event));
-    const eventStartDate = formatStartDateOnly(eventStart.toDate(), intl);
+    const eventStartDate = formatStartDateOnly(event.getListDateMoment(), intl);
     if (eventStartDate !== currentDate) {
       results.push({ header: eventStartDate, events: [] });
       currentDate = eventStartDate;

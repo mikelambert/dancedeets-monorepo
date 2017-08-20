@@ -81,7 +81,7 @@ def build_and_cache_image(city, week_start, search_results):
     image = build_animated_image(search_results)
     path = _generate_path(city, week_start)
     gcs.put_object(WEEKLY_IMAGE_BUCKET, path, image)
-    image_url = 'http://www.dancedeets.com/weekly/image?city=%s&week_start=%s' % (city.key().name(), week_start.strftime('%Y-%m-%d'))
+    image_url = 'https://www.dancedeets.com/weekly/image?city=%s&week_start=%s' % (city.key().name(), week_start.strftime('%Y-%m-%d'))
     return image_url
 
 def load_cached_image(city, week_start):

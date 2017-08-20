@@ -90,5 +90,5 @@ function googleTranslateElementInit() {
 {% if displayable_event.latitude %}
   <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAjgNUFTnWeftZEz6fWXZTGuQBRNR03VWE"></script>
 {% endif %}
-<script src="{{static_dir}}/js/eventExec.js"></script>
+<script src="{{ static_path('eventExec.js') }}"></script>
 {% endblock %}

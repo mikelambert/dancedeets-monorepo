@@ -1,33 +1,34 @@
 @import 'config.scss';
 
-#navbar-collapse-button-icon {
-  color: $headline-underline-main-color;
-}
-#navbar {
-  background-color: $body-bg;
-}
+$react-dates-color-primary: #4C4D81;
+$react-dates-color-secondary: #4C4D81;
+$react-dates-color-focus: #C0C0E8;
+$react-dates-color-text-focus: black;
+$react-dates-color-primary-shade-1: #9090D0;
+$react-dates-color-primary-shade-2: #C0C0E8;
+$react-dates-color-primary-shade-3: #9090D0;
+$react-dates-color-primary-shade-4: #C0C0E8;
+$react-dates-color-border: transparent;
+@import '~react-dates/css/variables.scss';
+@import '~react-dates/css/styles.scss';
 
 body {
   font-weight: 'lighter';
 }
 
 .fullscreen-static-image {
-    height: 100vh;
+  height: 100vh;
 }
 .fullscreen-darken-image {
-    background: rgba(41, 35, 0, 0.5);
-    width: 100%;
-    height: 100%;
+  background: rgba(41, 35, 0, 0.5);
+  width: 100%;
+  height: 100%;
 }
 
 .vertical-center {
-    position: relative;
-    top: 50%;
-    transform: translate(0, -50%);
-}
-
-.animate-on-hover {
-  display: block;
+  position: relative;
+  top: 50%;
+  transform: translate(0, -50%);
 }
 
 .body-contents {
@@ -44,12 +45,27 @@ body {
 
 .event-flyer {
   position: relative;
-  margin-bottom: 1em;
+  width: 100%;
+  height: auto;
+}
+
+.grey-top-border {
+  position: relative;
+}
+.grey-top-border::before {
+  position: absolute;
+  border-top: 1px solid $grey-background;
+  display: block;
+  top: 0;
+  left: 0;
+  right: 0;
+  content: '';
 }
 
 .product-social-links {
   padding-bottom: 0 1em;
   height: 20px;
+  line-height: 10px;
 }
 
 .margin-bottom-5,
@@ -65,24 +81,54 @@ body {
 .margin-bottom-55,
 .margin-bottom-60,
 .margin-bottom-100 {
-   clear:both;
+  clear: both;
 }
-.margin-bottom-5  { margin-bottom:5px;}
-.margin-bottom-10 { margin-bottom:10px;}
-.margin-bottom-15 { margin-bottom:15px;}
-.margin-bottom-20 { margin-bottom:20px;}
-.margin-bottom-25 { margin-bottom:25px;}
-.margin-bottom-30 { margin-bottom:30px;}
-.margin-bottom-35 { margin-bottom:35px;}
-.margin-bottom-40 { margin-bottom:40px;}
-.margin-bottom-45 { margin-bottom:45px;}
-.margin-bottom-50 { margin-bottom:50px;}
-.margin-bottom-55 { margin-bottom:55px;}
-.margin-bottom-60 { margin-bottom:60px;}
-.margin-bottom-100 { margin-bottom:100px;}
+.margin-bottom-5 {
+  margin-bottom: 5px;
+}
+.margin-bottom-10 {
+  margin-bottom: 10px;
+}
+.margin-bottom-15 {
+  margin-bottom: 15px;
+}
+.margin-bottom-20 {
+  margin-bottom: 20px;
+}
+.margin-bottom-25 {
+  margin-bottom: 25px;
+}
+.margin-bottom-30 {
+  margin-bottom: 30px;
+}
+.margin-bottom-35 {
+  margin-bottom: 35px;
+}
+.margin-bottom-40 {
+  margin-bottom: 40px;
+}
+.margin-bottom-45 {
+  margin-bottom: 45px;
+}
+.margin-bottom-50 {
+  margin-bottom: 50px;
+}
+.margin-bottom-55 {
+  margin-bottom: 55px;
+}
+.margin-bottom-60 {
+  margin-bottom: 60px;
+}
+.margin-bottom-100 {
+  margin-bottom: 100px;
+}
 
-.color-light { color: #ffffff;}
-.bg-color-darker { background-color: #222 !important;}
+.color-light {
+  color: #ffffff;
+}
+.bg-color-darker {
+  background-color: #222 !important;
+}
 
 .btn:hover {
   color: #fff;
@@ -117,7 +163,6 @@ h6 {
   line-height: 18px;
 }
 
-
 .headline {
   margin: 10px 0 25px 0;
   border-bottom: 1px solid $headline-underline-secondary-color;
@@ -128,10 +173,7 @@ h6 {
   //color: #585f69;
 }
 
-.headline h2,
-.headline h3,
-.headline h4,
-.headline .headline-underline {
+.headline h2, .headline h3, .headline h4, .headline .headline-underline {
   margin: 0 0 -2px 0;
   padding-bottom: 5px;
   display: inline-block;
@@ -142,11 +184,9 @@ h6 {
 .btn-default {
   background-image: linear-gradient(180deg, $purple-lighter, $purple-medium);
 
-  &:focus,
-  &.focus {
+  &:focus, &.focus {
     background-image: linear-gradient(180deg, $purple-lighter, $purple-medium);
-    &:active,
-    &.active {
+    &:active, &.active {
       border-color: $yellow-lightest;
     }
   }
@@ -154,31 +194,27 @@ h6 {
     background-image: linear-gradient(180deg, $purple-lighter, $purple-medium);
   }
 
-  &:active,
-  &.active {
+  &:active, &.active {
     background-image: linear-gradient(180deg, $purple-medium, $purple-lighter);
     border-color: $yellow-lightest;
 
-    &:hover,
-    &.hover {
+    &:hover, &.hover {
       border-color: $yellow-lightest;
     }
   }
 }
 .btn-no-focus {
-  outline:0 !important;
+  outline: 0 !important;
 }
 
 .btn-primary {
   background-image: linear-gradient(180deg, $purple-lighter, $purple-medium);
 
-  &:focus,
-  &.focus {
+  &:focus, &.focus {
     background-image: linear-gradient(180deg, $purple-lighter, $purple-medium);
   }
 
-  &:active,
-  &.active {
+  &:active, &.active {
     background-image: linear-gradient(180deg, $purple-medium, $purple-lighter);
     border-color: $yellow-lightest;
   }
@@ -188,28 +224,17 @@ h6 {
 .fc-state-default {
   background-color: $brand-primary;
   color: white;
-  background-image: linear-gradient(180deg, $brand-primary, lighten($brand-primary, 10%));
+  background-image: linear-gradient(
+    180deg,
+    $brand-primary,
+    lighten($brand-primary, 10%)
+  );
 }
 .fc-state-hover {
   background-color: lighten($brand-primary, 10%);
 }
 .fc-state-active {
   background-color: darken($brand-primary, 10%);
-}
-
-// Color the text of the tabs to not look like blue links
-.nav {
-
-  > li {
-
-    > a {
-      color: white;
-      &:hover,
-      &:focus {
-        color: $yellow-lighter
-      }
-    }
-  }
 }
 
 .no-border {
@@ -221,18 +246,62 @@ h6 {
   background-color: $body-bg;
 }
 
+.inline-block {
+  display: inline-block;
+}
+
 // Pulled from the event.jsx page
+.card::before {
+  border: 1px solid;
+  border-color: #e5e6e9 #dfe0e4 #d0d1d5;
+  border-radius: 4px;
+  bottom: -1px;
+  top: -1px;
+  left: -1px;
+  right: -1px;
+  content: '';
+  position: absolute;
+  pointer-events: none; // avoid capturing mouse events
+}
+
 .card {
-  border-radius: 15px;
-  background-color: #4C4D81;
+  border: 1px solid;
+  border-color: transparent;
+  border-radius: 3px;
+  background-color: white;
   padding: 10px;
-  margin: 10px
+  margin: 10px;
+  position: relative;
+}
+
+.card-header {
+  padding: 12px 12px 10px;
+  display: flex;
+  flex-direction: horizontal;
+  justify-content: space-between;
+}
+
+.card-contents {
+  padding: 10px;
+}
+
+.card-header-text {
+  line-height: 25px;
+  font-weight: bold;
+}
+
+.new-card {
+  @extend .card;
+  padding: 0px;
+}
+
+.new-card::before {
+  @extend .new-card::before;
 }
 
 .image-prefix {
   padding-left: 5px;
-  padding-top: 5px;
-  display: table;
+  display: inline-block;
 }
 
 .image-prefix-icon {
@@ -243,17 +312,11 @@ h6 {
 }
 
 .image-prefix-dancer {
-  width: 1.3em;
+  width: 1.5em;
 }
 
 .image-prefix-contents {
   display: table-cell;
-}
-
-.event-flyer {
-  width: 100%;
-  height: auto;
-  border-radius: 5px;
 }
 
 .italics {
@@ -266,4 +329,103 @@ h6 {
 
 .google-translate {
   height: 25px;
+}
+
+button.link-button, button.link-button:focus, button.link-button:active {
+  /* Remove all decorations to look like normal text */
+  background: none;
+  border: none;
+  display: inline;
+  font: inherit;
+  margin: 0;
+  padding: 0;
+  outline: none;
+  outline-offset: 0;
+  /* Additional styles to look like a link */
+  color: $blue-link;
+  cursor: pointer;
+  text-decoration: underline;
+}
+/* Remove extra space inside buttons in Firefox */
+button.link-button::-moz-focus-inner {
+  border: none;
+  padding: 0;
+}
+
+.fade-out-body {
+  position: 'relative';
+}
+
+.fade-out-body:after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: hsla(0, 0%, 100%, .2);
+  background: linear-gradient(180deg, hsla(0, 0%, 100%, 0) 0, $body-bg);
+  height: 100px;
+}
+
+/** We want to see the whole city and title, so let's ensure we override 'white-space: nowrap'.
+  * This is discussed in more detail here, which is when 2.1 introduced table-based event layout:
+  * https://code.google.com/p/fullcalendar/issues/detail?id=1992
+  **/
+.fc-day-grid-event > .fc-content {
+  white-space: normal !important;
+}
+.fc-event, .fc-event-dot {
+  background-color: $purple-lighter !important;
+}
+.fc-event {
+  border: 1px solid $purple-lightest !important;
+}
+
+// Top Search Field
+$top-search-placeholder-color: #484848;
+
+.top-search::-webkit-input-placeholder {
+  /* WebKit, Blink, Edge */
+  color: $top-search-placeholder-color;
+}
+.top-search:-moz-placeholder {
+  /* Mozilla Firefox 4 to 18 */
+  color: $top-search-placeholder-color;
+  opacity: 1;
+}
+.top-search::-moz-placeholder {
+  /* Mozilla Firefox 19+ */
+  color: $top-search-placeholder-color;
+  opacity: 1;
+}
+.top-search:-ms-input-placeholder {
+  /* Internet Explorer 10-11 */
+  color: $top-search-placeholder-color;
+}
+.top-search::-ms-input-placeholder {
+  /* Microsoft Edge */
+  color: $top-search-placeholder-color;
+}
+
+.top-search:focus {
+  outline-width: 0;
+}
+
+.video-container {
+  position: relative;
+  padding-bottom: 56.25%;
+  padding-top: 30px;
+  height: 0;
+  overflow: hidden;
+}
+
+.video-container iframe, .video-container object, .video-container embed {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.dummy {
 }

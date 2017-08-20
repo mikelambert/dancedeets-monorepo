@@ -17,12 +17,9 @@ function getDescription(event: Event): string {
 }
 
 function getStartEndTime(event: Event) {
-  // Parse dates-with-timezones, and use them to construct an event
-  const start = moment(event.start_time, moment.ISO_8601);
-  let end = null;
-  if (event.end_time) {
-    end = moment(event.end_time, moment.ISO_8601);
-  } else {
+  const start = event.getStartMoment();
+  let end = event.getEndMoment();
+  if (!end) {
     end = start.add(1.5, 'hours');
   }
   return { start, end };
@@ -83,7 +80,7 @@ async function addIOS(event: Event) {
   return true;
 }
 
-function androidDate(date: Date) {
+function androidDate(date) {
   // 2016-01-01 01:00
   const tzOffset = new Date().getTimezoneOffset() * 60000;
   try {
@@ -101,6 +98,10 @@ function androidDate(date: Date) {
 function addAndroid(event: Event) {
   const { start, end } = getStartEndTime(event);
 
+  // Sometimes get the following errror:
+  // Fatal Exception: android.content.ActivityNotFoundException
+  // No Activity found to handle Intent { act=android.intent.action.INSERT dat=content://com.android.calendar/events flg=0x10000000 (has extras) }
+  // Filed as https://github.com/lucasferreira/react-native-send-intent/issues/45
   SendIntentAndroid.addCalendarEvent({
     title: event.name,
     description: getDescription(event),

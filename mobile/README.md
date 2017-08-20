@@ -8,7 +8,7 @@ This uses a slightly patched version of react-native 0.45 (two cherrypicks from 
 cd react-native
 ./gradlew :ReactAndroid:installArchives
 cd ../dancedeets-monorepo/mobile/
-npm install
+./setup.sh
 ```
 
 We could alternately (un)comment the `React-Native-Compile:` sections and build react-native as part of our build. But it's slower in a variety of ways, so I'd prefer to avoid that as long as we don't need to actively develop React Native.

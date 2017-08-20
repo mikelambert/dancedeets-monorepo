@@ -6,6 +6,7 @@
 
 import React from 'react';
 import {
+  ActivityIndicator,
   StyleSheet,
   TouchableOpacity,
   View,
@@ -19,16 +20,18 @@ import type {
   StylePersonLookup,
 } from 'dancedeets-common/js/events/search';
 import { messages } from 'dancedeets-common/js/events/people';
-import { formatStartDateOnly } from 'dancedeets-common/js/dates';
 import { Collapsible, HorizontalView, semiNormalize, Text } from '../ui';
 import type { State } from '../reducers/search';
 import { openUserId } from '../util/fb';
 import { linkColor } from '../Colors';
 
-class PersonList extends React.Component {
+class _PersonList extends React.Component {
   props: {
     subtitle: string,
     people: StylePersonLookup,
+
+    // Self-managed props
+    intl: intlShape,
   };
 
   state: {
@@ -54,6 +57,13 @@ class PersonList extends React.Component {
   }
 
   render() {
+    if (!this.props.people[this.state.category]) {
+      return (
+        <Text style={{ marginLeft: 20, marginBottom: 10 }}>
+          {this.props.intl.formatMessage(messages.nooneNearby)}
+        </Text>
+      );
+    }
     const peopleList = this.props.people[this.state.category].slice(0, 10);
     // const categories = this.props.categoryOrder.filter(x => x === '' || this.props.people[x]);
     // {categories.map(x => <option key={x} value={x}>{x || 'Overall'}</option>)}
@@ -72,6 +82,7 @@ class PersonList extends React.Component {
     );
   }
 }
+const PersonList = injectIntl(_PersonList);
 
 class HeaderCollapsible extends React.Component {
   props: {
@@ -79,6 +90,7 @@ class HeaderCollapsible extends React.Component {
     title: string,
     children?: React.Element<*>,
     underlayColor?: string,
+    onPress?: () => void | Promise<void>,
   };
 
   state: {
@@ -86,6 +98,9 @@ class HeaderCollapsible extends React.Component {
   };
 
   _toggle() {
+    if (this.props.onPress) {
+      this.props.onPress();
+    }
     this.setState({ collapsed: !this.state.collapsed });
   }
 
@@ -136,29 +151,47 @@ class HeaderCollapsible extends React.Component {
   }
 }
 
+class _Loading extends React.Component {
+  props: {
+    // Self-managed props
+    intl: intlShape,
+  };
+
+  render() {
+    return <ActivityIndicator style={{ marginLeft: 20, marginBottom: 20 }} />;
+  }
+}
+const Loading = injectIntl(_Loading);
+
 class _OrganizerView extends React.Component {
   props: {
     defaultCollapsed: boolean,
     headerStyle: ViewPropTypes.style,
-    people: StylePersonLookup,
+    people: ?StylePersonLookup,
+    onPress?: () => void | Promise<void>,
 
     // Self-managed props
     intl: intlShape,
   };
 
   render() {
-    return (
-      <HeaderCollapsible
-        title={this.props.intl.formatMessage(messages.nearbyPromoters)}
-        defaultCollapsed={this.props.defaultCollapsed}
-        style={this.props.headerStyle}
-      >
-        <PersonList
+    const personList = this.props.people
+      ? <PersonList
           subtitle={this.props.intl.formatMessage(
             messages.nearbyPromotersMessage
           )}
           people={this.props.people}
         />
+      : <Loading />;
+
+    return (
+      <HeaderCollapsible
+        title={this.props.intl.formatMessage(messages.nearbyPromoters)}
+        defaultCollapsed={this.props.defaultCollapsed}
+        style={this.props.headerStyle}
+        onPress={this.props.onPress}
+      >
+        {personList}
       </HeaderCollapsible>
     );
   }
@@ -169,25 +202,31 @@ export class _AttendeeView extends React.Component {
   props: {
     defaultCollapsed: boolean,
     headerStyle: ViewPropTypes.style,
-    people: StylePersonLookup,
+    people: ?StylePersonLookup,
+    onPress?: () => void | Promise<void>,
 
     // Self-managed props
     intl: intlShape,
   };
 
   render() {
-    return (
-      <HeaderCollapsible
-        title={this.props.intl.formatMessage(messages.nearbyDancers)}
-        defaultCollapsed={this.props.defaultCollapsed}
-        style={this.props.headerStyle}
-      >
-        <PersonList
+    const personList = this.props.people
+      ? <PersonList
           subtitle={this.props.intl.formatMessage(
             messages.nearbyDancersMessage
           )}
           people={this.props.people}
         />
+      : <Loading />;
+
+    return (
+      <HeaderCollapsible
+        title={this.props.intl.formatMessage(messages.nearbyDancers)}
+        defaultCollapsed={this.props.defaultCollapsed}
+        style={this.props.headerStyle}
+        onPress={this.props.onPress}
+      >
+        {personList}
       </HeaderCollapsible>
     );
   }

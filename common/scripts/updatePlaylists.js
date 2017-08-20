@@ -8,7 +8,6 @@
 import fetch from 'node-fetch';
 import * as fs from 'fs';
 import zip from 'lodash/zip';
-import findIndex from 'lodash/findIndex';
 import { loadPlaylist } from './fetchYoutubeVideos';
 import { findVideoDimensions, getUrl, YoutubeKey } from './_youtube';
 
@@ -71,12 +70,8 @@ async function reloadPlaylists(playlistInfos: Array<PlaylistInfo>) {
       ...videoDimensions[x.youtubeId],
     }));
     // De-dupe the array on ids, keeping only the first element (where pos == found-itself)
-    const finalTutorialItems = tempTutorialItems.filter(function(
-      item,
-      pos,
-      self
-    ) {
-      return findIndex(self, x => x.id == item.id) == pos;
+    const finalTutorialItems = tempTutorialItems.filter((item, pos, self) => {
+      return self.findIndex(x => x.id == item.id) == pos;
     });
     const tutorial = {
       id: playlistInfo.id,
@@ -95,7 +90,10 @@ async function reloadPlaylists(playlistInfos: Array<PlaylistInfo>) {
         },
       ],
     };
-    const filename = `../js/tutorials/playlists/break/${playlistInfo.id.replace('-', '_')}.json`;
+    const filename = `../js/tutorials/playlists/break/${playlistInfo.id.replace(
+      '-',
+      '_'
+    )}.json`;
     fs.writeFile(filename, JSON.stringify(tutorial, null, '  '));
   }
 }

@@ -7,7 +7,7 @@ from google.appengine.ext import ndb
 
 import event_types
 from events import event_locations
-from loc import formatting
+from loc import address
 from loc import gmaps_api
 from . import namespaces
 from util import fb_events
@@ -327,19 +327,7 @@ class DBEvent(ndb.Model):
 
     def rebuild_venue(self):
         geocode = self.get_geocode()
-        if not geocode:
-            return {}
-        country = geocode.country(long=True)
-        venue = {}
-        if country:
-            venue['country'] = country
-        city = formatting.get_city(geocode)
-        if city:
-            venue['city'] = city
-        state = formatting.get_state(geocode)
-        if state:
-            venue['state'] = state
-        return venue
+        return address.get_address_from_geocode(geocode)
 
     @property
     def venue(self):

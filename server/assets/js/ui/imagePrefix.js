@@ -49,12 +49,12 @@ export default class ImagePrefix extends React.Component {
       );
     }
     return (
-      <div className={`image-prefix ${className || ''}`} {...otherProps}>
+      <span className={`image-prefix ${className || ''}`} {...otherProps}>
         {iconHtml}
-        <div className="image-prefix-contents">
+        <span className="image-prefix-contents">
           {children}
-        </div>
-      </div>
+        </span>
+      </span>
     );
   }
 }

@@ -8,6 +8,7 @@ const prod = !env.debug;
 module.exports = {
   entry: {
     brackets: './assets/js/brackets.js',
+    calendar: './assets/js/calendar.js',
     classResults: './assets/js/classResults.js',
     event: './assets/js/event.js',
     eventSearchResults: './assets/js/eventSearchResults.js',
@@ -21,7 +22,7 @@ module.exports = {
     path: path.join(__dirname, 'dist/js-server'),
     filename: '[name].js',
   },
-  devtool: prod ? 'source-map' : 'eval',
+  devtool: prod ? 'source-map' : 'cheap-eval-source-map',
   plugins: [
     new webpack.DefinePlugin({
       'process.env': {

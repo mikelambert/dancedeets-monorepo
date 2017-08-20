@@ -173,7 +173,6 @@ class Search(object):
             if self.query.time_period in search_base.FUTURE_INDEX_TIMES:
                 search_index = FutureEventsIndex
         if self.query.start_date:
-            # Do we want/need this hack?
             if self.query.start_date > datetime.date.today():
                 search_index = FutureEventsIndex
 

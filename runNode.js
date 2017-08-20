@@ -11,4 +11,8 @@ process.on('unhandledRejection', (reason, p) => {
 var path = require('path');
 require('babel-core/register');
 require('babel-polyfill');
-require(path.join(process.cwd(), process.argv[2]));
+var binPath = process.argv[2];
+if (!binPath.startsWith('/')) {
+  binPath = path.join(process.cwd(), binPath);
+}
+require(binPath);

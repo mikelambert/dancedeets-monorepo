@@ -2,8 +2,8 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="com.dancedeets.android"
-    android:versionCode="44"
-    android:versionName="2.2.4"
+    android:versionCode="46"
+    android:versionName="2.3.2"
     >
 
     <!--<uses-sdk tools:overrideLibrary="com.facebook.react, com.BV.LinearGradient, com.kevinejohn.RNMixpanel"/>-->
@@ -79,7 +79,7 @@
             android:name="com.mixpanel.android.MPConfig.ResourcePackageName"
             android:value="com.dancedeets.android"
             />
-        <metadata
+        <meta-data
             android:name="com.mixpanel.android.MPConfig.DisableViewCrawler"
             android:value="false"
             />

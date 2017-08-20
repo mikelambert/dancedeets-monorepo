@@ -45,7 +45,7 @@ const baseAssetsDir = `/Users/${username.sync()}/Dropbox/dancedeets/art/build-as
 // TODO: Support login here, so that this URL can actually run. Currently blocked by 'login: admin'
 gulp.task('web:events:resave', cb =>
   fetch(
-    'http://www.dancedeets.com/tasks/reload_events?user_id=701004&allow_cache=1&disable_updates=regeocode,photo&queue=fast-queue&only_if_updated=0'
+    'https://www.dancedeets.com/tasks/reload_events?user_id=701004&allow_cache=1&disable_updates=regeocode,photo&queue=fast-queue&only_if_updated=0'
   ).then(x => console.log(x))
 );
 
@@ -72,7 +72,12 @@ gulp.task(
 );
 gulp.task('compile:test-geonames', ['compile:test-geonames:build_cities_db']);
 
-gulp.task('compile:images:favicons', () =>
+const faviconsFilename = './dist/templates/favicon_tags.html';
+gulp.task(
+  'compile:images:favicons:delete',
+  $.shell.task(`rm -f ${faviconsFilename}`)
+);
+gulp.task('compile:images:favicons', ['compile:images:favicons:delete'], () =>
   gulp
     .src('assets/img/deets-head.png')
     .pipe(
@@ -80,10 +85,10 @@ gulp.task('compile:images:favicons', () =>
         appName: 'DanceDeets',
         appDescription: 'Street Dance Events. Worldwide.',
         developerName: 'DanceDeets',
-        developerURL: 'http://www.dancedeets.com/',
+        developerURL: 'https://www.dancedeets.com/',
         background: '#fff',
-        path: '/dist/img/favicons/',
-        url: 'http://www.dancedeets.com/',
+        path: 'https://www.dancedeets.com/dist/img/favicons/',
+        url: 'https://www.dancedeets.com/',
         display: 'standalone',
         orientation: 'portrait',
         version: 1.0,
@@ -93,7 +98,7 @@ gulp.task('compile:images:favicons', () =>
           opengraph: false,
           twitter: false,
         },
-        html: './dist/templates/favicon_tags.html',
+        html: faviconsFilename,
         replace: true,
       })
     )
@@ -255,7 +260,7 @@ gulp.task('compile:fonts', () =>
 gulp.task('pagespeed', cb =>
   // Update the below URL to the public URL of your site
   pagespeed(
-    'http://www.dancedeets.com/new_homepage',
+    'https://www.dancedeets.com/new_homepage',
     {
       strategy: 'mobile',
       // By default we use the PageSpeed Insights free (no API key) tier.
@@ -293,7 +298,7 @@ gulp.task('scrape:web:scrapy', webEventNames.map(x => `scrape:one:${x}`));
 gulp.task('scrape:classes:scrapy', classesNames.map(x => `scrape:one:${x}`));
 gulp.task(
   'scrape:classes:index:prod',
-  $.shell.task(['curl http://www.dancedeets.com/classes/reindex'])
+  $.shell.task(['curl https://www.dancedeets.com/classes/reindex'])
 );
 gulp.task(
   'scrape:classes:index:dev',
@@ -386,7 +391,7 @@ function webpack(configName, dependencies = []) {
   gulp.task(
     `compile:webpack:${configName}:prod:once`,
     dependencies,
-    $.shell.task([webpackCommand])
+    $.shell.task([`${webpackCommand}`])
   );
   gulp.task(
     `compile:webpack:${configName}:prod:watch`,
@@ -402,6 +407,13 @@ function webpack(configName, dependencies = []) {
     `compile:webpack:${configName}:debug:watch`,
     dependencies,
     $.shell.task([`${webpackCommand} --watch --debug`])
+  );
+  gulp.task(
+    `compile:webpack:${configName}:json`,
+    dependencies,
+    $.shell.task([
+      `${webpackCommand} --json > webpack-${configName}-output.json`,
+    ])
   );
 }
 // Generate rules for our three webpack configs
@@ -432,6 +444,17 @@ gulp.task('compile', [
   'compile:fonts',
   'compile:geonames',
 ]);
+
+// When debugging webpack bundle sizes, we can use js:size:* here
+// as well as track who references what, with http://webpack.github.io/analyse
+['common', 'eventSearchResultsExec'].forEach(filename =>
+  gulp.task(
+    `js:size:${filename}`,
+    $.shell.task(
+      `./node_modules/source-map-explorer/index.js dist/js/${filename}.js{,.map}`
+    )
+  )
+);
 
 gulp.task('clean', () => del.sync('dist'));
 

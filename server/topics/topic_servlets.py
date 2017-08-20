@@ -1,17 +1,19 @@
+import json
 import logging
 import re
+import urllib2
+
+from apiclient.discovery import build
 
 import app
 import base_servlet
 import fb_api
+import keys
 from topics import grouping
 from topics import topic_db
 from search import search
 from search import search_base
 from servlets import api
-
-import keys
-from apiclient.discovery import build
 
 # Set DEVELOPER_KEY to the "API key" value from the Google Developers Console:
 # https://console.developers.google.com/project/_/apiui/credential
@@ -20,7 +22,7 @@ DEVELOPER_KEY = keys.get('google_server_key')
 YOUTUBE_API_SERVICE_NAME = 'youtube'
 YOUTUBE_API_VERSION = 'v3'
 
-
+@app.bio_route('/?')
 @app.route('/topic/?')
 class TopicListHandler(base_servlet.BaseRequestHandler):
     def requires_login(self):
@@ -32,6 +34,11 @@ class TopicListHandler(base_servlet.BaseRequestHandler):
 
         self.render_template('topic_list')
 
+def get_instagrams_for(username):
+    text = urllib2.urlopen('https://www.instagram.com/%s/media/' % username).read()
+    json_data = json.loads(text)
+    return json_data
+
 def get_videos_for(keyword, recent=False):
     youtube = build(
         YOUTUBE_API_SERVICE_NAME,
@@ -42,32 +49,12 @@ def get_videos_for(keyword, recent=False):
         part="id,snippet",
         maxResults=50,
     ).execute()
-    return decorate_with_topic_details(search_response)
-
-def decorate_with_topic_details(search_response):
-    topic_response = get_topic_details_for(search_response)
-    topic_lookup = dict((x['id'], x) for x in topic_response['items'])
-    full_response = search_response.copy()
-    for video in full_response['items']:
-        if video['id']['kind'] == 'youtube#video':
-            video['topicDetails'] = topic_lookup[video['id']['videoId']].get('topicDetails')
-    return full_response
-
-def get_topic_details_for(search_response):
-    videoIds = [x['id']['videoId'] for x in search_response['items'] if x['id']['kind'] == 'youtube#video']
-    youtube = build(
-        YOUTUBE_API_SERVICE_NAME,
-        YOUTUBE_API_VERSION,
-        developerKey=DEVELOPER_KEY)
-    search_response = youtube.videos().list(
-        id=','.join(videoIds),
-        part="topicDetails",
-        maxResults=50,
-    ).execute()
     return search_response
 
 
-@app.route('/topic/([^/]+)/?')
+topic_regex = '([^/]+)'
+@app.bio_route('/%s' % topic_regex)
+@app.route('/topic/%s/?' % topic_regex)
 class TopicHandler(base_servlet.BaseRequestHandler):
     def requires_login(self):
         return False
@@ -79,14 +66,7 @@ class TopicHandler(base_servlet.BaseRequestHandler):
             return
 
         topic = topics[0]
-
-        if topic.graph_id:
-            # We shouldn't need any tokens to access pages
-            fbl = fb_api.FBLookup(None, None)
-            fb_source = fbl.get(topic_db.LookupTopicPage, topic.graph_id)
-        else:
-            fb_source = None
-
+        topic.init()
 
         def prefilter(doc_event):
             """Function for fitlering doc results, before we spend the energy to load the corresponding DBEvents.
@@ -126,38 +106,30 @@ class TopicHandler(base_servlet.BaseRequestHandler):
         search_query.extra_fields = ['name', 'description']
         search_results = search.Search(search_query).get_search_results(prefilter=prefilter)
 
-        self.display['topic_title'] = topic.override_title or (fb_source and fb_source['info']['name'])
-        self.display['topic_image'] = topic.override_image or (fb_source and fb_source['picture']['data']['url'])
-        self.display['topic_description'] = topic.override_description or (fb_source and fb_source['info'].get('about')) or ''
-
-        json_search_response = api.build_search_results_api(None, None, search_query, search_results, (2, 0), need_full_event=False, center_latlng=None, southwest=None, northeast=None)
+        json_search_response = api.build_search_results_api(None, search_query, search_results, (2, 0), need_full_event=False, geocode=None, distance=None)
 
         videos = get_videos_for(topic.youtube_query)
+
+        if topic.social().get('instagram'):
+            instagrams = get_instagrams_for(topic.social()['instagram'])
+        else:
+            instagrams = {'items': []}
+
+        topic_json = {
+            'title': topic.title(),
+            'description': topic.description(),
+            'image_url': topic.image_url(),
+            'social': topic.social(),
+        }
 
         props = dict(
             response=json_search_response,
             videos=videos,
+            instagrams=instagrams,
+            topic=topic_json,
         )
 
         self.setup_react_template('topic.js', props)
-        self.display['all_results'] = search_results
-
-        by_year = []
-        for year, month_events in sorted(grouping.group_results_by_date(search_results).items()):
-            by_year.append((year, sorted(month_events.items())))
-        self.display['group_by_date'] = by_year
-        by_country = sorted(grouping.group_results_by_location(search_results).items(), key=lambda x: (-len(x[1]), x[0]))
-        self.display['group_by_location'] = by_country
-
-
-        # TODO:
-        # show points on map (future and past?)
-        # show future events
-        # show past events
-        # show high quality and low quality events (most viable with 'past')
-        # have an ajax filter on the page that lets me filter by location?
-        self.display['fb_page'] = fb_source
-
         self.render_template('topic')
 
 

@@ -17,20 +17,17 @@ import { Card, Link, ShareLinks, wantsWindowSizes } from './ui';
 import type { windowProps } from './ui';
 import { generateMetaTags } from './meta';
 
-// De-Dupe
-const purpleColors = [
-  '#8283A9',
-  '#656595',
-  '#4C4D81',
-  '#333452',
-  '#222238',
-  '#171728',
-];
-const lightPurpleColors = ['#E0E0F5', '#D0D0F0', '#C0C0D0'];
+const backgroundPlaylistHeaderColor = 'white';
+const backgroundSectionHeaderColor = '#656595';
+const backgroundVideoColor = 'white';
+const backgroundVideoColorActive = '#E0E0F5';
+
+const headerHeight = 50;
 
 class _Duration extends React.Component {
   props: {
     duration: number,
+    style?: Object,
 
     // Self-managed props:
     intl: intlShape,
@@ -44,8 +41,8 @@ class _Duration extends React.Component {
     return (
       <div
         style={{
-          color: '#ccc',
           fontSize: '80%',
+          ...this.props.style,
         }}
       >
         {duration}
@@ -130,7 +127,10 @@ class _TutorialView extends React.Component {
 
   renderVideoLine(video) {
     const activeRow = this.state.video.youtubeId === video.youtubeId;
-    const backgroundColor = activeRow ? purpleColors[0] : purpleColors[3];
+    const backgroundColor = activeRow
+      ? backgroundVideoColorActive
+      : backgroundVideoColor;
+
     const imageSize = 30;
     const playIcon = require('../img/play.png'); // eslint-disable-line global-require
     return (
@@ -147,24 +147,22 @@ class _TutorialView extends React.Component {
 
           borderBottomWidth: 0.5,
           borderBottomStyle: 'solid',
-          borderBottomColor: purpleColors[4],
+          borderBottomColor: backgroundSectionHeaderColor,
         }}
       >
         <div>
-          <img
-            style={{
-              float: 'left',
-              verticalAlign: 'baseline',
-            }}
-            width={imageSize}
-            height={imageSize}
-            src={playIcon}
-            alt="Play"
+          <i
+            className="fa fa-play-circle"
+            aria-hidden="true"
+            style={{ fontSize: '200%' }}
           />
         </div>
         <div style={{ marginLeft: 10 }}>
           <div style={{ fontWeight: 'bold' }}>{video.title}</div>
-          <Duration duration={video.getDurationSeconds()} />
+          <Duration
+            duration={video.getDurationSeconds()}
+            style={{ color: '#777' }}
+          />
         </div>
       </Link>
     );
@@ -172,7 +170,13 @@ class _TutorialView extends React.Component {
 
   renderSectionHeader(section) {
     return (
-      <div style={{ padding: 7, backgroundColor: purpleColors[4] }}>
+      <div
+        style={{
+          color: 'white',
+          padding: 7,
+          backgroundColor: backgroundSectionHeaderColor,
+        }}
+      >
         <div>{section.title}</div>
         <Duration duration={section.getDurationSeconds()} />
       </div>
@@ -199,7 +203,9 @@ class _TutorialView extends React.Component {
     );
     const subline = `${tutorial.author} - ${duration}`;
     return (
-      <div style={{ padding: 7, backgroundColor: purpleColors[4] }}>
+      <div
+        style={{ padding: 7, backgroundColor: backgroundPlaylistHeaderColor }}
+      >
         <h3 style={{ marginTop: 0 }}>
           {tutorial.title} - <a href="/tutorials">See All Tutorials</a>
         </h3>
@@ -215,7 +221,10 @@ class _TutorialView extends React.Component {
     const video = this.state.video;
     if (this.props.window) {
       extraStyles = {
-        maxWidth: this.props.window.height * video.width / video.height,
+        maxWidth:
+          (this.props.window.height - headerHeight) *
+            video.width /
+            video.height,
         maxHeight: this.props.window.width * video.height / video.width,
       };
     }
@@ -249,15 +258,15 @@ class _TutorialView extends React.Component {
   render() {
     const tutorial = this.props.tutorial;
     const video = this.state.video;
-    const flexDirection = this.props.window && this.props.window.width > 1024
-      ? 'row'
-      : 'column';
+    const height = this.props.window
+      ? this.props.window.height - headerHeight
+      : '100vh';
     return (
       <div
+        className="media-width-row-or-column"
         style={{
-          height: '100vh',
           display: 'flex',
-          flexDirection,
+          height,
         }}
       >
         {this.renderPlayer()}

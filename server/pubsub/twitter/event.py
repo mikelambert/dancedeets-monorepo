@@ -35,7 +35,7 @@ def get_twitter_config(t):
 
 
 def format_twitter_post(config, db_event, media, handles=None):
-    url = common.campaign_url(db_event.id, 'twitter_feed')
+    url = common.campaign_url(db_event, 'twitter_feed')
     title = db_event.name
     title = re.sub('@(\w)', '@ \\1', title)
     city = db_event.actual_city_name

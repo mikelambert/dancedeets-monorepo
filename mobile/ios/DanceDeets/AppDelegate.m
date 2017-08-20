@@ -14,6 +14,11 @@
 #import <React/RCTPushNotificationManager.h>
 #import <React/RCTBundleURLProvider.h>
 #import <React/RCTRootView.h>
+#if __has_include(<React/RNSentry.h>)
+#import <React/RNSentry.h> // This is used for versions of react >= 0.40
+#else
+#import "RNSentry.h" // This is used for versions of react < 0.40
+#endif
 
 #include <asl.h>
 #import <Crashlytics/Crashlytics.h>
@@ -25,6 +30,10 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
+  #ifdef DEBUG
+    [FIRCrash sharedInstance].crashCollectionEnabled = NO;
+  #endif
+
   [Fabric with:@[[Crashlytics class]]];
   RCTSetLogThreshold(RCTLogLevelInfo);
   RCTSetLogFunction(CrashlyticsReactLogFunction);
@@ -70,6 +79,8 @@
                                                       moduleName:@"DanceDeets"
                                                initialProperties:nil
                                                    launchOptions:launchOptions];
+
+  [RNSentry installWithRootView:rootView];
 
   self.window = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
   UIViewController *rootViewController = [UIViewController new];

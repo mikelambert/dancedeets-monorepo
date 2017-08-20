@@ -103,7 +103,7 @@ class AttendeeMatch(object):
         return '%s(**%r)' % (self.__class__.__name__, self.__dict__)
 
     def get_attendee_lookups(self):
-        client = datastore.Client()
+        client = datastore.Client('dancedeets-hrd')
 
         debug_keys = []
         for city_name in popular_people.get_summed_area_cities(self.city_name):
@@ -113,7 +113,7 @@ class AttendeeMatch(object):
 
         missing_keys = []
         debug_attendees = client.get_multi(debug_keys, missing_keys)
-        person_to_hash_and_event_ids = [(x['person_id'], json.loads(x['grouped_event_ids'])) for x in debug_attendees]
+        person_to_hash_and_event_ids = [('%s: %s' % (x['person_id'], x['city']), json.loads(x['grouped_event_ids'])) for x in debug_attendees]
         person_to_hash_and_event_ids = sorted(person_to_hash_and_event_ids, key=lambda x: -len(x[1]))
         return person_to_hash_and_event_ids
 

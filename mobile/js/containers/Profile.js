@@ -24,6 +24,7 @@ import { Button, Card, Heading1, HorizontalView, normalize, Text } from '../ui';
 import { linkColor, purpleColors } from '../Colors';
 import { track } from '../store/track';
 import type { Dispatch, User } from '../actions/types';
+import type { State as UserState } from '../reducers/user';
 import sendMail from '../util/sendMail';
 
 const STATUSBAR_HEIGHT = Platform.OS === 'ios' ? 20 : 0;
@@ -75,6 +76,11 @@ const messages = defineMessages({
     defaultMessage: 'Logout',
     description: 'Button to log out of the app',
   },
+  loggingIn: {
+    id: 'login.loggingIn',
+    defaultMessage: 'Logging In...',
+    description: 'Message to display while we are logging in (loading data)',
+  },
   buttonNotificationSettings: {
     id: 'buttons.notificationSettings',
     defaultMessage: 'Notification Settings',
@@ -106,7 +112,7 @@ const messages = defineMessages({
 
 const shareLinkContent = {
   contentType: 'link',
-  contentUrl: 'http://www.dancedeets.com',
+  contentUrl: 'https://www.dancedeets.com',
   contentDescription: '',
 };
 
@@ -185,15 +191,19 @@ function sendAdvertisingEmail() {
 class _UserProfile extends React.Component {
   props: {
     // Self-managed props
-    user: ?User,
+    user: UserState,
     intl: intlShape,
     logIn: () => void,
-    logOutWithPrompt: () => void,
+    logOutWithPrompt: intlShape => void,
   };
 
   render() {
-    const user = this.props.user;
-    if (!user) {
+    const { userData, isLoggedIn } = this.props.user;
+    if (isLoggedIn && !userData) {
+      // Currently logging in...
+      return <Text>{this.props.intl.formatMessage(messages.loggingIn)}</Text>;
+    } else if (!userData) {
+      // Not logged in
       const loginButton = (
         <Button
           icon={require('../login/icons/facebook.png')}
@@ -213,11 +223,11 @@ class _UserProfile extends React.Component {
         onPress={() => this.props.logOutWithPrompt(this.props.intl)}
       />
     );
-    const friendCount = user.friends.data.length || 0;
-    const image = user.picture
+    const friendCount = userData.friends.data.length || 0;
+    const image = userData.picture
       ? <Image
           style={styles.profileImageSize}
-          source={{ uri: user.picture.data.url }}
+          source={{ uri: userData.picture.data.url }}
         />
       : null;
     let friendsCopy = null;
@@ -241,9 +251,9 @@ class _UserProfile extends React.Component {
       <Card>
         <View style={styles.profileLeft}>{image}</View>
         <View style={styles.profileRight}>
-          <Heading1>{user.profile.name || ' '}</Heading1>
+          <Heading1>{userData.profile.name || ' '}</Heading1>
           <Text style={{ fontStyle: 'italic', marginBottom: 10 }}>
-            {user.ddUser.formattedCity || ' '}
+            {userData.ddUser.formattedCity || ' '}
           </Text>
           {logoutButton}
         </View>
@@ -253,8 +263,8 @@ class _UserProfile extends React.Component {
         </Text>
         <Text>
           {this.props.intl.formatMessage(messages.profileDetailsContents, {
-            handAdded: user.ddUser.num_hand_added_events || 0,
-            autoAdded: user.ddUser.num_auto_added_events || 0,
+            handAdded: userData.ddUser.num_hand_added_events || 0,
+            autoAdded: userData.ddUser.num_auto_added_events || 0,
           })}
         </Text>
       </Card>
@@ -263,7 +273,7 @@ class _UserProfile extends React.Component {
 }
 const UserProfile = connect(
   state => ({
-    user: state.user.userData,
+    user: state.user,
   }),
   (dispatch: Dispatch) => ({
     logIn: async () => await loginButtonPressed(dispatch),

@@ -18,8 +18,6 @@ import url from 'url';
 import Helmet from 'react-helmet';
 import { Share as TwitterShare } from 'react-twitter-widgets';
 import ExecutionEnvironment from 'exenv';
-// TODO: Lightbox
-// import Lightbox from 'react-image-lightbox';
 import { intlWeb } from 'dancedeets-common/js/intl';
 import { formatStartEnd } from 'dancedeets-common/js/dates';
 import { Event } from 'dancedeets-common/js/events/models';
@@ -28,9 +26,13 @@ import { formatAttending } from 'dancedeets-common/js/events/helpers';
 import messages from 'dancedeets-common/js/events/messages';
 import { RsvpComponent } from './eventRsvp';
 import type { RsvpValue } from './eventRsvp';
-import { getReactEventSchema, getReactArticleSchema } from './eventSchema';
+import GoogleAd from './googleAd';
+import { JsonSchema } from './schema';
+import { getEventSchema, getArticleSchema } from './schema/event';
+import { getBreadcrumbsForEvent } from './schema/breadcrumbs';
 import { Message } from './intl';
 import { AmpImage, Card, ImagePrefix } from './ui';
+import FormatDescription from './formatDescription';
 
 /* intersperse: Return an array with the separator interspersed between
  * each element of the input array.
@@ -46,6 +48,18 @@ function intersperse(arr: Array<any>, sep: string) {
   return arr.slice(1).reduce((xs, x) => xs.concat([sep, x]), [arr[0]]);
 }
 
+function getAdsenseStyle(amp) {
+  return {
+    display: 'inline-block',
+    width: amp ? 300 : '100%',
+    height: 100,
+  };
+}
+
+function isEventAdsenseSafe(event) {
+  return !event.description.toLowerCase().includes('twerk');
+}
+
 class Title extends React.Component {
   props: {
     event: Event,
@@ -54,42 +68,10 @@ class Title extends React.Component {
   render() {
     const event = this.props.event;
 
-    let categoryLinks = null;
-    if (event.annotations.categories) {
-      const categories = event.annotations.categories.map(x =>
-        <a key={x} href={`/?keywords=${x}`}>{x}</a>
-      );
-      categoryLinks = (
-        <li key="category">categorized as: {intersperse(categories, ', ')}.</li>
-      );
-    }
-    let locationLinks = null;
-    const cityStateCountry = event.venue.cityStateCountry();
-    if (cityStateCountry) {
-      locationLinks = (
-        <li key="location">
-          in <a href={`/?location=${cityStateCountry}`}>{cityStateCountry}</a>.
-        </li>
-      );
-    }
-    let moreLinks = null;
-    if (categoryLinks || locationLinks) {
-      moreLinks = (
-        <div>
-          See more events:
-          <ul>
-            {locationLinks}
-            {categoryLinks}
-          </ul>
-        </div>
-      );
-    }
-
     return (
-      <Card>
-        {moreLinks}
-        <h2>{this.props.event.name}</h2>
-      </Card>
+      <h2 className="event-page-header">
+        {this.props.event.name}
+      </h2>
     );
   }
 }
@@ -124,6 +106,18 @@ class ImageWithLinks extends React.Component {
     // const imageUrl = (this.props.amp || !ExecutionEnvironment.canUseDOM) ? picture.source : '#';
     const imageUrl = picture.source; // (this.props.amp || !ExecutionEnvironment.canUseDOM) ? picture.source : '#';
 
+    const adsenseSafe = isEventAdsenseSafe(this.props.event);
+    const adsenseStyle = getAdsenseStyle(this.props.amp);
+
+    // Google Ad: event-inline
+    const adInline = adsenseSafe
+      ? <GoogleAd
+          style={adsenseStyle}
+          data-ad-slot="6741973779"
+          amp={this.props.amp}
+        />
+      : null;
+
     const image = (
       <AmpImage
         picture={picture}
@@ -133,7 +127,12 @@ class ImageWithLinks extends React.Component {
     );
 
     const link = (
-      <a className="link-event-flyer" href={imageUrl} onClick={this.onClick}>
+      <a
+        id="view-flyer"
+        className="link-event-flyer"
+        href={imageUrl}
+        onClick={this.onClick}
+      >
         {image}
       </a>
     );
@@ -151,30 +150,21 @@ class ImageWithLinks extends React.Component {
     */
 
     return (
-      <Card>
+      <div className="event-page-image-box">
         {link}
-        {lightbox}
-        <br />
-        <ImagePrefix iconName="picture-o">
-          <a
-            className="link-event-flyer"
-            href={imageUrl}
-            onClick={this.onClick}
-          >
-            See Full Flyer
-          </a>
-        </ImagePrefix>
-      </Card>
+        {adInline}
+      </div>
     );
   }
 }
 
 function googleCalendarStartEndFormat(event) {
   const fmt = 'YYYYMMDDTHHmmss[Z]';
-  const start = moment(event.start_time).utc().format(fmt);
-  const endTime = event.end_time
-    ? moment(event.end_time)
-    : moment(event.start_time).add(2, 'hours');
+  const start = event.getStartMoment().utc().format(fmt);
+  let endTime = event.getEndMoment();
+  if (!endTime) {
+    endTime = event.getStartMoment().add(2, 'hours');
+  }
   const end = endTime.utc().format(fmt);
   return `${start}/${end}`;
 }
@@ -221,7 +211,7 @@ class _EventLinks extends React.Component {
     let rsvpElement = null;
     if (event.rsvp && (event.rsvp.attending_count || event.rsvp.maybe_count)) {
       let rsvpAction = null;
-      if (this.props.userId != null && this.props.userRsvp && !this.props.amp) {
+      if (this.props.userId != null && !this.props.amp) {
         rsvpAction = (
           <div>
             RSVP:{' '}
@@ -233,10 +223,12 @@ class _EventLinks extends React.Component {
         );
       }
       rsvpElement = (
-        <ImagePrefix iconName="users">
-          {formatAttending(this.props.intl, event.rsvp)}
-          {rsvpAction}
-        </ImagePrefix>
+        <div>
+          <ImagePrefix iconName="users">
+            {formatAttending(this.props.intl, event.rsvp)}
+            {rsvpAction}
+          </ImagePrefix>
+        </div>
       );
     }
     let organizerElement = null;
@@ -254,29 +246,34 @@ class _EventLinks extends React.Component {
         </li>
       );
       organizerElement = (
-        <ImagePrefix iconName="user">
-          <Message message={messages.organizer} /><br />
-          <ul>
-            {admins}
-          </ul>
-        </ImagePrefix>
+        <div>
+          <ImagePrefix iconName="user">
+            <Message message={messages.organizer} /><br />
+            <ul id="view-event-admin">
+              {admins}
+            </ul>
+          </ImagePrefix>
+        </div>
       );
     }
     let ticketElement = null;
     if (this.props.event.ticket_uri) {
       const hostname = url.parse(this.props.event.ticket_uri).hostname;
       ticketElement = (
-        <ImagePrefix iconName="ticket">
-          <Message message={messages.ticketsLink} />
-          {' '}
-          <a
-            href={this.props.event.ticket_uri}
-            rel="noopener noreferrer"
-            target="_blank"
-          >
-            {hostname}
-          </a>
-        </ImagePrefix>
+        <div>
+          <ImagePrefix iconName="ticket">
+            <Message message={messages.ticketsLink} />
+            {' '}
+            <a
+              id="view-tickets"
+              href={this.props.event.ticket_uri}
+              rel="noopener noreferrer"
+              target="_blank"
+            >
+              {hostname}
+            </a>
+          </ImagePrefix>
+        </div>
       );
     }
 
@@ -286,56 +283,56 @@ class _EventLinks extends React.Component {
       this.props.event.annotations.creation.creatorName
     ) {
       addedByElement = (
-        <ImagePrefix iconName="user-plus">
-          <Message
-            message={messages.addedBy}
-            values={{ name: this.props.event.annotations.creation.creatorName }}
-          />
-        </ImagePrefix>
+        <div>
+          <ImagePrefix iconName="user-plus">
+            <Message
+              message={messages.addedBy}
+              values={{
+                name: this.props.event.annotations.creation.creatorName,
+              }}
+            />
+          </ImagePrefix>
+        </div>
       );
     }
 
     let shareLinks = null;
     if (!this.props.amp) {
       shareLinks = (
-        <ImagePrefix iconName="share-square-o" className="product-social-links">
-          <div style={{ display: 'inline-block' }}>
-            <TwitterShare url={event.getUrl()} />
-          </div>
-          <div
-            className="link-event-share fb-share-button"
-            data-href={event.getUrl()}
-            data-layout="button"
-            data-size="small"
-            data-mobile-iframe="true"
+        <div>
+          <ImagePrefix
+            iconName="share-square-o"
+            className="product-social-links"
           >
-            <a
-              className="fb-xfbml-parse-ignore"
-              rel="noopener noreferrer"
-              target="_blank"
-              href={`https://www.facebook.com/sharer/sharer.php?u=${event.getUrl()}&amp;src=sdkpreparse`}
+            <div className="inline-block">
+              <TwitterShare url={event.getUrl()} />
+            </div>
+            <div
+              className="link-event-share fb-share-button"
+              data-href={event.getUrl()}
+              data-layout="button"
+              data-size="small"
+              data-mobile-iframe="true"
             >
-              Share
-            </a>
-          </div>
-        </ImagePrefix>
+              <a
+                className="fb-xfbml-parse-ignore"
+                rel="noopener noreferrer"
+                target="_blank"
+                href={`https://www.facebook.com/sharer/sharer.php?u=${event.getUrl()}&amp;src=sdkpreparse`}
+              >
+                Share
+              </a>
+            </div>
+          </ImagePrefix>
+        </div>
       );
     }
 
-    let formattedStartEndText = null;
-    if (ExecutionEnvironment.canUseDOM) {
-      formattedStartEndText = formatStartEnd(
-        event.start_time,
-        event.end_time,
-        this.props.intl
-      );
-    } else {
-      formattedStartEndText = formatStartEnd(
-        event.startTimeNoTz(),
-        event.endTimeNoTz(),
-        this.props.intl
-      );
-    }
+    const formattedStartEndText = formatStartEnd(
+      event.getStartMoment(),
+      event.end_time ? event.getEndMoment() : null,
+      this.props.intl
+    );
     let sourceName = event.source.name;
     // Only add the a-href on the client, not the server.
     // This makes it mildly harder for scrapers to scrape us.
@@ -354,6 +351,7 @@ class _EventLinks extends React.Component {
       sourceName = (
         <a
           className="link-event-source"
+          id="view-source"
           href={event.source.url}
           rel="noopener noreferrer"
           target="_blank"
@@ -362,42 +360,72 @@ class _EventLinks extends React.Component {
         </a>
       );
     }
-    return (
-      <Card>
-        <ImagePrefix
-          iconName={
-            event.source.name === 'Facebook Event'
-              ? 'facebook-square'
-              : 'external-link'
-          }
-        >
-          <Message message={messages.source} />{' '}
-          {sourceName}
-        </ImagePrefix>
-        <ImagePrefix
-          icon={require('../img/categories-white.png')} // eslint-disable-line global-require
+
+    const adsenseSafe = isEventAdsenseSafe(this.props.event);
+    const adsenseStyle = getAdsenseStyle(this.props.amp);
+    // Google Ad: event-inline
+    const adInline = adsenseSafe
+      ? <GoogleAd
+          style={adsenseStyle}
+          data-ad-slot="6741973779"
           amp={this.props.amp}
-        >
-          {event.annotations.categories.join(', ')}
-        </ImagePrefix>
-        <ImagePrefix iconName="clock-o">
-          <FormatText>{formattedStartEndText}</FormatText>
-        </ImagePrefix>
-        <ImagePrefix iconName="calendar-plus-o">
-          <a
-            href={getAddToCalendarLink(event)}
-            rel="noopener noreferrer"
-            target="_blank"
-            className="link-event-add-to-calendar"
-          >
-            <Message message={messages.addToCalendar} />
-          </a>
-        </ImagePrefix>
-        {rsvpElement}
-        {ticketElement}
-        {addedByElement}
-        {organizerElement}
-        {shareLinks}
+        />
+      : null;
+
+    return (
+      <Card newStyle>
+        <div className="card-header">
+          <span className="card-header-text">
+            Details
+          </span>
+        </div>
+        <div className="grey-top-border card-contents">
+          <div>
+            <ImagePrefix
+              iconName={
+                event.source.name === 'Facebook Event'
+                  ? 'facebook-square'
+                  : 'external-link'
+              }
+            >
+              <Message message={messages.source} />{' '}
+              {sourceName}
+            </ImagePrefix>
+          </div>
+          <div>
+            <ImagePrefix
+              icon={require('../img/categories-black.png')} // eslint-disable-line global-require
+              amp={this.props.amp}
+            >
+              {event.annotations.categories.join(', ')}
+            </ImagePrefix>
+          </div>
+          <div>
+            <ImagePrefix iconName="clock-o">
+              <FormatText>{formattedStartEndText.first}</FormatText>
+              <FormatText>{formattedStartEndText.second}</FormatText>
+            </ImagePrefix>
+          </div>
+          <div>
+            <ImagePrefix iconName="calendar-plus-o">
+              <a
+                id="add-to-calendar"
+                href={getAddToCalendarLink(event)}
+                rel="noopener noreferrer"
+                target="_blank"
+                className="link-event-add-to-calendar"
+              >
+                <Message message={messages.addToCalendar} />
+              </a>
+            </ImagePrefix>
+          </div>
+          {rsvpElement}
+          {ticketElement}
+          {addedByElement}
+          {organizerElement}
+          {shareLinks}
+        </div>
+        {adInline}
       </Card>
     );
   }
@@ -410,16 +438,53 @@ class MapWithLinks extends React.Component {
     amp: ?boolean,
   };
 
-  map() {
-    const venueName = this.props.event.venue.name;
-    if (!venueName) {
-      return null;
-    }
+  mapUrl() {
     const geocode = this.props.event.venue.geocode;
     if (!geocode || !geocode.latitude) {
       return null;
     }
-    const mapUrl = `http://maps.google.com/?daddr=${geocode.latitude},${geocode.longitude}`;
+    return `http://maps.google.com/?daddr=${geocode.latitude},${geocode.longitude}`;
+  }
+
+  mapHeader() {
+    const geocode = this.props.event.venue.geocode;
+    if (!geocode || !geocode.latitude) {
+      return null;
+    }
+    const venueName = this.props.event.venue.name;
+    if (!venueName) {
+      return null;
+    }
+    return (
+      <div>
+        <div>
+          Open in
+          {' '}
+          <a
+            className="link-event-map"
+            id="view-map-link"
+            href={this.mapUrl()}
+            rel="noopener noreferrer"
+            target="_blank"
+          >
+            Google Maps
+          </a>
+          .
+        </div>
+        {this.props.event.description
+          ? <div className="visible-xs italics">
+              Event description is below the map.
+            </div>
+          : null}
+      </div>
+    );
+  }
+
+  map() {
+    const geocode = this.props.event.venue.geocode;
+    if (!geocode || !geocode.latitude) {
+      return null;
+    }
 
     const size = 450;
     const staticMapImageUrl: string =
@@ -427,10 +492,11 @@ class MapWithLinks extends React.Component {
       `center=${geocode.latitude},${geocode.longitude}&` +
       `markers=color:blue%7C${geocode.latitude},${geocode.longitude}`;
 
-    const mapContents = (
+    return (
       <a
         className="link-event-map"
-        href={mapUrl}
+        id="view-map"
+        href={this.mapUrl()}
         rel="noopener noreferrer"
         target="_blank"
       >
@@ -441,35 +507,9 @@ class MapWithLinks extends React.Component {
             width: size,
             height: size,
           }}
-          style={{ width: '100%' }}
+          style={{ width: '100%' }} // Only used in non-amp pages
         />
       </a>
-    );
-
-    return (
-      <div>
-        <p>
-          Open in
-          {' '}
-          <a
-            className="link-event-map"
-            href={mapUrl}
-            rel="noopener noreferrer"
-            target="_blank"
-          >
-            Google Maps
-          </a>
-          .
-        </p>
-        {this.props.event.description
-          ? <div className="visible-xs italics">
-              Event description is below the map.
-            </div>
-          : null}
-        <div>
-          {mapContents}
-        </div>
-      </div>
     );
   }
 
@@ -479,15 +519,20 @@ class MapWithLinks extends React.Component {
       let locationName = <FormatText>{venue.name}</FormatText>;
       if (venue.id) {
         locationName = (
-          <a href={`https://www.facebook.com/${venue.id}`}>{locationName}</a>
+          <a id="view-venue" href={`https://www.facebook.com/${venue.id}`}>
+            {locationName}
+          </a>
         );
       }
       return (
-        <Card>
-          <ImagePrefix iconName="map-marker">
-            <div>{locationName}</div>
-            <FormatText>{venue.streetCityStateCountry('\n')}</FormatText>
-          </ImagePrefix>
+        <Card newStyle>
+          <div className="card-contents">
+            <ImagePrefix iconName="map-marker">
+              <div>{locationName}</div>
+              <FormatText>{venue.streetCityStateCountry('\n')}</FormatText>
+            </ImagePrefix>
+            {this.mapHeader()}
+          </div>
           {this.map()}
         </Card>
       );
@@ -503,10 +548,16 @@ class Description extends React.Component {
 
   render() {
     return (
-      <Card>
-        <div className="bold">Description:</div>
-        <div className="google-translate" id="google_translate_element" />
-        <FormatText>{this.props.event.description}</FormatText>
+      <Card newStyle>
+        <div className="card-header">
+          <span className="card-header-text">
+            Description
+          </span>
+          <span className="google-translate" id="google_translate_element" />
+        </div>
+        <div className="grey-top-border card-contents">
+          <FormatDescription>{this.props.event.description}</FormatDescription>
+        </div>
       </Card>
     );
   }
@@ -603,13 +654,40 @@ export class EventPage extends React.Component {
 
   render() {
     const event = new Event(this.props.event);
+
+    const adsenseSafe = isEventAdsenseSafe(event);
+    const adsenseStyle = getAdsenseStyle(this.props.amp);
+
+    // Google Ad: event-header
+    const adHeader = adsenseSafe
+      ? <GoogleAd
+          style={{ ...adsenseStyle }}
+          data-ad-slot="8283608975"
+          amp={this.props.amp}
+        />
+      : null;
+    // Google Ad: event-footer
+    const adFooter = adsenseSafe
+      ? <GoogleAd
+          style={{ ...adsenseStyle }}
+          data-ad-slot="5190541772"
+          amp={this.props.amp}
+        />
+      : null;
+
     return (
       <div className="container">
         <HtmlHead event={event} />
-        {this.props.amp
-          ? getReactArticleSchema(event)
-          : getReactEventSchema(event)}
+        <JsonSchema
+          json={
+            this.props.amp ? getArticleSchema(event) : getEventSchema(event)
+          }
+        />
+        <JsonSchema json={getBreadcrumbsForEvent(event)} />
         <div className="row">
+          <div className="col-xs-12">
+            {adHeader}
+          </div>
           <div className="col-xs-12">
             <Title event={event} />
             <AdminPanel
@@ -633,6 +711,9 @@ export class EventPage extends React.Component {
           <div className="col-sm-7">
             <Description event={event} />
           </div>
+        </div>
+        <div className="col-xs-12">
+          {adFooter}
         </div>
       </div>
     );

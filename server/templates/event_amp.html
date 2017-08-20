@@ -13,8 +13,10 @@
     <script async src="https://cdn.ampproject.org/v0.js"></script>
     <script async custom-element="amp-analytics"
         src="https://cdn.ampproject.org/v0/amp-analytics-0.1.js"></script>
+    <script async custom-element="amp-ad" src="https://cdn.ampproject.org/v0/amp-ad-0.1.js"></script>
   </head>
   <body>
+  {% if prod_mode and track_analytics %}
     <amp-analytics type="googleanalytics">
       <script type="application/json">
       {
@@ -29,7 +31,8 @@
         }
       }
       </script>
-  </amp-analytics>
+    </amp-analytics>
+  {% endif %}
 
 <!--=== Header v6 ===-->
 <nav class="header-v6 header-classic-dark header-sticky">

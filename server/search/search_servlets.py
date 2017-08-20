@@ -36,9 +36,35 @@ class SearchHandler(base_servlet.BaseRequestHandler):
             self.redirect('/user/edit')
             return
 
-        form = search_base.HtmlSearchForm(self.request.GET, data=self.user.dict_for_form() if self.user else None)
+        get_data = self.request.GET.copy()
+        if get_data.get('start') == '':
+            del get_data['start']
+        if get_data.get('end') == '':
+            del get_data['end']
+        form = search_base.HtmlSearchForm(get_data, data=self.user.dict_for_form() if self.user else None)
         form.validated = form.validate()
         self.handle_search(form)
+
+@app.route('/calendar/iframe')
+class CalendarHandler(SearchHandler):
+    template_name = 'calendar_iframe'
+    search_class = search.Search
+
+    def handle_search(self, form):
+        validated = form.validate()
+        if not validated:
+            for field, errors in form.errors.items():
+                for error in errors:
+                    self.add_error(u"%s error: %s" % (
+                        getattr(form, field).label.text,
+                        error
+                    ))
+
+        props = dict(
+            query=form.url_params(),
+        )
+        self.setup_react_template('calendar.js', props)
+        self.render_template(self.template_name)
 
 @app.route('/')
 @app.route('/events/relevant')
@@ -56,7 +82,12 @@ class RelevantHandler(SearchHandler):
                         error
                     ))
 
-        if not self.request.get('calendar'):
+        if self.request.get('calendar'):
+            props = dict(
+                query=form.url_params(),
+            )
+            self.setup_react_template('calendar.js', props)
+        else:
             search_query = None
 
             search_results = []
@@ -77,23 +108,24 @@ class RelevantHandler(SearchHandler):
                     search_results.sort(key=lambda x: (x.start_time, x.actual_city_name, x.name))
                 onebox_links = onebox.get_links_for_query(search_query)
 
-            city_name = None
-            center_latlng = None
-            southwest = None
-            northeast = None
+            geocode = None
+            distance = None
             if form.location.data:
                 try:
-                    city_name, center_latlng, southwest, northeast = search_base.normalize_location(form)
+                    geocode, distance = search_base.get_geocode_with_distance(form)
                 except:
                     self.add_error('Unknown location: %s' % form.location.data)
 
             need_full_event = False
-            json_search_response = api.build_search_results_api(city_name, form, search_query, search_results, (2, 0), need_full_event, center_latlng, southwest, northeast)
+            # Keep in sync with mobile react code? And api.py
+            skip_people = True
+            json_search_response = api.build_search_results_api(form, search_query, search_results, (2, 0), need_full_event, geocode, distance, skip_people=skip_people)
             props = dict(
                 response=json_search_response,
                 past=(form.time_period.data == search_base.TIME_PAST),
-                showPeople=bool('people' in self.debug_list),
-                categoryOrder=[''] + [x.public_name for x in event_types.STYLES]
+                showPeople=not skip_people,
+                categoryOrder=[''] + [x.public_name for x in event_types.STYLES],
+                query=form.url_params(),
             )
             self.setup_react_template('eventSearchResults.js', props)
 
@@ -129,7 +161,6 @@ class RelevantHandler(SearchHandler):
         self.display['past_view_url'] = '/events/relevant?past=1&%s' % urls.urlencode(request_params)
         self.display['upcoming_view_url'] = '/events/relevant?%s' % urls.urlencode(request_params)
         self.display['calendar_view_url'] = '/events/relevant?calendar=1&%s' % urls.urlencode(request_params)
-        self.display['calendar_feed_url'] = '/calendar/feed?%s' % urls.urlencode(request_params)
         self.jinja_env.globals['CHOOSE_RSVPS'] = rsvp.CHOOSE_RSVPS
         self.render_template(self.template_name)
 
