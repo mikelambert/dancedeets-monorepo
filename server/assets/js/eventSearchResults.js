@@ -50,6 +50,13 @@ import type { windowProps } from './ui';
 import { SquareEventFlyer } from './eventCommon';
 import GoogleAd from './googleAd';
 import { SearchBox, CalendarRatio } from './resultsCommon';
+import {
+  MultiSelectList,
+  generateUniformState,
+  caseInsensitiveSort,
+  getSelected,
+} from './MultiSelectList';
+import type { MultiSelectState } from './MultiSelectList';
 
 require('slick-carousel/slick/slick.css');
 require('slick-carousel/slick/slick-theme.css');
@@ -496,6 +503,54 @@ class PersonList extends React.Component {
   }
 }
 
+class EventFilters extends React.Component {
+  props: {
+    events: Array<SearchEvent>,
+    onChange: (filters: Array<string>) => void,
+  };
+
+  state: {
+    initialStyles: Array<string>,
+    styles: MultiSelectState,
+  };
+
+  constructor(props) {
+    super(props);
+    const styles = this.getStyles();
+    this.state = {
+      styles: generateUniformState(styles, true),
+      initialStyles: styles,
+    };
+  }
+
+  getStyles() {
+    const categoryLookup = this.props.events.reduce((acc, e) => {
+      const newAcc = { ...acc };
+      e.annotations.categories.forEach(cat => {
+        newAcc[cat] = true;
+      });
+      return newAcc;
+    }, {});
+    return Object.keys(categoryLookup);
+  }
+
+  render() {
+    return (
+      <MultiSelectList
+        list={this.state.initialStyles}
+        selected={this.state.styles}
+        ref={x => {
+          // this._styles = x;
+        }}
+        onChange={state => {
+          this.setState({ styles: state });
+          this.props.onChange(getSelected(state));
+        }}
+      />
+    );
+  }
+}
+
 class CallbackOnRender extends React.Component {
   props: {
     callback: () => void | Promise<void>,
@@ -529,6 +584,31 @@ class ResultsList extends React.Component {
     response: NewSearchResponse,
   };
 
+  state: {
+    filters: Array<String>,
+  };
+
+  constructor(props) {
+    super(props);
+    this.state = { filters: [] };
+    (this: any).onChange = this.onChange.bind(this);
+  }
+
+  onChange(filters) {
+    this.setState({ filters });
+  }
+
+  filterResults(events) {
+    const filterSet = new Set(this.state.filters);
+    const foundEvents = events.filter(e => {
+      const overlapCategories = e.annotations.categories.filter(cat =>
+        filterSet.has(cat)
+      );
+      return overlapCategories.length;
+    });
+    return foundEvents;
+  }
+
   render() {
     let resultEvents = this.props.response.results.map(
       eventData => new SearchEvent(eventData)
@@ -538,6 +618,8 @@ class ResultsList extends React.Component {
     );
     const featuredInfos = (this.props.response.featuredInfos || [])
       .map(x => ({ ...x, event: new Event(x.event) }));
+
+    resultEvents = this.filterResults(resultEvents);
 
     const now = moment();
     const eventPanels = [];
@@ -578,8 +660,13 @@ class ResultsList extends React.Component {
     }
     const defaultKeys = ['featured', 'onebox', 'currentEvents', 'futureEvents'];
 
+    const eventFilters = (
+      <EventFilters events={resultEvents} onChange={this.onChange} />
+    );
+
     return (
       <div style={{ backgroundColor: 'white', padding: 10 }}>
+        {eventFilters}
         {featuredPanel}
         {oneboxPanel}
         {eventPanels}
