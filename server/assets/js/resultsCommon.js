@@ -291,8 +291,9 @@ class TextInput extends React.Component {
         width: '100%',
         fontWeight: 200,
       },
-      onFocus: () => {
-        this.props.onFocus();
+      onFocus: e => {
+        e.target.select();
+        this.props.onFocus(e);
       },
       onBlur: this.props.onBlur,
     };
