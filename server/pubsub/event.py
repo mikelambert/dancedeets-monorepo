@@ -30,7 +30,7 @@ def _event_has_enough_attendees(db_event):
     fbl = user.get_fblookup()
     matcher = event_attendee_classifier.get_matcher(fbl, db_event.fb_event)
     logging.info('Checking event %s and found %s overlap_ids', db_event.id, len(matcher.overlap_ids))
-    if len(matcher.overlap_ids) > 10:
+    if len(matcher.overlap_ids) > 15:
         return True
     else:
         return False
@@ -45,6 +45,7 @@ def should_post_on_event_wall(auth_token, db_event):
     if not _should_post_event_common(auth_token, db_event):
         return False
     # Additional filtering for FB Wall postings, since they are heavily-rate-limited by FB.
+    # We can't post into individual user's events...so this actually discards most of the events anyway
     if not db_event.is_fb_event:
         logging.info("Event is not FB event")
         return False
@@ -54,8 +55,8 @@ def should_post_on_event_wall(auth_token, db_event):
     if not db_event.public:
         logging.info("Event is not public")
         return False
-    if db_event.attendee_count < 10:
-        logging.warning("Skipping event due to <10 attendees: %s", db_event.attendee_count)
+    if db_event.attendee_count < 5:
+        logging.warning("Skipping event due to <5 attendees: %s", db_event.attendee_count)
         return False
     if db_event.attendee_count > 600:
         logging.warning("Skipping event due to 600+ attendees: %s", db_event.attendee_count)
