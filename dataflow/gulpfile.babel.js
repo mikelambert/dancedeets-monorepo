@@ -29,9 +29,9 @@ const sdk = 'beam-master/sdks/python/dist/apache-beam-0.7.0.dev0.tar.gz';
 const bucket = 'gs://dancedeets-hrd.appspot.com';
 
 function remoteJob(filename) {
-  const job_name = filename.replace(/[^-a-z0-9]/, '-');
+  const jobName = filename.replace(/[^-a-z0-9]/, '-');
   return $.shell.task([
-    `/usr/local/bin/python -m ${filename} --log=DEBUG --project dancedeets-hrd --job_name=${job_name} --runner DataflowRunner --staging_location ${bucket}/staging --temp_location ${bucket}/temp --output ${bucket}/output --sdk_location ${sdk} --setup_file ./setup.py --num_workers=100`,
+    `/usr/local/bin/python -m ${filename} --log=DEBUG --project dancedeets-hrd --job_name=${jobName} --runner DataflowRunner --staging_location ${bucket}/staging --temp_location ${bucket}/temp --output ${bucket}/output --sdk_location ${sdk} --setup_file ./setup.py --num_workers=100`,
   ]);
 }
 
