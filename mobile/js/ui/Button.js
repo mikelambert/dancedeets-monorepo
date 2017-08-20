@@ -192,7 +192,7 @@ let styles = StyleSheet.create({
   },
   caption: {
     letterSpacing: 1,
-    fontSize: semiNormalize(16),
+    fontSize: semiNormalize(15),
     lineHeight: semiNormalize(19),
     color: 'white',
   },

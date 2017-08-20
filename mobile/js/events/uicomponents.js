@@ -914,12 +914,14 @@ class _FullEventView extends React.Component {
             currentPosition={this.props.currentPosition}
           />
         </TouchableOpacity>
-        <EventRsvp event={this.props.event} />
+        <EventCategories categories={this.props.event.annotations.categories} />
         <EventTickets event={this.props.event} />
+
+        <EventRsvp event={this.props.event} />
         <EventSource event={this.props.event} />
         <EventAddedBy event={this.props.event} />
         <EventOrganizers event={this.props.event} />
-        <EventCategories categories={this.props.event.annotations.categories} />
+
         <HorizontalView style={eventStyles.splitButtons}>
           <EventShare event={this.props.event} />
           <TranslateButton event={this.props.event} />
@@ -965,6 +967,8 @@ const eventStyles = StyleSheet.create({
   },
   splitButtons: {
     justifyContent: 'space-between',
+    marginTop: 20,
+    marginHorizontal: 10,
   },
   row: {
     justifyContent: 'flex-start',
