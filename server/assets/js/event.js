@@ -402,7 +402,7 @@ class _EventLinks extends React.Component {
           </div>
           <div>
             <ImagePrefix iconName="clock-o">
-              <FormatText>{formattedStartEndText.first}</FormatText>
+              <FormatText>{formattedStartEndText.first}</FormatText><br />
               <FormatText>{formattedStartEndText.second}</FormatText>
             </ImagePrefix>
           </div>

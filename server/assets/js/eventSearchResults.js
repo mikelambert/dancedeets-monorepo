@@ -295,7 +295,11 @@ class FeaturedEvents extends React.Component {
       ? <Slider autoplay dots>{resultItems}</Slider>
       : resultItems;
 
-    return <div style={{ width: '100%', padding: 10 }}>{results}</div>;
+    return (
+      <div style={{ width: '100%', paddingLeft: 10, paddingRight: 10 }}>
+        {results}
+      </div>
+    );
   }
 }
 
@@ -537,7 +541,6 @@ class ResultsList extends React.Component {
 
     const now = moment();
     const eventPanels = [];
-    let eventCount = null;
     // DEBUG CODE:
     // const currentEvents = resultEvents.filter(event => event.getStartMoment() > now);
     const currentEvents = resultEvents.filter(event => {
@@ -551,12 +554,16 @@ class ResultsList extends React.Component {
       event.getListDateMoment().isAfter(now)
     );
     if (currentEvents.length) {
-      eventPanels.push(<CurrentEvents key="current" events={currentEvents} />);
+      eventPanels.push(
+        <div key="current">
+          <div>Events happening now:</div>
+          <CurrentEvents events={currentEvents} />
+        </div>
+      );
     }
     if (futureEvents.length) {
       eventPanels.push(<EventsList key="future" events={futureEvents} />);
     }
-    eventCount = currentEvents.length + futureEvents.length;
 
     let featuredPanel = null;
     if (featuredInfos.length) {
