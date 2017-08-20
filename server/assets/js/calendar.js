@@ -12,8 +12,6 @@ import createBrowserHistory from 'history/createBrowserHistory';
 import type { NewSearchResponse } from 'dancedeets-common/js/events/search';
 import { intlWeb } from 'dancedeets-common/js/intl';
 import FullCalendar from './FullCalendar';
-import { Card, ImagePrefix } from './ui';
-import { SearchBox, CalendarRatio } from './resultsCommon';
 
 class CalendarPage extends React.Component {
   props: {
