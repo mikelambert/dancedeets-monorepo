@@ -14,74 +14,69 @@ export const weekdayDate = {
   month: 'long',
   day: 'numeric',
 };
-export const weekdayDateWithYear = {
-  year: 'numeric',
-  weekday: 'long',
-  month: 'long',
-  day: 'numeric',
-};
 export const weekdayTime = { hour: 'numeric', minute: 'numeric' };
-export const weekdayDateTime = {
-  weekday: 'long',
-  year: 'numeric',
-  month: 'long',
-  day: 'numeric',
-  hour: 'numeric',
-  minute: 'numeric',
-};
+
+function dateIsNearby(date: moment, intl: intlShape) {
+  const now = moment(intl.now());
+  const diff = date.diff(now);
+  return (
+    diff > moment.duration(-3, 'months').asMilliseconds() ||
+    diff < moment.duration(6, 'months').asMilliseconds()
+  );
+}
+
+function formatDate(date, intl) {
+  // Use a year for faraway dates
+  const format = { ...weekdayDate };
+  if (!dateIsNearby(date, intl)) {
+    format.year = 'numeric';
+  }
+  return upperFirst(intl.formatDate(date.toDate(), format));
+}
+
+function formatTime(date, intl) {
+  return intl.formatTime(date);
+}
+
+function formatDateTime(date, intl) {
+  const format = { ...weekdayDate, ...weekdayTime };
+  if (!dateIsNearby(date, intl)) {
+    format.year = 'numeric';
+  }
+  return upperFirst(intl.formatDate(date.toDate(), format));
+}
 
 export function formatStartDateOnly(start: moment, intl: intlShape) {
-  const now = moment(intl.now());
-  const diff = start.diff(now);
-  let format = weekdayDate;
-  // Use a year for faraway dates
-  if (
-    diff < moment.duration(-3, 'months').asMilliseconds() ||
-    diff > moment.duration(6, 'months').asMilliseconds()
-  ) {
-    format = weekdayDateWithYear;
-  }
-  return upperFirst(intl.formatDate(start.toDate(), format));
+  return formatDate(start, intl);
 }
 
 export function formatStartTime(start: moment, intl: intlShape) {
-  const formattedStartTime = intl.formatTime(start);
-  return formattedStartTime;
+  return formatTime(start, intl);
 }
 
 export function formatStartEnd(start: moment, end: ?moment, intl: intlShape) {
-  const textFields = [];
-  const now = moment(intl.now());
-  const formattedStart = upperFirst(
-    intl.formatDate(start.toDate(), weekdayDateTime)
-  );
   if (end) {
     const duration = end.diff(start);
-    if (duration > moment.duration(1, 'days').asMilliseconds()) {
-      const formattedEnd = upperFirst(intl.formatDate(end, weekdayDateTime));
-      textFields.push(`${formattedStart} - \n${formattedEnd}`);
+    if (duration < moment.duration(1, 'days').asMilliseconds()) {
+      const durationText = ` (${humanizeDuration(duration)})`;
+      const startText = formatTime(start, intl);
+      const endText = formatTime(end, intl);
+      return {
+        first: formatDate(start, intl),
+        second: `${startText} - ${endText} ${durationText}`,
+      };
     } else {
-      const formattedEndTime = intl.formatTime(end);
-      textFields.push(`${formattedStart} - ${formattedEndTime}`);
+      return {
+        first: `${formatDateTime(start, intl)} -`,
+        second: formatDateTime(end, intl),
+      };
     }
-    const relativeDuration = humanizeDuration(duration);
-    textFields.push(` (${relativeDuration})`);
   } else {
-    textFields.push(formattedStart);
+    return {
+      first: formatDate(start, intl),
+      second: formatTime(start, intl),
+    };
   }
-  // Ensure we do some sort of timer refresh update on this
-  const relativeStart = start.diff(now);
-  if (
-    relativeStart > 0 &&
-    relativeStart < moment.duration(2, 'weeks').asMilliseconds()
-  ) {
-    const relativeStartOffset = upperFirst(
-      moment.duration(relativeStart).humanize(true)
-    );
-    textFields.push('\n');
-    textFields.push(relativeStartOffset);
-  }
-  return textFields.join('');
 }
 
 function humanizeExactly(unitCount, unitName) {
