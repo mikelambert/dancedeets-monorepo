@@ -141,9 +141,13 @@ export class BaseEvent extends JsonDerivedObject {
     if (!end) {
       return start;
     }
+    const now = moment();
+    if (now.isBefore(start)) {
+      return start;
+    }
     if (start.weekday() === end.weekday()) {
       // Assume it's a weekly event!
-      const nowDiff = moment().diff(start);
+      const nowDiff = now.diff(start);
       const weeksUntilNow =
         nowDiff / moment.duration(1, 'week').asMilliseconds();
       const nextStart = start.clone().add(Math.ceil(weeksUntilNow), 'week');
