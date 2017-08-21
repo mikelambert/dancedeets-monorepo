@@ -20,8 +20,7 @@ gcloud config set project dancedeets-hrd
 gcloud auth login
 ```
 
-Third, to setup dancedeets, run `./setup.sh`. It will download and install libraries,
-and setup some in our `lib/` directory for uploading to appengine.
+Third, to setup dancedeets, make sure you are in the `server/` directory and run `./setup.sh`. It will download and install Python and JS libraries, as well as setup some other aspects of our build.
 
 You can run a variety of commands from gulp:
 - `gulp test` to run all of the included tests.
