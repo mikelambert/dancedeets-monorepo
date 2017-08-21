@@ -111,7 +111,8 @@ class TestImports(unittest.TestCase):
             start_time = datetime.datetime(2010, 1, 1, 12)
             actual_city_name = 'Sacramento, CA, United States'
             fb_event = FB_EVENT
-        url = 'https://www.dancedeets.com/events/555/?utm_campaign=autopost&utm_medium=share&utm_source=twitter_feed'
+        url = 'https://www.dancedeets.com/events/555/some-really-long-name-here-that-just-keeps-on-going-and-may-or-may-not-ever-get-truncated-but-we-will-just-have-to-wait-and-see?utm_campaign=autopost&utm_medium=share&utm_source=twitter_feed'
+        self.maxDiff = 1000
         self.assertEqual(
             event.format_twitter_post(config, DBEvent(), media=False, handles=[]),
             u'2010/01/01: Sacramento, CA, United States: Some really long name here that just keeps on going and may or may not ev… %s' % url)
