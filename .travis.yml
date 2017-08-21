@@ -2,6 +2,14 @@ language: python
 sudo: required
 python:
 - 2.7
+env:
+  - CXX=g++-4.8
+addons:
+  apt:
+    sources:
+      - ubuntu-toolchain-r-test
+    packages:
+      - g++-4.8
 
 install:
 # Download the latest version of the GAE Python SDK
