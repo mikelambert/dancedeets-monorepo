@@ -33,6 +33,49 @@ If you are running the NLP classifier evaluations, you may want to setup re2 for
 To do this, download/install from <https://github.com/google/re2/>
 Then install `pip install re2` to get the python wrappers.
 
+## Running the Code
+
+There are a variety of ways to run the server, depending on your needs/purposes.
+
+### Overview
+
+While the development servers often involve some magic for hot-reloading React, compiling JS/CSS in the background, there are only two moving parts to the production server, that are important to keep in mind:
+- Javascript Backend, used for rendering React pages
+- Python Web Server, that handles requests, and may call out to the Javascript Backend
+
+### Clientside Javascript or Python
+If you're developing python or Javascript code, just running this should be sufficient:
+- `gulp server:hot`.
+
+It will start a JS Backend and Python Web Server (alongside a Javascript FE Proxy that implements hot reloading of React JS)
+Under the hood, it runs these three servers (only will matter to you if you want to run them directly in their own terminals, because one crashed, or because you want isolated logs):
+- `gulp server:hot:node` (JS Backend)
+- `gulp server:hot:python` (Python Web Server)
+- `gulp server:hot:frontend` (FE Hot Reloading Proxy)
+
+### CSS
+If you're making any changes to the CSS, you'll need to setup the server for auto-rebuilding CSS:
+- `gulp compile:webpack:client:debug:watch` (Recompile all JS/CSS code for Clients)
+
+Note that rebuilding CSS is automatic, but it won't automatically reload into your web client. You'll need to reload the page to pick up any updated CSS.
+
+### Less Common Cases
+#### Serverside Javascript
+Now we get into the trickier use cases...we use Isomorphic React, meaning we render the React code on the server using the JS Backend.
+Unfortuantely, if you want to test server-side rendering, you'll need to generate the server-side React templates. This can be done by running:
+- `gulp compile:webpack:server:debug:watch` (Recompile all JS/CSS code for Server)
+
+#### AMP Pages
+We also use AMP pages to help with our mobile audience. These require that we inline CSS into our AMP pages, which requires building special AMP-ified CSS. This can be done with the following command:
+- `gulp compile:webpack:amp:debug:watch` (Recompile all JS/CSS code for AMP includes)
+
+#### Production Versions
+The above commands all build debug versions of the JS/CSS. This means they're easier to debug and read and work with. Unfortuantely, we do not want to push these up to the live site. And sometimes we may wish to debug JS/CSS as close to live as possible. This can be done by changing `debug` to `prod` in the above commands:
+- `gulp compile:webpack:client:prod:watch` (Recompile all JS/CSS code for Clients)
+- `gulp compile:webpack:server:prod:watch` (Recompile all JS/CSS code for Server)
+- `gulp compile:webpack:amp:prod:watch` (Recompile all JS/CSS code for AMP includes)
+
+
 ## Code Layout
 
 - [`assets/`](assets): The Frontend code, used by Webpack to build out the JS, CSS, and Images (written into [`dist/`](dist))
