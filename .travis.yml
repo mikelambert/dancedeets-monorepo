@@ -2,6 +2,7 @@ language: python
 sudo: required
 python:
 - 2.7
+# These are to get node-gyp working again
 env:
   - CXX=g++-4.8
 addons:
