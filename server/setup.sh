@@ -86,17 +86,19 @@ if [ "$TRAVIS" != true ]; then
   pip install -t $BASE_DIR/lib-local -r $BASE_DIR/frankenserver/requirements.txt
 fi
 
+GULP=./node_modules/gulp/bin/gulp.js
+
 cd $BASE_DIR
 if [ "$TRAVIS" == true ]; then
   echo "Compiling CSS and JS and Icons"
-  gulp compile:webpack compile:images:favicons compile:test-geonames
+  $GULP compile:webpack compile:images:favicons compile:test-geonames
 else
   echo "Installing necessary brew libraries"
   brew ls --versions homebrew/science/vips >/dev/null || brew install homebrew/science/vips --with-webp --with-graphicsmagick
   brew ls --versions graphicsmagick >/dev/null || brew install graphicsmagick
   brew ls --versions librsvg >/dev/null || brew install librsvg
   echo "Building cities DB"
-  gulp compile:geonames
+  $GULP compile:geonames
   echo "Compiling everything"
-  gulp compile
+  $GULP compile
 fi
