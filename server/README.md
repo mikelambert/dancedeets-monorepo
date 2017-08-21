@@ -18,7 +18,6 @@ curl https://sdk.cloud.google.com | bash
 gcloud components update app preview
 gcloud config set project dancedeets-hrd
 gcloud auth login
-gcloud app run app.yaml
 ```
 
 Third, to setup dancedeets, run `./setup.sh`. It will download and install libraries,
