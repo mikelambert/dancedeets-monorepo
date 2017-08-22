@@ -488,7 +488,7 @@ gulp.task(
 
 function startDevAppServer(port) {
   return $.shell.task([
-    `PYTHONPATH=lib-local ${argv.gae_dir}/dev_appserver.py app-devserver.yaml --port=${port} --runtime=python-compat --storage_path=~/Projects/dancedeets-storage/ 2>&1 | technicolor-yawn`,
+    `PYTHONPATH=lib-local ${argv.gae_dir}/dev_appserver.py app-devserver.yaml --port=${port} --runtime=python-compat --storage_path=~/Projects/dancedeets-storage/ 2>&1 | ~/Library/Python/2.7/bin/technicolor-yawn`,
   ]);
 }
 gulp.task('dev-appserver:kill', $.shell.task(['./force_kill_server.sh']));
