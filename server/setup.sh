@@ -45,13 +45,6 @@ pip install --upgrade -t $BASE_DIR/lib-both -r $BASE_DIR/setup-requirements.txt
 pip install $USER_FLAG technicolor-yawn==0.2.0
 pip install $USER_FLAG coverage==4.2
 
-# TODO: install node
-# TODO: install npm?
-echo "Copying over private configs"
-if [ "$TRAVIS" != true ]; then
-  cp ~/Dropbox/dancedeets/private/*.yaml $BASE_DIR/
-fi
-
 echo "Installing npm modules: ../"
 cd $BASE_DIR/..
 npm install
