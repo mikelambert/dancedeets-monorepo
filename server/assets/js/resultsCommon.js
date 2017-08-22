@@ -462,31 +462,31 @@ class _SearchBox extends React.Component {
 
   autocompleteKeywords() {
     return [
-      { label: 'breaking', initial: true },
-      { label: 'bboying' },
-      { label: 'bgirling' },
-      { label: 'hiphop', initial: true },
-      { label: 'house', initial: true },
-      { label: 'popping', initial: true },
-      { label: 'locking', initial: true },
-      { label: 'waacking', initial: true },
-      { label: 'whacking' },
-      { label: 'choreography', initial: true },
-      { label: 'dancehall', initial: true },
-      { label: 'vogue', initial: true },
-      { label: 'krump', initial: true },
-      { label: 'all-styles', initial: true },
-      { label: 'turfing' },
-      { label: 'litefeet' },
-      { label: 'flexing' },
-      { label: 'bebop' },
-      { label: 'kids' },
+      { label: 'Breaking', initial: true },
+      { label: 'Bboying' },
+      { label: 'Bgirling' },
+      { label: 'Hiphop', initial: true },
+      { label: 'House', initial: true },
+      { label: 'Popping', initial: true },
+      { label: 'Locking', initial: true },
+      { label: 'Waacking', initial: true },
+      { label: 'Whacking' },
+      { label: 'Choreography', initial: true },
+      { label: 'Dancehall', initial: true },
+      { label: 'Vogue', initial: true },
+      { label: 'Krump', initial: true },
+      { label: 'All-Styles', initial: true },
+      { label: 'Turfing' },
+      { label: 'Litefeet' },
+      { label: 'Flexing' },
+      { label: 'Bebop' },
+      { label: 'Kids' },
       // event types
-      { label: 'battle' },
-      { label: 'workshop' },
-      { label: 'performance' },
-      { label: 'competition' },
-      { label: 'class' },
+      { label: 'Battle' },
+      { label: 'Workshop' },
+      { label: 'Performance' },
+      { label: 'Competition' },
+      { label: 'Class' },
     ];
   }
 
@@ -610,7 +610,7 @@ class _SearchBox extends React.Component {
                   placeholder={
                     focused
                       ? 'Dance style, event name, dancer name, etc'
-                      : 'All styles and event types'
+                      : 'Any style event, any event type'
                   }
                   value={this.state.keywords}
                   onChange={(event, value) =>
