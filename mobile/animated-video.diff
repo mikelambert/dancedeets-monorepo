@@ -1,0 +1,113 @@
+diff --git a/mobile/js/learn/VideoPlayer.js b/mobile/js/learn/VideoPlayer.js
+index 2a8ecf18..a61f4fa7 100644
+--- a/mobile/js/learn/VideoPlayer.js
++++ b/mobile/js/learn/VideoPlayer.js
+@@ -8,6 +8,7 @@ import React from 'react';
+ import {
+   Animated,
+   Image,
++  PanResponder,
+   Platform,
+   StyleSheet,
+   Text,
+@@ -19,7 +20,12 @@ export default class MyVideoPlayer extends VideoPlayer {
+   constructor(props) {
+     super(props);
+ 
++    // Screen Presses do nothing!
+     this.events.onScreenPress = () => {};
++
++    this.animations.scrubBar = {
++      leftOffset: new Animated.Value(0),
++    };
+   }
+ 
+   setControlTimeout() {
+@@ -78,6 +84,49 @@ export default class MyVideoPlayer extends VideoPlayer {
+   }
+ 
+   /**
++     * Get our seekbar responder going
++     */
++  initSeekPanResponder() {
++    this.player.seekPanResponder = PanResponder.create({
++      // Ask to be the responder.
++      onStartShouldSetPanResponder: (evt, gestureState) => true,
++      onMoveShouldSetPanResponder: (evt, gestureState) => true,
++
++      onPanResponderGrant: (evt, gestureState) => {
++        this.setState({ seeking: true });
++        this.animations.scrubBar.leftOffset.setOffset(this.state.seekerOffset);
++      },
++
++      onPanResponderMove: Animated.event(
++        [
++          null, // ignore the native event
++          // extract dx and dy from gestureState
++          // like 'pan.x = gestureState.dx, pan.y = gestureState.dy'
++          { dx: this.animations.scrubBar.leftOffset },
++        ],
++        {
++          listener: (evt, gestureState) => {
++            const position = this.state.seekerOffset + gestureState.dx;
++            this.setSeekerPosition(position);
++          },
++          // Disabled because it seems to break things when Pan code wants to treat this as a function
++          // useNativeDriver: true,
++        }
++      ),
++
++      onPanResponderRelease: (evt, gestureState) => {
++        const time = this.calculateTimeFromSeekerPosition();
++        if (time >= this.state.duration && !this.state.loading) {
++          this.setState({ seeking: false, paused: true });
++          this.events.onEnd();
++        } else {
++          this.seekTo(time);
++          this.setState({ seeking: false });
++        }
++      },
++    });
++  }
++  /**
+      * Render the seekbar and attach its handlers
+      */
+   renderSeekbar() {
+@@ -89,21 +138,24 @@ export default class MyVideoPlayer extends VideoPlayer {
+             this.player.seekerWidth = event.nativeEvent.layout.width;
+           }}
+         >
+-          <View
++          <Animated.View
+             style={[
+               styles.seek.fill,
+               {
+-                width: this.state.seekerFillWidth,
++                width: this.animations.scrubBar.leftOffset,
+                 backgroundColor: this.props.seekColor || '#FFF',
+               },
+             ]}
+           />
+         </View>
+-        <View
++        <Animated.View
+           style={[
+             styles.seek.handle,
+             {
+-              left: this.state.seekerPosition - 10,
++              transform: [
++                { translateX: this.animations.scrubBar.leftOffset },
++                { translateX: -10 },
++              ],
+               padding: 10,
+             },
+           ]}
+@@ -113,7 +165,7 @@ export default class MyVideoPlayer extends VideoPlayer {
+           {...this.player.seekPanResponder.panHandlers}
+         >
+           <View style={[styles.seek.circle, { backgroundColor: '#FFF' }]} />
+-        </View>
++        </Animated.View>
+       </View>
+     );
+   }

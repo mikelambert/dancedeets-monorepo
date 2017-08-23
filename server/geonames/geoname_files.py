@@ -1,8 +1,9 @@
 import csv
+import getpass
 import datetime
 import os
 
-GEONAMES_PATH = '/Users/lambert/Dropbox/dancedeets/data/geonames/'
+GEONAMES_PATH = '/Users/%s/Dropbox/dancedeets/git-assets/development/server/generated/' % getpass.getuser()
 
 class GeonamesDialect(csv.Dialect):
     quoting = csv.QUOTE_NONE

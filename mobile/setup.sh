@@ -1,8 +1,8 @@
 #!/bin/bash
 
-cp ~/Dropbox/dancedeets/private/sentry.properties ./ios/
-cp ~/Dropbox/dancedeets/private/sentry.properties ./android/
-cp ~/Dropbox/dancedeets/private/fabric.properties ./android/app/
+cp ~/Dropbox/dancedeets/git-assets/production/mobile/sentry.properties ./ios/
+cp ~/Dropbox/dancedeets/git-assets/production/mobile/sentry.properties ./android/
+cp ~/Dropbox/dancedeets/git-assets/production/mobile/fabric.properties ./android/app/
 
 npm install
 

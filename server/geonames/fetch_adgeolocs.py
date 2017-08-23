@@ -2,6 +2,7 @@
 
 from __future__ import absolute_import
 
+import getpass
 import json
 import logging
 import re
@@ -14,7 +15,7 @@ from util import urls
 from geonames import geoname_files
 from geonames import sqlite_db
 
-FILENAME_ADLOCS = '/Users/lambert/Dropbox/dancedeets/data/generated/adlocs_only.db'
+FILENAME_ADLOCS = '/Users/%s/Dropbox/dancedeets/git-assets/development/server/generated/adlocs_only.db' % getpass.getuser()
 
 
 FACEBOOK_CONFIG = None
