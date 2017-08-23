@@ -486,23 +486,20 @@ gulp.task(
   $.shell.task(['./wait_for_dev_appserver_exit.sh'])
 );
 
+const storagePath = '~/Documents/dancedeets-storage/';
+
+gulp.task(
+  'dev-appserver:create-storage-dir',
+  $.shell.task([`mkdir -p ${storagePath}`])
+);
+
 function startDevAppServer(port) {
   return $.shell.task([
-    `PYTHONPATH=lib-local ${argv.gae_dir}/dev_appserver.py app-devserver.yaml --port=${port} --runtime=python-compat --storage_path=~/Projects/dancedeets-storage/ 2>&1 | ~/Library/Python/2.7/bin/technicolor-yawn`,
+    `PYTHONPATH=lib-local ${argv.gae_dir}/dev_appserver.py app-devserver.yaml --port=${port} --runtime=python-compat --storage_path=${storagePath} 2>&1 | ~/Library/Python/2.7/bin/technicolor-yawn`,
   ]);
 }
 gulp.task('dev-appserver:kill', $.shell.task(['./force_kill_server.sh']));
 
-gulp.task(
-  'dev-appserver:server:regular',
-  ['dev-appserver:create-yaml:regular', 'dev-appserver:wait-for-exit'],
-  startDevAppServer(8080)
-);
-gulp.task(
-  'dev-appserver:server:hot',
-  ['dev-appserver:create-yaml:hot', 'dev-appserver:wait-for-exit'],
-  startDevAppServer(8085)
-);
 gulp.task('dev-appserver:server:regular:force', cb =>
   runSequence('dev-appserver:kill', 'dev-appserver:server:regular', cb)
 );
@@ -514,7 +511,11 @@ gulp.task('dev-appserver:server:hot:force', cb =>
   const port = x.includes('hot') ? 8085 : 8080;
   gulp.task(
     `dev-appserver:server:${x}`,
-    [`dev-appserver:create-yaml:${x}`, 'dev-appserver:wait-for-exit'],
+    [
+      `dev-appserver:create-yaml:${x}`,
+      'dev-appserver:wait-for-exit',
+      'dev-appserver:create-storage-dir',
+    ],
     startDevAppServer(port)
   );
   gulp.task(`dev-appserver:server:${x}:force`, cb =>
