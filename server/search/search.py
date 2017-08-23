@@ -175,6 +175,9 @@ class Search(object):
         if self.query.start_date:
             if self.query.start_date > datetime.date.today():
                 search_index = FutureEventsIndex
+        else:
+            # Special case...if there is no start date, assume it is 'today'
+            search_index = FutureEventsIndex
 
         logging.info("Doing search for %r", query_string)
         doc_index = search_index.real_index()

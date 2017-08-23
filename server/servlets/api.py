@@ -310,13 +310,6 @@ class SearchHandler(ApiHandler):
         }
         if self.request.get('locale'):
             data['locale'] = self.request.get('locale')
-        # If it's 1.0 clients, or web clients, then grab all data
-        if self.version == (1, 0):
-            time_period = search_base.TIME_UPCOMING
-        else:
-            time_period = self.request.get('time_period')
-        if time_period:
-            data['time_period'] = time_period
         return data
 
     def get(self):

@@ -64,25 +64,6 @@ mixpanel.track("Search Events", {
   "Location": {{ form.location.data|tojson }},
   "Keywords": {{ form.keywords.data|tojson }}
 });
-{% if selected_tab == 'past' %}
-  var num_results = {{ len(past_results) }};
-  var tab = 'PAST';
-{% elif selected_tab == 'present' %}
-  var num_results = {{ num_upcoming_results }};
-  var tab = 'UPCOMING';
-{% else %}
-  var tab = null;
-{% endif %}
-
-if (tab != null) {
-  mixpanel.track("Searched Results", {
-    "Location": {{ form.location.data|tojson }},
-    "Keywords": {{ form.keywords.data|tojson }},
-    "Tab": tab,
-    "Result Count": num_results,
-    "Onebox Count": {{ len(onebox_links) }}
-  });
-}
 mixpanel.track_links(".link-onebox", "Onebox");
 </script>
 

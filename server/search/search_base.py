@@ -68,7 +68,6 @@ class SearchForm(wtforms.Form):
     distance_units = wtforms.SelectField(choices=[('miles', 'Miles'), ('km', 'KM')], default='km')
     locale = wtforms.StringField(default='')
     min_attendees = wtforms.IntegerField(default=0)
-    time_period = wtforms.SelectField(choices=[(x, x) for x in TIME_LIST], default=TIME_ALL_FUTURE)
     deb = wtforms.StringField(default='')
 
     # Only used by API
@@ -130,7 +129,7 @@ class SearchForm(wtforms.Form):
         bounds = self._get_bounds()
         keywords = _get_parsed_keywords(self.keywords.data)
         common_fields = dict(bounds=bounds, min_attendees=self.min_attendees.data, keywords=keywords)
-        query = SearchQuery(start_date=self.start.data, end_date=self.end.data, time_period=self.time_period.data, **common_fields)
+        query = SearchQuery(start_date=self.start.data, end_date=self.end.data, **common_fields)
         return query
 
 
@@ -152,18 +151,6 @@ def get_geocode_with_distance(form):
 def get_center_and_bounds(geocode, distance):
     southwest, northeast = math.expand_bounds(geocode.latlng_bounds(), distance)
     return geocode.latlng(), southwest, northeast
-
-
-class HtmlSearchForm(SearchForm):
-    def __init__(self, formdata, data=None):
-        if formdata.get('past', '0') not in ['0', '', 'False', 'false']:
-            time_period = TIME_PAST
-        else:
-            time_period = TIME_ALL_FUTURE
-        if not data:
-            data = {}
-        data['time_period'] = time_period
-        super(HtmlSearchForm, self).__init__(formdata, data=data)
 
 
 class SearchQuery(object):

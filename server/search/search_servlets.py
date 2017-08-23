@@ -41,7 +41,7 @@ class SearchHandler(base_servlet.BaseRequestHandler):
             del get_data['start']
         if get_data.get('end') == '':
             del get_data['end']
-        form = search_base.HtmlSearchForm(get_data, data=self.user.dict_for_form() if self.user else None)
+        form = search_base.SearchForm(get_data, data=self.user.dict_for_form() if self.user else None)
         form.validated = form.validate()
         self.handle_search(form)
 
@@ -122,46 +122,12 @@ class RelevantHandler(SearchHandler):
             json_search_response = api.build_search_results_api(form, search_query, search_results, (2, 0), need_full_event, geocode, distance, skip_people=skip_people)
             props = dict(
                 response=json_search_response,
-                past=(form.time_period.data == search_base.TIME_PAST),
                 showPeople=not skip_people,
                 categoryOrder=[''] + [x.public_name for x in event_types.STYLES],
                 query=form.url_params(),
             )
             self.setup_react_template('eventSearchResults.js', props)
 
-            past_results, present_results, grouped_results = search.group_results(search_results)
-            if search_query and search_query.time_period in search_base.TIME_ALL_FUTURE:
-                present_results = past_results + present_results
-                past_results = []
-
-            self.display['num_upcoming_results'] = sum([len(x.results) for x in grouped_results]) + len(present_results)
-            self.display['past_results'] = past_results
-            self.display['ongoing_results'] = present_results
-            self.display['grouped_upcoming_results'] = grouped_results
-            self.display['onebox_links'] = onebox_links
-
-        if form.time_period.data == search_base.TIME_PAST:
-            self.display['selected_tab'] = 'past'
-        elif self.request.get('calendar'):
-            self.display['selected_tab'] = 'calendar'
-        else:
-            self.display['selected_tab'] = 'present'
-
-        self.display['form'] = form
-        if form.location.data and form.keywords.data:
-            self.display['result_title'] = '%s dance events near %s' % (form.keywords.data, form.location.data)
-        elif form.location.data:
-            self.display['result_title'] = '%s dance events' % form.location.data
-        elif form.keywords.data:
-            self.display['result_title'] = '%s dance events' % form.keywords.data
-        else:
-            self.display['result_title'] = 'Dance events'
-
-        request_params = form.url_params()
-        self.display['past_view_url'] = '/events/relevant?past=1&%s' % urls.urlencode(request_params)
-        self.display['upcoming_view_url'] = '/events/relevant?%s' % urls.urlencode(request_params)
-        self.display['calendar_view_url'] = '/events/relevant?calendar=1&%s' % urls.urlencode(request_params)
-        self.jinja_env.globals['CHOOSE_RSVPS'] = rsvp.CHOOSE_RSVPS
         self.render_template(self.template_name)
 
 @app.route('/city/(.*)/?')
