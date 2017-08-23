@@ -20,7 +20,7 @@ function dateIsNearby(date: moment, intl: intlShape) {
   const now = moment(intl.now());
   const diff = date.diff(now);
   return (
-    diff > moment.duration(-3, 'months').asMilliseconds() ||
+    diff > moment.duration(-3, 'months').asMilliseconds() &&
     diff < moment.duration(6, 'months').asMilliseconds()
   );
 }
