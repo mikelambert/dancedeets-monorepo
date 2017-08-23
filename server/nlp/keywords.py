@@ -650,6 +650,12 @@ PREPROCESS_REMOVAL = Name('PREPROCESS_REMOVAL', Any(
     'ice\W?breaker',
     u'アイスブレイク',
 
+    'home\W?turf',
+
+    'wackie\W?s',
+    'beat whackz',
+    'waking',
+
     'straight up', # up rock
     'tear\W?jerker', # jerker
     'in-strutter', # strutter
@@ -665,6 +671,7 @@ PREPROCESS_REMOVAL = Name('PREPROCESS_REMOVAL', Any(
     'breaking\W?boards?',
     'record\Wbreaking',
     'break\w+\W+(?:the\W+)?records?',
+    'short break',
 
     '(?:second|2nd) stage',
     'juste debout school',
