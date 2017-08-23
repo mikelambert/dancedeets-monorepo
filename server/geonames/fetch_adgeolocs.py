@@ -15,7 +15,7 @@ from util import urls
 from geonames import geoname_files
 from geonames import sqlite_db
 
-FILENAME_ADLOCS = '/Users/%s/Dropbox/dancedeets/git-assets/development/server/generated/adlocs_only.db' % getpass.getuser()
+FILENAME_ADLOCS = '/Users/%s/Dropbox/dancedeets-development/server/generated/adlocs_only.db' % getpass.getuser()
 
 
 FACEBOOK_CONFIG = None

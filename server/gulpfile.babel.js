@@ -40,7 +40,7 @@ gulp.task('default', taskListing);
 
 const $ = gulpLoadPlugins();
 
-const baseAssetsDir = `/Users/${username.sync()}/Dropbox/dancedeets/git-assets/development/server/build-assets/`;
+const baseAssetsDir = `/Users/${username.sync()}/Dropbox/dancedeets-development/server/build-assets/`;
 
 // TODO: Support login here, so that this URL can actually run. Currently blocked by 'login: admin'
 gulp.task('web:events:resave', cb =>
