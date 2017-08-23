@@ -145,7 +145,14 @@ export class BaseEvent extends JsonDerivedObject {
     if (now.isBefore(start)) {
       return start;
     }
-    if (start.weekday() === end.weekday()) {
+    // If the event looks to be a weekly event (ends <24 hours after it begins, plus N weeks),
+    // then return the next instance of that weekly event as our ListDate.
+    const duration = end.diff(start);
+    const durationMinusWeeks =
+      duration % moment.duration(1, 'week').asMilliseconds();
+    const lessThan24Hours =
+      durationMinusWeeks < moment.duration(1, 'day').asMilliseconds();
+    if (lessThan24Hours) {
       // Assume it's a weekly event!
       const nowDiff = now.diff(start);
       const weeksUntilNow =
