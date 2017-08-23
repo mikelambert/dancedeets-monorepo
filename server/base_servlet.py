@@ -161,6 +161,8 @@ class BareBaseRequestHandler(webapp2.RequestHandler, FacebookMixinHandler):
             return final_path
         else:
             extension = path.split('.')[-1]
+            if extension == 'css':
+                path = self.full_manifest[path]
             return '%s/dist/%s/%s' % (self._get_base_server(), extension, path)
 
     def _get_base_server(self):
