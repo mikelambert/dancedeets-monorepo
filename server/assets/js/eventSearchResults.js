@@ -582,6 +582,7 @@ class Loading extends React.Component {
 class ResultsList extends React.Component {
   props: {
     response: NewSearchResponse,
+    showPast: boolean,
   };
 
   state: {
@@ -626,18 +627,25 @@ class ResultsList extends React.Component {
 
     const now = moment();
     const eventPanels = [];
-    // DEBUG CODE:
-    // const currentEvents = resultEvents.filter(event => event.getStartMoment() > now);
-    const currentEvents = resultEvents.filter(event => {
-      let end = event.getEndMoment();
-      if (!end) {
-        end = event.getStartMoment().add(2, 'hours');
-      }
-      return event.getListDateMoment().isBefore(now) && now.isBefore(end);
-    });
-    const futureEvents = resultEvents.filter(event =>
-      event.getListDateMoment().isAfter(now)
-    );
+    let currentEvents = null;
+    let fullEvents = null;
+    if (this.props.showPast) {
+      currentEvents = [];
+      fullEvents = resultEvents;
+    } else {
+      // DEBUG CODE for current events:
+      // currentEvents = resultEvents.filter(event => event.getStartMoment() > now);
+      currentEvents = resultEvents.filter(event => {
+        let end = event.getEndMoment();
+        if (!end) {
+          end = event.getStartMoment().add(2, 'hours');
+        }
+        return event.getListDateMoment().isBefore(now) && now.isBefore(end);
+      });
+      fullEvents = resultEvents.filter(event =>
+        event.getListDateMoment().isAfter(now)
+      );
+    }
     if (currentEvents.length) {
       eventPanels.push(
         <div key="current">
@@ -646,8 +654,8 @@ class ResultsList extends React.Component {
         </div>
       );
     }
-    if (futureEvents.length) {
-      eventPanels.push(<EventsList key="future" events={futureEvents} />);
+    if (fullEvents.length) {
+      eventPanels.push(<EventsList key="full" events={fullEvents} />);
     }
 
     let featuredPanel = null;
@@ -661,7 +669,6 @@ class ResultsList extends React.Component {
     if (this.props.response.onebox_links.length) {
       oneboxPanel = <OneboxLinks links={this.props.response.onebox_links} />;
     }
-    const defaultKeys = ['featured', 'onebox', 'currentEvents', 'futureEvents'];
 
     const eventFilters = global.window &&
       global.window.location.hash.includes('filter')
@@ -897,6 +904,16 @@ class ResultTabs extends React.Component {
       );
     }
 
+    const queryStart = this.props.query.start
+      ? moment(this.props.query.start)
+      : null;
+    const queryEnd = this.props.query.end ? moment(this.props.query.end) : null;
+    const now = moment();
+    const showPast = Boolean(
+      (queryStart && queryStart.isBefore(now)) ||
+        (queryEnd && queryEnd.isBefore(now))
+    );
+
     return (
       <Tabs>
         <TabList>
@@ -906,7 +923,7 @@ class ResultTabs extends React.Component {
         </TabList>
 
         <TabPanel style={tabPanelStyle}>
-          <ResultsList response={this.props.response} />
+          <ResultsList response={this.props.response} showPast={showPast} />
           {overlayDiv}
         </TabPanel>
         <TabPanel style={tabPanelStyle}>

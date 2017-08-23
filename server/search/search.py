@@ -168,15 +168,14 @@ class Search(object):
         if not query_string:
             return []
 
-        search_index = AllEventsIndex
-        if self.query.time_period:
-            if self.query.time_period in search_base.FUTURE_INDEX_TIMES:
-                search_index = FutureEventsIndex
-        if self.query.start_date:
-            if self.query.start_date > datetime.date.today():
-                search_index = FutureEventsIndex
+        if (
+            (self.query.start_date and self.query.start_date < datetime.date.today()) or
+            (self.query.end_date and self.query.end_date < datetime.date.today())
+            ):
+            search_index = AllEventsIndex
         else:
-            # Special case...if there is no start date, assume it is 'today'
+            search_index = FutureEventsIndex
+        if self.query.time_period and self.query.time_period in search_base.FUTURE_INDEX_TIMES:
             search_index = FutureEventsIndex
 
         logging.info("Doing search for %r", query_string)
