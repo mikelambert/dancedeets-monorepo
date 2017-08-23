@@ -1,5 +1,6 @@
 #!/usr/bin/python
 
+import getpass
 from itertools import chain
 import json
 import os
@@ -30,4 +31,5 @@ cleanup('dist/css/')
 # -n don't overwrite existing files
 # -z compress files on upload
 # -R recursive
-subprocess.check_output('/Users/lambert/google-cloud-sdk/bin/gsutil -m cp -P -n -z css,js,json,map -R dist/{js,css,img,fonts,*.json} gs://dancedeets-static/', shell=True)
+cmd = '/Users/%s/google-cloud-sdk/bin/gsutil -m cp -P -n -z css,js,json,map -R dist/{js,css,img,fonts,*.json} gs://dancedeets-static/' % getpass.getuser()
+subprocess.check_output(cmd, shell=True)
