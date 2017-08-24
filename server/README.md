@@ -20,12 +20,16 @@ gcloud config set project dancedeets-hrd
 gcloud auth login
 ```
 
-Third, to setup dancedeets, make sure you are in the `server/` directory and run `./setup.sh`. It will download and install Python and JS libraries, as well as setup some other aspects of our build.
+Third, to setup dancedeets:
+- Make sure you are in the `server/` directory
+- Run `./setup.sh`. It will download and install Python and JS libraries, as well as setup some other aspects of our build.
+- Run `./setup_private.sh`. It will copy files from a shared Dropbox, which you will need to get access to. (It may fail due to the 'production' files, but the 'development' files should copy over.)
 
 You can run a variety of commands from gulp:
 - `gulp test` to run all of the included tests.
-- `gulp server:hot` to run a local server
-- `gulp deployServer` to push to production
+- `gulp server:hot` to run a local server (though you may want to run some `gulp:compile:webpack` commands below as well, particularly client and server)
+
+Once you're running a server, you can load http://dev.dancedeets.com:8080/ in your browser.
 
 If you are running the NLP classifier evaluations, you may want to setup re2 for speed.
 To do this, download/install from <https://github.com/google/re2/>
