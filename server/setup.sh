@@ -19,9 +19,6 @@ else
   USER_FLAG='--user'
 fi
 
-echo "Installing pip"
-python $TMP_DIR/get-pip.py $USER_FLAG
-
 HOSTS_UPDATED=$(grep dev.dancedeets.com /etc/hosts)
 if [ "$HOSTS_UPDATED" == "" ]; then
   cat <<EOF
@@ -46,20 +43,25 @@ if [ "$TRAVIS" == true ]; then
 else
   brew ls --versions libmemcached >/dev/null || brew install libmemcached
 fi
+
+echo "Installing pip"
+python $TMP_DIR/get-pip.py $USER_FLAG
+PIP=~/Library/Python/2.7/bin/pip
+
 # Things we expect to be installed in our docker container
-pip install --upgrade -t $BASE_DIR/lib-local -r $BASE_DIR/docker/gae-modules/requirements.txt
-pip install --upgrade -t $BASE_DIR/lib-local -r $BASE_DIR/docker/gae-modules-py/requirements.txt
+$PIP install --upgrade -t $BASE_DIR/lib-local -r $BASE_DIR/docker/gae-modules/requirements.txt
+$PIP install --upgrade -t $BASE_DIR/lib-local -r $BASE_DIR/docker/gae-modules-py/requirements.txt
 
 echo "Installing test libraries"
 # For testing, just install them locally (not in the lib/ dir).
-pip install --upgrade -t $BASE_DIR/lib-local -r $BASE_DIR/test-requirements.txt
+$PIP install --upgrade -t $BASE_DIR/lib-local -r $BASE_DIR/test-requirements.txt
 
 echo "Installing the libraries which don't work with gae-modules*"
-pip install --upgrade -t $BASE_DIR/lib-both -r $BASE_DIR/setup-requirements.txt
+$PIP install --upgrade -t $BASE_DIR/lib-both -r $BASE_DIR/setup-requirements.txt
 
 # We need these binaries, which only exist if we install them system-wide
-pip install $USER_FLAG technicolor-yawn==0.2.0
-pip install $USER_FLAG coverage==4.2
+$PIP install $USER_FLAG technicolor-yawn==0.2.0
+$PIP install $USER_FLAG coverage==4.2
 
 echo "Installing npm modules: ../"
 cd $BASE_DIR/..
@@ -91,8 +93,8 @@ if [ "$TRAVIS" != true ]; then
     git clone https://github.com/Khan/frankenserver $BASE_DIR/frankenserver
   fi
   # Install the modules that make frankenserver amazing
-  cd $BASE_DIR/frankenserver && pip install $USER_FLAG -r requirements.txt
-  pip install -t $BASE_DIR/lib-local -r $BASE_DIR/frankenserver/requirements.txt
+  cd $BASE_DIR/frankenserver && $PIP install $USER_FLAG -r requirements.txt
+  $PIP install -t $BASE_DIR/lib-local -r $BASE_DIR/frankenserver/requirements.txt
 fi
 
 GULP=./node_modules/gulp/bin/gulp.js
