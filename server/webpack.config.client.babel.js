@@ -97,9 +97,11 @@ const config = {
       name: 'common',
       minChunks: isCommonModule,
     }),
-    new OptimizeCssAssetsPlugin({
-      canPrint: true,
-    }),
+    ifProd(
+      new OptimizeCssAssetsPlugin({
+        canPrint: true,
+      })
+    ),
     ifProd(new webpack.HashedModuleIdsPlugin()),
     ifProd(new WebpackMd5Hash()),
     ifProd(
