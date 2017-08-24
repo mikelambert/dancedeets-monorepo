@@ -52,7 +52,9 @@ class _DatePicker extends React.Component {
     // Once the component has been updated, and re-rendered the <input>s with new values
     // Let's perform a search based off them
     if (prevState.focusedInput !== null && this.state.focusedInput === null) {
-      this.props.onComplete();
+      if (this.props.onComplete) {
+        this.props.onComplete();
+      }
     }
   }
 
@@ -197,6 +199,8 @@ function HandleSelection(event) {
       if (key === 'Enter') {
         // Don't run this code for Tab, or it will double-Tab
         findNextTabStop(target).focus();
+        // Only submit form on "Enter" on a form field without any menu item selected
+        this.props.onSubmit();
       }
     });
   } else {
@@ -266,9 +270,11 @@ class TextInput extends React.Component {
     id: string,
     placeholder: string,
     value: string,
-    onFocus: () => void,
-    onBlur: () => void,
+    onFocus: (e: SyntheticEvent) => void,
+    onBlur: (e: SyntheticEvent) => void,
+    onSubmit: (e: SyntheticEvent) => void,
 
+    shouldItemRender?: (item: Object, value: string) => boolean,
     autocomplete?: boolean,
   };
 
@@ -338,6 +344,7 @@ class TextInput extends React.Component {
           // Only show the menu if we have items to show
           renderMenu={items =>
             items.length ? <div style={menuStyle}>{items}</div> : <div />}
+          onSubmit={this.props.onSubmit}
           {...otherProps}
         />
       );
@@ -449,6 +456,7 @@ class _SearchBox extends React.Component {
       location: this.props.query.location,
       locationItems: [],
     };
+    (this: any).performSearch = this.performSearch.bind(this);
   }
 
   getAutocompleteService() {
@@ -532,125 +540,127 @@ class _SearchBox extends React.Component {
           action="/"
           acceptCharset="UTF-8"
         >
-          <div
-            style={{
-              fontSize: 19,
-              lineHeight: '24px',
-              letterSpacing: null,
-              paddingTop: 0,
-              paddingBottom: 0,
-              color: '#484848',
-              borderRadius: 4,
-              border: '1px solid #DBDBDB',
-              boxShadow: '0 1px 3px 0px rgba(0, 0, 0, 0.08)',
-              padding: 0,
-              display: 'table',
-              tableLayout: 'fixed',
-              width: '100%',
-              position: 'relative',
-              backgroundColor: 'white',
-            }}
-          >
-            <SearchBoxItem
-              iconName="globe"
-              renderItem={({ focused, onFocus, onBlur }) =>
-                <TextInput
-                  autocomplete
-                  id="location"
-                  placeholder={
-                    focused ? 'City, Region, or Country' : 'Anywhere'
-                  }
-                  value={this.state.location}
-                  items={this.state.locationItems}
-                  onChange={(event, value) => {
-                    this.setState({ location: value });
-                    if (!value) {
-                      return;
+          <div style={{ width: '100%' }}>
+            <div
+              style={{
+                fontSize: 19,
+                lineHeight: '24px',
+                letterSpacing: null,
+                paddingTop: 0,
+                paddingBottom: 0,
+                color: '#484848',
+                borderRadius: 4,
+                border: '1px solid #DBDBDB',
+                boxShadow: '0 1px 3px 0px rgba(0, 0, 0, 0.08)',
+                padding: 0,
+                display: 'table',
+                tableLayout: 'fixed',
+                width: '100%',
+                position: 'relative',
+                backgroundColor: 'white',
+              }}
+            >
+              <SearchBoxItem
+                iconName="globe"
+                renderItem={({ focused, onFocus, onBlur }) =>
+                  <TextInput
+                    autocomplete
+                    id="location"
+                    placeholder={
+                      focused ? 'City, Region, or Country' : 'Anywhere'
                     }
-                    // TODO: Cancel/ignore old prediction requests, in case they arrive out-of-order
-                    this.getAutocompleteService().getPlacePredictions(
-                      {
-                        input: value,
-                        types: ['(regions)'],
-                      },
-                      (predictions, status) => {
-                        let items = [];
-                        if (
-                          status ===
-                          window.google.maps.places.PlacesServiceStatus.OK
-                        ) {
-                          items = predictions.map(x => ({
-                            label: x.description,
-                            main: x.structured_formatting.main_text,
-                            secondary: x.structured_formatting.secondary_text,
-                          }));
-                        }
-                        this.setState({ locationItems: items });
+                    value={this.state.location}
+                    items={this.state.locationItems}
+                    onSubmit={this.performSearch}
+                    onChange={(event, value) => {
+                      this.setState({ location: value });
+                      if (!value) {
+                        return;
                       }
-                    );
-                  }}
-                  getItemValue={item => item.label}
-                  onSelect={async (value, item) => {
-                    await this.setState({ location: value });
-                    this.performSearch();
-                  }}
-                  onFocus={onFocus}
-                  onBlur={() => {
-                    onBlur();
-                    this.performSearch();
-                  }}
-                />}
-            />
-            <SearchBoxItem
-              iconName="search"
-              renderItem={({ focused, onFocus, onBlur }) =>
-                <TextInput
-                  autocomplete
-                  id="keywords"
-                  placeholder={
-                    focused
-                      ? 'Dance style, event name, dancer name, etc'
-                      : 'Any style event, any event type'
-                  }
-                  value={this.state.keywords}
-                  onChange={(event, value) =>
-                    this.setState({ keywords: value })}
-                  onSelect={async (value, item) => {
-                    await this.setState({ keywords: value });
-                    this.performSearch();
-                  }}
-                  items={this.autocompleteKeywords()}
-                  getItemValue={item => item.label}
-                  shouldItemRender={(item, value) => {
-                    if (value.length) {
-                      return (
-                        item.label
-                          .toLowerCase()
-                          .indexOf(value.toLowerCase()) !== -1
+                      // TODO: Cancel/ignore old prediction requests, in case they arrive out-of-order
+                      this.getAutocompleteService().getPlacePredictions(
+                        {
+                          input: value,
+                          types: ['(regions)'],
+                        },
+                        (predictions, status) => {
+                          let items = [];
+                          if (
+                            status ===
+                            window.google.maps.places.PlacesServiceStatus.OK
+                          ) {
+                            items = predictions.map(x => ({
+                              label: x.description,
+                              main: x.structured_formatting.main_text,
+                              secondary: x.structured_formatting.secondary_text,
+                            }));
+                          }
+                          this.setState({ locationItems: items });
+                        }
                       );
-                    } else {
-                      return item.initial;
+                    }}
+                    getItemValue={item => item.label}
+                    onSelect={async (value, item) => {
+                      await this.setState({ location: value });
+                    }}
+                    onFocus={onFocus}
+                    onBlur={onBlur}
+                  />}
+              />
+              <SearchBoxItem
+                iconName="search"
+                renderItem={({ focused, onFocus, onBlur }) =>
+                  <TextInput
+                    autocomplete
+                    id="keywords"
+                    placeholder={
+                      focused
+                        ? 'Dance style, event name, dancer name, etc'
+                        : 'Any style, event type, etc'
                     }
-                  }}
-                  onFocus={onFocus}
-                  onBlur={() => {
-                    onBlur();
-                    this.performSearch();
-                  }}
-                />}
-            />
-            <SearchBoxItem
-              iconName="clock-o"
-              renderItem={({ focused, onFocus, onBlur }) =>
-                <DatePicker
-                  query={this.props.query}
-                  focused={focused}
-                  onFocus={onFocus}
-                  onBlur={onBlur}
-                  onComplete={() => this.performSearch()}
-                />}
-            />
-
+                    value={this.state.keywords}
+                    onSubmit={this.performSearch}
+                    onChange={(event, value) =>
+                      this.setState({ keywords: value })}
+                    onSelect={async (value, item) => {
+                      await this.setState({ keywords: value });
+                    }}
+                    items={this.autocompleteKeywords()}
+                    getItemValue={item => item.label}
+                    shouldItemRender={(item, value) => {
+                      if (value.length) {
+                        return (
+                          item.label
+                            .toLowerCase()
+                            .indexOf(value.toLowerCase()) !== -1
+                        );
+                      } else {
+                        return item.initial;
+                      }
+                    }}
+                    onFocus={onFocus}
+                    onBlur={onBlur}
+                  />}
+              />
+              <SearchBoxItem
+                iconName="clock-o"
+                renderItem={({ focused, onFocus, onBlur }) =>
+                  <DatePicker
+                    query={this.props.query}
+                    focused={focused}
+                    onFocus={onFocus}
+                    onBlur={onBlur}
+                  />}
+              />
+            </div>
+            <button
+              className="btn btn-default"
+              type="button"
+              onClick={() => this.performSearch()}
+              style={{ height: '100%' }}
+            >
+              Let&apos;s Dance
+            </button>
           </div>
           {hiddenFields}
         </form>
