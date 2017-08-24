@@ -84,29 +84,16 @@ class _DatePicker extends React.Component {
 
   render() {
     const dateDisplay = (
-      <div key="date-display">
-        <button
-          type="button"
-          className="top-search"
-          style={{
-            fontSize: 18,
-            lineHeight: '24px',
-            fontWeight: 200,
-            padding: 7,
-
-            backgroundColor: 'transparent',
-            border: 0,
-            textAlign: 'left',
-            width: '100%',
-          }}
-          onClick={() => {
-            this.props.onFocus();
-            this.setState({ focusedInput: 'startDate' });
-          }}
-        >
-          {this.getShortSummary()}
-        </button>
-      </div>
+      <button
+        type="button"
+        className="top-search search-box-date-display"
+        onClick={() => {
+          this.props.onFocus();
+          this.setState({ focusedInput: 'startDate' });
+        }}
+      >
+        {this.getShortSummary()}
+      </button>
     );
     const narrowScreen =
       !this.props.window || this.props.window.width < NarrowWindowSize;
@@ -157,17 +144,18 @@ class _DatePicker extends React.Component {
     };
 
     return (
-      <div style={{ position: 'relative' }}>
+      <div className="search-box-date-picker">
         <div key="picker">
           {datePicker}
         </div>
         <div
           key="display"
-          style={
+          className={classNames(
+            'search-box-date-display-wrapper-fullsize',
             this.props.focused
-              ? { ...invisibleProps, ...fullsizeProps }
-              : fullsizeProps
-          }
+              ? 'search-box-date-display-wrapper-invisible'
+              : ''
+          )}
         >
           {dateDisplay}
         </div>
@@ -284,19 +272,9 @@ class TextInput extends React.Component {
     const inputProps = {
       id: this.props.id,
       type: 'text',
-      className: 'top-search',
+      className: 'top-search search-box-text-input',
       name: this.props.id,
       placeholder: this.props.placeholder,
-      style: {
-        border: 0,
-        textOverflow: 'ellipsis',
-        backgroundColor: 'transparent',
-        padding: 7,
-        fontSize: 18,
-        lineHeight: '24px',
-        width: '100%',
-        fontWeight: 200,
-      },
       onFocus: e => {
         e.target.select();
         this.props.onFocus(e);
@@ -304,17 +282,6 @@ class TextInput extends React.Component {
       onBlur: this.props.onBlur,
     };
     if (this.props.autocomplete) {
-      const menuStyle = {
-        marginTop: SearchBoxItem.underlineWidth,
-        borderRadius: '3px',
-        boxShadow: '0 2px 12px rgba(0, 0, 0, 0.1)',
-        background: 'rgba(255, 255, 255, 0.9)',
-        padding: '2px 0',
-        fontSize: '90%',
-        position: 'absolute',
-        width: '100%',
-        zIndex: 10,
-      };
       return (
         <Autocomplete
           wrapperStyle={{}}
@@ -323,19 +290,16 @@ class TextInput extends React.Component {
           renderItem={(item, isHighlighted) =>
             <div
               key={item.label}
-              style={{
-                background: isHighlighted ? '#C0C0E8' : 'white',
-                padding: 12,
-              }}
+              className={classNames(
+                'search-box-autocomplete-item',
+                isHighlighted ? 'search-box-autocomplete-item-selected' : ''
+              )}
             >
               {item.main
                 ? <div>
-                    <i
-                      className="fa fa-map-marker"
-                      style={{ paddingRight: 12 }}
-                    />
+                    <i className="fa fa-map-marker search-box-autocomplete-item-map-icon" />
                     <strong>{item.main}</strong>{' '}
-                    <small style={{ color: 'grey' }}>
+                    <small className="search-box-autocomplete-item-text2">
                       {item.secondary}
                     </small>
                   </div>
@@ -343,7 +307,9 @@ class TextInput extends React.Component {
             </div>}
           // Only show the menu if we have items to show
           renderMenu={items =>
-            items.length ? <div style={menuStyle}>{items}</div> : <div />}
+            items.length
+              ? <div className="search-box-autocomplete-menu">{items}</div>
+              : <div />}
           onSubmit={this.props.onSubmit}
           {...otherProps}
         />
@@ -380,48 +346,43 @@ class SearchBoxItem extends React.Component {
   constructor(props) {
     super(props);
     this.state = { focused: false };
+    (this: any).onFocus = this.onFocus.bind(this);
+    (this: any).onBlur = this.onBlur.bind(this);
+  }
+
+  onFocus() {
+    this.setState({ focused: true });
+  }
+
+  onBlur() {
+    this.setState({ focused: false });
   }
 
   render() {
     return (
       <div
-        style={{
-          verticalAlign: 'bottom',
-          color: '#484848',
-
-          transition: 'border 500ms ease-out, flex-grow 300ms ease-out',
-
-          border: '1px solid #e4e4e4',
-          borderBottomWidth: SearchBoxItem.underlineWidth,
-          borderBottomStyle: 'solid',
-          borderBottomColor: this.state.focused ? '#4C4D81' : 'transparent',
-        }}
-        className={
+        className={classNames(
+          'search-box-item',
           this.state.focused
-            ? 'media-query-search-focused'
+            ? 'media-query-search-focused search-box-item-focused'
             : 'media-query-search-not-focused'
-        }
+        )}
       >
         <div
-          style={{
-            display: 'flex',
-            height: 38,
-            overflow: this.state.focused ? 'inherit' : 'hidden',
-          }}
+          className={classNames(
+            'search-box-item-inner',
+            this.state.focused ? 'search-box-item-inner-focused' : ''
+          )}
         >
           <i
-            className={`fa fa-fw fa-${this.props.iconName}`}
-            style={{
-              verticalAlign: 'top',
-              paddingLeft: 7,
-              paddingTop: 10,
-            }}
+            className={`fa fa-fw fa-${this.props
+              .iconName} search-box-item-icon`}
           />
-          <div style={{ position: 'relative', flexGrow: 1 }}>
+          <div className="search-box-item-contents">
             {this.props.renderItem({
               focused: this.state.focused,
-              onFocus: () => this.setState({ focused: true }),
-              onBlur: () => this.setState({ focused: false }),
+              onFocus: this.onFocus,
+              onBlur: this.onBlur,
             })}
           </div>
         </div>
@@ -520,13 +481,7 @@ class _SearchBox extends React.Component {
 
     return (
       <div>
-        <div
-          style={{
-            fontWeight: 'bold',
-            textTransform: 'uppercase',
-            margin: 5,
-          }}
-        >
+        <div className="search-box-outer">
           Find the Dance Scene:
         </div>
         <form
@@ -539,22 +494,7 @@ class _SearchBox extends React.Component {
           action="/"
           acceptCharset="UTF-8"
         >
-          <div
-            style={{
-              fontSize: 19,
-              lineHeight: '24px',
-              letterSpacing: null,
-              color: '#484848',
-              borderRadius: 4,
-              border: '1px solid #DBDBDB',
-              borderRight: 0,
-              boxShadow: '0 1px 3px 0px rgba(0, 0, 0, 0.08)',
-              padding: 0,
-              width: '100%',
-              backgroundColor: 'white',
-            }}
-            className="media-query-search-box"
-          >
+          <div className="media-query-search-box search-box">
             <SearchBoxItem
               iconName="globe"
               renderItem={({ focused, onFocus, onBlur }) =>
@@ -649,13 +589,9 @@ class _SearchBox extends React.Component {
             />
             <div>
               <button
-                className="btn btn-default media-query-search-button"
+                className="btn btn-default media-query-search-button search-box-search-button"
                 type="button"
-                style={{
-                  width: '100%',
-                  height: '100%',
-                }}
-                onClick={() => this.performSearch()}
+                onClick={this.performSearch}
               >
                 Find My Dance
               </button>
