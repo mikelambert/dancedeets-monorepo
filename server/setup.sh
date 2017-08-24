@@ -22,6 +22,22 @@ fi
 echo "Installing pip"
 python $TMP_DIR/get-pip.py $USER_FLAG
 
+HOSTS_UPDATED=$(grep dev.dancedeets.com /etc/hosts)
+if [ "$HOSTS_UPDATED" == "" ]; then
+  cat <<EOF
+Updating /etc/hosts to include the dev.dancedeets.com domain"
+This step requires sudo to complete, though you are welcome to decline and do it yourself.
+If you would like to do it yourself, please run:
+  $ cat '127.0.0.1\tdev.dancedeets.com' >> /etc/hosts
+...or add '127.0.0.1\tdev.dancedeets.com' (where \t is a Tab) to /etc/hosts.
+EOF
+  sudo bash -c "cat '127.0.0.1\tdev.dancedeets.com' >> /etc/hosts" || echo "
+
+Not updating /etc/hosts, but please update it yourself!
+
+"
+fi
+
 echo "Installing docker gae-modules* libraries"
 # This is necessary for requirements.txt installing pylibmc
 if [ "$TRAVIS" == true ]; then
