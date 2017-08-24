@@ -46,6 +46,9 @@ class _DatePicker extends React.Component {
       endDate: props.query.end ? moment(props.query.end) : null,
       focusedInput: null,
     };
+    (this: any).onFocusClick = this.onFocusClick.bind(this);
+    (this: any).onDatesChange = this.onDatesChange.bind(this);
+    (this: any).onFocusChange = this.onFocusChange.bind(this);
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -56,6 +59,19 @@ class _DatePicker extends React.Component {
         this.props.onComplete();
       }
     }
+  }
+
+  onFocusClick() {
+    this.props.onFocus();
+    this.setState({ focusedInput: 'startDate' });
+  }
+
+  onDatesChange({ startDate, endDate }) {
+    this.setState({ startDate, endDate });
+  }
+  onFocusChange(focusedInput) {
+    this.setState({ focusedInput });
+    this.props.onFocus();
   }
 
   getShortSummary() {
@@ -87,10 +103,7 @@ class _DatePicker extends React.Component {
       <button
         type="button"
         className="top-search search-box-date-display"
-        onClick={() => {
-          this.props.onFocus();
-          this.setState({ focusedInput: 'startDate' });
-        }}
+        onClick={this.onFocusClick}
       >
         {this.getShortSummary()}
       </button>
@@ -113,16 +126,10 @@ class _DatePicker extends React.Component {
           // Update internal state
           startDate={this.state.startDate}
           endDate={this.state.endDate}
-          onDatesChange={({ startDate, endDate }) =>
-            this.setState({ startDate, endDate })}
+          onDatesChange={this.onDatesChange}
           focusedInput={this.state.focusedInput}
-          onFocusChange={focusedInput => {
-            this.setState({ focusedInput });
-            this.props.onFocus();
-          }}
-          onClose={() => {
-            this.props.onBlur();
-          }}
+          onFocusChange={this.onFocusChange}
+          onClose={this.props.onBlur}
           minimumNights={0}
           displayFormat={_DatePicker.DateFormat}
           hideKeyboardShortcutsPanel
@@ -130,18 +137,6 @@ class _DatePicker extends React.Component {
         />
       </div>
     );
-    const invisibleProps = {
-      visibility: 'hidden',
-      zIndex: -1,
-    };
-    const fullsizeProps = {
-      position: 'absolute',
-      top: 0,
-      bottom: 0,
-      left: 0,
-      right: 0,
-      backgroundColor: 'white',
-    };
 
     return (
       <div className="search-box-date-picker">
@@ -266,6 +261,44 @@ class TextInput extends React.Component {
     autocomplete?: boolean,
   };
 
+  constructor(props) {
+    super(props);
+    (this: any).onFocus = this.onFocus.bind(this);
+  }
+
+  onFocus(e) {
+    e.target.select();
+    this.props.onFocus(e);
+  }
+
+  renderItem(item, isHighlighted) {
+    return (
+      <div
+        key={item.label}
+        className={classNames(
+          'search-box-autocomplete-item',
+          isHighlighted ? 'search-box-autocomplete-item-selected' : ''
+        )}
+      >
+        {item.main
+          ? <div>
+              <i className="fa fa-map-marker search-box-autocomplete-item-map-icon" />
+              <strong>{item.main}</strong>{' '}
+              <small className="search-box-autocomplete-item-text2">
+                {item.secondary}
+              </small>
+            </div>
+          : item.label}
+      </div>
+    );
+  }
+
+  renderMenu(items) {
+    return items.length
+      ? <div className="search-box-autocomplete-menu">{items}</div>
+      : <div />;
+  }
+
   render() {
     const { id, placeholder, value, ...otherProps } = this.props;
 
@@ -275,10 +308,7 @@ class TextInput extends React.Component {
       className: 'top-search search-box-text-input',
       name: this.props.id,
       placeholder: this.props.placeholder,
-      onFocus: e => {
-        e.target.select();
-        this.props.onFocus(e);
-      },
+      onFocus: this.onFocus,
       onBlur: this.props.onBlur,
     };
     if (this.props.autocomplete) {
@@ -287,29 +317,9 @@ class TextInput extends React.Component {
           wrapperStyle={{}}
           inputProps={inputProps}
           value={this.props.value}
-          renderItem={(item, isHighlighted) =>
-            <div
-              key={item.label}
-              className={classNames(
-                'search-box-autocomplete-item',
-                isHighlighted ? 'search-box-autocomplete-item-selected' : ''
-              )}
-            >
-              {item.main
-                ? <div>
-                    <i className="fa fa-map-marker search-box-autocomplete-item-map-icon" />
-                    <strong>{item.main}</strong>{' '}
-                    <small className="search-box-autocomplete-item-text2">
-                      {item.secondary}
-                    </small>
-                  </div>
-                : item.label}
-            </div>}
+          renderItem={this.renderItem}
           // Only show the menu if we have items to show
-          renderMenu={items =>
-            items.length
-              ? <div className="search-box-autocomplete-menu">{items}</div>
-              : <div />}
+          renderMenu={this.renderMenu}
           onSubmit={this.props.onSubmit}
           {...otherProps}
         />
@@ -328,8 +338,6 @@ class TextInput extends React.Component {
 }
 
 class SearchBoxItem extends React.Component {
-  static underlineWidth = 2;
-
   props: {
     iconName: string,
     renderItem: ({
