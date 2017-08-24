@@ -19,20 +19,23 @@ else
   USER_FLAG='--user'
 fi
 
-HOSTS_UPDATED=$(grep dev.dancedeets.com /etc/hosts)
-if [ "$HOSTS_UPDATED" == "" ] && [ "$TRAVIS" != true ]; then
-  cat <<EOF
-Updating /etc/hosts to include the dev.dancedeets.com domain"
+if [ "$TRAVIS" != true ]; then
+  echo "Checking if we need to update /etc/hosts"
+  HOSTS_UPDATED=$(grep dev.dancedeets.com /etc/hosts)
+  if [ "$HOSTS_UPDATED" == "" ]; then
+    cat <<EOF
+Updating /etc/hosts to include the dev.dancedeets.com domain."
 This step requires sudo to complete, though you are welcome to decline and do it yourself.
 If you would like to do it yourself, please run:
   $ cat '127.0.0.1\tdev.dancedeets.com' >> /etc/hosts
 ...or add '127.0.0.1\tdev.dancedeets.com' (where \t is a Tab) to /etc/hosts.
 EOF
-  sudo bash -c "cat '127.0.0.1\tdev.dancedeets.com' >> /etc/hosts" || echo "
+    sudo bash -c "cat '127.0.0.1\tdev.dancedeets.com' >> /etc/hosts" || echo "
 
 Not updating /etc/hosts, but please update it yourself!
 
 "
+  fi
 fi
 
 echo "Installing docker gae-modules* libraries"
