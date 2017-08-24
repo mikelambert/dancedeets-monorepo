@@ -1,5 +1,9 @@
 $NarrowWindowSize: 768px;
 
+.media-query-search-button {
+  border-radius: 0px 0px 4px 4px;
+}
+
 // Keep in sync with resultsCommon.js's NarrowWindowSize
 @media (min-width: $NarrowWindowSize) {
   .media-query-search-not-focused {
@@ -14,13 +18,8 @@ $NarrowWindowSize: 768px;
     display: flex;
   }
   .media-query-search-button {
-    width: auto;
+    border-radius: 0px 4px 4px 0px;
   }
-}
-
-// In collapsed-mode, fill up the full width
-.media-query-search-button {
-  width: 100%;
 }
 
 .DateInput {

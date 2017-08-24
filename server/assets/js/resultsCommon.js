@@ -649,12 +649,11 @@ class _SearchBox extends React.Component {
             />
             <div>
               <button
-                className="btn btn-default"
+                className="btn btn-default media-query-search-button"
                 type="button"
                 style={{
                   width: '100%',
                   height: '100%',
-                  borderRadius: '0px 4px 4px 0px',
                 }}
                 onClick={() => this.performSearch()}
               >
