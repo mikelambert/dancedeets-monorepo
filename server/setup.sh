@@ -20,7 +20,7 @@ else
 fi
 
 HOSTS_UPDATED=$(grep dev.dancedeets.com /etc/hosts)
-if [ "$HOSTS_UPDATED" == "" ]; then
+if [ "$HOSTS_UPDATED" == "" ] && [ "$TRAVIS" != true ]; then
   cat <<EOF
 Updating /etc/hosts to include the dev.dancedeets.com domain"
 This step requires sudo to complete, though you are welcome to decline and do it yourself.
