@@ -49,7 +49,7 @@ fi
 
 echo "Installing pip"
 python $TMP_DIR/get-pip.py $USER_FLAG
-PIP=~/Library/Python/2.7/bin/pip
+PIP=$(which pip || echo ~/Library/Python/2.7/bin/pip)
 
 # Things we expect to be installed in our docker container
 $PIP install --upgrade -t $BASE_DIR/lib-local -r $BASE_DIR/docker/gae-modules/requirements.txt
