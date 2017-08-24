@@ -651,7 +651,11 @@ class _SearchBox extends React.Component {
               <button
                 className="btn btn-default"
                 type="button"
-                style={{ width: '100%', height: '100%' }}
+                style={{
+                  width: '100%',
+                  height: '100%',
+                  borderRadius: '0px 4px 4px 0px',
+                }}
                 onClick={() => this.performSearch()}
               >
                 Find My Dance
