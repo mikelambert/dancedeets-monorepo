@@ -425,6 +425,53 @@ class _SearchBox extends React.Component {
       locationItems: [],
     };
     (this: any).performSearch = this.performSearch.bind(this);
+    (this: any).saveRef = this.saveRef.bind(this);
+    (this: any).onLocationChange = this.onLocationChange.bind(this);
+    (this: any).onLocationPlaceCallback = this.onLocationPlaceCallback.bind(
+      this
+    );
+    (this: any).onLocationSelect = this.onLocationSelect.bind(this);
+    (this: any).onKeywordsChange = this.onKeywordsChange.bind(this);
+    (this: any).onKeywordsSelected = this.onKeywordsSelect.bind(this);
+  }
+
+  onLocationChange(event, value) {
+    this.setState({ location: value });
+    if (!value) {
+      return;
+    }
+    // TODO: Cancel/ignore old prediction requests, in case they arrive out-of-order
+    this.getAutocompleteService().getPlacePredictions(
+      {
+        input: value,
+        types: ['(regions)'],
+      },
+      this.onLocationPlaceCallback
+    );
+  }
+
+  onLocationPlaceCallback(predictions, status) {
+    let items = [];
+    if (status === window.google.maps.places.PlacesServiceStatus.OK) {
+      items = predictions.map(x => ({
+        label: x.description,
+        main: x.structured_formatting.main_text,
+        secondary: x.structured_formatting.secondary_text,
+      }));
+    }
+    this.setState({ locationItems: items });
+  }
+
+  async onLocationSelect(value, item) {
+    await this.setState({ location: value });
+  }
+
+  onKeywordsChange(event, value) {
+    this.setState({ keywords: value });
+  }
+
+  async onKeywordsSelect(value, item) {
+    await this.setState({ keywords: value });
   }
 
   getAutocompleteService() {
@@ -434,6 +481,10 @@ class _SearchBox extends React.Component {
     this._autoCompleteService = new window.google.maps.places
       .AutocompleteService();
     return this._autoCompleteService;
+  }
+
+  getItemLabel(item) {
+    return item.label;
   }
 
   autocompleteKeywords() {
@@ -482,6 +533,18 @@ class _SearchBox extends React.Component {
     this.props.onNewSearch(form);
   }
 
+  saveRef(x) {
+    this._form = x;
+  }
+
+  shouldKeywordItemRender(item, value) {
+    if (value.length) {
+      return item.label.toLowerCase().indexOf(value.toLowerCase()) !== -1;
+    } else {
+      return item.initial;
+    }
+  }
+
   render() {
     const hiddenFields = this.props.query.deb
       ? <input type="hidden" name="deb" value={this.props.query.deb} />
@@ -494,9 +557,7 @@ class _SearchBox extends React.Component {
         </div>
         <form
           id="search-form"
-          ref={x => {
-            this._form = x;
-          }}
+          ref={this.saveRef}
           role="search"
           className="form-inline"
           action="/"
@@ -515,37 +576,9 @@ class _SearchBox extends React.Component {
                   value={this.state.location}
                   items={this.state.locationItems}
                   onSubmit={this.performSearch}
-                  onChange={(event, value) => {
-                    this.setState({ location: value });
-                    if (!value) {
-                      return;
-                    }
-                    // TODO: Cancel/ignore old prediction requests, in case they arrive out-of-order
-                    this.getAutocompleteService().getPlacePredictions(
-                      {
-                        input: value,
-                        types: ['(regions)'],
-                      },
-                      (predictions, status) => {
-                        let items = [];
-                        if (
-                          status ===
-                          window.google.maps.places.PlacesServiceStatus.OK
-                        ) {
-                          items = predictions.map(x => ({
-                            label: x.description,
-                            main: x.structured_formatting.main_text,
-                            secondary: x.structured_formatting.secondary_text,
-                          }));
-                        }
-                        this.setState({ locationItems: items });
-                      }
-                    );
-                  }}
-                  getItemValue={item => item.label}
-                  onSelect={async (value, item) => {
-                    await this.setState({ location: value });
-                  }}
+                  onChange={this.onLocationChange}
+                  getItemValue={this.getItemLabel}
+                  onSelect={this.onLocationSelect}
                   onFocus={onFocus}
                   onBlur={onBlur}
                 />}
@@ -563,24 +596,11 @@ class _SearchBox extends React.Component {
                   }
                   value={this.state.keywords}
                   onSubmit={this.performSearch}
-                  onChange={(event, value) =>
-                    this.setState({ keywords: value })}
-                  onSelect={async (value, item) => {
-                    await this.setState({ keywords: value });
-                  }}
+                  onChange={this.onKeywordsChange}
+                  onSelect={this.onKeywordsSelect}
                   items={this.autocompleteKeywords()}
-                  getItemValue={item => item.label}
-                  shouldItemRender={(item, value) => {
-                    if (value.length) {
-                      return (
-                        item.label
-                          .toLowerCase()
-                          .indexOf(value.toLowerCase()) !== -1
-                      );
-                    } else {
-                      return item.initial;
-                    }
-                  }}
+                  getItemValue={this.getItemLabel}
+                  shouldItemRender={this.shouldKeywordItemRender}
                   onFocus={onFocus}
                   onBlur={onBlur}
                 />}
