@@ -40,7 +40,6 @@ class FBDataHandler(base_servlet.BareBaseRequestHandler):
                 'OBJ_PROFILE': fb_api.LookupProfile,
                 'OBJ_USER': fb_api.LookupUser,
                 'OBJ_USER_EVENTS': fb_api.LookupUserEvents,
-                'OBJ_FRIEND_LIST': fb_api.LookupFriendList,
                 'OBJ_EVENT': fb_api.LookupEvent,
                 'OBJ_EVENT_MEMBERS': fb_api.LookupEventMembers,
                 'OBJ_THING_FEED': fb_api.LookupThingCommon,
