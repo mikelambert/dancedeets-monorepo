@@ -136,6 +136,17 @@ class Search(object):
         # Extra search index fields to return
         self.extra_fields = []
 
+
+        if (
+            (self.query.start_date and self.query.start_date < datetime.date.today()) or
+            (self.query.end_date and self.query.end_date < datetime.date.today())
+            ):
+            self.search_index = AllEventsIndex
+        else:
+            self.search_index = FutureEventsIndex
+        if self.query.time_period and self.query.time_period in search_base.FUTURE_INDEX_TIMES:
+            self.search_index = FutureEventsIndex
+
     def _get_query_string(self):
         clauses = []
         if self.query.bounds:
@@ -168,18 +179,8 @@ class Search(object):
         if not query_string:
             return []
 
-        if (
-            (self.query.start_date and self.query.start_date < datetime.date.today()) or
-            (self.query.end_date and self.query.end_date < datetime.date.today())
-            ):
-            search_index = AllEventsIndex
-        else:
-            search_index = FutureEventsIndex
-        if self.query.time_period and self.query.time_period in search_base.FUTURE_INDEX_TIMES:
-            search_index = FutureEventsIndex
-
         logging.info("Doing search for %r", query_string)
-        doc_index = search_index.real_index()
+        doc_index = self.search_index.real_index()
         #TODO(lambert): implement pagination
         if ids_only:
             options = {'returned_fields': ['start_time', 'end_time'] + self.extra_fields}

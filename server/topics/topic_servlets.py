@@ -104,7 +104,10 @@ class TopicHandler(base_servlet.BaseRequestHandler):
         search_query = search_base.SearchQuery(keywords=keywords)
         # Need these fields for the prefilter
         search_query.extra_fields = ['name', 'description']
-        search_results = search.Search(search_query).get_search_results(prefilter=prefilter)
+        # TODO: query needs to include the 'all time' bits somehow, so we can grab all events for our topic pages
+        searcher = search.Search(search_query)
+        searcher.search_index = search.AllEventsIndex
+        search_results = searcher.get_search_results(prefilter=prefilter)
 
         json_search_response = api.build_search_results_api(None, search_query, search_results, (2, 0), need_full_event=False, geocode=None, distance=None)
 
