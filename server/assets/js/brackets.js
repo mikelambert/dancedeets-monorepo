@@ -50,7 +50,7 @@ class MatchReact extends React.Component {
 
   render() {
     const hoverStyle = {
-      boxShadow: '0px 0px 15px #fff',
+      boxShadow: '0px 0px 15px #000',
     };
     const divStyle = {
       position: 'absolute',
@@ -58,8 +58,8 @@ class MatchReact extends React.Component {
       top: this.props.position.y,
       width: this.props.bracketRenderer.MatchWidth,
       height: this.props.bracketRenderer.MatchHeight,
-      backgroundColor: 'black',
-      borderColor: 'white',
+      backgroundColor: 'transparent',
+      borderColor: 'black',
       borderWidth: 1,
       borderStyle: 'solid',
       ...(this.isHover() ? hoverStyle : {}),
@@ -142,6 +142,7 @@ class MatchReact extends React.Component {
               position: 'absolute',
               width: '100%',
               height: '100%',
+              color: 'white',
             }}
             onMouseEnter={this.onMouseEnterHandler}
             onMouseLeave={this.onMouseLeaveHandler}
@@ -194,7 +195,7 @@ class BracketLines extends React.Component {
         <div
           style={{
             position: 'absolute',
-            border: '1px solid white',
+            border: '1px solid black',
             borderLeftWidth: 0,
             ...box,
           }}
@@ -202,7 +203,7 @@ class BracketLines extends React.Component {
         <div
           style={{
             position: 'absolute',
-            borderTop: '1px solid white',
+            borderTop: '1px solid black',
             ...line,
           }}
         />
