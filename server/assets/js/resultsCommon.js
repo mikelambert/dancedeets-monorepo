@@ -432,7 +432,7 @@ class _SearchBox extends React.Component {
     );
     (this: any).onLocationSelect = this.onLocationSelect.bind(this);
     (this: any).onKeywordsChange = this.onKeywordsChange.bind(this);
-    (this: any).onKeywordsSelected = this.onKeywordsSelect.bind(this);
+    (this: any).onKeywordsSelect = this.onKeywordsSelect.bind(this);
   }
 
   onLocationChange(event, value) {
