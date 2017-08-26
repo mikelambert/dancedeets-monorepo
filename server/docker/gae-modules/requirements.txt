@@ -7,4 +7,4 @@ pylibmc==1.5.1 #memcache
 
 # We keep this at 1.5.3 until https://github.com/SathyaBhat/spotify-dl/issues/30 is resolved
 google-api-python-client==1.5.3
-google-cloud==0.25.0
+google-cloud==0.27.0
