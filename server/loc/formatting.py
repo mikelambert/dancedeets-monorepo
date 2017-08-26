@@ -1,4 +1,3 @@
-
 def get_city(geocode):
     country = geocode.get_component('country', long=False)
     if not country:
@@ -8,14 +7,20 @@ def get_city(geocode):
     else:
         return geocode.get_component('locality')
 
+
 def get_state(geocode):
     country = geocode.get_component('country', long=False)
     if not country:
         return geocode.get_component('administrative_area_level_1')
     elif country in ['US', 'CA', 'AU', 'MX', 'MY', 'ID', 'JP', 'HK', 'TW']:
-        return geocode.get_component('administrative_area_level_1', long=False) or geocode.get_component('administrative_area_level_2', long=False)
+        return geocode.get_component(
+            'administrative_area_level_1', long=False
+        ) or geocode.get_component(
+            'administrative_area_level_2', long=False
+        )
     else:
         return ''
+
 
 def _get_formatting_parts(geocode, include_neighborhood):
     if not geocode:
@@ -35,8 +40,9 @@ def _get_formatting_parts(geocode, include_neighborhood):
     elif country in ['US', 'CA', 'AU', 'MX', 'MY', 'ID', 'JP', 'HK', 'TW']:
         mini_components = [
             geocode.get_component('locality'),
-            geocode.get_component('administrative_area_level_1', long=False) or geocode.get_component('administrative_area_level_2', long=False),
-            ]
+            geocode.get_component('administrative_area_level_1', long=False) or
+            geocode.get_component('administrative_area_level_2', long=False),
+        ]
         components.append(', '.join(x for x in mini_components if x))
     else:
         if geocode.get_component('locality'):
@@ -75,11 +81,14 @@ def _get_formatting_parts(geocode, include_neighborhood):
 
     return [x for x in components if x]
 
+
 def _format_from_parts(parts):
     return ', '.join(parts)
 
+
 def format_geocode(geocode, include_neighborhood=False):
     return _format_from_parts(_get_formatting_parts(geocode, include_neighborhood=include_neighborhood))
+
 
 def format_geocodes(geocodes, include_neighborhood=False):
     if geocodes == []:
@@ -87,7 +96,7 @@ def format_geocodes(geocodes, include_neighborhood=False):
     parts_list = [_get_formatting_parts(geocode, include_neighborhood=include_neighborhood) for geocode in geocodes]
     min_length = min(len(x) for x in parts_list)
     # If all our addresses are in the same country, or state, then trim that off as irrelevant
-    for i in range(min_length-1):
+    for i in range(min_length - 1):
         # Get the set of the 'last' element of each of our addresses
         index_parts = set([x[-1] for x in parts_list])
         # If they all are the same thing, let's trim it off as unnecessary

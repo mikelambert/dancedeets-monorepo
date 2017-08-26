@@ -11,13 +11,16 @@ client = MailChimp(keys.get('mailchimp_username'), keys.get('mailchimp_key'))
 LIST_WEB_ID = 554989
 LIST_ID = '93ab23d636'
 
+
 class UserNotFound(Exception):
     pass
+
 
 def get_list_id():
     lists = client.lists.all()
     list_id = [x['id'] for x in lists['lists'] if x['web_id'] == LIST_WEB_ID][0]
     return list_id
+
 
 def add_members(list_id, members):
     data = {
@@ -28,6 +31,7 @@ def add_members(list_id, members):
         return client.lists.update_members(list_id=list_id, data=data)
     else:
         return {'errors': []}
+
 
 def update_email(list_id, old_email, new_email):
     data = {

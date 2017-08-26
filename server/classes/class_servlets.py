@@ -72,6 +72,7 @@ class RelevantHandler(base_servlet.BaseRequestHandler):
         self.display['full_location'] = full_location
         self.render_template(self.template_name)
 
+
 def process_uploaded_item(json_body):
     #TODO: And maybe only save/reindex if there were legit changes?
     for key, value in json_body.iteritems():
@@ -92,8 +93,8 @@ def process_upload_finalization(studio_name):
     # Disabling the memcache and incontext NDB caches doesn't appear to help,
     # since the stale objects are returned from the dev_apperver DB directly.
     query = class_models.StudioClass.query(
-        class_models.StudioClass.studio_name == studio_name,
-        class_models.StudioClass.start_time >= historical_fixup)
+        class_models.StudioClass.studio_name == studio_name, class_models.StudioClass.start_time >= historical_fixup
+    )
     num_events = 1000
     results = query.fetch(num_events)
     if len(results) == num_events:
@@ -156,7 +157,10 @@ def dedupe_classes(most_recent_scrape_time, classes):
             x.key.delete()
             deleted += 1
         else:
-            logging.error("Found stale data! Went to delete stale class %s due to old scrape_time %s, but it is actually %s", x.key, x.scrape_time, old_class.scrape_time)
+            logging.error(
+                "Found stale data! Went to delete stale class %s due to old scrape_time %s, but it is actually %s", x.key, x.scrape_time,
+                old_class.scrape_time
+            )
     logging.info("Kept %s classes.", len(classes) - deleted)
     return bool(old_classes)
 
@@ -166,7 +170,8 @@ class ClassReIndexHandler(base_servlet.JsonDataHandler):
     def post(self):
         class_index.StudioClassIndex.rebuild_from_query(force=True)
         self.response.status = 200
-    get=post
+
+    get = post
 
 
 @app.route('/classes/finish_upload')
@@ -177,6 +182,9 @@ class ClassFinishUploadhandler(base_servlet.JsonDataHandler):
             return
         process_upload_finalization(studio_name)
         self.response.status = 200
-    get=post
+
+    get = post
+
+
 # TODO: We need to optionally return these in the API
 # TODO: We need the api clients to be able to display class data

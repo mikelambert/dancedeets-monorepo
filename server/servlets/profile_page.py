@@ -6,6 +6,7 @@ import fb_api
 from profiles import profile
 from profiles import tags
 
+
 class BaseProfileHandler(base_servlet.BaseRequestHandler):
     def initialize(self, request, response):
         super(BaseProfileHandler, self).initialize(request, response)
@@ -15,6 +16,7 @@ class BaseProfileHandler(base_servlet.BaseRequestHandler):
 
     def get_profile_user(self):
         return self.fbl.fetched_data(fb_api.LookupProfile, self.profile_username)
+
 
 @app.route('/profile/[^/]*')
 class ProfileHandler(BaseProfileHandler):
@@ -44,6 +46,7 @@ class ProfileHandler(BaseProfileHandler):
 
         return self.render_template('profile')
 
+
 @app.route('/profile/[^/]*/add_tag')
 class ProfileAddTagHandler(BaseProfileHandler):
     def post(self):
@@ -53,5 +56,3 @@ class ProfileAddTagHandler(BaseProfileHandler):
         video_site, video_id = tags.parse_url(self.request.get('video_url'))
         video_tag = tags.ProfileVideoTag(fb_uid=fb_profile_uid, video_site=video_site, video_id=video_id)
         video_tag.put()
-
-

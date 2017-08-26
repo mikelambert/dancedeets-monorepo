@@ -36,6 +36,7 @@ def has_many_street_styles(classified_event):
         return (True, 'Found enough street styles: %s: %s, with music: %s' % (et, styles, music_only))
     return False, ''
 
+
 # house side?
 # lock side?
 # experimental side?
@@ -115,9 +116,12 @@ def has_list_of_good_classes(classified_event):
                 good_lines.append(dance_class_style_matches + manual_dancers + dance_and_music_matches)
         start_time = classified_event.start_time
         end_time = classified_event.end_time
-        if len(good_lines) > len(sub_lines) / 10 and (not end_time or end_time.time() > datetime.time(12) or end_time - start_time > datetime.timedelta(hours=12)):
+        if len(good_lines) > len(sub_lines) / 10 and (
+            not end_time or end_time.time() > datetime.time(12) or end_time - start_time > datetime.timedelta(hours=12)
+        ):
             return True, 'found good schedule: %s: %s' % ('\n'.join(sub_lines), good_lines)
     return False, ''
+
 
 # TODO: accumulate reasons why we did/didn't accept. each event has a story
 # TODO: also track "was a battle, but not sure about kind". good for maybe-queue.
@@ -131,8 +135,7 @@ def is_any_battle(classified_event):
     has_competitors = event_structure.find_competitor_list(classified_event.search_text)
     has_start_judges = classified_event.processed_text.has_token(rules.START_JUDGE)
     has_n_x_n_battle = (
-        classified_event.processed_text.has_token(keywords.BATTLE) and
-        classified_event.processed_text.has_token(keywords.N_X_N)
+        classified_event.processed_text.has_token(keywords.BATTLE) and classified_event.processed_text.has_token(keywords.N_X_N)
     )
     no_wrong_battles_processed = classified_event.processed_text.delete_with_rule(rules.WRONG_BATTLE)
     has_dance_battle = (
@@ -182,7 +185,10 @@ def is_battle(classified_event):
     if has_good_dance_battle and not is_wrong_competition_title and not is_wrong_style_battle_title:
         return (True, 'real dance-style battle/comp! %s' % has_good_dance_battle)
     elif has_dance_battle and not is_wrong_competition_title and not is_wrong_style_battle_title and not has_wrong_battle:
-        return (True, 'good-style real dance battle/comp! %s with keywords %s' % (has_dance_battle, (classified_event.real_dance_matches or classified_event.manual_dance_keywords_matches)))
+        return (
+            True, 'good-style real dance battle/comp! %s with keywords %s' %
+            (has_dance_battle, (classified_event.real_dance_matches or classified_event.manual_dance_keywords_matches))
+        )
     elif has_n_x_n and has_battle and not has_wrong_battle:
         return (True, 'battle keyword, NxN, good dance style')
     elif has_competitors and has_many_real_dance_keywords and not has_wrong_battle:
@@ -211,6 +217,7 @@ def is_audition(classified_event):
     elif has_audition and has_good_dance and not has_wrong_style and not has_wrong_audition:
         return (True, 'has audition with good-and-not-bad dance style')
     return (False, 'no audition')
+
 
 # Workshop examples to search for:
 # - (Locking) 9.30am to 11.00am-
@@ -271,7 +278,6 @@ def is_audition(classified_event):
 # 1-2:30pm - Sexy Caribbean moves (Kay-Ann Ward)
 # 2:30-4pm - Hip Hop Boot Camp
 
-
 # 'dancehall workshop' in title should work as-is? why not?
 
 # ALREADY CONFIRMED INSTRUCTORS!
@@ -322,16 +328,21 @@ def is_workshop(classified_event):
     # print has_good_dance
     # print has_good_crew
     if has_class_title and (has_good_dance_title or has_extended_good_crew_title) and not has_wrong_style_title:
-        return (True, 'has class with strong class-title: %s %s' % (has_class_title, (has_good_dance_title or has_extended_good_crew_title)))
-    elif classified_event.is_dance_event() and has_good_dance_title and has_extended_good_crew_title and not has_wrong_style_title and not has_non_dance_event_title:
+        return (
+            True, 'has class with strong class-title: %s %s' % (has_class_title, (has_good_dance_title or has_extended_good_crew_title))
+        )
+    elif classified_event.is_dance_event(
+    ) and has_good_dance_title and has_extended_good_crew_title and not has_wrong_style_title and not has_non_dance_event_title:
         return (True, 'has class with strong style-title: %s %s' % (has_good_dance_title, has_extended_good_crew_title))
     elif classified_event.is_dance_event() and lee_lee_hiphop and not has_wrong_style_title and not has_non_dance_event_title:
         return (True, 'has class with strong style-title: %s %s' % (has_good_dance_title, has_extended_good_crew_title))
     elif has_class_title and not has_wrong_style and (has_good_dance or has_good_crew):
-        return (True, 'has dance class title: %s, that contains strong description %s, %s' % (has_class_title, has_good_dance, has_good_crew))
+        return (
+            True, 'has dance class title: %s, that contains strong description %s, %s' % (has_class_title, has_good_dance, has_good_crew)
+        )
     elif has_good_dance_class_title:
         return (True, 'has good dance class title: %s' % has_good_dance_class_title)
-    elif has_good_dance_class and not has_wrong_style_title :
+    elif has_good_dance_class and not has_wrong_style_title:
         return (True, 'has good dance class: %s' % has_good_dance_class)
     return (False, 'nothing')
 
@@ -358,7 +369,7 @@ def has_standalone_keywords(classified_event):
         remaining_line = solo_lines_regex.sub('', line)
         deleted_length = len(line) - len(remaining_line)
         if 0.5 < 1.0 * deleted_length / len(alpha_line):
-            good_matches.add(solo_lines_regex.findall(line)[0]) # at most one keyword per line
+            good_matches.add(solo_lines_regex.findall(line)[0])  # at most one keyword per line
     if len(good_matches) >= 2:
         return True, 'found good keywords on lines by themselves: %s' % set(good_matches)
     return False, 'no good keywords on lines by themselves'
@@ -409,6 +420,7 @@ def is_auto_add_event(classified_event):
     c = AutoClassifier(classified_event)
     c.classify()
     return c.result
+
 
 class AutoClassifier(object):
     def __init__(self, classified_event):
@@ -489,9 +501,13 @@ def is_bad_wrong_dance(classified_event):
     if has_wrong_style_title and not has_decent_style:
         return True, 'Title is too strong a negative, without any compensating good title keywords'
     elif not real_dance_keywords and not has_house and len(club_only_matches) <= 1 and len(manual_keywords) <= 1 and keyword_count >= 2:
-        return True, 'Has strong classical keywords %s, but only real keywords %s' % (strong_classical_dance_keywords + weak_classical_dance_keywords, manual_keywords)
+        return True, 'Has strong classical keywords %s, but only real keywords %s' % (
+            strong_classical_dance_keywords + weak_classical_dance_keywords, manual_keywords
+        )
     elif keyword_count >= 2 and just_free_style_dance and not manual_keywords:
-        return True, 'Has strong classical keywords %s with freestyle dance, but only dance keywords %s' % (strong_classical_dance_keywords + weak_classical_dance_keywords, real_dance_keywords.union(manual_keywords))
+        return True, 'Has strong classical keywords %s with freestyle dance, but only dance keywords %s' % (
+            strong_classical_dance_keywords + weak_classical_dance_keywords, real_dance_keywords.union(manual_keywords)
+        )
     return False, 'not a bad classical dance event'
 
 

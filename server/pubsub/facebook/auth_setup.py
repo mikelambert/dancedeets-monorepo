@@ -1,4 +1,3 @@
-
 import fb_api
 
 import app
@@ -6,6 +5,7 @@ import base_servlet
 from events import eventdata
 from .. import db
 from . import event
+
 
 class LookupUserAccounts(fb_api.LookupType):
     @classmethod
@@ -29,7 +29,9 @@ def facebook_auth(fbl, page_uid, country_filter):
     page = pages[0]
     page_token = page['access_token']
 
-    auth_tokens = db.OAuthToken.query(db.OAuthToken.user_id == fbl.fb_uid, db.OAuthToken.token_nickname == page_uid, db.OAuthToken.application == db.APP_FACEBOOK).fetch(1)
+    auth_tokens = db.OAuthToken.query(
+        db.OAuthToken.user_id == fbl.fb_uid, db.OAuthToken.token_nickname == page_uid, db.OAuthToken.application == db.APP_FACEBOOK
+    ).fetch(1)
     if auth_tokens:
         auth_token = auth_tokens[0]
     else:
@@ -45,6 +47,7 @@ def facebook_auth(fbl, page_uid, country_filter):
     auth_token.put()
     return auth_token
 
+
 @app.route('/facebook/page_start')
 class FacebookPageSetupHandler(base_servlet.BaseRequestHandler):
     def get(self):
@@ -59,6 +62,7 @@ class FacebookPageSetupHandler(base_servlet.BaseRequestHandler):
         #TODO(lambert): Clean up
         self.response.write('Authorized!')
 
+
 @app.route('/tools/facebook_post')
 class FacebookPostHandler(base_servlet.BaseRequestHandler):
     def get(self):
@@ -67,7 +71,7 @@ class FacebookPostHandler(base_servlet.BaseRequestHandler):
 
         event_id = self.request.get('event_id')
         db_event = eventdata.DBEvent.get_by_id(event_id)
-        auth_tokens = db.OAuthToken.query(db.OAuthToken.user_id==self.fb_uid, db.OAuthToken.token_nickname==page_id).fetch(1)
+        auth_tokens = db.OAuthToken.query(db.OAuthToken.user_id == self.fb_uid, db.OAuthToken.token_nickname == page_id).fetch(1)
         if auth_tokens:
             result = event.facebook_post(auth_tokens[0], db_event)
             if 'error' in result:

@@ -6,6 +6,7 @@ import base_servlet
 import fb_api
 from . import users
 
+
 @app.route('/user/unsubscribe')
 class UserHandler(base_servlet.BaseRequestHandler):
     def get(self):
@@ -25,6 +26,7 @@ class UserHandler(base_servlet.BaseRequestHandler):
         user.put()
         self.user.add_message("Successfully unsubscribed!")
         self.redirect('/user/edit')
+
 
 @app.route('/user/edit')
 class UserHandler(base_servlet.BaseRequestHandler):
@@ -76,6 +78,7 @@ class UserHandler(base_servlet.BaseRequestHandler):
         self.errors_are_fatal()
         user.put()
 
+
 @app.route('/tools/show_users')
 class ShowUsersHandler(base_servlet.BaseRequestHandler):
     def get(self):
@@ -97,6 +100,7 @@ class ShowUsersHandler(base_servlet.BaseRequestHandler):
         self.display['fb_users'] = fb_users
         self.display['track_analytics'] = False
         self.render_template('show_users')
+
 
 @app.route('/tools/user_emails')
 class UserEmailExportHandler(base_servlet.BaseRequestHandler):
@@ -121,4 +125,4 @@ class UserEmailExportHandler(base_servlet.BaseRequestHandler):
                     unicode(user.send_email),
                     trimmed_locale,
                     user.location_country or '',
-                    ])
+                ])

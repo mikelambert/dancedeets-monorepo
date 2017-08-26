@@ -5,6 +5,7 @@ from google.appengine.api.search import search
 
 DATETIME_FORMAT = '%Y-%m-%dT%H:%M:%S'
 
+
 class StudioClass(ndb.Model):
     # The dev_appserver's query() sometimes returns stale data
     # for objects that were recently set. I'm not entirely sure of the cause,

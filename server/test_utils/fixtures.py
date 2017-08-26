@@ -12,6 +12,7 @@ from search import search
 from users import users
 from users import user_creation
 
+
 def create_event(event_id='1000001', start_time=None, location='NYC'):
     if not start_time:
         start_time = datetime.datetime.now()
@@ -22,27 +23,32 @@ def create_event(event_id='1000001', start_time=None, location='NYC'):
     picture_url = '%s/picture?redirect=false&type=large' % base_url
 
     fb_api.FBAPI.results.update({
-            url:
-                (200, {
-                    "name": "Event Title",
-                    "start_time": start_time.strftime("%Y-%m-%dT%H:%M:%S-0400"),
-                    "id": event_id,
-                }),
-            '/v2.9/?fields=images%2Cwidth%2Cheight&ids=%7Bresult%3Dinfo%3A%24.cover.id%7D':
-                (400, {'error': {'message': 'Cannot specify an empty identifier', 'code': 2500, 'type': 'OAuthException'}}),
-            picture_url:
-                (200, {
-                    "data": {
-                        "url": "test: image url",
-                    }
-                }),
+        url: (200, {
+            "name": "Event Title",
+            "start_time": start_time.strftime("%Y-%m-%dT%H:%M:%S-0400"),
+            "id": event_id,
+        }),
+        '/v2.9/?fields=images%2Cwidth%2Cheight&ids=%7Bresult%3Dinfo%3A%24.cover.id%7D': (
+            400, {
+                'error': {
+                    'message': 'Cannot specify an empty identifier',
+                    'code': 2500,
+                    'type': 'OAuthException'
+                }
+            }
+        ),
+        picture_url: (200, {
+            "data": {
+                "url": "test: image url",
+            }
+        }),
     })
-
 
     fbl = fb_api.FBLookup(None, None)
     fb_event = fbl.get(fb_api.LookupEvent, event_id)
     event = add_entities.add_update_event(fb_event, fbl, override_address=location)
     return event
+
 
 def create_web_event(event_id='tokyo-dance-life:1000001', json_body={}):
     event = eventdata.DBEvent(id=event_id)
@@ -58,6 +64,7 @@ def create_web_event(event_id='tokyo-dance-life:1000001', json_body={}):
     full_json_body.update(json_body)
     event_updates.update_and_save_web_events([(event, full_json_body)])
     return event
+
 
 def index_events(testbed_instance):
     search.construct_fulltext_search_index()
@@ -86,8 +93,7 @@ def create_user(user_id='701004', access_token='Access Token', access_token_expi
             'timezone': -8,
         }),
         '%s/events?since=yesterday&fields=id,rsvp_status&limit=3000' % base_url: (200, {
-            "data": {
-            },
+            "data": {},
         }),
         '%s/friends' % base_url: (200, {}),
         '%s/permissions' % base_url: (200, {}),
@@ -105,5 +111,7 @@ def create_user(user_id='701004', access_token='Access Token', access_token_expi
     fb_user = fbl.get(fb_api.LookupUser, user_id)
 
     ip = '127.0.0.1'
-    user = user_creation.create_user_with_fbuser(user_id, fb_user, access_token, access_token_expires, location, ip, send_email=True, client=client)
+    user = user_creation.create_user_with_fbuser(
+        user_id, fb_user, access_token, access_token_expires, location, ip, send_email=True, client=client
+    )
     return user

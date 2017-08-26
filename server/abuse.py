@@ -6,9 +6,8 @@
 import IPy
 from util import ips
 
-banned_list = IPy.IPSet([
-    IPy.IP('188.165.25.197')
-])
+banned_list = IPy.IPSet([IPy.IP('188.165.25.197')])
+
 
 def is_abuse(request):
     user_agent = request.headers.get('user-agent', 'NO_USER_AGENT')

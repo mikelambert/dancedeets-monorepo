@@ -9,6 +9,7 @@ from mapreduce import util
 import fb_api
 from users import access_tokens
 
+
 def start_map(
     fbl,
     name,
@@ -53,9 +54,7 @@ def get_fblookup(user=None):
     else:
         parent_token = params['fbl_access_token']
     access_token = (user and user.fb_access_token or parent_token)
-    fbl = fb_api.FBLookup(
-        user and user.fb_uid or params['fbl_fb_uid'],
-        access_token)
+    fbl = fb_api.FBLookup(user and user.fb_uid or params['fbl_fb_uid'], access_token)
     fbl.allow_cache = params['fbl_allow_cache']
     if params.get('fbl_oldest_allowed') is not None:
         fbl.db.oldest_allowed = params['fbl_oldest_allowed']
@@ -81,15 +80,18 @@ def get_fblookup_params(fbl, randomize_tokens=False):
 
 def mr_wrap(func):
     if util.is_generator(func):
+
         def map_func(*args, **kwargs):
             fbl = get_fblookup()
             # this passes the generator on to the client as a generator, while still having this function be detected as a generator (instead of just returning the generator directly, which would work but not let this function be detected as a generator)
             for x in func(fbl, *args, **kwargs):
                 yield x
     else:
+
         def map_func(*args, **kwargs):
             fbl = get_fblookup()
             return func(fbl, *args, **kwargs)
+
     return map_func
 
 
@@ -97,10 +99,12 @@ def mr_user_wrap(func):
     def map_func(user, *args, **kwargs):
         fbl = get_fblookup(user=user)
         return func(fbl, user, *args, **kwargs)
+
     return map_func
 
 
 def nomr_wrap(func):
     def map_func(*args, **kwargs):
         return func(*args, **kwargs)
+
     return map_func

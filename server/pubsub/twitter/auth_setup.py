@@ -10,6 +10,7 @@ request_token_url = 'https://twitter.com/oauth/request_token'
 access_token_url = 'https://twitter.com/oauth/access_token'
 authorize_url = 'https://twitter.com/oauth/authorize'
 
+
 def twitter_oauth1(user_id, token_nickname, country_filter):
     consumer = oauth.Consumer(auth.consumer_key, auth.consumer_secret)
     client = oauth.Client(consumer)
@@ -25,9 +26,7 @@ def twitter_oauth1(user_id, token_nickname, country_filter):
     request_token = dict(urlparse.parse_qsl(content))
 
     auth_tokens = db.OAuthToken.query(
-        db.OAuthToken.user_id == user_id,
-        db.OAuthToken.token_nickname == token_nickname,
-        db.OAuthToken.application == db.APP_TWITTER
+        db.OAuthToken.user_id == user_id, db.OAuthToken.token_nickname == token_nickname, db.OAuthToken.application == db.APP_TWITTER
     ).fetch(1)
     if auth_tokens:
         auth_token = auth_tokens[0]
@@ -48,6 +47,7 @@ def twitter_oauth1(user_id, token_nickname, country_filter):
 
     return "%s?oauth_token=%s" % (authorize_url, request_token['oauth_token'])
 
+
 # user comes to:
 # /sign-in-with-twitter/?
 #        oauth_token=NPcudxy0yU5T3tBzho7iCotZ3cnetKwcTIRlX0iwRl0&
@@ -55,10 +55,7 @@ def twitter_oauth1(user_id, token_nickname, country_filter):
 
 
 def twitter_oauth2(oauth_token, oauth_verifier):
-    auth_tokens = db.OAuthToken.query(
-        db.OAuthToken.temp_oauth_token == oauth_token,
-        db.OAuthToken.application == db.APP_TWITTER
-    ).fetch(1)
+    auth_tokens = db.OAuthToken.query(db.OAuthToken.temp_oauth_token == oauth_token, db.OAuthToken.application == db.APP_TWITTER).fetch(1)
     if not auth_tokens:
         return None
     auth_token = auth_tokens[0]
@@ -77,7 +74,7 @@ def twitter_oauth2(oauth_token, oauth_verifier):
     auth_token.oauth_token = access_token['oauth_token']
     auth_token.oauth_token_secret = access_token['oauth_token_secret']
     auth_token.valid_token = True
-    auth_token.time_between_posts = 5 * 60 # every 5 minutes
+    auth_token.time_between_posts = 5 * 60  # every 5 minutes
     auth_token.put()
     return auth_token
 
@@ -95,6 +92,7 @@ class TwitterOAuthStartHandler(base_servlet.BaseRequestHandler):
         url = twitter_oauth1(self.fb_uid, nickname, country_filter)
         self.redirect(url)
 
+
 @app.route('/twitter/oauth_callback')
 class TwitterOAuthCallbackHandler(base_servlet.BaseRequestHandler):
     def get(self):
@@ -107,12 +105,14 @@ class TwitterOAuthCallbackHandler(base_servlet.BaseRequestHandler):
         else:
             self.redirect('/twitter/oauth_failure')
 
+
 @app.route('/twitter/oauth_success')
 class TwitterOAuthSuccessHandler(base_servlet.BaseRequestHandler):
     def get(self):
         self.finish_preload()
         #TODO(lambert): Clean up
         self.response.write('Authorized!')
+
 
 @app.route('/twitter/oauth_failure')
 class TwitterOAuthFailureHandler(base_servlet.BaseRequestHandler):

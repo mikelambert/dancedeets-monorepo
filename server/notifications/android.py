@@ -8,15 +8,17 @@ import keys
 EVENT_REMINDER = 'EVENT_REMINDER'
 EVENT_ADDED = 'EVENT_ADDED'
 
+
 def _get_duration_seconds(event):
     start_time = event.start_time
     end_notify_window = event.end_time or event.start_time
     now = datetime.datetime.now(start_time.tzinfo)
     duration = (end_notify_window - now)
-    max_duration = 4 * 7 * 24 * 60 * 60 # 4 weeks
+    max_duration = 4 * 7 * 24 * 60 * 60  # 4 weeks
     duration_seconds = duration.seconds + duration.days * 24 * 60 * 60
     duration_seconds = min(duration_seconds, max_duration)
     return duration_seconds
+
 
 def rsvp_notify(user, event):
     duration_seconds = _get_duration_seconds(event)
@@ -32,15 +34,18 @@ def rsvp_notify(user, event):
     }
     return real_notify(user, event.id, extra_data)
 
+
 def add_notify(user, event_id):
     extra_data = {
         'notification_type': EVENT_ADDED,
     }
     return real_notify(user, event_id, extra_data)
 
+
 def can_notify(user):
     tokens = user.device_tokens('android')
     return bool(tokens)
+
 
 def real_notify(user, event_id, extra_data):
     if not can_notify(user):
@@ -81,4 +86,3 @@ def real_notify(user, event_id, extra_data):
     logging.info("User %s (%s), event %s: sent notification!", user.fb_uid, user.full_name, event_id)
 
     return 'success' in response
-

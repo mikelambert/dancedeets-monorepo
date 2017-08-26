@@ -1,4 +1,3 @@
-
 # We import these for their side-effects in adding routes to the wsgi app
 import battle_brackets.signup_servlets
 import brackets.servlets

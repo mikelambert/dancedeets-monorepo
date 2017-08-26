@@ -1,6 +1,7 @@
 import datetime
 import logging
 
+
 def processed_task(auth_token, result):
     if 'error' in result:
         logging.error("Facebook Post Error: %r", result)

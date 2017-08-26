@@ -15,18 +15,26 @@ from mail import mandrill_api
 from util import fixed_pipelines
 
 # TODO(mindbody):
-DISABLED_SPIDERS = [
-    'EXPG', 'Boogiezone', 'IDA', 'mL', 'NeighborhoodStudio'
-]
+DISABLED_SPIDERS = ['EXPG', 'Boogiezone', 'IDA', 'mL', 'NeighborhoodStudio']
+
 
 def get_spiders():
     return [
         # NY
-        'PMT', 'Evolution', 'Peridance', 'BDC',
+        'PMT',
+        'Evolution',
+        'Peridance',
+        'BDC',
         'EXPG',
         # LA
-        'Millenium', 'EDGE', 'DebbieReynolds', 'TheLab',
-        'Boogiezone', 'IDA', 'mL', 'NeighborhoodStudio',
+        'Millenium',
+        'EDGE',
+        'DebbieReynolds',
+        'TheLab',
+        'Boogiezone',
+        'IDA',
+        'mL',
+        'NeighborhoodStudio',
     ]
     # This depends on Twisted, which depends on zope.interface and lxml. And that whole ball of wax fails when run in the appengine dev sandbox.
     # We can't import any of classes/scrapers/ (since it all ultimately depends on scrapy), so there's no great way to get a list of classes.
@@ -138,4 +146,5 @@ class CrawlAndIndexClassesHandler(base_servlet.BaseTaskRequestHandler):
         pipeline = CrawlAndIndexClassesJob()
         pipeline.start(queue_name='slow-queue')
         self.response.out.write('OK')
-    post=get
+
+    post = get

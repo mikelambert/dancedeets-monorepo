@@ -6,6 +6,7 @@ MOBILE_KINDLE = 'MOBILE_KINDLE'
 MOBILE_ANDROID = 'MOBILE_ANDROID'
 MOBILE_WINDOWS_PHONE = 'MOBILE_WINDOWS_PHONE'
 
+
 def get_mobile_platform(user_agent):
     if not user_agent:
         user_agent = 'Unknown'

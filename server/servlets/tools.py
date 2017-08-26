@@ -26,6 +26,7 @@ class SSL(webapp2.RequestHandler):
     def get(self):
         self.response.out.write('J2lIvB957EnuN8U4ynpr7RX_2GbgJ9v66R7k9HEXD-o.XQbaOct9vX37AOs7-ADz5xfdu5eOwjUmk3FbCoPpNw8')
 
+
 @app.route('/tools/memory_top_users')
 class MemoryUsers(webapp2.RequestHandler):
     def get(self):
@@ -153,7 +154,7 @@ def resave_table(obj):
 @app.route('/tools/resave_table')
 class ResaveHandler(webapp2.RequestHandler):
     def get(self):
-        table = self.request.get('table') # users.users.User or events.eventdata.DBEvent or ...
+        table = self.request.get('table')  # users.users.User or events.eventdata.DBEvent or ...
         control.start_map(
             name='Resave %s' % table,
             reader_spec='mapreduce.input_readers.DatastoreInputReader',

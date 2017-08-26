@@ -4,6 +4,7 @@ import logging
 
 rad = math.pi / 180.0
 
+
 def expand_bounds(latlng_bounds, distance_in_km):
     northeast, southwest = latlng_bounds
 
@@ -14,28 +15,33 @@ def expand_bounds(latlng_bounds, distance_in_km):
 
     def add_latlngs(x, y):
         return (x[0] + y[0], x[1] + y[1])
+
     def sub_latlngs(x, y):
         return (x[0] - y[0], x[1] - y[1])
+
     northeast = add_latlngs(northeast, offsets_northeast)
     southwest = sub_latlngs(southwest, offsets_southwest)
 
     logging.info("2 NE %s, SW %s", northeast, southwest)
 
-    return southwest, northeast # ordered more negative to more positive
+    return southwest, northeast  # ordered more negative to more positive
+
 
 def get_distance(latlng1, latlng2, use_km=False):
-    dlat = (latlng2[0]-latlng1[0]) * rad
-    dlng = (latlng2[1]-latlng1[1]) * rad
-    a = (math.sin(dlat/2) * math.sin(dlat/2) +
-        math.cos(latlng1[0] * rad) * math.cos(latlng2[0] * rad) *
-        math.sin(dlng/2) * math.sin(dlng/2))
-    circum = 2 * math.atan2(math.sqrt(a), math.sqrt(1.0-a))
+    dlat = (latlng2[0] - latlng1[0]) * rad
+    dlng = (latlng2[1] - latlng1[1]) * rad
+    a = (
+        math.sin(dlat / 2) * math.sin(dlat / 2) +
+        math.cos(latlng1[0] * rad) * math.cos(latlng2[0] * rad) * math.sin(dlng / 2) * math.sin(dlng / 2)
+    )
+    circum = 2 * math.atan2(math.sqrt(a), math.sqrt(1.0 - a))
     if use_km:
-        radius = 6371 # km
+        radius = 6371  # km
     else:
-        radius = 3959 # miles
+        radius = 3959  # miles
     distance = radius * circum
     return distance
+
 
 def get_lat_long_box(latitude, longitude, km_distance):
     lat_degrees_per_km = 0.0090437
@@ -51,11 +57,13 @@ def get_lat_long_box(latitude, longitude, km_distance):
         (plus_lat, max(+90, longitude + long_degrees_per_km)),
     )
 
+
 def get_inner_box_radius_km(southwest, northeast):
     return min(
         get_distance((southwest[0], northeast[1]), northeast),
         get_distance((northeast[0], southwest[1]), northeast),
     ) / 2
+
 
 # UNUSED!
 def contains(bounds, latlng):
@@ -66,12 +74,16 @@ def contains(bounds, latlng):
         lngs_good = bounds[0][1] < latlng[1] or latlng[1] < bounds[1][1]
     return lats_good and lngs_good
 
+
 def _get_lat_lng_offsets(latlng, km):
     lat_range = km / 110.574
     lng_range = km / (math.cos(latlng[0] * rad) * 111.320)
     return lat_range, lng_range
 
+
 def miles_in_km(miles):
     return miles * 1.609344
+
+
 def km_in_miles(km):
     return km * 0.6213712

@@ -5,20 +5,21 @@ import re
 import icalendar
 from .. import items
 
+
 def expand_rrule(event):
     rrulestr = event['RRULE'].to_ical().decode('utf-8')
     start = event.decoded('dtstart')
     if isinstance(start, datetime.datetime):
         start = start.replace(tzinfo=None)
     rrule = dateutil.rrule.rrulestr(rrulestr, dtstart=start)
-    if not set(['UNTIL', 'COUNT']).intersection(
-            event['RRULE'].keys()):
+    if not set(['UNTIL', 'COUNT']).intersection(event['RRULE'].keys()):
         # pytz.timezones don't know any transition dates after 2038
         # either
         rrule._until = datetime.datetime.today() + datetime.timedelta(days=366)
     elif rrule._until and rrule._until.tzinfo:
         rrule._until = rrule._until.replace(tzinfo=None)
     return rrule
+
 
 class Evolution(items.StudioScraper):
     name = 'Evolution'
@@ -85,4 +86,3 @@ class Evolution(items.StudioScraper):
                 print "Found error processing ical event: ", e
                 print event
                 raise
-

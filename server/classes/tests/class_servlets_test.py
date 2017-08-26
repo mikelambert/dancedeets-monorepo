@@ -5,6 +5,7 @@ from classes import class_servlets
 from classes.scraper import items
 from test_utils import unittest
 
+
 def FilteredTestSuite(tests):
     try:
         # Treat it like a TestSuite (which is an array), returning a new TestSuite
@@ -17,8 +18,10 @@ def FilteredTestSuite(tests):
         else:
             return tests
 
+
 def load_tests(module, tests, dummy):
     return FilteredTestSuite(tests)
+
 
 class _TestDedupeList(unittest.TestCase):
     studio_name = 'DummyStudio'
@@ -83,12 +86,14 @@ class TestDeletedClass(_TestDedupeList):
         query = class_models.StudioClass.query()
         results = query.fetch(1000)
         start_times = [x.start_time for x in results]
-        self.assertEqual(start_times, [
-            today + datetime.timedelta(days=1),
-            today + datetime.timedelta(days=2),
-            today + datetime.timedelta(days=3),
-            today + datetime.timedelta(days=4),
-        ])
+        self.assertEqual(
+            start_times, [
+                today + datetime.timedelta(days=1),
+                today + datetime.timedelta(days=2),
+                today + datetime.timedelta(days=3),
+                today + datetime.timedelta(days=4),
+            ]
+        )
 
         self.assertEqual(len(results), 4)
 
@@ -120,10 +125,12 @@ class TestYesterdayIsPreservedAndDeletedClass(_TestDedupeList):
         results = query.fetch(1000)
         yesterday = today - datetime.timedelta(days=1)
         start_times = [x.start_time for x in results]
-        self.assertEqual(start_times, [
-            yesterday,
-            yesterday + datetime.timedelta(days=2),
-            yesterday + datetime.timedelta(days=3),
-            yesterday + datetime.timedelta(days=4),
-            yesterday + datetime.timedelta(days=5),
-        ])
+        self.assertEqual(
+            start_times, [
+                yesterday,
+                yesterday + datetime.timedelta(days=2),
+                yesterday + datetime.timedelta(days=3),
+                yesterday + datetime.timedelta(days=4),
+                yesterday + datetime.timedelta(days=5),
+            ]
+        )

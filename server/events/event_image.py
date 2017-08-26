@@ -22,31 +22,33 @@ EVENT_IMAGE_CACHE_BUCKET = 'dancedeets-event-flyers-%s-by-%s'
 CACHEABLE_SIZES = set([
     (180, 180),
     (720, None),
-# Some other common mobile image sizes
-#    (320, None),
-#    (1080, None),
-#    (1440, None),
+    # Some other common mobile image sizes
+    #    (320, None),
+    #    (1080, None),
+    #    (1440, None),
 ])
 
+
 def test_jpeg(h, f):
-    if h[:4] in [
-        '\xff\xd8\xff\xe2',
-        '\xff\xd8\xff\xe1',
-        '\xff\xd8\xff\xe0',
-        '\xff\xd8\xff\xdb'
-    ]:
+    if h[:4] in ['\xff\xd8\xff\xe2', '\xff\xd8\xff\xe1', '\xff\xd8\xff\xe0', '\xff\xd8\xff\xdb']:
         return 'jpeg'
+
+
 imghdr.tests.append(test_jpeg)
+
 
 class DownloadError(Exception):
     def __init__(self, code):
         super(DownloadError, self).__init__()
         self.code = code
 
+
 class NoImageError(Exception):
     pass
 
+
 NotFoundError = gcs.NotFoundError
+
 
 def _raw_get_image(db_event):
     image_url = db_event.full_image_url
@@ -64,13 +66,16 @@ def _raw_get_image(db_event):
     except urllib2.URLError:
         raise DownloadError(404)
 
+
 def _event_image_filename(event_id):
     return str(event_id)
+
 
 def _clear_out_resize_caches(event_id):
     for width, height in CACHEABLE_SIZES:
         bucket = _get_cache_bucket_name(width, height)
         gcs.delete_object(bucket, _event_image_filename(event_id))
+
 
 def cache_image_and_get_size(event):
     # For testing purposes:
@@ -94,6 +99,7 @@ def _render_image(event_id):
     image_data = gcs.get_object(EVENT_IMAGE_BUCKET, _event_image_filename(event_id))
     return image_data
 
+
 def _resize_image(final_image, width, height):
     orig_data = io.BytesIO(final_image)
     with Image.open(orig_data) as image:
@@ -109,6 +115,7 @@ def _resize_image(final_image, width, height):
         final_image = resized_data.getvalue()
     return final_image
 
+
 def _attempt_resize_image(final_image, width, height):
     try:
         if width or height:
@@ -117,9 +124,11 @@ def _attempt_resize_image(final_image, width, height):
         logging.info('Requested too-large image resize, returning original image: %s', e)
     return final_image
 
+
 def _get_cache_bucket_name(width, height):
     name = EVENT_IMAGE_CACHE_BUCKET % (width, height)
     return name.lower()
+
 
 def _read_image_cache(event_id, width, height):
     try:
@@ -127,6 +136,7 @@ def _read_image_cache(event_id, width, height):
         return image_data
     except NotFoundError:
         return None
+
 
 def _write_image_cache(event_id, width, height, final_image):
     bucket = _get_cache_bucket_name(width, height)
@@ -136,10 +146,12 @@ def _write_image_cache(event_id, width, height, final_image):
     except NotFoundError:
         logging.error('Error writing image cache to gs://%s/%s', bucket, filename)
 
+
 def _get_mimetype(image_data):
     f = io.BytesIO(image_data)
     image_type = imghdr.what(f)
     return 'image/%s' % image_type
+
 
 def get_image(event):
     try:
@@ -148,6 +160,7 @@ def get_image(event):
         cache_image_and_get_size(event)
         final_image = _render_image(event.id)
     return final_image
+
 
 def render(response, event, width=None, height=None):
     final_image = None

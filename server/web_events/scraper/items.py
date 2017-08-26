@@ -41,10 +41,10 @@ class WebEvent(item.DictItem):
         'end_time',
         'location_name',
         'location_address',
-        'geolocate_location_name', # used to geolocate this event
+        'geolocate_location_name',  # used to geolocate this event
         'latitude',
         'longitude',
-        'country', # the country we expect this event to be in, based on the scraper
+        'country',  # the country we expect this event to be in, based on the scraper
     ]
 
 
@@ -100,7 +100,7 @@ class SaveWebEventPipeline(pipelines.SaveToServerPipeline):
 class WebEventScraper(scrapy.Spider):
     """Base class for all our web event scrapers. Does some per-item field setup that is common across web events."""
 
-    _future_days = 14 # How many days of data to produce. Each iterator should check against this or self._future_horizon.
+    _future_days = 14  # How many days of data to produce. Each iterator should check against this or self._future_horizon.
 
     custom_settings = {
         'ITEM_PIPELINES': {
@@ -147,6 +147,7 @@ class WebEventScraper(scrapy.Spider):
             logging.error("Item contained too long properties: %s", item)
             return True
         return False
+
 
 """
     def parse(self, response):

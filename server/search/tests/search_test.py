@@ -5,6 +5,7 @@ from test_utils import unittest
 
 app = TestApp(main.application)
 
+
 class TestSearch(unittest.TestCase):
     def runTest(self):
         app.get('https://www.dancedeets.com/?location=New York&distance=50')

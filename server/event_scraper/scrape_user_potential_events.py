@@ -21,4 +21,3 @@ def get_potential_dance_events(fbl, user_id, fb_user_events):
     logging.info("Going to filter-and-lookup %s events", len(discovered_list))
 
     event_pipeline.process_discovered_events(fbl, discovered_list)
-

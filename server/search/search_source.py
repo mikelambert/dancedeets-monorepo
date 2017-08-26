@@ -8,6 +8,7 @@ import base_servlet
 from event_scraper import thing_db
 from . import index
 
+
 class SourceIndex(index.BaseIndex):
     obj_type = thing_db.Source
     index_name = 'AllSources'
@@ -58,8 +59,9 @@ class SourceIndex(index.BaseIndex):
             ],
             #language=XX, # We have no good language detection
             rank=source.num_real_events or 0,
-            )
+        )
         return doc_event
+
 
 @app.route('/tasks/refresh_source_index')
 class RefreshSourceSearchIndex(base_servlet.BaseTaskRequestHandler):

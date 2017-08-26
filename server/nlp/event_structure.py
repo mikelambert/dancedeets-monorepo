@@ -22,7 +22,7 @@ def find_competitor_list(search_text):
         numbered_list = results_match.group(0)
         num_lines = numbered_list.count('\n')
         if len(re.findall(r'\d ?[.:h] ?\d\d|\bam\b|\bpm\b', numbered_list)) > num_lines / 4:
-            return None # good list of times! workshops, etc! performance/shows/club-set times!
+            return None  # good list of times! workshops, etc! performance/shows/club-set times!
         processed_numbered_list = event_classifier.StringProcessor(numbered_list, processed_text.match_on_word_boundaries)
         event_keywords = processed_numbered_list.get_tokens(rules.EVENT)
         if len(event_keywords) > num_lines / 8:
@@ -40,7 +40,7 @@ def find_competitor_list(search_text):
                 qualified_lines = len([x for x in lines if re.search(type, x)])
                 if qualified_lines > num_lines / 8:
                     return numbered_list
-            if processed_text.match_on_word_boundaries == regex_keywords.WORD_BOUNDARIES: # maybe separate on kana vs kanji?
+            if processed_text.match_on_word_boundaries == regex_keywords.WORD_BOUNDARIES:  # maybe separate on kana vs kanji?
                 avg_words = 1.0 * sum([len([y for y in x.split(' ')]) for x in lines]) / num_lines
                 if avg_words < 3:
                     return numbered_list

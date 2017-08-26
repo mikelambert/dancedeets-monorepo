@@ -18,6 +18,7 @@ from util import mr
 
 timezone_finder = TimezoneFinder()
 
+
 class User(ndb.Model):
     # SSO
     fb_uid = property(lambda x: str(x.key.string_id()))
@@ -46,7 +47,7 @@ class User(ndb.Model):
 
     # Search preferences
     location = ndb.StringProperty(indexed=False)
-    distance = ndb.StringProperty(indexed=False) # WHY NOT INT???
+    distance = ndb.StringProperty(indexed=False)  # WHY NOT INT???
     distance_units = ndb.StringProperty(indexed=False)
     min_attendees = ndb.IntegerProperty(indexed=False)
 
@@ -62,11 +63,11 @@ class User(ndb.Model):
     city_name = ndb.StringProperty()
 
     # Derived from fb_user
-    full_name = ndb.StringProperty() # Indexed to make it easier for me to find a user for manual support
+    full_name = ndb.StringProperty()  # Indexed to make it easier for me to find a user for manual support
     first_name = ndb.StringProperty(indexed=False)
     last_name = ndb.StringProperty(indexed=False)
-    email = ndb.StringProperty() # Indexed to make it easier for me to find a user for manual support
-    mailchimp_email = ndb.StringProperty() # Indexed to make it easier for me to find a user for manual support
+    email = ndb.StringProperty()  # Indexed to make it easier for me to find a user for manual support
+    mailchimp_email = ndb.StringProperty()  # Indexed to make it easier for me to find a user for manual support
 
     locale = ndb.StringProperty(indexed=False)
     timezone_offset = ndb.FloatProperty()
@@ -95,10 +96,13 @@ class User(ndb.Model):
 
     def date_only_human_format(self, d):
         return dates.date_only_human_format(d)
+
     def date_human_format(self, d):
         return dates.date_human_format(d, country=self.location_country)
+
     def time_human_format(self, d):
         return dates.time_human_format(d, country=self.location_country)
+
     def duration_human_format(self, d1, d2):
         return dates.duration_human_format(d1, d2, country=self.location_country)
 
@@ -216,7 +220,7 @@ def update_mailchimp(user):
         'status_if_new': 'subscribed',
         'language': trimmed_locale,
         'merge_fields': {
-            'USER_ID': user.fb_uid, # necessary so we can update our local datastore on callbacks
+            'USER_ID': user.fb_uid,  # necessary so we can update our local datastore on callbacks
             'FIRSTNAME': user.first_name or '',
             'LASTNAME': user.last_name or '',
             'FULLNAME': user.full_name or '',
@@ -247,11 +251,13 @@ def update_mailchimp(user):
     else:
         logging.info('Writing user %s to mailchimp returned OK', user.fb_uid)
 
+
 class UserFriendsAtSignup(ndb.Model):
     fb_uid = property(lambda x: str(x.key.string_id()))
     registered_friend_string_ids = ndb.StringProperty(indexed=False, repeated=True)
     # deprecated
     registered_friend_ids = ndb.IntegerProperty(indexed=False, repeated=True)
+
 
 class UserMessage(ndb.Model):
     real_fb_uid = ndb.StringProperty()

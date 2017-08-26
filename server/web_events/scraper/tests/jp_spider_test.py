@@ -10,28 +10,19 @@ from web_events.scraper import jp_spider
 class TestParseTimes(unittest.TestCase):
     tests = {
         u"""OPEN 12:00
-        CLOSE 19:00""":
-        (datetime.datetime(2016, 4, 1, 12), datetime.datetime(2016, 4, 1, 19)),
-        u"""12:00～22:00""":
-        (datetime.datetime(2016, 4, 1, 12), datetime.datetime(2016, 4, 1, 22)),
-        u"""13:00～20:30""":
-        (datetime.datetime(2016, 4, 1, 13), datetime.datetime(2016, 4, 1, 20, 30)),
-        u"""OPEN 12:00 START 13:00""":
-        (datetime.datetime(2016, 4, 1, 12), None),
+        CLOSE 19:00""": (datetime.datetime(2016, 4, 1, 12), datetime.datetime(2016, 4, 1, 19)),
+        u"""12:00～22:00""": (datetime.datetime(2016, 4, 1, 12), datetime.datetime(2016, 4, 1, 22)),
+        u"""13:00～20:30""": (datetime.datetime(2016, 4, 1, 13), datetime.datetime(2016, 4, 1, 20, 30)),
+        u"""OPEN 12:00 START 13:00""": (datetime.datetime(2016, 4, 1, 12), None),
         # http://www.tokyo-dancelife.com/event/2016_03/29491.php
         u"""【日本代表決定戦】
-        OPEN 14:30 START 15:00""":
-        (datetime.datetime(2016, 4, 1, 14, 30), None),
-        u"""OPEN 15:00 START 15:30""":
-        (datetime.datetime(2016, 4, 1, 15), None),
-        u"""18:00open/18:30star""":
-        (datetime.datetime(2016, 4, 1, 18), None),
+        OPEN 14:30 START 15:00""": (datetime.datetime(2016, 4, 1, 14, 30), None),
+        u"""OPEN 15:00 START 15:30""": (datetime.datetime(2016, 4, 1, 15), None),
+        u"""18:00open/18:30star""": (datetime.datetime(2016, 4, 1, 18), None),
         u"""OPEN：14:00
         START：14:45
-        CLOSE予定：20:00""":
-        (datetime.datetime(2016, 4, 1, 14), datetime.datetime(2016, 4, 1, 20)),
-        u"""OPEN : 15:00~ / 17:30~ / CLOSE : 16:30 / 19:00""":
-        (datetime.datetime(2016, 4, 1, 15), datetime.datetime(2016, 4, 1, 16, 30)),
+        CLOSE予定：20:00""": (datetime.datetime(2016, 4, 1, 14), datetime.datetime(2016, 4, 1, 20)),
+        u"""OPEN : 15:00~ / 17:30~ / CLOSE : 16:30 / 19:00""": (datetime.datetime(2016, 4, 1, 15), datetime.datetime(2016, 4, 1, 16, 30)),
     }
 
     def runTest(self):

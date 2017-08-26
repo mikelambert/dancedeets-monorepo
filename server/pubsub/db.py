@@ -1,11 +1,11 @@
-
 from google.appengine.ext import ndb
 
 APP_TWITTER = 'APP_TWITTER'
-APP_TWITTER_DEV = 'APP_TWITTER_DEV' # disabled twitter dev
+APP_TWITTER_DEV = 'APP_TWITTER_DEV'  # disabled twitter dev
 APP_FACEBOOK = 'APP_FACEBOOK'  # a butchering of OAuthToken!
 APP_FACEBOOK_WALL = 'APP_FACEBOOK_WALL'  # a further butchering!
-APP_FACEBOOK_WEEKLY = 'APP_FACEBOOK_WEEKLY' # weekly posts!
+APP_FACEBOOK_WEEKLY = 'APP_FACEBOOK_WEEKLY'  # weekly posts!
+
 
 class OAuthToken(ndb.Model):
     user_id = ndb.StringProperty()
@@ -19,7 +19,7 @@ class OAuthToken(ndb.Model):
     # Can we post the same thing multiple times (developer mode)
     allow_reposting = ndb.BooleanProperty()
 
-    time_between_posts = ndb.IntegerProperty() # In seconds!
+    time_between_posts = ndb.IntegerProperty()  # In seconds!
     next_post_time = ndb.DateTimeProperty()
 
     json_data = ndb.JsonProperty()

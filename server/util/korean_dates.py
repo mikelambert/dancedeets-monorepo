@@ -3,11 +3,9 @@
 import datetime
 import re
 
-DAWN = 6 # sun rises at 6am-ish
-
+DAWN = 6  # sun rises at 6am-ish
 
 _DATETIME_SPAN_SEPARATOR = ur'(?:~|/|부터)'  # '부터' = 'from'
-
 
 _D_DATE = ur'(?P<day>\d+)[일\(]'
 _MD_DATE = ur'(?:(?P<month>\d+)월\s*)?' + _D_DATE
@@ -20,7 +18,9 @@ _TIME = ur'(?:(?P<dawn>새벽)|%s)' % _AM_PM_TIME
 
 
 def _extract_date(m, date_default=None):
-    return datetime.date(int(m.group('year') or date_default.year), int(m.group('month') or date_default.month), int(m.group('day') or date_default.day))
+    return datetime.date(
+        int(m.group('year') or date_default.year), int(m.group('month') or date_default.month), int(m.group('day') or date_default.day)
+    )
 
 
 def _extract_time(m, time_default=None):

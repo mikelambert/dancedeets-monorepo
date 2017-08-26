@@ -1,5 +1,5 @@
-
 from .. import browser_scraper
+
 
 class Boogiezone(browser_scraper.MindBodyBrowserScraper):
     name = 'Boogiezone'

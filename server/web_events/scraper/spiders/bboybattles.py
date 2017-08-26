@@ -23,9 +23,7 @@ class BBoyBattlesScraper(mixins.BrowserScraperMixin, fbitems.FbEventScraper):
     name = 'BBoyBattles'
     allowed_domains = ['bboybattles.org']
 
-    custom_settings = mixins.generate_custom_settings(
-        fbitems.FbEventScraper.custom_settings
-    )
+    custom_settings = mixins.generate_custom_settings(fbitems.FbEventScraper.custom_settings)
 
     def _generate_request(self, url):
         script = """

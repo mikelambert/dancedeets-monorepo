@@ -6,6 +6,7 @@ from google.appengine.api import search
 from event_scraper import thing_db
 from . import search_source
 
+
 class PageResult(object):
     def __init__(self, result, source):
         self.id = result.doc_id
@@ -18,10 +19,12 @@ class PageResult(object):
 
     def __repr__(self):
         return 'PageResult(%r)' % self.__dict__.items()
+
+
 class SearchPages(object):
     def __init__(self, search_query):
         self.query = search_query
-        self.limit = search.MAXIMUM_DOCUMENTS_RETURNED_PER_SEARCH # 1000
+        self.limit = search.MAXIMUM_DOCUMENTS_RETURNED_PER_SEARCH  # 1000
         # Extra search index fields to return
         self.extra_fields = []
 

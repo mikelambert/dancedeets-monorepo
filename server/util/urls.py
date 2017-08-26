@@ -4,9 +4,11 @@ from slugify import slugify
 
 EVENT_ID_REGEX = r'(?:\d+|[^/?#]+:[^/?#]+)'
 
+
 def dd_event_url(eid, kwargs=None):
     kwarg_string = '?%s' % urlencode(kwargs) if kwargs else ''
     return 'https://www.dancedeets.com%s%s' % (dd_relative_event_url(eid), kwarg_string)
+
 
 def dd_relative_event_url(eid):
     if isinstance(eid, basestring):
@@ -41,11 +43,13 @@ def event_image_url(eid, **kwargs):
     else:
         return url
 
+
 def dd_search_url(location, keywords=''):
     return 'https://www.dancedeets.com/?' + urlencode({
         'location': location,
         'keywords': keywords,
     })
+
 
 def urlencode(kwargs, doseq=False):
     if doseq:
@@ -56,6 +60,7 @@ def urlencode(kwargs, doseq=False):
     else:
         kwargs = dict((unicode(k).encode('utf-8'), unicode(v).encode('utf-8')) for (k, v) in kwargs.iteritems())
     return urllib.urlencode(kwargs, doseq=doseq)
+
 
 def get_event_id_from_url(url):
     if '#' in url:

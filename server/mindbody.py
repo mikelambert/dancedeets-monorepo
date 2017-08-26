@@ -6,12 +6,15 @@ SOURCE_NAME = "DanceDeets"
 SOURCE_PASSWORD = keys.get("mindbody_api_password")
 
 _CLIENTS = {}
+
+
 def get_client(service_name):
     global _CLIENTS
     if service_name not in _CLIENTS:
         url = "https://api.mindbodyonline.com/0_5/" + service_name + "Service.asmx?wsdl"
         _CLIENTS[service_name] = suds.client.Client(url)
     return _CLIENTS[service_name]
+
 
 def fill_credentials(client, request, site_ids):
     source_creds = client.factory.create('SourceCredentials')
@@ -30,11 +33,13 @@ def get_request(client, request_name, site_id):
     fill_credentials(client, request, [site_id])
     return request
 
+
 def get_activation_link(site_id):
     client = get_client("Site")
     request = get_request(client, "GetActivationCode", site_id)
     result = client.service.GetActivationCode(request)
     return result.ActivationLink
+
 
 def get_classes(start_time, end_time, hide_canceled_classes, site_id):
     service = get_client("Class")

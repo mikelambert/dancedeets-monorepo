@@ -1,4 +1,3 @@
-
 class GMapsBackend(object):
     def get_json(self, **params):
         raise NotImplementedError()

@@ -12,21 +12,22 @@ from search import search
 from search import search_base
 from users import users
 from . import android
-
 """
 Runs a mapreduce hourly, which finds all users with that timezone offset,
 and sends notifications about recently-aevents to those users
 """
 
+
 def get_time_offset():
-    desired_hour = 16 # send new-event notifications at 4pm
-    current_hour = datetime.datetime.now().hour # should be UTC hour
+    desired_hour = 16  # send new-event notifications at 4pm
+    current_hour = datetime.datetime.now().hour  # should be UTC hour
     offset = desired_hour - current_hour
     if offset <= -12:
         offset += 24
     if offset > 12:
         offset -= 24
     return float(offset)
+
 
 @app.route('/tasks/promote_new_events')
 class RemindUserMapReduceHandler(base_servlet.BaseTaskRequestHandler):
@@ -46,11 +47,12 @@ class RemindUserMapReduceHandler(base_servlet.BaseTaskRequestHandler):
                 'entity_kind': 'users.users.User',
                 'filters': [
                     ('timezone_offset', '>=', offset),
-                    ('timezone_offset', '<', offset+1),
+                    ('timezone_offset', '<', offset + 1),
                 ],
             },
             shard_count=1,
         )
+
 
 # for development only, usually this will be called via mapreduce
 @app.route('/tasks/promote_new_events_to_user')
@@ -59,6 +61,7 @@ class RemindUserHandler(base_servlet.BaseTaskRequestHandler):
         user_id = self.request.get('user_id')
         user = users.User.get_by_id(user_id)
         promote_events_to_user(user)
+
 
 def promote_events_to_user(user):
     # TODO: Adjust when we have iphone notifications
@@ -101,4 +104,3 @@ def promote_events_to_user(user):
         if android.add_notify(user, event_id):
             logging.info("Sent notification!")
     # TODO: iphone_notify!
-

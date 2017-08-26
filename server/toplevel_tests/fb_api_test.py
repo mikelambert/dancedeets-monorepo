@@ -10,6 +10,7 @@ from test_utils import fb_api_stub
 from test_utils import mock_memcache
 from test_utils import unittest as full_unittest
 
+
 class TestLookupUser(unittest.TestCase):
     def runTest(self):
         lookups = fb_api.LookupUser.get_lookups('id')
@@ -26,6 +27,7 @@ class TestLookupUser(unittest.TestCase):
         cleaned_object_data = fb_api.LookupUser.cleanup_data(deleted_object_data)
         self.assertEqual(cleaned_object_data['empty'], fb_api.EMPTY_CAUSE_DELETED)
 
+
 class TestLookupEvent(unittest.TestCase):
     def runTest(self):
         lookups = fb_api.LookupEvent.get_lookups('id')
@@ -40,6 +42,7 @@ class TestLookupEvent(unittest.TestCase):
         deleted_object_data = {'info': {'name': 'Event Info', 'attending_count': 0}, 'deleted': True}
         cleaned_object_data = fb_api.LookupEvent.cleanup_data(deleted_object_data)
         self.assertEqual(cleaned_object_data['empty'], fb_api.EMPTY_CAUSE_DELETED)
+
 
 class TestMemcache(unittest.TestCase):
     def setUp(self):
@@ -63,6 +66,7 @@ class TestMemcache(unittest.TestCase):
         m.save_objects({user_key: user})
         d = m.fetch_keys(set([user_key, user_key2]))
         self.assertEqual(d, {user_key: user})
+
 
 class TestDBCache(full_unittest.TestCase):
     def setUp(self):
@@ -90,10 +94,11 @@ class TestDBCache(full_unittest.TestCase):
         self.assertEqual(d, {user_key: user})
 
         user_modified = {'info': 'User Data Modified'}
-        db.save_objects({user_key: user}) # no change, no update
+        db.save_objects({user_key: user})  # no change, no update
         self.assertEqual(db.db_updates, 1)
         db.save_objects({user_key: user_modified})
         self.assertEqual(db.db_updates, 2)
+
 
 class TestFBAPI(full_unittest.TestCase):
     def runTest(self):
@@ -113,15 +118,13 @@ class TestFBAPI(full_unittest.TestCase):
         }
         user_key = (fb_api.LookupUser, '"uid"')
         d = fb.fetch_keys(set([user_key]))
-        self.assertEqual(d,
-            {user_key: {
-                'empty': None,
-                'friends': {},
-                'permissions': {},
-                'profile': {},
-                'rsvp_for_future_events': {},
-            }}
-        )
+        self.assertEqual(d, {user_key: {
+            'empty': None,
+            'friends': {},
+            'permissions': {},
+            'profile': {},
+            'rsvp_for_future_events': {},
+        }})
 
         fb_api.FBAPI.results = {
             url: (500, {}),
@@ -142,25 +145,30 @@ class TestFBAPI(full_unittest.TestCase):
         }
         user_key = (fb_api.LookupUser, '"uid"')
         d = fb.fetch_keys(set([user_key]))
-        self.assertEqual(d,
-            {user_key: {
-                'empty': fb_api.EMPTY_CAUSE_DELETED,
-            }}
-        )
+        self.assertEqual(d, {user_key: {
+            'empty': fb_api.EMPTY_CAUSE_DELETED,
+        }})
 
         fb_api.FBAPI.results = {
-            url: (200, {'error_code': 100}),
-            event_url: (200, {'error_code': 100}),
-            '/v2.9/uid/friends': (200, {'error_code': 100}),
-            '/v2.9/uid/permissions': (200, {'error_code': 100}),
+            url: (200, {
+                'error_code': 100
+            }),
+            event_url: (200, {
+                'error_code': 100
+            }),
+            '/v2.9/uid/friends': (200, {
+                'error_code': 100
+            }),
+            '/v2.9/uid/permissions': (200, {
+                'error_code': 100
+            }),
         }
         user_key = (fb_api.LookupUser, '"uid"')
         d = fb.fetch_keys(set([user_key]))
-        self.assertEqual(d,
-            {user_key: {
-                'empty': fb_api.EMPTY_CAUSE_INSUFFICIENT_PERMISSIONS,
-            }}
-        )
+        self.assertEqual(d, {user_key: {
+            'empty': fb_api.EMPTY_CAUSE_INSUFFICIENT_PERMISSIONS,
+        }})
+
 
 class TestFBLookupPickling(unittest.TestCase):
     def runTest(self):
@@ -200,15 +208,13 @@ class TestFBLookup(FBApiTestCase):
         }
         # And fetching it then populates our memcache and db
         result = fbl.get(fb_api.LookupUser, 'uid')
-        self.assertEqual(result,
-            {
-                'empty': None,
-                'friends': {},
-                'permissions': {},
-                'profile': {},
-                'rsvp_for_future_events': {},
-            }
-        )
+        self.assertEqual(result, {
+            'empty': None,
+            'friends': {},
+            'permissions': {},
+            'profile': {},
+            'rsvp_for_future_events': {},
+        })
 
         # Now remove our facebook backend, and test all our caches
 
@@ -223,15 +229,13 @@ class TestFBLookup(FBApiTestCase):
         # Rely on memcache/dbcache to fulfill this request now
         fbl.clear_local_cache()
         result = fbl.get(fb_api.LookupUser, 'uid')
-        self.assertEqual(result,
-            {
-                'empty': None,
-                'friends': {},
-                'permissions': {},
-                'profile': {},
-                'rsvp_for_future_events': {},
-            }
-        )
+        self.assertEqual(result, {
+            'empty': None,
+            'friends': {},
+            'permissions': {},
+            'profile': {},
+            'rsvp_for_future_events': {},
+        })
 
         # Clear memcache...
         user_key = (fb_api.LookupUser, '"uid"')
@@ -245,15 +249,13 @@ class TestFBLookup(FBApiTestCase):
 
         # But allowing db cache still works (and repopulates memcache)
         result = fbl.get(fb_api.LookupUser, 'uid')
-        self.assertEqual(result,
-            {
-                'empty': None,
-                'friends': {},
-                'permissions': {},
-                'profile': {},
-                'rsvp_for_future_events': {},
-            }
-        )
+        self.assertEqual(result, {
+            'empty': None,
+            'friends': {},
+            'permissions': {},
+            'profile': {},
+            'rsvp_for_future_events': {},
+        })
 
         # Clear dbcache, but still can work (because of memcache)
         fbl.db.invalidate_keys([user_key])
@@ -266,20 +268,19 @@ class TestFBLookup(FBApiTestCase):
 
         # But with memcache read, it works fine
         result = fbl.get(fb_api.LookupUser, 'uid')
-        self.assertEqual(result,
-            {
-                'empty': None,
-                'friends': {},
-                'permissions': {},
-                'profile': {},
-                'rsvp_for_future_events': {},
-            }
-        )
+        self.assertEqual(result, {
+            'empty': None,
+            'friends': {},
+            'permissions': {},
+            'profile': {},
+            'rsvp_for_future_events': {},
+        })
 
         # Clear memcache, now that db is empty, data is entirely gone, and it no longer works
         fbl.m.invalidate_keys([user_key])
         fbl.clear_local_cache()
         self.assertRaises(fb_api.NoFetchedDataException, fbl.get, fb_api.LookupUser, 'uid')
+
 
 class TestFBLookupProfile(FBApiTestCase):
     def runTest(self):
@@ -291,12 +292,11 @@ class TestFBLookupProfile(FBApiTestCase):
         }
         # And fetching it then populates our memcache and db
         result = fbl.get(fb_api.LookupProfile, 'uid')
-        self.assertEqual(result,
-            {
-                'profile': {},
-                'empty': None,
-            }
-        )
+        self.assertEqual(result, {
+            'profile': {},
+            'empty': None,
+        })
+
 
 class TestEventFailureHandling(FBApiTestCase):
     def runTest(self):
@@ -310,10 +310,20 @@ class TestEventFailureHandling(FBApiTestCase):
         picture_url = '/v2.9/eid/picture?redirect=false&type=large'
         # Inaccessible event
         fb_api.FBAPI.results = {
-            url:
-                (400, {"error": {"message": "Unsupported get request.", "type": "GraphMethodException", "code": 100}}),
-            picture_url:
-                (400, {"error": {"message": "Unsupported get request.", "type": "GraphMethodException", "code": 100}}),
+            url: (400, {
+                "error": {
+                    "message": "Unsupported get request.",
+                    "type": "GraphMethodException",
+                    "code": 100
+                }
+            }),
+            picture_url: (400, {
+                "error": {
+                    "message": "Unsupported get request.",
+                    "type": "GraphMethodException",
+                    "code": 100
+                }
+            }),
         }
 
         result = fbl.get(fb_api.LookupEvent, 'eid')
@@ -322,11 +332,11 @@ class TestEventFailureHandling(FBApiTestCase):
 
         # Partial timeout of optional field
         fb_api.FBAPI.results = {
-            url:
-                (200, {'id': 'eid'}),
+            url: (200, {
+                'id': 'eid'
+            }),
             '/?fields=images&ids=%7Bresult%3Dinfo%3A%24.cover.id%7D': fb_api_stub.RESULT_TIMEOUT,
-            picture_url:
-                (200, {}),
+            picture_url: (200, {}),
         }
 
         result = fbl.get(fb_api.LookupEvent, 'eid')
@@ -335,8 +345,9 @@ class TestEventFailureHandling(FBApiTestCase):
 
         # Partial timeout of required field
         fb_api.FBAPI.results = {
-            url:
-                (200, {'id': 'eid'}),
+            url: (200, {
+                'id': 'eid'
+            }),
             '/?fields=images&ids=%7Bresult%3Dinfo%3A%24.cover.id%7D': fb_api_stub.RESULT_TIMEOUT,
             picture_url: fb_api_stub.RESULT_TIMEOUT,
         }
@@ -346,23 +357,26 @@ class TestEventFailureHandling(FBApiTestCase):
 
         # Event without a Cover field
         fb_api.FBAPI.results = {
-            url:
-                (200, {
-                    "name": "Event Title",
-                    "start_time": "2014-07-12T17:00:00-0400",
-                    "id": "eid"
-                }),
-            '/?fields=images&ids=%7Bresult%3Dinfo%3A%24.cover.id%7D':
-                (400, {'error': {'message': 'Cannot specify an empty identifier', 'code': 2500, 'type': 'OAuthException'}}),
-            picture_url:
-                (200, {
-                    "data": [
-                        {
-                            "pic": "",
-                            "all_members_count": 437,
-                        }
-                    ]
-                }),
+            url: (200, {
+                "name": "Event Title",
+                "start_time": "2014-07-12T17:00:00-0400",
+                "id": "eid"
+            }),
+            '/?fields=images&ids=%7Bresult%3Dinfo%3A%24.cover.id%7D': (
+                400, {
+                    'error': {
+                        'message': 'Cannot specify an empty identifier',
+                        'code': 2500,
+                        'type': 'OAuthException'
+                    }
+                }
+            ),
+            picture_url: (200, {
+                "data": [{
+                    "pic": "",
+                    "all_members_count": 437,
+                }]
+            }),
         }
 
         result = fbl.get(fb_api.LookupEvent, 'eid')
@@ -374,6 +388,7 @@ class TestEventFailureHandling(FBApiTestCase):
         self.assertRaises(fb_api.NoFetchedDataException, fbl.get, fb_api.LookupEvent, 'eid')
         fb_api.FBAPI.do_timeout = False
         fbl.clear_local_cache()
+
 
 class TestUserFailureHandling(FBApiTestCase):
     def runTest(self):
@@ -389,7 +404,6 @@ class TestUserFailureHandling(FBApiTestCase):
         fbl.clear_local_cache()
 
         # TODO(lambert): Test and handle partial-permissions access problems?
-
 
 
 class TestMisc(unittest.TestCase):

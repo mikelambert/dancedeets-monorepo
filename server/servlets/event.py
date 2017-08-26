@@ -64,6 +64,7 @@ class RsvpAjaxHandler(base_servlet.BaseRequestHandler):
         self.write_json_response(dict(success=False, errors=errors))
         return True
 
+
 @app.route('/events/redirect')
 class RedirectToEventHandler(base_servlet.BaseRequestHandler):
     def requires_login(self):
@@ -86,7 +87,6 @@ class RedirectShortUrlHandler(base_servlet.BareBaseRequestHandler):
 
 @app.route(r'/events/(%s)(?:/.*)?' % urls.EVENT_ID_REGEX)
 class ShowEventHandler(base_servlet.BaseRequestHandler):
-
     def requires_login(self):
         return False
 
@@ -285,7 +285,8 @@ class AdminEditHandler(base_servlet.BaseRequestHandler):
         owner_location = None
         if 'owner' in fb_event['info']:
             owner_id = fb_event['info']['owner']['id']
-            location = self._get_location(owner_id, fb_api.LookupProfile, 'profile') or self._get_location(owner_id, fb_api.LookupThingPage, 'info')
+            location = self._get_location(owner_id, fb_api.LookupProfile, 'profile'
+                                         ) or self._get_location(owner_id, fb_api.LookupThingPage, 'info')
             if location:
                 owner_location = event_locations.city_for_fb_location(location)
         self.display['owner_location'] = owner_location
@@ -296,7 +297,9 @@ class AdminEditHandler(base_servlet.BaseRequestHandler):
             #STR_ID_MIGRATE
             creating_user = self.fbl.get(fb_api.LookupProfile, str(e.creating_fb_uid))
             if creating_user.get('empty'):
-                logging.warning('Have creating-user %s...but it is not publicly visible, so treating as None: %s', e.creating_fb_uid, creating_user)
+                logging.warning(
+                    'Have creating-user %s...but it is not publicly visible, so treating as None: %s', e.creating_fb_uid, creating_user
+                )
                 creating_user = None
         else:
             creating_user = None
@@ -388,17 +391,33 @@ class AdminEditHandler(base_servlet.BaseRequestHandler):
         self.errors_are_fatal()
 
         if self.request.get('background'):
-            deferred.defer(add_entities.add_update_event, fb_event, self.fbl, creating_uid=self.user.fb_uid, remapped_address=remapped_address, override_address=override_address, creating_method=eventdata.CM_ADMIN)
+            deferred.defer(
+                add_entities.add_update_event,
+                fb_event,
+                self.fbl,
+                creating_uid=self.user.fb_uid,
+                remapped_address=remapped_address,
+                override_address=override_address,
+                creating_method=eventdata.CM_ADMIN
+            )
             self.response.out.write("<title>Added!</title>Added!")
         else:
             try:
-                add_entities.add_update_event(fb_event, self.fbl, creating_uid=self.user.fb_uid, remapped_address=remapped_address, override_address=override_address, creating_method=eventdata.CM_ADMIN)
+                add_entities.add_update_event(
+                    fb_event,
+                    self.fbl,
+                    creating_uid=self.user.fb_uid,
+                    remapped_address=remapped_address,
+                    override_address=override_address,
+                    creating_method=eventdata.CM_ADMIN
+                )
             except Exception as e:
                 logging.exception('Error adding event')
                 self.add_error(str(e))
             self.errors_are_fatal()
             self.user.add_message("Changes saved!")
             return self.redirect('/events/admin_edit?event_id=%s' % event_id)
+
 
 def get_fb_event(fbl, event_id, lookup_type=fb_api.LookupEvent):
     data = None
@@ -431,6 +450,7 @@ def get_fb_event(fbl, event_id, lookup_type=fb_api.LookupEvent):
             if lookup_type == fb_api.LookupEvent and not data:
                 data = db_event.fb_event
     return data
+
 
 @app.route('/events_add')
 class AddHandler(base_servlet.BaseRequestHandler):
@@ -517,9 +537,17 @@ class AdminPotentialEventViewHandler(base_servlet.BaseRequestHandler):
             past_event_query = ''
 
         number_of_events = int(self.request.get('number_of_events', '20'))
-        unseen_potential_events = list(potential_events.PotentialEvent.gql("WHERE looked_at = NULL AND match_score > 0 %s ORDER BY match_score DESC LIMIT %s" % (past_event_query, number_of_events)))
+        unseen_potential_events = list(
+            potential_events.PotentialEvent.
+            gql("WHERE looked_at = NULL AND match_score > 0 %s ORDER BY match_score DESC LIMIT %s" % (past_event_query, number_of_events))
+        )
         if len(unseen_potential_events) < number_of_events:
-            unseen_potential_events += list(potential_events.PotentialEvent.gql("WHERE looked_at = NULL AND match_score = 0 AND show_even_if_no_score = True %s ORDER BY match_score DESC LIMIT %s" % (past_event_query, number_of_events - len(unseen_potential_events))))
+            unseen_potential_events += list(
+                potential_events.PotentialEvent.gql(
+                    "WHERE looked_at = NULL AND match_score = 0 AND show_even_if_no_score = True %s ORDER BY match_score DESC LIMIT %s" %
+                    (past_event_query, number_of_events - len(unseen_potential_events))
+                )
+            )
 
         potential_event_dict = dict((x.key().name(), x) for x in unseen_potential_events)
         already_added_event_ids = [x.string_id() for x in eventdata.DBEvent.get_by_ids(list(potential_event_dict), keys_only=True) if x]
@@ -528,8 +556,11 @@ class AdminPotentialEventViewHandler(base_servlet.BaseRequestHandler):
         potential_event_notadded_ids.sort(key=lambda x: -(potential_event_dict[x].match_score or 0))
 
         # Limit to 20 at a time so we don't overwhelm the user.
-        non_zero_events = potential_events.PotentialEvent.gql("WHERE looked_at = NULL AND match_score > 0 %s" % past_event_query).count(20000)
-        zero_events = potential_events.PotentialEvent.gql("WHERE looked_at = NULL AND match_score = 0 AND show_even_if_no_score = True %s" % past_event_query).count(20000)
+        non_zero_events = potential_events.PotentialEvent.gql("WHERE looked_at = NULL AND match_score > 0 %s" % past_event_query
+                                                             ).count(20000)
+        zero_events = potential_events.PotentialEvent.gql(
+            "WHERE looked_at = NULL AND match_score = 0 AND show_even_if_no_score = True %s" % past_event_query
+        ).count(20000)
         total_potential_events = non_zero_events + zero_events
 
         has_more_events = total_potential_events > number_of_events
@@ -543,7 +574,7 @@ class AdminPotentialEventViewHandler(base_servlet.BaseRequestHandler):
         for e in potential_event_notadded_ids:
             try:
                 fb_event = self.fbl.fetched_data(fb_api.LookupEvent, e)
-                fb_event_attending = None # self.fbl.fetched_data(fb_api.LookupEventAttending, e)
+                fb_event_attending = None  # self.fbl.fetched_data(fb_api.LookupEventAttending, e)
             except KeyError:
                 logging.error("Failed to load event id %s", e)
                 continue
@@ -560,15 +591,30 @@ class AdminPotentialEventViewHandler(base_servlet.BaseRequestHandler):
                 dance_words_str = 'NONE'
                 event_words_str = 'NONE'
                 wrong_words_str = 'NONE'
-            location_info = None # event_locations.LocationInfo(fb_event, debug=True)
-            potential_event_dict[e] = potential_events.update_scores_for_potential_event(potential_event_dict[e], fb_event, fb_event_attending)
-            template_events.append(dict(fb_event=fb_event, classified_event=classified_event, dance_words=dance_words_str, event_words=event_words_str, wrong_words=wrong_words_str, keyword_reason=reason, potential_event=potential_event_dict[e], location_info=location_info))
+            location_info = None  # event_locations.LocationInfo(fb_event, debug=True)
+            potential_event_dict[e] = potential_events.update_scores_for_potential_event(
+                potential_event_dict[e], fb_event, fb_event_attending
+            )
+            template_events.append(
+                dict(
+                    fb_event=fb_event,
+                    classified_event=classified_event,
+                    dance_words=dance_words_str,
+                    event_words=event_words_str,
+                    wrong_words=wrong_words_str,
+                    keyword_reason=reason,
+                    potential_event=potential_event_dict[e],
+                    location_info=location_info
+                )
+            )
         template_events = sorted(template_events, key=lambda x: -len(x['potential_event'].sources()))
         self.display['number_of_events'] = number_of_events
         self.display['total_potential_events'] = '%s + %s' % (non_zero_events, zero_events)
         self.display['has_more_events'] = has_more_events
         self.display['potential_events_listing'] = template_events
-        self.display['potential_ids'] = ','.join(already_added_event_ids + potential_event_notadded_ids)  # use all ids, since we want to mark already-added ids as processed as well. but only the top N of the potential event ids that we're showing to the user.
+        self.display['potential_ids'] = ','.join(
+            already_added_event_ids + potential_event_notadded_ids
+        )  # use all ids, since we want to mark already-added ids as processed as well. but only the top N of the potential event ids that we're showing to the user.
         self.display['track_analytics'] = False
         self.render_template('admin_potential_events')
 

@@ -68,7 +68,10 @@ class WebhookPageHandler(webapp2.RequestHandler):
                         event_pipeline.process_discovered_events(fbl, discovered_list)
                     except fb_api.ExpiredOAuthToken:
                         logging.info("Found ExpiredOAuthtoken when reloading events for User: %s", user.fb_uid)
-                        logging.info("User's Clients: %s, Last Login: %s, Expiration: %s", user.clients, user.last_login_time, user.fb_access_token_expires)
+                        logging.info(
+                            "User's Clients: %s, Last Login: %s, Expiration: %s", user.clients, user.last_login_time,
+                            user.fb_access_token_expires
+                        )
                     else:
                         processed = True
                 if not processed:

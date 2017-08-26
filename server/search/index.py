@@ -8,6 +8,7 @@ from util import deferred
 
 MAX_OBJECTS = 100000
 
+
 class BaseIndex(object):
     obj_type = None
     index_name = None
@@ -127,7 +128,9 @@ class BaseIndex(object):
             logging.info("Looking at %s doc_id candidates for deletion, will delete %s entries.", len(doc_ids), len(new_ids_to_delete))
             start_id = doc_ids[-1]
         if not force and len(doc_ids_to_delete) and len(doc_ids_to_delete) > len(object_ids) * cls.delete_threshold:
-            logging.critical("Deleting %s docs, more than %d%% of total %s docs", len(doc_ids_to_delete), cls.delete_threshold * 100, len(object_ids))
+            logging.critical(
+                "Deleting %s docs, more than %d%% of total %s docs", len(doc_ids_to_delete), cls.delete_threshold * 100, len(object_ids)
+            )
             return
         logging.info("Deleting %s docs", len(doc_ids_to_delete))
         cls.delete_ids(list(doc_ids_to_delete))

@@ -55,7 +55,7 @@ class SaveStudioClassPipeline(pipelines.SaveToServerPipeline):
 class StudioScraper(scrapy.Spider):
     """Base class for all our studio scrapers. Does some per-item field setup that is common across studios."""
 
-    _future_days = 14 # How many days of data to produce. Each iterator should check against this or self._future_horizon.
+    _future_days = 14  # How many days of data to produce. Each iterator should check against this or self._future_horizon.
 
     custom_settings = {
         'ITEM_PIPELINES': {

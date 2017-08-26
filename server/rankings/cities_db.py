@@ -17,10 +17,12 @@ TEST_FILENAME = 'geonames/cities_test.db'
 # - find people within this distance of our search box, too
 NEARBY_DISTANCE_KM = 100
 
+
 def get_nearby_city(latlng, country=None):
     nearby_cities = get_nearby_cities(latlng, country=country)
     city = _get_largest_city(nearby_cities)
     return city
+
 
 def get_nearby_cities(latlng, country=None, distance=None):
     # We shrink it by two:
@@ -28,11 +30,12 @@ def get_nearby_cities(latlng, country=None, distance=None):
     # But an event in San Francisco, looking for "people who would go to SF event",
     # would want to include Palo Alto in its search radius....so would need to go 2x to San Jose
     # So instead of searching 200km in popular people for cities...let's try to be more specific about which person goes to which city
-    distance = distance or NEARBY_DISTANCE_KM/2
+    distance = distance or NEARBY_DISTANCE_KM / 2
     southwest, northeast = math.expand_bounds((latlng, latlng), distance)
     nearby_cities = _get_contained_cities((southwest, northeast), country=country)
     nearby_cities = [x for x in nearby_cities if x.closer_than(latlng, distance)]
     return nearby_cities
+
 
 class City(object):
     def __init__(self, data):
@@ -52,6 +55,7 @@ class City(object):
         real_distance = math.get_distance(latlng, (self.latitude, self.longitude), use_km=True)
         return real_distance < distance
 
+
 def _get_contained_cities(points, country=None):
     logging.info("citiesdb search location is %s", points)
     values = [points[0][0], points[1][0], points[0][1], points[1][1]]
@@ -63,12 +67,17 @@ def _get_contained_cities(points, country=None):
     connection = sqlite3.connect(filename)
     connection.row_factory = sqlite3.Row
     cursor = connection.cursor()
-    cursor.execute('select * from City where ? < latitude and latitude < ? and ? < longitude and longitude < ? %s order by population desc' % query, values)
+    cursor.execute(
+        'select * from City where ? < latitude and latitude < ? and ? < longitude and longitude < ? %s order by population desc' % query,
+        values
+    )
     results = cursor.fetchall()
     return [City(x) for x in results]
 
+
 def get_largest_cities(limit=5, country=None):
     raise NotImplementedError()
+
 
 def _get_largest_city(cities):
     if not cities:

@@ -98,8 +98,8 @@ class DisplayEvent(ndb.Model):
                 'name': db_event.name,
                 'start_time': db_event.start_time_string,
                 'end_time': db_event.end_time_string,
-                'lat': db_event.latitude, # used for de-duping events
-                'lng': db_event.longitude, # used for de-duping events
+                'lat': db_event.latitude,  # used for de-duping events
+                'lng': db_event.longitude,  # used for de-duping events
                 'venue': {
                     'name': db_event.location_name,
                     'address': address,
@@ -132,15 +132,12 @@ class Search(object):
 
     def __init__(self, search_query):
         self.query = search_query
-        self.limit = search.MAXIMUM_DOCUMENTS_RETURNED_PER_SEARCH # 1000
+        self.limit = search.MAXIMUM_DOCUMENTS_RETURNED_PER_SEARCH  # 1000
         # Extra search index fields to return
         self.extra_fields = []
 
-
-        if (
-            (self.query.start_date and self.query.start_date < datetime.date.today()) or
-            (self.query.end_date and self.query.end_date < datetime.date.today())
-            ):
+        if ((self.query.start_date and self.query.start_date < datetime.date.today()) or
+            (self.query.end_date and self.query.end_date < datetime.date.today())):
             self.search_index = AllEventsIndex
         else:
             self.search_index = FutureEventsIndex
@@ -297,7 +294,9 @@ class EventsIndex(index.BaseIndex):
                 # which are otherwise discarded with a DateField.
                 # We want this to know what events have been added in the last 24 hours,
                 # so we can promote them to users when we send out daily notifications.
-                search.NumberField(name='creation_time', value=int(time.mktime(db_event.creation_time.timetuple())) if db_event.creation_time else 0),
+                search.NumberField(
+                    name='creation_time', value=int(time.mktime(db_event.creation_time.timetuple())) if db_event.creation_time else 0
+                ),
             ],
             # TODO: Re-enable this. We disabled it because:
             # - some langauges are like 'zh-Hant', but this expects two-letter languages

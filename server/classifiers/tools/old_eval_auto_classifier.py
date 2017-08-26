@@ -10,7 +10,6 @@ from classifiers import processing
 from nlp import event_auto_classifier
 from nlp import event_classifier
 
-
 ids_info = processing.load_ids()
 for x in ids_info:
     print x, len(ids_info[x])
@@ -22,7 +21,9 @@ else:
     full_run = True
     all_ids = ids_info['combined_ids']
 
-TOTAL = None # magic key
+TOTAL = None  # magic key
+
+
 def add_counts(base_counts, fb_event):
     if not keyword_counts:
         return
@@ -31,13 +32,15 @@ def add_counts(base_counts, fb_event):
     if 1:
         unique_words = frozenset(words)
     else:
-        unique_words = frozenset(['%s %s' % (words[i], words[i+1]) for i in range(len(words)-1)])
+        unique_words = frozenset(['%s %s' % (words[i], words[i + 1]) for i in range(len(words) - 1)])
     for word in unique_words:
         base_counts[word] = base_counts.get(word, 0) + 1
     base_counts[TOTAL] = base_counts.get(TOTAL, 0) + 1
 
+
 def get_df_from_counts(counts):
-    return dict((x[0], 1.0*x[1]/counts[TOTAL]) for x in counts.items())
+    return dict((x[0], 1.0 * x[1] / counts[TOTAL]) for x in counts.items())
+
 
 def df_minus_df(df1, df2, negative_scale=1.0):
     all_keys = set(df1).union(df2)
@@ -46,14 +49,17 @@ def df_minus_df(df1, df2, negative_scale=1.0):
         diff[key] = df1.get(key, 0) - df2.get(key, 0) * negative_scale
     return diff
 
+
 def sorted_df(df):
     diff_list = sorted(df.items(), key=lambda x: -x[1])
     return diff_list
 
+
 def print_top_for_df(df):
     print '\n'.join(['%s: %s' % x for x in sorted_df(df)][:20])
 
-def partition_ids(ids, classifier=lambda x:False):
+
+def partition_ids(ids, classifier=lambda x: False):
     successes = set()
     fails = set()
     for i, (id, fb_event) in enumerate(processing.all_fb_data(ids)):
@@ -74,6 +80,7 @@ def partition_ids(ids, classifier=lambda x:False):
         #else:
         #    add_counts(bad_counts, fb_event)
     return successes, fails
+
 
 def mp_classify(arg):
     classifier, (id, fb_event) = arg
@@ -100,7 +107,8 @@ def init_worker():
     import os
     os.nice(5)
 
-def mp_partition_ids(ids, classifier=lambda x:False):
+
+def mp_partition_ids(ids, classifier=lambda x: False):
     pool = multiprocessing.Pool(processes=multiprocessing.cpu_count(), initializer=init_worker)
     print "Generating data..."
     data = [(classifier, x) for x in processing.all_fb_data(ids)]
@@ -113,7 +121,10 @@ def mp_partition_ids(ids, classifier=lambda x:False):
     fails = set(x[1] for x in results if not x[0])
     return successes, fails
 
+
 positive_classifier = True
+
+
 def basic_match(fb_event):
     e = event_classifier.get_classified_event(fb_event)
     if not full_run:
@@ -133,6 +144,7 @@ def basic_match(fb_event):
         print fb_event['info']['id'], result
     return result[0]
 
+
 if positive_classifier:
     good_ids = classified_ids
     bad_ids = all_ids.difference(good_ids)
@@ -150,7 +162,6 @@ a = time.time()
 print "Running auto classifier..."
 theory_good_ids, theory_bad_ids = mp_partition_ids(all_ids, classifier=basic_match)
 print "done, %d seconds" % (time.time() - a)
-
 
 false_positives = theory_good_ids.difference(good_ids)
 false_negatives = theory_bad_ids.difference(bad_ids)
@@ -175,7 +186,6 @@ if keyword_counts:
     print_top_for_df(df_minus_df(get_df_from_counts(false_negative_counts), get_df_from_counts(bad_counts), negative_scale=100))
     print "Best fixes for false-positives:"
     print_top_for_df(df_minus_df(get_df_from_counts(false_positive_counts), get_df_from_counts(good_counts), negative_scale=0.1))
-
 
 for id in false_positives:
     print 'F', id

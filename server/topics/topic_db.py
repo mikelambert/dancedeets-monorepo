@@ -14,6 +14,7 @@ ALL_TOPICS = [
     TOPIC_DANCE_STYLE,
 ]
 
+
 class Topic(ndb.Model):
     graph_id = ndb.StringProperty()
 
@@ -74,6 +75,7 @@ class LookupTopicPage(fb_api.LookupType):
         return [
             ('info', cls.url('%s' % object_id, fields=['id', 'name', 'about', 'cover'])),
         ]
+
     @classmethod
     def cache_key(cls, object_id, fetching_uid):
         return (object_id or 'None', 'OBJ_TOPIC_PAGE')

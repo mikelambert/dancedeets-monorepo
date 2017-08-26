@@ -62,6 +62,7 @@ def _flatten(listOfLists):
     "Flatten one level of nesting"
     return list(itertools.chain.from_iterable(listOfLists))
 
+
 class StringProcessor(object):
     def __init__(self, text, match_on_word_boundaries=None, lowercase=True):
         self.text = text.lower() if lowercase else text
@@ -101,6 +102,7 @@ class StringProcessor(object):
     def real_tokenize(self, token):
         def word_with_hash(match):
             return token.replace_string(match.group(0))
+
         _, count = self.replace_with(token, word_with_hash)
         # If we want to get the matched results/keywords too, then we should only do that conditinoally on count, here:
         #if count:
@@ -234,9 +236,15 @@ class ClassifiedEvent(object):
         club_and_event_matches = self.processed_text.get_tokens(keywords.PRACTICE, keywords.PERFORMANCE, keywords.CONTEST)
         self.times['all_regexes'] = time.time() - a
 
-        self.found_dance_matches = self.real_dance_matches + self.processed_text.get_tokens(keywords.EASY_DANCE, keywords.AMBIGUOUS_DANCE_MUSIC, keywords.EASY_CHOREO, keywords.HOUSE, keywords.TOO_EASY_VOGUE, keywords.EASY_VOGUE) + self.manual_dance_keywords_matches
-        self.found_event_matches = event_matches + self.processed_text.get_tokens(keywords.EASY_EVENT, keywords.JAM) + club_and_event_matches
-        self.found_wrong_matches = self.processed_text.get_tokens(keywords.DANCE_WRONG_STYLE) + self.processed_text.get_tokens(keywords.CLUB_ONLY)
+        self.found_dance_matches = self.real_dance_matches + self.processed_text.get_tokens(
+            keywords.EASY_DANCE, keywords.AMBIGUOUS_DANCE_MUSIC, keywords.EASY_CHOREO, keywords.HOUSE, keywords.TOO_EASY_VOGUE,
+            keywords.EASY_VOGUE
+        ) + self.manual_dance_keywords_matches
+        self.found_event_matches = event_matches + self.processed_text.get_tokens(
+            keywords.EASY_EVENT, keywords.JAM
+        ) + club_and_event_matches
+        self.found_wrong_matches = self.processed_text.get_tokens(keywords.DANCE_WRONG_STYLE
+                                                                 ) + self.processed_text.get_tokens(keywords.CLUB_ONLY)
 
         title_wrong_style_matches = self.processed_title.get_tokens(rules.DANCE_WRONG_STYLE_TITLE)
         title_good_matches = self.processed_title.get_tokens(rules.ANY_GOOD)
@@ -261,7 +269,8 @@ class ClassifiedEvent(object):
         #    if 1.0 * good_parts / len(line) > 0.1:
         #        # strong!
         #        strong += 1
-        music_or_dance_keywords = self.processed_text.count_tokens(keywords.AMBIGUOUS_DANCE_MUSIC) + self.processed_text.count_tokens(keywords.HOUSE)
+        music_or_dance_keywords = self.processed_text.count_tokens(keywords.AMBIGUOUS_DANCE_MUSIC
+                                                                  ) + self.processed_text.count_tokens(keywords.HOUSE)
         if len(self.manual_dance_keywords_matches) >= 1:
             self.dance_event = 'obvious dancer or dance crew or battle'
         # one critical dance keyword
@@ -275,12 +284,19 @@ class ClassifiedEvent(object):
                 self.real_dance_matches)): # these two are implied by the above, but do it here just in case future clause re-ordering occurs
             self.dance_event = False
 
-        elif music_or_dance_keywords >= 1 and (len(event_matches) + self.processed_text.count_tokens(keywords.EASY_CHOREO)) >= 1 and self.calc_inverse_keyword_density < 5 and not (title_wrong_style_matches and not title_good_matches):
+        elif music_or_dance_keywords >= 1 and (
+            len(event_matches) + self.processed_text.count_tokens(keywords.EASY_CHOREO)
+        ) >= 1 and self.calc_inverse_keyword_density < 5 and not (title_wrong_style_matches and not title_good_matches):
             self.dance_event = 'hiphop/funk and good event type'
         # one critical event and a basic dance keyword and not a wrong-dance-style and not a generic-club
-        elif self.processed_text.count_tokens(keywords.EASY_DANCE) >= 1 and (len(event_matches) + self.processed_text.count_tokens(keywords.EASY_CHOREO)) >= 1 and not self.processed_text.count_tokens(keywords.DANCE_WRONG_STYLE) and self.calc_inverse_keyword_density < 5:
+        elif self.processed_text.count_tokens(keywords.EASY_DANCE) >= 1 and (
+            len(event_matches) + self.processed_text.count_tokens(keywords.EASY_CHOREO)
+        ) >= 1 and not self.processed_text.count_tokens(keywords.DANCE_WRONG_STYLE) and self.calc_inverse_keyword_density < 5:
             self.dance_event = 'dance event thats not a bad-style'
-        elif self.processed_text.count_tokens(keywords.EASY_DANCE) >= 1 and len(self.found_event_matches) >= 1 and not self.processed_text.count_tokens(keywords.DANCE_WRONG_STYLE) and self.processed_text.count_tokens(keywords.CLUB_ONLY) == 0:
+        elif self.processed_text.count_tokens(keywords.EASY_DANCE
+                                             ) >= 1 and len(self.found_event_matches) >= 1 and not self.processed_text.count_tokens(
+                                                 keywords.DANCE_WRONG_STYLE
+                                             ) and self.processed_text.count_tokens(keywords.CLUB_ONLY) == 0:
             self.dance_event = 'dance show thats not a club'
         elif music_or_dance_keywords >= 1 and self.processed_text.count_tokens(keywords.EASY_DANCE) >= 1:
             self.dance_event = 'good music and dance keyword'
@@ -331,12 +347,27 @@ def relevant_keywords(event):
 def highlight_keywords(text):
     import jinja2
     processed_text = StringProcessor(jinja2.Markup.escape(text))
-    processed_text.replace_with(rules.ANY_GOOD, lambda match: jinja2.Markup('<span class="matched-text">%s</span>') % match.group(0), flags=re.I)
+    processed_text.replace_with(
+        rules.ANY_GOOD, lambda match: jinja2.Markup('<span class="matched-text">%s</span>') % match.group(0), flags=re.I
+    )
     processed_text.replace_with(rules.ANY_BAD, lambda match: jinja2.Markup('<span class="bad-matched-text">%s</span>') % match.group(0))
     return jinja2.Markup(processed_text.get_tokenized_text())
 
+
 if __name__ == '__main__':
-    a = ['club', 'bottle service', 'table service', 'coat check', 'free before', 'vip', 'guest\\W?list', 'drink specials?', 'resident dj\\W?s?', 'dj\\W?s?', 'techno', 'trance', 'indie', 'glitch', 'bands?', 'dress to', 'mixtape', 'decks', 'r&b', 'local dj\\W?s?', 'all night', 'lounge', 'live performances?', 'doors', 'restaurant', 'hotel', 'music shows?', 'a night of', 'dance floor', 'beer', 'blues', 'bartenders?', 'waiters?', 'waitress(?:es)?', 'go\\Wgo', 'gogo', 'styling', 'salsa', 'bachata', 'balboa', 'tango', 'latin', 'lindy', 'lindyhop', 'swing', 'wcs', 'samba', 'waltz', 'salsy', 'milonga', 'dance partner', 'cha cha', 'hula', 'tumbling', 'exotic', 'cheer', 'barre', 'contact improv', 'contact improv\\w*', 'contratto mimo', 'musical theat(?:re|er)', 'pole dance', 'flirt dance', 'bollywood', 'kalbeliya', 'bhawai', 'teratali', 'ghumar', 'indienne', 'persiana?', 'arabe', 'arabic', 'oriental\\w*', 'oriente', 'cubana', 'capoeira', 'tahitian dancing', 'folklor\\w+', 'kizomba', 'burlesque', 'technique', 'limon', 'clogging', 'zouk', 'afro mundo', 'class?ic[ao]', 'acroyoga', 'kirtan', 'modern dance', 'pilates', 'tribal', 'jazz', 'tap', 'contemporary', 'contempor\\w*', 'africa\\w+', 'sabar', 'silk', 'aerial', 'zumba', 'belly\\W?danc(?:e(?:rs?)?|ing)', 'bellycraft', 'worldbellydancealliance', 'soca', 'flamenco']
+    a = [
+        'club', 'bottle service', 'table service', 'coat check', 'free before', 'vip', 'guest\\W?list', 'drink specials?',
+        'resident dj\\W?s?', 'dj\\W?s?', 'techno', 'trance', 'indie', 'glitch', 'bands?', 'dress to', 'mixtape', 'decks', 'r&b',
+        'local dj\\W?s?', 'all night', 'lounge', 'live performances?', 'doors', 'restaurant', 'hotel', 'music shows?', 'a night of',
+        'dance floor', 'beer', 'blues', 'bartenders?', 'waiters?', 'waitress(?:es)?', 'go\\Wgo', 'gogo', 'styling', 'salsa', 'bachata',
+        'balboa', 'tango', 'latin', 'lindy', 'lindyhop', 'swing', 'wcs', 'samba', 'waltz', 'salsy', 'milonga', 'dance partner', 'cha cha',
+        'hula', 'tumbling', 'exotic', 'cheer', 'barre', 'contact improv', 'contact improv\\w*', 'contratto mimo', 'musical theat(?:re|er)',
+        'pole dance', 'flirt dance', 'bollywood', 'kalbeliya', 'bhawai', 'teratali', 'ghumar', 'indienne', 'persiana?', 'arabe', 'arabic',
+        'oriental\\w*', 'oriente', 'cubana', 'capoeira', 'tahitian dancing', 'folklor\\w+', 'kizomba', 'burlesque', 'technique', 'limon',
+        'clogging', 'zouk', 'afro mundo', 'class?ic[ao]', 'acroyoga', 'kirtan', 'modern dance', 'pilates', 'tribal', 'jazz', 'tap',
+        'contemporary', 'contempor\\w*', 'africa\\w+', 'sabar', 'silk', 'aerial', 'zumba', 'belly\\W?danc(?:e(?:rs?)?|ing)', 'bellycraft',
+        'worldbellydancealliance', 'soca', 'flamenco'
+    ]
     a = sorted(a)
     print a
     print highlight_keywords(u' ๆ ซึ่งไม่ให้พี่น้อง Bboy ได้ผิดหวังอีกต่อไป*')

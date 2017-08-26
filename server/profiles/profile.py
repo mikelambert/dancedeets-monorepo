@@ -12,4 +12,3 @@ class Profile(db.Model):
 
     def get_by_id(id):
         pass
-

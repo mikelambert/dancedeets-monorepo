@@ -16,6 +16,7 @@ from . import search_base
 from . import search_pages
 from servlets import api
 
+
 class SearchHandler(base_servlet.BaseRequestHandler):
     def requires_login(self):
         if not self.request.get('location') and not self.request.get('keywords'):
@@ -45,6 +46,7 @@ class SearchHandler(base_servlet.BaseRequestHandler):
         form.validated = form.validate()
         self.handle_search(form)
 
+
 @app.route('/calendar/iframe')
 class CalendarHandler(SearchHandler):
     template_name = 'calendar_iframe'
@@ -55,16 +57,12 @@ class CalendarHandler(SearchHandler):
         if not validated:
             for field, errors in form.errors.items():
                 for error in errors:
-                    self.add_error(u"%s error: %s" % (
-                        getattr(form, field).label.text,
-                        error
-                    ))
+                    self.add_error(u"%s error: %s" % (getattr(form, field).label.text, error))
 
-        props = dict(
-            query=form.url_params(),
-        )
+        props = dict(query=form.url_params(),)
         self.setup_react_template('calendar.js', props)
         self.render_template(self.template_name)
+
 
 @app.route('/')
 @app.route('/events/relevant')
@@ -77,15 +75,10 @@ class RelevantHandler(SearchHandler):
         if not validated:
             for field, errors in form.errors.items():
                 for error in errors:
-                    self.add_error(u"%s error: %s" % (
-                        getattr(form, field).label.text,
-                        error
-                    ))
+                    self.add_error(u"%s error: %s" % (getattr(form, field).label.text, error))
 
         if self.request.get('calendar'):
-            props = dict(
-                query=form.url_params(),
-            )
+            props = dict(query=form.url_params(),)
             self.setup_react_template('calendar.js', props)
         else:
             search_query = None
@@ -119,7 +112,9 @@ class RelevantHandler(SearchHandler):
             need_full_event = False
             # Keep in sync with mobile react code? And api.py
             skip_people = True
-            json_search_response = api.build_search_results_api(form, search_query, search_results, (2, 0), need_full_event, geocode, distance, skip_people=skip_people)
+            json_search_response = api.build_search_results_api(
+                form, search_query, search_results, (2, 0), need_full_event, geocode, distance, skip_people=skip_people
+            )
             props = dict(
                 response=json_search_response,
                 showPeople=not skip_people,
@@ -130,6 +125,7 @@ class RelevantHandler(SearchHandler):
 
         self.render_template(self.template_name)
 
+
 @app.route('/city/(.*)/?')
 class CityHandler(RelevantHandler):
     def requires_login(self):
@@ -137,13 +133,13 @@ class CityHandler(RelevantHandler):
 
     def handle(self, city_name):
         # TODO(lambert): Why is this still required, can we get rid of it?
-        self.fbl.batch_fetch() # to avoid bad error handler?
+        self.fbl.batch_fetch()  # to avoid bad error handler?
         city_name = city_name.decode('utf-8')
         form = search_base.SearchForm(data={'location': city_name, 'distance': cities.NEARBY_DISTANCE_KM, 'distance_units': 'km'})
         self.handle_search(form)
+
 
 @app.route('/pages/search')
 class RelevantPageHandler(RelevantHandler):
     template_name = 'results_pages'
     search_class = search_pages.SearchPages
-

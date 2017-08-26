@@ -17,6 +17,7 @@ from . import event_pipeline
 from . import potential_events
 from . import thing_db
 
+
 def delete_bad_source(source):
     if source.creating_fb_uid or source.num_real_events:
         if source.street_dance_related != True:
@@ -32,6 +33,7 @@ def delete_bad_source(source):
         sid = source.graph_id
         yield operation.db.Delete(source)
         yield '-%s\n' % sid
+
 
 def mr_delete_bad_sources():
     mapper_params = {
@@ -96,13 +98,16 @@ def discover_events_from_sources(fbl, sources):
     logging.info("Discovered %s items: %s", len(discovered_list), discovered_list)
     return discovered_list
 
+
 def scrape_events_from_source_ids(fbl, source_ids):
     sources = thing_db.Source.get_by_key_name(source_ids)
     sources = [x for x in sources if x]
     logging.info("Looking up %s source_ids, found %s sources", len(source_ids), len(sources))
     scrape_events_from_sources(fbl, sources)
 
+
 map_scrape_events_from_sources = fb_mapreduce.mr_wrap(scrape_events_from_sources)
+
 
 def mapreduce_scrape_all_sources(fbl, min_potential_events=None, queue='slow-queue'):
     # Do not do the min_potential_events>1 filter in the mapreduce filter,
@@ -120,6 +125,7 @@ def mapreduce_scrape_all_sources(fbl, min_potential_events=None, queue='slow-que
         randomize_tokens=True,
     )
 
+
 def mapreduce_create_sources_from_events(fbl):
     fb_mapreduce.start_map(
         fbl,
@@ -127,6 +133,7 @@ def mapreduce_create_sources_from_events(fbl):
         'event_scraper.thing_db.map_create_sources_from_event',
         'events.eventdata.DBEvent',
     )
+
 
 def parsed_event_link(url):
     p = urlparse.urlparse(url)
@@ -139,6 +146,7 @@ def parsed_event_link(url):
         return p
     else:
         return None
+
 
 def _process_thing_feed(fbl, source):
     fb_source_common = fbl.fetched_data(fb_api.LookupThingCommon, source.graph_id)
@@ -179,6 +187,7 @@ def _process_thing_feed(fbl, source):
             discovered_list.append(discovered)
     return discovered_list
 
+
 def build_discovered_from_feed(source, feed_data, post_high_watermark):
     discovered_list = []
     for post in feed_data:
@@ -216,6 +225,7 @@ def build_discovered_from_feed(source, feed_data, post_high_watermark):
                 logging.warning("broken link is %s", urlparse.urlunparse(p))
     return discovered_list
 
+
 def process_event_source_ids(discovered_list, fbl):
     # TODO(lambert): maybe trim any ids from posts with dates "past" the last time we scraped? tricky to get correct though
     logging.info("Loading processing %s discovered events", len(discovered_list))
@@ -235,6 +245,7 @@ def process_event_source_ids(discovered_list, fbl):
         # initiate an out-of-band-scrape for our new sources we found
         if new_source_ids:
             deferred.defer(scrape_events_from_source_ids, fbl, new_source_ids)
+
 
 def scrape_events_from_source_ids_with_fallback(fbl, source_ids):
     for source_id in source_ids:

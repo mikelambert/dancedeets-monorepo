@@ -1,4 +1,3 @@
-
 import logging
 
 import app
@@ -25,6 +24,7 @@ class TrackNewUserFriendsHandler(base_servlet.BaseTaskFacebookRequestHandler):
         user_friends = users.UserFriendsAtSignup.get_or_insert(self.fb_uid)
         user_friends.registered_friend_string_ids = [x['id'] for x in app_friend_list['data']]
         user_friends.put()
+
     post = get
 
 
@@ -48,6 +48,7 @@ class ReloadAllUsersHandler(base_servlet.BaseTaskFacebookRequestHandler):
             },
             queue='fast-queue'
         )
+
     post = get
 
 
@@ -76,6 +77,7 @@ def fetch_and_save_fb_user(fbl, user):
     else:
         user.compute_derived_properties(fb_user)
         user.put()
+
 
 map_load_fb_user = fb_mapreduce.mr_user_wrap(yield_load_fb_user)
 load_fb_user = fb_mapreduce.nomr_wrap(yield_load_fb_user)

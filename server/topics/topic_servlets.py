@@ -22,6 +22,7 @@ DEVELOPER_KEY = keys.get('google_server_key')
 YOUTUBE_API_SERVICE_NAME = 'youtube'
 YOUTUBE_API_VERSION = 'v3'
 
+
 @app.bio_route('/?')
 @app.route('/topic/?')
 class TopicListHandler(base_servlet.BaseRequestHandler):
@@ -34,16 +35,15 @@ class TopicListHandler(base_servlet.BaseRequestHandler):
 
         self.render_template('topic_list')
 
+
 def get_instagrams_for(username):
     text = urllib2.urlopen('https://www.instagram.com/%s/media/' % username).read()
     json_data = json.loads(text)
     return json_data
 
+
 def get_videos_for(keyword, recent=False):
-    youtube = build(
-        YOUTUBE_API_SERVICE_NAME,
-        YOUTUBE_API_VERSION,
-        developerKey=DEVELOPER_KEY)
+    youtube = build(YOUTUBE_API_SERVICE_NAME, YOUTUBE_API_VERSION, developerKey=DEVELOPER_KEY)
     search_response = youtube.search().list(
         q=keyword,
         part="id,snippet",
@@ -53,6 +53,8 @@ def get_videos_for(keyword, recent=False):
 
 
 topic_regex = '([^/]+)'
+
+
 @app.bio_route('/%s' % topic_regex)
 @app.route('/topic/%s/?' % topic_regex)
 class TopicHandler(base_servlet.BaseRequestHandler):
@@ -60,7 +62,7 @@ class TopicHandler(base_servlet.BaseRequestHandler):
         return False
 
     def get(self, name):
-        topics = topic_db.Topic.query(topic_db.Topic.url_path==name).fetch(1)
+        topics = topic_db.Topic.query(topic_db.Topic.url_path == name).fetch(1)
         if not topics:
             self.response.set_status(404)
             return
@@ -109,7 +111,9 @@ class TopicHandler(base_servlet.BaseRequestHandler):
         searcher.search_index = search.AllEventsIndex
         search_results = searcher.get_search_results(prefilter=prefilter)
 
-        json_search_response = api.build_search_results_api(None, search_query, search_results, (2, 0), need_full_event=False, geocode=None, distance=None)
+        json_search_response = api.build_search_results_api(
+            None, search_query, search_results, (2, 0), need_full_event=False, geocode=None, distance=None
+        )
 
         videos = get_videos_for(topic.youtube_query)
 
@@ -150,12 +154,13 @@ def get_id_from_url(url):
         page_name = path_components[1]
         return page_name
 
+
 #"https://www.facebook.com/dancedeets"
 #"https://www.facebook.com/pages/DanceDeets-Events/1613128148918160"
 
+
 @app.route('/topic_add')
 class AdminAddTopicHandler(base_servlet.BaseRequestHandler):
-
     def show_barebones_page(self):
         self.response.out.write('Bleh')
 
@@ -179,7 +184,7 @@ class AdminAddTopicHandler(base_servlet.BaseRequestHandler):
 
         real_page_id = fb_page['info']['id']
 
-        topics = topic_db.Topic.query(topic_db.Topic.graph_id==real_page_id).fetch(1)
+        topics = topic_db.Topic.query(topic_db.Topic.graph_id == real_page_id).fetch(1)
         topic = topics[0] if topics else topic_db.Topic()
 
         topic.graph_id = real_page_id
@@ -187,4 +192,3 @@ class AdminAddTopicHandler(base_servlet.BaseRequestHandler):
         topic.search_keywords = self.request.get_all('search_keywords')
         topic.put()
         self.response.out.write('Added!')
-

@@ -15,6 +15,7 @@ from util import dates
 from util import fb_events
 from util import urls
 
+
 @app.route('/promote')
 class PromoteHandler(base_servlet.BaseRequestHandler):
     def requires_login(self):
@@ -85,16 +86,23 @@ class PromoteHandler(base_servlet.BaseRequestHandler):
         classified_event.classify()
         auto_add_result = event_auto_classifier.is_auto_add_event(classified_event)
         if not auto_add_result[0]:
-            event_warnings.append("The event wouldn't be automatically added. There weren't enough strong keywords for the system to identify it.")
+            event_warnings.append(
+                "The event wouldn't be automatically added. There weren't enough strong keywords for the system to identify it."
+            )
         auto_notadd_result = event_auto_classifier.is_auto_notadd_event(classified_event, auto_add_result=auto_add_result)
         if auto_notadd_result[0]:
-            event_warnings.append('The event appears to be the "wrong" kind of dance event for DanceDeets. Are you sure it is a street dance event?')
+            event_warnings.append(
+                'The event appears to be the "wrong" kind of dance event for DanceDeets. Are you sure it is a street dance event?'
+            )
 
         location_info = event_locations.LocationInfo(fb_event)
         if not location_info.geocode:
             event_errors.append('Your event has no location. Please select a particular address, city, state, or country for this event.')
         elif 'place' not in fb_event['info']:
-            event_warnings.append('For best results, your event should select a location from one of the venues Facebook suggests. DanceDeets believes your event is in %s' % location_info.final_city)
+            event_warnings.append(
+                'For best results, your event should select a location from one of the venues Facebook suggests. DanceDeets believes your event is in %s'
+                % location_info.final_city
+            )
 
         self.display['event_warnings'] = event_warnings
         self.display['event_errors'] = event_errors
@@ -109,7 +117,6 @@ class PromoteHandler(base_servlet.BaseRequestHandler):
 
 @app.route(r'/promoters/events/(%s)(?:/.*)?' % urls.EVENT_ID_REGEX)
 class PromoteEventHandler(base_servlet.BaseRequestHandler):
-
     def get(self, event_id):
         self.finish_preload()
 

@@ -8,10 +8,12 @@ from util import fb_events
 
 # grep '^701004.[0-9]*.OBJ_EVENT,' local_data/FacebookCachedObject.csv > local_data/FacebookCachedObjectEvent.csv
 
+
 class ClassifiedIds(object):
     def __init__(self, good_ids, bad_ids):
         self.good_ids = frozenset(good_ids)
         self.bad_ids = frozenset(bad_ids)
+
 
 class ClassifierScoreCard(object):
     def __init__(self, training_data, classifier_data, positive_classifier):
@@ -38,7 +40,6 @@ class ClassifierScoreCard(object):
         open(os.path.join(directory, 'true_negatives.txt'), 'w').writelines('%s\n' % x for x in sorted(self.true_negatives))
 
 
-
 def _partition_classify(arg):
     classifier, (key, value) = arg
     try:
@@ -48,13 +49,15 @@ def _partition_classify(arg):
         raise
     return (result, key)
 
+
 def _partition_init_worker():
     import signal
     signal.signal(signal.SIGINT, signal.SIG_IGN)
     import os
     os.nice(5)
 
-def partition_data(data, classifier=lambda x:False, workers=None):
+
+def partition_data(data, classifier=lambda x: False, workers=None):
     if not workers:
         workers = multiprocessing.cpu_count()
     pool = multiprocessing.Pool(processes=workers, initializer=_partition_init_worker)
@@ -99,6 +102,7 @@ def load_classified_ids(all_ids):
     classified_ids = ClassifiedIds(good_ids, bad_ids)
     return classified_ids
 
+
 def all_fb_data(combined_ids, filename='local_data/FacebookCachedObjectEvent.csv'):
     csv.field_size_limit(1000000000)
     for row in csv.reader(open(filename)):
@@ -107,5 +111,3 @@ def all_fb_data(combined_ids, filename='local_data/FacebookCachedObjectEvent.csv
             fb_event = json.loads(row[1])
             if fb_event and not fb_event.get('deleted') and not fb_event.get('empty') and fb_events.is_public(fb_event):
                 yield row_id, fb_event
-
-

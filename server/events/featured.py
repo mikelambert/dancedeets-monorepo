@@ -10,6 +10,7 @@ from events import eventdata
 
 MAX_OBJECTS = 100
 
+
 class FeaturedResult(ndb.Model):
     event_id = ndb.StringProperty()
     json_props = ndb.JsonProperty(indexed=False)
@@ -21,6 +22,7 @@ class FeaturedResult(ndb.Model):
     @property
     def showTitle(self):
         return self.json_props.get('showTitle') == True
+
 
 def get_featured_events_for(southwest, northeast):
     if not southwest or not northeast:
@@ -43,8 +45,5 @@ def get_featured_events_for(southwest, northeast):
         if featured_event.end_time_with_tz < datetime.datetime.utcnow().replace(tzinfo=pytz.utc):
             logging.info('Discarding featured event in the past: %s', featured_event.id)
             continue
-        featured_infos.append({
-            'event': featured_event,
-            'showTitle': featured_result.showTitle
-        })
+        featured_infos.append({'event': featured_event, 'showTitle': featured_result.showTitle})
     return featured_infos

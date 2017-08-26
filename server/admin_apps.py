@@ -10,6 +10,7 @@ import facebook
 from login_admin import authorize_middleware
 import main
 
+
 def _get_facebook_user_id(environ):
     request_cookies = RequestCookies(environ)
     user_data = facebook.parse_signed_request_cookie(request_cookies)
@@ -19,6 +20,7 @@ def _get_facebook_user_id(environ):
 
 
 admin_ids = ['701004']
+
 
 def is_admin(environ):
     # check if the fb-tokens we have correspond to one of our admin users

@@ -5,6 +5,7 @@ from . import potential_events_reloading
 from . import thing_db
 from . import thing_scraper
 
+
 @app.route('/tools/auto_add_potential_events')
 class AutoAddPotentialEventsHandler(base_servlet.BaseTaskFacebookRequestHandler):
     def get(self):
@@ -26,21 +27,25 @@ class AutoAddPotentialEventsHandler(base_servlet.BaseTaskFacebookRequestHandler)
 class MaybeAddEventsHandler(base_servlet.EventIdOperationHandler):
     event_id_operation = staticmethod(auto_add.maybe_add_events)
 
+
 @app.route('/tasks/count_source_stats')
 class CountSourceStatsHandler(base_servlet.BaseTaskFacebookRequestHandler):
     def get(self):
         queue = self.request.get('queue', 'slow-queue')
         thing_db.mr_count_potential_events(self.fbl, queue=queue)
 
+
 @app.route('/tasks/load_potential_events_for_user')
 class LoadPotentialEventsForUserHandler(base_servlet.UserIdOperationHandler):
     user_id_operation = staticmethod(potential_events_reloading.load_potential_events_for_user_ids)
+
 
 @app.route('/tasks/load_all_potential_events')
 class LoadAllPotentialEventsHandler(base_servlet.BaseTaskFacebookRequestHandler):
     def get(self):
         # this calls a map function wrapped by mr_user_wrap, so it works correctly on a per-user basis
         potential_events_reloading.mr_load_potential_events(self.fbl)
+
 
 @app.route('/tasks/load_potential_events_from_wall_posts')
 class LoadPotentialEventsFromWallPostsHandler(base_servlet.BaseTaskFacebookRequestHandler):

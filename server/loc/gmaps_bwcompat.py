@@ -36,10 +36,7 @@ class BwCachedBackend(gmaps_backends.GMapsBackend):
             address = kwargs.get('address')
             latlng = kwargs.get('latlng')
             if not address and not latlng:
-                return {
-                    "results": [],
-                    "status": "ZERO_RESULTS"
-                }
+                return {"results": [], "status": "ZERO_RESULTS"}
 
             # We changed this to be clearer and more consistent, but all our geocaches use "US" as a suffix, not "United States"
             if address and address.endswith('United States'):
@@ -50,15 +47,9 @@ class BwCachedBackend(gmaps_backends.GMapsBackend):
                 try:
                     geocoded_data = json.loads(geocode.json_data)
                     if not geocoded_data:
-                        return {
-                            "results": [],
-                            "status": "ZERO_RESULTS"
-                        }
+                        return {"results": [], "status": "ZERO_RESULTS"}
                     else:
-                        return {
-                            "results": [geocoded_data],
-                            "status": "OK"
-                        }
+                        return {"results": [geocoded_data], "status": "OK"}
                 except:
                     pass
         return self.backend.get_json(**kwargs)

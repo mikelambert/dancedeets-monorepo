@@ -17,6 +17,7 @@ full_size = (626, 840)
 
 WEEKLY_IMAGE_BUCKET = 'dancedeets-weekly'
 
+
 def build_animated_image(results):
     images = [_generate_image(x.db_event) for x in results if x.db_event.full_image_url]
 
@@ -28,6 +29,7 @@ def build_animated_image(results):
 
     image_data = _compress_image(image_data)
     return image_data
+
 
 def _compress_image(image_data):
     if subprocess.call('which gifsicle > /dev/null', shell=True):
@@ -45,6 +47,7 @@ def _compress_image(image_data):
     logging.info('Compressed %s -> %s bytes', len(image_data), len(compressed_data))
     orig.close()
     return compressed_data
+
 
 def _generate_image(event):
     image_data = event_image.get_image(event)
@@ -71,11 +74,13 @@ def _generate_image(event):
 
     return target
 
+
 def _generate_path(city, week_start):
     path = '%s/%s.gif' % (week_start.strftime('%Y-%m-%d'), city.display_name())
     if runtime.is_local_appengine():
         path = 'dev/%s' % path
     return path
+
 
 def build_and_cache_image(city, week_start, search_results):
     image = build_animated_image(search_results)
@@ -83,6 +88,7 @@ def build_and_cache_image(city, week_start, search_results):
     gcs.put_object(WEEKLY_IMAGE_BUCKET, path, image)
     image_url = 'https://www.dancedeets.com/weekly/image?city=%s&week_start=%s' % (city.key().name(), week_start.strftime('%Y-%m-%d'))
     return image_url
+
 
 def load_cached_image(city, week_start):
     path = _generate_path(city, week_start)
@@ -92,6 +98,7 @@ def load_cached_image(city, week_start):
     except gcs.NotFoundError:
         image_data = None
     return image_data
+
 
 @app.route('/weekly/image')
 class WeeklyImageHandler(base_servlet.BareBaseRequestHandler):
@@ -104,7 +111,7 @@ class WeeklyImageHandler(base_servlet.BareBaseRequestHandler):
             week_start = datetime.datetime.strptime(self.request.get('week_start'), '%Y-%m-%d').date()
         else:
             d = datetime.date.today()
-            week_start = d - datetime.timedelta(days=d.weekday()) # round down to last monday
+            week_start = d - datetime.timedelta(days=d.weekday())  # round down to last monday
 
         image_data = not disable_cache and load_cached_image(city, week_start)
 

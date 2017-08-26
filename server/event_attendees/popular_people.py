@@ -18,8 +18,10 @@ TOP_N = 100
 SUMMED_AREA = 'Summed-Area'
 SUMMED_AREA_CITY_DELIM = '|||'
 
+
 def is_summed_area(city):
     return city.startswith(SUMMED_AREA)
+
 
 def get_summed_area_cities(city):
     if is_summed_area(city):
@@ -30,6 +32,7 @@ def get_summed_area_cities(city):
             raise ValueError('Unknown Summed Area: %s' % city)
     else:
         return [city]
+
 
 class PRDebugAttendee(ndb.Model):
     created_date = ndb.DateTimeProperty(auto_now=True)
@@ -43,6 +46,7 @@ class PRDebugAttendee(ndb.Model):
         # TODO: sync with dataflow
         return '%s: %s' % (city, person_id)
 
+
 class PRCityCategory(ndb.Model):
     # key = city + other things
     created_date = ndb.DateTimeProperty(auto_now=True)
@@ -52,6 +56,7 @@ class PRCityCategory(ndb.Model):
     category = ndb.StringProperty()
     top_people_json = ndb.JsonProperty()
     # top_people_json is [['id: name', count], ...]
+
 
 class PeopleRanking(object):
     def __init__(self, city, category, person_type, top_people_json):
@@ -94,6 +99,7 @@ class PeopleRanking(object):
         top_person_unique_events = top_person[1]
         return max([int(top_person_unique_events * cutoff), minimum])
 
+
 def get_people_rankings_for_city_names(city_names, attendees_only=False):
     if runtime.is_local_appengine():
         pr_city_categories = load_from_dev(city_names, attendees_only=attendees_only)
@@ -108,6 +114,7 @@ def get_people_rankings_for_city_names(city_names, attendees_only=False):
         results.append(PeopleRanking(city_category.city, city_category.category, city_category.person_type, city_category.top_people_json))
 
     return results
+
 
 def load_from_dev(city_names, attendees_only):
     rankings = []
@@ -129,6 +136,7 @@ def load_from_dev(city_names, attendees_only):
             rankings.append(ranking)
     return rankings
 
+
 def _get_city_names_within(bounds):
     if bounds == None:
         return []
@@ -138,6 +146,7 @@ def _get_city_names_within(bounds):
     biggest_cities = sorted(included_cities, key=lambda x: -x.population)[:10]
     city_names = [city.display_name() for city in biggest_cities]
     return city_names
+
 
 def get_attendees_within(bounds, max_attendees):
     city_names = _get_city_names_within(bounds)
@@ -171,6 +180,7 @@ def get_attendees_within(bounds, max_attendees):
             logging.warning('Error writing memcache key %s with value length: %s', memcache_key, len(json_dump))
             logging.warning('Tried to write: %s', json.dumps(result, indent=2))
     return result
+
 
 def combine_rankings(rankings, max_people=0):
     groupings = {}
@@ -228,6 +238,7 @@ def combine_rankings(rankings, max_people=0):
         # Sort by count, then by name (for stable sorting)
         final_groupings[person_type][secondary_key] = sorted(dicts, key=lambda x: (-x['count'], x['id']))
     return final_groupings
+
 
 @app.route('/tools/popular_people')
 class ExportSourcesHandler(base_servlet.BaseTaskFacebookRequestHandler):

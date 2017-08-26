@@ -5,6 +5,7 @@ import urllib
 import keys
 from . import gmaps_backends
 
+
 class ProdServerBackend(gmaps_backends.GMapsBackend):
     def __init__(self, lookup_type, backend):
         self.lookup_type = lookup_type

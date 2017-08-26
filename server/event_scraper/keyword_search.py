@@ -12,6 +12,7 @@ from . import thing_db
 from . import potential_events
 from . import event_pipeline
 
+
 class LookupSearchEvents(fb_api.LookupType):
     @classmethod
     def track_lookup(cls):
@@ -27,6 +28,7 @@ class LookupSearchEvents(fb_api.LookupType):
     def cache_key(cls, object_id, fetching_uid):
         return (fb_api.USERLESS_UID, object_id, 'OBJ_SEARCH')
 
+
 def two(w):
     a, b = w.split(' ')
     keywords = [
@@ -35,19 +37,42 @@ def two(w):
     ]
     return keywords
 
+
 def search_fb(fbl):
     obvious_keywords = ([
-        'bboys', 'bboying', 'bgirl', 'bgirls', 'bgirling', 'breakdancing', 'breakdancers', 'breakdanse',
-        'hiphop', 'hip hop', 'new style',
+        'bboys',
+        'bboying',
+        'bgirl',
+        'bgirls',
+        'bgirling',
+        'breakdancing',
+        'breakdancers',
+        'breakdanse',
+        'hiphop',
+        'hip hop',
+        'new style',
         'house danse',
-        'afro house', 'afrohouse',
-        'poppers', 'poplock',
-        'tutting', 'bopping', 'boppers',
-        'lockers', 'locking',
-        'waacking', 'waackers', 'waack', 'whacking', 'whackers',
-        'jazzrock', 'jazz rock', 'jazz-rock',
+        'afro house',
+        'afrohouse',
+        'poppers',
+        'poplock',
+        'tutting',
+        'bopping',
+        'boppers',
+        'lockers',
+        'locking',
+        'waacking',
+        'waackers',
+        'waack',
+        'whacking',
+        'whackers',
+        'jazzrock',
+        'jazz rock',
+        'jazz-rock',
         'ragga jam',
-        'krump', 'krumperz', 'krumping',
+        'krump',
+        'krumperz',
+        'krumping',
         'streetjazz',
         'voguing',
         'house danse',
@@ -68,9 +93,7 @@ def search_fb(fbl):
         'cypher',
         'cypher battle',
         'cypher jam',
-    ] + two('electro dance')
-      + two('lite feet')
-    )
+    ] + two('electro dance') + two('lite feet'))
     too_popular_keywords = ([
         'bboy',
         'breaking',
@@ -78,7 +101,8 @@ def search_fb(fbl):
         'house dance',
         'bebop',
         'dancehall',
-        'street jazz', 'street-jazz',
+        'street jazz',
+        'street-jazz',
         'hip hop dance',
         # 'house workshop'....finds auto-add events we don't want labelled as house or as dance events
         # so we don't want to list it here..
@@ -88,32 +112,33 @@ def search_fb(fbl):
         # 'flexing',
         'lock',
         'popping',
-        'dance', 'choreo', 'choreography',
+        'dance',
+        'choreo',
+        'choreography',
         #'kpop', 'k pop',
         'vogue',
         'all styles',
         'freestyle',
-    ] + two('hip hop')
-      + two('street dance')
-      + two('new style')
-      + two('all styles')
-    )
+    ] + two('hip hop') + two('street dance') + two('new style') + two('all styles'))
     event_types = [
         'session',
-
         'workshop',
-        'class', 'taller', 'stage',
+        'class',
+        'taller',
+        'stage',
         'lesson',
-
         'battle',
         'jam',
-        'competition', 'competición', 'competencia',
-        'contest', 'concours',
+        'competition',
+        'competición',
+        'competencia',
+        'contest',
+        'concours',
         'tournaments',
-
-        'performance', 'spectacle',
-
-        'audition', 'audiciones',
+        'performance',
+        'spectacle',
+        'audition',
+        'audiciones',
         'bonnie and clyde',
     ]
     all_keywords = obvious_keywords[:]
@@ -150,7 +175,6 @@ def search_fb(fbl):
     discovered_list = [potential_events.DiscoveredEvent(id, None, thing_db.FIELD_SEARCH) for id in sorted(all_ids)]
 
     event_pipeline.process_discovered_events(fbl, discovered_list)
-
 
 
 @app.route('/tools/search_fb_for_events')

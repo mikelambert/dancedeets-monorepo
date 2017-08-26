@@ -3,6 +3,7 @@ from scrapy import item
 
 from scrapy_lib import pipelines
 
+
 class SaveFacebookEventPipeline(pipelines.SaveEventsToServerPipeline):
     server_path = 'web_events/upload_multi_fbevent'
     batch_size = 20

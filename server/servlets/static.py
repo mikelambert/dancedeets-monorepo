@@ -5,21 +5,15 @@ import webapp2
 
 import app
 
-mappings = [
-    (r'^/(dancedeets\.png)', './'),
-    (r'^/(robots\.txt)', './'),
-    (r'^/(favicon\.ico)', './'),
-    (r'^/v?css/(.*)', 'css/'),
-    (r'^/v?js/(.*)', 'js/'),
-    (r'^/dist[^/]*/(.*)', 'dist/'),
-    (r'^/images/(.*)', 'images/'),
-    (r'^/mapreduce/pipeline/images/(.*)', 'mapreduce/pipeline/ui/images/')
-]
+mappings = [(r'^/(dancedeets\.png)', './'), (r'^/(robots\.txt)', './'), (r'^/(favicon\.ico)', './'), (r'^/v?css/(.*)', 'css/'),
+            (r'^/v?js/(.*)', 'js/'), (r'^/dist[^/]*/(.*)', 'dist/'), (r'^/images/(.*)', 'images/'),
+            (r'^/mapreduce/pipeline/images/(.*)', 'mapreduce/pipeline/ui/images/')]
 
 compiled_mappings = [(re.compile(regex), path) for regex, path in mappings]
 all_static = '|'.join(regex for regex, path in mappings)
 
 mimetypes.add_type('application/font-woff2', '.woff2')
+
 
 @app.route(all_static)
 class StaticHandler(webapp2.RequestHandler):

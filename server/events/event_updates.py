@@ -25,6 +25,7 @@ DATETIME_FORMAT_TZ = "%Y-%m-%dT%H:%M:%S%z"
 
 timezone_finder = TimezoneFinder()
 
+
 def _event_time_period(db_event):
     return dates.event_time_period(db_event.start_time, db_event.end_time)
 
@@ -38,7 +39,10 @@ def delete_event(db_event):
 def need_forced_update(db_event):
     # If the expected time period is not the same as what we've computed and stored, we need to force update
     new_time_period = (db_event.search_time_period != _event_time_period(db_event))
-    logging.info("Event %s with time %s - %s: has search_time_period %s, expecting %s", db_event.id, db_event.start_time, db_event.end_time, db_event.search_time_period, _event_time_period(db_event))
+    logging.info(
+        "Event %s with time %s - %s: has search_time_period %s, expecting %s", db_event.id, db_event.start_time, db_event.end_time,
+        db_event.search_time_period, _event_time_period(db_event)
+    )
     return new_time_period
 
 
@@ -63,6 +67,7 @@ def resave_display_events(db_events):
     display_events = [search.DisplayEvent.build(x) for x in db_events]
     ndb.put_multi([x for x in display_events if x])
 
+
 def _save_events(db_events, disable_updates=None):
     objects_to_put = list(db_events)
     objects_to_put += [search.DisplayEvent.build(x) for x in db_events]
@@ -79,6 +84,7 @@ def _all_attending_count(fb_event):
     else:
         return None
 
+
 def _inner_cache_photo(db_event):
     if db_event.full_image_url:
         try:
@@ -92,6 +98,7 @@ def _inner_cache_photo(db_event):
             del db_event.json_props['photo_width']
         if 'photo_height' in db_event.json_props:
             del db_event.json_props['photo_height']
+
 
 def _inner_make_event_findable_for_fb_event(db_event, fb_dict, disable_updates):
     """set up any cached fields or bucketing or whatnot for this event"""
@@ -143,9 +150,11 @@ def _inner_make_event_findable_for_fb_event(db_event, fb_dict, disable_updates):
     location_info = event_locations.LocationInfo(fb_dict, db_event=db_event)
     _update_geodata(db_event, location_info, disable_updates)
 
+
 def clean_address(address):
     address = re.sub(r'B?\d*F?\d*$', '', address)
     return address
+
 
 def _inner_make_event_findable_for_web_event(db_event, web_event, disable_updates):
     logging.info("Making web_event %s findable." % db_event.id)
@@ -154,7 +163,7 @@ def _inner_make_event_findable_for_web_event(db_event, web_event, disable_update
     db_event.fb_event = None
     db_event.owner_fb_uid = None
 
-    db_event.attendee_count = 0 # Maybe someday set attending counts when we fetch them?
+    db_event.attendee_count = 0  # Maybe someday set attending counts when we fetch them?
 
     if web_event['start_time'].endswith('Z'):
         web_event['start_time'] = web_event['start_time'][:-1]
@@ -208,7 +217,9 @@ def _inner_make_event_findable_for_web_event(db_event, web_event, disable_update
         elif 'country' not in web_event:
             web_event['country'] = geocode_with_address.country()
         elif web_event['country'] != geocode_with_address.country():
-            logging.error("Found incorrect address for venue! Expected %s but found %s", web_event['country'], geocode_with_address.country())
+            logging.error(
+                "Found incorrect address for venue! Expected %s but found %s", web_event['country'], geocode_with_address.country()
+            )
 
         latlng = geocode.json_data['geometry']['location']
         web_event['latitude'] = latlng['lat']

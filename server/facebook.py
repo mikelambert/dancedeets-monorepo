@@ -13,7 +13,6 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
-
 """Python client library for the Facebook Platform.
 
 This client library is designed to support the Graph API and the official
@@ -48,6 +47,7 @@ def load_yaml(filename):
     abs_filename = os.path.join(os.path.dirname(__file__), filename)
     return yaml.load(file(abs_filename, 'r'))
 
+
 FACEBOOK_CONFIG = load_yaml(filename)
 try:
     _PROD_FACEBOOK_CONFIG = load_yaml('facebook-prod.yaml')
@@ -58,19 +58,22 @@ except IOError as e:
 # This new code pulled from: https://gist.github.com/1190267
 # aka: Hacked version of "official" (but now unsupported) Facebook Python SDK to support OAuth 2.0
 
+
 def urlsafe_b64decode(str):
     """Perform Base 64 decoding for strings with missing padding."""
 
     l = len(str)
     pl = l % 4
-    return base64.urlsafe_b64decode(str.ljust(l+pl, "="))
+    return base64.urlsafe_b64decode(str.ljust(l + pl, "="))
 
 
 class SignedRequestError(Exception):
     pass
 
+
 class AlreadyHasLongLivedToken(Exception):
     pass
+
 
 def parse_signed_request(signed_request, secret):
     """
@@ -103,8 +106,10 @@ def parse_signed_request(signed_request, secret):
 
     return {}
 
+
 def parse_signed_request_cookie(cookies):
     return parse_signed_request(cookies.get("fbsr_" + FACEBOOK_CONFIG['app_id'], ""), FACEBOOK_CONFIG['secret_key'])
+
 
 def get_user_from_cookie(cookies):
     app_id = FACEBOOK_CONFIG['app_id']
@@ -118,16 +123,12 @@ def get_user_from_cookie(cookies):
         result['uid'] = fb_cookie_data['user_id']
     return result
 
+
 def extend_access_token(access_token):
     app_id = FACEBOOK_CONFIG['app_id']
     app_secret = FACEBOOK_CONFIG['secret_key']
 
-    args = dict(
-        client_id = app_id,
-        client_secret = app_secret,
-        grant_type = 'fb_exchange_token',
-        fb_exchange_token = access_token
-    )
+    args = dict(client_id=app_id, client_secret=app_secret, grant_type='fb_exchange_token', fb_exchange_token=access_token)
     url = "https://graph.facebook.com/oauth/access_token?" + urllib.urlencode(args)
     file = urllib.urlopen(url)
     try:
@@ -147,4 +148,3 @@ def extend_access_token(access_token):
         'access_token_expires': access_token_expires,
     }
     return result
-

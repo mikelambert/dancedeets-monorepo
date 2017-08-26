@@ -10,6 +10,7 @@ db = firebase.FirebaseApplication('https://dancedeets-hrd.firebaseio.com', auth)
 #result = db.get('/events', None)
 #print result
 
+
 @api.apiroute(r'/event_signups/register')
 class RegisterHandler(api.ApiHandler):
     supports_auth = True
@@ -39,6 +40,7 @@ class RegisterHandler(api.ApiHandler):
         }
         db.put('/events/%s/categories/%s/signups/' % (event_id, category_index), signup_id, signup)
         self.write_json_success()
+
 
 @api.apiroute(r'/event_signups/unregister')
 class UnregisterHandler(api.ApiHandler):

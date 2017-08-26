@@ -97,6 +97,7 @@ for row in csv.reader(open('local_data/PotentialEvent.csv')):
 
 all_ids = potential_ids.union(classified_ids)
 
+
 def get_fb_event(id):
     EVENT_KEY = '701004.%s.OBJ_EVENT'
     key = EVENT_KEY % id
@@ -107,7 +108,8 @@ def get_fb_event(id):
         return None
     return fb_event
 
-def partition_ids(ids, classifier=lambda x:False):
+
+def partition_ids(ids, classifier=lambda x: False):
     successes = set()
     fails = set()
     for id in ids:
@@ -120,6 +122,7 @@ def partition_ids(ids, classifier=lambda x:False):
             fails.add(id)
     return successes, fails
 
+
 def get_stripped(fb_id, stripper):
     fb_event = get_fb_event(fb_id)
     if fb_event:
@@ -129,28 +132,32 @@ def get_stripped(fb_id, stripper):
     search_text = stripper(search_text)
     return search_text
 
+
 def split_words_for_id(id, stripper):
     search_text = get_stripped(id, stripper)
     words = re.split(r'\s+', search_text)
     if 1:
         return frozenset(words)
     else:
-        return frozenset(['%s %s' % (words[i], words[i+1]) for i in range(len(words)-1)])
+        return frozenset(['%s %s' % (words[i], words[i + 1]) for i in range(len(words) - 1)])
 
-def get_keyword_mapping(all_ids, stripper=lambda x:x):
+
+def get_keyword_mapping(all_ids, stripper=lambda x: x):
     keyword_mapping = {}
     for fb_id in all_ids:
         #TODO(lambert): also explore bigrams
-        keyword_mapping[fb_id] = split_words_for_id(fb_id, stripper)        
+        keyword_mapping[fb_id] = split_words_for_id(fb_id, stripper)
     return keyword_mapping
 
-def get_df(ids, stripper=lambda x:x):
+
+def get_df(ids, stripper=lambda x: x):
     words = {}
     for id in ids:
         for word in split_words_for_id(id, stripper):
             words[word] = words.get(word, 0) + 1
-    words_df = dict((x[0], 1.0*x[1]/len(ids)) for x in words.items())
+    words_df = dict((x[0], 1.0 * x[1] / len(ids)) for x in words.items())
     return words_df
+
 
 def df_minus_df(df1, df2, negative_scale=1.0):
     all_keys = set(df1).union(df2)
@@ -159,23 +166,30 @@ def df_minus_df(df1, df2, negative_scale=1.0):
         diff[key] = df1.get(key, 0) - df2.get(key, 0) * negative_scale
     return diff
 
+
 def sorted_df(df):
     diff_list = sorted(df.items(), key=lambda x: -x[1])
     return diff_list
+
 
 def print_top_for_df(df):
     print '\n'.join(['%s: %s' % x for x in sorted_df(df)][:20])
 
 
-
 basic_keywords = ['judges', 'locking', 'bboy', 'popping', 'waacking', 'bboying', 'krump']
 basic_keywords += ['lockin', 'bgirl', 'boogiezone', 'newstyle', 'cyphers']
 basic_keywords += ['dance battle', 'battles start']
-basic_keywords += ['1[\s-]*(?:vs?.?|on)[\s-]*1', '2[\s-]*(?:vs?.?|on)[\s-]*2',  '3[\s-]*(?:vs?.?|on)[\s-]*3', '5[\s-]*(?:vs?.?|on)[\s-]*5', '4[\s-]*(?:vs?.?|on)[\s-]*4']
+basic_keywords += [
+    '1[\s-]*(?:vs?.?|on)[\s-]*1', '2[\s-]*(?:vs?.?|on)[\s-]*2', '3[\s-]*(?:vs?.?|on)[\s-]*3', '5[\s-]*(?:vs?.?|on)[\s-]*5',
+    '4[\s-]*(?:vs?.?|on)[\s-]*4'
+]
 
 if positive_classifier:
     basic_neg_keywords = ['party', 'dj', 'night']
-    basic_neg_keywords += ['streetball', 'guitar', 'act', 'rap', 'vote', 'bottle', 'film', 'talent', 'fundraiser', 'shoot', 'graffiti', 'scratch', 'casting', 'votes', 'donate', 'singer', 'sing', 'support', 'booty', 'costume', 'boba', 'bobas', 'yoga']
+    basic_neg_keywords += [
+        'streetball', 'guitar', 'act', 'rap', 'vote', 'bottle', 'film', 'talent', 'fundraiser', 'shoot', 'graffiti', 'scratch', 'casting',
+        'votes', 'donate', 'singer', 'sing', 'support', 'booty', 'costume', 'boba', 'bobas', 'yoga'
+    ]
     # popping bobas
     # support XX
     # booty ...battle/contest/judges
@@ -201,20 +215,26 @@ if basic_neg_keywords:
 else:
     basic_neg_re = re.compile(r'XXXCSDCWEFWEF')
 
+
 def basic_match(fb_event):
     search_text = (fb_event['info'].get('name', '') + ' ' + fb_event['info'].get('description', '')).lower()
     if basic_neg_keywords and basic_neg_re.search(search_text):
         return False
     return basic_re.search(search_text)
 
+
 def strip_basic_all(text):
     return basic_neg_re.sub('', basic_re.sub('', text))
+
+
 def strip_basic_neg(text):
     return basic_neg_re.sub('', text)
+
 
 def get_matches(fb_event):
     search_text = (fb_event['info'].get('name', '') + ' ' + fb_event['info'].get('description', '')).lower()
     return basic_re.findall(search_text), basic_neg_re.findall(search_text)
+
 
 if positive_classifier:
     good_ids = classified_ids
@@ -227,7 +247,6 @@ a = time.time()
 print "Running auto classifier..."
 theory_good_ids, theory_bad_ids = partition_ids(all_ids, classifier=basic_match)
 print "done, %d seconds" % (time.time() - a)
-
 
 false_positives = theory_good_ids.difference(good_ids)
 false_negatives = theory_bad_ids.difference(bad_ids)
@@ -246,6 +265,7 @@ debug_bad_keywords = False
 if debug_bad_keywords:
     for kw in basic_neg_keywords:
         kw_re = re.compile(r'(?i)\b(?:%s)\b' % kw)
+
         def kw_match(fb_event):
             search_text = (fb_event['info'].get('name', '') + ' ' + fb_event['info'].get('description', '')).lower()
             return kw_re.search(search_text)
@@ -272,8 +292,6 @@ print_top_for_df(df_minus_df(df_false_positives, df_good_ids, negative_scale=1.0
 
 import sys
 sys.exit()
-
-
 """
 for success_type, success_ids in successes.iteritems():
     true_positives = success_ids.intersection(good_ids)
@@ -298,4 +316,3 @@ print 'potential', len(potential_ids)
 print 'potential-and-good', len(potential_and_good_ids)
 print 'potential-and-bad', len(potential_and_bad_ids)
 """
-

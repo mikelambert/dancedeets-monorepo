@@ -6,6 +6,7 @@ import StringIO
 import fb_api
 from util import fb_mapreduce
 
+
 def dump_fb_json(fbl, pe_list):
     pe_list = [x for x in pe_list if x.match_score > 0]
     if not pe_list:
@@ -26,7 +27,9 @@ def dump_fb_json(fbl, pe_list):
             logging.error("skipping row for event id %s", pe.fb_event_id)
     yield csv_file.getvalue()
 
+
 map_dump_fb_json = fb_mapreduce.mr_wrap(dump_fb_json)
+
 
 def mr_dump_events(fbl):
     fb_mapreduce.start_map(
@@ -43,5 +46,3 @@ def mr_dump_events(fbl):
             'bucket_name': 'dancedeets-hrd.appspot.com',
         },
     )
-
-

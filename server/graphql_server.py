@@ -11,8 +11,11 @@ app.secret_key = keys.get('flask_session_key')
 #from starwars import schema
 
 schema = graphene.Schema()
+
+
 class Query(graphene.ObjectType):
     hello = graphene.String(description='A typical hello world')
+
 
 schema.query = Query
 #schema.mutation = Mutation

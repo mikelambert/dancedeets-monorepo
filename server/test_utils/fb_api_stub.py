@@ -8,8 +8,10 @@ RESULT_TIMEOUT = 'RESULT_TIMEOUT'
 
 EXPIRED_ACCESS_TOKEN = 'EXPIRED_ACCESS_TOKEN'
 
+
 def get_object(string_key):
     return json.loads(open('test_data/FacebookCachedObject/%s' % string_key).read())
+
 
 class Stub(object):
     def activate(self, memory_memcache=True, disk_db=True):
@@ -28,8 +30,10 @@ class Stub(object):
         fb_api.FBAPI = self.real_fb_api
         fb_api.DBCache = self.real_db_cache
 
+
 def fake_lookup_debug_tokens(tokens):
     return [{'empty': False, 'token': {'data': {'is_valid': True, 'expires_at': 0}}} for x in tokens]
+
 
 class DiskDBCache(fb_api.DBCache):
     def fetch_keys(self, keys):
@@ -40,6 +44,7 @@ class DiskDBCache(fb_api.DBCache):
             except IOError:
                 pass
         return fetched_objects
+
 
 class FakeRPC(object):
     def __init__(self, batch_list, use_access_token, expired_token, do_timeout):
@@ -53,12 +58,16 @@ class FakeRPC(object):
         if self.do_timeout:
             raise urlfetch.DownloadError("Deadline exceeded while waiting for HTTP response from URL")
         elif self.expired_token:
-            return FakeResult(400, {'error': {
-                'message': u'Error validating access token: Session has expired on Jun 9, 2014 10:05am. The current time is Jun 9, 2014 10:32am.',
-                'code': 190,
-                'type': 'OAuthException',
-                'error_subcode': 463
-            }})
+            return FakeResult(
+                400, {
+                    'error': {
+                        'message': u'Error validating access token: Session has expired on Jun 9, 2014 10:05am. The current time is Jun 9, 2014 10:32am.',
+                        'code': 190,
+                        'type': 'OAuthException',
+                        'error_subcode': 463
+                    }
+                }
+            )
         else:
             urls = [x['relative_url'] for x in self.batch_list]
             for url in urls:
@@ -79,10 +88,12 @@ class FakeRPC(object):
                     results.append(None)
             return FakeResult(200, results)
 
+
 class FakeResult(object):
     def __init__(self, status_code, results):
         self.status_code = status_code
         self.content = json.dumps(results)
+
 
 class MemoryFBAPI(fb_api.FBAPI):
     results = {}
@@ -96,4 +107,5 @@ class MemoryFBAPI(fb_api.FBAPI):
         pass
 
     def _create_rpc_for_batch(self, batch_list, use_access_token):
-        return FakeRPC(batch_list, use_access_token, self.access_token_list == [EXPIRED_ACCESS_TOKEN], self.do_timeout), EXPIRED_ACCESS_TOKEN
+        return FakeRPC(batch_list, use_access_token, self.access_token_list == [EXPIRED_ACCESS_TOKEN],
+                       self.do_timeout), EXPIRED_ACCESS_TOKEN

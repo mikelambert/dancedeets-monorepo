@@ -26,6 +26,7 @@ class TestModel(ndb.Model):
         else:
             return ndb.get_multi(keys)
 
+
 class TestIndex(index.BaseIndex):
     obj_type = TestModel
     index_name = 'DummyIndex'
@@ -41,7 +42,7 @@ class TestIndex(index.BaseIndex):
                 search.TextField(name='field1', value=obj.field1),
                 search.TextField(name='field2', value=obj.field2),
             ],
-            )
+        )
         return doc_event
 
 

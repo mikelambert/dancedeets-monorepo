@@ -1,5 +1,4 @@
 #!/usr/bin/python
-
 """App Engine local runner example.
 
 This program handles properly importing the App Engine SDK so that modules
@@ -31,7 +30,7 @@ def fixup_paths(path):
 def setup():
     if os.path.exists('frankenserver/python'):
         sdk_path = 'frankenserver/python'
-    else: # running on travis
+    else:  # running on travis
         sdk_path = '../google_appengine'
 
     # If the SDK path points to a Google Cloud SDK installation
@@ -57,4 +56,3 @@ def setup():
         (appengine_config)
     except ImportError:
         print('Note: unable to import appengine_config.')
-

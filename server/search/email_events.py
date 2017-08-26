@@ -14,8 +14,10 @@ from util import fb_mapreduce
 from . import search_base
 from . import search
 
+
 class NoEmailException(Exception):
     pass
+
 
 def email_for_user(user, fbl, should_send=True):
     if not user.send_email:
@@ -24,7 +26,9 @@ def email_for_user(user, fbl, should_send=True):
         raise NoEmailException('User does not have an email')
 
     if user.weekly_email_send_date and user.weekly_email_send_date > datetime.datetime.now() - datetime.timedelta(days=3):
-        message = "Skipping user %s (%s) because last weekly email was sent on %s" % (user.fb_uid, user.full_name, user.weekly_email_send_date)
+        message = "Skipping user %s (%s) because last weekly email was sent on %s" % (
+            user.fb_uid, user.full_name, user.weekly_email_send_date
+        )
         logging.warning(message)
         # Sent the weekly email too recently, let's abort
         raise NoEmailException(message)
@@ -37,7 +41,7 @@ def email_for_user(user, fbl, should_send=True):
         raise NoEmailException('User does not have location')
 
     d = datetime.date.today()
-    start_time = d - datetime.timedelta(days=d.weekday()) # round down to last monday
+    start_time = d - datetime.timedelta(days=d.weekday())  # round down to last monday
     end_time = start_time + datetime.timedelta(days=8)
     data = {
         'location': user_location,
@@ -69,7 +73,9 @@ def email_for_user(user, fbl, should_send=True):
     fb_user = fbl.fetched_data(fb_api.LookupUser, fbl.fb_uid)
 
     need_full_event = False
-    json_search_response = api.build_search_results_api(form, search_query, search_results, (2, 0), need_full_event, geocode, distance, skip_people=True)
+    json_search_response = api.build_search_results_api(
+        form, search_query, search_results, (2, 0), need_full_event, geocode, distance, skip_people=True
+    )
     locale = user.locale or 'en_US'
     props = {
         'currentLocale': locale.replace('_', '-'),
@@ -129,6 +135,7 @@ def email_for_user(user, fbl, should_send=True):
         mandrill_api.send_message(message)
     return message
 
+
 @app.route('/tools/display_email')
 class DisplayEmailHandler(base_servlet.UserOperationHandler):
     def user_operation(self, fbl, users):
@@ -162,8 +169,11 @@ def yield_email_user(fbl, user):
     except Exception as e:
         logging.exception("Error sending email for user %s", user.fb_uid)
         return None
+
+
 map_email_user = fb_mapreduce.mr_user_wrap(yield_email_user)
 email_user = fb_mapreduce.nomr_wrap(yield_email_user)
+
 
 def mr_email_user(fbl):
     fb_mapreduce.start_map(

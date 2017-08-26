@@ -28,10 +28,11 @@ GRAPH_TYPES = [
 # Start small
 # Only set of sources with walls, and only hand-curated sources (or events). not grabbing new peoples yet.
 
-FIELD_FEED = 'FIELD_FEED' # /feed
-FIELD_EVENTS = 'FIELD_EVENTS' # /events
-FIELD_INVITES = 'FIELD_INVITES' # fql query on invites for signed-up users
-FIELD_SEARCH = 'FIELD_SEARCH' # /search?q=
+FIELD_FEED = 'FIELD_FEED'  # /feed
+FIELD_EVENTS = 'FIELD_EVENTS'  # /events
+FIELD_INVITES = 'FIELD_INVITES'  # fql query on invites for signed-up users
+FIELD_SEARCH = 'FIELD_SEARCH'  # /search?q=
+
 
 class Source(db.Model):
     graph_id = property(lambda x: str(x.key().name()))
@@ -80,10 +81,10 @@ class Source(db.Model):
             return 0
 
     def compute_derived_properties(self, fb_source_common, fb_source_data):
-        if fb_source_common['empty']: # only update these when we have feed data
+        if fb_source_common['empty']:  # only update these when we have feed data
             self.fb_info = {}
         else:
-            self.fb_info = fb_source_data['info'] # LookupThing* (and all fb_info dependencies). Only used for /search_pages functionality
+            self.fb_info = fb_source_data['info']  # LookupThing* (and all fb_info dependencies). Only used for /search_pages functionality
             self.graph_type = _type_for_fb_source(fb_source_common)
             if 'name' not in fb_source_common['info']:
                 logging.error('cannot find name for fb event data: %s, cannot update source data...', fb_source_common)
@@ -112,6 +113,7 @@ class Source(db.Model):
                         self.latitude, self.longitude = geocode.latlng()
         #TODO(lambert): at some point we need to calculate all potential events, and all real events, and update the numbers with values from them. and all fake events. we have a problem where a new source gets added, adds in the potential events and/or real events, but doesn't properly tally them all. can fix this one-off, but it's too-late now, and i imagine our data will grow inaccurate over time anyway.
 
+
 def link_for_fb_source(data):
     if 'link' in data['info']:
         return data['info']['link']
@@ -121,6 +123,7 @@ def link_for_fb_source(data):
         return 'http://www.facebook.com/events/%s/' % data['info']['id']
     else:
         return 'http://www.facebook.com/%s/' % data['info']['id']
+
 
 def _type_for_fb_source(fb_source_common):
     source_type = fb_source_common['metadata']['metadata']['type']
@@ -136,6 +139,7 @@ def _type_for_fb_source(fb_source_common):
         logging.info("cannot classify object type for metadata type %s", source_type)
         return None
 
+
 def get_lookup_for_graph_type(graph_type):
     if graph_type == GRAPH_TYPE_FANPAGE:
         return fb_api.LookupThingPage
@@ -146,6 +150,7 @@ def get_lookup_for_graph_type(graph_type):
     else:
         logging.error("cannot find LookupType for graph type %s", graph_type)
         raise ValueError('Unknown graph type %s' % graph_type)
+
 
 def create_source_from_id(fbl, source_id):
     logging.info('create_source_from_id: %s', source_id)
@@ -172,6 +177,7 @@ def create_source_from_id(fbl, source_id):
         return source
     return None
 
+
 def create_sources_from_event(fbl, db_event):
     logging.info('create_sources_from_event: %s', db_event.id)
     create_source_from_id(fbl, db_event.owner_fb_uid)
@@ -179,7 +185,9 @@ def create_sources_from_event(fbl, db_event):
         if admin['id'] != db_event.owner_fb_uid:
             create_source_from_id(fbl, admin['id'])
 
+
 map_create_sources_from_event = fb_mapreduce.mr_wrap(create_sources_from_event)
+
 
 def explode_per_source_count(pe):
     db_event = eventdata.DBEvent.get_by_id(pe.fb_event_id)
@@ -191,6 +199,7 @@ def explode_per_source_count(pe):
 
     for source_id in pe.source_ids_only():
         yield (source_id, json.dumps(result))
+
 
 def combine_source_count(source_id, counts_to_sum):
     s = Source.get_by_key_name(source_id)
@@ -213,6 +222,7 @@ def combine_source_count(source_id, counts_to_sum):
             s.num_false_negatives += 1
     yield operation.db.Put(s)
 
+
 def mr_count_potential_events(fbl, queue):
     mapper_params = {
         'entity_kind': 'event_scraper.potential_events.PotentialEvent',
@@ -227,6 +237,7 @@ def mr_count_potential_events(fbl, queue):
         mapper_params=mapper_params,
     )
     pipeline.start(queue_name=queue)
+
 
 """
 user:

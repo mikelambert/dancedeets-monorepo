@@ -5,6 +5,7 @@ import base_servlet
 from loc import gmaps_api
 import keys
 
+
 @app.route('/_gmaps_api')
 class ClassMultiUploadHandler(base_servlet.JsonDataHandler):
     def post(self):

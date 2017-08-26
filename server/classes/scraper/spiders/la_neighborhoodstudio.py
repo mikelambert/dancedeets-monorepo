@@ -2,6 +2,7 @@ import re
 
 from .. import browser_scraper
 
+
 class NeighborhoodStudio(browser_scraper.MindBodyBrowserScraper):
     name = 'NeighborhoodStudio'
     latlong = (34.0237478, -118.384045)

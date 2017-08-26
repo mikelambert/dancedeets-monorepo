@@ -11,8 +11,10 @@ import keys
 ACCOUNT_SID = "AC4fe8564ea12bfcb3af18df2ee99c2bd9"
 AUTH_TOKEN = keys.get("twilio_auth_token")
 
+
 class InvalidPhoneNumberException(Exception):
     pass
+
 
 def send_email_link(phone_number):
     client = TwilioRestClient(ACCOUNT_SID, AUTH_TOKEN)

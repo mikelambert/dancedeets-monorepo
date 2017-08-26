@@ -11,5 +11,7 @@ else:
     __KEY_CONFIG = {}
 
 NO_KEY = 'NO_KEY'
+
+
 def get(key):
     return __KEY_CONFIG.get(key, NO_KEY)

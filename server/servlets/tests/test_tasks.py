@@ -15,6 +15,7 @@ MIKE_ID = '701004'
 USER_ID = '1000'
 EVENT_ID = '299993043349170'
 
+
 class TestTasks(unittest.TestCase):
     def setUp(self):
         super(TestTasks, self).setUp()
@@ -30,29 +31,38 @@ class TestTasks(unittest.TestCase):
         u.expired_oauth_token = False
         u.put()
 
+
 class TestLoadEvents(TestTasks):
     def runTest(self):
         app.get('/tasks/load_events?user_id=%s&event_ids=%s' % (MIKE_ID, EVENT_ID))
+
 
 class TestReloadFutureEvents(TestTasks):
     def runTest(self):
         app.get('/tasks/reload_events?user_id=%s&event_ids=%s&time_period=%s' % (MIKE_ID, EVENT_ID, dates.TIME_FUTURE))
 
+
 class TestReloadPastEvents(TestTasks):
     def runTest(self):
         app.get('/tasks/reload_events?user_id=%s&event_ids=%s&time_period=%s' % (MIKE_ID, EVENT_ID, dates.TIME_PAST))
 
+
 class TestTrackNewUserFriends(TestTasks):
     def runTest(self):
         fb_api.FBAPI.results = {
-            '/v2.9/701004/friends':
-            (200, {
+            '/v2.9/701004/friends': (200, {
                 "data": [
-                    {"id": "703278"},
-                    {"id": '823422'},
-            ]}),
+                    {
+                        "id": "703278"
+                    },
+                    {
+                        "id": '823422'
+                    },
+                ]
+            }),
         }
         app.get('/tasks/track_newuser_friends?user_id=%s' % MIKE_ID)
+
 
 """
 def test_2():

@@ -7,7 +7,6 @@ from classifiers import processing
 from nlp import event_auto_classifier
 from nlp import event_classifier
 
-
 all_ids = processing.load_all_ids()
 training_data = processing.load_classified_ids(all_ids)
 
@@ -18,8 +17,9 @@ else:
     full_run = True
     trial_ids = all_ids
 
-
 positive_classifier = True
+
+
 def basic_match(fb_event):
     e = event_classifier.get_classified_event(fb_event)
     if not full_run:
@@ -36,6 +36,7 @@ def basic_match(fb_event):
         print fb_event['info']['id'], result
     return result[0]
 
+
 a = time.time()
 print "Running auto classifier..."
 fb_data = processing.all_fb_data(trial_ids)
@@ -48,7 +49,7 @@ score_card = processing.ClassifierScoreCard(training_data, classifier_data, posi
 
 print "Found %s true-positives, %s false-positives" % (len(score_card.true_positives), len(score_card.false_positives))
 print "Leaves %s to be manually-classified" % (len(score_card.false_negatives))
-                
+
 if full_run:
     score_card.write_to_disk('scratch/')
 

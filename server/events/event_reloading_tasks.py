@@ -16,6 +16,7 @@ from . import event_updates
 
 DATETIME_FORMAT = "%Y-%m-%dT%H:%M:%S"
 
+
 def add_event_tuple_if_updating(events_to_update, fbl, db_event, only_if_updated):
     try:
         fb_event = fbl.fetched_data(fb_api.LookupEvent, db_event.fb_event_id)
@@ -77,9 +78,13 @@ def load_fb_events_using_backup_tokens(event_ids, allow_cache, only_if_updated, 
     if events_to_update:
         event_updates.update_and_save_fb_events(events_to_update, disable_updates=disable_updates)
 
+
 def yield_resave_display_event(fbl, all_events):
     event_updates.resave_display_events(all_events)
+
+
 map_resave_display_event = fb_mapreduce.mr_wrap(yield_resave_display_event)
+
 
 def yield_load_fb_event(fbl, all_events):
     ctx = context.get()
@@ -137,16 +142,26 @@ def yield_load_fb_event(fbl, all_events):
     # Now trigger off a background reloading of empty fb_events
     if empty_fb_event_ids:
         logging.info("Couldn't fetch, using backup tokens for events: %s", empty_fb_event_ids)
-        deferred.defer(load_fb_events_using_backup_tokens, empty_fb_event_ids, allow_cache=fbl.allow_cache, only_if_updated=only_if_updated, disable_updates=disable_updates)
+        deferred.defer(
+            load_fb_events_using_backup_tokens,
+            empty_fb_event_ids,
+            allow_cache=fbl.allow_cache,
+            only_if_updated=only_if_updated,
+            disable_updates=disable_updates
+        )
     logging.info("Updating events: %s", [x[0].id for x in events_to_update])
     # And then re-save all the events in here
     if events_to_update:
         event_updates.update_and_save_fb_events(events_to_update, disable_updates=disable_updates)
+
+
 map_load_fb_event = fb_mapreduce.mr_wrap(yield_load_fb_event)
 load_fb_event = fb_mapreduce.nomr_wrap(yield_load_fb_event)
 
 
-def mr_load_fb_events(fbl, display_event=False, load_attending=False, time_period=None, disable_updates=None, only_if_updated=True, queue='slow-queue'):
+def mr_load_fb_events(
+    fbl, display_event=False, load_attending=False, time_period=None, disable_updates=None, only_if_updated=True, queue='slow-queue'
+):
     if display_event:
         event_or_attending = 'Display Events'
         mr_func = 'map_resave_display_event'
@@ -166,9 +181,11 @@ def mr_load_fb_events(fbl, display_event=False, load_attending=False, time_perio
         entity_kind='events.eventdata.DBEvent',
         handle_batch_size=20,
         filters=filters,
-        extra_mapper_params={'disable_updates': disable_updates, 'only_if_updated': only_if_updated},
+        extra_mapper_params={'disable_updates': disable_updates,
+                             'only_if_updated': only_if_updated},
         queue=queue,
     )
+
 
 def yield_maybe_delete_bad_event(fbl, db_event):
     ctx = context.get()
@@ -205,7 +222,9 @@ def yield_maybe_delete_bad_event(fbl, db_event):
                 db_event.creating_method = eventdata.CM_AUTO_ATTENDEE
                 yield op.db.Put(db_event)
         else:
-            logging.info('Accidentally %s added event %s: %s: %s', db_event.creating_method, db_event.fb_event_id, db_event.country, db_event.name)
+            logging.info(
+                'Accidentally %s added event %s: %s: %s', db_event.creating_method, db_event.fb_event_id, db_event.country, db_event.name
+            )
             mr.increment('deleting-bad-event')
             result = '%s: %s: %s: %s\n' % (db_event.fb_event_id, db_event.creating_method, db_event.country, db_event.name)
             yield result.encode('utf-8')
@@ -217,8 +236,10 @@ def yield_maybe_delete_bad_event(fbl, db_event):
                 if display_event:
                     yield op.db.Delete(display_event)
 
+
 map_maybe_delete_bad_event = fb_mapreduce.mr_wrap(yield_maybe_delete_bad_event)
 maybe_delete_bad_event = fb_mapreduce.nomr_wrap(yield_maybe_delete_bad_event)
+
 
 @app.route('/tasks/delete_bad_autoadds')
 class DeleteBadAutoAddsHandler(base_servlet.EventOperationHandler):
@@ -249,11 +270,14 @@ class DeleteBadAutoAddsHandler(base_servlet.EventOperationHandler):
                 'bucket_name': 'dancedeets-hrd.appspot.com',
             },
         )
-    post=get
+
+    post = get
+
 
 @app.route('/tasks/load_events')
 class LoadEventHandler(base_servlet.EventOperationHandler):
     event_operation = staticmethod(load_fb_event)
+
 
 @app.route('/tasks/reload_events')
 class ReloadEventsHandler(base_servlet.BaseTaskFacebookRequestHandler):
@@ -264,5 +288,14 @@ class ReloadEventsHandler(base_servlet.BaseTaskFacebookRequestHandler):
         load_attending = self.request.get('load_attending', '0') != '0'
         display_event = self.request.get('display_event', '0') != '0'
         queue = self.request.get('queue', 'slow-queue')
-        mr_load_fb_events(self.fbl, display_event=display_event, load_attending=load_attending, time_period=time_period, disable_updates=disable_updates, only_if_updated=only_if_updated, queue=queue)
-    post=get
+        mr_load_fb_events(
+            self.fbl,
+            display_event=display_event,
+            load_attending=load_attending,
+            time_period=time_period,
+            disable_updates=disable_updates,
+            only_if_updated=only_if_updated,
+            queue=queue
+        )
+
+    post = get

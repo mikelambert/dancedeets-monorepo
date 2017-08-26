@@ -18,12 +18,20 @@ URL_222_FEED = '/%s/222/feed?%s' % (VERSION, urllib.urlencode(dict(fields='creat
 URL_111_EVENTS = '/%s/111/events?%s' % (VERSION, urllib.urlencode(dict(fields='id,updated_time')))
 URL_222_EVENTS = '/%s/222/events?%s' % (VERSION, urllib.urlencode(dict(fields='id,updated_time')))
 
-class TestThingDBFixer(unittest.TestCase):
 
+class TestThingDBFixer(unittest.TestCase):
     def mark_as_error_and_reload(self, fbl):
 
         # Now let's "rename" the source to be id 222
-        error = (400, {"error": {"message": "Page ID 111 was migrated to page ID 222.  Please update your API calls to the new ID", "code": 21, "type": "OAuthException"}})
+        error = (
+            400, {
+                "error": {
+                    "message": "Page ID 111 was migrated to page ID 222.  Please update your API calls to the new ID",
+                    "code": 21,
+                    "type": "OAuthException"
+                }
+            }
+        )
         fb_api.FBAPI.results.update({
             URL_111: error,
             URL_111_FEED: error,
@@ -52,16 +60,38 @@ class TestThingDBFixer(unittest.TestCase):
 
         # Set up our facebook backend
         fb_api.FBAPI.results = {
-            URL_111: (200, {'id': '111', 'name': 'page 1'}),
-            URL_111_FEED: (200, {'data': []}),
-            URL_111_EVENTS: (200, {'data': []}),
+            URL_111: (200, {
+                'id': '111',
+                'name': 'page 1'
+            }),
+            URL_111_FEED: (200, {
+                'data': []
+            }),
+            URL_111_EVENTS: (200, {
+                'data': []
+            }),
             URL_111_INFO2: (200, {}),
-            URL_222: (200, {'id': '222', 'name': 'page 2'}),
-            URL_222_FEED: (200, {'data': []}),
-            URL_222_EVENTS: (200, {'data': []}),
+            URL_222: (200, {
+                'id': '222',
+                'name': 'page 2'
+            }),
+            URL_222_FEED: (200, {
+                'data': []
+            }),
+            URL_222_EVENTS: (200, {
+                'data': []
+            }),
             URL_222_INFO2: (200, {}),
-            '/%s/111?metadata=1' % fb_api.LookupThingCommon.version: (200, {'metadata': {'type': 'page'}}),
-            '/%s/222?metadata=1' % fb_api.LookupThingCommon.version: (200, {'metadata': {'type': 'page'}}),
+            '/%s/111?metadata=1' % fb_api.LookupThingCommon.version: (200, {
+                'metadata': {
+                    'type': 'page'
+                }
+            }),
+            '/%s/222?metadata=1' % fb_api.LookupThingCommon.version: (200, {
+                'metadata': {
+                    'type': 'page'
+                }
+            }),
         }
 
         # Fetch it and construct a source
@@ -86,8 +116,13 @@ class TestThingDBFixer(unittest.TestCase):
 
         # Now let's create 111 again, to verify merge works
         fb_api.FBAPI.results.update({
-            URL_111: (200, {'id': '111', 'name': 'page 1'}),
-            URL_111_FEED: (200, {'data': []}),
+            URL_111: (200, {
+                'id': '111',
+                'name': 'page 1'
+            }),
+            URL_111_FEED: (200, {
+                'data': []
+            }),
         })
         source = thing_db.create_source_from_id(fbl, '111')
         source.num_all_events = 5

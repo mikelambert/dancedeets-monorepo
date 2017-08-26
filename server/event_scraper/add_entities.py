@@ -11,10 +11,21 @@ from util import fb_events
 from . import potential_events
 from . import thing_db
 
+
 class AddEventException(Exception):
     pass
 
-def add_update_event(fb_event, fbl, creating_uid=None, visible_to_fb_uids=None, remapped_address=None, override_address=None, creating_method=None, allow_posting=True):
+
+def add_update_event(
+    fb_event,
+    fbl,
+    creating_uid=None,
+    visible_to_fb_uids=None,
+    remapped_address=None,
+    override_address=None,
+    creating_method=None,
+    allow_posting=True
+):
     if not fb_events.is_public_ish(fb_event):
         raise AddEventException('Cannot add secret/closed events to dancedeets!')
 

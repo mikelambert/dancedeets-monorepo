@@ -6,10 +6,12 @@ from rankings import cities
 from util import dates
 from . import pubsub
 
+
 @app.route('/tasks/social_publisher')
 class SocialPublisherHandler(base_servlet.BaseTaskRequestHandler):
     def get(self):
         pubsub.pull_and_publish_event()
+
 
 def yield_post_jp_event(db_events):
     from mapreduce import context
@@ -19,6 +21,7 @@ def yield_post_jp_event(db_events):
     db_events = [x for x in db_events if x.actual_city_name and x.actual_city_name.endswith('Japan')]
     for db_event in db_events:
         pubsub.eventually_publish_event(db_event.id, token_nickname)
+
 
 @app.route('/tasks/post_japan_events')
 class PostJapanEventsHandler(base_servlet.BaseTaskFacebookRequestHandler):
@@ -34,15 +37,19 @@ class PostJapanEventsHandler(base_servlet.BaseTaskFacebookRequestHandler):
             name='Post Future Japan Events',
             reader_spec='mapreduce.input_readers.DatastoreInputReader',
             handler_spec='pubsub.pubsub_tasks.map_post_jp_event',
-            shard_count=8, # since we want to stick it in the slow-queue, and don't care how fast it executes
+            shard_count=8,  # since we want to stick it in the slow-queue, and don't care how fast it executes
             queue_name='fast-queue',
             mapper_parameters=mapper_params,
         )
 
+
 def blacklisted(city):
-    if city.country_name == 'US' and city.state_name == 'NY' and city.city_name in ['Brooklyn', 'Borough of Queens', 'Manhattan', 'The Bronx']:
+    if city.country_name == 'US' and city.state_name == 'NY' and city.city_name in [
+        'Brooklyn', 'Borough of Queens', 'Manhattan', 'The Bronx'
+    ]:
         return True
     return False
+
 
 @app.route('/tasks/weekly_posts')
 class WeeklyEventsPostHandler(base_servlet.BaseTaskFacebookRequestHandler):

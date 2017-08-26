@@ -10,6 +10,7 @@ from .facebook import fb_util
 from .twitter import event as twitter_event
 from . import db
 
+
 def _should_post_event_common(auth_token, db_event):
     geocode = db_event.get_geocode()
     if not geocode:
@@ -20,6 +21,7 @@ def _should_post_event_common(auth_token, db_event):
         logging.info("Skipping event due to country filters")
         return False
     return True
+
 
 def _event_has_enough_attendees(db_event):
     # Ignore web events, since Japan/Korea web_events probably take up too much of the feed,
@@ -35,11 +37,13 @@ def _event_has_enough_attendees(db_event):
     else:
         return False
 
+
 def should_post_event_to_account(auth_token, db_event):
     if not _should_post_event_common(auth_token, db_event):
         return False
     # Add some filters based on number-attendees
     return True
+
 
 def should_post_on_event_wall(auth_token, db_event):
     if not _should_post_event_common(auth_token, db_event):
@@ -72,6 +76,7 @@ def post_event(auth_token, data):
     else:
         return False
 
+
 def _should_still_post_about_event(auth_token, db_event):
     if not db_event:
         logging.warning("Failed to post event: %s, dbevent deleted in dancedeets", db_event)
@@ -88,6 +93,7 @@ def _should_still_post_about_event(auth_token, db_event):
         if not _event_has_enough_attendees(db_event):
             return False
     return True
+
 
 def _post_event(auth_token, db_event):
     if auth_token.application == db.APP_TWITTER:

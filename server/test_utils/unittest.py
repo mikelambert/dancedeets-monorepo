@@ -10,6 +10,7 @@ from loc import gmaps_stub
 from test_utils import fb_api_stub
 from util import gcs
 
+
 class TestCase(RealTestCase):
     def setUp(self):
         self.testbed = testbed.Testbed()
@@ -29,7 +30,8 @@ class TestCase(RealTestCase):
         #TODO(lambert): move this into some testbed wrapper code, or port upstream
         # This is a bug in the code versions between appengine and its libraries:
         # mapreduce requires a DEFAULT_VERSION_HOSTNAME
-        self.testbed.setup_env(overwrite=True,
+        self.testbed.setup_env(
+            overwrite=True,
             DEFAULT_VERSION_HOSTNAME='localhost',
         )
         gcs.test_mode = True
@@ -39,5 +41,3 @@ class TestCase(RealTestCase):
         self.fb_api.deactivate()
         gcs.test_mode = False
         self.testbed.deactivate()
-
-

@@ -38,7 +38,7 @@ def parse_fb_timestamp(fb_timestamp):
     if not fb_timestamp:
         return None
     try:
-        return datetime.datetime.strptime(fb_timestamp, '%Y-%m-%d') # .date()
+        return datetime.datetime.strptime(fb_timestamp, '%Y-%m-%d')  # .date()
     except ValueError:
         # intentionally ignore timezone, since we care about representing the time zone in the event's local point of view
         return datetime.datetime.strptime(fb_timestamp[:19], '%Y-%m-%dT%H:%M:%S')

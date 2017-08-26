@@ -4,6 +4,7 @@ from util import deferred
 from . import potential_events
 from . import thing_db
 
+
 def function_migrate_thing_to_new_id(fbapi_obj, old_source_id, new_source_id):
     old_source = thing_db.Source.get_by_key_name(old_source_id)
 
@@ -38,6 +39,7 @@ def function_migrate_thing_to_new_id(fbapi_obj, old_source_id, new_source_id):
     new_source.put()
     old_source.delete()
 
+
 def migrate_potential_events(old_source_id, new_source_id):
     #STR_ID_MIGRATE
     potential_event_list = potential_events.PotentialEvent.gql("WHERE source_ids = %s" % long(old_source_id)).fetch(100)
@@ -59,4 +61,3 @@ def migrate_potential_events(old_source_id, new_source_id):
     if len(potential_event_list):
         # Tail recursion via task queues!
         deferred.defer(migrate_potential_events, old_source_id, new_source_id)
-

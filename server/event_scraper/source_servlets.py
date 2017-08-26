@@ -9,6 +9,7 @@ from . import potential_events
 from . import thing_db
 from . import thing_scraper
 
+
 def get_id_from_url(url):
     if '#' in url:
         url = url.split('#')[1]
@@ -16,6 +17,7 @@ def get_id_from_url(url):
     if not match:
         return None
     return match.group(1)
+
 
 @app.route('/sources/admin_edit')
 class AdminEditHandler(base_servlet.BaseRequestHandler):
@@ -30,7 +32,9 @@ class AdminEditHandler(base_servlet.BaseRequestHandler):
 
         #STR_ID_MIGRATE
         source_potential_events = potential_events.PotentialEvent.gql('WHERE source_ids = :graph_id', graph_id=long(s.graph_id)).fetch(1000)
-        found_db_event_ids = [x.string_id() for x in eventdata.DBEvent.get_by_ids([x.fb_event_id for x in source_potential_events], keys_only=True) if x]
+        found_db_event_ids = [
+            x.string_id() for x in eventdata.DBEvent.get_by_ids([x.fb_event_id for x in source_potential_events], keys_only=True) if x
+        ]
 
         if s.creating_fb_uid:
             #STR_ID_MIGRATE
@@ -39,7 +43,7 @@ class AdminEditHandler(base_servlet.BaseRequestHandler):
             creating_user = None
 
         self.display['creating_user'] = creating_user
-        self.display['potential_events'] = sorted(source_potential_events, key=lambda x:x.fb_event_id)
+        self.display['potential_events'] = sorted(source_potential_events, key=lambda x: x.fb_event_id)
         self.display['db_event_ids'] = sorted(found_db_event_ids)
         self.display['no_good_event_ids'] = sorted(list(set(x.fb_event_id for x in source_potential_events).difference(found_db_event_ids)))
 
@@ -69,6 +73,7 @@ class AdminEditHandler(base_servlet.BaseRequestHandler):
         #TODO(lambert): make this a backgrounded action?
         thing_scraper.scrape_events_from_sources(self.fbl, [s])
         self.redirect('/sources/admin_edit?source_id=%s' % source_id)
+
 
 @app.route('/sources/scrape')
 class ScrapeSourceHandler(base_servlet.SourceIdOperationHandler):

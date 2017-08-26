@@ -12,6 +12,7 @@ MIKE_ID = '701004'
 USER_ID = '1000'
 EVENT_ID = '299993043349170'
 
+
 class TestEventLocations(unittest.TestCase):
     def setUp(self):
         super(TestEventLocations, self).setUp()
@@ -25,12 +26,14 @@ class TestEventLocations(unittest.TestCase):
             for x, y in zip(a, b):
                 self.assertNearEqual(x, y, delta=delta)
         else:
-            assert abs(a-b) < delta, "a=%s,b=%s, a-b=%s < delta=%s" % (a, b, (a-b), delta)
+            assert abs(a - b) < delta, "a=%s,b=%s, a-b=%s < delta=%s" % (a, b, (a - b), delta)
+
 
 class TestGetAddressForFbEvent(TestEventLocations):
     def runTest(self):
         fb_event = self.get_event(EVENT_ID)
         self.assertEqual(event_locations.get_address_for_fb_event(fb_event), "Hype Dance, 67 Earl Street, Sheffield")
+
 
 class TestSimpleVenue(TestEventLocations):
     def runTest(self):
@@ -42,6 +45,7 @@ class TestSimpleVenue(TestEventLocations):
         self.assertEqual(location_info.final_city, 'Sheffield, United Kingdom')
         self.assertNearEqual(location_info.latlong(), (53.375206800000001, -1.4709795999999999))
 
+
 class TestNoVenue(TestEventLocations):
     def runTest(self):
         fb_event = self.get_event('100')
@@ -51,6 +55,7 @@ class TestNoVenue(TestEventLocations):
         self.assertEqual(location_info.fb_address, 'San Francisco')
         self.assertEqual(location_info.final_city, 'San Francisco, CA, United States')
         self.assertNearEqual(location_info.latlong(), (37.774929499999999, -122.4194155))
+
 
 class TestNoVenueWithRemap(TestNoVenue):
     def runTest(self):
@@ -67,9 +72,10 @@ class TestNoVenueWithRemap(TestNoVenue):
             self.assertNearEqual(location_info.latlong(), (37.804363700000003, -122.2711137))
 
             event_locations.update_remapped_address(fb_event, '')
-            super(TestNoVenueWithRemap, self).runTest() # should be the same as before
+            super(TestNoVenueWithRemap, self).runTest()  # should be the same as before
         finally:
             event_locations.update_remapped_address(fb_event, '')
+
 
 class TestOverride(TestEventLocations):
     def runTest(self):
@@ -82,6 +88,7 @@ class TestOverride(TestEventLocations):
         self.assertEqual(location_info.fb_address, 'San Francisco')
         self.assertEqual(location_info.final_city, 'San Jose, CA, United States')
         self.assertNearEqual(location_info.latlong(), (37.339385700000001, -121.89495549999999))
+
 
 class TestOnline(TestEventLocations):
     def runTest(self):
@@ -97,6 +104,7 @@ class TestOnline(TestEventLocations):
         self.assertEqual(location_info.actual_city(), None)
         self.assertEqual(location_info.latlong(), (None, None))
 
+
 class TestNewEventPlaceAPI(TestEventLocations):
     def runTest(self):
         fb_event = self.get_event('103')
@@ -110,6 +118,7 @@ class TestNewEventPlaceAPI(TestEventLocations):
         self.assertEqual(location_info.actual_city(), u'18, Shibuya-ku, T\u014dky\u014d-to, Japan')
         self.assertEqual(location_info.latlong(), (35.6724529, 139.7098159))
 
+
 class TestNone(TestEventLocations):
     def runTest(self):
         db_event = eventdata.DBEvent(address='ungeocodeable mess of crap')
@@ -118,6 +127,7 @@ class TestNone(TestEventLocations):
         location_info = event_locations.LocationInfo(fb_event, db_event=db_event, debug=True)
         self.assertEqual(location_info.final_city, None)
         self.assertEqual(location_info.latlong(), (None, None))
+
 
 class TestTBD(TestEventLocations):
     def runTest(self):
@@ -140,6 +150,7 @@ class TestTBD(TestEventLocations):
         finally:
             event_locations.update_remapped_address(fb_event, '')
 
+
 class TestNothingAtAll(TestEventLocations):
     def runTest(self):
         fb_event = self.get_event('101')
@@ -150,6 +161,7 @@ class TestNothingAtAll(TestEventLocations):
         self.assertEqual(location_info.fb_address, None)
         self.assertEqual(location_info.final_city, None)
         self.assertEqual(location_info.latlong(), (None, None))
+
 
 class TestEasyLatLong(TestEventLocations):
     def runTest(self):
@@ -162,6 +174,7 @@ class TestEasyLatLong(TestEventLocations):
         self.assertEqual(location_info.final_city, 'San Francisco, CA, United States')
         self.assertNearEqual(location_info.latlong(), (37.774929499999999, -122.4194155))
 
+
 def gen_event_with_location(loc):
     return {
         "empty": False,
@@ -173,8 +186,12 @@ def gen_event_with_location(loc):
         }
     }
 
+
 class TestGetString(unittest.TestCase):
     def runTest(self):
 
         self.assertEqual('New Taipei City, Taiwan', event_locations.LocationInfo(gen_event_with_location(u'捷運板橋站練舞')).final_city)
-        self.assertEqual((37.8693878, -122.2623099), event_locations.LocationInfo(gen_event_with_location(u'   Haas Pavilion, Berkeley, CA 94720, United States')).geocode.latlng())
+        self.assertEqual(
+            (37.8693878, -122.2623099),
+            event_locations.LocationInfo(gen_event_with_location(u'   Haas Pavilion, Berkeley, CA 94720, United States')).geocode.latlng()
+        )

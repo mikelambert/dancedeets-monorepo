@@ -3,6 +3,7 @@ import logging
 import app
 import base_servlet
 
+
 @app.route('/_ah/warmup')
 class DoNothingHandler(base_servlet.BareBaseRequestHandler):
     def get(self):

@@ -4,6 +4,7 @@ import re
 
 illegalChars = re.compile(u'[\x00-\x08\x0b\x0c\x0e-\x1F\uD800-\uDFFF\uFFFE\uFFFF]')
 
+
 def detect(text):
     text = illegalChars.sub('', text)
 

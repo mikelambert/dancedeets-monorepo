@@ -6,9 +6,9 @@ from logic import mobile
 from logic import sms
 from util import country_dialing_codes
 
+
 @app.route('/mobile_apps')
 class MobileAppsHandler(base_servlet.BaseRequestHandler):
-
     def requires_login(self):
         return False
 
@@ -27,7 +27,9 @@ class MobileAppsHandler(base_servlet.BaseRequestHandler):
             elif mobile_platform == mobile.MOBILE_WINDOWS_PHONE:
                 self.render_page(error="Sorry, we do not support Windows Phones.")
             else:
-                self.render_page(error="Could not detect the correct mobile app for your device. Please select the appropriate download button below.")
+                self.render_page(
+                    error="Could not detect the correct mobile app for your device. Please select the appropriate download button below."
+                )
         else:
             self.render_page()
 
@@ -70,4 +72,6 @@ class MobileAppsHandler(base_servlet.BaseRequestHandler):
                 self.render_page(error="You entered an invalid phone number.")
                 return
 
-            self.render_page(message="Thank you, your SMS should be arriving shortly. Just open the link on your phone to download the DanceDeets app.")
+            self.render_page(
+                message="Thank you, your SMS should be arriving shortly. Just open the link on your phone to download the DanceDeets app."
+            )

@@ -5,7 +5,9 @@ import geohash
 
 from loc import math as loc_math
 
-circumference_of_earth = 40000.0 # km
+circumference_of_earth = 40000.0  # km
+
+
 def get_geohash_bits_for_km(km):
     if km < min_box_size:
         return max_geohash_bits
@@ -14,12 +16,15 @@ def get_geohash_bits_for_km(km):
     geohash_bits = int(math.floor(-math.log(1.0 * km / circumference_of_earth) / math.log(2)))
     return geohash_bits
 
+
 def get_km_for_geohash_bits(precision):
     km = circumference_of_earth * math.pow(2, -precision)
     return km
 
-min_box_size = 100 # km
+
+min_box_size = 100  # km
 max_geohash_bits = get_geohash_bits_for_km(min_box_size)
+
 # max_geohash_bits should be 8, which is reasonable compared to 32 possible for complete geohashing
 
 
@@ -32,10 +37,7 @@ def get_all_geohashes_for(bounds, precision=None):
         km = loc_math.get_distance(bounds[0], bounds[1], use_km=True)
         precision = get_geohash_bits_for_km(km) - 1
 
-    center = (
-        (bounds[0][0] + bounds[1][0]) / 2,
-        (bounds[0][1] + bounds[1][1]) / 2
-    )
+    center = ((bounds[0][0] + bounds[1][0]) / 2, (bounds[0][1] + bounds[1][1]) / 2)
 
     # to understand why this is necessary, see the BACKGROUND of:
     # https://github.com/davetroy/geohash-js/blob/master/README

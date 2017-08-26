@@ -16,6 +16,7 @@ from .facebook import event
 from .facebook import fb_util
 from . import weekly_images
 
+
 def _generate_post_for(city, week_start, search_results):
     headers = [
         "Hey %(location)s, here's what's coming up for you this week in dance!",
@@ -71,18 +72,17 @@ def _generate_results_for(city, week_start):
     latlng_bounds = ((city.latitude, city.longitude), (city.latitude, city.longitude))
     city_bounds = math.expand_bounds(latlng_bounds, cities.NEARBY_DISTANCE_KM)
     search_query = search_base.SearchQuery(
-        time_period=search_base.TIME_ALL_FUTURE,
-        start_date=start_time,
-        end_date=end_time,
-        bounds=city_bounds
+        time_period=search_base.TIME_ALL_FUTURE, start_date=start_time, end_date=end_time, bounds=city_bounds
     )
     searcher = search.Search(search_query)
     search_results = searcher.get_search_results(full_event=True)
     return search_results
 
+
 def facebook_weekly_post(db_auth_token, city_data):
     result = _facebook_weekly_post(db_auth_token, city_data)
     return fb_util.processed_task(db_auth_token, result)
+
 
 def _facebook_weekly_post(db_auth_token, city_data):
     city_key = city_data['city']
@@ -92,7 +92,7 @@ def _facebook_weekly_post(db_auth_token, city_data):
     fbl = fb_api.FBLookup(None, db_auth_token.oauth_token)
 
     d = datetime.date.today()
-    week_start = d - datetime.timedelta(days=d.weekday()) # round down to last monday
+    week_start = d - datetime.timedelta(days=d.weekday())  # round down to last monday
 
     search_results = _generate_results_for(city, week_start)
     if len(search_results) < 2:

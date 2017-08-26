@@ -6,8 +6,6 @@ import app
 import keys
 from mail import mailchimp_api
 from users import users
-
-
 """
 type=upemail&fired_at=2017-04-23+08%3A08%3A31&data%5Bnew_id%5D=50696b797a&data%5Bnew_email%5D=mlambert%2Btest%40gmail.com&data%5Bold_email%5D=mlambert%40gmail.com&data%5Blist_id%5D=93ab23d636"
 aka:
@@ -18,6 +16,8 @@ aka:
     data[old_email]=mlambert@gmail.com
     data[list_id]=93ab23d636
 """
+
+
 @app.route('/webhooks/mailchimp')
 class MailchimpWebhookPageHandler(webapp2.RequestHandler):
     def handle(self):
@@ -42,9 +42,9 @@ class MailchimpWebhookPageHandler(webapp2.RequestHandler):
         else:
             logging.error('Unexpected webhook type: %s', self.request.get('type'))
 
-    get=handle
-    head=handle
-    post=handle
+    get = handle
+    head = handle
+    post = handle
 
 
 @app.route('/webhooks/mandrill')
@@ -63,7 +63,6 @@ class MandrillWebhookPageHandler(webapp2.RequestHandler):
             self.response.out.write('Bad Request: no mandrill_events')
             return
 
-
         mandrill_events = json.loads(self.request.get('mandrill_events'))
 
         logging.info('Processing %s webhook events', len(mandrill_events))
@@ -77,6 +76,6 @@ class MandrillWebhookPageHandler(webapp2.RequestHandler):
                     logging.info('Unsubscribing user %s (%s) in response to Mandrill request', user.fb_uid, user.full_name)
                 user.put()
 
-    get=handle
-    head=handle
-    post=handle
+    get = handle
+    head = handle
+    post = handle

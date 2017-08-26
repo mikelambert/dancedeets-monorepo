@@ -31,16 +31,25 @@ EMPTY_CAUSE_INSUFFICIENT_PERMISSIONS = 'insufficient_permissions'
 EMPTY_CAUSE_DELETED = 'deleted'
 
 #TODO(lambert): use parent_group to find additional sources to scrape
-OBJ_EVENT_FIELDS = ('description', 'end_time', 'id', 'name', 'owner', 'type', 'start_time', 'place', 'cover', 'admins', 'parent_group', 'ticket_uri', 'timezone', 'updated_time', 'attending_count', 'declined_count', 'maybe_count', 'noreply_count', 'is_page_owned', 'is_canceled')
+OBJ_EVENT_FIELDS = (
+    'description', 'end_time', 'id', 'name', 'owner', 'type', 'start_time', 'place', 'cover', 'admins', 'parent_group', 'ticket_uri',
+    'timezone', 'updated_time', 'attending_count', 'declined_count', 'maybe_count', 'noreply_count', 'is_page_owned', 'is_canceled'
+)
 
 OBJ_USER_FIELDS = ('name', 'email', 'first_name', 'last_name', 'locale', 'gender', 'picture', 'link', 'timezone')
 
 OBJ_SOURCE_COMMON_FIELDS = ('id', 'name', 'link')
 OBJ_SOURCE_USER_FIELDS = ('id', 'name', 'updated_time', 'link', 'first_name', 'last_name')
-OBJ_SOURCE_GROUP_FIELDS = ('id', 'name', 'updated_time', 'link', 'cover', 'email', 'description', 'parent', 'privacy', 'icon', 'link', 'venue', 'owner')
-OBJ_SOURCE_PAGE_FIELDS = ('id', 'name', 'link', 'cover', 'emails', 'about', 'category', 'category_list', 'current_location', 'hometown', 'general_info', 'likes', 'location', 'phone', 'username', 'website')
+OBJ_SOURCE_GROUP_FIELDS = (
+    'id', 'name', 'updated_time', 'link', 'cover', 'email', 'description', 'parent', 'privacy', 'icon', 'link', 'venue', 'owner'
+)
+OBJ_SOURCE_PAGE_FIELDS = (
+    'id', 'name', 'link', 'cover', 'emails', 'about', 'category', 'category_list', 'current_location', 'hometown', 'general_info', 'likes',
+    'location', 'phone', 'username', 'website'
+)
 
 USERLESS_UID = '701004'
+
 
 class FacebookCachedObject(db.Model):
     json_data = db.TextProperty()
@@ -52,13 +61,18 @@ class FacebookCachedObject(db.Model):
 
     def decode_data(self):
         if not self.json_data:
-            self.delete() # hack fix to get these objects purged from the system
+            self.delete()  # hack fix to get these objects purged from the system
         return self.data
+
 
 class ExpiredOAuthToken(Exception):
     pass
+
+
 class NoFetchedDataException(Exception):
     pass
+
+
 class PageRedirectException(Exception):
     def __init__(self, from_id, to_id):
         self.from_id = from_id
@@ -105,6 +119,7 @@ class LookupType(object):
             object_data['empty'] = object_data.get('deleted') and EMPTY_CAUSE_DELETED or None
         return object_data
 
+
 class LookupProfile(LookupType):
     use_access_token = False
 
@@ -117,9 +132,11 @@ class LookupProfile(LookupType):
         return [
             ('profile', cls.url('%s' % object_id)),
         ]
+
     @classmethod
     def cache_key(cls, object_id, fetching_uid):
         return (USERLESS_UID, object_id, 'OBJ_PROFILE')
+
 
 class LookupUser(LookupType):
     @classmethod
@@ -134,9 +151,11 @@ class LookupUser(LookupType):
             ('permissions', cls.url('%s/permissions' % object_id)),
             ('rsvp_for_future_events', cls.url('%s/events?since=yesterday&fields=id,rsvp_status&limit=3000' % object_id)),
         ]
+
     @classmethod
     def cache_key(cls, object_id, fetching_uid):
         return (fetching_uid or 'None', object_id, 'OBJ_USER')
+
 
 #TODO(lambert): move these LookupType subclasses out of fb_api.py into client code where they belong,
 # keeping this file infrastructure and unmodified as we add new features + LookupTypes
@@ -152,7 +171,7 @@ class LookupUserEvents(LookupType):
     def get_lookups(cls, object_id):
         common = 'limit=1000&since=yesterday&fields=%s' % ','.join(cls.fields)
         return [
-            ('events', cls.url('%s/events?%s' % (object_id, common))), # attending and unsure
+            ('events', cls.url('%s/events?%s' % (object_id, common))),  # attending and unsure
             ('events_declined', cls.url('%s/events?type=declined&%s' % (object_id, common))),
             ('events_not_replied', cls.url('%s/events?type=not_replied&%s' % (object_id, common))),
         ]
@@ -160,18 +179,14 @@ class LookupUserEvents(LookupType):
     @classmethod
     def all_events(cls, fb_data):
         try:
-            return (
-                fb_data['events']['data'] +
-                fb_data['events_declined']['data'] +
-                fb_data['events_not_replied']['data'] +
-                []
-            )
+            return (fb_data['events']['data'] + fb_data['events_declined']['data'] + fb_data['events_not_replied']['data'] + [])
         except KeyError:
             return fb_data['events']['data']
 
     @classmethod
     def cache_key(cls, object_id, fetching_uid):
         return (fetching_uid or 'None', object_id, 'OBJ_USER_EVENTS')
+
 
 class LookupEvent(LookupType):
     optional_keys = ['cover_info']
@@ -185,12 +200,14 @@ class LookupEvent(LookupType):
         return [
             ('info', cls.url(object_id, fields=OBJ_EVENT_FIELDS)),
             # Dependent lookup for the image from the info's cover photo id:
-            ('cover_info', cls.url('', fields=['images','width','height'], ids='{result=info:$.cover.id}')),
+            ('cover_info', cls.url('', fields=['images', 'width', 'height'], ids='{result=info:$.cover.id}')),
             ('picture', cls.url('%s/picture' % object_id, redirect='false', type='large')),
         ]
+
     @classmethod
     def cache_key(cls, object_id, fetching_uid):
         return (USERLESS_UID, object_id, 'OBJ_EVENT')
+
 
 class LookupEventPageComments(LookupType):
     use_access_token = False
@@ -204,9 +221,11 @@ class LookupEventPageComments(LookupType):
         return [
             ('comments', cls.url('comments/', ids=urls.dd_event_url(object_id))),
         ]
+
     @classmethod
     def cache_key(cls, object_id, fetching_uid):
         return (USERLESS_UID, object_id, 'OBJ_EVENTPAGE_COMMENTS')
+
 
 class LookupEventAttending(LookupType):
     """Gets id and name (for display) for just the attending.
@@ -222,9 +241,11 @@ class LookupEventAttending(LookupType):
         return [
             ('attending', cls.url('%s/attending' % object_id, fields=['id', 'name'], limit='2000')),
         ]
+
     @classmethod
     def cache_key(cls, object_id, fetching_uid):
         return (USERLESS_UID, object_id, 'OBJ_EVENT_ATTENDING')
+
 
 class LookupEventAttendingMaybe(LookupType):
     """Gets id-only (faster) for both attending and maybe.
@@ -241,9 +262,11 @@ class LookupEventAttendingMaybe(LookupType):
             ('attending', cls.url('%s/attending' % object_id, fields=['id'], limit='2000')),
             ('maybe', cls.url('%s/maybe' % object_id, fields=['id'], limit='2000')),
         ]
+
     @classmethod
     def cache_key(cls, object_id, fetching_uid):
         return (USERLESS_UID, object_id, 'OBJ_EVENT_ATTENDING_MAYBE')
+
 
 class LookupEventMembers(LookupType):
     @classmethod
@@ -258,9 +281,11 @@ class LookupEventMembers(LookupType):
             ('declined', cls.url('%s/declined' % object_id)),
             ('noreply', cls.url('%s/noreply' % object_id)),
         ]
+
     @classmethod
     def cache_key(cls, object_id, fetching_uid):
         return (USERLESS_UID, object_id, 'OBJ_EVENT_MEMBERS')
+
 
 class LookupThingCommon(LookupType):
     @classmethod
@@ -279,9 +304,11 @@ class LookupThingCommon(LookupType):
             ('feed', cls.url('%s/feed' % object_id, fields=['created_time', 'updated_time', 'from', 'link', 'message'], limit=10)),
             ('events', cls.url('%s/events' % object_id, fields=['id', 'updated_time'])),
         ]
+
     @classmethod
     def cache_key(cls, object_id, fetching_uid):
         return ('None', object_id, 'OBJ_THING_COMMON')
+
 
 class LookupThingUser(LookupType):
     @classmethod
@@ -298,6 +325,7 @@ class LookupThingUser(LookupType):
     def cache_key(cls, object_id, fetching_uid):
         return ('None', object_id, 'OBJ_THING_USER')
 
+
 class LookupThingGroup(LookupType):
     @classmethod
     def track_lookup(cls):
@@ -312,6 +340,7 @@ class LookupThingGroup(LookupType):
     @classmethod
     def cache_key(cls, object_id, fetching_uid):
         return ('None', object_id, 'OBJ_THING_GROUP')
+
 
 class LookupThingPage(LookupType):
     @classmethod
@@ -332,8 +361,10 @@ class LookupThingPage(LookupType):
 class CacheSystem(object):
     def fetch_keys(self, keys):
         raise NotImplementedError()
+
     def save_objects(self, keys_to_objects):
         raise NotImplementedError()
+
     def invalidate_keys(self, keys):
         raise NotImplementedError()
 
@@ -395,11 +426,12 @@ class Memcache(CacheSystem):
             if self._is_cacheable(k, v):
                 cache_key = self.key_to_cache_key(k)
                 memcache_set[cache_key] = v
-        memcache.set_multi(memcache_set, 2*3600)
+        memcache.set_multi(memcache_set, 2 * 3600)
 
     def invalidate_keys(self, keys):
         cache_keys = [self.key_to_cache_key(key) for key in keys]
         memcache.delete_multi(cache_keys)
+
 
 class DBCache(CacheSystem):
     def __init__(self, fetching_uid):
@@ -416,7 +448,7 @@ class DBCache(CacheSystem):
         max_in_queries = datastore.MAX_ALLOWABLE_QUERIES
         cache_keys = cache_key_mapping.keys()
         for i in range(0, len(cache_keys), max_in_queries):
-            objects = FacebookCachedObject.get_by_key_name(cache_keys[i:i+max_in_queries])
+            objects = FacebookCachedObject.get_by_key_name(cache_keys[i:i + max_in_queries])
             for o in objects:
                 if o:
                     # Sometimes objects get created without json_data, so we need to manually purge those from our DB and not pass them on to clients
@@ -477,15 +509,16 @@ class FBAPI(CacheSystem):
         return random.choice(self.access_token_list)
 
     def fetch_keys(self, keys):
-        FB_FETCH_COUNT = 10 # number of objects, each of which may be 1-5 RPCs
+        FB_FETCH_COUNT = 10  # number of objects, each of which may be 1-5 RPCs
         fetched_objects = {}
         keys = list(keys)
         for i in range(0, len(keys), FB_FETCH_COUNT):
-            fetched_objects.update(self._fetch_object_keys(keys[i:i+FB_FETCH_COUNT]))
+            fetched_objects.update(self._fetch_object_keys(keys[i:i + FB_FETCH_COUNT]))
         return fetched_objects
 
     def save_objects(self, keys_to_objects):
         raise NotImplementedError("Cannot save anything to FB")
+
     def invalidate_keys(self, keys):
         raise NotImplementedError("Cannot invalidate anything in FB")
 
@@ -501,9 +534,7 @@ class FBAPI(CacheSystem):
             else:
                 args["access_token"] = token
         post_data = None if post_args is None else urls.urlencode(post_args)
-        f = urllib.urlopen(
-                "https://graph.facebook.com/" + path + "?" +
-                urls.urlencode(args), post_data)
+        f = urllib.urlopen("https://graph.facebook.com/" + path + "?" + urls.urlencode(args), post_data)
         result = f.read()
         return json.loads(result)
 
@@ -527,7 +558,7 @@ class FBAPI(CacheSystem):
             post_args["access_token"] = token
         else:
             post_args["access_token"] = '%s|%s' % (facebook.FACEBOOK_CONFIG['app_id'], facebook.FACEBOOK_CONFIG['secret_key'])
-        post_args["include_headers"] = False # Don't need to see all the caching headers per response
+        post_args["include_headers"] = False  # Don't need to see all the caching headers per response
         post_data = None if post_args is None else urls.urlencode(post_args)
         rpc = urlfetch.create_rpc(deadline=DEADLINE)
         urlfetch.make_fetch_call(rpc, "https://graph.facebook.com/", post_data, "POST")
@@ -542,7 +573,9 @@ class FBAPI(CacheSystem):
             cls, oid = break_key(object_key)
             cls.track_lookup()
             parts_to_urls = cls.get_lookups(oid)
-            batch_list = [dict(method='GET', name=part_key, relative_url=url, omit_response_on_success=False) for (part_key, url) in parts_to_urls]
+            batch_list = [
+                dict(method='GET', name=part_key, relative_url=url, omit_response_on_success=False) for (part_key, url) in parts_to_urls
+            ]
             rpc, token = self._create_rpc_for_batch(batch_list, cls.use_access_token)
             object_keys_to_rpcs[object_key] = rpc, token
 
@@ -612,9 +645,9 @@ class FBAPI(CacheSystem):
                                 deferred.defer(thing_db_fixer.function_migrate_thing_to_new_id, self, from_id, to_id)
                         object_is_bad = True
                     elif error_code in [
-                            2, # Temporary API error: An unexpected error has occurred. Please retry your request later.
-                            2500, # Dependent-lookup on non-existing field: Cannot specify an empty identifier.
-                        ]:
+                        2,  # Temporary API error: An unexpected error has occurred. Please retry your request later.
+                        2500,  # Dependent-lookup on non-existing field: Cannot specify an empty identifier.
+                    ]:
                         # Handle errors as documented here: https://developers.facebook.com/docs/graph-api/using-graph-api/v2.0#errors
                         logging.warning("BatchLookup: Error code from FB server for %s: %s: %s", object_rpc_name, error_code, object_json)
                         if object_rpc_name not in cls.optional_keys:
@@ -644,9 +677,11 @@ def generate_key(cls, object_id):
     new_object_id = json.dumps(object_id, sort_keys=True)
     return (cls, new_object_id)
 
+
 def break_key(key):
     cls, object_id = key
     return (cls, json.loads(object_id))
+
 
 class FBLookup(object):
     def __init__(self, fb_uid, access_token):
@@ -668,7 +703,10 @@ class FBLookup(object):
         self.debug = False
 
     def __repr__(self):
-        keys = set(['fb_uid', 'access_token', 'allow_cache', 'allow_memcache_read', 'allow_memcache_write', 'allow_dbcache', 'resave_to_memcache', 'debug'])
+        keys = set([
+            'fb_uid', 'access_token', 'allow_cache', 'allow_memcache_read', 'allow_memcache_write', 'allow_dbcache', 'resave_to_memcache',
+            'debug'
+        ])
         newdict = dict(kv for kv in self.__dict__.iteritems() if kv[0] in keys)
         return 'FBLookup(%r)' % newdict
 
@@ -832,5 +870,3 @@ def lookup_debug_tokens(access_tokens):
         app_fbl = FBLookup(None, facebook.FACEBOOK_CONFIG['app_access_token'])
         app_fbl.make_passthrough()
         return app_fbl.get_multi(_LookupDebugToken, access_tokens)
-
-

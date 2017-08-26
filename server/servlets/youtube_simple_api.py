@@ -3,6 +3,7 @@ import gdata.youtube.service
 import app
 import base_servlet
 
+
 @app.route('/youtube_simple_api')
 class YoutubeSimpleApiHandler(base_servlet.BareBaseRequestHandler):
     def get(self):
@@ -11,12 +12,16 @@ class YoutubeSimpleApiHandler(base_servlet.BareBaseRequestHandler):
         if action == 'favorites':
             username = self.request.get('username')
             text_query = self.request.get('query')
-            query = gdata.youtube.service.YouTubeUserQuery(username=username, feed_type=action, text_query=text_query, params={'max-results': '50'})
+            query = gdata.youtube.service.YouTubeUserQuery(
+                username=username, feed_type=action, text_query=text_query, params={'max-results': '50'}
+            )
             feed = yt_service.YouTubeQuery(query)
         elif action == 'playlists':
             username = self.request.get('username')
             text_query = self.request.get('query')
-            query = gdata.youtube.service.YouTubeUserQuery(username=username, feed_type=action, text_query=text_query, params={'max-results': '50'})
+            query = gdata.youtube.service.YouTubeUserQuery(
+                username=username, feed_type=action, text_query=text_query, params={'max-results': '50'}
+            )
             result = yt_service.Query(query.ToUri())
             #feed = yt_service.YouTubeQuery(query)
             feed = gdata.youtube.YouTubePlaylistFeedFromString(result.ToString())
@@ -40,5 +45,3 @@ class YoutubeSimpleApiHandler(base_servlet.BareBaseRequestHandler):
                 print 'Playlist title: %s: %s' % (pid, entry.title.text)
             else:
                 print 'Video title: %s' % entry.media.title.text
-
-

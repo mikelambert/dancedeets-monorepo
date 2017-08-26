@@ -50,8 +50,10 @@ from copy import copy
 from operator import itemgetter
 from UserDict import DictMixin
 
+
 # Singleton sentinel - works with pickling
-class NULL(object): pass
+class NULL(object):
+    pass
 
 
 class Node(object):
@@ -65,28 +67,27 @@ class Node(object):
     :ivar children: A ``{key-part : child-node}`` mapping.
     '''
     __slots__ = ('value', 'children')
-    
+
     #: A callable for creating a new :attr:`children` mapping.
     ChildrenFactory = dict
 
     def __init__(self, value=NULL):
         self.value = value
         self.children = self.ChildrenFactory()
-    
+
     def numkeys(self):
         '''Return the number of keys in the subtree rooted at this node.'''
-        return ((self.value is not NULL) +
-                 sum(child.numkeys() for child in self.children.itervalues()))
+        return ((self.value is not NULL) + sum(child.numkeys() for child in self.children.itervalues()))
 
     def __repr__(self):
         return '(%s, {%s})' % (
-            self.value is NULL and 'NULL' or repr(self.value),
-            ', '.join('%r: %r' % t for t in self.children.iteritems()))
+            self.value is NULL and 'NULL' or repr(self.value), ', '.join('%r: %r' % t for t in self.children.iteritems())
+        )
 
     def __copy__(self):
         clone = self.__class__(self.value)
         clone_children = clone.children
-        for key,child in self.children.iteritems():
+        for key, child in self.children.iteritems():
             clone_children[key] = child.__copy__()
         return clone
 
@@ -96,7 +97,7 @@ class Node(object):
     def __setstate__(self, state):
         self.value, self.children = state
 
-    
+
 class Trie(DictMixin, object):
     '''Base trie class.
         
@@ -106,7 +107,7 @@ class Trie(DictMixin, object):
 
     #: Callable for forming a key from its parts.
     KeyFactory = tuple
-    
+
     #: Callable for creating new trie nodes.
     NodeFactory = Node
 
@@ -117,7 +118,7 @@ class Trie(DictMixin, object):
         '''
         self._root = self.NodeFactory()
         self.update(seq, **kwargs)
-    
+
     @classmethod
     def fromkeys(cls, iterable, value=None):
         '''Create a new trie with keys from ``iterable`` and values set to ``value``.
@@ -138,7 +139,8 @@ class Trie(DictMixin, object):
           - if ``default`` is given, return it
           - otherwise raise ``KeyError``
         '''
-        try: return self.longest_prefix_item(key)[0]
+        try:
+            return self.longest_prefix_item(key)[0]
         except KeyError:
             if default is not NULL:
                 return default
@@ -164,7 +166,7 @@ class Trie(DictMixin, object):
             return default
         else:
             raise KeyError
-    
+
     def longest_prefix_item(self, key, default=NULL):
         '''Return the item (``(key,value)`` tuple) associated with the longest
         key in this trie that is a prefix of ``key``.
@@ -173,7 +175,7 @@ class Trie(DictMixin, object):
           - if ``default`` is given, return it
           - otherwise raise ``KeyError``
         '''
-        prefix = [];
+        prefix = []
         append = prefix.append
         node = self._root
         for part in key:
@@ -230,9 +232,9 @@ class Trie(DictMixin, object):
             append(part)
             if node.value is not NULL:
                 yield (key_factory(prefix), node.value)
-    
+
     #----- extended mapping API methods ----------------------------------------
-    
+
     def keys(self, prefix=None):
         '''Return a list of this trie's keys.
         
@@ -261,7 +263,7 @@ class Trie(DictMixin, object):
         
         :param prefix: If not None, yield only the keys prefixed by ``prefix``.
         '''
-        return (key for key,value in self.iteritems(prefix))
+        return (key for key, value in self.iteritems(prefix))
 
     def itervalues(self, prefix=None):
         '''Return an iterator over this trie's values.
@@ -269,12 +271,14 @@ class Trie(DictMixin, object):
         :param prefix: If not None, yield only the values associated with keys
             prefixed by ``prefix``.
         '''
+
         def generator(node, NULL=NULL):
             if node.value is not NULL:
                 yield node.value
-            for part,child in node.children.iteritems():
+            for part, child in node.children.iteritems():
                 for subresult in generator(child):
                     yield subresult
+
         if prefix is None:
             node = self._root
         else:
@@ -291,15 +295,16 @@ class Trie(DictMixin, object):
         '''
         parts = []
         append = parts.append
-        def generator(node, key_factory=self.KeyFactory, parts=parts,
-                      append=append, NULL=NULL):
+
+        def generator(node, key_factory=self.KeyFactory, parts=parts, append=append, NULL=NULL):
             if node.value is not NULL:
                 yield (key_factory(parts), node.value)
-            for part,child in node.children.iteritems():
+            for part, child in node.children.iteritems():
                 append(part)
                 for subresult in generator(child):
                     yield subresult
                 del parts[-1]
+
         node = self._root
         if prefix is not None:
             for part in prefix:
@@ -311,7 +316,7 @@ class Trie(DictMixin, object):
         return generator(node)
 
     #----- original mapping API methods ----------------------------------------
-    
+
     def __len__(self):
         return self._root.numkeys()
 
@@ -347,7 +352,7 @@ class Trie(DictMixin, object):
         append = nodes_parts.append
         node = self._root
         for part in key:
-            append((node,part))
+            append((node, part))
             node = node.children.get(part)
             if node is None:
                 break
@@ -356,14 +361,14 @@ class Trie(DictMixin, object):
         node.value = NULL
         pop = nodes_parts.pop
         while node.value is NULL and not node.children and nodes_parts:
-            node,part = pop()
+            node, part = pop()
             del node.children[part]
 
     def clear(self):
         self._root.children.clear()
 
     def copy(self):
-        clone = copy(super(Trie,self))
+        clone = copy(super(Trie, self))
         clone._root = copy(self._root)
         return clone
 
@@ -405,11 +410,11 @@ class SortedTrie(Trie):
         (few inserts/deletes) and is iterated often, it is probably more efficient
         to use a :attr:`NodeFactory` based on a sorted dict such as
         `sorteddict <http://pypi.python.org/pypi/sorteddict/>`_.
-    '''    
+    '''
     NodeFactory = _SortedNode
 
 
-class SortedStringTrie(SortedTrie,StringTrie):
+class SortedStringTrie(SortedTrie, StringTrie):
     'A :class:`Trie` that is both a :class:`StringTrie` and a :class:`SortedTrie`.'
 
 

@@ -5,15 +5,18 @@ import urlparse
 
 from .. import items
 
+
 def parse_time(ts):
     if re.search(r'noon|am|pm', ts.lower()):
         return dateparser.parse(ts).time(), True
     else:
         return dateparser.parse(ts).time(), False
 
+
 def format_tuple_as_time_using_time(unsure_time, time):
     formatted_time = '%s %s' % (unsure_time.strftime('%I:%M'), time.strftime('%p'))
     return dateparser.parse(formatted_time).time()
+
 
 def parse_times(times):
     start_time_string, end_time_string = re.split(r' ?- ?', times)
@@ -24,6 +27,7 @@ def parse_times(times):
     elif not end_time_correct:
         end_time = format_tuple_as_time_using_time(end_time, start_time)
     return start_time, end_time
+
 
 class DebbieReynolds(items.StudioScraper):
     name = 'DebbieReynolds'

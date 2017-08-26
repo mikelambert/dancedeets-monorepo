@@ -6,6 +6,7 @@ from google.appengine.runtime import apiproxy_errors
 from util import dates
 from . import thing_db
 
+
 class DiscoveredEvent(object):
     def __init__(self, fb_event_id, source, source_field, extra_source_id=None):
         self.event_id = fb_event_id
@@ -40,13 +41,14 @@ class PESource(object):
         return self.__class__(self.id, self.field)
 
     def __eq__(self, other):
-      return self.id == other.id and self.field == other.field
+        return self.id == other.id and self.field == other.field
 
     def __hash__(self):
-      return hash((self.id, self.field))
+        return hash((self.id, self.field))
 
     def __repr__(self):
         return '%s(**%r)' % (self.__class__.__name__, self.__dict__)
+
 
 class PotentialEvent(db.Model):
     fb_event_id = property(lambda x: str(x.key().name()))
@@ -100,7 +102,6 @@ class PotentialEvent(db.Model):
                 has_source = True
         return has_source
 
-
     def set_past_event(self, fb_event):
         if not fb_event:
             past_event = True
@@ -129,6 +130,7 @@ def make_potential_event_without_source(fb_event_id):
             _common_potential_event_setup(potential_event)
             potential_event.put()
         return potential_event
+
     try:
         potential_event = db.run_in_transaction(_internal_add_potential_event)
     except apiproxy_errors.CapabilityDisabledError, e:
@@ -136,13 +138,16 @@ def make_potential_event_without_source(fb_event_id):
 
     return potential_event
 
+
 def make_potential_event_with_source(discovered):
     fb_event_id = discovered.event_id
     # show all events from a source if enough of them slip through our automatic filters
     if discovered.source is not None:
-        show_all_events = discovered.source.fraction_real_are_false_negative() > 0.05 and discovered.source_field != thing_db.FIELD_INVITES # never show all invites, privacy invasion
+        show_all_events = discovered.source.fraction_real_are_false_negative(
+        ) > 0.05 and discovered.source_field != thing_db.FIELD_INVITES  # never show all invites, privacy invasion
     else:
         show_all_events = discovered.source_field != thing_db.FIELD_INVITES
+
     def _internal_add_source_for_event_id():
         potential_event = PotentialEvent.get_by_key_name(fb_event_id) or PotentialEvent(key_name=fb_event_id)
         # If already added, return
@@ -156,7 +161,9 @@ def make_potential_event_with_source(discovered):
             #STR_ID_MIGRATE
             potential_event.set_sources(potential_event.sources() + [PESource(discovered.source_id or 0, discovered.source_field)])
 
-        logging.info('VTFI %s: Just added source id %s/%s to potential event, and saving', fb_event_id, discovered.source_id, discovered.source_field)
+        logging.info(
+            'VTFI %s: Just added source id %s/%s to potential event, and saving', fb_event_id, discovered.source_id, discovered.source_field
+        )
 
         potential_event.show_even_if_no_score = potential_event.show_even_if_no_score or show_all_events
         potential_event.put()
@@ -176,4 +183,3 @@ def make_potential_event_with_source(discovered):
             s.num_all_events = (s.num_all_events or 0) + 1
             s.put()
     return potential_event
-

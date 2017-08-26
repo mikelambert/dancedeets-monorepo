@@ -9,6 +9,7 @@ from users import users
 from util import urls
 from . import web_events_servlets
 
+
 @app.route('/web_events/upload_multi_fbevent')
 class ClassMultiFbEventUploadHandler(web_events_servlets.JsonDataHandler):
     def post(self):

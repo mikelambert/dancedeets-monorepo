@@ -1,5 +1,6 @@
 from .. import items
 
+
 class Millenium(items.HealCodeScraper):
     name = 'Millenium'
     latlong = (34.1633887, -118.3763954)

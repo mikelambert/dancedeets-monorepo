@@ -12,16 +12,15 @@ from loc import gmaps_api
 from . import namespaces
 from util import fb_events
 
-REGION_RADIUS = 200 # kilometers
-
+REGION_RADIUS = 200  # kilometers
 
 # valid parameters for creating_method= argument below
-CM_AUTO = 'CM_AUTO' # A FBEvent we found via fb pages/groups and signed-in fb users
-CM_AUTO_ATTENDEE = 'CM_AUTO_ATTENDEE' # A FBEvent we found via event-attendees
-CM_AUTO_WEB = 'CM_AUTO_WEB' # A FBEvent we scraped from the web
+CM_AUTO = 'CM_AUTO'  # A FBEvent we found via fb pages/groups and signed-in fb users
+CM_AUTO_ATTENDEE = 'CM_AUTO_ATTENDEE'  # A FBEvent we found via event-attendees
+CM_AUTO_WEB = 'CM_AUTO_WEB'  # A FBEvent we scraped from the web
 CM_ADMIN = 'CM_ADMIN'
 CM_USER = 'CM_USER'
-CM_WEB_SCRAPE = 'CM_WEB_SCRAPE' # A WebEvent we scraped from the web
+CM_WEB_SCRAPE = 'CM_WEB_SCRAPE'  # A WebEvent we scraped from the web
 CM_UNKNOWN = 'CM_UNKNOWN'
 
 ALL_CM_HUMAN_CREATED = [CM_ADMIN, CM_USER]
@@ -94,18 +93,18 @@ class DBEvent(ndb.Model):
 
     # searchable properties
     search_time_period = ndb.StringProperty()
-    start_time = ndb.DateTimeProperty(indexed=True) # needed to composite index
+    start_time = ndb.DateTimeProperty(indexed=True)  # needed to composite index
     end_time = ndb.DateTimeProperty(indexed=False)
     attendee_count = ndb.IntegerProperty(indexed=False)
 
     # extra cached properties
-    address = ndb.StringProperty(indexed=False) # manually overridden address
-    actual_city_name = ndb.StringProperty() # city for this event
+    address = ndb.StringProperty(indexed=False)  # manually overridden address
+    actual_city_name = ndb.StringProperty()  # city for this event
     # Index is needed for city_name=Unknown searches in admin_nolocation_events
-    city_name = ndb.StringProperty() # largest nearby city for this event
-    nearby_geoname_id = ndb.IntegerProperty() # largest nearby city (geoname id) for this event
+    city_name = ndb.StringProperty()  # largest nearby city for this event
+    nearby_geoname_id = ndb.IntegerProperty()  # largest nearby city (geoname id) for this event
 
-    latitude = ndb.FloatProperty(indexed=True) # needed to composite index
+    latitude = ndb.FloatProperty(indexed=True)  # needed to composite index
     longitude = ndb.FloatProperty(indexed=False)
     anywhere = ndb.BooleanProperty()
 
@@ -118,7 +117,7 @@ class DBEvent(ndb.Model):
     # TODO(lambert): right now this is unused, but maybe we want to cache our "ish" tags or something to that effect?
     # Was originally used to track manually-applied tags, and contains that data for some old events...
     tags = ndb.StringProperty(indexed=False, repeated=True)
-    nearby_city_names = ndb.StringProperty(indexed=False, repeated=True) # Unused
+    nearby_city_names = ndb.StringProperty(indexed=False, repeated=True)  # Unused
 
     # Things that would be nice to have in DBEvent:
     # - event privacy

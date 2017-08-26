@@ -3,10 +3,12 @@
 import unittest
 import webapp2
 
+
 class TestImports(unittest.TestCase):
     def runTest(self):
         import main
-        return main # to avoid pyflakes unused warning
+        return main  # to avoid pyflakes unused warning
+
 
 class TestUrlRoutes(unittest.TestCase):
     def runTest(self):
@@ -20,6 +22,7 @@ class TestUrlRoutes(unittest.TestCase):
         }
         route = router.match(webapp2.Request(env))
         self.assertEqual(route[0].handler, event.ShowEventHandler)
+
 
 if __name__ == '__main__':
     unittest.main()

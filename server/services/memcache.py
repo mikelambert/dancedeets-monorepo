@@ -9,10 +9,12 @@ except ImportError:
 
 import keys
 
+
 def init_memcache():
-    client = pylibmc.Client(
-        [keys.get('redis_memcache_endpoint')], binary=True,
-        username='dancedeets', password=keys.get('redis_memcache_password'))
+    client = pylibmc.Client([keys.get('redis_memcache_endpoint')],
+                            binary=True,
+                            username='dancedeets',
+                            password=keys.get('redis_memcache_password'))
 
     # Non-existent functions necessary to adhere to the memcache API expected by gae_memcache's setup_client()
     client.set_servers = None
@@ -25,6 +27,7 @@ def init_memcache():
         gae_memcache.setup_client(client)
     return client
 
+
 from util import runtime
 if runtime.is_local_appengine():
     memcache_client = gae_memcache._CLIENT
@@ -35,23 +38,30 @@ else:
 
 # Expose a simplified memcache_client API here...will we need it at all?
 
+
 def get(key):
     return memcache_client.get(key)
+
 
 def get_multi(keys):
     return memcache_client.get_multi(keys)
 
+
 def set(key, value, time=0):
     return memcache_client.set(key, value, time=time)
+
 
 def set_multi(mapping, time=0):
     return memcache_client.set(mapping, time=time)
 
+
 def flush_all():
     return memcache_client.flush_all()
 
+
 def delete(key):
     return memcache_client.delete(key)
+
 
 def delete_multi(keys):
     return memcache_client.delete_multi(keys)

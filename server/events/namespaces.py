@@ -1,4 +1,3 @@
-
 KOREA_SDK = 'street-dance-korea'
 JAPAN_DD = 'dance-delight'
 JAPAN_TDL = 'tokyo-dance-life'
@@ -13,6 +12,7 @@ class Namespace(object):
         self.long_name = long_name
         self.domain_url = domain_url
         self.event_url_func = event_url_func
+
 
 _NAMESPACE_LIST = [
     Namespace(

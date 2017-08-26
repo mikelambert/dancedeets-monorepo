@@ -16,6 +16,8 @@ from nlp import grammar
 skip_rules = ['EVENT', 'EVENT_WITH_ROMANCE_EVENT', 'ANY_GOOD', 'ANY_BAD']
 skip_keywords = ['CONNECTOR', 'ROMANCE', 'KING']
 skip_names = ['nlp.keywords.%s' % x for x in skip_keywords] + ['nlp.rules.%s' % x for x in skip_rules]
+
+
 def get_magic_rules(module):
     rules = {}
     for var in dir(module):
@@ -25,6 +27,8 @@ def get_magic_rules(module):
             if name not in skip_names:
                 rules[name] = var_value
     return rules
+
+
 # These are the regexes that will be our feature detectors
 named_rules = {}
 named_rules.update(get_magic_rules(rules))
@@ -40,13 +44,18 @@ loaded_data = processing.all_fb_data(all_ids)
 
 print 'loaded ids'
 
+
 class Bunch(object):
     pass
 
+
 train = Bunch()
+
 
 def process(fb_event):
     return '%s\n\n%s' % (fb_event['info'].get('name'), fb_event['info'].get('description'))
+
+
 import itertools
 process_all = True
 if process_all:
@@ -57,8 +66,11 @@ train.data = [process(x[1]) for x in loaded_data]
 
 print 'loaded data'
 
+
 def good_id(event_id):
     return event_id in training_data.good_ids
+
+
 train.target = [good_id(x[0]) for x in loaded_data]
 
 total_count = len(all_ids)
@@ -76,6 +88,8 @@ from nlp import event_classifier
 from sklearn.externals.joblib import Parallel, delayed
 
 import re
+
+
 def process_doc(fb_event):
     values = array.array(str("f"))
     processed_title = event_classifier.StringProcessor(fb_event['info'].get('name', '').lower())
@@ -91,6 +105,7 @@ def process_doc(fb_event):
         values.append(title_matches)
         values.append(text_matches)
     return values
+
 
 class GrammarFeatureVector(base.BaseEstimator):
     def __init__(self, rules_dict, binary=False):
@@ -116,7 +131,9 @@ class GrammarFeatureVector(base.BaseEstimator):
             dummy_processor.count_tokens(rule)
 
         print "Computing Features"
-        result = Parallel(n_jobs=7 if process_all else 1, verbose=10)(delayed(process_doc)(fb_event) for event_id, fb_event in raw_documents)
+        result = Parallel(
+            n_jobs=7 if process_all else 1, verbose=10
+        )(delayed(process_doc)(fb_event) for event_id, fb_event in raw_documents)
         for row_values in result:
             values.extend(row_values)
 
@@ -151,20 +168,19 @@ grammar_processor = GrammarFeatureVector(named_rules)
 for i, name in enumerate(grammar_processor.get_feature_names()):
     print i, name
 
-
 from sklearn.externals import joblib
 if process_all:
     load_grammar = True
 else:
     load_grammar = False
 if load_grammar:
-    grammar_processed_data = joblib.load('grammar-processed.pkl') 
+    grammar_processed_data = joblib.load('grammar-processed.pkl')
 else:
     grammar_processed_data = grammar_processor.fit_transform(loaded_data, train.target)
 processed_test_data = grammar_processed_data
 
 if process_all:
-    joblib.dump(grammar_processed_data, 'grammar-processed.pkl') 
+    joblib.dump(grammar_processed_data, 'grammar-processed.pkl')
 
 if False:
     text_processor = text.TfidfVectorizer(stop_words='english')
@@ -176,6 +192,7 @@ if False:
 
 test = train
 
+
 def eval_model(name, model, data):
     print '=' * 20
     print name, 'training'
@@ -185,33 +202,34 @@ def eval_model(name, model, data):
     predictions = model.predict(processed_test_data)
     print name, 'accuracy', np.mean(predictions == test.target)
 
-    print (metrics.classification_report(test.target, predictions))
+    print(metrics.classification_report(test.target, predictions))
     print metrics.confusion_matrix(test.target, predictions)
 
     print name, 'f1 cross validation', cross_validation.cross_val_score(model, grammar_processed_data, train.target, scoring='f1')
-    print name, 'precision cross validation', cross_validation.cross_val_score(model, grammar_processed_data, train.target, scoring='precision')
+    print name, 'precision cross validation', cross_validation.cross_val_score(
+        model, grammar_processed_data, train.target, scoring='precision'
+    )
     return model, predictions
+
 
 # SVM need balance on input features, same ranges and variances and stuff like that
 svm_model, svm_predictions = eval_model('svm', SGDClassifier(loss='hinge', penalty='l2', alpha=1e-3, n_iter=5), grammar_processed_data)
 from sklearn.svm import SVC
 svm_model, svm_predictions = eval_model('svm', SVC(max_iter=10000), grammar_processed_data)
 
-
 from sklearn import tree
-tree_model, tree_predictions = eval_model('tree', tree.DecisionTreeClassifier(max_leaf_nodes=1<<8), grammar_processed_data)
+tree_model, tree_predictions = eval_model('tree', tree.DecisionTreeClassifier(max_leaf_nodes=1 << 8), grammar_processed_data)
 feature_names = np.asarray(grammar_processor.get_feature_names())
 with open("dtree.dot", 'w') as f:
-     f = tree.export_graphviz(tree_model, out_file=f, feature_names=feature_names)
+    f = tree.export_graphviz(tree_model, out_file=f, feature_names=feature_names)
 
 if False:
     from sklearn.ensemble import AdaBoostClassifier
-    bdt = AdaBoostClassifier(tree.DecisionTreeClassifier(max_depth=5),
-                             algorithm="SAMME.R",
-                             n_estimators=20)
+    bdt = AdaBoostClassifier(tree.DecisionTreeClassifier(max_depth=5), algorithm="SAMME.R", n_estimators=20)
     tree_model2, tree_predictions2 = eval_model('ada-tree', bdt, grammar_processed_data)
 
 bayes_model, bayes_predictions = eval_model('bayes', MultinomialNB(), grammar_processed_data)
+
 
 def show_top10(classifier, categories):
     for i, category in enumerate(categories):
@@ -219,5 +237,6 @@ def show_top10(classifier, categories):
         print category
         for j in reversed(sorted_coeff):
             print '%s: %s' % (classifier.coef_[i][j], feature_names[j])
+
 
 show_top10(bayes_model, ['result'])

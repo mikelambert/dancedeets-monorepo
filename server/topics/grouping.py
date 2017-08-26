@@ -1,6 +1,7 @@
 import collections
 import datetime
 
+
 def group_results_by_date(results):
     year_months = collections.defaultdict(lambda: collections.defaultdict(lambda: []))
     for result in results:

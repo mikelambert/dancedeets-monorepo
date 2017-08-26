@@ -10,6 +10,7 @@ def _map_rsvp(rsvp):
     else:
         return rsvp
 
+
 def get_rsvps(fbl):
     fb_user = fbl.fetched_data(fb_api.LookupUser, fbl.fb_uid)
     if 'rsvp_for_future_events' in fb_user:
@@ -17,6 +18,7 @@ def get_rsvps(fbl):
         return dict((x['id'], _map_rsvp(x['rsvp_status'])) for x in rsvps_list)
     else:
         return {}
+
 
 class RSVPManager(object):
     def __init__(self, fbl):

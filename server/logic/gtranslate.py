@@ -13,6 +13,8 @@ from util import urls
 API_KEY = 'AIzaSyAMTDdM6Y8xDkS7zaj3nRWmxK01rHznlB0'
 
 MAX_LENGTH = 5000
+
+
 def check_language(text):
     if len(text) > MAX_LENGTH:
         logging.info("trimming text from %s to %s", len(text), MAX_LENGTH)
@@ -24,10 +26,7 @@ def check_language(text):
         request = urllib2.Request(base_url, form_data, {'X-HTTP-Method-Override': 'GET'})
         response_content = urllib2.urlopen(request).read()
     else:
-        result = urlfetch.fetch(url=base_url,
-            payload=form_data,
-            method=urlfetch.POST,
-            headers={'X-HTTP-Method-Override': 'GET'})
+        result = urlfetch.fetch(url=base_url, payload=form_data, method=urlfetch.POST, headers={'X-HTTP-Method-Override': 'GET'})
         if result.status_code != 200:
             error = "result status code is %s for content %s" % (result.status_code, result.content)
             logging.error(error)

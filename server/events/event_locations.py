@@ -35,6 +35,7 @@ def state_name_for_fb_location(location):
         pass
     return state_name
 
+
 def city_for_fb_location(location):
     state = state_name_for_fb_location(location)
     if location.get('city') and (state or location.get('country')):
@@ -45,26 +46,36 @@ def city_for_fb_location(location):
     else:
         return None
 
+
 def get_fb_place(fb_event):
     event_info = fb_event['info']
-    place = event_info.get('place', {}).get('location',
+    place = event_info.get('place', {}).get(
+        'location',
         # bwcompat:
-        event_info.get('venue', {}))
+        event_info.get('venue', {})
+    )
     return place
+
 
 def get_fb_place_name(fb_event):
     event_info = fb_event['info']
-    event_location = event_info.get('place', {}).get('name',
+    event_location = event_info.get('place', {}).get(
+        'name',
         # bwcompat:
-        event_info.get('location', None))
+        event_info.get('location', None)
+    )
     return event_location
+
 
 def get_fb_place_id(fb_event):
     event_info = fb_event['info']
-    event_location = event_info.get('place', {}).get('id',
+    event_location = event_info.get('place', {}).get(
+        'id',
         # bwcompat:
-        event_info.get('venue', {}).get('id', None))
+        event_info.get('venue', {}).get('id', None)
+    )
     return event_location
+
 
 def _get_latlng_from_event(fb_event):
     venue = get_fb_place(fb_event)
@@ -132,6 +143,7 @@ def update_remapped_address(fb_event, new_remapped_address):
     logging.info("remapped address for fb_event %r, new form value %r", location_info.remapped_address, new_remapped_address)
     if location_info.remapped_address != new_remapped_address:
         _save_remapped_address_for(location_info.fb_address, new_remapped_address)
+
 
 class LocationInfo(object):
     def __init__(self, fb_event=None, db_event=None, debug=False, check_places=True):

@@ -20,6 +20,7 @@ class TestEvent(unittest.TestCase):
             self.fail(result.json)
         self.assertEqual(result.json['id'], event.fb_event_id)
 
+
 class TestAuth(unittest.TestCase):
     def runTest(self):
         fields_str = '%2C'.join(fb_api.OBJ_USER_FIELDS)
@@ -29,19 +30,28 @@ class TestAuth(unittest.TestCase):
         access_token = 'BlahToken'
         new_access_token = 'BlahToken2'
         fb_api.FBAPI.get_results = {
-            'me': {'id': me_uid},
+            'me': {
+                'id': me_uid
+            },
         }
         fb_api.FBAPI.results = {
-            url: (200, {'id': me_uid, 'name': 'Mike Lambert'}),
+            url: (200, {
+                'id': me_uid,
+                'name': 'Mike Lambert'
+            }),
             '/v2.9/me/events?since=yesterday&fields=id,rsvp_status&limit=3000': (200, {}),
             '/v2.9/me/friends': (200, {}),
             '/v2.9/me/permissions': (200, {}),
             '/v2.9/debug_token?input_token=BlahToken': (200, {
-                'data': {'expires_at': 0}
-                }),
+                'data': {
+                    'expires_at': 0
+                }
+            }),
             '/v2.9/debug_token?input_token=BlahToken2': (200, {
-                'data': {'expires_at': 0}
-                }),
+                'data': {
+                    'expires_at': 0
+                }
+            }),
         }
 
         auth_request = {

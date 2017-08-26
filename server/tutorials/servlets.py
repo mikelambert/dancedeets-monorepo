@@ -1,4 +1,3 @@
-
 import app
 import base_servlet
 
@@ -11,14 +10,13 @@ class TutorialHandler(base_servlet.BaseRequestHandler):
     def get(self, tutorial_name):
         self.finish_preload()
 
-        props = dict(
-            tutorial=tutorial_name,
-        )
+        props = dict(tutorial=tutorial_name,)
         self.setup_react_template('tutorial.js', props)
 
         self.display['tutorial'] = tutorial_name
 
         self.render_template('tutorial')
+
 
 @app.route('/tutorials$')
 class TutorialRedirectHandler(base_servlet.BaseRequestHandler):
@@ -29,6 +27,7 @@ class TutorialRedirectHandler(base_servlet.BaseRequestHandler):
         self.finish_preload()
         self.redirect('/tutorials/')
 
+
 @app.route('/tutorials/(?:([^/]+)/?)?$')
 class TutorialCategoryHandler(base_servlet.BaseRequestHandler):
     def requires_login(self):
@@ -37,9 +36,7 @@ class TutorialCategoryHandler(base_servlet.BaseRequestHandler):
     def get(self, style):
         self.finish_preload()
 
-        props = dict(
-            style=style,
-        )
+        props = dict(style=style,)
         self.setup_react_template('tutorialCategory.js', props)
 
         self.display['style'] = style

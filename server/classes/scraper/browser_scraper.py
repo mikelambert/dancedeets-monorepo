@@ -9,6 +9,7 @@ import scrapyjs
 from . import items
 from scrapy_lib import mixins
 
+
 def adjust_caps(s):
     if s.upper() == s:
         s = s.title()
@@ -16,10 +17,7 @@ def adjust_caps(s):
 
 
 class BrowserScraper(items.StudioScraper, mixins.BrowserScraperMixin):
-    custom_settings = mixins.generate_custom_settings(
-        items.StudioScraper.custom_settings
-    )
-
+    custom_settings = mixins.generate_custom_settings(items.StudioScraper.custom_settings)
 
 
 class MindBodyBrowserScraper(BrowserScraper):
@@ -66,10 +64,12 @@ class MindBodyBrowserScraper(BrowserScraper):
     def start_requests(self):
         num_weeks = 3
         for i in range(num_weeks):
-            yield self._generate_request("""
+            yield self._generate_request(
+                """
                 splash:runjs("autoSubmitDateTo(false, true)")
                 splash:wait(3)
-            """ * i)
+            """ * i
+            )
 
     def _valid_item(self, item, row):
         return True

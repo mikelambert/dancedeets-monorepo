@@ -13,9 +13,11 @@ good_ids = ids_info['good_ids']
 bad_ids = ids_info['bad_ids']
 combined_ids = ids_info['combined_ids']
 
+
 def handle_new_false_negative(id, ec):
     print "FALSE------", id, [(k, v) for (k, v) in ec.__dict__.iteritems() if k not in ['search_text', 'times']]
     pass
+
 
 def handle_new_false_positive(id, ec):
     print "FALSE++++++", id, [(k, v) for (k, v) in ec.__dict__.iteritems() if k not in ['search_text', 'times']]
@@ -24,6 +26,8 @@ def handle_new_false_positive(id, ec):
 
 START_EVENT = 0
 END_EVENT = 0
+
+
 def partition_ids(old_true_positive, old_true_negative, classifier=event_classifier.classified_event_from_fb_event):
     success = set()
     fail = set()
@@ -51,6 +55,7 @@ def partition_ids(old_true_positive, old_true_negative, classifier=event_classif
     print 'Time per event: %s' % (1.0 * (time.time() - a) / (max(END_EVENT, i) - START_EVENT))
     return fail, success
 
+
 # TODO(lambert): move this all into a proper main()
 
 import sys
@@ -60,11 +65,10 @@ opts = dict(opt_data[0])
 if not opts.get('-i'):
     opts['-i'] = 'old_eval'
 
-
 print '--- using old filter ---'
 if opts.get('-i'):
-    old_fail = frozenset(x.strip() for x in open(opts['-i']+".fail").readlines())
-    old_succeed = frozenset(x.strip() for x in open(opts['-i']+".succeed").readlines())
+    old_fail = frozenset(x.strip() for x in open(opts['-i'] + ".fail").readlines())
+    old_succeed = frozenset(x.strip() for x in open(opts['-i'] + ".succeed").readlines())
 old_true_positive = old_succeed.intersection(good_ids)
 old_false_positive = old_succeed.intersection(bad_ids)
 old_false_negative = old_fail.intersection(good_ids)
@@ -75,15 +79,14 @@ print 'true negatives', len(old_true_negative)
 print '---'
 fail, succeed = partition_ids(old_true_positive, old_true_negative)
 if opts.get('-o'):
-    open(opts['-o']+".fail", 'w').writelines([x+"\n" for x in fail])
-    open(opts['-o']+".succeed", 'w').writelines([x+"\n" for x in succeed])
+    open(opts['-o'] + ".fail", 'w').writelines([x + "\n" for x in fail])
+    open(opts['-o'] + ".succeed", 'w').writelines([x + "\n" for x in succeed])
 true_positive = succeed.intersection(good_ids)
 false_positive = succeed.intersection(bad_ids)
 false_negative = fail.intersection(good_ids)
 true_negative = fail.intersection(bad_ids)
 print 'false negatives', len(false_negative)
 print 'true negatives', len(true_negative)
-
 
 print '-----'
 print "Events we helped find:", len(true_positive.difference(old_true_positive))
@@ -102,4 +105,3 @@ print ''
 print 'list of used-to-be-negative now-positive non-dance events (extra useless work)'
 for id in false_positive.difference(old_false_positive):
     print id
-

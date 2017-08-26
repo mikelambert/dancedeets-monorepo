@@ -42,12 +42,14 @@ class CalendarFeedHandler(LoginIfUnspecified, base_servlet.BaseRequestHandler):
                 end_time = start_time
             all_day = False
             title = '@ %s\n\n%s' % (result.actual_city_name, result.name)
-            json_results.append(dict(
-                id=result.event_id,
-                title=title,
-                start=start_time.strftime('%Y-%m-%dT%H:%M:%SZ'),
-                end=end_time.strftime('%Y-%m-%dT%H:%M:%SZ'),
-                url=urls.dd_event_url(result.event_id),
-                allDay=all_day,
-            ))
+            json_results.append(
+                dict(
+                    id=result.event_id,
+                    title=title,
+                    start=start_time.strftime('%Y-%m-%dT%H:%M:%SZ'),
+                    end=end_time.strftime('%Y-%m-%dT%H:%M:%SZ'),
+                    url=urls.dd_event_url(result.event_id),
+                    allDay=all_day,
+                )
+            )
         self.write_json_response(json_results)

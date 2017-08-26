@@ -3,10 +3,9 @@ import os
 # This gets imported from many places at a very low level.
 # Do *not* add extraneous imports/dependencies to this file.
 
+
 def is_appengine():
-    return (is_local_appengine() or
-            is_prod_appengine() or
-            is_prod_appengine_mvms())
+    return (is_local_appengine() or is_prod_appengine() or is_prod_appengine_mvms())
 
 
 def is_appengine_sandbox():
@@ -14,14 +13,11 @@ def is_appengine_sandbox():
 
 
 def is_local_appengine():
-    return ('APPENGINE_RUNTIME' in os.environ and
-            'Development/' in os.environ['SERVER_SOFTWARE'])
+    return ('APPENGINE_RUNTIME' in os.environ and 'Development/' in os.environ['SERVER_SOFTWARE'])
 
 
 def is_prod_appengine():
-    return ('APPENGINE_RUNTIME' in os.environ and
-            'Google App Engine/' in os.environ['SERVER_SOFTWARE'] and
-            not is_prod_appengine_mvms())
+    return ('APPENGINE_RUNTIME' in os.environ and 'Google App Engine/' in os.environ['SERVER_SOFTWARE'] and not is_prod_appengine_mvms())
 
 
 def is_prod_appengine_mvms():

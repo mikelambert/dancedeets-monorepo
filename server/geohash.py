@@ -90,113 +90,120 @@ Some degenerate cases:
 (-180.0, -90.0, 180.0, 90.0)
 """
 
-class Geostring (object):
-    def _to_bits (cls,f,depth=32):
+
+class Geostring(object):
+    def _to_bits(cls, f, depth=32):
         f *= (1L << depth)
-        return [(long(f) >> (depth-i)) & 1 for i in range(1,depth+1)]
+        return [(long(f) >> (depth - i)) & 1 for i in range(1, depth + 1)]
+
     _to_bits = classmethod(_to_bits)
 
-    def bitstring (cls,(x,y),bound=(-180,-90,180,90),depth=32):
-        x = cls._to_bits((x-bound[0])/float(bound[2]-bound[0]),depth)
-        y = cls._to_bits((y-bound[1])/float(bound[3]-bound[1]),depth)
-        bits = reduce(lambda x,y:x+list(y), zip(x,y), [])
-        return "".join(map(str,bits))
+    def bitstring(cls, (x, y), bound=(-180, -90, 180, 90), depth=32):
+        x = cls._to_bits((x - bound[0]) / float(bound[2] - bound[0]), depth)
+        y = cls._to_bits((y - bound[1]) / float(bound[3] - bound[1]), depth)
+        bits = reduce(lambda x, y: x + list(y), zip(x, y), [])
+        return "".join(map(str, bits))
+
     bitstring = classmethod(bitstring)
 
-    def __init__ (self, data, bound=(-180,-90,180,90), depth=32):
-        self.bound  = bound
-        self.depth  = depth
+    def __init__(self, data, bound=(-180, -90, 180, 90), depth=32):
+        self.bound = bound
+        self.depth = depth
         self.origin = bound[0:2]
-        self.size   = (bound[2]-bound[0], bound[3]-bound[1])
-        if isinstance(data,tuple) or isinstance(data,list):
-            self.hash = self.bitstring(data,bound,depth)
+        self.size = (bound[2] - bound[0], bound[3] - bound[1])
+        if isinstance(data, tuple) or isinstance(data, list):
+            self.hash = self.bitstring(data, bound, depth)
         else:
             self.hash = data
 
-    def __str__ (self):
+    def __str__(self):
         return self.hash
 
-    def _to_bbox (self, bits):
-        depth = len(bits)/2
+    def _to_bbox(self, bits):
+        depth = len(bits) / 2
         minx = miny = 0.0
         maxx = maxy = 1.0
-        for i in range(depth+1):
+        for i in range(depth + 1):
             try:
-                minx += float(bits[i*2])/(2L<<i)
-                miny += float(bits[i*2+1])/(2L<<i)
+                minx += float(bits[i * 2]) / (2L << i)
+                miny += float(bits[i * 2 + 1]) / (2L << i)
             except IndexError:
                 pass
         if depth:
-            maxx = minx + 1.0/(2L<<(depth-1))
-            maxy = miny + 1.0/(2L<<(depth-1))
+            maxx = minx + 1.0 / (2L << (depth - 1))
+            maxy = miny + 1.0 / (2L << (depth - 1))
         elif len(bits) == 1:
             # degenerate case
             maxx = min(minx + .5, 1.0)
-        minx, maxx = [self.origin[0]+x*self.size[0] for x in (minx,maxx)] 
-        miny, maxy = [self.origin[1]+y*self.size[1] for y in (miny,maxy)] 
-        return tuple([round(x,6) for x in minx, miny, maxx, maxy])
+        minx, maxx = [self.origin[0] + x * self.size[0] for x in (minx, maxx)]
+        miny, maxy = [self.origin[1] + y * self.size[1] for y in (miny, maxy)]
+        return tuple([round(x, 6) for x in minx, miny, maxx, maxy])
 
-    def bbox (self, prefix=None):
-        if not prefix: prefix=len(self.hash)
+    def bbox(self, prefix=None):
+        if not prefix: prefix = len(self.hash)
         return self._to_bbox(self.hash[:prefix])
 
-    def point (self,prefix=None):
+    def point(self, prefix=None):
         minx, miny, maxx, maxy = self.bbox(prefix)
-        return (minx+maxx)/2.0, (miny+maxy)/2.0
+        return (minx + maxx) / 2.0, (miny + maxy) / 2.0
 
-    def union (self,other):
+    def union(self, other):
         other = str(other)
-        hash  = self.hash
-        for i in range(min(len(self.hash),len(other))):
+        hash = self.hash
+        for i in range(min(len(self.hash), len(other))):
             if self.hash[i] != other[i]:
                 hash = self.hash[:i]
                 break
-        return type(self)(hash,self.bound,self.depth)
+        return type(self)(hash, self.bound, self.depth)
 
     __add__ = union
 
-class Geoindex (Geostring):
-    def bitstring (cls,coord,bound=(-180,-90,180,90),depth=32):
-        bits = Geostring.bitstring(coord,bound,depth)
-        bits = bits.replace("1","2")
-        bits += "1" * (depth*2 - len(bits))
+
+class Geoindex(Geostring):
+    def bitstring(cls, coord, bound=(-180, -90, 180, 90), depth=32):
+        bits = Geostring.bitstring(coord, bound, depth)
+        bits = bits.replace("1", "2")
+        bits += "1" * (depth * 2 - len(bits))
         return bits
+
     bitstring = classmethod(bitstring)
 
-    def bbox (self, prefix=None):
-        bits = self.hash.replace("1","").replace("2","1")
-        if not prefix: prefix=len(bits)
+    def bbox(self, prefix=None):
+        bits = self.hash.replace("1", "").replace("2", "1")
+        if not prefix: prefix = len(bits)
         return self._to_bbox(bits[:prefix])
 
-    def union (self,other):
+    def union(self, other):
         other = str(other)
-        hash  = self.hash
-        for i in range(min(len(self.hash),len(other))):
+        hash = self.hash
+        for i in range(min(len(self.hash), len(other))):
             if self.hash[i] != other[i]:
-                hash = self.hash[:i] + ("1" * (self.depth*2-i))
+                hash = self.hash[:i] + ("1" * (self.depth * 2 - i))
                 break
-        return type(self)(hash,self.bound,self.depth)
+        return type(self)(hash, self.bound, self.depth)
 
     __add__ = union
 
-class Geohash (Geostring):
+
+class Geohash(Geostring):
     BASE_32 = "0123456789bcdefghjkmnpqrstuvwxyz"
 
-    def bitstring (cls,coord,bound=(-180,-90,180,90),depth=32):
-        bits = Geostring.bitstring(coord,bound,depth)
+    def bitstring(cls, coord, bound=(-180, -90, 180, 90), depth=32):
+        bits = Geostring.bitstring(coord, bound, depth)
         hash = ""
-        for i in range(0,len(bits),5):
-            m = sum([int(n)<<(4-j) for j,n in enumerate(bits[i:i+5])])
+        for i in range(0, len(bits), 5):
+            m = sum([int(n) << (4 - j) for j, n in enumerate(bits[i:i + 5])])
             hash += cls.BASE_32[m]
         return hash
+
     bitstring = classmethod(bitstring)
 
-    def bbox (self,prefix=None):
-        if not prefix: prefix=len(self.hash)
-        bits = [[n>>(4-i)&1 for i in range(5)]
-                    for n in map(self.BASE_32.find, self.hash[:prefix])]
-        bits = reduce(lambda x,y:x+y, bits, [])
+    def bbox(self, prefix=None):
+        if not prefix: prefix = len(self.hash)
+        bits = [[n >> (4 - i) & 1 for i in range(5)] for n in map(self.BASE_32.find, self.hash[:prefix])]
+        bits = reduce(lambda x, y: x + y, bits, [])
         return self._to_bbox(bits)
+
 
 if __name__ == "__main__":
     import sys

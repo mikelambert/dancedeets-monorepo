@@ -28,28 +28,10 @@ app.secret_key = keys.get('flask_session_key')
 
 admin = Admin(app, name="Admin")
 for model in [
-    CachedGeoCode,
-    City,
-    DBEvent,
-    DisplayEvent,
-    FacebookCachedObject,
-    FeaturedResult,
-    GeoCode,
-    LocationMapping,
-    OAuthToken,
-    PRCityCategory,
-    PRDebugAttendee,
-    PotentialEvent,
-    Source,
-    StaticContent,
-    StudioClass,
-    Topic,
-    User,
-    UserFriendsAtSignup,
-    UserMessage
+    CachedGeoCode, City, DBEvent, DisplayEvent, FacebookCachedObject, FeaturedResult, GeoCode, LocationMapping, OAuthToken, PRCityCategory,
+    PRDebugAttendee, PotentialEvent, Source, StaticContent, StudioClass, Topic, User, UserFriendsAtSignup, UserMessage
 ]:
     admin.add_view(appengine.ModelView(model))
-
 
 if __name__ == '__main__':
 

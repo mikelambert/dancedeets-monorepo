@@ -31,15 +31,14 @@ ANY_POP = Any(
 
 ANY_LOCK_STRICT = Any(
     keywords.STYLE_LOCK,
-#    "lock\w*",
+    #    "lock\w*",
     u'ロック',
 )
 
-ANY_LOCK = Any(
-    ANY_LOCK_STRICT,
-    #'funk\w*',
-    #'funky',
-)
+ANY_LOCK = Any(ANY_LOCK_STRICT,
+               #'funk\w*',
+               #'funky',
+              )
 
 # No extras needed here
 ANY_WAACK_STRICT = Any(
@@ -58,7 +57,7 @@ ANY_WAACK = Any(
 
 ANY_HOUSE = Any(
     keywords.STYLE_HOUSE,
-    keywords.HOUSE, # TODO: Rename to STYLE_HOUSE_WEAK,
+    keywords.HOUSE,  # TODO: Rename to STYLE_HOUSE_WEAK,
 )
 
 ANY_HIPHOP = Any(
@@ -84,9 +83,7 @@ ANY_TURF = Any(
     'turf\w*',
 )
 
-ANY_LITEFEET = Any(
-    keywords.STYLE_LITEFEET,
-)
+ANY_LITEFEET = Any(keywords.STYLE_LITEFEET,)
 
 ANY_FLEX = Any(
     keywords.STYLE_FLEX,
@@ -100,7 +97,6 @@ ANY_BEBOP = Any(
     'jazz\Wfusion',
 )
 
-
 ANY_ALLSTYLE = Any(
     keywords.STYLE_ALLSTYLE,
     keywords.STYLE_ALLSTYLE_WEAK,
@@ -113,9 +109,7 @@ ANY_VOGUE = Any(
     keywords.EASY_VOGUE,
 )
 
-ANY_KIDS = Any(
-    keywords.KIDS,
-)
+ANY_KIDS = Any(keywords.KIDS,)
 
 STRICT_STYLES = {
     event_types.BREAK: ANY_BREAK,
@@ -162,13 +156,9 @@ ANY_BATTLE = Any(
     keywords.CONTEST,
 )
 
-ANY_PERFORMANCE = Any(
-    keywords.PERFORMANCE,
-)
+ANY_PERFORMANCE = Any(keywords.PERFORMANCE,)
 
-ANY_WORKSHOP = Any(
-    keywords.CLASS,
-)
+ANY_WORKSHOP = Any(keywords.CLASS,)
 
 ANY_PARTY = Any(
     keywords.CYPHER,
@@ -183,9 +173,7 @@ ANY_SESSION = Any(
     keywords.EASY_SESSION,
 )
 
-ANY_AUDITION = Any(
-    keywords.AUDITION,
-)
+ANY_AUDITION = Any(keywords.AUDITION,)
 
 EVENT_TYPES = {
     event_types.BATTLE: ANY_BATTLE,

@@ -13,4 +13,5 @@ def fix_stacktraces():
     def handle_exception(self, *args, **kwargs):
         logging.error('Template exception:\n%s', traceback.format_exc())
         real_handle_exception(self, *args, **kwargs)
+
     environment.Environment.handle_exception = handle_exception

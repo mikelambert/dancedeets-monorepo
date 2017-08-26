@@ -11,12 +11,14 @@ from test_utils import fixtures
 from test_utils import unittest
 import render_server
 
+
 def get_free_port():
     s = socket.socket()
     s.bind(('', 0))
     port = s.getsockname()[1]
     s.close()
     return port
+
 
 def wait_for_string_in_file(search_string, f):
     print 'Looking for %r in output' % search_string
@@ -28,12 +30,13 @@ def wait_for_string_in_file(search_string, f):
             break
         time.sleep(1)
 
+
 class TestSearch(unittest.TestCase):
     def setUp(self):
         super(TestSearch, self).setUp()
         self.old_port = render_server.PORT
         render_server.PORT = get_free_port()
-        args = ['node', '../runNode.js', './node_server/renderServer.js' ,'--port', unicode(render_server.PORT)]
+        args = ['node', '../runNode.js', './node_server/renderServer.js', '--port', unicode(render_server.PORT)]
         output = tempfile.TemporaryFile()
         self.server = subprocess.Popen(args, stdout=output, stderr=subprocess.STDOUT)
         address = '127.0.0.1:%s' % render_server.PORT
@@ -56,4 +59,3 @@ class TestSearch(unittest.TestCase):
         message = email_events.email_for_user(user, fbl, should_send=False)
         self.assertTrue(message, "Emailer did not email the user")
         self.assertIn('https://www.dancedeets.com/events/%s/' % event.fb_event_id, message['html'])
-

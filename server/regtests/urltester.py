@@ -9,7 +9,7 @@ URLS = [
     'https://www.dancedeets.com/?location=USA',
     'https://www.dancedeets.com/?location=Europe',
     'https://www.dancedeets.com/?location=Asia',
-    'https://www.dancedeets.com/events/386287078085795/', # no amp page
+    'https://www.dancedeets.com/events/386287078085795/',  # no amp page
     'https://www.dancedeets.com/events/1171204409564075/',
     'https://www.dancedeets.com/events/1171204409564075/?amp=1',
     'https://www.dancedeets.com/events/dance-delight:20554/',
@@ -21,9 +21,9 @@ URLS = [
     'https://www.dancedeets.com/events/image_proxy/1459851027584883/',
     'https://www.dancedeets.com/events/250492048363697/',
     'https://www.dancedeets.com/events/421615758038730',
-    'https://www.dancedeets.com/events/246367547151/', # no venue
-    'https://www.dancedeets.com/events/412709132257891/', # no description
-    'https://www.dancedeets.com/events/106615749421406/', # no location
+    'https://www.dancedeets.com/events/246367547151/',  # no venue
+    'https://www.dancedeets.com/events/412709132257891/',  # no description
+    'https://www.dancedeets.com/events/106615749421406/',  # no location
 ]
 API_URLS = [
     'https://www.dancedeets.com/api/v1.2/search?location=USA&time_period=UPCOMING',
@@ -48,6 +48,7 @@ def fetch(url):
 def error(url, error):
     logging.error('URL Error: %s', url)
     logging.error('  %s', error)
+
 
 for url in URLS:
     response = fetch(url)

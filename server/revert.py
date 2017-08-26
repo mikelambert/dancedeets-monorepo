@@ -19,6 +19,7 @@ def run(cmd):
 
 def get_versions():
     output = run('gcloud app versions list --service default')
+
     def split(l):
         return re.split(r'\s+', l)
 
@@ -45,6 +46,7 @@ def get_previous_version(versions, live):
         raise ValueError('No old versions to revert to, %s is the oldest version!' % live)
     prev_version = versions[new_version - 1]
     return prev_version
+
 
 if len(sys.argv) > 1:
     target_version = sys.argv[1]

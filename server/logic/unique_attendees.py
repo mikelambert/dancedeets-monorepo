@@ -8,6 +8,8 @@ import fb_api
 from util import fb_mapreduce
 
 BATCH_SIZE = 20
+
+
 def map_each_attendee(db_events):
     db_events = [x for x in db_events if x.is_fb_event]
 
@@ -27,9 +29,11 @@ def map_each_attendee(db_events):
             yield ('City: %s' % db_event.city_name, attendee['id'])
             yield ('Country: %s' % db_event.country, attendee['id'])
 
+
 def reduce_just_unique_attendees(location, all_attendees):
     yield 'Unique Attendees in %s: %s\n' % (location, len(set(all_attendees)))
     yield 'Total RSVPs in %s: %s\n' % (location, len(all_attendees))
+
 
 def mr_count_attendees_per_city(fbl):
     mapper_params = {
@@ -54,6 +58,7 @@ def mr_count_attendees_per_city(fbl):
     )
     mrp.start()
     return mrp
+
 
 @app.route('/tools/unique_attendees')
 class ExportSourcesHandler(base_servlet.BaseTaskFacebookRequestHandler):

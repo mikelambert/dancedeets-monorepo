@@ -1,13 +1,13 @@
 import IPy
 import logging
 
+
 def _check_for_builtin(environ):
-    return (
-        'HTTP_X_APPENGINE_QUEUENAME' in environ or
-        'HTTP_X_APPENGINE_CRON' in environ or
-        False)
+    return ('HTTP_X_APPENGINE_QUEUENAME' in environ or 'HTTP_X_APPENGINE_CRON' in environ or False)
+
 
 _no_admin = lambda x: False
+
 
 def authorize_middleware(app, check_env_for_admin=_no_admin):
     def wsgi_app(environ, start_response):
@@ -25,4 +25,5 @@ def authorize_middleware(app, check_env_for_admin=_no_admin):
             headers = [('Content-type', 'text/plain')]
             start_response(status, headers)
             return ['Forbidden']
+
     return wsgi_app

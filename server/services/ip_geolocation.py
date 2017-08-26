@@ -1,4 +1,3 @@
-
 import IPy
 import json
 import logging
@@ -12,17 +11,22 @@ from google.cloud import datastore
 from util import runtime
 from util import timelog
 
+
 def generate_client():
     global client
     client = datastore.Client('dancedeets-hrd')
 
+
 generate_client()
+
 
 def _memkey(ip):
     return 'IpGeolocation: %s' % ip
 
+
 def _dbkey(ip):
     return client.key('IpGeolocation', ip)
+
 
 def _save_cache(ip, data):
     data_dump = json.dumps(data)
@@ -32,6 +36,7 @@ def _save_cache(ip, data):
     obj = datastore.Entity(key=_dbkey(ip), exclude_from_indexes=['data'])
     obj['data'] = data_dump
     client.put(obj)
+
 
 def _get_cache(ip):
     start = time.time()
@@ -45,6 +50,7 @@ def _get_cache(ip):
             return None
         data_dump = obj['data']
     return json.loads(data_dump)
+
 
 def get_location_data_for(ip):
     if not ip:
@@ -66,6 +72,7 @@ def get_location_data_for(ip):
         _save_cache(ip, data)
         timelog.log_time_since('Saving IPCache', start)
     return data
+
 
 def get_location_string_for(ip, city=True):
     data = get_location_data_for(ip)

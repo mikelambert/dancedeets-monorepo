@@ -15,6 +15,7 @@ logger.setLevel(logging.INFO)
 
 SPONSOR_MINDBODY = 'MINDBODY'
 
+
 class MindBodyScraper(items.StudioScraper):
     site_id = -99
     filter_style = False

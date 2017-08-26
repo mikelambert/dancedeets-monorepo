@@ -11,11 +11,13 @@ from util import fb_mapreduce
 convert_chars = string.punctuation + '\r\n\t'
 trans = string.maketrans(convert_chars, ' ' * len(convert_chars))
 
+
 def strip_punctuation(s):
     return s.translate(trans)
 
+
 def training_data_for_pevents(fbl, pevents):
-    fbl.allow_memcache_write = False # don't pollute memcache
+    fbl.allow_memcache_write = False  # don't pollute memcache
     fb_event_ids = [x.fb_event_id for x in pevents if x.looked_at]
     fbl.request_multi(fb_api.LookupEvent, fb_event_ids)
     fbl.request_multi(fb_api.LookupEventAttending, fb_event_ids)
@@ -42,7 +44,10 @@ def training_data_for_pevents(fbl, pevents):
         except fb_api.NoFetchedDataException:
             logging.info("No data fetched for event id %s", potential_event.fb_event_id)
     yield csv_file.getvalue()
+
+
 map_training_data_for_pevents = fb_mapreduce.mr_wrap(training_data_for_pevents)
+
 
 def get_training_features(potential_event, fb_event, fb_event_attending):
     if 'owner' in fb_event['info']:
@@ -50,8 +55,10 @@ def get_training_features(potential_event, fb_event, fb_event_attending):
     else:
         owner_name = ''
     location = event_locations.get_address_for_fb_event(fb_event).encode('utf-8')
+
     def strip_text(s):
         return strip_punctuation(s.encode('utf8')).lower()
+
     name = strip_text(fb_event['info'].get('name', ''))
     description = strip_text(fb_event['info'].get('description', ''))
 
@@ -82,7 +89,9 @@ def mr_generate_training_data(fbl):
         queue=None,
     )
 
+
 MAGIC_USER_ID = '100529355548393795594'
+
 
 def get_predict_service():
     #TODO(lambert): we need to cache this somehow, if we use this, since it appears to not even use memcache for credentials.
@@ -96,9 +105,11 @@ def get_predict_service():
     service = build("prediction", "v1.5", http=http)
     return service
 
+
 MODEL_NAME = 'dancedeets/training_data.english.csv'
 DANCE_BIAS_MODEL_NAME = 'training20120513dance'
 NOT_DANCE_BIAS_MODEL_NAME = 'training20120513nodance'
+
 
 def predict(potential_event, fb_event, fb_event_attending, service=None):
     body = {'input': {'csvInstance': get_training_features(potential_event, fb_event, fb_event_attending)}}

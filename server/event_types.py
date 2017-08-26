@@ -11,6 +11,7 @@ class EventType(object):
     def url_name(self):
         return self.public_name.lower()
 
+
 BATTLE = EventType('BATTLE', 'Competition', 'Competitions')
 PERFORMANCE = EventType('PERFORMANCE', 'Performance', 'Performances')
 WORKSHOP = EventType('WORKSHOP', 'Workshop', 'Workshops')
@@ -41,6 +42,7 @@ class Style(object):
     @property
     def url_name(self):
         return self.public_name.lower()
+
 
 BREAK = Style('BREAK', 'Breaking')
 HIPHOP = Style('HIPHOP', 'Hip-Hop')

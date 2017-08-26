@@ -40,7 +40,7 @@ except:
     if prod_mode:
         logging.error("Failed to import google.appengine.ext.vmruntime.middlewares")
 else:
-    middlewares.MAX_CONCURRENT_REQUESTS = 30 # Normally 501
+    middlewares.MAX_CONCURRENT_REQUESTS = 30  # Normally 501
 
 # Disabled for now
 fixed_ndb.patch_logging(0)
@@ -76,6 +76,7 @@ def add_wsgi_middleware(app):
         app = memory_leaks.leak_middleware(app)
 
     return app
+
 
 if os.environ.get('HOT_SERVER_PORT'):
     logging.info('Using hot reloader!')

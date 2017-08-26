@@ -141,7 +141,9 @@ def retryable(func):
             logging.error("With Payload %r", body)
             taskqueue.add(method='POST', url=url, payload=body, countdown=60 * 60)
             raise
+
     return wrapped_func
+
 
 def people_groupings(geocode, distance, skip_people):
     groupings = None
@@ -195,6 +197,7 @@ def people_groupings(geocode, distance, skip_people):
 
                     logging.info('Person Groupings:\n%s', '\n'.join('%s: %s' % kv for kv in groupings.iteritems()))
     return groupings
+
 
 def build_search_results_api(form, search_query, search_results, version, need_full_event, geocode, distance, skip_people=False):
     if geocode:
@@ -268,6 +271,7 @@ def build_search_results_api(form, search_query, search_results, version, need_f
         }
     return json_response
 
+
 @apiroute('/people')
 class PeopleHandler(ApiHandler):
     def get(self):
@@ -280,10 +284,7 @@ class PeopleHandler(ApiHandler):
         if not form.validate():
             for field, errors in form.errors.items():
                 for error in errors:
-                    self.add_error(u"%s error: %s" % (
-                        getattr(form, field).label.text,
-                        error
-                    ))
+                    self.add_error(u"%s error: %s" % (getattr(form, field).label.text, error))
 
         if not form.location.data:
             self.add_error('Need location')
@@ -294,14 +295,14 @@ class PeopleHandler(ApiHandler):
                 self.add_error('Could not geocode location')
         self.errors_are_fatal()
 
-
         groupings = people_groupings(geocode, distance, skip_people=False)
         self.write_json_success({'people': groupings})
+
     post = get
+
 
 @apiroute('/search')
 class SearchHandler(ApiHandler):
-
     def _build_search_form_data(self):
         data = {
             'location': self.request.get('location'),
@@ -319,10 +320,7 @@ class SearchHandler(ApiHandler):
         if not form.validate():
             for field, errors in form.errors.items():
                 for error in errors:
-                    self.add_error(u"%s error: %s" % (
-                        getattr(form, field).label.text,
-                        error
-                    ))
+                    self.add_error(u"%s error: %s" % (getattr(form, field).label.text, error))
 
         geocode = None
         distance = None
@@ -361,14 +359,20 @@ class SearchHandler(ApiHandler):
                 # If we searched the world, then break
                 break
 
-        logging.info("Found %s keyword=%r events within %s %s of %s", len(search_results), form.keywords.data, form.distance.data, form.distance_units.data, form.location.data)
+        logging.info(
+            "Found %s keyword=%r events within %s %s of %s",
+            len(search_results), form.keywords.data, form.distance.data, form.distance_units.data, form.location.data
+        )
 
         # Keep in sync with mobile react code? And search_servlets
         skip_people = len(search_results) >= 10 or form.skip_people.data
-        json_response = build_search_results_api(form, search_query, search_results, self.version, need_full_event, geocode, distance, skip_people=skip_people)
+        json_response = build_search_results_api(
+            form, search_query, search_results, self.version, need_full_event, geocode, distance, skip_people=skip_people
+        )
         if self.request.get('client') == 'react-android' and self.version <= (1, 3):
             json_response['featured'] = []
         self.write_json_success(json_response)
+
     post = get
 
 
@@ -408,7 +412,7 @@ class AuthHandler(ApiHandler):
             self.write_json_error({'success': False, 'errors': ['No access token']})
             logging.error("Received empty access_token from client. Payload was: %s", self.json_body)
             return
-        self.errors_are_fatal() # Assert that our access_token is set
+        self.errors_are_fatal()  # Assert that our access_token is set
 
         # Fetch the access_token_expires value from Facebook, instead of demanding it via the API
         debug_info = fb_api.lookup_debug_tokens([access_token])[0]
@@ -440,12 +444,12 @@ class AuthHandler(ApiHandler):
                 if user.login_count:
                     user.login_count += 1
                 else:
-                    user.login_count = 2 # once for this one, once for initial creation
+                    user.login_count = 2  # once for this one, once for initial creation
             user.last_login_time = datetime.datetime.now()
 
             update_user(self, user, self.json_body)
 
-            user.put() # this also sets to memcache
+            user.put()  # this also sets to memcache
         else:
             client = self.json_body.get('client')
             location = self.json_body.get('location')
@@ -460,7 +464,7 @@ class UserUpdateHandler(ApiHandler):
     requires_auth = True
 
     def post(self):
-        self.errors_are_fatal() # Assert that our access_token is set
+        self.errors_are_fatal()  # Assert that our access_token is set
 
         user = users.User.get_by_id(self.fb_uid)
         if not user:
@@ -468,7 +472,7 @@ class UserUpdateHandler(ApiHandler):
 
         update_user(self, user, self.json_body)
 
-        user.put() # this also sets to memcache
+        user.put()  # this also sets to memcache
         self.write_json_success()
 
 
@@ -499,6 +503,7 @@ class SettingsHandler(ApiHandler):
         user.put()
 
         self.write_json_success()
+
 
 def canonicalize_search_event_data(result, version):
     event_api = {}
@@ -541,6 +546,7 @@ def canonicalize_search_event_data(result, version):
         event_api['rsvp'] = None
     return event_api
 
+
 def canonicalize_event_data(db_event, event_keywords, version):
     event_api = {}
     event_api['id'] = db_event.id
@@ -582,13 +588,17 @@ def canonicalize_event_data(db_event, event_keywords, version):
                 ratio = 1.0 * cover['width'] / cover['height']
             # Covers the most common screen sizes, according to Mixpanel:
             widths = reversed([320, 480, 720, 1080, 1440])
-            cover_images = [{'source': urls.event_image_url(db_event.id, width=width), 'width': width, 'height': int(width/ratio)} for width in widths]
+            cover_images = [{
+                'source': urls.event_image_url(db_event.id, width=width),
+                'width': width,
+                'height': int(width / ratio)
+            } for width in widths]
 
             # Used by old android and ios builds
             event_api['picture'] = urls.event_image_url(db_event.id, width=200, height=200)
             # Used by old react builds
             event_api['cover'] = {
-                'cover_id': 'dummy', # Android (v1.1) expects this value, even though it does nothing with it.
+                'cover_id': 'dummy',  # Android (v1.1) expects this value, even though it does nothing with it.
                 'images': sorted(cover_images, key=lambda x: -x['height']),
             }
     else:
@@ -615,7 +625,9 @@ def canonicalize_event_data(db_event, event_keywords, version):
         venue_location_name = ""
     venue = db_event.venue
     if 'name' in venue and venue['name'] != venue_location_name:
-        logging.error("For event %s, venue name %r is different from location name %r", db_event.fb_event_id, venue['name'], venue_location_name)
+        logging.error(
+            "For event %s, venue name %r is different from location name %r", db_event.fb_event_id, venue['name'], venue_location_name
+        )
     venue_id = db_event.venue_id
     address = None
     if 'country' in venue:
@@ -651,8 +663,8 @@ def canonicalize_event_data(db_event, event_keywords, version):
         annotations['creation'] = {
             'time': db_event.creation_time.strftime(DATETIME_FORMAT),
             'method': db_event.creating_method,
-            'creator': str(db_event.creating_fb_uid) if db_event.creating_fb_uid else None, #STR_ID_MIGRATE
-            'creatorName': db_event.creating_name if db_event.creating_name else None, #STR_ID_MIGRATE
+            'creator': str(db_event.creating_fb_uid) if db_event.creating_fb_uid else None,  #STR_ID_MIGRATE
+            'creatorName': db_event.creating_name if db_event.creating_name else None,  #STR_ID_MIGRATE
         }
     else:
         annotations['creation'] = None
@@ -666,7 +678,7 @@ def canonicalize_event_data(db_event, event_keywords, version):
     # or possibly none at all, if we only received a fb_event..
     else:
         pass
-    if db_event: # TODO: When is this not true?
+    if db_event:  # TODO: When is this not true?
         annotations['categories'] = event_types.humanize_categories(db_event.auto_categories)
 
     event_api['annotations'] = annotations
@@ -711,6 +723,7 @@ class UserInfoHandler(ApiHandler):
                 'num_hand_added_own_events': user.num_hand_added_own_events,
             }
         self.write_json_success(results)
+
     post = get
 
 
@@ -738,13 +751,10 @@ class EventTranslateHandler(ApiHandler):
         self.errors_are_fatal()
         db_event = eventdata.DBEvent.get_by_id(event_id)
         service = build('translate', 'v2', developerKey=keys.get('google_server_key'))
-        result = service.translations().list(
-            target=language,
-            format='text',
-            q=[db_event.name or '', db_event.description or '']
-        ).execute()
+        result = service.translations().list(target=language, format='text', q=[db_event.name or '', db_event.description or '']).execute()
         translations = [x['translatedText'] for x in result['translations']]
         self.write_json_success({'name': translations[0], 'description': translations[1]})
+
     get = post
 
 
@@ -797,7 +807,9 @@ class EventHandler(ApiHandler):
         # Ten minute expiry on data we return
         self.response.headers['Cache-Control'] = 'public, max-age=%s' % (10 * 60)
         self.write_json_success(json_data)
+
     post = get
+
 
 DATETIME_FORMAT = "%Y-%m-%dT%H:%M:%S"
 

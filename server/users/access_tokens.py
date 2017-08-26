@@ -6,8 +6,10 @@ from google.appengine.ext import ndb
 import fb_api
 from . import users
 
+
 def get_multiple_tokens(token_count):
-    good_users = users.User.query(users.User.key >= ndb.Key(users.User, '701004'), users.User.expired_oauth_token == False).fetch(token_count)  # noqa
+    good_users = users.User.query(users.User.key >= ndb.Key(users.User, '701004'),
+                                  users.User.expired_oauth_token == False).fetch(token_count)  # noqa
     guaranteed_users = [x for x in good_users if x.fb_uid == '701004']
     if guaranteed_users:
         guaranteed_user_token = guaranteed_users[0].fb_access_token

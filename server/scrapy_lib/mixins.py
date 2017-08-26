@@ -1,6 +1,5 @@
 import keys
 
-
 SERVER_URL = 'https://b54f18og-splash.scrapinghub.com'
 
 # Or...to test this code locally, you must run a Splash server.
@@ -12,11 +11,11 @@ SERVER_URL = 'https://b54f18og-splash.scrapinghub.com'
 # in my case: 192.168.99.100
 # SERVER_URL = 'http://192.168.99.100:8050'
 
+
 class BrowserScraperMixin(object):
     # So we can log in to our scrapinghub splash instance
     http_user = keys.get('scrapinghub_key')
     http_pass = ''
-
 
 
 def generate_custom_settings(kwargs):

@@ -34,6 +34,7 @@ from os import listdir
 
 from events.eventdata import DBEvent
 
+
 def run():
     # Set your downloaded folder's path here (must be readable by dev_appserver)
     mypath = '/Users/lambert/Dropbox/dancedeets/data/datastore_backup_datastore_backup_2016_11_19_DBEvent/15700286559371541387849311E815D'
@@ -43,7 +44,7 @@ def run():
     appname = "dev~None"
 
     # Do the harlem shake
-    onlyfiles = [ f for f in listdir(mypath) if isfile(join(mypath,f)) ]
+    onlyfiles = [f for f in listdir(mypath) if isfile(join(mypath, f))]
 
     for file in onlyfiles:
         i = 0
@@ -59,15 +60,16 @@ def run():
                 to_put.append(obj)
                 i += 1
                 if i % 100 == 0:
-                    print "Saved %d %ss" % (i, '')#entity.kind())
-                    ndb.put_multi(to_put) # use_memcache=False)
+                    print "Saved %d %ss" % (i, '')  #entity.kind())
+                    ndb.put_multi(to_put)  # use_memcache=False)
                     to_put = list()
 
-            ndb.put_multi(to_put) # use_memcache=False)
+            ndb.put_multi(to_put)  # use_memcache=False)
             to_put = list()
             print "Saved %d" % i
 
         except ProtocolBufferDecodeError:
             """ All good """
+
 
 run()

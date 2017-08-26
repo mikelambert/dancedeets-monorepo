@@ -6,6 +6,7 @@ from event_scraper import potential_events
 from . import gprediction
 from util import fb_mapreduce
 
+
 def classify_events(fbl, pe_list):
     pe_list = [x for x in pe_list if x.match_score > 0]
     if not pe_list:
@@ -37,6 +38,7 @@ def classify_events(fbl, pe_list):
 
 map_classify_events = fb_mapreduce.mr_wrap(classify_events)
 
+
 def mr_classify_potential_events(fbl):
     fb_mapreduce.start_map(
         fbl,
@@ -52,4 +54,3 @@ def mr_classify_potential_events(fbl):
             'bucket_name': 'dancedeets-hrd.appspot.com',
         },
     )
-

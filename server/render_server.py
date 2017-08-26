@@ -11,8 +11,10 @@ PORT = 8090
 RENDER_URL = 'http://localhost:%s/render'
 RENDER_MJML_URL = 'http://localhost:%s/mjml-render'
 
+
 class ComponentSourceFileNotFound(Exception):
     pass
+
 
 class RenderedComponent(object):
     def __init__(self, markup, head, props):
@@ -27,11 +29,14 @@ class RenderedComponent(object):
     def __unicode__(self):
         return unicode(self.markup)
 
+
 class RenderException(Exception):
     pass
 
+
 class MjmlRenderException(RenderException):
     pass
+
 
 def render_jsx(template_name, props=None, static_html=False):
     path = os.path.abspath(os.path.join('dist/js-server/', template_name))
@@ -61,12 +66,7 @@ def render_jsx(template_name, props=None, static_html=False):
 
     start = time.time()
     try:
-        res = requests.post(
-            url,
-            data=serialized_options,
-            headers=all_request_headers,
-            params={'hash': options_hash}
-        )
+        res = requests.post(url, data=serialized_options, headers=all_request_headers, params={'hash': options_hash})
     except requests.ConnectionError:
         empty_response.error = 'Could not connect to render server at {}'.format(url)
         return empty_response
@@ -93,6 +93,7 @@ def render_jsx(template_name, props=None, static_html=False):
         return empty_response
 
     return RenderedComponent(markup, obj.get('head', None), serialized_props)
+
 
 def render_mjml(mjml):
     url = RENDER_MJML_URL % PORT

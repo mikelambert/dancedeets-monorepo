@@ -12,7 +12,8 @@ def format_html(value):
 
 
 # Commented multi-line version:
-url_finder_re = re.compile(r"""
+url_finder_re = re.compile(
+    r"""
 (?xi)
 \b
 (                            # Capture 1: entire matched URL
@@ -56,7 +57,8 @@ url_finder_re = re.compile(r"""
         (?!@)            # not succeeded by a @, avoid matching "foo.na" in "foo.na@example.com"
     )
 )
-""")
+"""
+)
 
 
 def linkify(value):
@@ -69,27 +71,16 @@ def linkify(value):
         if '://' not in url:
             url = 'http://' + url
         return jinja2.Markup('<a href="%s">%s</a>') % (url, m.group(1))
+
     return url_finder_re.sub(make_href, jinja2.Markup.escape(value))
 
 
 # This code is taken from django
-_base_js_escapes = (
-    ('\\', '\\u005C'),
-    ('\'', '\\u0027'),
-    ('"', '\\u0022'),
-    ('>', '\\u003E'),
-    ('<', '\\u003C'),
-    ('&', '\\u0026'),
-    ('=', '\\u003D'),
-    ('-', '\\u002D'),
-    (';', '\\u003B'),
-    ('\u2028', '\\u2028'),
-    ('\u2029', '\\u2029')
-)
+_base_js_escapes = (('\\', '\\u005C'), ('\'', '\\u0027'), ('"', '\\u0022'), ('>', '\\u003E'), ('<', '\\u003C'), ('&', '\\u0026'),
+                    ('=', '\\u003D'), ('-', '\\u002D'), (';', '\\u003B'), ('\u2028', '\\u2028'), ('\u2029', '\\u2029'))
 
 # Escape every ASCII character with a value less than 32.
-_js_escapes = (_base_js_escapes +
-               tuple([('%c' % z, '\\u%04X' % z) for z in range(32)]))
+_js_escapes = (_base_js_escapes + tuple([('%c' % z, '\\u%04X' % z) for z in range(32)]))
 
 
 def escapejs(value):

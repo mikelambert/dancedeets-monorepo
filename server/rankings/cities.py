@@ -20,6 +20,7 @@ CITY_GEOHASH_PRECISIONS = range(
 # - find people within this distance of our search box, too
 NEARBY_DISTANCE_KM = 100
 
+
 def get_nearby_cities(points, only_populated=False, country=None):
     # TODO(lambert): we should cache this entire function. use lowercase of location to determine cache key. Using DB cache too.
     logging.info("search location is %s", points)
@@ -28,7 +29,9 @@ def get_nearby_cities(points, only_populated=False, country=None):
     geohashes = geohash_math.get_all_geohashes_for(points)
     # This can return a bunch. In theory, it'd be nice to order by population, but that doesn't seem to work...
     if only_populated:
-        cities = City.gql("where geohashes in :geohashes and has_nearby_events = :nearby_events", geohashes=geohashes, nearby_events=True).fetch(1000)
+        cities = City.gql(
+            "where geohashes in :geohashes and has_nearby_events = :nearby_events", geohashes=geohashes, nearby_events=True
+        ).fetch(1000)
     else:
         cities = City.gql("where geohashes in :geohashes", geohashes=geohashes).fetch(1000)
     if points[0] != points[1]:
@@ -37,18 +40,25 @@ def get_nearby_cities(points, only_populated=False, country=None):
         cities = [x for x in cities if x.country_name == country]
     return cities
 
+
 def get_largest_cities(limit=5, country=None):
     if country:
-        q = City.gql("where has_nearby_events = :nearby_events and country_name = :country order by population desc", nearby_events=True, country=country)
+        q = City.gql(
+            "where has_nearby_events = :nearby_events and country_name = :country order by population desc",
+            nearby_events=True,
+            country=country
+        )
     else:
         q = City.gql("where has_nearby_events = :nearby_events order by population desc", nearby_events=True)
     return q.fetch(limit=limit)
+
 
 def get_largest_city(cities):
     if not cities:
         return City(city_name='Unknown')
     largest_nearby_city = max(cities, key=lambda x: x.population)
     return largest_nearby_city
+
 
 class City(db.Model):
     created_date = db.DateTimeProperty(auto_now_add=True)
@@ -77,7 +87,10 @@ class City(db.Model):
         return city_name
 
     def __repr__(self):
-        return 'City(%s, %s, %s (%s, %s) Pop %s, hashes: %s)' % (self.city_name, self.state_name, self.country_name, self.latitude, self.longitude, self.population, self.geohashes)
+        return 'City(%s, %s, %s (%s, %s) Pop %s, hashes: %s)' % (
+            self.city_name, self.state_name, self.country_name, self.latitude, self.longitude, self.population, self.geohashes
+        )
+
 
 def import_cities():
     # Download this file from http://download.geonames.org/export/dump/
@@ -91,7 +104,9 @@ def import_cities():
         if not count % 1000:
             logging.info('Imported %s cities', count)
         # List of fields from http://download.geonames.org/export/dump/
-        geonameid, name, asciiname, alternatenames, latitude, longitude, feature_class, feature_code, country_code, cc2, admin1_code, admin2_code, admin3_code, admin4_code, population, elevation, gtopo30, timezone, modification_date = line.split('\t')
+        geonameid, name, asciiname, alternatenames, latitude, longitude, feature_class, feature_code, country_code, cc2, admin1_code, admin2_code, admin3_code, admin4_code, population, elevation, gtopo30, timezone, modification_date = line.split(
+            '\t'
+        )
 
         #if int(population) < 50000:
         #    print name, population
@@ -110,5 +125,3 @@ def import_cities():
             city.geohashes.append(str(geohash.Geostring((float(latitude), float(longitude)), depth=x)))
         city.timezone = timezone
         city.put()
-
-

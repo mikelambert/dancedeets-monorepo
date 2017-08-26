@@ -7,12 +7,15 @@ import re
 from . import regex_keywords
 from . import re_flatten
 
+
 def _flatten(listOfLists):
     "Flatten one level of nesting"
     return list(itertools.chain.from_iterable(listOfLists))
 
+
 class GrammarRule(object):
     """The entire grammar rule tree must be composed of these."""
+
     def __init__(self):
         self._cached_double_regex = {}
 
@@ -23,6 +26,7 @@ class GrammarRule(object):
 
     def get_regex_alternations(self):
         return [self.as_expanded_regex()]
+
 
 class _BaseAlternation(GrammarRule):
     def __init__(self):
@@ -67,6 +71,7 @@ class _BaseAlternation(GrammarRule):
     def __repr__(self):
         return '%s(%r)' % (self.__class__.__name__, self._keywords[:20])
 
+
 class Any(_BaseAlternation):
     def __init__(self, *keywords):
         super(Any, self).__init__()
@@ -75,8 +80,10 @@ class Any(_BaseAlternation):
             raise ValueError("Any() arguments need to be str, unicode, or a GrammarRule object: %s" % non_rule_or_string)
         self._keywords = tuple(keywords)
 
+
 STRONG = 0
 STRONG_WEAK = 1
+
 
 class FileBackedKeyword(_BaseAlternation):
     def __init__(self, filename, strength):
@@ -130,6 +137,7 @@ class FileBackedKeyword(_BaseAlternation):
 
         return manual_keywords, dependent_manual_keywords
 
+
 class Ordered(GrammarRule):
     def __init__(self, *args):
         super(Ordered, self).__init__()
@@ -144,6 +152,7 @@ class Ordered(GrammarRule):
     def __repr__(self):
         return '%s(*%r)' % (self.__class__.__name__, self.args)
 
+
 class RegexRule(GrammarRule):
     def __init__(self, regex):
         super(RegexRule, self).__init__()
@@ -157,6 +166,7 @@ class RegexRule(GrammarRule):
 
     def __repr__(self):
         return '%s(%r)' % (self.__class__.__name__, self.regex)
+
 
 class Name(GrammarRule):
     def __init__(self, name, sub_rule):

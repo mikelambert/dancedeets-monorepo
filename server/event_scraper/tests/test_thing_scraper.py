@@ -1,7 +1,7 @@
-
 from event_scraper import thing_scraper
 from test_utils import fb_api_stub
 from test_utils import unittest
+
 
 class TestSourceCreatingEvent(unittest.TestCase):
     def runTest(self):
@@ -12,6 +12,7 @@ class TestSourceCreatingEvent(unittest.TestCase):
         self.assertEqual(discovered.event_id, u'459081844137306')
         self.assertEqual(discovered.source, None)
         self.assertEqual(discovered.extra_source_id, u'391260537595682')
+
 
 class TestParseLink(unittest.TestCase):
     def runTest(self):

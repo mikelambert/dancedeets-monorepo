@@ -13,6 +13,7 @@ from . import auth
 TWITTER_CONFIG_KEY = 'TwitterConfig'
 TWITTER_CONFIG_EXPIRY = 24 * 60 * 60
 
+
 def create_media_on_twitter(t, db_event):
     cover = db_event.largest_cover
     if not cover:
@@ -24,6 +25,7 @@ def create_media_on_twitter(t, db_event):
     finally:
         t.domain = 'api.twitter.com'
     return result
+
 
 def get_twitter_config(t):
     config = memcache.get(TWITTER_CONFIG_KEY)
@@ -72,8 +74,7 @@ def format_twitter_post(config, db_event, media, handles=None):
 
 
 def twitter_post(auth_token, db_event):
-    t = twitter.Twitter(
-        auth=twitter.OAuth(auth_token.oauth_token, auth_token.oauth_token_secret, auth.consumer_key, auth.consumer_secret))
+    t = twitter.Twitter(auth=twitter.OAuth(auth_token.oauth_token, auth_token.oauth_token_secret, auth.consumer_key, auth.consumer_secret))
 
     update_params = {}
     if db_event.latitude:

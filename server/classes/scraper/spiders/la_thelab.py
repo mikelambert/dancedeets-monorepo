@@ -9,6 +9,7 @@ import scrapy
 
 from .. import items
 
+
 def parse_times(dt):
     day, times = dt.split(' ', 1)
     date = dateparser.parse(day)

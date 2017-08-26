@@ -19,8 +19,9 @@ else:
     full_run = True
     trial_ids = all_ids
 
-
 positive_classifier = True
+
+
 def basic_match(fb_event):
     found_styles = categories.find_styles(fb_event)
     if not full_run:
@@ -35,6 +36,7 @@ def basic_match(fb_event):
         #    print keyword, repr(context)
 
     return event_types.LOCK in found_styles
+
 
 a = time.time()
 print "Running auto classifier..."

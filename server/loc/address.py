@@ -1,5 +1,6 @@
 from loc import formatting
 
+
 def get_address_from_geocode(geocode):
     if not geocode:
         return {}

@@ -4,6 +4,7 @@ import app
 from . import search_base
 from . import search_servlets
 
+
 @app.route(r'/style/([\w-]+)/?')
 class ShowStyleHandler(search_servlets.RelevantHandler):
     def requires_login(self):

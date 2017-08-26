@@ -5,6 +5,7 @@ import fb_api
 # With 100, we seem to stay under the limit and have no real discernable difference in latency (below noise). Probably because our time is dominated by deserialization, not round-trip latency.
 RESULTS_AT_ONCE = 100
 
+
 def decorate_with_friends(fbl, search_results):
     #DISABLE_ATTENDING
     return
@@ -13,7 +14,7 @@ def decorate_with_friends(fbl, search_results):
         decorate_with_friends(fbl, search_results[RESULTS_AT_ONCE:])
         search_results = search_results[:RESULTS_AT_ONCE]
 
-    if fbl.fb_uid: # if logged in
+    if fbl.fb_uid:  # if logged in
         friends_list = fbl.fetched_data(fb_api.LookupUser, fbl.fb_uid)['friends']['data']
         friend_map = dict((x['id'], x['name']) for x in friends_list if 'name' in x)
         friend_ids = set(friend_map.keys())
@@ -32,4 +33,3 @@ def decorate_with_friends(fbl, search_results):
             result.attending_friends = []
     for result in search_results:
         result.attending_friend_count = len(result.attending_friends)
-

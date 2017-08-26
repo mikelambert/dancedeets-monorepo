@@ -5,27 +5,28 @@ import webapp2
 from google.appengine.api import memcache
 from google.appengine.ext import db
 
-
 import app
 import base_servlet
 from events import eventdata
 import fb_api
 from util import urls
 
+
 @app.route('/tools/delete_fb_cache')
 class DeleteFBCacheHandler(webapp2.RequestHandler):
-        def get(self):
-                self.response.headers['Content-Type'] = 'text/plain'
-                try:
-                        while True:
-                                q = db.GqlQuery("SELECT __key__ FROM FacebookCachedObject")
-                                if not q.count():
-                                    break
-                                db.delete(q.fetch(200))
-                                time.sleep(0.1)
-                except Exception, e:
-                        self.response.out.write(repr(e)+'\n')
-                        pass
+    def get(self):
+        self.response.headers['Content-Type'] = 'text/plain'
+        try:
+            while True:
+                q = db.GqlQuery("SELECT __key__ FROM FacebookCachedObject")
+                if not q.count():
+                    break
+                db.delete(q.fetch(200))
+                time.sleep(0.1)
+        except Exception, e:
+            self.response.out.write(repr(e) + '\n')
+            pass
+
 
 @app.route('/tools/fb_data')
 class FBDataHandler(base_servlet.BareBaseRequestHandler):
@@ -66,15 +67,17 @@ class FBDataHandler(base_servlet.BareBaseRequestHandler):
         self.response.out.write('MemcacheJSON:\n%s\n\n' % json.dumps(memcache_result))
         self.response.out.write('DatabaseJSON:\n%s\n\n' % json.dumps(db_result and db_result.decode_data() or None))
 
+
 @app.route('/tools/show_noowner_events')
 class ShowNoOwnerEventsHandler(base_servlet.BaseRequestHandler):
     def get(self):
         self.finish_preload()
-        all_events = eventdata.DBEvent.query(eventdata.DBEvent.owner_fb_uid==None).fetch(1000)
+        all_events = eventdata.DBEvent.query(eventdata.DBEvent.owner_fb_uid == None).fetch(1000)
         import logging
         logging.info("found %s events", len(all_events))
         for e in all_events:
             self.response.out.write('<a href="%s">%s</a><br>\n' % (e.source_url, e.fb_event_id))
+
 
 @app.route('/tools/test')
 class TestHandler(base_servlet.webapp2.RequestHandler):

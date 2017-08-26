@@ -47,18 +47,16 @@ class TestEvent(unittest.TestCase):
             }
         }
         event.fb_event['info']['admins'] = {
-          "data": [
-            {
-              "id": "admin_id",
-              "name": "admin"
+            "data": [{
+                "id": "admin_id",
+                "name": "admin"
+            }],
+            "paging": {
+                "cursors": {
+                    "before": "",
+                    "after": ""
+                }
             }
-          ],
-          "paging": {
-            "cursors": {
-              "before": "",
-              "after": ""
-            }
-          }
         }
         event.creating_fb_uid = 1
         event.creating_name = 'Addy McAdderson'
@@ -68,6 +66,7 @@ class TestEvent(unittest.TestCase):
         event = fixtures.create_web_event(json_body={'photo': 'test:http://url'})
         event.put()
         self.saveEvent(event)
+
 
 def generateAmpPages():
     if not os.path.exists('amp/generated'):
@@ -84,6 +83,7 @@ def generateAmpPages():
         for test, fail in r.failures:
             logging.error('%s: %s', test, fail)
         raise Exception('Errors generating amp files!')
+
 
 if __name__ == '__main__':
     generateAmpPages()

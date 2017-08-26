@@ -23,10 +23,9 @@ SHOULD_POST_EVENT_TO = {
     db.APP_FACEBOOK_WALL: event.should_post_on_event_wall,
 }
 
-POST_DATA = {
-    'event': event.post_event,
-    'weekly': weekly.facebook_weekly_post
-}
+POST_DATA = {'event': event.post_event, 'weekly': weekly.facebook_weekly_post}
+
+
 def eventually_publish_event(event_id, token_nickname=None):
     db_event = eventdata.DBEvent.get_by_id(event_id)
     if not db_event.has_content():
@@ -43,19 +42,25 @@ def eventually_publish_event(event_id, token_nickname=None):
 
     def should_post(auth_token):
         return _should_queue_event_for_posting(auth_token, db_event)
+
     return _eventually_publish_data(data, should_post, token_nickname=token_nickname)
+
 
 def eventually_publish_city_key(city_key):
     data = {
         'type': 'weekly',
         'city': city_key,
     }
+
     def should_post(auth_token):
         return auth_token.application == db.APP_FACEBOOK
+
     return _eventually_publish_data(data, should_post, queue_name=EVENT_PULL_QUEUE_HIGH, allow_reposting=True)
+
 
 def _sanitize(x):
     return re.sub(r'[^a-zA-Z0-9_-]', '-', x)
+
 
 def _get_type_and_data_names(data):
     data_type = data['type']
@@ -63,6 +68,7 @@ def _get_type_and_data_names(data):
     del new_data['type']
     data_rest = json.dumps(new_data, sort_keys=True)
     return _sanitize(data_type), _sanitize(data_rest)
+
 
 def _eventually_publish_data(data, should_post, token_nickname=None, queue_name=EVENT_PULL_QUEUE, allow_reposting=False):
     args = []
@@ -87,6 +93,7 @@ def _eventually_publish_data(data, should_post, token_nickname=None, queue_name=
                 # Ignore publishing requests we've already decided to publish (multi-task concurrency)
                 pass
 
+
 def _should_queue_event_for_posting(auth_token, db_event):
     func = SHOULD_POST_EVENT_TO.get(auth_token.application)
     result = False
@@ -96,13 +103,11 @@ def _should_queue_event_for_posting(auth_token, db_event):
             logging.info("Publishing event %s", db_event.id)
     return result
 
+
 def pull_and_publish_event():
     oauth_tokens = db.OAuthToken.query(
         db.OAuthToken.valid_token == True,
-        ndb.OR(
-            db.OAuthToken.next_post_time < datetime.datetime.now(),
-            db.OAuthToken.next_post_time == None
-        )
+        ndb.OR(db.OAuthToken.next_post_time < datetime.datetime.now(), db.OAuthToken.next_post_time == None)
     ).fetch(100)
     q1 = taskqueue.Queue(EVENT_PULL_QUEUE_HIGH)
     q2 = taskqueue.Queue(EVENT_PULL_QUEUE)
@@ -138,6 +143,7 @@ def pull_and_publish_event():
                 token.next_post_time = next_post_time
                 token.put()
 
+
 def _post_data_with_authtoken(data, auth_token):
     try:
         func = POST_DATA[data['type']]
@@ -147,4 +153,3 @@ def _post_data_with_authtoken(data, auth_token):
         # Just in case there's something failing-after-posting,
         # we don't want to trigger rapid-fire posts in a loop.
         return True
-

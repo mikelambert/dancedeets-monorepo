@@ -8,6 +8,7 @@ from google.appengine.ext import db
 SITE_YOUTUBE = 'YOUTUBE'
 SITE_VIMEO = 'VIMEO'
 
+
 def parse_url(url):
     purl = urlparse.urlparse(url)
     #TODO(lambert): handle embed codes and the like too?
@@ -20,12 +21,13 @@ def parse_url(url):
             return SITE_VIMEO, match.group(1)
     return None, None
 
+
 class ProfileVideoTag(db.Model):
-    fb_uid = db.StringProperty() # TODO: make this a proper key
+    fb_uid = db.StringProperty()  # TODO: make this a proper key
     tagger_fb_uid = db.IntegerProperty()
     video_site = db.StringProperty()
     video_id = db.StringProperty()
-    description = db.StringProperty(indexed=False) # "at 0:56", or "blue guy on the left"
+    description = db.StringProperty(indexed=False)  # "at 0:56", or "blue guy on the left"
 
     #TODO(lambert): if you want to split into playlists, or control ordering, then you need to use youtube playlists. Can just hook up a youtube playlist if you want from your list. If you hook up a playlist, then auto-grab tags from that playlist, polled periodically... And then we don't have an "authoritative editor" problem. Or you can use AuthSub/OAuth to manage your playlist in some far-out future, dealing with multimaster sync issues...
 
@@ -43,18 +45,23 @@ class ProfileVideoTag(db.Model):
 
     def get_video_embed(self):
         if self.video_site == SITE_YOUTUBE:
-            return jinja2.Markup("""\
+            return jinja2.Markup(
+                """\
 <iframe title="YouTube video player" class="youtube-player" type="text/html" width="640" height="390" src="http://www.youtube.com/embed/%(video_id)s?hd=1" frameborder="0"></iframe>
-""") % dict(video_id=self.video_id)
+"""
+            ) % dict(video_id=self.video_id)
         elif self.video_site == SITE_VIMEO:
-            return jinja2.Markup("""\
+            return jinja2.Markup(
+                """\
 <iframe src="http://player.vimeo.com/video/%(video_id)s?title=0&amp;byline=0&amp;portrait=0&amp;color=7a012e" width="400" height="225" frameborder="0"></iframe>
-""") % dict(video_id=self.video_id)
+"""
+            ) % dict(video_id=self.video_id)
         else:
             return "unknown!"
 
     def get_profile(self):
         return "/profile/%s" % self.fb_uid
+
 
 # for logged-in playlist fetching:
 # AuthSub

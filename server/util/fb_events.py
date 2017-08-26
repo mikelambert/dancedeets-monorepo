@@ -1,5 +1,6 @@
 import logging
 
+
 def get_all_members_count(fb_event):
     data = fb_event.get('fql_info', {}).get('data')
     if data and data[0].get('all_members_count'):
@@ -11,14 +12,13 @@ def get_all_members_count(fb_event):
 def invited_count(fb_event):
     if 'info' in fb_event:
         invited_count = (
-            fb_event['info'].get('attending_count', 0) +
-            fb_event['info'].get('maybe_count', 0) +
-            fb_event['info'].get('declined_count', 0) +
-            fb_event['info'].get('noreply_count', 0) +
-            0)
+            fb_event['info'].get('attending_count', 0) + fb_event['info'].get('maybe_count', 0) + fb_event['info'].get('declined_count', 0)
+            + fb_event['info'].get('noreply_count', 0) + 0
+        )
         return invited_count
     else:
         return None
+
 
 def is_public_ish(fb_event):
     if fb_event['empty']:
@@ -42,12 +42,9 @@ def is_public_ish(fb_event):
         #bwcompat
         privacy = fb_event['info'].get('privacy', 'OPEN')
 
-        return (
-            (privacy == 'FRIENDS' and members_count >= 60) or
-            (privacy == 'SECRET' and members_count >= 200) or
-            (privacy == 'CLOSED' and members_count >= 200) or
-            False
-        )
+        return ((privacy == 'FRIENDS' and members_count >= 60) or (privacy == 'SECRET' and members_count >= 200) or
+                (privacy == 'CLOSED' and members_count >= 200) or False)
+
 
 def is_public(fb_event):
     event_type = fb_event['info'].get('type')

@@ -8,8 +8,10 @@ from googleapiclient.discovery import build
 
 test_mode = False
 
+
 class NotFoundError(Exception):
     pass
+
 
 def _create_service():
     # Get the application default credentials. When running locally, these are
@@ -39,11 +41,13 @@ def put_object(bucket, filename, contents):
     # http://g.co/dv/resources/api-libraries/documentation/storage/v1/python/latest/storage_v1.objects.html#insert
     f = io.BytesIO(contents)
     req = service.objects().insert(
-        bucket=bucket, body=body,
+        bucket=bucket,
+        body=body,
         # You can also just set media_body=filename, but for the sake of
         # demonstration, pass in the more generic file handle, which could
         # very well be a StringIO or similar.
-        media_body=http.MediaIoBaseUpload(f, 'application/octet-stream'))
+        media_body=http.MediaIoBaseUpload(f, 'application/octet-stream')
+    )
     try:
         resp = req.execute()
     except errors.HttpError as e:
@@ -51,6 +55,7 @@ def put_object(bucket, filename, contents):
             raise NotFoundError()
         raise
     return resp
+
 
 def get_object(bucket, filename):
     if test_mode:
@@ -76,6 +81,7 @@ def get_object(bucket, filename):
         if e.resp.status == 404:
             raise NotFoundError()
         raise
+
 
 def delete_object(bucket, filename):
     if test_mode:

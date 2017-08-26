@@ -11,6 +11,7 @@ from util import text
 from .. import common
 from .. import db
 
+
 class LookupGeoTarget(fb_api.LookupType):
     @classmethod
     def get_lookups(cls, urlparams):
@@ -21,6 +22,7 @@ class LookupGeoTarget(fb_api.LookupType):
     @classmethod
     def cache_key(cls, query, fetching_uid):
         return (fb_api.USERLESS_UID, json.dumps(query, sort_keys=True), 'OBJ_GEO_TARGET')
+
 
 def facebook_post(auth_token, db_event):
     link = common.campaign_url(db_event, 'fb_feed')
@@ -81,13 +83,17 @@ def facebook_post(auth_token, db_event):
             ' Hosted by our friends at %(host)s.',
             ' Thanks to our buddies at %(host)s for hosting!',
             ' Hitup the awesome %(host)s with any questions you\'ve got!',
-        ]) % {'host': host}
+        ]) % {
+            'host': host
+        }
     if name:
         message += random.choice([
             ' Thanks to %(name)s for adding it to DanceDeets!',
             ' And a special thanks to %(name)s, for sharing it with you all on DanceDeets!',
             ' This event brought to you on DanceDeets courtesy of %(name)s!',
-        ]) % {'name': name}
+        ]) % {
+            'name': name
+        }
     post_values['message'] = message
 
     description = db_event.description
@@ -167,14 +173,18 @@ def _get_posting_user(db_event):
     else:
         return None
 
+
 def get_dancedeets_fbl():
     page_id = '110312662362915'
     #page_id = '1375421172766829' # DD-Manager-Test
-    tokens = db.OAuthToken.query(db.OAuthToken.user_id == '701004', db.OAuthToken.token_nickname == page_id, db.OAuthToken.application == db.APP_FACEBOOK).fetch(1)
+    tokens = db.OAuthToken.query(
+        db.OAuthToken.user_id == '701004', db.OAuthToken.token_nickname == page_id, db.OAuthToken.application == db.APP_FACEBOOK
+    ).fetch(1)
     if tokens:
         return fb_api.FBLookup(None, tokens[0].oauth_token)
     else:
         return None
+
 
 def post_on_event_wall(db_event):
     logging.info("Considering posting on event wall for %s", db_event.id)
@@ -186,14 +196,22 @@ def post_on_event_wall(db_event):
     url = common.campaign_url(db_event, 'fb_event_wall')
     name = _get_posting_user(db_event) or "we've"
     messages = [
-        ('Congrats, %(name)s added this dance event to DanceDeets, the site for street dance events worldwide! '
-         'Dancers can discover this event in our DanceDeets mobile app, or on our website here: %(url)s'),
-        ('Yay, %(name)s included your event on our DanceDeets website and mobile app for interested dancers. '
-         'You can check it out here, and good luck with your event! %(url)s'),
-        ('Hey there, %(name)s listed this event on DanceDeets, the website/mobile-app for street dancers worldwide. '
-         "We're sure you'll have a great event, but we hope our site can help with that in a small way... %(url)s"),
-        ('Awesome, %(name)s added your dance event to DanceDeets, to help more dancers discover it. '
-         "Hopefully you don't mind the extra help in promoting your event! %(url)s"),
+        (
+            'Congrats, %(name)s added this dance event to DanceDeets, the site for street dance events worldwide! '
+            'Dancers can discover this event in our DanceDeets mobile app, or on our website here: %(url)s'
+        ),
+        (
+            'Yay, %(name)s included your event on our DanceDeets website and mobile app for interested dancers. '
+            'You can check it out here, and good luck with your event! %(url)s'
+        ),
+        (
+            'Hey there, %(name)s listed this event on DanceDeets, the website/mobile-app for street dancers worldwide. '
+            "We're sure you'll have a great event, but we hope our site can help with that in a small way... %(url)s"
+        ),
+        (
+            'Awesome, %(name)s added your dance event to DanceDeets, to help more dancers discover it. '
+            "Hopefully you don't mind the extra help in promoting your event! %(url)s"
+        ),
     ]
     message = random.choice(messages) % {'name': name, 'url': url}
     logging.info("Attempting to post on event wall for %s", db_event.id)
@@ -202,5 +220,3 @@ def post_on_event_wall(db_event):
         'link': url,
     })
     return result
-
-

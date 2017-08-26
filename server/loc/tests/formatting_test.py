@@ -7,7 +7,6 @@ from loc import gmaps_stub
 from loc import formatting
 from test_utils import unittest
 
-
 formatting_reg_data = {
     'Shibuya': 'Shibuya, Tokyo, Japan',
     u'渋谷': 'Shibuya, Tokyo, Japan',
@@ -52,8 +51,10 @@ class TestLocationFormatting(unittest.TestCase):
                 logging.error('%s', gmaps_api._fetch_geocode_as_json(address=address))
                 self.assertEqual(final_address, formatted_address)
 
+
 grouping_lists = [
-    (['Miami, FL', 'Soma, SF, CA', 'Williamsburg, Brooklyn'], ['Miami, FL', 'South of Market, San Francisco, CA', 'Brooklyn, New York, NY']),
+    (['Miami, FL', 'Soma, SF, CA', 'Williamsburg, Brooklyn'], ['Miami, FL', 'South of Market, San Francisco, CA',
+                                                               'Brooklyn, New York, NY']),
     (['Brooklyn', 'Williamsburg, Brooklyn'], ['Brooklyn', 'Williamsburg, Brooklyn']),
     (['SOMA, SF, CA', '6 5th Street, SF, CA'], ['South of Market', 'South of Market']),
     (['Bay Area', '6 5th Street, SF, CA'], ['San Francisco Bay Area, CA', 'South of Market, San Francisco, CA']),
@@ -61,6 +62,7 @@ grouping_lists = [
     (['Shibuya', 'Ginza', 'Osaka'], ['Shibuya, Tokyo', u'Ginza, Chūō, Tokyo', 'Osaka, Osaka Prefecture']),
     (['Nagoya', 'Sydney'], ['Nagoya, Aichi Prefecture, Japan', 'Sydney, NSW, Australia']),
 ]
+
 
 class TestMultiLocationFormatting(unittest.TestCase):
     def runTest(self):

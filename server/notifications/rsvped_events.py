@@ -11,6 +11,7 @@ from util import taskqueue
 from util import urls
 from . import android
 
+
 def setup_reminders(fb_uid, fb_user_events):
     event_results_json = fb_user_events['events']['data']
     event_ids = [x['id'] for x in event_results_json]
@@ -49,12 +50,11 @@ def setup_reminders(fb_uid, fb_user_events):
                 name='notify_user-%s-%s' % (fb_uid, event['id']),
                 queue_name='mobile-notify-queue',
                 eta=start_notify_window,
-                url='/tasks/remind_user?' + urls.urlencode(dict(
-                    user_id=fb_uid,
-                    event_id=event['id'])),
+                url='/tasks/remind_user?' + urls.urlencode(dict(user_id=fb_uid, event_id=event['id'])),
             )
         except (taskqueue.TaskAlreadyExistsError, taskqueue.TombstonedTaskError) as e:
             logging.info("Error adding task: %s", e)
+
 
 def _is_attending(user, event_id):
     fbl = user.get_fblookup()
@@ -70,14 +70,18 @@ def _is_attending(user, event_id):
         return False
     return True
 
+
 @app.route('/tasks/remind_user')
 class RemindUserHandler(base_servlet.BaseTaskRequestHandler):
     def get(self):
         remind_user(self.request.get('user_id'), self.request.get('event_id'))
 
+
 DISABLED_USERS = [
     "10205048264624649",
 ]
+
+
 def remind_user(user_id, event_id):
     logging.info("Notifying user %s about event %s", user_id, event_id)
     if user_id in DISABLED_USERS:

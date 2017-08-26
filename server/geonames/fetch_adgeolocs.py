@@ -17,24 +17,28 @@ from geonames import sqlite_db
 
 FILENAME_ADLOCS = '/Users/%s/Dropbox/dancedeets-development/server/generated/adlocs_only.db' % getpass.getuser()
 
-
 FACEBOOK_CONFIG = None
+
+
 def get_config():
     global FACEBOOK_CONFIG
     if not FACEBOOK_CONFIG:
         FACEBOOK_CONFIG = facebook.load_yaml('facebook-dev.yaml')
     return FACEBOOK_CONFIG
 
+
 def number(x):
     return re.match(r'^\d+$', x)
 
+
 def get_query(geoname):
     city_state_list = [
-        geoname.ascii_name, # city name
-        geoname.admin1_code, # state name
+        geoname.ascii_name,  # city name
+        geoname.admin1_code,  # state name
     ]
     city_state = ', '.join(x for x in city_state_list if x and not number(x))
     return city_state
+
 
 def load_targeting_key(cursor, geoname):
     geo_search = {
@@ -43,7 +47,7 @@ def load_targeting_key(cursor, geoname):
         'q': get_query(geoname),
         'type': 'adgeolocation',
         'access_token': get_config()['app_access_token'],
-        'locale': 'en_US', # because app_access_token is locale-less and seems to use a IP-locale fallback
+        'locale': 'en_US',  # because app_access_token is locale-less and seems to use a IP-locale fallback
     }
     cursor.execute('select data from AdGeoLocation where q = ? and country_code = ?', (geo_search['q'], geo_search['country_code']))
     result = cursor.fetchone()
@@ -60,18 +64,22 @@ def load_targeting_key(cursor, geoname):
         sqlite_db.insert_record(cursor, 'AdGeoLocation', data)
         print '\n'.join('- ' + str(x) for x in result_json['data'])
 
+
 def fetch_database():
     conn = sqlite3.connect(FILENAME_ADLOCS)
     cursor = conn.cursor()
-    cursor.execute('''
+    cursor.execute(
+        '''
         CREATE TABLE IF NOT EXISTS AdGeoLocation
         (q text, country_code text, data text,
         PRIMARY KEY (q, country_code))
-    ''')
+    '''
+    )
 
     for geoname in geoname_files.cities(5000):
         load_targeting_key(cursor, geoname)
     conn.commit()
+
 
 if __name__ == '__main__':
     fetch_database()

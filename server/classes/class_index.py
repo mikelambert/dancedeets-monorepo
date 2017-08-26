@@ -12,7 +12,6 @@ from search import index
 from search import search_base
 from . import class_models
 
-
 # StudioClass Models:
 # scrapy.Item (optional)
 # ndb.Model
@@ -20,6 +19,7 @@ from . import class_models
 # (eventually, json representation?)
 
 DATETIME_FORMAT = "%Y-%m-%dT%H:%M:%S"
+
 
 def build_display_event_dict(doc):
     def get(x):
@@ -47,15 +47,15 @@ def build_display_event_dict(doc):
     return data
 
 
-
 class ClassSearch(object):
     def __init__(self, search_query):
         self.query = search_query
-        self.limit = search.MAXIMUM_DOCUMENTS_RETURNED_PER_SEARCH # 1000
+        self.limit = search.MAXIMUM_DOCUMENTS_RETURNED_PER_SEARCH  # 1000
         # Extra search index fields to return
         self.extra_fields = []
 
     DATE_SEARCH_FORMAT = '%Y-%m-%d'
+
     def _get_query_string(self):
         clauses = []
         if self.query.bounds:
@@ -141,5 +141,5 @@ class StudioClassIndex(index.BaseIndex):
             ],
             #language=XX, # We have no good language detection
             rank=timestamp,
-            )
+        )
         return doc_event

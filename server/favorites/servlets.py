@@ -3,6 +3,7 @@ from __future__ import absolute_import
 from servlets import api
 from . import db
 
+
 @api.apiroute(r'/favorites')
 class RsvpAjaxHandler(api.ApiHandler):
     def get(self):

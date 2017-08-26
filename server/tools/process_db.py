@@ -15,10 +15,11 @@ import sys
 from google.appengine.datastore import entity_pb
 from google.appengine.api import datastore
 
+
 def flatten_output(db_name, out_name, process_func):
     ct = 0
     print 'Processing %s' % db_name
-    csvwriter = csv.writer(open(out_name+".new", 'w'))
+    csvwriter = csv.writer(open(out_name + ".new", 'w'))
     conn = sqlite3.connect(db_name, isolation_level=None)
     cursor = conn.cursor()
     cursor.execute('select id, value from result')
@@ -36,26 +37,29 @@ def flatten_output(db_name, out_name, process_func):
         if ct % 20000 == 0:
             print "Ct is %s" % ct
             sys.stdout.flush()
-    os.rename(out_name, out_name+".bak")
-    os.rename(out_name+".new", out_name)
+    os.rename(out_name, out_name + ".bak")
+    os.rename(out_name + ".new", out_name)
     print "done"
+
 
 def event_list(x):
     start_time = x.get('start_time') or datetime.datetime(1970, 1, 1)
     return [
-        x.key().name(),
-        x['owner_fb_uid'],
-        ';'.join([y for y in x.get('tags', []) if not y.startswith('STYLE_')]),
+        x.key().name(), x['owner_fb_uid'], ';'.join([y for y in x.get('tags', []) if not y.startswith('STYLE_')]),
         start_time.strftime('%Y%m%d')
     ]
 
+
 def potential_event(x):
     return [x.key().name(), x.get('match_score', 0)]
+
+
 def json_data(x):
     if 'json_data' in x:
         return [x.key().name(), x['json_data']]
     else:
         return None
+
 
 flatten_output("local_data/DBEvent.db", "local_data/DBEvent.csv", event_list)
 flatten_output("local_data/PotentialEvent.db", "local_data/PotentialEvent.csv", potential_event)
@@ -79,7 +83,7 @@ if count_characters:
                 if not data['empty']:
                     total += len(data['info'].get('description', '')) or 0
                     count += 1
-        
+
     print 'total characters', total
     print 'total events', count
-    print 'characters per event', 1.0*total/count
+    print 'characters per event', 1.0 * total / count

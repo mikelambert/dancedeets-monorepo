@@ -18,7 +18,6 @@ import urllib
 import urlparse
 import webapp2
 
-
 from google.appengine.api.app_identity import app_identity
 from google.appengine.ext import db
 
@@ -46,6 +45,7 @@ from util import urls
 class _ValidationError(Exception):
     pass
 
+
 class FacebookMixinHandler(object):
     def setup_fbl(self):
         self.allow_cache = bool(int(self.request.get('allow_cache', 1)))
@@ -57,6 +57,7 @@ class FacebookMixinHandler(object):
         if expiry_days:
             expiry_days += random.uniform(-0.5, 0.5)
             self.fbl.db.oldest_allowed = datetime.datetime.now() - datetime.timedelta(days=expiry_days)
+
 
 class BareBaseRequestHandler(webapp2.RequestHandler, FacebookMixinHandler):
     allow_minify = True
@@ -71,6 +72,7 @@ class BareBaseRequestHandler(webapp2.RequestHandler, FacebookMixinHandler):
         def do_urlencode(value):
             """Escape for use in URLs."""
             return urllib.quote(value.encode('utf8'))
+
         self.jinja_env.filters['urlencode'] = do_urlencode
         self.jinja_env.filters['format_html'] = text.format_html
         self.jinja_env.filters['escapejs'] = text.escapejs
@@ -137,7 +139,8 @@ class BareBaseRequestHandler(webapp2.RequestHandler, FacebookMixinHandler):
         self.display['indexing_bot'] = self.indexing_bot
         self.display['needs_polyfill'] = 'fb_iab' in user_agent or 'ucbrowser' in user_agent
 
-        self.display['mixpanel_api_key'] = 'f5d9d18ed1bbe3b190f9c7c7388df243' if self.request.app.prod_mode else '668941ad91e251d2ae9408b1ea80f67b'
+        self.display['mixpanel_api_key'
+                    ] = 'f5d9d18ed1bbe3b190f9c7c7388df243' if self.request.app.prod_mode else '668941ad91e251d2ae9408b1ea80f67b'
 
         # If we are running behind a 'hot' server, let's point the static_dir appropriately
         if os.environ.get('HOT_SERVER_PORT'):
@@ -312,7 +315,6 @@ def get_location(fb_user):
 
 
 class BaseRequestHandler(BareBaseRequestHandler):
-
     def __init__(self, *args, **kwargs):
         self.fb_uid = None
         self.user = None
@@ -339,7 +341,9 @@ class BaseRequestHandler(BareBaseRequestHandler):
             user_login_cookie['access_token_md5'] = access_token_md5
         user_login_cookie['hash'] = generate_userlogin_hash(user_login_cookie)
         user_login_string = urllib.quote(json.dumps(user_login_cookie))
-        self.response.set_cookie(self._get_login_cookie_name(), user_login_string, max_age=30*24*60*60, path='/', domain=self._get_login_cookie_domain())
+        self.response.set_cookie(
+            self._get_login_cookie_name(), user_login_string, max_age=30 * 24 * 60 * 60, path='/', domain=self._get_login_cookie_domain()
+        )
 
     def _get_login_cookie_domain(self):
         domain = self.request.host.replace('www.', '.')
@@ -466,7 +470,9 @@ class BaseRequestHandler(BareBaseRequestHandler):
             try:
                 access_token, access_token_expires = self.get_long_lived_token_and_expires(request)
             except facebook.AlreadyHasLongLivedToken:
-                logging.warning("Don't have user, just trusted_cookie_uid. And unable to get long lived token for the incoming request. Giving up and doing logged-out")
+                logging.warning(
+                    "Don't have user, just trusted_cookie_uid. And unable to get long lived token for the incoming request. Giving up and doing logged-out"
+                )
                 self.fb_uid = None
                 self.access_token = None
                 self.user = None
@@ -481,7 +487,9 @@ class BaseRequestHandler(BareBaseRequestHandler):
             city = self.request.get('city') or self.get_location_from_headers() or get_location(fb_user)
             logging.info("User passed in a city of %r, facebook city is %s", self.request.get('city'), get_location(fb_user))
             ip = ips.get_remote_ip(self.request)
-            user_creation.create_user_with_fbuser(self.fb_uid, fb_user, self.access_token, access_token_expires, city, ip, send_email=True, referer=referer, client='web')
+            user_creation.create_user_with_fbuser(
+                self.fb_uid, fb_user, self.access_token, access_token_expires, city, ip, send_email=True, referer=referer, client='web'
+            )
             # TODO(lambert): handle this MUUUCH better
             logging.info("Not a /login request and there is no user object, constructed one realllly-quick, and continuing on.")
             self.user = users.User.get_by_id(self.fb_uid)
@@ -578,7 +586,9 @@ class BaseRequestHandler(BareBaseRequestHandler):
 
         if abuse.is_abuse(self.request):
             self.run_handler = False
-            self.response.out.write('You are destroying our server with your request rate. Please implement rate-limiting, respect robots.txt, and/or email abuse@dancedeets.com')
+            self.response.out.write(
+                'You are destroying our server with your request rate. Please implement rate-limiting, respect robots.txt, and/or email abuse@dancedeets.com'
+            )
             return
 
         # Redirect from the bare 'dancedeets.com' to the full 'www.dancedeets.com'
@@ -653,7 +663,7 @@ class BaseRequestHandler(BareBaseRequestHandler):
                 self.run_handler = False
                 return self.redirect(login_url)
             else:
-                self.display['attempt_autologin'] = 0 # do not attempt auto-login. wait for them to re-login
+                self.display['attempt_autologin'] = 0  # do not attempt auto-login. wait for them to re-login
                 self.fb_uid = None
                 self.access_token = None
                 self.user = None
@@ -705,11 +715,8 @@ class BaseRequestHandler(BareBaseRequestHandler):
         self.display['fb_permissions'] = fb_permissions
 
         already_used_mobile = self.user and (
-            'react-android' in self.user.clients or
-            'react-ios' in self.user.clients or
-            'android' in self.user.clients or
-            'ios' in self.user.clients or
-            False
+            'react-android' in self.user.clients or 'react-ios' in self.user.clients or 'android' in self.user.clients or
+            'ios' in self.user.clients or False
         )
         mobile_platform = mobile.get_mobile_platform(self.request.user_agent)
         show_mobile_promo = not mobile_platform and not already_used_mobile
@@ -728,8 +735,8 @@ class BaseRequestHandler(BareBaseRequestHandler):
         timelog.log_time_since('Getting City from IP', start)
 
         self.display['styles'] = event_types.STYLES
-        self.display['cities'] = [
-            ('North America', [
+        self.display['cities'] = [(
+            'North America', [
                 'Albuquerque',
                 'Austin',
                 'Baltimore',
@@ -758,8 +765,9 @@ class BaseRequestHandler(BareBaseRequestHandler):
                 'Vancouver',
                 ''
                 'Mexico: Mexico City',
-            ]),
-            ('Latin/South America', [
+            ]
+        ), (
+            'Latin/South America', [
                 'Argentina: Buenos Aires',
                 'Argentina: Neuquen',
                 'Brazil: Belo Horizonte',
@@ -771,8 +779,9 @@ class BaseRequestHandler(BareBaseRequestHandler):
                 'Colombia',
                 'Chile: Santiago',
                 'Peru: Lima',
-            ]),
-            ('Europe', [
+            ]
+        ), (
+            'Europe', [
                 'Austria: Vienna',
                 'Belgium: Brussels',
                 'Czech: Prague Republic',
@@ -803,8 +812,9 @@ class BaseRequestHandler(BareBaseRequestHandler):
                 'Switzerland: Zurich',
                 'United Kingdom: Leeds',
                 'United Kingdom: London',
-            ]),
-            ('Asia', [
+            ]
+        ), (
+            'Asia', [
                 'Hong Kong',
                 'India',
                 u'Japan: Tokyo (日本東京)',
@@ -818,8 +828,8 @@ class BaseRequestHandler(BareBaseRequestHandler):
                 'Australia: Melbourne',
                 'Australia: Perth',
                 'Australia: Sydney',
-            ])
-        ]
+            ]
+        )]
 
         self.display['deb'] = self.request.get('deb')
         self.display['debug_list'] = self.debug_list
@@ -862,6 +872,7 @@ def update_last_login_time(user_id, login_time):
             user.login_count = 2
         # in read-only, keep trying until we succeed
         user.put()
+
     db.run_in_transaction(_update_last_login_time)
 
 
@@ -916,7 +927,8 @@ class EventIdOperationHandler(BaseTaskFacebookRequestHandler):
     def get(self):
         event_ids = [x for x in self.request.get('event_ids').split(',') if x]
         self.event_id_operation(self.fbl, event_ids)
-    post=get
+
+    post = get
 
 
 class EventOperationHandler(BaseTaskFacebookRequestHandler):
@@ -926,7 +938,9 @@ class EventOperationHandler(BaseTaskFacebookRequestHandler):
         event_ids = [x for x in self.request.get('event_ids').split(',') if x]
         db_events = [x for x in eventdata.DBEvent.get_by_ids(event_ids) if x]
         self.event_operation(self.fbl, db_events)
-    post=get
+
+    post = get
+
 
 class UserIdOperationHandler(BaseTaskFacebookRequestHandler):
     user_id_operation = None
@@ -934,7 +948,9 @@ class UserIdOperationHandler(BaseTaskFacebookRequestHandler):
     def get(self):
         user_ids = [x for x in self.request.get('user_ids').split(',') if x]
         self.user_id_operation(self.fbl, user_ids)
-    post=get
+
+    post = get
+
 
 class UserOperationHandler(BaseTaskFacebookRequestHandler):
     user_operation = None
@@ -943,7 +959,9 @@ class UserOperationHandler(BaseTaskFacebookRequestHandler):
         user_ids = [x for x in self.request.get('user_ids').split(',') if x]
         load_users = users.User.get_by_ids(user_ids)
         self.user_operation(self.fbl, load_users)
-    post=get
+
+    post = get
+
 
 class SourceIdOperationHandler(BaseTaskFacebookRequestHandler):
     source_id_operation = None
@@ -951,4 +969,5 @@ class SourceIdOperationHandler(BaseTaskFacebookRequestHandler):
     def get(self):
         source_ids = [x for x in self.request.get('source_ids').split(',') if x]
         self.source_id_operation(self.fbl, source_ids)
-    post=get
+
+    post = get

@@ -1,10 +1,10 @@
-
 import webapp2
 
 import app
 from events import eventdata
 from events import event_image
 from util import urls
+
 
 @app.route(r'/events/image_proxy/(%s)/?' % urls.EVENT_ID_REGEX)
 class ImageProxyHandler(webapp2.RequestHandler):

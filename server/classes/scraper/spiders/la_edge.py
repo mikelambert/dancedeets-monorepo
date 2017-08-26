@@ -1,5 +1,6 @@
 from .. import items
 
+
 class EDGE(items.HealCodeScraper):
     name = 'EDGE'
     allowed_domains = ['www.edgepac.com']
