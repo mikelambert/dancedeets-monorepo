@@ -10,12 +10,14 @@ if not os.path.exists('download'):
 
 # Mix of streetdance.wang (autoincrement ids) and dope.ren (hashed ids?)
 
+
 def get_list():
     json_filename = 'condition.json'
     data = urllib.urlopen('https://www.dope.ren/dope/activity/condition.do').read()
     open(json_filename, 'w').write(data)
     return json.loads(data)
-    
+
+
 def get_id(id):
     json_filename = 'download/%s.json' % id
     if not os.path.exists(json_filename):
@@ -28,6 +30,7 @@ def get_id(id):
     except ValueError:
         return None
     return json_data['activity']['data']
+
 
 print 'list'
 data = get_list()

@@ -11,9 +11,12 @@ import urllib2
 path = '/Users/%s/Dropbox/dancedeets/private/bybase-usernamepassword.txt' % getpass.getuser()
 username, password = [x.strip() for x in open(path).readlines()]
 first_url = 'http://185.7.80.229/web/oauth/token/'
-first_data = 'client_secret=EEEgyMhYSPbiH1daC4G4KctYE7Tlq3&client_id=7xY6XoCUj6172CLrspX5rscLkdyIXE&grant_type=password&username=%s&password=%s' % (username, password)
+first_data = 'client_secret=EEEgyMhYSPbiH1daC4G4KctYE7Tlq3&client_id=7xY6XoCUj6172CLrspX5rscLkdyIXE&grant_type=password&username=%s&password=%s' % (
+    username, password
+)
 data = json.loads(urllib2.urlopen(first_url, first_data).read())
 print data
+
 
 def get_json(last_id=None):
     all_events = []
@@ -47,10 +50,11 @@ def get_json(last_id=None):
             break
     return all_events, not errored
 
+
 success = False
 all_events = []
 
-backup_ids = [None]#, 5016, 3511, 2112]
+backup_ids = [None]  #, 5016, 3511, 2112]
 for backup_id in backup_ids:
     if not success:
         result, success = get_json(backup_id)

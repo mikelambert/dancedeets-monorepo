@@ -25,6 +25,7 @@ eventData = json.loads(data)
 count = len(eventData)
 txt = open('eventList-%s.txt' % (count), 'w')
 
+
 def exists(e):
 
     # Just in case, search FB and see if the ID we get is on dancedeets
@@ -61,6 +62,7 @@ def exists(e):
 
     return False
 
+
 def dd_id_exists(eid):
     cache_filename = 'dd_id_cached/%s.txt' % eid
     if os.path.exists(cache_filename):
@@ -95,7 +97,9 @@ def find_fb_ids(e):
     if not fb_results:
         access_token = fb_access_token
         logging.info('Searching for event id %s on FB', e['id'])
-        fb_search_url = 'https://graph.facebook.com/v2.9/search?type=event&q=%s&access_token=%s' % (urllib.quote(title.encode('utf-8')), access_token)
+        fb_search_url = 'https://graph.facebook.com/v2.9/search?type=event&q=%s&access_token=%s' % (
+            urllib.quote(title.encode('utf-8')), access_token
+        )
         data = urllib2.urlopen(fb_search_url, timeout=2).read()
         fb_results = json.loads(data)
         if 'error' in fb_results:
@@ -109,6 +113,7 @@ def find_fb_ids(e):
         return found_events
     else:
         return []
+
 
 def print_find_status(e, found_events):
     title = HTMLParser.HTMLParser().unescape(e['title'])
@@ -171,7 +176,7 @@ for e in eventData:
     countries.setdefault(e['state'], []).append(e)
     if not e_exists:
         new_countries.setdefault(e['state'], []).append(e)
-    
+
 print 'Post-Ups (Missing):'
 for post_date, lst in sorted(posts.items()):
     print post_date, len(lst)
@@ -201,9 +206,7 @@ print 'Coverage:'
 existIds = [x for x in status if status[x]]
 print '%.02f' % (1.0 * len(existIds) / len(future))
 
-
 #for e in eventData:
 #    if future.get(e['id']) and not status[e['id']]:
 #        found_events = find_fb_ids(e)
 #        print_find_status(e, found_events)
-
