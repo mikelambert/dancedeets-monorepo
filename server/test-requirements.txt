@@ -4,3 +4,7 @@ WebTest==2.0.23
 technicolor-yawn==0.2.0
 # Used for running scrapinghub commands
 shub
+# Used for formatting python
+# TODO: We want https://github.com/google/yapf/commit/8a3b71f86b5c95b19629a778428a613881b03ca0
+# which hasn't been released to PYPI yet
+git+https://github.com/google/yapf
