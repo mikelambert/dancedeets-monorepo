@@ -25,6 +25,11 @@
         "trailingComma": "es5",
       },
     },
+    "PyYapf": {
+      "yapf_command": "${project_path}/scripts/yapf.sh",
+      "on_save": true,
+      "debug": true,
+    },
   },
   "SublimeLinter": {
     "@python": 2.7,
@@ -37,8 +42,8 @@
         // C0301: Line too long (%s/%s)
         // R0903: Too few public methods (%s/%s)
         "paths": [
-          "${project}/server/lib-local",
-          "${project}/server/lib-both",
+          "${project_path}/server/lib-local",
+          "${project_path}/server/lib-both",
           "${home}/google-cloud-sdk/platform/google_appengine",
         ],
       },
