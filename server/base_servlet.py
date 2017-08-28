@@ -107,7 +107,10 @@ class BareBaseRequestHandler(webapp2.RequestHandler, FacebookMixinHandler):
         raise NotImplementedError()
 
     def head(self, *args, **kwargs):
-        return self.get(*args, **kwargs)
+        self.response.out.write('Not running HEAD request, scrapers hit HEAD and use up too many resources')
+        # Don't call the GET handler...it's too expensive to run willy-nilly.
+        # Perhaps could run for everything but search-requests...?
+        # return self.get(*args, **kwargs)
 
     def initialize(self, request, response):
         super(BareBaseRequestHandler, self).initialize(request, response)
