@@ -166,23 +166,16 @@ class _EventDescription extends React.Component {
             <span>{event.name}</span>
           </a>
         </h3>
-        <div style={{ marginTop: 10 }}>
-          <ImagePrefix iconUrl="/dist/img/categories-black.png">
-            {keywords.join(', ')}
-          </ImagePrefix>
-        </div>
-        <div>
-          <ImagePrefix iconName="clock-o">
-            {formatStartDateOnly(event.getListDateMoment(), this.props.intl)}
-          </ImagePrefix>
-        </div>
-
-        <div>
-          <ImagePrefix iconName="map-marker">
-            <div>{event.venue.name}</div>
-            <FormatText>{event.venue.cityStateCountry()}</FormatText>
-          </ImagePrefix>
-        </div>
+        <ImagePrefix iconUrl="/dist/img/categories-black.png">
+          {keywords.join(', ')}
+        </ImagePrefix>
+        <ImagePrefix iconName="clock-o">
+          {formatStartDateOnly(event.getListDateMoment(), this.props.intl)}
+        </ImagePrefix>
+        <ImagePrefix iconName="map-marker">
+          <div>{event.venue.name}</div>
+          <FormatText>{event.venue.cityStateCountry()}</FormatText>
+        </ImagePrefix>
       </div>
     );
   }

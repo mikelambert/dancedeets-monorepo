@@ -301,7 +301,7 @@ h6 {
 
 .image-prefix {
   padding-left: 5px;
-  display: inline-block;
+  padding-bottom: 5px;
 }
 
 .image-prefix-icon {
@@ -427,5 +427,6 @@ $top-search-placeholder-color: #484848;
   height: 100%;
 }
 
-.dummy {
+.span {
+  display: inline;
 }

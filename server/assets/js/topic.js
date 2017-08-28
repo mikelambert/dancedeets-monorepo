@@ -17,7 +17,13 @@ import type { NewSearchResponse } from 'dancedeets-common/js/events/search';
 import { formatStartDateOnly } from 'dancedeets-common/js/dates';
 import { intlWeb } from 'dancedeets-common/js/intl';
 import { SquareEventFlyer } from './eventCommon';
-import { Card, ImagePrefix, Truncate, wantsWindowSizes } from './ui';
+import {
+  Card,
+  ImagePrefix,
+  ImagePrefixInline,
+  Truncate,
+  wantsWindowSizes,
+} from './ui';
 import type { windowProps } from './ui';
 import { SelectButton } from './MultiSelectList';
 
@@ -47,8 +53,9 @@ export class _TopicEvent extends React.Component {
           <SquareEventFlyer event={event} lazyLoad={this.props.lazyLoad} />
           <h3 className="event-title" style={{ marginTop: 10 }}>
             <a href={event.getUrl()}>
-              <ImagePrefix iconName="calendar" />
-              <span>{event.name}</span>
+              <ImagePrefix iconName="calendar">
+                <span>{event.name}</span>
+              </ImagePrefix>
             </a>
           </h3>
           <div className="event-city">
@@ -96,8 +103,9 @@ class Video extends React.Component {
               />
             </div>
             <h3 className="event-title" style={{ marginTop: 10 }}>
-              <ImagePrefix iconName="youtube" />
-              {this.props.video.snippet.title}
+              <ImagePrefix iconName="youtube">
+                {this.props.video.snippet.title}
+              </ImagePrefix>
             </h3>
           </a>
         </Card>
@@ -143,8 +151,9 @@ class Instagram extends React.Component {
               />
             </div>
             <h3 className="event-title" style={{ marginTop: 10 }}>
-              <ImagePrefix iconName="instagram" />
-              {title}
+              <ImagePrefix iconName="instagram">
+                {title}
+              </ImagePrefix>
             </h3>
           </a>
         </Card>
@@ -207,9 +216,9 @@ class SocialLink extends React.Component {
     const platformData = SocialLink.Platforms[this.props.platform];
     const link = platformData.link + this.props.username;
     const image = (
-      <ImagePrefix iconName={platformData.imageName}>
+      <ImagePrefixInline iconName={platformData.imageName}>
         {this.props.username}
-      </ImagePrefix>
+      </ImagePrefixInline>
     );
     return <a href={link}>{image}</a>;
   }

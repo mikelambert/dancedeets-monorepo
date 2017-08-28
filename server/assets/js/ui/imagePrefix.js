@@ -5,11 +5,11 @@
  */
 
 import React from 'react';
-
+import classNames from 'classnames';
 import { AmpImage } from './ampImage';
 import type { RequiredImage } from './ampImage';
 
-export default class ImagePrefix extends React.Component {
+export class ImagePrefix extends React.Component {
   props: {
     icon?: number, // aka required package
     iconUrl?: string,
@@ -52,12 +52,25 @@ export default class ImagePrefix extends React.Component {
       );
     }
     return (
-      <span className={`image-prefix ${className || ''}`} {...otherProps}>
+      <div className={`image-prefix ${className || ''}`} {...otherProps}>
         {iconHtml}
         <span className="image-prefix-contents">
           {children}
         </span>
-      </span>
+      </div>
+    );
+  }
+}
+
+export class ImagePrefixInline extends React.Component {
+  props: {
+    className?: string,
+  };
+
+  render() {
+    const { className, ...otherProps } = this.props;
+    return (
+      <ImagePrefix className={classNames(className, 'span')} {...otherProps} />
     );
   }
 }

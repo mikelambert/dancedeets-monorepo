@@ -223,12 +223,10 @@ class _EventLinks extends React.Component {
         );
       }
       rsvpElement = (
-        <div>
-          <ImagePrefix iconName="users">
-            {formatAttending(this.props.intl, event.rsvp)}
-            {rsvpAction}
-          </ImagePrefix>
-        </div>
+        <ImagePrefix iconName="users">
+          {formatAttending(this.props.intl, event.rsvp)}
+          {rsvpAction}
+        </ImagePrefix>
       );
     }
     let organizerElement = null;
@@ -246,34 +244,30 @@ class _EventLinks extends React.Component {
         </li>
       );
       organizerElement = (
-        <div>
-          <ImagePrefix iconName="user">
-            <Message message={messages.organizer} /><br />
-            <ul id="view-event-admin">
-              {admins}
-            </ul>
-          </ImagePrefix>
-        </div>
+        <ImagePrefix iconName="user">
+          <Message message={messages.organizer} /><br />
+          <ul id="view-event-admin">
+            {admins}
+          </ul>
+        </ImagePrefix>
       );
     }
     let ticketElement = null;
     if (this.props.event.ticket_uri) {
       const hostname = url.parse(this.props.event.ticket_uri).hostname;
       ticketElement = (
-        <div>
-          <ImagePrefix iconName="ticket">
-            <Message message={messages.ticketsLink} />
-            {' '}
-            <a
-              id="view-tickets"
-              href={this.props.event.ticket_uri}
-              rel="noopener noreferrer"
-              target="_blank"
-            >
-              {hostname}
-            </a>
-          </ImagePrefix>
-        </div>
+        <ImagePrefix iconName="ticket">
+          <Message message={messages.ticketsLink} />
+          {' '}
+          <a
+            id="view-tickets"
+            href={this.props.event.ticket_uri}
+            rel="noopener noreferrer"
+            target="_blank"
+          >
+            {hostname}
+          </a>
+        </ImagePrefix>
       );
     }
 
@@ -283,48 +277,41 @@ class _EventLinks extends React.Component {
       this.props.event.annotations.creation.creatorName
     ) {
       addedByElement = (
-        <div>
-          <ImagePrefix iconName="user-plus">
-            <Message
-              message={messages.addedBy}
-              values={{
-                name: this.props.event.annotations.creation.creatorName,
-              }}
-            />
-          </ImagePrefix>
-        </div>
+        <ImagePrefix iconName="user-plus">
+          <Message
+            message={messages.addedBy}
+            values={{
+              name: this.props.event.annotations.creation.creatorName,
+            }}
+          />
+        </ImagePrefix>
       );
     }
 
     let shareLinks = null;
     if (!this.props.amp) {
       shareLinks = (
-        <div>
-          <ImagePrefix
-            iconName="share-square-o"
-            className="product-social-links"
+        <ImagePrefix iconName="share-square-o" className="product-social-links">
+          <div className="inline-block">
+            <TwitterShare url={event.getUrl()} />
+          </div>
+          <div
+            className="link-event-share fb-share-button"
+            data-href={event.getUrl()}
+            data-layout="button"
+            data-size="small"
+            data-mobile-iframe="true"
           >
-            <div className="inline-block">
-              <TwitterShare url={event.getUrl()} />
-            </div>
-            <div
-              className="link-event-share fb-share-button"
-              data-href={event.getUrl()}
-              data-layout="button"
-              data-size="small"
-              data-mobile-iframe="true"
+            <a
+              className="fb-xfbml-parse-ignore"
+              rel="noopener noreferrer"
+              target="_blank"
+              href={`https://www.facebook.com/sharer/sharer.php?u=${event.getUrl()}&amp;src=sdkpreparse`}
             >
-              <a
-                className="fb-xfbml-parse-ignore"
-                rel="noopener noreferrer"
-                target="_blank"
-                href={`https://www.facebook.com/sharer/sharer.php?u=${event.getUrl()}&amp;src=sdkpreparse`}
-              >
-                Share
-              </a>
-            </div>
-          </ImagePrefix>
-        </div>
+              Share
+            </a>
+          </div>
+        </ImagePrefix>
       );
     }
 
@@ -380,45 +367,37 @@ class _EventLinks extends React.Component {
           </span>
         </div>
         <div className="grey-top-border card-contents">
-          <div>
-            <ImagePrefix
-              iconName={
-                event.source.name === 'Facebook Event'
-                  ? 'facebook-square'
-                  : 'external-link'
-              }
+          <ImagePrefix
+            iconName={
+              event.source.name === 'Facebook Event'
+                ? 'facebook-square'
+                : 'external-link'
+            }
+          >
+            <Message message={messages.source} />{' '}
+            {sourceName}
+          </ImagePrefix>
+          <ImagePrefix
+            icon={require('../img/categories-black.png')} // eslint-disable-line global-require
+            amp={this.props.amp}
+          >
+            {event.annotations.categories.join(', ')}
+          </ImagePrefix>
+          <ImagePrefix iconName="clock-o">
+            <FormatText>{formattedStartEndText.first}</FormatText><br />
+            <FormatText>{formattedStartEndText.second}</FormatText>
+          </ImagePrefix>
+          <ImagePrefix iconName="calendar-plus-o">
+            <a
+              id="add-to-calendar"
+              href={getAddToCalendarLink(event)}
+              rel="noopener noreferrer"
+              target="_blank"
+              className="link-event-add-to-calendar"
             >
-              <Message message={messages.source} />{' '}
-              {sourceName}
-            </ImagePrefix>
-          </div>
-          <div>
-            <ImagePrefix
-              icon={require('../img/categories-black.png')} // eslint-disable-line global-require
-              amp={this.props.amp}
-            >
-              {event.annotations.categories.join(', ')}
-            </ImagePrefix>
-          </div>
-          <div>
-            <ImagePrefix iconName="clock-o">
-              <FormatText>{formattedStartEndText.first}</FormatText><br />
-              <FormatText>{formattedStartEndText.second}</FormatText>
-            </ImagePrefix>
-          </div>
-          <div>
-            <ImagePrefix iconName="calendar-plus-o">
-              <a
-                id="add-to-calendar"
-                href={getAddToCalendarLink(event)}
-                rel="noopener noreferrer"
-                target="_blank"
-                className="link-event-add-to-calendar"
-              >
-                <Message message={messages.addToCalendar} />
-              </a>
-            </ImagePrefix>
-          </div>
+              <Message message={messages.addToCalendar} />
+            </a>
+          </ImagePrefix>
           {rsvpElement}
           {ticketElement}
           {addedByElement}
