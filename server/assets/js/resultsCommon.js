@@ -316,7 +316,6 @@ class TextInput extends React.Component {
     if (this.props.autocomplete) {
       return (
         <Autocomplete
-          wrapperStyle={{}}
           inputProps={inputProps}
           value={this.props.value}
           renderItem={this.renderItem}
