@@ -104,7 +104,7 @@ const config = {
     }),
     new webpack.optimize.CommonsChunkPlugin({
       name: 'common',
-      minChunks: isCommonModule,
+      minChunks: 3,
     }),
     new webpack.optimize.CommonsChunkPlugin({
       name: 'jquery',
@@ -121,7 +121,7 @@ const config = {
     ),
     ifProd(
       new OptimizeCssAssetsPlugin({
-        canPrint: true,
+        canPrint: false,
       })
     ),
     ifProd(new webpack.HashedModuleIdsPlugin()),
