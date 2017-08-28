@@ -16,7 +16,7 @@ select {
 .event-image {
   border: 1px solid $flyer-border-color;
   // The image will grow as large as 182, but shrinks to 30% on thin mobile screens
-  max-width: 180 + 2;
+  max-width: 182px;
   width: 30%;
   margin-bottom: auto; // Don't include the full height in our div
   margin-right: 10px;

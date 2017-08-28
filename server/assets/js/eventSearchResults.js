@@ -160,10 +160,10 @@ class _EventDescription extends React.Component {
     }
 
     return (
-      <div>
+      <div className="event-description">
         <h3 className="event-title">
           <a href={event.getRelativeUrl()}>
-            <span>{event.name}</span>
+            {event.name}
           </a>
         </h3>
         <ImagePrefix iconUrl="/dist/img/categories-black.png">
@@ -198,9 +198,7 @@ class HorizontalEvent extends React.Component {
             lazyLoad={this.props.lazyLoad}
           />
         </div>
-        <div className="event-description">
-          <EventDescription event={this.props.event} />
-        </div>
+        <EventDescription event={this.props.event} />
       </div>
     );
   }
@@ -339,7 +337,7 @@ class _EventsList extends React.Component {
 
       resultItems.push(
         <Sticky key={header}>
-          <div className="bold" style={{ backgroundColor: 'white' }}>
+          <div className="bold card-background">
             {header}
           </div>
         </Sticky>

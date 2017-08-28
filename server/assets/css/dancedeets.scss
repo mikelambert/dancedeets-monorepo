@@ -9,6 +9,8 @@ $react-dates-color-primary-shade-2: #C0C0E8;
 $react-dates-color-primary-shade-3: #9090D0;
 $react-dates-color-primary-shade-4: #C0C0E8;
 $react-dates-color-border: transparent;
+$card-background-color: white;
+
 @import '~react-dates/css/variables.scss';
 @import '~react-dates/css/styles.scss';
 
@@ -268,7 +270,7 @@ h6 {
   border: 1px solid;
   border-color: transparent;
   border-radius: 3px;
-  background-color: white;
+  background-color: $card-background-color;
   padding: 10px;
   margin: 10px;
   position: relative;
@@ -429,4 +431,13 @@ $top-search-placeholder-color: #484848;
 
 .span {
   display: inline;
+}
+
+.card-background {
+  background-color: $card-background-color;
+}
+
+.square-flyer {
+  height: 0px;
+  padding-bottom: 100%;
 }

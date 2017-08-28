@@ -41,12 +41,7 @@ export class SquareEventFlyer extends React.Component {
 
     const croppedPicture = this.generateCroppedCover(picture, width, height);
     let imageTag = (
-      <div
-        style={{
-          height: 0,
-          paddingBottom: `${scaledHeight}%`,
-        }}
-      >
+      <div card="square-flyer">
         <img
           role="presentation"
           src={croppedPicture.source}
