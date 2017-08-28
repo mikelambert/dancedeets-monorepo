@@ -131,10 +131,7 @@ export class HorizontalEventFlyer extends React.Component {
         <img
           role="presentation"
           src={croppedPicture.source}
-          style={{
-            width: '100%',
-          }}
-          className="no-border"
+          className="full-width no-border"
         />
       </div>
     );
