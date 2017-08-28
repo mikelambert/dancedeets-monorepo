@@ -12,6 +12,7 @@ import type { RequiredImage } from './ampImage';
 export default class ImagePrefix extends React.Component {
   props: {
     icon?: number, // aka required package
+    iconUrl?: string,
     iconName?: string,
     className?: string,
     amp?: boolean,
@@ -25,6 +26,7 @@ export default class ImagePrefix extends React.Component {
     }
     const {
       icon,
+      iconUrl,
       iconName,
       className,
       amp,
@@ -32,9 +34,10 @@ export default class ImagePrefix extends React.Component {
       ...otherProps
     } = this.props;
     let iconHtml = null;
-    if (icon) {
+    const iconSourceOrUrl = icon || iconUrl;
+    if (iconSourceOrUrl) {
       const picture: RequiredImage = {
-        source: icon,
+        source: iconSourceOrUrl,
         width: 18,
         height: 18,
       };

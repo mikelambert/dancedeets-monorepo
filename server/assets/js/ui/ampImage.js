@@ -9,7 +9,7 @@ import React from 'react';
 import type { Cover } from 'dancedeets-common/js/events/models';
 
 export type RequiredImage = {
-  source: number, // aka required package
+  source: number | string, // aka required package
   width: number,
   height: number,
 };
