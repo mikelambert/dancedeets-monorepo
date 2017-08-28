@@ -1014,7 +1014,13 @@ class ResultsPage extends React.Component {
     );
     const sideAd = (
       <GoogleAd
-        style={{ display: 'inline-block', width: 300, height: 600 }}
+        style={{
+          display: 'inline-block',
+          width: 300,
+          height: 600,
+          position: 'fixed',
+          zIndex: 1,
+        }}
         data-ad-slot="6881574572"
       />
     );
