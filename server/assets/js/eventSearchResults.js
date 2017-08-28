@@ -203,24 +203,15 @@ class HorizontalEvent extends React.Component {
   render() {
     const event = this.props.event;
     return (
-      <div>
-        <div className="grey-top-border">{' '}</div>
-        <div
-          style={{
-            paddingTop: 10,
-            paddingBottom: 10,
-            display: 'flex',
-          }}
-        >
-          <div className="event-image" style={{ maxWidth: 180 + 2 }}>
-            <SquareEventFlyer
-              event={this.props.event}
-              lazyLoad={this.props.lazyLoad}
-            />
-          </div>
-          <div className="event-description" style={{ flex: 1 }}>
-            <EventDescription event={this.props.event} />
-          </div>
+      <div className="grey-top-border horizontal-event">
+        <div className="event-image">
+          <SquareEventFlyer
+            event={this.props.event}
+            lazyLoad={this.props.lazyLoad}
+          />
+        </div>
+        <div className="event-description">
+          <EventDescription event={this.props.event} />
         </div>
       </div>
     );
