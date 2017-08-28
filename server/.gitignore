@@ -10,7 +10,7 @@ dist-includes/
 project.egg-info/
 
 # secret files
-keys.yaml
+keys*.yaml
 facebook-dev.yaml
 facebook-prod.yaml
 
