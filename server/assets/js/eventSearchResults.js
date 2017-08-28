@@ -675,15 +675,19 @@ class ResultsList extends React.Component {
       ? <EventFilters events={resultEvents} onChange={this.onChange} />
       : null;
 
+    const jsonSchema = !ExecutionEnvironment.canUseDOM
+      ? resultEvents.map(x =>
+          <JsonSchema key={x.id} json={getEventSchema(x)} />
+        )
+      : null;
+
     return (
       <div style={{ backgroundColor: 'white', padding: 10 }}>
         {eventFilters}
         {featuredPanel}
         {oneboxPanel}
         {eventPanels}
-        {resultEvents.map(x =>
-          <JsonSchema key={x.id} json={getEventSchema(x)} />
-        )}
+        {jsonSchema}
       </div>
     );
   }
@@ -996,14 +1000,18 @@ class ResultsPage extends React.Component {
   }
 
   render() {
-    const resultsCard = (
-      <Card style={{ margin: 0, padding: 0 }}>
-        <JsonSchema
+    const jsonSchema = !ExecutionEnvironment.canUseDOM
+      ? <JsonSchema
           json={getBreadcrumbsForSearch(
             this.state.response.address,
             this.state.response.query.keywords
           )}
         />
+      : null;
+
+    const resultsCard = (
+      <Card style={{ margin: 0, padding: 0 }}>
+        {jsonSchema}
         <ResultTabs
           query={this.state.query}
           loading={this.state.loading}
