@@ -18,11 +18,13 @@ const NarrowWindowSize = 768;
 
 export const CalendarRatio = 1.8;
 
+type Query = Object;
+
 class _DatePicker extends React.Component {
   static DateFormat = 'MMM Do';
 
   props: {
-    query: Object,
+    query: Query,
     focused: boolean,
     onFocus: () => void,
     onBlur: () => void,
@@ -399,40 +401,28 @@ class SearchBoxItem extends React.Component {
   }
 }
 
-class _SearchBox extends React.Component {
+class LocationSearchBox extends React.Component {
   props: {
-    query: Object,
-    onNewSearch: (form: Object) => void,
-    // Self-managed props
-    // intl: intlShape,
+    initialLocation: string,
+    performSearch: () => Promise<void>,
   };
 
   state: {
     location: string,
-    keywords: string,
     locationItems: Array<string>,
   };
 
   _autoCompleteService: Object;
 
-  _form: Object;
-
   constructor(props) {
     super(props);
     this.state = {
-      keywords: this.props.query.keywords,
-      location: this.props.query.location,
+      location: this.props.initialLocation,
       locationItems: [],
     };
-    (this: any).performSearch = this.performSearch.bind(this);
-    (this: any).saveRef = this.saveRef.bind(this);
     (this: any).onLocationChange = this.onLocationChange.bind(this);
-    (this: any).onLocationPlaceCallback = this.onLocationPlaceCallback.bind(
-      this
-    );
+    (this: any).onLocationLookup = this.onLocationLookup.bind(this);
     (this: any).onLocationSelect = this.onLocationSelect.bind(this);
-    (this: any).onKeywordsChange = this.onKeywordsChange.bind(this);
-    (this: any).onKeywordsSelect = this.onKeywordsSelect.bind(this);
   }
 
   onLocationChange(event, value) {
@@ -446,11 +436,11 @@ class _SearchBox extends React.Component {
         input: value,
         types: ['(regions)'],
       },
-      this.onLocationPlaceCallback
+      this.onLocationLookup
     );
   }
 
-  onLocationPlaceCallback(predictions, status) {
+  onLocationLookup(predictions, status) {
     let items = [];
     if (status === window.google.maps.places.PlacesServiceStatus.OK) {
       items = predictions.map(x => ({
@@ -466,14 +456,6 @@ class _SearchBox extends React.Component {
     await this.setState({ location: value });
   }
 
-  onKeywordsChange(event, value) {
-    this.setState({ keywords: value });
-  }
-
-  async onKeywordsSelect(value, item) {
-    await this.setState({ keywords: value });
-  }
-
   getAutocompleteService() {
     if (this._autoCompleteService) {
       return this._autoCompleteService;
@@ -485,6 +467,68 @@ class _SearchBox extends React.Component {
 
   getItemLabel(item) {
     return item.label;
+  }
+
+  render() {
+    return (
+      <SearchBoxItem
+        iconName="globe"
+        renderItem={({ focused, onFocus, onBlur }) =>
+          <TextInput
+            autocomplete
+            id="location"
+            placeholder={focused ? 'City, Region, or Country' : 'Anywhere'}
+            value={this.state.location}
+            items={this.state.locationItems}
+            onSubmit={this.props.performSearch}
+            onChange={this.onLocationChange}
+            getItemValue={this.getItemLabel}
+            onSelect={this.onLocationSelect}
+            onFocus={onFocus}
+            onBlur={onBlur}
+          />}
+      />
+    );
+  }
+}
+
+class KeywordSearchBox extends React.Component {
+  props: {
+    initialKeywords: string,
+    performSearch: () => Promise<void>,
+  };
+
+  state: {
+    keywords: string,
+  };
+
+  constructor(props) {
+    super(props);
+    this.state = {
+      keywords: this.props.initialKeywords,
+    };
+    (this: any).onKeywordsChange = this.onKeywordsChange.bind(this);
+    (this: any).onKeywordsSelect = this.onKeywordsSelect.bind(this);
+  }
+
+  onKeywordsChange(event, value) {
+    this.setState({ keywords: value });
+  }
+
+  async onKeywordsSelect(value, item) {
+    await this.setState({ keywords: value });
+  }
+
+  getItemLabel(item) {
+    return item.label;
+  }
+
+  shouldKeywordItemRender(item, value) {
+    if (value.length) {
+      return item.label.toLowerCase().indexOf(value.toLowerCase()) !== -1;
+    } else {
+      return item.initial;
+    }
   }
 
   autocompleteKeywords() {
@@ -517,6 +561,70 @@ class _SearchBox extends React.Component {
     ];
   }
 
+  render() {
+    return (
+      <SearchBoxItem
+        iconName="search"
+        renderItem={({ focused, onFocus, onBlur }) =>
+          <TextInput
+            autocomplete
+            id="keywords"
+            placeholder={
+              focused
+                ? 'Dance style, event name, dancer name, etc'
+                : 'Any style, event type, etc'
+            }
+            value={this.state.keywords}
+            onSubmit={this.props.performSearch}
+            onChange={this.onKeywordsChange}
+            onSelect={this.onKeywordsSelect}
+            items={this.autocompleteKeywords()}
+            getItemValue={this.getItemLabel}
+            shouldItemRender={this.shouldKeywordItemRender}
+            onFocus={onFocus}
+            onBlur={onBlur}
+          />}
+      />
+    );
+  }
+}
+
+class DateSearchBox extends React.Component {
+  props: {
+    query: Query,
+  };
+  render() {
+    return (
+      <SearchBoxItem
+        iconName="clock-o"
+        renderItem={({ focused, onFocus, onBlur }) =>
+          <DatePicker
+            query={this.props.query}
+            focused={focused}
+            onFocus={onFocus}
+            onBlur={onBlur}
+          />}
+      />
+    );
+  }
+}
+
+class _SearchBox extends React.Component {
+  props: {
+    query: Query,
+    onNewSearch: (form: Object) => void,
+    // Self-managed props
+    // intl: intlShape,
+  };
+
+  _form: Object;
+
+  constructor(props) {
+    super(props);
+    (this: any).performSearch = this.performSearch.bind(this);
+    (this: any).saveRef = this.saveRef.bind(this);
+  }
+
   async performSearch() {
     if (!this._form) {
       console.warn('Error, called performSearch before form has been setup');
@@ -535,14 +643,6 @@ class _SearchBox extends React.Component {
 
   saveRef(x) {
     this._form = x;
-  }
-
-  shouldKeywordItemRender(item, value) {
-    if (value.length) {
-      return item.label.toLowerCase().indexOf(value.toLowerCase()) !== -1;
-    } else {
-      return item.initial;
-    }
   }
 
   render() {
@@ -564,56 +664,17 @@ class _SearchBox extends React.Component {
           acceptCharset="UTF-8"
         >
           <div className="media-query-search-box search-box">
-            <SearchBoxItem
-              iconName="globe"
-              renderItem={({ focused, onFocus, onBlur }) =>
-                <TextInput
-                  autocomplete
-                  id="location"
-                  placeholder={
-                    focused ? 'City, Region, or Country' : 'Anywhere'
-                  }
-                  value={this.state.location}
-                  items={this.state.locationItems}
-                  onSubmit={this.performSearch}
-                  onChange={this.onLocationChange}
-                  getItemValue={this.getItemLabel}
-                  onSelect={this.onLocationSelect}
-                  onFocus={onFocus}
-                  onBlur={onBlur}
-                />}
+            <LocationSearchBox
+              initialLocation={this.props.query.location}
+              performSearch={this.performSearch}
             />
-            <SearchBoxItem
-              iconName="search"
-              renderItem={({ focused, onFocus, onBlur }) =>
-                <TextInput
-                  autocomplete
-                  id="keywords"
-                  placeholder={
-                    focused
-                      ? 'Dance style, event name, dancer name, etc'
-                      : 'Any style, event type, etc'
-                  }
-                  value={this.state.keywords}
-                  onSubmit={this.performSearch}
-                  onChange={this.onKeywordsChange}
-                  onSelect={this.onKeywordsSelect}
-                  items={this.autocompleteKeywords()}
-                  getItemValue={this.getItemLabel}
-                  shouldItemRender={this.shouldKeywordItemRender}
-                  onFocus={onFocus}
-                  onBlur={onBlur}
-                />}
+            <KeywordSearchBox
+              initialKeywords={this.props.query.keywords}
+              performSearch={this.performSearch}
             />
-            <SearchBoxItem
-              iconName="clock-o"
-              renderItem={({ focused, onFocus, onBlur }) =>
-                <DatePicker
-                  query={this.props.query}
-                  focused={focused}
-                  onFocus={onFocus}
-                  onBlur={onBlur}
-                />}
+            <DateSearchBox
+              query={this.props.query}
+              performSearch={this.performSearch}
             />
             <div>
               <button
