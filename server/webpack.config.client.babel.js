@@ -2,7 +2,7 @@ import webpack from 'webpack';
 import ExtractTextPlugin from 'extract-text-webpack-plugin';
 import OptimizeCssAssetsPlugin from 'optimize-css-assets-webpack-plugin';
 import ManifestPlugin from 'webpack-manifest-plugin';
-import ChunkManifestPlugin from 'chunk-manifest-webpack2-plugin';
+import ChunkManifestPlugin from 'chunk-manifest-webpack-plugin';
 import WebpackMd5Hash from 'webpack-md5-hash';
 import path from 'path';
 import uncss from 'uncss';
