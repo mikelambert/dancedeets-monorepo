@@ -20,8 +20,8 @@ export class ImagePrefix extends React.Component {
   };
 
   render() {
-    if (!this.props.icon && !this.props.iconName) {
-      console.error('Missing icon and iconName');
+    if (!this.props.icon && !this.props.iconName && !this.props.iconUrl) {
+      console.error('Missing icon and iconName and iconUrl');
       return null;
     }
     const {
