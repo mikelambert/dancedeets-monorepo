@@ -77,7 +77,7 @@
     "extra_paths": [
       "${project_path}/server/lib-local",
       "${project_path}/server/lib-both",
-      "/Users/lambert/google-cloud-sdk/platform/google_appengine",
+      "~/google-cloud-sdk/platform/google_appengine",
     ],
 		"js_prettier":
 		{
