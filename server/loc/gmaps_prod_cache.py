@@ -13,7 +13,7 @@ class ProdServerBackend(gmaps_backends.GMapsBackend):
 
     def get_json(self, **kwargs):
         post_data = json.dumps({
-            'private_key': keys.get('private_key'),
+            'private_key': keys.get('private_readonly_key'),
             'lookup_type': self.lookup_type,
             'lookup': kwargs,
         })

@@ -7,9 +7,9 @@ import keys
 
 
 @app.route('/_gmaps_api')
-class ClassMultiUploadHandler(base_servlet.JsonDataHandler):
+class GmapsApiLookupHandler(base_servlet.JsonDataHandler):
     def post(self):
-        if self.json_body['private_key'] != keys.get('private_key'):
+        if self.json_body['private_key'] != keys.get('private_readonly_key'):
             self.response.status = 403
             return
 
