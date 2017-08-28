@@ -523,6 +523,7 @@ class MapWithLinks extends React.Component {
 class Description extends React.Component {
   props: {
     event: Event,
+    amp?: boolean,
   };
 
   render() {
@@ -535,7 +536,9 @@ class Description extends React.Component {
           <span className="google-translate" id="google_translate_element" />
         </div>
         <div className="grey-top-border card-contents">
-          <FormatDescription>{this.props.event.description}</FormatDescription>
+          <FormatDescription amp={this.props.amp}>
+            {this.props.event.description}
+          </FormatDescription>
         </div>
       </Card>
     );
@@ -688,7 +691,7 @@ export class EventPage extends React.Component {
             <MapWithLinks event={event} amp={this.props.amp} />
           </div>
           <div className="col-sm-7">
-            <Description event={event} />
+            <Description event={event} amp={this.props.amp} />
           </div>
         </div>
         <div className="col-xs-12">

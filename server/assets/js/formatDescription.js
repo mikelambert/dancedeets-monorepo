@@ -58,20 +58,27 @@ class SoundCloud extends React.Component {
 class FacebookPage extends React.Component {
   props: {
     username: string,
+    amp: boolean,
   };
 
   render() {
-    return (
-      <FBPage
-        appId={this.props.username}
-        href={`https://www.facebook.com/${this.props.username}/`}
-        height={300}
-        smallHeader={false}
-        adaptContainerWidth
-        showFacepile
-        tabs={['messages']}
-      />
-    );
+    const pageUrl = `https://www.facebook.com/${this.props.username}/`;
+    return this.props.amp
+      ? <amp-facebook-like
+          width="90"
+          height="20"
+          layout="fixed"
+          data-href={pageUrl}
+        />
+      : <FBPage
+          appId={this.props.username}
+          href={pageUrl}
+          height={300}
+          smallHeader={false}
+          adaptContainerWidth
+          showFacepile
+          tabs={['messages']}
+        />;
   }
 }
 
@@ -175,16 +182,23 @@ class Formatter {
     ) {
       const videoId = parsedUrl.query.v;
       this.elements.push(
-        <div key={i} className="video-container">
-          <iframe
-            id="ytplayer"
-            type="text/html"
-            width="640"
-            height="360"
-            src={`https://www.youtube.com/embed/${videoId}`}
-            frameBorder="0"
-          />
-        </div>
+        this.options.amp
+          ? <amp-youtube
+              data-videoid={videoId}
+              layout="responsive"
+              width="480"
+              height="270"
+            />
+          : <div key={i} className="video-container">
+              <iframe
+                id="ytplayer"
+                type="text/html"
+                width="640"
+                height="360"
+                src={`https://www.youtube.com/embed/${videoId}`}
+                frameBorder="0"
+              />
+            </div>
       );
     } else if (
       parsedUrl.host === 'www.youtube.com' &&
@@ -193,18 +207,29 @@ class Formatter {
       parsedUrl.query.list
     ) {
       const playlistId = parsedUrl.query.list;
+      const embedUrl = `https://www.youtube.com/embed/videoseries?list=${playlistId}`;
       this.elements.push(
-        <div key={i} className="video-container">
-          <iframe
-            id="ytplayer"
-            type="text/html"
-            width="640"
-            height="360"
-            src={`https://www.youtube.com/embed/videoseries?list=${playlistId}`}
-            frameBorder="0"
-            allowFullScreen
-          />
-        </div>
+        this.options.amp
+          ? <amp-iframe
+              src={embedUrl}
+              layout="responsive"
+              width="480"
+              height="270"
+              frameborder="0"
+              allowfullscreen=""
+              sandbox="allow-scripts allow-same-origin"
+            />
+          : <div key={i} className="video-container">
+              <iframe
+                id="ytplayer"
+                type="text/html"
+                width="640"
+                height="360"
+                src={embedUrl}
+                frameBorder="0"
+                allowFullScreen
+              />
+            </div>
       );
     } else if (parsedUrl.host === 'www.soundcloud.com') {
       this.elements.push(<SoundCloud key={i} url={match.url} />);
@@ -218,7 +243,9 @@ class Formatter {
         const splits = username.split('-');
         username = splits[splits.length - 1];
       }
-      this.elements.push(<FacebookPage key={i} username={username} />);
+      this.elements.push(
+        <FacebookPage key={i} username={username} amp={this.options.amp} />
+      );
     } else {
       this.elements.push(
         <a key={i} target={target} rel={rel} href={match.url}>{match.text}</a>
