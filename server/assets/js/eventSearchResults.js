@@ -139,7 +139,7 @@ export class HorizontalEventFlyer extends React.Component {
       </div>
     );
     return (
-      <a className="link-event-flyer" href={event.getUrl()}>
+      <a className="link-event-flyer" href={event.getRelativeUrl()}>
         {imageTag}
       </a>
     );
@@ -165,7 +165,7 @@ class _EventDescription extends React.Component {
     return (
       <div>
         <h3 className="event-title">
-          <a href={event.getUrl()}>
+          <a href={event.getRelativeUrl()}>
             <span>{event.name}</span>
           </a>
         </h3>
@@ -233,7 +233,7 @@ class VerticalEvent extends React.Component {
       >
         <SquareEventFlyer event={event} />
         <h3 className="event-title" style={{ marginTop: 10 }}>
-          <a href={event.getUrl()}>
+          <a href={event.getRelativeUrl()}>
             <span>{event.name}</span>
           </a>
         </h3>
@@ -257,7 +257,7 @@ class FeaturedEvent extends React.Component {
       <Card>
         <HorizontalEventFlyer event={event} />
         <h3 className="event-title" style={{ marginTop: 10 }}>
-          <a href={event.getUrl()}>
+          <a href={event.getRelativeUrl()}>
             <span>{event.name}</span>
           </a>
         </h3>

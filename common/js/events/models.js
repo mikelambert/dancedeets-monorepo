@@ -112,8 +112,12 @@ export class BaseEvent extends JsonDerivedObject {
     this.venue = new Venue(eventData.venue);
   }
 
+  getRelativeUrl() {
+    return `/events/${this.id}/${this.slugged_name}`;
+  }
+
   getUrl() {
-    return `https://www.dancedeets.com/events/${this.id}/${this.slugged_name}`;
+    return `https://www.dancedeets.com${this.getRelativeUrl()}`;
   }
 
   startTimeNoTz() {
