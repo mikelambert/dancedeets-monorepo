@@ -6,7 +6,10 @@
 import IPy
 from util import ips
 
-banned_list = IPy.IPSet([IPy.IP('188.165.25.197')])
+banned_list = IPy.IPSet([
+    IPy.IP('188.165.25.197'),  # A scraper that hammered the site too quickly.
+    IPy.IP('46.101.245.227'),  # Digital Ocean Scraper. Hammered my server for city pages, which started 502-ing on user traffic.
+])
 
 
 def is_abuse(request):
