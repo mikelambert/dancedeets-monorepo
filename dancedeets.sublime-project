@@ -25,7 +25,7 @@
 		{
 			"file_regex": "^[ ]*File \"(...*?)\", line ([0-9]*)",
 			"name": "test",
-			"shell_cmd": "make && ./test.sh",
+			"shell_cmd": "cd server && ./test.sh",
 			"working_dir": "${project_path:${folder}}"
 		},
 		{
@@ -75,6 +75,7 @@
     // Too annoying with the flashing on edits:
     // "anaconda_linter_phantoms": false,
     "extra_paths": [
+      "${project_path}/server",
       "${project_path}/server/lib-local",
       "${project_path}/server/lib-both",
       "~/google-cloud-sdk/platform/google_appengine",
@@ -89,6 +90,7 @@
 				"trailingComma": "es5"
 			}
 		},
+		"test_command": "cd server && ./test.sh",
 		"validate_imports": true
 	}
 }
