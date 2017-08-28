@@ -17,7 +17,7 @@ function isCommonModule(module) {
   const common = [
     // TODO: Grab more of the common assets/ code
     'assets/js/ui',
-    'jquery',
+    'jquery', // must duplicate this...grab it into the first chunk, then grab it again into the second chunk
     'bootstrap',
     'raven-js',
     '/react/',
@@ -37,6 +37,23 @@ function isCommonModule(module) {
   if (userRequest.endsWith('css')) {
     return true;
   }
+  for (const elem of common) {
+    if (userRequest.indexOf(elem) > -1) {
+      return true;
+    }
+  }
+  return false;
+}
+
+function isJQuery(module) {
+  const userRequest = module.userRequest;
+  if (typeof userRequest !== 'string') {
+    return false;
+  }
+  if (userRequest.endsWith('css')) {
+    return false; // leave it in the parent commons.sccchunk
+  }
+  const common = ['jquery'];
   for (const elem of common) {
     if (userRequest.indexOf(elem) > -1) {
       return true;
@@ -85,6 +102,15 @@ const config = {
     new ExtractTextPlugin({
       filename: prod ? '../css/[name].[contenthash].css' : '../css/[name].css',
     }),
+    new webpack.optimize.CommonsChunkPlugin({
+      name: 'common',
+      minChunks: isCommonModule,
+    }),
+    new webpack.optimize.CommonsChunkPlugin({
+      name: 'jquery',
+      minChunks: isJQuery,
+    }),
+    new webpack.optimize.ModuleConcatenationPlugin(),
     ifProd(
       new webpack.optimize.UglifyJsPlugin({
         sourceMap: true,
@@ -93,10 +119,6 @@ const config = {
         },
       })
     ),
-    new webpack.optimize.CommonsChunkPlugin({
-      name: 'common',
-      minChunks: isCommonModule,
-    }),
     ifProd(
       new OptimizeCssAssetsPlugin({
         canPrint: true,
