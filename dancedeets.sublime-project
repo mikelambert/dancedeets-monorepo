@@ -1,71 +1,94 @@
 {
+	"SublimeLinter":
+	{
+		"@python": 2.7,
+		"linters":
+		{
+			"pep8":
+			{
+				"ignore": "E501,E261"
+			},
+			"pylint":
+			{
+				"disable": "C0103,C0111,C0301,R0903",
+				"paths":
+				[
+					"${project_path}/server/lib-local",
+					"${project_path}/server/lib-both",
+					"${home}/google-cloud-sdk/platform/google_appengine"
+				]
+			}
+		}
+	},
+	"build_systems":
+	[
+		{
+			"file_regex": "^[ ]*File \"(...*?)\", line ([0-9]*)",
+			"name": "test",
+			"shell_cmd": "make && ./test.sh",
+			"working_dir": "${project_path:${folder}}"
+		},
+		{
+			"file_regex": "^[ ]*File \"(...*?)\", line ([0-9]*)",
+			"name": "Anaconda Python Builder",
+			"selector": "source.python",
+			"shell_cmd": "\"python\" -u \"$file\""
+		}
+	],
+	"codeintel_settings":
+	{
+		"codeintel_language_settings":
+		{
+			"Python":
+			{
+				"codeintel_scan_extra_dir":
+				[
+					"server/lib-local",
+					"server/lib-both",
+					"~/google-cloud-sdk/platform/google_appengine"
+				]
+			}
+		}
+	},
 	"folders":
 	[
 		{
+			"folder_exclude_patterns":
+			[
+				"download",
+				"build"
+			],
 			"follow_symlinks": true,
-			"path": ".",
-			"folder_exclude_patterns": ["download", "build"],
+			"path": "."
+		}
+	],
+	"settings":
+	{
+		"PyYapf":
+		{
+			"on_save": true,
+			"yapf_command": "${project_path}/scripts/yapf.sh"
 		},
-  ],
-  "build_systems":
-  [
-    {
-      "name": "test",
-      "working_dir": "${project_path:${folder}}",
-      "file_regex": "^[ ]*File \"(...*?)\", line ([0-9]*)",
-      "shell_cmd": "make && ./test.sh"
-    },
-  ],
-  "settings": {
-    "js_prettier": {
-      "debug": true,
-      "auto_format_on_save": true,
-      "prettier_options": {
-        "singleQuote": true,
-        "trailingComma": "es5",
-      },
-    },
-    "PyYapf": {
-      "yapf_command": "${project_path}/scripts/yapf.sh",
-      "on_save": true,
-      "debug": true,
-    },
-  },
-  "SublimeLinter": {
-    "@python": 2.7,
-    "linters": {
-      "pylint": {
-        // Disabled for now, to make our codebase look decent with pylint
-        "disable": "C0103,C0111,C0301,R0903",
-        // C0103: Invalid %s name "%s"
-        // C0111: Missing %s docstring
-        // C0301: Line too long (%s/%s)
-        // R0903: Too few public methods (%s/%s)
-        "paths": [
-          "${project_path}/server/lib-local",
-          "${project_path}/server/lib-both",
-          "${home}/google-cloud-sdk/platform/google_appengine",
-        ],
-      },
-      "pep8": {
-        "ignore": "E501,E261"
-        // E501: line too long
-        // E261: at least two spaces before inline comment
-      }
-    }
-  },
-  "codeintel_settings": {
-    "codeintel_language_settings": {
-      "Python": {
-        "codeintel_scan_extra_dir": [
-          // These project-relative and user-relative paths depend on:
-          // https://github.com/SublimeCodeIntel/SublimeCodeIntel/pull/569
-          // Otherwise we need to specify them as fully-absolute paths
-          "server/lib-local",
-          "server/lib-both",
-          "~/google-cloud-sdk/platform/google_appengine",
-        ],
-      },
-    },
-  },
+		"anaconda_linting": true,
+		"anaconda_linting_behaviour": "always",
+    "pep8": false,
+    // Too annoying with the flashing on edits:
+    // "anaconda_linter_phantoms": false,
+    "extra_paths": [
+      "${project_path}/server/lib-local",
+      "${project_path}/server/lib-both",
+      "/Users/lambert/google-cloud-sdk/platform/google_appengine",
+    ],
+		"js_prettier":
+		{
+			"auto_format_on_save": true,
+			"debug": true,
+			"prettier_options":
+			{
+				"singleQuote": true,
+				"trailingComma": "es5"
+			}
+		},
+		"validate_imports": true
+	}
 }
