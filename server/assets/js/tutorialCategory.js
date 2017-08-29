@@ -235,7 +235,7 @@ class _FilterBar extends React.Component {
     onChange: (key: ValidKey, newState: any) => void,
 
     // Self-managed props
-    intl: intlShape,
+    // intl: intlShape,
   };
 
   _query: HTMLInputElement;
