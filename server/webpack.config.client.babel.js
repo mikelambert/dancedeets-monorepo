@@ -5,45 +5,8 @@ import ManifestPlugin from 'webpack-manifest-plugin';
 import ChunkManifestPlugin from 'chunk-manifest-webpack-plugin';
 import WebpackMd5Hash from 'webpack-md5-hash';
 import path from 'path';
-import uncss from 'uncss';
 import { argv as env } from 'yargs';
 import pleeease from 'pleeease';
-
-function isCommonModule(module) {
-  const userRequest = module.userRequest;
-  if (typeof userRequest !== 'string') {
-    return false;
-  }
-  const common = [
-    // TODO: Grab more of the common assets/ code
-    'assets/js/ui',
-    'jquery', // must duplicate this...grab it into the first chunk, then grab it again into the second chunk
-    'bootstrap',
-    'raven-js',
-    '/react/',
-    'react-dom',
-    'react-intl',
-    'moment',
-    'lodash',
-    'babel-polyfill',
-    '/intl/',
-    'intl-',
-    'url',
-    'fbjs',
-    'js/messages',
-    'source-map',
-  ];
-  // Throw all CSS into the common module, so it doesn't require multiple downloads or blocking pages on subsequent navigations
-  if (userRequest.endsWith('css')) {
-    return true;
-  }
-  for (const elem of common) {
-    if (userRequest.indexOf(elem) > -1) {
-      return true;
-    }
-  }
-  return false;
-}
 
 function isJQuery(module) {
   const userRequest = module.userRequest;
@@ -113,8 +76,8 @@ const config = {
     }),
     new webpack.optimize.CommonsChunkPlugin({
       name: 'common',
-      chunks: Object.keys(entry),
-      minChunks: 3,
+      chunks: ['homepage', 'normalPage', 'eventExec', 'eventSearchResultsExec'],
+      minChunks: 2,
     }),
     new webpack.optimize.ModuleConcatenationPlugin(),
     ifProd(
