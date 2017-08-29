@@ -93,7 +93,8 @@ gulp.task('compile:images:favicons', ['compile:images:favicons:delete'], () =>
         orientation: 'portrait',
         version: 1.0,
         logging: false,
-        online: true,
+        // Unfortunately, the online generator doesn't seem to include 'short_name' in manifest.json
+        online: false,
         icons: {
           opengraph: false,
           twitter: false,
