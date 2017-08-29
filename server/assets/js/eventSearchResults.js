@@ -13,7 +13,6 @@ import upperFirst from 'lodash/upperFirst';
 import isEqual from 'lodash/isEqual';
 import { injectIntl, intlShape } from 'react-intl';
 import { StickyContainer, Sticky } from 'react-sticky';
-import Masonry from 'react-masonry-component';
 import Slider from 'react-slick';
 import Spinner from 'react-spinkit';
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
@@ -297,16 +296,20 @@ class CurrentEvents extends React.Component {
       return null;
     }
 
+    // Masonry is too big and messy to use here
+    // And float-left can get us pretty far as a layout strategy
     const resultItems = [];
     this.props.events.forEach((event, index) => {
-      resultItems.push(<VerticalEvent key={event.id} event={event} />);
+      resultItems.push(
+        <div style={{ float: 'left' }}>
+          <VerticalEvent key={event.id} event={event} />
+        </div>
+      );
     });
 
     return (
-      <div style={{ width: '100%', padding: 10 }}>
-        <Masonry>
-          {resultItems}
-        </Masonry>
+      <div style={{ width: '100%', padding: 10 }} className="clearfix">
+        {resultItems}
       </div>
     );
   }
@@ -610,8 +613,6 @@ class ResultsList extends React.Component {
       currentEvents = [];
       fullEvents = resultEvents;
     } else {
-      // DEBUG CODE for current events:
-      // currentEvents = resultEvents.filter(event => event.getStartMoment() > now);
       currentEvents = resultEvents.filter(event => {
         let end = event.getEndMoment();
         if (!end) {
@@ -622,6 +623,8 @@ class ResultsList extends React.Component {
       fullEvents = resultEvents.filter(event =>
         event.getListDateMoment().isAfter(now)
       );
+      // DEBUG CODE for current events:
+      // currentEvents = resultEvents;
     }
     if (currentEvents.length) {
       eventPanels.push(
