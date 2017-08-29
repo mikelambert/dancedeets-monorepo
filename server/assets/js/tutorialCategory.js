@@ -24,8 +24,6 @@ import {
 import { formatDuration } from 'dancedeets-common/js/tutorials/format';
 import messages from 'dancedeets-common/js/tutorials/messages';
 import { sortNumber } from 'dancedeets-common/js/util/sort';
-// TODO: Can/should we trim this file? It is 150KB, and we probably only need 10KB of it...
-import languageData from 'dancedeets-common/js/languages';
 import { messages as styleMessages } from 'dancedeets-common/js/styles';
 import { Card, Link, ShareLinks, wantsWindowSizes } from './ui';
 import type { windowProps } from './ui';
@@ -37,6 +35,24 @@ import {
   MultiSelectList,
   MultiSelectState,
 } from './MultiSelectList';
+
+// Can/should we trim this file? It is 150KB, and we probably only need 10KB of it...
+// import languageData from 'dancedeets-common/js/languages';
+// Instead, let's just us a small hardcoded list of languages for now...
+// We can revisit this later when we are producing per-locale bundles
+// and when we can pre-process the above file to include just the relevant languages we need to translate
+const languageData = {
+  cs: 'Czech',
+  en: 'English',
+  es: 'Spanish',
+  it: 'Italian',
+  ja: 'Japanese',
+  ko: 'Korean',
+  lt: 'Lithuanian',
+  pl: 'Polish',
+  ru: 'Russian',
+  zh: 'Chinese',
+};
 
 class MatchedVideo extends React.Component {
   props: {
@@ -250,9 +266,7 @@ class _FilterBar extends React.Component {
               onChange={state => this.props.onChange('languages', state)}
               itemRenderer={data => {
                 const x = JSON.parse(data);
-                return `${languageData[this.props.intl.locale][
-                  x.language
-                ]} (${x.count})`;
+                return `${languageData[x.language]} (${x.count})`;
               }}
             />
           </div>
