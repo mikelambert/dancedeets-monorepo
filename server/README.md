@@ -9,10 +9,8 @@ The magic behind <https://www.dancedeets.com/>.
 ## Setup
 
 Download and install these libraries we depend on:
-- <https://developers.google.com/appengine/downloads>
-  ...and open the AppEngine app at least once, to set up `/usr/local/google_appengine`.
-- <https://nodejs.org/ja/download/>
 - Download and install XCode from the App Store.
+- <https://nodejs.org/ja/download/>
 
 Second, setup our system-wide tools (maybe worth encapsulating in a script?):
 ```
