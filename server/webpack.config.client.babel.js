@@ -66,19 +66,21 @@ const prod = !env.debug;
 
 const ifProd = plugin => (prod ? plugin : null);
 
+const entry = {
+  bracketsExec: './assets/js/bracketsExec.js',
+  calendarExec: './assets/js/calendarExec.js',
+  homepage: './assets/js/homepage.js',
+  normalPage: './assets/js/normalPage.js',
+  classResultsExec: './assets/js/classResultsExec.js',
+  eventExec: './assets/js/eventExec.js',
+  eventSearchResultsExec: './assets/js/eventSearchResultsExec.js',
+  topicExec: './assets/js/topicExec.js',
+  tutorialExec: './assets/js/tutorialExec.js',
+  tutorialCategoryExec: './assets/js/tutorialCategoryExec.js',
+};
+
 const config = {
-  entry: {
-    bracketsExec: './assets/js/bracketsExec.js',
-    calendarExec: './assets/js/calendarExec.js',
-    homepage: './assets/js/homepage.js',
-    normalPage: './assets/js/normalPage.js',
-    classResultsExec: './assets/js/classResultsExec.js',
-    eventExec: './assets/js/eventExec.js',
-    eventSearchResultsExec: './assets/js/eventSearchResultsExec.js',
-    topicExec: './assets/js/topicExec.js',
-    tutorialExec: './assets/js/tutorialExec.js',
-    tutorialCategoryExec: './assets/js/tutorialCategoryExec.js',
-  },
+  entry,
   output: {
     path: path.join(__dirname, 'dist/js'),
     filename: prod ? '[name].[chunkhash].js' : '[name].js',
@@ -103,12 +105,16 @@ const config = {
       filename: prod ? '../css/[name].[contenthash].css' : '../css/[name].css',
     }),
     new webpack.optimize.CommonsChunkPlugin({
-      name: 'common',
-      minChunks: 3,
+      name: 'jquery',
+      // For now this is *after* 'common', and so gets loaded first.
+      // When we move jquery out of assets/js/common.js, we can flip these.
+      chunks: ['common', ...Object.keys(entry)],
+      minChunks: isJQuery,
     }),
     new webpack.optimize.CommonsChunkPlugin({
-      name: 'jquery',
-      minChunks: isJQuery,
+      name: 'common',
+      chunks: Object.keys(entry),
+      minChunks: 3,
     }),
     new webpack.optimize.ModuleConcatenationPlugin(),
     ifProd(
