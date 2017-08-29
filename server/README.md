@@ -8,14 +8,16 @@ The magic behind <https://www.dancedeets.com/>.
 
 ## Setup
 
-First, download and install appengine libraries here:
-<https://developers.google.com/appengine/downloads>
-...and open the AppEngine app at least once, to set up `/usr/local/google_appengine`.
+Download and install these libraries we depend on:
+- <https://developers.google.com/appengine/downloads>
+  ...and open the AppEngine app at least once, to set up `/usr/local/google_appengine`.
+- <https://nodejs.org/ja/download/>
+- Download and install XCode from the App Store.
 
-Second, setup gcloud:
+Second, setup our system-wide tools (maybe worth encapsulating in a script?):
 ```
+/usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
 curl https://sdk.cloud.google.com | bash
-gcloud components update app preview
 gcloud config set project dancedeets-hrd
 gcloud auth login
 ```
