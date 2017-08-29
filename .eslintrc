@@ -22,7 +22,7 @@
     'no-console': 0,
     'react/no-multi-comp': 0, // We'd have too many files
     'no-use-before-define': 0, // Someties can lead to more intuitive flow/layout
-    'no-unused-vars': 0, // Sometimes unused vars represent documentation of arguments
+    'no-unused-vars': [2, { "vars": "all", "args": "none", "ignoreRestSiblings": true }], // Sometimes unused vars represent documentation of arguments
     'no-else-return': 0, // Sometimes it's much clearer to understand alternation logical flow with 'else's
     'react/prefer-stateless-function': 0, // TODO: We should revisit this one...
     'class-methods-use-this': 0, // Shouldn't have to do major rewrites just because of not using 'this'
