@@ -21,7 +21,7 @@ fi
 
 if [ "$TRAVIS" != true ]; then
   echo "Checking if we need to update /etc/hosts"
-  HOSTS_UPDATED=$(grep dev.dancedeets.com /etc/hosts)
+  HOSTS_UPDATED=$(grep dev.dancedeets.com /etc/hosts || echo -n)
   if [ "$HOSTS_UPDATED" == "" ]; then
     cat <<EOF
 Updating /etc/hosts to include the dev.dancedeets.com domain."
