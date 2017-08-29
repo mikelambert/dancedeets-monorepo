@@ -6,9 +6,7 @@
 
 import React from 'react';
 import { injectIntl, intlShape } from 'react-intl';
-import url from 'url';
 import { intlWeb } from 'dancedeets-common/js/intl';
-import type { Cover } from 'dancedeets-common/js/events/models';
 import { SearchEvent } from 'dancedeets-common/js/events/models';
 import type { NewSearchResponse } from 'dancedeets-common/js/events/search';
 import {
@@ -16,17 +14,11 @@ import {
   formatStartTime,
 } from 'dancedeets-common/js/dates';
 import { groupEventsByStartDate } from 'dancedeets-common/js/events/helpers';
+import { addUrlArgs } from 'dancedeets-common/js/util/url';
 import type { ExportedIconsEnum } from './exportedIcons';
 
 const outsideGutter = 20;
 const verticalSpacing = 20;
-
-function addArgs(origUrl, args) {
-  const parsedUrl = url.parse(origUrl, true);
-  parsedUrl.query = { ...parsedUrl.query, ...args };
-  const newUrl = url.format(parsedUrl);
-  return newUrl;
-}
 
 function addTrackingTags(origUrl) {
   const tags = {
@@ -34,15 +26,7 @@ function addTrackingTags(origUrl) {
     utm_medium: 'email',
     utm_campaign: 'weekly_email',
   };
-  return addArgs(origUrl, tags);
-}
-
-function generateCroppedCover(picture: Cover, width: number, height: number) {
-  return {
-    source: addArgs(picture.source, { width, height }),
-    width,
-    height,
-  };
+  return addUrlArgs(origUrl, tags);
 }
 
 class SmallIcon extends React.Component {
@@ -90,8 +74,8 @@ class _MailEvent extends React.Component {
     let flyerImage = null;
     const eventUrl = addTrackingTags(this.props.event.getUrl());
 
-    if (event.picture) {
-      const coverUrl = generateCroppedCover(event.picture, size, size);
+    const coverUrl = event.getCroppedCover(size, size);
+    if (coverUrl) {
       flyerImage = (
         <mj-image
           align="left"

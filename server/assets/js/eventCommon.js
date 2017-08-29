@@ -5,9 +5,7 @@
  */
 
 import React from 'react';
-import url from 'url';
 import LazyLoad from 'react-lazyload';
-import type { Cover } from 'dancedeets-common/js/events/models';
 import { SearchEvent } from 'dancedeets-common/js/events/models';
 
 export class SquareEventFlyer extends React.Component {
@@ -16,28 +14,15 @@ export class SquareEventFlyer extends React.Component {
     lazyLoad?: boolean,
   };
 
-  generateCroppedCover(picture: Cover, width: number, height: number) {
-    const parsedSource = url.parse(picture.source, true);
-    parsedSource.query = { ...parsedSource.query, width, height };
-    const newSourceUrl = url.format(parsedSource);
-
-    return {
-      source: newSourceUrl,
-      width,
-      height,
-    };
-  }
-
   render() {
     const event = this.props.event;
-    const picture = event.picture;
-    if (!picture) {
-      return null;
-    }
     const width = 180;
     const height = 180;
 
-    const croppedPicture = this.generateCroppedCover(picture, width, height);
+    const croppedPicture = this.props.event.getCroppedCover(width, height);
+    if (!croppedPicture) {
+      return null;
+    }
     let imageTag = (
       <div card="square-flyer">
         <img

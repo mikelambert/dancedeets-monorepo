@@ -4,7 +4,7 @@
  * @flow
  */
 
-import url from 'url';
+import { addUrlArgs } from '../util/url';
 import moment from 'moment';
 
 type JSON = string | number | boolean | null | JSONObject | JSONArray;
@@ -120,6 +120,17 @@ export class BaseEvent extends JsonDerivedObject {
     return `https://www.dancedeets.com${this.getRelativeUrl()}`;
   }
 
+  getCroppedCover(width: ?number, height: ?number): ?Cover {
+    if (!this.picture) {
+      return null;
+    }
+    return {
+      source: addUrlArgs(this.picture.source, { width, height }),
+      width,
+      height,
+    };
+  }
+
   startTimeNoTz() {
     return this.start_time.substr(0, 19);
   }
@@ -206,12 +217,9 @@ export class Event extends BaseEvent {
     }
 
     let { width, height } = dimensions;
+    let cover = null;
     if (!width && !height) {
-      return {
-        uri: this.picture.source,
-        width: this.picture.width,
-        height: this.picture.height,
-      };
+      cover = this.picture;
     }
 
     const ratio = this.picture.width / this.picture.height;
@@ -220,16 +228,17 @@ export class Event extends BaseEvent {
     } else if (!width && height) {
       width = Math.floor(height / ratio);
     }
-    const parsedSource = url.parse(this.picture.source, true);
-    // Careful! We are re-using parsedSource here.
-    // If we do more complex things, we may need to create and modify copies...
-    parsedSource.query = { ...parsedSource.query, width, height };
-    const result = {
-      uri: url.format(parsedSource),
-      width,
-      height,
+    cover = this.getCroppedCover(width, height);
+    if (!cover) {
+      // Shouldn't happen since we check this.picture up above,
+      // but this helps with flow type-checking
+      return null;
+    }
+    return {
+      uri: cover.source,
+      width: cover.width,
+      height: cover.height,
     };
-    return result;
   }
 
   getSquareFlyer(): ?MiniImageProp {

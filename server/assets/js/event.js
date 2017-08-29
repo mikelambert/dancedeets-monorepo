@@ -8,7 +8,6 @@ import React from 'react';
 import FormatText from 'react-format-text';
 import querystring from 'querystring';
 import { injectIntl, intlShape } from 'react-intl';
-import url from 'url';
 import Helmet from 'react-helmet';
 import { Share as TwitterShare } from 'react-twitter-widgets';
 import ExecutionEnvironment from 'exenv';
@@ -18,6 +17,7 @@ import { Event } from 'dancedeets-common/js/events/models';
 import type { JSONObject } from 'dancedeets-common/js/events/models';
 import { formatAttending } from 'dancedeets-common/js/events/helpers';
 import messages from 'dancedeets-common/js/events/messages';
+import { getHostname } from 'dancedeets-common/js/util/url';
 import { RsvpComponent } from './eventRsvp';
 import type { RsvpValue } from './eventRsvp';
 import GoogleAd from './googleAd';
@@ -220,7 +220,7 @@ class _EventLinks extends React.Component {
     }
     let ticketElement = null;
     if (this.props.event.ticket_uri) {
-      const hostname = url.parse(this.props.event.ticket_uri).hostname;
+      const hostname = getHostname(this.props.event.ticket_uri);
       ticketElement = (
         <ImagePrefix iconName="ticket">
           <Message message={messages.ticketsLink} />

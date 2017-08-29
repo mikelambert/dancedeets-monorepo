@@ -9,7 +9,6 @@ import {
   AlertIOS,
   Dimensions,
   Image,
-  InteractionManager,
   Linking,
   Platform,
   ScrollView,
@@ -21,14 +20,13 @@ import {
 import { injectIntl, intlShape, defineMessages } from 'react-intl';
 import Locale from 'react-native-locale';
 import { connect } from 'react-redux';
-import GoogleApiAvailability from 'react-native-google-api-availability';
 import moment from 'moment';
 import geolib from 'geolib';
-import url from 'url';
 import querystring from 'querystring';
 import { formatStartEnd } from 'dancedeets-common/js/dates';
 import { Event, Venue } from 'dancedeets-common/js/events/models';
 import messages from 'dancedeets-common/js/events/messages';
+import { getHostname } from 'dancedeets-common/js/util/url';
 import { formatAttending } from 'dancedeets-common/js/events/helpers';
 import {
   Autolink,
@@ -809,7 +807,7 @@ class _EventTickets extends React.PureComponent {
 
   render() {
     if (this.props.event.ticket_uri) {
-      const hostname = url.parse(this.props.event.ticket_uri).hostname;
+      const hostname = getHostname(this.props.event.ticket_uri);
       return (
         <SubEventLine icon={require('./images/ticket.png')}>
           <HorizontalView>

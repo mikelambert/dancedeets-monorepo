@@ -5,7 +5,6 @@
  */
 
 import React from 'react';
-import url from 'url';
 import FormatText from 'react-format-text';
 import moment from 'moment';
 import ExecutionEnvironment from 'exenv';
@@ -20,7 +19,6 @@ import createBrowserHistory from 'history/createBrowserHistory';
 import { performRequest as realPerformRequest } from 'dancedeets-common/js/api/dancedeets';
 import { sortNumber } from 'dancedeets-common/js/util/sort';
 import { intlWeb } from 'dancedeets-common/js/intl';
-import type { Cover } from 'dancedeets-common/js/events/models';
 import { messages } from 'dancedeets-common/js/events/people';
 import {
   BaseEvent,
@@ -89,30 +87,17 @@ export class HorizontalEventFlyer extends React.Component {
     event: BaseEvent,
   };
 
-  generateCroppedCover(picture: Cover, width: number, height: number) {
-    const parsedSource = url.parse(picture.source, true);
-    parsedSource.query = { ...parsedSource.query, width, height };
-    const newSourceUrl = url.format(parsedSource);
-
-    return {
-      source: newSourceUrl,
-      width,
-      height,
-    };
-  }
-
   render() {
     const event = this.props.event;
-    const picture = event.picture;
-    if (!picture) {
-      return null;
-    }
     const width = 800;
     const height = 400;
 
     const scaledHeight = '50'; // height == width * 50%
 
-    const croppedPicture = this.generateCroppedCover(picture, width, height);
+    const croppedPicture = event.getCroppedCover(width, height);
+    if (!croppedPicture) {
+      return null;
+    }
     const imageTag = (
       <div
         style={{
