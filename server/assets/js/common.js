@@ -32,7 +32,8 @@ require('bootstrap/js/transition');
 
 // Now let's import the rest normally.
 import './all-css';
-import './stackdriver-errors';
+// Disable this for now, since we don't need the 60KB, and Raven/Sentry serves us fine
+// import './stackdriver-errors';
 import { fbSetup } from './fb';
 import appInstallPromos from './app-install-promo';
 /* eslint-enable import/first */
