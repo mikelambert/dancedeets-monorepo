@@ -409,7 +409,7 @@ class _OneboxLinks extends React.Component {
 
     return (
       <div>
-        Featured Sites:
+        <b>Featured Sites:</b>
         <ul>{oneboxList}</ul>
       </div>
     );
@@ -626,7 +626,7 @@ class ResultsList extends React.Component {
     if (currentEvents.length) {
       eventPanels.push(
         <div key="current">
-          <div>Events happening now:</div>
+          <div className="bold">Events happening now:</div>
           <CurrentEvents events={currentEvents} />
         </div>
       );
