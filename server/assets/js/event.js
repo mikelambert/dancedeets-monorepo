@@ -7,13 +7,7 @@
 import React from 'react';
 import FormatText from 'react-format-text';
 import querystring from 'querystring';
-import moment from 'moment';
-import {
-  defineMessages,
-  injectIntl,
-  intlShape,
-  FormattedMessage,
-} from 'react-intl';
+import { injectIntl, intlShape } from 'react-intl';
 import url from 'url';
 import Helmet from 'react-helmet';
 import { Share as TwitterShare } from 'react-twitter-widgets';
@@ -34,20 +28,6 @@ import { Message } from './intl';
 import { AmpImage, Card, ImagePrefix } from './ui';
 import FormatDescription from './formatDescription';
 
-/* intersperse: Return an array with the separator interspersed between
- * each element of the input array.
- *
- * > _([1,2,3]).intersperse(0)
- * [1,0,2,0,3]
- */
-function intersperse(arr: Array<any>, sep: string) {
-  if (arr.length === 0) {
-    return [];
-  }
-
-  return arr.slice(1).reduce((xs, x) => xs.concat([sep, x]), [arr[0]]);
-}
-
 function getAdsenseStyle(amp) {
   return {
     display: 'inline-block',
@@ -66,8 +46,6 @@ class Title extends React.Component {
   };
 
   render() {
-    const event = this.props.event;
-
     return (
       <h2 className="event-page-header">
         {this.props.event.name}
@@ -137,7 +115,6 @@ class ImageWithLinks extends React.Component {
       </a>
     );
 
-    const lightbox = null;
     /*
     // TODO: Lightbox
     let lightbox = null;
@@ -182,17 +159,6 @@ function getAddToCalendarLink(event) {
   };
   const query = querystring.stringify(args);
   return `https://www.google.com/calendar/render?${query}`;
-}
-
-function rsvpString(event) {
-  if (!event.rsvp) {
-    return null;
-  }
-  let rsvp = `${event.rsvp.attending_count} Attending`;
-  if (event.rsvp.maybe_count) {
-    rsvp += `, ${event.rsvp.maybe_count} Maybe`;
-  }
-  return rsvp;
 }
 
 class _EventLinks extends React.Component {

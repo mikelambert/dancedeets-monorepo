@@ -7,10 +7,7 @@
 import React from 'react';
 import Masonry from 'react-masonry-component';
 import FormatText from 'react-format-text';
-import moment from 'moment';
 import Helmet from 'react-helmet';
-import ShowMore from 'react-show-more';
-import upperFirst from 'lodash/upperFirst';
 import { injectIntl, intlShape } from 'react-intl';
 import { SearchEvent } from 'dancedeets-common/js/events/models';
 import type { NewSearchResponse } from 'dancedeets-common/js/events/search';

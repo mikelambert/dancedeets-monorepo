@@ -5,11 +5,7 @@
  */
 
 import React from 'react';
-import { injectIntl, intlShape } from 'react-intl';
 import querystring from 'querystring';
-import ExecutionEnvironment from 'exenv';
-import createBrowserHistory from 'history/createBrowserHistory';
-import type { NewSearchResponse } from 'dancedeets-common/js/events/search';
 import { intlWeb } from 'dancedeets-common/js/intl';
 import FullCalendar from './FullCalendar';
 

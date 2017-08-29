@@ -74,7 +74,6 @@ export class BracketRenderer {
 
   getPositionForMatchIndex(index: number) {
     const totalSize = this.getTotalSize();
-    const totalColumns = this.getTotalColumns();
     const column = this.getColumnForMatchIndex(index);
     const x =
       totalSize.width -

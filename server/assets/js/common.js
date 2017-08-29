@@ -35,7 +35,6 @@ import './all-css';
 import './stackdriver-errors';
 import { fbSetup } from './fb';
 import appInstallPromos from './app-install-promo';
-import { queryOn } from './dom';
 /* eslint-enable import/first */
 
 if (window.prodMode === 'prod') {

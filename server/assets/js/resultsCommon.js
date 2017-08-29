@@ -7,7 +7,7 @@
 import React from 'react';
 import moment from 'moment';
 import classNames from 'classnames';
-import { injectIntl, intlShape } from 'react-intl';
+import { injectIntl } from 'react-intl';
 import Autocomplete from 'react-autocomplete';
 import { DateRangePicker } from 'react-dates';
 import { wantsWindowSizes } from './ui';
@@ -629,8 +629,6 @@ class _SearchBox extends React.Component {
       console.warn('Error, called performSearch before form has been setup');
       return;
     }
-    const formData = new FormData(this._form);
-
     const form = {};
     [...this._form.elements].forEach(field => {
       if (field.name !== '') {

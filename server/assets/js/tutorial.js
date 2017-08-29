@@ -13,7 +13,7 @@ import { intlWeb } from 'dancedeets-common/js/intl';
 import { getTutorials } from 'dancedeets-common/js/tutorials/playlistConfig';
 import { Playlist, Video } from 'dancedeets-common/js/tutorials/models';
 import { formatDuration } from 'dancedeets-common/js/tutorials/format';
-import { Card, Link, ShareLinks, wantsWindowSizes } from './ui';
+import { Link, ShareLinks, wantsWindowSizes } from './ui';
 import type { windowProps } from './ui';
 import { generateMetaTags } from './meta';
 
@@ -131,8 +131,6 @@ class _TutorialView extends React.Component {
       ? backgroundVideoColorActive
       : backgroundVideoColor;
 
-    const imageSize = 30;
-    const playIcon = require('../img/play.png'); // eslint-disable-line global-require
     return (
       <Link
         onClick={() => this.onVideoClick(video)}
@@ -256,8 +254,6 @@ class _TutorialView extends React.Component {
   }
 
   render() {
-    const tutorial = this.props.tutorial;
-    const video = this.state.video;
     const height = this.props.window
       ? this.props.window.height - headerHeight
       : '100vh';

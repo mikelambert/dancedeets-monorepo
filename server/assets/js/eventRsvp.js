@@ -5,7 +5,7 @@
  */
 
 import React from 'react';
-import { injectIntl, intlShape, FormattedMessage } from 'react-intl';
+import { injectIntl } from 'react-intl';
 import messages from 'dancedeets-common/js/events/messages';
 import { Event } from 'dancedeets-common/js/events/models';
 import { Message } from './intl';
@@ -77,7 +77,7 @@ class _RsvpComponent extends React.Component {
       return;
     }
     try {
-      const result = fetch('/events/rsvp_ajax', {
+      fetch('/events/rsvp_ajax', {
         rsvp: rsvpValue,
         event_id: this.props.event.id,
       });

@@ -8,7 +8,7 @@ import React from 'react';
 import { injectIntl, intlShape } from 'react-intl';
 import url from 'url';
 import { intlWeb } from 'dancedeets-common/js/intl';
-import type { Cover, JSONObject } from 'dancedeets-common/js/events/models';
+import type { Cover } from 'dancedeets-common/js/events/models';
 import { SearchEvent } from 'dancedeets-common/js/events/models';
 import type { NewSearchResponse } from 'dancedeets-common/js/events/search';
 import {

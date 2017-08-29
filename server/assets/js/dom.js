@@ -4,10 +4,6 @@
  * @flow
  */
 
-function domClass(className) {
-  return [].slice.call(document.getElementsByClassName(className));
-}
-
 function domQuery(query) {
   return [].slice.call(document.querySelectorAll(query));
 }

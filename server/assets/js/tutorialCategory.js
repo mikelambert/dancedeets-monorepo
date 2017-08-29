@@ -5,13 +5,11 @@
  */
 
 import React from 'react';
-import uniq from 'lodash/uniq';
 import countBy from 'lodash/countBy';
-import { defineMessages, injectIntl, intlShape } from 'react-intl';
+import { injectIntl, intlShape } from 'react-intl';
 import Helmet from 'react-helmet';
 import Masonry from 'react-masonry-component';
 import LazyLoad from 'react-lazyload';
-import upperFirst from 'lodash/upperFirst';
 import querystring from 'querystring';
 import { intlWeb } from 'dancedeets-common/js/intl';
 import { getTutorials } from 'dancedeets-common/js/tutorials/playlistConfig';
@@ -24,8 +22,7 @@ import {
 import { formatDuration } from 'dancedeets-common/js/tutorials/format';
 import messages from 'dancedeets-common/js/tutorials/messages';
 import { sortNumber } from 'dancedeets-common/js/util/sort';
-import { messages as styleMessages } from 'dancedeets-common/js/styles';
-import { Card, Link, ShareLinks, wantsWindowSizes } from './ui';
+import { Card, ShareLinks, wantsWindowSizes } from './ui';
 import type { windowProps } from './ui';
 import { generateMetaTags } from './meta';
 import {
@@ -161,7 +158,6 @@ class _Tutorial extends React.Component {
       tutorial.getDurationSeconds()
     );
 
-    const title = tutorial.title;
     if (this.props.intl.locale !== tutorial.language) {
       // const localizedLanguage = languages[this.props.intl.locale][tutorial.language];
       // title = this.props.intl.formatMessage(messages.languagePrefixedTitle, { language: upperFirst(localizedLanguage), title: tutorial.title });

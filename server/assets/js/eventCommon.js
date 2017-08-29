@@ -7,8 +7,8 @@
 import React from 'react';
 import url from 'url';
 import LazyLoad from 'react-lazyload';
-import type { Cover, JSONObject } from 'dancedeets-common/js/events/models';
-import { Event, SearchEvent } from 'dancedeets-common/js/events/models';
+import type { Cover } from 'dancedeets-common/js/events/models';
+import { SearchEvent } from 'dancedeets-common/js/events/models';
 
 export class SquareEventFlyer extends React.Component {
   props: {
@@ -36,8 +36,6 @@ export class SquareEventFlyer extends React.Component {
     }
     const width = 180;
     const height = 180;
-
-    const scaledHeight = '100'; // height == width
 
     const croppedPicture = this.generateCroppedCover(picture, width, height);
     let imageTag = (

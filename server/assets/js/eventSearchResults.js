@@ -9,21 +9,18 @@ import url from 'url';
 import FormatText from 'react-format-text';
 import moment from 'moment';
 import ExecutionEnvironment from 'exenv';
-import upperFirst from 'lodash/upperFirst';
 import isEqual from 'lodash/isEqual';
 import { injectIntl, intlShape } from 'react-intl';
 import { StickyContainer, Sticky } from 'react-sticky';
 import Slider from 'react-slick';
 import Spinner from 'react-spinkit';
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
-import Collapse, { Panel } from 'rc-collapse';
 import querystring from 'querystring';
 import createBrowserHistory from 'history/createBrowserHistory';
 import { performRequest as realPerformRequest } from 'dancedeets-common/js/api/dancedeets';
-import { timeout } from 'dancedeets-common/js/api/timeouts';
 import { sortNumber } from 'dancedeets-common/js/util/sort';
 import { intlWeb } from 'dancedeets-common/js/intl';
-import type { Cover, JSONObject } from 'dancedeets-common/js/events/models';
+import type { Cover } from 'dancedeets-common/js/events/models';
 import { messages } from 'dancedeets-common/js/events/people';
 import {
   BaseEvent,
@@ -36,10 +33,7 @@ import type {
   PeopleListing,
   StylePersonLookup,
 } from 'dancedeets-common/js/events/search';
-import {
-  formatAttending,
-  groupEventsByStartDate,
-} from 'dancedeets-common/js/events/helpers';
+import { groupEventsByStartDate } from 'dancedeets-common/js/events/helpers';
 import { formatStartDateOnly } from 'dancedeets-common/js/dates';
 import { JsonSchema } from './schema';
 import { getEventSchema } from './schema/event';
@@ -52,7 +46,6 @@ import { SearchBox, CalendarRatio } from './resultsCommon';
 import {
   MultiSelectList,
   generateUniformState,
-  caseInsensitiveSort,
   getSelected,
 } from './MultiSelectList';
 import type { MultiSelectState } from './MultiSelectList';
@@ -188,7 +181,6 @@ class HorizontalEvent extends React.Component {
   };
 
   render() {
-    const event = this.props.event;
     return (
       <div className="grey-top-border horizontal-event">
         <div className="event-image">
@@ -519,9 +511,6 @@ class EventFilters extends React.Component {
       <MultiSelectList
         list={this.state.initialStyles}
         selected={this.state.styles}
-        ref={x => {
-          // this._styles = x;
-        }}
         onChange={state => {
           this.setState({ styles: state });
           this.props.onChange(getSelected(state));
