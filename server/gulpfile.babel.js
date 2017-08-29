@@ -391,12 +391,13 @@ function webpack(configName, dependencies = []) {
   gulp.task(
     `compile:webpack:${configName}:prod:once`,
     dependencies,
-    $.shell.task([`${webpackCommand}`])
+    // We must pass NODE_ENV here, because otherwise inside webpack, it's too late for babel plugins
+    $.shell.task([`NODE_ENV=production ${webpackCommand}`])
   );
   gulp.task(
     `compile:webpack:${configName}:prod:watch`,
     dependencies,
-    $.shell.task([`${webpackCommand} --watch`])
+    $.shell.task([`NODE_ENV=production ${webpackCommand} --watch`])
   );
   gulp.task(
     `compile:webpack:${configName}:debug:once`,
