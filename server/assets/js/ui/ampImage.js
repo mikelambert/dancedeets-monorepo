@@ -20,10 +20,12 @@ export class AmpImage extends React.Component {
     picture: ClientCover,
     amp?: ?boolean,
     width?: string,
+    srcSet?: string,
+    sizes?: string,
   };
 
   render() {
-    const { picture, amp, width, ...otherProps } = this.props;
+    const { picture, amp, width, srcSet, sizes, ...otherProps } = this.props;
     if (this.props.amp) {
       return (
         <amp-img
@@ -31,6 +33,8 @@ export class AmpImage extends React.Component {
           layout="responsive"
           width={picture.width}
           height={picture.height}
+          srcSet={srcSet}
+          sizes={sizes}
         />
       );
     } else {
@@ -39,6 +43,8 @@ export class AmpImage extends React.Component {
           role="presentation"
           src={picture.source}
           width={width}
+          srcSet={srcSet}
+          sizes={sizes}
           {...otherProps}
         />
       );

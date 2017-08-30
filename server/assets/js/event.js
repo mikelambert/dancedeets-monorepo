@@ -76,13 +76,13 @@ class ImageWithLinks extends React.Component {
   }
 
   render() {
-    const picture = this.props.event.picture;
-    if (!picture) {
+    // This is for the small percentage of browsers that don't support srcSet
+    // We use 480 since they're likely old browsers, don't need high resolutions, etc
+    const basicCoverImage = this.props.event.getFlyer({ width: 480 });
+    if (!basicCoverImage || !this.props.event.picture) {
       return null;
     }
-    // TODO: Lightbox
-    // const imageUrl = (this.props.amp || !ExecutionEnvironment.canUseDOM) ? picture.source : '#';
-    const imageUrl = picture.source; // (this.props.amp || !ExecutionEnvironment.canUseDOM) ? picture.source : '#';
+    const fullImageUrl = this.props.event.picture.source;
 
     const adsenseSafe = isEventAdsenseSafe(this.props.event);
     const adsenseStyle = getAdsenseStyle(this.props.amp);
@@ -96,11 +96,20 @@ class ImageWithLinks extends React.Component {
         />
       : null;
 
+    const flyers = this.props.event.getResponsiveFlyers();
+    const srcSet = flyers.map(x => `${x.uri} ${x.width}w`).join(', ');
+    // These were derived from looking at how the page renders at screen sizes,
+    // and the size of the images with all the margins/padding intact.
+    const sizes =
+      '(max-width: 768px) 100vw, (max-width: 994px) 262px, (max-width: 1200px) 354px, 437px';
+
     const image = (
       <AmpImage
-        picture={picture}
+        picture={basicCoverImage}
         amp={this.props.amp}
         className="event-flyer"
+        srcSet={srcSet}
+        sizes={sizes}
       />
     );
 
@@ -108,7 +117,7 @@ class ImageWithLinks extends React.Component {
       <a
         id="view-flyer"
         className="link-event-flyer"
-        href={imageUrl}
+        href={fullImageUrl}
         onClick={this.onClick}
       >
         {image}
