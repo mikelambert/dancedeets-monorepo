@@ -338,7 +338,8 @@ class _EventsList extends React.Component {
         />
       );
     }
-    const monetizedResultItems = insertEvery(resultItems, adItem, 10);
+    // Set eveyr-other to 1000 to temporarily disable interspersed ads
+    const monetizedResultItems = insertEvery(resultItems, adItem, 1000);
 
     return (
       <StickyContainer>
