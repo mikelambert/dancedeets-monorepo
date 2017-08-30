@@ -974,6 +974,9 @@ class ResultsPage extends React.Component {
         />
       </Card>
     );
+    // If we want better sticky performance, we should use
+    // https://github.com/yahoo/react-stickynode
+    // (And convert over the event headers as well)
     const sideAd = (
       <GoogleAd
         style={{
