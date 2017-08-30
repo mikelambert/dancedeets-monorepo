@@ -33,6 +33,7 @@ import type {
 } from 'dancedeets-common/js/events/search';
 import { groupEventsByStartDate } from 'dancedeets-common/js/events/helpers';
 import { formatStartDateOnly } from 'dancedeets-common/js/dates';
+import { cdnBaseUrl } from 'dancedeets-common/js/util/url';
 import { JsonSchema } from './schema';
 import { getEventSchema } from './schema/event';
 import { getBreadcrumbsForSearch } from './schema/breadcrumbs';
@@ -143,7 +144,7 @@ class _EventDescription extends React.Component {
             {event.name}
           </a>
         </h3>
-        <ImagePrefix iconUrl="/dist/img/categories-black.png">
+        <ImagePrefix iconUrl={`${cdnBaseUrl}/img/categories-black.png`}>
           {keywords.join(', ')}
         </ImagePrefix>
         <ImagePrefix iconName="clock-o">

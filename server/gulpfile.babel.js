@@ -21,8 +21,9 @@ import yargs from 'yargs';
 import process from 'process';
 import childProcess from 'child_process';
 import { generate as fontAwesomeGenerate } from 'font-awesome-svg-png/index';
-// How bad is it to be importing from 'assets' into our gulpfile?
-// It means changes from the assets/ dir now will sometimes require re-running gulp.
+// How bad is it to be importing from local files into our gulpfile?
+// It means changes from the assets/ or dancedeets-common code now will sometimes require re-running gulp.
+import { cdnBaseUrl } from '../common/js/util/url';
 import exportedIcons from './assets/js/exportedIcons';
 
 const argv = yargs
@@ -87,7 +88,7 @@ gulp.task('compile:images:favicons', ['compile:images:favicons:delete'], () =>
         developerName: 'DanceDeets',
         developerURL: 'https://www.dancedeets.com/',
         background: '#fff',
-        path: 'https://www.dancedeets.com/dist/img/favicons/',
+        path: `${cdnBaseUrl}/img/favicons/`,
         url: 'https://www.dancedeets.com/',
         display: 'standalone',
         orientation: 'portrait',

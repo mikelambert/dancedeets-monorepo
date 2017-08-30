@@ -1,4 +1,11 @@
+/**
+ * Copyright 2016 DanceDeets.
+ *
+ * @flow
+ */
+
 /* eslint-disable import/first */
+import { cdnBaseUrl } from 'dancedeets-common/js/util/url';
 import './common';
 import jQuery from 'jquery';
 
@@ -16,17 +23,17 @@ jQuery(document).ready(() => {
 function setupHomepage() {
   // background-image rotation
   let images = [
-    'dist/img/background-show-locking.jpg', // slim
-    'dist/img/background-class-overhead.jpg', // cricket
-    'dist/img/background-club-turntable.jpg', // mario
-    'dist/img/background-show-awards.jpg', // slim
+    `${cdnBaseUrl}/img/background-show-locking.jpg`, // slim
+    `${cdnBaseUrl}/img/background-class-overhead.jpg`, // cricket
+    `${cdnBaseUrl}/img/background-club-turntable.jpg`, // mario
+    `${cdnBaseUrl}/img/background-show-awards.jpg`, // slim
 
-    'dist/img/background-class-kids.jpg', // mario
-    'dist/img/background-show-pose.jpg', // slim
-    'dist/img/background-club-smoke-cypher.jpg', // mario
-    'dist/img/background-class-rocking.jpg', // mario
-    'dist/img/background-show-dj.jpg', // slim
-    //    'dist/img/background-club-headspin.jpg',
+    `${cdnBaseUrl}/img/background-class-kids.jpg`, // mario
+    `${cdnBaseUrl}/img/background-show-pose.jpg`, // slim
+    `${cdnBaseUrl}/img/background-club-smoke-cypher.jpg`, // mario
+    `${cdnBaseUrl}/img/background-class-rocking.jpg`, // mario
+    `${cdnBaseUrl}/img/background-show-dj.jpg`, // slim
+    //    `${cdnBaseUrl}/img/background-club-headspin.jpg`,
   ];
   if (jQuery(document).width() > 900) {
     images = images.map(x => x.replace('.jpg', '@2x.jpg'));

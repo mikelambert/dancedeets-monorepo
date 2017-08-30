@@ -22,6 +22,7 @@ import {
 import { formatDuration } from 'dancedeets-common/js/tutorials/format';
 import messages from 'dancedeets-common/js/tutorials/messages';
 import { sortNumber } from 'dancedeets-common/js/util/sort';
+import { cdnBaseUrl } from 'dancedeets-common/js/util/url';
 import { Card, ShareLinks, wantsWindowSizes } from './ui';
 import type { windowProps } from './ui';
 import { generateMetaTags } from './meta';
@@ -457,7 +458,7 @@ class _TutorialFilteredLayout extends React.Component {
     const meta = generateMetaTags(
       title,
       'https://www.dancedeets.com/tutorials/',
-      'https://www.dancedeets.com/dist/img/screenshot-tutorial.jpg'
+      `${cdnBaseUrl}/img/screenshot-tutorial.jpg`
     );
     return (
       <div>

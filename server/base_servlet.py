@@ -162,7 +162,10 @@ class BareBaseRequestHandler(webapp2.RequestHandler, FacebookMixinHandler):
 
     def _get_static_path_for(self, path):
         if self.request.app.prod_mode:
-            chunked_filename = self.full_manifest[path]
+            if 'path' in self.full_manifest:
+                chunked_filename = self.full_manifest[path]
+            else:
+                chunked_filename = path
             # The Amazon CloudFront CDN that proxies our https://storage.googleapis.com/dancedeets-static/ bucket
             final_path = 'https://d24pxbq9kdo541.cloudfront.net/js/%s' % chunked_filename
             return final_path
