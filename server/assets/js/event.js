@@ -272,7 +272,9 @@ class _EventLinks extends React.Component {
               className="fb-xfbml-parse-ignore"
               rel="noopener noreferrer"
               target="_blank"
-              href={`https://www.facebook.com/sharer/sharer.php?u=${event.getUrl()}&amp;src=sdkpreparse`}
+              href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(
+                event.getUrl()
+              )}&src=sdkpreparse`}
             >
               Share
             </a>
