@@ -13,6 +13,6 @@ export function addUrlArgs(origUrl: string, args: Object) {
   return newUrl;
 }
 
-export function getHostname(origUrl) {
+export function getHostname(origUrl: string) {
   return url.parse(origUrl).hostname;
 }
