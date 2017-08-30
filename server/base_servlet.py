@@ -697,6 +697,7 @@ class BaseRequestHandler(BareBaseRequestHandler):
         self.jinja_env.globals['raw_fb_event_url'] = urls.raw_fb_event_url
         self.jinja_env.globals['dd_admin_event_url'] = urls.dd_admin_event_url
         self.jinja_env.globals['dd_admin_source_url'] = urls.dd_admin_source_url
+        self.jinja_env.globals['event_image_url'] = urls.event_image_url
 
         locales = self.request.headers.get('Accept-Language', '').split(',')
         self.locales = [x.split(';')[0] for x in locales]

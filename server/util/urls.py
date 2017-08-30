@@ -37,7 +37,7 @@ def dd_admin_source_url(eid):
 
 def event_image_url(eid, **kwargs):
     encoded_kwargs = urlencode(kwargs)
-    url = 'https://img.dancedeets.com/events/image_proxy/%s' % eid
+    url = 'https://d29yoxhmm9n0eh.cloudfront.net/%s' % eid
     if encoded_kwargs:
         return '%s?%s' % (url, encoded_kwargs)
     else:

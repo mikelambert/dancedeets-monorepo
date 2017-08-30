@@ -9,7 +9,7 @@
 {% endif %}
 {% if displayable_event.has_image %}
   <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:image:src" content="https://img.dancedeets.com/events/image_proxy/{{ displayable_event.id }}" />
+  <meta name="twitter:image:src" content="{{ event_image_url(displayable_event.id) }}" />
 {% else %}
   <meta name="twitter:card" content="summary" />
 {% endif %}
@@ -31,7 +31,7 @@
 <meta property="og:url" content="https://{{ full_hostname }}/events/{{ displayable_event.id }}/" />
 <meta property="og:site_name" content="DanceDeets" />
 {% if displayable_event.has_image %}
-<meta property="og:image" content="https://img.dancedeets.com/events/image_proxy/{{ displayable_event.id }}" />
+<meta property="og:image" content="{{ event_image_url(displayable_event.id) }}" />
 {% endif %}
 <meta property="og:description"
       content="{{ displayable_event.meta_description|e }}" />
