@@ -19,7 +19,7 @@ def _get_facebook_user_id(environ):
     return user_id
 
 
-admin_ids = ['701004']
+admin_ids = ['701004', '1199838260131297']
 
 
 def is_admin(environ):
