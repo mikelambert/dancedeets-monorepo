@@ -471,8 +471,21 @@ gulp.task(
     `docker run -it -p "127.0.0.1:8081:8080" -v "${homedir}:/content" -e DATALAB_DEBUG=true -e PROJECT_ID=dancedeets-hrd gcr.io/cloud-datalab/datalab:local`,
   ])
 );
-gulp.task('datalab:remote:start', $.shell.task([`datalab connect dl`]));
-gulp.task('datalab:remote:stop', $.shell.task([`datalab stop dl`]));
+gulp.task(
+  'datalab:remote:setup',
+  $.shell.task('gcloud components install datalab')
+);
+
+gulp.task(
+  'datalab:remote:start',
+  ['datalab:remote:setup'],
+  $.shell.task([`datalab connect dl-mlambert`])
+);
+gulp.task(
+  'datalab:remote:stop',
+  ['datalab:remote:setup'],
+  $.shell.task([`datalab stop dl-mlambert`])
+);
 
 gulp.task(
   'dev-appserver:create-yaml:hot',
