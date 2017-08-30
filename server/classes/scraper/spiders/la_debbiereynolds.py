@@ -45,9 +45,12 @@ class DebbieReynolds(items.StudioScraper):
             schedule_block = day_block.css('table.views-table')
             date = dateparser.parse(days[i]).date()
             for class_block in schedule_block.css('tr'):
+                header_cells = class_block.xpath('th')
+                if header_cells:
+                    continue
                 cells = class_block.xpath('td')
                 cells = [' '.join(x.xpath('.//text()').extract()).strip() for x in cells]
-                times, style, level, instructor, sub, editnode = cells
+                times, style, instructor, level = cells
                 full_style = '%s %s' % (level, style)
                 if not self._street_style(full_style):
                     continue
@@ -60,8 +63,10 @@ class DebbieReynolds(items.StudioScraper):
                 item['style'] = full_style
                 item['teacher'] = instructor
                 # This information is incorrect on their website :(
-                teacher_link = class_block.css('.views-field-field-class-inst').xpath('./a/@href').extract()[0]
-                url = urlparse.urljoin(response.url, teacher_link)
-                item['teacher_link'] = url
+                teacher_link = class_block.css('.views-field-field-substitute-tech').xpath('./a/@href')
+                if teacher_link:
+                    teacher_link_url = teacher_link.extract()[0]
+                    url = urlparse.urljoin(response.url, teacher_link_url)
+                    item['teacher_link'] = url
                 for new_item in self._repeated_items_iterator(item):
                     yield new_item
