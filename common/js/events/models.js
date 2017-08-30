@@ -4,8 +4,8 @@
  * @flow
  */
 
-import { addUrlArgs } from '../util/url';
 import moment from 'moment';
+import { addUrlArgs } from '../util/url';
 
 type JSON = string | number | boolean | null | JSONObject | JSONArray;
 export type JSONObject = { [key: string]: JSON };

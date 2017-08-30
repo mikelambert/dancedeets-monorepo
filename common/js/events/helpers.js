@@ -5,8 +5,6 @@
  */
 
 import { intlShape } from 'react-intl';
-import moment from 'moment';
-import upperFirst from 'lodash/upperFirst';
 import { formatStartDateOnly } from '../dates';
 import { BaseEvent } from './models';
 import type { EventRsvpList } from './models';

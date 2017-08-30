@@ -5,7 +5,7 @@
  */
 
 import querystring from 'querystring';
-import { timeout, retryWithBackoff } from './timeouts';
+import { retryWithBackoff } from './timeouts';
 
 const DEV_SERVER = false;
 
