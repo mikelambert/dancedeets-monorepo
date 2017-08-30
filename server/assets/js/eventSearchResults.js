@@ -332,34 +332,16 @@ class _EventsList extends React.Component {
       ? Number(lastEvent.id[lastEvent.id.length - 1]) % 2
       : null;
     function adItem(origIndex) {
-      switch (adType) {
-        case 0:
-          // Google Ad: search-inline-native
-          return (
-            <GoogleAd
-              key={`ad-${origIndex}`}
-              id={`ad-${origIndex}-adType-inline-native`}
-              style={{ display: 'block' }}
-              data-ad-format="fluid"
-              data-ad-layout="image-side"
-              data-ad-layout-key="-ef+o-2p-9x+sk"
-              data-ad-slot="7215991777"
-            />
-          );
-        case 1:
-          // Google Ad: search-inline
-          return (
-            <GoogleAd
-              key={`ad-${origIndex}`}
-              id={`ad-${origIndex}-adType-inline`}
-              style={{ display: 'block' }}
-              data-ad-format="auto"
-              data-ad-slot="8358307776"
-            />
-          );
-        default:
-          return null;
-      }
+      // Google Ad: search-inline
+      return (
+        <GoogleAd
+          key={`ad-${origIndex}`}
+          id={`ad-${origIndex}-adType-inline`}
+          style={{ display: 'block' }}
+          data-ad-format="auto"
+          data-ad-slot="8358307776"
+        />
+      );
     }
     const monetizedResultItems = insertEvery(resultItems, adItem, 10);
 
