@@ -326,11 +326,6 @@ class _EventsList extends React.Component {
       overallEventIndex += events.length;
     });
 
-    // Make some arbitrary determination on what kinds of ads to use.
-    const lastEvent = this.props.events[0];
-    const adType = lastEvent
-      ? Number(lastEvent.id[lastEvent.id.length - 1]) % 2
-      : null;
     function adItem(origIndex) {
       // Google Ad: search-inline
       return (
@@ -971,6 +966,16 @@ class ResultsPage extends React.Component {
         data-ad-slot="6881574572"
       />
     );
+    const searchHeaderAd = (
+      <GoogleAd
+        key={`ad-searchHeader`}
+        id={`ad-searchHeader`}
+        style={{ display: 'inline-block', width: '100%', height: 100 }}
+        data-ad-format="auto"
+        data-ad-slot="3343723888"
+      />
+    );
+
     return (
       <div>
         <div className="container">
@@ -984,6 +989,7 @@ class ResultsPage extends React.Component {
           </div>
           <div className="row">
             <div className="col-md-8">
+              {searchHeaderAd}
               {resultsCard}
             </div>
             <div className="col-md-4 hidden-xs hidden-sm">
