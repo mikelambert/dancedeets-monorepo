@@ -24,7 +24,7 @@ export class SquareEventFlyer extends React.Component {
       return null;
     }
     let imageTag = (
-      <div card="square-flyer">
+      <div className="square-flyer">
         <img
           role="presentation"
           src={croppedPicture.source}
