@@ -10,6 +10,7 @@ import tlds from 'tlds';
 import url from 'url';
 import FBPage from 'facebook-plugins/lib/FBPage';
 import querystring from 'querystring';
+import Helmet from 'react-helmet';
 
 const linkify = Linkify();
 linkify.tlds(tlds);
@@ -64,12 +65,23 @@ class FacebookPage extends React.Component {
   render() {
     const pageUrl = `https://www.facebook.com/${this.props.username}/`;
     return this.props.amp
-      ? <amp-facebook-like
-          width="90"
-          height="20"
-          layout="fixed"
-          data-href={pageUrl}
-        />
+      ? <span>
+          <Helmet
+            script={[
+              {
+                async: 'async',
+                'custom-element': 'amp-facebook-like',
+                src: 'https://cdn.ampproject.org/v0/amp-facebook-like-0.1.js',
+              },
+            ]}
+          />
+          <amp-facebook-like
+            width="90"
+            height="20"
+            layout="fixed"
+            data-href={pageUrl}
+          />
+        </span>
       : <FBPage
           appId={this.props.username}
           href={pageUrl}
@@ -183,12 +195,23 @@ class Formatter {
       const videoId = parsedUrl.query.v;
       this.elements.push(
         this.options.amp
-          ? <amp-youtube
-              data-videoid={videoId}
-              layout="responsive"
-              width="480"
-              height="270"
-            />
+          ? <span>
+              <Helmet
+                script={[
+                  {
+                    async: 'async',
+                    'custom-element': 'amp-youtube',
+                    src: 'https://cdn.ampproject.org/v0/amp-youtube-0.1.js',
+                  },
+                ]}
+              />
+              <amp-youtube
+                data-videoid={videoId}
+                layout="responsive"
+                width="480"
+                height="270"
+              />
+            </span>
           : <div key={i} className="video-container">
               <iframe
                 id="ytplayer"
@@ -210,15 +233,26 @@ class Formatter {
       const embedUrl = `https://www.youtube.com/embed/videoseries?list=${playlistId}`;
       this.elements.push(
         this.options.amp
-          ? <amp-iframe
-              src={embedUrl}
-              layout="responsive"
-              width="480"
-              height="270"
-              frameborder="0"
-              allowfullscreen=""
-              sandbox="allow-scripts allow-same-origin"
-            />
+          ? <span>
+              <Helmet
+                script={[
+                  {
+                    async: 'async',
+                    'custom-element': 'amp-iframe',
+                    src: 'https://cdn.ampproject.org/v0/amp-iframe-0.1.js',
+                  },
+                ]}
+              />
+              <amp-iframe
+                src={embedUrl}
+                layout="responsive"
+                width="480"
+                height="270"
+                frameborder="0"
+                allowfullscreen=""
+                sandbox="allow-scripts allow-same-origin"
+              />
+            </span>
           : <div key={i} className="video-container">
               <iframe
                 id="ytplayer"

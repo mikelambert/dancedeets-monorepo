@@ -2,7 +2,12 @@
 <html amp lang="en">
   <head>
     <meta charset="utf-8">
+{% if react_head %}
+  {{ react_head.title|safe }}
+  {{ react_head.script|safe }} {# amp scripts #}
+{% else %}
     <title>{{ displayable_event.name|e }}</title>
+{% endif %}
     <link rel="canonical" href="{{ canonical_url }}" />
     <meta name="viewport" content="width=device-width,minimum-scale=1,initial-scale=1,maximum-scale=1,user-scalable=no">
 
@@ -14,9 +19,6 @@
     <script async custom-element="amp-analytics"
         src="https://cdn.ampproject.org/v0/amp-analytics-0.1.js"></script>
     <script async custom-element="amp-ad" src="https://cdn.ampproject.org/v0/amp-ad-0.1.js"></script>
-    <script async custom-element="amp-iframe" src="https://cdn.ampproject.org/v0/amp-iframe-0.1.js"></script>
-    <script async custom-element="amp-youtube" src="https://cdn.ampproject.org/v0/amp-youtube-0.1.js"></script>
-    <script async custom-element="amp-facebook-like" src="https://cdn.ampproject.org/v0/amp-facebook-like-0.1.js"></script>
   </head>
   <body>
   {% if prod_mode and track_analytics %}
