@@ -546,6 +546,7 @@ gulp.task(
 
 const dockerImages = [
   'gae-py-js',
+  'gae-nginx',
   'gae-geos',
   'gae-binaries',
   'gae-modules',

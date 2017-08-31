@@ -10,4 +10,8 @@ FROM gcr.io/dancedeets-hrd/gae-modules-py
 # So instead, let's monkeypatch this file here...
 ADD ./hacks/fixed_multiprocessing_pool.py /usr/lib/python2.7/multiprocessing/pool.py
 
+# But let's change the final script to run node *and* python *and* nginx servers
+ADD run-servers.sh /usr/local/bin/run-servers.sh
+ENTRYPOINT ["bash", "run-servers.sh"]
+
 ADD . /app/
