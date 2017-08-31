@@ -162,7 +162,7 @@ class BareBaseRequestHandler(webapp2.RequestHandler, FacebookMixinHandler):
 
     def _get_static_path_for(self, path):
         if self.request.app.prod_mode:
-            if 'path' in self.full_manifest:
+            if path in self.full_manifest:
                 chunked_filename = self.full_manifest[path]
             else:
                 chunked_filename = path
