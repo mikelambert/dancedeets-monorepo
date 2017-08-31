@@ -34,6 +34,6 @@ cleanup('dist/css/')
 # -n don't overwrite existing files
 # -z compress files on upload
 # -R recursive
-cmd = '/Users/%s/google-cloud-sdk/bin/gsutil -m cp -P -n -z css,js,json,map -R dist/{js,css,img,fonts,*.json} gs://dancedeets-static/' % getpass.getuser(
+cmd = '/Users/%s/google-cloud-sdk/bin/gsutil -m cp -P -n -z svg,css,js,json,map -R dist/{js,css,img,fonts,*.json} gs://dancedeets-static/' % getpass.getuser(
 )
 subprocess.check_output(cmd, shell=True)
