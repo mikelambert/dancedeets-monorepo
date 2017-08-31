@@ -322,6 +322,9 @@ class TextInput extends React.Component {
           // Only show the menu if we have items to show
           renderMenu={this.renderMenu}
           onSubmit={this.props.onSubmit}
+          // Avoid using the 'display: inline-block" wrapperStyle defaults,
+          // since we want the Autocomplete to fill up its parent div container
+          wrapperStyle={null}
           {...otherProps}
         />
       );
