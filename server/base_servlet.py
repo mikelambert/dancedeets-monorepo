@@ -587,6 +587,23 @@ class BaseRequestHandler(BareBaseRequestHandler):
         login_url = '/login?%s' % urls.urlencode(params)
         return login_url
 
+    def redirect(self, url, **kwargs):
+        if url.startswith('/'):
+            spliturl = urlparse.urlsplit(self.request.url)
+            # Redirect to the www.dancedeets.com domain if they requested the raw hostname
+            domain = self._get_full_hostname() if spliturl.netloc == 'dancedeets.com' else spliturl.netloc
+            # Redirect to https on prod, as relying on url.scheme would send it back to http, due to the nginx http-based proxy
+            scheme = 'https' if self.request.app.prod_mode else 'http'
+            new_url = urlparse.urlunsplit([
+                scheme,
+                domain,
+                spliturl.path,
+                spliturl.query,
+                spliturl.fragment,
+            ])
+            url = str(urlparse.urljoin(new_url, url))
+        return super(BaseRequestHandler, self).redirect(url, **kwargs)
+
     def initialize(self, request, response):
         super(BaseRequestHandler, self).initialize(request, response)
         self.run_handler = True
@@ -606,14 +623,14 @@ class BaseRequestHandler(BareBaseRequestHandler):
         if not os.environ.get('DEBUG_MEMORY_LEAKS') and url.netloc != self._get_full_hostname() and not matches_passthrough_domain:
             logging.info("Redirecting from %s to %s: %s", url.netloc, self._get_full_hostname(), self.request.url)
             new_url = urlparse.urlunsplit([
-                url.scheme,
+                'https',
                 self._get_full_hostname(),
                 url.path,
                 url.query,
                 url.fragment,
             ])
             self.run_handler = False
-            self.redirect(new_url, abort=True)
+            self.redirect(new_url, permanent=True, abort=True)
             return
 
         # Always turn https on! For now, let's use a short expiry
@@ -632,7 +649,7 @@ class BaseRequestHandler(BareBaseRequestHandler):
                 url.fragment,
             ])
             self.run_handler = False
-            self.redirect(new_url, abort=True)
+            self.redirect(new_url, permanent=True, abort=True)
 
         login_url = self.get_login_url()
         redirect_url = self.handle_alternate_login(request)
