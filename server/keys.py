@@ -9,7 +9,7 @@ def _get_config(filename):
     if os.path.exists(_filename):
         return yaml.load(file(_filename, 'r'))
     else:
-        logging.error('Cannot find keys.yaml, using an empty keys file instead.')
+        logging.error('Cannot find %s, using an empty keys file instead.', filename)
         return {}
 
 

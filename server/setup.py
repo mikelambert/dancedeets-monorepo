@@ -26,6 +26,7 @@ setup(
         ('dance_keywords', glob.glob('nlp/dance_keywords/*.txt')),
         ('', [
             'keys.yaml',
+            'keys-dev.yaml',
             'facebook-prod.yaml',
             'facebook-test.yaml',
         ]),
