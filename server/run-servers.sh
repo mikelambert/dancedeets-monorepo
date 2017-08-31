@@ -6,7 +6,7 @@ PATH=$PATH:/nodejs/bin NODE_ENV=production NODE_PATH=node_server/node_modules/ n
 
 # Copied in top-level Dockerfile: ADD . /app/
 # And runs in daemon mode
-nginx -c nginx.conf
+nginx -c /app/nginx.conf
 
 
 # Both of /app/gunicorn*.py are guaranteed to exist
