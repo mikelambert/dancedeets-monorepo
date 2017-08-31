@@ -30,6 +30,8 @@ require('bootstrap/js/dropdown');
 // Used by above plugins, possibly
 require('bootstrap/js/transition');
 
+import { cdnBaseUrl } from 'dancedeets-common/js/util/url';
+
 // Now let's import the rest normally.
 import './all-css';
 // Disable this for now, since we don't need the 60KB, and Raven/Sentry serves us fine
@@ -53,7 +55,7 @@ if (window.showSmartBanner) {
   jQuery.smartbanner({
     title: 'DanceDeets',
     author: 'DanceDeets',
-    icon: '/images/ic_launcher_dancedeets.png',
+    icon: `${cdnBaseUrl}/img/ic_launcher_dancedeets.png`,
   });
 }
 

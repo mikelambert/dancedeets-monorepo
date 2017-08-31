@@ -130,9 +130,9 @@ gulp.task('compile:images:assets-to-dist', () =>
   gulp
     .src(`./assets/img/**/*.{png,jpg}`)
     .pipe(
-      $.responsiveImages({
-        // We reference categories-black.png from our mails
-        'categories-*.png': [{}],
+      $.imagemin({
+        progressive: true,
+        interlaced: true,
       })
     )
     .pipe(gulp.dest('dist/img'))

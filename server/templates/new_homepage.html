@@ -47,10 +47,10 @@ body.header-fixed-space {
                         or track events from your phone
                     </div>
                     {% if mobile_platform != mobile.MOBILE_ANDROID %}
-                    <a href="{{ mobile.IOS_URL }}"><img src="/images/app_store_download.png" class="store-button"></a>
+                    <a href="{{ mobile.IOS_URL }}"><img src="{{static_dir}}/img/app_store_download.png" class="store-button"></a>
                     {% endif %}
                     {% if mobile_platform != mobile.MOBILE_IOS %}
-                    <a href="{{ mobile.ANDROID_URL }}"><img src="/images/play_store_download.png" class="store-button"></a>
+                    <a href="{{ mobile.ANDROID_URL }}"><img src="{{static_dir}}/img/play_store_download.png" class="store-button"></a>
                     {% endif %}
                 </div>
                 <div class="dancedeets-tagline-small color-light">
