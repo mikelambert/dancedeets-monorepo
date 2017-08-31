@@ -179,5 +179,5 @@ def render(response, event, width=None, height=None):
             logging.info('Requested too-large image resize, using original image: %s', e)
     response.headers['Content-Type'] = _get_mimetype(final_image)
     # Sometimes the event updates images, so we don't want to cache these for too long!
-    response.headers['Cache-Control'] = 'public, max-age=%s' % (2 * 60 * 60)
+    response.headers['Cache-Control'] = 'public, max-age=%s' % (4 * 60 * 60)
     response.out.write(final_image)
