@@ -41,6 +41,8 @@ from util import timelog
 from util import text
 from util import urls
 
+CDN_HOST = 'https://d24pxbq9kdo541.cloudfront.net'
+
 
 class _ValidationError(Exception):
     pass
@@ -151,8 +153,12 @@ class BareBaseRequestHandler(webapp2.RequestHandler, FacebookMixinHandler):
             self.display['static_dir'] = '%s/dist' % self._get_base_server()
             self.display['hot_reloading'] = True
         else:
-            self.display['static_dir'] = '%s/dist-%s' % (self._get_base_server(), self._get_static_version())
-            self.display['hot_reloading'] = False
+            if self.request.app.prod_mode:
+                self.display['static_dir'] = CDN_HOST
+                self.display['hot_reloading'] = False
+            else:
+                self.display['static_dir'] = '%s/dist-%s' % (self._get_base_server(), self._get_static_version())
+                self.display['hot_reloading'] = False
         self.display['static_path'] = self._get_static_path_for
 
         logging.info("Appengine Request Headers:")
@@ -167,7 +173,7 @@ class BareBaseRequestHandler(webapp2.RequestHandler, FacebookMixinHandler):
             else:
                 chunked_filename = path
             # The Amazon CloudFront CDN that proxies our https://storage.googleapis.com/dancedeets-static/ bucket
-            final_path = 'https://d24pxbq9kdo541.cloudfront.net/js/%s' % chunked_filename
+            final_path = '%s/js/%s' % (CDN_HOST, chunked_filename)
             return final_path
         else:
             extension = path.split('.')[-1]
