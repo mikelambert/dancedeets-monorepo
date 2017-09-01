@@ -19,42 +19,6 @@ SLOW_QUEUE = 'slow-queue'
 MAX_EVENTS = 100000
 
 
-class ResultsGroup(object):
-    def __init__(self, name, results):
-        self.name = name
-        self.results = results
-
-
-def group_results(search_results, include_all=False):
-    now = datetime.datetime.now() - datetime.timedelta(hours=12)
-
-    grouped_results = []
-    past_results = []
-    present_results = []
-    week_results = []
-    month_results = []
-    year_results = []
-    for result in search_results:
-        if result.start_time < now:
-            if result.fake_end_time > now:
-                present_results.append(result)
-            else:
-                past_results.append(result)
-        else:
-            if result.start_time < now + datetime.timedelta(days=7):
-                week_results.append(result)
-            elif result.start_time < now + datetime.timedelta(days=30):
-                month_results.append(result)
-            else:
-                year_results.append(result)
-    grouped_results.append(ResultsGroup('Events This Week', week_results))
-    grouped_results.append(ResultsGroup('Events This Month', month_results))
-    grouped_results.append(ResultsGroup('Future Events', year_results))
-    if not include_all:
-        grouped_results = [x for x in grouped_results if x.results]
-    return past_results, present_results, grouped_results
-
-
 class DisplayEvent(ndb.Model):
     """Subset of event data used for rendering"""
     id = property(lambda x: str(x.key.string_id()))
