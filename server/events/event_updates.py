@@ -33,6 +33,9 @@ def _event_time_period(db_event):
 def delete_event(db_event):
     search.delete_from_fulltext_search_index(db_event.id)
     db_event.key.delete()
+    display_event = search.DisplayEvent.get_by_id(db_event.id)
+    if display_event:
+        display_event.key.delete()
 
 
 # Even if the fb_event isn't updated, sometimes we still need to force a db_event update
