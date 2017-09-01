@@ -241,7 +241,18 @@ class EventsIndex(index.BaseIndex):
         if not isinstance(db_event.start_time, datetime.datetime) and not isinstance(db_event.start_time, datetime.date):
             logging.error("DB Event %s start_time is not correct format: ", db_event.id, db_event.start_time)
             return None
-        timestamp = min(int(time.mktime(db_event.start_time.timetuple())), 2**31 - 1)
+        # We want a higher rank for older events, because higher rank documents get listed first
+        # Otherwise if we do a 'style' search and hit the MAXIMUM_DOCUMENTS_RETURNED_PER_SEARCH=1000 limit,
+        # we will drop the lowest rank documents, which will end up dropping the events closest-to-today.events
+        #
+        # So we need a number that is between 0 (non-negative) and 2**31
+        # Start with our earliest FB events (2000 is easy), marking them as rank==2**31
+        # and count down from there...
+        timestamp = int(time.mktime(db_event.start_time.timetuple()))
+        time_2010 = time.mktime(datetime.date(2000, 1, 1).timetuple())
+        time_since_2010 = timestamp - time_2010
+        rank = max(min(2**31 - time_since_2010, 2**31 - 1), 0)
+
         doc_event = search.Document(
             doc_id=db_event.id,
             fields=[
@@ -266,7 +277,7 @@ class EventsIndex(index.BaseIndex):
             # - some langauges are like 'zh-Hant', but this expects two-letter languages
             # - some events don't have a 'language' field in their json_props....why/how?!?
             # language=db_event.json_props['language'],
-            rank=timestamp,
+            rank=rank,
         )
         return doc_event
 
