@@ -248,9 +248,9 @@ class EventsIndex(index.BaseIndex):
         # So we need a number that is between 0 (non-negative) and 2**31
         # Start with our earliest FB events (2000 is easy), marking them as rank==2**31
         # and count down from there...
-        timestamp = int(time.mktime(db_event.start_time.timetuple()))
+        timestamp = time.mktime(db_event.start_time.timetuple())
         time_2010 = time.mktime(datetime.date(2000, 1, 1).timetuple())
-        time_since_2010 = timestamp - time_2010
+        time_since_2010 = int(timestamp - time_2010)
         rank = max(min(2**31 - time_since_2010, 2**31 - 1), 0)
 
         doc_event = search.Document(
