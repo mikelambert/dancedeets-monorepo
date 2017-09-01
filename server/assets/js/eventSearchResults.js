@@ -49,11 +49,6 @@ import {
 } from './MultiSelectList';
 import type { MultiSelectState } from './MultiSelectList';
 
-require('slick-carousel/slick/slick.css');
-require('slick-carousel/slick/slick-theme.css');
-require('../css/slick.scss');
-require('../css/rc-collapse.scss');
-
 type FormSearchQuery = {
   location?: string, // eslint-disable-line react/no-unused-prop-types
   keywords?: string, // eslint-disable-line react/no-unused-prop-types

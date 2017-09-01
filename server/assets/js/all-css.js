@@ -22,3 +22,8 @@ require('../css/header.scss');
 require('../css/footer.scss');
 require('../css/custom.scss');
 require('../css/dancedeets-old.scss');
+
+require('slick-carousel/slick/slick.scss');
+require('slick-carousel/slick/slick-theme.scss');
+require('../css/slick.scss');
+require('../css/rc-collapse.scss');
