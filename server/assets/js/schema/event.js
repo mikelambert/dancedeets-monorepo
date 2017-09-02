@@ -85,7 +85,7 @@ export function getArticleSchema(event: Event) {
       logo: {
         '@type': 'ImageObject',
         url:
-          'https://www.dancedeets.com/dist/img/deets-head-and-title-on-black.png',
+          'https://static.dancedeets.com/img/deets-head-and-title-on-black.png',
         width: 246,
         height: 60,
       },
