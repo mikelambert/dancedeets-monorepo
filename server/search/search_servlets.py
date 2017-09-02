@@ -94,7 +94,7 @@ class RelevantHandler(SearchHandler):
                     search_results = searcher.get_search_results(full_event=True)
                     search_results = [x for x in search_results if x.db_event.is_indexable()]
                 else:
-                    initial_result_limit = 20
+                    initial_result_limit = 1000  # TODO: Make this 20, when the mapreduce finishes
                     searcher.limit = initial_result_limit
                     search_results = searcher.get_search_results()
                     has_more_results = len(search_results) == initial_result_limit
