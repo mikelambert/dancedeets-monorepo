@@ -109,6 +109,7 @@
     "react-sticky": "^5.0.5",
     "react-tabs": "^1.1.0",
     "react-twitter-widgets": "^1.5.0",
+    "react-waypoint": "^7.1.0",
     "react-youtube": "github:troybetz/react-youtube",
     "slick-carousel": "^1.6.0",
     "stackdriver-errors-js": "github:GoogleCloudPlatform/stackdriver-errors-js",

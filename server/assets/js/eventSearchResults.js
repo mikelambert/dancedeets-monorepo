@@ -14,6 +14,7 @@ import { StickyContainer, Sticky } from 'react-sticky';
 import Slider from 'react-slick';
 import Spinner from 'react-spinkit';
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
+import Waypoint from 'react-waypoint';
 import querystring from 'querystring';
 import createBrowserHistory from 'history/createBrowserHistory';
 import { performRequest as realPerformRequest } from 'dancedeets-common/js/api/dancedeets';
@@ -291,6 +292,7 @@ class CurrentEvents extends React.Component {
 class _EventsList extends React.Component {
   props: {
     events: Array<SearchEvent>,
+    loadMoreContent: () => void,
 
     // Self-managed props
     intl: intlShape,
@@ -299,6 +301,10 @@ class _EventsList extends React.Component {
   render() {
     const resultItems = [];
     let overallEventIndex = 0;
+
+    const hasMoreEventsToFetch = Boolean(this.props.loadMoreContent);
+    let showedWaypoint = false;
+    const totalEventCount = this.props.events.length;
     groupEventsByStartDate(
       this.props.intl,
       this.props.events
@@ -318,9 +324,23 @@ class _EventsList extends React.Component {
           </div>
         </Sticky>
       );
+      if (
+        hasMoreEventsToFetch &&
+        overallEventIndex > totalEventCount * 0.75 &&
+        !showedWaypoint
+      ) {
+        showedWaypoint = true;
+        resultItems.push(
+          <Waypoint key="waypoint" onEnter={this.props.loadMoreContent} />
+        );
+      }
       resultItems.push(...renderedEvents);
       overallEventIndex += events.length;
     });
+
+    if (hasMoreEventsToFetch) {
+      resultItems.push(<Loading />);
+    }
 
     function adItem(origIndex) {
       // Google Ad: search-inline
@@ -511,6 +531,7 @@ class ResultsList extends React.Component {
   props: {
     response: NewSearchResponse,
     showPast: boolean,
+    loadMoreContent: () => void,
   };
 
   state: {
@@ -583,7 +604,13 @@ class ResultsList extends React.Component {
       );
     }
     if (fullEvents.length) {
-      eventPanels.push(<EventsList key="full" events={fullEvents} />);
+      eventPanels.push(
+        <EventsList
+          key="full"
+          events={fullEvents}
+          loadMoreContent={this.props.loadMoreContent}
+        />
+      );
     }
 
     let featuredPanel = null;
@@ -622,10 +649,10 @@ class ResultsList extends React.Component {
 }
 
 export async function search(
-  location: string,
-  keywords: string,
-  start: string,
-  end: string
+  location: ?string,
+  keywords: ?string,
+  start: ?string,
+  end: ?string
 ) {
   const args = {};
   if (location) {
@@ -799,6 +826,7 @@ class ResultTabs extends React.Component {
     query: FormSearchQuery,
     loading: boolean,
     categoryOrder: Array<string>,
+    loadMoreContent: () => void,
   };
 
   render() {
@@ -855,7 +883,11 @@ class ResultTabs extends React.Component {
         </TabList>
 
         <TabPanel style={tabPanelStyle}>
-          <ResultsList response={this.props.response} showPast={showPast} />
+          <ResultsList
+            response={this.props.response}
+            showPast={showPast}
+            loadMoreContent={this.props.loadMoreContent}
+          />
           {overlayDiv}
         </TabPanel>
         <TabPanel style={tabPanelStyle}>
@@ -878,6 +910,16 @@ function canonicalizeQuery(query) {
   return newQuery;
 }
 
+async function performSearch(query: FormSearchQuery) {
+  const response = await search(
+    query.location,
+    query.keywords,
+    query.start,
+    query.end
+  );
+  return response;
+}
+
 class ResultsPage extends React.Component {
   props: {
     response: NewSearchResponse,
@@ -889,6 +931,8 @@ class ResultsPage extends React.Component {
     loading: boolean,
     query: FormSearchQuery,
     response: NewSearchResponse,
+    loadingMore: boolean,
+    hasMoreEventsToFetch: boolean,
   };
 
   constructor(props) {
@@ -897,8 +941,11 @@ class ResultsPage extends React.Component {
       response: this.props.response,
       query: canonicalizeQuery(this.props.query),
       loading: false,
+      loadingMore: false,
+      hasMoreEventsToFetch: false,
     };
     (this: any).onNewSearch = this.onNewSearch.bind(this);
+    (this: any).loadMoreContent = this.loadMoreContent.bind(this);
   }
 
   async onNewSearch(query: Object) {
@@ -918,13 +965,25 @@ class ResultsPage extends React.Component {
     }
 
     await this.setState({ query: newQuery, loading: true });
-    const response = await search(
-      query.location,
-      query.keywords,
-      query.start,
-      query.end
-    );
+    const response = await performSearch(query);
     await this.setState({ response, loading: false });
+  }
+
+  async loadMoreContent() {
+    if (this.state.hasMoreEventsToFetch && !this.state.loadingMore) {
+      // Mark that we're currently loading more,
+      // so we don't perform two requests simultaneously (best-effort)
+      await this.setState({ loadingMore: true });
+      const response = await performSearch(this.state.query);
+      // Mark that we no longer have events to fetch,
+      // so that our children know not to show the Loading spinner.
+      // Also, simultaneously update the respones with the full list of events.
+      await this.setState({
+        response,
+        hasMoreEventsToFetch: false,
+        loadingMore: false,
+      });
+    }
   }
 
   render() {
@@ -945,6 +1004,9 @@ class ResultsPage extends React.Component {
           loading={this.state.loading}
           response={this.state.response}
           categoryOrder={this.props.categoryOrder}
+          loadMoreContent={
+            this.state.hasMoreEventsToFetch ? this.loadMoreContent : null
+          }
         />
       </Card>
     );
