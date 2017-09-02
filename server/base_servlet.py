@@ -41,7 +41,7 @@ from util import timelog
 from util import text
 from util import urls
 
-CDN_HOST = 'https://d24pxbq9kdo541.cloudfront.net'
+CDN_HOST = 'https://static.dancedeets.com'
 
 
 class _ValidationError(Exception):

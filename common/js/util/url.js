@@ -17,4 +17,4 @@ export function getHostname(origUrl: string) {
   return url.parse(origUrl).hostname;
 }
 
-export const cdnBaseUrl = 'https://d24pxbq9kdo541.cloudfront.net';
+export const cdnBaseUrl = 'https://static.dancedeets.com';
