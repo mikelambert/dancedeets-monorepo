@@ -97,6 +97,7 @@ class Search(object):
     def __init__(self, search_query):
         self.query = search_query
         self.limit = search.MAXIMUM_DOCUMENTS_RETURNED_PER_SEARCH  # 1000
+        self.limit_hit = False
         # Extra search index fields to return
         self.extra_fields = []
 
@@ -170,7 +171,16 @@ class Search(object):
         doc_events = self._get_candidate_doc_events(ids_only=not prefilter)
         logging.info("Search returned %s events in %s seconds", len(doc_events), time.time() - a)
         if len(doc_events) == self.limit:
-            logging.error('Query has more results, only returning %s results: %r', len(doc_events), self.query)
+            # If it was a full-search, that did not return full list of results, log an error
+            if self.limit == search.MAXIMUM_DOCUMENTS_RETURNED_PER_SEARCH:  # 1000
+                logging.error('Query has more results, only returning %s results: %r', len(doc_events), self.query)
+            # logging.info('rank')
+            # for x in sorted(doc_events, key=lambda x: x.rank):
+            #     logging.info('rank %s %s %s', x.rank, x.field('start_time').value, x.doc_id)
+            # logging.info('start_time')
+            # for x in sorted(doc_events, key=lambda x: x.field('start_time').value):
+            #     logging.info('start_time %s %s %s', x.rank, x.field('start_time').value, x.doc_id)
+            self.limit_hit = True
 
         #TODO(lambert): move to common library.
         now = datetime.datetime.now() - datetime.timedelta(hours=12)
@@ -249,9 +259,9 @@ class EventsIndex(index.BaseIndex):
         # Start with our earliest FB events (2000 is easy), marking them as rank==2**31
         # and count down from there...
         timestamp = time.mktime(db_event.start_time.timetuple())
-        time_2010 = time.mktime(datetime.date(2000, 1, 1).timetuple())
-        time_since_2010 = int(timestamp - time_2010)
-        rank = max(min(2**31 - time_since_2010, 2**31 - 1), 0)
+        time_2000 = time.mktime(datetime.date(2000, 1, 1).timetuple())
+        time_since_2000 = int(timestamp - time_2000)
+        rank = max(min(2**31 - time_since_2000, 2**31 - 1), 0)
 
         doc_event = search.Document(
             doc_id=db_event.id,
