@@ -339,7 +339,7 @@ class _EventsList extends React.Component {
     });
 
     if (hasMoreEventsToFetch) {
-      resultItems.push(<Loading />);
+      resultItems.push(<Loading key="bottom_loading" style={{ margin: 80 }} />);
     }
 
     function adItem(origIndex) {
@@ -925,6 +925,7 @@ class ResultsPage extends React.Component {
     response: NewSearchResponse,
     categoryOrder: Array<string>,
     query: Object,
+    hasMoreResults: boolean,
   };
 
   state: {
@@ -942,7 +943,7 @@ class ResultsPage extends React.Component {
       query: canonicalizeQuery(this.props.query),
       loading: false,
       loadingMore: false,
-      hasMoreEventsToFetch: false,
+      hasMoreEventsToFetch: this.props.hasMoreResults,
     };
     (this: any).onNewSearch = this.onNewSearch.bind(this);
     (this: any).loadMoreContent = this.loadMoreContent.bind(this);

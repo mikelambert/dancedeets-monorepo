@@ -83,16 +83,21 @@ class RelevantHandler(SearchHandler):
         else:
             search_query = None
 
+            has_more_results = False
             search_results = []
             onebox_links = []
             if validated:
                 search_query = form.build_query()
 
+                searcher = self.search_class(search_query)
                 if self.indexing_bot:
-                    search_results = self.search_class(search_query).get_search_results(full_event=True)
+                    search_results = searcher.get_search_results(full_event=True)
                     search_results = [x for x in search_results if x.db_event.is_indexable()]
                 else:
-                    search_results = self.search_class(search_query).get_search_results()
+                    initial_result_limit = 20
+                    searcher.limit = initial_result_limit
+                    search_results = searcher.get_search_results()
+                    has_more_results = len(search_results) == initial_result_limit
 
                 if 'class' in form.deb.data:
                     from classes import class_index
@@ -117,6 +122,7 @@ class RelevantHandler(SearchHandler):
             )
             props = dict(
                 response=json_search_response,
+                hasMoreResults=has_more_results,
                 showPeople=not skip_people,
                 categoryOrder=[''] + [x.public_name for x in event_types.STYLES],
                 query=form.url_params(),
