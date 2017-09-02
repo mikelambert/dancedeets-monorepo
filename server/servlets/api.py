@@ -311,6 +311,8 @@ class SearchHandler(ApiHandler):
         }
         if self.request.get('locale'):
             data['locale'] = self.request.get('locale')
+        if self.request.get('deb'):
+            data['deb'] = self.request.get('deb')
         return data
 
     def get(self):
@@ -347,7 +349,7 @@ class SearchHandler(ApiHandler):
             form.distance.data = distances[distance_index]
             form.distance_units.data = 'miles'
             search_query = form.build_query()
-            searcher = search.Search(search_query)
+            searcher = search.Search(search_query, deb=form.deb.data)
             # TODO(lambert): Increase the size limit when our clients can handle it. And improve our result sorting to return the 'best' results.
             searcher.limit = 500
             need_full_event = self.version < (2, 0)

@@ -94,8 +94,9 @@ class DisplayEvent(ndb.Model):
 class Search(object):
     DATE_SEARCH_FORMAT = '%Y-%m-%d'
 
-    def __init__(self, search_query):
+    def __init__(self, search_query, deb=None):
         self.query = search_query
+        self.deb = deb or []
         self.limit = search.MAXIMUM_DOCUMENTS_RETURNED_PER_SEARCH  # 1000
         self.limit_hit = False
         # Extra search index fields to return
@@ -174,13 +175,11 @@ class Search(object):
             # If it was a full-search, that did not return full list of results, log an error
             if self.limit == search.MAXIMUM_DOCUMENTS_RETURNED_PER_SEARCH:  # 1000
                 logging.error('Query has more results, only returning %s results: %r', len(doc_events), self.query)
-            # logging.info('rank')
-            # for x in sorted(doc_events, key=lambda x: x.rank):
-            #     logging.info('rank %s %s %s', x.rank, x.field('start_time').value, x.doc_id)
-            # logging.info('start_time')
-            # for x in sorted(doc_events, key=lambda x: x.field('start_time').value):
-            #     logging.info('start_time %s %s %s', x.rank, x.field('start_time').value, x.doc_id)
             self.limit_hit = True
+        if 'load' in self.deb:
+            logging.info('rank %s', self.query)
+            for x in sorted(doc_events, key=lambda x: x.rank):
+                logging.info('rank %s %s %s', x.rank, x.field('start_time').value, x.doc_id)
 
         #TODO(lambert): move to common library.
         now = datetime.datetime.now() - datetime.timedelta(hours=12)

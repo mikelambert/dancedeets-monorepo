@@ -89,7 +89,7 @@ class RelevantHandler(SearchHandler):
             if validated:
                 search_query = form.build_query()
 
-                searcher = self.search_class(search_query)
+                searcher = self.search_class(search_query, deb=form.deb.data)
                 if self.indexing_bot:
                     search_results = searcher.get_search_results(full_event=True)
                     search_results = [x for x in search_results if x.db_event.is_indexable()]
@@ -97,8 +97,9 @@ class RelevantHandler(SearchHandler):
                     # TODO: This is disabled for now.
                     # Turns out setting a limit doesn't return the highest-20-ranked items.
                     # Instead it returns a random selection. Making it harder to use.
-                    # initial_result_limit = 20
-                    # searcher.limit = initial_result_limit
+                    if 'load' in form.deb.data:
+                        initial_result_limit = 20
+                        searcher.limit = initial_result_limit
                     search_results = searcher.get_search_results()
                     has_more_results = searcher.limit_hit
 
