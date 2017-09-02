@@ -39,12 +39,10 @@ OBJ_EVENT_FIELDS = (
 OBJ_USER_FIELDS = ('name', 'email', 'first_name', 'last_name', 'locale', 'gender', 'picture', 'link', 'timezone')
 
 OBJ_SOURCE_COMMON_FIELDS = ('id', 'name', 'link')
-OBJ_SOURCE_USER_FIELDS = ('id', 'name', 'updated_time', 'link', 'first_name', 'last_name')
-OBJ_SOURCE_GROUP_FIELDS = (
-    'id', 'name', 'updated_time', 'link', 'cover', 'email', 'description', 'parent', 'privacy', 'icon', 'link', 'venue', 'owner'
-)
+OBJ_SOURCE_USER_FIELDS = ('id', 'name', 'updated_time', 'first_name', 'last_name')
+OBJ_SOURCE_GROUP_FIELDS = ('id', 'name', 'updated_time', 'cover', 'email', 'description', 'parent', 'privacy', 'icon', 'venue', 'owner')
 OBJ_SOURCE_PAGE_FIELDS = (
-    'id', 'name', 'link', 'cover', 'emails', 'about', 'category', 'category_list', 'current_location', 'hometown', 'general_info', 'likes',
+    'id', 'name', 'cover', 'emails', 'about', 'category', 'category_list', 'current_location', 'hometown', 'general_info', 'likes',
     'location', 'phone', 'username', 'website'
 )
 
