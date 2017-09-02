@@ -273,7 +273,7 @@ class Formatter {
     ) {
       const pathname = parsedUrl.pathname;
       let username = pathname.split('/')[1];
-      if (username.includes('-')) {
+      if (username && username.includes('-')) {
         const splits = username.split('-');
         username = splits[splits.length - 1];
       }
