@@ -60,6 +60,7 @@ const config = {
 
     new webpack.DefinePlugin({
       'process.env': {
+        REACT_SPINKIT_NO_STYLES: JSON.stringify(true), // Import just the spinners we care about
         NODE_ENV: JSON.stringify(prod ? 'production' : ''),
         BROWSER: JSON.stringify(true),
       },

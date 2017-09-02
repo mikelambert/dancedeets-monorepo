@@ -27,3 +27,4 @@ require('slick-carousel/slick/slick.scss');
 require('slick-carousel/slick/slick-theme.scss');
 require('../css/slick.scss');
 require('../css/rc-collapse.scss');
+require('react-spinkit/css/circle.css');
