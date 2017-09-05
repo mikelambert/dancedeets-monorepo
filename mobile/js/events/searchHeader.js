@@ -266,9 +266,9 @@ class _SearchHeader extends React.Component {
       <View style={{ flex: 1 }}>
         {this.props.searchHeader.searchFormVisible ? this.renderHeader() : null}
         {this.props.children}
-        {this.props.searchHeader.searchFormVisible
-          ? this.renderAutoComplete()
-          : null}
+        {this.props.searchHeader.searchFormVisible ? (
+          this.renderAutoComplete()
+        ) : null}
       </View>
     );
   }

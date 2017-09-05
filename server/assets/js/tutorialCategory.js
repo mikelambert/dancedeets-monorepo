@@ -93,7 +93,9 @@ class MatchedSection extends React.Component {
     const url = `${tutorialUrl}#${videoIndex}`;
     return (
       <div>
-        <div><a href={url}>{this.props.section.title}</a></div>
+        <div>
+          <a href={url}>{this.props.section.title}</a>
+        </div>
         {this.props.children}
       </div>
     );
@@ -198,7 +200,9 @@ class _Tutorial extends React.Component {
     );
     if (this.props.lazyLoad) {
       imageTag = (
-        <LazyLoad height={imageHeight} once offset={300}>{imageTag}</LazyLoad>
+        <LazyLoad height={imageHeight} once offset={300}>
+          {imageTag}
+        </LazyLoad>
       );
     }
     return (
@@ -446,14 +450,14 @@ class _TutorialFilteredLayout extends React.Component {
     });
 
     // Now let's render them
-    const tutorialComponents = filteredTutorials.map((tutorial, index) =>
+    const tutorialComponents = filteredTutorials.map((tutorial, index) => (
       <Tutorial
         key={tutorial.getId()}
         tutorial={tutorial}
         searchKeywords={keywords}
         lazyLoad={index > 30}
       />
-    );
+    ));
     const title = 'Dance Tutorials';
     const meta = generateMetaTags(
       title,
@@ -471,9 +475,7 @@ class _TutorialFilteredLayout extends React.Component {
           query={this.state.query}
           onChange={this.onChange}
         />
-        <Masonry>
-          {tutorialComponents}
-        </Masonry>
+        <Masonry>{tutorialComponents}</Masonry>
       </div>
     );
   }
@@ -506,7 +508,9 @@ class _TutorialOverview extends React.Component {
       } else {
         // 404 not found
         return (
-          <div><Helmet title="Unknown Tutorial Category" />Unknown Style!</div>
+          <div>
+            <Helmet title="Unknown Tutorial Category" />Unknown Style!
+          </div>
         );
       }
     } else {

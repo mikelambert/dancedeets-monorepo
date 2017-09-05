@@ -54,14 +54,12 @@ export default class Truncate extends React.Component {
     if (!this.state.needsToggle || this.state.expanded) {
       return (
         <div>
-          <div>
-            {this.props.children}
-          </div>
-          {this.state.needsToggle
-            ? <button className="link-button" onClick={this.toggleVisibility}>
-                Show less...
-              </button>
-            : null}
+          <div>{this.props.children}</div>
+          {this.state.needsToggle ? (
+            <button className="link-button" onClick={this.toggleVisibility}>
+              Show less...
+            </button>
+          ) : null}
         </div>
       );
     } else {
@@ -76,7 +74,7 @@ export default class Truncate extends React.Component {
       return (
         <div style={{ height: this.props.height }}>
           <Measure scroll bounds onResize={this.onResize}>
-            {({ measureRef }) =>
+            {({ measureRef }) => (
               <div
                 ref={measureRef}
                 className="fade-out-body"
@@ -86,7 +84,8 @@ export default class Truncate extends React.Component {
                 }}
               >
                 {this.props.children}
-              </div>}
+              </div>
+            )}
           </Measure>
           {loadMoreButton}
         </div>

@@ -136,9 +136,7 @@ class _EventDescription extends React.Component {
     return (
       <div className="event-description">
         <h3 className="event-title">
-          <a href={event.getRelativeUrl()}>
-            {event.name}
-          </a>
+          <a href={event.getRelativeUrl()}>{event.name}</a>
         </h3>
         <ImagePrefix iconUrl={`${cdnBaseUrl}/img/categories-black.png`}>
           {keywords.join(', ')}
@@ -248,9 +246,14 @@ class FeaturedEvents extends React.Component {
       );
     });
 
-    const results = resultItems.length > 1
-      ? <Slider autoplay dots>{resultItems}</Slider>
-      : resultItems;
+    const results =
+      resultItems.length > 1 ? (
+        <Slider autoplay dots>
+          {resultItems}
+        </Slider>
+      ) : (
+        resultItems
+      );
 
     return (
       <div style={{ width: '100%', paddingLeft: 10, paddingRight: 10 }}>
@@ -309,19 +312,17 @@ class _EventsList extends React.Component {
       this.props.intl,
       this.props.events
     ).forEach(({ header, events }) => {
-      const renderedEvents = events.map((event, index) =>
+      const renderedEvents = events.map((event, index) => (
         <HorizontalEvent
           key={event.id}
           event={event}
           lazyLoad={overallEventIndex + index > 8}
         />
-      );
+      ));
 
       resultItems.push(
         <Sticky key={header}>
-          <div className="bold card-background">
-            {header}
-          </div>
+          <div className="bold card-background">{header}</div>
         </Sticky>
       );
 
@@ -359,11 +360,7 @@ class _EventsList extends React.Component {
     // Set eveyr-other to 1000 to temporarily disable interspersed ads
     const monetizedResultItems = insertEvery(resultItems, adItem, 1000);
 
-    return (
-      <StickyContainer>
-        {monetizedResultItems}
-      </StickyContainer>
-    );
+    return <StickyContainer>{monetizedResultItems}</StickyContainer>;
   }
 }
 const EventsList = injectIntl(_EventsList);
@@ -377,11 +374,13 @@ class _OneboxLinks extends React.Component {
     if (!this.props.links.length) {
       return null;
     }
-    const oneboxList = this.props.links.map(onebox =>
+    const oneboxList = this.props.links.map(onebox => (
       <li key={onebox.url}>
-        <a className="link-onebox" href={onebox.url}>{onebox.title}</a>
+        <a className="link-onebox" href={onebox.url}>
+          {onebox.title}
+        </a>
       </li>
-    );
+    ));
 
     return (
       <div>
@@ -434,22 +433,26 @@ class PersonList extends React.Component {
           className="form-control form-inline"
           onChange={e => this.setState({ category: e.target.value })}
         >
-          {categories.map(x =>
-            <option key={x} value={x}>{x || 'Overall'}</option>
-          )}
+          {categories.map(x => (
+            <option key={x} value={x}>
+              {x || 'Overall'}
+            </option>
+          ))}
         </select>
-        <p><i>{this.props.subtitle}:</i></p>
+        <p>
+          <i>{this.props.subtitle}:</i>
+        </p>
       </form>
     );
     return (
       <div>
         {selector}
         <ul>
-          {peopleList.map(x =>
+          {peopleList.map(x => (
             <li key={x.id}>
               <a href={`https://www.facebook.com/${x.id}`}>{x.name}</a>
             </li>
-          )}
+          ))}
         </ul>
       </div>
     );
@@ -627,15 +630,15 @@ class ResultsList extends React.Component {
       oneboxPanel = <OneboxLinks links={this.props.response.onebox_links} />;
     }
 
-    const eventFilters = global.window &&
-      global.window.location.hash.includes('filter')
-      ? <EventFilters events={resultEvents} onChange={this.onChange} />
-      : null;
+    const eventFilters =
+      global.window && global.window.location.hash.includes('filter') ? (
+        <EventFilters events={resultEvents} onChange={this.onChange} />
+      ) : null;
 
     const jsonSchema = !ExecutionEnvironment.canUseDOM
-      ? resultEvents.map(x =>
+      ? resultEvents.map(x => (
           <JsonSchema key={x.id} json={getEventSchema(x)} />
-        )
+        ))
       : null;
 
     return (
@@ -753,26 +756,26 @@ class _PeopleList extends React.Component {
           </CallbackOnRender>
         );
       } else {
-        adminContents = admins
-          ? <PersonList
-              title={this.props.intl.formatMessage(messages.nearbyPromoters)}
-              subtitle={this.props.intl.formatMessage(
-                messages.nearbyPromotersMessage
-              )}
-              people={admins}
-              categoryOrder={this.props.categoryOrder}
-            />
-          : null;
-        attendeeContents = attendees
-          ? <PersonList
-              title={this.props.intl.formatMessage(messages.nearbyDancers)}
-              subtitle={this.props.intl.formatMessage(
-                messages.nearbyDancersMessage
-              )}
-              people={attendees}
-              categoryOrder={this.props.categoryOrder}
-            />
-          : null;
+        adminContents = admins ? (
+          <PersonList
+            title={this.props.intl.formatMessage(messages.nearbyPromoters)}
+            subtitle={this.props.intl.formatMessage(
+              messages.nearbyPromotersMessage
+            )}
+            people={admins}
+            categoryOrder={this.props.categoryOrder}
+          />
+        ) : null;
+        attendeeContents = attendees ? (
+          <PersonList
+            title={this.props.intl.formatMessage(messages.nearbyDancers)}
+            subtitle={this.props.intl.formatMessage(
+              messages.nearbyDancersMessage
+            )}
+            people={attendees}
+            categoryOrder={this.props.categoryOrder}
+          />
+        ) : null;
       }
     } else if (this.state.failed) {
       adminContents = <span>Error Loading People</span>;
@@ -782,13 +785,18 @@ class _PeopleList extends React.Component {
       attendeeContents = null;
     }
 
-    const adminsDiv = adminContents
-      ? <div className="col-sm-6">{adminContents}</div>
-      : null;
-    const attendeesDiv = attendeeContents
-      ? <div className="col-sm-6">{attendeeContents}</div>
-      : null;
-    return <div className="row">{adminsDiv}{attendeesDiv}</div>;
+    const adminsDiv = adminContents ? (
+      <div className="col-sm-6">{adminContents}</div>
+    ) : null;
+    const attendeesDiv = attendeeContents ? (
+      <div className="col-sm-6">{attendeeContents}</div>
+    ) : null;
+    return (
+      <div className="row">
+        {adminsDiv}
+        {attendeesDiv}
+      </div>
+    );
   }
 }
 const PeopleList = injectIntl(_PeopleList);
@@ -832,18 +840,18 @@ class ResultTabs extends React.Component {
   };
 
   render() {
-    const overlayDiv = this.props.loading
-      ? <div
-          style={{
-            position: 'absolute',
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 0,
-            backgroundColor: 'rgba(255, 255, 255, 0.7)',
-          }}
-        />
-      : null;
+    const overlayDiv = this.props.loading ? (
+      <div
+        style={{
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          backgroundColor: 'rgba(255, 255, 255, 0.7)',
+        }}
+      />
+    ) : null;
     const tabPanelStyle = {
       position: 'relative',
     };
@@ -990,14 +998,14 @@ class ResultsPage extends React.Component {
   }
 
   render() {
-    const jsonSchema = !ExecutionEnvironment.canUseDOM
-      ? <JsonSchema
-          json={getBreadcrumbsForSearch(
-            this.state.response.address,
-            this.state.response.query.keywords
-          )}
-        />
-      : null;
+    const jsonSchema = !ExecutionEnvironment.canUseDOM ? (
+      <JsonSchema
+        json={getBreadcrumbsForSearch(
+          this.state.response.address,
+          this.state.response.query.keywords
+        )}
+      />
+    ) : null;
 
     const resultsCard = (
       <Card style={{ margin: 0, padding: 0 }}>
@@ -1054,9 +1062,7 @@ class ResultsPage extends React.Component {
               {searchHeaderAd}
               {resultsCard}
             </div>
-            <div className="col-md-4 hidden-xs hidden-sm">
-              {sideAd}
-            </div>
+            <div className="col-md-4 hidden-xs hidden-sm">{sideAd}</div>
           </div>
         </div>
       </div>

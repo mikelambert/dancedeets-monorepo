@@ -144,9 +144,11 @@ class _ShareButtons extends React.Component {
           size="small"
           caption={this.props.intl.formatMessage(messages.shareGeneric)}
           icon={
-            Platform.OS === 'ios'
-              ? require('./share-icons/small-share-ios.png')
-              : require('./share-icons/small-share-android.png')
+            Platform.OS === 'ios' ? (
+              require('./share-icons/small-share-ios.png')
+            ) : (
+              require('./share-icons/small-share-android.png')
+            )
           }
           onPress={() => {
             track('Share DanceDeets', { Button: 'Send Native' });
@@ -224,12 +226,12 @@ class _UserProfile extends React.Component {
       />
     );
     const friendCount = userData.friends.data.length || 0;
-    const image = userData.picture
-      ? <Image
-          style={styles.profileImageSize}
-          source={{ uri: userData.picture.data.url }}
-        />
-      : null;
+    const image = userData.picture ? (
+      <Image
+        style={styles.profileImageSize}
+        source={{ uri: userData.picture.data.url }}
+      />
+    ) : null;
     let friendsCopy = null;
     if (friendCount !== 0) {
       friendsCopy = (
@@ -313,9 +315,11 @@ class ButtonIcon extends React.Component {
     return (
       <Icon
         name={
-          Platform.OS === 'android'
-            ? `md-${this.props.iconName}`
-            : `ios-${this.props.iconName}`
+          Platform.OS === 'android' ? (
+            `md-${this.props.iconName}`
+          ) : (
+            `ios-${this.props.iconName}`
+          )
         }
         size={20}
         style={{ width: 19, textAlign: 'center', marginRight: 9 }}
@@ -354,7 +358,6 @@ class _Profile extends React.Component {
         style={styles.container}
         contentContainerStyle={styles.containerContent}
       >
-
         <UserProfile />
 
         {notificationButton}
@@ -386,7 +389,6 @@ class _Profile extends React.Component {
           onPress={this.props.openCredits}
           style={[styles.noFlexButton, { marginBottom: 30 }]}
         />
-
       </ScrollView>
     );
   }

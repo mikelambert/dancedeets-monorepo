@@ -34,7 +34,9 @@ export class SquareEventFlyer extends React.Component {
     );
     if (this.props.lazyLoad) {
       imageTag = (
-        <LazyLoad height={height} once offset={300}>{imageTag}</LazyLoad>
+        <LazyLoad height={height} once offset={300}>
+          {imageTag}
+        </LazyLoad>
       );
     }
     return (

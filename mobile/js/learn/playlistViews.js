@@ -115,7 +115,6 @@ class _PlaylistStylesView extends React.Component {
             alignItems: 'center',
           }}
         >
-
           <Image
             source={styleIcons[category.style.id]}
             resizeMode="contain"
@@ -296,7 +295,8 @@ class _PlaylistListView extends React.Component {
             Contact Us
           </Button>
           <DarkText>
-            {' '}{this.props.intl.formatMessage(messages.contactSuffix)}
+            {' '}
+            {this.props.intl.formatMessage(messages.contactSuffix)}
           </DarkText>
         </HorizontalView>
       </View>
@@ -446,11 +446,11 @@ class _PlaylistView extends React.Component {
   }
 
   renderHeader() {
-    const subtitle = this.props.playlist.subtitle
-      ? <Text style={styles.playlistSubtitle}>
-          {this.props.playlist.subtitle}
-        </Text>
-      : null;
+    const subtitle = this.props.playlist.subtitle ? (
+      <Text style={styles.playlistSubtitle}>
+        {this.props.playlist.subtitle}
+      </Text>
+    ) : null;
     const duration = formatDuration(
       this.props.intl.formatMessage,
       this.props.playlist.getDurationSeconds()
@@ -506,9 +506,11 @@ class _PlaylistView extends React.Component {
           >
             <Icon
               name={
-                this.state.isPlaying && selected
-                  ? 'pause-circle'
-                  : 'play-circle'
+                this.state.isPlaying && selected ? (
+                  'pause-circle'
+                ) : (
+                  'play-circle'
+                )
               }
               size={20}
               style={styles.videoPlay}

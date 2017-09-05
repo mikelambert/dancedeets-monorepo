@@ -182,7 +182,11 @@ export default class ZoomableImage extends React.Component {
         contents = this.renderIOS(zoomScale, horizontal);
       }
     }
-    return <View style={{ flex: 1 }} onLayout={this.onLayout}>{contents}</View>;
+    return (
+      <View style={{ flex: 1 }} onLayout={this.onLayout}>
+        {contents}
+      </View>
+    );
   }
 }
 

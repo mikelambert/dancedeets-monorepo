@@ -95,9 +95,8 @@ async function loadChannel(channelName, searchQuery) {
     contentDetailsLookup[x.id] = x.contentDetails;
   });
   const annotatedPlaylist = channelSearchJson.items.map(x => {
-    const id = x.id instanceof Object
-      ? x.id.videoId
-      : x.snippet.resourceId.videoId;
+    const id =
+      x.id instanceof Object ? x.id.videoId : x.snippet.resourceId.videoId;
     return {
       youtubeId: id,
       duration: contentDetailsLookup[id]

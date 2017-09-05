@@ -142,9 +142,7 @@ class _DatePicker extends React.Component {
 
     return (
       <div className="search-box-date-picker">
-        <div key="picker">
-          {datePicker}
-        </div>
+        <div key="picker">{datePicker}</div>
         <div
           key="display"
           className={classNames(
@@ -282,23 +280,27 @@ class TextInput extends React.Component {
           isHighlighted ? 'search-box-autocomplete-item-selected' : ''
         )}
       >
-        {item.main
-          ? <div>
-              <i className="fa fa-map-marker search-box-autocomplete-item-map-icon" />
-              <strong>{item.main}</strong>{' '}
-              <small className="search-box-autocomplete-item-text2">
-                {item.secondary}
-              </small>
-            </div>
-          : item.label}
+        {item.main ? (
+          <div>
+            <i className="fa fa-map-marker search-box-autocomplete-item-map-icon" />
+            <strong>{item.main}</strong>{' '}
+            <small className="search-box-autocomplete-item-text2">
+              {item.secondary}
+            </small>
+          </div>
+        ) : (
+          item.label
+        )}
       </div>
     );
   }
 
   renderMenu(items) {
-    return items.length
-      ? <div className="search-box-autocomplete-menu">{items}</div>
-      : <div />;
+    return items.length ? (
+      <div className="search-box-autocomplete-menu">{items}</div>
+    ) : (
+      <div />
+    );
   }
 
   render() {
@@ -475,7 +477,7 @@ class LocationSearchBox extends React.Component {
     return (
       <SearchBoxItem
         iconName="globe"
-        renderItem={({ focused, onFocus, onBlur }) =>
+        renderItem={({ focused, onFocus, onBlur }) => (
           <TextInput
             autocomplete
             id="location"
@@ -488,7 +490,8 @@ class LocationSearchBox extends React.Component {
             onSelect={this.onLocationSelect}
             onFocus={onFocus}
             onBlur={onBlur}
-          />}
+          />
+        )}
       />
     );
   }
@@ -567,14 +570,16 @@ class KeywordSearchBox extends React.Component {
     return (
       <SearchBoxItem
         iconName="search"
-        renderItem={({ focused, onFocus, onBlur }) =>
+        renderItem={({ focused, onFocus, onBlur }) => (
           <TextInput
             autocomplete
             id="keywords"
             placeholder={
-              focused
-                ? 'Dance style, event name, dancer name, etc'
-                : 'Any style, event type, etc'
+              focused ? (
+                'Dance style, event name, dancer name, etc'
+              ) : (
+                'Any style, event type, etc'
+              )
             }
             value={this.state.keywords}
             onSubmit={this.props.performSearch}
@@ -585,7 +590,8 @@ class KeywordSearchBox extends React.Component {
             shouldItemRender={this.shouldKeywordItemRender}
             onFocus={onFocus}
             onBlur={onBlur}
-          />}
+          />
+        )}
       />
     );
   }
@@ -599,13 +605,14 @@ class DateSearchBox extends React.Component {
     return (
       <SearchBoxItem
         iconName="clock-o"
-        renderItem={({ focused, onFocus, onBlur }) =>
+        renderItem={({ focused, onFocus, onBlur }) => (
           <DatePicker
             query={this.props.query}
             focused={focused}
             onFocus={onFocus}
             onBlur={onBlur}
-          />}
+          />
+        )}
       />
     );
   }
@@ -646,15 +653,13 @@ class _SearchBox extends React.Component {
   }
 
   render() {
-    const hiddenFields = this.props.query.deb
-      ? <input type="hidden" name="deb" value={this.props.query.deb} />
-      : null;
+    const hiddenFields = this.props.query.deb ? (
+      <input type="hidden" name="deb" value={this.props.query.deb} />
+    ) : null;
 
     return (
       <div>
-        <div className="search-box-outer">
-          Find the Dance Scene:
-        </div>
+        <div className="search-box-outer">Find the Dance Scene:</div>
         <form
           id="search-form"
           ref={this.saveRef}

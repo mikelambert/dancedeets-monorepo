@@ -46,11 +46,7 @@ class Title extends React.Component {
   };
 
   render() {
-    return (
-      <h2 className="event-page-header">
-        {this.props.event.name}
-      </h2>
-    );
+    return <h2 className="event-page-header">{this.props.event.name}</h2>;
   }
 }
 
@@ -88,13 +84,13 @@ class ImageWithLinks extends React.Component {
     const adsenseStyle = getAdsenseStyle(this.props.amp);
 
     // Google Ad: event-inline
-    const adInline = adsenseSafe
-      ? <GoogleAd
-          style={adsenseStyle}
-          data-ad-slot="6741973779"
-          amp={this.props.amp}
-        />
-      : null;
+    const adInline = adsenseSafe ? (
+      <GoogleAd
+        style={adsenseStyle}
+        data-ad-slot="6741973779"
+        amp={this.props.amp}
+      />
+    ) : null;
 
     const flyers = this.props.event.getResponsiveFlyers();
     const srcSet = flyers.map(x => `${x.uri} ${x.width}w`).join(', ');
@@ -146,7 +142,10 @@ class ImageWithLinks extends React.Component {
 
 function googleCalendarStartEndFormat(event) {
   const fmt = 'YYYYMMDDTHHmmss[Z]';
-  const start = event.getStartMoment().utc().format(fmt);
+  const start = event
+    .getStartMoment()
+    .utc()
+    .format(fmt);
   let endTime = event.getEndMoment();
   if (!endTime) {
     endTime = event.getStartMoment().add(2, 'hours');
@@ -206,7 +205,7 @@ class _EventLinks extends React.Component {
     }
     let organizerElement = null;
     if (event.admins.length) {
-      const admins = event.admins.map(admin =>
+      const admins = event.admins.map(admin => (
         <li key={admin.id}>
           <a
             className="link-event-admin"
@@ -217,13 +216,12 @@ class _EventLinks extends React.Component {
             {admin.name}
           </a>
         </li>
-      );
+      ));
       organizerElement = (
         <ImagePrefix iconName="user">
-          <Message message={messages.organizer} /><br />
-          <ul id="view-event-admin">
-            {admins}
-          </ul>
+          <Message message={messages.organizer} />
+          <br />
+          <ul id="view-event-admin">{admins}</ul>
         </ImagePrefix>
       );
     }
@@ -232,8 +230,7 @@ class _EventLinks extends React.Component {
       const hostname = getHostname(this.props.event.ticket_uri);
       ticketElement = (
         <ImagePrefix iconName="ticket">
-          <Message message={messages.ticketsLink} />
-          {' '}
+          <Message message={messages.ticketsLink} />{' '}
           <a
             id="view-tickets"
             href={this.props.event.ticket_uri}
@@ -328,31 +325,30 @@ class _EventLinks extends React.Component {
     const adsenseSafe = isEventAdsenseSafe(this.props.event);
     const adsenseStyle = getAdsenseStyle(this.props.amp);
     // Google Ad: event-inline
-    const adInline = adsenseSafe
-      ? <GoogleAd
-          style={adsenseStyle}
-          data-ad-slot="6741973779"
-          amp={this.props.amp}
-        />
-      : null;
+    const adInline = adsenseSafe ? (
+      <GoogleAd
+        style={adsenseStyle}
+        data-ad-slot="6741973779"
+        amp={this.props.amp}
+      />
+    ) : null;
 
     return (
       <Card newStyle>
         <div className="card-header">
-          <span className="card-header-text">
-            Details
-          </span>
+          <span className="card-header-text">Details</span>
         </div>
         <div className="grey-top-border card-contents">
           <ImagePrefix
             iconName={
-              event.source.name === 'Facebook Event'
-                ? 'facebook-square'
-                : 'external-link'
+              event.source.name === 'Facebook Event' ? (
+                'facebook-square'
+              ) : (
+                'external-link'
+              )
             }
           >
-            <Message message={messages.source} />{' '}
-            {sourceName}
+            <Message message={messages.source} /> {sourceName}
           </ImagePrefix>
           <ImagePrefix
             icon={require('../img/categories-black.png')} // eslint-disable-line global-require
@@ -361,7 +357,8 @@ class _EventLinks extends React.Component {
             {event.annotations.categories.join(', ')}
           </ImagePrefix>
           <ImagePrefix iconName="clock-o">
-            <FormatText>{formattedStartEndText.first}</FormatText><br />
+            <FormatText>{formattedStartEndText.first}</FormatText>
+            <br />
             <FormatText>{formattedStartEndText.second}</FormatText>
           </ImagePrefix>
           <ImagePrefix iconName="calendar-plus-o">
@@ -414,8 +411,7 @@ class MapWithLinks extends React.Component {
     return (
       <div>
         <div>
-          Open in
-          {' '}
+          Open in{' '}
           <a
             className="link-event-map"
             id="view-map-link"
@@ -427,11 +423,11 @@ class MapWithLinks extends React.Component {
           </a>
           .
         </div>
-        {this.props.event.description
-          ? <div className="visible-xs italics">
-              Event description is below the map.
-            </div>
-          : null}
+        {this.props.event.description ? (
+          <div className="visible-xs italics">
+            Event description is below the map.
+          </div>
+        ) : null}
       </div>
     );
   }
@@ -507,9 +503,7 @@ class Description extends React.Component {
     return (
       <Card newStyle>
         <div className="card-header">
-          <span className="card-header-text">
-            Description
-          </span>
+          <span className="card-header-text">Description</span>
           <span className="google-translate" id="google_translate_element" />
         </div>
         <div className="grey-top-border card-contents">
@@ -571,18 +565,15 @@ class AdminPanel extends React.Component {
       <div>
         <AdminButton path={`/promoters/events/${eventId}/refresh`}>
           Refresh from Facebook
-        </AdminButton>
-        {' '}
+        </AdminButton>{' '}
         |
         <AdminButton path={`/promoters/events/${eventId}/delete`}>
           Delete from DanceDeets
-        </AdminButton>
-        {' '}
+        </AdminButton>{' '}
         |
         <AdminButton path={`/promoters/events/${eventId}/feature`}>
           Pay to Promote
-        </AdminButton>
-        {' '}
+        </AdminButton>{' '}
         |
         <AdminButton path={`/promoters/events/${eventId}/categories`}>
           Edit Categories
@@ -618,21 +609,21 @@ export class EventPage extends React.Component {
     const adsenseStyle = getAdsenseStyle(this.props.amp);
 
     // Google Ad: event-header
-    const adHeader = adsenseSafe
-      ? <GoogleAd
-          style={{ ...adsenseStyle }}
-          data-ad-slot="8283608975"
-          amp={this.props.amp}
-        />
-      : null;
+    const adHeader = adsenseSafe ? (
+      <GoogleAd
+        style={{ ...adsenseStyle }}
+        data-ad-slot="8283608975"
+        amp={this.props.amp}
+      />
+    ) : null;
     // Google Ad: event-footer
-    const adFooter = adsenseSafe
-      ? <GoogleAd
-          style={{ ...adsenseStyle }}
-          data-ad-slot="5190541772"
-          amp={this.props.amp}
-        />
-      : null;
+    const adFooter = adsenseSafe ? (
+      <GoogleAd
+        style={{ ...adsenseStyle }}
+        data-ad-slot="5190541772"
+        amp={this.props.amp}
+      />
+    ) : null;
 
     return (
       <div className="container">
@@ -644,9 +635,7 @@ export class EventPage extends React.Component {
         />
         <JsonSchema json={getBreadcrumbsForEvent(event)} />
         <div className="row">
-          <div className="col-xs-12">
-            {adHeader}
-          </div>
+          <div className="col-xs-12">{adHeader}</div>
           <div className="col-xs-12">
             <Title event={event} />
             <AdminPanel
@@ -671,9 +660,7 @@ export class EventPage extends React.Component {
             <Description event={event} amp={this.props.amp} />
           </div>
         </div>
-        <div className="col-xs-12">
-          {adFooter}
-        </div>
+        <div className="col-xs-12">{adFooter}</div>
       </div>
     );
   }

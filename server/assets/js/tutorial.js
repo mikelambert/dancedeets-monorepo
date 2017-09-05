@@ -185,9 +185,9 @@ class _TutorialView extends React.Component {
     return (
       <div>
         {this.renderSectionHeader(section)}
-        {section.videos.map((video, index) =>
+        {section.videos.map((video, index) => (
           <div key={index}>{this.renderVideoLine(video)}</div>
-        )}
+        ))}
       </div>
     );
   }
@@ -221,8 +221,8 @@ class _TutorialView extends React.Component {
       extraStyles = {
         maxWidth:
           (this.props.window.height - headerHeight) *
-            video.width /
-            video.height,
+          video.width /
+          video.height,
         maxHeight: this.props.window.width * video.height / video.width,
       };
     }
@@ -273,9 +273,9 @@ class _TutorialView extends React.Component {
           }}
         >
           {this.renderHeader()}
-          {this.props.tutorial.sections.map((section, index) =>
+          {this.props.tutorial.sections.map((section, index) => (
             <div key={index}>{this.renderWholeSection(section)}</div>
-          )}
+          ))}
         </div>
       </div>
     );
@@ -365,7 +365,8 @@ class _TutorialPage extends React.Component {
     }
     return (
       <div>
-        <HtmlHead tutorial={tutorial} videoIndex={videoIndex} />{result}
+        <HtmlHead tutorial={tutorial} videoIndex={videoIndex} />
+        {result}
       </div>
     );
   }

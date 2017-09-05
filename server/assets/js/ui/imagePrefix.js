@@ -54,9 +54,7 @@ export class ImagePrefix extends React.Component {
     return (
       <div className={`image-prefix ${className || ''}`} {...otherProps}>
         {iconHtml}
-        <span className="image-prefix-contents">
-          {children}
-        </span>
+        <span className="image-prefix-contents">{children}</span>
       </div>
     );
   }

@@ -117,9 +117,7 @@ class _MailEvent extends React.Component {
         padding-right={outsideGutter}
         padding-bottom={verticalSpacing}
       >
-        <mj-column width="33%">
-          {flyerImage}
-        </mj-column>
+        <mj-column width="33%">{flyerImage}</mj-column>
         <mj-column width="66%">
           <mj-text mj-class="header">
             <a href={eventUrl}>{event.name}</a>
@@ -205,11 +203,8 @@ class _BodyWrapper extends React.Component {
           <mj-group>
             <mj-column>
               <mj-text>
-                With
-                {' '}
-                {this.props.response.results.length}
-                {' '}
-                events for Your Week in Dance!
+                With {this.props.response.results.length} events for Your Week
+                in Dance!
               </mj-text>
             </mj-column>
           </mj-group>
@@ -236,9 +231,7 @@ class _BodyWrapper extends React.Component {
           <mj-column width="100%">
             <mj-text padding="10px 25px">
               <p>
-                Hey
-                {' '}
-                {this.props.user.userName}
+                Hey {this.props.user.userName}
                 , here’s what we’ve found for you this week!
               </p>
             </mj-text>
@@ -250,11 +243,9 @@ class _BodyWrapper extends React.Component {
         <mj-section background-color="#ffffff">
           <mj-column width="100%">
             <mj-text padding="10px 25px">
-              Looking for more events? Be sure to
-              {' '}
-              <a href="{{ search_url }}">check out website</a>
-              {' '}
-              for the complete and up-to-date schedule!
+              Looking for more events? Be sure to{' '}
+              <a href="{{ search_url }}">check out website</a> for the complete
+              and up-to-date schedule!
             </mj-text>
           </mj-column>
         </mj-section>
@@ -289,14 +280,11 @@ class _BodyWrapper extends React.Component {
         <mj-section full-width="full-width" padding="20px">
           <mj-column>
             <mj-text align="center">
-              You may also
-              {' '}
+              You may also{' '}
               <a href="*|UNSUB:https://www.dancedeets.com/user/unsubscribe|*">
                 unsubscribe
-              </a>
-              {' '}
-              or
-              {' '}
+              </a>{' '}
+              or{' '}
               <a href="https://www.dancedeets.com/user/edit">
                 change your preferred city
               </a>

@@ -92,7 +92,7 @@ class _UserRegistrationStatus extends React.Component {
         return dancerIds.includes(userId);
       });
       if (signedUpTeams.length) {
-        const teamTexts = signedUpTeams.map(team =>
+        const teamTexts = signedUpTeams.map(team => (
           <HorizontalView style={styles.registrationLineOuter} key={team}>
             <CompactTeam team={team} style={styles.registrationIndent} />
             <Button
@@ -105,7 +105,7 @@ class _UserRegistrationStatus extends React.Component {
               isLoading={this.state.isLoading}
             />
           </HorizontalView>
-        );
+        ));
         return (
           <View>
             <HorizontalView style={styles.registrationLine}>

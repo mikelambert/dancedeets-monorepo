@@ -20,8 +20,8 @@ import type { Dispatch } from '../../actions/types';
 const navigateOnce = getStateForAction => (action, state) => {
   const { type, routeName } = action;
   return state &&
-    type === NavigationActions.NAVIGATE &&
-    routeName === state.routes[state.routes.length - 1].routeName
+  type === NavigationActions.NAVIGATE &&
+  routeName === state.routes[state.routes.length - 1].routeName
     ? state
     : getStateForAction(action, state);
 };

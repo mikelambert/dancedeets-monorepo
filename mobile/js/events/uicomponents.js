@@ -400,14 +400,15 @@ class _EventOrganizers extends React.PureComponent {
       );
     } else {
       // TODO: fetch the types of each admin, and sort them with the page first (or show only the page?)
-      const organizers = this.props.event.admins.map(admin =>
+      const organizers = this.props.event.admins.map(admin => (
         <HorizontalView>
           <Text style={[eventStyles.detailText, eventStyles.detailListText]}>
-            {' '}–{' '}
+            {' '}
+            –{' '}
           </Text>
           {this.renderAdminLink(admin)}
         </HorizontalView>
-      );
+      ));
       let text = '';
       if (this.state.opened) {
         text = this.props.intl.formatMessage(messages.hideOrganizers);
@@ -585,12 +586,13 @@ class _EventRsvp extends React.Component {
       const counts = formatAttending(this.props.intl, this.props.event.rsvp);
       // TODO: Maybe make a pop-out to show the list-of-users-attending prepended by DD users
       const countsText = <Text style={eventStyles.detailText}>{counts}</Text>;
-      const rsvpControl = this.props.event.source.name === 'Facebook Event'
-        ? <EventRsvpControl
+      const rsvpControl =
+        this.props.event.source.name === 'Facebook Event' ? (
+          <EventRsvpControl
             event={this.props.event}
             style={{ marginRight: 20 }}
           />
-        : null;
+        ) : null;
       return (
         <SubEventLine icon={require('./images/attending.png')}>
           {countsText}
@@ -748,9 +750,10 @@ class _EventTranslate extends React.PureComponent {
 
   render() {
     const translatedEvent = this.props.translatedEvents[this.props.event.id];
-    const translatedText = translatedEvent && translatedEvent.visible
-      ? this.props.intl.formatMessage(messages.untranslate)
-      : this.props.intl.formatMessage(messages.translate);
+    const translatedText =
+      translatedEvent && translatedEvent.visible
+        ? this.props.intl.formatMessage(messages.untranslate)
+        : this.props.intl.formatMessage(messages.translate);
     return (
       <Button
         icon={require('./images/translate.png')}

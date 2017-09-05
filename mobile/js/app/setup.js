@@ -38,11 +38,7 @@ export default function setup() {
       if (Platform.OS === 'ios' && ProcessInfo.environment.UITest) {
         app = <ScreenshotSlideshow>{app}</ScreenshotSlideshow>;
       }
-      return (
-        <Provider store={this.state.store}>
-          {app}
-        </Provider>
-      );
+      return <Provider store={this.state.store}>{app}</Provider>;
     }
   }
 

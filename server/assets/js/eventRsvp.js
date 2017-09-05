@@ -123,9 +123,8 @@ class _RsvpComponent extends React.Component {
     const id = this.props.event.id;
 
     const buttons = choiceStrings.map(({ internal, messageName }, index) => {
-      const activeClass = this.state.rsvpValue === internal
-        ? 'active btn-no-focus'
-        : '';
+      const activeClass =
+        this.state.rsvpValue === internal ? 'active btn-no-focus' : '';
       return (
         <button
           key={internal}

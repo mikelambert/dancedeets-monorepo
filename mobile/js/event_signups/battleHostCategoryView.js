@@ -67,9 +67,7 @@ class _TeamList extends React.Component {
         </HorizontalView>
         <HorizontalView>
           <Text>Dancers: </Text>
-          <View>
-            {dancers}
-          </View>
+          <View>{dancers}</View>
         </HorizontalView>
       </View>
     );
@@ -89,9 +87,9 @@ class _TeamList extends React.Component {
     }
 
     const width = 50;
-    const banner = prelim.auditioned
-      ? <RibbonBanner text="Auditioned" width={width} />
-      : null;
+    const banner = prelim.auditioned ? (
+      <RibbonBanner text="Auditioned" width={width} />
+    ) : null;
     const style = null; // prelim.auditioned ? { backgroundColor: 'red' } : null;
     return (
       <TouchableOpacity onPress={() => this.onSignupPressed(prelim)}>
@@ -131,7 +129,7 @@ class _BattleHostCategoryView extends React.Component {
     return (
       <TeamList
         signups={signups}
-        renderHeader={() =>
+        renderHeader={() => (
           <View
             style={{
               alignSelf: 'center',
@@ -139,7 +137,8 @@ class _BattleHostCategoryView extends React.Component {
             }}
           >
             <Text>{signups.length} competitors:</Text>
-          </View>}
+          </View>
+        )}
       />
     );
   }

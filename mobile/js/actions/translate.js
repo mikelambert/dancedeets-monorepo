@@ -13,7 +13,8 @@ const messages = defineMessages({
   featureTranslation: {
     id: 'feature.translation',
     defaultMessage: 'Translation',
-    description: 'The name of the Translation feature when requesting permissions',
+    description:
+      'The name of the Translation feature when requesting permissions',
   },
 });
 

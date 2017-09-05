@@ -14,6 +14,10 @@ export default class Link extends React.Component {
   render() {
     const { children, style, ...otherProps } = this.props;
     const fullStyle = { cursor: 'pointer', ...style };
-    return <div style={fullStyle} {...otherProps}>{children}</div>;
+    return (
+      <div style={fullStyle} {...otherProps}>
+        {children}
+      </div>
+    );
   }
 }

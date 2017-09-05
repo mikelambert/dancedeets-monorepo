@@ -75,7 +75,8 @@ async function checkTutorial(tutorialJson) {
         // Check that video durations are correct
       } else if (video.duration !== foundVideo.contentDetails.duration) {
         console.error(
-          `Tutorial ${video.youtubeId} has incorrect duration: ${video.duration}, expected: ${foundVideo.contentDetails.duration}`
+          `Tutorial ${video.youtubeId} has incorrect duration: ${video.duration}, expected: ${foundVideo
+            .contentDetails.duration}`
         );
         video.duration = foundVideo.contentDetails.duration;
       }
@@ -134,9 +135,9 @@ async function checkAllTutorials() {
   // Used for testing down below
   let defaultTutorials = null;
   try {
-    defaultTutorials = require(
-      '../js/tutorials/playlistConfig.js'
-    ).getTutorials('');
+    defaultTutorials = require('../js/tutorials/playlistConfig.js').getTutorials(
+      ''
+    );
   } catch (e) {
     console.error('Error importing learnConfig.js\n', e);
     return;

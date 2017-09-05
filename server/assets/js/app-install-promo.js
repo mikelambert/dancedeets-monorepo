@@ -11,7 +11,9 @@ import { queryOn } from './dom';
 
 function hideAppPromo() {
   cookie.save('ap-closed', '1', {
-    expires: moment().add(4, 'days').toDate(),
+    expires: moment()
+      .add(4, 'days')
+      .toDate(),
     path: '/',
   });
 }
@@ -28,7 +30,9 @@ function initAppPromos() {
       }
     }
     cookie.save('ap-used', '1', {
-      expires: moment().add(60, 'days').toDate(),
+      expires: moment()
+        .add(60, 'days')
+        .toDate(),
       path: '/',
     });
 

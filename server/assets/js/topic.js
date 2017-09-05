@@ -55,12 +55,8 @@ export class _TopicEvent extends React.Component {
               </ImagePrefix>
             </a>
           </h3>
-          <div className="event-city">
-            {eventStartDate}
-          </div>
-          <div className="event-city">
-            {event.venue.cityStateCountry('\n')}
-          </div>
+          <div className="event-city">{eventStartDate}</div>
+          <div className="event-city">{event.venue.cityStateCountry('\n')}</div>
         </Card>
       </div>
     );
@@ -122,7 +118,10 @@ class Instagram extends React.Component {
     let newText = text;
     newText = newText.split('\n')[0];
     newText = newText.split('. ')[0];
-    newText = newText.split(' ').splice(0, 20).join(' ');
+    newText = newText
+      .split(' ')
+      .splice(0, 20)
+      .join(' ');
     return newText;
   }
 
@@ -148,9 +147,7 @@ class Instagram extends React.Component {
               />
             </div>
             <h3 className="event-title" style={{ marginTop: 10 }}>
-              <ImagePrefix iconName="instagram">
-                {title}
-              </ImagePrefix>
+              <ImagePrefix iconName="instagram">{title}</ImagePrefix>
             </h3>
           </a>
         </Card>
@@ -227,11 +224,11 @@ class SocialLinks extends React.Component {
   };
 
   render() {
-    const socialLinks = Object.keys(this.props.topic.social).map(key =>
+    const socialLinks = Object.keys(this.props.topic.social).map(key => (
       <div key={key}>
         <SocialLink platform={key} username={this.props.topic.social[key]} />
       </div>
-    );
+    ));
     return <div>{socialLinks}</div>;
   }
 }
@@ -301,7 +298,9 @@ class _EventList extends React.Component {
         margin;
     }
 
-    const dates = Object.keys(dateMap).sort().reverse();
+    const dates = Object.keys(dateMap)
+      .sort()
+      .reverse();
     const resultItems = dates.map((x, index) => {
       const item = dateMap[x];
       if (item.event) {
@@ -343,40 +342,38 @@ class _EventList extends React.Component {
           <Card>
             Show:{' '}
             <div className="btn-group" role="group">
-              {resultEvents.length
-                ? <SelectButton
-                    toggleState={() => {
-                      this.setState({ showEvents: !this.state.showEvents });
-                    }}
-                    active={this.state.showEvents}
-                    item={`${resultEvents.length} Events`}
-                  />
-                : null}
-              {resultVideos.length
-                ? <SelectButton
-                    toggleState={() => {
-                      this.setState({ showVideos: !this.state.showVideos });
-                    }}
-                    active={this.state.showVideos}
-                    item={`${resultVideos.length} Videos`}
-                  />
-                : null}
-              {resultInstagramVideos.length
-                ? <SelectButton
-                    toggleState={() => {
-                      this.setState({
-                        showInstagrams: !this.state.showInstagrams,
-                      });
-                    }}
-                    active={this.state.showInstagrams}
-                    item={`${resultInstagramVideos.length} Instagram Videos`}
-                  />
-                : null}
+              {resultEvents.length ? (
+                <SelectButton
+                  toggleState={() => {
+                    this.setState({ showEvents: !this.state.showEvents });
+                  }}
+                  active={this.state.showEvents}
+                  item={`${resultEvents.length} Events`}
+                />
+              ) : null}
+              {resultVideos.length ? (
+                <SelectButton
+                  toggleState={() => {
+                    this.setState({ showVideos: !this.state.showVideos });
+                  }}
+                  active={this.state.showVideos}
+                  item={`${resultVideos.length} Videos`}
+                />
+              ) : null}
+              {resultInstagramVideos.length ? (
+                <SelectButton
+                  toggleState={() => {
+                    this.setState({
+                      showInstagrams: !this.state.showInstagrams,
+                    });
+                  }}
+                  active={this.state.showInstagrams}
+                  item={`${resultInstagramVideos.length} Instagram Videos`}
+                />
+              ) : null}
             </div>
           </Card>
-          <Masonry>
-            {resultItems}
-          </Masonry>
+          <Masonry>{resultItems}</Masonry>
         </div>
       </div>
     );

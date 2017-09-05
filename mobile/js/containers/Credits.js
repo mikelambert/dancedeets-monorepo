@@ -28,9 +28,11 @@ class CreditSubList extends React.Component {
   };
 
   render() {
-    const subcreditGroups = this.props.list.map(x =>
-      <Text key={x} style={{ left: 5 }}>- {x}</Text>
-    );
+    const subcreditGroups = this.props.list.map(x => (
+      <Text key={x} style={{ left: 5 }}>
+        - {x}
+      </Text>
+    ));
     return <View>{subcreditGroups}</View>;
   }
 }
@@ -41,16 +43,14 @@ export default class Credits extends React.Component {
   };
 
   render() {
-    const creditGroups = credits.map(x =>
+    const creditGroups = credits.map(x => (
       <View key={x[0]}>
         <Text style={{ fontWeight: 'bold' }}>{x[0]}:</Text>
         <CreditSubList list={x[1]} />
       </View>
-    );
+    ));
     return (
-      <View style={[styles.outerStyle, this.props.style]}>
-        {creditGroups}
-      </View>
+      <View style={[styles.outerStyle, this.props.style]}>{creditGroups}</View>
     );
   }
 }

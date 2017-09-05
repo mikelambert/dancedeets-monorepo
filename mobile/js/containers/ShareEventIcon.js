@@ -39,9 +39,11 @@ export default class ShareEventIcon extends React.Component {
             marginRight: 10,
           }}
           source={
-            Platform.OS === 'ios'
-              ? require('./share-icons/share-ios.png')
-              : require('./share-icons/share-android.png')
+            Platform.OS === 'ios' ? (
+              require('./share-icons/share-ios.png')
+            ) : (
+              require('./share-icons/share-android.png')
+            )
           }
         />
       </TouchableOpacity>

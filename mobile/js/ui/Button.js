@@ -70,9 +70,7 @@ class Button extends React.Component {
     const content = (
       <HorizontalView>
         {icon}
-        <Text style={[styles.caption, this.props.textStyle]}>
-          {caption}
-        </Text>
+        <Text style={[styles.caption, this.props.textStyle]}>{caption}</Text>
       </HorizontalView>
     );
     return content;
@@ -104,9 +102,8 @@ class Button extends React.Component {
   }
 
   render() {
-    const size = this.props.size === 'small'
-      ? styles.smallButton
-      : styles.largeButton;
+    const size =
+      this.props.size === 'small' ? styles.smallButton : styles.largeButton;
 
     let buttonContents = null;
     if (this.props.color === 'translucent') {

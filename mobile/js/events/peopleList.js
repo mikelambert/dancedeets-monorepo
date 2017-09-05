@@ -175,14 +175,16 @@ class _OrganizerView extends React.Component {
   };
 
   render() {
-    const personList = this.props.people
-      ? <PersonList
-          subtitle={this.props.intl.formatMessage(
-            messages.nearbyPromotersMessage
-          )}
-          people={this.props.people}
-        />
-      : <Loading />;
+    const personList = this.props.people ? (
+      <PersonList
+        subtitle={this.props.intl.formatMessage(
+          messages.nearbyPromotersMessage
+        )}
+        people={this.props.people}
+      />
+    ) : (
+      <Loading />
+    );
 
     return (
       <HeaderCollapsible
@@ -210,14 +212,14 @@ export class _AttendeeView extends React.Component {
   };
 
   render() {
-    const personList = this.props.people
-      ? <PersonList
-          subtitle={this.props.intl.formatMessage(
-            messages.nearbyDancersMessage
-          )}
-          people={this.props.people}
-        />
-      : <Loading />;
+    const personList = this.props.people ? (
+      <PersonList
+        subtitle={this.props.intl.formatMessage(messages.nearbyDancersMessage)}
+        people={this.props.people}
+      />
+    ) : (
+      <Loading />
+    );
 
     return (
       <HeaderCollapsible

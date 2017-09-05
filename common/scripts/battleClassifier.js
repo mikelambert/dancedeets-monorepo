@@ -17,7 +17,9 @@ const roundRegexes = {
 };
 
 const anyRoundRegex = new RegExp(
-  Object.keys(roundRegexes).map(x => roundRegexes[x].source).join('|'),
+  Object.keys(roundRegexes)
+    .map(x => roundRegexes[x].source)
+    .join('|'),
   'i'
 );
 
@@ -126,9 +128,10 @@ async function buildBracketFromPlaylist(playlistId) {
         if (result) {
           return {
             ...result,
-            winner: result.first === contestant
-              ? 0
-              : result.second === contestant ? 1 : null,
+            winner:
+              result.first === contestant
+                ? 0
+                : result.second === contestant ? 1 : null,
           };
         } else {
           throw new Error(`Could not find match for contestant`);

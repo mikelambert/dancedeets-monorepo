@@ -128,7 +128,8 @@ class MatchReact extends React.Component {
               textAlign: 'center',
             }}
           >
-            {contestants[0]}<br />
+            {contestants[0]}
+            <br />
             vs<br />
             {contestants[1]}
           </div>
@@ -180,8 +181,8 @@ class BracketLines extends React.Component {
       top: this.props.top,
       width:
         this.props.right -
-          this.props.left -
-          this.props.bracketRenderer.MatchGutterWidth / 2,
+        this.props.left -
+        this.props.bracketRenderer.MatchGutterWidth / 2,
       height: this.props.bottom - this.props.top,
     };
     const line = {
@@ -306,14 +307,14 @@ class BracketReact extends React.Component {
     const totalSize = bracketRenderer.getTotalSize();
     const matches = bracketRenderer
       .getMatchAndPositions()
-      .map(({ match, position }, index) =>
+      .map(({ match, position }, index) => (
         <MatchReact
           key={index}
           bracketRenderer={bracketRenderer}
           match={match}
           position={position}
         />
-      );
+      ));
     const lines = [];
 
     // Start at 1, not 0. The final match (column 0) does not have an right-going bracket

@@ -92,9 +92,10 @@ export default class MyVideoPlayer extends VideoPlayer {
   }
 
   renderPlayPause() {
-    let source = this.state.paused === true
-      ? require('react-native-video-controls/assets/img/play.png')
-      : require('react-native-video-controls/assets/img/pause.png');
+    let source =
+      this.state.paused === true
+        ? require('react-native-video-controls/assets/img/play.png')
+        : require('react-native-video-controls/assets/img/pause.png');
     return this.renderControl(
       <Image source={source} />,
       this.methods.togglePlayPause,
@@ -148,9 +149,7 @@ export default class MyVideoPlayer extends VideoPlayer {
      */
   renderTimer() {
     return this.renderControl(
-      <Text style={styles.controls.timerText}>
-        {this.calculateTime()}
-      </Text>,
+      <Text style={styles.controls.timerText}>{this.calculateTime()}</Text>,
       this.methods.toggleTimer,
       styles.controls.timer
     );

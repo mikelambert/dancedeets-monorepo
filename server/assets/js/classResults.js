@@ -110,9 +110,7 @@ class DayNavMenu extends React.Component {
     }
     return (
       <span className="navmenu-height headline-underline">
-        Jump to:
-        {' '}
-        {weeks}
+        Jump to: {weeks}
       </span>
     );
   }
@@ -154,8 +152,12 @@ class SearchBar extends React.Component {
               this._studios = x;
             }}
             onChange={state => this.props.onChange('studios', state)}
-            itemRenderer={item =>
-              <span><StudioImage key="image" studioName={item} />{item}</span>}
+            itemRenderer={item => (
+              <span>
+                <StudioImage key="image" studioName={item} />
+                {item}
+              </span>
+            )}
           />
         </div>
         <div>
@@ -260,7 +262,11 @@ class ClassTitle extends React.Component {
   };
   render() {
     const filteredClasses = this.props.filteredClasses;
-    return <div><b>Showing {filteredClasses.length} classes:</b></div>;
+    return (
+      <div>
+        <b>Showing {filteredClasses.length} classes:</b>
+      </div>
+    );
   }
 }
 
@@ -287,12 +293,9 @@ class SponsoredSummary extends React.Component {
       const studioList = Object.keys(sponsoredStudios.MINDBODY);
       sponsorHtml.push(
         <div key="MINDBODY" style={{ margin: '1em 0em', fontStyle: 'italic' }}>
-          Studios Powered by
-          {' '}
+          Studios Powered by{' '}
           <a href="http://www.mindbodyonline.com">MINDBODY</a>
-          :
-          {' '}
-          {studioList.join(', ')}
+          : {studioList.join(', ')}
         </div>
       );
     }

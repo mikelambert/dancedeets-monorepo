@@ -250,11 +250,7 @@ class FeaturedEvents extends React.PureComponent {
         </Carousel>
       );
     }
-    return (
-      <View style={{ height: 200 }}>
-        {carousel}
-      </View>
-    );
+    return <View style={{ height: 200 }}>{carousel}</View>;
   }
 }
 
@@ -727,8 +723,9 @@ class _EventListContainer extends React.Component {
         refreshing={search.loading}
         sections={sections}
         renderItem={this.renderItem}
-        renderSectionHeader={({ section }) =>
-          <SectionHeader title={upperFirst(section.title)} />}
+        renderSectionHeader={({ section }) => (
+          <SectionHeader title={upperFirst(section.title)} />
+        )}
         stickySectionHeadersEnabled
         initialNumToRender={20}
         maxToRenderPerBatch={2}
@@ -739,9 +736,7 @@ class _EventListContainer extends React.Component {
   render() {
     return (
       <View style={styles.container}>
-        <SearchHeader>
-          {this.renderListView()}
-        </SearchHeader>
+        <SearchHeader>{this.renderListView()}</SearchHeader>
       </View>
     );
   }

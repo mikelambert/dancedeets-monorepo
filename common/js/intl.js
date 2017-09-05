@@ -119,10 +119,11 @@ class Internationalize extends React.Component {
 // zh-TW
 // etc
 export function intlWeb(Wrapped: any) {
-  return (props: Object) =>
+  return (props: Object) => (
     <Internationalize {...props}>
       <Wrapped {...props} />
-    </Internationalize>;
+    </Internationalize>
+  );
 }
 
 // currentLocale here is of the form:
@@ -131,11 +132,12 @@ export function intlWeb(Wrapped: any) {
 // zh-Hant-US
 // etc
 export function intl(Wrapped: any, currentLocale: string) {
-  return (props: Object) =>
+  return (props: Object) => (
     <Internationalize
       currentLocale={currentLocale}
       defaultLocale={defaultLocale}
     >
       <Wrapped {...props} />
-    </Internationalize>;
+    </Internationalize>
+  );
 }

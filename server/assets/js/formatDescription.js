@@ -64,33 +64,35 @@ class FacebookPage extends React.Component {
 
   render() {
     const pageUrl = `https://www.facebook.com/${this.props.username}/`;
-    return this.props.amp
-      ? <span>
-          <Helmet
-            script={[
-              {
-                async: 'async',
-                'custom-element': 'amp-facebook-like',
-                src: 'https://cdn.ampproject.org/v0/amp-facebook-like-0.1.js',
-              },
-            ]}
-          />
-          <amp-facebook-like
-            width="90"
-            height="20"
-            layout="fixed"
-            data-href={pageUrl}
-          />
-        </span>
-      : <FBPage
-          appId={this.props.username}
-          href={pageUrl}
-          height={300}
-          smallHeader={false}
-          adaptContainerWidth
-          showFacepile
-          tabs={['messages']}
-        />;
+    return this.props.amp ? (
+      <span>
+        <Helmet
+          script={[
+            {
+              async: 'async',
+              'custom-element': 'amp-facebook-like',
+              src: 'https://cdn.ampproject.org/v0/amp-facebook-like-0.1.js',
+            },
+          ]}
+        />
+        <amp-facebook-like
+          width="90"
+          height="20"
+          layout="fixed"
+          data-href={pageUrl}
+        />
+      </span>
+    ) : (
+      <FBPage
+        appId={this.props.username}
+        href={pageUrl}
+        height={300}
+        smallHeader={false}
+        adaptContainerWidth
+        showFacepile
+        tabs={['messages']}
+      />
+    );
   }
 }
 
@@ -128,18 +130,22 @@ class Formatter {
       return;
     }
     const remappers = {
-      snapchat: username =>
-        <a href={`http://www.snapchat.com/add/${username}`}>{username}</a>,
-      facebook: username =>
-        <a href={`https://www.facebook.com/${username}`}>{username}</a>,
-      instagram: username =>
+      snapchat: username => (
+        <a href={`http://www.snapchat.com/add/${username}`}>{username}</a>
+      ),
+      facebook: username => (
+        <a href={`https://www.facebook.com/${username}`}>{username}</a>
+      ),
+      instagram: username => (
         <a href={`https://instagram.com/${username.replace('@', '')}`}>
           {username}
-        </a>,
-      twitter: username =>
+        </a>
+      ),
+      twitter: username => (
         <a href={`https://twitter.com/${username.replace('@', '')}`}>
           {username}
-        </a>,
+        </a>
+      ),
     };
     let found = false;
     for (const keyword of Object.keys(remappers)) {
@@ -194,34 +200,36 @@ class Formatter {
     ) {
       const videoId = parsedUrl.query.v;
       this.elements.push(
-        this.options.amp
-          ? <span>
-              <Helmet
-                script={[
-                  {
-                    async: 'async',
-                    'custom-element': 'amp-youtube',
-                    src: 'https://cdn.ampproject.org/v0/amp-youtube-0.1.js',
-                  },
-                ]}
-              />
-              <amp-youtube
-                data-videoid={videoId}
-                layout="responsive"
-                width="480"
-                height="270"
-              />
-            </span>
-          : <div key={i} className="video-container">
-              <iframe
-                id="ytplayer"
-                type="text/html"
-                width="640"
-                height="360"
-                src={`https://www.youtube.com/embed/${videoId}`}
-                frameBorder="0"
-              />
-            </div>
+        this.options.amp ? (
+          <span>
+            <Helmet
+              script={[
+                {
+                  async: 'async',
+                  'custom-element': 'amp-youtube',
+                  src: 'https://cdn.ampproject.org/v0/amp-youtube-0.1.js',
+                },
+              ]}
+            />
+            <amp-youtube
+              data-videoid={videoId}
+              layout="responsive"
+              width="480"
+              height="270"
+            />
+          </span>
+        ) : (
+          <div key={i} className="video-container">
+            <iframe
+              id="ytplayer"
+              type="text/html"
+              width="640"
+              height="360"
+              src={`https://www.youtube.com/embed/${videoId}`}
+              frameBorder="0"
+            />
+          </div>
+        )
       );
     } else if (
       parsedUrl.host === 'www.youtube.com' &&
@@ -232,38 +240,40 @@ class Formatter {
       const playlistId = parsedUrl.query.list;
       const embedUrl = `https://www.youtube.com/embed/videoseries?list=${playlistId}`;
       this.elements.push(
-        this.options.amp
-          ? <span>
-              <Helmet
-                script={[
-                  {
-                    async: 'async',
-                    'custom-element': 'amp-iframe',
-                    src: 'https://cdn.ampproject.org/v0/amp-iframe-0.1.js',
-                  },
-                ]}
-              />
-              <amp-iframe
-                src={embedUrl}
-                layout="responsive"
-                width="480"
-                height="270"
-                frameborder="0"
-                allowfullscreen=""
-                sandbox="allow-scripts allow-same-origin"
-              />
-            </span>
-          : <div key={i} className="video-container">
-              <iframe
-                id="ytplayer"
-                type="text/html"
-                width="640"
-                height="360"
-                src={embedUrl}
-                frameBorder="0"
-                allowFullScreen
-              />
-            </div>
+        this.options.amp ? (
+          <span>
+            <Helmet
+              script={[
+                {
+                  async: 'async',
+                  'custom-element': 'amp-iframe',
+                  src: 'https://cdn.ampproject.org/v0/amp-iframe-0.1.js',
+                },
+              ]}
+            />
+            <amp-iframe
+              src={embedUrl}
+              layout="responsive"
+              width="480"
+              height="270"
+              frameborder="0"
+              allowfullscreen=""
+              sandbox="allow-scripts allow-same-origin"
+            />
+          </span>
+        ) : (
+          <div key={i} className="video-container">
+            <iframe
+              id="ytplayer"
+              type="text/html"
+              width="640"
+              height="360"
+              src={embedUrl}
+              frameBorder="0"
+              allowFullScreen
+            />
+          </div>
+        )
       );
     } else if (parsedUrl.host === 'www.soundcloud.com') {
       this.elements.push(<SoundCloud key={i} url={match.url} />);
@@ -282,7 +292,9 @@ class Formatter {
       );
     } else {
       this.elements.push(
-        <a key={i} target={target} rel={rel} href={match.url}>{match.text}</a>
+        <a key={i} target={target} rel={rel} href={match.url}>
+          {match.text}
+        </a>
       );
     }
   }

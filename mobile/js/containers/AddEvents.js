@@ -103,7 +103,6 @@ class _FilterHeader extends React.Component {
   render() {
     return (
       <View style={styles.header}>
-
         <Text style={styles.headerRow}>
           {this.props.intl.formatMessage(messages.introText)}
         </Text>
@@ -193,9 +192,9 @@ class _AddEventRow extends React.Component {
     const bannerText = this.props.intl
       .formatMessage(messages.addedBanner)
       .toUpperCase();
-    const addedBanner = this.props.event.loaded
-      ? <RibbonBanner text={bannerText} width={width} />
-      : null;
+    const addedBanner = this.props.event.loaded ? (
+      <RibbonBanner text={bannerText} width={width} />
+    ) : null;
     const textColor = this.props.event.loaded || tempOverlay ? '#888' : 'white';
 
     const start = moment.parseZone(this.props.event.start_time);
@@ -227,11 +226,7 @@ class _AddEventRow extends React.Component {
       </HorizontalView>
     );
     if (this.props.event.loaded || this.props.event.pending) {
-      return (
-        <View style={styles.row}>
-          {row}
-        </View>
-      );
+      return <View style={styles.row}>{row}</View>;
     } else {
       return (
         <View style={styles.row}>

@@ -20,8 +20,11 @@ class _TeamList extends React.Component {
 
   renderRow(row) {
     const signup = row.item;
-    const dancers = (signup.dancers || [])
-      .map(x => <Text key={x.id} style={{ marginLeft: 20 }}>{x.name}</Text>);
+    const dancers = (signup.dancers || []).map(x => (
+      <Text key={x.id} style={{ marginLeft: 20 }}>
+        {x.name}
+      </Text>
+    ));
     return (
       <Card>
         <Text>{signup.teamName}:</Text>
@@ -54,7 +57,7 @@ class _CategoryView extends React.Component {
     return (
       <TeamList
         signups={signups}
-        renderHeader={() =>
+        renderHeader={() => (
           <View
             style={{
               alignSelf: 'center',
@@ -67,7 +70,8 @@ class _CategoryView extends React.Component {
               onUnregister={this.props.onUnregister}
             />
             <Text>{signups.length} competitors:</Text>
-          </View>}
+          </View>
+        )}
       />
     );
   }

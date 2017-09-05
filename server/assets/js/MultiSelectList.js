@@ -66,7 +66,9 @@ export function caseInsensitiveSort(a, b) {
 }
 
 export function getSelected(state: { [item: string]: boolean }) {
-  return Object.keys(state).filter(x => state[x]).sort(caseInsensitiveSort);
+  return Object.keys(state)
+    .filter(x => state[x])
+    .sort(caseInsensitiveSort);
 }
 
 export function isAllSelected(state) {

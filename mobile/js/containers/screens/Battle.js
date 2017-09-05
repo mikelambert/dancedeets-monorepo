@@ -193,7 +193,7 @@ class BattleHostScreen extends React.Component {
     const battleId = this.props.navigation.state.params.battleId;
     <TrackFirebase
       path={`events/${battleId}`}
-      renderContents={battleEvent =>
+      renderContents={battleEvent => (
         <BattleEventHostView
           battleEvent={battleEvent}
           onSelected={selectedCategory => {
@@ -203,7 +203,8 @@ class BattleHostScreen extends React.Component {
               categoryId: selectedCategory.id,
             });
           }}
-        />}
+        />
+      )}
     />;
   }
 }

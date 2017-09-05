@@ -92,7 +92,8 @@ export class YoutubePlaylistBlog extends Blog {
     super();
     this.title = playlistJson.items[0].snippet.title;
     this.description = playlistJson.items[0].snippet.description;
-    this.url = `https://www.youtube.com/playlist?list=${playlistJson.items[0].id}`;
+    this.url = `https://www.youtube.com/playlist?list=${playlistJson.items[0]
+      .id}`;
 
     const contentDetailsLookup = {};
     videosJson.items.forEach(x => {

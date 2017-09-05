@@ -102,26 +102,25 @@ class _SearchHeaderTitleSummary extends React.Component {
 
   render() {
     const searchQuery = this.props.query;
-    const keywords = searchQuery.keywords
-      ? <RealText numberOfLines={1}>
-          {searchQuery.keywords}
-        </RealText>
-      : null;
-    const spacer = searchQuery.location && searchQuery.keywords
-      ? <View style={{ paddingRight: 5 }} />
-      : null;
-    const location = searchQuery.location
-      ? <RealText
-          style={{
-            color: 'grey',
-            fontSize: semiNormalize(12),
-            lineHeight: semiNormalize(16),
-          }}
-          numberOfLines={1}
-        >
-          {searchQuery.location}
-        </RealText>
-      : null;
+    const keywords = searchQuery.keywords ? (
+      <RealText numberOfLines={1}>{searchQuery.keywords}</RealText>
+    ) : null;
+    const spacer =
+      searchQuery.location && searchQuery.keywords ? (
+        <View style={{ paddingRight: 5 }} />
+      ) : null;
+    const location = searchQuery.location ? (
+      <RealText
+        style={{
+          color: 'grey',
+          fontSize: semiNormalize(12),
+          lineHeight: semiNormalize(16),
+        }}
+        numberOfLines={1}
+      >
+        {searchQuery.location}
+      </RealText>
+    ) : null;
     const sideMargin = 40;
     return (
       <Animated.View
@@ -198,20 +197,20 @@ class NavButton extends React.PureComponent {
 
   render() {
     let contents = [
-      this.props.imageSource
-        ? <Image key="image" source={this.props.imageSource} />
-        : null,
-      this.props.text
-        ? <Text
-            key="text"
-            style={{
-              fontSize: 17,
-              color: this.props.disabled ? '#bbb' : 'white',
-            }}
-          >
-            {this.props.text}
-          </Text>
-        : null,
+      this.props.imageSource ? (
+        <Image key="image" source={this.props.imageSource} />
+      ) : null,
+      this.props.text ? (
+        <Text
+          key="text"
+          style={{
+            fontSize: 17,
+            color: this.props.disabled ? '#bbb' : 'white',
+          }}
+        >
+          {this.props.text}
+        </Text>
+      ) : null,
     ];
     if (!this.props.disabled) {
       contents = (
@@ -220,11 +219,7 @@ class NavButton extends React.PureComponent {
         </TouchableItem>
       );
     }
-    return (
-      <View style={{ marginLeft: 10, marginRight: 10 }}>
-        {contents}
-      </View>
-    );
+    return <View style={{ marginLeft: 10, marginRight: 10 }}>{contents}</View>;
   }
 }
 
@@ -331,12 +326,13 @@ class FeaturedEventScreen extends React.Component {
     const event = this.props.navigation.state.params.event;
     return (
       <PositionProvider
-        renderWithPosition={position =>
+        renderWithPosition={position => (
           <FullEventView
             onFlyerSelected={this.onFlyerSelected}
             event={event}
             currentPosition={position}
-          />}
+          />
+        )}
       />
     );
   }

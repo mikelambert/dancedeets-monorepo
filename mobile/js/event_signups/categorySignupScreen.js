@@ -74,7 +74,7 @@ class _CategorySignupScreen extends React.Component {
   }
 
   teamWidgets() {
-    return this.teamIndices().map(index =>
+    return this.teamIndices().map(index => (
       <GiftedForm.TextInputWidget
         key={index}
         name={`dancer_name_${index + 1}`}
@@ -82,7 +82,7 @@ class _CategorySignupScreen extends React.Component {
         placeholder=""
         {...this.textInputProps()}
       />
-    );
+    ));
   }
 
   teamValidators() {
@@ -168,7 +168,6 @@ class _CategorySignupScreen extends React.Component {
         }}
         onValueChange={this.handleValueChange}
       >
-
         {teamMember1}
         {teamMembers}
 
