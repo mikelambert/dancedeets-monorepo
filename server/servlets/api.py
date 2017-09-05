@@ -309,10 +309,14 @@ class SearchHandler(ApiHandler):
             'keywords': self.request.get('keywords'),
             'skip_people': self.request.get('skip_people'),
         }
-        if self.request.get('locale'):
-            data['locale'] = self.request.get('locale')
-        if self.request.get('deb'):
-            data['deb'] = self.request.get('deb')
+        for key in ['locale', 'deb']:
+            if self.request.get(key):
+                data[key] = self.request.get(key)
+        for key in ['start', 'end']:
+            if self.request.get(key):
+                dt = datetime.datetime.strptime(self.request.get(key), '%Y-%m-%d')
+                if dt:
+                    data[key] = dt.date()
         return data
 
     def get(self):
