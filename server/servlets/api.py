@@ -347,23 +347,14 @@ class SearchHandler(ApiHandler):
                 self.errors_are_fatal()
 
         search_results = []
-        distances = [50, 100, 170, 300]
-        distance_index = 0
-        while not search_results:
-            form.distance.data = distances[distance_index]
-            form.distance_units.data = 'miles'
-            search_query = form.build_query()
-            searcher = search.Search(search_query, deb=form.deb.data)
-            # TODO(lambert): Increase the size limit when our clients can handle it. And improve our result sorting to return the 'best' results.
-            searcher.limit = 500
-            need_full_event = self.version < (2, 0)
-            search_results = searcher.get_search_results(full_event=need_full_event)
-
-            # Increase our search distance in the hopes of finding something
-            distance_index += 1
-            if distance_index == len(distances):
-                # If we searched the world, then break
-                break
+        form.distance.data = 50
+        form.distance_units.data = 'km'
+        search_query = form.build_query()
+        searcher = search.Search(search_query, deb=form.deb.data)
+        # TODO(lambert): Increase the size limit when our clients can handle it. And improve our result sorting to return the 'best' results.
+        searcher.limit = 500
+        need_full_event = self.version < (2, 0)
+        search_results = searcher.get_search_results(full_event=need_full_event)
 
         logging.info(
             "Found %s keyword=%r events within %s %s of %s",
