@@ -199,19 +199,10 @@ class Search(object):
         # If they only want the top-N items, make sure we restrict it here
         # It'd be nice to do in our limit= query, but that doesn't guarantee the top-N
         doc_events = sorted(doc_events, key=lambda x: x.rank)
-        if 'load' in self.deb:
-            logging.info('rank0 %s', self.query)
-            for x in doc_events:
-                logging.info('rank0 %s %s %s', x.rank, x.field('start_time').value, x.doc_id)
-
         if self.top_n < len(doc_events):
+            # Make sure we mark it here, so that we know whether to dynamically load more items
             self.limit_hit = True
         doc_events = doc_events[-self.top_n:]
-
-        if 'load' in self.deb:
-            logging.info('rank1 %s', self.query)
-            for x in doc_events:
-                logging.info('rank1 %s %s %s', x.rank, x.field('start_time').value, x.doc_id)
 
         a = time.time()
         ids = [x.doc_id for x in doc_events]

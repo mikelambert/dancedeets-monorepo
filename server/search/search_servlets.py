@@ -97,9 +97,8 @@ class RelevantHandler(SearchHandler):
                     # TODO: This is disabled for now.
                     # Turns out setting a limit doesn't return the highest-20-ranked items.
                     # Instead it returns a random selection. Making it harder to use.
-                    if 'load' in form.deb.data:
-                        initial_result_limit = 20
-                        searcher.top_n = initial_result_limit
+                    initial_result_limit = 20
+                    searcher.top_n = initial_result_limit
                     search_results = searcher.get_search_results()
                     has_more_results = searcher.limit_hit
 
