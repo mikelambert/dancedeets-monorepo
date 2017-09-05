@@ -142,7 +142,10 @@ class _EventDescription extends React.Component {
           {keywords.join(', ')}
         </ImagePrefix>
         <ImagePrefix iconName="clock-o">
-          {formatStartDateOnly(event.getListDateMoment(), this.props.intl)}
+          {formatStartDateOnly(
+            event.getListDateMoment({ timezone: false }),
+            this.props.intl
+          )}
         </ImagePrefix>
         <ImagePrefix iconName="map-marker">
           <div>{event.venue.name}</div>
@@ -572,14 +575,14 @@ class ResultsList extends React.Component {
       eventData => new SearchEvent(eventData)
     );
     resultEvents = sortNumber(resultEvents, resultEvent =>
-      resultEvent.getListDateMoment().valueOf()
+      resultEvent.getListDateMoment({ timezone: false }).valueOf()
     );
     const featuredInfos = (this.props.response.featuredInfos || [])
       .map(x => ({ ...x, event: new Event(x.event) }));
 
     resultEvents = this.filterResults(resultEvents);
 
-    const now = moment();
+    const now = moment(); // Timezone-aware 'now'
     const eventPanels = [];
     let currentEvents = null;
     let fullEvents = null;
@@ -588,14 +591,14 @@ class ResultsList extends React.Component {
       fullEvents = resultEvents;
     } else {
       currentEvents = resultEvents.filter(event => {
-        let end = event.getEndMoment();
-        if (!end) {
-          end = event.getStartMoment().add(2, 'hours');
-        }
-        return event.getListDateMoment().isBefore(now) && now.isBefore(end);
+        const end = event.getEndMoment({ timezone: true, estimate: true });
+        return (
+          event.getListDateMoment({ timezone: true }).isBefore(now) &&
+          now.isBefore(end)
+        );
       });
       fullEvents = resultEvents.filter(event =>
-        event.getListDateMoment().isAfter(now)
+        event.getListDateMoment({ timezone: true }).isAfter(now)
       );
       // DEBUG CODE for current events:
       // currentEvents = resultEvents;

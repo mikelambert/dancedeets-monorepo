@@ -143,14 +143,13 @@ class ImageWithLinks extends React.Component {
 function googleCalendarStartEndFormat(event) {
   const fmt = 'YYYYMMDDTHHmmss[Z]';
   const start = event
-    .getStartMoment()
+    .getStartMoment({ timezone: true })
     .utc()
     .format(fmt);
-  let endTime = event.getEndMoment();
-  if (!endTime) {
-    endTime = event.getStartMoment().add(2, 'hours');
-  }
-  const end = endTime.utc().format(fmt);
+  const end = event
+    .getEndMoment({ timezone: true, estimate: true })
+    .utc()
+    .format(fmt);
   return `${start}/${end}`;
 }
 
@@ -290,8 +289,8 @@ class _EventLinks extends React.Component {
     }
 
     const formattedStartEndText = formatStartEnd(
-      event.getStartMoment(),
-      event.end_time ? event.getEndMoment() : null,
+      event.getStartMoment({ timezone: false }),
+      event.getEndMoment({ timezone: false }),
       this.props.intl
     );
     let sourceName = event.source.name;

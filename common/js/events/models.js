@@ -131,28 +131,49 @@ export class BaseEvent extends JsonDerivedObject {
     };
   }
 
-  startTimeNoTz() {
-    return this.start_time.substr(0, 19);
-  }
-  endTimeNoTz() {
-    return this.end_time ? this.end_time.substr(0, 19) : null;
-  }
-
-  getStartMoment(): moment {
-    return moment(this.startTimeNoTz());
-  }
-
-  getEndMoment(): ?moment {
-    if (this.end_time) {
-      return moment(this.endTimeNoTz());
+  startTime({ timezone }: { timezone: Boolean }) {
+    if (timezone) {
+      return this.start_time;
     } else {
-      return null;
+      return this.start_time.substr(0, 19);
     }
   }
 
-  getListDateMoment(): moment {
-    const start = this.getStartMoment();
-    const end = this.getEndMoment();
+  endTime({ timezone }: { timezone: Boolean }) {
+    if (!this.end_time) {
+      return null;
+    }
+    if (timezone) {
+      return this.end_time;
+    } else {
+      return this.end_time.substr(0, 19);
+    }
+  }
+
+  getStartMoment({ timezone }: { timezone: Boolean }): moment {
+    return moment(this.startTime({ timezone }));
+  }
+
+  getEndMoment({
+    timezone,
+    estimate,
+  }: {
+    timezone: Boolean,
+    estimate?: Boolean,
+  }): ?moment {
+    if (!this.end_time) {
+      if (estimate) {
+        return this.getStartMoment({ timezone }).add(1.5, 'hours');
+      } else {
+        return null;
+      }
+    }
+    return moment(this.endTime({ timezone }));
+  }
+
+  getListDateMoment({ timezone }: { timezone: Boolean }): moment {
+    const start = this.getStartMoment({ timezone });
+    const end = this.getEndMoment({ timezone });
     if (!end) {
       return start;
     }

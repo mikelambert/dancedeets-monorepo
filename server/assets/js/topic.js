@@ -40,7 +40,7 @@ export class _TopicEvent extends React.Component {
     const event = this.props.event;
 
     const eventStartDate = formatStartDateOnly(
-      event.getStartMoment(),
+      event.getStartMoment({ timezone: false }),
       this.props.intl
     );
 

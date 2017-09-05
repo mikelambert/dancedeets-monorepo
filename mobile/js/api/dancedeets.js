@@ -123,7 +123,9 @@ export async function search(
     event: new Event(x.event),
   }));
   response.results = response.results.map(x => new Event(x));
-  response.results = sortString(response.results, x => x.getStartMoment());
+  response.results = sortString(response.results, x =>
+    x.getStartMoment({ timezone: false })
+  );
   return response;
 }
 

@@ -900,8 +900,8 @@ class _FullEventView extends React.Component {
           {name}
         </Text>
         <EventDateTime
-          start={this.props.event.getStartMoment()}
-          end={this.props.event.getEndMoment()}
+          start={this.props.event.getStartMoment({ timezone: false })}
+          end={this.props.event.getEndMoment({ timezone: false })}
         >
           <AddToCalendarButton
             event={this.props.event}

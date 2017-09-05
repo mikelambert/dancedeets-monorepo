@@ -18,14 +18,14 @@ export function getEventSchema(event: Event | SearchEvent) {
     name: event.name,
     mainEntityOfPage: event.getUrl(),
     url: event.getUrl(),
-    startDate: formatSchemaDate(event.getStartMoment()),
+    startDate: formatSchemaDate(event.getStartMoment({ timezone: false })),
     description: event.description,
   };
   if (event.admins) {
     schema.organizer = event.admins.map(x => x.name).join(', ');
   }
   if (event.end_time) {
-    schema.endDate = formatSchemaDate(event.getEndMoment());
+    schema.endDate = formatSchemaDate(event.getEndMoment({ timezone: false }));
   }
   if (event.picture) {
     schema.image = event.picture.source;

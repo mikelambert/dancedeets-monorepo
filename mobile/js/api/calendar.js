@@ -4,11 +4,10 @@
  * @flow
  */
 
-import { Alert, Platform } from 'react-native';
+import { Platform } from 'react-native';
 import Permissions from 'react-native-permissions';
 import CalendarEventsIOS from 'react-native-calendar-events';
 import SendIntentAndroid from 'react-native-send-intent';
-import moment from 'moment';
 import { Event } from 'dancedeets-common/js/events/models';
 import { OkAlert, OkCancelAlert } from '../ui';
 
@@ -17,11 +16,8 @@ function getDescription(event: Event): string {
 }
 
 function getStartEndTime(event: Event) {
-  const start = event.getStartMoment();
-  let end = event.getEndMoment();
-  if (!end) {
-    end = start.add(1.5, 'hours');
-  }
+  const start = event.getStartMoment({ timezone: false });
+  const end = event.getEndMoment({ timezone: false, estimate: true });
   return { start, end };
 }
 

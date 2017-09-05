@@ -109,7 +109,7 @@ class _MailEvent extends React.Component {
       );
     }
 
-    const start = event.getStartMoment();
+    const start = event.getStartMoment({ timezone: false });
     return (
       <mj-section
         background-color="#ffffff"

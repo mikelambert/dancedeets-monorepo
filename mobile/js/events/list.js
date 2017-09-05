@@ -474,20 +474,14 @@ class _EventListContainer extends React.Component {
       const now = moment(this.props.intl.now());
       if (response.results != null && response.results.length > 0) {
         for (const e of response.results) {
-          // TODO: Due to some ancient bad design decisions,
-          // it's surprisingly difficult to to do
-          // time-zone-aware date manipulation on the server,
+          // It's difficult to to do time-zone-aware date manipulation on the server,
           // so instead let's filter out those events here.
-          let end = e.getEndMoment();
-          // If it's an endtime-less event, compute a fallback endtime here.
-          if (!end || !end.isValid()) {
-            end = e.getStartMoment().add(2, 'hours');
-          }
+          const end = e.getEndMoment({ timezone: true, estimate: true });
           if (end.isBefore(now)) {
             continue;
           }
           const formattedStart = formatStartDateOnly(
-            e.getListDateMoment(),
+            e.getListDateMoment({ timezone: false }),
             this.props.intl
           );
           let lastSection = sections[sections.length - 1];
