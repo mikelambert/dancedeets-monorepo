@@ -326,6 +326,7 @@ class _EventsList extends React.Component {
       );
 
       if (
+        hasMoreEventsToFetch &&
         eventIndexThreshold >= overallEventIndex &&
         eventIndexThreshold < overallEventIndex + events.length
       ) {
