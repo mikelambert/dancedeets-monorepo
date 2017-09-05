@@ -351,9 +351,9 @@ class SearchHandler(ApiHandler):
         form.distance_units.data = 'km'
         search_query = form.build_query()
         searcher = search.Search(search_query, deb=form.deb.data)
-        # TODO(lambert): Increase the size limit when our clients can handle it. And improve our result sorting to return the 'best' results.
-        searcher.limit = 500
         need_full_event = self.version < (2, 0)
+        # TODO(lambert): Increase the size limit when our clients can handle it. And improve our result sorting to return the 'best' results.
+        searcher.limit = 500 if need_full_event else 1000
         search_results = searcher.get_search_results(full_event=need_full_event)
 
         logging.info(
