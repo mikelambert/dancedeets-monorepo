@@ -99,7 +99,7 @@ class RelevantHandler(SearchHandler):
                     # Instead it returns a random selection. Making it harder to use.
                     if 'load' in form.deb.data:
                         initial_result_limit = 20
-                        searcher.limit = initial_result_limit
+                        searcher.top_n = initial_result_limit
                     search_results = searcher.get_search_results()
                     has_more_results = searcher.limit_hit
 

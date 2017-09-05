@@ -98,6 +98,7 @@ class Search(object):
         self.query = search_query
         self.deb = deb or []
         self.limit = search.MAXIMUM_DOCUMENTS_RETURNED_PER_SEARCH  # 1000
+        self.top_n = self.limit
         self.limit_hit = False
         # Extra search index fields to return
         self.extra_fields = []
@@ -175,11 +176,6 @@ class Search(object):
             # If it was a full-search, that did not return full list of results, log an error
             if self.limit == search.MAXIMUM_DOCUMENTS_RETURNED_PER_SEARCH:  # 1000
                 logging.error('Query has more results, only returning %s results: %r', len(doc_events), self.query)
-            self.limit_hit = True
-        if 'load' in self.deb:
-            logging.info('rank %s', self.query)
-            for x in sorted(doc_events, key=lambda x: x.rank):
-                logging.info('rank %s %s %s', x.rank, x.field('start_time').value, x.doc_id)
 
         #TODO(lambert): move to common library.
         now = datetime.datetime.now() - datetime.timedelta(hours=12)
@@ -199,6 +195,23 @@ class Search(object):
             doc_events = [x for x in doc_events if prefilter(x)]
 
         logging.info("After filtering, we have %s events", len(doc_events))
+
+        # If they only want the top-N items, make sure we restrict it here
+        # It'd be nice to do in our limit= query, but that doesn't guarantee the top-N
+        doc_events = sorted(doc_events, key=lambda x: x.rank)
+        if 'load' in self.deb:
+            logging.info('rank0 %s', self.query)
+            for x in doc_events:
+                logging.info('rank0 %s %s %s', x.rank, x.field('start_time').value, x.doc_id)
+
+        if self.top_n < len(doc_events):
+            self.limit_hit = True
+        doc_events = doc_events[-self.top_n:]
+
+        if 'load' in self.deb:
+            logging.info('rank1 %s', self.query)
+            for x in doc_events:
+                logging.info('rank1 %s %s %s', x.rank, x.field('start_time').value, x.doc_id)
 
         a = time.time()
         ids = [x.doc_id for x in doc_events]

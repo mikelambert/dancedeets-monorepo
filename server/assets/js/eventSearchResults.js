@@ -303,8 +303,8 @@ class _EventsList extends React.Component {
     let overallEventIndex = 0;
 
     const hasMoreEventsToFetch = Boolean(this.props.loadMoreContent);
-    let showedWaypoint = false;
-    const totalEventCount = this.props.events.length;
+    const eventIndexThreshold = Math.round(this.props.events.length * 0.75);
+
     groupEventsByStartDate(
       this.props.intl,
       this.props.events
@@ -324,13 +324,14 @@ class _EventsList extends React.Component {
           </div>
         </Sticky>
       );
+
       if (
-        hasMoreEventsToFetch &&
-        overallEventIndex > totalEventCount * 0.75 &&
-        !showedWaypoint
+        eventIndexThreshold >= overallEventIndex &&
+        eventIndexThreshold < overallEventIndex + events.length
       ) {
-        showedWaypoint = true;
-        resultItems.push(
+        renderedEvents.splice(
+          eventIndexThreshold - overallEventIndex,
+          0,
           <Waypoint key="waypoint" onEnter={this.props.loadMoreContent} />
         );
       }
