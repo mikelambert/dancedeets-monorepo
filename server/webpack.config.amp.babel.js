@@ -6,6 +6,4 @@
 
 import uncssWebpackGenerator from './uncssWebpackGenerator';
 
-module.exports = uncssWebpackGenerator('eventAmp', [
-  'amp/generated/*-amp.html',
-]);
+module.exports = uncssWebpackGenerator('amp', ['amp/generated/*-amp.html']);

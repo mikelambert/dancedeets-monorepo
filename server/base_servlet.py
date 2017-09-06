@@ -610,23 +610,31 @@ class BaseRequestHandler(BareBaseRequestHandler):
             url = str(urlparse.urljoin(new_url, url))
         return super(BaseRequestHandler, self).redirect(url, **kwargs)
 
-    def should_inline_css(self):
-        cookie_name = 'Second-Session-Visit'
-        # Set response cookie, so future visits will know they've been here in this session
-        self.set_cookie(cookie_name, '')
+    cookie_name = 'Second-Session-Visit'
 
+    def should_inline_css(self):
+        if 'inline-css' in self.debug_list:
+            return True
         # But if this request doesnt have the cookie, yes
-        if not self.get_cookie(cookie_name) is not None:
+        if not self.get_cookie(self.cookie_name) is not None:
             return True
         return False
 
+    def do_not_inline_css_next_time(self):
+        # Set response cookie, so future visits will know they've been here in this session
+        self.set_cookie(self.cookie_name, '')
+
     def setup_inlined_css(self):
-        if self.should_inline_css() and self.css_basename:
-            css_path = self.full_manifest['%s.css' % self.css_basename]
-            css_filename = os.path.join(os.path.dirname(__file__), 'dist/js/%s' % css_path)
-            css = open(css_filename).read()
-            css = css.replace('url(../', 'url(https://static.dancedeets.com/')
-            self.display['inline_css'] = css
+        self.do_not_inline_css_next_time()
+        if self.css_basename and self.should_inline_css():
+            css_path = '%s.css' % self.css_basename
+            css_filename = os.path.join(os.path.dirname(__file__), 'dist-includes/css/%s' % css_path)
+            try:
+                css = open(css_filename).read()
+                css = css.replace('url(../', 'url(https://static.dancedeets.com/')
+                self.display['inline_css'] = css
+            except IOError:
+                logging.error('Error loading %s', css_filename)
 
     def initialize(self, request, response):
         super(BaseRequestHandler, self).initialize(request, response)

@@ -87,7 +87,7 @@ class RedirectShortUrlHandler(base_servlet.BareBaseRequestHandler):
 
 @app.route(r'/events/(%s)(?:/.*)?' % urls.EVENT_ID_REGEX)
 class ShowEventHandler(base_servlet.BaseRequestHandler):
-    css_basename = 'common'
+    css_basename = 'full'
 
     def requires_login(self):
         return False
@@ -136,7 +136,7 @@ class ShowEventHandler(base_servlet.BaseRequestHandler):
                 # <meta name=viewport content=width=device-width,minimum-scale=1,initial-scale=1,maximum-scale=1,user-scalable=no>
                 self.allow_minify = False
                 try:
-                    event_amp_css_filename = os.path.join(os.path.dirname(__file__), '..', 'dist-includes/css/eventAmp.css')
+                    event_amp_css_filename = os.path.join(os.path.dirname(__file__), '..', 'dist-includes/css/amp.css')
                     event_amp_css = open(event_amp_css_filename).read()
                     event_amp_css = re.sub(r'@-ms-viewport\s*{.*?}', '', event_amp_css)
                     event_amp_css = re.sub(r'!important', '', event_amp_css)
