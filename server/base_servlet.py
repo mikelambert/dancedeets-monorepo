@@ -326,6 +326,8 @@ def get_location(fb_user):
 
 
 class BaseRequestHandler(BareBaseRequestHandler):
+    css_filename = None
+
     def __init__(self, *args, **kwargs):
         self.fb_uid = None
         self.user = None
@@ -608,6 +610,26 @@ class BaseRequestHandler(BareBaseRequestHandler):
             url = str(urlparse.urljoin(new_url, url))
         return super(BaseRequestHandler, self).redirect(url, **kwargs)
 
+    def should_inline_css(self):
+        cookie_name = 'Second-Session-Visit'
+        # Set response cookie, so future visits will know they've been here in this session
+        self.set_cookie(cookie_name, '')
+
+        print 3, self.get_cookie(cookie_name)
+        # But if this request doesnt have the cookie, yes
+        if not self.get_cookie(cookie_name) is not None:
+            return True
+        return False
+
+    def setup_inlined_css(self):
+        print 1
+        if self.should_inline_css() and self.css_filename:
+            print 2
+            css_filename = os.path.join(os.path.dirname(__file__), 'dist-includes/css/%s.css' % self.css_filename)
+            css = open(css_filename).read()
+            css = css.replace('url(../', 'url(https://static.dancedeets.com/')
+            self.display['inline_css'] = css
+
     def initialize(self, request, response):
         super(BaseRequestHandler, self).initialize(request, response)
         self.run_handler = True
@@ -874,6 +896,8 @@ class BaseRequestHandler(BareBaseRequestHandler):
         totals['total_events'] = humanize.intcomma(totals['total_events'])
         totals['total_users'] = humanize.intcomma(totals['total_users'])
         self.display.update(totals)
+
+        self.setup_inlined_css()
 
     def dispatch(self):
         if self.run_handler:
