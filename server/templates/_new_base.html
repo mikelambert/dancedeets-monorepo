@@ -230,10 +230,10 @@
 <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
 <ul>
 {% if not user %}
-    <li><button type="button" class="btn btn-default onclick-login"><i class="fa fa-sign-in fa-lg"></i> Join dancedeets and share your events</button> to help others discover your local dance scene.
     <li><button type="button" class="btn btn-default onclick-login"><i class="fa fa-envelope fa-lg"></i> Subscribe to our weekly email</button> of upcoming events.
 {% endif %}
 {% if show_mobile_promo %}
+    {# Only shown on desktop devices #}
     <li><a href="/mobile_apps" class="btn btn-default"><i class="fa fa-mobile fa-lg"></i> DanceDeets Mobile App</a> helps you find events and tutorials on the go.
 {% endif %}
 </ul></div>
