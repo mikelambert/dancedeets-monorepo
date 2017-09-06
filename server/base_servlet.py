@@ -326,7 +326,7 @@ def get_location(fb_user):
 
 
 class BaseRequestHandler(BareBaseRequestHandler):
-    css_filename = None
+    css_basename = None
 
     def __init__(self, *args, **kwargs):
         self.fb_uid = None
@@ -615,17 +615,15 @@ class BaseRequestHandler(BareBaseRequestHandler):
         # Set response cookie, so future visits will know they've been here in this session
         self.set_cookie(cookie_name, '')
 
-        print 3, self.get_cookie(cookie_name)
         # But if this request doesnt have the cookie, yes
         if not self.get_cookie(cookie_name) is not None:
             return True
         return False
 
     def setup_inlined_css(self):
-        print 1
-        if self.should_inline_css() and self.css_filename:
-            print 2
-            css_filename = os.path.join(os.path.dirname(__file__), 'dist-includes/css/%s.css' % self.css_filename)
+        if self.should_inline_css() and self.css_basename:
+            css_path = self.full_manifest['%s.css' % self.css_basename]
+            css_filename = os.path.join(os.path.dirname(__file__), 'dist/js/%s' % css_path)
             css = open(css_filename).read()
             css = css.replace('url(../', 'url(https://static.dancedeets.com/')
             self.display['inline_css'] = css

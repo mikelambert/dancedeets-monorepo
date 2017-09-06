@@ -9,7 +9,7 @@
 {% if inline_css %}
   <link rel="prefetch" href="{{ static_path('common.css') }}" as="stylesheet">
   <style>
-    {{ inline_css }}
+    {{ inline_css|safe }}
   </style>
 {% else %}
   <link rel="stylesheet" href="{{ static_path('common.css') }}">

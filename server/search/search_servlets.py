@@ -69,6 +69,7 @@ class CalendarHandler(SearchHandler):
 class RelevantHandler(SearchHandler):
     template_name = 'results'
     search_class = search.Search
+    css_basename = 'common'
 
     def handle_search(self, form):
         validated = form.validate()

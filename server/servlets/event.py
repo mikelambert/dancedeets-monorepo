@@ -87,6 +87,8 @@ class RedirectShortUrlHandler(base_servlet.BareBaseRequestHandler):
 
 @app.route(r'/events/(%s)(?:/.*)?' % urls.EVENT_ID_REGEX)
 class ShowEventHandler(base_servlet.BaseRequestHandler):
+    css_basename = 'common'
+
     def requires_login(self):
         return False
 
