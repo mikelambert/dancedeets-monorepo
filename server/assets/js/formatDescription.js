@@ -8,7 +8,6 @@ import React from 'react';
 import Linkify from 'linkify-it';
 import tlds from 'tlds';
 import url from 'url';
-import FBPage from 'facebook-plugins/lib/FBPage';
 import querystring from 'querystring';
 import Helmet from 'react-helmet';
 
@@ -62,6 +61,12 @@ class FacebookPage extends React.Component {
     amp: boolean,
   };
 
+  componentDidMount() {
+    if (window.FB) {
+      window.FB.XFBML.parse();
+    }
+  }
+
   render() {
     const pageUrl = `https://www.facebook.com/${this.props.username}/`;
     return this.props.amp ? (
@@ -83,14 +88,14 @@ class FacebookPage extends React.Component {
         />
       </span>
     ) : (
-      <FBPage
-        appId={this.props.username}
-        href={pageUrl}
-        height={300}
-        smallHeader={false}
-        adaptContainerWidth
-        showFacepile
-        tabs={['messages']}
+      <div
+        className="fb-page"
+        data-href={pageUrl}
+        data-height={300}
+        data-adapt-container-width
+        data-tabs={'messages'}
+        data-show-facepile
+        data-small-header={false}
       />
     );
   }
@@ -278,8 +283,8 @@ class Formatter {
     } else if (parsedUrl.host === 'www.soundcloud.com') {
       this.elements.push(<SoundCloud key={i} url={match.url} />);
     } else if (
-      parsedUrl.host === 'www.facebook.com' ||
-      (parsedUrl.pathname && !/^\/(?:events|groups|)/.test(parsedUrl.pathname))
+      parsedUrl.host === 'www.facebook.com' &&
+      (parsedUrl.pathname && !/^\/(?:events|groups)/.test(parsedUrl.pathname))
     ) {
       const pathname = parsedUrl.pathname;
       let username = pathname.split('/')[1];
