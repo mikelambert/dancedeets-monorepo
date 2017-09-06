@@ -1,3 +1,9 @@
+/**
+ * Copyright 2016 DanceDeets.
+ *
+ * @flow
+ */
+
 import webpack from 'webpack';
 import path from 'path';
 import { argv as env } from 'yargs';
