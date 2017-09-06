@@ -119,9 +119,9 @@ class StreetDanceKoreaScraper(items.WebEventScraper):
         match = re.search(extract_location, response.body)
         if match:
             item['location_name'] = match.group('venue')
-            item['location_address'] = match.group('address') or match.group('venue')
-            item['latitude'] = match.group('latitude')
-            item['longitude'] = match.group('longitude')
+            item['location_address'] = match.group('address')
+            item['latitude'] = float(match.group('latitude'))
+            item['longitude'] = float(match.group('longitude'))
         else:
             # TODO: ...default to generic korea?
             logging.error("Found event with empty location: %s: %s", item['namespaced_id'], item['name'])

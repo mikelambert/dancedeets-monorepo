@@ -243,8 +243,10 @@ def _inner_make_event_findable_for_web_event(db_event, web_event, disable_update
     _inner_common_setup(db_event, disable_updates=disable_updates)
 
     if 'geodata' not in (disable_updates or []):
-        # Don't use cached/stale geocode when constructing the LocationInfo here
-        #db_event.location_geocode = geocode
+        # Don't use cached/stale geocode, when constructing the LocationInfo below.
+        # Force it to re-look-up from the web data.
+        if 'regeocode' not in (disable_updates or []):
+            db_event.location_geocode = None
         location_info = event_locations.LocationInfo(db_event=db_event)
         _update_geodata(db_event, location_info, disable_updates)
 
