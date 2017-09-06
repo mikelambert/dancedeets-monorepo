@@ -422,6 +422,9 @@ function webpack(configName, dependencies = []) {
 // Generate rules for our three webpack configs
 webpack('server');
 webpack('client');
+// For running uncss on a full page render
+webpack('uncss');
+// Fo rrunning uncss on a minimal amp page render
 if (process.env.TRAVIS) {
   // We disable generate-amp-sources on Travis CI,
   // because it dies when trying to 'import webtest'.
@@ -430,7 +433,7 @@ if (process.env.TRAVIS) {
   webpack('amp', ['generate-amp-sources']);
 }
 
-const webpackConfigs = ['amp', 'server', 'client'];
+const webpackConfigs = ['amp', 'server', 'client', 'uncss'];
 
 const suffixes = ['prod:once', 'prod:watch', 'debug:once', 'debug:watch'];
 suffixes.forEach(suffix =>
