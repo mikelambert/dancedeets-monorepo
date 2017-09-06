@@ -52,7 +52,7 @@
     "tap": "^10.2.0",
     "tap-spec": "^4.1.1",
     "tape": "^4.6.3",
-    "uncss": "giakki/uncss",
+    "uncss": "^0.15.0",
     "url-loader": "^0.5.7",
     "username": "^2.1.0",
     "webpack": "^3.5.5",
