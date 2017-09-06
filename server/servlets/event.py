@@ -138,7 +138,7 @@ class ShowEventHandler(base_servlet.BaseRequestHandler):
                     event_amp_css = open(event_amp_css_filename).read()
                     event_amp_css = re.sub(r'@-ms-viewport\s*{.*?}', '', event_amp_css)
                     event_amp_css = re.sub(r'!important', '', event_amp_css)
-                    event_amp_css = event_amp_css.replace('url(..', 'url(/dist-' + self._get_static_version())
+                    event_amp_css = event_amp_css.replace('url(../', 'url(https://static.dancedeets.com/')
                 except IOError as e:
                     logging.exception('Failed to load AMP CSS')
                     event_amp_css = ''
