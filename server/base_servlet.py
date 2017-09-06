@@ -13,6 +13,7 @@ import logging
 import random
 import os
 import re
+import time
 import traceback
 import urllib
 import urlparse
@@ -757,7 +758,6 @@ class BaseRequestHandler(BareBaseRequestHandler):
         self.display['mobile'] = mobile
         self.display['mobile_show_smartbanner'] = True
 
-        import time
         start = time.time()
         self.display['ip_location'] = self.get_location_from_headers()
         timelog.log_time_since('Getting City from IP', start)
