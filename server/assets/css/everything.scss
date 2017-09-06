@@ -1,0 +1,27 @@
+@import '~font-awesome/css/font-awesome.css';
+@import '~jquery.smartbanner/jquery.smartbanner.css';
+@import 'bootstrap-custom.scss';
+
+// media queries to complement our React JS
+@import 'tutorials.scss';
+@import 'resultsSearchBox.scss';
+@import 'results.scss';
+
+@import 'fonts.scss';
+@import 'dancedeets.scss';
+@import 'tabs.scss';
+@import 'eventPage.scss';
+@import 'social-hovers.scss';
+@import 'header.scss';
+@import 'footer.scss';
+@import 'custom.scss';
+@import 'dancedeets-old.scss';
+
+$slick-font-path: '~slick-carousel/slick/fonts/';
+$slick-loader-path: '~slick-carousel/slick/';
+@import '~slick-carousel/slick/slick.scss';
+@import '~slick-carousel/slick/slick-theme.scss';
+@import 'slick.scss';
+
+@import 'rc-collapse.scss';
+@import '~react-spinkit/css/circle.css';
