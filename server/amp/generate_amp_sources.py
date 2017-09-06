@@ -22,9 +22,9 @@ app = TestApp(main.application)
 
 
 class TestEvent(unittest.TestCase):
-    def saveEvent(self, event):
-        r = app.get('/events/%s?amp=1' % event.id)
-        path = os.path.join(os.path.dirname(__file__), './generated/%s.html' % event.id)
+    def saveEvent(self, event, amp=False):
+        r = app.get('/events/%s%s' % (event.id, '?amp=1' if amp else ''))
+        path = os.path.join(os.path.dirname(__file__), './generated/%s%s.html' % (event.id, '-amp' if amp else '-full'))
         body = r.unicode_normal_body
         # All events should have this, if they don't then maybe the React server is broken
         # *Don't* overwrite these pages with broken React server results,
@@ -32,7 +32,7 @@ class TestEvent(unittest.TestCase):
         if 'Add to Calendar' not in body:
             raise Exception('Could not find generated HTML in result:')
         f = open(path, 'w')
-        f.write(body)
+        f.write(body.encode('utf-8'))
 
     def runTest(self):
         event = fixtures.create_event()
@@ -63,9 +63,11 @@ class TestEvent(unittest.TestCase):
         event_updates.update_and_save_fb_events([(event, event.fb_event)])
         event.put()
         self.saveEvent(event)
+        self.saveEvent(event, amp=True)
         event = fixtures.create_web_event(json_body={'photo': 'test:http://url'})
         event.put()
         self.saveEvent(event)
+        self.saveEvent(event, amp=True)
 
 
 def generateAmpPages():
