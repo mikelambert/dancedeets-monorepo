@@ -6,4 +6,8 @@
 
 import uncssWebpackGenerator from './uncssWebpackGenerator';
 
-module.exports = uncssWebpackGenerator('full', ['amp/generated/*-full.html']);
+module.exports = uncssWebpackGenerator(
+  'full',
+  ['amp/generated/*-full.html'],
+  [/#app-install.*/]
+);

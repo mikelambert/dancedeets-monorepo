@@ -14,7 +14,11 @@ import OptimizeCssAssetsPlugin from 'optimize-css-assets-webpack-plugin';
 
 const prod = !env.debug;
 
-export default function uncssWebpackGenerator(outputFilename, htmlFiles) {
+export default function uncssWebpackGenerator(
+  outputFilename,
+  htmlFiles,
+  ignore = undefined
+) {
   return {
     entry: {
       dummy: './assets/js/all-css.js',
@@ -110,6 +114,7 @@ export default function uncssWebpackGenerator(outputFilename, htmlFiles) {
                     }),
                     uncss.postcssPlugin({
                       html: [...htmlFiles, 'amp/empty.html'],
+                      ignore,
                     }),
                   ],
                 },
