@@ -112,7 +112,7 @@ class SearchForm(wtforms.Form):
             return False
         success = True
         if self.start.data and self.end.data:
-            if not self.start.data < self.end.data:
+            if not self.start.data <= self.end.data:
                 self.start.errors.append('start must be less than end')
                 self.end.errors.append('start must be less than end')
                 success = False
