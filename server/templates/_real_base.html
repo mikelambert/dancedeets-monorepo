@@ -35,18 +35,14 @@
       {% endif %}
     });
     ga('require', 'linkid', 'linkid.js');
-    ga('send', 'pageview', {
-      'dimension1':
+    ga('set', 'dimension1',
     {% if user %}
         'logged-in'
     {% else %}
         'logged-out'
     {%- endif %}
-    {% if user %}
-    ,
-        'dimension2': 'has-account'
-    {%- endif %}
-    });
+    );
+    ga('send', 'pageview');
 
     !function(f,b,e,v,n,t,s)
     {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
