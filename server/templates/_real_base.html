@@ -28,11 +28,13 @@
     m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
     })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
 
-    ga('create', 'UA-18831479-1', 'auto', {'siteSpeedSampleRate': 100});
+    ga('create', 'UA-18831479-1', {
+      'siteSpeedSampleRate': 100,
+      {% if user %}
+        'userId': '{{ user.fb_uid}}',
+      {% endif %}
+    });
     ga('require', 'linkid', 'linkid.js');
-    {% if user %}
-      ga('set', '&uid', '{{ user.fb_uid }}');
-    {% endif %}
     ga('send', 'pageview', {
       'dimension1':
     {% if user %}
