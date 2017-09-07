@@ -14,7 +14,7 @@ export async function openUserId(userId: string) {
     // We don't really need to pass fields=, but the FB SDK complains if we don't
     const metadata = await performRequest('GET', userId, {
       metadata: '1',
-      fields: '',
+      fields: 'id',
     });
     const idType = metadata.metadata.type;
     if (idType === 'user') {
