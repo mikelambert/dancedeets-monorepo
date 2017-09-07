@@ -152,7 +152,13 @@ const config = {
         use: ExtractTextPlugin.extract({
           fallback: 'style-loader',
           use: [
-            { loader: 'css-loader?sourceMap' },
+            {
+              loader: 'css-loader',
+              options: {
+                sourceMap: true,
+                modules: true,
+              },
+            },
             {
               loader: 'postcss-loader',
               options: {

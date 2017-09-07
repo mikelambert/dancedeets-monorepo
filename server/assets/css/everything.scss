@@ -1,5 +1,6 @@
-@import '~font-awesome/css/font-awesome.css';
-@import '~jquery.smartbanner/jquery.smartbanner.css';
+@import '~jquery.smartbanner/jquery.smartbanner';
+$fa-font-path: 'font-awesome/fonts';
+@import '~font-awesome/scss/font-awesome.scss';
 @import 'bootstrap-custom.scss';
 
 // media queries to complement our React JS
@@ -17,11 +18,11 @@
 @import 'custom.scss';
 @import 'dancedeets-old.scss';
 
-$slick-font-path: '~slick-carousel/slick/fonts/';
-$slick-loader-path: '~slick-carousel/slick/';
+$slick-font-path: 'slick-carousel/slick/fonts/';
+$slick-loader-path: 'slick-carousel/slick/';
 @import '~slick-carousel/slick/slick.scss';
 @import '~slick-carousel/slick/slick-theme.scss';
 @import 'slick.scss';
 
 @import 'rc-collapse.scss';
-@import '~react-spinkit/css/circle.css';
+@import '~react-spinkit/css/circle';
