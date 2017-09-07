@@ -9,5 +9,5 @@ import uncssWebpackGenerator from './uncssWebpackGenerator';
 module.exports = uncssWebpackGenerator(
   'full',
   ['amp/generated/*-full.html'],
-  [/#app-install.*/]
+  ['.modal']
 );
