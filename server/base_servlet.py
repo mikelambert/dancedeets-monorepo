@@ -190,6 +190,7 @@ class BareBaseRequestHandler(webapp2.RequestHandler, FacebookMixinHandler):
         cookie[name] = str(base64.b64encode(value))
         cookie[name]['path'] = '/'
         cookie[name]['secure'] = ''
+        cookie[name]['domain'] = self._get_cookie_domain()
         if expires is not None:
             cookie[name]['expires'] = expires
         self.response.headers.add_header(*cookie.output().split(': '))
@@ -354,12 +355,10 @@ class BaseRequestHandler(BareBaseRequestHandler):
             user_login_cookie['access_token_md5'] = access_token_md5
         user_login_cookie['hash'] = generate_userlogin_hash(user_login_cookie)
         user_login_string = urllib.quote(json.dumps(user_login_cookie))
-        self.response.set_cookie(
-            self._get_login_cookie_name(), user_login_string, max_age=30 * 24 * 60 * 60, path='/', domain=self._get_login_cookie_domain()
-        )
+        self.response.set_cookie(self._get_login_cookie_name(), user_login_string, max_age=30 * 24 * 60 * 60, path='/')
 
-    def _get_login_cookie_domain(self):
-        domain = self.request.host.replace('www.', '.')
+    def _get_cookie_domain(self):
+        domain = self.request.host
         if ':' in domain:
             domain = domain.split(':')[0]
         return domain
@@ -416,7 +415,7 @@ class BaseRequestHandler(BareBaseRequestHandler):
 
         if self.request.cookies.get('user_login', ''):
             logging.info("Deleting old-style user_login cookie")
-            self.response.set_cookie('user_login', '', max_age=0, path='/', domain=self._get_login_cookie_domain())
+            self.response.set_cookie('user_login', '', max_age=0, path='/', domain=self._get_cookie_domain())
 
         # If the user has changed facebook users, let's automatically re-login at dancedeets
         if trusted_cookie_uid and trusted_cookie_uid != our_cookie_uid:
@@ -610,19 +609,19 @@ class BaseRequestHandler(BareBaseRequestHandler):
             url = str(urlparse.urljoin(new_url, url))
         return super(BaseRequestHandler, self).redirect(url, **kwargs)
 
-    cookie_name = 'Second-Session-Visit'
+    second_session_cookie_name = 'Second-Session-Visit'
 
     def should_inline_css(self):
         if 'inline-css' in self.debug_list:
             return True
         # But if this request doesnt have the cookie, yes
-        if not self.get_cookie(self.cookie_name) is not None:
+        if not self.get_cookie(self.second_session_cookie_name) is not None:
             return True
         return False
 
     def do_not_inline_css_next_time(self):
         # Set response cookie, so future visits will know they've been here in this session
-        self.set_cookie(self.cookie_name, '')
+        self.set_cookie(self.second_session_cookie_name, '')
 
     def setup_inlined_css(self):
         self.do_not_inline_css_next_time()
@@ -760,7 +759,7 @@ class BaseRequestHandler(BareBaseRequestHandler):
         self.display['app_id'] = facebook.FACEBOOK_CONFIG['app_id']
         self.display['prod_mode'] = self.request.app.prod_mode
 
-        self.display['base_hostname'] = 'dancedeets.com' if self.request.app.prod_mode else 'dev.dancedeets.com'
+        self.display['base_hostname'] = 'www.dancedeets.com' if self.request.app.prod_mode else 'dev.dancedeets.com'
         self.display['full_hostname'] = self._get_full_hostname()
 
         self.display['email_suffix'] = ''
