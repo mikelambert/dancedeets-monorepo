@@ -87,7 +87,6 @@ export default function uncssWebpackGenerator(outputFilename, htmlFiles) {
                 loader: 'css-loader',
                 options: {
                   sourceMap: true,
-                  modules: true,
                 },
               },
               {
