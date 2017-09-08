@@ -7,6 +7,7 @@ import urllib
 
 from google.appengine.api import memcache
 from google.cloud import datastore
+from google.cloud import exceptions
 
 from util import runtime
 from util import timelog
@@ -38,13 +39,22 @@ def _save_cache(ip, data):
     client.put(obj)
 
 
+def _client_get(key):
+    try:
+        return client.get(key)
+    except exceptions.Unauthorized:
+        logging.error('Error using old client, recreating a new one')
+        generate_client()
+        return client.get(key)
+
+
 def _get_cache(ip):
     start = time.time()
     data_dump = memcache.get(_memkey(ip))
     timelog.log_time_since('Getting IP Memcache', start)
     if not data_dump:
         start = time.time()
-        obj = client.get(_dbkey(ip))
+        obj = _client_get(_dbkey(ip))
         timelog.log_time_since('Getting IP DBCache', start)
         if not obj:
             return None
