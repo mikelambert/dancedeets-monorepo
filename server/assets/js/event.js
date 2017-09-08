@@ -5,6 +5,7 @@
  */
 
 import React from 'react';
+import moment from 'moment';
 import FormatText from 'react-format-text';
 import querystring from 'querystring';
 import { injectIntl, intlShape } from 'react-intl';
@@ -12,9 +13,9 @@ import Helmet from 'react-helmet';
 import { Share as TwitterShare } from 'react-twitter-widgets';
 import ExecutionEnvironment from 'exenv';
 import { intlWeb } from 'dancedeets-common/js/intl';
-import { formatStartEnd } from 'dancedeets-common/js/dates';
+import { formatDateTime, formatStartEnd } from 'dancedeets-common/js/dates';
 import { Event } from 'dancedeets-common/js/events/models';
-import type { JSONObject } from 'dancedeets-common/js/events/models';
+import type { JSONObject, Admin } from 'dancedeets-common/js/events/models';
 import { formatAttending } from 'dancedeets-common/js/events/helpers';
 import messages from 'dancedeets-common/js/events/messages';
 import { getHostname } from 'dancedeets-common/js/util/url';
@@ -492,6 +493,50 @@ class MapWithLinks extends React.Component {
   }
 }
 
+type Post = Object;
+
+class _WallPost extends React.Component {
+  props: {
+    post: Post,
+    // Self-managed props
+    intl: intlShape,
+  };
+
+  render() {
+    return (
+      <Card newStyle>
+        <div className="card-header">
+          <span className="card-header-text">
+            {formatDateTime(
+              moment(this.props.post.created_time),
+              this.props.intl
+            )}
+          </span>
+        </div>
+        <div className="grey-top-border card-contents">
+          <FormatDescription>{this.props.post.message}</FormatDescription>
+        </div>
+      </Card>
+    );
+  }
+}
+const WallPost = injectIntl(_WallPost);
+
+class WallPosts extends React.Component {
+  props: {
+    posts: Array<Post>,
+    admins: Array<Admin>,
+  };
+
+  render() {
+    const adminIds = this.props.admins.map(x => x.id);
+    const adminPosts = this.props.posts.filter(x =>
+      adminIds.includes(x.from.id)
+    );
+    return <div>{adminPosts.map(x => <WallPost post={x} />)}</div>;
+  }
+}
+
 class Description extends React.Component {
   props: {
     event: Event,
@@ -657,6 +702,11 @@ export class EventPage extends React.Component {
           </div>
           <div className="col-sm-7">
             <Description event={event} amp={this.props.amp} />
+            <WallPosts
+              amp={this.props.amp}
+              posts={this.props.event.posts}
+              admins={this.props.event.admins}
+            />
           </div>
         </div>
         <div className="col-xs-12">{adFooter}</div>

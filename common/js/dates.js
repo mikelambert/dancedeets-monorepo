@@ -38,7 +38,7 @@ function formatTime(date, intl) {
   return intl.formatTime(date);
 }
 
-function formatDateTime(date, intl) {
+export function formatDateTime(date, intl) {
   const format = { ...weekdayDate, ...weekdayTime };
   if (!dateIsNearby(date, intl)) {
     format.year = 'numeric';
