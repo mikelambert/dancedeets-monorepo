@@ -14,9 +14,10 @@ import Helmet from 'react-helmet';
 const linkify = Linkify();
 linkify.tlds(tlds);
 
-class SoundCloud extends React.Component {
+class OEmbed extends React.Component {
   props: {
     url: string,
+    getOembedUrl: (pageUrl: string) => string, // eslint-disable-line react/no-unused-prop-types
   };
 
   state: {
@@ -39,9 +40,10 @@ class SoundCloud extends React.Component {
   }
 
   async loadEmbed() {
-    const args = querystring.stringify({ url: this.props.url, format: 'json' });
-    const oembedUrl = `https://soundcloud.com/oembed?${args}`;
-    const result = await fetch(oembedUrl);
+    const oembedUrl = this.props.getOembedUrl(this.props.url);
+    console.log(oembedUrl);
+    const result = await fetch(oembedUrl, { mode: 'no-cors' });
+    console.log(await result.text());
     const data = await result.json();
     this.setState({ embedCode: data.html });
   }
@@ -52,6 +54,25 @@ class SoundCloud extends React.Component {
     } else {
       return <a href={this.props.url}>{this.props.url}</a>;
     }
+  }
+}
+
+class SoundCloud extends React.Component {
+  props: {
+    url: string,
+  };
+
+  render() {
+    return (
+      <OEmbed
+        url={this.props.url}
+        getOembedUrl={mediaUrl =>
+          `https://soundcloud.com/oembed?${querystring.stringify({
+            url: mediaUrl,
+            format: 'json',
+          })}`}
+      />
+    );
   }
 }
 
@@ -96,6 +117,79 @@ class FacebookPage extends React.Component {
         data-tabs={'messages'}
         data-show-facepile
         data-small-header={false}
+      />
+    );
+  }
+}
+
+class FacebookPost extends React.Component {
+  static isPostUrl(mediaUrl) {
+    return (
+      mediaUrl.includes('/posts/') ||
+      mediaUrl.includes('/activity/') ||
+      mediaUrl.includes('/photo.php?fbid=') ||
+      mediaUrl.includes('/photo.php?fbid=') ||
+      mediaUrl.includes('/photos/') ||
+      mediaUrl.includes('/permalink.php?story_fbid=') ||
+      mediaUrl.includes('/media/set?set=') ||
+      mediaUrl.includes('/questions/') ||
+      mediaUrl.includes('/notes/') ||
+      false
+    );
+    /*
+    https://www.facebook.com/{page-name}/posts/{post-id}
+    https://www.facebook.com/{username}/posts/{post-id}
+    https://www.facebook.com/{username}/activity/{activity-id}
+    https://www.facebook.com/photo.php?fbid={photo-id}
+    https://www.facebook.com/photos/{photo-id}
+    https://www.facebook.com/permalink.php?story_fbid={post-id}
+    https://www.facebook.com/media/set?set={set-id}
+    https://www.facebook.com/questions/{question-id}
+    https://www.facebook.com/notes/{username}/{note-url}/{note-id}
+    */
+  }
+
+  props: {
+    url: string,
+  };
+
+  render() {
+    return (
+      <OEmbed
+        url={this.props.url}
+        getOembedUrl={mediaUrl =>
+          `https://www.facebook.com/plugins/post/oembed.json/?${querystring.stringify(
+            { url: mediaUrl }
+          )}`}
+      />
+    );
+  }
+}
+
+class FacebookVideo extends React.Component {
+  static isVideoUrl(mediaUrl) {
+    return mediaUrl.includes('/video.php') || mediaUrl.includes('/videos/');
+    /*
+    https://www.facebook.com/{page-name}/videos/{video-id}/
+    https://www.facebook.com/{username}/videos/{video-id}/
+    https://www.facebook.com/video.php?id={video-id}
+    https://www.facebook.com/video.php?v={video-id}
+    */
+  }
+
+  props: {
+    url: string,
+  };
+
+  render() {
+    // <iframe src="https://www.facebook.com/plugins/video.php?href=https%3A%2F%2Fwww.facebook.com%2FLADbible%2Fvideos%2F3153395898040912%2F&show_text=0&width=317" width="317" height="476" style="border:none;overflow:hidden" scrolling="no" frameborder="0" allowTransparency="true" allowFullScreen="true"></iframe>
+    return (
+      <OEmbed
+        url={this.props.url}
+        getOembedUrl={mediaUrl =>
+          `https://www.facebook.com/plugins/video/oembed.json/?${querystring.stringify(
+            { url: mediaUrl }
+          )}`}
       />
     );
   }
@@ -284,7 +378,20 @@ class Formatter {
       this.elements.push(<SoundCloud key={i} url={match.url} />);
     } else if (
       parsedUrl.host === 'www.facebook.com' &&
-      (parsedUrl.pathname && !/^\/(?:events|groups)/.test(parsedUrl.pathname))
+      FacebookPost.isPostUrl(match.url) &&
+      false
+    ) {
+      this.elements.push(<FacebookPost key={i} url={match.url} />);
+    } else if (
+      parsedUrl.host === 'www.facebook.com' &&
+      FacebookVideo.isVideoUrl(match.url) &&
+      false
+    ) {
+      this.elements.push(<FacebookVideo key={i} url={match.url} />);
+    } else if (
+      parsedUrl.host === 'www.facebook.com' &&
+      parsedUrl.pathname &&
+      !/^\/(?:events|groups)/.test(parsedUrl.pathname)
     ) {
       const pathname = parsedUrl.pathname;
       let username = pathname.split('/')[1];
