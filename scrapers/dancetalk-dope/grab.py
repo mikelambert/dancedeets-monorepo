@@ -11,11 +11,25 @@ if not os.path.exists('download'):
 # Mix of streetdance.wang (autoincrement ids) and dope.ren (hashed ids?)
 
 
-def get_list():
-    json_filename = 'condition.json'
-    data = urllib.urlopen('https://www.dope.ren/dope/activity/condition.do').read()
-    open(json_filename, 'w').write(data)
+def get_data(url):
+    print url
+    data = urllib.urlopen(url).read()
     return json.loads(data)
+
+
+def get_list():
+    first_data = get_data('https://www.dope.ren/dope/activity/twoCondition.do?startPage=1')
+    activities = []
+    for i in range(first_data['activityTotalPage']):
+        new_data = get_data('https://www.dope.ren/dope/activity/twoCondition.do?startPage=%s' % (i + 1))
+        open('twoCondition%s.json' % (i + 1), 'w').write(json.dumps(new_data))
+        activities.extend(new_data['activity'])
+    # No longer works:
+    # data = urllib.urlopen('https://www.dope.ren/dope/activity/condition.do').read()
+
+    data = {'activity': activities, 'activityTotalPage': first_data['activityTotalPage']}
+    open('twoCondition.json', 'w').write(json.dumps(data))
+    return data
 
 
 def get_id(id):
