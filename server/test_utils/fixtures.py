@@ -22,6 +22,9 @@ def create_event(event_id='1000001', start_time=None, location='NYC'):
 
     picture_url = '%s/picture?redirect=false&type=large' % base_url
 
+    wall_fields_str = '%2C'.join(fb_api.OBJ_EVENT_WALL_FIELDS)
+    wall_url = '%s/feed?fields=%s&limit=1000' % (base_url, wall_fields_str)
+
     fb_api.FBAPI.results.update({
         url: (200, {
             "name": "Event Title",
@@ -42,6 +45,9 @@ def create_event(event_id='1000001', start_time=None, location='NYC'):
                 "url": "test: image url",
             }
         }),
+        wall_url: (200, {
+            'data': []
+        })
     })
 
     fbl = fb_api.FBLookup(None, None)

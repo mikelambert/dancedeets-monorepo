@@ -530,8 +530,8 @@ class WallPosts extends React.Component {
 
   render() {
     const adminIds = this.props.admins.map(x => x.id);
-    const adminPosts = this.props.posts.filter(x =>
-      adminIds.includes(x.from.id)
+    const adminPosts = this.props.posts.filter(
+      x => x.from && adminIds.includes(x.from.id)
     );
     return <div>{adminPosts.map((x, i) => <WallPost key={i} post={x} />)}</div>;
   }

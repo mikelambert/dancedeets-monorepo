@@ -574,6 +574,8 @@ def canonicalize_post_data(post, version):
             'id': post['from']['id'],
             'name': post['from']['name'],
         }
+    else:
+        logging.fino('post without from: %s', post)
     return post_api
 
 
@@ -715,6 +717,8 @@ def canonicalize_event_data(db_event, event_wall, event_keywords, version):
         posts = event_wall['wall']['data']
         api_posts = [canonicalize_post_data(x, version) for x in posts if x.get('message')]
         event_api['posts'] = api_posts
+    else:
+        event_api['posts'] = []
 
     event_api['annotations'] = annotations
     event_api['ticket_uri'] = db_event.ticket_uri
@@ -837,7 +841,10 @@ class EventHandler(ApiHandler):
         # get venue address and stuffs
         # pass in as rewritten db_event for computing json_data
 
-        fb_event_wall = self.fbl.get(fb_api.LookupEventWall, event_id)
+        if db_event.is_fb_event:
+            fb_event_wall = self.fbl.get(fb_api.LookupEventWall, event_id)
+        else:
+            fb_event_wall = None
         json_data = canonicalize_event_data(db_event, fb_event_wall, None, self.version)
 
         # Ten minute expiry on data we return

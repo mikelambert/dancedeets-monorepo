@@ -120,7 +120,10 @@ class ShowEventHandler(base_servlet.BaseRequestHandler):
         if self.fb_uid:
             rsvps = rsvp.get_rsvps(self.fbl)
 
-        fb_event_wall = self.fbl.get(fb_api.LookupEventWall, event_id)
+        if db_event.is_fb_event:
+            fb_event_wall = self.fbl.get(fb_api.LookupEventWall, event_id)
+        else:
+            fb_event_wall = None
 
         # Render React component for inclusion in our template:
         api_event = api.canonicalize_event_data(db_event, fb_event_wall, None, version=(1, 3))
