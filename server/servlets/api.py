@@ -215,7 +215,7 @@ def build_search_results_api(form, search_query, search_results, version, need_f
     for result in search_results:
         try:
             if need_full_event:
-                json_result = canonicalize_event_data(result.db_event, result.event_keywords, version)
+                json_result = canonicalize_event_data(result.db_event, None, result.event_keywords, version)
             else:
                 json_result = canonicalize_search_event_data(result, version)
             json_results.append(json_result)
@@ -227,7 +227,7 @@ def build_search_results_api(form, search_query, search_results, version, need_f
         featured_infos = featured.get_featured_events_for(southwest, northeast)
         for featured_info in featured_infos:
             try:
-                featured_info['event'] = canonicalize_event_data(featured_info['event'], [], version)
+                featured_info['event'] = canonicalize_event_data(featured_info['event'], None, [], version)
                 real_featured_infos.append(featured_info)
             except Exception as e:
                 logging.exception("Error processing event %s: %s" % (result.event_id, e))
@@ -544,7 +544,40 @@ def canonicalize_search_event_data(result, version):
     return event_api
 
 
-def canonicalize_event_data(db_event, event_keywords, version):
+def canonicalize_post_data(post, version):
+    """
+    post['created_time']
+    post['updated_time']
+
+    post['from']
+        post['from']['id']
+        post['from']['name']
+
+    post['message']
+        post['message_tags'][0]['id']
+        post['message_tags'][0]['length']
+        post['message_tags'][0]['offset']
+        post['message_tags'][0]['name']
+        post['message_tags'][0]['type']
+
+    post['link']
+    post['picture']
+    post['name']
+    """
+    post_api = {}
+    post_api['created_time'] = post['created_time']
+    post_api['message'] = post['message']
+    if 'link' in post:
+        post_api['link'] = post['link']
+    if 'from' in post:
+        post_api['from'] = {
+            'id': post['from']['id'],
+            'name': post['from']['name'],
+        }
+    return post_api
+
+
+def canonicalize_event_data(db_event, event_wall, event_keywords, version):
     event_api = {}
     event_api['id'] = db_event.id
     event_api['name'] = db_event.name
@@ -678,6 +711,11 @@ def canonicalize_event_data(db_event, event_keywords, version):
     if db_event:  # TODO: When is this not true?
         annotations['categories'] = event_types.humanize_categories(db_event.auto_categories)
 
+    if event_wall and not event_wall['empty']:
+        posts = event_wall['wall']['data']
+        api_posts = [canonicalize_post_data(x, version) for x in posts if x.get('message')]
+        event_api['posts'] = api_posts
+
     event_api['annotations'] = annotations
     event_api['ticket_uri'] = db_event.ticket_uri
     # maybe handle: 'timezone', 'updated_time'
@@ -799,7 +837,8 @@ class EventHandler(ApiHandler):
         # get venue address and stuffs
         # pass in as rewritten db_event for computing json_data
 
-        json_data = canonicalize_event_data(db_event, None, self.version)
+        fb_event_wall = self.fbl.get(fb_api.LookupEventWall, event_id)
+        json_data = canonicalize_event_data(db_event, fb_event_wall, None, self.version)
 
         # Ten minute expiry on data we return
         self.response.headers['Cache-Control'] = 'public, max-age=%s' % (10 * 60)

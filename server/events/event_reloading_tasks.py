@@ -54,6 +54,7 @@ def load_fb_events_using_backup_tokens(event_ids, allow_cache, only_if_updated, 
             fbl.allow_cache = allow_cache
             try:
                 fbl.request(fb_api.LookupEvent, db_event.fb_event_id)
+                fbl.request(fb_api.LookupEventWall, db_event.fb_event_id)
                 fbl.request(fb_api.LookupEventAttending, db_event.fb_event_id)
                 fbl.request(fb_api.LookupEventAttendingMaybe, db_event.fb_event_id)
                 fbl.batch_fetch()
@@ -109,6 +110,7 @@ def yield_load_fb_event(fbl, all_events):
     logging.info("loading db events %s", [db_event.fb_event_id for db_event in db_events])
 
     fbl.request_multi(fb_api.LookupEvent, [x.fb_event_id for x in db_events])
+    fbl.request_multi(fb_api.LookupEventWall, [x.fb_event_id for x in db_events])
     fbl.request_multi(fb_api.LookupEventAttending, [x.fb_event_id for x in db_events])
     # We load these too, just in case we want to check up on our auto-attendee criteria for events
     fbl.request_multi(fb_api.LookupEventAttendingMaybe, [x.fb_event_id for x in db_events])

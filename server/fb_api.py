@@ -35,6 +35,7 @@ OBJ_EVENT_FIELDS = (
     'description', 'end_time', 'id', 'name', 'owner', 'type', 'start_time', 'place', 'cover', 'admins', 'parent_group', 'ticket_uri',
     'timezone', 'updated_time', 'attending_count', 'declined_count', 'maybe_count', 'noreply_count', 'is_page_owned', 'is_canceled'
 )
+OBJ_EVENT_WALL_FIELDS = ('id', 'created_time', 'updated_time', 'message', 'message_tags', 'from', 'link', 'name', 'picture')
 
 OBJ_USER_FIELDS = ('name', 'email', 'first_name', 'last_name', 'locale', 'gender', 'picture', 'link', 'timezone')
 
@@ -205,6 +206,22 @@ class LookupEvent(LookupType):
     @classmethod
     def cache_key(cls, object_id, fetching_uid):
         return (USERLESS_UID, object_id, 'OBJ_EVENT')
+
+
+class LookupEventWall(LookupType):
+    @classmethod
+    def track_lookup(cls):
+        mr.increment('fb-lookups-event-wall')
+
+    @classmethod
+    def get_lookups(cls, object_id):
+        return [
+            ('wall', cls.url('%s/feed' % object_id, limit=1000, fields=OBJ_EVENT_WALL_FIELDS)),
+        ]
+
+    @classmethod
+    def cache_key(cls, object_id, fetching_uid):
+        return (USERLESS_UID, object_id, 'OBJ_EVENT_WALL')
 
 
 class LookupEventPageComments(LookupType):
