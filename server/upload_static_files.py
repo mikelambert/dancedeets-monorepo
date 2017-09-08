@@ -29,11 +29,17 @@ def cleanup(path):
 cleanup('dist/js')
 cleanup('dist/css/')
 
+user = getpass.getuser()
+
 # -m run copies in parallel
 # -P preserve mtimes
 # -n don't overwrite existing files
 # -z compress files on upload
 # -R recursive
-cmd = '/Users/%s/google-cloud-sdk/bin/gsutil -m cp -P -n -z svg,css,js,json,map -R dist/{js,css,img,fonts,*.json} gs://dancedeets-static/' % getpass.getuser(
-)
+cmd = '/Users/%s/google-cloud-sdk/bin/gsutil -m cp -P -n -z svg,css,js,json,map -R dist/{js,css,img,fonts,*.json} gs://dancedeets-static/' % user
+subprocess.check_output(cmd, shell=True)
+
+max_age = 60 * 60 * 24
+paths = 'gs://dancedeets-static/img'
+cmd = '/Users/%s/google-cloud-sdk/bin/gsutil -m setmeta -r -h "Cache-Control:public, max-age=%s" %s' % (user, max_age, paths)
 subprocess.check_output(cmd, shell=True)
