@@ -22,13 +22,13 @@ def get_list():
     activities = []
     for i in range(first_data['activityTotalPage']):
         new_data = get_data('https://www.dope.ren/dope/activity/twoCondition.do?startPage=%s' % (i + 1))
-        open('twoCondition%s.json' % (i + 1), 'w').write(json.dumps(new_data))
+        open('download/twoCondition%s.json' % (i + 1), 'w').write(json.dumps(new_data))
         activities.extend(new_data['activity'])
     # No longer works:
     # data = urllib.urlopen('https://www.dope.ren/dope/activity/condition.do').read()
 
     data = {'activity': activities, 'activityTotalPage': first_data['activityTotalPage']}
-    open('twoCondition.json', 'w').write(json.dumps(data))
+    open('download/twoCondition.json', 'w').write(json.dumps(data))
     return data
 
 
