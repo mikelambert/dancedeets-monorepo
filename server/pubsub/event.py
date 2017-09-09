@@ -32,7 +32,7 @@ def _event_has_enough_attendees(db_event):
     fbl = user.get_fblookup()
     matcher = event_attendee_classifier.get_matcher(fbl, db_event.fb_event)
     logging.info('Checking event %s and found %s overlap_ids', db_event.id, len(matcher.overlap_ids))
-    if len(matcher.overlap_ids) > 20:
+    if len(matcher.overlap_ids) > 25:
         return True
     else:
         return False
