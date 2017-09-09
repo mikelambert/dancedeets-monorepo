@@ -505,6 +505,12 @@ class _WallPost extends React.Component {
   };
 
   render() {
+    let message = this.props.post.message;
+    if (!message.includes(this.props.post.link)) {
+      message += `\n${this.props.post.link}`;
+    }
+    // TODO: alternately, should we just process the link using the magical tools
+    // and leave the wallpost message itself alone...
     return (
       <Card newStyle>
         <div className="card-header">
@@ -516,9 +522,7 @@ class _WallPost extends React.Component {
           </span>
         </div>
         <div className="grey-top-border card-contents">
-          <FormatDescription amp={this.props.amp}>
-            {this.props.post.message}
-          </FormatDescription>
+          <FormatDescription amp={this.props.amp}>{message}</FormatDescription>
         </div>
       </Card>
     );

@@ -165,24 +165,7 @@ class FacebookPost extends React.Component {
   }
 
   render() {
-    /*
-    console.log('post');
-    return (
-      <div
-        className="fb-video"
-        data-href="https://www.facebook.com/LADbible/videos/3153395898040912/"
-      />
-    );
-    */
-    return (
-      <OEmbed
-        url={this.props.url}
-        getOembedUrl={mediaUrl =>
-          `https://www.facebook.com/plugins/post/oembed.json/?${querystring.stringify(
-            { url: mediaUrl }
-          )}`}
-      />
-    );
+    return <div className="fb-post" data-href={this.props.url} />;
   }
 }
 
@@ -208,25 +191,7 @@ class FacebookVideo extends React.Component {
   }
 
   render() {
-    /*
-    console.log('video');
-    return (
-      <div
-        className="fb-video"
-        data-href="https://www.facebook.com/LADbible/videos/3153395898040912/"
-      />
-    );
-    */
-    // <iframe src="https://www.facebook.com/plugins/video.php?href=https%3A%2F%2Fwww.facebook.com%2FLADbible%2Fvideos%2F3153395898040912%2F&show_text=0&width=317" width="317" height="476" style="border:none;overflow:hidden" scrolling="no" frameborder="0" allowTransparency="true" allowFullScreen="true"></iframe>
-    return (
-      <OEmbed
-        url={this.props.url}
-        getOembedUrl={mediaUrl =>
-          `https://www.facebook.com/plugins/video/oembed.json/?${querystring.stringify(
-            { url: mediaUrl }
-          )}`}
-      />
-    );
+    return <div className="fb-video" data-href={this.props.url} />;
   }
 }
 
@@ -429,14 +394,12 @@ class Formatter {
       this.elements.push(<SoundCloud key={i} url={match.url} />);
     } else if (
       parsedUrl.host === 'www.facebook.com' &&
-      FacebookPost.isPostUrl(match.url) &&
-      false
+      FacebookPost.isPostUrl(match.url)
     ) {
       this.elements.push(<FacebookPost key={i} url={match.url} />);
     } else if (
       parsedUrl.host === 'www.facebook.com' &&
-      FacebookVideo.isVideoUrl(match.url) &&
-      false
+      FacebookVideo.isVideoUrl(match.url)
     ) {
       this.elements.push(<FacebookVideo key={i} url={match.url} />);
     } else if (
