@@ -498,6 +498,8 @@ type Post = Object;
 class _WallPost extends React.Component {
   props: {
     post: Post,
+    amp: Boolean,
+
     // Self-managed props
     intl: intlShape,
   };
@@ -514,7 +516,9 @@ class _WallPost extends React.Component {
           </span>
         </div>
         <div className="grey-top-border card-contents">
-          <FormatDescription>{this.props.post.message}</FormatDescription>
+          <FormatDescription amp={this.props.amp}>
+            {this.props.post.message}
+          </FormatDescription>
         </div>
       </Card>
     );
@@ -526,6 +530,7 @@ class WallPosts extends React.Component {
   props: {
     posts: Array<Post>,
     admins: Array<Admin>,
+    amp: Boolean,
   };
 
   render() {
@@ -533,7 +538,13 @@ class WallPosts extends React.Component {
     const adminPosts = this.props.posts.filter(
       x => x.from && adminIds.includes(x.from.id)
     );
-    return <div>{adminPosts.map((x, i) => <WallPost key={i} post={x} />)}</div>;
+    return (
+      <div>
+        {adminPosts.map((x, i) => (
+          <WallPost key={i} post={x} amp={this.props.amp} />
+        ))}
+      </div>
+    );
   }
 }
 
