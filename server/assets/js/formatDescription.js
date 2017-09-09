@@ -10,6 +10,7 @@ import tlds from 'tlds';
 import url from 'url';
 import querystring from 'querystring';
 import Helmet from 'react-helmet';
+import ExecutionEnvironment from 'exenv';
 
 const linkify = Linkify();
 linkify.tlds(tlds);
@@ -40,6 +41,10 @@ class OEmbed extends React.Component {
   }
 
   async loadEmbed() {
+    // Don't try to load/render oembeds serverside
+    if (!ExecutionEnvironment.canUseDOM) {
+      return;
+    }
     const oembedUrl = this.props.getOembedUrl(this.props.url);
     console.log(oembedUrl);
     const result = await fetch(oembedUrl, { mode: 'no-cors' });
@@ -153,7 +158,22 @@ class FacebookPost extends React.Component {
     url: string,
   };
 
+  componentDidMount() {
+    if (window.FB) {
+      window.FB.XFBML.parse();
+    }
+  }
+
   render() {
+    /*
+    console.log('post');
+    return (
+      <div
+        className="fb-video"
+        data-href="https://www.facebook.com/LADbible/videos/3153395898040912/"
+      />
+    );
+    */
     return (
       <OEmbed
         url={this.props.url}
@@ -181,7 +201,22 @@ class FacebookVideo extends React.Component {
     url: string,
   };
 
+  componentDidMount() {
+    if (window.FB) {
+      window.FB.XFBML.parse();
+    }
+  }
+
   render() {
+    /*
+    console.log('video');
+    return (
+      <div
+        className="fb-video"
+        data-href="https://www.facebook.com/LADbible/videos/3153395898040912/"
+      />
+    );
+    */
     // <iframe src="https://www.facebook.com/plugins/video.php?href=https%3A%2F%2Fwww.facebook.com%2FLADbible%2Fvideos%2F3153395898040912%2F&show_text=0&width=317" width="317" height="476" style="border:none;overflow:hidden" scrolling="no" frameborder="0" allowTransparency="true" allowFullScreen="true"></iframe>
     return (
       <OEmbed
@@ -191,6 +226,46 @@ class FacebookVideo extends React.Component {
             { url: mediaUrl }
           )}`}
       />
+    );
+  }
+}
+
+class YouTube extends React.Component {
+  props: {
+    amp: Boolean,
+    videoId: string,
+  };
+
+  render() {
+    return this.props.amp ? (
+      <span>
+        <Helmet
+          script={[
+            {
+              async: 'async',
+              'custom-element': 'amp-youtube',
+              src: 'https://cdn.ampproject.org/v0/amp-youtube-0.1.js',
+            },
+          ]}
+        />
+        <amp-youtube
+          data-videoid={this.props.videoId}
+          layout="responsive"
+          width="480"
+          height="270"
+        />
+      </span>
+    ) : (
+      <div className="video-container">
+        <iframe
+          id="ytplayer"
+          type="text/html"
+          width="640"
+          height="360"
+          src={`https://www.youtube.com/embed/${this.props.videoId}`}
+          frameBorder="0"
+        />
+      </div>
     );
   }
 }
@@ -299,36 +374,12 @@ class Formatter {
     ) {
       const videoId = parsedUrl.query.v;
       this.elements.push(
-        this.options.amp ? (
-          <span>
-            <Helmet
-              script={[
-                {
-                  async: 'async',
-                  'custom-element': 'amp-youtube',
-                  src: 'https://cdn.ampproject.org/v0/amp-youtube-0.1.js',
-                },
-              ]}
-            />
-            <amp-youtube
-              data-videoid={videoId}
-              layout="responsive"
-              width="480"
-              height="270"
-            />
-          </span>
-        ) : (
-          <div key={i} className="video-container">
-            <iframe
-              id="ytplayer"
-              type="text/html"
-              width="640"
-              height="360"
-              src={`https://www.youtube.com/embed/${videoId}`}
-              frameBorder="0"
-            />
-          </div>
-        )
+        <YouTube key={i} videoId={videoId} amp={this.options.amp} />
+      );
+    } else if (parsedUrl.host === 'youtu.be') {
+      const videoId = parsedUrl.pathname.slice(1);
+      this.elements.push(
+        <YouTube key={i} videoId={videoId} amp={this.options.amp} />
       );
     } else if (
       parsedUrl.host === 'www.youtube.com' &&
@@ -339,7 +390,7 @@ class Formatter {
       const playlistId = parsedUrl.query.list;
       const embedUrl = `https://www.youtube.com/embed/videoseries?list=${playlistId}`;
       this.elements.push(
-        this.options.amp ? (
+        this.props.amp ? (
           <span>
             <Helmet
               script={[
