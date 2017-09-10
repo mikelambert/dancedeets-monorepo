@@ -10,7 +10,6 @@ import moment from 'moment';
 import ExecutionEnvironment from 'exenv';
 import isEqual from 'lodash/isEqual';
 import { injectIntl, intlShape } from 'react-intl';
-import { StickyContainer, Sticky } from 'react-sticky';
 import Slider from 'react-slick';
 import Spinner from 'react-spinkit';
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
@@ -327,9 +326,9 @@ class _EventsList extends React.Component {
       ));
 
       resultItems.push(
-        <Sticky key={header}>
-          <div className="bold card-background">{header}</div>
-        </Sticky>
+        <div key={header} className="bold card-background">
+          {header}
+        </div>
       );
 
       if (
@@ -370,7 +369,7 @@ class _EventsList extends React.Component {
     // Set eveyr-other to 1000 to temporarily disable interspersed ads
     const monetizedResultItems = insertEvery(resultItems, adItem, 1000);
 
-    return <StickyContainer>{monetizedResultItems}</StickyContainer>;
+    return <div>{monetizedResultItems}</div>;
   }
 }
 const EventsList = injectIntl(_EventsList);
