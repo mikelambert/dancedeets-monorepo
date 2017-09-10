@@ -82,7 +82,9 @@ class RedirectToEventHandler(base_servlet.BaseRequestHandler):
 @app.short_route(r'/e-(%s)' % urls.EVENT_ID_REGEX)
 class RedirectShortUrlHandler(base_servlet.BareBaseRequestHandler):
     def get(self, event_id):
-        return self.redirect(urls.dd_event_url(event_id))
+        source = self.request.get('s', 'empty')
+        medium = self.request.get('m', 'dd.events')
+        return self.redirect(urls.dd_event_url(event_id), {'utm_source': source, 'utm_medium': medium, 'utm_campaign': 'dd.events'})
 
 
 @app.route(r'/events/(%s)(?:/.*)?' % urls.EVENT_ID_REGEX)
