@@ -668,10 +668,13 @@ class BaseRequestHandler(BareBaseRequestHandler):
         # This only 'takes effect' when it is returned on an https domain,
         # so we still need to make sure to add an https redirect.
         https_redirect_duration = 60 * 60 * 24 * 7
-        if url.netloc != 'dev.dancedeets.com':
+        if 'dev.dancedeets.com' not in url.netloc:
             self.response.headers.add_header('Strict-Transport-Security', 'max-age=%s' % https_redirect_duration)
         # This is how we detect if the incoming url is on https in GAE Flex (we cannot trust request.url)
-        if request.method == 'GET' and request.headers.get('x-forwarded-proto', 'http') == 'http':
+        logging.info('url %s', url.netloc)
+        if request.method == 'GET' and request.headers.get(
+            'x-forwarded-proto', 'http'
+        ) == 'http' and 'dev.dancedeets.com' not in url.netloc:
             new_url = urlparse.urlunsplit([
                 'https',
                 url.netloc,
