@@ -134,6 +134,15 @@ class RelevantHandler(SearchHandler):
             )
             self.setup_react_template('eventSearchResults.js', props)
 
+        if form.location.data and form.keywords.data:
+            self.display['result_title'] = '%s dance events near %s' % (form.keywords.data, form.location.data)
+        elif form.location.data:
+            self.display['result_title'] = '%s dance events' % form.location.data
+        elif form.keywords.data:
+            self.display['result_title'] = '%s dance events' % form.keywords.data
+        else:
+            self.display['result_title'] = 'Dance events'
+
         self.render_template(self.template_name)
 
 
