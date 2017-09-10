@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 import logging
+import re
 import time
 
 import app
@@ -97,7 +98,8 @@ class RelevantHandler(SearchHandler):
                     # TODO: This is disabled for now.
                     # Turns out setting a limit doesn't return the highest-20-ranked items.
                     # Instead it returns a random selection. Making it harder to use.
-                    initial_result_limit = 20
+                    if not re.search('bot|crawl|spider', (self.request.user_agent or '').lower()):
+                        initial_result_limit = 20
                     searcher.top_n = initial_result_limit
                     search_results = searcher.get_search_results()
                     has_more_results = searcher.limit_hit
