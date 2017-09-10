@@ -311,6 +311,9 @@ class _EventsList extends React.Component {
     const hasMoreEventsToFetch = Boolean(this.props.loadMoreContent);
     const eventIndexThreshold = Math.round(this.props.events.length * 0.75);
 
+    let waypoint = (
+      <Waypoint key="waypoint" onEnter={this.props.loadMoreContent} />
+    );
     groupEventsByStartDate(
       this.props.intl,
       this.props.events
@@ -337,14 +340,18 @@ class _EventsList extends React.Component {
         renderedEvents.splice(
           eventIndexThreshold - overallEventIndex,
           0,
-          <Waypoint key="waypoint" onEnter={this.props.loadMoreContent} />
+          waypoint
         );
+        waypoint = null;
       }
       resultItems.push(...renderedEvents);
       overallEventIndex += events.length;
     });
 
     if (hasMoreEventsToFetch) {
+      if (waypoint) {
+        resultItems.push(waypoint);
+      }
       resultItems.push(<Loading key="bottom_loading" style={{ margin: 80 }} />);
     }
 
