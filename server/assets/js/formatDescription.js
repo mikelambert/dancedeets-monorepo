@@ -156,6 +156,7 @@ class FacebookPost extends React.Component {
 
   props: {
     url: string,
+    amp: Boolean,
   };
 
   componentDidMount() {
@@ -165,7 +166,27 @@ class FacebookPost extends React.Component {
   }
 
   render() {
-    return <div className="fb-post" data-href={this.props.url} />;
+    return this.props.amp ? (
+      <span>
+        <Helmet
+          script={[
+            {
+              async: 'async',
+              'custom-element': 'amp-facebook',
+              src: 'https://cdn.ampproject.org/v0/amp-facebook-0.1.js',
+            },
+          ]}
+        />
+        <amp-facebook
+          width="480"
+          height="270"
+          layout="responsive"
+          data-href={this.props.url}
+        />
+      </span>
+    ) : (
+      <div className="fb-post" data-href={this.props.url} />
+    );
   }
 }
 
@@ -182,6 +203,7 @@ class FacebookVideo extends React.Component {
 
   props: {
     url: string,
+    amp: Boolean,
   };
 
   componentDidMount() {
@@ -191,7 +213,27 @@ class FacebookVideo extends React.Component {
   }
 
   render() {
-    return <div className="fb-video" data-href={this.props.url} />;
+    return this.props.amp ? (
+      <span>
+        <Helmet
+          script={[
+            {
+              async: 'async',
+              'custom-element': 'amp-facebook',
+              src: 'https://cdn.ampproject.org/v0/amp-facebook-0.1.js',
+            },
+          ]}
+        />
+        <amp-facebook
+          width="480"
+          height="270"
+          layout="responsive"
+          data-href={this.props.url}
+        />
+      </span>
+    ) : (
+      <div className="fb-video" data-href={this.props.url} />
+    );
   }
 }
 
@@ -396,12 +438,16 @@ class Formatter {
       parsedUrl.host === 'www.facebook.com' &&
       FacebookPost.isPostUrl(match.url)
     ) {
-      this.elements.push(<FacebookPost key={i} url={match.url} />);
+      this.elements.push(
+        <FacebookPost key={i} url={match.url} amp={this.props.amp} />
+      );
     } else if (
       parsedUrl.host === 'www.facebook.com' &&
       FacebookVideo.isVideoUrl(match.url)
     ) {
-      this.elements.push(<FacebookVideo key={i} url={match.url} />);
+      this.elements.push(
+        <FacebookVideo key={i} url={match.url} amp={this.props.amp} />
+      );
     } else if (
       parsedUrl.host === 'www.facebook.com' &&
       parsedUrl.pathname &&
