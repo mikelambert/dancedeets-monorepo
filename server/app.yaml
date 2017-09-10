@@ -13,9 +13,6 @@ resources:
 manual_scaling:
   instances: 2
 
-inbound_services:
-- warmup
-
 default_expiration: 10d
 handlers:
 # Unused graphql:
@@ -44,8 +41,6 @@ handlers:
   script: admin_apps.authorized_main_app
 - url: /tasks/.*
   script: admin_apps.authorized_main_app
-- url: /_ah/warmup
-  script: main.application
 - url: .*
   script: main.application
 
