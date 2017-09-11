@@ -397,7 +397,7 @@ class Formatter {
       const playlistId = parsedUrl.query.list;
       const embedUrl = `https://www.youtube.com/embed/videoseries?list=${playlistId}`;
       this.elements.push(
-        this.props.amp ? (
+        this.options.amp ? (
           <span>
             <Helmet
               script={[
@@ -439,14 +439,14 @@ class Formatter {
       FacebookPost.isPostUrl(match.url)
     ) {
       this.elements.push(
-        <FacebookPost key={i} url={match.url} amp={this.props.amp} />
+        <FacebookPost key={i} url={match.url} amp={this.options.amp} />
       );
     } else if (
       parsedUrl.host === 'www.facebook.com' &&
       FacebookVideo.isVideoUrl(match.url)
     ) {
       this.elements.push(
-        <FacebookVideo key={i} url={match.url} amp={this.props.amp} />
+        <FacebookVideo key={i} url={match.url} amp={this.options.amp} />
       );
     } else if (
       parsedUrl.host === 'www.facebook.com' &&
