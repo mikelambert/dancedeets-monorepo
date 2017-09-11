@@ -21,7 +21,7 @@ class FeaturedResult(ndb.Model):
 
     @property
     def showTitle(self):
-        return self.json_props.get('showTitle') == True
+        return self.json_props.get('showTitle', True) == True
 
 
 def get_featured_events_for(southwest, northeast):
