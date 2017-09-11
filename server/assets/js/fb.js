@@ -18,7 +18,7 @@ export function fbSetup(
   let loginPressed = false;
 
   const cookieOptions = {
-    domain: `.${baseHostname}`,
+    domain: baseHostname,
     path: '/',
   };
 
