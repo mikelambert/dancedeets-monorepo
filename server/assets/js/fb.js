@@ -21,11 +21,19 @@ export function fbSetup(
     domain: baseHostname,
     path: '/',
   };
+  const cookieOptions2 = {
+    domain: '.dancedeets.com',
+    path: '/',
+  };
 
   function deleteLoginCookies() {
     cookie.remove(`fbsr_${fbAppId}`, cookieOptions);
     cookie.remove(`user_token_${fbAppId}`, cookieOptions); // set by client, for server
     cookie.remove(`user_login_${fbAppId}`, cookieOptions); // set by server, for client/server
+    // Temporary, to ensure we clean up our cookies from our old .dancedeets.com domain
+    cookie.remove(`fbsr_${fbAppId}`, cookieOptions2);
+    cookie.remove(`user_token_${fbAppId}`, cookieOptions2); // set by client, for server
+    cookie.remove(`user_login_${fbAppId}`, cookieOptions2); // set by server, for client/server
   }
 
   function reloadWithNewToken() {
