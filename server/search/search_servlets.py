@@ -100,7 +100,7 @@ class RelevantHandler(SearchHandler):
                     # Instead it returns a random selection. Making it harder to use.
                     if not re.search('bot|crawl|spider', (self.request.user_agent or '').lower()):
                         initial_result_limit = 20
-                    searcher.top_n = initial_result_limit
+                        searcher.top_n = initial_result_limit
                     search_results = searcher.get_search_results()
                     has_more_results = searcher.limit_hit
 
