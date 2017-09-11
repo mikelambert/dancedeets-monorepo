@@ -136,6 +136,7 @@ class FacebookPost extends React.Component {
       mediaUrl.includes('/photo.php?fbid=') ||
       mediaUrl.includes('/photos/') ||
       mediaUrl.includes('/permalink.php?story_fbid=') ||
+      mediaUrl.includes('/story.php?story_fbid=') ||
       mediaUrl.includes('/media/set?set=') ||
       mediaUrl.includes('/questions/') ||
       mediaUrl.includes('/notes/') ||
@@ -166,6 +167,11 @@ class FacebookPost extends React.Component {
   }
 
   render() {
+    let mediaUrl = this.props.url;
+    if (mediaUrl.includes('/story.php?story_fbid=')) {
+      mediaUrl = mediaUrl.replace('story.php', 'permalink.php');
+    }
+
     return this.props.amp ? (
       <span>
         <Helmet
@@ -181,11 +187,11 @@ class FacebookPost extends React.Component {
           width="480"
           height="270"
           layout="responsive"
-          data-href={this.props.url}
+          data-href={mediaUrl}
         />
       </span>
     ) : (
-      <div className="fb-post" data-href={this.props.url} />
+      <div className="fb-post" data-href={mediaUrl} />
     );
   }
 }
@@ -350,7 +356,7 @@ class Formatter {
     }
   }
   splitNewlines(str, i) {
-    const parts = str.split(/\n|\r/);
+    const parts = str.split(/\r\n|\n|\r/);
 
     parts.forEach((part, j) => {
       if (part) {
@@ -435,14 +441,16 @@ class Formatter {
     } else if (parsedUrl.host === 'www.soundcloud.com') {
       this.elements.push(<SoundCloud key={i} url={match.url} />);
     } else if (
-      parsedUrl.host === 'www.facebook.com' &&
+      (parsedUrl.host === 'www.facebook.com' ||
+        parsedUrl.host === 'm.facebook.com') &&
       FacebookPost.isPostUrl(match.url)
     ) {
       this.elements.push(
         <FacebookPost key={i} url={match.url} amp={this.options.amp} />
       );
     } else if (
-      parsedUrl.host === 'www.facebook.com' &&
+      (parsedUrl.host === 'www.facebook.com' ||
+        parsedUrl.host === 'm.facebook.com') &&
       FacebookVideo.isVideoUrl(match.url)
     ) {
       this.elements.push(

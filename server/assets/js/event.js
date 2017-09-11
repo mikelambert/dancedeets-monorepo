@@ -506,7 +506,7 @@ class _WallPost extends React.Component {
 
   render() {
     let message = this.props.post.message;
-    if (!message.includes(this.props.post.link)) {
+    if (this.props.post.link && !message.includes(this.props.post.link)) {
       message += `\n${this.props.post.link}`;
     }
     // TODO: alternately, should we just process the link using the magical tools
