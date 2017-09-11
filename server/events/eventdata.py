@@ -1,3 +1,4 @@
+import datetime
 import dateutil
 import logging
 import re
@@ -198,6 +199,13 @@ class DBEvent(ndb.Model):
             return dateutil.parser.parse(self.end_time_string)
         else:
             return None
+
+    @property
+    def forced_end_time_with_tz(self):
+        if self.end_time:
+            return self.end_time_with_tz
+        else:
+            return self.start_time_with_tz + datetime.timedelta(hours=2)
 
     @property
     def ticket_uri(self):

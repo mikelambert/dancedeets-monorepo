@@ -42,7 +42,7 @@ def get_featured_events_for(southwest, northeast):
     featured_events = eventdata.DBEvent.get_by_ids([x.event_id for x in relevant_featured])
     featured_infos = []
     for featured_result, featured_event in zip(relevant_featured, featured_events):
-        if featured_event.end_time_with_tz < datetime.datetime.utcnow().replace(tzinfo=pytz.utc):
+        if featured_event.forced_end_time_with_tz < datetime.datetime.utcnow().replace(tzinfo=pytz.utc):
             logging.info('Discarding featured event in the past: %s', featured_event.id)
             continue
         featured_infos.append({'event': featured_event, 'showTitle': featured_result.showTitle})

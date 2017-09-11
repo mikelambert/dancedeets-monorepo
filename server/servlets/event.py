@@ -218,10 +218,7 @@ class DisplayableEvent(object):
     def calendar_start_end(self):
         fmt = '%Y%m%dT%H%M%SZ'
         start_time = dates.to_utc(self.start_time_with_tz).strftime(fmt)
-        if self.end_time:
-            end_time = dates.to_utc(self.end_time_with_tz).strftime(fmt)
-        else:
-            end_time = dates.to_utc(self.start_time_with_tz + datetime.timedelta(hours=2)).strftime(fmt)
+        end_time = dates.to_utc(self.forced_end_time_with_tz).strftime(fmt)
         dt = '%s/%s' % (start_time, end_time)
         return dt
 
