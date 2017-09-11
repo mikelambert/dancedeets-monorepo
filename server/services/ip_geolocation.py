@@ -1,3 +1,4 @@
+import datetime
 import IPy
 import json
 import logging
@@ -43,7 +44,8 @@ def _client_get(key):
     try:
         return client.get(key)
     except exceptions.Unauthorized:
-        logging.error('Error using old client, recreating a new one')
+        logging.error('At %s, old client lost authorization, with expiry: %s', datetime.datetime.utcnow(), client._credentials.expiry)
+        logging.error('Old client %r, old client credentials: %r', client.__dict__, client._credentials.__dict__)
         generate_client()
         return client.get(key)
 
