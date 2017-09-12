@@ -218,10 +218,9 @@ class FeaturedEvent extends React.Component {
       <Card>
         <HorizontalEventFlyer event={event} />
         <h3 className="event-title" style={{ marginTop: 10 }}>
-          <a href={event.getRelativeUrl()}>
-            <span>{event.name}</span>
-          </a>
+          <a href={event.getRelativeUrl()}>{event.name}</a>
         </h3>
+        <div>{event.venue.cityStateCountry()}</div>
       </Card>
     );
   }
