@@ -691,6 +691,10 @@ export class EventPage extends React.Component {
       />
     ) : null;
 
+    const initialQuery = {
+      location: event.venue.cityStateCountry(),
+    };
+
     return (
       <div className="container">
         <HtmlHead event={event} />
@@ -701,7 +705,7 @@ export class EventPage extends React.Component {
         />
         <JsonSchema json={getBreadcrumbsForEvent(event)} />
         <div style={{ marginBottom: 50 }}>
-          <SearchBox query={{}} onNewSearch={this.performSearch} />
+          <SearchBox query={initialQuery} onNewSearch={this.performSearch} />
         </div>
         <div className="row">
           <div className="col-xs-12">{adHeader}</div>
