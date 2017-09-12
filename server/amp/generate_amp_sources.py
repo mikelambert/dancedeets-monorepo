@@ -30,7 +30,7 @@ class TestEvent(unittest.TestCase):
         # *Don't* overwrite these pages with broken React server results,
         # or it will destroy the CSS we produce for our AMP pages. :(
         if 'Add to Calendar' not in body:
-            raise Exception('Could not find generated HTML in result:')
+            raise Exception('Could not find generated HTML in result: %s' % body)
         f = open(path, 'w')
         f.write(body.encode('utf-8'))
 
