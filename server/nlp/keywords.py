@@ -666,7 +666,7 @@ CLUB_ONLY = Name(
 )
 
 POP_MUSIC = Any(
-    * [
+    *[
         '%s\W+pop'
         for x in
         # List grabbed off wikipedia, but leaving electropop
@@ -688,11 +688,15 @@ PREPROCESS_REMOVAL = Name(
         "america's got talent",
         'jerk chicken',
         'poker tournaments?',
+
+        # competition
         'fashion competition',
         'wrestling competition',
         't?shirt competition',
         'shaking competition',
         'costume competition',
+
+        # pop
         'bottles? popping?',
         'poppin.? bottles?',
         'pop video',
@@ -706,12 +710,14 @@ PREPROCESS_REMOVAL = Name(
         'spinning popping',  # event 1784253371902736 and potentially others
         'pop\W*culture',
         'poppin.?\W?box',
+        'cherry popp\w+',
         POP_MUSIC,
 
         # refers to ninjitsu stuff, not flexing stuff
         'bone\W*breaking\W+techniques?',
 
         # Should many of these quality as a "immediate failure" keyword?
+        # lock
         'on lock',
         'lock(?:ing|ed|s)? (?:in|out|your|our|the|a|it|down|up)',
         'lock\s*(?:and|&)\s*key',
@@ -723,8 +729,15 @@ PREPROCESS_REMOVAL = Name(
         '(?:through|thru)\W+the\W+lock',
         'lock\W*city\w+',  # event 1886535754903769 and source 311775542225221
         'bike\W?lock',
+
+        # waack
         'whack music',
         'wack music',
+        'wackie\W?s',
+        'beat whackz',
+        'waking',
+
+        # house
         'at battle house',  # To get rid of most events from 1753270238323171
         'wave\W?house',  # venue in san diego
         'full house',
@@ -738,9 +751,11 @@ PREPROCESS_REMOVAL = Name(
         'log\W*house',
         'stagehouse',
         'stage\W*house tavern',
-        'latin street dance',
+        'latin street',
         'marvellous dance crew',
         'johnny soultrain',  # some artist in SF who is named 'soultrain'
+
+        # class
         '1st class',
         'first class',
         'world class',
@@ -750,22 +765,19 @@ PREPROCESS_REMOVAL = Name(
         'class\W?rnb',
         'class act',
         'class of\W*\d+',
-        'go\W?go\W?danc(?:ers?|ing?)',
-        'latin street',
-        'ice\W?breaker',
-        u'アイスブレイク',
-        'home\W?turf',
-        'wackie\W?s',
-        'beat whackz',
-        'waking',
-        'straight up',  # up rock
-        'tear\W?jerker',  # jerker
-        'in-strutter',  # strutter
+        'of course',
+
+        # stage
         'on stage',
         'main\Wstage',
         'music\Wstage',
         'the stage',
-        'of course',
+        '(?:second|2nd) stage',
+
+        #break
+        'ice\W?breaker',
+        u'アイスブレイク',
+        'break down',
         'breaking down',
         'ground\W?breaking',
         'board\W?breaking',
@@ -773,10 +785,15 @@ PREPROCESS_REMOVAL = Name(
         'record\Wbreaking',
         'break\w+\W+(?:the\W+)?records?',
         'short break',
-        '(?:second|2nd) stage',
+
+        # other
+        'go\W?go\W?danc(?:ers?|ing?)',
+        'home\W?turf',
+        'straight up',  # up rock
+        'tear\W?jerker',  # jerker
+        'in-strutter',  # strutter
         'juste debout school',
         'baile funk',
-        'cherry popp\w+',
         'champs\W+sur',  # french city champs-sur-marne is not a championship event
     )
 )
