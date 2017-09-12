@@ -2,3 +2,10 @@
 .slick-dots li.slick-active button:before {
   opacity: 1;
 }
+
+.slick-dots {
+  // No idea why it was set to absolute,
+  // but this gets it included in the parent <div> box,
+  // as opposed to jutting out off the bottom.
+  position: static;
+}
