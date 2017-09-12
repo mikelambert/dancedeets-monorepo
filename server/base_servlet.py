@@ -671,10 +671,8 @@ class BaseRequestHandler(BareBaseRequestHandler):
         if 'dev.dancedeets.com' not in url.netloc:
             self.response.headers.add_header('Strict-Transport-Security', 'max-age=%s' % https_redirect_duration)
         # This is how we detect if the incoming url is on https in GAE Flex (we cannot trust request.url)
-        logging.info('url %s', url.netloc)
-        if request.method == 'GET' and request.headers.get(
-            'x-forwarded-proto', 'http'
-        ) == 'http' and 'dev.dancedeets.com' not in url.netloc:
+        http_only_host = 'dev.dancedeets.com' in url.netloc or 'localhost' in url.netloc
+        if request.method == 'GET' and request.headers.get('x-forwarded-proto', 'http') == 'http' and not http_only_host:
             new_url = urlparse.urlunsplit([
                 'https',
                 url.netloc,
