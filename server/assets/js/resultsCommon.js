@@ -698,3 +698,13 @@ class _SearchBox extends React.Component {
   }
 }
 export const SearchBox = injectIntl(_SearchBox);
+
+export function canonicalizeQuery(query) {
+  const newQuery = {};
+  ['location', 'keywords', 'start', 'end'].forEach(key => {
+    if (query[key] && query[key].length) {
+      newQuery[key] = query[key];
+    }
+  });
+  return newQuery;
+}

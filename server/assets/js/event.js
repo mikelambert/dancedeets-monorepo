@@ -28,6 +28,7 @@ import { getBreadcrumbsForEvent } from './schema/breadcrumbs';
 import { Message } from './intl';
 import { AmpImage, Card, ImagePrefix } from './ui';
 import FormatDescription from './formatDescription';
+import { canonicalizeQuery, SearchBox } from './resultsCommon';
 
 function getAdsenseStyle(amp) {
   return {
@@ -661,6 +662,12 @@ export class EventPage extends React.Component {
     userRsvp?: RsvpValue,
   };
 
+  performSearch(query: Object) {
+    const newQuery = canonicalizeQuery(query);
+    const newQueryString = querystring.stringify(newQuery);
+    window.location = `/?${newQueryString}`;
+  }
+
   render() {
     const event = new Event(this.props.event);
 
@@ -693,6 +700,9 @@ export class EventPage extends React.Component {
           }
         />
         <JsonSchema json={getBreadcrumbsForEvent(event)} />
+        <div style={{ marginBottom: 50 }}>
+          <SearchBox query={{}} onNewSearch={this.performSearch} />
+        </div>
         <div className="row">
           <div className="col-xs-12">{adHeader}</div>
           <div className="col-xs-12">

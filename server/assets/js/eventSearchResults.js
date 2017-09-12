@@ -41,7 +41,7 @@ import { Card, ImagePrefix, wantsWindowSizes } from './ui';
 import type { windowProps } from './ui';
 import { SquareEventFlyer } from './eventCommon';
 import GoogleAd from './googleAd';
-import { SearchBox, CalendarRatio } from './resultsCommon';
+import { canonicalizeQuery, SearchBox, CalendarRatio } from './resultsCommon';
 import {
   MultiSelectList,
   generateUniformState,
@@ -916,16 +916,6 @@ class ResultTabs extends React.Component {
       </Tabs>
     );
   }
-}
-
-function canonicalizeQuery(query) {
-  const newQuery = {};
-  ['location', 'keywords', 'start', 'end'].forEach(key => {
-    if (query[key] && query[key].length) {
-      newQuery[key] = query[key];
-    }
-  });
-  return newQuery;
 }
 
 async function performSearch(query: FormSearchQuery) {
