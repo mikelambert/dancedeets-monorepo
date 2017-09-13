@@ -56,6 +56,7 @@ cron:
 #  url: /tools/popular_people?user_id=701004
 #  # twice a month
 #  schedule: 1,15 of month 09:00
-- description: queue up our weekly city posts
-  url: /tasks/weekly_posts?user_id=701004&limit=30
-  schedule: every monday 12:00
+# Disabled since weekly posts seem to get super-low engagement, and this image stitching doesn't seem to be that engaging or work that well embedded on FB feeds
+#- description: queue up our weekly city posts
+#  url: /tasks/weekly_posts?user_id=701004&limit=30
+#  schedule: every monday 12:00
