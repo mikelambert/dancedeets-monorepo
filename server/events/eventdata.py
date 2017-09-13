@@ -173,7 +173,7 @@ class DBEvent(ndb.Model):
             return True
         else:
             # and not self.fb_event['info']['is_canceled']
-            return not self.fb_event['empty']
+            return self.fb_event and not self.fb_event['empty']
 
     @property
     def start_time_string(self):
