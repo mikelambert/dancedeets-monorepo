@@ -40,6 +40,7 @@ import servlets.profile_page
 import servlets.static
 import servlets.static_db
 import servlets.tools
+import sitemaps.events
 import servlets.youtube_simple_api
 import topics.topic_servlets
 import tutorials.servlets
