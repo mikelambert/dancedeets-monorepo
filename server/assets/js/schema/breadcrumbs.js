@@ -89,9 +89,8 @@ export function getBreadcrumbsForSearch(
         name: address.city,
       });
     }
-    // } else if (keywords) {
-    //   listItems.push({});
-  } else if (keywords) {
+  }
+  if (keywords) {
     const query = { keywords };
     const url = `/?${querystring.stringify(query)}`;
     listItems.push({
