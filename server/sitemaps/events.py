@@ -22,7 +22,9 @@ def yield_sitemap_event(fbl, all_events):
         if event.is_fb_event:
             if 'updated_time' in event.fb_event['info']:
                 lastmod_node = etree.Element('lastmod')
-                lastmod_node.text = event.fb_event['info']['updated_time']
+                updated = event.fb_event['info']['updated_time']
+                updated = updated.replace('+0000', '+00:00')
+                lastmod_node.text = updated
                 url_node.append(lastmod_node)
             else:
                 logging.info('Event %s does not have updated_time: %s' % (event.id, event.fb_event))
