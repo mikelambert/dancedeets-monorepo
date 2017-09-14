@@ -1,5 +1,6 @@
 import datetime
 from lxml import etree
+import logging
 
 # local
 import app
@@ -19,9 +20,12 @@ def yield_sitemap_event(fbl, all_events):
         loc_node = etree.Element('loc')
         loc_node.text = urls.dd_event_url(event)
         if event.is_fb_event:
-            last_mod_node = etree.Element('last_mod')
-            last_mod_node.text = event.fb_event['info']['updated_time']
-            url_node.append(last_mod_node)
+            if 'updated_time' in event.fb_event['info']:
+                last_mod_node = etree.Element('last_mod')
+                last_mod_node.text = event.fb_event['info']['updated_time']
+                url_node.append(last_mod_node)
+            else:
+                logging.info('Event %s does not have updated_time: %s' % (event.id, event.fb_event))
         changefreq_node = etree.Element('changefreq')
         priority_node = etree.Element('priority')
 
