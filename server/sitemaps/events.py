@@ -61,15 +61,6 @@ def yield_sitemap_event(fbl, all_events):
         yield etree.tostring(url_node)
 
 
-def open_sitemap_files(event_nodes):
-    urlset_node = etree.Element('urlset')
-    urlset_node.attrib['xmlns'] = 'http://www.sitemaps.org/schemas/sitemap/0.9'
-    for event_node in event_nodes:
-        urlset_node.append(event_node)
-    print etree.tostring(urlset_node, pretty_print=True)
-    return urlset_node
-
-
 map_sitemap_event = fb_mapreduce.mr_wrap(yield_sitemap_event)
 sitemap_event = fb_mapreduce.nomr_wrap(yield_sitemap_event)
 
@@ -78,9 +69,17 @@ sitemap_event = fb_mapreduce.nomr_wrap(yield_sitemap_event)
 class ReloadEventsHandler(base_servlet.BaseTaskFacebookRequestHandler):
     def get(self):
         queue = self.request.get('queue', 'fast-queue')
+        time_period = self.request.get('time_period', None)
+
+        filters = []
+        if time_period:
+            filters.append(('search_time_period', '=', time_period))
+            name = 'Generate %s Sitemaps' % time_period
+        else:
+            name = 'Generate Sitemaps'
         fb_mapreduce.start_map(
             fbl=self.fbl,
-            name='Generate Sitemaps',
+            name=name,
             handler_spec='sitemaps.events.map_sitemap_event',
             entity_kind='events.eventdata.DBEvent',
             handle_batch_size=20,
