@@ -258,6 +258,9 @@ class FeaturedEvents extends React.Component {
 
     return (
       <div style={{ width: '100%', paddingLeft: 10, paddingRight: 10 }}>
+        <div>
+          <b>Featured Event:</b>
+        </div>
         {results}
       </div>
     );
