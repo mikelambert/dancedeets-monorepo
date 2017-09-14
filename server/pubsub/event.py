@@ -53,7 +53,7 @@ def should_post_on_event_wall(auth_token, db_event):
     if not db_event.is_fb_event:
         logging.info("Event is not FB event")
         return False
-    if db_event.is_page_owned:
+    if not db_event.is_page_owned:
         logging.info("Event is not owned by page")
         return False
     if not db_event.public:
