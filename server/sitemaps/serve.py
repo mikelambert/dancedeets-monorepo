@@ -102,7 +102,7 @@ def sitemap_node(name, date):
     sitemap_node.append(loc_node)
     if date:
         lastmod_node = etree.Element('lastmod')
-        lastmod_node.text = date.strftime('%Y-%m-%dT%H:%M:%S%z')
+        lastmod_node.text = date.strftime('%Y-%m-%dT%H:%M:%S+00:00')
         sitemap_node.append(lastmod_node)
     return sitemap_node
 
