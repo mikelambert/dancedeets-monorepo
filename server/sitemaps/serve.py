@@ -1,6 +1,7 @@
 from google.cloud import storage
 import logging
 from lxml import etree
+import os.path
 
 # local
 import app
@@ -26,6 +27,12 @@ def get_newest_path(bucket, mapreduce_name):
         if len(blobs) == MapReduceShards:
             return dir
     return None
+
+
+def get_mapreduce_date(bucket, mapreduce_name):
+    path = '%soutput-0' % get_newest_path(bucket, mapreduce_name)
+    blob = bucket.get_blob(path)
+    return blob.updated
 
 
 def get_sitemap_for_mapreduce(mapreduce_name):
@@ -83,10 +90,38 @@ class NumberedSitemapHandler(base_servlet.BaseRequestHandler):
         self.response.out.write(xml)
 
 
+def sitemap_node(name, date):
+    sitemap_node = etree.Element('sitemap')
+    loc_node = etree.Element('loc')
+    loc_node.text = 'https://www.dancedeets.com/sitemaps/%s.xml' % name
+    sitemap_node.append(loc_node)
+    if date:
+        lastmod_node = etree.Element('lastmod')
+        lastmod_node.text = date.strftime('%Y-%m-%dT%H:%M:%S')
+        sitemap_node.append(lastmod_node)
+    return sitemap_node
+
+
 @app.route('/sitemaps/index.xml')
 class SitemapMapHandler(base_servlet.BaseRequestHandler):
     def get(self):
-        MapReduceShards
-        sitemap_data = get_sitemap_for_mapreduce('Generate Sitemaps')
+        root = etree.Element('sitemapindex')
+        root.attrib['xmlns'] = 'http://www.sitemaps.org/schemas/sitemap/0.9'
+
+        bucket_name = 'dancedeets-hrd.appspot.com'
+        bucket = client.get_bucket(bucket_name)
+
+        recent_date = get_mapreduce_date(bucket, 'Generate FUTURE Sitemaps')
+        root.append(sitemap_node('recent', recent_date))
+
+        versioned_date = get_mapreduce_date(bucket, 'Generate Sitemaps')
+        path = get_newest_path(bucket, 'Generate Sitemaps')
+        version = os.path.basename(path.strip('/'))
+        print path, version
+        for i in range(MapReduceShards):
+            root.append(sitemap_node('%s-%s' % (version, i), versioned_date))
+
+        root_data = etree.tostring(root, pretty_print=True)
+
         self.response.headers["Content-Type"] = "text/xml"
-        self.response.out.write(sitemap_data)
+        self.response.out.write(root_data)
