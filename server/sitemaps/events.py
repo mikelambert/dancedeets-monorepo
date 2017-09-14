@@ -62,7 +62,7 @@ def yield_sitemap_event(fbl, all_events):
         url_node.append(changefreq_node)
         url_node.append(priority_node)
         # prints out as one line
-        yield etree.tostring(url_node)
+        yield '%s\n' % etree.tostring(url_node)
 
 
 map_sitemap_event = fb_mapreduce.mr_wrap(yield_sitemap_event)
@@ -87,6 +87,7 @@ class ReloadEventsHandler(base_servlet.BaseTaskFacebookRequestHandler):
             handler_spec='sitemaps.events.map_sitemap_event',
             entity_kind='events.eventdata.DBEvent',
             handle_batch_size=20,
+            filters=filters,
             queue=queue,
             output_writer_spec='mapreduce.output_writers.GoogleCloudStorageOutputWriter',
             output_writer={
