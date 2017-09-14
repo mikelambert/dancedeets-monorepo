@@ -47,8 +47,7 @@ def get_sitemap_for_mapreduce(mapreduce_name):
     url_nodes = []
     for blob in blobs:
         blob_data = blob.download_as_string()
-        url_nodes.extend(blob_data)
-
+        url_nodes.append(blob_data)
     return sitemap_wrapper('\n'.join(url_nodes))
 
 
@@ -63,6 +62,9 @@ def sitemap_wrapper(url_nodes):
 
 @app.route('/sitemaps/recent.xml')
 class RecentSitemapHandler(base_servlet.BaseRequestHandler):
+    def requires_login(self):
+        return False
+
     def get(self):
         sitemap_data = get_sitemap_for_mapreduce('Generate FUTURE Sitemaps')
         if not sitemap_data:
@@ -74,6 +76,9 @@ class RecentSitemapHandler(base_servlet.BaseRequestHandler):
 
 @app.route('/sitemaps/(\d+)-(\d+).xml')
 class NumberedSitemapHandler(base_servlet.BaseRequestHandler):
+    def requires_login(self):
+        return False
+
     def get(self, version, index):
         bucket_name = 'dancedeets-hrd.appspot.com'
         mapreduce_name = 'Generate Sitemaps'
@@ -104,6 +109,9 @@ def sitemap_node(name, date):
 
 @app.route('/sitemaps/index.xml')
 class SitemapMapHandler(base_servlet.BaseRequestHandler):
+    def requires_login(self):
+        return False
+
     def get(self):
         root = etree.Element('sitemapindex')
         root.attrib['xmlns'] = 'http://www.sitemaps.org/schemas/sitemap/0.9'
