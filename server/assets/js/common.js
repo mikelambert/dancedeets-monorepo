@@ -37,7 +37,7 @@ import './all-css';
 // Disable this for now, since we don't need the 60KB, and Raven/Sentry serves us fine
 // import './stackdriver-errors';
 import { fbSetup } from './fb';
-from dancedeets import appInstallPromos from './app-install-promo';
+import appInstallPromos from './app-install-promo';
 /* eslint-enable import/first */
 
 if (window.prodMode === 'prod') {
