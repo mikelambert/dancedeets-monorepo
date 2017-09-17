@@ -24,16 +24,17 @@ class Yelp(object):
         while True:
             total, businesses = self._fetch_offset(city, i * batch, batch)
             all_businesses.extend(businesses)
-            print i * batch + batch, total
             if i * batch + batch > total:
                 break
             i += 1
+            break # TODO: remove
         return businesses
 
 businesses = Yelp().fetch_all('New York, NY')
 
 for x in businesses:
-    print x['location']
-    query = '%s %s' % (x['name'], ' '.join(x['display_address']))
-    result = bing.bing_lucky(query)
-    print query, result
+    query = 'site:www.facebook.com %s %s' % (x['name'], ' '.join(x['location']['display_address']))
+    results = bing.bing_lucky(query)
+    print query
+    for x in results:
+        print '  ', ' '.join(x)
