@@ -52,7 +52,7 @@ def get_fb_place(fb_event):
     place = event_info.get('place', {}).get(
         'location',
         # bwcompat:
-        event_info.get('venue', {})
+        event_info.get('venue', {}) or {}
     )
     return place
 
@@ -72,7 +72,7 @@ def get_fb_place_id(fb_event):
     event_location = event_info.get('place', {}).get(
         'id',
         # bwcompat:
-        event_info.get('venue', {}).get('id', None)
+        (event_info.get('venue', {}) or {}).get('id', None)
     )
     return event_location
 
