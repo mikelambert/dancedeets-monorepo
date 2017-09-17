@@ -9,7 +9,7 @@ prod_mode = 'SERVER_SOFTWARE' in os.environ and not os.environ['SERVER_SOFTWARE'
 # Need to do this after vendoring lib-local/
 # And can't do it in appengine_config, since that gets loaded by appengine/api/lib_config
 # in places where we can't actually load pylibmc
-from services import memcache
+from dancedeets.services import memcache
 
 if not prod_mode:
     # Make python-twitter work in the sandbox (not yet sure about prod...)
@@ -27,10 +27,10 @@ if not prod_mode:
     logging.info('Trimmed sys.meta_path from %s to %s entries', len(sys.meta_path), len(new_path))
     sys.meta_path = new_path
 
-from hacks import fixed_jinja2  # noqa: ignore=E402
-from hacks import fixed_ndb  # noqa: ignore=E402
-from hacks import fixed_mapreduce_util  # noqa: ignore=E402
-from hacks import memory_leaks  # noqa: ignore=E402
+from dancedeets.hacks import fixed_jinja2  # noqa: ignore=E402
+from dancedeets.hacks import fixed_ndb  # noqa: ignore=E402
+from dancedeets.hacks import fixed_mapreduce_util  # noqa: ignore=E402
+from dancedeets.hacks import memory_leaks  # noqa: ignore=E402
 from requests_toolbelt.adapters import appengine as appengine_adapter  # noqa: ignore=E402
 from requests.packages.urllib3.contrib import appengine as appengine_manager  # noqa: ignore=E402
 
@@ -82,7 +82,7 @@ if os.environ.get('HOT_SERVER_PORT'):
     logging.info('Using hot reloader!')
 
 # Load this first, so 'app.prod_mode' is set asap
-from app import app as application
+from dancedeets.app import app as application
 application.debug = True
 application.prod_mode = prod_mode
 application = add_wsgi_middleware(application)
@@ -101,5 +101,5 @@ import _strptime
 
 # We import for the side-effects in adding routes to the wsgi app
 logging.info("Begin servlets")
-import all_servlets
+import dancedeets.all_servlets
 logging.info("Finished servlets")

@@ -1,10 +1,10 @@
 import datetime
 import logging
 
-import app
-import base_servlet
-import keys
-from search import search_base
+from dancedeets import app
+from dancedeets import base_servlet
+from dancedeets import keys
+from dancedeets.search import search_base
 from . import class_index
 from . import class_models
 

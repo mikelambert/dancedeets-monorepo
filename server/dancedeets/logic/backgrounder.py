@@ -1,5 +1,5 @@
-from util import taskqueue
-from util import urls
+from dancedeets.util import taskqueue
+from dancedeets.util import urls
 
 # deferred (http://code.google.com/appengine/articles/deferred.html) is useful, but since we map many of these to code that is also called by servlets (for debugging and/or cronjobs), it's not as useful for these:
 

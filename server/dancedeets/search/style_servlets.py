@@ -1,6 +1,6 @@
 import re
 
-import app
+from dancedeets import app
 from . import search_base
 from . import search_servlets
 

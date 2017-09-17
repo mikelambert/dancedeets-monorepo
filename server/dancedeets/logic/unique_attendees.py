@@ -2,10 +2,10 @@ import logging
 
 from mapreduce import mapreduce_pipeline
 
-import app
-import base_servlet
-import fb_api
-from util import fb_mapreduce
+from dancedeets import app
+from dancedeets import base_servlet
+from dancedeets import fb_api
+from dancedeets.util import fb_mapreduce
 
 BATCH_SIZE = 20
 

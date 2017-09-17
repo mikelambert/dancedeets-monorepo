@@ -3,10 +3,10 @@ from lxml import etree
 import logging
 
 # local
-import app
-import base_servlet
-from util import fb_mapreduce
-from util import urls
+from dancedeets import app
+from dancedeets import base_servlet
+from dancedeets.util import fb_mapreduce
+from dancedeets.util import urls
 
 
 def yield_sitemap_event(fbl, all_events):

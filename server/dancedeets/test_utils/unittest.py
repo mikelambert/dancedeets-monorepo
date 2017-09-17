@@ -6,9 +6,9 @@ from unittest import TestCase as RealTestCase
 
 from google.appengine.ext import testbed
 
-from loc import gmaps_stub
-from test_utils import fb_api_stub
-from util import gcs
+from dancedeets.loc import gmaps_stub
+from dancedeets.test_utils import fb_api_stub
+from dancedeets.util import gcs
 
 
 class TestCase(RealTestCase):

@@ -2,7 +2,7 @@ import json
 import logging
 from google.appengine.api import urlfetch
 
-import fb_api
+from dancedeets import fb_api
 
 RESULT_TIMEOUT = 'RESULT_TIMEOUT'
 

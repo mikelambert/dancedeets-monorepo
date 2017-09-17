@@ -3,7 +3,7 @@ import os
 import re
 import webapp2
 
-import app
+from dancedeets import app
 
 mappings = [(r'^/(dancedeets\.png)', './'), (r'^/(robots\.txt)', './'), (r'^/(favicon\.ico)', './'), (r'^/v?css/(.*)', 'css/'),
             (r'^/v?js/(.*)', 'js/'), (r'^/dist[^/]*/(.*)', 'dist/'), (r'^/images/(.*)', 'images/'),

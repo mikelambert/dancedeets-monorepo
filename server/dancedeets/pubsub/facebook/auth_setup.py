@@ -1,8 +1,8 @@
-import fb_api
+from dancedeets import fb_api
 
-import app
-import base_servlet
-from events import eventdata
+from dancedeets import app
+from dancedeets import base_servlet
+from dancedeets.events import eventdata
 from .. import db
 from . import event
 

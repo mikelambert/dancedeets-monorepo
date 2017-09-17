@@ -4,13 +4,13 @@ import time
 
 from mapreduce import control
 
-import app
-import base_servlet
-from loc import gmaps_api
-from loc import math
-from search import search
-from search import search_base
-from users import users
+from dancedeets import app
+from dancedeets import base_servlet
+from dancedeets.loc import gmaps_api
+from dancedeets.loc import math
+from dancedeets.search import search
+from dancedeets.search import search_base
+from dancedeets.users import users
 from . import android
 """
 Runs a mapreduce hourly, which finds all users with that timezone offset,

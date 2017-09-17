@@ -3,7 +3,7 @@ import logging
 from google.appengine.ext import db
 from google.appengine.runtime import apiproxy_errors
 
-from util import dates
+from dancedeets.util import dates
 from . import thing_db
 
 

@@ -7,7 +7,7 @@ except ImportError:
     logging.error('Failed to import memcache')
     gae_memcache = None
 
-import keys
+from dancedeets import keys
 
 
 def init_memcache():
@@ -28,7 +28,7 @@ def init_memcache():
     return client
 
 
-from util import runtime
+from dancedeets.util import runtime
 if runtime.is_local_appengine():
     memcache_client = gae_memcache._CLIENT
 else:

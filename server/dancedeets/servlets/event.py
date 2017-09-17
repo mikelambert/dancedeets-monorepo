@@ -8,31 +8,31 @@ import pprint
 import re
 import urllib
 
-import app
-import base_servlet
-from event_attendees import event_attendee_classifier
-from event_scraper import add_entities
-from event_scraper import potential_events
-from events import add_events
-from events import eventdata
-from events import event_locations
-from events import event_updates
-import fb_api
-from loc import formatting
-from loc import gmaps_api
-from logic import rsvp
-from nlp import categories
-from nlp import event_auto_classifier
-from nlp import event_classifier
-from rankings import cities_db
-from rankings import rankings
-from search import search
-from servlets import api
-from users import users
-from util import dates
-from util import deferred
-from util import fb_events
-from util import urls
+from dancedeets import app
+from dancedeets import base_servlet
+from dancedeets.event_attendees import event_attendee_classifier
+from dancedeets.event_scraper import add_entities
+from dancedeets.event_scraper import potential_events
+from dancedeets.events import add_events
+from dancedeets.events import eventdata
+from dancedeets.events import event_locations
+from dancedeets.events import event_updates
+from dancedeets import fb_api
+from dancedeets.loc import formatting
+from dancedeets.loc import gmaps_api
+from dancedeets.logic import rsvp
+from dancedeets.nlp import categories
+from dancedeets.nlp import event_auto_classifier
+from dancedeets.nlp import event_classifier
+from dancedeets.rankings import cities_db
+from dancedeets.rankings import rankings
+from dancedeets.search import search
+from dancedeets.servlets import api
+from dancedeets.users import users
+from dancedeets.util import dates
+from dancedeets.util import deferred
+from dancedeets.util import fb_events
+from dancedeets.util import urls
 
 PREFETCH_EVENTS_INTERVAL = 24 * 60 * 60
 

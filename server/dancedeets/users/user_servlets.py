@@ -1,9 +1,9 @@
 import collections
 import csv
 
-import app
-import base_servlet
-import fb_api
+from dancedeets import app
+from dancedeets import base_servlet
+from dancedeets import fb_api
 from . import users
 
 

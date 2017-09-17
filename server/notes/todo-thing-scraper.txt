@@ -68,11 +68,11 @@ fetching thing data. events, walls, likes. can't grab friends unless they're a u
 
 fetch groups too somehow?
 
-fetching the attending lists from events.
+fetching the attending lists from dancedeets.events.
 
 processing stream of events of walls/events. adding to potentialevents with source
 
-processing stream of pages/people. (from people, and from events). add as potentialpeople a
+processing stream of pages/people. (from people, and from dancedeets.events). add as potentialpeople a
 long with source
 
 

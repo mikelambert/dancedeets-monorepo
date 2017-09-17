@@ -1,11 +1,11 @@
 import logging
 
-import app
-import base_servlet
-import fb_api
-from mail import mailchimp_api
-from util import fb_mapreduce
-from . import users
+from dancedeets import app
+from dancedeets import base_servlet
+from dancedeets import fb_api
+from dancedeets.mail import mailchimp_api
+from dancedeets.util import fb_mapreduce
+from users import users
 
 
 class LookupAppFriendUsers(fb_api.LookupType):

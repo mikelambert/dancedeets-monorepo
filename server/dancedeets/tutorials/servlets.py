@@ -1,5 +1,5 @@
-import app
-import base_servlet
+from dancedeets import app
+from dancedeets import base_servlet
 
 
 @app.route('/tutorials/([^/]+/[^/]+)$')

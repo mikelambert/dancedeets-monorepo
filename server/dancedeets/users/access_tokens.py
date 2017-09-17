@@ -3,7 +3,7 @@ import time
 
 from google.appengine.ext import ndb
 
-import fb_api
+from dancedeets import fb_api
 from . import users
 
 

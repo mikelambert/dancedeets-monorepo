@@ -1,10 +1,10 @@
 # -*-*- encoding: utf-8 -*-*-
 
-import fb_api
-from nlp import event_auto_classifier
-from nlp import event_classifier
-from nlp import rules
-from test_utils import unittest
+from dancedeets import fb_api
+from dancedeets.nlp import event_auto_classifier
+from dancedeets.nlp import event_classifier
+from dancedeets.nlp import rules
+from dancedeets.test_utils import unittest
 
 
 class TestSimpleMatches(unittest.TestCase):

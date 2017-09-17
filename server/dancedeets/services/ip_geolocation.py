@@ -10,8 +10,8 @@ from google.appengine.api import memcache
 from google.cloud import datastore
 from google.cloud import exceptions
 
-from util import runtime
-from util import timelog
+from dancedeets.util import runtime
+from dancedeets.util import timelog
 
 
 def generate_client():

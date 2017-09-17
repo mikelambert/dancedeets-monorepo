@@ -1,10 +1,10 @@
 import pprint
 import re
 
-import app
-import base_servlet
-from events import eventdata
-import fb_api
+from dancedeets import app
+from dancedeets import base_servlet
+from dancedeets.events import eventdata
+from dancedeets import fb_api
 from . import potential_events
 from . import thing_db
 from . import thing_scraper

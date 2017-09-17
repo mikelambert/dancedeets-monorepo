@@ -7,11 +7,11 @@ from google.appengine.api import memcache
 from google.appengine.ext import ndb
 from google.cloud import datastore
 
-import app
-import base_servlet
-import event_types
-from rankings import cities
-from util import runtime
+from dancedeets import app
+from dancedeets import base_servlet
+from dancedeets import event_types
+from dancedeets.rankings import cities
+from dancedeets.util import runtime
 
 TOP_N = 100
 

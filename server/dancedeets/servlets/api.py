@@ -9,29 +9,29 @@ import urllib
 from google.appengine.api import memcache
 from googleapiclient.discovery import build
 
-import app
-import base_servlet
-import event_types
-from event_scraper import add_entities
-from events import add_events
-from events import eventdata
-from events import featured
-import fb_api
-import keys
-from loc import address
-from loc import gmaps_api
-from loc import math
-from event_attendees import popular_people
-from rankings import cities
-from search import onebox
-from search import search
-from search import search_base
-from users import user_creation
-from users import users
-from util import ips
-from util import language
-from util import taskqueue
-from util import urls
+from dancedeets import app
+from dancedeets import base_servlet
+from dancedeets import event_types
+from dancedeets.event_scraper import add_entities
+from dancedeets.events import add_events
+from dancedeets.events import eventdata
+from dancedeets.events import featured
+from dancedeets import fb_api
+from dancedeets import keys
+from dancedeets.loc import address
+from dancedeets.loc import gmaps_api
+from dancedeets.loc import math
+from dancedeets.event_attendees import popular_people
+from dancedeets.rankings import cities
+from dancedeets.search import onebox
+from dancedeets.search import search
+from dancedeets.search import search_base
+from dancedeets.users import user_creation
+from dancedeets.users import users
+from dancedeets.util import ips
+from dancedeets.util import language
+from dancedeets.util import taskqueue
+from dancedeets.util import urls
 
 DATETIME_FORMAT = "%Y-%m-%dT%H:%M:%SZ"
 DATETIME_FORMAT_TZ = "%Y-%m-%dT%H:%M:%S%z"

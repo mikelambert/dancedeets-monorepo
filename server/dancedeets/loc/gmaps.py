@@ -5,11 +5,11 @@ import json
 import logging
 import urllib
 
-import keys
+from dancedeets import keys
 
 from . import gmaps_backends
-from util import mr
-from util import urls
+from dancedeets.util import mr
+from dancedeets.util import urls
 
 google_maps_private_key = keys.get("google_maps_private_key")
 google_server_key = keys.get("google_server_key")

@@ -8,8 +8,8 @@ import time
 
 from google.appengine.ext import ndb
 
-from events import eventdata
-from util import taskqueue
+from dancedeets.events import eventdata
+from dancedeets.util import taskqueue
 from . import db
 from . import event
 from . import weekly

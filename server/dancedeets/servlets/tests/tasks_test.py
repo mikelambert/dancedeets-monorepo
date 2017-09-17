@@ -1,13 +1,13 @@
 from webtest import TestApp
 
-from events import eventdata
-import fb_api
-from loc import gmaps_stub
+from dancedeets.events import eventdata
+from dancedeets import fb_api
+from dancedeets.loc import gmaps_stub
 import main
-from test_utils import fb_api_stub
-from test_utils import unittest
-from users import users
-from util import dates
+from dancedeets.test_utils import fb_api_stub
+from dancedeets.test_utils import unittest
+from dancedeets.users import users
+from dancedeets.util import dates
 
 app = TestApp(main.application)
 

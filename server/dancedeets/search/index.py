@@ -4,7 +4,7 @@ from google.appengine.ext import db
 from google.appengine.ext import ndb
 from google.appengine.api import search
 
-from util import deferred
+from dancedeets.util import deferred
 
 MAX_OBJECTS = 100000
 
@@ -93,7 +93,7 @@ class BaseIndex(object):
 
     @classmethod
     def delete_ids(cls, object_ids):
-        logging.info("Deleting from search index: %s", object_ids)
+        logging.info("Deleting from dancedeets.search index: %s", object_ids)
         doc_index = cls.real_index()
         for i in range(0, len(object_ids), search.MAXIMUM_DOCUMENTS_PER_PUT_REQUEST):
             doc_index.delete(object_ids[i:i + search.MAXIMUM_DOCUMENTS_PER_PUT_REQUEST])

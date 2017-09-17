@@ -1,19 +1,19 @@
 import datetime
 import logging
 
-import app
-import base_servlet
-from event_scraper import add_entities
-from events import event_locations
-from events import eventdata
-import fb_api
-from nlp import event_auto_classifier
-from nlp import event_classifier
-from servlets import api
-from servlets import event
-from util import dates
-from util import fb_events
-from util import urls
+from dancedeets import app
+from dancedeets import base_servlet
+from dancedeets import fb_api
+from dancedeets.event_scraper import add_entities
+from dancedeets.events import event_locations
+from dancedeets.events import eventdata
+from dancedeets.nlp import event_auto_classifier
+from dancedeets.nlp import event_classifier
+from dancedeets.servlets import api
+from dancedeets.servlets import event
+from dancedeets.util import dates
+from dancedeets.util import fb_events
+from dancedeets.util import urls
 
 
 @app.route('/promote')
@@ -35,8 +35,8 @@ class PromoteHandler(base_servlet.BaseRequestHandler):
 
         loaded_fb_event_ids = set(x.string_id() for x in eventdata.DBEvent.get_by_ids([x['id'] for x in events], keys_only=True) if x)
 
-        for event in events:
-            event['loaded'] = event['id'] in loaded_fb_event_ids
+        for e in events:
+            e['loaded'] = e['id'] in loaded_fb_event_ids
         return events
 
     def render_page(self):

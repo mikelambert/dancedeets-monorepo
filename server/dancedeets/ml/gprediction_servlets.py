@@ -4,8 +4,8 @@ import urllib
 from google.appengine.ext import blobstore
 from google.appengine.ext.webapp import blobstore_handlers
 
-import app
-import base_servlet
+from dancedeets import app
+from dancedeets import base_servlet
 from . import gprediction
 
 

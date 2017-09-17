@@ -3,14 +3,14 @@ import logging
 import random
 import re
 
-import app
-import base_servlet
-import fb_api
-from mail import mandrill_api
-import render_server
-from servlets import api
-from users import users
-from util import fb_mapreduce
+from dancedeets import app
+from dancedeets import base_servlet
+from dancedeets import fb_api
+from dancedeets.mail import mandrill_api
+from dancedeets import render_server
+from dancedeets.servlets import api
+from dancedeets.users import users
+from dancedeets.util import fb_mapreduce
 from . import search_base
 from . import search
 

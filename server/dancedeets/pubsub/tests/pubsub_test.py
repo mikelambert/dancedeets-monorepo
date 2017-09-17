@@ -3,16 +3,16 @@
 import datetime
 import mock
 
-import fb_api
-from events import eventdata
-from events import event_updates
-from pubsub import pubsub
-from pubsub import weekly
-from pubsub.twitter import auth_setup
-from pubsub.twitter import event
-from rankings import cities
-from search import search_base
-from test_utils import unittest
+from dancedeets import fb_api
+from dancedeets.events import eventdata
+from dancedeets.events import event_updates
+from dancedeets.pubsub import pubsub
+from dancedeets.pubsub import weekly
+from dancedeets.pubsub.twitter import auth_setup
+from dancedeets.pubsub.twitter import event
+from dancedeets.rankings import cities
+from dancedeets.search import search_base
+from dancedeets.test_utils import unittest
 
 FB_EVENT = {
     'info': {

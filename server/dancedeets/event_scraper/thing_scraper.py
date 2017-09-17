@@ -5,14 +5,14 @@ import logging
 import re
 import urlparse
 
-import fb_api
+from dancedeets import fb_api
 from mapreduce import context
 from mapreduce import control
 from mapreduce import operation
 
-from users import users
-from util import deferred
-from util import fb_mapreduce
+from dancedeets.users import users
+from dancedeets.util import deferred
+from dancedeets.util import fb_mapreduce
 from . import event_pipeline
 from . import potential_events
 from . import thing_db

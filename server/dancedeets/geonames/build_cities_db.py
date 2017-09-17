@@ -9,10 +9,10 @@ import sqlite3
 import sys
 import urllib
 
-from util import urls
-from geonames import geoname_files
-from geonames import sqlite_db
-from geonames import fetch_adgeolocs
+from dancedeets.util import urls
+from dancedeets import geonames import geoname_files
+from dancedeets import geonames import sqlite_db
+from dancedeets import geonames import fetch_adgeolocs
 
 
 def get_fb_targeting_key(cursor_adlocs, geoname):

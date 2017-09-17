@@ -5,7 +5,7 @@ from twilio.rest.resources import base
 # This is the right import for 3.5.2
 from twilio import TwilioRestException
 
-import keys
+from dancedeets import keys
 
 # put your own credentials here
 ACCOUNT_SID = "AC4fe8564ea12bfcb3af18df2ee99c2bd9"

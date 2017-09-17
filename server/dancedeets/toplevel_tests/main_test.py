@@ -12,7 +12,7 @@ class TestImports(unittest.TestCase):
 
 class TestUrlRoutes(unittest.TestCase):
     def runTest(self):
-        from servlets import event
+        from dancedeets.servlets import event
         from app import app
         router = app.router
         env = {

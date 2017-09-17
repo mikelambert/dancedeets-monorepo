@@ -1,8 +1,8 @@
 import logging
 
-import fb_api
-from notifications import rsvped_events
-from util import fb_mapreduce
+from dancedeets import fb_api
+from dancedeets.notifications import rsvped_events
+from dancedeets.util import fb_mapreduce
 from . import scrape_user_potential_events
 
 

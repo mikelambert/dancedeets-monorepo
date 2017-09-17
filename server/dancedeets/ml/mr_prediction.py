@@ -1,10 +1,10 @@
 import logging
 
-import fb_api
+from dancedeets import fb_api
 
-from event_scraper import potential_events
+from dancedeets.event_scraper import potential_events
 from . import gprediction
-from util import fb_mapreduce
+from dancedeets.util import fb_mapreduce
 
 
 def classify_events(fbl, pe_list):

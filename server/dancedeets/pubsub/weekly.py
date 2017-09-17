@@ -5,13 +5,13 @@ import json
 import logging
 import random
 
-import fb_api
-from loc import math
-from rankings import cities
-from rankings import cities_db
-from search import search_base
-from search import search
-from util import urls
+from dancedeets import fb_api
+from dancedeets.loc import math
+from dancedeets.rankings import cities
+from dancedeets.rankings import cities_db
+from dancedeets.search import search_base
+from dancedeets.search import search
+from dancedeets.util import urls
 from .facebook import event
 from .facebook import fb_util
 from . import weekly_images

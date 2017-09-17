@@ -1,9 +1,9 @@
 import webapp2
 
-import app
-from events import eventdata
-from events import event_image
-from util import urls
+from dancedeets import app
+from dancedeets.events import eventdata
+from dancedeets.events import event_image
+from dancedeets.util import urls
 
 
 @app.route(r'/events/image_proxy/(%s)/?' % urls.EVENT_ID_REGEX)

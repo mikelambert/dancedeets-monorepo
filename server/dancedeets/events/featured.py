@@ -6,7 +6,7 @@ from shapely import geometry
 
 from google.appengine.ext import ndb
 
-from events import eventdata
+from dancedeets.events import eventdata
 
 MAX_OBJECTS = 100
 

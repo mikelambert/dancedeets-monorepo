@@ -1,7 +1,7 @@
 import logging
 import os
 from google.appengine.ext import vendor
-from util import runtime
+from dancedeets.util import runtime
 
 vendor.add('lib-both')
 

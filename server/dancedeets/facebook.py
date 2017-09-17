@@ -33,7 +33,7 @@ import hashlib
 import urllib
 import yaml
 
-from util import runtime
+from dancedeets.util import runtime
 
 if runtime.is_local_appengine():
     filename = 'facebook-dev.yaml'
@@ -44,7 +44,7 @@ else:
 
 
 def load_yaml(filename):
-    abs_filename = os.path.join(os.path.dirname(__file__), filename)
+    abs_filename = os.path.join(os.path.dirname(__file__), '..', filename)
     return yaml.load(file(abs_filename, 'r'))
 
 

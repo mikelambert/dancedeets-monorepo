@@ -1,13 +1,13 @@
 import logging
-import keys
+from dancedeets import keys
 
-import app
-from events import eventdata
-from event_scraper import add_entities
-import fb_api
-from users import users
-from util import urls
-from . import web_events_servlets
+from dancedeets import app
+from dancedeets.events import eventdata
+from dancedeets.event_scraper import add_entities
+from dancedeets import fb_api
+from dancedeets.users import users
+from dancedeets.util import urls
+from dancedeets.web_events import web_events_servlets
 
 
 @app.route('/web_events/upload_multi_fbevent')

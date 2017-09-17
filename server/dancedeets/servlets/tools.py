@@ -9,13 +9,13 @@ from google.appengine.api import memcache
 from mapreduce import control
 from mapreduce import operation as op
 
-import app
-import base_servlet
-from events import eventdata
-import fb_api
-from util import fb_events
-from util import mr
-from util import fb_mapreduce
+from dancedeets import app
+from dancedeets import base_servlet
+from dancedeets.events import eventdata
+from dancedeets import fb_api
+from dancedeets.util import fb_events
+from dancedeets.util import mr
+from dancedeets.util import fb_mapreduce
 
 
 # This code is used by Lets Encrypt Acme to prove ownership of dancedeets.com

@@ -12,9 +12,9 @@ import urllib2
 
 from google.appengine.api import images
 
-from util import fetch
-from util import gcs
-from util import runtime
+from dancedeets.util import fetch
+from dancedeets.util import gcs
+from dancedeets.util import runtime
 
 EVENT_IMAGE_BUCKET = 'dancedeets-event-flyers-full'
 EVENT_IMAGE_CACHE_BUCKET = 'dancedeets-event-flyers-%s-by-%s'

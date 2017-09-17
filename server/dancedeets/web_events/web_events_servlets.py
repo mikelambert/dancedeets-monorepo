@@ -1,15 +1,15 @@
 import datetime
 import json
 import logging
-import keys
+from dancedeets import keys
 import urllib
 import webapp2
 
-import app
-from events import eventdata
-from events import event_updates
-from pubsub import pubsub
-from util import deferred
+from dancedeets import app
+from dancedeets.events import eventdata
+from dancedeets.events import event_updates
+from dancedeets.pubsub import pubsub
+from dancedeets.util import deferred
 
 
 class JsonDataHandler(webapp2.RequestHandler):

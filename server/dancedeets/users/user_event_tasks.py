@@ -1,9 +1,9 @@
 from mapreduce import control
 
-import app
-import base_servlet
-from events import eventdata
-from event_scraper import potential_events
+from dancedeets import app
+from dancedeets import base_servlet
+from dancedeets.events import eventdata
+from dancedeets.event_scraper import potential_events
 
 
 def update_user_qualities(user):

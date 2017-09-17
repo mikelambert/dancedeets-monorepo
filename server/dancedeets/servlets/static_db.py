@@ -3,8 +3,8 @@ import markdown
 
 from google.appengine.ext import ndb
 
-import app
-import base_servlet
+from dancedeets import app
+from dancedeets import base_servlet
 
 
 class StaticContent(ndb.Model):

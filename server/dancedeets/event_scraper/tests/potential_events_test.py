@@ -1,6 +1,6 @@
-from event_scraper import potential_events
-from event_scraper import thing_db
-from test_utils import unittest
+from dancedeets.event_scraper import potential_events
+from dancedeets.event_scraper import thing_db
+from dancedeets.test_utils import unittest
 
 
 class TestDiscoveredEvent(unittest.TestCase):

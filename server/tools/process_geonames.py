@@ -2,7 +2,7 @@
 
 import sys
 sys.path += ['..']
-import geohash
+from dancedeets import geohash
 
 cities = []
 

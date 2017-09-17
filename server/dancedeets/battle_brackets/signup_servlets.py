@@ -2,8 +2,8 @@ import random
 from firebase import firebase
 import time
 
-import keys
-from servlets import api
+from dancedeets import keys
+from dancedeets.servlets import api
 
 auth = firebase.FirebaseAuthentication(keys.get('firebase_secret'), None)
 db = firebase.FirebaseApplication('https://dancedeets-hrd.firebaseio.com', auth)

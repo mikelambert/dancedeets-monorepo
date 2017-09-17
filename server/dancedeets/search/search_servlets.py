@@ -4,18 +4,18 @@ import logging
 import re
 import time
 
-import app
-import base_servlet
-import event_types
-from logic import friends
-from logic import rsvp
-from rankings import cities
-from util import urls
+from dancedeets import app
+from dancedeets import base_servlet
+from dancedeets import event_types
+from dancedeets.logic import friends
+from dancedeets.logic import rsvp
+from dancedeets.rankings import cities
+from dancedeets.util import urls
 from . import onebox
 from . import search
 from . import search_base
 from . import search_pages
-from servlets import api
+from dancedeets.servlets import api
 
 
 class SearchHandler(base_servlet.BaseRequestHandler):
@@ -105,7 +105,7 @@ class RelevantHandler(SearchHandler):
                     has_more_results = searcher.limit_hit
 
                 if 'class' in form.deb.data:
-                    from classes import class_index
+                    from dancedeets.classes import class_index
                     class_results = class_index.ClassSearch(search_query).get_search_results()
                     search_results += class_results
                     search_results.sort(key=lambda x: (x.start_time, x.actual_city_name, x.name))

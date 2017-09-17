@@ -1,9 +1,9 @@
 from __future__ import absolute_import
 import math
 
-import geohash
+from dancedeets import geohash
 
-from loc import math as loc_math
+from dancedeets.loc import math as loc_math
 
 circumference_of_earth = 40000.0  # km
 

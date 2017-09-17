@@ -6,9 +6,9 @@ import re
 import sys
 import time
 sys.path += ['.']
-from classifiers import processing
-from nlp import event_auto_classifier
-from nlp import event_classifier
+from dancedeets.classifiers import processing
+from dancedeets.nlp import event_auto_classifier
+from dancedeets.nlp import event_classifier
 
 ids_info = processing.load_ids()
 for x in ids_info:

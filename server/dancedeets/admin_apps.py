@@ -3,11 +3,11 @@ from webob.cookies import RequestCookies
 
 import google.appengine.ext.deferred
 import mapreduce.main
-import pipeline_wrapper
+from dancedeets import pipeline_wrapper
 
-import admin
-import facebook
-from login_admin import authorize_middleware
+from dancedeets import admin
+from dancedeets import facebook
+from dancedeets.login_admin import authorize_middleware
 import main
 
 

@@ -4,10 +4,10 @@ import json
 import logging
 import random
 
-import fb_api
-import fb_api_util
-from users import users
-from util import text
+from dancedeets import fb_api
+from dancedeets import fb_api_util
+from dancedeets.users import users
+from dancedeets.util import text
 from .. import common
 from .. import db
 

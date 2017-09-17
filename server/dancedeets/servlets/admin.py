@@ -5,11 +5,11 @@ import webapp2
 from google.appengine.api import memcache
 from google.appengine.ext import db
 
-import app
-import base_servlet
-from events import eventdata
-import fb_api
-from util import urls
+from dancedeets import app
+from dancedeets import base_servlet
+from dancedeets.events import eventdata
+from dancedeets import fb_api
+from dancedeets.util import urls
 
 
 @app.route('/tools/delete_fb_cache')

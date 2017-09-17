@@ -3,8 +3,8 @@ from mailchimp3 import MailChimp
 import md5
 from requests import exceptions
 
-import keys
-from util import runtime
+from dancedeets import keys
+from dancedeets.util import runtime
 
 client = MailChimp(keys.get('mailchimp_username'), keys.get('mailchimp_key'))
 

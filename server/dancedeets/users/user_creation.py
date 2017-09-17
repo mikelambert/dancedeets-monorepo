@@ -1,9 +1,9 @@
 import datetime
 import logging
 
-from logic import backgrounder
-from util import taskqueue
-from util import urls
+from dancedeets.logic import backgrounder
+from dancedeets.util import taskqueue
+from dancedeets.util import urls
 from . import users
 
 

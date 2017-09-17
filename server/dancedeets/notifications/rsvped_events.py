@@ -2,13 +2,13 @@ import datetime
 from dateutil import parser
 import logging
 
-import app
-import base_servlet
-import fb_api
-from events import eventdata
-from users import users
-from util import taskqueue
-from util import urls
+from dancedeets import app
+from dancedeets import base_servlet
+from dancedeets import fb_api
+from dancedeets.events import eventdata
+from dancedeets.users import users
+from dancedeets.util import taskqueue
+from dancedeets.util import urls
 from . import android
 
 

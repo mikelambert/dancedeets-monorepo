@@ -1,10 +1,10 @@
 import datetime
 import logging
 
-from event_attendees import event_attendee_classifier
-from events import eventdata
-from users import users
-from util import fb_events
+from dancedeets.event_attendees import event_attendee_classifier
+from dancedeets.events import eventdata
+from dancedeets.users import users
+from dancedeets.util import fb_events
 from .facebook import event as facebook_event
 from .facebook import fb_util
 from .twitter import event as twitter_event

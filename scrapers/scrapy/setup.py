@@ -4,8 +4,7 @@ from setuptools import setup, find_packages
 import glob
 
 packages = (
-    ['dancedeets'] +
-    ['dancedeets.%s' % x for x in find_packages('../../server')] +
+    find_packages('../../server') +
     find_packages()
 )
 
@@ -13,7 +12,7 @@ setup(
     name='dancedeets-scrapy',
     version='1.0',
     packages=packages,
-    package_dir={'dancedeets': '../../server'},
+    package_dir={'dancedeets': '../../server/dancedeets'},
     install_requires=[
         # I'm not sure this really does anything more than documentation,
         # as our our dependencies need to be installed as eggs directly on dash.scrapinghub.com
@@ -25,7 +24,7 @@ setup(
         'scrapy_settings',
     ],
     data_files=[
-        ('dancedeets/nlp/dance_keywords', glob.glob('../../server/nlp/dance_keywords/*.txt')),
+        ('dancedeets/nlp/dance_keywords', glob.glob('../../server/dancedeets/nlp/dance_keywords/*.txt')),
         ('dancedeets', [
             '../../server/keys.yaml',
             '../../server/keys-dev.yaml',

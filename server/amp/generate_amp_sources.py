@@ -13,10 +13,10 @@ from webtest import TestApp
 
 from google.appengine.ext import testbed
 
-from events import event_updates
+from dancedeets.events import event_updates
 import main
-from test_utils import fixtures
-from test_utils import unittest
+from dancedeets.test_utils import fixtures
+from dancedeets.test_utils import unittest
 
 app = TestApp(main.application)
 

@@ -6,10 +6,10 @@ import time
 
 from google.appengine.api import search
 
-from loc import gmaps_api
-from loc import math
-from search import index
-from search import search_base
+from dancedeets.loc import gmaps_api
+from dancedeets.loc import math
+from dancedeets.search import index
+from dancedeets.search import search_base
 from . import class_models
 
 # StudioClass Models:

@@ -5,7 +5,7 @@ import re
 
 from google.appengine.api import memcache
 
-from util import fetch
+from dancedeets.util import fetch
 import twitter
 from .. import common
 from . import auth

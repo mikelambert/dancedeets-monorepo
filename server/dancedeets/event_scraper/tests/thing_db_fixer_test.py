@@ -1,10 +1,10 @@
 import urllib
 
-import fb_api
-from event_scraper import potential_events
-from event_scraper import thing_db
-from test_utils import unittest
-from util import deferred
+from dancedeets import fb_api
+from dancedeets.event_scraper import potential_events
+from dancedeets.event_scraper import thing_db
+from dancedeets.test_utils import unittest
+from dancedeets.util import deferred
 
 common_fields_str = '%2C'.join(fb_api.OBJ_SOURCE_COMMON_FIELDS)
 page_fields_str = '%2C'.join(fb_api.OBJ_SOURCE_PAGE_FIELDS)

@@ -1,6 +1,6 @@
 from google.appengine.ext import ndb
 
-import fb_api
+from dancedeets import fb_api
 
 TOPIC_DANCER = 'TOPIC_DANCER'
 TOPIC_DANCE_CREW = 'TOPIC_DANCE_CREW'

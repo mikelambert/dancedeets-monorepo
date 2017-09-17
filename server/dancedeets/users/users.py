@@ -8,13 +8,13 @@ from google.appengine.runtime import apiproxy_errors
 from mapreduce import context
 
 import datetime
-import fb_api
-from rankings import cities_db
-from loc import gmaps_api
-from loc import math
-from mail import mailchimp_api
-from util import dates
-from util import mr
+from dancedeets import fb_api
+from dancedeets.rankings import cities_db
+from dancedeets.loc import gmaps_api
+from dancedeets.loc import math
+from dancedeets.mail import mailchimp_api
+from dancedeets.util import dates
+from dancedeets.util import mr
 
 timezone_finder = TimezoneFinder()
 

@@ -1,12 +1,12 @@
 #!/usr/bin/python
 # -*-*- encoding: utf-8 -*-*-
 
-from events import eventdata
-from events import event_locations
-import fb_api
-from loc import gmaps_stub
-from test_utils import fb_api_stub
-from test_utils import unittest
+from dancedeets.events import eventdata
+from dancedeets.events import event_locations
+from dancedeets import fb_api
+from dancedeets.loc import gmaps_stub
+from dancedeets.test_utils import fb_api_stub
+from dancedeets.test_utils import unittest
 
 MIKE_ID = '701004'
 USER_ID = '1000'

@@ -4,8 +4,8 @@ from lxml import etree
 import os.path
 
 # local
-import app
-import base_servlet
+from dancedeets import app
+from dancedeets import base_servlet
 
 
 client = storage.Client('dancedeets-hrd')

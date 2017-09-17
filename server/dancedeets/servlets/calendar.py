@@ -1,11 +1,11 @@
 import datetime
 import logging
 
-import app
-import base_servlet
-from search import search
-from search import search_base
-from util import urls
+from dancedeets import app
+from dancedeets import base_servlet
+from dancedeets.search import search
+from dancedeets.search import search_base
+from dancedeets.util import urls
 
 
 class LoginIfUnspecified(object):
@@ -26,7 +26,7 @@ class CalendarFeedHandler(LoginIfUnspecified, base_servlet.BaseRequestHandler):
         search_results = search.Search(search_query).get_search_results()
 
         if 'class' in form.deb.data:
-            from classes import class_index
+            from dancedeets.classes import class_index
             class_results = class_index.ClassSearch(search_query).get_search_results()
             search_results += class_results
             search_results.sort(key=lambda x: x.start_time)

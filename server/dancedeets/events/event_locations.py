@@ -5,8 +5,8 @@ import re
 from google.appengine.ext import db
 from google.appengine.runtime import apiproxy_errors
 
-from loc import gmaps_api
-from loc import formatting
+from dancedeets.loc import gmaps_api
+from dancedeets.loc import formatting
 
 ONLINE_ADDRESS = 'ONLINE'
 

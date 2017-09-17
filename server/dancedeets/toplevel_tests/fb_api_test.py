@@ -5,10 +5,10 @@ import unittest
 
 from google.appengine.ext import testbed
 
-import fb_api
-from test_utils import fb_api_stub
-from test_utils import mock_memcache
-from test_utils import unittest as full_unittest
+from dancedeets import fb_api
+from dancedeets.test_utils import fb_api_stub
+from dancedeets.test_utils import mock_memcache
+from dancedeets.test_utils import unittest as full_unittest
 
 
 class TestLookupUser(unittest.TestCase):

@@ -1,7 +1,7 @@
 import logging
 import mandrill
 
-import keys
+from dancedeets import keys
 
 mandrill_client = mandrill.Mandrill(keys.get('mandrill_api_key'))
 

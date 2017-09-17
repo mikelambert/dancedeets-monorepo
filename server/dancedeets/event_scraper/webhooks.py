@@ -5,11 +5,11 @@ import logging
 import urllib
 import webapp2
 
-import app
-import facebook
-import fb_api
-import keys
-from users import users
+from dancedeets import app
+from dancedeets import facebook
+from dancedeets import fb_api
+from dancedeets import keys
+from dancedeets.users import users
 from . import event_pipeline
 from . import potential_events
 from . import thing_db

@@ -3,8 +3,8 @@ import json
 import logging
 import StringIO
 
-import fb_api
-from util import fb_mapreduce
+from dancedeets import fb_api
+from dancedeets.util import fb_mapreduce
 
 
 def dump_fb_json(fbl, pe_list):

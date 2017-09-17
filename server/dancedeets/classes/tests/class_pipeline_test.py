@@ -1,8 +1,8 @@
 from scrapy.utils.project import get_project_settings
 from scrapy.crawler import CrawlerRunner
 
-from classes import class_pipeline
-from test_utils import unittest
+from dancedeets.classes import class_pipeline
+from dancedeets.test_utils import unittest
 
 
 class TestSpiderList(unittest.TestCase):

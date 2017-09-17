@@ -7,17 +7,17 @@ import random
 import re
 import urllib
 
-import facebook
+from dancedeets import facebook
 from google.appengine.ext import db
 from google.appengine.api import datastore
 from google.appengine.api import memcache
 from google.appengine.api import urlfetch
 from google.appengine.runtime import apiproxy_errors
 
-from util import fb_events
-from util import mr
-from util import properties
-from util import urls
+from dancedeets.util import fb_events
+from dancedeets.util import mr
+from dancedeets.util import properties
+from dancedeets.util import urls
 
 # Comparison of pickle vs json:
 # http://kbyanc.blogspot.com/2007/07/python-serializer-benchmarks.html
@@ -653,8 +653,8 @@ class FBAPI(CacheSystem):
                             if self.raise_on_page_redirect:
                                 raise PageRedirectException(from_id, to_id)
                             else:
-                                from event_scraper import thing_db_fixer
-                                from util import deferred
+                                from dancedeets.event_scraper import thing_db_fixer
+                                from dancedeets.util import deferred
                                 logging.warning(message)
                                 logging.warning("Executing deferred call to migrate to new ID, returning None here.")
                                 deferred.defer(thing_db_fixer.function_migrate_thing_to_new_id, self, from_id, to_id)

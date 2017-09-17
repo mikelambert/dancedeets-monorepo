@@ -6,8 +6,8 @@ from mapreduce import context
 from mapreduce import control
 from mapreduce import util
 
-import fb_api
-from users import access_tokens
+from dancedeets import fb_api
+from dancedeets.users import access_tokens
 
 
 def start_map(

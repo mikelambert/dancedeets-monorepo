@@ -1,4 +1,4 @@
-import fb_api
+from dancedeets import fb_api
 
 # We only do this many at once, so that we don't load them all into memory simultaneously.
 # This helps us avoid blowing our soft memory limit and killing our serving process just because the user looked up every-event-in-the-world.

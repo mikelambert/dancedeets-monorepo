@@ -5,9 +5,9 @@ import time
 
 sys.path += ['.']
 
-from classifiers import processing
-import event_types
-from nlp import categories
+from dancedeets.classifiers import processing
+from dancedeets import event_types
+from dancedeets.nlp import categories
 
 all_ids = processing.load_all_ids()
 training_data = processing.load_classified_ids(all_ids)

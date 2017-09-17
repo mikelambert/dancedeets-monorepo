@@ -1,4 +1,4 @@
-import fb_api
+from dancedeets import fb_api
 
 
 class LookupMetadata(fb_api.LookupType):

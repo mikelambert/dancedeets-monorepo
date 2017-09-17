@@ -22,25 +22,25 @@ import webapp2
 from google.appengine.api.app_identity import app_identity
 from google.appengine.ext import db
 
-import abuse
-from users import users
-from users import access_tokens
-from events import eventdata
-import event_types
-import facebook
-import fb_api
-from logic import backgrounder
-from logic import mobile
-from rankings import rankings
-import render_server
-from services import ip_geolocation
-from users import user_creation
-from util import dates
-from util import deferred
-from util import ips
-from util import timelog
-from util import text
-from util import urls
+from dancedeets import abuse
+from dancedeets.users import users
+from dancedeets.users import access_tokens
+from dancedeets.events import eventdata
+from dancedeets import event_types
+from dancedeets import facebook
+from dancedeets import fb_api
+from dancedeets.logic import backgrounder
+from dancedeets.logic import mobile
+from dancedeets.rankings import rankings
+from dancedeets import render_server
+from dancedeets.services import ip_geolocation
+from dancedeets.users import user_creation
+from dancedeets.util import dates
+from dancedeets.util import deferred
+from dancedeets.util import ips
+from dancedeets.util import timelog
+from dancedeets.util import text
+from dancedeets.util import urls
 
 CDN_HOST = 'https://static.dancedeets.com'
 
@@ -282,7 +282,7 @@ class BareBaseRequestHandler(webapp2.RequestHandler, FacebookMixinHandler):
         except:
             logging.exception('Failure to geolocate IP %s, falling back on old-school resolution', ip)
         if not address:
-            from loc import names
+            from dancedeets.loc import names
             iso3166_country = self.request.headers.get("X-AppEngine-Country")
             full_country = names.get_country_name(iso3166_country)
 
@@ -627,7 +627,7 @@ class BaseRequestHandler(BareBaseRequestHandler):
         self.do_not_inline_css_next_time()
         if self.css_basename and self.should_inline_css():
             css_path = '%s.css' % self.css_basename
-            css_filename = os.path.join(os.path.dirname(__file__), 'dist-includes/css/%s' % css_path)
+            css_filename = os.path.join(os.path.dirname(__file__), '../dist-includes/css/%s' % css_path)
             try:
                 css = open(css_filename).read()
                 css = css.replace('url(../', 'url(https://static.dancedeets.com/')

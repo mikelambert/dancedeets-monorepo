@@ -1,9 +1,9 @@
 import json
 
-import app
-import base_servlet
-from loc import gmaps_api
-import keys
+from dancedeets import app
+from dancedeets import base_servlet
+from dancedeets.loc import gmaps_api
+from dancedeets import keys
 
 
 @app.route('/_gmaps_api')

@@ -1,8 +1,8 @@
 import datetime
 
-from classes import class_models
-from classes import class_servlets
-from test_utils import unittest
+from dancedeets.classes import class_models
+from dancedeets.classes import class_servlets
+from dancedeets.test_utils import unittest
 
 
 def FilteredTestSuite(tests):

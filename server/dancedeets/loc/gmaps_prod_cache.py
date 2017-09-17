@@ -2,7 +2,7 @@ import json
 import logging
 import urllib
 
-import keys
+from dancedeets import keys
 from . import gmaps_backends
 
 

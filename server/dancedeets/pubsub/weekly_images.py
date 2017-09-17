@@ -6,12 +6,12 @@ import subprocess
 import StringIO
 import tempfile
 
-import app
-import base_servlet
-from events import event_image
-from rankings import cities
-from util import gcs
-from util import runtime
+from dancedeets import app
+from dancedeets import base_servlet
+from dancedeets.events import event_image
+from dancedeets.rankings import cities
+from dancedeets.util import gcs
+from dancedeets.util import runtime
 
 full_size = (626, 840)
 

@@ -2,11 +2,11 @@ import json
 import logging
 
 from mapreduce import mapreduce_pipeline
-from util import fb_mapreduce
+from dancedeets.util import fb_mapreduce
 
-import app
-import base_servlet
-from util import mr
+from dancedeets import app
+from dancedeets import base_servlet
+from dancedeets.util import mr
 from . import event_pipeline
 from . import potential_events
 from . import thing_scraper

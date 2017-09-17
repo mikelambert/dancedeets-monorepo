@@ -3,11 +3,11 @@
 import datetime
 import time
 
-import base_servlet
-import app
+from dancedeets import base_servlet
+from dancedeets import app
 import logging
-import fb_api
-from util import mr
+from dancedeets import fb_api
+from dancedeets.util import mr
 from . import thing_db
 from . import potential_events
 from . import event_pipeline

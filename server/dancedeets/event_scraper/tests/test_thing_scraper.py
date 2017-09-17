@@ -1,5 +1,5 @@
-from event_scraper import thing_scraper
-from test_utils import unittest
+from dancedeets.event_scraper import thing_scraper
+from dancedeets.test_utils import unittest
 
 
 class TestParseLink(unittest.TestCase):

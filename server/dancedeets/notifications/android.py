@@ -3,7 +3,7 @@ import logging
 
 import gcm
 
-import keys
+from dancedeets import keys
 
 EVENT_REMINDER = 'EVENT_REMINDER'
 EVENT_ADDED = 'EVENT_ADDED'

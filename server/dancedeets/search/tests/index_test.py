@@ -5,9 +5,9 @@ from google.appengine.ext import ndb
 from google.appengine.api import search
 from google.appengine.ext import testbed
 
-from search import index
-from test_utils import fb_api_stub
-from test_utils import unittest
+from dancedeets.search import index
+from dancedeets.test_utils import fb_api_stub
+from dancedeets.test_utils import unittest
 
 
 class TestModel(ndb.Model):

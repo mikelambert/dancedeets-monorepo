@@ -1,6 +1,6 @@
 from __future__ import absolute_import
 
-from servlets import api
+from dancedeets.servlets import api
 from . import db
 
 

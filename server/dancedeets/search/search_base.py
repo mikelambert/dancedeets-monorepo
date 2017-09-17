@@ -9,12 +9,12 @@ import wtforms
 from google.appengine.api import search
 from google.appengine.api.search import search as inner_search
 
-import event_types
-from loc import gmaps_api
-from loc import math
-from nlp import categories
-from util import dates
-from util import urls
+from dancedeets import event_types
+from dancedeets.loc import gmaps_api
+from dancedeets.loc import math
+from dancedeets.nlp import categories
+from dancedeets.util import dates
+from dancedeets.util import urls
 
 TIME_PAST = 'PAST'
 TIME_ONGOING = 'ONGOING'

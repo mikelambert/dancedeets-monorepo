@@ -3,11 +3,11 @@ import urllib
 from webtest import TestApp
 from webtest import utils
 
-import fb_api
+from dancedeets import fb_api
 import main
-from test_utils import fixtures
-from test_utils import unittest
-from users import users
+from dancedeets.test_utils import fixtures
+from dancedeets.test_utils import unittest
+from dancedeets.users import users
 
 app = TestApp(main.application)
 

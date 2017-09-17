@@ -4,13 +4,13 @@ import time
 
 from google.cloud import datastore
 
-from events import event_locations
-import fb_api
-from loc import math
-from nlp import event_auto_classifier
-from nlp import event_classifier
-from rankings import cities
-from util import fb_events
+from dancedeets.events import event_locations
+from dancedeets import fb_api
+from dancedeets.loc import math
+from dancedeets.nlp import event_auto_classifier
+from dancedeets.nlp import event_classifier
+from dancedeets.rankings import cities
+from dancedeets.util import fb_events
 from . import popular_people
 
 

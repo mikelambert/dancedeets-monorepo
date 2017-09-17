@@ -5,11 +5,11 @@ import subprocess
 import tempfile
 import time
 
-import fb_api
-from search import email_events
-from test_utils import fixtures
-from test_utils import unittest
-import render_server
+from dancedeets import fb_api
+from dancedeets.search import email_events
+from dancedeets.test_utils import fixtures
+from dancedeets.test_utils import unittest
+from dancedeets import render_server
 
 
 def get_free_port():

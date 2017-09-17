@@ -1,7 +1,7 @@
 from flask import Flask
 from flask_graphql import GraphQL
 import graphene
-import keys
+from dancedeets import keys
 
 app = Flask(__name__)
 app.debug = True

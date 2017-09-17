@@ -1,7 +1,7 @@
 # -*-*- encoding: utf-8 -*-*-
 
-from loc import gmaps_api
-from test_utils import unittest
+from dancedeets.loc import gmaps_api
+from dancedeets.test_utils import unittest
 
 
 class TestGetCountry(unittest.TestCase):

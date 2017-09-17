@@ -1,10 +1,10 @@
 import re
 
-import app
-import base_servlet
-import fb_api
-from profiles import profile
-from profiles import tags
+from dancedeets import app
+from dancedeets import base_servlet
+from dancedeets import fb_api
+from dancedeets.profiles import profile
+from dancedeets.profiles import tags
 
 
 class BaseProfileHandler(base_servlet.BaseRequestHandler):

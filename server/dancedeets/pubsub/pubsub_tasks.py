@@ -1,9 +1,9 @@
 from mapreduce import control
 
-import app
-import base_servlet
-from rankings import cities
-from util import dates
+from dancedeets import app
+from dancedeets import base_servlet
+from dancedeets.rankings import cities
+from dancedeets.util import dates
 from . import pubsub
 
 
@@ -54,7 +54,7 @@ def blacklisted(city):
 @app.route('/tasks/weekly_posts')
 class WeeklyEventsPostHandler(base_servlet.BaseTaskFacebookRequestHandler):
     def get(self):
-        #TODO: rewrite this to use "top cities" filter from rankings...maybe rewrite our rankings to be better organized?
+        #TODO: rewrite this to use "top cities" filter from dancedeets.rankings...maybe rewrite our rankings to be better organized?
         limit = int(self.request.get('limit', '10'))
         top_cities = cities.get_largest_cities(limit=limit, country='US')
         top_city_keys = [x.key().name() for x in top_cities if not blacklisted(x)]

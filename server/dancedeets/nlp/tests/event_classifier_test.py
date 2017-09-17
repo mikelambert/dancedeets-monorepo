@@ -3,9 +3,9 @@
 
 import unittest
 
-from nlp import event_classifier
-from nlp import keywords
-from nlp import grammar
+from dancedeets.nlp import event_classifier
+from dancedeets.nlp import keywords
+from dancedeets.nlp import grammar
 
 
 class TestSoulSessionsOslo(unittest.TestCase):

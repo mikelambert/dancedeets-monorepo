@@ -9,11 +9,11 @@ import re
 import sqlite3
 import urllib
 
-import facebook
-from util import urls
+from dancedeets import facebook
+from dancedeets.util import urls
 
-from geonames import geoname_files
-from geonames import sqlite_db
+from dancedeets.geonames import geoname_files
+from dancedeets.geonames import sqlite_db
 
 FILENAME_ADLOCS = '/Users/%s/Dropbox/dancedeets-development/server/generated/adlocs_only.db' % getpass.getuser()
 

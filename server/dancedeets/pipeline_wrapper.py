@@ -10,7 +10,7 @@
 # So this wrapper just does that...updates the sys.path, and loads the _APP handlers
 
 from google.appengine.ext import vendor
-from util import runtime
+from dancedeets.util import runtime
 
 vendor.add('lib-both')
 if runtime.is_local_appengine():

@@ -32,7 +32,7 @@ from os.path import isfile
 from os.path import join
 from os import listdir
 
-from events.eventdata import DBEvent
+from dancedeets.events.eventdata import DBEvent
 
 
 def run():

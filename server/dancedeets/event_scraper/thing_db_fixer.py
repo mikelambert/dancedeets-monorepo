@@ -1,6 +1,6 @@
-import fb_api
+from dancedeets import fb_api
 import logging
-from util import deferred
+from dancedeets.util import deferred
 from . import potential_events
 from . import thing_db
 

@@ -2,10 +2,10 @@
 
 import logging
 
-import app
-import base_servlet
-from logic import mobile
-from users import users
+from dancedeets import app
+from dancedeets import base_servlet
+from dancedeets.logic import mobile
+from dancedeets.users import users
 
 
 @app.route('/login')
@@ -43,7 +43,7 @@ class LoginHandler(base_servlet.BaseRequestHandler):
 
         self.display['user_message'] = self.get_cookie('User-Message')
 
-        from util import country_dialing_codes
+        from dancedeets.util import country_dialing_codes
         self.display['suppress_promos'] = True
         self.display['country_codes'] = sorted(country_dialing_codes.mapping.items())
         self.display['android_url'] = mobile.ANDROID_URL

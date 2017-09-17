@@ -2,8 +2,8 @@
 
 import logging
 
-from loc import gmaps_stub
-from test_utils import unittest
+from dancedeets.loc import gmaps_stub
+from dancedeets.test_utils import unittest
 
 formatting_reg_data = {
     u'address_u__u6e0b_u8c37_': dict(address=u'渋谷'),

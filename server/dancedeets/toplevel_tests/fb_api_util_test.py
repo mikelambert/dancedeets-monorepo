@@ -1,7 +1,7 @@
-import fb_api
-import fb_api_util
+from dancedeets import fb_api
+from dancedeets import fb_api_util
 
-from test_utils import unittest
+from dancedeets.test_utils import unittest
 
 
 class TestLookupUser(unittest.TestCase):

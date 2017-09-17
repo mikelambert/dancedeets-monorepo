@@ -3,14 +3,14 @@ import logging
 from mapreduce import context
 from mapreduce import operation as op
 
-import app
-import base_servlet
-from event_attendees import event_attendee_classifier
-import fb_api
-from users import users
-from util import deferred
-from util import fb_mapreduce
-from util import mr
+from dancedeets import app
+from dancedeets import base_servlet
+from dancedeets.event_attendees import event_attendee_classifier
+from dancedeets import fb_api
+from dancedeets.users import users
+from dancedeets.util import deferred
+from dancedeets.util import fb_mapreduce
+from dancedeets.util import mr
 from . import eventdata
 from . import event_updates
 
@@ -209,8 +209,8 @@ def yield_maybe_delete_bad_event(fbl, db_event):
         return
 
     logging.info('MDBE: Check on event %s: %s', db_event.id, db_event.creating_method)
-    from event_scraper import auto_add
-    from nlp import event_classifier
+    from dancedeets.event_scraper import auto_add
+    from dancedeets.nlp import event_classifier
     classified_event = event_classifier.get_classified_event(db_event.fb_event)
     good_text_event = auto_add.is_good_event_by_text(db_event.fb_event, classified_event)
     if good_text_event:
@@ -231,7 +231,7 @@ def yield_maybe_delete_bad_event(fbl, db_event):
             result = '%s: %s: %s: %s\n' % (db_event.fb_event_id, db_event.creating_method, db_event.country, db_event.name)
             yield result.encode('utf-8')
             if allow_deletes:
-                from search import search
+                from dancedeets.search import search
                 search.delete_from_fulltext_search_index(db_event.fb_event_id)
                 yield op.db.Delete(db_event)
                 display_event = search.DisplayEvent.get_by_id(db_event.fb_event_id)

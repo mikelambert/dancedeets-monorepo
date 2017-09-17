@@ -2,11 +2,11 @@ import logging
 
 from google.appengine.ext import db
 
-import geohash
-from loc import geohash_math
-from loc import math
-from loc import names
-from util import runtime
+from dancedeets import geohash
+from dancedeets.loc from dancedeets import geohash_math
+from dancedeets.loc import math
+from dancedeets.loc import names
+from dancedeets.util import runtime
 
 CITY_GEOHASH_PRECISIONS = range(
     geohash_math.get_geohash_bits_for_km(1500),

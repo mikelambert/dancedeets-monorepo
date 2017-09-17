@@ -1,5 +1,5 @@
-import app
-import base_servlet
+from dancedeets import app
+from dancedeets import base_servlet
 from . import auto_add
 from . import potential_events_reloading
 from . import thing_db

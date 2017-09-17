@@ -3,7 +3,7 @@ import time
 
 from google.appengine.api import search
 
-from event_scraper import thing_db
+from dancedeets.event_scraper import thing_db
 from . import search_source
 
 

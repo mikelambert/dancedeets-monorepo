@@ -4,7 +4,7 @@
 # gce_list.overlaps(ip)
 
 import IPy
-from util import ips
+from dancedeets.util import ips
 
 banned_list = IPy.IPSet([
     IPy.IP('188.165.25.197'),  # A scraper that hammered the site too quickly.

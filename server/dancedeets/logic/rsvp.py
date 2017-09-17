@@ -1,5 +1,5 @@
-import fb_api
-from logic import backgrounder
+from dancedeets import fb_api
+from dancedeets.logic import backgrounder
 
 CHOOSE_RSVPS = ['attending', 'maybe', 'declined']
 

@@ -1,6 +1,6 @@
 import datetime
 import unittest
-from util import dates
+from dancedeets.util import dates
 
 
 class TestDates(unittest.TestCase):

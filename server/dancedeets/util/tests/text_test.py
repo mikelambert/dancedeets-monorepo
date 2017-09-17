@@ -1,5 +1,5 @@
 import unittest
-from util import text
+from dancedeets.util import text
 
 
 class TestLinkify(unittest.TestCase):

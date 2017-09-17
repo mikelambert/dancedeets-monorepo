@@ -7,11 +7,11 @@ from mapreduce import json_util
 from mapreduce import mapreduce_pipeline
 from mapreduce import operation
 
-from events import eventdata
-import fb_api
-from loc import gmaps_api
-from logic import backgrounder
-from util import fb_mapreduce
+from dancedeets.events import eventdata
+from dancedeets import fb_api
+from dancedeets.loc import gmaps_api
+from dancedeets.logic import backgrounder
+from dancedeets.util import fb_mapreduce
 
 GRAPH_TYPE_PROFILE = 'GRAPH_TYPE_PROFILE'
 GRAPH_TYPE_FANPAGE = 'GRAPH_TYPE_FANPAGE'

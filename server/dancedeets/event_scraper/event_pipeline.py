@@ -1,9 +1,9 @@
 import logging
 
-import fb_api
-from event_scraper import potential_events
-from event_scraper import auto_add
-from util import fb_events
+from dancedeets import fb_api
+from dancedeets.event_scraper import potential_events
+from dancedeets.event_scraper import auto_add
+from dancedeets.util import fb_events
 
 
 def get_unprocessed_discovered_events(discovered_list):

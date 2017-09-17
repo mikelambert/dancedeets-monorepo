@@ -1,6 +1,6 @@
 import webapp2
 
-import app
+from dancedeets import app
 
 
 @app.route('/_ah/start')

@@ -1,6 +1,6 @@
 import logging
 
-import fb_api
+from dancedeets import fb_api
 from . import event_pipeline
 from . import potential_events
 from . import thing_db

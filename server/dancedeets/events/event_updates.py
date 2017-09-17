@@ -7,16 +7,16 @@ import dateutil
 
 from google.appengine.ext import ndb
 
-import fb_api
-from loc import gmaps_api
-from loc import math
-from rankings import cities
-from rankings import cities_db
-from search import search
-from nlp import categories
-from nlp import event_classifier
-from util import dates
-from util import language
+from dancedeets import fb_api
+from dancedeets.loc import gmaps_api
+from dancedeets.loc import math
+from dancedeets.rankings import cities
+from dancedeets.rankings import cities_db
+from dancedeets.search import search
+from dancedeets.nlp import categories
+from dancedeets.nlp import event_classifier
+from dancedeets.util import dates
+from dancedeets.util import language
 from . import event_image
 from . import event_locations
 

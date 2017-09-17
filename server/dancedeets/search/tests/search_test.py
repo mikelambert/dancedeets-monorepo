@@ -1,7 +1,7 @@
 from webtest import TestApp
 
 import main
-from test_utils import unittest
+from dancedeets.test_utils import unittest
 
 app = TestApp(main.application)
 

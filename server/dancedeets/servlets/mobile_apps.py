@@ -1,10 +1,10 @@
-import app
-import base_servlet
+from dancedeets import app
+from dancedeets import base_servlet
 
-from loc import names
-from logic import mobile
-from logic import sms
-from util import country_dialing_codes
+from dancedeets.loc import names
+from dancedeets.logic import mobile
+from dancedeets.logic import sms
+from dancedeets.util import country_dialing_codes
 
 
 @app.route('/mobile_apps')

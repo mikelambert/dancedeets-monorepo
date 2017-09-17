@@ -3,10 +3,10 @@ import logging
 import string
 import StringIO
 
-from events import eventdata
-from events import event_locations
-import fb_api
-from util import fb_mapreduce
+from dancedeets.events import eventdata
+from dancedeets.events import event_locations
+from dancedeets import fb_api
+from dancedeets.util import fb_mapreduce
 
 convert_chars = string.punctuation + '\r\n\t'
 trans = string.maketrans(convert_chars, ' ' * len(convert_chars))

@@ -1,4 +1,4 @@
-from util import urls
+from dancedeets.util import urls
 
 DATE_FORMAT = "%Y/%m/%d"
 TIME_FORMAT = "%H:%M"

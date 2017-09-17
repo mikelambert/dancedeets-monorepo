@@ -2,10 +2,10 @@
 
 import logging
 
-from loc import gmaps_api
-from loc import gmaps_stub
-from loc import formatting
-from test_utils import unittest
+from dancedeets.loc import gmaps_api
+from dancedeets.loc import gmaps_stub
+from dancedeets.loc import formatting
+from dancedeets.test_utils import unittest
 
 formatting_reg_data = {
     'Shibuya': 'Shibuya, Tokyo, Japan',

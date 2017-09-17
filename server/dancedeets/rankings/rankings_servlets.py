@@ -1,7 +1,7 @@
 import webapp2
 
-import app
-import base_servlet
+from dancedeets import app
+from dancedeets import base_servlet
 from . import cities
 from . import rankings
 

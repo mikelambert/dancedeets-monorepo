@@ -1,6 +1,6 @@
-import app
-import base_servlet
-from users import users
+from dancedeets import app
+from dancedeets import base_servlet
+from dancedeets.users import users
 from . import search
 from . import email_events
 

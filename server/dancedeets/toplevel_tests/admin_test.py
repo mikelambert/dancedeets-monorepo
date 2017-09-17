@@ -2,7 +2,7 @@
 
 import unittest
 
-import admin
+from dancedeets import admin
 
 
 class TestAdmin(unittest.TestCase):

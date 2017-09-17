@@ -8,7 +8,7 @@ except ImportError:
     urllib2_fallback = True
     import urllib2
 
-from util import urls
+from dancedeets.util import urls
 
 API_KEY = 'AIzaSyAMTDdM6Y8xDkS7zaj3nRWmxK01rHznlB0'
 

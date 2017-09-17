@@ -4,7 +4,7 @@ import logging
 import multiprocessing
 import os
 
-from util import fb_events
+from dancedeets.util import fb_events
 
 # grep '^701004.[0-9]*.OBJ_EVENT,' local_data/FacebookCachedObject.csv > local_data/FacebookCachedObjectEvent.csv
 

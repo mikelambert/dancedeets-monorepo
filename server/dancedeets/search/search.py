@@ -9,8 +9,8 @@ import time
 from google.appengine.ext import ndb
 from google.appengine.api import search
 
-from events import eventdata
-from util import dates
+from dancedeets.events import eventdata
+from dancedeets.util import dates
 from . import index
 from . import search_base
 
@@ -322,7 +322,7 @@ def update_fulltext_search_index_batch(events_to_update):
 
 
 def delete_from_fulltext_search_index(db_event_id):
-    logging.info("Deleting event from search index: %s", db_event_id)
+    logging.info("Deleting event from dancedeets.search index: %s", db_event_id)
     FutureEventsIndex.delete_ids([db_event_id])
     AllEventsIndex.delete_ids([db_event_id])
 

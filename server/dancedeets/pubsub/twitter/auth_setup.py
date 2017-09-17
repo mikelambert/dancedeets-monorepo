@@ -1,8 +1,8 @@
 import oauth2 as oauth
 import urlparse
 
-import base_servlet
-import app
+from dancedeets import base_servlet
+from dancedeets import app
 from .. import db
 from . import auth
 

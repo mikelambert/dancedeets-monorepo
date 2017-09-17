@@ -3,9 +3,9 @@ import logging
 
 from google.appengine.api import search
 
-import app
-import base_servlet
-from event_scraper import thing_db
+from dancedeets import app
+from dancedeets import base_servlet
+from dancedeets.event_scraper import thing_db
 from . import index
 
 

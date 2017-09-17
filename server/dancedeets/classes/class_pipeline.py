@@ -7,12 +7,12 @@ from pipeline import common
 from pipeline import pipeline
 import scrapinghub
 
-import app
-import base_servlet
-from classes import class_index
-import keys
-from mail import mandrill_api
-from util import fixed_pipelines
+from dancedeets import app
+from dancedeets import base_servlet
+from dancedeets.classes import class_index
+from dancedeets import keys
+from dancedeets.mail import mandrill_api
+from dancedeets.util import fixed_pipelines
 
 # TODO(mindbody):
 DISABLED_SPIDERS = ['EXPG', 'Boogiezone', 'IDA', 'mL', 'NeighborhoodStudio']

@@ -2,25 +2,25 @@ from flask import Flask
 from flask_admin import Admin
 from flask_admin.contrib import appengine
 
-import keys
+from dancedeets import keys
 
-from classes.class_models import StudioClass
-from event_attendees.popular_people import PRCityCategory
-from event_attendees.popular_people import PRDebugAttendee
-from event_scraper.potential_events import PotentialEvent
-from event_scraper.thing_db import Source
-from events.eventdata import DBEvent
-from events.event_locations import LocationMapping
-from events.featured import FeaturedResult
-from rankings.cities import City
-from fb_api import FacebookCachedObject
-from loc.gmaps_cached import CachedGeoCode
-from loc.gmaps_bwcompat import GeoCode
-from pubsub.db import OAuthToken
-from search.search import DisplayEvent
-from servlets.static_db import StaticContent
-from topics.topic_db import Topic
-from users.users import User, UserFriendsAtSignup, UserMessage
+from dancedeets.classes.class_models import StudioClass
+from dancedeets.event_attendees.popular_people import PRCityCategory
+from dancedeets.event_attendees.popular_people import PRDebugAttendee
+from dancedeets.event_scraper.potential_events import PotentialEvent
+from dancedeets.event_scraper.thing_db import Source
+from dancedeets.events.eventdata import DBEvent
+from dancedeets.events.event_locations import LocationMapping
+from dancedeets.events.featured import FeaturedResult
+from dancedeets.rankings.cities import City
+from dancedeets.fb_api import FacebookCachedObject
+from dancedeets.loc.gmaps_cached import CachedGeoCode
+from dancedeets.loc.gmaps_bwcompat import GeoCode
+from dancedeets.pubsub.db import OAuthToken
+from dancedeets.search.search import DisplayEvent
+from dancedeets.servlets.static_db import StaticContent
+from dancedeets.topics.topic_db import Topic
+from dancedeets.users.users import User, UserFriendsAtSignup, UserMessage
 
 app = Flask(__name__)
 app.debug = True

@@ -2,14 +2,14 @@ import datetime
 import logging
 import re
 
-import fb_api
+from dancedeets import fb_api
 
-from event_attendees import event_attendee_classifier
-from events import eventdata
-from nlp import event_auto_classifier
-from nlp import event_classifier
-from util import fb_mapreduce
-from util import mr
+from dancedeets.event_attendees import event_attendee_classifier
+from dancedeets.events import eventdata
+from dancedeets.nlp import event_auto_classifier
+from dancedeets.nlp import event_classifier
+from dancedeets.util import fb_mapreduce
+from dancedeets.util import mr
 from . import add_entities
 from . import potential_events
 

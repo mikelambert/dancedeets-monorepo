@@ -4,13 +4,13 @@ import pickle
 
 from google.appengine.ext import testbed
 
-from events import eventdata
-from events import event_updates
-from event_scraper import add_entities
-import fb_api
-from search import search
-from users import users
-from users import user_creation
+from dancedeets.events import eventdata
+from dancedeets.events import event_updates
+from dancedeets.event_scraper import add_entities
+from dancedeets import fb_api
+from dancedeets.search import search
+from dancedeets.users import users
+from dancedeets.users import user_creation
 
 
 def create_event(event_id='1000001', start_time=None, location='NYC'):

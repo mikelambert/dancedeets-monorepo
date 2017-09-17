@@ -5,15 +5,15 @@ import urllib2
 
 from apiclient.discovery import build
 
-import app
-import base_servlet
-import fb_api
-import keys
-from topics import grouping
-from topics import topic_db
-from search import search
-from search import search_base
-from servlets import api
+from dancedeets import app
+from dancedeets import base_servlet
+from dancedeets import fb_api
+from dancedeets import keys
+from dancedeets.topics import grouping
+from dancedeets.topics import topic_db
+from dancedeets.search import search
+from dancedeets.search import search_base
+from dancedeets.servlets import api
 
 # Set DEVELOPER_KEY to the "API key" value from the Google Developers Console:
 # https://console.developers.google.com/project/_/apiui/credential

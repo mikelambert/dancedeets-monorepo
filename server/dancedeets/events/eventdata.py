@@ -6,12 +6,12 @@ import pytz
 
 from google.appengine.ext import ndb
 
-import event_types
-from events import event_locations
-from loc import address
-from loc import gmaps_api
+from dancedeets import event_types
+from dancedeets.events import event_locations
+from dancedeets.loc import address
+from dancedeets.loc import gmaps_api
 from . import namespaces
-from util import fb_events
+from dancedeets.util import fb_events
 
 REGION_RADIUS = 200  # kilometers
 

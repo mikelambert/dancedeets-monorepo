@@ -3,7 +3,7 @@
 import datetime
 import unittest
 
-from util import korean_dates
+from dancedeets.util import korean_dates
 
 examples = {
     u'2016년 3월 12일(토)': (datetime.date(2016, 3, 12), None),

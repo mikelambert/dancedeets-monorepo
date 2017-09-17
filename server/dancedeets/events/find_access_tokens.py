@@ -9,13 +9,13 @@ from mapreduce import mapreduce_pipeline
 from mapreduce import pipeline_base
 from mapreduce import util
 
-import app
-import base_servlet
-import fb_api
+from dancedeets import app
+from dancedeets import base_servlet
+from dancedeets import fb_api
 from . import eventdata
 from . import event_updates
 from . import namespaces
-from util import fb_mapreduce
+from dancedeets.util import fb_mapreduce
 
 
 def test_user_on_events(user):

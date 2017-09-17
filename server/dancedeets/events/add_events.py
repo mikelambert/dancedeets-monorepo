@@ -1,9 +1,9 @@
 import logging
 
-import fb_api
-from events import eventdata
-from logic import backgrounder
-from util import dates
+from dancedeets import fb_api
+from dancedeets.events import eventdata
+from dancedeets.logic import backgrounder
+from dancedeets.util import dates
 
 
 def get_decorated_user_events(fbl):

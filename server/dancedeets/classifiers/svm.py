@@ -8,11 +8,11 @@ from sklearn.linear_model import SGDClassifier
 
 import numpy as np
 
-from classifiers import processing
+from dancedeets.classifiers import processing
 
-from nlp import rules
-from nlp import keywords
-from nlp import grammar
+from dancedeets.nlp import rules
+from dancedeets.nlp import keywords
+from dancedeets.nlp import grammar
 skip_rules = ['EVENT', 'EVENT_WITH_ROMANCE_EVENT', 'ANY_GOOD', 'ANY_BAD']
 skip_keywords = ['CONNECTOR', 'ROMANCE', 'KING']
 skip_names = ['nlp.keywords.%s' % x for x in skip_keywords] + ['nlp.rules.%s' % x for x in skip_rules]
@@ -84,7 +84,7 @@ sample_weights = np.array(sample_weights_list, "f")
 
 import array
 from sklearn import base
-from nlp import event_classifier
+from dancedeets.nlp import event_classifier
 from sklearn.externals.joblib import Parallel, delayed
 
 import re

@@ -2,10 +2,10 @@ import json
 import logging
 import webapp2
 
-import app
-import keys
-from mail import mailchimp_api
-from users import users
+from dancedeets import app
+from dancedeets import keys
+from dancedeets.mail import mailchimp_api
+from dancedeets.users import users
 """
 type=upemail&fired_at=2017-04-23+08%3A08%3A31&data%5Bnew_id%5D=50696b797a&data%5Bnew_email%5D=mlambert%2Btest%40gmail.com&data%5Bold_email%5D=mlambert%40gmail.com&data%5Blist_id%5D=93ab23d636"
 aka:

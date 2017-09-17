@@ -2,7 +2,7 @@ import copy
 import json
 import logging
 
-from util import runtime
+from dancedeets.util import runtime
 from . import gmaps
 from . import gmaps_prod_cache
 from . import math

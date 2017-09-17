@@ -1,7 +1,7 @@
 from google.appengine.ext import db
 
 import json
-from loc import gmaps_backends
+from dancedeets.loc import gmaps_backends
 
 LOCATION_EXPIRY = 24 * 60 * 60
 

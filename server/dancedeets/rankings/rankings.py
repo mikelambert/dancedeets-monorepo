@@ -6,7 +6,7 @@ from mapreduce import control
 from mapreduce import model
 from mapreduce import operation as op
 
-from loc import gmaps_api
+from dancedeets.loc import gmaps_api
 from . import cities_db
 
 EVENT_FOR_CITY_RANKING = 'CITY_EVENT_RANKING'

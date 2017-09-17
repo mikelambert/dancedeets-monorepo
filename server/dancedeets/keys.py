@@ -5,7 +5,7 @@ import yaml
 
 
 def _get_config(filename):
-    _filename = os.path.join(os.path.dirname(__file__), filename)
+    _filename = os.path.join(os.path.dirname(__file__), '..', filename)
     if os.path.exists(_filename):
         return yaml.load(file(_filename, 'r'))
     else:

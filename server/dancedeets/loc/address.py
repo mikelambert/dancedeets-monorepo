@@ -1,4 +1,4 @@
-from loc import formatting
+from dancedeets.loc import formatting
 
 
 def get_address_from_geocode(geocode):

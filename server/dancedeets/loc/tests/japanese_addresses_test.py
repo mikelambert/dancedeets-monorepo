@@ -2,7 +2,7 @@
 
 import unittest
 
-from loc import japanese_addresses
+from dancedeets.loc import japanese_addresses
 
 examples = [
     u'〒150-0043 渋谷区道玄坂2-14-8',
