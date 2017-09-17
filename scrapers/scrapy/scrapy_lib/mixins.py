@@ -1,4 +1,4 @@
-import keys
+from dancedeets import keys
 
 SERVER_URL = 'https://b54f18og-splash.scrapinghub.com'
 

@@ -1,7 +1,7 @@
 # -*-*- encoding: utf-8 -*-*-
 #
 
-import event_types
+from .. import event_types
 from . import event_classifier
 from . import event_structure
 from . import keywords

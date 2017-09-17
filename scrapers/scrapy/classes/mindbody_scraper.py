@@ -4,7 +4,7 @@ import datetime
 import logging
 
 from . import items
-import mindbody
+from . import mindbody
 
 # Before we can use this Scraper on a MindBody site, we must first get the admin to open:
 # mindbody.get_activation_link(-99)

@@ -19,7 +19,7 @@ from . import grammar
 from . import regex_keywords
 from . import rules
 
-from util import dates
+from ..util import dates
 
 USE_UNICODE = False
 

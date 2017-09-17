@@ -1,6 +1,6 @@
 import suds.client
 
-import keys
+from dancedeets import keys
 
 SOURCE_NAME = "DanceDeets"
 SOURCE_PASSWORD = keys.get("mindbody_api_password")

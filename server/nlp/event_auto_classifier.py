@@ -10,7 +10,7 @@ except ImportError as e:
     re2 = None
     import re
 
-import event_types
+from .. import event_types
 from . import categories
 from . import event_classifier
 from . import event_structure

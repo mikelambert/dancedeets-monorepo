@@ -2,7 +2,6 @@ import datetime
 
 from classes import class_models
 from classes import class_servlets
-from classes.scraper import items
 from test_utils import unittest
 
 
@@ -31,7 +30,7 @@ class _TestDedupeList(unittest.TestCase):
         assert start_time
         scrape_items = []
         for i in range(len):
-            item = items.StudioClass()
+            item = {}
             item['studio_name'] = self.studio_name
             this_start_time = start_time + datetime.timedelta(days=i)
             item['start_time'] = this_start_time.strftime(class_servlets.DATETIME_FORMAT)

@@ -2,7 +2,7 @@
 
 import re
 
-from nlp import re_flatten
+from ..nlp import re_flatten
 
 prefectures = [
     u'愛知県',

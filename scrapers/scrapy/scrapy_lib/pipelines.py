@@ -7,10 +7,11 @@
 
 import datetime
 import json
-import keys
 import logging
 import urllib
 import urllib2
+
+from dancedeets import keys
 
 DATETIME_FORMAT_TZ = "%Y-%m-%dT%H:%M:%S%z"
 DATETIME_FORMAT = "%Y-%m-%dT%H:%M:%S"
