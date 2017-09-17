@@ -14,6 +14,7 @@ setup(
         'dateparser',
         'html2text',
     ],
+    package_dir={'': '../../server'},
     py_modules=[
         'event_types',
         'facebook',

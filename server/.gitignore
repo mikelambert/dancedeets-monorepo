@@ -6,9 +6,6 @@ app-memory.yaml
 dist/
 dist-includes/
 
-# generated directory when we 'shub deploy'
-project.egg-info/
-
 # secret files
 keys*.yaml
 facebook-dev.yaml
