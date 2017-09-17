@@ -122,10 +122,14 @@ class ShowEventHandler(base_servlet.BaseRequestHandler):
         if self.fb_uid:
             rsvps = rsvp.get_rsvps(self.fbl)
 
+        fb_event_wall = None
         if db_event.is_fb_event:
-            fb_event_wall = self.fbl.get(fb_api.LookupEventWall, event_id)
-        else:
-            fb_event_wall = None
+            try:
+                fb_event_wall = self.fbl.get(fb_api.LookupEventWall, event_id)
+            except fb_api.NoFetchedDataException:
+                # If there are problems fetching (likely due to super-large walls)
+                # let's just ignore it for now and keep going
+                pass
 
         # Render React component for inclusion in our template:
         api_event = api.canonicalize_event_data(db_event, fb_event_wall, None, version=(1, 3))
