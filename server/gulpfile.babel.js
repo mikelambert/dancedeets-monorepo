@@ -279,19 +279,22 @@ gulp.task('deploy:cleanup-files', () =>
   del.sync('lib/setuptools/script (dev).tmpl')
 );
 
-gulp.task('deploy:server:toofast', $.shell.task(['./buildpush.sh']));
+gulp.task(
+  'deploy:server:toofast',
+  $.shell.task(['./build_tools/buildpush.sh'])
+);
 gulp.task(
   'deploy:memory_leak_server:generate_yaml',
-  $.shell.task(['./create_memory_service_yaml.sh'])
+  $.shell.task(['./build_tools/create_memory_service_yaml.sh'])
 );
 gulp.task(
   'deploy:memory_leak_server:toofast',
   ['deploy:memory_leak_server:generate_yaml'],
-  $.shell.task(['./buildpush_memory.sh'])
+  $.shell.task(['./build_tools/buildpush_memory.sh'])
 );
 gulp.task(
   'deploy:server:prepush',
-  $.shell.task(['./tools/check_for_native_modules.sh'])
+  $.shell.task(['./build_tools/check_for_native_modules.sh'])
 );
 gulp.task('deploy:server:fast', cb =>
   runSequence('deploy:server:prepush', 'deploy:server:toofast', cb)
@@ -392,7 +395,7 @@ gulp.task('compile', [
 
 gulp.task('clean', () => del.sync('dist'));
 
-gulp.task('test', $.shell.task(['./test.sh']));
+gulp.task('test', $.shell.task(['./build_tools/test.sh']));
 
 gulp.task('rebuild', cb => runSequence('clean', 'compile', 'test', cb));
 
@@ -421,16 +424,16 @@ gulp.task(
 
 gulp.task(
   'dev-appserver:create-yaml:hot',
-  $.shell.task(['HOT_SERVER_PORT=8080 ./create_devserver_yaml.sh'])
+  $.shell.task(['HOT_SERVER_PORT=8080 ./build_tools/create_devserver_yaml.sh'])
 );
 gulp.task(
   'dev-appserver:create-yaml:regular',
-  $.shell.task(['./create_devserver_yaml.sh'])
+  $.shell.task(['./build_tools/create_devserver_yaml.sh'])
 );
 
 gulp.task(
   'dev-appserver:wait-for-exit',
-  $.shell.task(['./wait_for_dev_appserver_exit.sh'])
+  $.shell.task(['./build_tools/wait_for_dev_appserver_exit.sh'])
 );
 
 const storagePath = '~/Documents/dancedeets-storage/';
@@ -445,7 +448,10 @@ function startDevAppServer(port) {
     `PYTHONPATH=lib-local ${argv.gae_dir}/dev_appserver.py app-devserver.yaml --port=${port} --runtime=python-compat --storage_path=${storagePath} 2>&1 | ~/Library/Python/2.7/bin/technicolor-yawn`,
   ]);
 }
-gulp.task('dev-appserver:kill', $.shell.task(['./force_kill_server.sh']));
+gulp.task(
+  'dev-appserver:kill',
+  $.shell.task(['./build_tools/force_kill_server.sh'])
+);
 
 gulp.task('dev-appserver:server:regular:force', cb =>
   runSequence('dev-appserver:kill', 'dev-appserver:server:regular', cb)
