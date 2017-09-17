@@ -12,8 +12,8 @@
 BOT_NAME = 'DanceDeets'
 
 SPIDER_MODULES = [
-    'classes.scraper.spiders',
-    'web_events.scraper.spiders',
+    'classes',
+    'web_events',
 ]
 
 SPIDER_MIDDLEWARES_BASE = {

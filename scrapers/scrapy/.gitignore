@@ -1,2 +1,2 @@
 # generated directory when we 'shub deploy'
-project.egg-info/
+*.egg-info/

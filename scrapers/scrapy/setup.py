@@ -4,9 +4,10 @@ from setuptools import setup, find_packages
 import glob
 
 setup(
-    name='project',
+    name='dancedeets-scrapy',
     version='1.0',
-    packages=find_packages(),
+    packages=['dancedeets'] + find_packages(),
+    package_dir={'dancedeets': '../../server'},
     install_requires=[
         # I'm not sure this really does anything more than documentation,
         # as our our dependencies need to be installed as eggs directly on dash.scrapinghub.com
@@ -14,24 +15,5 @@ setup(
         'dateparser',
         'html2text',
     ],
-    package_dir={'': '../../server'},
-    py_modules=[
-        'event_types',
-        'facebook',
-        'keys',
-        'mindbody',
-        'styles',
-        'scrapy_settings',
-    ],
-    data_files=[
-        ('dance_keywords', glob.glob('nlp/dance_keywords/*.txt')),
-        ('', [
-            'keys.yaml',
-            'keys-dev.yaml',
-            'facebook-prod.yaml',
-            'facebook-test.yaml',
-        ]),
-    ],
-    include_package_data=True,
     entry_points={'scrapy': ['settings = scrapy_settings']},
 )
