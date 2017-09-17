@@ -60,3 +60,9 @@ cron:
 #- description: queue up our weekly city posts
 #  url: /tasks/weekly_posts?user_id=701004&limit=30
 #  schedule: every monday 12:00
+- description: generate sitemaps/*-*.xml
+  url: /tasks/generate_sitemaps?user_id=701004
+  schedule: every tuesday 12:00
+- description: generate sitemaps/recent.xml
+  url: /tasks/generate_sitemaps?user_id=701004&time_period=FUTURE
+  schedule: every day 12:00
