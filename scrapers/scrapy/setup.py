@@ -3,10 +3,16 @@
 from setuptools import setup, find_packages
 import glob
 
+packages = (
+    ['dancedeets'] +
+    ['dancedeets.%s' % x for x in find_packages('../../server')] +
+    find_packages()
+)
+
 setup(
     name='dancedeets-scrapy',
     version='1.0',
-    packages=['dancedeets.%s' % x for x in find_packages('../../server')] + find_packages(),
+    packages=packages,
     package_dir={'dancedeets': '../../server'},
     install_requires=[
         # I'm not sure this really does anything more than documentation,
@@ -15,13 +21,16 @@ setup(
         'dateparser',
         'html2text',
     ],
+    py_modules=[
+        'scrapy_settings',
+    ],
     data_files=[
-        ('dancedeets/dance_keywords', glob.glob('nlp/dance_keywords/*.txt')),
+        ('dancedeets/nlp/dance_keywords', glob.glob('../../server/nlp/dance_keywords/*.txt')),
         ('dancedeets', [
-            'keys.yaml',
-            'keys-dev.yaml',
-            'facebook-prod.yaml',
-            'facebook-test.yaml',
+            '../../server/keys.yaml',
+            '../../server/keys-dev.yaml',
+            '../../server/facebook-prod.yaml',
+            '../../server/facebook-test.yaml',
         ]),
     ],
     include_package_data=True,

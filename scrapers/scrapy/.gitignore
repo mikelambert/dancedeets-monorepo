@@ -1,2 +1,4 @@
 # generated directory when we 'shub deploy'
 *.egg-info/
+
+lib-local/
