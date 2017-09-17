@@ -5,7 +5,7 @@ from dancedeets import base_servlet
 from dancedeets import fb_api
 from dancedeets.mail import mailchimp_api
 from dancedeets.util import fb_mapreduce
-from users import users
+from dancedeets.users import users
 
 
 class LookupAppFriendUsers(fb_api.LookupType):

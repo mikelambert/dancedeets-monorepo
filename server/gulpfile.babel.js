@@ -55,14 +55,14 @@ gulp.task('web:events:resave', cb =>
 gulp.task(
   'compile:geonames:fetch_adgeolocs',
   $.shell.task(
-    'PYTHONPATH=lib-local:lib-both:. python ./geonames/fetch_adgeolocs.py'
+    'PYTHONPATH=lib-local:lib-both:. python ./dancedeets/geonames/fetch_adgeolocs.py'
   )
 );
 gulp.task(
   'compile:geonames:build_cities_db',
   ['compile:geonames:fetch_adgeolocs'],
   $.shell.task(
-    'PYTHONPATH=lib-local:lib-both:. python ./geonames/build_cities_db.py ./geonames/cities.db'
+    'PYTHONPATH=lib-local:lib-both:. python ./dancedeets/geonames/build_cities_db.py ./dancedeets/geonames/cities.db'
   )
 );
 gulp.task('compile:geonames', ['compile:geonames:build_cities_db']);
@@ -70,7 +70,7 @@ gulp.task('compile:geonames', ['compile:geonames:build_cities_db']);
 gulp.task(
   'compile:test-geonames:build_cities_db',
   $.shell.task(
-    'PYTHONPATH=lib-local:lib-both:. DUMMY_FILE=1 python ./geonames/build_cities_db.py ./geonames/cities_test.db'
+    'PYTHONPATH=lib-local:lib-both:. DUMMY_FILE=1 python ./dancedeets/geonames/build_cities_db.py ./dancedeets/geonames/cities_test.db'
   )
 );
 gulp.task('compile:test-geonames', ['compile:test-geonames:build_cities_db']);

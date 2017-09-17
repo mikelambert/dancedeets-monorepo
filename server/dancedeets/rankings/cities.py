@@ -3,7 +3,7 @@ import logging
 from google.appengine.ext import db
 
 from dancedeets import geohash
-from dancedeets.loc from dancedeets import geohash_math
+from dancedeets.loc import geohash_math
 from dancedeets.loc import math
 from dancedeets.loc import names
 from dancedeets.util import runtime
