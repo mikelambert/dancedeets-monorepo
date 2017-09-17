@@ -15,6 +15,12 @@ import gulp from 'gulp';
 import gulpLoadPlugins from 'gulp-load-plugins';
 import runSequence from 'run-sequence';
 import yaml from 'js-yaml';
+import taskListing from 'gulp-task-listing';
+
+gulp.task('help', taskListing);
+gulp.task('default', taskListing);
+
+const $ = gulpLoadPlugins();
 
 function getScrapyNames(pattern) {
   return glob
