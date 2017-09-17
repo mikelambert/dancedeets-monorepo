@@ -5,7 +5,7 @@ import os
 import sys
 import unittest
 
-import runner
+from . import runner
 
 
 def main(test_path, test_pattern):
