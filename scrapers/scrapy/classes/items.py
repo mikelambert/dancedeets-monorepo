@@ -13,10 +13,10 @@ import re
 import scrapy
 from scrapy import item
 
-from nlp import event_classifier
-from nlp import categories
-from nlp import keywords
-from nlp import rules
+from dancedeets.nlp import event_classifier
+from dancedeets.nlp import categories
+from dancedeets.nlp import keywords
+from dancedeets.nlp import rules
 from scrapy_lib import pipelines
 
 

@@ -3,7 +3,7 @@
 import logging
 import unittest
 
-from web_events.scraper import items
+from web_events import items
 
 
 class TestLineAfter(unittest.TestCase):

@@ -7,8 +7,8 @@ import scrapyjs
 
 from .. import items
 
-from nlp import event_classifier
-from nlp import rules
+from dancedeets.nlp import event_classifier
+from dancedeets.nlp import rules
 
 
 def parse_times(times):

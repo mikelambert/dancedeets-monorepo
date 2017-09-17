@@ -4,7 +4,7 @@ import datetime
 import logging
 import unittest
 
-from web_events.scraper import jp_spider
+from web_events import jp_spider
 
 
 class TestParseTimes(unittest.TestCase):

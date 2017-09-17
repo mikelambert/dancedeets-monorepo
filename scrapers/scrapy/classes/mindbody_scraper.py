@@ -3,7 +3,7 @@
 import datetime
 import logging
 
-from classes.scraper import items
+from . import items
 import mindbody
 
 # Before we can use this Scraper on a MindBody site, we must first get the admin to open:

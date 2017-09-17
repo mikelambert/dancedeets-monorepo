@@ -5,10 +5,10 @@ import re
 import scrapy
 from scrapy.selector import Selector
 
-from events import namespaces
+from dancedeets.events import namespaces
 from .. import items
 from .. import jp_spider
-from loc import japanese_addresses
+from dancedeets.loc import japanese_addresses
 
 date_re = ur'(\d+)年\s*(\d+)月\s*(\d+)日'
 # We separate these so we can handle "OPEN : 12:00 / 14:30 / CLOSE : 14:30 / 16:00"

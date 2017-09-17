@@ -1,6 +1,6 @@
 import re
 
-import event_types
+from dancedeets import event_types
 from .. import browser_scraper
 
 

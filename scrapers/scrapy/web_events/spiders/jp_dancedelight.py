@@ -6,8 +6,8 @@ import urlparse
 
 import scrapy
 
-from events import namespaces
-from loc import japanese_addresses
+from dancedeets.events import namespaces
+from dancedeets.loc import japanese_addresses
 from .. import items
 from .. import jp_spider
 

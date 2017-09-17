@@ -4,7 +4,7 @@ import unittest
 
 import scrapy
 
-from classes.scraper.spiders import ny_expg
+from classes.spiders import ny_expg
 
 schedule_table = """<table id="classSchedule-mainTable" class="classSchedule-mainTable-loaded" cellspacing="0">
 <thead><tr class="floatingHeaderRow" style="width: 930px;"><th id="startTimeHeader" class="floatingHeader" style="padding-left:10px;">Start time</th><th id="signUpNowHeader" class="floatingHeader" style="cursor:auto;">&nbsp;</th><th id="classNameHeader" valign="bottom" class="floatingHeader">Classes</th><th id="trainerNameHeader" valign="bottom" class="floatingHeader">Teacher</th><th id="resourceNameHeader" align="left" valign="bottom" class="floatingHeader">Room</th><th id="durationHeader" class="floatingHeader">Duration</th></tr> </thead><tbody><tr><td colspan="100%" class="header" id="an2"><b>&nbsp;<span class="headText">Mon&nbsp;</span>March 07, 2016&nbsp;</b></td></tr><tr class="evenRow"><td>&nbsp;&nbsp;&nbsp;<s>4:00&nbsp;pm </s></td><td></td><td><s>Hip Hop(Intermediate)</s></td><td><span style="color:#990000;">Cancelled Today</span></td><td><s></s></td><td>&nbsp;1&nbsp;hour&nbsp;&amp;&nbsp;30&nbsp;minutes</td></tr>

@@ -9,9 +9,9 @@ import urlparse
 
 import scrapy
 
-from events import namespaces
-from util import korean_dates
-from util import strip_markdown
+from dancedeets.events import namespaces
+from dancedeets.util import korean_dates
+from dancedeets.util import strip_markdown
 from .. import items
 
 

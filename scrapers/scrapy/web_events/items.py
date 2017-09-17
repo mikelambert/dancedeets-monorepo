@@ -14,11 +14,11 @@ import HTMLParser
 import scrapy
 from scrapy import item
 
-from nlp import event_classifier
-from nlp import keywords
-from nlp import rules
+from dancedeets.nlp import event_classifier
+from dancedeets.nlp import keywords
+from dancedeets.nlp import rules
 from scrapy_lib import pipelines
-from util import strip_markdown
+from dancedeets.util import strip_markdown
 
 
 class WebEvent(item.DictItem):
