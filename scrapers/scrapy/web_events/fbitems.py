@@ -14,7 +14,7 @@ class FbEventScraper(scrapy.Spider):
 
     custom_settings = {
         'ITEM_PIPELINES': {
-            'web_events.scraper.fbitems.SaveFacebookEventPipeline': 300,
+            'web_events.fbitems.SaveFacebookEventPipeline': 300,
         }
     }
 

@@ -104,7 +104,7 @@ class WebEventScraper(scrapy.Spider):
 
     custom_settings = {
         'ITEM_PIPELINES': {
-            'web_events.scraper.items.SaveWebEventPipeline': 300,
+            'web_events.items.SaveWebEventPipeline': 300,
         }
     }
 

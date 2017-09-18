@@ -37,8 +37,8 @@ function getScrapyNames(pattern) {
     .filter(x => x);
 }
 
-const webEventNames = getScrapyNames('web_events/*.py');
-const classesNames = getScrapyNames('classes/*.py');
+const webEventNames = getScrapyNames('web_events/spiders/*.py');
+const classesNames = getScrapyNames('classes/spiders/*.py');
 
 webEventNames
   .concat(classesNames)

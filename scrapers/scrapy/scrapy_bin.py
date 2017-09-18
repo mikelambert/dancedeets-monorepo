@@ -7,6 +7,7 @@ import sys
 
 site.addsitedir('lib-local')
 site.addsitedir('lib-both')
+site.addsitedir('../../server')
 
 from scrapy.cmdline import execute
 

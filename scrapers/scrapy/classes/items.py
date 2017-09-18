@@ -59,7 +59,7 @@ class StudioScraper(scrapy.Spider):
 
     custom_settings = {
         'ITEM_PIPELINES': {
-            'classes.scraper.items.SaveStudioClassPipeline': 300,
+            'classes.items.SaveStudioClassPipeline': 300,
         }
     }
 
