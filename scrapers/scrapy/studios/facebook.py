@@ -9,8 +9,10 @@ import urllib
 from dancedeets import facebook
 from dancedeets.util import urls
 
+cache_dir = os.path.join(os.path.dirname(__file__), 'fb_cache')
+
 try:
-    os.makedirs('fb_cache')
+    os.makedirs(cache_dir)
 except OSError:
     pass
 
@@ -30,7 +32,7 @@ def _cache_name(params):
         name = params['q']
         print name
     name = re.sub(r'[^-\w]', '_', name)
-    return 'fb_cache/%s.txt' % name
+    return '%s/%s.txt' % (cache_dir, name)
 
 def _get_cache(params):
     try:

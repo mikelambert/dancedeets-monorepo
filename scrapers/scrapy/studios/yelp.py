@@ -2,8 +2,9 @@ import json
 import os
 import yelp_core
 
+cache_dir = os.path.join(os.path.dirname(__file__), 'yelp_cache')
 try:
-    os.makedirs('yelp_cache')
+    os.makedirs(cache_dir)
 except OSError:
     pass
 
@@ -24,7 +25,8 @@ class Yelp(object):
         return total, response.get('businesses')
 
     def _cache_name(self, city):
-        return 'yelp_cache/%s.txt' % city.lower().replace(' ', '-').replace(',', '')
+        canonical_city = city.lower().replace(' ', '-').replace(',', '')
+        return '%s/%s.txt' % (cache_dir, canonical_city)
 
     def _get_cache(self, city):
         try:
