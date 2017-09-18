@@ -2,7 +2,7 @@ import json
 import os
 import yelp_core
 
-cache_dir = os.path.join(os.path.dirname(__file__), 'yelp_cache')
+cache_dir = os.path.join(os.path.dirname(__file__), 'cache', 'yelp')
 try:
     os.makedirs(cache_dir)
 except OSError:

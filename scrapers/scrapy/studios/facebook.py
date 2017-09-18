@@ -9,7 +9,7 @@ import urllib
 from dancedeets import facebook
 from dancedeets.util import urls
 
-cache_dir = os.path.join(os.path.dirname(__file__), 'fb_cache')
+cache_dir = os.path.join(os.path.dirname(__file__), 'cache', 'fb')
 
 try:
     os.makedirs(cache_dir)
