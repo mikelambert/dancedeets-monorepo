@@ -59,12 +59,14 @@ const allSpiderFiles = allSpiderModules
   .map(x => `${x.replace('.', '/')}/*.py`)
   .map(getScrapyNames);
 
-flatten(allSpiderFiles).forEach(x =>
-  gulp.task(
-    `scrape:one:${x}`,
-    $.shell.task(`./scrapy_bin.py crawl ${x} -a ${argv.a}`)
-  )
-);
+flatten(allSpiderFiles).forEach(x => {
+  let cmd = `./scrapy_bin.py crawl ${x}`;
+  if (argv.a) {
+    cmd += ` -a ${argv.a}`;
+  }
+  gulp.task(`scrape:one:${x}`, $.shell.task(cmd));
+});
+
 gulp.task(
   'scrape:classes:index:prod',
   $.shell.task(['curl https://www.dancedeets.com/classes/reindex'])
