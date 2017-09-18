@@ -10,8 +10,7 @@ except OSError:
 
 class Yelp(object):
     def __init__(self):
-        self.bearer_token = yelp_core.obtain_bearer_token(yelp_core.API_HOST, yelp_core.TOKEN_PATH)
-
+        self.bearer_token = None
 
     def _fetch_offset(self, city, offset, limit):
         url_params = {
@@ -37,11 +36,17 @@ class Yelp(object):
     def _set_cache(self, city, data):
         return open(self._cache_name(city), 'w').write(json.dumps(data))
 
+    def _get_token(self):
+        if self.bearer_token:
+            return
+        self.bearer_token = yelp_core.obtain_bearer_token(yelp_core.API_HOST, yelp_core.TOKEN_PATH)
+
     def fetch_all(self, city):
         cached_result = self._get_cache(city)
         if cached_result is not None:
             return cached_result
 
+        self._get_token()
         all_businesses = []
         batch = 50
         i = 0
