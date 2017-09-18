@@ -32,24 +32,28 @@ class AllStudiosScraper(spiders.CrawlSpider):
 
     custom_settings = {
         'ITEM_PIPELINES': {
-        }
+        },
+        'DOWNLOADER_MIDDLEWARES': {
+            'scrapy.downloadermiddlewares.httpcache.HttpCacheMiddleware': 900,
+        },
+        'HTTPCACHE_ENABLED': True,
     }
 
     def parse_start_url(self, response):
         # Allow start_urls to redirect somewhere else, and include that redirected domain
         parsed_url = urlparse(response.url)
         self.allowed_domains.add(parsed_url.netloc.lower())
+        self._parse_contents(response)
         return []
 
 
-    def parse_subpage(self, response):
-        print response.url
-        return None
-        #parsed_url = urlparse(response.request.url)
+    def _parse_contents(self, response):
+        text_contents = ''.join(response.selector.xpath('//text()').extract()).lower()
+
 
     def __init__(self, *args, **kwargs):
         self.rules = (
-            spiders.Rule(SameBaseDomainLinkExtractor(allowed_domains=self.allowed_domains), callback=self.parse_subpage, follow=True),
+            spiders.Rule(SameBaseDomainLinkExtractor(allowed_domains=self.allowed_domains), callback=self._parse_contents, follow=True),
         )
         # We must set up self.rules before calling super, since super calls _compile_rules().
         super(AllStudiosScraper, self).__init__(*args, **kwargs)
