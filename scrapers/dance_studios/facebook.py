@@ -24,9 +24,12 @@ def get_config():
     return FACEBOOK_CONFIG
 
 def _cache_name(params):
-    name = '%s--%s' % (params['q'], params['center'])
+    if 'center' in params:
+        name = '%s--%s' % (params['q'], params['center'])
+    else:
+        name = params['q']
+        print name
     name = re.sub(r'[^-\w]', '_', name)
-    print name
     return 'fb_cache/%s.txt' % name
 
 def _get_cache(params):
