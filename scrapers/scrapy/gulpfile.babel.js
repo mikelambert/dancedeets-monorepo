@@ -16,6 +16,8 @@ import gulpLoadPlugins from 'gulp-load-plugins';
 import runSequence from 'run-sequence';
 import yaml from 'js-yaml';
 import taskListing from 'gulp-task-listing';
+import { execSync } from 'child_process';
+import flatten from 'lodash/flatten';
 
 gulp.task('help', taskListing);
 gulp.task('default', taskListing);
@@ -37,16 +39,18 @@ function getScrapyNames(pattern) {
     .filter(x => x);
 }
 
-const webEventNames = getScrapyNames('web_events/spiders/*.py');
-const classesNames = getScrapyNames('classes/spiders/*.py');
+const allSpiderModules = execSync('python scrapy_settings.py');
+const allSpiderFiles = allSpiderModules
+  .toString()
+  .trim()
+  .toString()
+  .split('\n')
+  .map(x => `${x.replace('.', '/')}/*.py`)
+  .map(getScrapyNames);
 
-webEventNames
-  .concat(classesNames)
-  .forEach(x =>
-    gulp.task(`scrape:one:${x}`, $.shell.task(`./scrapy_bin.py crawl ${x}`))
-  );
-gulp.task('scrape:web:scrapy', webEventNames.map(x => `scrape:one:${x}`));
-gulp.task('scrape:classes:scrapy', classesNames.map(x => `scrape:one:${x}`));
+flatten(allSpiderFiles).forEach(x =>
+  gulp.task(`scrape:one:${x}`, $.shell.task(`./scrapy_bin.py crawl ${x}`))
+);
 gulp.task(
   'scrape:classes:index:prod',
   $.shell.task(['curl https://www.dancedeets.com/classes/reindex'])

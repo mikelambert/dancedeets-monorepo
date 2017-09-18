@@ -14,6 +14,7 @@ BOT_NAME = 'DanceDeets'
 SPIDER_MODULES = [
     'classes.spiders',
     'web_events.spiders',
+    'studios.spiders',
 ]
 
 SPIDER_MIDDLEWARES_BASE = {
@@ -90,3 +91,6 @@ SPIDER_MIDDLEWARES_BASE = {
 #HTTPCACHE_DIR='httpcache'
 #HTTPCACHE_IGNORE_HTTP_CODES=[]
 #HTTPCACHE_STORAGE='scrapy.extensions.httpcache.FilesystemCacheStorage'
+
+if __name__ == '__main__':
+    print '\n'.join(SPIDER_MODULES)
