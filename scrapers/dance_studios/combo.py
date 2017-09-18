@@ -17,17 +17,26 @@ businesses = (
 
 fb_place_fields = 'id,about,category,category_list,company_overview,contact_address,cover,current_location,description,emails,fan_count,general_info,is_permanently_closed,location,link,name,phone,website,was_here_count'
 
+show_good = True
+
 for x in businesses:
-    print x['name'].encode('utf-8')
     args = dict(type='place', q=x['name'], limit=1, fields=fb_place_fields)
     if x['coordinates']['latitude']:
         args['center'] = '%s,%s' % (x['coordinates']['latitude'], x['coordinates']['longitude'])
     results = facebook.search(**args)
     if 'data' not in results:
-        print results
+        raise Exception('Error on %s: %s' % (x['name'], results))
     if results['data']:
         result = results['data'][0]
-        print result['name'].encode('utf-8'), result.get('website') or result['id']
+        if 'website' in result:
+            if show_good:
+                print x['name'].encode('utf-8'), result['link'], result['website']
+        else:
+            if not show_good:
+                print x['name'].encode('utf-8')
+                print '  ', result['link']
     else:
-        print '  Not found!'
-    print ''
+        if not show_good:
+            print x['name'].encode('utf-8')
+            print '  Not found!'
+    #print ''
