@@ -86,8 +86,8 @@ class ReloadEventsHandler(base_servlet.BaseTaskFacebookRequestHandler):
         fb_mapreduce.start_map(
             fbl=self.fbl,
             name=name,
-            handler_spec='sitemaps.events.map_sitemap_event',
-            entity_kind='events.eventdata.DBEvent',
+            handler_spec='dancedeets.sitemaps.events.map_sitemap_event',
+            entity_kind='dancedeets.events.eventdata.DBEvent',
             handle_batch_size=20,
             filters=filters,
             queue=queue,

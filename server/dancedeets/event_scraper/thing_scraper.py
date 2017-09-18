@@ -46,7 +46,7 @@ def mr_delete_bad_sources():
     control.start_map(
         name='Delete Bad Sources',
         reader_spec='mapreduce.input_readers.DatastoreInputReader',
-        handler_spec='event_scraper.thing_scraper.delete_bad_source',
+        handler_spec='dancedeets.event_scraper.thing_scraper.delete_bad_source',
         output_writer_spec='mapreduce.output_writers.GoogleCloudStorageOutputWriter',
         shard_count=8,
         queue_name='fast-queue',

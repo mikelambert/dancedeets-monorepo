@@ -17,7 +17,8 @@ from dancedeets.test_utils import unittest
 FB_EVENT = {
     'info': {
         'name': 'Some really long name here that just keeps on going and may or may not ever get truncated, but we will just have to wait and see',
-    }
+    },
+    'empty': None,
 }
 
 

@@ -1,11 +1,11 @@
 #!/usr/bin/python
 
 import argparse
-import os
 import sys
 import unittest
 
-from . import runner
+# relative import
+import runner
 
 
 def main(test_path, test_pattern):

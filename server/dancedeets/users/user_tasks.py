@@ -41,8 +41,8 @@ class ReloadAllUsersHandler(base_servlet.BaseTaskFacebookRequestHandler):
         fb_mapreduce.start_map(
             fbl=self.fbl,
             name='Load Users',
-            handler_spec='users.user_tasks.map_load_fb_user',
-            entity_kind='users.users.User',
+            handler_spec='dancedeets.users.user_tasks.map_load_fb_user',
+            entity_kind='dancedeets.users.users.User',
             extra_mapper_params={
                 'mailchimp_list_id': mailchimp_list_id,
             },

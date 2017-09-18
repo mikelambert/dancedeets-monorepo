@@ -42,7 +42,7 @@ class RemindUserMapReduceHandler(base_servlet.BaseTaskRequestHandler):
         control.start_map(
             name='Send New Events to Users in TZ%s' % string_offset,
             reader_spec='mapreduce.input_readers.DatastoreInputReader',
-            handler_spec='notifications.added_events.promote_events_to_user',
+            handler_spec='dancedeets.notifications.added_events.promote_events_to_user',
             mapper_parameters={
                 'entity_kind': 'users.users.User',
                 'filters': [

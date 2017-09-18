@@ -179,8 +179,8 @@ def mr_load_fb_events(
     fb_mapreduce.start_map(
         fbl=fbl,
         name=name,
-        handler_spec='events.event_reloading_tasks.%s' % mr_func,
-        entity_kind='events.eventdata.DBEvent',
+        handler_spec='dancedeets.events.event_reloading_tasks.%s' % mr_func,
+        entity_kind='dancedeets.events.eventdata.DBEvent',
         handle_batch_size=20,
         filters=filters,
         extra_mapper_params={'disable_updates': disable_updates,
@@ -261,8 +261,8 @@ class DeleteBadAutoAddsHandler(base_servlet.EventOperationHandler):
         fb_mapreduce.start_map(
             fbl=self.fbl,
             name=name,
-            handler_spec='events.event_reloading_tasks.map_maybe_delete_bad_event',
-            entity_kind='events.eventdata.DBEvent',
+            handler_spec='dancedeets.events.event_reloading_tasks.map_maybe_delete_bad_event',
+            entity_kind='dancedeets.events.eventdata.DBEvent',
             filters=filters,
             extra_mapper_params=extra_mapper_params,
             queue=queue,

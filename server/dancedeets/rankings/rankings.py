@@ -67,7 +67,7 @@ def begin_ranking_calculations():
     control.start_map(
         name='Compute City Rankings by Events',
         reader_spec='mapreduce.input_readers.DatastoreInputReader',
-        handler_spec='rankings.rankings.count_event_for_city',
+        handler_spec='dancedeets.rankings.rankings.count_event_for_city',
         mapper_parameters={'entity_kind': 'events.eventdata.DBEvent'},
         queue_name='fast-queue',
         shard_count=16,
@@ -77,7 +77,7 @@ def begin_ranking_calculations():
     control.start_map(
         name='Compute City Rankings by Users',
         reader_spec='mapreduce.input_readers.DatastoreInputReader',
-        handler_spec='rankings.rankings.count_user_for_city',
+        handler_spec='dancedeets.rankings.rankings.count_user_for_city',
         mapper_parameters={'entity_kind': 'users.users.User'},
         queue_name='fast-queue',
         shard_count=16,

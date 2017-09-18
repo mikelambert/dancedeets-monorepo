@@ -36,7 +36,7 @@ class PostJapanEventsHandler(base_servlet.BaseTaskFacebookRequestHandler):
         control.start_map(
             name='Post Future Japan Events',
             reader_spec='mapreduce.input_readers.DatastoreInputReader',
-            handler_spec='pubsub.pubsub_tasks.map_post_jp_event',
+            handler_spec='dancedeets.pubsub.pubsub_tasks.map_post_jp_event',
             shard_count=8,  # since we want to stick it in the slow-queue, and don't care how fast it executes
             queue_name='fast-queue',
             mapper_parameters=mapper_params,

@@ -10,8 +10,8 @@ def mr_load_potential_events(fbl):
     fb_mapreduce.start_map(
         fbl=fbl,
         name='Load Potential Events For Users',
-        handler_spec='event_scraper.potential_events_reloading.map_load_potential_events',
-        entity_kind='users.users.User',
+        handler_spec='dancedeets.event_scraper.potential_events_reloading.map_load_potential_events',
+        entity_kind='dancedeets.users.users.User',
     )
 
 

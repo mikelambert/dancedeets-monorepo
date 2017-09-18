@@ -158,7 +158,7 @@ class ResaveHandler(webapp2.RequestHandler):
         control.start_map(
             name='Resave %s' % table,
             reader_spec='mapreduce.input_readers.DatastoreInputReader',
-            handler_spec='servlets.tools.resave_table',
+            handler_spec='dancedeets.servlets.tools.resave_table',
             mapper_parameters={
                 'entity_kind': table,
             },
@@ -178,7 +178,7 @@ class DeleteTableHandler(webapp2.RequestHandler):
         control.start_map(
             name='Delete %s' % table,
             reader_spec='mapreduce.input_readers.DatastoreInputReader',
-            handler_spec='servlets.tools.delete_table',
+            handler_spec='dancedeets.servlets.tools.delete_table',
             mapper_parameters={
                 'entity_kind': table,
             },

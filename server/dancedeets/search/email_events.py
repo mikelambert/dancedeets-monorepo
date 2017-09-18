@@ -180,6 +180,6 @@ def mr_email_user(fbl):
         fbl=fbl,
         name='Email Users',
         #TODO: MOVE
-        handler_spec='search.email_events.map_email_user',
-        entity_kind='users.users.User',
+        handler_spec='dancedeets.search.email_events.map_email_user',
+        entity_kind='dancedeets.users.users.User',
     )
