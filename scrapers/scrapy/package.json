@@ -13,6 +13,7 @@
     "gulp-shell": "^0.6.3",
     "gulp-task-listing": "^1.0.1",
     "js-yaml": "^3.10.0",
+    "lodash": "^4.17.4",
     "run-sequence": "^2.1.0"
   }
 }
