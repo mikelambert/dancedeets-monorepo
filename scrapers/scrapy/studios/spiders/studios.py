@@ -1,20 +1,39 @@
 import re
 import urlparse
+from six.moves.urllib.parse import urlparse
 
 import scrapy
 from scrapy import item
+from scrapy import spiders
+from scrapy.linkextractors import LinkExtractor
 
 from .. import yelp
 from .. import facebook
 
-class AllStudiosScraper(scrapy.Spider):
+class SameBaseDomainLinkExtractor(LinkExtractor):
+    def _extract_links(self, selector, response_url, response_encoding, base_url):
+        links = super(SameBaseDomainLinkExtractor, self)._extract_links(selector, response_url, response_encoding, base_url)
+        parsed_base_url = urlparse(base_url)
+        for link in links:
+            parsed_link_url = urlparse(link.url)
+            if parsed_base_url.netloc.lower() == parsed_link_url.netloc.lower():
+                yield link
+
+
+class AllStudiosScraper(spiders.CrawlSpider):
     name = 'AllStudios'
     allowed_domains = []
+    handle_httpstatus_list = [403]
 
     custom_settings = {
         'ITEM_PIPELINES': {
         }
     }
+
+    rules = (
+        spiders.Rule(SameBaseDomainLinkExtractor()),
+    )
+
 
     def start_requests(self):
         self.businesses = yelp.Yelp().fetch_all(self.city)
@@ -32,6 +51,5 @@ class AllStudiosScraper(scrapy.Spider):
                     if not website.startswith('http'):
                         website = 'http://%s' % website
                     yield scrapy.Request(website, self.parse)
+                    return
 
-    def parse(self, response):
-        print response
