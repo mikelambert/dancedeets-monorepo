@@ -15,6 +15,11 @@ fb_place_fields = 'id,about,category,category_list,company_overview,contact_addr
 for x in businesses:
     print x['name']
     # use x['location']['city']
-    results = facebook.search(type='place', q=x['name'], limit=1, fields=fb_place_fields)
-    result = results['data'][0]
-    print result['name']
+    center = '%s,%s' % (x['coordinates']['latitude'], x['coordinates']['longitude'])
+    results = facebook.search(type='place', q=x['name'], limit=1, center=center, fields=fb_place_fields)
+    if results['data']:
+        result = results['data'][0]
+        print result['name'], result.get('website') or result['id']
+    else:
+        print '  Not found!'
+    print ''
