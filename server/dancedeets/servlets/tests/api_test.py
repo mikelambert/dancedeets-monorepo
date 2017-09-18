@@ -15,7 +15,6 @@ app = TestApp(main.application)
 class TestEvent(unittest.TestCase):
     def runTest(self):
         event = fixtures.create_event()
-        print event.fb_event_id
         result = app.get('/api/v1.0/events/%s' % event.fb_event_id)
         if 'success' in result.json and not result.json['success']:
             self.fail(result.json)

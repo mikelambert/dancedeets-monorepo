@@ -13,10 +13,10 @@ class TestImports(unittest.TestCase):
 class TestUrlRoutes(unittest.TestCase):
     def runTest(self):
         from dancedeets.servlets import event
-        from app import app
+        from dancedeets.app import app
         router = app.router
         env = {
-            'SERVER_NAME': 'www.dancedeets.com',
+            'SERVER_NAME': 'dev.dancedeets.com',
             'SERVER_PORT': '80',
             'PATH_INFO': '/events/55/',
         }

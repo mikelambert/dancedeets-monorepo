@@ -173,7 +173,6 @@ class DBEvent(ndb.Model):
             return True
         else:
             # and not self.fb_event['info']['is_canceled']
-            print self.fb_event
             return self.fb_event and not self.fb_event['empty']
 
     @property
