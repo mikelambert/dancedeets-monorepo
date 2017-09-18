@@ -18,8 +18,10 @@ SPIDER_MODULES = [
 ]
 
 SPIDER_MIDDLEWARES_BASE = {
-    # One before 'HttpErrorMiddleware' runs at priority 50
-    'scrapy_lib.middlewares.BetterHttpErrorMiddleware': 49,
+    # This is disabled, because we don't care about all http 404 errors right now.
+    #
+    # We want this one before 'HttpErrorMiddleware' runs at priority 50
+    #'scrapy_lib.middlewares.BetterHttpErrorMiddleware': 49,
 }
 #NEWSPIDER_MODULE = 'classes.scraper.spiders'
 

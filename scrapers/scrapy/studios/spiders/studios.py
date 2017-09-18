@@ -1,3 +1,4 @@
+import logging
 import re
 import urlparse
 from six.moves.urllib.parse import urlparse
@@ -20,6 +21,19 @@ class SameBaseDomainLinkExtractor(LinkExtractor):
         for link in links:
             if '/mindbody/' in link.url:
                 continue
+            # Wordpress/Blog sites
+            if '/tag/' in link.url:
+                continue
+            if '/category/' in link.url:
+                continue
+            if '/author' in link.url:
+                continue
+            if '/blog/' in link.url:
+                continue
+            if 'replytocom=' in link.url:
+                continue
+            if 'author=1' in link.url:
+                continue
             parsed_link_url = urlparse(link.url)
             if parsed_link_url.netloc.lower() in self.allowed_domains:
                 yield link
@@ -37,7 +51,19 @@ class AllStudiosScraper(spiders.CrawlSpider):
             'scrapy.downloadermiddlewares.httpcache.HttpCacheMiddleware': 900,
         },
         'HTTPCACHE_ENABLED': True,
+        'CONCURRENT_REQUESTS_PER_DOMAIN': 1,
+        'DOWNLOAD_DELAY': 5,
     }
+
+    def __init__(self, *args, **kwargs):
+        self.rules = (
+            spiders.Rule(SameBaseDomainLinkExtractor(allowed_domains=self.allowed_domains), callback=self._parse_contents, follow=True),
+        )
+        logging.getLogger('scrapy.core.engine').setLevel(logging.INFO)
+        logging.getLogger('scrapy.downloadermiddlewares.redirect').setLevel(logging.INFO)
+
+        # We must set up self.rules before calling super, since super calls _compile_rules().
+        super(AllStudiosScraper, self).__init__(*args, **kwargs)
 
     def parse_start_url(self, response):
         # Allow start_urls to redirect somewhere else, and include that redirected domain
@@ -51,13 +77,6 @@ class AllStudiosScraper(spiders.CrawlSpider):
         text_contents = ''.join(response.selector.xpath('//text()').extract()).lower()
 
 
-    def __init__(self, *args, **kwargs):
-        self.rules = (
-            spiders.Rule(SameBaseDomainLinkExtractor(allowed_domains=self.allowed_domains), callback=self._parse_contents, follow=True),
-        )
-        # We must set up self.rules before calling super, since super calls _compile_rules().
-        super(AllStudiosScraper, self).__init__(*args, **kwargs)
-
     def start_requests(self):
         self.businesses = yelp.Yelp().fetch_all(self.city)
 
@@ -70,14 +89,14 @@ class AllStudiosScraper(spiders.CrawlSpider):
             if results['data']:
                 result = results['data'][0]
                 if 'website' in result:
-                    website = result['website']
-                    if not website.startswith('http'):
-                        website = 'http://%s' % website
+                    websites = result['website']
+                    for website in websites.strip().split(' '):
+                        if not website.startswith('http'):
+                            website = 'http://%s' % website
 
-                    parsed_url = urlparse(website)
-                    self.allowed_domains.add(parsed_url.netloc.lower())
-                    request = scrapy.Request(website, self.parse)
-                    request.allow_redirect = True
-                    yield request
-                    return
+                        parsed_url = urlparse(website)
+                        self.allowed_domains.add(parsed_url.netloc.lower())
+                        request = scrapy.Request(website, self.parse)
+                        request.allow_redirect = True
+                        yield request
 
