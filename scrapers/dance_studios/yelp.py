@@ -39,12 +39,13 @@ except ImportError:
     from urllib import quote
     from urllib import urlencode
 
+from dancedeets import keys
 
 # OAuth credential placeholders that must be filled in by users.
 # You can find them on
 # https://www.yelp.com/developers/v3/manage_app
 CLIENT_ID = 'jIfBNs0i8p0IQ6sjXkYyQA'
-CLIENT_SECRET = '***REMOVED***'
+CLIENT_SECRET = keys.get('yelp_api_secret')
 
 
 # API constants, you shouldn't have to change these.
