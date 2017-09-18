@@ -23,7 +23,7 @@ FB_EVENT = {
 
 
 class TestPublishEvent(unittest.TestCase):
-    @mock.patch('keys.get')
+    @mock.patch('dancedeets.keys.get')
     @mock.patch('oauth2.Client.request')
     @mock.patch('twitter.Twitter')
     def runTest(self, Twitter, Client_request, keys_get):
