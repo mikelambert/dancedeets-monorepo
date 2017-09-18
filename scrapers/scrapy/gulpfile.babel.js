@@ -18,6 +18,17 @@ import yaml from 'js-yaml';
 import taskListing from 'gulp-task-listing';
 import { execSync } from 'child_process';
 import flatten from 'lodash/flatten';
+import yargs from 'yargs';
+
+const argv = yargs
+  .option('a', {
+    alias: 'a',
+    description: 'The params to pass to scrapers',
+    default: '',
+  })
+  .help('h')
+  .alias('h', 'help')
+  .strict().argv;
 
 gulp.task('help', taskListing);
 gulp.task('default', taskListing);
@@ -49,7 +60,10 @@ const allSpiderFiles = allSpiderModules
   .map(getScrapyNames);
 
 flatten(allSpiderFiles).forEach(x =>
-  gulp.task(`scrape:one:${x}`, $.shell.task(`./scrapy_bin.py crawl ${x}`))
+  gulp.task(
+    `scrape:one:${x}`,
+    $.shell.task(`./scrapy_bin.py crawl ${x} -a ${argv.a}`)
+  )
 );
 gulp.task(
   'scrape:classes:index:prod',
