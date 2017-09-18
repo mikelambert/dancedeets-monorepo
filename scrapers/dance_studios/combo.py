@@ -1,5 +1,8 @@
 import sys
 sys.path += ['lib/']
+sys.path += ['../../server/']
+sys.path += ['../../server/lib-local']
+sys.path += ['../../server/lib-both']
 
 import json
 import os
