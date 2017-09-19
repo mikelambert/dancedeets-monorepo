@@ -695,9 +695,12 @@ def canonicalize_event_data(db_event, event_wall, event_keywords, version):
         annotations['creation'] = {
             'time': db_event.creation_time.strftime(DATETIME_FORMAT),
             'method': db_event.creating_method,
-            'creator': str(db_event.creating_fb_uid) if db_event.creating_fb_uid else None,  #STR_ID_MIGRATE
-            'creatorName': db_event.creating_name if db_event.creating_name else None,  #STR_ID_MIGRATE
         }
+        if db_event.creating_method == eventdata.CM_USER:
+            annotations['creation'].update({
+                'creator': str(db_event.creating_fb_uid) if db_event.creating_fb_uid else None,  #STR_ID_MIGRATE
+                'creatorName': db_event.creating_name if db_event.creating_name else None,  #STR_ID_MIGRATE
+            })
     else:
         annotations['creation'] = None
     # We may have keywords from the search result that called us
