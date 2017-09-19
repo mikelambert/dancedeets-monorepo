@@ -729,6 +729,7 @@ PREPROCESS_REMOVAL = Name(
         '(?:through|thru)\W+the\W+lock',
         'lock\W*city\w+',  # event 1886535754903769 and source 311775542225221
         'bike\W?lock',
+        'locker\W?room',
 
         # waack
         'whack music',

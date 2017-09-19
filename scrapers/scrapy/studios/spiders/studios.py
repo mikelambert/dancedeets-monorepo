@@ -7,9 +7,27 @@ import scrapy
 from scrapy import item
 from scrapy import spiders
 from scrapy.linkextractors import LinkExtractor
+from dancedeets.nlp import event_classifier
+from dancedeets.nlp import regex_keywords
+from dancedeets.nlp import keywords
+from dancedeets.nlp import rules
 
 from .. import yelp
 from .. import facebook
+"""
+In start_requests:
+- pass a city to the scraper
+- grab all studios
+- grab fb pages (use parse response api?)
+Then, for each FB studio page:
+- Send the FB page's website through the pipeline, as well as the linked-pages
+
+TODO: If we can derive the class types from the FB info, use it
+TODO: Prioritize the 'classes' page or 'about' page, to find keywords?
+TODO: Check that they have a minimum number of styles, to be qualified as a "dance event styles" page (to avoid accidental matches)
+TODO: Improve our keyword classifier, to be just the direct dance style names (not the 'related' ones)
+TODO: Any other semantic pages we want to save? Schedule pages? Or Teachers pages?
+"""
 
 
 class SameBaseDomainLinkExtractor(LinkExtractor):
@@ -37,7 +55,6 @@ class SameBaseDomainLinkExtractor(LinkExtractor):
                 continue
             parsed_link_url = urlparse(link.url)
             if parsed_link_url.netloc.lower() in self.allowed_domains:
-                #print 'Link:', link.url, 'from', response_url
                 yield link
 
 
@@ -74,17 +91,22 @@ class AllStudiosScraper(spiders.CrawlSpider):
         return []
 
     def _parse_contents(self, response):
-        print response.url
         if not hasattr(response, 'selector'):
             logging.info('Skipping unknown file from: %s', response.url)
             return
-        text_contents = ''.join(response.selector.xpath('//text()').extract()).lower()
+        # Get all text contents of tags (unless they are script or style tags)
+        text_contents = ' '.join(response.selector.xpath('//*[not(self::script|self::style)]/text()').extract()).lower()
+
+        processed_text = event_classifier.StringProcessor(text_contents, regex_keywords.WORD_BOUNDARIES)
+        wrong = processed_text.get_tokens(keywords.DANCE_WRONG_STYLE)
+        good = processed_text.get_tokens(rules.STREET_STYLE)
+        if (wrong or good):
+            print response.url, set(wrong), set(good)
 
     def start_requests(self):
         self.businesses = yelp.Yelp().fetch_all(self.city)
 
         fb_place_fields = 'id,about,category,category_list,company_overview,contact_address,cover,current_location,description,emails,fan_count,general_info,is_permanently_closed,location,link,name,phone,website'
-        print len(self.businesses)
         for x in self.businesses:
             args = dict(type='place', q=x['name'], limit=1, fields=fb_place_fields)
             if x['coordinates']['latitude']:
@@ -104,5 +126,4 @@ class AllStudiosScraper(spiders.CrawlSpider):
                         self.allowed_domains.add(parsed_url.netloc.lower())
                         request = scrapy.Request(website, self.parse)
                         request.allow_redirect = True
-                        print 'Seed:', request.url
                         yield request

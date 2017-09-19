@@ -187,19 +187,27 @@ ANY_BAD = Name('ANY_BAD', Any(
     keywords.DANCE_WRONG_STYLE,
 ))
 
-ANY_GOOD = Name(
-    'ANY_GOOD',
+STREET_STYLE = Name(
+    'STREE_STYLE',
     Any(
-        MANUAL_DANCE[grammar.STRONG],  # includes MANUAL_DANCER
         DANCE,
-        keywords.EASY_DANCE,
-        keywords.EASY_CHOREO,
         keywords.AMBIGUOUS_DANCE_MUSIC,
         keywords.HOUSE,
         keywords.FREESTYLE,
         keywords.STREET,
         keywords.VOGUE,
         keywords.EASY_VOGUE,
+        keywords.TOO_EASY_VOGUE,
+    )
+)
+
+ANY_GOOD = Name(
+    'ANY_GOOD',
+    Any(
+        MANUAL_DANCE[grammar.STRONG],  # includes MANUAL_DANCER
+        keywords.EASY_DANCE,
+        keywords.EASY_CHOREO,
+        STREET_STYLE,
         keywords.TOO_EASY_VOGUE,
         keywords.BONNIE_AND_CLYDE,
         EVENT,
