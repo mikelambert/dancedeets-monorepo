@@ -3,10 +3,7 @@
 from setuptools import setup, find_packages
 import glob
 
-packages = (
-    find_packages('../../server') +
-    find_packages()
-)
+packages = (find_packages('../../server') + find_packages())
 
 setup(
     name='dancedeets-scrapy',
@@ -25,12 +22,14 @@ setup(
     ],
     data_files=[
         ('dancedeets/nlp/dance_keywords', glob.glob('../../server/dancedeets/nlp/dance_keywords/*.txt')),
-        ('dancedeets', [
-            '../../server/keys.yaml',
-            '../../server/keys-dev.yaml',
-            '../../server/facebook-prod.yaml',
-            '../../server/facebook-test.yaml',
-        ]),
+        (
+            '', [
+                '../../server/keys.yaml',
+                '../../server/keys-dev.yaml',
+                '../../server/facebook-prod.yaml',
+                '../../server/facebook-test.yaml',
+            ]
+        ),
     ],
     include_package_data=True,
     entry_points={'scrapy': ['settings = scrapy_settings']},
