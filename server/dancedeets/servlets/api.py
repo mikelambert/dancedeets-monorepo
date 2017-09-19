@@ -177,6 +177,7 @@ def people_groupings(geocode, distance, skip_people):
                         groupings = popular_people.combine_rankings(people_rankings, max_people=10)
                     except:
                         logging.exception('Error creating combined people rankings')
+                        groupings = {}
                     new_groupings = {
                         'ADMIN': {},
                         'ATTENDEE': {},
