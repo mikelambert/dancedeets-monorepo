@@ -17,12 +17,6 @@ SPIDER_MODULES = [
     'studios.spiders',
 ]
 
-SPIDER_MIDDLEWARES_BASE = {
-    # This is disabled, because we don't care about all http 404 errors right now.
-    #
-    # We want this one before 'HttpErrorMiddleware' runs at priority 50
-    #'scrapy_lib.middlewares.BetterHttpErrorMiddleware': 49,
-}
 #NEWSPIDER_MODULE = 'classes.scraper.spiders'
 
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
