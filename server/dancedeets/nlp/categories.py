@@ -150,7 +150,6 @@ ANY_BATTLE = Any(
     keywords.JUDGE,
     keywords.OBVIOUS_BATTLE,
     keywords.BONNIE_AND_CLYDE,
-    keywords.JAM,
     keywords.BATTLE,
     keywords.N_X_N,
     keywords.CONTEST,

@@ -371,6 +371,7 @@ STYLE_ALLSTYLE = Name(
         'all\W+open\W?style[sz]?',
         'open\W+all\W?style[sz]?',
         'me against the music',
+        'the floor improv night',
     )
 )
 STYLE_HOUSE = Name(
