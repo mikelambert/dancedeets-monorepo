@@ -666,7 +666,7 @@ CLUB_ONLY = Name(
 )
 
 POP_MUSIC = Any(
-    *[
+    * [
         '%s\W+pop'
         for x in
         # List grabbed off wikipedia, but leaving electropop
@@ -1120,72 +1120,128 @@ ROMANCE_LANGUAGE_CLASS = Name('ROMANCE_LANGUAGE_CLASS', Any(
     'stages',
 ))
 
+DANCE_STYLE_LATIN = Any(
+    'styling',
+    'salsa',
+    'bachata',
+    'latin',
+    'samba',
+    u'サルサ',  # japanese salsa
+    u'소스',  # korean salsa
+    'latines',
+    'rumba',
+    'cha\W?cha',
+    u'륨바',  # korean rumba
+    'salsy',  # salsa czech
+    'salser[oa]s?',
+    'zouk',
+    u'ズーク',  # japanese zouk
+)
+
+DANCE_STYLE_SWING = Any(
+    'balboa',
+    'lindy',
+    'lindyhop\w*',
+    u'リンディ',  # japanese lindy
+    u'린디',  # korean lindy
+    'swing',
+    'wcs',
+    'charleston',
+    'quickstep',
+    'blues',
+    u'ブルース',  # japanese blues
+)
+
+DANCE_STYLE_CLASSICAL = Any(
+    'barre',
+    'contato improv\w*',
+    'contact improv\w*',
+    u'コンタクトインプロビゼーション',  # japanese contact improv
+    'contratto mimo',  # italian contact mime
+    'limon',
+    'modern dance',
+    'jazz',
+    u'재즈',  # korean jazz
+    'contemporary',
+    u'súčasný',  # contemporary slovak
+    u'współczesnego',  # contemporary polish
+    'contempor\w*',  # contemporary italian, french
+    'class?ic[ao]',
+    'tap',
+    u'탭 ?댄스',  # korean tap dance
+)
+
+DANCE_STYLE_AFRICAN = Any(
+    'african dance',
+    u'アフリカンダンス',  # african dance
+    'afro dance',
+    'afro mundo',
+    'tribal',
+    'africa\w+',
+    'sabar',
+    'kizomba',
+)
+
+DANCE_STYLE_INDIAN = Any(
+    'bollywood',
+    u'볼리우드',  # bollywood
+    'kalbeliya',
+    'bhawai',
+    'teratali',
+    'ghumar',
+    'kirtan',
+    'indienne',
+)
+
+DANCE_STYLE_TANGO = Any(
+    'tango',
+    'milonga',
+    u'タンゴ',  # japanese tango
+    u'탱고',  # korean tango
+)
+
+DANCE_STYLE_SEXY = Any(
+    'exotic',
+    'pole danc\w+',
+    'flirt danc\w+',
+    u'ポールダンス',  # japanese pole dance
+    u'폴 ?댄스',  # korean pole dance
+    'go\W?go',
+    'burlesque',
+    u'バーレスク',  # japanese burlesque
+)
+
+DANCE_STYLE_BALLROOM = Any(
+    'waltz',
+    u'왈츠',  # korean waltz
+    u'ワルツ',  # japanese waltz
+)
+
 DANCE_WRONG_STYLE = Name(
     'DANCE_WRONG_STYLE',
     Any(
+        DANCE_STYLE_LATIN,
+        DANCE_STYLE_SWING,
+        DANCE_STYLE_TANGO,
+        DANCE_STYLE_CLASSICAL,
+        DANCE_STYLE_AFRICAN,
+        DANCE_STYLE_INDIAN,
+        DANCE_STYLE_SEXY,
+        DANCE_STYLE_BALLROOM,
         'parkour',
-        'styling',
-        'salsa',
-        'bachata',
-        'balboa',
-        'tango',
-        'latin',
-        'lindy',
-        'lindyhop\w*',
-        'swing',
-        'wcs',
-        'samba',
-        u'サルサ',  # japanese salsa
-        u'タンゴ',  # japanese tango
-        u'リンディ',  # japanese lindy
-        u'소스',  # korean salsa
-        u'탱고',  # korean tango
-        u'린디',  # korean lindy
-        'latines',
-        'quickstep',
-        'rumba',
-        'cha\W?cha',
-        u'륨바',  # korean rumba
-        'blues',
-        u'ブルース',  # japanese blues
-        'waltz',
-        u'왈츠',  # korean waltz
-        u'ワルツ',  # japanese waltz
-        'salsy',  # salsa czech
-        'salser[oa]s?',
-        'kizomba',
+        'flamenco',
         'disco dance',
         'disco tan\w+',  # czech disco dance
-        'milonga',
         'dance partner',
-        'cha cha',
         'hula',
         'hoop',
         'ghost',
         'ghosting',
         'tumbling',
-        'exotic',
         'cheer',
-        'barre',
         'butoh',
         u'舞踏',  # japanese butoh
-        'contato improv\w*',
-        'contact improv\w*',
-        u'コンタクトインプロビゼーション',  # japanese contact improv
-        'contratto mimo',  # italian contact mime
         'musical theat(?:re|er)',
-        'pole danc\w+',
-        'flirt danc\w+',
-        u'ポールダンス',  # japanese pole dance
-        u'폴 ?댄스',  # korean pole dance
-        'go\W?go',
-        'bollywood',
-        'kalbeliya',
-        'bhawai',
-        'teratali',
-        'ghumar',
-        u'볼리우드',  # bollywood
-        'indienne',
         'persiana?',
         'arabe',
         'arabic',
@@ -1193,43 +1249,21 @@ DANCE_WRONG_STYLE = Name(
         'oriental\w*',
         'oriente',
         'cubana',
+        'soca',
         'capoeira',
         u'カポエイラ',  # japanese capoeira
         'tahitian dancing',
         'tahitienne',
         'folklor\w+',
-        'burlesque',
-        u'バーレスク',  # japanese burlesque
-        'limon',
         'artist\Win\Wresidence',
         'residency',
         'disciplinary',
         'reflective',
         'clogging',
-        'zouk',
-        u'ズーク',  # japanese zouk
-        'african dance',
-        u'アフリカンダンス',  # african dance
-        'afro dance',
-        'afro mundo',
-        'class?ic[ao]',
         'acroyoga',
-        'kirtan',
         'hoop\W?dance',
-        'modern dance',
         'pilates',
         u'ピラティス',  # japanese pilates
-        'tribal',
-        'jazz',
-        'tap',
-        'contemporary',
-        u'재즈',  # korean jazz
-        u'탭 ?댄스',  # korean tap dance
-        u'súčasný',  # contemporary slovak
-        u'współczesnego',  # contemporary polish
-        'contempor\w*',  # contemporary italian, french
-        'africa\w+',
-        'sabar',
         'aerial silk',
         'silk',
         'aerial',
@@ -1238,12 +1272,9 @@ DANCE_WRONG_STYLE = Name(
         'bellycraft',
         'worldbellydancealliance',
         u'ベリーダンス',  # japanese bellydance
-        'soca',
-        'flamenco',
         'technique',
         'guest artists?',
         'partnering',
-        'charleston',
     )
 )
 
