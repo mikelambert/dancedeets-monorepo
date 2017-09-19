@@ -8,7 +8,7 @@ FROM gcr.io/dancedeets-hrd/gae-modules-py
 # But this is in Python 2.7.14, which won't be in Debian or GCE for a looooong time:
 # https://github.com/GoogleCloudPlatform/python-compat-runtime/issues/95#issuecomment-304770651
 # So instead, let's monkeypatch this file here...
-ADD ./hacks/fixed_multiprocessing_pool.py /usr/lib/python2.7/multiprocessing/pool.py
+ADD ./dancedeets/hacks/fixed_multiprocessing_pool.py /usr/lib/python2.7/multiprocessing/pool.py
 
 # But let's change the final script to run node *and* python *and* nginx servers
 ADD run-servers.sh /usr/local/bin/run-servers.sh

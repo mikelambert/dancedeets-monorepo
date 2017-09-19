@@ -225,13 +225,13 @@ def combine_source_count(source_id, counts_to_sum):
 
 def mr_count_potential_events(fbl, queue):
     mapper_params = {
-        'entity_kind': 'event_scraper.potential_events.PotentialEvent',
+        'entity_kind': 'dancedeets.event_scraper.potential_events.PotentialEvent',
     }
     mapper_params.update(fb_mapreduce.get_fblookup_params(fbl))
     pipeline = mapreduce_pipeline.MapreducePipeline(
         'clean source counts',
-        'event_scraper.thing_db.explode_per_source_count',
-        'event_scraper.thing_db.combine_source_count',
+        'dancedeets.event_scraper.thing_db.explode_per_source_count',
+        'dancedeets.event_scraper.thing_db.combine_source_count',
         'mapreduce.input_readers.DatastoreInputReader',
         None,
         mapper_params=mapper_params,

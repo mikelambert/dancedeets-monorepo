@@ -41,7 +41,7 @@ class RecomputeUserStatsHandler(base_servlet.BaseTaskRequestHandler):
             name='Compute User-Event Stats',
             reader_spec='mapreduce.input_readers.DatastoreInputReader',
             handler_spec='dancedeets.users.user_event_tasks.map_compute_user_stats',
-            mapper_parameters={'entity_kind': 'users.users.User'},
+            mapper_parameters={'entity_kind': 'dancedeets.users.users.User'},
             queue_name='fast-queue',
             shard_count=5,
         )

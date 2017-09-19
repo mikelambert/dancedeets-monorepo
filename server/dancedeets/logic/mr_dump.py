@@ -35,8 +35,8 @@ def mr_dump_events(fbl):
     fb_mapreduce.start_map(
         fbl,
         'Dump Potential FB Event Data',
-        'logic.mr_dump.map_dump_fb_json',
-        'event_scraper.potential_events.PotentialEvent',
+        'dancedeets.logic.mr_dump.map_dump_fb_json',
+        'dancedeets.event_scraper.potential_events.PotentialEvent',
         handle_batch_size=80,
         queue=None,
         filters=[('looked_at', '=', None)],

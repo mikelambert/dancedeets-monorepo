@@ -57,7 +57,7 @@ class LoadPotentialEventsFromWallPostsHandler(base_servlet.BaseTaskFacebookReque
 
 def mapreduce_scrape_sources_and_process_events(fbl, min_potential_events, queue):
     mapper_params = {
-        'entity_kind': 'event_scraper.thing_db.Source',
+        'entity_kind': 'dancedeets.event_scraper.thing_db.Source',
         'min_potential_events': min_potential_events,
         'handle_batch_size': 20,
     }
@@ -74,8 +74,8 @@ def mapreduce_scrape_sources_and_process_events(fbl, min_potential_events, queue
     # output = yield ...
     pipeline = mapreduce_pipeline.MapreducePipeline(
         'Scrape sources, then load and classify the events',
-        'event_scraper.thing_scraper2.scrape_sources_for_events',
-        'event_scraper.thing_scraper2.process_events',
+        'dancedeets.event_scraper.thing_scraper2.scrape_sources_for_events',
+        'dancedeets.event_scraper.thing_scraper2.process_events',
         'mapreduce.input_readers.DatastoreInputReader',
         'mapreduce.output_writers.GoogleCloudStorageOutputWriter',
         mapper_params=mapper_params,

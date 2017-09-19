@@ -72,12 +72,12 @@ class FindAccessTokensForEventsPipeline(base_handler.PipelineBase):
         # output = yield ...
         yield mapreduce_pipeline.MapreducePipeline(
             'Find valid access_tokens for events',
-            'events.find_access_tokens.test_user_on_events',
-            'events.find_access_tokens.save_valid_users_to_event',
+            'dancedeets.events.find_access_tokens.test_user_on_events',
+            'dancedeets.events.find_access_tokens.save_valid_users_to_event',
             'mapreduce.input_readers.DatastoreInputReader',
             'mapreduce.output_writers.GoogleCloudStorageOutputWriter',
             mapper_params={
-                'entity_kind': 'users.users.User',
+                'entity_kind': 'dancedeets.users.users.User',
                 'filters': filters,
                 'event_ids': ','.join(event_ids),
             },
@@ -134,7 +134,7 @@ class CombinerPipeline(pipeline_base._OutputSlotsMixin, pipeline_base.PipelineBa
         }
         yield mapper_pipeline.MapperPipeline(
             job_name + "-combine",
-            'events.find_access_tokens.file_identity',
+            'dancedeets.events.find_access_tokens.file_identity',
             'mapreduce.input_readers.GoogleCloudStorageInputReader',
             'mapreduce.output_writers.GoogleCloudStorageOutputWriter',
             params,
@@ -156,7 +156,7 @@ class FindEventsNeedingAccessTokensPipeline(base_handler.PipelineBase):
     def run(self, fbl_json, filters):
         bucket_name = 'dancedeets-hrd.appspot.com'
         params = {
-            'entity_kind': 'events.eventdata.DBEvent',
+            'entity_kind': 'dancedeets.events.eventdata.DBEvent',
             'filters': filters,
             'handle_batch_size': 20,
             'output_writer': {
@@ -169,7 +169,7 @@ class FindEventsNeedingAccessTokensPipeline(base_handler.PipelineBase):
         find_events_needing_access_tokens = (
             yield mapper_pipeline.MapperPipeline(
                 'Find valid events needing access_tokens',
-                'events.find_access_tokens.map_events_needing_access_tokens',
+                'dancedeets.events.find_access_tokens.map_events_needing_access_tokens',
                 'mapreduce.input_readers.DatastoreInputReader',
                 'mapreduce.output_writers.GoogleCloudStorageOutputWriter',
                 params=params,

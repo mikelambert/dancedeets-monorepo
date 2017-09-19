@@ -43,8 +43,8 @@ def mr_classify_potential_events(fbl):
     fb_mapreduce.start_map(
         fbl,
         'Auto-Classify Events',
-        'ml.mr_prediction.map_classify_events',
-        'event_scraper.potential_events.PotentialEvent',
+        'dancedeets.ml.mr_prediction.map_classify_events',
+        'dancedeets.event_scraper.potential_events.PotentialEvent',
         filters=[('looked_at', '=', None)],
         handle_batch_size=20,
         queue='slow-queue',

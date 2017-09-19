@@ -37,14 +37,14 @@ def reduce_just_unique_attendees(location, all_attendees):
 
 def mr_count_attendees_per_city(fbl):
     mapper_params = {
-        'entity_kind': 'events.eventdata.DBEvent',
+        'entity_kind': 'dancedeets.events.eventdata.DBEvent',
         'handle_batch_size': BATCH_SIZE,
     }
     mapper_params.update(fb_mapreduce.get_fblookup_params(fbl, randomize_tokens=True))
     mrp = mapreduce_pipeline.MapreducePipeline(
         'unique_attendees',
-        'logic.unique_attendees.map_each_attendee',
-        'logic.unique_attendees.reduce_just_unique_attendees',
+        'dancedeets.logic.unique_attendees.map_each_attendee',
+        'dancedeets.logic.unique_attendees.reduce_just_unique_attendees',
         'mapreduce.input_readers.DatastoreInputReader',
         'mapreduce.output_writers.GoogleCloudStorageOutputWriter',
         mapper_params=mapper_params,

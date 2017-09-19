@@ -37,7 +37,7 @@ def delete_bad_source(source):
 
 def mr_delete_bad_sources():
     mapper_params = {
-        'entity_kind': 'event_scraper.thing_db.Source',
+        'entity_kind': 'dancedeets.event_scraper.thing_db.Source',
         'output_writer': {
             'mime_type': 'text/plain',
             'bucket_name': 'dancedeets-hrd.appspot.com',
@@ -117,8 +117,8 @@ def mapreduce_scrape_all_sources(fbl, min_potential_events=None, queue='slow-que
     fb_mapreduce.start_map(
         fbl,
         'Scrape All Sources',
-        'event_scraper.thing_scraper.map_scrape_events_from_sources',
-        'event_scraper.thing_db.Source',
+        'dancedeets.event_scraper.thing_scraper.map_scrape_events_from_sources',
+        'dancedeets.event_scraper.thing_db.Source',
         handle_batch_size=10,
         extra_mapper_params={'min_potential_events': min_potential_events},
         queue=queue,
@@ -130,8 +130,8 @@ def mapreduce_create_sources_from_events(fbl):
     fb_mapreduce.start_map(
         fbl,
         'Create Sources from Events',
-        'event_scraper.thing_db.map_create_sources_from_event',
-        'events.eventdata.DBEvent',
+        'dancedeets.event_scraper.thing_db.map_create_sources_from_event',
+        'dancedeets.events.eventdata.DBEvent',
     )
 
 

@@ -28,7 +28,7 @@ class PostJapanEventsHandler(base_servlet.BaseTaskFacebookRequestHandler):
     def get(self):
         token_nickname = self.request.get('token_nickname', None)
         mapper_params = {
-            'entity_kind': 'events.eventdata.DBEvent',
+            'entity_kind': 'dancedeets.events.eventdata.DBEvent',
             'handle_batch_size': 20,
             'filters': [('search_time_period', '=', dates.TIME_FUTURE)],
             'token_nickname': token_nickname,

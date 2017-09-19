@@ -6,6 +6,8 @@ import json
 import os
 import subprocess
 
+os.chdir(os.path.join(os.path.dirname(__file__), '..'))
+
 
 def get_static_files():
     manifest = json.loads(open('dist/manifest.json').read())

@@ -108,8 +108,8 @@ def mr_private_events(fbl):
     fb_mapreduce.start_map(
         fbl,
         'Dump Private Events',
-        'servlets.tools.map_dump_private_events',
-        'events.eventdata.DBEvent',
+        'dancedeets.servlets.tools.map_dump_private_events',
+        'dancedeets.events.eventdata.DBEvent',
         handle_batch_size=80,
         queue=None,
         output_writer_spec='mapreduce.output_writers.GoogleCloudStorageOutputWriter',

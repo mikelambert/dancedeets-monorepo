@@ -44,7 +44,7 @@ class RemindUserMapReduceHandler(base_servlet.BaseTaskRequestHandler):
             reader_spec='mapreduce.input_readers.DatastoreInputReader',
             handler_spec='dancedeets.notifications.added_events.promote_events_to_user',
             mapper_parameters={
-                'entity_kind': 'users.users.User',
+                'entity_kind': 'dancedeets.users.users.User',
                 'filters': [
                     ('timezone_offset', '>=', offset),
                     ('timezone_offset', '<', offset + 1),

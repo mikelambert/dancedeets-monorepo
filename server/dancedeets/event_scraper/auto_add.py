@@ -121,8 +121,8 @@ def mr_classify_potential_events(fbl, past_event, dancey_only):
     fb_mapreduce.start_map(
         fbl,
         'Auto-Add Events',
-        'event_scraper.auto_add.map_classify_events',
-        'event_scraper.potential_events.PotentialEvent',
+        'dancedeets.event_scraper.auto_add.map_classify_events',
+        'dancedeets.event_scraper.potential_events.PotentialEvent',
         filters=filters,
         handle_batch_size=20,
         queue='fast-queue',
