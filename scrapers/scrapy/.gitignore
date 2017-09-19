@@ -2,3 +2,6 @@
 *.egg-info/
 
 lib-local/
+
+# The scrapy http cache
+.scrapy
