@@ -188,7 +188,7 @@ ANY_BAD = Name('ANY_BAD', Any(
 ))
 
 STREET_STYLE = Name(
-    'STREE_STYLE',
+    'STREET_STYLE',
     Any(
         DANCE,
         keywords.AMBIGUOUS_DANCE_MUSIC,
