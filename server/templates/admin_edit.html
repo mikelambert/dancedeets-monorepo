@@ -118,7 +118,7 @@ Edit Event
 #}
         <br>
         {% for dancer_id, admin_hash_and_event_ids in attendee_ids_to_admin_hash_and_event_ids %}
-          Dancer <a href="https://www.facebook.com/{{ dancer_id }}">{{ dancer_id }}</a> has {{ len(admin_hash_and_event_ids) }} points, and attended events:<br>
+          Dancer <a href="https://www.facebook.com/{{ dancer_id.split(':')[0] }}">{{ dancer_id }}</a> has {{ len(admin_hash_and_event_ids) }} points, and attended events:<br>
           {% if len(admin_hash_and_event_ids) < 15 %}
             {% for admin_hash, event_ids in admin_hash_and_event_ids.iteritems() %}
               <a href="https://www.facebook.com/{{ admin_hash }}">{{ admin_hash }}</a>: (
