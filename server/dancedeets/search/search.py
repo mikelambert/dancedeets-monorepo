@@ -159,8 +159,9 @@ class Search(object):
     def _deduped_results(search_results):
         existing_datetime_locs = collections.defaultdict(lambda: [])
         for r in search_results:
-            print(r.start_time, r.latitude, r.longitude)
-            existing_datetime_locs[(r.start_time, round(r.latitude, 3), round(r.longitude, 3))].append(r)
+            latitude = round(r.latitude, 3) if r.latitude is not None else None
+            longitude = round(r.longitude, 3) if r.longitude is not None else None
+            existing_datetime_locs[(r.start_time, latitude, longitude)].append(r)
 
         deduped_results = []
         for same_results in existing_datetime_locs.values():
