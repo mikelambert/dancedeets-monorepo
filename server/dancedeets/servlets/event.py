@@ -215,7 +215,7 @@ class DisplayableEvent(object):
         return join_valid(': ', [
             formatted_start_time,
             formatted_location,
-            self.db_event.description,
+            self.db_event.description.replace('\n', ' '),
         ])
 
     @property
