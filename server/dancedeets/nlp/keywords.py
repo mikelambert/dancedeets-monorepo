@@ -788,6 +788,9 @@ PREPROCESS_REMOVAL = Name(
         'break\w+\W+(?:the\W+)?records?',
         'short break',
 
+        # vogue
+        'drag on',
+
         # other
         'go\W?go\W?danc(?:ers?|ing?)',
         'home\W?turf',
