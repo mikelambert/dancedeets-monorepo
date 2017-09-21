@@ -1,7 +1,6 @@
 import logging
 import re
-import urlparse
-from six.moves.urllib.parse import urlparse
+from six.moves.urllib.parse import parse_qs, urlparse, urlunparse, urlencode
 
 import scrapy
 from scrapy import item
@@ -29,6 +28,13 @@ TODO: Improve our keyword classifier, to be just the direct dance style names (n
 TODO: Any other semantic pages we want to save? Schedule pages? Or Teachers pages?
 """
 
+# Pages we're likely to find a list of classes (and dance styles) on...
+class_link_re = r'class|schedule|calendar|lesson'
+
+
+def class_link(link):
+    return re.search(class_link_re, link.url.lower()) or re.search(class_link_re, link.text.lower())
+
 
 class SameBaseDomainLinkExtractor(LinkExtractor):
     def __init__(self, allowed_domains):
@@ -36,31 +42,25 @@ class SameBaseDomainLinkExtractor(LinkExtractor):
         self.allowed_domains = allowed_domains
 
     def _extract_links(self, selector, response_url, response_encoding, base_url):
+        print response_url
         links = super(SameBaseDomainLinkExtractor, self)._extract_links(selector, response_url, response_encoding, base_url)
-        for link in links:
-            if '/mindbody/' in link.url:
-                continue
-            # Wordpress/Blog sites
-            if '/tag/' in link.url:
-                continue
-            if '/category/' in link.url:
-                continue
-            if '/author' in link.url:
-                continue
-            if '/blog/' in link.url:
-                continue
-            if 'replytocom=' in link.url:
-                continue
-            if 'author=1' in link.url:
-                continue
+        class_links = [x for x in links if class_link(x)]
+
+        if not class_links:
+            print 'XX::'
+            for link in links:
+                print '  XX: ', link
+        for link in class_links:
             parsed_link_url = urlparse(link.url)
             if parsed_link_url.netloc.lower() in self.allowed_domains:
+                #print '  ', link
                 yield link
 
 
 class AllStudiosScraper(spiders.CrawlSpider):
     name = 'AllStudios'
     allowed_domains = set()
+    allowed_domains_re = r'frontdeskhq\.com|healcode\.com'
     handle_httpstatus_list = [403]
 
     custom_settings = {
@@ -87,10 +87,22 @@ class AllStudiosScraper(spiders.CrawlSpider):
         # Allow start_urls to redirect somewhere else, and include that redirected domain
         parsed_url = urlparse(response.url)
         self.allowed_domains.add(parsed_url.netloc.lower())
-        self._parse_contents(response)
-        return []
+        return self._parse_contents(response)
 
     def _parse_contents(self, response):
+        # Wix pages aren't really parseable, so anytime we see them,
+        # let's re-run it (depth-1) with an escaped-fragment to get the real html source
+        if 'https://static.wixstatic.com/' in response.body and '_escaped_fragment_' not in response.url:
+            parsed_url = urlparse(response.url)
+            qs = parse_qs(parsed_url.query)
+            qs['_escaped_fragment_'] = ''
+            wix_scrapeable_url = urlunparse(
+                (parsed_url.scheme, parsed_url.netloc, parsed_url.path, parsed_url.params, urlencode(qs), parsed_url.fragment)
+            )
+            response.meta['depth'] -= 1
+            return [scrapy.Request(wix_scrapeable_url, self.parse)]
+
+        return
         if not hasattr(response, 'selector'):
             logging.info('Skipping unknown file from: %s', response.url)
             return
@@ -101,7 +113,8 @@ class AllStudiosScraper(spiders.CrawlSpider):
         wrong = processed_text.get_tokens(keywords.DANCE_WRONG_STYLE)
         good = processed_text.get_tokens(rules.STREET_STYLE)
         if (wrong or good):
-            print response.url, set(wrong), set(good)
+            #print response.url, set(wrong), set(good)
+            pass
 
     def start_requests(self):
         self.businesses = yelp.Yelp().fetch_all(self.city)
@@ -125,5 +138,4 @@ class AllStudiosScraper(spiders.CrawlSpider):
                         parsed_url = urlparse(website)
                         self.allowed_domains.add(parsed_url.netloc.lower())
                         request = scrapy.Request(website, self.parse)
-                        request.allow_redirect = True
                         yield request
