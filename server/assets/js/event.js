@@ -11,7 +11,6 @@ import querystring from 'querystring';
 import { injectIntl, intlShape } from 'react-intl';
 import Helmet from 'react-helmet';
 import { Share as TwitterShare } from 'react-twitter-widgets';
-import ExecutionEnvironment from 'exenv';
 import { intlWeb } from 'dancedeets-common/js/intl';
 import { formatDateTime, formatStartEnd } from 'dancedeets-common/js/dates';
 import { Event } from 'dancedeets-common/js/events/models';
@@ -295,33 +294,29 @@ class _EventLinks extends React.Component {
       event.getEndMoment({ timezone: false }),
       this.props.intl
     );
-    let sourceName = event.source.name;
-    // Only add the a-href on the client, not the server.
-    // This makes it mildly harder for scrapers to scrape us.
-    // This may also help Google not discover the original FB event,
-    // which may help our rankings on such events.
-
-    // We want to run this:
-    // - For non-fb events
-    // - On the client
-    // - For amp pages (since there is no client JS)
-    if (
-      sourceName !== 'Facebook Event' ||
-      ExecutionEnvironment.canUseDOM ||
-      this.props.amp
-    ) {
-      sourceName = (
-        <a
+    const source = (
+      <ImagePrefix
+        iconName={
+          event.source.name === 'Facebook Event' ? (
+            'facebook-square'
+          ) : (
+            'external-link'
+          )
+        }
+      >
+        <Message message={messages.source} />{' '}
+        <a // eslint-disable-line jsx-a11y/no-static-element-interactions
           className="link-event-source"
           id="view-source"
+          // This may also help Google not discover the original FB event,
+          // which may help our rankings on such events.
+          rel="nofollow"
           href={event.source.url}
-          rel="noopener noreferrer"
-          target="_blank"
         >
-          {sourceName}
+          {event.source.name}
         </a>
-      );
-    }
+      </ImagePrefix>
+    );
 
     const adsenseSafe = isEventAdsenseSafe(this.props.event);
     const adsenseStyle = getAdsenseStyle(this.props.amp);
@@ -340,17 +335,7 @@ class _EventLinks extends React.Component {
           <span className="card-header-text">Details</span>
         </div>
         <div className="grey-top-border card-contents">
-          <ImagePrefix
-            iconName={
-              event.source.name === 'Facebook Event' ? (
-                'facebook-square'
-              ) : (
-                'external-link'
-              )
-            }
-          >
-            <Message message={messages.source} /> {sourceName}
-          </ImagePrefix>
+          {source}
           <ImagePrefix
             icon={require('../img/categories-black.png')} // eslint-disable-line global-require
             amp={this.props.amp}
