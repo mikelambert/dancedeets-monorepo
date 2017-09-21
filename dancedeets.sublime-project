@@ -69,6 +69,10 @@
 			"on_save": true,
 			"yapf_command": "${project_path}/scripts/yapf.sh"
 		},
+		"paths": [
+			"${project_path}/node_modules/.bin",
+			"${project_path}/node_modules/server/.bin",
+		],
 		"anaconda_linting": true,
 		"anaconda_linting_behaviour": "always",
     "pep8": false,

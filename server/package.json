@@ -20,7 +20,6 @@
     "extract-text-webpack-plugin": "^3.0.0",
     "favicons": "github:mikelambert/favicons",
     "file-loader": "^0.9.0",
-    "flow-bin": "^0.49.1",
     "font-awesome-svg-png": "github:tupadr3/Font-Awesome-SVG-PNG",
     "gulp": "^3.9.0",
     "gulp-babel": "^6.1.2",
