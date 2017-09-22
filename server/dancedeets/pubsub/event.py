@@ -70,7 +70,6 @@ blacklisted_countries = [
     "ZW",
     # Oceania
     "AS",
-    "AU",
     "CK",
     "TL",
     "FJ",
