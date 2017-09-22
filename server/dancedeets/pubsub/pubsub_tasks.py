@@ -1,8 +1,13 @@
 from mapreduce import control
 
+import datetime
+
 from dancedeets import app
 from dancedeets import base_servlet
+from dancedeets.pubsub import pubsub
 from dancedeets.rankings import cities
+from dancedeets.search import search_base
+from dancedeets.search import search
 from dancedeets.util import dates
 from . import pubsub
 
@@ -60,3 +65,20 @@ class WeeklyEventsPostHandler(base_servlet.BaseTaskFacebookRequestHandler):
         top_city_keys = [x.key().name() for x in top_cities if not blacklisted(x)]
         for city_key in top_city_keys:
             pubsub.eventually_publish_city_key(city_key)
+
+
+def prepare_event_notifications():
+    today = datetime.date()
+    query = search_base.Query()
+    query.start = today + datetime.timedelta(days=14)
+    query.end = today + datetime.timedelta(days=15)
+    searcher = search.Search(query)
+    results = searcher.get_search_results()
+    for result in results:
+        pubsub.eventually_publish_event(result.event_id, post_type=pubsub.POST_TYPE_REMINDER)
+
+
+@app.route('/tasks/prepare_event_notifications')
+class EventNotificationsHandler(base_servlet.BaseTaskRequestHandler):
+    def handle(self):
+        prepare_event_notifications()

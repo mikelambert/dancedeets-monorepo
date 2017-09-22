@@ -25,8 +25,11 @@ SHOULD_POST_EVENT_TO = {
 
 POST_DATA = {'event': event.post_event, 'weekly': weekly.facebook_weekly_post}
 
+POST_TYPE_ADDED = 'ADDED'
+POST_TYPE_REMINDER = 'REMINDER'
 
-def eventually_publish_event(event_id, token_nickname=None):
+
+def eventually_publish_event(event_id, token_nickname=None, post_type=POST_TYPE_ADDED):
     db_event = eventdata.DBEvent.get_by_id(event_id)
     if not db_event.has_content():
         logging.info('Not publishing %s because it has no content.', db_event.id)
@@ -41,6 +44,16 @@ def eventually_publish_event(event_id, token_nickname=None):
     }
 
     def should_post(auth_token):
+        # When added, don't allow FACEBOOK wall posts
+        if post_type == POST_TYPE_ADDED:
+            if auth_token.application == db.APP_FACEBOOK:
+                return False
+        # When reminding, *only* allow FACEBOOK wall posts
+        elif post_type == POST_TYPE_REMINDER:
+            if auth_token.application != db.APP_FACEBOOK:
+                return False
+        else:
+            logging.error('Unknown post type: %s', post_type)
         return _should_queue_event_for_posting(auth_token, db_event)
 
     return _eventually_publish_data(data, should_post, token_nickname=token_nickname)
