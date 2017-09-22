@@ -109,7 +109,7 @@ def facebook_post(auth_token, db_event):
     if venue_id:
         post_values['place'] = venue_id
 
-    feed_targeting = get_targeting_data(fbl, db_event)
+    feed_targeting = get_country_targeting_data(fbl, db_event)
     if feed_targeting:
         # Ideally we'd do this as 'feed_targeting', but Facebook appears to return errors with that due to:
         # {u'error': {u'message': u'Invalid parameter', u'code': 100, u'is_transient': False,
@@ -120,6 +120,15 @@ def facebook_post(auth_token, db_event):
 
     logging.info("FB Feed Post Values: %s", post_values)
     return fbl.fb.post(endpoint, None, post_values)
+
+
+def get_country_targeting_data(fbl, db_event):
+    short_country = db_event.country
+    feed_targeting = {
+        'countries': [short_country],
+    }
+    full_targeting = {'geo_locations': feed_targeting}
+    return full_targeting
 
 
 def get_targeting_data(fbl, db_event):
