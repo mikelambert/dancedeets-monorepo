@@ -17,7 +17,7 @@ def _should_post_event_common(auth_token, db_event):
         # Don't post events without a location. It's too confusing...
         return False
     event_country = geocode.country()
-    if auth_token.country_filters and event_country not in auth_token.country_filters:
+    if auth_token and auth_token.country_filters and event_country not in auth_token.country_filters:
         logging.info("Skipping event due to country filters")
         return False
     return True
@@ -32,16 +32,18 @@ def _event_has_enough_attendees(db_event):
     fbl = user.get_fblookup()
     matcher = event_attendee_classifier.get_matcher(fbl, db_event.fb_event)
     logging.info('Checking event %s and found %s overlap_ids', db_event.id, len(matcher.overlap_ids))
-    if len(matcher.overlap_ids) > 30:
-        return True
-    else:
+    if len(matcher.overlap_ids) < 30:
         return False
+    # Re-run these checks here, since they're fast, and things may have changed in the interim if the queue is long
+    return should_post_event_to_account(db_event)
 
 
 def should_post_event_to_account(auth_token, db_event):
     if not _should_post_event_common(auth_token, db_event):
         return False
     # Add some filters based on number-attendees
+    if db_event.attendee_count < 100:
+        return False
     return True
 
 
