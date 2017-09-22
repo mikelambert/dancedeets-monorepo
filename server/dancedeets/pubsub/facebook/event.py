@@ -69,32 +69,32 @@ def facebook_post(auth_token, db_event):
         'location': location,
         'date': human_date,
         'venue': venue,
+        'host': host,
+        'name': name,
+        'description': db_event.description,
     }
     messages = [
         'Dancers, are you ready? %(venue)s has an event on %(date)s in %(location)s.',
-        'Hello %(location)s dancers, mark your calendars! We just found a new dance event on %(date)s at %(venue)s.',
-        'Hey %(location)s dancers, save the date! Look what we found coming up on %(date)s at %(venue)s.',
-        'Just posted! We have an upcoming dance event on %(date)s at %(venue)s in %(location)s.',
-        'What\'s up %(location)s, there\'s a dance event at %(venue)s on %(date)s.',
+        'Mark your calendars for %(date)s! We just found a new dance event in %(location)s at %(venue)s.',
+        'Hey dancers, save the date! %(date)s. %(venue)s is hosting an event in %(location)s.',
+        'We have an dance event coming up soon on %(date)s at %(venue)s in %(location)s.',
+        'What\'s good %(location)s! There\'s a dance event at %(venue)s on %(date)s.',
     ]
-    message = random.choice(messages) % params
+    message = random.choice(messages)
     if host and host != venue:
         message += random.choice([
             ' Hosted by our friends at %(host)s.',
             ' Thanks to our buddies at %(host)s for hosting!',
             ' Hitup the awesome %(host)s with any questions you\'ve got!',
-        ]) % {
-            'host': host
-        }
+        ])
     if name:
         message += random.choice([
             ' Thanks to %(name)s for adding it to DanceDeets!',
-            ' And a special thanks to %(name)s, for sharing it with you all on DanceDeets!',
-            ' This event brought to you on DanceDeets courtesy of %(name)s!',
-        ]) % {
-            'name': name
-        }
-    post_values['message'] = message
+            ' And a special thanks to %(name)s, for sharing it!',
+            ' This event brought DanceDeets and you courtesy of %(name)s!',
+        ])
+    message += '\n\nCheck the full description below:\n%(description)s'
+    post_values['message'] = message % params
 
     description = db_event.description
     if len(description) > 10000:
