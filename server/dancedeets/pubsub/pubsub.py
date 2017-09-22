@@ -43,6 +43,8 @@ def eventually_publish_event(event_id, token_nickname=None, post_type=POST_TYPE_
         'event_id': event_id,
     }
 
+    logging.info('Eventually publish event %s with post type %s', event_id, post_type)
+
     def should_post(auth_token):
         # When added, don't allow FACEBOOK wall posts
         if post_type == POST_TYPE_ADDED:
@@ -90,7 +92,7 @@ def _eventually_publish_data(data, should_post, token_nickname=None, queue_name=
     oauth_tokens = db.OAuthToken.query(db.OAuthToken.valid_token == True, *args).fetch(100)
     q = taskqueue.Queue(queue_name)
     for token in oauth_tokens:
-        logging.info("Evaluating token %s", token)
+        logging.info("Evaluating token %s with application %s", token, token.application)
         token_allow_resposting = token.allow_reposting or allow_reposting
         if should_post(token):
             # Names are limited to r"^[a-zA-Z0-9_-]{1,500}$"

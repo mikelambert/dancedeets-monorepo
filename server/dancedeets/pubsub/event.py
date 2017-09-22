@@ -4,7 +4,6 @@ import logging
 from dancedeets.event_attendees import event_attendee_classifier
 from dancedeets.events import eventdata
 from dancedeets.users import users
-from dancedeets.util import fb_events
 from .facebook import event as facebook_event
 from .facebook import fb_util
 from .twitter import event as twitter_event
@@ -197,7 +196,7 @@ def _post_event(auth_token, db_event):
     elif auth_token.application == db.APP_FACEBOOK:
         result = facebook_event.facebook_post(auth_token, db_event)
         # Re-run these checks here, since they're fast, and things may have changed in the interim if the queue is long
-        if not should_post_event_to_account(db_event):
+        if not should_post_event_to_account(auth_token, db_event):
             return True
         return fb_util.processed_task(auth_token, result)
     elif auth_token.application == db.APP_FACEBOOK_WALL:
