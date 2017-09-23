@@ -438,7 +438,7 @@ class Formatter {
           </div>
         )
       );
-    } else if (parsedUrl.host === 'www.soundcloud.com') {
+    } else if (parsedUrl.host === 'soundcloud.com') {
       this.elements.push(<SoundCloud key={i} url={match.url} />);
     } else if (
       (parsedUrl.host === 'www.facebook.com' ||
