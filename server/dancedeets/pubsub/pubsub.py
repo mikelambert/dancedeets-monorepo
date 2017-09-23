@@ -106,7 +106,7 @@ def _eventually_publish_data(data, should_post, token_nickname=None, queue_name=
                 q.add(taskqueue.Task(name=name, payload=json.dumps(data), method='PULL', tag=token.queue_id()))
             except (taskqueue.TombstonedTaskError, taskqueue.TaskAlreadyExistsError):
                 # Ignore publishing requests we've already decided to publish (multi-task concurrency)
-                pass
+                logging.info('Attempted but dropping task %s, because we already posted about it', name)
 
 
 def _should_queue_event_for_posting(auth_token, db_event):
