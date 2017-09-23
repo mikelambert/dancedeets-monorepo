@@ -56,7 +56,10 @@ def eventually_publish_event(event_id, token_nickname=None, post_type=POST_TYPE_
                 return False
         else:
             logging.error('Unknown post type: %s', post_type)
-        return _should_queue_event_for_posting(auth_token, db_event, min_attendees)
+        result = _should_queue_event_for_posting(auth_token, db_event, min_attendees)
+        if result:
+            logging.info('Should post Event %s in %s. Title: %s', event_id, db_event.country, db_event.name)
+        return result
 
     return _eventually_publish_data(data, should_post, token_nickname=token_nickname, allow_reposting=allow_reposting)
 
