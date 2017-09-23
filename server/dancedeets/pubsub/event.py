@@ -122,11 +122,11 @@ def _event_has_enough_attendees(db_event):
 
 
 # Called from two places, once on insertion, once on retrieval
-def should_post_event_to_account(auth_token, db_event):
+def should_post_event_to_account(auth_token, db_event, min_attendees):
     if not _should_post_event_common(auth_token, db_event):
         return False
     # Add some filters based on number-attendees
-    if db_event.attendee_count < 100:
+    if db_event.attendee_count < min_attendees:
         return False
 
     # Country filter blacklist
@@ -147,7 +147,7 @@ def should_post_event_to_account(auth_token, db_event):
     return True
 
 
-def should_post_on_event_wall(auth_token, db_event):
+def should_post_on_event_wall(auth_token, db_event, min_attendees):
     if not _should_post_event_common(auth_token, db_event):
         return False
     # Additional filtering for FB Wall postings, since they are heavily-rate-limited by FB.
