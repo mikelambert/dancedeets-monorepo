@@ -107,7 +107,7 @@ def _should_post_event_common(auth_token, db_event):
     return True
 
 
-def _event_has_enough_attendees(db_event):
+def _event_has_enough_attendees(db_event, dancer_count):
     # Ignore web events, since Japan/Korea web_events probably take up too much of the feed,
     # and there are already existing ways those people are likely to find local events
     if not db_event.is_fb_event:
@@ -116,13 +116,13 @@ def _event_has_enough_attendees(db_event):
     fbl = user.get_fblookup()
     matcher = event_attendee_classifier.get_matcher(fbl, db_event.fb_event)
     logging.info('Checking event %s and found %s overlap_ids', db_event.id, len(matcher.overlap_ids))
-    if len(matcher.overlap_ids) < 30:
+    if len(matcher.overlap_ids) < dancer_count:
         return False
     return True
 
 
 # Called from two places, once on insertion, once on retrieval
-def should_post_event_to_account(auth_token, db_event, min_attendees):
+def should_post_event_to_account(auth_token, db_event, min_attendees, min_dancers):
     if not _should_post_event_common(auth_token, db_event):
         return False
     # Add some filters based on number-attendees
@@ -141,13 +141,13 @@ def should_post_event_to_account(auth_token, db_event, min_attendees):
     #TODO: Store the actual attendees counts and match info in the event itself,
     # so that we don't need to recompute it here just to do this filtering.
     if not auth_token.application == db.APP_TWITTER:
-        if not _event_has_enough_attendees(db_event):
+        if not _event_has_enough_attendees(db_event, min_dancers):
             return False
 
     return True
 
 
-def should_post_on_event_wall(auth_token, db_event, min_attendees):
+def should_post_on_event_wall(auth_token, db_event, min_attendees, min_dancers):
     if not _should_post_event_common(auth_token, db_event):
         return False
     # Additional filtering for FB Wall postings, since they are heavily-rate-limited by FB.
@@ -189,11 +189,6 @@ def _should_still_post_about_event(auth_token, db_event):
     if (db_event.end_time or db_event.start_time) < datetime.datetime.now():
         logging.info('Not publishing %s because it is in the past.', db_event.id)
         return False
-    #TODO: Store the actual attendees counts and match info in the event itself,
-    # so that we don't need to recompute it here just to do this filtering.
-    if not auth_token.application == db.APP_TWITTER:
-        if not _event_has_enough_attendees(db_event):
-            return False
     return True
 
 
@@ -202,9 +197,6 @@ def _post_event(auth_token, db_event):
         return twitter_event.twitter_post(auth_token, db_event)
     elif auth_token.application == db.APP_FACEBOOK:
         result = facebook_event.facebook_post(auth_token, db_event)
-        # Re-run these checks here, since they're fast, and things may have changed in the interim if the queue is long
-        if not should_post_event_to_account(auth_token, db_event):
-            return True
         return fb_util.processed_task(auth_token, result)
     elif auth_token.application == db.APP_FACEBOOK_WALL:
         result = facebook_event.post_on_event_wall(db_event)

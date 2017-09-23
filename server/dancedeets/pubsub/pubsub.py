@@ -29,7 +29,9 @@ POST_TYPE_ADDED = 'ADDED'
 POST_TYPE_REMINDER = 'REMINDER'
 
 
-def eventually_publish_event(event_id, token_nickname=None, post_type=POST_TYPE_ADDED, min_attendees=0, allow_reposting=False):
+def eventually_publish_event(
+    event_id, token_nickname=None, post_type=POST_TYPE_ADDED, min_attendees=0, min_dancers=30, allow_reposting=False
+):
     db_event = eventdata.DBEvent.get_by_id(event_id)
     if not db_event.has_content():
         logging.info('Not publishing %s because it has no content.', db_event.id)
@@ -56,9 +58,9 @@ def eventually_publish_event(event_id, token_nickname=None, post_type=POST_TYPE_
                 return False
         else:
             logging.error('Unknown post type: %s', post_type)
-        result = _should_queue_event_for_posting(auth_token, db_event, min_attendees)
+        result = _should_queue_event_for_posting(auth_token, db_event, min_attendees, min_dancers)
         if result:
-            logging.info('Should post Event %s in %s. Title: %s', event_id, db_event.country, db_event.name)
+            logging.info('In %s, should post Event %s. Title: %s', db_event.country, event_id, db_event.name)
         return result
 
     return _eventually_publish_data(data, should_post, token_nickname=token_nickname, allow_reposting=allow_reposting)
@@ -112,11 +114,11 @@ def _eventually_publish_data(data, should_post, token_nickname=None, queue_name=
                 logging.info('Attempted but dropping task %s, because we already posted about it', name)
 
 
-def _should_queue_event_for_posting(auth_token, db_event, min_attendees):
+def _should_queue_event_for_posting(auth_token, db_event, min_attendees, min_dancers):
     func = SHOULD_POST_EVENT_TO.get(auth_token.application)
     result = False
     if func:
-        result = func(auth_token, db_event, min_attendees)
+        result = func(auth_token, db_event, min_attendees, min_dancers)
         if result:
             logging.info("Publishing event %s", db_event.id)
     return result

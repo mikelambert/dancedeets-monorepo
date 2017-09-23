@@ -67,17 +67,21 @@ class WeeklyEventsPostHandler(base_servlet.BaseTaskFacebookRequestHandler):
             pubsub.eventually_publish_city_key(city_key)
 
 
-def prepare_event_notifications(days, min_attendees, allow_reposting):
+def prepare_event_notifications(days, min_attendees, min_dancers, allow_reposting):
     today = datetime.date.today()
     query = search_base.SearchQuery()
     query.start_date = today + datetime.timedelta(days=days)
-    query.end_date = today + datetime.timedelta(days=days + 1)
+    query.end_date = today + datetime.timedelta(days=days)
     query.min_attendees = min_attendees
     searcher = search.Search(query)
     results = searcher.get_search_results()
     for result in results:
         pubsub.eventually_publish_event(
-            result.event_id, post_type=pubsub.POST_TYPE_REMINDER, min_attendees=min_attendees, allow_reposting=allow_reposting
+            result.event_id,
+            post_type=pubsub.POST_TYPE_REMINDER,
+            min_attendees=min_attendees,
+            min_dancers=min_dancers,
+            allow_reposting=allow_reposting
         )
 
 
@@ -86,5 +90,6 @@ class EventNotificationsHandler(base_servlet.BaseTaskRequestHandler):
     def get(self):
         days = int(self.request.get('days'))
         allow_reposting = self.request.get('allow_reposting') == '1'
-        min_attendees = int(self.request.get('min_attendees'))
-        prepare_event_notifications(days, min_attendees, allow_reposting)
+        min_attendees = int(self.request.get('min_attendees', '100'))
+        min_dancers = int(self.request.get('min_dancers', '40'))
+        prepare_event_notifications(days, min_attendees, min_dancers, allow_reposting)
