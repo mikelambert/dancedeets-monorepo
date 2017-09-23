@@ -67,11 +67,11 @@ class WeeklyEventsPostHandler(base_servlet.BaseTaskFacebookRequestHandler):
             pubsub.eventually_publish_city_key(city_key)
 
 
-def prepare_event_notifications():
+def prepare_event_notifications(days):
     today = datetime.date.today()
     query = search_base.SearchQuery()
-    query.start_date = today + datetime.timedelta(days=14)
-    query.end_date = today + datetime.timedelta(days=15)
+    query.start_date = today + datetime.timedelta(days=days)
+    query.end_date = today + datetime.timedelta(days=days + 1)
     searcher = search.Search(query)
     results = searcher.get_search_results()
     for result in results:
@@ -81,4 +81,5 @@ def prepare_event_notifications():
 @app.route('/tasks/prepare_event_notifications')
 class EventNotificationsHandler(base_servlet.BaseTaskRequestHandler):
     def get(self):
-        prepare_event_notifications()
+        days = int(self.request.get('days'))
+        prepare_event_notifications(days)

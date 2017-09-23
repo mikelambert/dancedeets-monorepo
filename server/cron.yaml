@@ -66,3 +66,6 @@ cron:
 - description: generate sitemaps/recent.xml
   url: /tasks/generate_sitemaps?user_id=701004&time_period=FUTURE
   schedule: every day 12:00
+- description: start posting about events N days out
+  url: /tasks/prepare_event_notifications?days=14
+  schedule: every day 10:00
