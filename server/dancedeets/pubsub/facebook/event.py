@@ -37,7 +37,6 @@ def facebook_post(auth_token, db_event):
     post_values['link'] = link
     post_values['name'] = db_event.name
     post_values['caption'] = datetime_string
-    adding_name = _get_posting_user(db_event)
 
     human_date = db_event.start_time.strftime('%B %-d')
     # TODO: Sometimes we definitely know the City (from a lat/long), but FB doesn't give us a city.
@@ -65,7 +64,15 @@ def facebook_post(auth_token, db_event):
         # Don't want to post events globally...too noisy
         return {}
 
+    intros = [
+        'Dancers, are you ready to get down?',
+        'Mark your calendars, it\'s time to dance!',
+        'Save the date, we got a dance event for you!',
+        'We found a great event for all you dancers!',
+    ]
+    intro = random.choice(intros)
     params = {
+        'intro': intro,
         'name': db_event.name,
         'description': db_event.description,
         'date': human_date,
@@ -75,35 +82,30 @@ def facebook_post(auth_token, db_event):
         'full_location': db_event.city_state_country,
         #
         'host': host,
-        'adder_name': adding_name,
     }
-    messages = [
-        'Dancers, are you ready? %(venue)s has an event on %(date)s in %(location)s.',
-        'Mark your calendars for %(date)s! We just found a new dance event in %(location)s at %(venue)s.',
-        'Hey dancers, save the date! %(date)s. %(venue)s is hosting an event in %(location)s.',
-        'We have an dance event coming up soon on %(date)s at %(venue)s in %(location)s.',
-        'What\'s good %(location)s! There\'s a dance event at %(venue)s on %(date)s.',
-    ]
-    message = random.choice(messages)
+
+    # Add some callouts
+    callouts = ''
     if host and host != venue:
-        message += random.choice([
+        callouts += random.choice([
             ' Hosted by our friends at %(host)s.',
             ' Thanks to our buddies at %(host)s for hosting!',
             ' Hitup the awesome %(host)s with any questions you\'ve got!',
         ])
-    if adding_name:
-        message += random.choice([
-            ' Thanks to %(adding_name)s for adding it to DanceDeets!',
-            ' And a special thanks to %(adding_name)s, for sharing it!',
-            ' This event brought DanceDeets and you courtesy of %(adding_name)s!',
-        ])
-    message += """
+    params['callouts'] = callouts % params
+    # Possible lines:
+    #━ ━ ━ ━ ━ ━ ━ ━ ━ ━ ━ ━ ━ ━ ━ ━ ━ ━ ━ ━ ━ ━ ━ ━
+    #_____________________________________________________________________
 
-_________________________________________
+    message = """
+%(intro)s
+
 %(name)s
 
 Date: %(date)s
 City: %(full_location)s
+Venue: %(venue)s
+%(callouts)s
 _________________________________________
 Description:
 %(description)s
