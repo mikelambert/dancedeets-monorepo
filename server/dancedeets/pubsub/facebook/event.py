@@ -37,7 +37,7 @@ def facebook_post(auth_token, db_event):
     post_values['link'] = link
     post_values['name'] = db_event.name
     post_values['caption'] = datetime_string
-    name = _get_posting_user(db_event)
+    adding_name = _get_posting_user(db_event)
 
     human_date = db_event.start_time.strftime('%B %-d')
     # TODO: Sometimes we definitely know the City (from a lat/long), but FB doesn't give us a city.
@@ -66,12 +66,16 @@ def facebook_post(auth_token, db_event):
         return {}
 
     params = {
-        'location': location,
-        'date': human_date,
-        'venue': venue,
-        'host': host,
-        'name': name,
+        'name': db_event.name,
         'description': db_event.description,
+        'date': human_date,
+        #
+        'venue': venue,
+        'location': location,
+        'full_location': db_event.city_state_country,
+        #
+        'host': host,
+        'adder_name': adding_name,
     }
     messages = [
         'Dancers, are you ready? %(venue)s has an event on %(date)s in %(location)s.',
@@ -87,13 +91,23 @@ def facebook_post(auth_token, db_event):
             ' Thanks to our buddies at %(host)s for hosting!',
             ' Hitup the awesome %(host)s with any questions you\'ve got!',
         ])
-    if name:
+    if adding_name:
         message += random.choice([
-            ' Thanks to %(name)s for adding it to DanceDeets!',
-            ' And a special thanks to %(name)s, for sharing it!',
-            ' This event brought DanceDeets and you courtesy of %(name)s!',
+            ' Thanks to %(adding_name)s for adding it to DanceDeets!',
+            ' And a special thanks to %(adding_name)s, for sharing it!',
+            ' This event brought DanceDeets and you courtesy of %(adding_name)s!',
         ])
-    message += '\n\nCheck the full description below:\n%(description)s'
+    message += """
+
+_________________________________________
+%(name)s
+
+Date: %(date)s
+City: %(full_location)s
+_________________________________________
+Description:
+%(description)s
+"""
     post_values['message'] = message % params
 
     description = db_event.description
