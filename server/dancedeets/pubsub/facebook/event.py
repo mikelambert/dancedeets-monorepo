@@ -106,7 +106,7 @@ Date: %(date)s
 City: %(full_location)s
 Venue: %(venue)s
 %(callouts)s
-_________________________________________
+_____________________________________________________________________
 Description:
 %(description)s
 """
