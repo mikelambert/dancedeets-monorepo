@@ -13,6 +13,14 @@
           content="Every street dance event. On the web, on your phone. At home, and when traveling."/>
 {% endblock %}
 
+{% block head_javascript %}
+  {% if selected_tab == 'calendar' %}
+    <script defer src="{{ static_path('calendarExec.js') }}"></script>
+  {% else %}
+    <script defer src="{{ static_path('eventSearchResultsExec.js') }}"></script>
+  {% endif %}
+{% endblock %}
+
 {% block body %}
 <div id="react-parent">
   {{ react_html|safe }}
@@ -24,11 +32,6 @@
 {% endblock %}
 
 {% block bottom_javascript %}
-{% if selected_tab == 'calendar' %}
-<script src="{{ static_path('calendarExec.js') }}"></script>
-{% else %}
-<script src="{{ static_path('eventSearchResultsExec.js') }}"></script>
-{% endif %}
 
 <script type="text/javascript">
 
@@ -41,32 +44,4 @@ function share() {
 }
 
 </script>
-
-{% if selected_tab == 'calendar' %}
-
-<script type="text/javascript">
-mixpanel.track("Search Events", {
-  "Location": {{ form.location.data|tojson }},
-  "Keywords": {{ form.keywords.data|tojson }}
-});
-
-mixpanel.track("Searched Results", {
-  "Location": {{ form.location.data|tojson }},
-  "Keywords": {{ form.keywords.data|tojson }},
-  "Tab": "CALENDAR"
-});
-</script>
-{% else %}
-{#
-<script type="text/javascript">
-mixpanel.track("Search Events", {
-  "Location": {{ form.location.data|tojson }},
-  "Keywords": {{ form.keywords.data|tojson }}
-});
-mixpanel.track_links(".link-onebox", "Onebox");
-</script>
-
-{{ rsvp.rsvp_script() }}
-#}
-{% endif %}
 {% endblock %}

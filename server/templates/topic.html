@@ -10,6 +10,10 @@
 </style>
 {% endblock %}
 
+{% block head_javascript %}
+<script defer src="{{ static_path('topicExec.js') }}"></script>
+{% endblock %}
+
 {% block body %}
 <div id="react-parent">
   {{ react_html|safe }}
@@ -18,10 +22,4 @@
   window._REACT_PROPS = {{ react_props|safe }};
   window._REACT_ID = 'react-parent';
 </script>
-{% endblock %}
-
-
-
-{% block bottom_javascript %}
-<script type="text/javascript" src="{{ static_path('topicExec.js') }}"></script>
 {% endblock %}

@@ -14,6 +14,13 @@
 {% endblock %}
 </head>
 
+{% block head_javascript %}
+  <script defer src="{{ static_path('homepage.js') }}"></script>
+  <script type="text/javascript">
+    mixpanel.track("Homepage");
+  </script>
+{% endblock %}
+
 {% block body %}
 <style type="text/css">
 {# By default, the page is pushed down below the header.
@@ -228,11 +235,4 @@ body.header-fixed-space {
         #}
     </div>
     <!--=== End Cube-Portfdlio ===-->
-{% endblock %}
-
-{% block bottom_javascript %}
-<script type="text/javascript" src="{{ static_path('homepage.js') }}"></script>
-<script type="text/javascript">
-mixpanel.track("Homepage");
-</script>
 {% endblock %}

@@ -55,8 +55,11 @@ Add Dance Event
 		</form>
 {% endblock %}
 
+{% block head_javascript %}
+  <script defer src="{{ static_path('normalPage.js') }}"></script>
+{% endblock %}
+
 {% block bottom_javascript %}
-<script type="text/javascript" src="{{ static_path('normalPage.js') }}"></script>
 <script type="text/javascript">
 	function addEvent() {
 		var element = jQuery(this);

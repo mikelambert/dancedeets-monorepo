@@ -12,6 +12,10 @@
 <link rel="canonical" href="{{ canonical_url }}" />
 {% endblock %}
 
+{% block head_javascript %}
+<script defer src="{{ static_path('tutorialExec.js') }}"></script>
+{% endblock %}
+
 {% block body %}
 <style type="text/css">
 .navbar {
@@ -32,7 +36,3 @@
 {% endblock %}
 
 {% block footer %}{% endblock %}
-
-{% block bottom_javascript %}
-<script src="{{ static_path('tutorialExec.js') }}"></script>
-{% endblock %}

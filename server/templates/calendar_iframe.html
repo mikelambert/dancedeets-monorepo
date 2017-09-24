@@ -15,9 +15,9 @@
     window._REACT_ID = 'react-parent';
   </script>
   {% if not hot_reloading %}
-  <script src="{{ static_path('jquery.js') }}"></script>
-  <script src="{{ static_path('common.js') }}"></script>
+  <script defer src="{{ static_path('jquery.js') }}"></script>
+  <script defer src="{{ static_path('common.js') }}"></script>
   {% endif %}
-  <script src="{{ static_path('calendarExec.js') }}"></script>
+  <script defer src="{{ static_path('calendarExec.js') }}"></script>
 </body>
 </html>

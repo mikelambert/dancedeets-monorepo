@@ -24,6 +24,10 @@ DanceDeets - Mobile Apps
 </style>
 {% endblock %}
 
+{% block head_javascript %}
+<script defer src="{{ static_path('normalPage.js') }}"></script>
+{% endblock %}
+
 {% block body %}
 {# not using container-fluid, but container, so things are more centered #}
 <div class="container">
@@ -90,8 +94,4 @@ Keep up with the latest dance events when you're on the go!
 
 </div>
 </div>
-{% endblock %}
-
-{% block bottom_javascript %}
-<script type="text/javascript" src="{{ static_path('normalPage.js') }}"></script>
 {% endblock %}

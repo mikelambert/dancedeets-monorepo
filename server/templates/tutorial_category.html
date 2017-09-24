@@ -12,6 +12,10 @@
 <link rel="canonical" href="{{ canonical_url }}" />
 {% endblock %}
 
+{% block head_javascript %}
+<script defer src="{{ static_path('tutorialCategoryExec.js') }}"></script>
+{% endblock %}
+
 {% block body %}
 <div id="react-parent">
   {{ react_html|safe }}
@@ -23,7 +27,3 @@
 {% endblock %}
 
 {% block footer %}{% endblock %}
-
-{% block bottom_javascript %}
-<script src="{{ static_path('tutorialCategoryExec.js') }}"></script>
-{% endblock %}
