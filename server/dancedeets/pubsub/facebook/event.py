@@ -88,9 +88,9 @@ def facebook_post(auth_token, db_event):
     callouts = ''
     if host and host != venue:
         callouts += random.choice([
-            ' Hosted by our friends at %(host)s.',
-            ' Thanks to our buddies at %(host)s for hosting!',
-            ' Hitup the awesome %(host)s with any questions you\'ve got!',
+            'Hosted by our friends at %(host)s.',
+            'Thanks to our buddies at %(host)s for hosting!',
+            'Hitup the awesome %(host)s with any questions you\'ve got!',
         ])
     params['callouts'] = callouts % params
     # Possible lines:
