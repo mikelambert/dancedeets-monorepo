@@ -37,7 +37,9 @@ class OEmbed extends React.Component {
   }
 
   componentDidUpdate(prevProps, prevState) {
-    this.loadEmbed();
+    if (prevProps.url !== this.props.url) {
+      this.loadEmbed();
+    }
   }
 
   async loadEmbed() {
@@ -47,8 +49,7 @@ class OEmbed extends React.Component {
     }
     const oembedUrl = this.props.getOembedUrl(this.props.url);
     console.log(oembedUrl);
-    const result = await fetch(oembedUrl, { mode: 'no-cors' });
-    console.log(await result.text());
+    const result = await fetch(oembedUrl, {});
     const data = await result.json();
     this.setState({ embedCode: data.html });
   }
