@@ -31,6 +31,7 @@ from dancedeets.hacks import fixed_jinja2  # noqa: ignore=E402
 from dancedeets.hacks import fixed_ndb  # noqa: ignore=E402
 from dancedeets.hacks import fixed_mapreduce_util  # noqa: ignore=E402
 from dancedeets.hacks import memory_leaks  # noqa: ignore=E402
+from dancedeets.redirect_canonical import redirect_canonical  # noqa: ignore=E402
 from requests_toolbelt.adapters import appengine as appengine_adapter  # noqa: ignore=E402
 from requests.packages.urllib3.contrib import appengine as appengine_manager  # noqa: ignore=E402
 
@@ -74,6 +75,8 @@ def add_wsgi_middleware(app):
     # So setdeploy manually, and test from there. Never a live server, as it would be both broken *and* slow.
     if os.environ.get('DEBUG_MEMORY_LEAKS'):
         app = memory_leaks.leak_middleware(app)
+
+    return redirect_canonical(app, 'dancedeets.com', 'www.dancedeets.com')
 
     return app
 

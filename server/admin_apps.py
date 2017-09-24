@@ -8,6 +8,7 @@ from dancedeets import pipeline_wrapper
 from dancedeets import admin
 from dancedeets import facebook
 from dancedeets.login_admin import authorize_middleware
+from dancedeets.redirect_canonical import redirect_canonical
 import main
 
 
@@ -27,9 +28,12 @@ def is_admin(environ):
     return _get_facebook_user_id(environ) in admin_ids
 
 
-authorized_deferred_app = authorize_middleware(google.appengine.ext.deferred.application, is_admin)
-authorized_deferred_app = authorize_middleware(google.appengine.ext.deferred.application, is_admin)
-authorized_pipeline_app = authorize_middleware(pipeline_wrapper._APP, is_admin)
-authorized_mapreduce_app = authorize_middleware(mapreduce.main.APP, is_admin)
-authorized_main_app = authorize_middleware(main.application, is_admin)
-authorized_admin_app = authorize_middleware(admin.app, is_admin)
+def middleware(app):
+    return redirect_canonical(authorize_middleware(app, is_admin), 'dancedeets.com', 'www.dancedeets.com')
+
+
+authorized_deferred_app = middleware(google.appengine.ext.deferred.application)
+authorized_pipeline_app = middleware(pipeline_wrapper._APP)
+authorized_mapreduce_app = middleware(mapreduce.main.APP)
+authorized_main_app = middleware(main.application)
+authorized_admin_app = middleware(admin.app)
