@@ -633,28 +633,6 @@ def canonicalize_base_event_data(db_event, version):
         event_api['picture'] = None
         event_api['cover'] = None
 
-    return event_api
-
-
-def canonicalize_event_data(db_event, event_wall, event_keywords, version):
-    event_api = canonicalize_base_event_data(db_event, version)
-    event_api['description'] = db_event.description
-    event_api['source'] = {
-        'name': db_event.source_name,
-        'url': db_event.source_url,
-    }
-
-    if db_event.json_props and 'language' in db_event.json_props:
-        event_api['language'] = db_event.json_props['language']
-    else:
-        # bwcompat that let's this work without the need to re-save
-        text = '%s. %s' % (event_api['name'], event_api['description'])
-        try:
-            event_api['language'] = language.detect(text)
-        except ValueError:
-            logging.exception('Error detecting language on event %s with text %r', db_event.id, text)
-            event_api['language'] = None
-
     # location data
     if db_event.location_name:
         venue_location_name = db_event.location_name
@@ -694,6 +672,29 @@ def canonicalize_event_data(db_event, event_wall, event_keywords, version):
         'address': address,
         'geocode': geocode,
     }
+
+    return event_api
+
+
+def canonicalize_event_data(db_event, event_wall, event_keywords, version):
+    event_api = canonicalize_base_event_data(db_event, version)
+    event_api['description'] = db_event.description
+    event_api['source'] = {
+        'name': db_event.source_name,
+        'url': db_event.source_url,
+    }
+
+    if db_event.json_props and 'language' in db_event.json_props:
+        event_api['language'] = db_event.json_props['language']
+    else:
+        # bwcompat that let's this work without the need to re-save
+        text = '%s. %s' % (event_api['name'], event_api['description'])
+        try:
+            event_api['language'] = language.detect(text)
+        except ValueError:
+            logging.exception('Error detecting language on event %s with text %r', db_event.id, text)
+            event_api['language'] = None
+
     # people data
     event_api['admins'] = db_event.admins
 
