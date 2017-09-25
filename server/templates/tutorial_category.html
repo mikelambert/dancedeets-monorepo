@@ -5,15 +5,12 @@
 {% endblock %}
 
 {% block head_javascript %}
+<script defer src="{{ static_path('tutorialCategoryExec.js') }}"></script>
 {{ enable_mixpanel() }}
 {% endblock %}
 
 {% block head_metatags %}
 <link rel="canonical" href="{{ canonical_url }}" />
-{% endblock %}
-
-{% block head_javascript %}
-<script defer src="{{ static_path('tutorialCategoryExec.js') }}"></script>
 {% endblock %}
 
 {% block body %}
