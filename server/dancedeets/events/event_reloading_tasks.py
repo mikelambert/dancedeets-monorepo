@@ -44,8 +44,9 @@ def load_fb_events_using_backup_tokens(event_ids, allow_cache, only_if_updated, 
     for db_event in db_events:
         processed = False
         fbl = None
-        logging.info("Looking for event id %s with visible user ids %s", db_event.fb_event_id, db_event.visible_to_fb_uids)
-        for user in users.User.get_by_ids(db_event.visible_to_fb_uids):
+        visible_to_fb_uids = db_event.visible_to_fb_uids
+        logging.info("Looking for event id %s with visible user ids %s", db_event.fb_event_id, visible_to_fb_uids)
+        for user in users.User.get_by_ids(visible_to_fb_uids):
             if not user:
                 # If this user id doesn't exist in our system, then it was never an actual user
                 # It most likely comes from the days when we could get fb events from friends-of-users
@@ -61,6 +62,7 @@ def load_fb_events_using_backup_tokens(event_ids, allow_cache, only_if_updated, 
                 real_fb_event = fbl.fetched_data(fb_api.LookupEvent, db_event.fb_event_id)
             except fb_api.ExpiredOAuthToken:
                 logging.warning("User %s has expired oauth token", user.fb_uid)
+                visible_to_fb_uids.remove(user.fb_uid)
             else:
                 if real_fb_event['empty'] != fb_api.EMPTY_CAUSE_INSUFFICIENT_PERMISSIONS:
                     add_event_tuple_if_updating(events_to_update, fbl, db_event, only_if_updated)
@@ -69,8 +71,9 @@ def load_fb_events_using_backup_tokens(event_ids, allow_cache, only_if_updated, 
         if not processed:
             logging.warning('Cleaning out the visible_to_fb_uids for event %s, since our tokens have all expired.', db_event.fb_event_id)
             # Now mark our event as lacking in valid access_tokens, so that our pipeline can pick it up and look for a new one
-            db_event.visible_to_fb_uids = []
-            db_event.put()
+            if db_event.visible_to_fb_uids != visible_to_fb_uids:
+                db_event.visible_to_fb_uids = visible_to_fb_uids
+                db_event.put()
             # Let's update the DBEvent as necessary (note, this uses the last-updated FBLookup)
             # Unfortunately, we failed to get anything in our fbl, as it was raising an ExpiredOAuthToken
             # So instead, let's call it and just have it use the db_event.fb_event
