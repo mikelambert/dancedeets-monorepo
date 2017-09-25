@@ -643,11 +643,13 @@ class PastEventWarning extends React.Component {
     }
 
     return (
-      <div className="past-event-box">
-        <div className="past-event-warning">
-          Note: This event has already taken place. <br />
+      <div>
+        <div className="red-card">
+          <div className="card-contents">
+            Note: This event has already taken place.
+          </div>
         </div>
-        <div>
+        <div className="other-upcoming-events">
           But you may be interested in{' '}
           <a href={searchUrl}>{`all upcoming events near ${location}`}</a>.
           {upcomingEvents}

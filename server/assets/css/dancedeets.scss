@@ -1,15 +1,14 @@
 @import 'config.scss';
 
-$react-dates-color-primary: #4C4D81;
-$react-dates-color-secondary: #4C4D81;
-$react-dates-color-focus: #C0C0E8;
+$react-dates-color-primary: #4c4d81;
+$react-dates-color-secondary: #4c4d81;
+$react-dates-color-focus: #c0c0e8;
 $react-dates-color-text-focus: black;
-$react-dates-color-primary-shade-1: #9090D0;
-$react-dates-color-primary-shade-2: #C0C0E8;
-$react-dates-color-primary-shade-3: #9090D0;
-$react-dates-color-primary-shade-4: #C0C0E8;
+$react-dates-color-primary-shade-1: #9090d0;
+$react-dates-color-primary-shade-2: #c0c0e8;
+$react-dates-color-primary-shade-3: #9090d0;
+$react-dates-color-primary-shade-4: #c0c0e8;
 $react-dates-color-border: transparent;
-$card-background-color: white;
 
 @import '~react-dates/css/variables.scss';
 @import '~react-dates/css/styles.scss';
@@ -175,7 +174,10 @@ h6 {
   //color: #585f69;
 }
 
-.headline h2, .headline h3, .headline h4, .headline .headline-underline {
+.headline h2,
+.headline h3,
+.headline h4,
+.headline .headline-underline {
   margin: 0 0 -2px 0;
   padding-bottom: 5px;
   display: inline-block;
@@ -186,9 +188,11 @@ h6 {
 .btn-default {
   background-image: linear-gradient(180deg, $purple-lighter, $purple-medium);
 
-  &:focus, &.focus {
+  &:focus,
+  &.focus {
     background-image: linear-gradient(180deg, $purple-lighter, $purple-medium);
-    &:active, &.active {
+    &:active,
+    &.active {
       border-color: $yellow-lightest;
     }
   }
@@ -196,11 +200,13 @@ h6 {
     background-image: linear-gradient(180deg, $purple-lighter, $purple-medium);
   }
 
-  &:active, &.active {
+  &:active,
+  &.active {
     background-image: linear-gradient(180deg, $purple-medium, $purple-lighter);
     border-color: $yellow-lightest;
 
-    &:hover, &.hover {
+    &:hover,
+    &.hover {
       border-color: $yellow-lightest;
     }
   }
@@ -212,11 +218,13 @@ h6 {
 .btn-primary {
   background-image: linear-gradient(180deg, $purple-lighter, $purple-medium);
 
-  &:focus, &.focus {
+  &:focus,
+  &.focus {
     background-image: linear-gradient(180deg, $purple-lighter, $purple-medium);
   }
 
-  &:active, &.active {
+  &:active,
+  &.active {
     background-image: linear-gradient(180deg, $purple-medium, $purple-lighter);
     border-color: $yellow-lightest;
   }
@@ -252,55 +260,6 @@ h6 {
   display: inline-block;
 }
 
-// Pulled from the event.jsx page
-.card::before {
-  border: 1px solid;
-  border-color: #e5e6e9 #dfe0e4 #d0d1d5;
-  border-radius: 4px;
-  bottom: -1px;
-  top: -1px;
-  left: -1px;
-  right: -1px;
-  content: '';
-  position: absolute;
-  pointer-events: none; // avoid capturing mouse events
-}
-
-.card {
-  border: 1px solid;
-  border-color: transparent;
-  border-radius: 3px;
-  background-color: $card-background-color;
-  padding: 10px;
-  margin: 10px;
-  position: relative;
-}
-
-.card-header {
-  padding: 12px 12px 10px;
-  display: flex;
-  flex-direction: horizontal;
-  justify-content: space-between;
-}
-
-.card-contents {
-  padding: 10px;
-}
-
-.card-header-text {
-  line-height: 25px;
-  font-weight: bold;
-}
-
-.new-card {
-  @extend .card;
-  padding: 0px;
-}
-
-.new-card::before {
-  @extend .new-card::before;
-}
-
 .image-prefix {
   padding-left: 5px;
   padding-bottom: 5px;
@@ -333,7 +292,9 @@ h6 {
   height: 25px;
 }
 
-button.link-button, button.link-button:focus, button.link-button:active {
+button.link-button,
+button.link-button:focus,
+button.link-button:active {
   /* Remove all decorations to look like normal text */
   background: none;
   border: none;
@@ -364,7 +325,7 @@ button.link-button::-moz-focus-inner {
   bottom: 0;
   left: 0;
   right: 0;
-  background: hsla(0, 0%, 100%, .2);
+  background: hsla(0, 0%, 100%, 0.2);
   background: linear-gradient(180deg, hsla(0, 0%, 100%, 0) 0, $body-bg);
   height: 100px;
 }
@@ -376,7 +337,8 @@ button.link-button::-moz-focus-inner {
 .fc-day-grid-event > .fc-content {
   white-space: normal !important;
 }
-.fc-event, .fc-event-dot {
+.fc-event,
+.fc-event-dot {
   background-color: $purple-lighter !important;
 }
 .fc-event {
@@ -421,7 +383,9 @@ $top-search-placeholder-color: #484848;
   overflow: hidden;
 }
 
-.video-container iframe, .video-container object, .video-container embed {
+.video-container iframe,
+.video-container object,
+.video-container embed {
   position: absolute;
   top: 0;
   left: 0;
@@ -431,10 +395,6 @@ $top-search-placeholder-color: #484848;
 
 .span {
   display: inline;
-}
-
-.card-background {
-  background-color: $card-background-color;
 }
 
 .square-flyer {
