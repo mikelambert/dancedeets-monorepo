@@ -12,10 +12,13 @@ import { injectIntl, intlShape } from 'react-intl';
 import Helmet from 'react-helmet';
 import { Share as TwitterShare } from 'react-twitter-widgets';
 import { intlWeb } from 'dancedeets-common/js/intl';
-import { formatDateTime, formatStartEnd } from 'dancedeets-common/js/dates';
-import { Event } from 'dancedeets-common/js/events/models';
+import {
+  formatDateTime,
+  formatStartEnd,
+  formatStartDateOnly,
+} from 'dancedeets-common/js/dates';
+import { BaseEvent, Event } from 'dancedeets-common/js/events/models';
 import type { JSONObject, Admin } from 'dancedeets-common/js/events/models';
-import type { SearchEvent } from 'dancedeets-common/js/events/search';
 import { formatAttending } from 'dancedeets-common/js/events/helpers';
 import messages from 'dancedeets-common/js/events/messages';
 import { getHostname } from 'dancedeets-common/js/util/url';
@@ -620,12 +623,31 @@ class AdminPanel extends React.Component {
   }
 }
 
+class _EventRecommendation extends React.Component {
+  props: {
+    event: BaseEvent,
+    intl: intlShape,
+  };
+
+  render() {
+    const start = this.props.event.getStartMoment({ timezone: false });
+    return (
+      <a href={this.props.event.getUrl()}>
+        {formatStartDateOnly(start, this.props.intl)}
+        {' - '}
+        {this.props.event.name}
+      </a>
+    );
+  }
+}
+const EventRecommendation = injectIntl(_EventRecommendation);
+
 class PastEventWarning extends React.Component {
   props: {
     // event: Event,
     // include future events from same admins
     initialQuery: Query,
-    upcomingEvents: Array<SearchEvent>,
+    upcomingEvents: Array<BaseEvent>,
   };
 
   render() {
@@ -637,7 +659,13 @@ class PastEventWarning extends React.Component {
       upcomingEvents = (
         <div>
           Or more upcoming events from the same organizers:
-          <ul>{this.props.upcomingEvents.map(x => <li>{x.name}</li>)}</ul>
+          <ul>
+            {this.props.upcomingEvents.map(x => (
+              <li key={x.id}>
+                <EventRecommendation event={x} />
+              </li>
+            ))}
+          </ul>
         </div>
       );
     }
@@ -685,7 +713,7 @@ export class EventPage extends React.Component {
     // Past event, as defined by the server code
     pastEvent: boolean,
     // List of events, if we need to display relevant upcoming events
-    upcomingEvents: Array<SearchEvent>,
+    upcomingEvents: Array<BaseEvent>,
   };
 
   performSearch(query: Query) {
@@ -725,12 +753,14 @@ export class EventPage extends React.Component {
       </div>
     );
 
+    const upcomingEvents = this.props.upcomingEvents.map(x => new BaseEvent(x));
+
     let pastPromo = null;
     if (this.props.pastEvent) {
       pastPromo = (
         <PastEventWarning
           initialQuery={initialQuery}
-          upcomingEvents={this.props.upcomingEvents}
+          upcomingEvents={upcomingEvents}
         />
       );
     }
