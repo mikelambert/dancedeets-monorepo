@@ -131,6 +131,11 @@ class ShowEventHandler(base_servlet.BaseRequestHandler):
                 # let's just ignore it for now and keep going
                 pass
 
+        if db_event.is_past():
+            # Look up new events for organizers!
+            # ids = [admin['id'] for admin in db_event.admins]
+            upcoming_events = []  #api.canonicalize_event_data(db_event, None, None, version=(1, 3))]
+
         # Render React component for inclusion in our template:
         api_event = api.canonicalize_event_data(db_event, fb_event_wall, None, version=(1, 3))
         render_amp = bool(self.request.get('amp'))
@@ -138,6 +143,8 @@ class ShowEventHandler(base_servlet.BaseRequestHandler):
             amp=render_amp,
             event=api_event,
             userRsvp=rsvps.get(event_id),
+            pastEvent=db_event.is_past(),
+            upcomingEvents=upcoming_events,
         )
         self.setup_react_template('event.js', props, static_html=render_amp)
 

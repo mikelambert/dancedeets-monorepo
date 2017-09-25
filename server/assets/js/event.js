@@ -15,6 +15,7 @@ import { intlWeb } from 'dancedeets-common/js/intl';
 import { formatDateTime, formatStartEnd } from 'dancedeets-common/js/dates';
 import { Event } from 'dancedeets-common/js/events/models';
 import type { JSONObject, Admin } from 'dancedeets-common/js/events/models';
+import type { SearchEvent } from 'dancedeets-common/js/events/search';
 import { formatAttending } from 'dancedeets-common/js/events/helpers';
 import messages from 'dancedeets-common/js/events/messages';
 import { getHostname } from 'dancedeets-common/js/util/url';
@@ -28,6 +29,8 @@ import { Message } from './intl';
 import { AmpImage, Card, ImagePrefix } from './ui';
 import FormatDescription from './formatDescription';
 import { canonicalizeQuery, SearchBox } from './resultsCommon';
+
+type Query = Object;
 
 function getAdsenseStyle(amp) {
   return {
@@ -273,18 +276,7 @@ class _EventLinks extends React.Component {
             data-layout="button"
             data-size="small"
             data-mobile-iframe="true"
-          >
-            <a
-              className="fb-xfbml-parse-ignore"
-              rel="noopener noreferrer"
-              target="_blank"
-              href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(
-                event.getUrl()
-              )}&src=sdkpreparse`}
-            >
-              Share
-            </a>
-          </div>
+          />
         </ImagePrefix>
       );
     }
@@ -628,6 +620,49 @@ class AdminPanel extends React.Component {
   }
 }
 
+class PastEventWarning extends React.Component {
+  props: {
+    // event: Event,
+    // include future events from same admins
+    initialQuery: Query,
+    upcomingEvents: Array<SearchEvent>,
+  };
+
+  render() {
+    const searchUrl = getSearchUrl(this.props.initialQuery);
+    const location = this.props.initialQuery.location;
+
+    let upcomingEvents = null;
+    if (this.props.upcomingEvents.length) {
+      upcomingEvents = (
+        <div>
+          Or more upcoming events from the same organizers:
+          <ul>{this.props.upcomingEvents.map(x => <li>{x.name}</li>)}</ul>
+        </div>
+      );
+    }
+
+    return (
+      <div className="past-event-box">
+        <div className="past-event-warning">
+          Note: This event has already taken place. <br />
+        </div>
+        <div>
+          But you may be interested in{' '}
+          <a href={searchUrl}>{`all upcoming events near ${location}`}</a>.
+          {upcomingEvents}
+        </div>
+      </div>
+    );
+  }
+}
+
+function getSearchUrl(query: Query) {
+  const newQuery = canonicalizeQuery(query);
+  const newQueryString = querystring.stringify(newQuery);
+  return `/?${newQueryString}`;
+}
+
 class HtmlHead extends React.Component {
   props: {
     event: Event,
@@ -645,12 +680,14 @@ export class EventPage extends React.Component {
     amp?: boolean,
     userId?: number,
     userRsvp?: RsvpValue,
+    // Past event, as defined by the server code
+    pastEvent: boolean,
+    // List of events, if we need to display relevant upcoming events
+    upcomingEvents: Array<SearchEvent>,
   };
 
-  performSearch(query: Object) {
-    const newQuery = canonicalizeQuery(query);
-    const newQueryString = querystring.stringify(newQuery);
-    window.location = `/?${newQueryString}`;
+  performSearch(query: Query) {
+    window.location = getSearchUrl(query);
   }
 
   render() {
@@ -686,6 +723,16 @@ export class EventPage extends React.Component {
       </div>
     );
 
+    let pastPromo = null;
+    if (this.props.pastEvent) {
+      pastPromo = (
+        <PastEventWarning
+          initialQuery={initialQuery}
+          upcomingEvents={this.props.upcomingEvents}
+        />
+      );
+    }
+
     return (
       <div className="container">
         <HtmlHead event={event} />
@@ -705,6 +752,7 @@ export class EventPage extends React.Component {
               userId={this.props.userId}
               forceAdmin={this.props.forceAdmin}
             />
+            {pastPromo}
           </div>
         </div>
         <div className="row">
