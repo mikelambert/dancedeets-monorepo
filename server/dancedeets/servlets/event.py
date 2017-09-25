@@ -140,8 +140,7 @@ class ShowEventHandler(base_servlet.BaseRequestHandler):
                 eventdata.DBEvent.admin_fb_uids.IN(admin_ids), eventdata.DBEvent.search_time_period == dates.TIME_FUTURE
             ).fetch(1000)
             events = sorted(events, key=lambda x: x.start_time)
-            upcoming_events = [api.canonicalize_event_data(e, None, None, version=(1, 3)) for e in events]
-            # TODO: trim the amount of data we really pass down into the React subsystem
+            upcoming_events = [api.canonicalize_base_event_data(e, version=(1, 3)) for e in events]
 
         # Render React component for inclusion in our template:
         api_event = api.canonicalize_event_data(db_event, fb_event_wall, None, version=(1, 3))

@@ -580,22 +580,17 @@ def canonicalize_post_data(post, version):
     return post_api
 
 
-def canonicalize_event_data(db_event, event_wall, event_keywords, version):
+def canonicalize_base_event_data(db_event, version):
     event_api = {}
     event_api['id'] = db_event.id
     event_api['name'] = db_event.name
     event_api['slugged_name'] = slugify(unicode(db_event.name))
     event_api['start_time'] = db_event.start_time_with_tz.strftime(DATETIME_FORMAT_TZ)
-    event_api['description'] = db_event.description
     # end time can be optional, especially on single-day events that are whole-day events
     if db_event.end_time_with_tz:
         event_api['end_time'] = db_event.end_time_with_tz.strftime(DATETIME_FORMAT_TZ)
     else:
         event_api['end_time'] = None
-    event_api['source'] = {
-        'name': db_event.source_name,
-        'url': db_event.source_url,
-    }
 
     # cover images
     if db_event.has_image:
@@ -637,6 +632,17 @@ def canonicalize_event_data(db_event, event_wall, event_keywords, version):
     else:
         event_api['picture'] = None
         event_api['cover'] = None
+
+    return event_api
+
+
+def canonicalize_event_data(db_event, event_wall, event_keywords, version):
+    event_api = canonicalize_base_event_data(db_event, version)
+    event_api['description'] = db_event.description
+    event_api['source'] = {
+        'name': db_event.source_name,
+        'url': db_event.source_url,
+    }
 
     if db_event.json_props and 'language' in db_event.json_props:
         event_api['language'] = db_event.json_props['language']
