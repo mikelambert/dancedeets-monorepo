@@ -106,6 +106,10 @@ def _inner_cache_photo(db_event):
 def _inner_make_event_findable_for_fb_event(db_event, fb_dict, disable_updates):
     """set up any cached fields or bucketing or whatnot for this event"""
 
+    # If the event was public, and is now deleted, lets mark it as force-canceled
+    orig_event_type = db_event.fb_event.get('info', {}).get('type')
+    db_event.is_force_canceled = fb_dict['empty'] and orig_event_type == 'public'
+
     # Update this event with the latest time_period regardless (possibly overwritten below)
     db_event.search_time_period = _event_time_period(db_event)
 

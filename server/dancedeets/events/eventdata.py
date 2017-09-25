@@ -77,6 +77,7 @@ class DBEvent(ndb.Model):
     visible_to_fb_uids = ndb.StringProperty(indexed=False, repeated=True)
     # derived data from fb_event itself
     fb_event = ndb.JsonProperty(indexed=False)
+    is_force_canceled = ndb.JsonProperty(indexed=False)
 
     json_props = ndb.JsonProperty(indexed=False)
 
@@ -133,7 +134,9 @@ class DBEvent(ndb.Model):
         return self.forced_end_time_with_tz < datetime.datetime.utcnow().replace(tzinfo=pytz.utc)
 
     def is_canceled(self):
-        if self.web_event:
+        if self.is_force_canceled:
+            return self.is_force_canceled
+        elif self.web_event:
             return False
         else:
             return self.fb_event['info']['is_canceled']
