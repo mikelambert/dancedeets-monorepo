@@ -50,8 +50,14 @@ class OEmbed extends React.Component {
     const oembedUrl = this.props.getOembedUrl(this.props.url);
     console.log(oembedUrl);
     const result = await fetch(oembedUrl, {});
-    const data = await result.json();
-    this.setState({ embedCode: data.html });
+    if (result.ok) {
+      const data = await result.json();
+      this.setState({ embedCode: data.html });
+    } else {
+      console.error(
+        `Received status ${result.status} when fetching ${oembedUrl}`
+      );
+    }
   }
 
   render() {
