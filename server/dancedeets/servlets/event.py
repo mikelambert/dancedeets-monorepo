@@ -136,11 +136,13 @@ class ShowEventHandler(base_servlet.BaseRequestHandler):
         if past_event:
             # Look up new events for organizers!
             admin_ids = [admin['id'] for admin in db_event.admins]
-            events = eventdata.DBEvent.query(
-                eventdata.DBEvent.admin_fb_uids.IN(admin_ids), eventdata.DBEvent.search_time_period == dates.TIME_FUTURE
-            ).fetch(1000)
-            events = sorted(events, key=lambda x: x.start_time)
-            upcoming_events = [api.canonicalize_base_event_data(e, version=(1, 3)) for e in events]
+            # Check admin_ids, because if we try to field.IN([]), we get the error: "Cannot convert FalseNode to predicate"
+            if admin_ids:
+                events = eventdata.DBEvent.query(
+                    eventdata.DBEvent.admin_fb_uids.IN(admin_ids), eventdata.DBEvent.search_time_period == dates.TIME_FUTURE
+                ).fetch(1000)
+                events = sorted(events, key=lambda x: x.start_time)
+                upcoming_events = [api.canonicalize_base_event_data(e, version=(1, 3)) for e in events]
 
         # Render React component for inclusion in our template:
         api_event = api.canonicalize_event_data(db_event, fb_event_wall, None, version=(1, 3))
