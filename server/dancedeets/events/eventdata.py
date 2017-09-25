@@ -188,7 +188,10 @@ class DBEvent(ndb.Model):
 
     @property
     def start_time_with_tz(self):
-        return dateutil.parser.parse(self.start_time_string)
+        dt = dateutil.parser.parse(self.start_time_string)
+        if not dt.tzinfo:
+            dt = dt.replace(tzinfo=pytz.utc)
+        return dt
 
     @property
     def end_time_string(self):
@@ -200,7 +203,10 @@ class DBEvent(ndb.Model):
     @property
     def end_time_with_tz(self):
         if self.end_time:
-            return dateutil.parser.parse(self.end_time_string)
+            dt = dateutil.parser.parse(self.end_time_string)
+            if not dt.tzinfo:
+                dt = dt.replace(tzinfo=pytz.utc)
+            return dt
         else:
             return None
 
