@@ -144,6 +144,7 @@ class ShowEventHandler(base_servlet.BaseRequestHandler):
                 events = sorted(events, key=lambda x: x.start_time)
                 upcoming_events = [api.canonicalize_base_event_data(e, version=(1, 3)) for e in events]
 
+        canceled_event = db_event.is_canceled()
         # Render React component for inclusion in our template:
         api_event = api.canonicalize_event_data(db_event, fb_event_wall, None, version=(1, 3))
         render_amp = bool(self.request.get('amp'))
@@ -152,6 +153,7 @@ class ShowEventHandler(base_servlet.BaseRequestHandler):
             event=api_event,
             userRsvp=rsvps.get(event_id),
             pastEvent=past_event,
+            canceledEvent=canceled_event,
             upcomingEvents=upcoming_events,
         )
         self.setup_react_template('event.js', props, static_html=render_amp)

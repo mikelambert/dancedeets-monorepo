@@ -132,6 +132,12 @@ class DBEvent(ndb.Model):
     def is_past(self):
         return self.forced_end_time_with_tz < datetime.datetime.utcnow().replace(tzinfo=pytz.utc)
 
+    def is_canceled(self):
+        if self.web_event:
+            return False
+        else:
+            return self.fb_event['info']['is_canceled']
+
     def get_geocode(self):
         return gmaps_api.parse_geocode(self.location_geocode)
 

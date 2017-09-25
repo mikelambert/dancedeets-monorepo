@@ -642,9 +642,9 @@ class _EventRecommendation extends React.Component {
 }
 const EventRecommendation = injectIntl(_EventRecommendation);
 
-class PastEventWarning extends React.Component {
+class BadEventWarning extends React.Component {
   props: {
-    // event: Event,
+    messages: string,
     // include future events from same admins
     initialQuery: Query,
     upcomingEvents: Array<BaseEvent>,
@@ -674,12 +674,12 @@ class PastEventWarning extends React.Component {
       <div>
         <div className="red-card">
           <div className="card-contents">
-            Note: This event has already taken place.
+            {this.props.messages.map(x => <div key={x}>{x}</div>)}
           </div>
         </div>
         <div className="other-upcoming-events">
           But you may be interested in{' '}
-          <a href={searchUrl}>{`all upcoming events near ${location}`}</a>.
+          <a href={searchUrl}>all upcoming events near {location}</a>.
           {upcomingEvents}
         </div>
       </div>
@@ -712,6 +712,7 @@ export class EventPage extends React.Component {
     userRsvp?: RsvpValue,
     // Past event, as defined by the server code
     pastEvent: boolean,
+    canceledEvent: boolean,
     // List of events, if we need to display relevant upcoming events
     upcomingEvents: Array<BaseEvent>,
   };
@@ -755,10 +756,18 @@ export class EventPage extends React.Component {
 
     const upcomingEvents = this.props.upcomingEvents.map(x => new BaseEvent(x));
 
-    let pastPromo = null;
+    const eventMessages = [];
     if (this.props.pastEvent) {
-      pastPromo = (
-        <PastEventWarning
+      eventMessages.push('Note: This event has already taken place.');
+    }
+    if (this.props.canceledEvent) {
+      eventMessages.push('Note: This event has been canceled.');
+    }
+    let badPromo = null;
+    if (eventMessages.length) {
+      badPromo = (
+        <BadEventWarning
+          messages={eventMessages}
           initialQuery={initialQuery}
           upcomingEvents={upcomingEvents}
         />
@@ -784,7 +793,7 @@ export class EventPage extends React.Component {
               userId={this.props.userId}
               forceAdmin={this.props.forceAdmin}
             />
-            {pastPromo}
+            {badPromo}
           </div>
         </div>
         <div className="row">
