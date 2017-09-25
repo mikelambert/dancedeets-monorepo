@@ -134,6 +134,10 @@ def _inner_make_event_findable_for_fb_event(db_event, fb_dict, disable_updates):
         db_event.owner_fb_uid = fb_dict['info']['owner']['id']
     else:
         db_event.owner_fb_uid = None
+    if 'admins' in fb_dict['info']:
+        db_event.admin_fb_uids = [x['id'] for x in fb_dict['info']['admins']]
+    else:
+        db_event.admin_fb_uids = []
 
     db_event.attendee_count = _all_attending_count(fb_dict)
 

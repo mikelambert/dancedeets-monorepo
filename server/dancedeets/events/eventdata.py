@@ -73,6 +73,7 @@ class DBEvent(ndb.Model):
 
     # Fields unique to Facebook:
     owner_fb_uid = ndb.StringProperty()
+    admin_fb_uids = ndb.StringProperty(repeated=True)
     visible_to_fb_uids = ndb.StringProperty(indexed=False, repeated=True)
     # derived data from fb_event itself
     fb_event = ndb.JsonProperty(indexed=False)
