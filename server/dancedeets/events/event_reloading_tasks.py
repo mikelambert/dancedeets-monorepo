@@ -26,9 +26,14 @@ def add_event_tuple_if_updating(events_to_update, fbl, db_event, only_if_updated
         logging.info('Error fetching data from server for event %s: %s', db_event.fb_event_id, e)
         fb_event = db_event.fb_event
     update_regardless = not only_if_updated
+    orig_event_type = db_event.fb_event.get('info', {}).get('type')
     if fb_event['empty']:
-        logging.info('The latest fb event %s is empty (%s), using dbevent.fb_event instead', db_event.id, fb_event['empty'])
-        fb_event = db_event.fb_event
+        logging.info('The latest fb event %s is empty (%s), with type %s', db_event.id, fb_event['empty'], orig_event_type)
+        if orig_event_type != 'public':
+            logging.info(
+                'The event is not public, so losing permission may be due to losing user tokens, so let\'s keep the event and its data'
+            )
+            fb_event = db_event.fb_event
     if update_regardless or db_event.fb_event != fb_event:
         logging.info("Event %s is updated.", db_event.id)
         events_to_update.append((db_event, fb_event))
