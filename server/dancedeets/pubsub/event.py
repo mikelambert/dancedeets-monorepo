@@ -164,10 +164,10 @@ def should_post_on_event_wall(auth_token, db_event, min_attendees, min_dancers):
     if db_event.attendee_count < 10:
         logging.warning("Skipping event due to <10 attendees: %s", db_event.attendee_count)
         return False
-    if db_event.attendee_count > 600:
+    if db_event.attendee_count > 400:
         logging.warning("Skipping event due to 600+ attendees: %s", db_event.attendee_count)
         return False
-    if not _event_has_enough_attendees(db_event, 10):
+    if not _event_has_enough_attendees(db_event, 20):
         return False
     return True
 
