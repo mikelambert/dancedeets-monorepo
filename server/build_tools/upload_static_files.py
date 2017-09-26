@@ -41,7 +41,7 @@ max_age = 60 * 60 * 24
 # -z compress files on upload
 # -R recursive
 cmd = '/Users/%s/google-cloud-sdk/bin/gsutil -m -h "Cache-Control:public,max-age=%s" cp -P -n -z svg,css,js,json,map -R dist/{js,css,img,fonts,*.json} gs://dancedeets-static/' % (
-    max_age, user
+    user, max_age
 )
 subprocess.check_output(cmd, shell=True)
 
