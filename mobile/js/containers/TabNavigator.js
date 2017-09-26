@@ -62,7 +62,8 @@ function image(focused, name) {
   return <Icon name={imageName} size={30} style={styles.icon} color={color} />;
 }
 
-const mediumUrl = 'https://medium.dancedeets.com/';
+const mediumUrl =
+  'https://medium.dancedeets.com/?utm_source=articles-tab&utm_medium=mobile-app&utm_campaign=articles-tab';
 
 class ArticlesScreensNavigator extends React.Component {
   render() {
