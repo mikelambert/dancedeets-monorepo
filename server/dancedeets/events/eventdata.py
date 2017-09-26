@@ -139,7 +139,7 @@ class DBEvent(ndb.Model):
         elif self.web_event:
             return False
         else:
-            return self.fb_event['info']['is_canceled']
+            return self.fb_event['info'].get('is_canceled')
 
     def get_geocode(self):
         return gmaps_api.parse_geocode(self.location_geocode)
@@ -185,7 +185,6 @@ class DBEvent(ndb.Model):
         if self.web_event:
             return True
         else:
-            # and not self.fb_event['info']['is_canceled']
             return self.fb_event and not self.fb_event['empty']
 
     @property
