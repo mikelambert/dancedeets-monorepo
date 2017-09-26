@@ -651,9 +651,6 @@ class BadEventWarning extends React.Component {
   };
 
   render() {
-    const searchUrl = getSearchUrl(this.props.initialQuery);
-    const location = this.props.initialQuery.location;
-
     let upcomingEvents = null;
     if (this.props.upcomingEvents.length) {
       upcomingEvents = (
@@ -670,6 +667,26 @@ class BadEventWarning extends React.Component {
       );
     }
 
+    let nearbyEvents = null;
+    const location = this.props.initialQuery.location;
+    if (location) {
+      const searchUrl = getSearchUrl(this.props.initialQuery);
+
+      nearbyEvents = (
+        <a href={searchUrl}>all upcoming events near {location}</a>
+      );
+    }
+
+    let recommendations = null;
+    if (upcomingEvents || nearbyEvents) {
+      recommendations = (
+        <div className="other-upcoming-events">
+          But you may be interested in {nearbyEvents}.
+          {upcomingEvents}
+        </div>
+      );
+    }
+
     return (
       <div>
         <div className="red-card">
@@ -677,11 +694,7 @@ class BadEventWarning extends React.Component {
             {this.props.messages.map(x => <div key={x}>{x}</div>)}
           </div>
         </div>
-        <div className="other-upcoming-events">
-          But you may be interested in{' '}
-          <a href={searchUrl}>all upcoming events near {location}</a>.
-          {upcomingEvents}
-        </div>
+        {recommendations}
       </div>
     );
   }
