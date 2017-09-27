@@ -116,8 +116,9 @@ export class BaseEvent extends JsonDerivedObject {
     return `/events/${this.id}/${this.slugged_name}`;
   }
 
-  getUrl() {
-    return `https://www.dancedeets.com${this.getRelativeUrl()}`;
+  getUrl(args: ?Object) {
+    const url = `https://www.dancedeets.com${this.getRelativeUrl()}`;
+    return addUrlArgs(url, args);
   }
 
   getCroppedCover(width: ?number, height: ?number): ?Cover {

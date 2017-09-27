@@ -6,7 +6,7 @@
 
 import url from 'url';
 
-export function addUrlArgs(origUrl: string, args: Object) {
+export function addUrlArgs(origUrl: string, args: ?Object) {
   const parsedUrl = url.parse(origUrl, true);
   parsedUrl.query = { ...parsedUrl.query, ...args };
   const newUrl = url.format(parsedUrl);

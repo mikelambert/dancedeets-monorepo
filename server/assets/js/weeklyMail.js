@@ -14,21 +14,11 @@ import {
   formatStartTime,
 } from 'dancedeets-common/js/dates';
 import { groupEventsByStartDate } from 'dancedeets-common/js/events/helpers';
-import { addUrlArgs } from 'dancedeets-common/js/util/url';
 import type { ExportedIconsEnum } from './exportedIcons';
 import { EmailWrapper } from './mailCommon';
 
 const outsideGutter = 20;
 const verticalSpacing = 20;
-
-function addTrackingTags(origUrl) {
-  const tags = {
-    utm_source: 'weekly_email',
-    utm_medium: 'email',
-    utm_campaign: 'weekly_email',
-  };
-  return addUrlArgs(origUrl, tags);
-}
 
 class SmallIcon extends React.Component {
   props: {
@@ -73,7 +63,11 @@ class _MailEvent extends React.Component {
     const size = 180;
     const gutter = 10;
     let flyerImage = null;
-    const eventUrl = addTrackingTags(this.props.event.getUrl());
+    const eventUrl = this.props.event.getUrl({
+      utm_source: 'weekly_email',
+      utm_medium: 'email',
+      utm_campaign: 'weekly_email',
+    });
 
     const coverUrl = event.getCroppedCover(size, size);
     if (coverUrl) {
