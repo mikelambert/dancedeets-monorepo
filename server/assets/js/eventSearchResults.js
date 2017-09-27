@@ -84,11 +84,12 @@ export class HorizontalEventFlyer extends React.Component {
   };
 
   render() {
+    const fbDims = { width: 500, height: 262 };
     const event = this.props.event;
-    const width = 800;
-    const height = 400;
+    const width = 700;
+    const height = Math.round(width * fbDims.height / fbDims.width); // This dimension ratio come from what FB shows
 
-    const scaledHeight = '50'; // height == width * 50%
+    const scaledHeight = Math.round(fbDims.height / fbDims.width * 100);
 
     const croppedPicture = event.getCroppedCover(width, height);
     if (!croppedPicture) {
