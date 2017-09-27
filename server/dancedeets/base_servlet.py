@@ -248,9 +248,9 @@ class BareBaseRequestHandler(webapp2.RequestHandler, FacebookMixinHandler):
         ))
         try:
             result = render_server.render_jsx(template_name, props, static_html=static_html)
-        except render_server.ComponentSourceFileNotFound as e:
+        except render_server.ComponentSourceFileNotFound:
             self.display['react_props'] = json.dumps(props)
-            logging.exception('Error rendering React component: %s', e)
+            logging.exception('Error rendering React component')
             return
 
         if result.error:
