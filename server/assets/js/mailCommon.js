@@ -40,7 +40,7 @@ export class EmailWrapper extends React.Component {
             <mj-section full-width="full-width">
               <mj-column>
                 <mj-image
-                  src="https://www.dancedeets.com/images/mail-top.png"
+                  src="https://static.dancedeets.com/img/mail-top.png"
                   alt=""
                 />
               </mj-column>
@@ -61,7 +61,7 @@ export class EmailWrapper extends React.Component {
             <mj-section>
               <mj-column>
                 <mj-image
-                  src="https://www.dancedeets.com/images/mail-bottom.png"
+                  src="https://static.dancedeets.com/img/mail-bottom.png"
                   alt=""
                   align="center"
                   border="none"
