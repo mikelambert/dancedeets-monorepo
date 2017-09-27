@@ -39,6 +39,8 @@ handlers:
   script: admin_apps.authorized_admin_app
 - url: /events/admin.*
   script: admin_apps.authorized_main_app
+- url: /sources/admin.*
+  script: admin_apps.authorized_main_app
 - url: /tasks/.*
   script: admin_apps.authorized_main_app
 - url: .*
