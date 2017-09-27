@@ -63,7 +63,7 @@ function image(focused, name) {
 }
 
 const mediumUrl =
-  'https://medium.dancedeets.com/?utm_source=articles-tab&utm_medium=mobile-app&utm_campaign=articles-tab';
+  'https://medium.dancedeets.com/?utm_source=articles_tab&utm_medium=mobile_app&utm_campaign=articles_tab';
 
 class ArticlesScreensNavigator extends React.Component {
   render() {
