@@ -91,7 +91,7 @@ class _MailEvent extends React.Component {
     if (event.annotations.categories.length) {
       danceCategories = (
         <tr>
-          <td style={imageAlign} padding-el>
+          <td style={imageAlign}>
             <SmallIcon
               url="https://static.dancedeets.com/img/categories-black.png"
               alt="Categories"
