@@ -573,7 +573,7 @@ def canonicalize_post_data(post, version):
     if 'from' in post:
         post_api['from'] = {
             'id': post['from']['id'],
-            'name': post['from']['name'],
+            'name': post['from'].get('name', 'Unknown'),
         }
     else:
         logging.info('post without from: %s', post)
