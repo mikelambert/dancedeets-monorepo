@@ -135,8 +135,8 @@ beat streat vol
 battlefest
 brooklyn united rockers
 wdc.{0,10}final
-funk box
-funkbox
+#funk box
+#funkbox
 saint city session
 tap water sessions
 toca tuesdays?
