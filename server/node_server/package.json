@@ -12,9 +12,9 @@
     "body-parser": "^1.14.1",
     "express": "^4.14.0",
     "mjml": "^3.3.4",
-    "react": "^15.4.1",
-    "react-dom": "^15.4.1",
-    "react-render": "~1.1.0",
+    "react": "^16.0.0",
+    "react-dom": "^16.0.0",
+    "react-render": "^1.2.1",
     "yargs": "^6.5.0"
   }
 }

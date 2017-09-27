@@ -10,7 +10,7 @@ import ReactDOM from 'react-dom';
 import { AppContainer } from 'react-hot-loader';
 
 export default function(Component: React$Component<*, *, *>, props?: Object) {
-  ReactDOM.render(
+  ReactDOM.hydrate(
     <AppContainer>
       <Component {...window._REACT_PROPS} {...props} />
     </AppContainer>,
