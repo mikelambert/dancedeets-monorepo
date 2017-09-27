@@ -143,7 +143,7 @@ class DisplayEmailHandler(base_servlet.UserOperationHandler):
         try:
             message = email_for_user(users[0], fbl, should_send=False)
         except Exception as e:
-            self.response.out.write('Error generating mail html: %s', e)
+            self.response.out.write('Error generating mail html: %s' % e)
         else:
             self.response.out.write(message['html'])
 
