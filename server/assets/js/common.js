@@ -40,7 +40,7 @@ import { fbSetup } from './fb';
 import appInstallPromos from './app-install-promo';
 /* eslint-enable import/first */
 
-if (window.prodMode === 'prod') {
+if (window.prodMode) {
   Raven.config('https://f966ae7e625249f8a36d42e8b521dc2f@sentry.io/159133', {
     environment: window.prodMode ? 'prod' : 'dev',
   }).install();
