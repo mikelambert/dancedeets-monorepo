@@ -63,6 +63,8 @@ class Source(db.Model):
     num_real_events = db.IntegerProperty(indexed=False)
     num_false_negatives = db.IntegerProperty(indexed=False)
 
+    emails = db.ListProperty(str, indexed=True)
+
     def fraction_potential_are_real(self, bias=1):
         num_real_events = (self.num_real_events or 0) + bias
         num_potential_events = (self.num_potential_events or 0) + bias
@@ -90,6 +92,9 @@ class Source(db.Model):
                 logging.error('cannot find name for fb event data: %s, cannot update source data...', fb_source_common)
                 return
             self.name = fb_source_common['info']['name']
+            self.emails = fb_source_data['info'].get('emails', [])
+            if not self.emails:
+                pass  # TODO: trigger basic crawl of website to search for emails
             feed = fb_source_common['feed']['data']
             if len(feed):
                 dt = datetime.datetime.strptime(feed[-1]['created_time'], '%Y-%m-%dT%H:%M:%S+0000')

@@ -2,6 +2,7 @@ import logging
 
 from dancedeets import fb_api
 from dancedeets.events import eventdata
+from dancedeets.events import event_emails
 from dancedeets.events import event_locations
 from dancedeets.events import event_updates
 from dancedeets.pubsub import pubsub
@@ -60,13 +61,20 @@ def add_update_event(
     # Updates and saves the event
     event_updates.update_and_save_fb_events([(e, fb_event)])
 
-    if newly_created and allow_posting:
-        logging.info("New event, publishing to twitter/facebook")
-        deferred.defer(pubsub.eventually_publish_event, e.fb_event_id)
+    post_pubsub = newly_created and allow_posting
 
     fbl.clear_local_cache()
-    deferred.defer(crawl_event_source, fbl, e.fb_event_id)
+    deferred.defer(after_add_event, fbl, e.fb_event_id, post_pubsub)
     return e
+
+
+def after_add_event(fbl, event_id, post_pubsub):
+    logging.info("New event, publishing to twitter/facebook")
+    if post_pubsub:
+        pubsub.eventually_publish_event(event_id)
+    crawl_event_source(fbl, event_id)
+    # This has to occur *after* the event sources have been crawled (and the sources' emails are saved)
+    event_emails.send_event_add_emails(event_id)
 
 
 def crawl_event_source(fbl, event_id):
