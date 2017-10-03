@@ -336,7 +336,7 @@ class AdminEditHandler(base_servlet.BaseRequestHandler):
         potential_event = potential_events.make_potential_event_without_source(event_id)
         a = time.time()
         classified_event = event_classifier.get_classified_event(fb_event, potential_event.language)
-        timelog.log_time_since('Running Text Classifier', a)
+        timelog.log_time_since('Running BasicText Classifier', a)
         self.display['classified_event'] = classified_event
         dance_words_str = ', '.join(list(classified_event.dance_matches()))
         if classified_event.is_dance_event():
@@ -350,8 +350,11 @@ class AdminEditHandler(base_servlet.BaseRequestHandler):
         self.display['potential_event'] = potential_event
         self.display['display_event'] = display_event
 
+        start = time.time()
         add_result = event_auto_classifier.is_auto_add_event(classified_event)
         notadd_result = event_auto_classifier.is_auto_notadd_event(classified_event, auto_add_result=add_result)
+        timelog.log_time_since('Running Text Classifier', start)
+
         auto_classified = ''
         if add_result[0]:
             auto_classified += 'add: %s.\n' % add_result[1]
