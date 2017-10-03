@@ -23,6 +23,7 @@ from dancedeets.loc import gmaps_api
 from dancedeets.loc import math
 from dancedeets.event_attendees import popular_people
 from dancedeets.rankings import cities
+from dancedeets.rankings import cities_db
 from dancedeets.search import onebox
 from dancedeets.search import search
 from dancedeets.search import search_base
@@ -167,7 +168,7 @@ def people_groupings(geocode, distance, skip_people):
                     southwest = southwest_baseline
                     northeast = northeast_baseline
                 logging.info('Searching for cities within %s', (southwest, northeast))
-                included_cities = cities.get_nearby_cities((southwest, northeast), only_populated=True)
+                included_cities = cities_db.get_contained_cities((southwest, northeast))
                 biggest_cities = sorted(included_cities, key=lambda x: -x.population)[:10]
                 city_names = [city.display_name() for city in biggest_cities]
                 logging.info('City names: %s', city_names)
