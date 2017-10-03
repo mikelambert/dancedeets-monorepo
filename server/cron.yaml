@@ -21,7 +21,7 @@ cron:
 # Instead, let's run it with no cache, reloading all fb event/attending data, to then re-classify.
 - description: auto-add events
   url: /tools/auto_add_potential_events?user_id=dummy&past_event=0&allow_cache=0&queue=slow-queue
-  schedule: every 12 hours
+  schedule: every 24 hours
 #
 #
 - description: reload user data
