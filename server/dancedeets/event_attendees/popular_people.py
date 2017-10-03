@@ -101,13 +101,15 @@ class PeopleRanking(object):
 
 
 def get_people_rankings_for_city_names(city_names, attendees_only=False):
+    import time
     if runtime.is_local_appengine():
-        pr_city_categories = load_from_dev(city_names, attendees_only=attendees_only)
+        a = time.time()
+        pr_city_categories = get_people_rankings_for_city_names_sqlite(city_names, attendees_only)
+        logging.info('Loading PRCityCategory took %0.3f seconds', time.time() - a)
+
+        # pr_city_categories = get_people_rankings_for_city_names_dev_remote(city_names, attendees_only)
     else:
-        args = []
-        if attendees_only:
-            args = [PRCityCategory.person_type == 'ATTENDEE']
-        pr_city_categories = PRCityCategory.query(PRCityCategory.city.IN(city_names), *args).fetch(100)
+        pr_city_categories = get_people_rankings_for_city_names_datastore(city_names, attendees_only)
 
     results = []
     for city_category in pr_city_categories:
@@ -116,7 +118,40 @@ def get_people_rankings_for_city_names(city_names, attendees_only=False):
     return results
 
 
-def load_from_dev(city_names, attendees_only):
+def get_people_rankings_for_city_names_sqlite(city_names, attendees_only):
+    import sqlite3
+    import getpass
+    FILENAME_DB = '/Users/%s/Dropbox/dancedeets-development/server/generated/pr_city_category.db' % getpass.getuser()
+    conn = sqlite3.connect(FILENAME_DB)
+    cursor = conn.cursor()
+
+    query = 'SELECT person_type, city, category, top_people_json from PRCityCategory where city in (%s)' % ','.join('?' * len(city_names))
+    params = list(city_names)
+    if attendees_only:
+        query += '  AND person_type = ?'
+        params += ['ATTENDEE']
+
+    cursor.execute(query, params)
+    rankings = []
+    for result in cursor.fetchall():
+        ranking = PRCityCategory()
+        # ranking.key = ndb.Key('PRCityCategory', result.)
+        ranking.person_type = result[0]
+        ranking.city = result[1]
+        ranking.category = result[2]
+        ranking.top_people_json = json.loads(result[3])
+        rankings.append(ranking)
+    return rankings
+
+
+def get_people_rankings_for_city_names_datastore(city_names, attendees_only):
+    args = []
+    if attendees_only:
+        args = [PRCityCategory.person_type == 'ATTENDEE']
+    return PRCityCategory.query(PRCityCategory.city.IN(city_names), *args).fetch(100)
+
+
+def get_people_rankings_for_city_names_dev_remote(city_names, attendees_only):
     rankings = []
     client = datastore.Client('dancedeets-hrd')
 
