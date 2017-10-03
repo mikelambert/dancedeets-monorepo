@@ -103,14 +103,9 @@ class PeopleRanking(object):
 
 def get_people_rankings_for_city_names(city_names, attendees_only=False):
     import time
-    if runtime.is_local_appengine():
-        a = time.time()
-        pr_city_categories = get_people_rankings_for_city_names_sqlite(city_names, attendees_only)
-        logging.info('Loading PRCityCategory took %0.3f seconds', time.time() - a)
-
-        # pr_city_categories = get_people_rankings_for_city_names_dev_remote(city_names, attendees_only)
-    else:
-        pr_city_categories = get_people_rankings_for_city_names_datastore(city_names, attendees_only)
+    start = time.time()
+    pr_city_categories = get_people_rankings_for_city_names_sqlite(city_names, attendees_only)
+    logging.info('Loading PRCityCategory took %0.3f seconds', time.time() - start)
 
     results = []
     for city_category in pr_city_categories:
