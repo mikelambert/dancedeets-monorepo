@@ -80,7 +80,7 @@ def email_for_event(email, event, should_send=False):
     message = {
         'from_email': 'events@dancedeets.com',
         'from_name': 'DanceDeets Events',
-        'subject': 'Event Added',
+        'subject': 'Event Added',  # TODO
         'to': [{
             'email': email,
             'type': 'to',

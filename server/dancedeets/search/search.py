@@ -241,6 +241,9 @@ class EventsIndex(index.BaseIndex):
     def _create_doc_event(cls, db_event):
         if not db_event.has_content():
             return None
+        if db_event.is_canceled():
+            logging.info('Skipping event due to canceled: %s', db_event.id)
+            return None
         # TODO(lambert): find a way to index no-location events.
         # As of now, the lat/long number fields cannot be None.
         # In what radius/location should no-location events show up
