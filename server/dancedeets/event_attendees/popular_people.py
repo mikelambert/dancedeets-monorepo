@@ -179,8 +179,7 @@ def _get_city_names_within(bounds):
     logging.info('Looking up nearby cities to %s', bounds)
     included_cities = cities_db.get_contained_cities(bounds)
     logging.info('Found %s cities', len(included_cities))
-    biggest_cities = included_cities  # sorted(included_cities, key=lambda x: -x.population)[:20]
-    city_names = [city.display_name() for city in biggest_cities]
+    city_names = [city.display_name() for city in included_cities]
     return city_names
 
 
