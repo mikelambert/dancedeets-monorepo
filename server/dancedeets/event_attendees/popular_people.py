@@ -11,6 +11,7 @@ from dancedeets import app
 from dancedeets import base_servlet
 from dancedeets import event_types
 from dancedeets.rankings import cities
+from dancedeets.rankings import cities_db
 from dancedeets.util import runtime
 
 TOP_N = 100
@@ -176,9 +177,9 @@ def _get_city_names_within(bounds):
     if bounds == None:
         return []
     logging.info('Looking up nearby cities to %s', bounds)
-    included_cities = cities.get_nearby_cities(bounds, only_populated=True)
+    included_cities = cities_db.get_contained_cities(bounds)
     logging.info('Found %s cities', len(included_cities))
-    biggest_cities = sorted(included_cities, key=lambda x: -x.population)[:10]
+    biggest_cities = included_cities  # sorted(included_cities, key=lambda x: -x.population)[:20]
     city_names = [city.display_name() for city in biggest_cities]
     return city_names
 

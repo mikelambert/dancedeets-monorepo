@@ -32,7 +32,7 @@ def get_nearby_cities(latlng, country=None, distance=None):
     # So instead of searching 200km in popular people for cities...let's try to be more specific about which person goes to which city
     distance = distance or NEARBY_DISTANCE_KM / 2
     southwest, northeast = math.expand_bounds((latlng, latlng), distance)
-    nearby_cities = _get_contained_cities((southwest, northeast), country=country)
+    nearby_cities = get_contained_cities((southwest, northeast), country=country)
     nearby_cities = [x for x in nearby_cities if x.closer_than(latlng, distance)]
     return nearby_cities
 
@@ -56,7 +56,7 @@ class City(object):
         return real_distance < distance
 
 
-def _get_contained_cities(points, country=None):
+def get_contained_cities(points, country=None):
     logging.info("citiesdb search location is %s", points)
     values = [points[0][0], points[1][0], points[0][1], points[1][1]]
     query = ''
