@@ -7,7 +7,6 @@ import random
 
 from dancedeets import fb_api
 from dancedeets.loc import math
-from dancedeets.rankings import cities
 from dancedeets.rankings import cities_db
 from dancedeets.search import search_base
 from dancedeets.search import search
@@ -70,7 +69,7 @@ def _generate_results_for(city, week_start):
     end_time = start_time + datetime.timedelta(days=8)
 
     latlng_bounds = ((city.latitude, city.longitude), (city.latitude, city.longitude))
-    city_bounds = math.expand_bounds(latlng_bounds, cities.NEARBY_DISTANCE_KM)
+    city_bounds = math.expand_bounds(latlng_bounds, cities_db.NEARBY_DISTANCE_KM)
     search_query = search_base.SearchQuery(
         time_period=search_base.TIME_ALL_FUTURE, start_date=start_time, end_date=end_time, bounds=city_bounds
     )
@@ -86,8 +85,7 @@ def facebook_weekly_post(db_auth_token, city_data):
 
 def _facebook_weekly_post(db_auth_token, city_data):
     city_key = city_data['city']
-
-    city = cities.City.get_by_key_name(city_key)
+    city = cities_db.lookup_city_from_geoname_id(city_key)
     page_id = db_auth_token.token_nickname
     fbl = fb_api.FBLookup(None, db_auth_token.oauth_token)
 

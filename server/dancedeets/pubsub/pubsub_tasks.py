@@ -5,7 +5,7 @@ import datetime
 from dancedeets import app
 from dancedeets import base_servlet
 from dancedeets.pubsub import pubsub
-from dancedeets.rankings import cities
+from dancedeets.rankings import cities_db
 from dancedeets.search import search_base
 from dancedeets.search import search
 from dancedeets.util import dates
@@ -61,8 +61,8 @@ class WeeklyEventsPostHandler(base_servlet.BaseTaskFacebookRequestHandler):
     def get(self):
         #TODO: rewrite this to use "top cities" filter from dancedeets.rankings...maybe rewrite our rankings to be better organized?
         limit = int(self.request.get('limit', '10'))
-        top_cities = cities.get_largest_cities(limit=limit, country='US')
-        top_city_keys = [x.key().name() for x in top_cities if not blacklisted(x)]
+        top_cities = cities_db.get_largest_cities(limit=limit, country='US')
+        top_city_keys = [x.geoname_id for x in top_cities if not blacklisted(x)]
         for city_key in top_city_keys:
             pubsub.eventually_publish_city_key(city_key)
 

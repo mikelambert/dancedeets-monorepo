@@ -56,6 +56,15 @@ class City(object):
         return real_distance < distance
 
 
+def lookup_city_from_geoname_id(geoname_id):
+    filename = FILENAME if os.path.exists(FILENAME) else TEST_FILENAME
+    connection = sqlite3.connect(filename)
+    connection.row_factory = sqlite3.Row
+    cursor = connection.cursor()
+    cursor.execute('select * from City where geoname_id = ?', (geoname_id,))
+    return City(cursor.fetchone())
+
+
 def get_contained_cities(points, country=None):
     logging.info("citiesdb search location is %s", points)
     values = [points[0][0], points[1][0], points[0][1], points[1][1]]

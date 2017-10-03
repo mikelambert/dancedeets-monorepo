@@ -22,7 +22,6 @@ from dancedeets.loc import address
 from dancedeets.loc import gmaps_api
 from dancedeets.loc import math
 from dancedeets.event_attendees import popular_people
-from dancedeets.rankings import cities
 from dancedeets.rankings import cities_db
 from dancedeets.search import onebox
 from dancedeets.search import search
@@ -162,7 +161,7 @@ def people_groupings(geocode, distance, skip_people):
                 # Too big a search area, not worth showing promoters or dancers
             else:
                 # TODO: Replace with a call to get_attendees_within (that also gets ADMIN people)
-                southwest_baseline, northeast_baseline = math.expand_bounds((center_latlng, center_latlng), cities.NEARBY_DISTANCE_KM)
+                southwest_baseline, northeast_baseline = math.expand_bounds((center_latlng, center_latlng), cities_db.NEARBY_DISTANCE_KM)
                 distance_km_baseline = math.get_inner_box_radius_km(southwest_baseline, northeast_baseline)
                 if distance_km < distance_km_baseline:
                     southwest = southwest_baseline

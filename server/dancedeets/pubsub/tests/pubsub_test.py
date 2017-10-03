@@ -10,7 +10,7 @@ from dancedeets.pubsub import pubsub
 from dancedeets.pubsub import weekly
 from dancedeets.pubsub.twitter import auth_setup
 from dancedeets.pubsub.twitter import event
-from dancedeets.rankings import cities
+from dancedeets.rankings import cities_db
 from dancedeets.search import search_base
 from dancedeets.test_utils import unittest
 
@@ -61,7 +61,7 @@ class TestPublishEvent(unittest.TestCase):
 
 class TestWeeklyPost(unittest.TestCase):
     def runTest(self):
-        city = cities.City(city_name='Gotham')
+        city = cities_db.City(dict(city_name='Gotham'))
         d = datetime.date(2020, 1, 1)
         week_start = d - datetime.timedelta(days=d.weekday())  # round down to last monday
         search_results = [

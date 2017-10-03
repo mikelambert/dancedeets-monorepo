@@ -9,7 +9,7 @@ from dancedeets import fb_api
 from dancedeets.loc import math
 from dancedeets.nlp import event_auto_classifier
 from dancedeets.nlp import event_classifier
-from dancedeets.rankings import cities
+from dancedeets.rankings import cities_db
 from dancedeets.util import fb_events
 from . import popular_people
 
@@ -49,7 +49,7 @@ def _get_bounds_for_fb_event(fb_event, check_places=False):
         # TODO: Someday we'd like to use locations of Taiwan or Germany to grab a bunch of stuff in those bounds
         # but for now, FB doesn't send us proper lat-long-boxes for them, and I don't want to look up everything
         # just in case there are bigger bounds...so we accept the latlong as-is.
-        bounds = math.expand_bounds((latlong, latlong), cities.NEARBY_DISTANCE_KM)
+        bounds = math.expand_bounds((latlong, latlong), cities_db.NEARBY_DISTANCE_KM)
     else:
         logging.info('Looking up event %s LocationInfo', fb_event['info']['id'])
         # Places textsearch lookups turn out to be 10x-expensive against our quota
@@ -58,7 +58,7 @@ def _get_bounds_for_fb_event(fb_event, check_places=False):
         # But at least it won't try Places *in addition* to geocode lookups.
         location_info = event_locations.LocationInfo(fb_event, check_places=check_places)
         if location_info.geocode:
-            bounds = math.expand_bounds(location_info.geocode.latlng_bounds(), cities.NEARBY_DISTANCE_KM)
+            bounds = math.expand_bounds(location_info.geocode.latlng_bounds(), cities_db.NEARBY_DISTANCE_KM)
         else:
             bounds = None
     return bounds

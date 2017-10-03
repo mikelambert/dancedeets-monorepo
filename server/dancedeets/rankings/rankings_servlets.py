@@ -2,7 +2,6 @@ import webapp2
 
 from dancedeets import app
 from dancedeets import base_servlet
-from . import cities
 from . import rankings
 
 
@@ -24,13 +23,6 @@ class RankingsHandler(base_servlet.BaseRequestHandler):
         self.display['string_translations'] = rankings.string_translations
 
         self.render_template('rankings')
-
-
-@app.route('/tools/import_cities')
-class ImportCitiesHandler(webapp2.RequestHandler):
-    def get(self):
-        cities.import_cities()
-        self.response.out.write("Imported Cities!")
 
 
 @app.route('/tasks/compute_rankings')

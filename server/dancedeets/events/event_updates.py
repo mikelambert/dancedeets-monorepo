@@ -10,7 +10,6 @@ from google.appengine.ext import ndb
 from dancedeets import fb_api
 from dancedeets.loc import gmaps_api
 from dancedeets.loc import math
-from dancedeets.rankings import cities
 from dancedeets.rankings import cities_db
 from dancedeets.search import search
 from dancedeets.nlp import categories

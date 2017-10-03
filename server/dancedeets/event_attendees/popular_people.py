@@ -10,7 +10,6 @@ from google.cloud import datastore
 from dancedeets import app
 from dancedeets import base_servlet
 from dancedeets import event_types
-from dancedeets.rankings import cities
 from dancedeets.rankings import cities_db
 from dancedeets.util import runtime
 

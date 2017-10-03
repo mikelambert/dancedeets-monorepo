@@ -9,7 +9,7 @@ import tempfile
 from dancedeets import app
 from dancedeets import base_servlet
 from dancedeets.events import event_image
-from dancedeets.rankings import cities
+from dancedeets.rankings import cities_db
 from dancedeets.util import gcs
 from dancedeets.util import runtime
 
@@ -103,8 +103,8 @@ def load_cached_image(city, week_start):
 @app.route('/weekly/image')
 class WeeklyImageHandler(base_servlet.BareBaseRequestHandler):
     def get(self):
-        city_name = self.request.get('city')
-        city = cities.City.get_by_key_name(city_name)
+        city_key = self.request.get('city')
+        city = cities_db.lookup_city_from_geoname_id(city_key)
 
         disable_cache = self.request.get('disable_cache') == '1'
         if self.request.get('week_start'):
