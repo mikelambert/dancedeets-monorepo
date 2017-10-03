@@ -25,47 +25,44 @@ class PMTHouseOfDance(items.StudioScraper):
     address = '69 W 14th St, New York, NY'
 
     def start_requests(self):
-        yield scrapy.Request('http://www.pmthouseofdance.com/schedule?_escaped_fragment_=')
+        yield scrapy.Request('http://www.pmthouseofdance.com/general-schedule?_escaped_fragment_=')
 
     def parse_classes(self, response):
-        text_sections = response.css('div.Text')
+        table = response.css('table')
 
-        captured_columns = []
-        rows_to_capture = 0
-        for text_block in text_sections:
-            if 'Tuesday' in self._extract_text(text_block):
-                rows_to_capture = 5
-            if rows_to_capture > 0:
-                cells = []
-                for row in text_block.xpath('.//p'):
-                    cells.append(self._extract_text(row.xpath('.')))
-                captured_columns.append(cells)
-            rows_to_capture -= 1
-
-        row_by_row = zip(*captured_columns)
-
-        day = None  # Keep track of this row-to-row
-        for row in row_by_row:
-            if not row[1] or '---' in row[1]:
+        date = None  # Keep track of this row-to-row
+        for row in table.css('tr'):
+            cells = row.css('td')
+            if not cells:
                 continue
-            potential_day = row[0]
-            if potential_day and potential_day != u'\u200b':
-                day = potential_day
-                # Hack fix for broken PMT site
-                if day == 'onday':
-                    day = 'Monday'
-                date = dateparser.parse(day).date()
+
+            row_contents = self._extract_text(row)
+            if not row_contents or '---' in row_contents:
+                continue
+
+            potential_day = self._extract_text(cells[0])
+            if potential_day:
+                date = dateparser.parse(potential_day).date()
+            times = self._extract_text(cells[1])
+            classname = self._extract_text(cells[2])
+
+            if not times:
+                continue
+
+            teacher = self._extract_text(cells[3])
+            teacher_href = cells[3].xpath('.//@href').extract()[0].strip()
+
             # Use our NLP event classification keywords to figure out which BDC classes to keep
-            style = row[2]
-            processor = event_classifier.StringProcessor(style)
+            processor = event_classifier.StringProcessor(classname)
             if not processor.has_token(rules.DANCE_STYLE):
                 continue
 
             item = items.StudioClass()
-            item['style'] = style
-            item['teacher'] = row[3]
+            item['style'] = classname
+            item['teacher'] = teacher
+            item['teacher_link'] = teacher_href
             # do we care?? row[4]
-            start_time, end_time = parse_times(self._cleanup(row[1]))
+            start_time, end_time = parse_times(self._cleanup(times))
             item['start_time'] = datetime.datetime.combine(date, start_time)
             item['end_time'] = datetime.datetime.combine(date, end_time)
             for new_item in self._repeated_items_iterator(item):
