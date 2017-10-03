@@ -29,6 +29,15 @@ def add_event_tuple_if_updating(events_to_update, fbl, db_event, only_if_updated
     if fb_event['empty']:
         logging.info('The latest fb event %s is empty (%s), with type %s, keeping event data', db_event.id, fb_event['empty'])
         fb_event = db_event.fb_event
+
+        # If the event was public, and is now deleted, lets mark it as force-canceled
+        if db_event.fb_event:
+            orig_event_type = db_event.fb_event.get('info', {}).get('type')
+            force_canceled = orig_event_type == 'public'
+            if force_canceled:
+                logging.info('Marking fb event %s as canceled, as old fb data is public, and we cannot fetch the data', db_event.id)
+                fb_event['info']['is_canceled'] = force_canceled
+
     if update_regardless or db_event.fb_event != fb_event:
         logging.info("Event %s is updated.", db_event.id)
         events_to_update.append((db_event, fb_event))
