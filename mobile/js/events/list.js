@@ -408,7 +408,6 @@ class _EventListContainer extends React.Component {
 
   getData(response: ?SearchResponse) {
     const sections = [];
-    const sectionHeaders = [];
 
     if (response) {
       if (response.featuredInfos && response.featuredInfos.length) {
@@ -573,7 +572,7 @@ class _EventListContainer extends React.Component {
     }
     try {
       this._loadingPeople = true;
-      //locale: this.props.search.response.query.locale,
+      // locale: this.props.search.response.query.locale,
       const resultJson = await people(
         this.props.search.response.query.location
       );
