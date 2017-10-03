@@ -6,6 +6,7 @@ import logging
 import os
 import pprint
 import re
+import time
 import urllib
 
 from dancedeets import app
@@ -32,6 +33,7 @@ from dancedeets.users import users
 from dancedeets.util import dates
 from dancedeets.util import deferred
 from dancedeets.util import fb_events
+from dancedeets.util import timelog
 from dancedeets.util import urls
 
 PREFETCH_EVENTS_INTERVAL = 24 * 60 * 60
@@ -332,7 +334,9 @@ class AdminEditHandler(base_servlet.BaseRequestHandler):
             creating_user = None
 
         potential_event = potential_events.make_potential_event_without_source(event_id)
+        a = time.time()
         classified_event = event_classifier.get_classified_event(fb_event, potential_event.language)
+        timelog.log_time_since('Running Text Classifier', a)
         self.display['classified_event'] = classified_event
         dance_words_str = ', '.join(list(classified_event.dance_matches()))
         if classified_event.is_dance_event():
@@ -373,8 +377,14 @@ class AdminEditHandler(base_servlet.BaseRequestHandler):
                 city_name = city.display_name()
         self.display['ranking_city_name'] = city_name
 
+        a = time.time()
         fb_event_attending_maybe = get_fb_event(self.fbl, event_id, lookup_type=fb_api.LookupEventAttendingMaybe)
-        matcher = event_attendee_classifier.get_matcher(self.fbl, fb_event, fb_event_attending_maybe)
+        timelog.log_time_since('Loading FB Event Attending Data', a)
+        a = time.time()
+        matcher = event_attendee_classifier.get_matcher(
+            self.fbl, fb_event, fb_event_attending_maybe=fb_event_attending_maybe, classified_event=classified_event
+        )
+        timelog.log_time_since('Running Attendee Classifier', a)
         # print '\n'.join(matcher.results)
         sorted_matches = sorted(matcher.matches, key=lambda x: -len(x.overlap_ids))
         matched_overlap_ids = sorted_matches[0].overlap_ids if matcher.matches else []
