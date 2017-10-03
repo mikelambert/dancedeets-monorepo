@@ -120,7 +120,7 @@ def get_people_rankings_for_city_names(city_names, attendees_only=False):
 
 
 def get_people_rankings_for_city_names_sqlite(city_names, attendees_only):
-    popular_people_sqlite.get_people_rankings_for_city_names_sqlite(city_names, attendees_only)
+    return popular_people_sqlite.get_people_rankings_for_city_names_sqlite(city_names, attendees_only)
 
 
 def get_people_rankings_for_city_names_datastore(city_names, attendees_only):

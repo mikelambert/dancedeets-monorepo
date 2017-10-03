@@ -1,8 +1,11 @@
 import sqlite3
 import getpass
+import json
+import os
 
 from google.cloud import storage
 
+from dancedeets.util import runtime
 from dancedeets.util import timelog
 
 DEV_DB = '/Users/%s/Dropbox/dancedeets-development/server/generated/pr_city_category.db' % getpass.getuser()
@@ -18,7 +21,13 @@ def download_sqlite():
     open(SERVER_DB, 'w').write(contents)
 
 
-def get_people_rankings_for_city_names_sqlite(city_names, attendees_only):
+CONN = None
+
+
+def _get_connection():
+    global CONN
+    if CONN:
+        return CONN
     if runtime.is_local_appengine():
         filename_db = DEV_DB
     else:
@@ -27,7 +36,16 @@ def get_people_rankings_for_city_names_sqlite(city_names, attendees_only):
             start = time.time()
             download_sqlite()
             timelog.log_time_since('Downloading PRCityCategory sqlite db', start)
-    conn = sqlite3.connect(filename_db)
+    CONN = sqlite3.connect(filename_db)
+    return CONN
+
+
+class FakePRCityCategory(object):
+    pass
+
+
+def get_people_rankings_for_city_names_sqlite(city_names, attendees_only):
+    conn = _get_connection()
     cursor = conn.cursor()
 
     query = 'SELECT person_type, city, category, top_people_json from PRCityCategory where city in (%s)' % ','.join('?' * len(city_names))
@@ -39,7 +57,7 @@ def get_people_rankings_for_city_names_sqlite(city_names, attendees_only):
     cursor.execute(query, params)
     rankings = []
     for result in cursor.fetchall():
-        ranking = PRCityCategory()
+        ranking = FakePRCityCategory()
         # ranking.key = ndb.Key('PRCityCategory', result.)
         ranking.person_type = result[0]
         ranking.city = result[1]
