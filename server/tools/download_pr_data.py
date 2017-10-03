@@ -21,8 +21,23 @@ def save_db(clear=False):
     cursor = conn.cursor()
     if clear:
         cursor.execute('''DROP TABLE IF EXISTS PRCityCategory''')
+        cursor.execute(
+            '''
+            CREATE TABLE PRCityCategory
+            (
+            created_date text not null,
+            person_type text not null,
+            city text not null,
+            category text not null,
+            top_people_json text,
+            PRIMARY KEY (person_type, city, category)
+            )
+            '''
+        )
         cursor.execute('''
-            )''')
+            CREATE INDEX no_person_type ON PRCityCategory
+            (city, category)
+            ''')
     client = datastore.Client()
     query = client.query(kind='PRCityCategory')
     query.order = ['person_type', 'city', 'category']
