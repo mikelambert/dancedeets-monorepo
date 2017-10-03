@@ -4,15 +4,12 @@ from __future__ import absolute_import
 
 import json
 import os
-import re
 import sqlite3
 import sys
-import urllib
 
-from dancedeets.util import urls
-from dancedeets import geonames import geoname_files
-from dancedeets import geonames import sqlite_db
-from dancedeets import geonames import fetch_adgeolocs
+from dancedeets.geonames import geoname_files
+from dancedeets.geonames import sqlite_db
+from dancedeets.geonames import fetch_adgeolocs
 
 
 def get_fb_targeting_key(cursor_adlocs, geoname):

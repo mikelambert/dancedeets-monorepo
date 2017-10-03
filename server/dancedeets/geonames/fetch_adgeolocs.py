@@ -56,7 +56,6 @@ def load_targeting_key(cursor, geoname):
         result_json = json.loads(result)
         array_json = json.dumps(result_json['data'])
         data = {
-            'geonameid': data['geonameid'],
             'q': geo_search['q'],
             'country_code': geo_search['country_code'],
             'data': array_json,
