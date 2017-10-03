@@ -2,7 +2,7 @@
 
 import os
 
-import runner
+from dancedeets import runner
 
 runner.setup()
 

@@ -4,8 +4,7 @@ import argparse
 import sys
 import unittest
 
-# relative import
-import runner
+from dancedeets import runner
 
 
 def main(test_path, test_pattern):
