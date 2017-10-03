@@ -173,14 +173,22 @@ export class BaseEvent extends JsonDerivedObject {
   }
 
   getListDateMoment({ timezone }: { timezone: Boolean }): moment {
-    const start = this.getStartMoment({ timezone });
-    const end = this.getEndMoment({ timezone });
+    const startFinalTimezone = this.getStartMoment({ timezone });
+    const start = this.getStartMoment({ timezone: true });
+    const end = this.getEndMoment({ timezone: true });
     if (!end) {
-      return start;
+      return startFinalTimezone;
     }
+    // This code can get tricky. It uses moment(), which has an embedded timezone.
+    // So anytime we compare it with something, we should also be using timezones (start, end).
+    // But this function may be asked to return a timezone-less time.
+    // So when we return something, we return startFinalTimezone (or something computed off that),
+    // to ensure we meet our contract.
+    // This is all super-important since moment() differs between server and client,
+    // and any differences in rendering between them can cause major DOM screwups.
     const now = moment();
     if (now.isBefore(start)) {
-      return start;
+      return startFinalTimezone;
     }
     // If the event looks to be a weekly event (ends <24 hours after it begins, plus N weeks),
     // then return the next instance of that weekly event as our ListDate.
@@ -194,12 +202,14 @@ export class BaseEvent extends JsonDerivedObject {
       const nowDiff = now.diff(start);
       const weeksUntilNow =
         nowDiff / moment.duration(1, 'week').asMilliseconds();
-      const nextStart = start.clone().add(Math.ceil(weeksUntilNow), 'week');
+      const nextStart = startFinalTimezone
+        .clone()
+        .add(Math.ceil(weeksUntilNow), 'week');
       if (nextStart.isBefore(end)) {
         return nextStart;
       }
     }
-    return start;
+    return startFinalTimezone;
   }
 }
 
