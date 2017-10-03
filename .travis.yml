@@ -30,7 +30,7 @@ install:
 - cd server/node_server && npm install ; cd ../..
 - cd server && ./setup.sh && cd ..
 
-script: cd server && ./test.sh --coverage
+script: cd server && ./build_tools/test.sh --coverage
 
 after_success:
 - pip install coveralls
