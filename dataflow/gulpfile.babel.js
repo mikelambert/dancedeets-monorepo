@@ -12,6 +12,7 @@
 import gulp from 'gulp';
 import gulpLoadPlugins from 'gulp-load-plugins';
 import taskListing from 'gulp-task-listing';
+import runSequence from 'run-sequence';
 
 gulp.task('help', taskListing);
 gulp.task('default', taskListing);
@@ -48,3 +49,19 @@ function localRemoteTasks(command) {
 
 localRemoteTasks('popular_people');
 localRemoteTasks('delete_old');
+
+gulp.task(
+  'popular_people:download',
+  $.shell.task(['cd ../server && python tools/download_pr_data.py'])
+);
+
+gulp.task('popular_people:upload', $.shell.task(['./tools/upload_pr_data.sh']));
+
+gulp.task('popular_people:complete', cb =>
+  runSequence(
+    'popular_people:remote',
+    'popular_people:download',
+    'popular_people:upload',
+    cb
+  )
+);

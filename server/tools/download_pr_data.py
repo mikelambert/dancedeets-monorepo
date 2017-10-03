@@ -4,6 +4,7 @@
 
 import getpass
 import sqlite3
+import sys
 
 from google.cloud import datastore
 from dancedeets.geonames import sqlite_db
@@ -34,4 +35,7 @@ def save_db(clear=False):
 
 
 if __name__ == '__main__':
-    save_db(clear=False)
+    if len(sys.argv) > 1 and sys.argv[1] == 'db_name':
+        print FILENAME_DB
+    else:
+        save_db(clear=False)
