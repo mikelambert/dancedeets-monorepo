@@ -12,7 +12,6 @@ from dancedeets.event_scraper.thing_db import Source
 from dancedeets.events.eventdata import DBEvent
 from dancedeets.events.event_locations import LocationMapping
 from dancedeets.events.featured import FeaturedResult
-from dancedeets.rankings.cities import City
 from dancedeets.fb_api import FacebookCachedObject
 from dancedeets.loc.gmaps_cached import CachedGeoCode
 from dancedeets.loc.gmaps_bwcompat import GeoCode
@@ -28,7 +27,7 @@ app.secret_key = keys.get('flask_session_key')
 
 admin = Admin(app, name="Admin")
 for model in [
-    CachedGeoCode, City, DBEvent, DisplayEvent, FacebookCachedObject, FeaturedResult, GeoCode, LocationMapping, OAuthToken, PRCityCategory,
+    CachedGeoCode, DBEvent, DisplayEvent, FacebookCachedObject, FeaturedResult, GeoCode, LocationMapping, OAuthToken, PRCityCategory,
     PRDebugAttendee, PotentialEvent, Source, StaticContent, StudioClass, Topic, User, UserFriendsAtSignup, UserMessage
 ]:
     admin.add_view(appengine.ModelView(model))
