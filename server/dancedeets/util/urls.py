@@ -20,7 +20,7 @@ def dd_relative_event_url(eid):
 
 
 def dd_short_event_url(eid):
-    return 'http://dd.events/e-%s' % eid
+    return 'https://dd.events/e-%s' % eid
 
 
 def raw_fb_event_url(eid):

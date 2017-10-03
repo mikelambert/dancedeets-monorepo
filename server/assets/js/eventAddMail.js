@@ -24,7 +24,7 @@ class BodyWrapper extends React.Component {
       utm_campaign: 'event_add',
     };
     const url = event.getUrl(args);
-    const shortUrl = `http://dd.events/e/${event.id}`;
+    const shortUrl = `https://dd.events/e/${event.id}`;
     const address = event.venue.address;
     let city = 'your city';
     if (address && address.city) {

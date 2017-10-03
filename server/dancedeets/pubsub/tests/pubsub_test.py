@@ -61,7 +61,7 @@ class TestPublishEvent(unittest.TestCase):
 
 class TestWeeklyPost(unittest.TestCase):
     def runTest(self):
-        city = cities_db.City(dict(city_name='Gotham'))
+        city = cities_db.City(dict(city_name='Gotham', country_name='US'))
         d = datetime.date(2020, 1, 1)
         week_start = d - datetime.timedelta(days=d.weekday())  # round down to last monday
         search_results = [
@@ -95,16 +95,16 @@ class TestWeeklyPost(unittest.TestCase):
         self.assertEqual(
             contents, '''\
 Wednesday January 1:
-- 9:00: Event 1:
-  http://dd.events/e-1
+- 9:00AM: Event 1:
+  https://dd.events/e-1
 
-- 10:00: Event 2:
-  http://dd.events/e-2
+- 10:00AM: Event 2:
+  https://dd.events/e-2
 
 
 Friday January 3:
-- 9:00: Event 3:
-  http://dd.events/e-3'''
+- 9:00AM: Event 3:
+  https://dd.events/e-3'''
         )
 
 
