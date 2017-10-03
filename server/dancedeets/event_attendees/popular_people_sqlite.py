@@ -22,13 +22,7 @@ def download_sqlite():
     open(SERVER_DB, 'w').write(contents)
 
 
-CONN = None
-
-
 def _get_connection():
-    global CONN
-    if CONN:
-        return CONN
     if runtime.is_local_appengine():
         filename_db = DEV_DB
     else:
@@ -37,8 +31,9 @@ def _get_connection():
             start = time.time()
             download_sqlite()
             timelog.log_time_since('Downloading PRCityCategory sqlite db', start)
-    CONN = sqlite3.connect(filename_db)
-    return CONN
+    conn = sqlite3.connect(filename_db)
+    # Cannot be shared between threads, be careful if making this global!
+    return conn
 
 
 class FakePRCityCategory(object):
