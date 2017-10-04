@@ -1,6 +1,9 @@
+from atomicwrites import atomic_write
 import sqlite3
 import getpass
 import json
+import logging
+import threading
 import time
 import os
 
@@ -12,14 +15,27 @@ from dancedeets.util import timelog
 DEV_DB = '/Users/%s/Dropbox/dancedeets-development/server/generated/pr_city_category.db' % getpass.getuser()
 SERVER_DB = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'pr_city_category.db')
 
+FILE_COPY_LOCK = threading.Lock()
+
 
 def download_sqlite():
-    client = storage.Client()
-    bucket = client.get_bucket('dancedeets-dependencies')
-    blob = bucket.get_blob('pr_city_category.db')
-    # Luckily this only takes around 5-10 seconds (for street dance) when run on GCE instances
-    contents = blob.download_as_string()
-    open(SERVER_DB, 'w').write(contents)
+    logging.info('Grabbing file-copy lock')
+    if FILE_COPY_LOCK.acquire():
+        # Check it again, now that we've finally gotten the lock
+        logging.info('Grabbed lock, checking if file exists: %s', os.path.exists(SERVER_DB))
+        if not os.path.exists(SERVER_DB):
+            # TODO: ensure we copy to a staging ground, and move it into place (so no one tries to open a malformed file)
+            client = storage.Client('dancedeets-hrd')
+            bucket = client.get_bucket('dancedeets-dependencies')
+            logging.info('Downloading file')
+            blob = bucket.get_blob('pr_city_category.db')
+            # Luckily this only takes around 5-10 seconds (for street dance) when run on GCE instances
+            contents = blob.download_as_string()
+            with atomic_write(SERVER_DB, overwrite=True) as f:
+                f.write(contents)
+                # SERVER_DB doesn't exist yet.
+            # Now it does.
+        FILE_COPY_LOCK.release()
 
 
 def _get_connection():

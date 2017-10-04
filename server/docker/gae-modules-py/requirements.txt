@@ -2,6 +2,7 @@
 # Because the published version has a bug with media uploads:
 git+https://github.com/sixohsix/twitter
 
+atomicwrites==1.1.5
 
 # Date Manip
 icalendar==3.11
