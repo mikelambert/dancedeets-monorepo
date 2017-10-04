@@ -15,7 +15,6 @@ import fetch from 'node-fetch';
 import gutil from 'gutil';
 import gulp from 'gulp';
 import gulpLoadPlugins from 'gulp-load-plugins';
-import osHomedir from 'os-homedir';
 import runSequence from 'run-sequence';
 import { output as pagespeed } from 'psi';
 import username from 'username';
@@ -399,27 +398,22 @@ gulp.task('test', $.shell.task(['./build_tools/test.sh']));
 
 gulp.task('rebuild', cb => runSequence('clean', 'compile', 'test', cb));
 
-const homedir = osHomedir();
-gulp.task(
-  'datalab:local',
-  $.shell.task([
-    `docker run -it -p "127.0.0.1:8081:8080" -v "${homedir}:/content" -e DATALAB_DEBUG=true -e PROJECT_ID=dancedeets-hrd gcr.io/cloud-datalab/datalab:local`,
-  ])
-);
-gulp.task(
-  'datalab:remote:setup',
-  $.shell.task('gcloud components install datalab')
-);
+gulp.task('datalab:setup', $.shell.task('gcloud components install datalab'));
 
 gulp.task(
-  'datalab:remote:start',
-  ['datalab:remote:setup'],
-  $.shell.task([`datalab connect dl-mlambert`])
+  'datalab:create',
+  ['datalab:setup'],
+  $.shell.task([`datalab create dl-${username.sync()} --disk-size-gb 1`])
 );
 gulp.task(
-  'datalab:remote:stop',
-  ['datalab:remote:setup'],
-  $.shell.task([`datalab stop dl-mlambert`])
+  'datalab:start',
+  ['datalab:setup'],
+  $.shell.task([`datalab connect dl-${username.sync()}`])
+);
+gulp.task(
+  'datalab:stop',
+  ['datalab:setup'],
+  $.shell.task([`datalab stop dl-${username.sync()}`])
 );
 
 gulp.task(
