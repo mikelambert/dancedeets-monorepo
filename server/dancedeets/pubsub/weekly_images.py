@@ -104,6 +104,9 @@ def load_cached_image(city, week_start):
 class WeeklyImageHandler(base_servlet.BareBaseRequestHandler):
     def get(self):
         city_key = self.request.get('city')
+        if ',' in city_key:
+            self.response.set_status(404)
+            return
         city = cities_db.lookup_city_from_geoname_id(city_key)
 
         disable_cache = self.request.get('disable_cache') == '1'
