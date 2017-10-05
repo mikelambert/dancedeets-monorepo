@@ -31,6 +31,7 @@ const defaultTutorials = [
       require('./playlists/break/vincanitv_stalks.json'),
       require('./playlists/break/vincanitv_threads.json'),
       require('./playlists/break/footworkfundamentals.json'),
+      require('./playlists/break/darrenwong.json'),
       require('./playlists/break/piechienteddie.json'),
       require('./playlists/break/milestone.json'),
       require('./playlists/break/roxrite.json'),

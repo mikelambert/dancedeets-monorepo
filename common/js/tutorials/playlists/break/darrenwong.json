@@ -1,0 +1,95 @@
+{
+  "id": "darren-wong-kinjaz",
+  "title": "Darren Wong (Kinjaz)",
+  "author": "Darren Wong (Kinjaz)",
+  "style": "break",
+  "language": "en",
+  "thumbnail": "https://i.ytimg.com/vi/tOxY7ZoyIN0/mqdefault.jpg",
+  "sections": [
+    {
+      "title": "Toprock",
+      "videos": [
+        {
+          "youtubeId": "tOxY7ZoyIN0",
+          "duration": "PT7M7S",
+          "title": "The Groove or The Rock"
+        },
+        {
+          "youtubeId": "rjevgR6nktk",
+          "duration": "PT6M22S",
+          "title": "2 Step"
+        },
+        {
+          "youtubeId": "l1XFiuu2nB4",
+          "duration": "PT4M59S",
+          "title": "Crossover Step"
+        },
+        {
+          "youtubeId": "sbDtVCxznjc",
+          "duration": "PT18M28S",
+          "title": "Kick and Skip"
+        },
+        {
+          "youtubeId": "gXrR5XDM8Js",
+          "duration": "PT9M7S",
+          "title": "Salsa Step or Salsa Rock"
+        },
+        {
+          "youtubeId": "AkbTDpdCNRc",
+          "duration": "PT13M3S",
+          "title": "Kick and Twist"
+        },
+        {
+          "youtubeId": "-CeEQrCxLLQ",
+          "duration": "PT12M51S",
+          "title": "Transition In and Out of The 2 Step"
+        },
+        {
+          "youtubeId": "59hNKX_qthA",
+          "duration": "PT9M26S",
+          "title": "Transition In and Out of The Salsa Step"
+        },
+        {
+          "youtubeId": "g-GhvkzL0sA",
+          "duration": "PT8M45S",
+          "title": "Transition In and Out of The Kick and Twist"
+        }
+      ]
+    },
+    {
+      "title": "Footwork",
+      "videos": [
+        {
+          "youtubeId": "xf0ASKQRGHU",
+          "duration": "PT14M42S",
+          "title": "101 (Everything You Should Know For Footwork)"
+        },
+        {
+          "youtubeId": "aff4wHndz8I",
+          "duration": "PT9M56S",
+          "title": "Weight Changes"
+        },
+        {
+          "youtubeId": "MHJ7w1GfXV4",
+          "duration": "PT10M24S",
+          "title": "Monkey Swings"
+        },
+        {
+          "youtubeId": "g8DnXRXiGEo",
+          "duration": "PT15M34S",
+          "title": "The Hook"
+        },
+        {
+          "youtubeId": "zWYIMjA9bcU",
+          "duration": "PT21M",
+          "title": "Front Sweeps"
+        },
+        {
+          "youtubeId": "6mcUChfH_bY",
+          "duration": "PT16M9S",
+          "title": "Back Sweeps"
+        }
+      ]
+    }
+  ]
+}
