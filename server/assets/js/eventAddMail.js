@@ -5,11 +5,10 @@
  */
 
 import React from 'react';
-import { injectIntl, intlShape } from 'react-intl';
 import { intlWeb } from 'dancedeets-common/js/intl';
 import { Event } from 'dancedeets-common/js/events/models';
+import { addUrlArgs } from 'dancedeets-common/js/util/url';
 import { EmailWrapper } from './mailCommon';
-import { addUrlArgs } from '../util/url';
 
 class BodyWrapper extends React.Component {
   props: {
