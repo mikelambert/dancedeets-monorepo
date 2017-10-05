@@ -230,7 +230,7 @@ class SearchHandler(ApiHandler):
 
         # Keep in sync with mobile react code? And search_servlets
         skip_people = len(search_results) >= 10 or form.skip_people.data
-        json_response = build_search_results_api(
+        json_response = api_format.build_search_results_api(
             form, search_query, search_results, self.version, need_full_event, geocode, distance, skip_people=skip_people
         )
         if self.request.get('client') == 'react-android' and self.version <= (1, 3):
@@ -479,7 +479,7 @@ class EventHandler(ApiHandler):
             fb_event_wall = self.fbl.get(fb_api.LookupEventWall, event_id)
         else:
             fb_event_wall = None
-        json_data = canonicalize_event_data(db_event, fb_event_wall, None, self.version)
+        json_data = api_format.canonicalize_event_data(db_event, fb_event_wall, None, self.version)
 
         # Ten minute expiry on data we return
         self.response.headers['Cache-Control'] = 'public, max-age=%s' % (10 * 60)
