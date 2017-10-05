@@ -125,10 +125,10 @@ class AddEventEmail extends React.Component {
   };
 
   render() {
-    const title = this.props.event.name;
+    const event = new Event(this.props.event);
     return (
       <EmailWrapper
-        header={`We've added your event: ${title}`}
+        header={`We've added your event: ${event.name}`}
         // TODO: Implement unsubscribe link
         footer={
           <div>
@@ -140,7 +140,7 @@ class AddEventEmail extends React.Component {
           </div>
         }
       >
-        <BodyWrapper />
+        <BodyWrapper event={event} />
       </EmailWrapper>
     );
   }
