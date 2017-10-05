@@ -7,6 +7,7 @@ import time
 from dancedeets import app
 from dancedeets import base_servlet
 from dancedeets import event_types
+from dancedeets.logic import api_format
 from dancedeets.logic import friends
 from dancedeets.logic import rsvp
 from dancedeets.rankings import cities_db
@@ -15,7 +16,6 @@ from . import onebox
 from . import search
 from . import search_base
 from . import search_pages
-from dancedeets.servlets import api
 
 
 class SearchHandler(base_servlet.BaseRequestHandler):
@@ -122,7 +122,7 @@ class RelevantHandler(SearchHandler):
             need_full_event = False
             # Keep in sync with mobile react code? And api.py
             skip_people = True
-            json_search_response = api.build_search_results_api(
+            json_search_response = api_format.build_search_results_api(
                 form, search_query, search_results, (2, 0), need_full_event, geocode, distance, skip_people=skip_people
             )
             props = dict(

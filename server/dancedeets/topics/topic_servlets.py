@@ -9,11 +9,11 @@ from dancedeets import app
 from dancedeets import base_servlet
 from dancedeets import fb_api
 from dancedeets import keys
+from dancedeets.logic import api_format
 from dancedeets.topics import grouping
 from dancedeets.topics import topic_db
 from dancedeets.search import search
 from dancedeets.search import search_base
-from dancedeets.servlets import api
 
 # Set DEVELOPER_KEY to the "API key" value from the Google Developers Console:
 # https://console.developers.google.com/project/_/apiui/credential
@@ -111,7 +111,7 @@ class TopicHandler(base_servlet.BaseRequestHandler):
         searcher.search_index = search.AllEventsIndex
         search_results = searcher.get_search_results(prefilter=prefilter)
 
-        json_search_response = api.build_search_results_api(
+        json_search_response = api_format.build_search_results_api(
             None, search_query, search_results, (2, 0), need_full_event=False, geocode=None, distance=None
         )
 

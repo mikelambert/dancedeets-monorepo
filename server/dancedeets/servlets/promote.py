@@ -7,9 +7,9 @@ from dancedeets import fb_api
 from dancedeets.event_scraper import add_entities
 from dancedeets.events import event_locations
 from dancedeets.events import eventdata
+from dancedeets.logic import api_format
 from dancedeets.nlp import event_auto_classifier
 from dancedeets.nlp import event_classifier
-from dancedeets.servlets import api
 from dancedeets.servlets import event
 from dancedeets.util import dates
 from dancedeets.util import fb_events
@@ -131,7 +131,7 @@ class PromoteEventHandler(base_servlet.BaseRequestHandler):
         self.display['displayable_event'] = event.DisplayableEvent(db_event)
 
         # Render React component for inclusion in our template:
-        api_event = api.canonicalize_event_data(db_event, None, None, version=(1, 3))
+        api_event = api_format.canonicalize_event_data(db_event, None, None, version=(1, 3))
         props = dict(
             event=api_event,
             forceAdmin=True,

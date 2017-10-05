@@ -6,9 +6,9 @@ import re
 from dancedeets import app
 from dancedeets import base_servlet
 from dancedeets import fb_api
-from dancedeets.mail import mandrill_api
 from dancedeets import render_server
-from dancedeets.servlets import api
+from dancedeets.logic import api_format
+from dancedeets.mail import mandrill_api
 from dancedeets.users import users
 from dancedeets.util import fb_mapreduce
 from . import search_base
@@ -73,7 +73,7 @@ def email_for_user(user, fbl, should_send=True):
     fb_user = fbl.fetched_data(fb_api.LookupUser, fbl.fb_uid)
 
     need_full_event = False
-    json_search_response = api.build_search_results_api(
+    json_search_response = api_format.build_search_results_api(
         form, search_query, search_results, (2, 0), need_full_event, geocode, distance, skip_people=True
     )
     locale = user.locale or 'en_US'

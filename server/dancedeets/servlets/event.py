@@ -21,6 +21,7 @@ from dancedeets.events import event_updates
 from dancedeets import fb_api
 from dancedeets.loc import formatting
 from dancedeets.loc import gmaps_api
+from dancedeets.logic import api_format
 from dancedeets.logic import rsvp
 from dancedeets.nlp import categories
 from dancedeets.nlp import event_auto_classifier
@@ -28,7 +29,6 @@ from dancedeets.nlp import event_classifier
 from dancedeets.rankings import cities_db
 from dancedeets.rankings import rankings
 from dancedeets.search import search
-from dancedeets.servlets import api
 from dancedeets.users import users
 from dancedeets.util import dates
 from dancedeets.util import deferred
@@ -144,11 +144,11 @@ class ShowEventHandler(base_servlet.BaseRequestHandler):
                     eventdata.DBEvent.admin_fb_uids.IN(admin_ids), eventdata.DBEvent.search_time_period == dates.TIME_FUTURE
                 ).fetch(1000)
                 events = sorted(events, key=lambda x: x.start_time)
-                upcoming_events = [api.canonicalize_base_event_data(e, version=(1, 3)) for e in events]
+                upcoming_events = [api_format.canonicalize_base_event_data(e, version=(1, 3)) for e in events]
 
         canceled_event = db_event.is_canceled()
         # Render React component for inclusion in our template:
-        api_event = api.canonicalize_event_data(db_event, fb_event_wall, None, version=(1, 3))
+        api_event = api_format.canonicalize_event_data(db_event, fb_event_wall, None, version=(1, 3))
         render_amp = bool(self.request.get('amp'))
         props = dict(
             amp=render_amp,
