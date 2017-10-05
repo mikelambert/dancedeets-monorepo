@@ -17,9 +17,7 @@ python-gcm==0.4
 python-gflags==3.1.0
 Jinja2==2.8
 humanize==0.5.1
-# Need a version from github that fixes the XSS:
-# https://github.com/mankyd/htmlmin/commit/697d4b05a6124663114bfad5480c3a89df758ccc
-git+https://github.com/mankyd/htmlmin
+htmlmin==0.1.11
 
 urllib3==1.21.1
 requests-toolbelt==0.7.0
