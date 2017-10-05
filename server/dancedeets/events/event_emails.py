@@ -5,6 +5,7 @@ from google.appengine.ext import ndb
 
 from dancedeets.event_scraper import thing_db
 from dancedeets.events import eventdata
+from dancedeets.server import api
 from dancedeets import render_server
 
 
@@ -68,7 +69,12 @@ from dancedeets.mail import mandrill_api
 
 
 def email_for_event(email, event, should_send=False):
-    props = {}
+    locale = 'en_US'
+    api_event = api.canonicalize_event_data(event, None, None, (2, 0))
+    props = {
+        'currentLocale': locale.replace('_', '-'),
+        'event': api_event,
+    }
     response = render_server.render_jsx('eventAddMail.js', props, static_html=True)
     if response.error:
         message = 'Error rendering weeklyMail.js: %s' % response.error
