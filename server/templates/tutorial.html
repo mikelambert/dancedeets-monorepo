@@ -6,7 +6,9 @@
 
 {% block head_javascript %}
 <script defer src="{{ static_path('tutorialExec.js') }}"></script>
-{{ enable_mixpanel() }}
+<script>
+  {{ enable_mixpanel() }}
+</script>
 {% endblock %}
 
 {% block head_metatags %}
