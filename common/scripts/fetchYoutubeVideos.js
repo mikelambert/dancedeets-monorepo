@@ -138,5 +138,5 @@ const type = args[1];
 if (type === 'pl') {
   printPlaylist(args[2]);
 } else if (type === 'ch') {
-  printChannel(args[3], args[4] || '');
+  printChannel(args[2], args[3] || '');
 }
