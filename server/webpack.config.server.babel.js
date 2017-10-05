@@ -23,6 +23,7 @@ module.exports = {
     tutorial: './assets/js/tutorial.js',
     tutorialCategory: './assets/js/tutorialCategory.js',
     weeklyMail: './assets/js/weeklyMail.js',
+    eventAddMail: './assets/js/eventAddMail.js',
   },
   output: {
     path: path.join(__dirname, 'dist/js-server'),
