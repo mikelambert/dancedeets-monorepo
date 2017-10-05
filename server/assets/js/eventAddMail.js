@@ -30,7 +30,7 @@ class BodyWrapper extends React.Component {
     if (address && address.city) {
       city = `the ${address.city} area`;
     }
-    //TODO: Handle 'intro email' different from 'second email'
+    // TODO: Handle 'intro email' different from 'second email'
     return (
       <mj-section background-color="#ffffff">
         <mj-column width="100%">
@@ -62,7 +62,7 @@ class BodyWrapper extends React.Component {
                   mobile app
                 </a>{' '}
                 for the 40,000+ dancers that visit every month. Even if they
-                don't have Facebook.
+                done&#39;t have Facebook.
               </li>
               <li>
                 Easily discoverable by dancers visiting {city}, as well as new
@@ -130,7 +130,7 @@ class AddEventEmail extends React.Component {
     return (
       <EmailWrapper
         header={`We've added your event: ${title}`}
-        //TODO: Implement unsubscribe link
+        // TODO: Implement unsubscribe link
         footer={
           <div>
             You may also{' '}

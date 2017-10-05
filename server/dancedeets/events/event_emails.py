@@ -34,13 +34,13 @@ def get_emails_from_string(s):
     """Returns an iterator of matched emails found in string s."""
     # Removing lines that start with '//' because the regular expression
     # mistakenly matches patterns like 'http://foo@bar.com' as '//foo@bar.com'.
-    return [email[0] for email in re.findall(email_regex, s) if not email[0].startswith('//')]
+    return [email for email in re.findall(email_regex, s) if not email[0].startswith('//')]
 
 
 def get_emails_for_event(event):
     emails = set()
-    event.emails = get_emails_from_string(event.description)
-    emails.update(event.emails)
+    event_emails = get_emails_from_string(event.description)
+    emails.update(event_emails)
     for admin in event.admins:
         source = thing_db.Source.get_by_key_name(admin['id'])
         if not source or not source.emails:
@@ -55,12 +55,12 @@ def send_event_add_emails(event_id):
     for address in emails:
         try:
             email_contents = email_for_event(address, event, should_send=False)
-            logging.info(email_contents)
-        except NoEmailException:
-            logging.info("Not sending email for event %s to address %s", event.id, address)
+            logging.info('Sent email: %s', email_contents)
+        except NoEmailException as e:
+            logging.info("Not sending email for event %s to address %s: %s", event.id, address, e)
             continue
         except Exception:
-            logging.info("Not sending email for event %s to address %s", event.id, address)
+            logging.exception("Not sending email for event %s to address %s", event.id, address)
             continue
 
 
