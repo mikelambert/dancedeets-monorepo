@@ -162,7 +162,7 @@ class PeopleHandler(ApiHandler):
                 self.add_error('Could not geocode location')
         self.errors_are_fatal()
 
-        groupings = people_groupings(geocode, distance, skip_people=False)
+        groupings = api_format.people_groupings(geocode, distance, skip_people=False)
         self.write_json_success({'people': groupings})
 
     post = get
