@@ -44,7 +44,10 @@ function getAdsenseStyle(amp) {
 }
 
 function isEventAdsenseSafe(event) {
-  return !event.description.toLowerCase().includes('twerk');
+  const sexyContent =
+    event.description.toLowerCase().includes('twerk') ||
+    event.annotations.categories.includes('Vogue');
+  return !sexyContent;
 }
 
 class Title extends React.Component {
