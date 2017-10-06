@@ -2,7 +2,7 @@ import logging
 
 from dancedeets import fb_api
 from dancedeets.events import eventdata
-from dancedeets.events import event_emails
+from dancedeets.events import event_emails_sending
 from dancedeets.events import event_locations
 from dancedeets.events import event_updates
 from dancedeets.pubsub import pubsub
@@ -74,7 +74,7 @@ def after_add_event(fbl, event_id, post_pubsub):
         pubsub.eventually_publish_event(event_id)
     crawl_event_source(fbl, event_id)
     # This has to occur *after* the event sources have been crawled (and the sources' emails are saved)
-    event_emails.send_event_add_emails(event_id)
+    event_emails_sending.send_event_add_emails(event_id)
 
 
 def crawl_event_source(fbl, event_id):
