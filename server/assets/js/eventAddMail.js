@@ -13,6 +13,7 @@ import { EmailWrapper } from './mailCommon';
 class BodyWrapper extends React.Component {
   props: {
     event: Event,
+    emailTo: string,
   };
 
   render() {
@@ -108,8 +109,7 @@ class BodyWrapper extends React.Component {
               </li>
               <li>
                 If you want to set a specific contact email address for your
-                events (other than {event.getContactEmails().join(', ')}), click
-                here.
+                events (other than {this.props.emailTo}), click here.
               </li>
             </ul>
           </mj-text>
@@ -122,6 +122,7 @@ class BodyWrapper extends React.Component {
 class AddEventEmail extends React.Component {
   props: {
     event: Event,
+    emailTo: string,
   };
 
   render() {
@@ -140,7 +141,7 @@ class AddEventEmail extends React.Component {
           </div>
         }
       >
-        <BodyWrapper event={event} />
+        <BodyWrapper event={event} emailTo={this.props.emailTo} />
       </EmailWrapper>
     );
   }

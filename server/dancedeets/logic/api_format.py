@@ -4,7 +4,6 @@ from slugify import slugify
 
 from dancedeets import event_types
 from dancedeets.events import eventdata
-from dancedeets.events import event_emails
 from dancedeets.events import featured
 from dancedeets.loc import address
 from dancedeets.loc import gmaps_api
@@ -193,16 +192,13 @@ def canonicalize_base_event_data(db_event, version):
     return event_api
 
 
-def canonicalize_event_data(db_event, version, event_wall=None, event_keywords=None, include_emails=False):
+def canonicalize_event_data(db_event, version, event_wall=None, event_keywords=None):
     event_api = canonicalize_base_event_data(db_event, version)
     event_api['description'] = db_event.description
     event_api['source'] = {
         'name': db_event.source_name,
         'url': db_event.source_url,
     }
-
-    if include_emails:
-        event_api['emails'] = event_emails.get_emails_for_event(db_event)
 
     if db_event.json_props and 'language' in db_event.json_props:
         event_api['language'] = db_event.json_props['language']

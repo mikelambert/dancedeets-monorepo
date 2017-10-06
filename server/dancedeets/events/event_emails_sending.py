@@ -21,10 +21,11 @@ def send_event_add_emails(event_id):
 
 def email_for_event(email, event, should_send=False):
     locale = 'en_US'
-    api_event = api_format.canonicalize_event_data(event, (2, 0), include_emails=True)
+    api_event = api_format.canonicalize_event_data(event, (2, 0))
     props = {
         'currentLocale': locale.replace('_', '-'),
         'event': api_event,
+        'emailTo': email,
     }
     response = render_server.render_jsx('eventAddMail.js', props, static_html=True)
     if response.error:
