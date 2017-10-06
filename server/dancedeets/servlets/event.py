@@ -144,11 +144,11 @@ class ShowEventHandler(base_servlet.BaseRequestHandler):
                     eventdata.DBEvent.admin_fb_uids.IN(admin_ids), eventdata.DBEvent.search_time_period == dates.TIME_FUTURE
                 ).fetch(1000)
                 events = sorted(events, key=lambda x: x.start_time)
-                upcoming_events = [api_format.canonicalize_base_event_data(e, version=(1, 3)) for e in events]
+                upcoming_events = [api_format.canonicalize_base_event_data(e, version=(2, 0)) for e in events]
 
         canceled_event = db_event.is_canceled()
         # Render React component for inclusion in our template:
-        api_event = api_format.canonicalize_event_data(db_event, fb_event_wall, None, version=(1, 3))
+        api_event = api_format.canonicalize_event_data(db_event, (2, 0), event_wall=fb_event_wall)
         render_amp = bool(self.request.get('amp'))
         props = dict(
             amp=render_amp,

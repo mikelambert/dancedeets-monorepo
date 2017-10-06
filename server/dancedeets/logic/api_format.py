@@ -192,7 +192,7 @@ def canonicalize_base_event_data(db_event, version):
     return event_api
 
 
-def canonicalize_event_data(db_event, event_wall, event_keywords, version):
+def canonicalize_event_data(db_event, version, event_wall=None, event_keywords=None):
     event_api = canonicalize_base_event_data(db_event, version)
     event_api['description'] = db_event.description
     event_api['source'] = {
@@ -333,7 +333,7 @@ def build_search_results_api(form, search_query, search_results, version, need_f
     for result in search_results:
         try:
             if need_full_event:
-                json_result = canonicalize_event_data(result.db_event, None, result.event_keywords, version)
+                json_result = canonicalize_event_data(result.db_event, version, event_keywords=result.event_keywords)
             else:
                 json_result = canonicalize_search_event_data(result, version)
             json_results.append(json_result)
@@ -345,7 +345,7 @@ def build_search_results_api(form, search_query, search_results, version, need_f
         featured_infos = featured.get_featured_events_for(southwest, northeast)
         for featured_info in featured_infos:
             try:
-                featured_info['event'] = canonicalize_event_data(featured_info['event'], None, [], version)
+                featured_info['event'] = canonicalize_event_data(featured_info['event'], version)
                 real_featured_infos.append(featured_info)
             except Exception as e:
                 logging.exception("Error processing event %s: %s" % (result.event_id, e))

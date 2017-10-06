@@ -479,7 +479,7 @@ class EventHandler(ApiHandler):
             fb_event_wall = self.fbl.get(fb_api.LookupEventWall, event_id)
         else:
             fb_event_wall = None
-        json_data = api_format.canonicalize_event_data(db_event, fb_event_wall, None, self.version)
+        json_data = api_format.canonicalize_event_data(db_event, self.version, event_wall=fb_event_wall)
 
         # Ten minute expiry on data we return
         self.response.headers['Cache-Control'] = 'public, max-age=%s' % (10 * 60)

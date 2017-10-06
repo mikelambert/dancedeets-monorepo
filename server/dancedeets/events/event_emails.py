@@ -70,7 +70,7 @@ from dancedeets.mail import mandrill_api
 
 def email_for_event(email, event, should_send=False):
     locale = 'en_US'
-    api_event = api_format.canonicalize_event_data(event, None, None, (2, 0))
+    api_event = api_format.canonicalize_event_data(event, (2, 0))
     props = {
         'currentLocale': locale.replace('_', '-'),
         'event': api_event,
