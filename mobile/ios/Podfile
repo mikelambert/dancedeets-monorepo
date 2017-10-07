@@ -11,6 +11,9 @@ platform :ios, '8.0'
   'Firebase/Database',
   'Firebase/RemoteConfig',
   'Firebase/Messaging',
+  'FBSDKCoreKit',
+  'FBSDKLoginKit',
+  'FBSDKShareKit',
   'Mixpanel',
   'Fabric',
   'Crashlytics'
