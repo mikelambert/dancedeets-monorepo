@@ -1,5 +1,6 @@
 import logging
 from dancedeets import render_server
+from dancedeets.events import eventdata
 from dancedeets.logic import api_format
 from dancedeets.mail import mandrill_api
 
