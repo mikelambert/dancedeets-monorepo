@@ -1,13 +1,14 @@
 import logging
 from dancedeets import render_server
 from dancedeets.events import eventdata
+from dancedeets.events import event_emails
 from dancedeets.logic import api_format
 from dancedeets.mail import mandrill_api
 
 
 def send_event_add_emails(event_id):
     event = eventdata.DBEvent.get_by_id(event_id)
-    emails = get_emails_for_event(event)
+    emails = event_emails.get_emails_for_event(event)
     for address in emails:
         try:
             email_contents = email_for_event(address, event, should_send=False)
