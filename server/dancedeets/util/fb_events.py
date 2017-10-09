@@ -32,12 +32,17 @@ def is_public_ish(fb_event):
     event_type = fb_event['info'].get('type')
     if event_type:
         # event_type = {private, public, group, community}
-        if event_type in ['private']:
+        if event_type == 'private':
             logging.info('Event %s has %s type with %s members', fb_event['info']['id'], event_type, members_count)
             if members_count >= 200:
                 return True
+        elif event_type == 'group':
+            parent_group = fb_event['info']['parent_group']
+            if parent_group['privacy'] == 'OPEN':
+                return True
         else:
             logging.error('Event %s has unknown event type: %s', fb_event['info']['id'], event_type)
+        return False
     else:
         #bwcompat
         privacy = fb_event['info'].get('privacy', 'OPEN')
@@ -49,7 +54,7 @@ def is_public_ish(fb_event):
 def is_public(fb_event):
     event_type = fb_event['info'].get('type')
     if event_type:
-        return event_type in ['public', 'group', 'community']
+        return event_type in ['public', 'community']
     else:
         #bwcompat
         return fb_event['info'].get('privacy', 'OPEN') == 'OPEN'
