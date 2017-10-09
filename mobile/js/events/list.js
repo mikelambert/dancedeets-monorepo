@@ -791,7 +791,7 @@ const styles = StyleSheet.create({
     marginBottom: 50,
   },
   sectionHeader: {
-    borderTopWidth: 0.5,
+    borderTopWidth: StyleSheet.hairlineWidth,
     borderTopColor: gradientBottom,
     height: SectionHeight,
     alignItems: 'flex-start', // left align
