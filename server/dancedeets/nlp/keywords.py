@@ -1493,6 +1493,8 @@ WRONG_LOCK = Name(
         'bind',
         'blade',
         'dialog',
+        'needlework',
+        'embroider\w+',
     )
 )
 
@@ -1503,7 +1505,6 @@ WRONG_HOUSE = Name('WRONG_HOUSE', Any(
     'logs?',
     'tile[sd]?',
     'kitchen',
-    'home',
     'houses',
 ))
 

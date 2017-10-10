@@ -311,9 +311,15 @@ def is_workshop(classified_event):
 
     has_good_crew = classified_event.processed_text.has_token(rules.MANUAL_DANCER[grammar.STRONG])
 
-    is_right_name_wrong_kind = classified_event.processed_text.has_token(rules.RIGHT_NAME_WRONG_KIND)
-    if not has_good_dance and is_right_name_wrong_kind:
-        return (False, 'nothing')
+    good_bad_pairings = [
+        (keywords.STYLE_HOUSE, keywords.WRONG_HOUSE),
+        (keywords.STYLE_BREAK, keywords.WRONG_BREAK),
+        (keywords.STYLE_LOCK, keywords.WRONG_LOCK),
+        (keywords.STYLE_FLEX, keywords.WRONG_FLEX),
+    ]
+    for good, bad in good_bad_pairings:
+        if classified_event.processed_text.has_token(good) and classified_event.processed_text.has_token(bad):
+            return (False, 'has bad-token for equivalent good-token, skipping')
 
     # print has_class_title
     # print has_good_dance_title

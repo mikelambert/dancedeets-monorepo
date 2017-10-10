@@ -168,7 +168,7 @@ class RegexRule(GrammarRule):
         return '%s(%r)' % (self.__class__.__name__, self.regex)
 
 
-class Name(GrammarRule):
+class Name(_BaseAlternation):
     def __init__(self, name, sub_rule):
         super(Name, self).__init__()
         self._name = name
@@ -192,9 +192,6 @@ class Name(GrammarRule):
 
     def children(self):
         return [self._sub_rule]
-
-    def as_expanded_regex(self):
-        return self._sub_rule.as_expanded_regex()
 
     def get_regex_alternations(self):
         return self._sub_rule.get_regex_alternations() + [r'_%s\d*_' % self._final_name]
