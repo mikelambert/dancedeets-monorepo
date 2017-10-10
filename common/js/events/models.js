@@ -38,11 +38,12 @@ export class Venue extends JsonDerivedObject {
     longitude: number,
   };
   address: ?{
-    street: string,
-    city: string,
-    state: string,
-    zip: string,
+    street?: string,
+    city?: string,
+    state?: string,
+    zip?: string,
     country: string,
+    countryCode: string,
   };
   name: ?string;
   id: ?string;
