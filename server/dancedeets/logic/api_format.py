@@ -169,7 +169,10 @@ def canonicalize_base_event_data(db_event, version):
             if key in venue:
                 address[key] = venue.get(key)
         real_geocode = db_event.get_geocode()
-        address['countryCode'] = real_geocode.country()
+        if real_geocode:
+            address['countryCode'] = real_geocode.country()
+        else:
+            logging.warning('Event %s had country %s but no geocode', db_event.id, venue['country'])
 
     geocode = None
     if db_event.longitude and db_event.latitude:
