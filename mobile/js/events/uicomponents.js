@@ -199,7 +199,6 @@ class _EventVenue extends React.PureComponent {
       );
     }
     if (this.props.venue.address) {
-      const country = this.props.venue.address.country;
       components.push(
         <Text key="line2" style={[eventStyles.detailText, this.props.style]}>
           {this.props.venue.cityStateCountry()}
