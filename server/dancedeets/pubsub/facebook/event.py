@@ -8,6 +8,7 @@ from dancedeets import fb_api
 from dancedeets import fb_api_util
 from dancedeets.users import users
 from dancedeets.util import text
+from dancedeets.util import urls
 from .. import common
 from .. import db
 
@@ -25,7 +26,10 @@ class LookupGeoTarget(fb_api.LookupType):
 
 
 def facebook_post(auth_token, db_event):
-    link = common.campaign_url(db_event, 'fb_feed')
+    if db_event.is_fb_event:
+        link = urls.raw_fb_event_url(db_event.id)
+    else:
+        link = common.campaign_url(db_event, 'fb_feed')
     datetime_string = db_event.start_time.strftime('%s @ %s' % (common.DATE_FORMAT, common.TIME_FORMAT))
 
     page_id = auth_token.token_nickname
@@ -64,22 +68,14 @@ def facebook_post(auth_token, db_event):
         # Don't want to post events globally...too noisy
         return {}
 
-    intros = [
-        'Dancers, are you ready to get down?',
-        'Mark your calendars, it\'s time to dance!',
-        'Save the date, we got a dance event for you!',
-        'We found a great event for all you dancers!',
-    ]
-    intro = random.choice(intros)
     params = {
-        'intro': intro,
         'name': db_event.name,
         'description': db_event.description,
         'date': human_date,
         #
         'venue': venue,
         'location': location,
-        'full_location': db_event.city_state_country,
+        'full_location': db_event.city,
         #
         'host': host,
     }
@@ -98,8 +94,6 @@ def facebook_post(auth_token, db_event):
     #_____________________________________________________________________
 
     message = """
-%(intro)s
-
 %(name)s
 
 Date: %(date)s
