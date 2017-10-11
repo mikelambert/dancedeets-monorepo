@@ -36,6 +36,7 @@ const prod = !env.debug;
 const ifProd = plugin => (prod ? plugin : null);
 
 const entry = {
+  addEvent: './assets/js/addEvent.js',
   bracketsExec: './assets/js/bracketsExec.js',
   calendarExec: './assets/js/calendarExec.js',
   homepage: './assets/js/homepage.js',

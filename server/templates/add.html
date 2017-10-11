@@ -4,6 +4,10 @@
 Add Dance Event
 {% endblock %}
 
+{% block head_javascript %}
+<script defer src="{{ static_path('addEvent.js') }}"></script>
+{% endblock %}
+
 {% block inner_body %}
 		<form action="/events_add" method=post>
 		<div>
@@ -22,7 +26,7 @@ Add Dance Event
 			{% else %}
 				Enter your facebook event URL here:<br>
 				<input id="event_url_form" type=text name="event_url" class="form-control">
-				<p><button class="btn btn-primary" onclick="return validateAdd();">Add Event by URL</button>
+				<p><button id="add-by-url" class="btn btn-primary">Add Event by URL</button>
 				<br/>
 				{% if events %}
 					Or select one of your facebook events below:<br>
@@ -53,58 +57,4 @@ Add Dance Event
 			{% endif %}
 		</div>
 		</form>
-{% endblock %}
-
-{% block head_javascript %}
-  <script defer src="{{ static_path('normalPage.js') }}"></script>
-{% endblock %}
-
-{% block bottom_javascript %}
-<script type="text/javascript">
-	function addEvent() {
-		var element = jQuery(this);
-		var id = element.attr('id').replace('button-', '');
-
-		element.text('Adding...');
-		jQuery.ajax({
-			method: 'POST',
-			url: '/events_add?ajax=1&event_id=' + id,
-		}).done(function() {
-			var liEvent = jQuery('#event-' + id);
-			liEvent.addClass('ui-disabled');
-			liEvent.removeClass('ui-selectable').removeClass('ui-selected');
-		}).done(function () {
-			element.text('Add Event');
-		})
-		return false;
-	}
-	jQuery(document).ready(function() {
-		jQuery("#add-events").click(function(event) {
-			var selectees = jQuery(".ui-selectable", "#add-events");
-			selectees.filter('.ui-selected').each(function() {
-				jQuery(this).removeClass('ui-selected');
-			});
-			jQuery(event.target).parents().addBack().filter('.ui-selectable').each(function() {
-				jQuery(this).addClass('ui-selected');
-				jQuery('#event_id_form').val(jQuery(this).data('id'));
-			});
-		});
-        jQuery("#add-events li").each(function () {
-			var outerDiv = jQuery('<div class="add-button">');
-			outerDiv.append(jQuery('<div class="whiten"></div>'));
-			outerDiv.append(jQuery('<button type="button" class="btn btn-primary" style="margin-left:60px; margin-top: 0.75em">Add Event</button>')
-				.attr('id', 'button-' + jQuery(this).data('id'))
-				.on('click', addEvent));
-			jQuery(this).append(outerDiv);
-			});
-		});
-	function validateAdd() {
-		if (jQuery('#event_id_form').val() || jQuery('#event_url_form').val()) {
-			return true;
-		} else {
-			alert("Please select one of your events to add, or enter the URL of the event you wish to add.");
-			return false;
-		}
-	}
-</script>
 {% endblock %}

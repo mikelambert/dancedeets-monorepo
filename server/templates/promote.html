@@ -4,6 +4,10 @@
 DanceDeets - Promoters
 {% endblock %}
 
+{% block head_javascript %}
+<script defer src="{{ static_path('addEvent.js') }}"></script>
+{% endblock %}
+
 {% block inner_body %}
 <p><h3>DanceDeets Event Promotion</h3>
 
@@ -28,7 +32,7 @@ The event "{{ event.info.name|e }}" has the following problems:
 <p>Want to promote a street dance event? Create a Facebook event and check it for common promotion mistakes!
 <form id="events-form" class="form" action="/promote" method="post">
 {% if user %}
-	<input type=text id="event_url" name="event_url" placeholder="http://www.facebook.com/events/..." value="{{ event_url|e }}" class="form-control">
+	<input type=text id="event_url_form" name="event_url" placeholder="http://www.facebook.com/events/..." value="{{ event_url|e }}" class="form-control">
 	<p><button class="btn btn-primary">Check and Add Event</button>
 	<p>Or select one of your events below:
 	<p>
@@ -57,29 +61,10 @@ The event "{{ event.info.name|e }}" has the following problems:
 	{% endfor %}
 	</ul>
 {% else %}
-	<input type=text name="event_url" placeholder="http://www.facebook.com/events/..." class="form-control">
+	<input type=text name="event_url_form" placeholder="http://www.facebook.com/events/..." class="form-control">
 	<p><button class="btn btn-primary">Check and Add Event</button>
 	<p>Or <button class="btn btn-primary" onclick="manualLogin();">Login to check your Facebook events</button>
 {% endif %}
 </form>
 
-{% endblock %}
-
-
-{% block bottom_javascript %}
-<script type="text/javascript">
-	jQuery(document).ready(function() {
-		jQuery("#add-events").click(function(event) {
-			var selectees = jQuery(".ui-selectable", "#add-events");
-			selectees.filter('.ui-selected').each(function() {
-				jQuery(this).removeClass('ui-selected');
-			});
-			jQuery(event.target).parents().andSelf().filter('.ui-selectable').each(function() {
-				jQuery(this).addClass('ui-selected');
-				jQuery('#event_url').val('https://www.facebook.com/events/' + jQuery(this).data('id'));
-				jQuery("#events-form").submit();
-			});
-		});
-	});
-</script>
 {% endblock %}
