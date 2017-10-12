@@ -1,9 +1,11 @@
 #!/usr/bin/python
 #
 # import PR data into sqlite
+import commands
 import csv
 import json
 import getpass
+import os
 import site
 import sqlite3
 import StringIO
@@ -38,13 +40,16 @@ def save_personcity_db(clear=True):
             '''
         )
 
-    client = storage.Client()
-    bucket = client.get_bucket('dancedeets-hrd.appspot.com')
+    path = os.path.join(os.path.dirname(__file__), 'test')
+    try:
+        os.makedirs(path)
+    except OSError:
+        pass
+    print 'Downloading CSV files'
+    commands.getoutput('gsutil -m cp gs://dancedeets-hrd.appspot.com/test/*.csv %s' % path)
     for i in range(300):
         print 'Loading blob %s' % i
-        blob = bucket.get_blob('test/people-city-%05d-of-00300.csv' % i)
-        file = StringIO.StringIO(blob.download_as_string())
-        reader = csv.reader(file)
+        reader = csv.reader(open(os.path.join(path, 'people-city-%05d-of-00300.csv' % i)))
         for row in reader:
             if not row:
                 continue
