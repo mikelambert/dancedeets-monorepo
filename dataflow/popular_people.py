@@ -209,7 +209,10 @@ def CountPersonTopCities((person_id, cities)):
         if count > min_threshold:
             top_cities.append(city)
 
-    yield person_id, (top_cities, total_events)
+    if top_cities:
+        yield person_id, (top_cities, total_events)
+    else:
+        logging.info('%s: %s', person_id, sorted(events_per_city.items(), key=lambda x: -x[1]))
 
 
 class BuildPRPersonCity(beam.DoFn):
@@ -219,7 +222,7 @@ class BuildPRPersonCity(beam.DoFn):
     def process(self, (person_id, (top_cities, total_events)), timestamp):
         db_key = self.client.key('PRPersonCity', person_id)
         # TODO: db_key = person_city.key(self.client, person_id)
-        person_city = datastore.Entity(key=db_key)
+        person_city = datastore.Entity(key=db_key, exclude_from_indexes=['top_cities'])
         person_city['top_cities'] = top_cities
         person_city['total_events'] = total_events
         yield person_city
@@ -425,7 +428,7 @@ def run():
     parser.add_argument('--run_locally', dest='run_locally', default='', help='Run data subset and do not save.')
     parser.add_argument('--debug_attendees', dest='debug_attendees', default=False, type=bool, help='Generate PRDebugAttendee data')
     parser.add_argument('--want_top_attendees', dest='want_top_attendees', default=False, type=bool, help='Generate PRCityCategory data')
-    parser.add_argument('--person_locations', dest='person_locations', default=False, type=bool, help='Generate PRPersonCity data')
+    parser.add_argument('--person_locations', dest='person_locations', default=True, type=bool, help='Generate PRPersonCity data')
     known_args, pipeline_args = parser.parse_known_args()
     pipeline_options = PipelineOptions(pipeline_args)
     pipeline_options.view_as(SetupOptions).save_main_session = True
