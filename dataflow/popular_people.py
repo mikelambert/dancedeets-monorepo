@@ -1,10 +1,12 @@
 import argparse
 from collections import Counter
+import csv
 import datetime
 import json
 import logging
 import random
 import site
+import StringIO
 import sys
 
 site.addsitedir('lib')
@@ -18,6 +20,7 @@ from google.cloud.datastore import helpers
 import apache_beam as beam
 from apache_beam import pvalue
 from apache_beam import typehints
+from apache_beam.io.textio import WriteToText
 from apache_beam.io.gcp.datastore.v1.datastoreio import ReadFromDatastore
 from apache_beam.io.gcp.datastore.v1.datastoreio import WriteToDatastore
 from apache_beam.metrics import Metrics
@@ -330,6 +333,19 @@ class WriteToDatastoreSingle(beam.DoFn):
             self.client.put(entity)
 
 
+def ConvertEntityToText(entity, keys):
+    output = StringIO.StringIO()
+    csvwriter = csv.writer(output)
+    data = []
+    for key in keys:
+        if key == '_key':
+            data.append(entity.key.name)
+        else:
+            data.append(json.dumps(entity[key]))
+    csvwriter.writerow(data)
+    yield output.getvalue().strip()  # the later stages append newlines
+
+
 def ConvertFromEntity(entity):
     return helpers.entity_to_protobuf(entity)
 
@@ -392,7 +408,9 @@ def run_pipeline(project, pipeline_options, run_locally, args):
             'group by attendee' >> beam.GroupByKey() |
             'build top-cities per-person' >> beam.FlatMap(CountPersonTopCities) |
             'build PRPersonCity' >> beam.ParDo(BuildPRPersonCity(), timestamp) |
-            'write PRPersonCity to datastore (unbatched)' >> beam.ParDo(WriteToDatastoreSingle(), actually_save=not run_locally)
+            'convert Entity to CSV' >> beam.ParDo(ConvertEntityToText, keys=['_key', 'top_cities', 'total_events']) |
+            'WriteToText' >> WriteToText('gs://dancedeets-hrd.appspot.com/test/people-city', file_name_suffix='.csv')
+            #'write PRPersonCity to datastore (unbatched)' >> beam.ParDo(WriteToDatastoreSingle(), actually_save=not run_locally)
         ) # yapf: disable
 
     if debug_attendees:

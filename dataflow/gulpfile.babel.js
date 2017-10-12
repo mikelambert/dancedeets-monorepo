@@ -24,7 +24,7 @@ const bucket = 'gs://dancedeets-hrd.appspot.com';
 function remoteJob(filename) {
   const jobName = filename.replace(/[^-a-z0-9]/, '-');
   return $.shell.task([
-    `/usr/local/bin/python -m ${filename} --log=DEBUG --project dancedeets-hrd --job_name=${jobName} --runner DataflowRunner --staging_location ${bucket}/staging --temp_location ${bucket}/temp --output ${bucket}/output --setup_file ./setup.py --num_workers 100`,
+    `/usr/local/bin/python -m ${filename} --log=DEBUG --project dancedeets-hrd --job_name=${jobName} --runner DataflowRunner --staging_location ${bucket}/staging --temp_location ${bucket}/temp --output ${bucket}/output --setup_file ./setup.py --num_workers 50`,
   ]);
 }
 
