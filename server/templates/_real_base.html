@@ -16,10 +16,6 @@
   });
 {% endmacro -%}
 {% macro analytics_javascript(ganalytics_features) -%}
-  window.mixpanel = {
-    track: function(name, args) {},
-    track_links: function(cssPath, name) {},
-  };
 
   {% if prod_mode and track_analytics %}
     // Google Analytics
@@ -64,6 +60,10 @@
 <script>
 //<![CDATA[
   window.webpackManifest = {{ webpack_manifest|safe }};
+  window.mixpanel = {
+    track: function(name, args) {},
+    track_links: function(cssPath, name) {},
+  };
 //]]>
 </script>
 {% endif %}
