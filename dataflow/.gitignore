@@ -1,3 +1,10 @@
-beam-master/
+# built stuff
+dist/
+*.egg-info/
+
+# installed
 lib/
+
+# old direct installation
+beam-master/
 master.zip

@@ -89,7 +89,6 @@ class CustomCommands(setuptools.Command):
 # so this dependency will not trigger anything to be installed unless a version
 # restriction is specified.
 REQUIRED_PACKAGES = [
-    'googledatastore',
     'google-cloud-datastore',
 ]
 
