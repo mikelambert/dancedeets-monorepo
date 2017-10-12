@@ -208,18 +208,22 @@ def CountPersonTopCities((person_id, cities)):
         total_events += 1
         events_per_city[city] += 1
 
-    min_threshold = total_events / 5
+    min_events = 5
+    min_fraction = 0.2
+    # We must have at least "min_events" in one city
+    # and we must have at least "min_fraction" of our events in one city
+    # Without these, the cities don't count, and without cities, we don't persist this data
+    min_threshold = max(min_events, total_events * min_fraction)
     top_cities = []
     for city, count in events_per_city.iteritems():
         if count > min_threshold:
             top_cities.append(city)
 
     # Try to limit our yielding to noteworthy people
-    if total_events > 3:
-        if top_cities:
-            yield person_id, (top_cities, total_events)
-        else:
-            logging.info('%s: %s', person_id, sorted(events_per_city.items(), key=lambda x: -x[1]))
+    if top_cities:
+        yield person_id, (top_cities, total_events)
+    else:
+        logging.info('%s: %s', person_id, sorted(events_per_city.items(), key=lambda x: -x[1]))
 
 
 class BuildPRPersonCity(beam.DoFn):
