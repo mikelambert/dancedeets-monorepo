@@ -1,25 +1,65 @@
 #!/usr/bin/python
 #
-# import google cloud datastore into sqlite
-
+# import PR data into sqlite
+import csv
 import json
 import getpass
+import site
 import sqlite3
+import StringIO
 import sys
 
+site.addsitedir('lib-local')
+
+from google.cloud import storage
 from google.cloud import datastore
 from dancedeets.geonames import sqlite_db
 
-FULL_DB = '/Users/%s/Dropbox/dancedeets-development/server/generated/pr_city_category_full.db' % getpass.getuser()
-TRIMMED_DB = '/Users/%s/Dropbox/dancedeets-development/server/generated/pr_city_category.db' % getpass.getuser()
+FULL_CITY_CATEGORY_DB = '/Users/%s/Dropbox/dancedeets-development/server/generated/pr_city_category_full.db' % getpass.getuser()
+TRIMMED_CITY_CATEGORY_DB = '/Users/%s/Dropbox/dancedeets-development/server/generated/pr_city_category.db' % getpass.getuser()
+
+PERSON_CITY_DB = '/Users/%s/Dropbox/dancedeets-development/server/generated/pr_person_city.db' % getpass.getuser()
 
 
-def all_rows():
-    return []
+def save_personcity_db(clear=True):
+    conn = sqlite3.connect(PERSON_CITY_DB)
+    cursor = conn.cursor()
+    if clear:
+        cursor.execute('''DROP TABLE IF EXISTS PRPersonCity''')
+        cursor.execute(
+            '''
+            CREATE TABLE PRPersonCity
+            (
+            person_id text not null,
+            top_cities text,
+            total_events integer not null,
+            PRIMARY KEY (person_id)
+            )
+            '''
+        )
+
+    client = storage.Client()
+    bucket = client.get_bucket('dancedeets-hrd.appspot.com')
+    for i in range(300):
+        print 'Loading blob %s' % i
+        blob = bucket.get_blob('test/people-city-%05d-of-00300.csv' % i)
+        file = StringIO.StringIO(blob.download_as_string())
+        reader = csv.reader(file)
+        for row in reader:
+            if not row:
+                continue
+            data = {
+                'person_id': row[0],
+                'top_cities': row[1],
+                'total_events': row[2],
+            }
+            sqlite_db.insert_record(cursor, 'PRPersonCity', data)
+
+    conn.commit()
 
 
-def save_db(clear=False):
-    conn = sqlite3.connect(FULL_DB)
+def save_citycategory_db(clear=False):
+    conn = sqlite3.connect(FULL_CITY_CATEGORY_DB)
     cursor = conn.cursor()
     if clear:
         cursor.execute('''DROP TABLE IF EXISTS PRCityCategory''')
@@ -50,10 +90,10 @@ def save_db(clear=False):
     conn.commit()
 
 
-def copy_db(clear=True):
-    old_conn = sqlite3.connect(FULL_DB)
+def copy_citycategory_db(clear=True):
+    old_conn = sqlite3.connect(FULL_CITY_CATEGORY_DB)
     old_cursor = old_conn.cursor()
-    new_conn = sqlite3.connect(TRIMMED_DB)
+    new_conn = sqlite3.connect(TRIMMED_CITY_CATEGORY_DB)
     new_cursor = new_conn.cursor()
     if clear:
         new_cursor.execute('''DROP TABLE IF EXISTS PRCityCategory''')
@@ -86,7 +126,9 @@ def copy_db(clear=True):
 
 if __name__ == '__main__':
     if len(sys.argv) > 1 and sys.argv[1] == 'db_name':
-        print TRIMMED_DB
+        print TRIMMED_CITY_CATEGORY_DB
     else:
-        save_db()
-        copy_db()
+        save_personcity_db()
+        # Rewrite these as 'download files'
+        # save_citycategory_db()
+        # copy_citycategory_db()
