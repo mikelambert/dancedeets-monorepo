@@ -60,14 +60,18 @@
 <script>
 //<![CDATA[
   window.webpackManifest = {{ webpack_manifest|safe }};
-  window.mixpanel = {
-    track: function(name, args) {},
-    track_links: function(cssPath, name) {},
-  };
 //]]>
 </script>
 {% endif %}
 <noscript><img height="1" width="1" style="display:none" src="https://www.facebook.com/tr?id=112515792804169&ev=PageView&noscript=1" /></noscript>
+<script>
+//<![CDATA[
+window.mixpanel = {
+  track: function(name, args) {},
+  track_links: function(cssPath, name) {},
+};
+//]]>
+</script>
 {% block headbody %}
 {% endblock %}
 </html>
