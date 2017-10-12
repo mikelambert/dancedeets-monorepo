@@ -36,14 +36,15 @@ def ConvertToEntity(element):
     return helpers.entity_from_protobuf(element)
 
 
-def CountableEvent(db_event):
+def CountableEvent(db_event, ground_truth_events):
     # Don't use auto-events to train...could have a runaway AI system there!
     #TODO: Use Constants
     if ':' in db_event.key.name:
         namespace = db_event.key.name.split(':')[0]
     else:
         namespace = 'FB'
-    if namespace == 'FB' and db_event['creating_method'] != 'CM_AUTO_ATTENDEE':
+    can_use_event = not ground_truth_events or db_event['creating_method'] != 'CM_AUTO_ATTENDEE'
+    if namespace == 'FB' and can_use_event:
         try:
             fb_event = json.loads(db_event['fb_event'])
             if not fb_event['empty']:
@@ -191,7 +192,11 @@ class DebugBuildPRDebugAttendee(beam.DoFn):
 def GroupAttendenceByPerson(data):
     if data['person_type'] != 'ATTENDEE':
         return
+    # This captures everything, unlike the subsets captured in each category
     if data['category'] != '':
+        return
+    # If the event doesn't have a location, don't worry about using it to infer location
+    if data['category'] == 'Unknown':
         return
     yield data['person_id'], data['city']
 
@@ -209,10 +214,12 @@ def CountPersonTopCities((person_id, cities)):
         if count > min_threshold:
             top_cities.append(city)
 
-    if top_cities:
-        yield person_id, (top_cities, total_events)
-    else:
-        logging.info('%s: %s', person_id, sorted(events_per_city.items(), key=lambda x: -x[1]))
+    # Try to limit our yielding to noteworthy people
+    if total_events > 3:
+        if top_cities:
+            yield person_id, (top_cities, total_events)
+        else:
+            logging.info('%s: %s', person_id, sorted(events_per_city.items(), key=lambda x: -x[1]))
 
 
 class BuildPRPersonCity(beam.DoFn):
@@ -331,6 +338,7 @@ def Logger(entity, prefix):
 def run_pipeline(project, pipeline_options, run_locally, args):
     """Creates a pipeline that reads entities from Cloud Datastore."""
 
+    ground_truth_events = args.ground_truth_events
     debug_attendees = args.debug_attendees
     want_top_attendees = args.want_top_attendees
     person_locations = args.person_locations
@@ -353,7 +361,7 @@ def run_pipeline(project, pipeline_options, run_locally, args):
         'read from datastore' >> ReadFromDatastore(project, query._pb_from_query(q), num_splits=400) |
         'convert to entity' >> beam.Map(ConvertToEntity) |
         # Find the events we want to count, and expand all the admins/attendees
-        'filter events' >> beam.FlatMap(CountableEvent) |
+        'filter events' >> beam.FlatMap(CountableEvent, ground_truth_events) |
         'load fb attending' >> beam.ParDo(GetEventAndAttending()) |
         'export attendees' >> beam.FlatMap(ExportPeople)
     ) # yapf: disable
@@ -429,6 +437,13 @@ def run():
     parser.add_argument('--debug_attendees', dest='debug_attendees', default=False, type=bool, help='Generate PRDebugAttendee data')
     parser.add_argument('--want_top_attendees', dest='want_top_attendees', default=False, type=bool, help='Generate PRCityCategory data')
     parser.add_argument('--person_locations', dest='person_locations', default=True, type=bool, help='Generate PRPersonCity data')
+    parser.add_argument(
+        '--ground_truth_events',
+        dest='ground_truth_events',
+        default=False,
+        type=bool,
+        help='Only use real-events, not events added as a result of this pipeline data'
+    )
     known_args, pipeline_args = parser.parse_known_args()
     pipeline_options = PipelineOptions(pipeline_args)
     pipeline_options.view_as(SetupOptions).save_main_session = True
