@@ -1,29 +1,11 @@
 import argparse
+from collections import Counter
 import datetime
 import json
 import logging
 import random
 import site
 import sys
-"""
-pip install 'git+https://github.com/apache/beam.git#egg=0.7.0-dev&subdirectory=sdks/python' -t lib
-pip install googledatastore google-apitools -t lib
-pip install google-cloud-datastore --user (cant use lib/)
-
-python -m popular_people --log=DEBUG
-
-OR FOR SERVER RUNS:
-
-wget https://github.com/apache/beam/archive/master.zip
-unzip master.zip
-cd beam-master/sdks/python/
-python setup.py sdist
-cd ../../..
-export SDK=beam-master/sdks/python/dist/apache-beam-0.7.0.dev0.tar.gz
-export BUCKET=gs://dancedeets-hrd.appspot.com
-python -m popular_people --log=DEBUG --project dancedeets-hrd --job-name=popular-people --runner DataflowRunner --staging_location $BUCKET/staging --temp_location $BUCKET/temp --output $BUCKET/output --sdk_location $SDK --setup_file ./setup.py --num_workers=20
-
-"""
 
 site.addsitedir('lib')
 
@@ -206,6 +188,43 @@ class DebugBuildPRDebugAttendee(beam.DoFn):
         yield debug_attendee
 
 
+def GroupAttendenceByPerson(data):
+    if data['person_type'] != 'ATTENDEE':
+        return
+    if data['category'] != '':
+        return
+    yield data['person_id'], data['city']
+
+
+def CountPersonTopCities((person_id, cities)):
+    total_events = 0
+    events_per_city = Counter()
+    for city in cities:
+        total_events += 1
+        events_per_city[city] += 1
+
+    min_threshold = total_events / 5
+    top_cities = []
+    for city, count in events_per_city.iteritems():
+        if count > min_threshold:
+            top_cities.append(city)
+
+    yield person_id, (top_cities, total_events)
+
+
+class BuildPRPersonCity(beam.DoFn):
+    def start_bundle(self):
+        self.client = datastore.Client()
+
+    def process(self, (person_id, (top_cities, total_events)), timestamp):
+        db_key = self.client.key('PRPersonCity', person_id)
+        # TODO: db_key = person_city.key(self.client, person_id)
+        person_city = datastore.Entity(key=db_key)
+        person_city['top_cities'] = top_cities
+        person_city['total_events'] = total_events
+        yield person_city
+
+
 def ToJson(value):
     yield json.dumps(value, sort_keys=True)
 
@@ -306,8 +325,13 @@ def Logger(entity, prefix):
     yield entity
 
 
-def run_pipeline(project, pipeline_options, run_locally, debug_attendees):
+def run_pipeline(project, pipeline_options, run_locally, args):
     """Creates a pipeline that reads entities from Cloud Datastore."""
+
+    debug_attendees = args.debug_attendees
+    want_top_attendees = args.want_top_attendees
+    person_locations = args.person_locations
+
     p = beam.Pipeline(options=pipeline_options)
     # Create a query to read entities from datastore.
     client = datastore.Client()
@@ -322,24 +346,47 @@ def run_pipeline(project, pipeline_options, run_locally, debug_attendees):
 
     # Set up our map/reduce pipeline
     produce_attendees = (
-        p | 'read from datastore' >> ReadFromDatastore(project, query._pb_from_query(q), num_splits=400) |
-        'convert to entity' >> beam.Map(ConvertToEntity)
+        p |
+        'read from datastore' >> ReadFromDatastore(project, query._pb_from_query(q), num_splits=400) |
+        'convert to entity' >> beam.Map(ConvertToEntity) |
         # Find the events we want to count, and expand all the admins/attendees
-        | 'filter events' >> beam.FlatMap(CountableEvent) | 'load fb attending' >> beam.ParDo(GetEventAndAttending()) |
+        'filter events' >> beam.FlatMap(CountableEvent) |
+        'load fb attending' >> beam.ParDo(GetEventAndAttending()) |
         'export attendees' >> beam.FlatMap(ExportPeople)
-    )
+    ) # yapf: disable
 
-    top_attendee_lists = (
-        produce_attendees | 'map category -> person' >> beam.FlatMap(GroupPeopleByCategory) | 'group by category' >> beam.GroupByKey() |
-        'build top-people lists' >> beam.FlatMap(CountPeopleInfos)
-    )
+
+    if want_top_attendees or debug_attendees:
+        top_attendee_lists = (
+            produce_attendees |
+            'map category -> person' >> beam.FlatMap(GroupPeopleByCategory) |
+            'group by category' >> beam.GroupByKey() |
+            'build top-people lists' >> beam.FlatMap(CountPeopleInfos)
+        ) # yapf: disable
+    if want_top_attendees:
+        (
+            top_attendee_lists |
+            'generate PRCityCategory database record' >> beam.ParDo(BuildPRCityCategory(), timestamp, 'PRCityCategory', TOP_ALL_N) |
+            'write PRCityCategory to datastore (unbatched)' >> beam.ParDo(WriteToDatastoreSingle(), actually_save=not run_locally)
+        ) # yapf: disable
+
+    if person_locations:
+        build_person_cities = (
+            produce_attendees |
+            'map attendee -> city' >> beam.FlatMap(GroupAttendenceByPerson) |
+            'group by attendee' >> beam.GroupByKey() |
+            'build top-cities per-person' >> beam.FlatMap(CountPersonTopCities) |
+            'build PRPersonCity' >> beam.ParDo(BuildPRPersonCity(), timestamp) |
+            'write PRPersonCity to datastore (unbatched)' >> beam.ParDo(WriteToDatastoreSingle(), actually_save=not run_locally)
+        ) # yapf: disable
 
     if debug_attendees:
         attendee_event_debugging = (
-            produce_attendees | 'map city-attendee -> event' >> beam.FlatMap(DebugExportEventPeopleForGrouping) |
+            produce_attendees |
+            'map city-attendee -> event' >> beam.FlatMap(DebugExportEventPeopleForGrouping) |
             'group by city-attendee' >> beam.GroupByKey() |
             'within city-attendee, group event_ids by admin_hash' >> beam.FlatMap(DebugGroupEventIds)
-        )
+        ) # yapf: disable
 
         exploded_top_attendees = (
             top_attendee_lists |
@@ -347,24 +394,18 @@ def run_pipeline(project, pipeline_options, run_locally, debug_attendees):
             # We don't deal with duplicates, since it requires the objects (ie our dicts) to be hashable
             # Instead, we rely on DebugFilterForTopAttendee to filter out duplicates created by the above
             # | 'remove duplicates from multiple overlapping attendee-lists' >> beam.RemoveDuplicates()
-        )
+        ) # yapf: disable
 
         (
             # These both have the same keys:
             # key contains {person_type, city, category, person_id}
-            (attendee_event_debugging, exploded_top_attendees) | beam.Flatten()
+            (attendee_event_debugging, exploded_top_attendees) | beam.Flatten() |
             # keys are {city, person_id}
-            | 'group the attendee-debug info with the is-it-a-top-attendee info' >> beam.GroupByKey() |
+            'group the attendee-debug info with the is-it-a-top-attendee info' >> beam.GroupByKey() |
             'filter for TOP_ATTENDEE' >> beam.FlatMap(DebugFilterForTopAttendee) |
             'build PRDebugAttendee' >> beam.ParDo(DebugBuildPRDebugAttendee(), timestamp) |
             'write PRDebugAttendee to datastore (unbatched)' >> beam.ParDo(WriteToDatastoreSingle(), actually_save=not run_locally)
-        )
-
-    (
-        top_attendee_lists |
-        'generate PRCityCategory database record' >> beam.ParDo(BuildPRCityCategory(), timestamp, 'PRCityCategory', TOP_ALL_N) |
-        'write PRCityCategory to datastore (unbatched)' >> beam.ParDo(WriteToDatastoreSingle(), actually_save=not run_locally)
-    )
+        ) # yapf: disable
     """
     (output
         | 'convert from entity' >> beam.Map(ConvertFromEntity)
@@ -382,12 +423,14 @@ def run_pipeline(project, pipeline_options, run_locally, debug_attendees):
 def run():
     parser = argparse.ArgumentParser()
     parser.add_argument('--run_locally', dest='run_locally', default='', help='Run data subset and do not save.')
-    parser.add_argument('--debug_attendees', dest='debug_attendees', default='True', help='Generate PRDebugAttendee data')
+    parser.add_argument('--debug_attendees', dest='debug_attendees', default=False, type=bool, help='Generate PRDebugAttendee data')
+    parser.add_argument('--want_top_attendees', dest='want_top_attendees', default=False, type=bool, help='Generate PRCityCategory data')
+    parser.add_argument('--person_locations', dest='person_locations', default=False, type=bool, help='Generate PRPersonCity data')
     known_args, pipeline_args = parser.parse_known_args()
     pipeline_options = PipelineOptions(pipeline_args)
     pipeline_options.view_as(SetupOptions).save_main_session = True
     gcloud_options = pipeline_options.view_as(GoogleCloudOptions)
-    run_pipeline('dancedeets-hrd', gcloud_options, known_args.run_locally, known_args.debug_attendees)
+    run_pipeline('dancedeets-hrd', gcloud_options, known_args.run_locally, known_args)
 
 
 if __name__ == '__main__':
