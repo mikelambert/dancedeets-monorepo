@@ -111,6 +111,7 @@
     "stackdriver-errors-js": "github:GoogleCloudPlatform/stackdriver-errors-js",
     "stacktrace-js": "^1.3.1",
     "tlds": "^1.192.0",
+    "universal-cookie": "^2.1.0",
     "whatwg-fetch": "^2.0.1"
   },
   "engines": {

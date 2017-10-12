@@ -5,7 +5,7 @@
  */
 
 import EventEmitter from 'eventemitter3';
-import cookie from 'react-cookie';
+import Cookies from 'universal-cookie';
 import { queryOn } from './dom';
 
 export const fbLoadEmitter = new EventEmitter();
@@ -15,25 +15,26 @@ export function fbSetup(
   fbAppId: string,
   baseHostname: string
 ) {
+  const cookies = new Cookies();
+
   let loginPressed = false;
 
   const cookieOptions = {
-    domain: baseHostname,
     path: '/',
   };
+  // Temporary, to ensure we clean up our cookies from our old .dancedeets.com domain
   const cookieOptions2 = {
     domain: '.dancedeets.com',
     path: '/',
   };
 
   function deleteLoginCookies() {
-    cookie.remove(`fbsr_${fbAppId}`, cookieOptions);
-    cookie.remove(`user_token_${fbAppId}`, cookieOptions); // set by client, for server
-    cookie.remove(`user_login_${fbAppId}`, cookieOptions); // set by server, for client/server
-    // Temporary, to ensure we clean up our cookies from our old .dancedeets.com domain
-    cookie.remove(`fbsr_${fbAppId}`, cookieOptions2);
-    cookie.remove(`user_token_${fbAppId}`, cookieOptions2); // set by client, for server
-    cookie.remove(`user_login_${fbAppId}`, cookieOptions2); // set by server, for client/server
+    [cookieOptions, cookieOptions2].forEach(cookieOpts => {
+      cookies.remove(`fbsr_${fbAppId}`, cookieOpts);
+      cookies.remove(`fbm_${fbAppId}`, cookieOpts);
+      cookies.remove(`user_token_${fbAppId}`, cookieOpts); // set by client, for server
+      cookies.remove(`user_login_${fbAppId}`, cookieOpts); // set by server, for client/server
+    });
   }
 
   function reloadWithNewToken() {
@@ -45,7 +46,7 @@ export function fbSetup(
   }
 
   function currentUser() {
-    const userLogin = cookie.load(`user_login_${fbAppId}`);
+    const userLogin = cookies.get(`user_login_${fbAppId}`);
     if (userLogin) {
       return userLogin.uid;
     }
@@ -57,7 +58,7 @@ export function fbSetup(
       // We want to set this cookie before we attempt to do any reloads below,
       // so that the server will have access to our user_token_ (access token)
       const accessToken = response.authResponse.accessToken;
-      cookie.save(`user_token_${fbAppId}`, accessToken, cookieOptions);
+      cookies.set(`user_token_${fbAppId}`, accessToken, cookieOptions);
 
       if (response.authResponse.userID !== currentUser()) {
         if (loginPressed) {
