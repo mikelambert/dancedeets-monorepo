@@ -224,7 +224,7 @@ def CountPersonTopCities((person_id, cities)):
 
     # Try to limit our yielding to noteworthy people
     if top_cities:
-        yield person_id, (top_cities, total_events)
+        yield {'person_id': person_id, 'top_cities': json.dumps(top_cities), 'total_events': total_events}
     else:
         logging.info('%s: %s', person_id, sorted(events_per_city.items(), key=lambda x: -x[1]))
 
@@ -233,12 +233,12 @@ class BuildPRPersonCity(beam.DoFn):
     def start_bundle(self):
         self.client = datastore.Client()
 
-    def process(self, (person_id, (top_cities, total_events)), timestamp):
-        db_key = self.client.key('PRPersonCity', person_id)
+    def process(self, obj, timestamp):
+        db_key = self.client.key('PRPersonCity', obj['person_id'])
         # TODO: db_key = person_city.key(self.client, person_id)
         person_city = datastore.Entity(key=db_key, exclude_from_indexes=['top_cities'])
-        person_city['top_cities'] = top_cities
-        person_city['total_events'] = total_events
+        person_city['top_cities'] = obj['top_cities']
+        person_city['total_events'] = obj['total_events']
         yield person_city
 
 
@@ -333,17 +333,8 @@ class WriteToDatastoreSingle(beam.DoFn):
             self.client.put(entity)
 
 
-def ConvertEntityToText(entity, keys):
-    output = StringIO.StringIO()
-    csvwriter = csv.writer(output)
-    data = []
-    for key in keys:
-        if key == '_key':
-            data.append(entity.key.name)
-        else:
-            data.append(json.dumps(entity[key]))
-    csvwriter.writerow(data)
-    yield output.getvalue().strip()  # the later stages append newlines
+def ConvertDictToText(d):
+    yield '%s' % json.dumps(d)
 
 
 def ConvertFromEntity(entity):
@@ -407,9 +398,9 @@ def run_pipeline(project, pipeline_options, run_locally, args):
             'map attendee -> city' >> beam.FlatMap(GroupAttendenceByPerson) |
             'group by attendee' >> beam.GroupByKey() |
             'build top-cities per-person' >> beam.FlatMap(CountPersonTopCities) |
-            'build PRPersonCity' >> beam.ParDo(BuildPRPersonCity(), timestamp) |
-            'convert Entity to CSV' >> beam.ParDo(ConvertEntityToText, keys=['_key', 'top_cities', 'total_events']) |
-            'WriteToText' >> WriteToText('gs://dancedeets-hrd.appspot.com/test/people-city', file_name_suffix='.csv')
+            'convert dict to json' >> beam.ParDo(ConvertDictToText) |
+            'write json' >> WriteToText('gs://dancedeets-hrd.appspot.com/test/people-city', file_name_suffix='.csv')
+            #'build PRPersonCity' >> beam.ParDo(BuildPRPersonCity(), timestamp) |
             #'write PRPersonCity to datastore (unbatched)' >> beam.ParDo(WriteToDatastoreSingle(), actually_save=not run_locally)
         ) # yapf: disable
 

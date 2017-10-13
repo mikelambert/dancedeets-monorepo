@@ -2,7 +2,6 @@
 #
 # import PR data into sqlite
 import commands
-import csv
 import json
 import getpass
 import os
@@ -45,19 +44,17 @@ def save_personcity_db(clear=True):
         os.makedirs(path)
     except OSError:
         pass
+    for filename in os.listdir(path):
+        print 'deleting', filename
+        os.remove(os.path.join(path, filename))
+
     print 'Downloading CSV files'
-    commands.getoutput('gsutil -m cp gs://dancedeets-hrd.appspot.com/test/*.csv %s' % path)
-    for i in range(300):
-        print 'Loading blob %s' % i
-        reader = csv.reader(open(os.path.join(path, 'people-city-%05d-of-00300.csv' % i)))
-        for row in reader:
-            if not row:
-                continue
-            data = {
-                'person_id': row[0],
-                'top_cities': row[1],
-                'total_events': row[2],
-            }
+    commands.getoutput('gsutil -m cp gs://dancedeets-hrd.appspot.com/test/* %s' % path)
+    for filename in os.listdir(path):
+        print 'Loading blob %s' % filename
+        for row in open(os.path.join(path, filename)):
+            data = json.loads(row.strip())
+            data['top_cities'] = json.dumps(data['top_cities'])
             sqlite_db.insert_record(cursor, 'PRPersonCity', data)
 
     conn.commit()

@@ -14,5 +14,4 @@ def insert_record(cursor, table_name, data):
     except Exception:
         logging.exception('Found problems with data: %s', data)
         result = None
-    cursor.connection.commit()
     return result
