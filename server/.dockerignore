@@ -14,6 +14,8 @@ snapshotted
 tmp
 build
 .git
+webpack-client-output.json
+
 # Don't technically need the server-side JS maps,
 # as they're never accessed or used...
 dist/js-server/*.map
@@ -21,6 +23,9 @@ dist-includes/*/*.map
 # We have moved these all over to GCS
 dist/js
 dist/css
+
+# Downloaded data files
+tools/tmp
 
 # Source bits, that we actually don't need to run on the server
 amp/
