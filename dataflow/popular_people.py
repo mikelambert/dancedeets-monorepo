@@ -224,7 +224,7 @@ def CountPersonTopCities((person_id, cities)):
 
     # Try to limit our yielding to noteworthy people
     if top_cities:
-        yield {'person_id': person_id, 'top_cities': json.dumps(top_cities), 'total_events': total_events}
+        yield {'person_id': person_id, 'top_cities': top_cities, 'total_events': total_events}
     else:
         logging.info('%s: %s', person_id, sorted(events_per_city.items(), key=lambda x: -x[1]))
 
