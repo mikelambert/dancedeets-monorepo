@@ -61,8 +61,8 @@ def add_update_event(
 
     try:
         fb_event_attending_maybe = fbl.get(fb_api.LookupEventAttendingMaybe, event_id)
-    except fb_api.NoFetchedDataException as e:
-        logging.warning('Error loading fb-event-attending-maybe in add_update_event: %s', e)
+    except fb_api.NoFetchedDataException as error:
+        logging.warning('Error loading fb-event-attending-maybe in add_update_event: %s', error)
         fb_event_attending_maybe = None
 
     # Updates and saves the event

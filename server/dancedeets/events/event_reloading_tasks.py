@@ -20,12 +20,19 @@ DATETIME_FORMAT = "%Y-%m-%dT%H:%M:%S"
 def add_event_tuple_if_updating(events_to_update, fbl, db_event, only_if_updated):
     try:
         fb_event = fbl.fetched_data(fb_api.LookupEvent, db_event.fb_event_id)
-        fb_event_attending_maybe = fbl.fetched_data(fb_api.LookupEventAttendingMaybe, db_event.fb_event_id)
     except fb_api.NoFetchedDataException as e:
         # Ensure we can do a bare-minimum update, even if we aren't able to get a proper fb_event from the server.
         # This helps ensure we still update the event's search_time_period regardless.
         logging.info('Error fetching data from server for event %s: %s', db_event.fb_event_id, e)
         fb_event = db_event.fb_event
+    try:
+        fb_event_attending_maybe = fbl.fetched_data(fb_api.LookupEventAttendingMaybe, db_event.fb_event_id)
+    except fb_api.NoFetchedDataException as e:
+        # Ensure we can do a bare-minimum update, even if we aren't able to get a proper fb_event from the server.
+        # This helps ensure we still update the event's search_time_period regardless.
+        logging.info('Error fetching attending data from server for event %s: %s', db_event.fb_event_id, e)
+        fb_event_attending_maybe = None
+
     update_regardless = not only_if_updated
     if fb_event['empty']:
         logging.info('The latest fb event %s is empty (%s), keeping event data', db_event.id, fb_event['empty'])
