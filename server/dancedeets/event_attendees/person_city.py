@@ -40,12 +40,17 @@ def get_stddev_distance_for(person_ids, event_location):
 
 def get_top_city_for(person_ids):
     counts = Counter()
+    total_count = 0
     for city in _get_cities(person_ids):
         counts[city] += 1
+        total_count += 1
     top_cities = sorted(counts, key=lambda x: -counts[x])
     for i, city in enumerate(top_cities[:3]):
         logging.info('Top City %s: %s (%s attendees)', i, city, counts[city])
     if top_cities:
-        return top_cities[0]
-    else:
-        return None
+        top_city = top_cities[0]
+        city_count = counts[top_cities]
+        # More than 10%, and must have at least 3 people
+        if city_count > 3 and city_count > total_count * 0.1:
+            return top_city
+    return None
