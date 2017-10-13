@@ -21,26 +21,49 @@ const $ = gulpLoadPlugins();
 
 const bucket = 'gs://dancedeets-hrd.appspot.com';
 
-function remoteJob(filename) {
-  const jobName = filename.replace(/[^-a-z0-9]/, '-');
+function generateArgString(args) {
+  const argsString = Object.keys(args)
+    .map(key => `--${key}=${String(args[key])}`)
+    .join(' ');
+  return argsString;
+}
+
+function remoteJob(name, module, args) {
+  const jobName = name.toLowerCase().replace(/[^-a-z0-9]/, '-');
+  const argsString = generateArgString(args);
+  console.log(
+    `/usr/local/bin/python -m ${module} --log=DEBUG --project dancedeets-hrd --job_name=${jobName} --runner DataflowRunner --staging_location ${bucket}/staging --temp_location ${bucket}/temp --output ${bucket}/output --setup_file ./setup.py --num_workers 50 ${argsString}`
+  );
   return $.shell.task([
-    `/usr/local/bin/python -m ${filename} --log=DEBUG --project dancedeets-hrd --job_name=${jobName} --runner DataflowRunner --staging_location ${bucket}/staging --temp_location ${bucket}/temp --output ${bucket}/output --setup_file ./setup.py --num_workers 50`,
+    `/usr/local/bin/python -m ${module} --log=DEBUG --project dancedeets-hrd --job_name=${jobName} --runner DataflowRunner --staging_location ${bucket}/staging --temp_location ${bucket}/temp --output ${bucket}/output --setup_file ./setup.py --num_workers 50 ${argsString}`,
   ]);
 }
 
-function localJob(filename) {
+function localJob(name, module, args) {
+  const argsString = generateArgString(args);
   return $.shell.task([
-    `/usr/local/bin/python -m ${filename} --log=DEBUG --run_locally=true`,
+    `/usr/local/bin/python -m ${module} --log=DEBUG --run_locally=true ${argsString}`,
   ]);
 }
 
-function localRemoteTasks(command) {
-  gulp.task(`${command}:remote`, remoteJob(command));
-  gulp.task(`${command}:local`, localJob(command));
+function localRemoteTasks(name, module, args = {}) {
+  gulp.task(`${name}:remote`, remoteJob(name, module, args));
+  gulp.task(`${name}:local`, localJob(name, module, args));
 }
 
-localRemoteTasks('popular_people');
-localRemoteTasks('delete_old');
+localRemoteTasks('pr-city-category', 'popular_people', {
+  ground_truth_events: true,
+  want_top_attendees: true,
+});
+localRemoteTasks('pr-debug-attendees', 'popular_people', {
+  ground_truth_events: true,
+  debug_attendees: true,
+});
+localRemoteTasks('pr-person-city', 'popular_people', {
+  ground_truth_events: false,
+  person_locations: true,
+});
+localRemoteTasks('delete_old', 'delete_old');
 
 gulp.task(
   'popular_people:download',

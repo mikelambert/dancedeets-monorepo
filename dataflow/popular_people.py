@@ -28,7 +28,6 @@ from apache_beam.options.pipeline_options import GoogleCloudOptions
 from apache_beam.options.pipeline_options import PipelineOptions
 from apache_beam.options.pipeline_options import SetupOptions
 
-TOP_ALL_N = 1000
 TOP_DISPLAY_CITY_N = 10
 TOP_CITY_N = 100
 
@@ -296,7 +295,7 @@ def CountPeopleInfos((key, people_infos)):
         'count': count,
     } for pid, count in sorted_counts]
     # key contains {person_type, city, category}
-    yield (key, sorted_people[:TOP_ALL_N])
+    yield (key, sorted_people[:TOP_CITY_N])
 
 
 def CityToCategoryPeople((key, people)):
@@ -390,7 +389,7 @@ def run_pipeline(project, pipeline_options, run_locally, args):
             top_attendee_lists |
             'convert dict to json' >> beam.ParDo(ConvertDictToText) |
             'write json' >> WriteToText('gs://dancedeets-hrd.appspot.com/people-ranking-outputs/city-category/%s/data' % timestamp, file_name_suffix='.txt')
-            #'generate PRCityCategory database record' >> beam.ParDo(BuildPRCityCategory(), timestamp, 'PRCityCategory', TOP_ALL_N) |
+            #'generate PRCityCategory database record' >> beam.ParDo(BuildPRCityCategory(), timestamp, 'PRCityCategory', TOP_CITY_N) |
             #'write PRCityCategory to datastore (unbatched)' >> beam.ParDo(WriteToDatastoreSingle(), actually_save=not run_locally)
         ) # yapf: disable
 
@@ -451,7 +450,7 @@ def run():
     parser.add_argument('--run_locally', dest='run_locally', default='', help='Run data subset and do not save.')
     parser.add_argument('--debug_attendees', dest='debug_attendees', default=False, type=bool, help='Generate PRDebugAttendee data')
     parser.add_argument('--want_top_attendees', dest='want_top_attendees', default=False, type=bool, help='Generate PRCityCategory data')
-    parser.add_argument('--person_locations', dest='person_locations', default=True, type=bool, help='Generate PRPersonCity data')
+    parser.add_argument('--person_locations', dest='person_locations', default=False, type=bool, help='Generate PRPersonCity data')
     parser.add_argument(
         '--ground_truth_events',
         dest='ground_truth_events',
