@@ -1,21 +1,24 @@
 import datetime
-import logging
-import re
-from timezonefinder import TimezoneFinder
-import pytz
 import dateutil
+import logging
+import pytz
+import re
+import time
+from timezonefinder import TimezoneFinder
 
 from google.appengine.ext import ndb
 
 from dancedeets import fb_api
+from dancedeets.event_attendees import event_attendee_classifier
+from dancedeets.event_attendees import person_city
 from dancedeets.loc import gmaps_api
-from dancedeets.loc import math
 from dancedeets.rankings import cities_db
 from dancedeets.search import search
 from dancedeets.nlp import categories
 from dancedeets.nlp import event_classifier
 from dancedeets.util import dates
 from dancedeets.util import language
+from dancedeets.util import timelog
 from . import event_image
 from . import event_locations
 
@@ -147,11 +150,35 @@ def _inner_make_event_findable_for_fb_event(db_event, fb_dict, disable_updates):
 
     _inner_common_setup(db_event, disable_updates=disable_updates)
 
+    # First, attempt to re-derive the event location
+    original_address = db_event.address
+    db_event.address = None
+
     if 'regeocode' not in (disable_updates or []):
         # Don't use cached/stale geocode, when constructing the LocationInfo below.
         # Force it to re-look-up from the fb location and cached geo lookups.
         db_event.location_geocode = None
     location_info = event_locations.LocationInfo(fb_dict, db_event=db_event)
+
+    # If we can't figure out the location from the data we have, let's decide based on attendees
+    if not location_info.geocode and False:  # TODO
+        # Test code to find the event central location
+        try:
+            fb_event_attending_maybe = None  # TODO self.fbl.get(fb_api.LookupEventAttendingMaybe, db_event.id)
+        except fb_api.NoFetchedDataException:
+            logging.info('Event %s could not fetch event attendees, aborting.', db_event.id)
+        else:
+            ids = event_attendee_classifier._get_event_attendee_ids(fb_event_attending_maybe)
+            start = time.time()
+            top_city = person_city.get_top_city_for(ids)
+            timelog.log_time_since('Guessing Location for Attendee IDs', start)
+            db_event.address = top_city
+            location_info = event_locations.LocationInfo(fb_dict, db_event=db_event)
+    # Otherwise if we've still failed, fall-back onto the original db_event.address
+    if not location_info.geocode and original_address:
+        db_event.address = original_address
+        location_info = event_locations.LocationInfo(fb_dict, db_event=db_event)
+
     _update_geodata(db_event, location_info, disable_updates)
 
 

@@ -1,5 +1,6 @@
 from collections import Counter
 import json
+import logging
 
 from dancedeets.util import sqlite_db
 
@@ -17,5 +18,10 @@ def get_top_city_for(person_ids):
         top_cities = json.loads(result[0])
         for id in top_cities:
             counts[id] += 1
-    top_city = sorted(counts, key=lambda x: -counts[x])[0]
-    return top_city
+    top_cities = sorted(counts, key=lambda x: -counts[x])
+    for i, city in enumerate(top_cities[:3]):
+        logging.info('Top City %s: %s (%s attendees)', i, city, counts[city])
+    if top_cities:
+        return top_cities[0]
+    else:
+        return None
