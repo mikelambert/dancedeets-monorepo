@@ -39,7 +39,7 @@ def save_personcity_db(clear=True):
             '''
         )
 
-    path = os.path.join(os.path.dirname(__file__), 'test')
+    path = os.path.join(os.path.dirname(__file__), 'tmp')
     try:
         os.makedirs(path)
     except OSError:
@@ -51,7 +51,7 @@ def save_personcity_db(clear=True):
     print 'Downloading CSV files'
     commands.getoutput('gsutil -m cp gs://dancedeets-hrd.appspot.com/test/* %s' % path)
     for filename in os.listdir(path):
-        print 'Loading blob %s' % filename
+        print 'Loading file %s' % filename
         for row in open(os.path.join(path, filename)):
             data = json.loads(row.strip())
             data['top_cities'] = json.dumps(data['top_cities'])
