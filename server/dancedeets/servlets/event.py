@@ -380,6 +380,18 @@ class AdminEditHandler(base_servlet.BaseRequestHandler):
                 city_name = city.display_name()
         self.display['ranking_city_name'] = city_name
 
+        # Test code to find the event central location
+        try:
+            fb_event_attending_maybe = self.fbl.get(fb_api.LookupEventAttendingMaybe, event_id)
+            ids = event_attendee_classifier._get_event_attendee_ids(fb_event_attending_maybe)
+            from dancedeets.event_attendees import person_city
+            start = time.time()
+            top_city = person_city.get_top_city_for(ids)
+            timelog.log_time_since('Guessing Location for Attendee IDs', start)
+            print 'BEST GUESS:', top_city
+        except fb_api.NoFetchedDataException:
+            logging.info('Event %s could not fetch event attendees, aborting.', event_id)
+
         a = time.time()
         fb_event_attending_maybe = get_fb_event(self.fbl, event_id, lookup_type=fb_api.LookupEventAttendingMaybe)
         timelog.log_time_since('Loading FB Event Attending Data', a)
