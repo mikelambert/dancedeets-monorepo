@@ -22,6 +22,41 @@ TRIMMED_CITY_CATEGORY_DB = '/Users/%s/Dropbox/dancedeets-development/server/gene
 PERSON_CITY_DB = '/Users/%s/Dropbox/dancedeets-development/server/generated/pr_person_city.db' % getpass.getuser()
 
 
+def _get_path():
+    path = os.path.join(os.path.dirname(__file__), 'tmp')
+    return path
+
+
+def download_files():
+    path = _get_path()
+    try:
+        os.makedirs(path)
+    except OSError:
+        pass
+    #for filename in os.listdir(path):
+    #    print 'deleting', filename
+    #    os.remove(os.path.join(path, filename))
+
+    print 'Downloading CSV files'
+    commands.getoutput('gsutil -m cp -R -n gs://dancedeets-hrd.appspot.com/people-ranking-outputs/ %s' % path)
+
+
+def iterate_most_recent(job_name):
+    job_path = get_most_recent(job_name)
+    for filename in os.listdir(job_path):
+        print 'Loading file %s' % filename
+        for row in open(os.path.join(job_path, filename)):
+            yield json.loads(row.strip())
+
+
+def get_most_recent(job_name):
+    path = _get_path()
+    job_path = os.path.join(path, 'people-ranking-outputs', job_name)
+    timestamps = sorted(os.listdir(job_path), lambda x: x if x == '%s' else int(x))
+    full_path = os.path.join(job_path, timestamps[-1])
+    return full_path
+
+
 def save_personcity_db(clear=True):
     conn = sqlite3.connect(PERSON_CITY_DB)
     cursor = conn.cursor()
@@ -39,27 +74,9 @@ def save_personcity_db(clear=True):
             '''
         )
 
-    path = os.path.join(os.path.dirname(__file__), 'tmp')
-    try:
-        os.makedirs(path)
-    except OSError:
-        pass
-    #for filename in os.listdir(path):
-    #    print 'deleting', filename
-    #    os.remove(os.path.join(path, filename))
-
-    print 'Downloading CSV files'
-    commands.getoutput('gsutil -m cp -R -n gs://dancedeets-hrd.appspot.com/people-ranking-outputs/ %s' % path)
-
-    people_city_path = os.path.join(path, 'people-ranking-outputs', 'people-city')
-    timestamps = sorted(os.listdir(people_city_path), lambda x: x if x == '%s' else int(x))
-    full_path = os.path.join(people_city_path, timestamps[-1])
-    for filename in os.listdir(full_path):
-        print 'Loading file %s' % filename
-        for row in open(os.path.join(full_path, filename)):
-            data = json.loads(row.strip())
-            data['top_cities'] = json.dumps(data['top_cities'])
-            sqlite_db.insert_record(cursor, 'PRPersonCity', data)
+    for data in iterate_most_recent('people-city'):
+        data['top_cities'] = json.dumps(data['top_cities'])
+        sqlite_db.insert_record(cursor, 'PRPersonCity', data)
 
     conn.commit()
 
@@ -134,6 +151,7 @@ if __name__ == '__main__':
     if len(sys.argv) > 1 and sys.argv[1] == 'db_name':
         print TRIMMED_CITY_CATEGORY_DB
     else:
+        download_files()
         save_personcity_db()
         # Rewrite these as 'download files'
         # save_citycategory_db()
