@@ -107,9 +107,6 @@ def save_citycategory_db(clear=True):
 
 
 if __name__ == '__main__':
-    if len(sys.argv) > 1 and sys.argv[1] == 'db_name':
-        print TRIMMED_CITY_CATEGORY_DB
-    else:
-        download_files()
-        save_personcity_db()
-        save_citycategory_db()
+    download_files()
+    save_personcity_db()
+    save_citycategory_db()
