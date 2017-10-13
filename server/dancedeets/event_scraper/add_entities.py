@@ -33,7 +33,8 @@ def add_update_event(
     if remapped_address is not None:
         event_locations.update_remapped_address(fb_event, remapped_address)
 
-    e = eventdata.DBEvent.get_or_insert(fb_event['info']['id'])
+    event_id = fb_event['info']['id']
+    e = eventdata.DBEvent.get_or_insert(event_id)
     newly_created = (e.creating_method is None)
     if override_address is not None:
         e.address = override_address
@@ -58,8 +59,14 @@ def add_update_event(
             visible_to_fb_uids = []
     e.visible_to_fb_uids = visible_to_fb_uids
 
+    try:
+        fb_event_attending_maybe = fbl.get(fb_api.LookupEventAttendingMaybe, event_id)
+    except fb_api.NoFetchedDataException as e:
+        logging.warning('Error loading fb-event-attending-maybe in add_update_event: %s', e)
+        fb_event_attending_maybe = None
+
     # Updates and saves the event
-    event_updates.update_and_save_fb_events([(e, fb_event)])
+    event_updates.update_and_save_fb_events([(e, fb_event, fb_event_attending_maybe)])
 
     post_pubsub = newly_created and allow_posting
 

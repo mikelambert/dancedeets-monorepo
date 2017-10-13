@@ -60,7 +60,7 @@ class TestEvent(unittest.TestCase):
         }
         event.creating_fb_uid = 1
         event.creating_name = 'Addy McAdderson'
-        event_updates.update_and_save_fb_events([(event, event.fb_event)])
+        event_updates.update_and_save_fb_events([(event, event.fb_event, None)])
         event.put()
         self.saveEvent(event)
         self.saveEvent(event, amp=True)

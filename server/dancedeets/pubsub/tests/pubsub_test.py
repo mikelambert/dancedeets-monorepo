@@ -50,7 +50,7 @@ class TestPublishEvent(unittest.TestCase):
         fb_event = fbl.get(fb_api.LookupEvent, event_id)
 
         db_event = eventdata.DBEvent.get_or_insert(event_id)
-        event_updates.update_and_save_fb_events([(db_event, fb_event)], disable_updates=['photo'])
+        event_updates.update_and_save_fb_events([(db_event, fb_event, None)], disable_updates=['photo'])
         db_event.put()
         pubsub.eventually_publish_event(event_id)
 

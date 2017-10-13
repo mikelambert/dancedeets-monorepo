@@ -20,6 +20,7 @@ DATETIME_FORMAT = "%Y-%m-%dT%H:%M:%S"
 def add_event_tuple_if_updating(events_to_update, fbl, db_event, only_if_updated):
     try:
         fb_event = fbl.fetched_data(fb_api.LookupEvent, db_event.fb_event_id)
+        fb_event_attending_maybe = fbl.fetched_data(fb_api.LookupEventAttendingMaybe, db_event.fb_event_id)
     except fb_api.NoFetchedDataException as e:
         # Ensure we can do a bare-minimum update, even if we aren't able to get a proper fb_event from the server.
         # This helps ensure we still update the event's search_time_period regardless.
@@ -41,11 +42,11 @@ def add_event_tuple_if_updating(events_to_update, fbl, db_event, only_if_updated
 
     if update_regardless or db_event.fb_event != fb_event:
         logging.info("Event %s is updated.", db_event.id)
-        events_to_update.append((db_event, fb_event))
+        events_to_update.append((db_event, fb_event, fb_event_attending_maybe))
     # This happens when an event moves from TIME_FUTURE into TIME_PAST
     elif event_updates.need_forced_update(db_event):
         logging.info("Event %s is being saved via forced update", db_event.fb_event_id)
-        events_to_update.append((db_event, fb_event))
+        events_to_update.append((db_event, fb_event, fb_event_attending_maybe))
 
 
 def load_fb_events_using_backup_tokens(event_ids, allow_cache, only_if_updated, disable_updates):

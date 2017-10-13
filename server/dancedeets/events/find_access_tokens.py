@@ -32,6 +32,7 @@ def test_user_on_events(user):
     fbl.allow_cache = False
     try:
         fb_events = fbl.get_multi(fb_api.LookupEvent, event_ids)
+        fb_event_attending_maybe = fbl.get_multi(fb_api.LookupEventAttendingMaybe, event_ids)
     except fb_api.ExpiredOAuthToken:
         # Not longer a valid source for access_tokens
         return
@@ -44,7 +45,7 @@ def test_user_on_events(user):
     db_fb_events = []
     for db_event, new_fb_event in zip(found_db_events, found_fb_events):
         if db_event.has_content():
-            db_fb_events.append((db_event, new_fb_event))
+            db_fb_events.append((db_event, new_fb_event, fb_event_attending_maybe))
     event_updates.update_and_save_fb_events(db_fb_events)
 
     # We can end the shard via this, though it's difficult to tell when *every* event_id has got a valid token.
