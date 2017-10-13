@@ -65,13 +65,6 @@ localRemoteTasks('pr-person-city', 'popular_people', {
 });
 localRemoteTasks('delete_old', 'delete_old');
 
-gulp.task(
-  'popular_people:download',
-  $.shell.task(['cd ../server && python tools/download_pr_data.py'])
-);
-
-gulp.task('popular_people:upload', $.shell.task(['./tools/upload_pr_data.sh']));
-
 gulp.task('popular_people:complete', cb =>
   runSequence(
     'popular_people:remote',
