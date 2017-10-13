@@ -42,7 +42,7 @@ def get_connection(database_name):
     if runtime.is_local_appengine():
         db_path = os.path.join(DEV_PATH, full_db_name)
     else:
-        db_path = os.path.join(SERVER_DB, full_db_name)
+        db_path = os.path.join(SERVER_PATH, full_db_name)
         if not os.path.exists(db_path):
             start = time.time()
             _download_sqlite(db_path)
