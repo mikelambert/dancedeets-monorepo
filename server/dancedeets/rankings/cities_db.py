@@ -21,6 +21,14 @@ def get_nearby_city(latlng, country=None):
     return city
 
 
+def get_current_city(latlng):
+    for distance in [20, 100, 500]:
+        nearby_cities = get_nearby_cities(latlng, distance=distance)
+        if nearby_cities:
+            closest_cities = sorted(nearby_cities, key=lambda x: -x.distance_to(latlng))
+            return closest_cities[0]
+
+
 def get_nearby_cities(latlng, country=None, distance=None):
     # We shrink it by two:
     # An event in Palo Alto could be thrown into a San Jose bucket
@@ -49,8 +57,11 @@ class City(object):
         return city_name
 
     def closer_than(self, latlng, distance):
-        real_distance = math.get_distance(latlng, (self.latitude, self.longitude), use_km=True)
+        real_distance = self.distance_to(latlng)
         return real_distance < distance
+
+    def distance_to(self, latlng):
+        return math.get_distance(latlng, (self.latitude, self.longitude), use_km=True)
 
 
 def lookup_city_from_geoname_id(geoname_id):
