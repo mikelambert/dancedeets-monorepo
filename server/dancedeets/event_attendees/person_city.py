@@ -27,6 +27,12 @@ def _distance_between(geoname_id1, geoname_id2):
 
 
 def get_stddev_distance_for(person_ids, event_location):
+    # we should save this out into the dbevent somewhere
+    #
+    # 1) regenerate all dataflows using geoname id, and download and generate the *.db
+    # 2) test locally
+    # 3) push to GCS
+    # 4) push the code, and trust it to use the new GCS files
     distances = [_distance_between(city, event_location) for city in _get_cities(person_ids)]
     stddev = math.sqrt(sum(x * x for x in distances) / len(distances))
     return stddev

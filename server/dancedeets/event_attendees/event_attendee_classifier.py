@@ -98,10 +98,10 @@ def get_matcher(fbl, fb_event, fb_event_attending_maybe=None, classified_event=N
 class AttendeeMatch(object):
     def __init__(self, name, top_n, overlap_ids, reason):
         # TODO: clean up our city passing
-        category, city = name.split(': ', 1)
+        category, geoname_id = name.split(': ', 1)
         self.name = name
         self.category = category
-        self.city_name = city
+        self.geoname_id = geoname_id
         self.top_n = top_n
         self.overlap_ids = overlap_ids
         self.reason = reason
@@ -113,7 +113,7 @@ class AttendeeMatch(object):
         client = datastore.Client('dancedeets-hrd')
 
         debug_keys = []
-        for city_name in popular_people.get_summed_area_cities(self.city_name):
+        for city_name in popular_people.get_summed_area_cities(self.geoname_id):
             for person_id in self.overlap_ids:
                 debug_key = popular_people.PRDebugAttendee.generate_key(city_name, person_id)
                 debug_keys.append(client.key('PRDebugAttendee', debug_key))

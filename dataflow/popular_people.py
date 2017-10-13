@@ -105,7 +105,7 @@ def track_person(person_type, db_event, person, count_once_per):
     '''Yields json({person-type, category, city}) to 'count_once_per: id: name' '''
     base_key = {
         'person_type': person_type,
-        'city': db_event['geoname_id'],
+        'geoname_id': db_event['nearby_geoname_id'],
         'count_once_per': count_once_per,
         'person_id': person['id'],
         'person_name': person.get('name'),
@@ -128,7 +128,7 @@ def DebugExportEventPeopleForGrouping(data):
     if data['category'] != '':
         return
     key = {
-        'city': data['city'],
+        'geoname_id': data['geoname_id'],
         'person_id': data['person_id'],
     }
     yield key, (data['count_once_per'], data['event_id'])
@@ -156,7 +156,7 @@ def DebugExplodeAttendeeList((key, sorted_people)):
     #if key['category'] != '':
     #    return
     new_key = {
-        'city': key['city'],
+        'geoname_id': key['geoname_id'],
     }
     for person in sorted_people:
         final_key = new_key.copy()
@@ -180,12 +180,12 @@ class DebugBuildPRDebugAttendee(beam.DoFn):
 
     def process(self, (key, grouped_events), timestamp):
         # TODO: Sync with server/logic
-        key_name = '%s: %s' % (key['city'], key['person_id'])
+        key_name = '%s: %s' % (key['geoname_id'], key['person_id'])
         db_key = self.client.key('PRDebugAttendee', key_name)
         debug_attendee = datastore.Entity(key=db_key, exclude_from_indexes=['grouped_event_ids'])
         debug_attendee['created_date'] = timestamp
 
-        debug_attendee['city'] = key['city']
+        debug_attendee['geoname_id'] = key['geoname_id']
         debug_attendee['person_id'] = key['person_id']
         debug_attendee['grouped_event_ids'] = json.dumps(grouped_events)
         yield debug_attendee
@@ -200,7 +200,7 @@ def GroupAttendenceByPerson(data):
     # If the event doesn't have a location, don't worry about using it to infer location
     if data['category'] == 'Unknown':
         return
-    yield data['person_id'], data['city']
+    yield data['person_id'], data['geoname_id']
 
 
 def CountPersonTopCities((person_id, cities)):
@@ -303,7 +303,7 @@ def CityToCategoryPeople((key, people)):
         'category': key['category'],
         'person_type': key['person_type'],
     }
-    yield (key['city'], [within_city_category, people])
+    yield (key['geoname_id'], [within_city_category, people])
 
 
 class BuildPRCityCategory(beam.DoFn):
@@ -311,13 +311,13 @@ class BuildPRCityCategory(beam.DoFn):
         self.client = datastore.Client()
 
     def process(self, (key, sorted_people), timestamp, table_name, people_length):
-        key_name = '%s: %s: %s' % (key['person_type'], key['city'], key['category'])
+        key_name = '%s: %s: %s' % (key['person_type'], key['geoname_id'], key['category'])
         db_key = self.client.key(table_name, key_name)
         ranking = datastore.Entity(key=db_key, exclude_from_indexes=['top_people_json'])
         ranking['created_date'] = timestamp
 
         ranking['person_type'] = key['person_type']
-        ranking['city'] = key['city']
+        ranking['geoname_id'] = key['geoname_id']
         ranking['category'] = key['category']
         ranking['top_people_json'] = json.dumps(sorted_people[:people_length])
         yield ranking

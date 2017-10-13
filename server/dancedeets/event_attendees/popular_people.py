@@ -53,21 +53,21 @@ class PRCityCategory(ndb.Model):
     created_date = ndb.DateTimeProperty(auto_now=True)
 
     person_type = ndb.StringProperty()
-    city = ndb.StringProperty()
+    geoname_id = ndb.StringProperty()
     category = ndb.StringProperty()
     top_people_json = ndb.JsonProperty()
     # top_people_json is [['id: name', count], ...]
 
 
 class PeopleRanking(object):
-    def __init__(self, city, category, person_type, top_people_json):
-        self.city = city
+    def __init__(self, geoname_id, category, person_type, top_people_json):
+        self.geoname_id = geoname_id
         self.category = category
         self.person_type = person_type
         self.top_people_json = top_people_json
 
     def __repr__(self):
-        return 'PeopleRanking(%s, %s, %s,\n%s\n)' % (self.city, self.category, self.person_type, self.top_people_json)
+        return 'PeopleRanking(%s, %s, %s,\n%s\n)' % (self.geoname_id, self.category, self.person_type, self.top_people_json)
 
     @property
     def human_category(self):
@@ -109,7 +109,9 @@ def get_people_rankings_for_city_names(city_names, attendees_only=False):
 
     results = []
     for city_category in pr_city_categories:
-        results.append(PeopleRanking(city_category.city, city_category.category, city_category.person_type, city_category.top_people_json))
+        results.append(
+            PeopleRanking(city_category.geoname_id, city_category.category, city_category.person_type, city_category.top_people_json)
+        )
 
     return results
 
@@ -139,14 +141,14 @@ def get_people_rankings_for_city_names_dev_remote(city_names, attendees_only):
             ranking = PRCityCategory()
             ranking.key = ndb.Key('PRCityCategory', result.key.name)
             ranking.person_type = result['person_type']
-            ranking.city = result['city']
+            ranking.geoname_id = result['geoname_id']
             ranking.category = result['category']
             ranking.top_people_json = json.loads(result.get('top_people_json', '[]'))
             rankings.append(ranking)
     return rankings
 
 
-def _get_city_names_within(bounds):
+def _get_geoname_ids_within(bounds):
     if bounds == None:
         return []
     logging.info('Looking up nearby cities to %s', bounds)
@@ -157,17 +159,17 @@ def _get_city_names_within(bounds):
 
 
 def get_attendees_within(bounds, max_attendees):
-    city_names = _get_city_names_within(bounds)
-    logging.info('Loading PRCityCategory for top 10 cities: %s', city_names)
-    if not city_names:
+    geoname_ids = _get_geoname_ids_within(bounds)
+    logging.info('Loading PRCityCategory for top 10 cities: %s', geoname_ids)
+    if not geoname_ids:
         return {}
-    memcache_key = 'AttendeeCache: %s' % hashlib.md5('\n'.join(city_names).encode('utf-8')).hexdigest()
+    memcache_key = 'AttendeeCache: %s' % hashlib.md5('\n'.join(geoname_ids).encode('utf-8')).hexdigest()
     memcache_result = memcache.get(memcache_key)
     if memcache_result:
         logging.info('Reading memcache key %s with value length: %s', memcache_key, len(memcache_result))
         result = json.loads(memcache_result)
     else:
-        people_rankings = get_people_rankings_for_city_names(city_names, attendees_only=True)
+        people_rankings = get_people_rankings_for_city_names(geoname_ids, attendees_only=True)
         logging.info('Loaded %s People Rankings', len(people_rankings))
         if runtime.is_local_appengine() and False:
             for x in people_rankings:
@@ -192,7 +194,7 @@ def get_attendees_within(bounds, max_attendees):
 
 def combine_rankings(rankings, max_people=0):
     groupings = {}
-    cities = sorted(set(r.city for r in rankings))
+    cities = sorted(set(r.geoname_id for r in rankings))
     summed_area_key = '%s (%s)' % (SUMMED_AREA, SUMMED_AREA_CITY_DELIM.join(cities))
     for r in rankings:
         top_people = r.worthy_top_people()
@@ -201,7 +203,7 @@ def combine_rankings(rankings, max_people=0):
         #logging.info(r.key)
         for key in (
             (summed_area_key, r.person_type, r.category),
-            (r.city, r.person_type, r.category),
+            (r.geoname_id, r.person_type, r.category),
         ):
             # Make sure we use setdefault....we can have key repeats due to rankings from different cities
             groupings.setdefault(key, {})
@@ -228,8 +230,8 @@ def combine_rankings(rankings, max_people=0):
 
     final_groupings = {}
     for key in groupings:
-        city, person_type, category = key
-        secondary_key = '%s: %s' % (category, city)
+        geoname_id, person_type, category = key
+        secondary_key = '%s: %s' % (category, geoname_id)
         orig = groupings[key]
         dicts = []
         for name, count in orig.iteritems():
