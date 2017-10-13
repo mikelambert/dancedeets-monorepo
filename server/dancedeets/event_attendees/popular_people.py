@@ -152,7 +152,7 @@ def _get_city_names_within(bounds):
     logging.info('Looking up nearby cities to %s', bounds)
     included_cities = cities_db.get_contained_cities(bounds)
     logging.info('Found %s cities', len(included_cities))
-    city_names = [city.display_name() for city in included_cities]
+    city_names = [city.geoname_id for city in included_cities]
     return city_names
 
 

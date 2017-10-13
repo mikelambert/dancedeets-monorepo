@@ -107,7 +107,8 @@ class WeeklyImageHandler(base_servlet.BareBaseRequestHandler):
         if ',' in city_key:
             self.response.set_status(404)
             return
-        city = cities_db.lookup_city_from_geoname_id(city_key)
+        cities = cities_db.lookup_city_from_geoname_ids([city_key])
+        city = cities[0]
 
         disable_cache = self.request.get('disable_cache') == '1'
         if self.request.get('week_start'):

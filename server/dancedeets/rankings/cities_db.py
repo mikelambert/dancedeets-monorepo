@@ -64,12 +64,13 @@ class City(object):
         return math.get_distance(latlng, (self.latitude, self.longitude), use_km=True)
 
 
-def lookup_city_from_geoname_id(geoname_id):
+def lookup_city_from_geoname_ids(geoname_ids):
     connection = sqlite_db.get_connection('cities', TEST_FILENAME)
     connection.row_factory = sqlite3.Row
     cursor = connection.cursor()
-    cursor.execute('select * from City where geoname_id = ?', (geoname_id,))
-    return City(cursor.fetchone())
+    query = 'select * from City where geoname_id in (%s)' % ','.join('?' * len(geoname_ids))
+    cursor.execute(query, geoname_ids)
+    return [City(x) for x in cursor.fetchall()]
 
 
 def get_contained_cities(points, country=None):

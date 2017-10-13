@@ -3,6 +3,7 @@ import json
 import logging
 import math
 
+from dancedeets.rankings import cities_db
 from dancedeets.util import sqlite_db
 
 
@@ -11,8 +12,7 @@ def _get_cities(person_ids):
     cursor = conn.cursor()
 
     query = 'SELECT top_cities from PRPersonCity where person_id in (%s)' % ','.join('?' * len(person_ids))
-    params = list(person_ids)
-    cursor.execute(query, params)
+    cursor.execute(query, person_ids)
     cities = []
     for result in cursor.fetchall():
         top_cities = json.loads(result[0])
@@ -20,9 +20,10 @@ def _get_cities(person_ids):
     return cities
 
 
-def _distance_between(a, b):
-    #TODO: I think we need to start passing everything around as geoname_ids, to make this cheap/efficient, right?
-    raise NotImplementedError()
+def _distance_between(geoname_id1, geoname_id2):
+    city1, city2 = cities_db.lookup_city_from_geoname_ids([geoname_id1, geoname_id2])
+    distance = city1.distance_to(city2.latlng())
+    return distance
 
 
 def get_stddev_distance_for(person_ids, event_location):

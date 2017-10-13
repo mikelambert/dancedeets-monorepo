@@ -85,7 +85,8 @@ def facebook_weekly_post(db_auth_token, city_data):
 
 def _facebook_weekly_post(db_auth_token, city_data):
     city_key = city_data['city']
-    city = cities_db.lookup_city_from_geoname_id(city_key)
+    cities = cities_db.lookup_city_from_geoname_ids([city_key])
+    city = cities[0]
     page_id = db_auth_token.token_nickname
     fbl = fb_api.FBLookup(None, db_auth_token.oauth_token)
 

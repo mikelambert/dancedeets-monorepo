@@ -105,7 +105,7 @@ def track_person(person_type, db_event, person, count_once_per):
     '''Yields json({person-type, category, city}) to 'count_once_per: id: name' '''
     base_key = {
         'person_type': person_type,
-        'city': db_event['city_name'],
+        'city': db_event['geoname_id'],
         'count_once_per': count_once_per,
         'person_id': person['id'],
         'person_name': person.get('name'),
