@@ -42,7 +42,8 @@ gulp.task('default', taskListing);
 
 const $ = gulpLoadPlugins();
 
-const baseAssetsDir = `/Users/${username.sync()}/Dropbox/dancedeets-development/server/build-assets/`;
+const baseAssetsDir = `/Users/${username.sync()}/Dropbox/dancedeets-development/server/build-assets`;
+const generatedFilesDir = `/Users/${username.sync()}/Dropbox/dancedeets-development/server/generated`;
 
 // download the PR* data from GC Datastore, generate sqlite databases, and then upload them to GC Storage
 gulp.task('sqlite:generate', $.shell.task(['./tools/download_pr_data.py']));
@@ -65,7 +66,7 @@ gulp.task(
   'compile:geonames:build_cities_db',
   ['compile:geonames:fetch_adgeolocs'],
   $.shell.task(
-    'PYTHONPATH=lib-local:lib-both:. python ./dancedeets/geonames/build_cities_db.py ./dancedeets/geonames/cities.db'
+    `PYTHONPATH=lib-local:lib-both:. python ./dancedeets/geonames/build_cities_db.py ${generatedFilesDir}/cities.db`
   )
 );
 gulp.task('compile:geonames', ['compile:geonames:build_cities_db']);
@@ -145,7 +146,7 @@ gulp.task('compile:images:assets-to-dist', () =>
 
 gulp.task('compile:images:resize', () =>
   gulp
-    .src(`${baseAssetsDir}img/**/*.{png,jpg}`)
+    .src(`${baseAssetsDir}/img/**/*.{png,jpg}`)
     .pipe(
       $.responsiveImages({
         'classes/*/*.*': [
@@ -235,7 +236,7 @@ gulp.task('compile:images:shared-resize', () =>
 // gets deets-activity svg files
 gulp.task('compile:images:svg', () =>
   gulp
-    .src(`${baseAssetsDir}img/*.svg`)
+    .src(`${baseAssetsDir}/img/*.svg`)
     .pipe(
       $.cache(
         $.imagemin({

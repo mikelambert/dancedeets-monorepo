@@ -7,16 +7,12 @@ import getpass
 import os
 import site
 import sqlite3
-import StringIO
-import sys
 
 site.addsitedir('lib-local')
 
-from google.cloud import storage
 from dancedeets.geonames import sqlite_db
 
-TRIMMED_CITY_CATEGORY_DB = '/Users/%s/Dropbox/dancedeets-development/server/generated/pr_city_category.db' % getpass.getuser()
-PERSON_CITY_DB = '/Users/%s/Dropbox/dancedeets-development/server/generated/pr_person_city.db' % getpass.getuser()
+DB_PATH = '/Users/%s/Dropbox/dancedeets-development/server/generated/' % getpass.getuser()
 
 
 def _get_path():
@@ -55,7 +51,7 @@ def get_most_recent(job_name):
 
 
 def save_personcity_db(clear=True):
-    conn = sqlite3.connect(PERSON_CITY_DB)
+    conn = sqlite3.connect(os.path.join(DB_PATH, 'pr_person_city'))
     cursor = conn.cursor()
     if clear:
         cursor.execute('''DROP TABLE IF EXISTS PRPersonCity''')
@@ -79,7 +75,7 @@ def save_personcity_db(clear=True):
 
 
 def save_citycategory_db(clear=True):
-    conn = sqlite3.connect(TRIMMED_CITY_CATEGORY_DB)
+    conn = sqlite3.connect(os.path.join(DB_PATH, 'pr_city_category.db'))
     cursor = conn.cursor()
     if clear:
         cursor.execute('''DROP TABLE IF EXISTS PRCityCategory''')
