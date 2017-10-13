@@ -388,8 +388,10 @@ def run_pipeline(project, pipeline_options, run_locally, args):
     if want_top_attendees:
         (
             top_attendee_lists |
-            'generate PRCityCategory database record' >> beam.ParDo(BuildPRCityCategory(), timestamp, 'PRCityCategory', TOP_ALL_N) |
-            'write PRCityCategory to datastore (unbatched)' >> beam.ParDo(WriteToDatastoreSingle(), actually_save=not run_locally)
+            'convert dict to json' >> beam.ParDo(ConvertDictToText) |
+            'write json' >> WriteToText('gs://dancedeets-hrd.appspot.com/people-ranking-outputs/city-category/%s/data' % timestamp, file_name_suffix='.txt')
+            #'generate PRCityCategory database record' >> beam.ParDo(BuildPRCityCategory(), timestamp, 'PRCityCategory', TOP_ALL_N) |
+            #'write PRCityCategory to datastore (unbatched)' >> beam.ParDo(WriteToDatastoreSingle(), actually_save=not run_locally)
         ) # yapf: disable
 
     if person_locations:
@@ -399,7 +401,7 @@ def run_pipeline(project, pipeline_options, run_locally, args):
             'group by attendee' >> beam.GroupByKey() |
             'build top-cities per-person' >> beam.FlatMap(CountPersonTopCities) |
             'convert dict to json' >> beam.ParDo(ConvertDictToText) |
-            'write json' >> WriteToText('gs://dancedeets-hrd.appspot.com/test/people-city', file_name_suffix='.csv')
+            'write json' >> WriteToText('gs://dancedeets-hrd.appspot.com/people-ranking-outputs/people-city/%s/data' % timestamp, file_name_suffix='.txt')
             #'build PRPersonCity' >> beam.ParDo(BuildPRPersonCity(), timestamp) |
             #'write PRPersonCity to datastore (unbatched)' >> beam.ParDo(WriteToDatastoreSingle(), actually_save=not run_locally)
         ) # yapf: disable

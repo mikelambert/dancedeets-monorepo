@@ -44,15 +44,19 @@ def save_personcity_db(clear=True):
         os.makedirs(path)
     except OSError:
         pass
-    for filename in os.listdir(path):
-        print 'deleting', filename
-        os.remove(os.path.join(path, filename))
+    #for filename in os.listdir(path):
+    #    print 'deleting', filename
+    #    os.remove(os.path.join(path, filename))
 
     print 'Downloading CSV files'
-    commands.getoutput('gsutil -m cp gs://dancedeets-hrd.appspot.com/test/* %s' % path)
-    for filename in os.listdir(path):
+    commands.getoutput('gsutil -m cp -R -n gs://dancedeets-hrd.appspot.com/people-ranking-outputs/ %s' % path)
+
+    people_city_path = os.path.join(path, 'people-ranking-outputs', 'people-city')
+    timestamps = sorted(os.listdir(people_city_path), lambda x: x if x == '%s' else int(x))
+    full_path = os.path.join(people_city_path, timestamps[-1])
+    for filename in os.listdir(full_path):
         print 'Loading file %s' % filename
-        for row in open(os.path.join(path, filename)):
+        for row in open(os.path.join(full_path, filename)):
             data = json.loads(row.strip())
             data['top_cities'] = json.dumps(data['top_cities'])
             sqlite_db.insert_record(cursor, 'PRPersonCity', data)
