@@ -163,7 +163,7 @@ def get_attendees_within(bounds, max_attendees):
     logging.info('Loading PRCityCategory for top 10 cities: %s', geoname_ids)
     if not geoname_ids:
         return {}
-    memcache_key = 'AttendeeCache: %s' % hashlib.md5('\n'.join(geoname_ids).encode('utf-8')).hexdigest()
+    memcache_key = 'AttendeeCache: %s' % hashlib.md5('\n'.join(str(x) for x in geoname_ids).encode('utf-8')).hexdigest()
     memcache_result = memcache.get(memcache_key)
     if memcache_result:
         logging.info('Reading memcache key %s with value length: %s', memcache_key, len(memcache_result))
