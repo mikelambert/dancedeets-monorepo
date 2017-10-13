@@ -47,7 +47,10 @@ const generatedFilesDir = `/Users/${username.sync()}/Dropbox/dancedeets-developm
 
 // download the PR* data from GC Datastore, generate sqlite databases, and then upload them to GC Storage
 gulp.task('sqlite:generate', $.shell.task(['./tools/download_pr_data.py']));
-gulp.task('sqlite:upload', $.shell.task(['./tools/upload_pr_data.py']));
+gulp.task(
+  'sqlite:upload',
+  $.shell.task(['PYTHONPATH=. ./tools/upload_pr_data.py'])
+);
 
 // TODO: Support login here, so that this URL can actually run. Currently blocked by 'login: admin'
 gulp.task('web:events:resave', cb =>
