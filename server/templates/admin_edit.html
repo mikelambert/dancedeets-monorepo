@@ -6,75 +6,80 @@ Edit Event
 
 {% block inner_body %}
 
-		<form action="/events/admin_edit" method=post>
+    <form action="/events/admin_edit" method=post>
 
-			<table><tr><td>
-			<h2>{{ fb_event.info.name|format_html|highlight_keywords }}</h2>
-			</td></tr>
-			</table>
-			<a href="{{ raw_fb_event_url(fb_event.info.id) }}">See on Facebook</a> (<a href="http://graph.facebook.com/{{ fb_event.info.id }}">Graph</a>)
-			{% if fb_event.info.owner %}
-				(Owner: <a href="{{ dd_admin_source_url(fb_event.info.owner.id) }}">{{ fb_event.info.owner.name }}</a>
-				{%- if owner_location -%}
-				, Location: {{ owner_location }}
-				{% endif -%})
-			{% endif %}
-			<br><br>
-			<table>
-				<tr><td>
-					Original Address:
-				</td><td>
-					<table style="display:inline"><tr><td>
-					{% if location_info.fb_address %}
-						<a href="http://www.google.com/search?q={{ location_info.fb_address|urlencode }}">{{ location_info.fb_address|format_html }}</a>
-					{% endif %}
-					</td></tr>
-					</table>
-				</td></tr>
-				<tr><td>
-					Geocoded Address:
-				</td><td>
-					{{ fb_geocoded_address|format_html }}
-				</td></tr>
-				<tr><td>
-					Remapped Address:
-				</td><td>
-					<input class="form-control" type="text" size=40 name="remapped_address" value="{{ location_info.remapped_address or "" }}">
-				</td></tr>
-				<tr><td>
-					Override Address:
-					{% if location_info.needs_override_address() %}
-						(Required!)
-					{% endif %}
-				</td><td>
-					<input class="form-control" type="text" size=40 name="override_address" value="{{ location_info.overridden_address or "" }}">
-				</td></tr>
-				<tr><td>
-					Final Address:
-				</td><td>
-					{{ location_info.final_city|format_html }}
-					{% if event and event.anywhere %}
-					<br>Online/Anywhere/Worldwide
-					{% endif %}
-				</td></tr>
+      <table><tr><td>
+      <h2>{{ fb_event.info.name|format_html|highlight_keywords }}</h2>
+      </td></tr>
+      </table>
+      <a href="{{ raw_fb_event_url(fb_event.info.id) }}">See on Facebook</a> (<a href="http://graph.facebook.com/{{ fb_event.info.id }}">Graph</a>)
+      {% if fb_event.info.owner %}
+        (Owner: <a href="{{ dd_admin_source_url(fb_event.info.owner.id) }}">{{ fb_event.info.owner.name }}</a>
+        {%- if owner_location -%}
+        , Location: {{ owner_location }}
+        {% endif -%})
+      {% endif %}
+      <br><br>
+      <table>
+        <tr><td>
+          Original Address:
+        </td><td>
+          <table style="display:inline"><tr><td>
+          {% if location_info.fb_address %}
+            <a href="http://www.google.com/search?q={{ location_info.fb_address|urlencode }}">{{ location_info.fb_address|format_html }}</a>
+          {% endif %}
+          </td></tr>
+          </table>
+        </td></tr>
+        <tr><td>
+          Geocoded Address:
+        </td><td>
+          {{ fb_geocoded_address|format_html }}
+        </td></tr>
+        <tr><td>
+          Remapped Address:
+        </td><td>
+          <input class="form-control" type="text" size=40 name="remapped_address" value="{{ location_info.remapped_address or "" }}">
+        </td></tr>
+        <tr><td>
+          Override Address:
+          {% if location_info.needs_override_address() %}
+            (Required!)
+          {% endif %}
+        </td><td>
+          <input class="form-control" type="text" size=40 name="override_address" value="{{ location_info.overridden_address or "" }}">
+        </td></tr>
+        <tr><td>
+          Final Address:
+        </td><td>
+          {{ location_info.final_city|format_html }}
+          {% if event and event.anywhere %}
+          <br>Online/Anywhere/Worldwide
+          {% endif %}
+        </td></tr>
+        <tr><td>
+          Attendee-Based City:
+        </td><td>
+          {{ attendee_based_city }}
+        </td></tr>
         <tr><td>
           Ranking City Name:
         </td><td>
           {{ ranking_city_name }}
         </td></tr>
-			</table>
-			<div>
-			<table><tr><td>Description:</td><td><div style="height: 25px" id="google_translate_element"></div></td></tr></table>
-			{% if fb_event.info.description %}
-				{% set description = fb_event.info.description %}
-			{% else %}
-				{% set description = "None!" %}
-			{% endif %}
-			<div style="padding: 20px; width: 600px; height:150px; overflow:scroll; border: 1px solid black">{{ description|format_html|linkify|highlight_keywords }}</div>
-			</div>
-			<p>Reason: {{ classified_event.reason() }}<br>
-			Dance Words: {{ classifier_dance_words }}<br>
-			Event Words: {{ classifier_event_words }}<br>
+      </table>
+      <div>
+      <table><tr><td>Description:</td><td><div style="height: 25px" id="google_translate_element"></div></td></tr></table>
+      {% if fb_event.info.description %}
+        {% set description = fb_event.info.description %}
+      {% else %}
+        {% set description = "None!" %}
+      {% endif %}
+      <div style="padding: 20px; width: 600px; height:150px; overflow:scroll; border: 1px solid black">{{ description|format_html|linkify|highlight_keywords }}</div>
+      </div>
+      <p>Reason: {{ classified_event.reason() }}<br>
+      Dance Words: {{ classifier_dance_words }}<br>
+      Event Words: {{ classifier_event_words }}<br>
       <br>
 
       {% if event %}
@@ -82,7 +87,7 @@ Edit Event
       <br>
       {% endif %}
 
-			{% if auto_classified_types %}<b>{% endif %}
+      {% if auto_classified_types %}<b>{% endif %}
       Auto-classified Keywords:
       {% if auto_classified_types %}</b>{% endif %}
       {{ auto_classified_types }}<br>
@@ -135,62 +140,62 @@ Edit Event
         <br>
       {% endif %}
 
-			Auto-categorized: {{ auto_categorized_types }}<br>
-			{% if event %}
-				Any Existing Tags:
-				{% for tag in event.tags %}
-					{{ tag }}
-				{% endfor %}
-			<br>
-			{% endif %}
-			<p>
-			{% if event %}
-				{% if creating_user %}
-					Submitted by <a href="https://www.facebook.com/{{ creating_user.profile.id }}">{{ creating_user.profile.name }}</a>.<br>
-				{% endif %}
-				<button type="submit" class="btn btn-primary">Edit Event</button>
-				<button type="submit" class="btn btn-danger" name="delete" value="yes">Delete Event</button>
-			{% else %}
-				Creating new event!
-				<button type="submit" class="btn btn-primary">Create Event</button>
-				{# <button type="submit" class="btn btn-default">Not a Dance Event</button> #}
-			{% endif %}
-			<p>
-			{% include "_event_admin_links.html" %}
-			{% if potential_event %}
-				Potential Event</a><br>
-				Language: {{ potential_event.language }}<br>
-				Dance Bias Score is {{ potential_event.dance_bias_score }}.<br>
-				Non Dance Bias Score is {{ potential_event.non_dance_bias_score }}.<br>
-				Keyword Score is {{ potential_event.match_score }}.<br>
-				Inv Keyword Density is {{ classified_event.inverse_keyword_density() }}.<br>
-				Show-even-if-zero is {{ potential_event.show_even_if_no_score }}.<br>
-				With Sources:
-				{% for source_id in potential_event.source_ids_only() %}
-					<a href="{{ dd_admin_source_url(source_id) }}">{{ source_id }}</a>,
-				{% endfor %}
+      Auto-categorized: {{ auto_categorized_types }}<br>
+      {% if event %}
+        Any Existing Tags:
+        {% for tag in event.tags %}
+          {{ tag }}
+        {% endfor %}
+      <br>
+      {% endif %}
+      <p>
+      {% if event %}
+        {% if creating_user %}
+          Submitted by <a href="https://www.facebook.com/{{ creating_user.profile.id }}">{{ creating_user.profile.name }}</a>.<br>
+        {% endif %}
+        <button type="submit" class="btn btn-primary">Edit Event</button>
+        <button type="submit" class="btn btn-danger" name="delete" value="yes">Delete Event</button>
+      {% else %}
+        Creating new event!
+        <button type="submit" class="btn btn-primary">Create Event</button>
+        {# <button type="submit" class="btn btn-default">Not a Dance Event</button> #}
+      {% endif %}
+      <p>
+      {% include "_event_admin_links.html" %}
+      {% if potential_event %}
+        Potential Event</a><br>
+        Language: {{ potential_event.language }}<br>
+        Dance Bias Score is {{ potential_event.dance_bias_score }}.<br>
+        Non Dance Bias Score is {{ potential_event.non_dance_bias_score }}.<br>
+        Keyword Score is {{ potential_event.match_score }}.<br>
+        Inv Keyword Density is {{ classified_event.inverse_keyword_density() }}.<br>
+        Show-even-if-zero is {{ potential_event.show_even_if_no_score }}.<br>
+        With Sources:
+        {% for source_id in potential_event.source_ids_only() %}
+          <a href="{{ dd_admin_source_url(source_id) }}">{{ source_id }}</a>,
+        {% endfor %}
         <br>
         Overlap Dance Attendee IDs:
         {% for id in overlap_attendee_ids %}
           <a href="http://www.facebook.com/{{ id }}">{{ id }}</a>,
         {% endfor %}
         <br>
-			{% endif %}
-			<input type="hidden" name="event_id" value="{{ fb_event.info.id }}">
+      {% endif %}
+      <input type="hidden" name="event_id" value="{{ fb_event.info.id }}">
 
-		</form>
-	</body>
+    </form>
+  </body>
 {% endblock %}
 
 {% block bottom_javascript %}
 <script type="text/javascript">
 function googleTranslateElementInit() {
-	new google.translate.TranslateElement({
-		layout: google.translate.TranslateElement.InlineLayout.SIMPLE,
-		multilanguagePage: true,
-		gaTrack: true,
-		gaId: 'UA-18831479-1',
-	}, 'google_translate_element');
+  new google.translate.TranslateElement({
+    layout: google.translate.TranslateElement.InlineLayout.SIMPLE,
+    multilanguagePage: true,
+    gaTrack: true,
+    gaId: 'UA-18831479-1',
+  }, 'google_translate_element');
 }
 </script>
 <script type="text/javascript" src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>

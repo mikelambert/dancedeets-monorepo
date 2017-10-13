@@ -12,6 +12,7 @@ import urllib
 from dancedeets import app
 from dancedeets import base_servlet
 from dancedeets.event_attendees import event_attendee_classifier
+from dancedeets.event_attendees import person_city
 from dancedeets.event_scraper import add_entities
 from dancedeets.event_scraper import potential_events
 from dancedeets.events import add_events
@@ -27,7 +28,6 @@ from dancedeets.nlp import categories
 from dancedeets.nlp import event_auto_classifier
 from dancedeets.nlp import event_classifier
 from dancedeets.rankings import cities_db
-from dancedeets.rankings import rankings
 from dancedeets.search import search
 from dancedeets.users import users
 from dancedeets.util import dates
@@ -384,13 +384,13 @@ class AdminEditHandler(base_servlet.BaseRequestHandler):
         try:
             fb_event_attending_maybe = self.fbl.get(fb_api.LookupEventAttendingMaybe, event_id)
             ids = event_attendee_classifier._get_event_attendee_ids(fb_event_attending_maybe)
-            from dancedeets.event_attendees import person_city
             start = time.time()
             top_city = person_city.get_top_city_for(ids)
             timelog.log_time_since('Guessing Location for Attendee IDs', start)
-            print 'BEST GUESS:', top_city
+            self.display['attendee_based_city'] = top_city
         except fb_api.NoFetchedDataException:
             logging.info('Event %s could not fetch event attendees, aborting.', event_id)
+            self.display['attendee_based_city'] = 'Could not fetch attendees'
 
         a = time.time()
         fb_event_attending_maybe = get_fb_event(self.fbl, event_id, lookup_type=fb_api.LookupEventAttendingMaybe)
