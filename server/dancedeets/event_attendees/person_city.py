@@ -63,5 +63,8 @@ def get_top_geoname_for(person_ids):
 
 def get_top_city_for(person_ids):
     top_geoname_id = get_top_geoname_for(person_ids)
-    city = cities_db.lookup_city_from_geoname_ids([top_geoname_id])[0]
-    return city.display_name()
+    if top_geoname_id:
+        city = cities_db.lookup_city_from_geoname_ids([top_geoname_id])[0]
+        return city.display_name()
+    else:
+        False
