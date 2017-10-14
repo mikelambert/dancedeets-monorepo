@@ -2,6 +2,7 @@ import hashlib
 import json
 import logging
 import re
+import time
 
 from google.appengine.api import memcache
 from google.appengine.ext import ndb
@@ -101,10 +102,9 @@ class PeopleRanking(object):
         return max([int(top_person_unique_events * cutoff), minimum])
 
 
-def get_people_rankings_for_city_names(city_names, attendees_only=False):
-    import time
+def get_people_rankings_for_city_names(geoname_ids, attendees_only=False):
     start = time.time()
-    pr_city_categories = get_people_rankings_for_city_names_sqlite(city_names, attendees_only)
+    pr_city_categories = get_people_rankings_for_city_names_sqlite(geoname_ids, attendees_only)
     logging.info('Loading PRCityCategory took %0.3f seconds', time.time() - start)
 
     results = []
@@ -116,22 +116,22 @@ def get_people_rankings_for_city_names(city_names, attendees_only=False):
     return results
 
 
-def get_people_rankings_for_city_names_sqlite(city_names, attendees_only):
-    return popular_people_sqlite.get_people_rankings_for_city_names_sqlite(city_names, attendees_only)
+def get_people_rankings_for_city_names_sqlite(geoname_ids, attendees_only):
+    return popular_people_sqlite.get_people_rankings_for_city_names_sqlite(geoname_ids, attendees_only)
 
 
-def get_people_rankings_for_city_names_datastore(city_names, attendees_only):
+def get_people_rankings_for_city_names_datastore(geoname_ids, attendees_only):
     args = []
     if attendees_only:
         args = [PRCityCategory.person_type == 'ATTENDEE']
-    return PRCityCategory.query(PRCityCategory.city.IN(city_names), *args).fetch(100)
+    return PRCityCategory.query(PRCityCategory.city.IN(geoname_ids), *args).fetch(100)
 
 
-def get_people_rankings_for_city_names_dev_remote(city_names, attendees_only):
+def get_people_rankings_for_city_names_dev_remote(geoname_ids, attendees_only):
     rankings = []
     client = datastore.Client('dancedeets-hrd')
 
-    for city_name in city_names:
+    for city_name in geoname_ids:
         q = client.query(kind='PRCityCategory')
         q.add_filter('city', '=', city_name)
         if attendees_only:

@@ -18,12 +18,14 @@ class FakePRCityCategory(object):
     pass
 
 
-def get_people_rankings_for_city_names_sqlite(city_names, attendees_only):
+def get_people_rankings_for_city_names_sqlite(geoname_ids, attendees_only):
     conn = sqlite_db.get_connection('pr_city_category')
     cursor = conn.cursor()
 
-    query = 'SELECT person_type, city, category, top_people_json from PRCityCategory where city in (%s)' % ','.join('?' * len(city_names))
-    params = list(city_names)
+    query = 'SELECT person_type, geoname_id, category, top_people_json from PRCityCategory where geoname_id in (%s)' % ','.join(
+        '?' * len(geoname_ids)
+    )
+    params = list(geoname_ids)
     if attendees_only:
         query += '  AND person_type = ?'
         params += ['ATTENDEE']

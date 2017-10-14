@@ -292,11 +292,11 @@ def people_groupings(geocode, distance, skip_people):
                 logging.info('Searching for cities within %s', (southwest, northeast))
                 included_cities = cities_db.get_contained_cities((southwest, northeast))
                 biggest_cities = sorted(included_cities, key=lambda x: -x.population)[:10]
-                city_names = [city.geoname_id for city in biggest_cities]
-                logging.info('City names: %s', city_names)
-                if city_names:
+                geoname_ids = [city.geoname_id for city in biggest_cities]
+                logging.info('City names: %s', [city.display_name() for city in biggest_cities])
+                if geoname_ids:
                     try:
-                        people_rankings = popular_people.get_people_rankings_for_city_names(city_names)
+                        people_rankings = popular_people.get_people_rankings_for_city_names(geoname_ids)
                         groupings = popular_people.combine_rankings(people_rankings, max_people=10)
                     except:
                         logging.exception('Error creating combined people rankings')
