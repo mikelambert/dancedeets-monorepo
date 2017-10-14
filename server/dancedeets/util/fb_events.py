@@ -37,8 +37,9 @@ def is_public_ish(fb_event):
             if members_count >= 200:
                 return True
         elif event_type == 'group':
-            parent_group = fb_event['info']['parent_group']
-            if parent_group['privacy'] == 'OPEN':
+            parent_group = fb_event['info'].get('parent_group')
+            # Super old events may not have/return a parent_group at all!
+            if not parent_group or parent_group['privacy'] == 'OPEN':
                 return True
         else:
             logging.error('Event %s has unknown event type: %s', fb_event['info']['id'], event_type)
