@@ -46,7 +46,6 @@ def get_top_city_for(person_ids):
         total_count += 1
     top_cities = sorted(counts, key=lambda x: -counts[x])
     for i, geoname_id in enumerate(top_cities[:3]):
-        print geoname_id
         city = cities_db.lookup_city_from_geoname_ids([geoname_id])[0]
         logging.info('Top City %s: %s (%s attendees)', i, city.display_name(), counts[geoname_id])
     if top_cities:
@@ -54,6 +53,6 @@ def get_top_city_for(person_ids):
         city_count = counts[top_geoname_id]
         city = cities_db.lookup_city_from_geoname_ids([top_geoname_id])[0]
         # More than 10%, and must have at least 3 people
-        if city_count > 3 and city_count > total_count * 0.1:
+        if city_count >= 3 and city_count >= total_count * 0.1:
             return city.display_name()
     return None

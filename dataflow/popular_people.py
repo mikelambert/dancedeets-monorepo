@@ -210,7 +210,7 @@ def CountPersonTopCities((person_id, cities)):
         total_events += 1
         events_per_city[city] += 1
 
-    min_events = 5
+    min_events = 3
     min_fraction = 0.2
     # We must have at least "min_events" in one city
     # and we must have at least "min_fraction" of our events in one city
@@ -218,7 +218,7 @@ def CountPersonTopCities((person_id, cities)):
     min_threshold = max(min_events, total_events * min_fraction)
     top_cities = []
     for city, count in events_per_city.iteritems():
-        if count > min_threshold:
+        if count >= min_threshold:
             top_cities.append(city)
 
     # Try to limit our yielding to noteworthy people
