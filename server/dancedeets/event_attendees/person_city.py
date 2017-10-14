@@ -49,7 +49,7 @@ def get_top_city_for(person_ids):
         logging.info('Top City %s: %s (%s attendees)', i, city, counts[city])
     if top_cities:
         top_city = top_cities[0]
-        city_count = counts[top_cities]
+        city_count = counts[top_city]
         # More than 10%, and must have at least 3 people
         if city_count > 3 and city_count > total_count * 0.1:
             return top_city
