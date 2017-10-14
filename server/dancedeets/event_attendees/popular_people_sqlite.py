@@ -1,17 +1,6 @@
-from atomicwrites import atomic_write
-import sqlite3
-import getpass
 import json
-import logging
-import threading
-import time
-import os
 
-from google.cloud import storage
-
-from dancedeets.util import runtime
 from dancedeets.util import sqlite_db
-from dancedeets.util import timelog
 
 
 class FakePRCityCategory(object):
@@ -36,7 +25,7 @@ def get_people_rankings_for_city_names_sqlite(geoname_ids, attendees_only):
         ranking = FakePRCityCategory()
         # ranking.key = ndb.Key('PRCityCategory', result.)
         ranking.person_type = result[0]
-        ranking.city = result[1]
+        ranking.geoname_id = result[1]
         ranking.category = result[2]
         ranking.top_people_json = json.loads(result[3])
         rankings.append(ranking)
