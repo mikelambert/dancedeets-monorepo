@@ -15,7 +15,7 @@ def _get_cities(person_ids):
     cursor.execute(query, person_ids)
     cities = []
     for result in cursor.fetchall():
-        top_cities = json.loads(result[0])
+        top_cities = [x for x in json.loads(result[0]) if x]
         cities.extend(top_cities)
     return cities
 
@@ -45,12 +45,15 @@ def get_top_city_for(person_ids):
         counts[city] += 1
         total_count += 1
     top_cities = sorted(counts, key=lambda x: -counts[x])
-    for i, city in enumerate(top_cities[:3]):
-        logging.info('Top City %s: %s (%s attendees)', i, city, counts[city])
+    for i, geoname_id in enumerate(top_cities[:3]):
+        print geoname_id
+        city = cities_db.lookup_city_from_geoname_ids([geoname_id])[0]
+        logging.info('Top City %s: %s (%s attendees)', i, city.display_name(), counts[geoname_id])
     if top_cities:
-        top_city = top_cities[0]
-        city_count = counts[top_city]
+        top_geoname_id = top_cities[0]
+        city_count = counts[top_geoname_id]
+        city = cities_db.lookup_city_from_geoname_ids([top_geoname_id])[0]
         # More than 10%, and must have at least 3 people
         if city_count > 3 and city_count > total_count * 0.1:
-            return top_city
+            return city.display_name()
     return None
