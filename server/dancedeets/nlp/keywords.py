@@ -777,7 +777,7 @@ PREPROCESS_REMOVAL = Name(
         '(?:second|2nd) stage',
 
         #break
-        'ice\W?breaker',
+        'ice\W?break\w+',
         u'アイスブレイク',
         'break down',
         'breaking down',
