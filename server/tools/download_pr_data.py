@@ -51,7 +51,7 @@ def get_most_recent(job_name):
 
 
 def save_personcity_db(clear=True):
-    conn = sqlite3.connect(os.path.join(DB_PATH, 'pr_person_city'))
+    conn = sqlite3.connect(os.path.join(DB_PATH, 'pr_person_city.db'))
     cursor = conn.cursor()
     if clear:
         cursor.execute('''DROP TABLE IF EXISTS PRPersonCity''')
