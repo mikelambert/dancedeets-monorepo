@@ -194,7 +194,7 @@ class LocationInfo(object):
             if self.final_address != ONLINE_ADDRESS:
                 self.geocode = gmaps_api.lookup_string(self.final_address, check_places=check_places)
 
-        if not self.geocode and db_event.attendee_geoname_id:
+        if not self.geocode and db_event and db_event.attendee_geoname_id:
             city = cities_db.lookup_city_from_geoname_ids([db_event.attendee_geoname_id])[0]
             logging.info('No geocode found, but we have an attendee_geoname_id pointing to %s, using that', city.display_name())
             self.final_address = city.display_name()

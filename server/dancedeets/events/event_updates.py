@@ -164,12 +164,13 @@ def _inner_make_event_findable_for_fb_event(db_event, fb_dict, fb_event_attendin
         timelog.log_time_since('Guessing Location for Attendee IDs', start)
         db_event.attendee_geoname_id = top_geoname_id
 
-        # Undo the attempts to set the address earlier, that's not actually the right place to stick this (it overrides the fbevent location)
-        top_city = cities_db.lookup_city_from_geoname_ids([top_geoname_id])[0]
-        if db_event.address == top_city:
-            db_event.address = ''
+        if top_geoname_id:
+            # Undo the attempts to set the address earlier, that's not actually the right place to stick this (it overrides the fbevent location)
+            top_city = cities_db.lookup_city_from_geoname_ids([top_geoname_id])[0]
+            if db_event.address == top_city:
+                db_event.address = ''
 
-        logging.info('Guessing top city from attendees: %s', top_city.display_name())
+            logging.info('Guessing top city from attendees: %s', top_city.display_name())
 
     location_info = event_locations.LocationInfo(fb_dict, db_event=db_event)
 
