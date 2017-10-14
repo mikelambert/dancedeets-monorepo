@@ -95,6 +95,7 @@ class PromoteHandler(base_servlet.BaseRequestHandler):
                 'The event appears to be the "wrong" kind of dance event for DanceDeets. Are you sure it is a street dance event?'
             )
 
+        # Intentionally don't pass the fb_event_attending_maybe, since we want the event to be tested standalone
         location_info = event_locations.LocationInfo(fb_event)
         if not location_info.geocode:
             event_errors.append('Your event has no location. Please select a particular address, city, state, or country for this event.')

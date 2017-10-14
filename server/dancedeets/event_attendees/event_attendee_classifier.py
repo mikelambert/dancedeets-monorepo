@@ -41,7 +41,7 @@ def _get_event_attendee_ids(fb_event_attending_maybe):
     return event_attendee_ids
 
 
-def _get_bounds_for_fb_event(fb_event, check_places=False):
+def _get_bounds_for_fb_event(fb_event, fb_event_attending_maybe, check_places=False):
     # We don't need google-maps latlong accuracy. Let's cheat and use the fb_event for convenience if possible...
     location = fb_event['info'].get('place', {}).get('location', {})
     if location and location.get('latitude') is not None:
@@ -56,7 +56,7 @@ def _get_bounds_for_fb_event(fb_event, check_places=False):
         # So we disable them here, and instead just rely on the 99% good address searches
         # It should fallback to places on un-geocodable addresses too...
         # But at least it won't try Places *in addition* to geocode lookups.
-        location_info = event_locations.LocationInfo(fb_event, check_places=check_places)
+        location_info = event_locations.LocationInfo(fb_event, fb_event_attending_maybe=fb_event_attending_maybe, check_places=check_places)
         if location_info.geocode:
             bounds = math.expand_bounds(location_info.geocode.latlng_bounds(), cities_db.NEARBY_DISTANCE_KM)
         else:
@@ -64,10 +64,10 @@ def _get_bounds_for_fb_event(fb_event, check_places=False):
     return bounds
 
 
-def _get_location_style_attendees(fb_event, suspected_dance_event=False, max_attendees=None):
+def _get_location_style_attendees(fb_event, fb_event_attending_maybe, suspected_dance_event=False, max_attendees=None):
     if suspected_dance_event:
         logging.info('Suspected dance event, so checking place API too just in case.')
-    bounds = _get_bounds_for_fb_event(fb_event, check_places=suspected_dance_event)
+    bounds = _get_bounds_for_fb_event(fb_event, fb_event_attending_maybe, check_places=suspected_dance_event)
     dance_attendee_styles = popular_people.get_attendees_within(bounds, max_attendees=max_attendees)
     return dance_attendee_styles
 
@@ -148,7 +148,7 @@ class EventAttendeeMatcher(object):
             suspected_dance_event = self.classified_event.dance_event or len(self.classified_event.found_dance_matches) >= 2
             start_time = time.time()
             self.dance_style_attendees = _get_location_style_attendees(
-                self.fb_event, suspected_dance_event=suspected_dance_event, max_attendees=100
+                self.fb_event, self.fb_event_attending_maybe, suspected_dance_event=suspected_dance_event, max_attendees=100
             )
             logging.info('Lookup for dancers in event location took %0.3f.', time.time() - start_time)
 

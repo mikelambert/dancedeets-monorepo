@@ -1,13 +1,16 @@
 import logging
 import pycountry
 import re
+import time
 
 from google.appengine.ext import db
 from google.appengine.runtime import apiproxy_errors
 
+from dancedeets.event_attendees import event_attendee_classifier
+from dancedeets.event_attendees import person_city
 from dancedeets.loc import gmaps_api
 from dancedeets.loc import formatting
-from dancedeets.rankings import cities_db
+from dancedeets.util import timelog
 
 ONLINE_ADDRESS = 'ONLINE'
 
@@ -140,14 +143,14 @@ def _save_remapped_address_for(original_address, new_remapped_address):
 
 def update_remapped_address(fb_event, new_remapped_address):
     new_remapped_address = new_remapped_address or None
-    location_info = LocationInfo(fb_event)
+    location_info = LocationInfo(fb_event)  # only doing this to look up the old remapped address
     logging.info("remapped address for fb_event %r, new form value %r", location_info.remapped_address, new_remapped_address)
     if location_info.remapped_address != new_remapped_address:
         _save_remapped_address_for(location_info.fb_address, new_remapped_address)
 
 
 class LocationInfo(object):
-    def __init__(self, fb_event=None, db_event=None, debug=False, check_places=True):
+    def __init__(self, fb_event=None, fb_event_attending_maybe=None, db_event=None, debug=False, check_places=True):
         self.overridden_address = None
         self.fb_address = None
         self.remapped_address = None
@@ -194,11 +197,16 @@ class LocationInfo(object):
             if self.final_address != ONLINE_ADDRESS:
                 self.geocode = gmaps_api.lookup_string(self.final_address, check_places=check_places)
 
-        if not self.geocode and db_event and db_event.attendee_geoname_id:
-            city = cities_db.lookup_city_from_geoname_ids([db_event.attendee_geoname_id])[0]
-            logging.info('No geocode found, but we have an attendee_geoname_id pointing to %s, using that', city.display_name())
-            self.final_address = city.display_name()
-            self.geocode = gmaps_api.lookup_string(self.final_address, check_places=check_places)
+        if fb_event_attending_maybe:
+            ids = event_attendee_classifier._get_event_attendee_ids(fb_event_attending_maybe)
+            start = time.time()
+            self.attendee_based_city = person_city.get_top_city_for(ids)
+            timelog.log_time_since('Guessing Location for Attendee IDs', start)
+
+            if not self.geocode and self.attendee_based_city:
+                logging.info('No geocode found, but we have an attendee_geoname_id pointing to %s, using that', self.attendee_based_city)
+                self.final_address = self.attendee_based_city
+                self.geocode = gmaps_api.lookup_string(self.final_address, check_places=check_places)
 
         logging.info("Final address is %r", self.final_address)
 

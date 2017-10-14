@@ -366,7 +366,12 @@ class AdminEditHandler(base_servlet.BaseRequestHandler):
         event_types = styles + categories.find_event_types(fb_event)
         self.display['auto_categorized_types'] = ', '.join(x.public_name for x in event_types)
 
-        location_info = event_locations.LocationInfo(fb_event, db_event=e, debug=True)
+        a = time.time()
+        fb_event_attending_maybe = get_fb_event(self.fbl, event_id, lookup_type=fb_api.LookupEventAttendingMaybe)
+        timelog.log_time_since('Loading FB Event Attending Data', a)
+        a = time.time()
+
+        location_info = event_locations.LocationInfo(fb_event, fb_event_attending_maybe=fb_event_attending_maybe, db_event=e, debug=True)
         self.display['location_info'] = location_info
         if location_info.fb_address:
             fb_geocode = gmaps_api.lookup_address(location_info.fb_address)
@@ -380,22 +385,6 @@ class AdminEditHandler(base_servlet.BaseRequestHandler):
                 city_name = city.display_name()
         self.display['ranking_city_name'] = city_name
 
-        # Test code to find the event central location
-        try:
-            fb_event_attending_maybe = self.fbl.get(fb_api.LookupEventAttendingMaybe, event_id)
-            ids = event_attendee_classifier._get_event_attendee_ids(fb_event_attending_maybe)
-            start = time.time()
-            top_city = person_city.get_top_city_for(ids)
-            timelog.log_time_since('Guessing Location for Attendee IDs', start)
-            self.display['attendee_based_city'] = top_city
-        except fb_api.NoFetchedDataException:
-            logging.info('Event %s could not fetch event attendees, aborting.', event_id)
-            self.display['attendee_based_city'] = 'Could not fetch attendees'
-
-        a = time.time()
-        fb_event_attending_maybe = get_fb_event(self.fbl, event_id, lookup_type=fb_api.LookupEventAttendingMaybe)
-        timelog.log_time_since('Loading FB Event Attending Data', a)
-        a = time.time()
         matcher = event_attendee_classifier.get_matcher(
             self.fbl, fb_event, fb_event_attending_maybe=fb_event_attending_maybe, classified_event=classified_event
         )

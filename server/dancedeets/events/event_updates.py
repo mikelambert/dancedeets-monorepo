@@ -156,6 +156,8 @@ def _inner_make_event_findable_for_fb_event(db_event, fb_dict, fb_event_attendin
         # Force it to re-look-up from the fb location and cached geo lookups.
         db_event.location_geocode = None
 
+    location_info = event_locations.LocationInfo(fb_dict, fb_event_attending_maybe=fb_event_attending_maybe, db_event=db_event)
+
     # Setup event's attendee-based location guess, in case we need it
     if fb_event_attending_maybe:
         ids = event_attendee_classifier._get_event_attendee_ids(fb_event_attending_maybe)
@@ -171,8 +173,6 @@ def _inner_make_event_findable_for_fb_event(db_event, fb_dict, fb_event_attendin
                 db_event.address = ''
 
             logging.info('Guessing top city from attendees: %s', top_city.display_name())
-
-    location_info = event_locations.LocationInfo(fb_dict, db_event=db_event)
 
     _update_geodata(db_event, location_info, disable_updates)
 

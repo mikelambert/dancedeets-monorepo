@@ -46,8 +46,12 @@ def get_top_geoname_for(person_ids):
         total_count += 1
     top_cities = sorted(counts, key=lambda x: -counts[x])
     for i, geoname_id in enumerate(top_cities[:3]):
-        city = cities_db.lookup_city_from_geoname_ids([geoname_id])[0]
-        logging.info('Top City %s: %s (%s attendees)', i, city.display_name(), counts[geoname_id])
+        cities = cities_db.lookup_city_from_geoname_ids([geoname_id])
+        if cities:
+            city = cities[0]
+            logging.info('Top City %s: %s (%s attendees)', i, city.display_name(), counts[geoname_id])
+        else:
+            logging.error('Failed to find city for geoname %s', geoname_id)
     if top_cities:
         top_geoname_id = top_cities[0]
         city_count = counts[top_geoname_id]
