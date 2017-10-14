@@ -23,24 +23,6 @@ def _find_overlap(event_attendee_ids, top_dance_attendee_ids):
     return intersection_ids, num_intersection, fraction_known
 
 
-def _get_event_attendee_ids(fb_event_attending_maybe):
-    if fb_event_attending_maybe['empty']:
-        logging.info('Event has no attendees, skipping attendee-based classification.')
-        return []
-
-    # Combine both attending AND maybe for looking at people and figuring out if this event is legit
-    # Will really help improve the coverage and accuracy versus just using the attendee lists...
-    try:
-        people = fb_event_attending_maybe['attending']['data'] + fb_event_attending_maybe['maybe']['data']
-    except KeyError:
-        logging.error('Got corrupted fb_event_attending_maybe: %s', fb_event_attending_maybe)
-        return []
-    event_attendee_ids = [attendee['id'] for attendee in people]
-    if not event_attendee_ids:
-        return []
-    return event_attendee_ids
-
-
 def _get_bounds_for_fb_event(fb_event, fb_event_attending_maybe, check_places=False):
     # We don't need google-maps latlong accuracy. Let's cheat and use the fb_event for convenience if possible...
     location = fb_event['info'].get('place', {}).get('location', {})
@@ -141,7 +123,7 @@ class EventAttendeeMatcher(object):
 
     def classify(self):
         event_id = self.fb_event['info']['id']
-        self.event_attendee_ids = _get_event_attendee_ids(self.fb_event_attending_maybe)
+        self.event_attendee_ids = fb_events.get_event_attendee_ids(self.fb_event_attending_maybe)
         if self.event_attendee_ids:
             # If it's a suspected dance event, then we'll fall-through and check the places API for the location data
             # This ensures that any suspected dance events will get proper dance-attendees, and be more likely to be found.

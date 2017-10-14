@@ -9,7 +9,6 @@ from timezonefinder import TimezoneFinder
 from google.appengine.ext import ndb
 
 from dancedeets import fb_api
-from dancedeets.event_attendees import event_attendee_classifier
 from dancedeets.event_attendees import person_city
 from dancedeets.loc import gmaps_api
 from dancedeets.rankings import cities_db
@@ -17,6 +16,7 @@ from dancedeets.search import search
 from dancedeets.nlp import categories
 from dancedeets.nlp import event_classifier
 from dancedeets.util import dates
+from dancedeets.util import fb_events
 from dancedeets.util import language
 from dancedeets.util import timelog
 from . import event_image
@@ -160,7 +160,7 @@ def _inner_make_event_findable_for_fb_event(db_event, fb_dict, fb_event_attendin
 
     # Setup event's attendee-based location guess, in case we need it
     if fb_event_attending_maybe:
-        ids = event_attendee_classifier._get_event_attendee_ids(fb_event_attending_maybe)
+        ids = fb_events.get_event_attendee_ids(fb_event_attending_maybe)
         start = time.time()
         top_geoname_id = person_city.get_top_geoname_for(ids)
         timelog.log_time_since('Guessing Location for Attendee IDs', start)

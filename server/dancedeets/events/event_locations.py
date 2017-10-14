@@ -6,10 +6,10 @@ import time
 from google.appengine.ext import db
 from google.appengine.runtime import apiproxy_errors
 
-from dancedeets.event_attendees import event_attendee_classifier
 from dancedeets.event_attendees import person_city
 from dancedeets.loc import gmaps_api
 from dancedeets.loc import formatting
+from dancedeets.util import fb_events
 from dancedeets.util import timelog
 
 ONLINE_ADDRESS = 'ONLINE'
@@ -198,7 +198,7 @@ class LocationInfo(object):
                 self.geocode = gmaps_api.lookup_string(self.final_address, check_places=check_places)
 
         if fb_event_attending_maybe:
-            ids = event_attendee_classifier._get_event_attendee_ids(fb_event_attending_maybe)
+            ids = fb_events.get_event_attendee_ids(fb_event_attending_maybe)
             start = time.time()
             self.attendee_based_city = person_city.get_top_city_for(ids)
             timelog.log_time_since('Guessing Location for Attendee IDs', start)
