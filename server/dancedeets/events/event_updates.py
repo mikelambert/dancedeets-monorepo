@@ -167,12 +167,18 @@ def _inner_make_event_findable_for_fb_event(db_event, fb_dict, fb_event_attendin
         start = time.time()
         top_city = person_city.get_top_city_for(ids)
         timelog.log_time_since('Guessing Location for Attendee IDs', start)
+        logging.info('Guessing top city from attendees: %s', top_city)
         db_event.address = top_city
+        logging.info('DEBUG: db_event.address is %s', db_event.address)
         location_info = event_locations.LocationInfo(fb_dict, db_event=db_event)
+        logging.info('DEBUG: new locationinfo is %s, %s', location_info, location_info.geocode)
+
     # Otherwise if we've still failed, fall-back onto the original db_event.address
     if not location_info.geocode and original_address:
+        logging.info('Gave up, overwriting db_event.address with original address: %s', original_address)
         db_event.address = original_address
         location_info = event_locations.LocationInfo(fb_dict, db_event=db_event)
+        logging.info('db_event.address is %s', db_event.address)
 
     _update_geodata(db_event, location_info, disable_updates)
 
