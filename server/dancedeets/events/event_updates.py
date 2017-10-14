@@ -122,6 +122,7 @@ def _inner_make_event_findable_for_fb_event(db_event, fb_dict, fb_event_attendin
         db_event.address = None
         db_event.actual_city_name = None
         db_event.city_name = None
+        db_event.attendee_geoname_id = None
         db_event.nearby_geoname_id = None
         db_event.fb_event = fb_dict
         return
@@ -150,35 +151,27 @@ def _inner_make_event_findable_for_fb_event(db_event, fb_dict, fb_event_attendin
 
     _inner_common_setup(db_event, disable_updates=disable_updates)
 
-    # First, attempt to re-derive the event location
-    original_address = db_event.address
-    db_event.address = None
-
     if 'regeocode' not in (disable_updates or []):
         # Don't use cached/stale geocode, when constructing the LocationInfo below.
         # Force it to re-look-up from the fb location and cached geo lookups.
         db_event.location_geocode = None
-    location_info = event_locations.LocationInfo(fb_dict, db_event=db_event)
 
-    # If we can't figure out the location from the data we have, let's decide based on attendees
-    if not location_info.geocode and fb_event_attending_maybe:
-        # Test code to find the event central location
+    # Setup event's attendee-based location guess, in case we need it
+    if fb_event_attending_maybe:
         ids = event_attendee_classifier._get_event_attendee_ids(fb_event_attending_maybe)
         start = time.time()
-        top_city = person_city.get_top_city_for(ids)
+        top_geoname_id = person_city.get_top_geoname_for(ids)
         timelog.log_time_since('Guessing Location for Attendee IDs', start)
-        logging.info('Guessing top city from attendees: %s', top_city)
-        db_event.address = top_city
-        logging.info('DEBUG: db_event.address is %s', db_event.address)
-        location_info = event_locations.LocationInfo(fb_dict, db_event=db_event)
-        logging.info('DEBUG: new locationinfo is %s, %s', location_info, location_info.geocode)
+        db_event.attendee_geoname_id = top_geoname_id
 
-    # Otherwise if we've still failed, fall-back onto the original db_event.address
-    if not location_info.geocode and original_address:
-        logging.info('Gave up, overwriting db_event.address with original address: %s', original_address)
-        db_event.address = original_address
-        location_info = event_locations.LocationInfo(fb_dict, db_event=db_event)
-        logging.info('db_event.address is %s', db_event.address)
+        # Undo the attempts to set the address earlier, that's not actually the right place to stick this (it overrides the fbevent location)
+        top_city = cities_db.lookup_city_from_geoname_ids([top_geoname_id])[0]
+        if db_event.address == top_city:
+            db_event.address = ''
+
+        logging.info('Guessing top city from attendees: %s', top_city.display_name())
+
+    location_info = event_locations.LocationInfo(fb_dict, db_event=db_event)
 
     _update_geodata(db_event, location_info, disable_updates)
 

@@ -38,7 +38,7 @@ def get_stddev_distance_for(person_ids, event_location):
     return stddev
 
 
-def get_top_city_for(person_ids):
+def get_top_geoname_for(person_ids):
     counts = Counter()
     total_count = 0
     for city in _get_cities(person_ids):
@@ -51,8 +51,13 @@ def get_top_city_for(person_ids):
     if top_cities:
         top_geoname_id = top_cities[0]
         city_count = counts[top_geoname_id]
-        city = cities_db.lookup_city_from_geoname_ids([top_geoname_id])[0]
         # More than 10%, and must have at least 3 people
         if city_count >= 3 and city_count >= total_count * 0.1:
-            return city.display_name()
+            return top_geoname_id
     return None
+
+
+def get_top_city_for(person_ids):
+    top_geoname_id = get_top_geoname_for(person_ids)
+    city = cities_db.lookup_city_from_geoname_ids([top_geoname_id])[0]
+    return city.display_name()
