@@ -178,6 +178,8 @@ def create_source_from_id(fbl, source_id):
         source.compute_derived_properties(fb_source_common, fb_source_data)
         source.put()
         if new_source:
+            # It seems some "new" sources are existing sources without a creation_time set, so let's force-set it here
+            source.creation_time = datetime.datetime.now()
             backgrounder.load_sources([source_id], fb_uid=fbl.fb_uid)
         return source
     return None
