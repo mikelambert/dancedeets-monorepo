@@ -46,7 +46,10 @@ const baseAssetsDir = `/Users/${username.sync()}/Dropbox/dancedeets-development/
 const generatedFilesDir = `/Users/${username.sync()}/Dropbox/dancedeets-development/server/generated`;
 
 // download the PR* data from GC Datastore, generate sqlite databases, and then upload them to GC Storage
-gulp.task('sqlite:generate', $.shell.task(['./tools/download_pr_data.py']));
+gulp.task(
+  'sqlite:generate',
+  $.shell.task(['PYTHONPATH=. ./tools/download_pr_data.py'])
+);
 gulp.task(
   'sqlite:upload',
   $.shell.task(['PYTHONPATH=. ./tools/upload_pr_data.py'])

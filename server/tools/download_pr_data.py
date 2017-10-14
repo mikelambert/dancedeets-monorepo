@@ -45,7 +45,7 @@ def iterate_most_recent(job_name):
 def get_most_recent(job_name):
     path = _get_path()
     job_path = os.path.join(path, 'people-ranking-outputs', job_name)
-    timestamps = sorted(os.listdir(job_path), lambda x: x if x == '%s' else int(x))
+    timestamps = sorted(os.listdir(job_path), key=lambda x: x)
     full_path = os.path.join(job_path, timestamps[-1])
     return full_path
 
@@ -84,16 +84,16 @@ def save_citycategory_db(clear=True):
             CREATE TABLE PRCityCategory
             (
             person_type text not null,
-            city text not null,
+            geoname_id text not null,
             category text not null,
             top_people_json text,
-            PRIMARY KEY (person_type, city, category)
+            PRIMARY KEY (person_type, geoname_id, category)
             )
             '''
         )
         cursor.execute('''
             CREATE INDEX no_person_type ON PRCityCategory
-            (city, category)
+            (geoname_id, category)
             ''')
     for data, top_people_json in iterate_most_recent('city-category'):
         data['top_people_json'] = json.dumps(top_people_json)
