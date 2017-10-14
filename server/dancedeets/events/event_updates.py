@@ -169,7 +169,7 @@ def _inner_make_event_findable_for_fb_event(db_event, fb_dict, fb_event_attendin
         if top_geoname_id:
             # Undo the attempts to set the address earlier, that's not actually the right place to stick this (it overrides the fbevent location)
             top_city = cities_db.lookup_city_from_geoname_ids([top_geoname_id])[0]
-            if db_event.address == top_city:
+            if db_event.address == top_city.display_name():
                 db_event.address = ''
 
             logging.info('Guessing top city from attendees: %s', top_city.display_name())
