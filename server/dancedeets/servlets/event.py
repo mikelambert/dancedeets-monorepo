@@ -387,8 +387,6 @@ class AdminEditHandler(base_servlet.BaseRequestHandler):
 
         person_ids = fb_events.get_event_attendee_ids(fb_event_attending_maybe)
         self.display['nonlocal_fraction'] = person_city.get_nonlocal_fraction(person_ids, location_info.geocode.latlng())
-        print self.display['nonlocal_fraction']
-        print 100 * self.display['nonlocal_fraction']
 
         matcher = event_attendee_classifier.get_matcher(
             self.fbl, fb_event, fb_event_attending_maybe=fb_event_attending_maybe, classified_event=classified_event

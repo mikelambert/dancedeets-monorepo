@@ -62,7 +62,7 @@ def is_public(fb_event):
 
 
 def get_event_attendee_ids(fb_event_attending_maybe, include_maybe=True):
-    if fb_event_attending_maybe['empty']:
+    if not fb_event_attending_maybe or fb_event_attending_maybe['empty']:
         logging.info('Event has no attendees, skipping attendee-based classification.')
         return []
 
