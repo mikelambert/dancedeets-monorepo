@@ -163,6 +163,9 @@ def create_source_from_id(fbl, source_id):
         return None
     # technically we could check if the object exists in the db, before we bother fetching the feed
     fb_source_common = fbl.get(fb_api.LookupThingCommon, source_id)
+    if fb_source_common['empty']:
+        logging.error('Error loading Common Fields for Source: %s', source_id)
+        return None
 
     if source_id != fb_source_common['info']['id']:
         source_id = fb_source_common['info']['id']

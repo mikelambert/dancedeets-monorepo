@@ -87,6 +87,9 @@ def after_add_event(fbl, event_id, post_pubsub):
 def crawl_event_source(fbl, event_id):
     logging.info('Crawling sources for event %s', event_id)
     fb_event = fbl.get(fb_api.LookupEvent, event_id)
+    if fb_event['empty']:
+        logging.error('No FB Event found: %s', event_id)
+        return
     e = eventdata.DBEvent.get_by_id(fb_event['info']['id'])
     thing_db.create_sources_from_event(fbl, e)
 
