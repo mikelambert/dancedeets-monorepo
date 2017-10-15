@@ -386,7 +386,10 @@ class AdminEditHandler(base_servlet.BaseRequestHandler):
         self.display['ranking_city_name'] = city_name
 
         person_ids = fb_events.get_event_attendee_ids(fb_event_attending_maybe)
-        self.display['nonlocal_fraction'] = person_city.get_nonlocal_fraction(person_ids, location_info.geocode.latlng())
+        if location_info.geocode:
+            self.display['nonlocal_fraction'] = person_city.get_nonlocal_fraction(person_ids, location_info.geocode.latlng())
+        else:
+            self.display['nonlocal_fraction'] = 'Unknown'
 
         matcher = event_attendee_classifier.get_matcher(
             self.fbl, fb_event, fb_event_attending_maybe=fb_event_attending_maybe, classified_event=classified_event
