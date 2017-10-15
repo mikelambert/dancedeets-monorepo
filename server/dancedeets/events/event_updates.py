@@ -163,7 +163,7 @@ def _inner_make_event_findable_for_fb_event(db_event, fb_dict, fb_event_attendin
         ids = fb_events.get_event_attendee_ids(fb_event_attending_maybe)
         start = time.time()
         top_geoname_id = person_city.get_top_geoname_for(ids)
-        timelog.log_time_since('Guessing Location for Attendee IDs', start)
+        timelog.log_time_since('Guessing Location for %s Attendee IDs' % len(ids), start)
         db_event.attendee_geoname_id = top_geoname_id
 
         if top_geoname_id:

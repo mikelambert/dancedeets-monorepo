@@ -201,7 +201,8 @@ class LocationInfo(object):
             ids = fb_events.get_event_attendee_ids(fb_event_attending_maybe)
             start = time.time()
             self.attendee_based_city = person_city.get_top_city_for(ids)
-            timelog.log_time_since('Guessing Location for Attendee IDs', start)
+            event_id = db_event.id if db_event else fb_event['info']['id']
+            timelog.log_time_since('Guessing Location for Event %s with %s Attendee IDs' % (event_id, len(ids)), start)
 
             if not self.geocode and self.attendee_based_city:
                 logging.info('No geocode found, but we have an attendee_geoname_id pointing to %s, using that', self.attendee_based_city)
