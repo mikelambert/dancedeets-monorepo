@@ -7,35 +7,52 @@ from dancedeets.rankings import cities_db
 from dancedeets.util import sqlite_db
 
 
-def _get_cities(person_ids):
+def _get_lol_cities(person_ids):
     conn = sqlite_db.get_connection('pr_person_city')
     cursor = conn.cursor()
 
-    query = 'SELECT top_cities from PRPersonCity where person_id in (%s)' % ','.join('?' * len(person_ids))
+    query = 'SELECT person_id, top_cities from PRPersonCity where person_id in (%s)' % ','.join('?' * len(person_ids))
     cursor.execute(query, person_ids)
-    cities = []
+    lol_cities = []
     for result in cursor.fetchall():
-        top_cities = [x for x in json.loads(result[0]) if x]
+        top_cities = [x for x in json.loads(result[1]) if x]
+        lol_cities.append(top_cities)
+    return lol_cities
+
+
+def _get_cities(person_ids):
+    lol_cities = _get_lol_cities(person_ids)
+    cities = []
+    for top_cities in lol_cities:
         cities.extend(top_cities)
     return cities
 
 
-def _distance_between(geoname_id1, geoname_id2):
-    city1, city2 = cities_db.lookup_city_from_geoname_ids([geoname_id1, geoname_id2])
-    distance = city1.distance_to(city2.latlng())
+def _distance_to(geoname_id, latlng):
+    city = cities_db.lookup_city_from_geoname_ids([geoname_id])[0]
+    distance = city.distance_to(latlng)
     return distance
 
 
-def get_stddev_distance_for(person_ids, event_location):
-    # we should save this out into the dbevent somewhere
-    #
-    # 1) regenerate all dataflows using geoname id, and download and generate the *.db
-    # 2) test locally
-    # 3) push to GCS
-    # 4) push the code, and trust it to use the new GCS files
-    distances = [_distance_between(city, event_location) for city in _get_cities(person_ids)]
-    stddev = math.sqrt(sum(x * x for x in distances) / len(distances))
-    return stddev
+def get_rms_distance_for(person_ids, center_latlng):
+    distances = []
+    for top_cities in _get_lol_cities(person_ids):
+        min_distance = min([_distance_to(x, center_latlng) for x in top_cities])
+        distances.append(min_distance)
+    avg = sum(distances) / len(distances)
+    rms = math.sqrt(sum(x * x for x in distances) / len(distances))
+    local = len([x for x in distances if x < 200])
+    regional = len([x for x in distances if x >= 200 and x < 2000])
+    continental = len([x for x in distances if x >= 2000 and x < 6000])
+    intercontinental = len([x for x in distances if x >= 6000])
+    print avg, rms, (
+        100 * local / len(distances), 100 * regional / len(distances), 100 * continental / len(distances),
+        100 * intercontinental / len(distances)
+    )
+    # TODO: rms doesn't capture what we actually care about, for the "internationalness" of the event
+    # it might have something to do with the histogram and spread, or the percentage-nonlocal
+    # (is a regional jam different from an international jam?)
+    return int(rms)
 
 
 def get_top_geoname_for(person_ids):

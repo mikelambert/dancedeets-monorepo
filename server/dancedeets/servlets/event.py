@@ -385,6 +385,9 @@ class AdminEditHandler(base_servlet.BaseRequestHandler):
                 city_name = city.display_name()
         self.display['ranking_city_name'] = city_name
 
+        person_ids = fb_events.get_event_attendee_ids(fb_event_attending_maybe)
+        self.display['rms_distance'] = person_city.get_rms_distance_for(person_ids, location_info.geocode.latlng())
+
         matcher = event_attendee_classifier.get_matcher(
             self.fbl, fb_event, fb_event_attending_maybe=fb_event_attending_maybe, classified_event=classified_event
         )

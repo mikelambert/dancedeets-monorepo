@@ -61,7 +61,7 @@ def is_public(fb_event):
         return fb_event['info'].get('privacy', 'OPEN') == 'OPEN'
 
 
-def get_event_attendee_ids(fb_event_attending_maybe):
+def get_event_attendee_ids(fb_event_attending_maybe, include_maybe=True):
     if fb_event_attending_maybe['empty']:
         logging.info('Event has no attendees, skipping attendee-based classification.')
         return []
@@ -69,7 +69,9 @@ def get_event_attendee_ids(fb_event_attending_maybe):
     # Combine both attending AND maybe for looking at people and figuring out if this event is legit
     # Will really help improve the coverage and accuracy versus just using the attendee lists...
     try:
-        people = fb_event_attending_maybe['attending']['data'] + fb_event_attending_maybe['maybe']['data']
+        people = fb_event_attending_maybe['attending']['data']
+        if include_maybe:
+            people += fb_event_attending_maybe['maybe']['data']
     except KeyError:
         logging.error('Got corrupted fb_event_attending_maybe: %s', fb_event_attending_maybe)
         return []
