@@ -32,8 +32,9 @@ EMPTY_CAUSE_DELETED = 'deleted'
 
 #TODO(lambert): use parent_group to find additional sources to scrape
 OBJ_EVENT_FIELDS = (
-    'description', 'end_time', 'id', 'name', 'owner', 'type', 'start_time', 'place', 'cover', 'admins', 'parent_group', 'ticket_uri',
-    'timezone', 'updated_time', 'attending_count', 'declined_count', 'maybe_count', 'noreply_count', 'is_page_owned', 'is_canceled'
+    'description', 'end_time', 'id', 'name', 'owner', 'type', 'start_time', 'event_times', 'place', 'cover', 'admins', 'parent_group',
+    'ticket_uri', 'timezone', 'updated_time', 'attending_count', 'declined_count', 'maybe_count', 'noreply_count', 'is_page_owned',
+    'is_canceled'
 )
 OBJ_EVENT_WALL_FIELDS = ('id', 'created_time', 'updated_time', 'message', 'message_tags', 'from', 'link', 'name', 'picture')
 
