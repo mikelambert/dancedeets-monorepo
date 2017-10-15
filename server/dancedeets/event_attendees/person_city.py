@@ -34,7 +34,7 @@ def _distance_to(geoname_id, latlng):
     return distance
 
 
-def get_rms_distance_for(person_ids, center_latlng):
+def get_nonlocal_fraction(person_ids, center_latlng):
     distances = []
     for top_cities in _get_lol_cities(person_ids):
         min_distance = min([_distance_to(x, center_latlng) for x in top_cities])
@@ -45,14 +45,14 @@ def get_rms_distance_for(person_ids, center_latlng):
     regional = len([x for x in distances if x >= 200 and x < 2000])
     continental = len([x for x in distances if x >= 2000 and x < 6000])
     intercontinental = len([x for x in distances if x >= 6000])
+
     print avg, rms, (
         100 * local / len(distances), 100 * regional / len(distances), 100 * continental / len(distances),
         100 * intercontinental / len(distances)
     )
-    # TODO: rms doesn't capture what we actually care about, for the "internationalness" of the event
-    # it might have something to do with the histogram and spread, or the percentage-nonlocal
-    # (is a regional jam different from an international jam?)
-    return int(rms)
+
+    nonlocal_fraction = 1.0 * (len(distances) - local) / len(distances)
+    return nonlocal_fraction
 
 
 def get_top_geoname_for(person_ids):

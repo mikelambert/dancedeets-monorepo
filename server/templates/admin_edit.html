@@ -68,9 +68,9 @@ Edit Event
           {{ ranking_city_name }}
         </td></tr>
         <tr><td>
-          (Attendee Radius)<sub>rms</sub>:
+          Non-local Attendees:
         </td><td>
-          {{ rms_distance }}
+          {{ (100*nonlocal_fraction)|round|int }}%
         </td></tr>
 
       </table>
