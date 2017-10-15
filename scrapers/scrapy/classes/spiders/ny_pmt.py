@@ -50,7 +50,7 @@ class PMTHouseOfDance(items.StudioScraper):
                 continue
 
             teacher = self._extract_text(cells[3])
-            teacher_href = cells[3].xpath('.//@href').extract()[0].strip()
+            href_cell = cells[3].xpath('.//@href').extract()
 
             # Use our NLP event classification keywords to figure out which BDC classes to keep
             processor = event_classifier.StringProcessor(classname)
@@ -60,7 +60,8 @@ class PMTHouseOfDance(items.StudioScraper):
             item = items.StudioClass()
             item['style'] = classname
             item['teacher'] = teacher
-            item['teacher_link'] = teacher_href
+            if href_cell:
+                item['teacher_link'] = href_cell[0].strip()
             # do we care?? row[4]
             start_time, end_time = parse_times(self._cleanup(times))
             item['start_time'] = datetime.datetime.combine(date, start_time)
