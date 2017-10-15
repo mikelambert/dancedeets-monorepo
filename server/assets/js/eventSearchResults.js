@@ -620,15 +620,13 @@ class ResultsList extends React.Component {
         </div>
       );
     }
-    if (fullEvents.length) {
-      eventPanels.push(
-        <EventsList
-          key="full"
-          events={fullEvents}
-          loadMoreContent={this.props.loadMoreContent}
-        />
-      );
-    }
+    eventPanels.push(
+      <EventsList
+        key="full"
+        events={fullEvents}
+        loadMoreContent={this.props.loadMoreContent}
+      />
+    );
 
     let featuredPanel = null;
     if (featuredInfos.length) {
@@ -979,7 +977,11 @@ class ResultsPage extends React.Component {
 
     await this.setState({ query: newQuery, loading: true });
     const response = await performSearch(query);
-    await this.setState({ response, loading: false });
+    await this.setState({
+      response,
+      loading: false,
+      hasMoreEventsToFetch: false,
+    });
   }
 
   async loadMoreContent() {
