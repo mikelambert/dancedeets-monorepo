@@ -70,7 +70,11 @@ Edit Event
         <tr><td>
           Non-local Attendees:
         </td><td>
-          {{ (100*nonlocal_fraction)|round|int }}%
+          {% if nonlocal_fraction == 'Unknown' %}
+            {{ nonlocal_fraction }}
+          {% else %}
+            {{ (100*nonlocal_fraction)|round|int }}
+          {% endif %}
         </td></tr>
 
       </table>
