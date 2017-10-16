@@ -285,7 +285,7 @@ class EventsIndex(index.BaseIndex):
                 search.NumberField(name='longitude', value=db_event.longitude),
                 search.TextField(name='categories', value=' '.join(db_event.auto_categories)),
                 search.TextField(name='country', value=db_event.country),
-                search.NumberField(name='worth', value=getattr(db_event, 'nonlocal_dance_fraction', 0)),
+                search.NumberField(name='worth', value=getattr(db_event, 'nonlocal_dance_fraction', 0) or 0),
                 # Use NumberField instead of DateField since we care about hours/minutes/seconds,
                 # which are otherwise discarded with a DateField.
                 # We want this to know what events have been added in the last 24 hours,

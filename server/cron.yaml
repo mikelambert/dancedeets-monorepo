@@ -3,6 +3,8 @@ cron:
 - description: reload future facebook event data
   url: /tasks/reload_events?user_id=701004&allow_cache=0&only_if_updated=1&time_period=FUTURE&disable_updates=&queue=slow-queue
   schedule: every 3 hours
+# If we are trying to run this quickly, we may be interested in using disable_updates=regeocode,geodata,photo,index depending:
+# www.dancedeets.com/tasks/reload_events?user_id=701004&allow_cache=1&only_if_updated=0&disable_updates=regeocode,photo,geodata,index&queue=fast-queue
 #
 # These load potential events from all the various pages/groups out there
 - description: load potential events from special users and sources

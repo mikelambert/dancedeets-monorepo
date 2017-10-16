@@ -37,8 +37,13 @@ def _distance_to(geoname_id, latlng):
 def get_nonlocal_fraction(person_ids, center_latlng):
     distances = []
     for top_cities in _get_lol_cities(person_ids):
-        min_distance = min([_distance_to(x, center_latlng) for x in top_cities])
-        distances.append(min_distance)
+        if top_cities:
+            min_distance = min([_distance_to(x, center_latlng) for x in top_cities])
+            distances.append(min_distance)
+
+    if not len(distances):
+        return 0
+
     avg = sum(distances) / len(distances)
     rms = math.sqrt(sum(x * x for x in distances) / len(distances))
     local = len([x for x in distances if x < 200])
