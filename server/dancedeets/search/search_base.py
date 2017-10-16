@@ -68,6 +68,7 @@ class SearchForm(wtforms.Form):
     distance_units = wtforms.SelectField(choices=[('miles', 'Miles'), ('km', 'KM')], default='km')
     locale = wtforms.StringField(default='')
     min_attendees = wtforms.IntegerField(default=0)
+    min_worth = wtforms.IntegerField(default=0)
     deb = wtforms.StringField(default='')
 
     # Only used by API
@@ -94,6 +95,8 @@ class SearchForm(wtforms.Form):
             d['min_attendees'] = self.min_attendees.data
         if self.location.data:
             d['location'] = self.location.data
+        if self.min_worth.data:
+            d['min_worth'] = self.min_worth.data
         if self.distance.data:
             d['distance'] = self.distance.data
         if self.distance_units.data:
@@ -128,7 +131,7 @@ class SearchForm(wtforms.Form):
     def build_query(self, start_end_query=False):
         bounds = self._get_bounds()
         keywords = _get_parsed_keywords(self.keywords.data)
-        common_fields = dict(bounds=bounds, min_attendees=self.min_attendees.data, keywords=keywords)
+        common_fields = dict(bounds=bounds, min_attendees=self.min_attendees.data, min_worth=self.min_worth.data, keywords=keywords)
         query = SearchQuery(start_date=self.start.data, end_date=self.end.data, **common_fields)
         return query
 
@@ -154,9 +157,10 @@ def get_center_and_bounds(geocode, distance):
 
 
 class SearchQuery(object):
-    def __init__(self, time_period=None, start_date=None, end_date=None, bounds=None, min_attendees=None, keywords=None):
+    def __init__(self, time_period=None, start_date=None, end_date=None, bounds=None, min_attendees=None, min_worth, keywords=None):
         self.time_period = time_period
         self.min_attendees = min_attendees
+        self.min_worth = min_worth
         self.start_date = start_date
         self.end_date = end_date
         self.bounds = bounds

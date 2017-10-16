@@ -111,6 +111,8 @@ def _inner_make_event_findable_for_fb_event(db_event, fb_dict, fb_event_attendin
     # Update this event with the latest time_period regardless (possibly overwritten below)
     db_event.search_time_period = _event_time_period(db_event)
 
+    db_event.get_nonlocal_fraction = None
+
     if fb_dict['empty'] == fb_api.EMPTY_CAUSE_DELETED:
         # If this event has already past, don't allow it to be deleted. We want to keep history!
         if db_event.end_time and db_event.end_time < datetime.datetime.now() - datetime.timedelta(days=2):
@@ -160,10 +162,13 @@ def _inner_make_event_findable_for_fb_event(db_event, fb_dict, fb_event_attendin
 
     # Setup event's attendee-based location guess, in case we need it
     if fb_event_attending_maybe:
-        ids = fb_events.get_event_attendee_ids(fb_event_attending_maybe)
+        person_ids = fb_events.get_event_attendee_ids(fb_event_attending_maybe)
+
+        db_event.get_nonlocal_fraction = person_city.get_nonlocal_fraction(person_ids, location_info.geocode.latlng())
+
         start = time.time()
-        top_geoname_id = person_city.get_top_geoname_for(ids)
-        timelog.log_time_since('Guessing Location for %s Attendee IDs' % len(ids), start)
+        top_geoname_id = person_city.get_top_geoname_for(person_ids)
+        timelog.log_time_since('Guessing Location for %s Attendee IDs' % len(person_ids), start)
         db_event.attendee_geoname_id = top_geoname_id
 
         if top_geoname_id:
@@ -188,6 +193,7 @@ def _inner_make_event_findable_for_web_event(db_event, web_event, disable_update
 
     db_event.fb_event = None
     db_event.owner_fb_uid = None
+    db_event.get_nonlocal_fraction = None
 
     db_event.attendee_count = 0  # Maybe someday set attending counts when we fetch them?
 

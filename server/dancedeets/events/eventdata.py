@@ -122,6 +122,8 @@ class DBEvent(ndb.Model):
     tags = ndb.StringProperty(indexed=False, repeated=True)
     nearby_city_names = ndb.StringProperty(indexed=False, repeated=True)  # Unused
 
+    nonlocal_dance_fraction = ndb.FloatProperty(indexed=True)
+
     # Things that would be nice to have in DBEvent:
     # - event privacy
     # - has image?
