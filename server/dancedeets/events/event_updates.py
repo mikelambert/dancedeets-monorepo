@@ -29,15 +29,16 @@ DATETIME_FORMAT_TZ = "%Y-%m-%dT%H:%M:%S%z"
 timezone_finder = TimezoneFinder()
 
 reload_functions = {
-    'bboylite': web_events_reloading.reload_bboy_lite,
+    'bboylite-jam': web_events_reloading.reload_bboy_lite_jam,
+    'bboylite-course': web_events_reloading.reload_bboy_lite_course,
 }
 
 
 def reload_web_events(web_events, disable_updates=None):
     events_to_update = []
     for web_event in web_events:
-        if web_event.web_event_type in reload_functions:
-            func = reload_functions[web_event.web_event_type]
+        if web_event.namespace in reload_functions:
+            func = reload_functions[web_event.namespace]
             new_json = func(web_event)
             events_to_update.append((web_event, new_json))
         else:
@@ -208,8 +209,6 @@ def clean_address(address):
 def _inner_make_event_findable_for_web_event(db_event, web_event, disable_updates):
     logging.info("Making web_event %s findable." % db_event.id)
     db_event.web_event = web_event
-
-    db_event.web_event_type = db_event.web_event_type or 'scrapy'
 
     db_event.fb_event = None
     db_event.owner_fb_uid = None
