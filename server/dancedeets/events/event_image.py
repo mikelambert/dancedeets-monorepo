@@ -50,8 +50,11 @@ class NoImageError(Exception):
 NotFoundError = gcs.NotFoundError
 
 
-def _raw_get_image(db_event):
-    image_url = db_event.full_image_url
+def _raw_get_image(db_event, index):
+    if index is None:
+        image_url = db_event.full_image_url
+    else:
+        image_url = db_event.extra_image_urls()[index]
     # For testing purposes:
     if image_url.startswith('test:'):
         raise NotFoundError()
@@ -67,25 +70,28 @@ def _raw_get_image(db_event):
         raise DownloadError(404)
 
 
-def _event_image_filename(event_id):
-    return str(event_id)
+def _event_image_filename(event_id, index):
+    if index is None:
+        return str(event_id)
+    else:
+        return '%s-%s' % (event_id, index)
 
 
-def _clear_out_resize_caches(event_id):
+def _clear_out_resize_caches(event_id, index=None):
     for width, height in CACHEABLE_SIZES:
         bucket = _get_cache_bucket_name(width, height)
-        gcs.delete_object(bucket, _event_image_filename(event_id))
+        gcs.delete_object(bucket, _event_image_filename(event_id, index=index))
 
 
-def cache_image_and_get_size(event):
+def cache_image_and_get_size(event, index=None):
     # For testing purposes:
     if event.full_image_url.startswith('test:'):
         return 100, 100
     else:
-        mimetype, response = _raw_get_image(event)
+        mimetype, response = _raw_get_image(event, index=index)
         try:
-            gcs.put_object(EVENT_IMAGE_BUCKET, _event_image_filename(event.id), response)
-            _clear_out_resize_caches(event.id)
+            gcs.put_object(EVENT_IMAGE_BUCKET, _event_image_filename(event.id, index=index), response)
+            _clear_out_resize_caches(event.id, index=index)
         except:
             if runtime.is_local_appengine():
                 logging.exception('Error saving event image: %s', event.id)
@@ -95,8 +101,8 @@ def cache_image_and_get_size(event):
         return img.width, img.height
 
 
-def _render_image(event_id):
-    image_data = gcs.get_object(EVENT_IMAGE_BUCKET, _event_image_filename(event_id))
+def _render_image(event_id, index):
+    image_data = gcs.get_object(EVENT_IMAGE_BUCKET, _event_image_filename(event_id, index=index))
     return image_data
 
 
@@ -130,17 +136,17 @@ def _get_cache_bucket_name(width, height):
     return name.lower()
 
 
-def _read_image_cache(event_id, width, height):
+def _read_image_cache(event_id, index, width, height):
     try:
-        image_data = gcs.get_object(_get_cache_bucket_name(width, height), _event_image_filename(event_id))
+        image_data = gcs.get_object(_get_cache_bucket_name(width, height), _event_image_filename(event_id, index=index))
         return image_data
     except NotFoundError:
         return None
 
 
-def _write_image_cache(event_id, width, height, final_image):
+def _write_image_cache(event_id, index, width, height, final_image):
     bucket = _get_cache_bucket_name(width, height)
-    filename = _event_image_filename(event_id)
+    filename = _event_image_filename(event_id, index=index)
     try:
         gcs.put_object(bucket, filename, final_image)
     except NotFoundError:
@@ -153,28 +159,28 @@ def _get_mimetype(image_data):
     return 'image/%s' % image_type
 
 
-def get_image(event):
+def get_image(event, index=None):
     try:
-        final_image = _render_image(event.id)
+        final_image = _render_image(event.id, index=index)
     except NotFoundError:
-        cache_image_and_get_size(event)
-        final_image = _render_image(event.id)
+        cache_image_and_get_size(event, index=index)
+        final_image = _render_image(event.id, index=index)
     return final_image
 
 
-def render(response, event, width=None, height=None):
+def render(response, event, index=None, width=None, height=None):
     final_image = None
     cache_key = (width, height)
     logging.info('Cache key is %r', cache_key)
     if cache_key in CACHEABLE_SIZES:
-        final_image = _read_image_cache(event.id, width, height)
+        final_image = _read_image_cache(event.id, index, width, height)
     if not final_image:
-        final_image = get_image(event)
+        final_image = get_image(event, index=index)
     if width or height:
         try:
             final_image = _resize_image(final_image, width, height)
             if cache_key in CACHEABLE_SIZES:
-                _write_image_cache(event.id, width, height, final_image)
+                _write_image_cache(event.id, index, width, height, final_image)
         except resizeimage.ImageSizeError as e:
             logging.info('Requested too-large image resize, using original image: %s', e)
     response.headers['Content-Type'] = _get_mimetype(final_image)

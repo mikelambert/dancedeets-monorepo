@@ -307,6 +307,15 @@ class DBEvent(ndb.Model):
             else:
                 return []
 
+    def extra_image_urls(self):
+        if self.web_event:
+            if 'raw' in self.web_event:
+                raw = self.web_event['raw']
+                if 'jam_gallery' in raw:  # used by jwjam
+                    image_urls = [x['pic'] for x in raw['jam_gallery']]
+                    return image_urls
+        return []
+
     @property
     def largest_cover(self):
         cover_images = self.cover_images

@@ -122,6 +122,8 @@ def _inner_cache_photo(db_event):
             del db_event.json_props['photo_width']
         if 'photo_height' in db_event.json_props:
             del db_event.json_props['photo_height']
+    for index in range(len(db_event.extra_image_urls())):
+        event_image.cache_image_and_get_size(db_event, index=index)
 
 
 def _inner_make_event_findable_for_fb_event(db_event, fb_dict, fb_event_attending_maybe, disable_updates):
