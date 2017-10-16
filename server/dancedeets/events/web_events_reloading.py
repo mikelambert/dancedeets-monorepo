@@ -5,6 +5,7 @@ import dateparser
 import datetime
 import json
 import os
+import re
 import urllib
 from . import namespaces
 
@@ -47,6 +48,7 @@ def fetch_jwjam(namespace, id):
     if json_data['phone']:
         item['description'] += 'Phone Number: %s\n\n%s' % (json_data['phone'], item['description'])
     item['photo'] = json_data['pic']
+    item['photo'] = re.sub(r'\?.*$', '', item['photo'])
 
     # Save the raw data, for use later if desired
     item['raw'] = json_data
