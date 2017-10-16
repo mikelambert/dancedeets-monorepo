@@ -1,3 +1,5 @@
+# -*-*- encoding: utf-8 -*-*-
+
 KOREA_SDK = 'street-dance-korea'
 JAPAN_DD = 'dance-delight'
 JAPAN_TDL = 'tokyo-dance-life'
@@ -56,14 +58,14 @@ _NAMESPACE_LIST = [
     ),
     Namespace(
         CHINA_JWJAM_JAM,
-        '街舞酱 Jam',
+        u'街舞酱 Jam',
         'http://jwjam.com/Jwjam/Jam/jam_list',
         # I wish we could link to the event page directly, but alas they use obfuscated id URLs
         lambda x: 'http://jwjam.com/Jwjam/Jam/jam_list',
     ),
     Namespace(
         CHINA_JWJAM_COURSE,
-        '街舞酱 Course',
+        u'街舞酱 Course',
         'http://jwjam.com/Jwjam/Jam/jam_list',
         # I wish we could link to the event page directly, but alas they use obfuscated id URLs
         lambda x: 'http://jwjam.com/Jwjam/Jam/jam_list',
