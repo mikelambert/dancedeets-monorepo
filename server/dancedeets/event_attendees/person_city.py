@@ -51,9 +51,11 @@ def get_nonlocal_fraction(person_ids, center_latlng):
     continental = len([x for x in distances if x >= 2000 and x < 6000])
     intercontinental = len([x for x in distances if x >= 6000])
 
-    print avg, rms, (
-        100 * local / len(distances), 100 * regional / len(distances), 100 * continental / len(distances),
-        100 * intercontinental / len(distances)
+    logging.info(
+        'avg %s, rms %s, params %s', avg, rms, (
+            100 * local / len(distances), 100 * regional / len(distances), 100 * continental / len(distances),
+            100 * intercontinental / len(distances)
+        )
     )
 
     nonlocal_fraction = 1.0 * (len(distances) - local) / len(distances)
