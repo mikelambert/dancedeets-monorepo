@@ -1,3 +1,8 @@
+import site
+site.addsitedir('lib-local')
+
+import dateparser
+import datetime
 import json
 import os
 import urllib
@@ -48,7 +53,15 @@ def fetch_jwjam(namespace, id):
     # TODO: handle all images in json_data['jam_gallery'], so they can be proxied correctly
 
     item['start_time'] = json_data['startDate']
-    item['end_time'] = json_data['endDate']
+    end_date = json_data['endDate']
+
+    if end_date and end_date != '0000-00-00 00:00:00':
+        item['end_time'] = end_date
+    else:
+        next_day = dateparser.parse(item['start_time']).date()
+        next_day += datetime.timedelta(days=1)
+        item['end_time'] = next_day.strftime('%Y-%m-%d %H:%M:%S')
+        print item['end_time']
 
     item['latitude'], item['longitude'] = json_data['location'].split(',')
     item['location_address'] = json_data['address']
