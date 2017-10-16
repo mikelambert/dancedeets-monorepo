@@ -6,7 +6,7 @@ from dancedeets.events import event_image
 from dancedeets.util import urls
 
 
-@app.route(r'/events/image_proxy/(%s)(?:/(\d+))/?' % urls.EVENT_ID_REGEX)
+@app.route(r'/events/image_proxy/(%s)(?:/(\d+))?/?' % urls.EVENT_ID_REGEX)
 class ImageProxyHandler(webapp2.RequestHandler):
     """Proxies images for use by twitter, where it doesn't need to respect the FB cache server's /robots.txt."""
 
@@ -15,6 +15,10 @@ class ImageProxyHandler(webapp2.RequestHandler):
         if not db_event or not db_event.full_image_url:
             self.response.set_status(404)
             return
+        if index > len(db_event.extra_image_urls()):
+            self.response.set_status(404)
+            return
+        index = int(index) if index is not None else None
         width = self.request.get('width')
         if width:
             width = int(width)

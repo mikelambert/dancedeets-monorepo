@@ -63,7 +63,6 @@ def fetch_jwjam(namespace, id):
         next_day = dateparser.parse(item['start_time']).date()
         next_day += datetime.timedelta(days=1)
         item['end_time'] = next_day.strftime('%Y-%m-%d %H:%M:%S')
-        print item['end_time']
 
     item['latitude'], item['longitude'] = json_data['location'].split(',')
     item['location_address'] = json_data['address']
