@@ -1,5 +1,6 @@
 import json
 import urllib
+from . import namespaces
 
 
 def fetch_bboy_lite(namespace, url):
@@ -34,10 +35,12 @@ def fetch_bboy_lite(namespace, url):
 
 
 def reload_bboy_lite_jam(web_event):
-    item = fetch_bboy_lite('bboylite-jam', 'http://jamyo.jamyooo.com/Lite/Jam/jam_detail?id=%s' % web_event.namespaced_id)
+    item = fetch_bboy_lite(namespaces.CHINA_JWJAM_JAM, 'http://jamyo.jamyooo.com/Lite/Jam/jam_detail?id=%s' % web_event.namespaced_id)
     return item or web_event.web_event
 
 
 def reload_bboy_lite_course(web_event):
-    item = fetch_bboy_lite('bboylite-course', 'https://jamyo.jamyooo.com/Lite/Course/course_details?course_id=%s' % web_event.namespaced_id)
+    item = fetch_bboy_lite(
+        namespaces.CHINA_JWJAM_COURSE, 'https://jamyo.jamyooo.com/Lite/Course/course_details?course_id=%s' % web_event.namespaced_id
+    )
     return item or web_event.web_event

@@ -4,6 +4,8 @@ JAPAN_TDL = 'tokyo-dance-life'
 JAPAN_DEWS = 'dews'
 JAPAN_ETS = 'enter-the-stage'
 FACEBOOK = 'FB'
+CHINA_JWJAM_JAM = 'jwjam-jam'
+CHINA_JWJAM_COURSE = 'jwjam-course'
 
 
 class Namespace(object):
@@ -51,6 +53,20 @@ _NAMESPACE_LIST = [
         'http://www.streetdancekorea.com',
         # I wish we could link to the event page directly, but alas there is none...
         lambda x: 'http://www.streetdancekorea.com/',
+    ),
+    Namespace(
+        CHINA_JWJAM_JAM,
+        '街舞酱 Jam',
+        'http://jwjam.com/Jwjam/Jam/jam_list',
+        # I wish we could link to the event page directly, but alas they use obfuscated id URLs
+        lambda x: 'http://jwjam.com/Jwjam/Jam/jam_list',
+    ),
+    Namespace(
+        CHINA_JWJAM_COURSE,
+        '街舞酱 Course',
+        'http://jwjam.com/Jwjam/Jam/jam_list',
+        # I wish we could link to the event page directly, but alas they use obfuscated id URLs
+        lambda x: 'http://jwjam.com/Jwjam/Jam/jam_list',
     ),
 ]
 

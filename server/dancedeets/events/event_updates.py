@@ -21,6 +21,7 @@ from dancedeets.util import language
 from dancedeets.util import timelog
 from . import event_image
 from . import event_locations
+from . import namespaces
 from . import web_events_reloading
 
 DATETIME_FORMAT = "%Y-%m-%dT%H:%M:%S"
@@ -29,8 +30,8 @@ DATETIME_FORMAT_TZ = "%Y-%m-%dT%H:%M:%S%z"
 timezone_finder = TimezoneFinder()
 
 reload_functions = {
-    'bboylite-jam': web_events_reloading.reload_bboy_lite_jam,
-    'bboylite-course': web_events_reloading.reload_bboy_lite_course,
+    namespaces.CHINA_JWJAM_JAM: web_events_reloading.reload_bboy_lite_jam,
+    namespaces.CHINA_JWJAM_COURSE: web_events_reloading.reload_bboy_lite_course,
 }
 
 
