@@ -157,7 +157,7 @@ def get_center_and_bounds(geocode, distance):
 
 
 class SearchQuery(object):
-    def __init__(self, time_period=None, start_date=None, end_date=None, bounds=None, min_attendees=None, min_worth, keywords=None):
+    def __init__(self, time_period=None, start_date=None, end_date=None, bounds=None, min_attendees=None, min_worth=None, keywords=None):
         self.time_period = time_period
         self.min_attendees = min_attendees
         self.min_worth = min_worth
