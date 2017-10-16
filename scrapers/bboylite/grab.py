@@ -15,7 +15,7 @@ def get_id(id):
         url = 'http://jamyo.jamyooo.com/Lite/Jam/jam_detail?id=%s' % id
         data = urllib.urlopen(url).read()
         open(json_filename, 'w').write(data)
-        time.sleep(2)
+        #time.sleep(2)
     try:
         json_data = json.loads(open(json_filename).read())
     except ValueError:
@@ -29,11 +29,11 @@ def get_id(id):
         return event
 
 
-trailing_count = 5
+trailing_count = 20
 
 
 def grab_all():
-    id = 2860
+    id = 3167
     missing = 0
     while True:
         event = get_id(id)
