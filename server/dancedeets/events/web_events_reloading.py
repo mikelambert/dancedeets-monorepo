@@ -2,9 +2,14 @@ import json
 import urllib
 from . import namespaces
 
+urls = {
+    namespaces.CHINA_JWJAM_JAM: 'http://jamyo.jamyooo.com/Lite/Jam/jam_detail?id=%s',
+    namespaces.CHINA_JWJAM_COURSE: 'https://jamyo.jamyooo.com/Lite/Course/course_details?course_id=%s',
+}
 
-def fetch_bboy_lite(namespace, url):
-    url = url
+
+def fetch_jwjam(namespace, id):
+    url = urls[namespace] % id
     data = urllib.urlopen(url).read()
     json_data = json.loads(data)['data']
 
@@ -34,13 +39,11 @@ def fetch_bboy_lite(namespace, url):
         return None
 
 
-def reload_bboy_lite_jam(web_event):
-    item = fetch_bboy_lite(namespaces.CHINA_JWJAM_JAM, 'http://jamyo.jamyooo.com/Lite/Jam/jam_detail?id=%s' % web_event.namespaced_id)
+def fetch_jwjam_jam(web_event):
+    item = fetch_jwjam(namespaces.CHINA_JWJAM_JAM, web_event.namespaced_id)
     return item or web_event.web_event
 
 
-def reload_bboy_lite_course(web_event):
-    item = fetch_bboy_lite(
-        namespaces.CHINA_JWJAM_COURSE, 'https://jamyo.jamyooo.com/Lite/Course/course_details?course_id=%s' % web_event.namespaced_id
-    )
+def fetch_jwjam_course(web_event):
+    item = fetch_jwjam(namespaces.CHINA_JWJAM_COURSE, web_event.namespaced_id)
     return item or web_event.web_event

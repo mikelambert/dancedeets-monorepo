@@ -30,8 +30,8 @@ DATETIME_FORMAT_TZ = "%Y-%m-%dT%H:%M:%S%z"
 timezone_finder = TimezoneFinder()
 
 reload_functions = {
-    namespaces.CHINA_JWJAM_JAM: web_events_reloading.reload_bboy_lite_jam,
-    namespaces.CHINA_JWJAM_COURSE: web_events_reloading.reload_bboy_lite_course,
+    namespaces.CHINA_JWJAM_JAM: web_events_reloading.fetch_jwjam_jam,
+    namespaces.CHINA_JWJAM_COURSE: web_events_reloading.fetch_jwjam_course,
 }
 
 
