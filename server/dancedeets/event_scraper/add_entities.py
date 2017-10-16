@@ -17,6 +17,18 @@ class AddEventException(Exception):
     pass
 
 
+def add_update_web_event(json_body, allow_posting=True):
+    event_id = eventdata.DBEvent.generate_id(json_body['namespace'], json_body['namespaced_id'])
+    e = eventdata.DBEvent.get_or_insert(event_id)
+    newly_created = (e.creating_method is None)
+    e.creating_method = eventdata.CM_WEB_SCRAPE
+
+    event_updates.update_and_save_web_events([(e, json_body)])
+
+    post_pubsub = newly_created and allow_posting
+    deferred.defer(after_add_event, e.fb_event_id, None, post_pubsub)
+
+
 def add_update_fb_event(
     fb_event,
     fbl,
@@ -71,15 +83,16 @@ def add_update_fb_event(
     post_pubsub = newly_created and allow_posting
 
     fbl.clear_local_cache()
-    deferred.defer(after_add_event, fbl, e.fb_event_id, post_pubsub)
+    deferred.defer(after_add_event, e.fb_event_id, fbl, post_pubsub)
     return e
 
 
-def after_add_event(fbl, event_id, post_pubsub):
+def after_add_event(event_id, fbl, post_pubsub):
     logging.info("New event, publishing to twitter/facebook")
     if post_pubsub:
         pubsub.eventually_publish_event(event_id)
-    crawl_event_source(fbl, event_id)
+    if fbl:
+        crawl_event_source(fbl, event_id)
     # This has to occur *after* the event sources have been crawled (and the sources' emails are saved)
     event_emails_sending.send_event_add_emails(event_id)
 
