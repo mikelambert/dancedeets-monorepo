@@ -11,7 +11,19 @@ urls = {
 def fetch_jwjam(namespace, id):
     url = urls[namespace] % id
     data = urllib.urlopen(url).read()
-    json_data = json.loads(data)['data']
+    try:
+        json_data = json.loads(data)['data']
+    except ValueError:
+        return None
+
+    # Throw our our most egregiously-fake data fetches
+    if not json_data['location']:
+        return None
+        phone = (json_data['phone'] or '').replace('-', '')
+    if phone and len(phone) != 11:
+        return None
+    if json_data['title'] == '':
+        return None
 
     item = {}
     item['country'] = 'CN'
@@ -19,7 +31,7 @@ def fetch_jwjam(namespace, id):
     item['namespaced_id'] = json_data['id']
     item['name'] = json_data['title']
 
-    item['description'] = 'Phone Number: %(phone)s\n\n%(contents)s' % json_data
+    item['description'] = 'Phone Number: %(phone)s\n\n%(content)s' % json_data
     item['photo'] = json_data['pic']
 
     # Save the raw data, for use later if desired

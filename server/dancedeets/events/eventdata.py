@@ -183,13 +183,6 @@ class DBEvent(ndb.Model):
 
     def has_content(self):
         if self.web_event:
-            if self.namespace == 'bboylite-jam' or self.namespace == 'bboylite-course':
-                # Throw our our most egregiously-fake data fetches
-                phone = (self.web_event['raw']['phone'] or '').replace('-', '')
-                if phone and len(phone) != 11:
-                    return False
-                if self.web_event['raw']['title'] == '':
-                    return False
             return True
         else:
             return self.fb_event and not self.fb_event['empty']
