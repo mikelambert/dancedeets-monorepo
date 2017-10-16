@@ -25,7 +25,7 @@ def push_items(items):
     make_request(server, path, params)
 
 
-def fetch_all_ids(namespace, start_id=0):
+def fetch_all_ids(namespace, start_id=1):
     trailing_count = 20
     missing = 0
     id = start_id
@@ -48,5 +48,6 @@ def fetch_all_ids(namespace, start_id=0):
     return last_id
 
 
-last_id = fetch_all_ids(namespaces.CHINA_JWJAM_JAM, start_id=0)
-fetch_all_ids(namespaces.CHINA_JWJAM_COURSE, start_id=0)
+# TODO: Load the high-watermark (from DB), and start fetching from there
+fetch_all_ids(namespaces.CHINA_JWJAM_JAM, start_id=1)
+fetch_all_ids(namespaces.CHINA_JWJAM_COURSE, start_id=1)

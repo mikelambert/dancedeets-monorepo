@@ -26,7 +26,7 @@ def add_update_web_event(json_body, allow_posting=True):
     event_updates.update_and_save_web_events([(e, json_body)])
 
     post_pubsub = newly_created and allow_posting
-    deferred.defer(after_add_event, e.fb_event_id, None, post_pubsub)
+    deferred.defer(after_add_event, e.id, None, post_pubsub)
 
 
 def add_update_fb_event(
@@ -83,7 +83,7 @@ def add_update_fb_event(
     post_pubsub = newly_created and allow_posting
 
     fbl.clear_local_cache()
-    deferred.defer(after_add_event, e.fb_event_id, fbl, post_pubsub)
+    deferred.defer(after_add_event, e.id, fbl, post_pubsub)
     return e
 
 

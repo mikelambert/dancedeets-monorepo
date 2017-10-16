@@ -1,4 +1,5 @@
 import json
+import os
 import urllib
 from . import namespaces
 
@@ -10,7 +11,13 @@ urls = {
 
 def fetch_jwjam(namespace, id):
     url = urls[namespace] % id
-    data = urllib.urlopen(url).read()
+
+    typename = 'jam' if namespace == namespaces.CHINA_JWJAM_JAM else 'course'
+    json_filename = os.path.join(os.path.dirname(__file__), '../../../scrapers/bboylite/download-%s/%s.json' % (typename, id))
+    if os.path.exists(json_filename):
+        data = open(json_filename).read()
+    else:
+        data = urllib.urlopen(url).read()
     try:
         json_data = json.loads(data)['data']
     except ValueError:
@@ -19,7 +26,7 @@ def fetch_jwjam(namespace, id):
     # Throw our our most egregiously-fake data fetches
     if not json_data['location']:
         return None
-        phone = (json_data['phone'] or '').replace('-', '')
+    phone = (json_data['phone'] or '').replace('-', '')
     if phone and len(phone) != 11:
         return None
     if json_data['title'] == '':
@@ -31,7 +38,9 @@ def fetch_jwjam(namespace, id):
     item['namespaced_id'] = json_data['id']
     item['name'] = json_data['title']
 
-    item['description'] = 'Phone Number: %(phone)s\n\n%(content)s' % json_data
+    item['description'] = json_data['content'] or ''
+    if json_data['phone']:
+        item['description'] += 'Phone Number: %s\n\n%s' % (json_data['phone'], item['description'])
     item['photo'] = json_data['pic']
 
     # Save the raw data, for use later if desired
