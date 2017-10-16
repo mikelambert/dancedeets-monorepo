@@ -2,17 +2,18 @@
 
 import json
 import os
-import time
 import urllib
 
-if not os.path.exists('download'):
-    os.makedirs('download')
+JAM = {'dir': 'download-jam', 'url': 'http://jamyo.jamyooo.com/Lite/Jam/jam_detail?id=%s'}
+COURSE = {'dir': 'download-course', 'url': 'https://jamyo.jamyooo.com/Lite/Course/course_details?course_id=%s'}
 
 
-def get_id(id):
-    json_filename = 'download/%s.json' % id
+def get_id(id, type):
+    if not os.path.exists(type['dir']):
+        os.makedirs(type['dir'])
+    json_filename = '%s/%s.json' % (type['dir'], id)
     if not os.path.exists(json_filename):
-        url = 'http://jamyo.jamyooo.com/Lite/Jam/jam_detail?id=%s' % id
+        url = type['url'] % id
         data = urllib.urlopen(url).read()
         open(json_filename, 'w').write(data)
         #time.sleep(2)
@@ -32,29 +33,34 @@ def get_id(id):
 trailing_count = 20
 
 
-def grab_all():
-    id = 3167
+def grab_all(start_id, type):
     missing = 0
+    id = start_id
     while True:
-        event = get_id(id)
+        event = get_id(id, type)
         id += 1
 
         if event:
             missing = 0
         else:
             missing += 1
-        if missing > trailing_count:
+        if missing >= trailing_count:
             break
-    return id - missing
+    last_id = id - missing
+
+    # And this will then clean them all up
+    delete_past(last_id, type)
+
+    return last_id
 
 
-def delete_past(id):
-    for i in range(0, trailing_count):
-        json_filename = 'download/%s.json' % (id + i)
-        os.remove(json_filename)
+def delete_past(id, type):
+    for i in range(0, trailing_count + 1):
+        json_filename = '%s/%s.json' % (type['dir'], id + i)
+        if os.path.exists(json_filename):
+            os.remove(json_filename)
 
 
 # This will accidentally create a few 'empty' files at the very end..
-last_id = grab_all()
-# And this will then clean them all up
-delete_past(last_id)
+#last_id = grab_all(3167, JAM)
+last_id = grab_all(92, COURSE)
