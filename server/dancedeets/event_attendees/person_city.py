@@ -35,6 +35,14 @@ def _distance_to(geoname_id, latlng):
 
 
 def get_nonlocal_fraction(person_ids, center_latlng):
+    data = get_data_fields(person_ids, center_latlng)
+    if not data:
+        return 0
+    nonlocal_fraction = 1.0 * (data['total_known_people'] - data['count_range_0']) / data['total_known_people']
+    return nonlocal_fraction
+
+
+def get_data_fields(person_ids, center_latlng):
     distances = []
     for top_cities in _get_lol_cities(person_ids):
         if top_cities:
@@ -42,7 +50,7 @@ def get_nonlocal_fraction(person_ids, center_latlng):
             distances.append(min_distance)
 
     if not len(distances):
-        return 0
+        return None
 
     avg = sum(distances) / len(distances)
     rms = math.sqrt(sum(x * x for x in distances) / len(distances))
@@ -51,15 +59,17 @@ def get_nonlocal_fraction(person_ids, center_latlng):
     continental = len([x for x in distances if x >= 2000 and x < 6000])
     intercontinental = len([x for x in distances if x >= 6000])
 
-    logging.info(
-        'avg %s, rms %s, params %s', avg, rms, (
-            100 * local / len(distances), 100 * regional / len(distances), 100 * continental / len(distances),
-            100 * intercontinental / len(distances)
-        )
-    )
-
-    nonlocal_fraction = 1.0 * (len(distances) - local) / len(distances)
-    return nonlocal_fraction
+    data = {
+        'distance_average': avg,
+        'distance_rms': rms,
+        'total_attending_maybe_people': len(person_ids),
+        'total_known_people': len(distances),
+        'count_range_0': local,
+        'count_range_1': regional,
+        'count_range_2': continental,
+        'count_range_3': intercontinental,
+    }
+    return data
 
 
 def get_top_geoname_for(person_ids):
