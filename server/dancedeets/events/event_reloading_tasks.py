@@ -120,11 +120,11 @@ def yield_load_fb_event(fbl, all_events):
 
     # Process web_events
     web_events = [x for x in all_events if not x.is_fb_event]
-    events_to_update = []
+    web_events_to_update = []
     for web_event in web_events:
         if event_updates.need_forced_update(web_event):
-            events_to_update.append((web_event, web_event.web_event))
-    event_updates.update_and_save_web_events(events_to_update, disable_updates=disable_updates)
+            web_events_to_update.append(web_event)
+    event_updates.reload_web_events(web_events_to_update, disable_updates=disable_updates)
 
     # Now process fb_events
     db_events = [x for x in all_events if x.is_fb_event]

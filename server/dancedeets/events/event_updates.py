@@ -21,11 +21,28 @@ from dancedeets.util import language
 from dancedeets.util import timelog
 from . import event_image
 from . import event_locations
+from . import web_events_reloading
 
 DATETIME_FORMAT = "%Y-%m-%dT%H:%M:%S"
 DATETIME_FORMAT_TZ = "%Y-%m-%dT%H:%M:%S%z"
 
 timezone_finder = TimezoneFinder()
+
+reload_functions = {
+    'bboylite': web_events_reloading.reload_bboy_lite,
+}
+
+
+def reload_web_events(web_events, disable_updates=None):
+    events_to_update = []
+    for web_event in web_events:
+        if web_event.web_event_type in reload_functions:
+            func = reload_functions[web_event.web_event_type]
+            new_json = func(web_event)
+            events_to_update.append((web_event, new_json))
+        else:
+            events_to_update.append((web_event, web_event.web_event))
+    update_and_save_web_events(events_to_update, disable_updates=disable_updates)
 
 
 def _event_time_period(db_event):
@@ -191,6 +208,8 @@ def clean_address(address):
 def _inner_make_event_findable_for_web_event(db_event, web_event, disable_updates):
     logging.info("Making web_event %s findable." % db_event.id)
     db_event.web_event = web_event
+
+    db_event.web_event_type = db_event.web_event_type or 'scrapy'
 
     db_event.fb_event = None
     db_event.owner_fb_uid = None

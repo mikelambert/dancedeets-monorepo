@@ -124,6 +124,8 @@ class DBEvent(ndb.Model):
 
     nonlocal_fraction = ndb.FloatProperty(indexed=True)  # Fraction of attendees that are non-local dancers
 
+    web_event_type = ndb.StringProperty(indexed=True)
+
     # Things that would be nice to have in DBEvent:
     # - event privacy
     # - has image?
