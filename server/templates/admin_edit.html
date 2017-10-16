@@ -68,13 +68,9 @@ Edit Event
           {{ ranking_city_name }}
         </td></tr>
         <tr><td>
-          Non-local Attendees:
+          Attendee Distance Info:
         </td><td>
-          {% if nonlocal_fraction == 'Unknown' %}
-            {{ nonlocal_fraction }}
-          {% else %}
-            {{ (100*nonlocal_fraction)|round|int }}
-          {% endif %}
+          {{ attendee_distance_info }}
         </td></tr>
 
       </table>

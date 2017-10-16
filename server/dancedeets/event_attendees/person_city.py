@@ -38,7 +38,7 @@ def get_nonlocal_fraction(person_ids, center_latlng):
     data = get_data_fields(person_ids, center_latlng)
     if not data:
         return 0
-    nonlocal_fraction = 1.0 * (data['total_known_people'] - data['count_range_0']) / data['total_known_people']
+    nonlocal_fraction = 1.0 * (data['total_known_people'] - data['count_histogram'][0]) / data['total_known_people']
     return nonlocal_fraction
 
 
@@ -60,14 +60,11 @@ def get_data_fields(person_ids, center_latlng):
     intercontinental = len([x for x in distances if x >= 6000])
 
     data = {
-        'distance_average': avg,
-        'distance_rms': rms,
+        'distance_average': int(avg),
+        'distance_rms': int(rms),
         'total_attending_maybe_people': len(person_ids),
         'total_known_people': len(distances),
-        'count_range_0': local,
-        'count_range_1': regional,
-        'count_range_2': continental,
-        'count_range_3': intercontinental,
+        'count_histogram': (local, regional, continental, intercontinental),
     }
     return data
 
