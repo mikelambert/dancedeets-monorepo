@@ -86,7 +86,6 @@ class RelevantHandler(SearchHandler):
 
             has_more_results = False
             search_results = []
-            onebox_links = []
             if validated:
                 search_query = form.build_query()
 
@@ -109,7 +108,6 @@ class RelevantHandler(SearchHandler):
                     class_results = class_index.ClassSearch(search_query).get_search_results()
                     search_results += class_results
                     search_results.sort(key=lambda x: (x.start_time, x.actual_city_name, x.name))
-                onebox_links = onebox.get_links_for_query(search_query)
 
             geocode = None
             distance = None
