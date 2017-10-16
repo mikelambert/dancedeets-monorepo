@@ -15,7 +15,10 @@ def fetch_bboy_lite(namespace, url):
 
     item['description'] = 'Phone Number: %(phone)s\n\n%(contents)s' % json_data
     item['photo'] = json_data['pic']
-    # TODO: handle all images in json_data['jam_gallery']
+
+    # Save the raw data, for use later if desired
+    item['raw'] = json_data
+    # TODO: handle all images in json_data['jam_gallery'], so they can be proxied correctly
 
     item['start_time'] = json_data['startDate']
     item['end_time'] = json_data['endDate']
@@ -23,7 +26,11 @@ def fetch_bboy_lite(namespace, url):
     item['latitude'], item['longitude'] = json_data['location'].split(',')
     item['location_address'] = json_data['address']
 
-    return item
+    # Only return our item if it has 'good' data
+    if item['name'] and item['start_time'] and item['photo']:
+        return item
+    else:
+        return None
 
 
 def reload_bboy_lite_jam(web_event):
