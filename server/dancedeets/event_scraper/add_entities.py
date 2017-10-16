@@ -17,7 +17,7 @@ class AddEventException(Exception):
     pass
 
 
-def add_update_event(
+def add_update_fb_event(
     fb_event,
     fbl,
     creating_uid=None,
@@ -62,7 +62,7 @@ def add_update_event(
     try:
         fb_event_attending_maybe = fbl.get(fb_api.LookupEventAttendingMaybe, event_id)
     except fb_api.NoFetchedDataException as error:
-        logging.warning('Error loading fb-event-attending-maybe in add_update_event: %s', error)
+        logging.warning('Error loading fb-event-attending-maybe in add_update_fb_event: %s', error)
         fb_event_attending_maybe = None
 
     # Updates and saves the event

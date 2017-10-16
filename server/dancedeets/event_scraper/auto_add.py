@@ -81,7 +81,7 @@ def really_classify_events(fbl, new_pe_list, new_fb_list, allow_posting=True):
             try:
                 invite_ids = pe.get_invite_uids() if pe else []
                 logging.info('VTFI %s: Adding event %s, due to pe-invite-ids: %s', event_id, event_id, invite_ids)
-                e = add_entities.add_update_event(
+                e = add_entities.add_update_fb_event(
                     fb_event, fbl, visible_to_fb_uids=invite_ids, creating_method=method, allow_posting=allow_posting
                 )
                 pe2 = potential_events.PotentialEvent.get_by_key_name(event_id)

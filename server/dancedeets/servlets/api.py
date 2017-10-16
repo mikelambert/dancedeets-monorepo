@@ -450,7 +450,7 @@ class EventAddHandler(ApiHandler):
             self.add_error('Need to pass event_id argument')
         self.errors_are_fatal()
         fb_event = self.fbl.get(fb_api.LookupEvent, event_id, allow_cache=False)
-        add_entities.add_update_event(fb_event, self.fbl, creating_uid=self.fbl.fb_uid, creating_method=eventdata.CM_USER)
+        add_entities.add_update_fb_event(fb_event, self.fbl, creating_uid=self.fbl.fb_uid, creating_method=eventdata.CM_USER)
         self.write_json_success()
 
 

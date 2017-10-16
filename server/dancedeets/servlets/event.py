@@ -440,7 +440,7 @@ class AdminEditHandler(base_servlet.BaseRequestHandler):
 
         if self.request.get('background'):
             deferred.defer(
-                add_entities.add_update_event,
+                add_entities.add_update_fb_event,
                 fb_event,
                 self.fbl,
                 creating_uid=self.user.fb_uid,
@@ -451,7 +451,7 @@ class AdminEditHandler(base_servlet.BaseRequestHandler):
             self.response.out.write("<title>Added!</title>Added!")
         else:
             try:
-                add_entities.add_update_event(
+                add_entities.add_update_fb_event(
                     fb_event,
                     self.fbl,
                     creating_uid=self.user.fb_uid,
@@ -540,7 +540,7 @@ class AddHandler(base_servlet.BaseRequestHandler):
         try:
             # Skip cache so we always get latest data for newly-added event
             fb_event = self.fbl.get(fb_api.LookupEvent, event_id, allow_cache=False)
-            add_entities.add_update_event(fb_event, self.fbl, creating_uid=self.user.fb_uid, creating_method=eventdata.CM_USER)
+            add_entities.add_update_fb_event(fb_event, self.fbl, creating_uid=self.user.fb_uid, creating_method=eventdata.CM_USER)
         except Exception as e:
             self.add_error(str(e))
 

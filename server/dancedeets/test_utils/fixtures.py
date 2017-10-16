@@ -52,7 +52,7 @@ def create_event(event_id='1000001', start_time=None, location='NYC'):
 
     fbl = fb_api.FBLookup(None, None)
     fb_event = fbl.get(fb_api.LookupEvent, event_id)
-    event = add_entities.add_update_event(fb_event, fbl, override_address=location)
+    event = add_entities.add_update_fb_event(fb_event, fbl, override_address=location)
     return event
 
 
