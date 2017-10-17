@@ -122,12 +122,16 @@ export class BaseEvent extends JsonDerivedObject {
     return addUrlArgs(url, args);
   }
 
-  getCroppedCover(width: ?number, height: ?number): ?Cover {
+  getCroppedCover(width: ?number, height: ?number, index?: number): ?Cover {
     if (!this.picture) {
       return null;
     }
+    let source = this.picture.source;
+    if (index != null) {
+      source += `/${index}`;
+    }
     return {
-      source: addUrlArgs(this.picture.source, { width, height }),
+      source: addUrlArgs(source, { width, height }),
       width,
       height,
     };
@@ -243,12 +247,12 @@ export class Event extends BaseEvent {
   language: string;
   admins: Array<Admin>;
   ticket_uri: string; // eslint-disable-line camelcase
+  extraImageCount: string;
 
   getFlyer(dimensions: { width?: number, height?: number }): ?MiniImageProp {
     if (!this.picture) {
       return null;
     }
-
     let { width, height } = dimensions;
     let cover = null;
     if (!width && !height) {

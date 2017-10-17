@@ -108,6 +108,8 @@ def canonicalize_base_event_data(db_event, version):
     else:
         event_api['end_time'] = None
 
+    event_api['extraImageCount'] = len(db_event.extra_image_urls())
+
     # cover images
     if db_event.has_image:
         if version >= (1, 3):

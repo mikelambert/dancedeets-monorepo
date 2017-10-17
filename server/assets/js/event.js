@@ -536,6 +536,35 @@ class WallPosts extends React.Component {
   }
 }
 
+class ExtraImages extends React.Component {
+  props: {
+    event: Event,
+    amp?: boolean,
+  };
+
+  render() {
+    if (!this.props.event.extraImageCount) {
+      return null;
+    }
+    const images = [];
+    let i = 0;
+    while (i < this.props.event.extraImageCount) {
+      const source = this.props.event.getCroppedCover(480, null, i);
+      console.log(i, source);
+      images.push(
+        <AmpImage
+          key={i}
+          picture={source}
+          amp={this.props.amp}
+          className="event-flyer"
+        />
+      );
+      i += 1;
+    }
+    return images;
+  }
+}
+
 class Description extends React.Component {
   props: {
     event: Event,
@@ -553,6 +582,7 @@ class Description extends React.Component {
           <FormatDescription amp={this.props.amp}>
             {this.props.event.description}
           </FormatDescription>
+          <ExtraImages event={this.props.event} amp={this.props.amp} />
         </div>
       </Card>
     );
