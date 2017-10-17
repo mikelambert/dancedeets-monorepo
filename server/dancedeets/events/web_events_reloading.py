@@ -66,6 +66,7 @@ def fetch_jwjam(namespace, id):
 
     item['latitude'], item['longitude'] = json_data['location'].split(',')
     item['location_address'] = json_data['address']
+    item['location_name'] = json_data['address']
 
     # Only return our item if it has 'good' data
     if item['name'] and item['start_time'] and item['photo']:
