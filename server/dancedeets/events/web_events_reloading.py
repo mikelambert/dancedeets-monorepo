@@ -62,7 +62,7 @@ def fetch_jwjam(namespace, id):
     else:
         item['end_time'] = item['start_time']
 
-    item['latitude'], item['longitude'] = json_data['location'].split(',')
+    item['latitude'], item['longitude'] = [int(x) for x in json_data['location'].split(',')]
     item['location_address'] = json_data['address']
     item['location_name'] = json_data['address']
 

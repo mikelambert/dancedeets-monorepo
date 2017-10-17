@@ -30,7 +30,7 @@ def push_items(items):
     params = {
         'items': items,
     }
-    make_request('dev.dancedeets.com:8080', path, params)
+    #make_request('dev.dancedeets.com:8080', path, params)
     make_request('www.dancedeets.com', path, params)
 
 
@@ -78,7 +78,7 @@ def fetch_latest(namespace):
     fetch_all_ids(namespace, start_id=start_id)
 
 
-fetch_latest_only = True
+fetch_latest_only = False
 
 if fetch_latest_only:
     fetch_latest(namespaces.CHINA_JWJAM_JAM)
