@@ -1,8 +1,8 @@
 #!/usr/bin/python
 import site
-
 site.addsitedir('lib-local')
 
+from google.cloud import datastore
 import json
 import logging
 import urllib
@@ -10,6 +10,7 @@ import urllib2
 from dancedeets import keys
 from dancedeets.events import web_events_reloading
 from dancedeets.events import namespaces
+from dancedeets.util import dates
 
 logging.getLogger().setLevel(logging.INFO)
 
@@ -57,12 +58,19 @@ def fetch_all_ids(namespace, start_id=1):
 
 
 def find_high_watermark(namespace):
-    # implement this!
-    # for all events with this namespace
-    # sort by namespace id (aka id)
-    # and grab the highest-numbered one
-    # to return as our watermark
-    return 1
+    client = datastore.Client('dancedeets-hrd')
+    # Get most recent future event
+    query = client.query(kind='DBEvent')
+    query.add_filter('namespace_copy', '=', namespace)
+    query.order = ['-creation_time']
+    #query.keys_only()
+    # Get 100 most recent ids, and get the max integer
+    results = [x.key for x in query.fetch(100)]
+    if results:
+        max_id = max([int(x.name.split(':')[1]) for x in results])
+        return max_id
+    else:
+        return 1
 
 
 def fetch_latest(namespace):

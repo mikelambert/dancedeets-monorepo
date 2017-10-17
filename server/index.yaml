@@ -42,6 +42,12 @@ indexes:
 
 - kind: DBEvent
   properties:
+  - name: namespace_copy
+  - name: creation_time
+    direction: desc
+
+- kind: DBEvent
+  properties:
   - name: city_name
   - name: start_time
     direction: desc
