@@ -25,12 +25,12 @@ def make_request(server, path, params):
 
 
 def push_items(items):
-    server = 'dev.dancedeets.com:8080'
     path = 'web_events/upload_multi'
     params = {
         'items': items,
     }
-    make_request(server, path, params)
+    make_request('dev.dancedeets.com:8080', path, params)
+    make_request('www.dancedeets.com', path, params)
 
 
 def fetch_all_ids(namespace, start_id=1):
