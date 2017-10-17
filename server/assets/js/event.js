@@ -151,16 +151,29 @@ class ImageWithLinks extends React.Component {
 }
 
 function googleCalendarStartEndFormat(event) {
-  const fmt = 'YYYYMMDDTHHmmss[Z]';
-  const start = event
-    .getStartMoment({ timezone: true })
-    .utc()
-    .format(fmt);
-  const end = event
-    .getEndMoment({ timezone: true, estimate: true })
-    .utc()
-    .format(fmt);
-  return `${start}/${end}`;
+  // If it's an all-day event
+  const startNoTz = event.getStartMoment({ timezone: false });
+  const endNoTz = event.getEndMoment({ timezone: false });
+  if (
+    startNoTz.format('HH:mm:SS') === '00:00:00' &&
+    endNoTz.format('HH:mm:SS') === '00:00:00'
+  ) {
+    const fmt = 'YYYYMMDD';
+    const start = startNoTz.format(fmt);
+    const end = endNoTz.format(fmt);
+    return `${start}/${end}`;
+  } else {
+    const fmt = 'YYYYMMDDTHHmmss[Z]';
+    const start = event
+      .getStartMoment({ timezone: true })
+      .utc()
+      .format(fmt);
+    const end = event
+      .getEndMoment({ timezone: true, estimate: true })
+      .utc()
+      .format(fmt);
+    return `${start}/${end}`;
+  }
 }
 
 function getAddToCalendarLink(event) {
@@ -550,7 +563,6 @@ class ExtraImages extends React.Component {
     let i = 0;
     while (i < this.props.event.extraImageCount) {
       const source = this.props.event.getCroppedCover(480, null, i);
-      console.log(i, source);
       images.push(
         <AmpImage
           key={i}
