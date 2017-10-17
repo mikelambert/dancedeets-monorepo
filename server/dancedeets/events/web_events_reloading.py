@@ -60,9 +60,7 @@ def fetch_jwjam(namespace, id):
     if end_date and end_date != '0000-00-00 00:00:00':
         item['end_time'] = end_date
     else:
-        next_day = dateparser.parse(item['start_time']).date()
-        next_day += datetime.timedelta(days=1)
-        item['end_time'] = next_day.strftime('%Y-%m-%d %H:%M:%S')
+        item['end_time'] = item['start_time']
 
     item['latitude'], item['longitude'] = json_data['location'].split(',')
     item['location_address'] = json_data['address']
