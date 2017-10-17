@@ -156,6 +156,7 @@ function googleCalendarStartEndFormat(event) {
   const endNoTz = event.getEndMoment({ timezone: false });
   if (
     startNoTz.format('HH:mm:SS') === '00:00:00' &&
+    endNoTz &&
     endNoTz.format('HH:mm:SS') === '00:00:00'
   ) {
     const fmt = 'YYYYMMDD';
