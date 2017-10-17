@@ -394,7 +394,14 @@ class MapWithLinks extends React.Component {
     if (!geocode || !geocode.latitude) {
       return null;
     }
-    return `http://maps.google.com/?daddr=${geocode.latitude},${geocode.longitude}`;
+    let host = 'maps.google.com';
+    if (
+      this.props.event.venue.address &&
+      this.props.event.venue.address.countryCode === 'CN'
+    ) {
+      host = 'maps.google.cn';
+    }
+    return `http://${host}/?daddr=${geocode.latitude},${geocode.longitude}`;
   }
 
   mapHeader() {
