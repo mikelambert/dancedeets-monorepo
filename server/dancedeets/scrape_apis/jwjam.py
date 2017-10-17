@@ -1,3 +1,8 @@
+#!/usr/bin/python
+import site
+
+site.addsitedir('lib-local')
+
 import json
 import logging
 import urllib
@@ -5,6 +10,8 @@ import urllib2
 from dancedeets import keys
 from dancedeets.events import web_events_reloading
 from dancedeets.events import namespaces
+
+logging.getLogger().setLevel(logging.INFO)
 
 
 def make_request(server, path, params):
