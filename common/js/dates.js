@@ -56,20 +56,36 @@ export function formatStartTime(start: moment, intl: intlShape) {
 
 export function formatStartEnd(start: moment, end: ?moment, intl: intlShape) {
   if (end) {
-    const duration = end.diff(start);
-    if (duration < moment.duration(1, 'days').asMilliseconds()) {
-      const durationText = ` (${humanizeDuration(duration)})`;
-      const startText = formatTime(start, intl);
-      const endText = formatTime(end, intl);
-      return {
-        first: formatDate(start, intl),
-        second: `${startText} - ${endText} ${durationText}`,
-      };
+    if (
+      start.format('HH:mm:SS') === '00:00:00' &&
+      end.format('HH:mm:SS') === '00:00:00'
+    ) {
+      if (end.diff(start)) {
+        return {
+          first: `${formatDate(start, intl)} -`,
+          second: formatDate(end, intl),
+        };
+      } else {
+        return {
+          first: formatDate(start, intl),
+        };
+      }
     } else {
-      return {
-        first: `${formatDateTime(start, intl)} -`,
-        second: formatDateTime(end, intl),
-      };
+      const duration = end.diff(start);
+      if (duration < moment.duration(1, 'days').asMilliseconds()) {
+        const durationText = ` (${humanizeDuration(duration)})`;
+        const startText = formatTime(start, intl);
+        const endText = formatTime(end, intl);
+        return {
+          first: formatDate(start, intl),
+          second: `${startText} - ${endText} ${durationText}`,
+        };
+      } else {
+        return {
+          first: `${formatDateTime(start, intl)} -`,
+          second: formatDateTime(end, intl),
+        };
+      }
     }
   } else {
     return {
