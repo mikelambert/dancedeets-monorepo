@@ -90,6 +90,9 @@ def cache_image_and_get_size(event, index=None):
     else:
         mimetype, response = _raw_get_image(event, index=index)
         try:
+            # If image 0 *is* the flyer...then let's ignore image zero and just proxy the flyer
+            if index == 0 and event.full_image_url == event.extra_image_urls()[0]:
+                index = None
             gcs.put_object(EVENT_IMAGE_BUCKET, _event_image_filename(event.id, index=index), response)
             _clear_out_resize_caches(event.id, index=index)
         except:

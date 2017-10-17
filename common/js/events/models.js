@@ -127,7 +127,7 @@ export class BaseEvent extends JsonDerivedObject {
       return null;
     }
     let source = this.picture.source;
-    if (index != null) {
+    if (index) {
       source += `/${index}`;
     }
     return {
