@@ -247,7 +247,7 @@ export class Event extends BaseEvent {
   language: string;
   admins: Array<Admin>;
   ticket_uri: string; // eslint-disable-line camelcase
-  extraImageCount: string;
+  extraImageCount: number;
 
   getFlyer(dimensions: { width?: number, height?: number }): ?MiniImageProp {
     if (!this.picture) {
