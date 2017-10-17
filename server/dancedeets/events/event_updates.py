@@ -303,6 +303,9 @@ def _inner_make_event_findable_for_web_event(db_event, web_event, disable_update
 
 
 def _inner_common_setup(db_event, disable_updates=None):
+    # Copy namespace to the DBEvent (for filtering)
+    db_event.namespace_copy = db_event.namespace
+
     if db_event.json_props is None:
         db_event.json_props = {}
 

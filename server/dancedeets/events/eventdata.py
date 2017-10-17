@@ -86,6 +86,8 @@ class DBEvent(ndb.Model):
     # # TODO: WEB_EVENTS: IMPLEMENT AND MIGRATE DATA
     # namespaced_creator = ndb.StringProperty()
 
+    namespace_copy = ndb.StringProperty()
+
     # The blob of data that we received from the scraper
     web_event = ndb.JsonProperty(indexed=False)
 
