@@ -278,17 +278,23 @@ def _inner_make_event_findable_for_web_event(db_event, web_event, disable_update
         latlng = geocode.json_data['geometry']['location']
         web_event['latitude'] = latlng['lat']
         web_event['longitude'] = latlng['lng']
+    else:
+        # No geocode found
+        web_event['location_name'] = web_event.get('location_name')
+        web_event['latitude'] = web_event.get('latitude')
+        web_event['longitude'] = web_event.get('longitude')
 
-        # Add timezones, and save them to the web_event strings, for use by eventdata accessors
-        timezone_string = timezone_finder.closest_timezone_at(lat=latlng['lat'], lng=latlng['lng'])
-        web_event['timezone'] = timezone_string
-        if timezone_string:
-            tz = pytz.timezone(timezone_string)
-            web_event['start_time'] = tz.localize(db_event.start_time).strftime(DATETIME_FORMAT_TZ)
-            if db_event.end_time:
-                web_event['end_time'] = tz.localize(db_event.end_time).strftime(DATETIME_FORMAT_TZ)
-        else:
-            logging.error('No timezone string found for latlng: %s', latlng)
+    # Add timezones, and save them to the web_event strings, for use by eventdata accessors
+    timezone_string = timezone_finder.closest_timezone_at(lat=web_event['latitude'], lng=web_event['longitude'])
+    web_event['timezone'] = timezone_string
+    if timezone_string:
+        tz = pytz.timezone(timezone_string)
+        web_event['start_time'] = tz.localize(db_event.start_time).strftime(DATETIME_FORMAT_TZ)
+        if db_event.end_time:
+            web_event['end_time'] = tz.localize(db_event.end_time).strftime(DATETIME_FORMAT_TZ)
+    else:
+        logging.error('No timezone string found for latlng: %s', latlng)
+
     db_event.address = web_event.get('location_address')
 
     _inner_common_setup(db_event, disable_updates=disable_updates)
@@ -299,6 +305,7 @@ def _inner_make_event_findable_for_web_event(db_event, web_event, disable_update
         if 'regeocode' not in (disable_updates or []):
             db_event.location_geocode = None
         location_info = event_locations.LocationInfo(db_event=db_event)
+        print location_info, location_info.__dict__
         _update_geodata(db_event, location_info, disable_updates)
 
 
@@ -343,11 +350,11 @@ def _update_geodata(db_event, location_info, disable_updates):
 
     db_event.anywhere = location_info.is_online_event()
     db_event.actual_city_name = location_info.actual_city()
-    if location_info.latlong():
+    if location_info.latlong()[0] is not None:
         db_event.latitude, db_event.longitude = location_info.latlong()
     else:
-        db_event.latitude = None
-        db_event.longitude = None
+        db_event.latitude = db_event.web_event['latitude'] if db_event.web_event else None
+        db_event.longitude = db_event.web_event['longitude'] if db_event.web_event else None
         # TODO(lambert): find a better way of reporting/notifying about un-geocodeable addresses
         logging.warning("No geocoding results for eid=%s is: %s", db_event.id, location_info)
 
