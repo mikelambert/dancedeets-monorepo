@@ -39,6 +39,9 @@ def fetch_jwjam(namespace, id):
         return None
     if json_data['startDate'] == '0000-00-00 00:00:00':
         return None
+    # set on jwjam-course
+    if json_data.get('isTest'):
+        return None
 
     item = {}
     item['country'] = 'CN'
@@ -46,7 +49,8 @@ def fetch_jwjam(namespace, id):
     item['namespaced_id'] = json_data['id']
     item['name'] = json_data['title']
 
-    item['description'] = json_data['content'] or ''
+    # set on jwjam-jam
+    item['description'] = json_data.get('content') or ''
     if json_data['phone']:
         item['description'] += 'Phone Number: %s\n\n%s' % (json_data['phone'], item['description'])
     item['photo'] = json_data['pic']
