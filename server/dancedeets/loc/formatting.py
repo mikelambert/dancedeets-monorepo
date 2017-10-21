@@ -2,6 +2,8 @@ def get_city(geocode):
     country = geocode.get_component('country', long=False)
     if not country:
         return geocode.get_component('administrative_area_level_2')
+    elif country in ['ZH']:
+        return geocode.get_component('administrative_area_level_1')
     elif country in ['US', 'CA', 'AU', 'MX', 'MY', 'ID', 'JP', 'HK', 'TW']:
         return geocode.get_component('locality')
     else:
@@ -12,6 +14,8 @@ def get_state(geocode):
     country = geocode.get_component('country', long=False)
     if not country:
         return geocode.get_component('administrative_area_level_1')
+    elif country in ['ZH']:
+        return ''
     elif country in ['US', 'CA', 'AU', 'MX', 'MY', 'ID', 'JP', 'HK', 'TW']:
         return geocode.get_component(
             'administrative_area_level_1', long=False
