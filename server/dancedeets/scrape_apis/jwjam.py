@@ -43,16 +43,16 @@ def fetch_all_ids(namespace, start_id=1):
         logging.info('Downloaded %s:%s: %s', namespace, id, item)
         id += 1
 
-        if not item:
-            continue
-        push_items([item])
-
         if item:
             missing = 0
         else:
             missing += 1
         if missing >= trailing_count:
             break
+
+        if not item:
+            continue
+        push_items([item])
     last_id = id - missing
     return last_id
 
@@ -78,7 +78,7 @@ def fetch_latest(namespace):
     fetch_all_ids(namespace, start_id=start_id)
 
 
-fetch_latest_only = False
+fetch_latest_only = True
 
 if fetch_latest_only:
     fetch_latest(namespaces.CHINA_JWJAM_JAM)
