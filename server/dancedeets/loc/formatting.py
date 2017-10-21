@@ -3,7 +3,7 @@ def get_city(geocode):
     if not country:
         return geocode.get_component('administrative_area_level_2')
     elif country in ['ZH']:
-        return geocode.get_component('administrative_area_level_1')
+        return geocode.get_component('locality') or geocode.get_component('administrative_area_level_1')
     elif country in ['US', 'CA', 'AU', 'MX', 'MY', 'ID', 'JP', 'HK', 'TW']:
         return geocode.get_component('locality')
     else:
