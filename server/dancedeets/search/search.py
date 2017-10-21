@@ -125,6 +125,8 @@ class Search(object):
                 clauses += ['longitude >= %s AND longitude <= %s' % longitudes]
             else:
                 clauses += ['(longitude >= %s OR longitude <= %s)' % longitudes]
+        if self.query.country_code:
+            clauses += ['country = %s' % self.query.country_code]
         if self.query.start_date:
             clauses += ['end_time >= %s' % self.query.start_date.strftime(self.DATE_SEARCH_FORMAT)]
         if self.query.end_date:

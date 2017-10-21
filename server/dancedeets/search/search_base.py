@@ -121,17 +121,23 @@ class SearchForm(wtforms.Form):
                 success = False
         return success
 
-    def _get_bounds(self):
+    def build_query(self, start_end_query=False):
         bounds = None
+        country_code = None
         if self.location.data:
             geocode = gmaps_api.lookup_address(self.location.data, language=self.locale.data)
-            bounds = math.expand_bounds(geocode.latlng_bounds(), self.distance_in_km())
-        return bounds
-
-    def build_query(self, start_end_query=False):
-        bounds = self._get_bounds()
+            if geocode.is_country_geocode():
+                country_code = geocode.country()
+            else:
+                bounds = math.expand_bounds(geocode.latlng_bounds(), self.distance_in_km())
         keywords = _get_parsed_keywords(self.keywords.data)
-        common_fields = dict(bounds=bounds, min_attendees=self.min_attendees.data, min_worth=self.min_worth.data, keywords=keywords)
+        common_fields = dict(
+            bounds=bounds,
+            min_attendees=self.min_attendees.data,
+            min_worth=self.min_worth.data,
+            keywords=keywords,
+            country_code=country_code
+        )
         query = SearchQuery(start_date=self.start.data, end_date=self.end.data, **common_fields)
         return query
 
@@ -157,7 +163,17 @@ def get_center_and_bounds(geocode, distance):
 
 
 class SearchQuery(object):
-    def __init__(self, time_period=None, start_date=None, end_date=None, bounds=None, min_attendees=None, min_worth=None, keywords=None):
+    def __init__(
+        self,
+        time_period=None,
+        start_date=None,
+        end_date=None,
+        bounds=None,
+        min_attendees=None,
+        min_worth=None,
+        keywords=None,
+        country_code=None
+    ):
         self.time_period = time_period
         self.min_attendees = min_attendees
         self.min_worth = min_worth
@@ -165,6 +181,7 @@ class SearchQuery(object):
         self.end_date = end_date
         self.bounds = bounds
         self.keywords = keywords
+        self.country_code = country_code
 
     def __repr__(self):
         return 'SearchQuery(**%r)' % self.__dict__

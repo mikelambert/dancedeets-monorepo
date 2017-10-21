@@ -59,6 +59,9 @@ class GMapsGeocode(_GMapsResult):
     def country(self, long=False):
         return self.get_component('country', long=long)
 
+    def is_country_geocode(self):
+        return self.country() and len(self.json_data['address_components']) == 1
+
     def latlng_bounds(self):
         if 'viewport' in self.json_data['geometry']:
             viewport = self.json_data['geometry']['viewport']
