@@ -35,7 +35,7 @@ def push_items(items):
 
 
 def fetch_all_ids(namespace, start_id=1):
-    trailing_count = 20
+    trailing_count = 50
     missing = 0
     id = start_id
     while True:
@@ -70,19 +70,19 @@ def find_high_watermark(namespace):
         max_id = max([int(x.name.split(':')[1]) for x in results])
         return max_id
     else:
-        return 1
+        return 0
 
 
-def fetch_latest(namespace):
-    start_id = find_high_watermark(namespace)
+def fetch_latest(namespace, start_id=0):
+    start_id = find_high_watermark(namespace) or start_id
     fetch_all_ids(namespace, start_id=start_id)
 
 
 fetch_latest_only = True
 
 if fetch_latest_only:
-    fetch_latest(namespaces.CHINA_JWJAM_JAM)
-    fetch_latest(namespaces.CHINA_JWJAM_COURSE)
+    fetch_latest(namespaces.CHINA_JWJAM_JAM, 0)
+    fetch_latest(namespaces.CHINA_JWJAM_COURSE, 92)
 else:
-    fetch_all_ids(namespaces.CHINA_JWJAM_JAM)
-    fetch_all_ids(namespaces.CHINA_JWJAM_COURSE)
+    fetch_all_ids(namespaces.CHINA_JWJAM_JAM, 0)
+    fetch_all_ids(namespaces.CHINA_JWJAM_COURSE, 92)

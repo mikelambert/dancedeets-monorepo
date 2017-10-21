@@ -62,6 +62,9 @@ def fetch_jwjam(namespace, id):
     else:
         item['end_time'] = item['start_time']
 
+    if not re.match(r'^\d+\.\d+,\d+\.\d+$', json_data['location']):
+        return None
+
     location_parts = [float(x) for x in json_data['location'].split(',')]
     item['latitude'] = location_parts[1]
     item['longitude'] = location_parts[0]
