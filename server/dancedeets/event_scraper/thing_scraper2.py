@@ -24,6 +24,10 @@ def _shard_for(event_id):
 def scrape_sources_for_events(sources):
     fbl = fb_mapreduce.get_fblookup()
     fbl.allow_cache = False
+    # Eliminate all caches (both fetching, and saving!)
+    # This should save on a bunch of unnecessary put() calls while scraping
+    # (Current estimates are 30qps * 60 sec/min * 50min * $0.18/10K Queries * 30 days = $48/month)
+    fbl.make_passthrough()
     discovered_list = thing_scraper.discover_events_from_sources(fbl, sources)
     for x in discovered_list:
         state = (x.event_id, x.source_id, x.source_field, x.extra_source_id)
