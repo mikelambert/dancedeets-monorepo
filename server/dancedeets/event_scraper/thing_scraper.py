@@ -79,7 +79,7 @@ def discover_events_from_sources(fbl, sources):
 
     if fbl.allow_cache:
         logging.error('discover_events_from_sources unexpectedly called with a disabled cache!')
-    if fbl.allow_cache or fbl.db:
+    if fbl.db:
         logging.error('discover_events_from_sources unexpectedly called with a db. This could get expensive!')
 
     logging.info("Looking up sources: %s", [x.graph_id for x in sources])
