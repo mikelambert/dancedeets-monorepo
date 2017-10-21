@@ -8,7 +8,11 @@ import urllib
 from dancedeets import keys
 
 from . import gmaps_backends
-from dancedeets.util import mr
+try:
+    from dancedeets.util import mr
+except ImportError:
+    logging.exception('Failed to import mr module')
+    mr = None
 from dancedeets.util import urls
 
 google_maps_private_key = keys.get("google_maps_private_key")
@@ -23,7 +27,8 @@ class LiveBackend(gmaps_backends.GMapsBackend):
         self.use_private_key = use_private_key
 
     def get_json(self, **kwargs):
-        mr.increment('gmaps-api-%s' % self.name)
+        if mr:
+            mr.increment('gmaps-api-%s' % self.name)
         if self.use_private_key:
             kwargs['client'] = 'free-dancedeets'
             unsigned_url_path = "%s?%s" % (self.path, urls.urlencode(kwargs))
