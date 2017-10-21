@@ -37,6 +37,8 @@ def fetch_jwjam(namespace, id):
         return None
     if json_data['title'] == '':
         return None
+    if json_data['startDate'] == '0000-00-00 00:00:00':
+        return None
 
     item = {}
     item['country'] = 'CN'
