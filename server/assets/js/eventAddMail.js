@@ -18,6 +18,7 @@ class GenericCircle extends React.Component {
   render() {
     return (
       <img
+        alt="•"
         src="https://static.dancedeets.com/img/mail/purple-circle.png"
         width="36px"
         height="36px"
