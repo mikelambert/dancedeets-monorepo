@@ -110,15 +110,15 @@ class EventTestimonials extends React.Component {
         </mj-section>
         <mj-section>
           <mj-column>
-            <ImageThumbnail imageName="events/sygu" />
+            <ImageThumbnail imageName="events/sygu.jpg" />
             <mj-text>Step Ya Game Up</mj-text>
           </mj-column>
           <mj-column>
-            <ImageThumbnail imageName="events/lohh" />
+            <ImageThumbnail imageName="events/lohh.png" />
             <mj-text>Ladies of Hip-Hop</mj-text>
           </mj-column>
           <mj-column>
-            <ImageThumbnail imageName="events/ssl" />
+            <ImageThumbnail imageName="events/ssl.png" />
             <mj-text>Street Style Lab</mj-text>
           </mj-column>
         </mj-section>
@@ -129,21 +129,21 @@ class EventTestimonials extends React.Component {
         </mj-section>
         <mj-section>
           <mj-column>
-            <ImageThumbnail imageName="testimonials/nedric" />
+            <ImageThumbnail imageName="testimonials/nedric.jpg" />
             <mj-text>
               Looking forward to working with DanceDeets on my next event!
             </mj-text>
             <mj-text>Nedric Johnson (Juste Debout NYC)</mj-text>
           </mj-column>
           <mj-column>
-            <ImageThumbnail imageName="testimonials/stretch" />
+            <ImageThumbnail imageName="testimonials/stretch.jpg" />
             <mj-text>
               I tell dancers to check DanceDeets for events in this scene...
             </mj-text>
             <mj-text>Buddha Stretch (Elite Force, MOPTOP)</mj-text>
           </mj-column>
           <mj-column>
-            <ImageThumbnail imageName="testimonials/stretch" />
+            <ImageThumbnail imageName="testimonials/carlo.jpg" />
             <mj-text>
               More promoters need to start working with DanceDeets!
             </mj-text>
@@ -179,19 +179,21 @@ class BodyWrapper extends React.Component {
     // TODO: Handle 'intro email' different from 'second email'
     return [
       <mj-section class="alternate">
-        <mj-column full-width="full-width" />
+        <mj-column full-width="full-width">
+          <mj-image src="https://static.dancedeets.com/img/mail/header-flyers.jpg" />
+        </mj-column>
       </mj-section>,
       <mj-section>
         <mj-column full-width="full-width">
           <mj-text>
             <p>Hi there {this.props.organizerName},</p>
             <p>
-              We want to help promote your new event and help grow our dance
+              We want to help promote your new event and help grow our dance{' '}
               scene:
             </p>
             <p>“{event.name}”</p>
             <p>
-              To start, we&#8217;ve added your event to DanceDeets, the
+              To start, we&#8217;ve added your event to DanceDeets, the{' '}
               world&#8217; s biggest street dance event platform:
             </p>
             <mj-button

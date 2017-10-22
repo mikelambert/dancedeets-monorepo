@@ -59,11 +59,11 @@ export class NewEmailWrapper extends React.Component {
                 </mj-text>
                 <mjml-image
                   href={this.props.mobileIosUrl}
-                  src="https://static.dancedeets.com/img/mail/mobile-iphone.png"
+                  src="https://static.dancedeets.com/img/mail/mobile-ios-download.png"
                 />
                 <mjml-image
                   href={this.props.mobileAndroidUrl}
-                  src="https://static.dancedeets.com/img/mail/mobile-android.png"
+                  src="https://static.dancedeets.com/img/mail/mobile-android-download.png"
                 />
               </mj-column>
               <mj-column>
