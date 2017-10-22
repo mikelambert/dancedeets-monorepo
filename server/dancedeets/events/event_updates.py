@@ -299,7 +299,7 @@ def _inner_make_event_findable_for_web_event(db_event, web_event, disable_update
         if db_event.end_time:
             web_event['end_time'] = tz.localize(db_event.end_time).strftime(DATETIME_FORMAT_TZ)
     else:
-        logging.error('No timezone string found for latlng: %s', latlng)
+        logging.error('No timezone string found for latlng: %s, %s', web_event['latitude'], web_event['longitude'])
 
     db_event.address = web_event.get('location_address')
 
