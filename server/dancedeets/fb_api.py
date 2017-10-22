@@ -844,8 +844,7 @@ class FBLookup(object):
             logging.warning("BatchLookup: Couldn't find values for keys: %s", keys)
 
         self.fb_fetches = self.fb.fb_fetches
-        if self.db:
-            self.db_updates = self.db.db_updates
+        self.db_updates = self.db.db_updates if self.db else 0
 
         # In case we do futher fetches, don't refetch any of these keys
         self._keys_to_fetch = set()
