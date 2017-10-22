@@ -17,10 +17,10 @@ import {
 class GenericCircle extends React.Component {
   render() {
     return (
-      <mj-image
+      <img
         src="https://static.dancedeets.com/img/mail/purple-circle.png"
-        width="50px"
-        height="50px"
+        width="36px"
+        height="36px"
       />
     );
   }
@@ -39,9 +39,7 @@ class SellingPoint extends React.Component {
           <td>
             <GenericCircle />
           </td>
-          <td style={{ fontWeight: 'bold' }}>
-            <mj-text>{this.props.title}</mj-text>
-          </td>
+          <td style={{ fontWeight: 'bold' }}>{this.props.title}</td>
         </tr>
       </mj-table>,
       <mj-text>{this.props.contents}</mj-text>,
@@ -229,17 +227,15 @@ class BodyWrapper extends React.Component {
             <p>What does this mean for you?</p>
           </mj-text>
 
-          <table>
+          <mj-table>
             <tr>
               <td>
                 <GenericCircle />
               </td>
               <td>
-                <mj-text>
-                  Your event is now accessible on dancedeets.com and our mobile{' '}
-                  app, for the 50,000+ dancers that visit us every month. Even
-                  if they don&#8217; t use Facebook.
-                </mj-text>
+                Your event is now accessible on dancedeets.com and our mobile{' '}
+                app, for the 50,000+ dancers that visit us every month. Even if
+                they don&#8217; t use Facebook.
               </td>
             </tr>
             <tr>
@@ -247,25 +243,23 @@ class BodyWrapper extends React.Component {
                 <GenericCircle />
               </td>
               <td>
-                <mj-text>
-                  Easily discoverable by dancers living in {city} (or those just{' '}
-                  visiting!), as well as new dancers looking to get into the{' '}
-                  scene.
-                </mj-text>
+                Easily discoverable by dancers living in {city} (or those just{' '}
+                visiting!), as well as new dancers looking to get into the{' '}
+                scene.
               </td>
+            </tr>
+            <tr>
               <td>
                 <GenericCircle />
               </td>
               <td>
-                <mj-text>
-                  We&#8217; ve published information about your event to Google{' '}
-                  and <a href="https://twitter.com/dancedeets">Twitter</a>, so{' '}
-                  dancers can find information about your event, no matter where{' '}
-                  they look.
-                </mj-text>
+                We&#8217; ve published information about your event to Google{' '}
+                and <a href="https://twitter.com/dancedeets">Twitter</a>, so{' '}
+                dancers can find information about your event, no matter where{' '}
+                they look.
               </td>
             </tr>
-          </table>
+          </mj-table>
 
           <mj-text font-weight="bold">Want more promotion? Read on…</mj-text>
         </mj-column>
