@@ -13,6 +13,7 @@ class NoEmailException(Exception):
 def send_event_add_emails(event_id, should_send=False):
     event = eventdata.DBEvent.get_by_id(event_id)
     emails = event_emails.get_emails_for_event(event)
+    emails.add('mlambert+event-test@gmail.com')
     email_contents = []
     for address in emails:
         try:

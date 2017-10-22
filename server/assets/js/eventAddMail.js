@@ -166,11 +166,13 @@ class BodyWrapper extends React.Component {
 
   render() {
     const event = this.props.event;
+    /*
     const args = {
       utm_source: 'event_add',
       utm_medium: 'email',
       utm_campaign: 'event_add',
     };
+    */
     const shortUrl = `https://dd.events/e/${event.id}`;
     const address = event.venue.address;
     let city = 'your city';

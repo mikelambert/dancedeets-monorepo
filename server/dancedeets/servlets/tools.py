@@ -38,6 +38,19 @@ class MemoryUsers(webapp2.RequestHandler):
             self.response.out.write(data + '\n')
 
 
+@app.route('/tools/display_event_email')
+class DisplayEmailHandler(base_servlet.EventIdOperationHandler):
+    def event_id_operation(self, fbl, event_ids):
+        from dancedeets.events import event_emails_sending
+        try:
+            messages = event_emails_sending.send_event_add_emails(event_ids[0], should_send=False)
+        except Exception as e:
+            self.response.out.write('Error generating mail html: %s' % e)
+        else:
+            for message in messages:
+                self.response.out.write(message['html'])
+
+
 @app.route('/tools/memory_dump_objgraph')
 class MemoryDumper(webapp2.RequestHandler):
     def get(self):
