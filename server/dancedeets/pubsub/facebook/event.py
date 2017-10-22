@@ -64,7 +64,17 @@ def facebook_post(auth_token, db_event):
         # Don't want to post events globally...too noisy
         return {}
 
+    intro = random.choice([
+        'Coming up soon! ',
+        'Are you ready? ',
+        'Just a few days away... ',
+        'We can\t wait! ',
+        'Get ready! ',
+        '',
+    ])
+
     params = {
+        'intro': intro,
         'name': db_event.name,
         'description': db_event.description,
         'date': human_date,
@@ -90,11 +100,10 @@ def facebook_post(auth_token, db_event):
     #_____________________________________________________________________
 
     message = """
-%(name)s
+%(intro)s%(name)s
 
 Date: %(date)s
-City: %(full_location)s
-Venue: %(venue)s
+Venue: %(venue)s, (full_location)s
 %(callouts)s
 _____________________________________________________________________
 Description:
@@ -115,7 +124,7 @@ Description:
     if venue_id:
         post_values['place'] = venue_id
 
-    feed_targeting = get_country_targeting_data(fbl, db_event)
+    feed_targeting = get_targeting_data(fbl, db_event)
     if feed_targeting:
         # Ideally we'd do this as 'feed_targeting', but Facebook appears to return errors with that due to:
         # {u'error': {u'message': u'Invalid parameter', u'code': 100, u'is_transient': False,
