@@ -162,6 +162,9 @@ gulp.task('compile:images:resize', () =>
             format: 'png',
           },
         ],
+        // Ensure that these images are copied over as-is
+        'mail/*.*': [{}],
+        'mail/*/*.*': [{}],
         '{location,style}-*.jpg': [
           {
             width: 450,
