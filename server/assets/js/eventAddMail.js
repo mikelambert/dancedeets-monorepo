@@ -8,12 +8,45 @@ import React from 'react';
 import { intlWeb } from 'dancedeets-common/js/intl';
 import { Event } from 'dancedeets-common/js/events/models';
 import { addUrlArgs } from 'dancedeets-common/js/util/url';
-import { NewEmailWrapper } from './mailCommon';
+import { NewEmailWrapper, buttonColor } from './mailCommon';
 
+class GenericCircle extends React.Component {
+  render() {
+    return (
+      <mj-image
+        src="https://static.dancedeets.com/img/mail/purple-circle.png"
+        width="50px"
+        height="50px"
+      />
+    );
+  }
+}
+
+class SellingPoint extends React.Component {
+  props: {
+    title: string,
+    contents: string,
+  };
+
+  render() {
+    return [
+      <mj-table>
+        <tr>
+          <td>
+            <GenericCircle />
+          </td>
+          <td style={{ fontWeight: 'bold' }}>{this.props.title}</td>
+        </tr>
+      </mj-table>,
+      <mj-text>{this.props.contents}</mj-text>,
+    ];
+  }
+}
 class BodyWrapper extends React.Component {
   props: {
     event: Event,
-    emailTo: string,
+    organizerEmail: string,
+    organizerName: string,
   };
 
   render() {
@@ -31,117 +64,129 @@ class BodyWrapper extends React.Component {
       city = `the ${address.city} area`;
     }
     // TODO: Handle 'intro email' different from 'second email'
-    return (
-      <mj-section background-color="#ffffff">
-        <mj-column width="100%">
-          <mj-text padding="10px 25px">
-            <p>Hi there,</p>
+    return [
+      <mj-section class="alternate">
+        <mj-column full-width="full-width" />
+      </mj-section>,
+      <mj-section>
+        <mj-column full-width="full-width">
+          <mj-text>
+            <p>Hi there {this.props.organizerName},</p>
             <p>
-              I wanted to let you know we&#39;ve just added your event{' '}
-              <a href={url}>{event.name}</a> to DanceDeets, where our worldwide
-              dance community finds the dance events they care about.
+              We want to help promote your new event and help grow our dance
+              scene:
             </p>
+            <p>“{event.name}”</p>
             <p>
-              Thank you for organizing and hosting events like this one, that
-              build and make up the essence of our dance scene. In return,
-              we&#39;ll do our part to spread the word to dancers everywhere:
+              To start, we&#8217;ve added your event to DanceDeets, the
+              world&#8217; s biggest street dance event platform:
             </p>
-            <ul>
-              <li>
-                Your event is now listed on {' '}
-                <a href={addUrlArgs('https://www.dancedeets.com', args)}>
-                  dancedeets.com
-                </a>{' '}
-                and our{' '}
-                <a
-                  href={addUrlArgs(
-                    'https://www.dancedeets.com/mobile_apps',
-                    args
-                  )}
-                >
-                  mobile app
-                </a>{' '}
-                for the 40,000+ dancers that visit every month. Even if they
-                done&#39;t have Facebook.
-              </li>
-              <li>
-                Easily discoverable by dancers visiting {city}, as well as new
-                dancers looking to join your scene.
-              </li>
-              <li>
-                We&#39;ve published information about your event to Google and
-                <a href="https://twitter.com/dancedeets">Twitter</a>, so dancers
-                can find information about your event, no matter where they
-                look.
-              </li>
-              <li>
-                If you need a convenient URL to share with folks, you can use{' '}
-                <a href={shortUrl}>shortUrl</a>, which can be viewed even by
-                those friends who refuse to use Facebook.
-              </li>
-            </ul>
-            <hr />
-            <p>
-              But we still want to make things better! Let us know which of the
-              following will help you most!
-            </p>
-            <ul>
-              <li>
-                If you want us to tell you about common mistakes and ways to
-                improve your event and event description, click here.
-              </li>
-              <li>
-                If you want us to push and promote your event to an even larger
-                audience outside of {city}, click here.
-              </li>
-              <li>
-                If you want to be able to force-refresh the event information
-                from Facebook anytime you make changes, click here.
-              </li>
-              <li>
-                If you want to control the keywords we list your event as
-                (currently {event.annotations.categories.join(', ')}), click
-                here.
-              </li>
-              <li>
-                If you want to set a special video trailer (or
-                soundcloud/mixcloud link!) for your event, click here.
-              </li>
-              <li>
-                If you want to set a specific contact email address for your
-                events (other than {this.props.emailTo}), click here.
-              </li>
-            </ul>
+            <mj-button
+              href={shortUrl}
+              align="center"
+              background-color={buttonColor}
+            />
+
+            <p>What does this mean for you?</p>
           </mj-text>
+
+          <mj-table>
+            <tr>
+              <td>
+                <GenericCircle />
+              </td>
+              <td>
+                Your event is now accessible on dancedeets.com and our mobile{' '}
+                app, for the 50,000+ dancers that visit us every month. Even if{' '}
+                they don&#8217; t use Facebook.
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <GenericCircle />
+              </td>
+              <td>
+                Easily discoverable by dancers living in {city} (or those just{' '}
+                visiting!), as well as new dancers looking to get into the{' '}
+                scene.
+              </td>
+              <td>
+                <GenericCircle />
+              </td>
+              <td>
+                We&#8217; ve published information about your event to Google{' '}
+                and <a href="https://twitter.com/dancedeets">Twitter</a>, so{' '}
+                dancers can find information about your event, no matter where{' '}
+                they look.
+              </td>
+            </tr>
+          </mj-table>
+
+          <mj-text font-weight="bold">Want more promotion? Read on…</mj-text>
         </mj-column>
-      </mj-section>
-    );
+      </mj-section>,
+      <mj-section>
+        <mj-column>
+          <SellingPoint
+            title="THE most influencial dance event platform"
+            contents="Over 250,000 events around the world, visited by over 50,000 dancers every month."
+          />
+        </mj-column>
+        <mj-column>
+          <SellingPoint
+            title="Maximum exposure on multiple channels"
+            contents="Website, mobile apps, Facebook, Instagram, Twitter… We will push your event to everywhere dancers look."
+          />
+        </mj-column>
+      </mj-section>,
+      <mj-section>
+        <mj-column>
+          <SellingPoint
+            title="Ongoing event promotion support"
+            contents="We will post/share footage and event recap after the event, to our 8,000 global followers on Facebook."
+          />
+        </mj-column>
+        <mj-column>
+          <SellingPoint
+            title="Completely free!"
+            contents="No fee! All you need to do is to help spread DanceDeets’ name to your local dancers.."
+          />
+        </mj-column>
+      </mj-section>,
+      <mj-button
+        href="mailto:partnering@dancedeets.com"
+        align="center"
+        background-color={buttonColor}
+      />,
+    ];
   }
 }
 
 class AddEventEmail extends React.Component {
   props: {
     event: Event,
-    emailTo: string,
+    organizerEmail: string,
+    organizerName: string,
+
+    mobileIosUrl: string,
+    mobileAndroidUrl: string,
+    emailPreferencesUrl: string,
   };
 
   render() {
     const event = new Event(this.props.event);
     return (
       <NewEmailWrapper
-        header={`We've added your event: ${event.name}`}
-        // TODO: Implement unsubscribe link
-        footer={
-          <div>
-            You may also{' '}
-            <a href="*|UNSUB:https://www.dancedeets.com/user/unsubscribe|*">
-              unsubscribe
-            </a>{' '}
-            from these event notification emails.
-          </div>
-        }
+        previewText={`We want to help promote your event!`}
+        mobileIosUrl={this.props.mobileIosUrl}
+        mobileAndroidUrl={this.props.mobileAndroidUrl}
+        emailPreferencesUrl={this.props.emailPreferencesUrl}
       >
-        <BodyWrapper event={event} emailTo={this.props.emailTo} />
+        <BodyWrapper
+          event={event}
+          organizerEmail={this.props.organizerEmail}
+          organizerName={this.props.organizerName}
+        />
       </NewEmailWrapper>
     );
   }

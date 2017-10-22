@@ -12,12 +12,14 @@ const secondaryBackgroundColor = '#534F4F';
 const primaryForegroundColor = '#534F4F';
 const secondaryForegroundColor = '#FFFFFF';
 const footerForegroundColor = '$D5D5D5';
+export const buttonColor = '#A361CB';
 
 export class NewEmailWrapper extends React.Component {
   props: {
     previewText: string,
     mobileIosUrl: string,
     mobileAndroidUrl: string,
+    emailPreferencesUrl: string,
     children: React.Element<*>,
   };
 
@@ -93,9 +95,13 @@ export class NewEmailWrapper extends React.Component {
                   instagram-href="https://www.instagram.com/dancedeets"
                 />
                 <mj-text color={footerForegroundColor}>
-                  Built for and by Dancers.<br />
-                  Sent with ❤ from DanceDeets<br />
-                  <a href="/user/email_edit?">Email preferences</a>
+                  <p>Built for and by Dancers.</p>
+                  <p>Sent with ❤ from DanceDeets</p>
+                  <p>
+                    <a href={this.props.emailPreferencesUrl}>
+                      Unsubscribe / email preferences
+                    </a>
+                  </p>
                 </mj-text>
               </mj-column>
             </mj-section>
