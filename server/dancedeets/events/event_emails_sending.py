@@ -6,6 +6,10 @@ from dancedeets.logic import api_format
 from dancedeets.mail import mandrill_api
 
 
+class NoEmailException(Exception):
+    pass
+
+
 def send_event_add_emails(event_id):
     event = eventdata.DBEvent.get_by_id(event_id)
     emails = event_emails.get_emails_for_event(event)
