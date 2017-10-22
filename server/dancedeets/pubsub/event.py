@@ -9,90 +9,6 @@ from .facebook import fb_util
 from .twitter import event as twitter_event
 from . import db
 
-blacklisted_countries = [
-    # Africa
-    "DZ",
-    "AO",
-    "BJ",
-    "BW",
-    "BF",
-    "BI",
-    "CM",
-    "CV",
-    "CF",
-    "KM",
-    "CD",
-    "DJ",
-    "EG",
-    "GQ",
-    "ER",
-    "ET",
-    "GA",
-    "GM",
-    "GH",
-    "GN",
-    "GW",
-    "CI",
-    "KE",
-    "LS",
-    "LR",
-    "LY",
-    "MG",
-    "MW",
-    "ML",
-    "MR",
-    "MU",
-    "MA",
-    "MZ",
-    "NA",
-    "NE",
-    "NG",
-    "of",
-    "RE",
-    "RW",
-    "SH",
-    "ST",
-    "SN",
-    "SC",
-    "SL",
-    "SO",
-    "ZA",
-    "SS",
-    "SD",
-    "SZ",
-    "TZ",
-    "TG",
-    "TN",
-    "UG",
-    "EH",
-    "ZM",
-    "ZW",
-    # Oceania
-    "AS",
-    "CK",
-    "TL",
-    "FJ",
-    "PF",
-    "GU",
-    "KI",
-    "MH",
-    "FM",
-    "NR",
-    "NC",
-    "NZ",
-    "NU",
-    "NF",
-    "MP",
-    "PW",
-    "PG",
-    "PN",
-    "WS",
-    "SB",
-    "TK",
-    "TV",
-    "VU",
-]
-
 
 def _should_post_event_common(auth_token, db_event):
     geocode = db_event.get_geocode()
@@ -133,9 +49,6 @@ def should_post_event_to_account(auth_token, db_event, min_attendees, min_dancer
     geocode = db_event.get_geocode()
     if not geocode:
         # Don't post events without a location. It's too confusing...
-        return False
-    event_country = geocode.country()
-    if event_country in blacklisted_countries:
         return False
 
     #TODO: Store the actual attendees counts and match info in the event itself,
