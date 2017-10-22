@@ -6,6 +6,106 @@
 
 import React from 'react';
 
+const accentColor = '#DACCFF';
+const primaryBackgroundColor = '#FFFFFF';
+const secondaryBackgroundColor = '#534F4F';
+const primaryForegroundColor = '#534F4F';
+const secondaryForegroundColor = '#FFFFFF';
+const footerForegroundColor = '$D5D5D5';
+
+export class NewEmailWrapper extends React.Component {
+  props: {
+    previewText: string,
+    mobileIosUrl: string,
+    mobileAndroidUrl: string,
+    children: React.Element<*>,
+  };
+
+  render() {
+    return (
+      <mjml>
+        <mj-head>
+          <mj-attributes>
+            <mj-all
+              padding="0"
+              color={primaryForegroundColor}
+              background-color={primaryBackgroundColor}
+              font-size="12px"
+              line-height="20px"
+              font-family="Ubuntu, Helvetica, Arial, sans-serif"
+            />
+            <mj-class name="header" font-size="18px" line-height="26px" />
+            <mj-class
+              name="alternate"
+              background-color={secondaryBackgroundColor}
+              color={secondaryForegroundColor}
+            />
+            <mj-preview>{this.props.previewText}</mj-preview>
+          </mj-attributes>
+        </mj-head>
+        <mj-body>
+          <mj-container background-color="#EAEAEA">
+            {this.props.children}
+
+            <mj-section>
+              <mj-column>
+                <mj-text class="header">Find Your Dance on the Go</mj-text>
+                <mj-text>
+                  Discover over 250,000 battles, parties, workshops, sessions,{' '}
+                  everywhere you go. Find dance events near you by location,{' '}
+                  time, style, and keywords.
+                </mj-text>
+                <mjml-image
+                  href={this.props.mobileIosUrl}
+                  src="https://static.dancedeets.com/img/mail/mobile-iphone.png"
+                />
+                <mjml-image
+                  href={this.props.mobileAndroidUrl}
+                  src="https://static.dancedeets.com/img/mail/mobile-android.png"
+                />
+              </mj-column>
+              <mj-column>
+                <mj-image
+                  src="https://static.dancedeets.com/img/mail/mobile-phones-top.png"
+                  alt=""
+                  align="center"
+                  border="none"
+                  container-background-color="transparent"
+                />
+              </mj-column>
+            </mj-section>
+
+            <mj-divider border-color={accentColor} />
+
+            <mj-section class="alternate" full-width="full-width">
+              <mj-column>
+                <mj-social
+                  mode="horizontal"
+                  display="google twitter instagram"
+                  facebook-icon-color={footerForegroundColor}
+                  twitter-icon-color={footerForegroundColor}
+                  instagram-icon-color={footerForegroundColor}
+                  facebook-content=""
+                  twitter-content=""
+                  instagram-content=""
+                  facebook-href="https://www.facebook.com/dancedeets"
+                  twitter-href="https://www.twitter.com/dancedeets"
+                  instagram-href="https://www.instagram.com/dancedeets"
+                />
+                <mj-text color={footerForegroundColor}>
+                  Built for and by Dancers.<br />
+                  Sent with ❤ from DanceDeets<br />
+                  <a href="/user/email_edit?">Email preferences</a>
+                </mj-text>
+              </mj-column>
+            </mj-section>
+          </mj-container>
+        </mj-body>
+      </mjml>
+    );
+  }
+}
+
 export class EmailWrapper extends React.Component {
   props: {
     header: string,

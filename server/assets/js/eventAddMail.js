@@ -8,7 +8,7 @@ import React from 'react';
 import { intlWeb } from 'dancedeets-common/js/intl';
 import { Event } from 'dancedeets-common/js/events/models';
 import { addUrlArgs } from 'dancedeets-common/js/util/url';
-import { EmailWrapper } from './mailCommon';
+import { NewEmailWrapper } from './mailCommon';
 
 class BodyWrapper extends React.Component {
   props: {
@@ -128,7 +128,7 @@ class AddEventEmail extends React.Component {
   render() {
     const event = new Event(this.props.event);
     return (
-      <EmailWrapper
+      <NewEmailWrapper
         header={`We've added your event: ${event.name}`}
         // TODO: Implement unsubscribe link
         footer={
@@ -142,7 +142,7 @@ class AddEventEmail extends React.Component {
         }
       >
         <BodyWrapper event={event} emailTo={this.props.emailTo} />
-      </EmailWrapper>
+      </NewEmailWrapper>
     );
   }
 }
