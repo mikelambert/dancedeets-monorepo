@@ -42,6 +42,51 @@ class SellingPoint extends React.Component {
     ];
   }
 }
+
+class Upsell extends React.Component {
+  render() {
+    return [
+      <mj-section>
+        <mj-column>
+          <SellingPoint
+            title="THE most influencial dance event platform"
+            contents="Over 250,000 events around the world, visited by over 50,000 dancers every month."
+          />
+        </mj-column>
+        <mj-column>
+          <SellingPoint
+            title="Maximum exposure on multiple channels"
+            contents="Website, mobile apps, Facebook, Instagram, Twitter… We will push your event to everywhere dancers look."
+          />
+        </mj-column>
+      </mj-section>,
+      <mj-section>
+        <mj-column>
+          <SellingPoint
+            title="Ongoing event promotion support"
+            contents="We will post/share footage and event recap after the event, to our 8,000 global followers on Facebook."
+          />
+        </mj-column>
+        <mj-column>
+          <SellingPoint
+            title="Completely free!"
+            contents="No fee! All you need to do is to help spread DanceDeets’ name to your local dancers.."
+          />
+        </mj-column>
+      </mj-section>,
+      <mj-section>
+        <mj-column>
+          <mj-button
+            href="mailto:partnering@dancedeets.com"
+            align="center"
+            background-color={buttonColor}
+          />
+        </mj-column>
+      </mj-section>,
+    ];
+  }
+}
+
 class BodyWrapper extends React.Component {
   props: {
     event: Event,
@@ -125,39 +170,7 @@ class BodyWrapper extends React.Component {
           <mj-text font-weight="bold">Want more promotion? Read on…</mj-text>
         </mj-column>
       </mj-section>,
-      <mj-section>
-        <mj-column>
-          <SellingPoint
-            title="THE most influencial dance event platform"
-            contents="Over 250,000 events around the world, visited by over 50,000 dancers every month."
-          />
-        </mj-column>
-        <mj-column>
-          <SellingPoint
-            title="Maximum exposure on multiple channels"
-            contents="Website, mobile apps, Facebook, Instagram, Twitter… We will push your event to everywhere dancers look."
-          />
-        </mj-column>
-      </mj-section>,
-      <mj-section>
-        <mj-column>
-          <SellingPoint
-            title="Ongoing event promotion support"
-            contents="We will post/share footage and event recap after the event, to our 8,000 global followers on Facebook."
-          />
-        </mj-column>
-        <mj-column>
-          <SellingPoint
-            title="Completely free!"
-            contents="No fee! All you need to do is to help spread DanceDeets’ name to your local dancers.."
-          />
-        </mj-column>
-      </mj-section>,
-      <mj-button
-        href="mailto:partnering@dancedeets.com"
-        align="center"
-        background-color={buttonColor}
-      />,
+      <Upsell />,
     ];
   }
 }
