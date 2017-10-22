@@ -87,6 +87,74 @@ class Upsell extends React.Component {
   }
 }
 
+class ImageThumbnail extends React.Component {
+  props: {
+    imageName: string,
+  };
+
+  render() {
+    const imageUrl = `https://static.dancedeets.com/img/mail/${this.props
+      .imageName}`;
+    return <mj-image src={imageUrl} width="100px" height="100px" />;
+  }
+}
+
+class EventTestimonials extends React.Component {
+  render() {
+    return (
+      <mj-group class="alternate">
+        <mj-section>
+          <mj-column>
+            <mj-text align="center">Events we have worked with:</mj-text>
+          </mj-column>
+        </mj-section>
+        <mj-section>
+          <mj-column>
+            <ImageThumbnail imageName="events/sygu" />
+            <mj-text>Step Ya Game Up</mj-text>
+          </mj-column>
+          <mj-column>
+            <ImageThumbnail imageName="events/lohh" />
+            <mj-text>Ladies of Hip-Hop</mj-text>
+          </mj-column>
+          <mj-column>
+            <ImageThumbnail imageName="events/ssl" />
+            <mj-text>Street Style Lab</mj-text>
+          </mj-column>
+        </mj-section>
+        <mj-section>
+          <mj-column>
+            <mj-text align="center">Testimonials:</mj-text>
+          </mj-column>
+        </mj-section>
+        <mj-section>
+          <mj-column>
+            <ImageThumbnail imageName="testimonials/nedric" />
+            <mj-text>
+              Looking forward to working with DanceDeets on my next event!
+            </mj-text>
+            <mj-text>Nedric Johnson (Juste Debout NYC)</mj-text>
+          </mj-column>
+          <mj-column>
+            <ImageThumbnail imageName="testimonials/stretch" />
+            <mj-text>
+              I tell dancers to check DanceDeets for events in this scene...
+            </mj-text>
+            <mj-text>Buddha Stretch (Elite Force, MOPTOP)</mj-text>
+          </mj-column>
+          <mj-column>
+            <ImageThumbnail imageName="testimonials/stretch" />
+            <mj-text>
+              More promoters need to start working with DanceDeets!
+            </mj-text>
+            <mj-text>Carlo C-Lo (Electro Soul, Top Status)</mj-text>
+          </mj-column>
+        </mj-section>
+      </mj-group>
+    );
+  }
+}
+
 class BodyWrapper extends React.Component {
   props: {
     event: Event,
@@ -171,6 +239,7 @@ class BodyWrapper extends React.Component {
         </mj-column>
       </mj-section>,
       <Upsell />,
+      <EventTestimonials />,
     ];
   }
 }
