@@ -35,7 +35,9 @@ class SellingPoint extends React.Component {
           <td>
             <GenericCircle />
           </td>
-          <td style={{ fontWeight: 'bold' }}>{this.props.title}</td>
+          <td style={{ fontWeight: 'bold' }}>
+            <mj-text>{this.props.title}</mj-text>
+          </td>
         </tr>
       </mj-table>,
       <mj-text>{this.props.contents}</mj-text>,
@@ -102,7 +104,7 @@ class ImageThumbnail extends React.Component {
 class EventTestimonials extends React.Component {
   render() {
     return (
-      <mj-group class="alternate">
+      <mj-wrapper class="alternate">
         <mj-section>
           <mj-column>
             <mj-text align="center">Events we have worked with:</mj-text>
@@ -150,7 +152,7 @@ class EventTestimonials extends React.Component {
             <mj-text>Carlo C-Lo (Electro Soul, Top Status)</mj-text>
           </mj-column>
         </mj-section>
-      </mj-group>
+      </mj-wrapper>
     );
   }
 }
