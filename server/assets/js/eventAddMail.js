@@ -8,7 +8,11 @@ import React from 'react';
 import { intlWeb } from 'dancedeets-common/js/intl';
 import { Event } from 'dancedeets-common/js/events/models';
 // import { addUrlArgs } from 'dancedeets-common/js/util/url';
-import { NewEmailWrapper, buttonColor } from './mailCommon';
+import {
+  NewEmailWrapper,
+  buttonBackgroundColor,
+  buttonForegroundColor,
+} from './mailCommon';
 
 class GenericCircle extends React.Component {
   render() {
@@ -30,7 +34,7 @@ class SellingPoint extends React.Component {
 
   render() {
     return [
-      <mj-table>
+      <mj-table container-background-color="transparent">
         <tr>
           <td>
             <GenericCircle />
@@ -81,8 +85,11 @@ class Upsell extends React.Component {
           <mj-button
             href="mailto:partnering@dancedeets.com"
             align="center"
-            background-color={buttonColor}
-          />
+            background-color={buttonBackgroundColor}
+            color={buttonForegroundColor}
+          >
+            Get in Touch
+          </mj-button>
         </mj-column>
       </mj-section>,
     ];
@@ -104,52 +111,62 @@ class ImageThumbnail extends React.Component {
 class EventTestimonials extends React.Component {
   render() {
     return (
-      <mj-wrapper class="alternate">
-        <mj-section>
-          <mj-column>
-            <mj-text align="center">Events we have worked with:</mj-text>
+      <mj-wrapper mj-class="alternate">
+        <mj-section mj-class="alternate">
+          <mj-column mj-class="alternate">
+            <mj-text mj-class="alternate" align="center">
+              Events we have worked with:
+            </mj-text>
           </mj-column>
         </mj-section>
-        <mj-section>
-          <mj-column>
+        <mj-section mj-class="alternate">
+          <mj-column mj-class="alternate">
             <ImageThumbnail imageName="events/sygu.jpg" />
-            <mj-text>Step Ya Game Up</mj-text>
+            <mj-text mj-class="alternate">Step Ya Game Up</mj-text>
           </mj-column>
-          <mj-column>
+          <mj-column mj-class="alternate">
             <ImageThumbnail imageName="events/lohh.png" />
-            <mj-text>Ladies of Hip-Hop</mj-text>
+            <mj-text mj-class="alternate">Ladies of Hip-Hop</mj-text>
           </mj-column>
-          <mj-column>
+          <mj-column mj-class="alternate">
             <ImageThumbnail imageName="events/ssl.png" />
-            <mj-text>Street Style Lab</mj-text>
+            <mj-text mj-class="alternate">Street Style Lab</mj-text>
           </mj-column>
         </mj-section>
         <mj-section>
-          <mj-column>
-            <mj-text align="center">Testimonials:</mj-text>
+          <mj-column mj-class="alternate">
+            <mj-text mj-class="alternate" align="center">
+              Testimonials:
+            </mj-text>
           </mj-column>
         </mj-section>
-        <mj-section>
-          <mj-column>
+        <mj-section mj-class="alternate">
+          <mj-column mj-class="alternate">
             <ImageThumbnail imageName="testimonials/nedric.jpg" />
-            <mj-text>
+            <mj-text mj-class="alternate">
               Looking forward to working with DanceDeets on my next event!
             </mj-text>
-            <mj-text>Nedric Johnson (Juste Debout NYC)</mj-text>
+            <mj-text mj-class="alternate">
+              Nedric Johnson (Juste Debout NYC)
+            </mj-text>
           </mj-column>
-          <mj-column>
+          <mj-column mj-class="alternate">
             <ImageThumbnail imageName="testimonials/stretch.jpg" />
-            <mj-text>
+            <mj-text mj-class="alternate">
               I tell dancers to check DanceDeets for events in this scene...
             </mj-text>
-            <mj-text>Buddha Stretch (Elite Force, MOPTOP)</mj-text>
+            <mj-text mj-class="alternate">
+              Buddha Stretch (Elite Force, MOPTOP)
+            </mj-text>
           </mj-column>
-          <mj-column>
+          <mj-column mj-class="alternate">
             <ImageThumbnail imageName="testimonials/carlo.jpg" />
-            <mj-text>
+            <mj-text mj-class="alternate">
               More promoters need to start working with DanceDeets!
             </mj-text>
-            <mj-text>Carlo C-Lo (Electro Soul, Top Status)</mj-text>
+            <mj-text mj-class="alternate">
+              Carlo C-Lo (Electro Soul, Top Status)
+            </mj-text>
           </mj-column>
         </mj-section>
       </mj-wrapper>
@@ -181,7 +198,7 @@ class BodyWrapper extends React.Component {
     }
     // TODO: Handle 'intro email' different from 'second email'
     return [
-      <mj-section class="alternate">
+      <mj-section mj-class="alternate">
         <mj-column full-width="full-width">
           <mj-image src="https://static.dancedeets.com/img/mail/header-flyers.jpg" />
         </mj-column>
@@ -199,24 +216,30 @@ class BodyWrapper extends React.Component {
               To start, we&#8217;ve added your event to DanceDeets, the{' '}
               world&#8217; s biggest street dance event platform:
             </p>
-            <mj-button
-              href={shortUrl}
-              align="center"
-              background-color={buttonColor}
-            />
-
+          </mj-text>
+          <mj-button
+            href={shortUrl}
+            align="center"
+            background-color={buttonBackgroundColor}
+            color={buttonForegroundColor}
+          >
+            View Your Event
+          </mj-button>
+          <mj-text>
             <p>What does this mean for you?</p>
           </mj-text>
 
-          <mj-table>
+          <table>
             <tr>
               <td>
                 <GenericCircle />
               </td>
               <td>
-                Your event is now accessible on dancedeets.com and our mobile{' '}
-                app, for the 50,000+ dancers that visit us every month. Even if{' '}
-                they don&#8217; t use Facebook.
+                <mj-text>
+                  Your event is now accessible on dancedeets.com and our mobile{' '}
+                  app, for the 50,000+ dancers that visit us every month. Even
+                  if they don&#8217; t use Facebook.
+                </mj-text>
               </td>
             </tr>
             <tr>
@@ -224,21 +247,25 @@ class BodyWrapper extends React.Component {
                 <GenericCircle />
               </td>
               <td>
-                Easily discoverable by dancers living in {city} (or those just{' '}
-                visiting!), as well as new dancers looking to get into the{' '}
-                scene.
+                <mj-text>
+                  Easily discoverable by dancers living in {city} (or those just{' '}
+                  visiting!), as well as new dancers looking to get into the{' '}
+                  scene.
+                </mj-text>
               </td>
               <td>
                 <GenericCircle />
               </td>
               <td>
-                We&#8217; ve published information about your event to Google{' '}
-                and <a href="https://twitter.com/dancedeets">Twitter</a>, so{' '}
-                dancers can find information about your event, no matter where{' '}
-                they look.
+                <mj-text>
+                  We&#8217; ve published information about your event to Google{' '}
+                  and <a href="https://twitter.com/dancedeets">Twitter</a>, so{' '}
+                  dancers can find information about your event, no matter where{' '}
+                  they look.
+                </mj-text>
               </td>
             </tr>
-          </mj-table>
+          </table>
 
           <mj-text font-weight="bold">Want more promotion? Read on…</mj-text>
         </mj-column>

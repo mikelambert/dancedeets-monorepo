@@ -8,11 +8,12 @@ import React from 'react';
 
 const accentColor = '#DACCFF';
 const primaryBackgroundColor = '#FFFFFF';
-const secondaryBackgroundColor = '#534F4F';
+const secondaryBackgroundColor = '#4F5086';
 const primaryForegroundColor = '#534F4F';
 const secondaryForegroundColor = '#FFFFFF';
 const footerForegroundColor = '$D5D5D5';
-export const buttonColor = '#A361CB';
+export const buttonBackgroundColor = '#A361CB';
+export const buttonForegroundColor = '#FFFFFF';
 
 export class NewEmailWrapper extends React.Component {
   props: {
@@ -51,7 +52,7 @@ export class NewEmailWrapper extends React.Component {
 
             <mj-section>
               <mj-column>
-                <mj-text class="header">Find Your Dance on the Go</mj-text>
+                <mj-text mj-class="header">Find Your Dance on the Go</mj-text>
                 <mj-text>
                   Discover over 250,000 battles, parties, workshops, sessions,{' '}
                   everywhere you go. Find dance events near you by location,{' '}
@@ -79,11 +80,11 @@ export class NewEmailWrapper extends React.Component {
 
             <mj-divider border-color={accentColor} />
 
-            <mj-section class="alternate" full-width="full-width">
-              <mj-column>
+            <mj-section mj-class="alternate">
+              <mj-column mj-class="alternate">
                 <mj-social
                   mode="horizontal"
-                  display="google twitter instagram"
+                  display="facebook twitter instagram"
                   facebook-icon-color={footerForegroundColor}
                   twitter-icon-color={footerForegroundColor}
                   instagram-icon-color={footerForegroundColor}
@@ -94,7 +95,7 @@ export class NewEmailWrapper extends React.Component {
                   twitter-href="https://www.twitter.com/dancedeets"
                   instagram-href="https://www.instagram.com/dancedeets"
                 />
-                <mj-text color={footerForegroundColor}>
+                <mj-text align="center" mj-class="alternate">
                   <p>Built for and by Dancers.</p>
                   <p>Sent with ❤ from DanceDeets</p>
                   <p>
