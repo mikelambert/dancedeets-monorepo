@@ -7,7 +7,7 @@
 import React from 'react';
 import { intlWeb } from 'dancedeets-common/js/intl';
 import { Event } from 'dancedeets-common/js/events/models';
-import { addUrlArgs } from 'dancedeets-common/js/util/url';
+// import { addUrlArgs } from 'dancedeets-common/js/util/url';
 import { NewEmailWrapper, buttonColor } from './mailCommon';
 
 class GenericCircle extends React.Component {
@@ -158,7 +158,7 @@ class EventTestimonials extends React.Component {
 class BodyWrapper extends React.Component {
   props: {
     event: Event,
-    organizerEmail: string,
+    // organizerEmail: string,
     organizerName: string,
   };
 
@@ -169,7 +169,6 @@ class BodyWrapper extends React.Component {
       utm_medium: 'email',
       utm_campaign: 'event_add',
     };
-    const url = event.getUrl(args);
     const shortUrl = `https://dd.events/e/${event.id}`;
     const address = event.venue.address;
     let city = 'your city';
