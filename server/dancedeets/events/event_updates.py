@@ -288,9 +288,12 @@ def _inner_make_event_findable_for_web_event(db_event, web_event, disable_update
         web_event['longitude'] = web_event.get('longitude')
 
     # Add timezones, and save them to the web_event strings, for use by eventdata accessors
-    timezone_string = timezone_finder.closest_timezone_at(lat=web_event['latitude'], lng=web_event['longitude'])
-    web_event['timezone'] = timezone_string
+    timezone_string = None
+    if web_event['latitude'] is not None:
+        timezone_string = timezone_finder.closest_timezone_at(lat=web_event['latitude'], lng=web_event['longitude'])
+
     if timezone_string:
+        web_event['timezone'] = timezone_string
         tz = pytz.timezone(timezone_string)
         web_event['start_time'] = tz.localize(db_event.start_time).strftime(DATETIME_FORMAT_TZ)
         if db_event.end_time:
