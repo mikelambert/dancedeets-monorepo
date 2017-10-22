@@ -10,12 +10,13 @@ class NoEmailException(Exception):
     pass
 
 
-def send_event_add_emails(event_id):
+def send_event_add_emails(event_id, should_send=False):
     event = eventdata.DBEvent.get_by_id(event_id)
     emails = event_emails.get_emails_for_event(event)
+    email_contents = []
     for address in emails:
         try:
-            email_contents = email_for_event(address, event, should_send=False)
+            email_contents.append(email_for_event(address, event, should_send=should_send))
             logging.info('Sent email: %s', email_contents)
         except NoEmailException as e:
             logging.info("Not sending email for event %s to address %s: %s", event.id, address, e)
@@ -23,6 +24,7 @@ def send_event_add_emails(event_id):
         except Exception:
             logging.exception("Not sending email for event %s to address %s", event.id, address)
             continue
+    return email_contents
 
 
 def email_for_event(email, event, should_send=False):
