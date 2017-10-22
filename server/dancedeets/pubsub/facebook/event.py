@@ -8,7 +8,6 @@ from dancedeets import fb_api
 from dancedeets import fb_api_util
 from dancedeets.users import users
 from dancedeets.util import text
-from dancedeets.util import urls
 from .. import common
 from .. import db
 
@@ -26,10 +25,7 @@ class LookupGeoTarget(fb_api.LookupType):
 
 
 def facebook_post(auth_token, db_event):
-    if db_event.is_fb_event:
-        link = urls.raw_fb_event_url(db_event.id)
-    else:
-        link = common.campaign_url(db_event, 'fb_feed')
+    link = common.campaign_url(db_event, 'fb_feed')
     datetime_string = db_event.start_time.strftime('%s @ %s' % (common.DATE_FORMAT, common.TIME_FORMAT))
 
     page_id = auth_token.token_nickname
