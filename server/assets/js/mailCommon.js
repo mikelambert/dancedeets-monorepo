@@ -30,7 +30,7 @@ export class NewEmailWrapper extends React.Component {
         <mj-head>
           <mj-attributes>
             <mj-all
-              padding="0"
+              padding="0px"
               color={primaryForegroundColor}
               background-color={primaryBackgroundColor}
               font-size="12px"
@@ -50,7 +50,7 @@ export class NewEmailWrapper extends React.Component {
           <mj-container background-color="#EAEAEA">
             {this.props.children}
 
-            <mj-section>
+            <mj-section padding="20 20 0 20">
               <mj-column>
                 <mj-text mj-class="header">Find Your Dance on the Go</mj-text>
                 <mj-text>
@@ -67,7 +67,7 @@ export class NewEmailWrapper extends React.Component {
                   src="https://static.dancedeets.com/img/mail/mobile-android-download.png"
                 />
               </mj-column>
-              <mj-column>
+              <mj-column padding="20 0 0 0">
                 <mj-image
                   src="https://static.dancedeets.com/img/mail/mobile-phones-top.png"
                   alt=""
@@ -80,7 +80,7 @@ export class NewEmailWrapper extends React.Component {
 
             <mj-divider border-color={accentColor} />
 
-            <mj-section mj-class="alternate">
+            <mj-section mj-class="alternate" padding="20 0 0">
               <mj-column mj-class="alternate">
                 <mj-social
                   mode="horizontal"

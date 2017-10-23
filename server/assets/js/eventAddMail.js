@@ -37,10 +37,12 @@ class SellingPoint extends React.Component {
     return [
       <mj-table container-background-color="transparent">
         <tr>
-          <td>
+          <td style={{ width: 36 }}>
             <GenericCircle />
           </td>
-          <td style={{ fontWeight: 'bold' }}>{this.props.title}</td>
+          <td style={{ fontWeight: 'bold', paddingLeft: 20 }}>
+            {this.props.title}
+          </td>
         </tr>
       </mj-table>,
       <mj-text>{this.props.contents}</mj-text>,
@@ -51,7 +53,7 @@ class SellingPoint extends React.Component {
 class Upsell extends React.Component {
   render() {
     return [
-      <mj-section>
+      <mj-section padding="10 20">
         <mj-column>
           <SellingPoint
             title="THE most influencial dance event platform"
@@ -65,7 +67,7 @@ class Upsell extends React.Component {
           />
         </mj-column>
       </mj-section>,
-      <mj-section>
+      <mj-section padding="0 20">
         <mj-column>
           <SellingPoint
             title="Ongoing event promotion support"
@@ -79,7 +81,7 @@ class Upsell extends React.Component {
           />
         </mj-column>
       </mj-section>,
-      <mj-section>
+      <mj-section padding="0 20 20">
         <mj-column>
           <mj-button
             href="mailto:partnering@dancedeets.com"
@@ -110,7 +112,7 @@ class ImageThumbnail extends React.Component {
 class EventTestimonials extends React.Component {
   render() {
     return (
-      <mj-wrapper mj-class="alternate">
+      <mj-wrapper mj-class="alternate" padding="10 20">
         <mj-section mj-class="alternate">
           <mj-column mj-class="alternate">
             <mj-text mj-class="alternate" align="center">
@@ -121,18 +123,24 @@ class EventTestimonials extends React.Component {
         <mj-section mj-class="alternate">
           <mj-column mj-class="alternate">
             <ImageThumbnail imageName="events/sygu.jpg" />
-            <mj-text mj-class="alternate">Step Ya Game Up</mj-text>
+            <mj-text mj-class="alternate" align="center">
+              Step Ya Game Up
+            </mj-text>
           </mj-column>
           <mj-column mj-class="alternate">
             <ImageThumbnail imageName="events/lohh.png" />
-            <mj-text mj-class="alternate">Ladies of Hip-Hop</mj-text>
+            <mj-text mj-class="alternate" align="center">
+              Ladies of Hip-Hop
+            </mj-text>
           </mj-column>
           <mj-column mj-class="alternate">
             <ImageThumbnail imageName="events/ssl.png" />
-            <mj-text mj-class="alternate">Street Style Lab</mj-text>
+            <mj-text mj-class="alternate" align="center">
+              Street Style Lab
+            </mj-text>
           </mj-column>
         </mj-section>
-        <mj-section>
+        <mj-section mj-class="alternate">
           <mj-column mj-class="alternate">
             <mj-text mj-class="alternate" align="center">
               Testimonials:
@@ -146,7 +154,7 @@ class EventTestimonials extends React.Component {
               Looking forward to working with DanceDeets on my next event!
             </mj-text>
             <mj-text mj-class="alternate">
-              Nedric Johnson (Juste Debout NYC)
+              Nedric Johnson<br />Juste Debout NYC
             </mj-text>
           </mj-column>
           <mj-column mj-class="alternate">
@@ -155,7 +163,7 @@ class EventTestimonials extends React.Component {
               I tell dancers to check DanceDeets for events in this scene...
             </mj-text>
             <mj-text mj-class="alternate">
-              Buddha Stretch (Elite Force, MOPTOP)
+              Buddha Stretch<br />Elite Force, MOPTOP
             </mj-text>
           </mj-column>
           <mj-column mj-class="alternate">
@@ -164,7 +172,7 @@ class EventTestimonials extends React.Component {
               More promoters need to start working with DanceDeets!
             </mj-text>
             <mj-text mj-class="alternate">
-              Carlo C-Lo (Electro Soul, Top Status)
+              Carlo C-Lo<br />Electro Soul, Top Status
             </mj-text>
           </mj-column>
         </mj-section>
@@ -198,11 +206,11 @@ class BodyWrapper extends React.Component {
     // TODO: Handle 'intro email' different from 'second email'
     return [
       <mj-section mj-class="alternate">
-        <mj-column full-width="full-width">
+        <mj-column mj-class="alternate" full-width="full-width">
           <mj-image src="https://static.dancedeets.com/img/mail/header-flyers.jpg" />
         </mj-column>
       </mj-section>,
-      <mj-section>
+      <mj-section padding="10 20">
         <mj-column full-width="full-width">
           <mj-text>
             <p>Hi there {this.props.organizerName},</p>
@@ -230,30 +238,30 @@ class BodyWrapper extends React.Component {
 
           <mj-table>
             <tr>
-              <td>
+              <td style={{ verticalAlign: 'top' }}>
                 <GenericCircle />
               </td>
-              <td>
+              <td style={{ paddingLeft: 20, paddingBottom: 20 }}>
                 Your event is now accessible on dancedeets.com and our mobile{' '}
                 app, for the 50,000+ dancers that visit us every month. Even if
                 they don&#8217; t use Facebook.
               </td>
             </tr>
             <tr>
-              <td>
+              <td style={{ verticalAlign: 'top' }}>
                 <GenericCircle />
               </td>
-              <td>
+              <td style={{ paddingLeft: 20, paddingBottom: 20 }}>
                 Easily discoverable by dancers living in {city} (or those just{' '}
                 visiting!), as well as new dancers looking to get into the{' '}
                 scene.
               </td>
             </tr>
             <tr>
-              <td>
+              <td style={{ verticalAlign: 'top' }}>
                 <GenericCircle />
               </td>
-              <td>
+              <td style={{ paddingLeft: 20, paddingBottom: 20 }}>
                 We&#8217; ve published information about your event to Google{' '}
                 and <a href="https://twitter.com/dancedeets">Twitter</a>, so{' '}
                 dancers can find information about your event, no matter where{' '}
