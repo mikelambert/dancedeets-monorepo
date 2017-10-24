@@ -78,7 +78,9 @@ export class NewEmailWrapper extends React.Component {
               </mj-column>
             </mj-section>
 
-            <mj-divider border-color={accentColor} />
+            <mj-section>
+              <mj-divider border-color={accentColor} />
+            </mj-section>
 
             <mj-section mj-class="alternate" padding="20 0 0">
               <mj-column mj-class="alternate">
