@@ -50,12 +50,12 @@ export class NewEmailWrapper extends React.Component {
           <mj-container background-color="#EAEAEA">
             {this.props.children}
 
-            <mj-section padding="20 20 0 20">
+            <mj-section padding="20 30 0">
               <mj-column>
-                <mj-text mj-class="header">Find Your Dance on the Go</mj-text>
+                <mj-text mj-class="header">Find Your Dance on the go</mj-text>
                 <mj-text>
-                  Discover over 250,000 battles, parties, workshops, sessions,{' '}
-                  everywhere you go. Find dance events near you by location,{' '}
+                  Discover over 250,000 battles, parties, workshops, sessions,
+                  everywhere you go. Find dance events near you by location,
                   time, style, and keywords.
                 </mj-text>
                 <mjml-image

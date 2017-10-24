@@ -53,7 +53,43 @@ class SellingPoint extends React.Component {
 class Upsell extends React.Component {
   render() {
     return [
-      <mj-section padding="10 20">
+      <mj-section
+        mj-class="alternate"
+        padding="0 30"
+        background-url="https://static.dancedeets.com/img/mail/white-background-height.png"
+        background-repeat="repeat-x"
+      >
+        <mj-group mj-class="alternate" background-color="transparent">
+          <mj-column mj-class="alternate" background-color="transparent">
+            <mj-spacer height="120px" />
+            <mj-text
+              mj-class="alternate"
+              background-color="transparent"
+              align="center"
+            >
+              Want to be a featured event?
+            </mj-text>
+            <mj-text
+              mj-class="alternate"
+              background-color="transparent"
+              align="center"
+              font-style="italic"
+              font-size="20px"
+              padding-top="20px"
+            >
+              Collaborate with us!
+            </mj-text>
+          </mj-column>
+          <mj-column mj-class="alternate" background-color="transparent">
+            <mj-image
+              src="https://static.dancedeets.com/img/mail/mobile-phone-featured-event.png"
+              width="200px"
+            />
+          </mj-column>
+        </mj-group>
+      </mj-section>,
+
+      <mj-section padding="10 30">
         <mj-column>
           <SellingPoint
             title="THE most influencial dance event platform"
@@ -67,7 +103,7 @@ class Upsell extends React.Component {
           />
         </mj-column>
       </mj-section>,
-      <mj-section padding="0 20">
+      <mj-section padding="0 30">
         <mj-column>
           <SellingPoint
             title="Ongoing event promotion support"
@@ -81,7 +117,7 @@ class Upsell extends React.Component {
           />
         </mj-column>
       </mj-section>,
-      <mj-section padding="0 20 20">
+      <mj-section padding="0 20 30">
         <mj-column>
           <mj-button
             href="mailto:partnering@dancedeets.com"
@@ -112,7 +148,7 @@ class ImageThumbnail extends React.Component {
 class EventTestimonials extends React.Component {
   render() {
     return (
-      <mj-wrapper mj-class="alternate" padding="10 20">
+      <mj-wrapper mj-class="alternate" padding="10 30">
         <mj-section mj-class="alternate">
           <mj-column mj-class="alternate">
             <mj-text mj-class="alternate" align="center">
@@ -210,18 +246,18 @@ class BodyWrapper extends React.Component {
           <mj-image src="https://static.dancedeets.com/img/mail/header-flyers.jpg" />
         </mj-column>
       </mj-section>,
-      <mj-section padding="10 20">
+      <mj-section padding="10 30 0">
         <mj-column full-width="full-width">
           <mj-text>
             <p>Hi there {this.props.organizerName},</p>
             <p>
-              We want to help promote your new event and help grow our dance{' '}
+              We want to help promote your new event and help grow our dance
               scene:
             </p>
             <p>“{event.name}”</p>
             <p>
-              To start, we&#8217;ve added your event to DanceDeets, the{' '}
-              world&#8217; s biggest street dance event platform:
+              To start, we&#8217;ve added your event to DanceDeets, the
+              world&#8217;s biggest street dance event platform:
             </p>
           </mj-text>
           <mj-button
@@ -242,9 +278,9 @@ class BodyWrapper extends React.Component {
                 <GenericCircle />
               </td>
               <td style={{ paddingLeft: 20, paddingBottom: 20 }}>
-                Your event is now accessible on dancedeets.com and our mobile{' '}
+                Your event is now accessible on dancedeets.com and our mobile
                 app, for the 50,000+ dancers that visit us every month. Even if
-                they don&#8217; t use Facebook.
+                they don&#8217;t use Facebook.
               </td>
             </tr>
             <tr>
@@ -252,8 +288,8 @@ class BodyWrapper extends React.Component {
                 <GenericCircle />
               </td>
               <td style={{ paddingLeft: 20, paddingBottom: 20 }}>
-                Easily discoverable by dancers living in {city} (or those just{' '}
-                visiting!), as well as new dancers looking to get into the{' '}
+                Easily discoverable by dancers living in {city} (or those just
+                visiting!), as well as new dancers looking to get into the
                 scene.
               </td>
             </tr>
@@ -262,10 +298,10 @@ class BodyWrapper extends React.Component {
                 <GenericCircle />
               </td>
               <td style={{ paddingLeft: 20, paddingBottom: 20 }}>
-                We&#8217; ve published information about your event to Google{' '}
-                and <a href="https://twitter.com/dancedeets">Twitter</a>, so{' '}
-                dancers can find information about your event, no matter where{' '}
-                they look.
+                We&#8217;ve published information about your event to Google and{' '}
+                <a href="https://twitter.com/dancedeets">Twitter</a>, so dancers
+                can find information about your event, no matter where they
+                look.
               </td>
             </tr>
           </mj-table>
