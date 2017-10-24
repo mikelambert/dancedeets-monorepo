@@ -89,7 +89,7 @@ class Upsell extends React.Component {
         </mj-group>
       </mj-section>,
 
-      <mj-section padding="10 30">
+      <mj-section padding="20 30">
         <mj-column>
           <SellingPoint
             title="THE most influencial dance event platform"
@@ -124,6 +124,8 @@ class Upsell extends React.Component {
             align="center"
             background-color={buttonBackgroundColor}
             color={buttonForegroundColor}
+            height="25px"
+            border-radius="30px"
           >
             Get in Touch
           </mj-button>
@@ -265,6 +267,8 @@ class BodyWrapper extends React.Component {
             align="center"
             background-color={buttonBackgroundColor}
             color={buttonForegroundColor}
+            height="25px"
+            border-radius="30px"
           >
             View Your Event
           </mj-button>
