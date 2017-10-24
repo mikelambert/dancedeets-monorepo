@@ -188,28 +188,43 @@ class EventTestimonials extends React.Component {
         <mj-section mj-class="alternate">
           <mj-column mj-class="alternate">
             <ImageThumbnail imageName="testimonials/nedric.jpg" />
-            <mj-text mj-class="alternate">
+            <mj-text mj-class="alternate" font-size="10px" align="center">
               Looking forward to working with DanceDeets on my next event!
             </mj-text>
-            <mj-text mj-class="alternate">
+            <mj-text
+              mj-class="alternate"
+              font-size="10px"
+              align="center"
+              padding="10 0 0"
+            >
               Nedric Johnson<br />Juste Debout NYC
             </mj-text>
           </mj-column>
           <mj-column mj-class="alternate">
             <ImageThumbnail imageName="testimonials/stretch.jpg" />
-            <mj-text mj-class="alternate">
+            <mj-text mj-class="alternate" font-size="10px" align="center">
               I tell dancers to check DanceDeets for events in this scene...
             </mj-text>
-            <mj-text mj-class="alternate">
+            <mj-text
+              mj-class="alternate"
+              font-size="10px"
+              align="center"
+              padding="10 0 0"
+            >
               Buddha Stretch<br />Elite Force, MOPTOP
             </mj-text>
           </mj-column>
           <mj-column mj-class="alternate">
             <ImageThumbnail imageName="testimonials/carlo.jpg" />
-            <mj-text mj-class="alternate">
+            <mj-text mj-class="alternate" font-size="10px" align="center">
               More promoters need to start working with DanceDeets!
             </mj-text>
-            <mj-text mj-class="alternate">
+            <mj-text
+              mj-class="alternate"
+              font-size="10px"
+              align="center"
+              padding="10 0 0"
+            >
               Carlo C-Lo<br />Electro Soul, Top Status
             </mj-text>
           </mj-column>
