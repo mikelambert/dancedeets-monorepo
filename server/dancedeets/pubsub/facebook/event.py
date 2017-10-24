@@ -103,7 +103,7 @@ def facebook_post(auth_token, db_event):
 %(intro)s%(name)s
 
 Date: %(date)s
-Venue: %(venue)s, (full_location)s
+Venue: %(venue)s, %(full_location)s
 %(callouts)s
 _____________________________________________________________________
 Description:
