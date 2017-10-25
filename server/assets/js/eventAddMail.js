@@ -45,6 +45,7 @@ class SellingPoint extends React.Component {
           </td>
         </tr>
       </mj-table>,
+      <mj-spacer height="20px" />,
       <mj-text>{this.props.contents}</mj-text>,
     ];
   }
@@ -104,7 +105,7 @@ class Upsell extends React.Component {
         </mj-column>
       </mj-section>,
       <mj-section padding="0 30">
-        <mj-column>
+        <mj-column padding="0 30">
           <SellingPoint
             title="Ongoing event promotion support"
             contents="We will post/share footage and event recap after the event, to our 8,000 global followers on Facebook."
@@ -268,8 +269,7 @@ class BodyWrapper extends React.Component {
           <mj-text>
             <p>Hi there {this.props.organizerName},</p>
             <p>
-              We want to help promote your new event and help grow our dance
-              scene:
+              We want to help promote your new event, and grow our dance scene:
             </p>
             <p>“{event.name}”</p>
             <p>
@@ -297,9 +297,10 @@ class BodyWrapper extends React.Component {
                 <GenericCircle />
               </td>
               <td style={{ paddingLeft: 20, paddingBottom: 20 }}>
-                Your event is now accessible on dancedeets.com and our mobile
-                app, for the 50,000+ dancers that visit us every month. Even if
-                they don&#8217;t use Facebook.
+                Your event is now accessible on{' '}
+                <a href="https://www.dancedeets.com">dancedeets.com</a> and our
+                mobile app, for the 50,000+ dancers that visit us every month.
+                Even if they don&#8217;t use Facebook.
               </td>
             </tr>
             <tr>
