@@ -172,19 +172,19 @@ class EventTestimonials extends React.Component {
         </mj-section>
         <mj-section mj-class="alternate">
           <mj-column mj-class="alternate">
-            <ImageThumbnail imageName="events/sygu.jpg" />
+            <ImageThumbnail imageName="events/event1.jpg" />
             <mj-text mj-class="alternate" align="center">
               Step Ya Game Up
             </mj-text>
           </mj-column>
           <mj-column mj-class="alternate">
-            <ImageThumbnail imageName="events/lohh.png" />
+            <ImageThumbnail imageName="events/event2.png" />
             <mj-text mj-class="alternate" align="center">
               Ladies of Hip-Hop
             </mj-text>
           </mj-column>
           <mj-column mj-class="alternate">
-            <ImageThumbnail imageName="events/ssl.png" />
+            <ImageThumbnail imageName="events/event3.png" />
             <mj-text mj-class="alternate" align="center">
               Street Style Lab
             </mj-text>
@@ -207,8 +207,8 @@ class EventTestimonials extends React.Component {
               padding-right={columnPadding}
             >
               Promoting is all about getting your event seen by more people.
-              Everyone in the scene is on DanceDeets, that&#8217;s why we put
-              our event there!
+              Everyone in this scene is on DanceDeets, that&#8217;s why we put
+              our events there!
             </mj-text>
             <mj-text
               mj-class="alternate"

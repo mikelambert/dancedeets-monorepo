@@ -65,6 +65,7 @@ export class NewEmailWrapper extends React.Component {
                     <td>
                       <a href={this.props.mobileIosUrl}>
                         <img
+                          alt="Download iPhone/iPad App"
                           src="https://static.dancedeets.com/img/mail/mobile-ios-download.png"
                           width="122"
                           style={{ padding: 10 }}
@@ -75,6 +76,7 @@ export class NewEmailWrapper extends React.Component {
                     <td>
                       <a href={this.props.mobileAndroidUrl}>
                         <img
+                          alt="Download Android App"
                           src="https://static.dancedeets.com/img/mail/mobile-android-download.png"
                           width="122"
                           style={{ padding: 10 }}
@@ -87,7 +89,7 @@ export class NewEmailWrapper extends React.Component {
               </mj-column>
               <mj-column>
                 <mj-image
-                  src="https://static.dancedeets.com/img/mail/mobile-phones-top.png"
+                  src="https://static.dancedeets.com/img/mail/mobile-phones-top.jpg"
                   alt=""
                   align="center"
                   border="none"
