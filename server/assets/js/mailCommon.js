@@ -15,6 +15,107 @@ const footerForegroundColor = '$D5D5D5';
 export const buttonBackgroundColor = '#A361CB';
 export const buttonForegroundColor = '#FFFFFF';
 
+export class MobileAppPromo extends React.Component {
+  props: {
+    mobileIosUrl: string,
+    mobileAndroidUrl: string,
+  };
+
+  render() {
+    return (
+      <mj-section padding="20 30 0">
+        <mj-column>
+          <mj-text mj-class="header" padding-bottom="10">
+            Find Your Dance on the go
+          </mj-text>
+          <mj-text padding="10 0">
+            Discover over 250,000 battles, parties, workshops, sessions,
+            everywhere you go. Find dance events near you by location, time,
+            style, and keywords.
+          </mj-text>
+          <mj-table>
+            <tr>
+              <td>
+                <a href={this.props.mobileIosUrl}>
+                  <img
+                    alt="Download iPhone/iPad App"
+                    src="https://static.dancedeets.com/img/mail/mobile-ios-download.png"
+                    width="122"
+                    style={{ padding: 10 }}
+                    border="0"
+                  />
+                </a>
+              </td>
+              <td>
+                <a href={this.props.mobileAndroidUrl}>
+                  <img
+                    alt="Download Android App"
+                    src="https://static.dancedeets.com/img/mail/mobile-android-download.png"
+                    width="122"
+                    style={{ padding: 10 }}
+                    border="0"
+                  />
+                </a>
+              </td>
+            </tr>
+          </mj-table>
+        </mj-column>
+        <mj-column>
+          <mj-image
+            src="https://static.dancedeets.com/img/mail/mobile-phones-top.jpg"
+            alt=""
+            align="center"
+            border="none"
+            container-background-color="transparent"
+            padding-left="30"
+          />
+        </mj-column>
+      </mj-section>
+    );
+  }
+}
+
+export class Footer extends React.Component {
+  props: {
+    emailPreferencesUrl: string,
+  };
+
+  render() {
+    return [
+      <mj-section>
+        <mj-divider border-color={accentColor} />
+      </mj-section>,
+
+      <mj-section mj-class="alternate" padding="20 0 0">
+        <mj-column mj-class="alternate">
+          <mj-social
+            mode="horizontal"
+            display="facebook twitter instagram"
+            facebook-icon-color={footerForegroundColor}
+            twitter-icon-color={footerForegroundColor}
+            instagram-icon-color={footerForegroundColor}
+            facebook-content=""
+            twitter-content=""
+            instagram-content=""
+            facebook-href="https://www.facebook.com/dancedeets"
+            twitter-href="https://www.twitter.com/dancedeets"
+            instagram-href="https://www.instagram.com/dancedeets"
+          />
+          <mj-text align="center" mj-class="alternate">
+            <p>Built for and by Dancers.</p>
+            <p>Sent with ❤ from DanceDeets</p>
+            <p>
+              <a href={this.props.emailPreferencesUrl}>
+                Unsubscribe / email preferences
+              </a>
+            </p>
+          </mj-text>
+        </mj-column>
+      </mj-section>,
+    ];
+  }
+}
+
 export class NewEmailWrapper extends React.Component {
   props: {
     previewText: string,
@@ -49,86 +150,11 @@ export class NewEmailWrapper extends React.Component {
         <mj-body>
           <mj-container background-color="#EAEAEA">
             {this.props.children}
-
-            <mj-section padding="20 30 0">
-              <mj-column>
-                <mj-text mj-class="header" padding-bottom="10">
-                  Find Your Dance on the go
-                </mj-text>
-                <mj-text padding="10 0">
-                  Discover over 250,000 battles, parties, workshops, sessions,
-                  everywhere you go. Find dance events near you by location,
-                  time, style, and keywords.
-                </mj-text>
-                <mj-table>
-                  <tr>
-                    <td>
-                      <a href={this.props.mobileIosUrl}>
-                        <img
-                          alt="Download iPhone/iPad App"
-                          src="https://static.dancedeets.com/img/mail/mobile-ios-download.png"
-                          width="122"
-                          style={{ padding: 10 }}
-                          border="0"
-                        />
-                      </a>
-                    </td>
-                    <td>
-                      <a href={this.props.mobileAndroidUrl}>
-                        <img
-                          alt="Download Android App"
-                          src="https://static.dancedeets.com/img/mail/mobile-android-download.png"
-                          width="122"
-                          style={{ padding: 10 }}
-                          border="0"
-                        />
-                      </a>
-                    </td>
-                  </tr>
-                </mj-table>
-              </mj-column>
-              <mj-column>
-                <mj-image
-                  src="https://static.dancedeets.com/img/mail/mobile-phones-top.jpg"
-                  alt=""
-                  align="center"
-                  border="none"
-                  container-background-color="transparent"
-                  padding-left="30"
-                />
-              </mj-column>
-            </mj-section>
-
-            <mj-section>
-              <mj-divider border-color={accentColor} />
-            </mj-section>
-
-            <mj-section mj-class="alternate" padding="20 0 0">
-              <mj-column mj-class="alternate">
-                <mj-social
-                  mode="horizontal"
-                  display="facebook twitter instagram"
-                  facebook-icon-color={footerForegroundColor}
-                  twitter-icon-color={footerForegroundColor}
-                  instagram-icon-color={footerForegroundColor}
-                  facebook-content=""
-                  twitter-content=""
-                  instagram-content=""
-                  facebook-href="https://www.facebook.com/dancedeets"
-                  twitter-href="https://www.twitter.com/dancedeets"
-                  instagram-href="https://www.instagram.com/dancedeets"
-                />
-                <mj-text align="center" mj-class="alternate">
-                  <p>Built for and by Dancers.</p>
-                  <p>Sent with ❤ from DanceDeets</p>
-                  <p>
-                    <a href={this.props.emailPreferencesUrl}>
-                      Unsubscribe / email preferences
-                    </a>
-                  </p>
-                </mj-text>
-              </mj-column>
-            </mj-section>
+            <MobileAppPromo
+              mobileAndroidUrl={this.props.mobileAndroidUrl}
+              mobileIosUrl={this.props.mobileIosUrl}
+            />
+            <Footer emailPreferencesUrl={this.props.emailPreferencesUrl} />
           </mj-container>
         </mj-body>
       </mjml>
