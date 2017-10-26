@@ -60,14 +60,11 @@ class TestAuth(unittest.TestCase):
             'location': 'New Location',
             'client': 'android',
         }
-        print 1
         self.assertEqual(users.User.get_by_id(me_uid), None)
         result = app.post_json('/api/v1.0/auth', auth_request)
-        print 2
         self.assertEqual(result.json, {'success': True})
         self.assertNotEqual(users.User.get_by_id(me_uid), None)
         self.assertEqual(users.User.get_by_id(me_uid).fb_access_token, access_token)
-        print 3
 
         # Now again, but with fully-urlquoted string.
         # This time it will update the token, but not create a new user.
@@ -75,9 +72,7 @@ class TestAuth(unittest.TestCase):
         try:
             utils.dumps = lambda *args, **kwargs: urllib.quote(old_dumps(*args, **kwargs))
             auth_request['access_token'] = new_access_token
-            print 4
             result = app.post_json('/api/v1.0/auth', auth_request)
-            print 5
             self.assertEqual(result.json, {'success': True})
         finally:
             utils.dumps = old_dumps
