@@ -11,7 +11,7 @@ const primaryBackgroundColor = '#FFFFFF';
 const secondaryBackgroundColor = '#4F5086';
 const primaryForegroundColor = '#534F4F';
 const secondaryForegroundColor = '#FFFFFF';
-const footerForegroundColor = '$D5D5D5';
+const footerForegroundColor = '#D5D5D5';
 export const buttonBackgroundColor = '#A361CB';
 export const buttonForegroundColor = '#FFFFFF';
 
@@ -88,20 +88,45 @@ export class Footer extends React.Component {
 
       <mj-section mj-class="alternate" padding="20 0 0">
         <mj-column mj-class="alternate">
-          <mj-social
-            mode="horizontal"
-            display="facebook twitter instagram"
-            facebook-icon-color={footerForegroundColor}
-            twitter-icon-color={footerForegroundColor}
-            instagram-icon-color={footerForegroundColor}
-            facebook-content=""
-            twitter-content=""
-            instagram-content=""
-            facebook-href="https://www.facebook.com/dancedeets"
-            twitter-href="https://www.twitter.com/dancedeets"
-            instagram-href="https://www.instagram.com/dancedeets"
-          />
-          <mj-text align="center" mj-class="alternate">
+          <mj-table width="100px" align="center">
+            <tr>
+              <td>
+                <a href="https://www.facebook.com/dancedeets">
+                  <img
+                    src="https://static.dancedeets.com/img/mail/social-facebook.png"
+                    alt="Facebook"
+                    width="30"
+                    style={{ margin: '0px 10px' }}
+                  />
+                </a>
+              </td>
+              <td>
+                <a href="https://www.twitter.com/dancedeets">
+                  <img
+                    src="https://static.dancedeets.com/img/mail/social-twitter.png"
+                    alt="Facebook"
+                    width="30"
+                    style={{ margin: '0px 10px' }}
+                  />
+                </a>
+              </td>
+              <td>
+                <a href="https://www.instagram.com/dancedeets">
+                  <img
+                    src="https://static.dancedeets.com/img/mail/social-instagram.png"
+                    alt="Facebook"
+                    width="30"
+                    style={{ margin: '0px 10px' }}
+                  />
+                </a>
+              </td>
+            </tr>
+          </mj-table>
+          <mj-text
+            align="center"
+            mj-class="alternate"
+            color={footerForegroundColor}
+          >
             <p>Built for and by Dancers.</p>
             <p>Sent with ❤ from DanceDeets</p>
             <p>
