@@ -14,6 +14,8 @@ import {
   buttonForegroundColor,
 } from './mailCommon';
 
+const columnPadding = 15;
+
 class GenericCircle extends React.Component {
   render() {
     return (
@@ -31,22 +33,25 @@ class SellingPoint extends React.Component {
   props: {
     title: string,
     contents: string,
+    placement: 'left' | 'right',
   };
 
   render() {
+    const paddings = {
+      'padding-left': this.props.placement === 'right' ? 10 : 0,
+      'padding-right': this.props.placement === 'left' ? 10 : 0,
+    };
     return [
-      <mj-table container-background-color="transparent">
+      <mj-table container-background-color="transparent" {...paddings}>
         <tr>
           <td style={{ width: 36 }}>
             <GenericCircle />
           </td>
-          <td style={{ fontWeight: 'bold', paddingLeft: 20 }}>
-            {this.props.title}
-          </td>
+          <td style={{ fontSize: 15, paddingLeft: 20 }}>{this.props.title}</td>
         </tr>
       </mj-table>,
       <mj-spacer height="20px" />,
-      <mj-text>{this.props.contents}</mj-text>,
+      <mj-text {...paddings}>{this.props.contents}</mj-text>,
     ];
   }
 }
@@ -95,26 +100,30 @@ class Upsell extends React.Component {
           <SellingPoint
             title="THE most influencial dance event platform"
             contents="Over 250,000 events around the world, visited by over 50,000 dancers every month."
+            placement="left"
           />
         </mj-column>
         <mj-column>
           <SellingPoint
             title="Maximum exposure on multiple channels"
             contents="Website, mobile apps, Facebook, Instagram, Twitter… We will push your event to everywhere dancers look."
+            placement="right"
           />
         </mj-column>
       </mj-section>,
       <mj-section padding="0 30">
-        <mj-column padding="0 30">
+        <mj-column>
           <SellingPoint
             title="Ongoing event promotion support"
             contents="We will post/share footage and event recap after the event, to our 8,000 global followers on Facebook."
+            placement="left"
           />
         </mj-column>
         <mj-column>
           <SellingPoint
             title="Completely free!"
             contents="No fee! All you need to do is to help spread DanceDeets’ name to your local dancers.."
+            placement="right"
           />
         </mj-column>
       </mj-section>,
@@ -144,7 +153,9 @@ class ImageThumbnail extends React.Component {
   render() {
     const imageUrl = `https://static.dancedeets.com/img/mail/${this.props
       .imageName}`;
-    return <mj-image src={imageUrl} width="100px" height="100px" />;
+    return (
+      <mj-image src={imageUrl} width="80px" height="80px" padding-bottom="20" />
+    );
   }
 }
 
@@ -152,9 +163,9 @@ class EventTestimonials extends React.Component {
   render() {
     return (
       <mj-wrapper mj-class="alternate" padding="10 30">
-        <mj-section mj-class="alternate">
+        <mj-section mj-class="alternate" padding="20 0">
           <mj-column mj-class="alternate">
-            <mj-text mj-class="alternate" align="center">
+            <mj-text mj-class="alternate" align="center" font-size="16px">
               Events we have worked with:
             </mj-text>
           </mj-column>
@@ -179,9 +190,9 @@ class EventTestimonials extends React.Component {
             </mj-text>
           </mj-column>
         </mj-section>
-        <mj-section mj-class="alternate">
+        <mj-section mj-class="alternate" padding="40 0 20">
           <mj-column mj-class="alternate">
-            <mj-text mj-class="alternate" align="center">
+            <mj-text mj-class="alternate" align="center" font-size="16px">
               Testimonials:
             </mj-text>
           </mj-column>
@@ -189,40 +200,62 @@ class EventTestimonials extends React.Component {
         <mj-section mj-class="alternate">
           <mj-column mj-class="alternate">
             <ImageThumbnail imageName="testimonials/nedric.jpg" />
-            <mj-text mj-class="alternate" font-size="10px" align="center">
-              Looking forward to working with DanceDeets on my next event!
+            <mj-text
+              mj-class="alternate"
+              font-size="11px"
+              align="center"
+              padding-right={columnPadding}
+            >
+              Promoting is all about getting your event seen by more people.
+              Everyone in this scene is on DanceDeets, that's why we put our
+              event there!
             </mj-text>
             <mj-text
               mj-class="alternate"
-              font-size="10px"
+              font-size="11px"
               align="center"
               padding="10 0 0"
             >
               Nedric Johnson<br />Juste Debout NYC
             </mj-text>
           </mj-column>
+
           <mj-column mj-class="alternate">
             <ImageThumbnail imageName="testimonials/stretch.jpg" />
-            <mj-text mj-class="alternate" font-size="10px" align="center">
-              I tell dancers to check DanceDeets for events in this scene...
+            <mj-text
+              mj-class="alternate"
+              font-size="11px"
+              align="center"
+              padding-left={columnPadding}
+              padding-right={columnPadding}
+            >
+              We had dancers from out of state, and even overseas, coming to our
+              jams because of DanceDeets, thanks to their global presence
             </mj-text>
             <mj-text
               mj-class="alternate"
-              font-size="10px"
+              font-size="11px"
               align="center"
               padding="10 0 0"
             >
               Buddha Stretch<br />Elite Force, MOPTOP
             </mj-text>
           </mj-column>
+
           <mj-column mj-class="alternate">
             <ImageThumbnail imageName="testimonials/carlo.jpg" />
-            <mj-text mj-class="alternate" font-size="10px" align="center">
-              More promoters need to start working with DanceDeets!
+            <mj-text
+              mj-class="alternate"
+              font-size="11px"
+              align="center"
+              padding-left={columnPadding}
+            >
+              Promoting on DanceDeets was really easy and smooth. The whole
+              process took less than three minutes.
             </mj-text>
             <mj-text
               mj-class="alternate"
-              font-size="10px"
+              font-size="11px"
               align="center"
               padding="10 0 0"
             >
@@ -271,7 +304,7 @@ class BodyWrapper extends React.Component {
             <p>
               We want to help promote your new event, and grow our dance scene:
             </p>
-            <p>“{event.name}”</p>
+            <p style={{ paddingLeft: 20 }}>“{event.name}”</p>
             <p>
               To start, we&#8217;ve added your event to DanceDeets, the
               world&#8217;s biggest street dance event platform:

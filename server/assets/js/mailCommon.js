@@ -33,9 +33,9 @@ export class NewEmailWrapper extends React.Component {
               padding="0px"
               color={primaryForegroundColor}
               background-color={primaryBackgroundColor}
-              font-size="12px"
+              font-size="13px"
               line-height="20px"
-              font-family="Ubuntu, Helvetica, Arial, sans-serif"
+              font-family="Helvetica Nueue, Helvetica, Arial, sans-serif"
             />
             <mj-class name="header" font-size="18px" line-height="26px" />
             <mj-class
@@ -52,20 +52,38 @@ export class NewEmailWrapper extends React.Component {
 
             <mj-section padding="20 30 0">
               <mj-column>
-                <mj-text mj-class="header">Find Your Dance on the go</mj-text>
-                <mj-text>
+                <mj-text mj-class="header" padding-bottom="10">
+                  Find Your Dance on the go
+                </mj-text>
+                <mj-text padding="10 0">
                   Discover over 250,000 battles, parties, workshops, sessions,
                   everywhere you go. Find dance events near you by location,
                   time, style, and keywords.
                 </mj-text>
-                <mjml-image
-                  href={this.props.mobileIosUrl}
-                  src="https://static.dancedeets.com/img/mail/mobile-ios-download.png"
-                />
-                <mjml-image
-                  href={this.props.mobileAndroidUrl}
-                  src="https://static.dancedeets.com/img/mail/mobile-android-download.png"
-                />
+                <mj-table>
+                  <tr>
+                    <td>
+                      <a href={this.props.mobileIosUrl}>
+                        <img
+                          src="https://static.dancedeets.com/img/mail/mobile-ios-download.png"
+                          width="122"
+                          style={{ paddingTop: 10, paddingBottom: 10 }}
+                          border="0"
+                        />
+                      </a>
+                    </td>
+                    <td>
+                      <a href={this.props.mobileAndroidUrl}>
+                        <img
+                          src="https://static.dancedeets.com/img/mail/mobile-android-download.png"
+                          width="122"
+                          style={{ paddingTop: 10, paddingBottom: 10 }}
+                          border="0"
+                        />
+                      </a>
+                    </td>
+                  </tr>
+                </mj-table>
               </mj-column>
               <mj-column padding="20 0 0 0">
                 <mj-image
@@ -74,6 +92,7 @@ export class NewEmailWrapper extends React.Component {
                   align="center"
                   border="none"
                   container-background-color="transparent"
+                  padding-left="20"
                 />
               </mj-column>
             </mj-section>
