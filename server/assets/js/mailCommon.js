@@ -67,7 +67,7 @@ export class NewEmailWrapper extends React.Component {
                         <img
                           src="https://static.dancedeets.com/img/mail/mobile-ios-download.png"
                           width="122"
-                          style={{ paddingTop: 10, paddingBottom: 10 }}
+                          style={{ padding: 10 }}
                           border="0"
                         />
                       </a>
@@ -77,7 +77,7 @@ export class NewEmailWrapper extends React.Component {
                         <img
                           src="https://static.dancedeets.com/img/mail/mobile-android-download.png"
                           width="122"
-                          style={{ paddingTop: 10, paddingBottom: 10 }}
+                          style={{ padding: 10 }}
                           border="0"
                         />
                       </a>
@@ -85,14 +85,14 @@ export class NewEmailWrapper extends React.Component {
                   </tr>
                 </mj-table>
               </mj-column>
-              <mj-column padding="20 0 0 0">
+              <mj-column>
                 <mj-image
                   src="https://static.dancedeets.com/img/mail/mobile-phones-top.png"
                   alt=""
                   align="center"
                   border="none"
                   container-background-color="transparent"
-                  padding-left="20"
+                  padding-left="30"
                 />
               </mj-column>
             </mj-section>

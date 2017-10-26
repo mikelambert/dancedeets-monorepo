@@ -207,8 +207,8 @@ class EventTestimonials extends React.Component {
               padding-right={columnPadding}
             >
               Promoting is all about getting your event seen by more people.
-              Everyone in this scene is on DanceDeets, that's why we put our
-              event there!
+              Everyone in the scene is on DanceDeets, that&#8217;s why we put
+              our event there!
             </mj-text>
             <mj-text
               mj-class="alternate"
@@ -229,8 +229,8 @@ class EventTestimonials extends React.Component {
               padding-left={columnPadding}
               padding-right={columnPadding}
             >
-              We had dancers from out of state, and even overseas, coming to our
-              jams because of DanceDeets, thanks to their global presence
+              We had dancers from Russia coming to our jam in Norway because
+              they found it on DanceDeets!
             </mj-text>
             <mj-text
               mj-class="alternate"
@@ -238,7 +238,7 @@ class EventTestimonials extends React.Component {
               align="center"
               padding="10 0 0"
             >
-              Buddha Stretch<br />Elite Force, MOPTOP
+              Tomas Vikeland<br />Midnigt Urban Dans<br />Trondheim, Norway
             </mj-text>
           </mj-column>
 
@@ -250,8 +250,8 @@ class EventTestimonials extends React.Component {
               align="center"
               padding-left={columnPadding}
             >
-              Promoting on DanceDeets was really easy and smooth. The whole
-              process took less than three minutes.
+              Promoting on DanceDeets was really easy and smooth, only took a
+              few minutes!
             </mj-text>
             <mj-text
               mj-class="alternate"
