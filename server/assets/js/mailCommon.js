@@ -23,7 +23,7 @@ export class MobileAppPromo extends React.Component {
 
   render() {
     return (
-      <mj-section padding="20 30 0">
+      <mj-section padding="40 30 0">
         <mj-column>
           <mj-text mj-class="header" padding-bottom="10">
             Find Your Dance on the go

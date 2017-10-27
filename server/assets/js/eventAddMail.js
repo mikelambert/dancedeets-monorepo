@@ -95,7 +95,7 @@ class Upsell extends React.Component {
         </mj-group>
       </mj-section>,
 
-      <mj-section padding="20 30">
+      <mj-section padding="40 30">
         <mj-column>
           <SellingPoint
             title="THE most influencial dance event platform"
@@ -136,6 +136,7 @@ class Upsell extends React.Component {
             color={buttonForegroundColor}
             height="25px"
             border-radius="30px"
+            padding="20px 0px"
           >
             Get in Touch
           </mj-button>
@@ -206,10 +207,10 @@ class EventTestimonials extends React.Component {
               align="center"
               padding-right={columnPadding}
             >
-              Promoting is all about increasing your reach, being seen by more
+              “Promoting is all about increasing your reach, being seen by more
               regular everyday people, dancers, potential sponsors, etc.
               Everyone who matters in this scene is on DanceDeets, that&#8217;s
-              why I put my events there!
+              why I put my events there!”
             </mj-text>
             <mj-text
               mj-class="alternate"
@@ -231,8 +232,8 @@ class EventTestimonials extends React.Component {
               padding-left={columnPadding}
               padding-right={columnPadding}
             >
-              We had dancers from Russia coming to our jam in Norway because
-              they found it on DanceDeets!
+              “We had dancers from Russia coming to our jam in Norway because
+              they found it on DanceDeets!”
             </mj-text>
             <mj-text
               mj-class="alternate"
@@ -256,8 +257,8 @@ class EventTestimonials extends React.Component {
               align="center"
               padding-left={columnPadding}
             >
-              Promoting on DanceDeets was really easy and smooth, only took a
-              few minutes!
+              “Promoting on DanceDeets was really easy and smooth, only took a
+              few minutes!”
             </mj-text>
             <mj-text
               mj-class="alternate"
@@ -296,6 +297,10 @@ class BodyWrapper extends React.Component {
     if (address && address.city) {
       city = `the ${address.city} area`;
     }
+    let hiThere = 'Hi there,';
+    if (this.props.organizerName) {
+      hiThere = `Hi there ${this.props.organizerName},`;
+    }
     // TODO: Handle 'intro email' different from 'second email'
     return [
       <mj-section mj-class="alternate">
@@ -306,7 +311,7 @@ class BodyWrapper extends React.Component {
       <mj-section padding="10 30 0">
         <mj-column full-width="full-width">
           <mj-text>
-            <p>Hi there {this.props.organizerName},</p>
+            <p>{hiThere}</p>
             <p>
               We want to help promote your new event, and grow our dance scene:
             </p>
@@ -323,6 +328,7 @@ class BodyWrapper extends React.Component {
             color={buttonForegroundColor}
             height="25px"
             border-radius="30px"
+            padding="20px 0px"
           >
             View Your Event
           </mj-button>
