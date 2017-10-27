@@ -172,7 +172,7 @@ class EventTestimonials extends React.Component {
         </mj-section>
         <mj-section mj-class="alternate">
           <mj-column mj-class="alternate">
-            <ImageThumbnail imageName="events/event1.jpg" />
+            <ImageThumbnail imageName="events/event1.png" />
             <mj-text mj-class="alternate" align="center">
               Step Ya Game Up
             </mj-text>
@@ -180,13 +180,13 @@ class EventTestimonials extends React.Component {
           <mj-column mj-class="alternate">
             <ImageThumbnail imageName="events/event2.png" />
             <mj-text mj-class="alternate" align="center">
-              Ladies of Hip-Hop
+              Street Style Lab
             </mj-text>
           </mj-column>
           <mj-column mj-class="alternate">
             <ImageThumbnail imageName="events/event3.png" />
             <mj-text mj-class="alternate" align="center">
-              Street Style Lab
+              Ladies of Hip-Hop
             </mj-text>
           </mj-column>
         </mj-section>
@@ -199,16 +199,17 @@ class EventTestimonials extends React.Component {
         </mj-section>
         <mj-section mj-class="alternate">
           <mj-column mj-class="alternate">
-            <ImageThumbnail imageName="testimonials/nedric.jpg" />
+            <ImageThumbnail imageName="testimonials/terry.png" />
             <mj-text
               mj-class="alternate"
               font-size="11px"
               align="center"
               padding-right={columnPadding}
             >
-              Promoting is all about getting your event seen by more people.
-              Everyone in this scene is on DanceDeets, that&#8217;s why we put
-              our events there!
+              Promoting is all about increasing your reach, being seen by more
+              regular everyday people, dancers, potential sponsors, etc.
+              Everyone who matters in this scene is on DanceDeets, that&#8217;s
+              why I put my events there!
             </mj-text>
             <mj-text
               mj-class="alternate"
@@ -216,12 +217,13 @@ class EventTestimonials extends React.Component {
               align="center"
               padding="10 0 0"
             >
-              Nedric Johnson<br />Juste Debout NYC
+              Brooklyn Terry<br />Elite Force<br />
+              <a href="https://www.facebook.com/SpeakeasyTYO">Speakeasy TYO</a>
             </mj-text>
           </mj-column>
 
           <mj-column mj-class="alternate">
-            <ImageThumbnail imageName="testimonials/stretch.jpg" />
+            <ImageThumbnail imageName="testimonials/tomas.png" />
             <mj-text
               mj-class="alternate"
               font-size="11px"
@@ -238,7 +240,11 @@ class EventTestimonials extends React.Component {
               align="center"
               padding="10 0 0"
             >
-              Tomas Vikeland<br />Midnigt Urban Dans<br />Trondheim, Norway
+              Tomas Vikeland<br />
+              <a href="https://www.facebook.com/midtnorsk.urban.dans">
+                Midnigt Urban Dans
+              </a>
+              <br />Trondheim, Norway
             </mj-text>
           </mj-column>
 
