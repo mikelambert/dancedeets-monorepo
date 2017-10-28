@@ -37,12 +37,17 @@ def get_emails_from_string(s):
 
 
 def get_emails_for_event(event):
-    emails = set()
-    in_event_emails = get_emails_from_string(event.description)
-    emails.update(in_event_emails)
+    emails = {}
+
+    for email in get_emails_from_string(event.description):
+        # Allow these names to be overridden later
+        emails[email] = None
+
     for admin in event.admins:
         source = thing_db.Source.get_by_key_name(admin['id'])
         if not source or not source.emails:
             continue
-        emails.update(source.emails)
-    return emails
+        for email in source.emails:
+            emails[email] = source.name
+
+    return [{'email': email, 'name': name} for (email, name) in emails.items()]

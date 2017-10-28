@@ -391,8 +391,10 @@ class BodyWrapper extends React.Component {
 class AddEventEmail extends React.Component {
   props: {
     event: Event,
-    organizerEmail: string,
-    organizerName: string,
+    organizer: {
+      email: string,
+      name: string,
+    },
 
     mobileIosUrl: string,
     mobileAndroidUrl: string,
@@ -410,8 +412,8 @@ class AddEventEmail extends React.Component {
       >
         <BodyWrapper
           event={event}
-          organizerEmail={this.props.organizerEmail}
-          organizerName={this.props.organizerName}
+          organizerEmail={this.props.organizer.email}
+          organizerName={this.props.organizer.name}
         />
       </NewEmailWrapper>
     );
