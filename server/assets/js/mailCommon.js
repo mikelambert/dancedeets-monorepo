@@ -14,6 +14,7 @@ const secondaryForegroundColor = '#FFFFFF';
 const footerForegroundColor = '#D5D5D5';
 export const buttonBackgroundColor = '#A361CB';
 export const buttonForegroundColor = '#FFFFFF';
+const secondaryLinkColor = '#';
 
 export class MobileAppPromo extends React.Component {
   props: {
@@ -174,6 +175,18 @@ export class NewEmailWrapper extends React.Component {
         </mj-head>
         <mj-body>
           <mj-container background-color="#EAEAEA">
+            <mj-raw>
+              <style
+                dangerouslySetInnerHTML={{
+                  __html: `
+                  a.alternate:link {color: #9999ff}
+                  a.alternate:visited {color: #9999ff;}
+                  a.alternate:hover {color: #9999ff;}
+                  a.alternate:active {color: #9999ff;}
+                `,
+                }}
+              />
+            </mj-raw>
             {this.props.children}
             <MobileAppPromo
               mobileAndroidUrl={this.props.mobileAndroidUrl}

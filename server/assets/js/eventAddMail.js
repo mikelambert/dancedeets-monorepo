@@ -219,7 +219,12 @@ class EventTestimonials extends React.Component {
               padding="10 0 0"
             >
               Brooklyn Terry<br />Elite Force<br />
-              <a href="https://www.facebook.com/SpeakeasyTYO">Speakeasy TYO</a>
+              <a
+                href="https://www.facebook.com/SpeakeasyTYO"
+                className="alternate"
+              >
+                Speakeasy TYO
+              </a>
             </mj-text>
           </mj-column>
 
@@ -242,7 +247,10 @@ class EventTestimonials extends React.Component {
               padding="10 0 0"
             >
               Tomas Vikeland<br />
-              <a href="https://www.facebook.com/midtnorsk.urban.dans">
+              <a
+                href="https://www.facebook.com/midtnorsk.urban.dans"
+                className="alternate"
+              >
                 Midnigt Urban Dans
               </a>
               <br />Trondheim, Norway
