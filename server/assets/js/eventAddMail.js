@@ -218,13 +218,22 @@ class EventTestimonials extends React.Component {
               align="center"
               padding="10 0 0"
             >
-              Brooklyn Terry<br />Elite Force<br />
+              Brooklyn Terry<br />
+              <a
+                href="https://www.facebook.com/ELITEFORCECREW/"
+                className="alternate"
+              >
+                Elite Force
+              </a>
+              <br />
               <a
                 href="https://www.facebook.com/SpeakeasyTYO"
                 className="alternate"
               >
                 Speakeasy TYO
               </a>
+              <br />
+              Tokyo, Japan
             </mj-text>
           </mj-column>
 
@@ -251,14 +260,14 @@ class EventTestimonials extends React.Component {
                 href="https://www.facebook.com/midtnorsk.urban.dans"
                 className="alternate"
               >
-                Midnigt Urban Dans
+                Midtnorsk Urban Dans
               </a>
               <br />Trondheim, Norway
             </mj-text>
           </mj-column>
 
           <mj-column mj-class="alternate">
-            <ImageThumbnail imageName="testimonials/carlo.jpg" />
+            <ImageThumbnail imageName="testimonials/elena.png" />
             <mj-text
               mj-class="alternate"
               font-size="11px"
@@ -274,7 +283,15 @@ class EventTestimonials extends React.Component {
               align="center"
               padding="10 0 0"
             >
-              Carlo C-Lo<br />Electro Soul, Top Status
+              Elanna Smith<br />
+              <a
+                href="https://www.facebook.com/ElectricFunketeers/"
+                className="alternate"
+              >
+                Electric Funketeers
+              </a>
+              <br />
+              Chicago, USA
             </mj-text>
           </mj-column>
         </mj-section>
