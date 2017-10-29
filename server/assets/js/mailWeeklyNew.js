@@ -110,7 +110,7 @@ class MainBody extends React.Component {
       <mj-section background-color="#ffffff">
         <mj-column width="100%">
           <mj-text padding={`10 ${outsideGutter}`}>
-            Looking for more events? Be sure to check out
+            Looking for more events? Be sure to check out{' '}
             <a href="https://www.dancedeets.com/">www.dancedeets.com</a> for the
             complete and up-to-date schedule!
           </mj-text>
@@ -132,6 +132,46 @@ class HeaderFindYourDance extends React.Component {
   }
 }
 
+class FeaturePromo extends React.Component {
+  render() {
+    return (
+      <mj-wrapper mj-class="alternate" padding={`10 ${outsideGutter}`}>
+        <mj-section mj-class="alternate" padding="20 0">
+          <mj-column mj-class="alternate">
+            <mj-text mj-class="alternate" align="center" font-size="16px">
+              Explore more on DanceDeets...
+            </mj-text>
+          </mj-column>
+        </mj-section>
+        <mj-section mj-class="alternate">
+          <mj-column mj-class="alternate">
+            <mj-text mj-class="alternate">
+              Start planning your next trip! Going on vacation?
+              <ul>
+                <li>Check out events in NYC, Paris, and LA</li>
+                <li>Find all locking events in Taiwan</li>
+                <li>Popping events in France?</li>
+              </ul>
+            </mj-text>
+          </mj-column>
+          <mj-column mj-class="alternate">
+            <mj-text mj-class="alternate">
+              Got an event you would like to share with more dancers? Add an
+              event within just a few clicks!
+            </mj-text>
+          </mj-column>
+          <mj-column mj-class="alternate">
+            <mj-text mj-class="alternate">
+              Check out the best dance tutorials we found around the world to
+              help you level up.
+            </mj-text>
+          </mj-column>
+        </mj-section>
+      </mj-wrapper>
+    );
+  }
+}
+
 class BodyWrapper extends React.Component {
   props: {
     user: any,
@@ -143,6 +183,7 @@ class BodyWrapper extends React.Component {
       <NavHeader />,
       <HeaderFindYourDance />,
       <MainBody user={this.props.user} response={this.props.response} />,
+      <FeaturePromo />,
     ];
   }
 }
