@@ -19,31 +19,67 @@ import { EventDisplay } from './weeklyMail';
 class NavHeader extends React.Component {
   render() {
     return (
-      <mj-navbar mj-class="alternate">
+      <mj-section mj-class="alternate">
         <mj-column
-          width="20%"
+          width="30%"
           mj-class="alternate"
           background-color="transparent"
+          vertical-align="middle"
         >
           <mj-image src="https://static.dancedeets.com/img/mail/header-dancedeets.png" />
         </mj-column>
-        <mj-column width="80%" mj-class="alternate">
-          <mj-inline-links base-url="https://www.dancedeets.com">
-            <mj-link href="/" mj-class="alternate">
+        <mj-column width="70%" mj-class="alternate" vertical-align="middle">
+          <mj-raw>
+            <style
+              // eslint-disable-next-line react/no-danger
+              dangerouslySetInnerHTML={{
+                __html: `
+                  a.alternate-header-link:link,
+                  a.alternate-header-link:visited,
+                  a.alternate-header-link:hover,
+                  a.alternate-header-link:active
+                  {
+                    color: #ffffff;
+                    text-decoration: none;
+                    margin-left: 10px;
+                  }
+                `,
+              }}
+            />
+          </mj-raw>
+          <mj-text
+            mj-class="alternate"
+            align="right"
+            padding-right="20"
+            height="100%"
+          >
+            <a
+              href="https://www.dancedeets.com/"
+              className="alternate-header-link"
+            >
               HOME
-            </mj-link>
-            <mj-link href="https://medium.dancedeets.com" mj-class="alternate">
-              BLOG
-            </mj-link>
-            <mj-link href="/tutorials" mj-class="alternate">
+            </a>&nbsp;
+            <a
+              href="https://medium.dancedeets.com/"
+              className="alternate-header-link"
+            >
+              ARTICLES
+            </a>&nbsp;
+            <a
+              href="https://www.dancedeets.com/tutorials"
+              className="alternate-header-link"
+            >
               TUTORIALS
-            </mj-link>
-            <mj-link href="/about" mj-class="alternate">
-              ABOUT US
-            </mj-link>
-          </mj-inline-links>
+            </a>&nbsp;
+            <a
+              href="https://www.dancedeets.com/about"
+              className="alternate-header-link"
+            >
+              ABOUT
+            </a>
+          </mj-text>
         </mj-column>
-      </mj-navbar>
+      </mj-section>
     );
   }
 }
