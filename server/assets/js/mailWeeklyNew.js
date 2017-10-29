@@ -114,6 +114,12 @@ class MainBody extends React.Component {
             Looking for more events? Be sure to check out{' '}
             <a href="https://www.dancedeets.com/">www.dancedeets.com</a> for the
             complete and up-to-date schedule!
+            <br />
+            <br />
+            Not in {this.props.user.city}?{' '}
+            <a href="https://www.dancedeets.com/user/edit">
+              Change your preferred location
+            </a>.
           </mj-text>
         </mj-column>
       </mj-section>,
@@ -153,11 +159,100 @@ class FeaturePromo extends React.Component {
               padding-bottom="20"
             />
             <mj-text mj-class="alternate" padding-right={columnPadding}>
-              Start planning your next trip! Going on vacation?
+              Start planning your next trip! Here are some ideas...
+              <p />
+              All events in:
               <ul>
-                <li>Check out events in NYC, Paris, and LA</li>
-                <li>Find all locking events in Taiwan</li>
-                <li>Popping events in France?</li>
+                <li>
+                  <a
+                    href="https://www.dancedeets.com/?location=NYC"
+                    class="alternate"
+                  >
+                    NYC
+                  </a>,{' '}
+                  <a
+                    href="https://www.dancedeets.com/?location=Paris"
+                    class="alternate"
+                  >
+                    Paris
+                  </a>, and{' '}
+                  <a
+                    href="https://www.dancedeets.com/?location=Los Angeles"
+                    class="alternate"
+                  >
+                    LA
+                  </a>
+                </li>
+              </ul>
+              Search for dance styles across the country:
+              <ul>
+                <li>
+                  <a
+                    href="https://www.dancedeets.com/?location=Taiwan&keywords=locking"
+                    class="alternate"
+                  >
+                    Locking in Taiwan
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href="https://www.dancedeets.com/?location=France&keywords=popping"
+                    class="alternate"
+                  >
+                    Popping in France
+                  </a>
+                </li>
+              </ul>
+              Follow dancers, crews, and event tours:
+              <ul>
+                <li>
+                  <a
+                    href="https://www.dancedeets.com/?keywords=icee"
+                    class="alternate"
+                  >
+                    Icee
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href="https://www.dancedeets.com/?keywords=%22lyle beniga%22"
+                    class="alternate"
+                  >
+                    Lyle Beniga
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href="https://www.dancedeets.com/?keywords=%22elite force%22"
+                    class="alternate"
+                  >
+                    Elite Force
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href="https://www.dancedeets.com/?keywords=%22wanted posse%22"
+                    class="alternate"
+                  >
+                    Wanted Posse
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href="https://www.dancedeets.com/?keywords=udef"
+                    class="alternate"
+                  >
+                    the UDEF Tour
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href="https://www.dancedeets.com/?keywords==%22red bull bc one%22"
+                    class="alternate"
+                  >
+                    Red Bull BC One
+                  </a>
+                </li>
               </ul>
             </mj-text>
           </mj-column>
@@ -173,8 +268,14 @@ class FeaturePromo extends React.Component {
               padding-left={columnPadding}
               padding-right={columnPadding}
             >
-              Got an event you would like to share with more dancers? Add an
-              event within just a few clicks!
+              Got an event you would like to share with more dancers?<a
+                href="https://www.dancedeets.com/events_add"
+                class="alternate"
+              >
+                {' '}
+                Add an event
+              </a>{' '}
+              with just a few clicks!
             </mj-text>
           </mj-column>
           <mj-column mj-class="alternate">
@@ -185,8 +286,38 @@ class FeaturePromo extends React.Component {
               padding-bottom="20"
             />
             <mj-text mj-class="alternate" padding-left={columnPadding}>
-              Check out the best dance tutorials we found around the world to
-              help you level up.
+              Check out the{' '}
+              <a href="https://www.dancedeets.com/tutorials" class="alternate">
+                best dance tutorials
+              </a>{' '}
+              we found around the world to help you level up.
+              <p />
+              Bboying/bgirling:
+              <ul>
+                <li>VincaniTV</li>
+                <li>Storm's Footwork</li>
+              </ul>
+              Freestyle hiphop:
+              <ul>
+                <li>Elite Force 1990s</li>
+                <li>Ill Kozby</li>
+              </ul>
+              House dance:
+              <ul>
+                <li>Elite Force 1990s</li>
+                <li>Elite Force 2010s</li>
+                <li>Jardy Santiago</li>
+              </ul>
+              Popping:
+              <ul>
+                <li>Popin Pete &amp; Skeeter Rabbit</li>
+                <li>Oakland Boogaloo</li>
+              </ul>
+              Locking:
+              <ul>
+                <li>Skeeter Rabbit &amp; Flomaster</li>
+                <li>Tony Gogo</li>
+              </ul>
             </mj-text>
           </mj-column>
         </mj-section>

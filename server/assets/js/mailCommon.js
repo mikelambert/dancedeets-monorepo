@@ -183,10 +183,10 @@ export class NewEmailWrapper extends React.Component {
                 // eslint-disable-next-line react/no-danger
                 dangerouslySetInnerHTML={{
                   __html: `
-                  a.alternate-header-link:link,
-                  a.alternate-header-link:visited,
-                  a.alternate-header-link:hover,
-                  a.alternate-header-link:active {
+                  a.alternate:link,
+                  a.alternate:visited,
+                  a.alternate:hover,
+                  a.alternate:active {
                     color: #9999ff;
                   }
                 `,
