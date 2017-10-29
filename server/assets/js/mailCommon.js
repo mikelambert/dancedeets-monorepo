@@ -14,6 +14,7 @@ const secondaryForegroundColor = '#FFFFFF';
 const footerForegroundColor = '#D5D5D5';
 export const buttonBackgroundColor = '#A361CB';
 export const buttonForegroundColor = '#FFFFFF';
+export const outsideGutter = 30;
 
 export class MobileAppPromo extends React.Component {
   props: {
@@ -23,7 +24,7 @@ export class MobileAppPromo extends React.Component {
 
   render() {
     return (
-      <mj-section padding="40 30 0">
+      <mj-section padding={`40 ${outsideGutter} 0`}>
         <mj-column>
           <mj-text mj-class="header" padding-bottom="10">
             Find Your Dance on the go

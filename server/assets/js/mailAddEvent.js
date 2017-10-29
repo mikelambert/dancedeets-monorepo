@@ -12,6 +12,7 @@ import {
   NewEmailWrapper,
   buttonBackgroundColor,
   buttonForegroundColor,
+  outsideGutter,
 } from './mailCommon';
 
 const columnPadding = 15;
@@ -61,7 +62,7 @@ class Upsell extends React.Component {
     return [
       <mj-section
         mj-class="alternate"
-        padding="0 30"
+        padding={`0 ${outsideGutter}`}
         background-url="https://static.dancedeets.com/img/mail/white-background-height.png"
         background-repeat="repeat-x"
       >
@@ -95,7 +96,7 @@ class Upsell extends React.Component {
         </mj-group>
       </mj-section>,
 
-      <mj-section padding="40 30">
+      <mj-section padding={`40 ${outsideGutter}`}>
         <mj-column>
           <SellingPoint
             title="THE most influencial dance event platform"
@@ -111,7 +112,7 @@ class Upsell extends React.Component {
           />
         </mj-column>
       </mj-section>,
-      <mj-section padding="0 30">
+      <mj-section padding={`0 ${outsideGutter}`}>
         <mj-column>
           <SellingPoint
             title="Ongoing event promotion support"
@@ -127,7 +128,7 @@ class Upsell extends React.Component {
           />
         </mj-column>
       </mj-section>,
-      <mj-section padding="0 20 30">
+      <mj-section padding={`0 ${outsideGutter} 30`}>
         <mj-column>
           <mj-button
             href="mailto:partnering@dancedeets.com"
@@ -163,7 +164,7 @@ class ImageThumbnail extends React.Component {
 class EventTestimonials extends React.Component {
   render() {
     return (
-      <mj-wrapper mj-class="alternate" padding="10 30">
+      <mj-wrapper mj-class="alternate" padding={`10 ${outsideGutter}`}>
         <mj-section mj-class="alternate" padding="20 0">
           <mj-column mj-class="alternate">
             <mj-text mj-class="alternate" align="center" font-size="16px">
@@ -300,6 +301,18 @@ class EventTestimonials extends React.Component {
   }
 }
 
+class HeaderFlyers extends React.Component {
+  render() {
+    return (
+      <mj-section mj-class="alternate">
+        <mj-column mj-class="alternate" full-width="full-width">
+          <mj-image src="https://static.dancedeets.com/img/mail/header-flyers.jpg" />
+        </mj-column>
+      </mj-section>
+    );
+  }
+}
+
 class BodyWrapper extends React.Component {
   props: {
     event: Event,
@@ -328,12 +341,8 @@ class BodyWrapper extends React.Component {
     }
     // TODO: Handle 'intro email' different from 'second email'
     return [
-      <mj-section mj-class="alternate">
-        <mj-column mj-class="alternate" full-width="full-width">
-          <mj-image src="https://static.dancedeets.com/img/mail/header-flyers.jpg" />
-        </mj-column>
-      </mj-section>,
-      <mj-section padding="10 30 0">
+      <HeaderFlyers />,
+      <mj-section padding={`10 ${outsideGutter} 0`}>
         <mj-column full-width="full-width">
           <mj-text>
             <p>{hiThere}</p>

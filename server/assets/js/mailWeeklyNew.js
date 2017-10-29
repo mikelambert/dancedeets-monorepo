@@ -12,6 +12,7 @@ import {
   NewEmailWrapper,
   buttonBackgroundColor,
   buttonForegroundColor,
+  outsideGutter,
 } from './mailCommon';
 import { EventDisplay } from './weeklyMail';
 
@@ -60,7 +61,7 @@ class MainBody extends React.Component {
     return [
       <mj-section>
         <mj-column>
-          <mj-text padding="10px 25px">
+          <mj-text padding={`10px ${outsideGutter}`}>
             Hey {this.props.user.userName},
             <br />
             <br />
@@ -72,7 +73,7 @@ class MainBody extends React.Component {
       <EventDisplay events={resultEvents} />,
       <mj-section background-color="#ffffff">
         <mj-column width="100%">
-          <mj-text padding="10px 25px">
+          <mj-text padding={`10 ${outsideGutter}`}>
             Looking for more events? Be sure to check out
             <a href="https://www.dancedeets.com/">www.dancedeets.com</a> for the
             complete and up-to-date schedule!
@@ -80,6 +81,18 @@ class MainBody extends React.Component {
         </mj-column>
       </mj-section>,
     ];
+  }
+}
+
+class HeaderFindYourDance extends React.Component {
+  render() {
+    return (
+      <mj-section mj-class="alternate">
+        <mj-column mj-class="alternate">
+          <mj-image src="https://static.dancedeets.com/img/mail/header-find-your-dance.jpg" />
+        </mj-column>
+      </mj-section>
+    );
   }
 }
 
@@ -92,6 +105,7 @@ class BodyWrapper extends React.Component {
   render() {
     return [
       <NavHeader />,
+      <HeaderFindYourDance />,
       <MainBody user={this.props.user} response={this.props.response} />,
     ];
   }

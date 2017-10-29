@@ -15,9 +15,8 @@ import {
 } from 'dancedeets-common/js/dates';
 import { groupEventsByStartDate } from 'dancedeets-common/js/events/helpers';
 import type { ExportedIconsEnum } from './exportedIcons';
-import { EmailWrapper } from './mailCommon';
+import { EmailWrapper, outsideGutter } from './mailCommon';
 
-const outsideGutter = 20;
 const verticalSpacing = 20;
 
 class SmallIcon extends React.Component {
@@ -108,7 +107,7 @@ class _MailEvent extends React.Component {
     return (
       <mj-section
         background-color="#ffffff"
-        padding-left={outsideGutter * 2}
+        padding-left={outsideGutter + 20}
         padding-right={outsideGutter}
         padding-bottom={verticalSpacing}
       >
