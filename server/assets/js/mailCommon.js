@@ -83,7 +83,9 @@ export class Footer extends React.Component {
   render() {
     return [
       <mj-section>
-        <mj-divider border-color={accentColor} />
+        <mj-column>
+          <mj-divider border-color={accentColor} />
+        </mj-column>
       </mj-section>,
 
       <mj-section mj-class="alternate" padding="20 0 0">

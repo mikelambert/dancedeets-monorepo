@@ -7,7 +7,7 @@
 import React from 'react';
 import { injectIntl, intlShape } from 'react-intl';
 import { intlWeb } from 'dancedeets-common/js/intl';
-import { SearchEvent } from 'dancedeets-common/js/events/models';
+import { BaseEvent, SearchEvent } from 'dancedeets-common/js/events/models';
 import type { NewSearchResponse } from 'dancedeets-common/js/events/search';
 import {
   formatStartDateOnly,
@@ -167,13 +167,34 @@ class DayHeader extends React.Component {
   }
 }
 
-class _BodyWrapper extends React.Component {
+class _EventDisplay extends React.Component {
   props: {
-    user: any,
-    response: NewSearchResponse,
+    events: Array<BaseEvent>,
 
     // Self-managed props
     intl: intlShape,
+  };
+
+  render() {
+    const eventDisplays = [];
+    groupEventsByStartDate(
+      this.props.intl,
+      this.props.events
+    ).forEach(({ header, events }) => {
+      eventDisplays.push(<DayHeader key={header} title={header} />);
+      eventDisplays.push(
+        ...events.map(event => <MailEvent key={event.id} event={event} />)
+      );
+    });
+    return eventDisplays;
+  }
+}
+export const EventDisplay = injectIntl(_EventDisplay);
+
+class BodyWrapper extends React.Component {
+  props: {
+    user: any,
+    response: NewSearchResponse,
   };
 
   render() {
@@ -181,16 +202,6 @@ class _BodyWrapper extends React.Component {
       eventData => new SearchEvent(eventData)
     );
 
-    const eventDisplays = [];
-    groupEventsByStartDate(
-      this.props.intl,
-      resultEvents
-    ).forEach(({ header, events }) => {
-      eventDisplays.push(<DayHeader key={header} title={header} />);
-      eventDisplays.push(
-        ...events.map(event => <MailEvent key={event.id} event={event} />)
-      );
-    });
     return [
       <mj-section background-color="#ffffff">
         <mj-column width="100%">
@@ -202,9 +213,7 @@ class _BodyWrapper extends React.Component {
           </mj-text>
         </mj-column>
       </mj-section>,
-
-      ...eventDisplays,
-
+      <EventDisplay events={resultEvents} />,
       <mj-section background-color="#ffffff">
         <mj-column width="100%">
           <mj-text padding="10px 25px">
@@ -233,7 +242,6 @@ class _BodyWrapper extends React.Component {
     ];
   }
 }
-const BodyWrapper = injectIntl(_BodyWrapper);
 
 class WeeklyEmail extends React.Component {
   props: {

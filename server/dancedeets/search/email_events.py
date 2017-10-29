@@ -8,6 +8,7 @@ from dancedeets import base_servlet
 from dancedeets import fb_api
 from dancedeets import render_server
 from dancedeets.logic import api_format
+from dancedeets.logic import mobile
 from dancedeets.mail import mandrill_api
 from dancedeets.users import users
 from dancedeets.util import fb_mapreduce
@@ -78,11 +79,15 @@ def email_for_user(user, fbl, should_send=True, new_email=False):
     )
     locale = user.locale or 'en_US'
     props = {
-        'currentLocale': locale.replace('_', '-'),
         'user': {
             'userName': user.first_name or user.full_name or '',
+            'city': user.city_name,
         },
         'response': json_search_response,
+        'currentLocale': locale.replace('_', '-'),
+        'mobileIosUrl': mobile.IOS_URL,
+        'mobileAndroidUrl': mobile.ANDROID_URL,
+        'emailPreferencesUrl': None,  # TODO
     }
     if new_email:
         email_template = 'mailWeeklyNew.js'

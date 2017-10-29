@@ -32,12 +32,12 @@ def email_for_event(organizer, event, should_send=False):
     locale = 'en_US'
     api_event = api_format.canonicalize_event_data(event, (2, 0))
     props = {
-        'currentLocale': locale.replace('_', '-'),
         'event': api_event,
         'organizer': organizer,
+        'currentLocale': locale.replace('_', '-'),
         'mobileIosUrl': mobile.IOS_URL,
         'mobileAndroidUrl': mobile.ANDROID_URL,
-        'emailPreferencesUrl': None,
+        'emailPreferencesUrl': None,  # TODO
     }
     response = render_server.render_jsx('mailAddEvent.js', props, static_html=True)
     if response.error:
