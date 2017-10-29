@@ -146,6 +146,12 @@ class FeaturePromo extends React.Component {
         </mj-section>
         <mj-section mj-class="alternate">
           <mj-column mj-class="alternate">
+            <mj-image
+              src="https://static.dancedeets.com/img/mail/purple-icons/search.png"
+              width="80"
+              height="80"
+              padding-bottom="20"
+            />
             <mj-text mj-class="alternate" padding-right={columnPadding}>
               Start planning your next trip! Going on vacation?
               <ul>
@@ -156,6 +162,12 @@ class FeaturePromo extends React.Component {
             </mj-text>
           </mj-column>
           <mj-column mj-class="alternate">
+            <mj-image
+              src="https://static.dancedeets.com/img/mail/purple-icons/calendar-add.png"
+              width="80"
+              height="80"
+              padding-bottom="20"
+            />
             <mj-text
               mj-class="alternate"
               padding-left={columnPadding}
@@ -166,6 +178,12 @@ class FeaturePromo extends React.Component {
             </mj-text>
           </mj-column>
           <mj-column mj-class="alternate">
+            <mj-image
+              src="https://static.dancedeets.com/img/mail/purple-icons/movie.png"
+              width="80"
+              height="80"
+              padding-bottom="20"
+            />
             <mj-text mj-class="alternate" padding-left={columnPadding}>
               Check out the best dance tutorials we found around the world to
               help you level up.
