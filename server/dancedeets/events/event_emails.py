@@ -50,4 +50,6 @@ def get_emails_for_event(event):
         for email in source.emails:
             emails[email] = source.name
 
+    if len(emails) > 1:
+        logging.warning('Event %s (%s) has 2+ emails: %s', event.id, event.name, emails.items())
     return [{'email': email, 'name': name} for (email, name) in emails.items()]
