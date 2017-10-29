@@ -15,6 +15,7 @@ const footerForegroundColor = '#D5D5D5';
 export const buttonBackgroundColor = '#A361CB';
 export const buttonForegroundColor = '#FFFFFF';
 export const outsideGutter = 30;
+export const columnPadding = 15;
 
 export class MobileAppPromo extends React.Component {
   props: {

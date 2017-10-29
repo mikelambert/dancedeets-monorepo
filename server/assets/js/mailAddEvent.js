@@ -12,10 +12,9 @@ import {
   NewEmailWrapper,
   buttonBackgroundColor,
   buttonForegroundColor,
+  columnPadding,
   outsideGutter,
 } from './mailCommon';
-
-const columnPadding = 15;
 
 class GenericCircle extends React.Component {
   render() {

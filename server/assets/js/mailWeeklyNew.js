@@ -12,6 +12,7 @@ import {
   NewEmailWrapper,
   buttonBackgroundColor,
   buttonForegroundColor,
+  columnPadding,
   outsideGutter,
 } from './mailCommon';
 import { EventDisplay } from './weeklyMail';
@@ -145,7 +146,7 @@ class FeaturePromo extends React.Component {
         </mj-section>
         <mj-section mj-class="alternate">
           <mj-column mj-class="alternate">
-            <mj-text mj-class="alternate">
+            <mj-text mj-class="alternate" padding-right={columnPadding}>
               Start planning your next trip! Going on vacation?
               <ul>
                 <li>Check out events in NYC, Paris, and LA</li>
@@ -155,13 +156,17 @@ class FeaturePromo extends React.Component {
             </mj-text>
           </mj-column>
           <mj-column mj-class="alternate">
-            <mj-text mj-class="alternate">
+            <mj-text
+              mj-class="alternate"
+              padding-left={columnPadding}
+              padding-right={columnPadding}
+            >
               Got an event you would like to share with more dancers? Add an
               event within just a few clicks!
             </mj-text>
           </mj-column>
           <mj-column mj-class="alternate">
-            <mj-text mj-class="alternate">
+            <mj-text mj-class="alternate" padding-left={columnPadding}>
               Check out the best dance tutorials we found around the world to
               help you level up.
             </mj-text>
