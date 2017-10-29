@@ -39,7 +39,7 @@ def email_for_event(organizer, event, should_send=False):
         'mobileAndroidUrl': mobile.ANDROID_URL,
         'emailPreferencesUrl': None,
     }
-    response = render_server.render_jsx('eventAddMail.js', props, static_html=True)
+    response = render_server.render_jsx('mailAddEvent.js', props, static_html=True)
     if response.error:
         message = 'Error rendering weeklyMail.js: %s' % response.error
         logging.error(message)

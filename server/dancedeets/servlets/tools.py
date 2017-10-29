@@ -38,7 +38,7 @@ class MemoryUsers(webapp2.RequestHandler):
             self.response.out.write(data + '\n')
 
 
-@app.route('/tools/display_event_email')
+@app.route('/tools/email/add_event')
 class DisplayEmailHandler(base_servlet.EventIdOperationHandler):
     def event_id_operation(self, fbl, event_ids):
         from dancedeets.events import event_emails_sending
