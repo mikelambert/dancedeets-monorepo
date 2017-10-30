@@ -151,6 +151,7 @@ const defaultTutorials = [
       require('./playlists/misc/riehata.json'),
       require('./playlists/misc/seto.json'),
       require('./playlists/waack/kumari.json'),
+      require('./playlists/waack/lion_cho.json'),
       require('./playlists/waack/christina.json'),
       require('./playlists/waack/miscellaneous.json'),
       require('./playlists/waack/mizuki.json'),

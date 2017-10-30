@@ -1,0 +1,125 @@
+{
+  "id": "lion-cho",
+  "title": "Lion Cho",
+  "author": "Lion Cho",
+  "style": "waack",
+  "language": "ko",
+  "thumbnail": "https://i.ytimg.com/vi/thECiow93nw/mqdefault.jpg",
+  "sections": [
+    {
+      "title": "Waacking Basics",
+      "videos": [
+        {
+          "youtubeId": "thECiow93nw",
+          "duration": "PT5M11S",
+          "title": "트월 1 - Twirl 1"
+        },
+        {
+          "youtubeId": "a_D27nwMNTk",
+          "duration": "PT7M25S",
+          "title": "트월 2 - Twirl 2"
+        },
+        {
+          "youtubeId": "74-0e5DkZVc",
+          "duration": "PT6M52S",
+          "title": "낚시 - Fishing"
+        },
+        {
+          "youtubeId": "WRlrIUBLKw8",
+          "duration": "PT5M31S",
+          "title": "왁(+터치) - Waack (+ Touch)"
+        },
+        {
+          "youtubeId": "IHlBtjCywhE",
+          "duration": "PT5M41S",
+          "title": "등근육 짜기 & 트위스트 - Back Squeeze & Twist"
+        },
+        {
+          "youtubeId": "BPAH9XORma8",
+          "duration": "PT4M44S",
+          "title": "Extension (Open Window)"
+        },
+        {
+          "youtubeId": "rl88lP28prU",
+          "duration": "PT7M4S",
+          "title": "Applied Twirl (Twist & Armpit)"
+        },
+        {
+          "youtubeId": "tePib4Sj8ew",
+          "duration": "PT8M35S",
+          "title": "Line"
+        },
+        {
+          "youtubeId": "DmPaWahB_7Q",
+          "duration": "PT6M51S",
+          "title": "팔꿈치 1 - Elbow 1"
+        },
+        {
+          "youtubeId": "KDYXjmWt1jk",
+          "duration": "PT3M26S",
+          "title": "팔꿈치 2 - Elbow 2"
+        },
+        {
+          "youtubeId": "meUus7-2IAI",
+          "duration": "PT4M",
+          "title": "주먹ㅈ...아니, 펀치 - Punch"
+        },
+        {
+          "youtubeId": "ZlzCdh8Kq1g",
+          "duration": "PT6M27S",
+          "title": "한 길(쥐불놀이st) - One Way"
+        },
+        {
+          "youtubeId": "ja1nTQAmuqo",
+          "duration": "PT7M33S",
+          "title": "더블(양팔 트월) - Double (Twirl / Back Twirl)"
+        },
+        {
+          "youtubeId": "9OE0c9DDdTE",
+          "duration": "PT5M17S",
+          "title": "손을 꽉 움켜쥐어봅시다 - Grab"
+        },
+        {
+          "youtubeId": "MlrjZeq810o",
+          "duration": "PT8M31S",
+          "title": "옆리듬(골반) 1 - Side Rhythm (Pelvis) 2"
+        },
+        {
+          "youtubeId": "KfQ9re28uv8",
+          "duration": "PT8M12S",
+          "title": "리듬(골반) 2 - Rhythm (Pelvis) 2"
+        },
+        {
+          "youtubeId": "dSu3I6LTm4g",
+          "duration": "PT11M8S",
+          "title": "Lower Body (+ English subtitles)"
+        },
+        {
+          "youtubeId": "_J6vHVzBDSw",
+          "duration": "PT9M29S",
+          "title": "Lower + Upper Body (+ English subtitles)"
+        },
+        {
+          "youtubeId": "rMojHtj72HY",
+          "duration": "PT7M40S",
+          "title": "Upper Body Rhythm"
+        }
+      ]
+    },
+    {
+      "title": "More Tutorials",
+      "videos": [
+        {
+          "youtubeId": "JEVLqErj0qo",
+          "duration": "PT8M52S",
+          "title": "Longer Tutorial"
+        },
+        {
+          "youtubeId": "dq5ICfDGve0",
+          "duration": "PT9M23S",
+          "title": "Routine Tutorial"
+        }
+      ]
+    }
+  ]
+}
