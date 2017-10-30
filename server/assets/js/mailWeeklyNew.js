@@ -280,7 +280,7 @@ class FeaturePromo extends React.Component {
               >
                 freestyle hiphop
               </a>{' '}
-              or
+              or{' '}
               <a
                 href="https://www.dancedeets.com/tutorials/house"
                 class="alternate"
