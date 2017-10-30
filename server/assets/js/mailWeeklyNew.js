@@ -17,6 +17,12 @@ import {
 } from './mailCommon';
 import { EventDisplay } from './weeklyMail';
 
+type User = {
+  userName: string,
+  city: string,
+  countryName: string,
+};
+
 class NavHeader extends React.Component {
   render() {
     return (
@@ -87,7 +93,7 @@ class NavHeader extends React.Component {
 
 class MainBody extends React.Component {
   props: {
-    user: any,
+    user: User,
     response: NewSearchResponse,
   };
 
@@ -140,7 +146,11 @@ class HeaderFindYourDance extends React.Component {
 }
 
 class FeaturePromo extends React.Component {
+  props: {
+    user: User,
+  };
   render() {
+    const countryName = this.props.user.countryName;
     return (
       <mj-wrapper mj-class="alternate" padding={`10 ${outsideGutter}`}>
         <mj-section mj-class="alternate" padding="20 0">
@@ -159,98 +169,51 @@ class FeaturePromo extends React.Component {
               padding-bottom="20"
             />
             <mj-text mj-class="alternate" padding-right={columnPadding}>
-              Start planning your next trip! Here are some ideas...
+              Planning your next trip?
               <p />
-              All events in:
+              Check all events in{' '}
+              <a
+                href="https://www.dancedeets.com/?location=NYC"
+                class="alternate"
+              >
+                NYC
+              </a>,{' '}
+              <a
+                href="https://www.dancedeets.com/?location=Paris"
+                class="alternate"
+              >
+                Paris
+              </a>, and{' '}
+              <a
+                href="https://www.dancedeets.com/?location=Los Angeles"
+                class="alternate"
+              >
+                LA
+              </a>.<br />
+              <br />Or all events in {countryName} for:<br />
               <ul>
                 <li>
                   <a
-                    href="https://www.dancedeets.com/?location=NYC"
+                    href={`https://www.dancedeets.com/?location=${countryName}&keywords=breaking`}
                     class="alternate"
                   >
-                    NYC
-                  </a>,{' '}
-                  <a
-                    href="https://www.dancedeets.com/?location=Paris"
-                    class="alternate"
-                  >
-                    Paris
-                  </a>, and{' '}
-                  <a
-                    href="https://www.dancedeets.com/?location=Los Angeles"
-                    class="alternate"
-                  >
-                    LA
-                  </a>
-                </li>
-              </ul>
-              Search for dance styles across the country:
-              <ul>
-                <li>
-                  <a
-                    href="https://www.dancedeets.com/?location=Taiwan&keywords=locking"
-                    class="alternate"
-                  >
-                    Locking in Taiwan
+                    Bboying/Bgirling
                   </a>
                 </li>
                 <li>
                   <a
-                    href="https://www.dancedeets.com/?location=France&keywords=popping"
+                    href={`https://www.dancedeets.com/?location=${countryName}&keywords=popping`}
                     class="alternate"
                   >
-                    Popping in France
-                  </a>
-                </li>
-              </ul>
-              Follow dancers, crews, and event tours:
-              <ul>
-                <li>
-                  <a
-                    href="https://www.dancedeets.com/?keywords=icee"
-                    class="alternate"
-                  >
-                    Icee
+                    Popping
                   </a>
                 </li>
                 <li>
                   <a
-                    href="https://www.dancedeets.com/?keywords=%22lyle beniga%22"
+                    href={`https://www.dancedeets.com/?location=${countryName}&keywords=hiphop`}
                     class="alternate"
                   >
-                    Lyle Beniga
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="https://www.dancedeets.com/?keywords=%22elite force%22"
-                    class="alternate"
-                  >
-                    Elite Force
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="https://www.dancedeets.com/?keywords=%22wanted posse%22"
-                    class="alternate"
-                  >
-                    Wanted Posse
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="https://www.dancedeets.com/?keywords=udef"
-                    class="alternate"
-                  >
-                    the UDEF Tour
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="https://www.dancedeets.com/?keywords==%22red bull bc one%22"
-                    class="alternate"
-                  >
-                    Red Bull BC One
+                    Hip-Hop
                   </a>
                 </li>
               </ul>
@@ -268,11 +231,9 @@ class FeaturePromo extends React.Component {
               padding-left={columnPadding}
               padding-right={columnPadding}
             >
-              Got an event you would like to share with more dancers?<a
-                href="https://www.dancedeets.com/events_add"
-                class="alternate"
-              >
-                {' '}
+              Got an event you would like to share with more dancers?<br />
+              <br />
+              <a href="https://www.dancedeets.com/events_add" class="alternate">
                 Add an event
               </a>{' '}
               with just a few clicks!
@@ -291,33 +252,41 @@ class FeaturePromo extends React.Component {
                 best dance tutorials
               </a>{' '}
               we found around the world to help you level up.
-              <p />
-              Bboying/bgirling:
-              <ul>
-                <li>VincaniTV</li>
-                <li>Storm's Footwork</li>
-              </ul>
-              Freestyle hiphop:
-              <ul>
-                <li>Elite Force 1990s</li>
-                <li>Ill Kozby</li>
-              </ul>
-              House dance:
-              <ul>
-                <li>Elite Force 1990s</li>
-                <li>Elite Force 2010s</li>
-                <li>Jardy Santiago</li>
-              </ul>
-              Popping:
-              <ul>
-                <li>Popin Pete &amp; Skeeter Rabbit</li>
-                <li>Oakland Boogaloo</li>
-              </ul>
-              Locking:
-              <ul>
-                <li>Skeeter Rabbit &amp; Flomaster</li>
-                <li>Tony Gogo</li>
-              </ul>
+              <br />
+              <br />
+              Whether it's{' '}
+              <a
+                href="https://www.dancedeets.com/tutorials/break"
+                class="alternate"
+              >
+                bboying
+              </a>,{' '}
+              <a
+                href="https://www.dancedeets.com/tutorials/pop"
+                class="alternate"
+              >
+                popping
+              </a>{' '}
+              or{' '}
+              <a
+                href="https://www.dancedeets.com/tutorials/lock"
+                class="alternate"
+              >
+                locking
+              </a>,{' '}
+              <a
+                href="https://www.dancedeets.com/tutorials/hiphop"
+                class="alternate"
+              >
+                freestyle hiphop
+              </a>{' '}
+              or
+              <a
+                href="https://www.dancedeets.com/tutorials/house"
+                class="alternate"
+              >
+                house
+              </a>, we've got you covered!
             </mj-text>
           </mj-column>
         </mj-section>
@@ -328,7 +297,7 @@ class FeaturePromo extends React.Component {
 
 class BodyWrapper extends React.Component {
   props: {
-    user: any,
+    user: User,
     response: NewSearchResponse,
   };
 
@@ -337,14 +306,14 @@ class BodyWrapper extends React.Component {
       <NavHeader />,
       <HeaderFindYourDance />,
       <MainBody user={this.props.user} response={this.props.response} />,
-      <FeaturePromo />,
+      <FeaturePromo user={this.props.user} />,
     ];
   }
 }
 
 class AddEventEmail extends React.Component {
   props: {
-    user: any,
+    user: User,
     response: NewSearchResponse,
 
     mobileIosUrl: string,
