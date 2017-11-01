@@ -6,15 +6,9 @@
 
 import React from 'react';
 import { intlWeb } from 'dancedeets-common/js/intl';
-import { Event, SearchEvent } from 'dancedeets-common/js/events/models';
+import { SearchEvent } from 'dancedeets-common/js/events/models';
 // import { addUrlArgs } from 'dancedeets-common/js/util/url';
-import {
-  NewEmailWrapper,
-  buttonBackgroundColor,
-  buttonForegroundColor,
-  columnPadding,
-  outsideGutter,
-} from './mailCommon';
+import { NewEmailWrapper, columnPadding, outsideGutter } from './mailCommon';
 import { EventDisplay } from './weeklyMail';
 
 type User = {
@@ -174,19 +168,19 @@ class FeaturePromo extends React.Component {
               Check all events in{' '}
               <a
                 href="https://www.dancedeets.com/?location=NYC"
-                class="alternate"
+                className="alternate"
               >
                 NYC
               </a>,{' '}
               <a
                 href="https://www.dancedeets.com/?location=Paris"
-                class="alternate"
+                className="alternate"
               >
                 Paris
               </a>, and{' '}
               <a
                 href="https://www.dancedeets.com/?location=Los Angeles"
-                class="alternate"
+                className="alternate"
               >
                 LA
               </a>.<br />
@@ -195,7 +189,7 @@ class FeaturePromo extends React.Component {
                 <li>
                   <a
                     href={`https://www.dancedeets.com/?location=${countryName}&keywords=breaking`}
-                    class="alternate"
+                    className="alternate"
                   >
                     Bboying/Bgirling
                   </a>
@@ -203,7 +197,7 @@ class FeaturePromo extends React.Component {
                 <li>
                   <a
                     href={`https://www.dancedeets.com/?location=${countryName}&keywords=popping`}
-                    class="alternate"
+                    className="alternate"
                   >
                     Popping
                   </a>
@@ -211,7 +205,7 @@ class FeaturePromo extends React.Component {
                 <li>
                   <a
                     href={`https://www.dancedeets.com/?location=${countryName}&keywords=hiphop`}
-                    class="alternate"
+                    className="alternate"
                   >
                     Hip-Hop
                   </a>
@@ -233,7 +227,10 @@ class FeaturePromo extends React.Component {
             >
               Got an event you would like to share with more dancers?<br />
               <br />
-              <a href="https://www.dancedeets.com/events_add" class="alternate">
+              <a
+                href="https://www.dancedeets.com/events_add"
+                className="alternate"
+              >
                 Add an event
               </a>{' '}
               with just a few clicks!
@@ -248,45 +245,48 @@ class FeaturePromo extends React.Component {
             />
             <mj-text mj-class="alternate" padding-left={columnPadding}>
               Check out the{' '}
-              <a href="https://www.dancedeets.com/tutorials" class="alternate">
+              <a
+                href="https://www.dancedeets.com/tutorials"
+                className="alternate"
+              >
                 best dance tutorials
               </a>{' '}
               we found around the world to help you level up.
               <br />
               <br />
-              Whether it's{' '}
+              Whether it&#8217;s{' '}
               <a
                 href="https://www.dancedeets.com/tutorials/break"
-                class="alternate"
+                className="alternate"
               >
                 bboying
               </a>,{' '}
               <a
                 href="https://www.dancedeets.com/tutorials/pop"
-                class="alternate"
+                className="alternate"
               >
                 popping
               </a>{' '}
               or{' '}
               <a
                 href="https://www.dancedeets.com/tutorials/lock"
-                class="alternate"
+                className="alternate"
               >
                 locking
               </a>,{' '}
               <a
                 href="https://www.dancedeets.com/tutorials/hiphop"
-                class="alternate"
+                className="alternate"
               >
                 freestyle hiphop
               </a>{' '}
               or{' '}
               <a
                 href="https://www.dancedeets.com/tutorials/house"
-                class="alternate"
+                className="alternate"
               >
                 house
-              </a>, we've got you covered!
+              </a>, we&#8217;ve got you covered!
             </mj-text>
           </mj-column>
         </mj-section>
