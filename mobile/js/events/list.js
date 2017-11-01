@@ -56,20 +56,12 @@ import {
   purpleColors,
 } from '../Colors';
 import { auth, isAuthenticated, people } from '../api/dancedeets';
-import {
-  BottomFade,
-  Button,
-  HorizontalView,
-  normalize,
-  ProportionalImage,
-  semiNormalize,
-  Text,
-} from '../ui';
-import { track, trackWithEvent } from '../store/track';
+import { BottomFade, Button, normalize, semiNormalize, Text } from '../ui';
+import { track } from '../store/track';
 import { hasLocationPermission, getAddress } from '../util/geo';
 import { loadUserData } from '../actions/login';
 import { canHandleUrl } from '../websiteUrl';
-import { loadSavedAddress, storeSavedAddress } from './savedAddress';
+import { loadSavedAddress } from './savedAddress';
 import { AttendeeView, OrganizerView } from './peopleList';
 
 const messages = defineMessages({
@@ -185,6 +177,20 @@ class FeaturedEvents extends React.PureComponent {
     }
     // And if there's a title, do an even larger fade that lets us stick the text in there
     if (featuredInfo.showTitle) {
+      let promotionText = null;
+      if (featuredInfo.promotionText) {
+        promotionText = (
+          <Text
+            numberOfLines={1}
+            style={{
+              textAlign: 'center',
+              fontStyle: 'italic',
+            }}
+          >
+            {featuredInfo.promotionText}
+          </Text>
+        );
+      }
       fadeOverlay = (
         <View
           style={{
@@ -195,19 +201,25 @@ class FeaturedEvents extends React.PureComponent {
           }}
         >
           <BottomFade height={150} />
-          <Text
-            numberOfLines={1}
+          <View
             style={{
               position: 'absolute',
               bottom: CarouselDotIndicatorSize,
-              textAlign: 'center',
               left: 0,
               right: 0,
-              fontWeight: 'bold',
             }}
           >
-            {featuredInfo.event.name}
-          </Text>
+            <Text
+              numberOfLines={1}
+              style={{
+                textAlign: 'center',
+                fontWeight: 'bold',
+              }}
+            >
+              {featuredInfo.event.name}
+            </Text>
+            {promotionText}
+          </View>
         </View>
       );
     }

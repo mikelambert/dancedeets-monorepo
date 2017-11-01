@@ -29,6 +29,7 @@ export type FeaturedInfo = {
   event: Event,
   showTitle: boolean,
   overrideFlyer: string,
+  promotionText: ?string,
 };
 
 type Person = {
