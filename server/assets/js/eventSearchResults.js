@@ -210,17 +210,26 @@ class VerticalEvent extends React.Component {
 
 class FeaturedEvent extends React.Component {
   props: {
-    event: BaseEvent,
+    featuredInfo: FeaturedInfo,
   };
 
   render() {
-    const event = this.props.event;
+    const event = this.props.featuredInfo.event;
+    let promotionText = null;
+    if (this.props.featuredInfo.promotionText) {
+      promotionText = (
+        <div style={{ fontStyle: 'italic' }}>
+          {this.props.featuredInfo.promotionText}
+        </div>
+      );
+    }
     return (
       <Card>
         <HorizontalEventFlyer event={event} />
-        <h3 className="event-title" style={{ marginTop: 10 }}>
+        <h3 className="event-title" style={{ marginTop: 10, marginBottom: 0 }}>
           <a href={event.getRelativeUrl()}>{event.name}</a>
         </h3>
+        {promotionText}
         <div>{event.venue.cityStateCountry()}</div>
       </Card>
     );
@@ -229,21 +238,21 @@ class FeaturedEvent extends React.Component {
 
 class FeaturedEvents extends React.Component {
   props: {
-    events: Array<BaseEvent>,
+    featuredInfos: Array<FeaturedInfo>,
   };
 
   render() {
-    if (!this.props.events.length) {
+    if (!this.props.featuredInfos.length) {
       return null;
     }
 
     const resultItems = [];
-    const imageEvents = this.props.events.filter(x => x.picture);
-    imageEvents.forEach((event, index) => {
+    const imageEvents = this.props.featuredInfos.filter(x => x.event.picture);
+    imageEvents.forEach((featuredInfo, index) => {
       // Slider requires children to be actual HTML elements.
       resultItems.push(
-        <div key={event.id}>
-          <FeaturedEvent event={event} />
+        <div key={featuredInfo.event.id}>
+          <FeaturedEvent featuredInfo={featuredInfo} />
         </div>
       );
     });
@@ -631,7 +640,7 @@ class ResultsList extends React.Component {
     let featuredPanel = null;
     if (featuredInfos.length) {
       featuredPanel = (
-        <FeaturedEvents events={featuredInfos.map(x => x.event)} />
+        <FeaturedEvents featuredInfos={featuredInfos.map(x => x)} />
       );
     }
 

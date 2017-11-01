@@ -22,6 +22,10 @@ class FeaturedResult(ndb.Model):
     def showTitle(self):
         return self.json_props.get('showTitle', True) == True
 
+    @property
+    def promotionText(self):
+        return self.json_props.get('promotionText', None)
+
 
 def get_featured_events_for(southwest, northeast):
     if not southwest or not northeast:
@@ -44,5 +48,9 @@ def get_featured_events_for(southwest, northeast):
         if featured_event.is_past():
             logging.info('Discarding featured event in the past: %s', featured_event.id)
             continue
-        featured_infos.append({'event': featured_event, 'showTitle': featured_result.showTitle})
+        featured_infos.append({
+            'event': featured_event,
+            'showTitle': featured_result.showTitle,
+            'promotionText': featured_result.promotionText,
+        })
     return featured_infos
