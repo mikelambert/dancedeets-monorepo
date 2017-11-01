@@ -1964,7 +1964,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "export SENTRY_PROPERTIES=sentry.properties\n../node_modules/sentry-cli-binary/bin/sentry-cli upload-dsym";
+			shellScript = "export SENTRY_PROPERTIES=sentry.properties\n../node_modules/sentry-cli-binary/bin/sentry-cli upload-dsym || echo Failed to upload to Sentry Server";
 		};
 		CF41303A6A662045F6F154CD /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
