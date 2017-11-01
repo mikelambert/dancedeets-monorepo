@@ -158,8 +158,8 @@ class FeaturePromo extends React.Component {
           <mj-column mj-class="alternate">
             <mj-image
               src="https://static.dancedeets.com/img/mail/purple-icons/search.png"
-              width="80"
-              height="80"
+              width="80px"
+              height="80px"
               padding-bottom="20"
             />
             <mj-text mj-class="alternate" padding-right={columnPadding}>
@@ -216,8 +216,8 @@ class FeaturePromo extends React.Component {
           <mj-column mj-class="alternate">
             <mj-image
               src="https://static.dancedeets.com/img/mail/purple-icons/calendar-add.png"
-              width="80"
-              height="80"
+              width="80px"
+              height="80px"
               padding-bottom="20"
             />
             <mj-text
@@ -239,8 +239,8 @@ class FeaturePromo extends React.Component {
           <mj-column mj-class="alternate">
             <mj-image
               src="https://static.dancedeets.com/img/mail/purple-icons/movie.png"
-              width="80"
-              height="80"
+              width="80px"
+              height="80px"
               padding-bottom="20"
             />
             <mj-text mj-class="alternate" padding-left={columnPadding}>
