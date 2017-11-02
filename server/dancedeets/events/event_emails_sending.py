@@ -41,10 +41,14 @@ def email_for_event(organizer, event, should_send=False):
     }
     response = render_server.render_jsx('mailAddEvent.js', props, static_html=True)
     if response.error:
-        message = 'Error rendering weeklyMail.js: %s' % response.error
+        message = 'Error rendering mailAddEvent.js: %s' % response.error
         logging.error(message)
         raise NoEmailException(message)
     mjml_response = render_server.render_mjml(response.markup)
+    if mjml_response.get('errors'):
+        message = 'Errors rendering mailAddEvent.mjml: %s', mjml_response['errors']
+        logging.error(message)
+        raise NoEmailException(message)
     rendered_html = mjml_response['html']
 
     message = {

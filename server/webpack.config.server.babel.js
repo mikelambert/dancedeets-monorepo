@@ -20,6 +20,7 @@ module.exports = {
     eventSearchResults: './assets/js/eventSearchResults.js',
     mailAddEvent: './assets/js/mailAddEvent.js',
     mailWeeklyNew: './assets/js/mailWeeklyNew.js',
+    mailNewUser: './assets/js/mailNewUser.js',
     renderServer: './node_server/renderServer.js',
     topic: './assets/js/topic.js',
     tutorial: './assets/js/tutorial.js',

@@ -11,8 +11,9 @@ from mapreduce import operation as op
 
 from dancedeets import app
 from dancedeets import base_servlet
-from dancedeets.events import eventdata
 from dancedeets import fb_api
+from dancedeets.events import eventdata
+from dancedeets.users import new_user_email
 from dancedeets.util import fb_events
 from dancedeets.util import mr
 from dancedeets.util import fb_mapreduce
@@ -39,7 +40,7 @@ class MemoryUsers(webapp2.RequestHandler):
 
 
 @app.route('/tools/email/add_event')
-class DisplayEmailHandler(base_servlet.EventIdOperationHandler):
+class DisplayAddEventEmailHandler(base_servlet.EventIdOperationHandler):
     def event_id_operation(self, fbl, event_ids):
         from dancedeets.events import event_emails_sending
         try:
@@ -49,6 +50,18 @@ class DisplayEmailHandler(base_servlet.EventIdOperationHandler):
         else:
             for message in messages:
                 self.response.out.write(message['html'])
+
+
+@app.route('/tools/email/new_user')
+class DisplayNewUserEmailHandler(base_servlet.UserOperationHandler):
+    def user_operation(self, fbl, users):
+        fbl.get(fb_api.LookupUser, users[0].fb_uid)
+        try:
+            message = new_user_email.email_for_user(users[0], fbl, should_send=False)
+        except Exception as e:
+            self.response.out.write('Error generating mail html: %s' % e)
+        else:
+            self.response.out.write(message['html'])
 
 
 @app.route('/tools/memory_dump_objgraph')

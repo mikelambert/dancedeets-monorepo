@@ -1,7 +1,9 @@
 import datetime
 import logging
 
+from dancedeets import fb_api
 from dancedeets.logic import backgrounder
+from dancedeets.users import new_user_email
 from dancedeets.util import taskqueue
 from dancedeets.util import urls
 from . import users
@@ -42,5 +44,8 @@ def create_user_with_fbuser(fb_uid, fb_user, access_token, access_token_expires,
     taskqueue.add(method='GET', url='/tasks/track_newuser_friends?' + urls.urlencode({'user_id': fb_uid}), queue_name='slow-queue')
     # Now load their potential events, to make "add event page" faster (and let us process/scrape their events)
     backgrounder.load_potential_events_for_users([fb_uid])
+
+    fbl = fb_api.FBLookup(fb_uid, user.fb_access_token)
+    new_user_email.email_for_user(user, fbl, should_send=False)
 
     return user

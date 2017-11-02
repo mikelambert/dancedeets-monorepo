@@ -72,8 +72,6 @@ def email_for_user(user, fbl, should_send=True, new_email=False):
     if not search_results:
         raise NoEmailException('No search results for user')
 
-    fb_user = fbl.fetched_data(fb_api.LookupUser, fbl.fb_uid)
-
     need_full_event = False
     json_search_response = api_format.build_search_results_api(
         form, search_query, search_results, (2, 0), need_full_event, geocode, distance, skip_people=True

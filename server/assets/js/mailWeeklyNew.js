@@ -11,7 +11,7 @@ import { SearchEvent } from 'dancedeets-common/js/events/models';
 import { NewEmailWrapper, columnPadding, outsideGutter } from './mailCommon';
 import { EventDisplay } from './weeklyMail';
 
-type User = {
+export type User = {
   userName: string,
   city: string,
   countryName: string,
@@ -108,8 +108,8 @@ class MainBody extends React.Component {
         </mj-column>
       </mj-section>,
       <EventDisplay events={resultEvents} />,
-      <mj-section background-color="#ffffff">
-        <mj-column width="100%">
+      <mj-section>
+        <mj-column>
           <mj-text padding={`10 ${outsideGutter}`}>
             Looking for more events? Be sure to check out{' '}
             <a href="https://www.dancedeets.com/">www.dancedeets.com</a> for the
