@@ -256,9 +256,15 @@ class DBEvent(ndb.Model):
     @property
     def description(self):
         if self.web_event:
-            return self.web_event['description']
+            description = self.web_event['description']
         else:
-            return self.fb_event['info'].get('description', '')
+            description = self.fb_event['info'].get('description', '')
+        # TODO: Horrible Hack. Fix and generalize this:
+        if self.id == '117285065630229':
+            promo_text = 'ENTER PROMO CODE "DANCEDEETS" FOR $5 OFF WHEN YOU PURCHASE THE TICKET'
+            description = '%s\n\n%s' % (promo_text, description)
+            description = description.replace('ask promoters for Promo Code', promo_text)
+        return description
 
     @property
     def public(self):
