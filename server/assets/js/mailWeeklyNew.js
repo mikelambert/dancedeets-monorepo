@@ -17,7 +17,7 @@ export type User = {
   countryName: string,
 };
 
-class NavHeader extends React.Component {
+export class NavHeader extends React.Component {
   render() {
     return (
       <mj-section mj-class="alternate">
@@ -127,7 +127,7 @@ class MainBody extends React.Component {
   }
 }
 
-class HeaderFindYourDance extends React.Component {
+export class HeaderFindYourDance extends React.Component {
   render() {
     return (
       <mj-section mj-class="alternate">

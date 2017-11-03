@@ -6,12 +6,10 @@
 
 import React from 'react';
 import { intlWeb } from 'dancedeets-common/js/intl';
-import { SearchEvent } from 'dancedeets-common/js/events/models';
 // import { addUrlArgs } from 'dancedeets-common/js/util/url';
-import { NewEmailWrapper, columnPadding, outsideGutter } from './mailCommon';
-import { EventDisplay } from './weeklyMail';
-import { NavHeader, HeaderFindYourDance } from './weeklyMailNew';
-import type { User } from './weeklyMailNew';
+import { ImageThumbnail } from './mailAddEvent';
+import { NavHeader, HeaderFindYourDance } from './mailWeeklyNew';
+import type { User } from './mailWeeklyNew';
 import {
   NewEmailWrapper,
   buttonBackgroundColor,

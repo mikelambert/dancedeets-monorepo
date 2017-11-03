@@ -146,7 +146,7 @@ class Upsell extends React.Component {
   }
 }
 
-class ImageThumbnail extends React.Component {
+export class ImageThumbnail extends React.Component {
   props: {
     imageName: string,
   };
