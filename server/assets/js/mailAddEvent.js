@@ -68,16 +68,11 @@ class Upsell extends React.Component {
         <mj-group mj-class="alternate" background-color="transparent">
           <mj-column mj-class="alternate" background-color="transparent">
             <mj-spacer height="120px" />
-            <mj-text
-              mj-class="alternate"
-              background-color="transparent"
-              align="center"
-            >
+            <mj-text mj-class="alternate" align="center">
               Want to be a featured event?
             </mj-text>
             <mj-text
               mj-class="alternate"
-              background-color="transparent"
               align="center"
               font-style="italic"
               font-size="20px"
@@ -304,7 +299,7 @@ class HeaderFlyers extends React.Component {
   render() {
     return (
       <mj-section mj-class="alternate">
-        <mj-column mj-class="alternate" full-width="full-width">
+        <mj-column mj-class="alternate">
           <mj-image src="https://static.dancedeets.com/img/mail/header-flyers.jpg" />
         </mj-column>
       </mj-section>
@@ -342,7 +337,7 @@ class BodyWrapper extends React.Component {
     return [
       <HeaderFlyers />,
       <mj-section padding={`10 ${outsideGutter} 0`}>
-        <mj-column full-width="full-width">
+        <mj-column>
           <mj-text>
             <p>{hiThere}</p>
             <p>
