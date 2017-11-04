@@ -775,26 +775,28 @@ class _PeopleList extends React.Component {
           </CallbackOnRender>
         );
       } else {
-        adminContents = admins ? (
-          <PersonList
-            title={this.props.intl.formatMessage(messages.nearbyPromoters)}
-            subtitle={this.props.intl.formatMessage(
-              messages.nearbyPromotersMessage
-            )}
-            people={admins}
-            categoryOrder={this.props.categoryOrder}
-          />
-        ) : null;
-        attendeeContents = attendees ? (
-          <PersonList
-            title={this.props.intl.formatMessage(messages.nearbyDancers)}
-            subtitle={this.props.intl.formatMessage(
-              messages.nearbyDancersMessage
-            )}
-            people={attendees}
-            categoryOrder={this.props.categoryOrder}
-          />
-        ) : null;
+        adminContents =
+          admins && Object.keys(admins).length ? (
+            <PersonList
+              title={this.props.intl.formatMessage(messages.nearbyPromoters)}
+              subtitle={this.props.intl.formatMessage(
+                messages.nearbyPromotersMessage
+              )}
+              people={admins}
+              categoryOrder={this.props.categoryOrder}
+            />
+          ) : null;
+        attendeeContents =
+          attendees && Object.keys(attendees).length ? (
+            <PersonList
+              title={this.props.intl.formatMessage(messages.nearbyDancers)}
+              subtitle={this.props.intl.formatMessage(
+                messages.nearbyDancersMessage
+              )}
+              people={attendees}
+              categoryOrder={this.props.categoryOrder}
+            />
+          ) : null;
       }
     } else if (this.state.failed) {
       adminContents = <span>Error Loading People</span>;
