@@ -564,7 +564,7 @@ class ExtraImages extends React.Component {
   };
 
   render() {
-    if (!this.props.event.extraImageCount || !this.picture) {
+    if (!this.props.event.extraImageCount || !this.props.event.picture) {
       return null;
     }
     const images = [];
