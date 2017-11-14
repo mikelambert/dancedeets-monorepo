@@ -4,11 +4,12 @@ import csv
 from dancedeets import app
 from dancedeets import base_servlet
 from dancedeets import fb_api
+from dancedeets.events import event_emails
 from . import users
 
 
 @app.route('/user/unsubscribe')
-class UserHandler(base_servlet.BaseRequestHandler):
+class UserUnsubscribeHandler(base_servlet.BaseRequestHandler):
     def get(self):
         self.finish_preload()
         self.render_template('user_unsubscribe')
@@ -18,13 +19,11 @@ class UserHandler(base_servlet.BaseRequestHandler):
         self.errors_are_fatal()
         email = self.request.get('email')
         user = users.User.query(users.User.email == email).get()
-        if not user:
-            self.display['errors'] = ['Sorry, we could not find an account with that email address!']
-            self.render_template('user_unsubscribe')
-            return
-        user.send_email = False
-        user.put()
-        self.user.add_message("Successfully unsubscribed!")
+        if user:
+            user.send_email = False
+            user.put()
+        event_emails.unsubscribe_email(email)
+        self.user.add_message("Successfully unsubscribed %s!" % email)
         self.redirect('/user/edit')
 
 

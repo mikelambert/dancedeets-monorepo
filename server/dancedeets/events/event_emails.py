@@ -29,6 +29,11 @@ def filter_for_subscribed_emails(emails):
     return [email for unsubscribed, email in zip(unsubscribes_found, emails) if not unsubscribed]
 
 
+def unsubscribe_email(email):
+    o = OrganizerEmailUnsubscribed(key=email)
+    o.put()
+
+
 def get_emails_from_string(s):
     """Returns an iterator of matched emails found in string s."""
     # Removing lines that start with '//' because the regular expression
