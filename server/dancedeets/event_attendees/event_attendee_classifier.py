@@ -94,14 +94,15 @@ class AttendeeMatch(object):
     def get_attendee_lookups(self):
         client = datastore.Client('dancedeets-hrd')
 
-        debug_keys = []
+        debug_attendees = []
         for city_name in popular_people.get_summed_area_cities(self.geoname_id):
+            missing_keys = []
+            debug_keys = []
             for person_id in self.overlap_ids:
                 debug_key = popular_people.PRDebugAttendee.generate_key(city_name, person_id)
                 debug_keys.append(client.key('PRDebugAttendee', debug_key))
+            debug_attendees.extend(client.get_multi(debug_keys, missing_keys))
 
-        missing_keys = []
-        debug_attendees = client.get_multi(debug_keys, missing_keys)
         person_to_hash_and_event_ids = [('%s: %s' % (x['person_id'], x['city']), json.loads(x['grouped_event_ids']))
                                         for x in debug_attendees]
         person_to_hash_and_event_ids = sorted(person_to_hash_and_event_ids, key=lambda x: -len(x[1]))
