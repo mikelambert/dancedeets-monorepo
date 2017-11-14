@@ -14,9 +14,13 @@ def _get_lol_cities(person_ids):
     query = 'SELECT person_id, top_cities from PRPersonCity where person_id in (%s)' % ','.join('?' * len(person_ids))
     cursor.execute(query, person_ids)
     lol_cities = []
+    found_person_ids = []
     for result in cursor.fetchall():
+        found_person_ids.append(result[0])
         top_cities = [x for x in json.loads(result[1]) if x]
         lol_cities.append(top_cities)
+    missing_ids = set(person_ids).difference(found_person_ids)
+    logging.info("Missing ids we cannot find cities for: %s", missing_ids)
     return lol_cities
 
 
