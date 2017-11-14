@@ -44,8 +44,11 @@ function getAdsenseStyle(amp) {
 }
 
 function isEventAdsenseSafe(event) {
+  const description = (event.name + event.description).toLowerCase();
   const sexyContent =
-    event.description.toLowerCase().includes('twerk') ||
+    description.includes('twerk') ||
+    description.includes('queer') ||
+    description.match(/\bcum\b/) ||
     event.annotations.categories.includes('Vogue');
   return !sexyContent;
 }
