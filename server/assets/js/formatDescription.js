@@ -360,7 +360,7 @@ class Formatter {
         this.addText(part);
       }
       if (j < parts.length - 1) {
-        this.elements.push(<br key={`${i}.${j}`} />);
+        this.elements.push(<br key={`${i}.${j}`} />); // eslint-disable-line react/no-array-index-key
       }
     });
   }

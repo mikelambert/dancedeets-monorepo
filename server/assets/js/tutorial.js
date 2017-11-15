@@ -271,7 +271,7 @@ class _TutorialView extends React.Component<
         >
           {this.renderHeader()}
           {this.props.tutorial.sections.map((section, index) => (
-            <div key={index}>{this.renderWholeSection(section)}</div>
+            <div key={section.title}>{this.renderWholeSection(section)}</div>
           ))}
         </div>
       </div>

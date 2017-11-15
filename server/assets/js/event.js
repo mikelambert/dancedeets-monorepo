@@ -527,7 +527,7 @@ class WallPosts extends React.Component<{
     return (
       <div>
         {adminPosts.map((x, i) => (
-          <WallPost key={i} post={x} amp={this.props.amp} />
+          <WallPost key={x.created_time} post={x} amp={this.props.amp} />
         ))}
       </div>
     );

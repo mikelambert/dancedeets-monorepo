@@ -38,6 +38,19 @@
     'no-return-await': 0, // I like returning await from async functions for clarity purplses
     // Also: https://stackoverflow.com/a/42750371/1125823
 
+    'prefer-destructuring': ['error', {
+      VariableDeclarator: {
+        array: false,
+        object: true,
+      },
+      AssignmentExpression: {
+        array: false,
+        object: false,
+      },
+    }, {
+      enforceForRenamedProperties: false,
+    }],
+
     // TODO: Remove this once https://github.com/airbnb/javascript/pull/1204 is merged and released to NPM
     'import/no-extraneous-dependencies': ['error', {
       devDependencies: [
