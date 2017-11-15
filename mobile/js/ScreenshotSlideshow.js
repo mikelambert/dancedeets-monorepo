@@ -11,7 +11,7 @@ import { AccessToken } from 'react-native-fbsdk';
 import { injectIntl, intlShape, defineMessages } from 'react-intl';
 import type { Dispatch } from './actions/types';
 import { disableTracking } from './store/track';
-import { disableWrites, event } from './api/dancedeets';
+import { disableWrites } from './api/dancedeets';
 import {
   logOut,
   loginComplete,
@@ -29,7 +29,7 @@ const messages = defineMessages({
 });
 
 type Props = {
-  transitionPage: (page: React.Component) => void,
+  transitionPage: (page: React.Component<*, *>) => void,
   children: React.Node,
 
   // Self-managed props

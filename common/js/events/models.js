@@ -12,16 +12,22 @@ export type JSONObject = { [key: string]: JSON };
 type JSONArray = Array<JSON>;
 type MiniImageProp = {
   uri: string,
-  width: number,
-  height: number,
+  width: ?number,
+  height: ?number,
 };
 
 const squareImageSize = 180;
 
+export type SizedCover = {
+  source: string,
+  height: number,
+  width: number,
+};
+
 export type Cover = {
   source: string,
-  height?: number,
-  width?: number,
+  height: ?number,
+  width: ?number,
 };
 
 export class JsonDerivedObject {
@@ -105,7 +111,7 @@ export class BaseEvent extends JsonDerivedObject {
   slugged_name: string; // eslint-disable-line camelcase
   start_time: string; // eslint-disable-line camelcase
   end_time: ?string; // eslint-disable-line camelcase
-  picture: ?Cover;
+  picture: ?SizedCover;
   venue: Venue;
 
   constructor(eventData: JSONObject) {
@@ -137,7 +143,7 @@ export class BaseEvent extends JsonDerivedObject {
     };
   }
 
-  startTime({ timezone }: { timezone: Boolean }) {
+  startTime({ timezone }: { timezone: boolean }) {
     if (timezone) {
       return this.start_time;
     } else {
@@ -145,7 +151,7 @@ export class BaseEvent extends JsonDerivedObject {
     }
   }
 
-  endTime({ timezone }: { timezone: Boolean }) {
+  endTime({ timezone }: { timezone: boolean }) {
     if (!this.end_time) {
       return null;
     }
@@ -156,7 +162,7 @@ export class BaseEvent extends JsonDerivedObject {
     }
   }
 
-  getStartMoment({ timezone }: { timezone: Boolean }): moment {
+  getStartMoment({ timezone }: { timezone: boolean }): moment {
     return moment(this.startTime({ timezone }));
   }
 
@@ -164,8 +170,8 @@ export class BaseEvent extends JsonDerivedObject {
     timezone,
     estimate,
   }: {
-    timezone: Boolean,
-    estimate?: Boolean,
+    timezone: boolean,
+    estimate?: boolean,
   }): ?moment {
     if (!this.end_time) {
       if (estimate) {
@@ -177,7 +183,7 @@ export class BaseEvent extends JsonDerivedObject {
     return moment(this.endTime({ timezone }));
   }
 
-  getListDateMoment({ timezone }: { timezone: Boolean }): moment {
+  getListDateMoment({ timezone }: { timezone: boolean }): moment {
     const startFinalTimezone = this.getStartMoment({ timezone });
     const start = this.getStartMoment({ timezone: true });
     const end = this.getEndMoment({ timezone: true });
@@ -233,7 +239,7 @@ export class Event extends BaseEvent {
     name: string,
   };
   rsvp: ?EventRsvpList;
-  picture: ?Cover;
+  picture: ?SizedCover;
   venue: Venue;
   annotations: {
     categories: Array<string>,
@@ -282,7 +288,7 @@ export class Event extends BaseEvent {
     return this.getFlyer({ width: squareImageSize, height: squareImageSize });
   }
 
-  getResponsiveFlyers(): Array<MiniImageProp> {
+  getResponsiveFlyers(): Array<?MiniImageProp> {
     if (!this.picture) {
       return [];
     }

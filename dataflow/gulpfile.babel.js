@@ -21,7 +21,7 @@ const $ = gulpLoadPlugins();
 
 const bucket = 'gs://dancedeets-hrd.appspot.com';
 
-function generateArgString(args) {
+function generateArgString(args: { [string]: any }) {
   const argsString = Object.keys(args)
     .map(key => `--${key}=${String(args[key])}`)
     .join(' ');
