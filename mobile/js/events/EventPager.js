@@ -167,9 +167,6 @@ class EventPager extends React.Component {
       event,
       position,
     }));
-    // We use react-native-viewpager instead of react-native-carousel,
-    // because we only want to render a few pages in the big list
-    // (as opposed to a fully rendered pageable/scrollable view, which will scale poorly)
     return (
       <FlatList
         data={data}
