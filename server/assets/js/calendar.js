@@ -9,11 +9,9 @@ import querystring from 'querystring';
 import { intlWeb } from 'dancedeets-common/js/intl';
 import FullCalendar from './FullCalendar';
 
-class CalendarPage extends React.Component {
-  props: {
-    query: Object,
-  };
-
+class CalendarPage extends React.Component<{
+  query: Object,
+}> {
   render() {
     const queryString = querystring.stringify(this.props.query);
     const eventUrl = `/calendar/feed?${queryString}`;

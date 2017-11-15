@@ -8,12 +8,10 @@ import * as React from 'react';
 import LazyLoad from 'react-lazyload';
 import { SearchEvent } from 'dancedeets-common/js/events/models';
 
-export class SquareEventFlyer extends React.Component {
-  props: {
-    event: SearchEvent,
-    lazyLoad?: boolean,
-  };
-
+export class SquareEventFlyer extends React.Component<{
+  event: SearchEvent,
+  lazyLoad?: boolean,
+}> {
   render() {
     const event = this.props.event;
     const width = 180;

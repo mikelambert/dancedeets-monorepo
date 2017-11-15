@@ -93,7 +93,7 @@ export class MultiSelectList extends React.Component<MultiSelectProps> {
     (this: any).setAll = this.setAll.bind(this);
   }
 
-  setAll(item) {
+  setAll() {
     this.changedState(generateUniformState(this.props.list, true));
   }
 
@@ -101,7 +101,7 @@ export class MultiSelectList extends React.Component<MultiSelectProps> {
     this.props.onChange(newState);
   }
 
-  toggleItem(item) {
+  toggleItem(item: string) {
     if (isAllSelected(this.props.selected)) {
       const newState = generateUniformState(this.props.list, false);
       newState[item] = true;

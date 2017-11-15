@@ -20,7 +20,7 @@ if (ExecutionEnvironment.canUseDOM) {
 
 type Props = {
   options: Object,
-  onDateChanged: (start: Date, end: Date) => void,
+  onDateChanged?: (start: Date, end: Date) => void,
 };
 
 class FullCalendar extends React.Component<Props> {

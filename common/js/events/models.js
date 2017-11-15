@@ -232,6 +232,8 @@ export class SearchEvent extends BaseEvent {
   };
 }
 
+export type Post = Object;
+
 export class Event extends BaseEvent {
   description: string;
   source: {
@@ -252,6 +254,7 @@ export class Event extends BaseEvent {
   };
   language: string;
   admins: Array<Admin>;
+  posts: Array<Post>;
   ticket_uri: string; // eslint-disable-line camelcase
   extraImageCount: number;
 

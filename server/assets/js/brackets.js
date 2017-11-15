@@ -9,17 +9,16 @@ import * as React from 'react';
 import type { Bracket, Match, Position } from './bracketModels';
 import { BracketRenderer } from './bracketModels';
 
-class MatchReact extends React.Component {
-  props: {
+class MatchReact extends React.Component<
+  {
     bracketRenderer: BracketRenderer,
     match: ?Match,
     position: Position,
-  };
-
-  state: {
+  },
+  {
     imageCounter: number,
-  };
-
+  }
+> {
   _intervalId: number;
 
   constructor(props) {
@@ -166,15 +165,13 @@ class MatchReact extends React.Component {
   }
 }
 
-class BracketLines extends React.Component {
-  props: {
-    bracketRenderer: BracketRenderer,
-    left: number,
-    right: number,
-    top: number,
-    bottom: number,
-  };
-
+class BracketLines extends React.Component<{
+  bracketRenderer: BracketRenderer,
+  left: number,
+  right: number,
+  top: number,
+  bottom: number,
+}> {
   render() {
     const box = {
       left: this.props.left,
@@ -213,11 +210,9 @@ class BracketLines extends React.Component {
   }
 }
 
-class BracketReact extends React.Component {
-  props: {
-    bracket: Bracket,
-  };
-
+class BracketReact extends React.Component<{
+  bracket: Bracket,
+}> {
   render() {
     const bracket = {
       matches: [

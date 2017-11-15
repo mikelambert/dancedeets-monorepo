@@ -15,16 +15,15 @@ import ExecutionEnvironment from 'exenv';
 const linkify = Linkify();
 linkify.tlds(tlds);
 
-class OEmbed extends React.Component {
-  props: {
+class OEmbed extends React.Component<
+  {
     url: string,
     getOembedUrl: (pageUrl: string) => string, // eslint-disable-line react/no-unused-prop-types
-  };
-
-  state: {
+  },
+  {
     embedCode: ?string,
-  };
-
+  }
+> {
   constructor(props) {
     super(props);
     this.state = {
@@ -69,11 +68,9 @@ class OEmbed extends React.Component {
   }
 }
 
-class SoundCloud extends React.Component {
-  props: {
-    url: string,
-  };
-
+class SoundCloud extends React.Component<{
+  url: string,
+}> {
   render() {
     return (
       <OEmbed
@@ -88,12 +85,10 @@ class SoundCloud extends React.Component {
   }
 }
 
-class FacebookPage extends React.Component {
-  props: {
-    username: string,
-    amp: boolean,
-  };
-
+class FacebookPage extends React.Component<{
+  username: string,
+  amp: boolean,
+}> {
   componentDidMount() {
     if (window.FB) {
       window.FB.XFBML.parse();
@@ -134,7 +129,10 @@ class FacebookPage extends React.Component {
   }
 }
 
-class FacebookPost extends React.Component {
+class FacebookPost extends React.Component<{
+  url: string,
+  amp: boolean,
+}> {
   static isPostUrl(mediaUrl) {
     return (
       mediaUrl.includes('/posts/') ||
@@ -161,11 +159,6 @@ class FacebookPost extends React.Component {
     https://www.facebook.com/notes/{username}/{note-url}/{note-id}
     */
   }
-
-  props: {
-    url: string,
-    amp: boolean,
-  };
 
   componentDidMount() {
     if (window.FB) {
@@ -203,7 +196,10 @@ class FacebookPost extends React.Component {
   }
 }
 
-class FacebookVideo extends React.Component {
+class FacebookVideo extends React.Component<{
+  url: string,
+  amp: boolean,
+}> {
   static isVideoUrl(mediaUrl) {
     return mediaUrl.includes('/video.php') || mediaUrl.includes('/videos/');
     /*
@@ -213,11 +209,6 @@ class FacebookVideo extends React.Component {
     https://www.facebook.com/video.php?v={video-id}
     */
   }
-
-  props: {
-    url: string,
-    amp: boolean,
-  };
 
   componentDidMount() {
     if (window.FB) {
@@ -250,12 +241,10 @@ class FacebookVideo extends React.Component {
   }
 }
 
-class YouTube extends React.Component {
-  props: {
-    amp: boolean,
-    videoId: string,
-  };
-
+class YouTube extends React.Component<{
+  amp: boolean,
+  videoId: string,
+}> {
   render() {
     return this.props.amp ? (
       <span>
@@ -293,7 +282,7 @@ class YouTube extends React.Component {
 class Formatter {
   str: string;
   options: Object;
-  elements: Array<React$Element<*> | string>;
+  elements: Array<React.Element<*> | string>;
 
   constructor(str, options) {
     this.str = str;
@@ -487,11 +476,9 @@ class Formatter {
   }
 }
 
-export default class DescriptionFormatter extends React.Component {
-  props: {
-    children: string,
-  };
-
+export default class DescriptionFormatter extends React.Component<{
+  children: string,
+}> {
   render() {
     const text = this.props.children;
     const formatter = new Formatter(text, this.props);

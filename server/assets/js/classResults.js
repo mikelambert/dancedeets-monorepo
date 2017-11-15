@@ -40,11 +40,9 @@ type StudioClassType = {
   /* eslint-enable react/no-unused-prop-types */
 };
 
-class StudioImage extends React.Component {
-  props: {
-    studioName: string,
-  };
-
+class StudioImage extends React.Component<{
+  studioName: string,
+}> {
   render() {
     const imageSrc = `${this.context.imagePath +
       this.props.studioName.toLowerCase()}.png`;
@@ -59,11 +57,9 @@ function getDayId(dayName) {
   return dayName;
 }
 
-class DayLink extends React.Component {
-  props: {
-    dayName: string,
-  };
-
+class DayLink extends React.Component<{
+  dayName: string,
+}> {
   constructor(props) {
     super(props);
     (this: any).onClick = this.onClick.bind(this);
@@ -98,7 +94,7 @@ const dayOfWeekNames = [
   'Saturday',
 ];
 
-class DayNavMenu extends React.Component {
+class DayNavMenu extends React.Component<{}> {
   render() {
     const weeks = [];
     for (let i = 0; i < 7; i += 1) {
@@ -116,18 +112,17 @@ class DayNavMenu extends React.Component {
   }
 }
 
-class SearchBar extends React.Component {
-  props: {
-    initialStudios: Array<string>,
-    initialStyles: Array<string>,
-    studios: MultiSelectState,
-    styles: MultiSelectState,
-    teacher: string,
-    onChange: (key: ValidKey, newState: any) => void,
-  };
-  _styles: MultiSelectList;
-  _studios: MultiSelectList;
-  _teacher: HTMLInputElement;
+class SearchBar extends React.Component<{
+  initialStudios: Array<string>,
+  initialStyles: Array<string>,
+  studios: MultiSelectState,
+  styles: MultiSelectState,
+  teacher: string,
+  onChange: (key: ValidKey, newState: any) => void,
+}> {
+  _styles: ?MultiSelectList;
+  _studios: ?MultiSelectList;
+  _teacher: ?HTMLInputElement;
 
   render() {
     return (
@@ -170,7 +165,9 @@ class SearchBar extends React.Component {
               this._teacher = x;
             }}
             onChange={state =>
-              this.props.onChange('teacher', this._teacher.value)}
+              this._teacher
+                ? this.props.onChange('teacher', this._teacher.value)
+                : null}
           />
         </div>
       </form>
@@ -178,13 +175,11 @@ class SearchBar extends React.Component {
   }
 }
 
-class ClassSummary extends React.Component {
-  props: {
-    styles: Array<string>,
-    studios: Array<string>,
-    teacher: string,
-  };
-
+class ClassSummary extends React.Component<{
+  styles: Array<string>,
+  studios: Array<string>,
+  teacher: string,
+}> {
   render() {
     let classes = this.props.styles.join(', ');
     if (!classes) {
@@ -207,11 +202,9 @@ class ClassSummary extends React.Component {
   }
 }
 
-class StudioClass extends React.Component {
-  props: {
-    studio_class: StudioClassType,
-  };
-
+class StudioClass extends React.Component<{
+  studio_class: StudioClassType,
+}> {
   render() {
     return (
       <div style={{ marginLeft: 40, marginBottom: 2 }}>
@@ -224,12 +217,10 @@ class StudioClass extends React.Component {
   }
 }
 
-class DayHeader extends React.Component {
-  props: {
-    date: Date,
-    useAnchor: boolean,
-  };
-
+class DayHeader extends React.Component<{
+  date: Date,
+  useAnchor: boolean,
+}> {
   render() {
     let contents = <h4>{dateFormat(this.props.date, 'ddd MMM D')}</h4>;
     if (this.props.useAnchor) {
@@ -246,20 +237,17 @@ class DayHeader extends React.Component {
   }
 }
 
-class TimeHeader extends React.Component {
-  props: {
-    datetime: Date,
-  };
-
+class TimeHeader extends React.Component<{
+  datetime: Date,
+}> {
   render() {
     return <b>{dateFormat(this.props.datetime, 'h:mma')}</b>;
   }
 }
 
-class ClassTitle extends React.Component {
-  props: {
-    filteredClasses: Array<StudioClassType>,
-  };
+class ClassTitle extends React.Component<{
+  filteredClasses: Array<StudioClassType>,
+}> {
   render() {
     const filteredClasses = this.props.filteredClasses;
     return (
@@ -270,11 +258,9 @@ class ClassTitle extends React.Component {
   }
 }
 
-class SponsoredSummary extends React.Component {
-  props: {
-    classes: Array<StudioClassType>,
-  };
-
+class SponsoredSummary extends React.Component<{
+  classes: Array<StudioClassType>,
+}> {
   render() {
     const sponsoredStudios = {};
     this.props.classes.forEach(studioClass => {
@@ -303,11 +289,9 @@ class SponsoredSummary extends React.Component {
   }
 }
 
-class StudioClasses extends React.Component {
-  props: {
-    filteredClasses: Array<StudioClassType>,
-  };
-
+class StudioClasses extends React.Component<{
+  filteredClasses: Array<StudioClassType>,
+}> {
   render() {
     const rows = [];
     let lastStudioClass = null;
@@ -387,18 +371,17 @@ type AppProps = {
 
 type ValidKey = 'styles' | 'studios' | 'teacher';
 
-class App extends React.Component {
-  props: AppProps;
-
-  state: {
+class App extends React.Component<
+  AppProps,
+  {
     styles: MultiSelectState,
     studios: MultiSelectState,
     teacher: string,
     initialClasses: Array<StudioClassType>,
     initialStudios: Array<string>,
     initialStyles: Array<string>,
-  };
-
+  }
+> {
   constructor(props: AppProps) {
     super(props);
     const studiosSet = {};

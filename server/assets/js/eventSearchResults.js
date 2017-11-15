@@ -26,6 +26,7 @@ import {
   SearchEvent,
 } from 'dancedeets-common/js/events/models';
 import type {
+  FeaturedInfo,
   NewSearchResponse,
   Onebox,
   PeopleListing,
@@ -78,11 +79,9 @@ async function performRequest(
   return await realPerformRequest(window.fetch, path, args, postArgs, '2.0');
 }
 
-export class HorizontalEventFlyer extends React.Component {
-  props: {
-    event: BaseEvent,
-  };
-
+export class HorizontalEventFlyer extends React.Component<{
+  event: BaseEvent,
+}> {
   render() {
     const fbDims = { width: 500, height: 262 };
     const event = this.props.event;
@@ -117,15 +116,13 @@ export class HorizontalEventFlyer extends React.Component {
   }
 }
 
-class _EventDescription extends React.Component {
-  props: {
-    event: SearchEvent,
-    indexingBot?: boolean,
+class _EventDescription extends React.Component<{
+  event: SearchEvent,
+  indexingBot?: boolean,
 
-    // Self-managed props
-    intl: intlShape,
-  };
-
+  // Self-managed props
+  intl: intlShape,
+}> {
   render() {
     const event = this.props.event;
     const keywords = [...event.annotations.categories];
@@ -157,12 +154,10 @@ class _EventDescription extends React.Component {
 }
 const EventDescription = injectIntl(_EventDescription);
 
-class HorizontalEvent extends React.Component {
-  props: {
-    event: SearchEvent,
-    lazyLoad: boolean,
-  };
-
+class HorizontalEvent extends React.Component<{
+  event: SearchEvent,
+  lazyLoad?: boolean,
+}> {
   render() {
     return (
       <div className="grey-top-border horizontal-event">
@@ -178,11 +173,9 @@ class HorizontalEvent extends React.Component {
   }
 }
 
-class VerticalEvent extends React.Component {
-  props: {
-    event: SearchEvent,
-  };
-
+class VerticalEvent extends React.Component<{
+  event: SearchEvent,
+}> {
   render() {
     const event = this.props.event;
     return (
@@ -208,11 +201,9 @@ class VerticalEvent extends React.Component {
   }
 }
 
-class FeaturedEvent extends React.Component {
-  props: {
-    featuredInfo: FeaturedInfo,
-  };
-
+class FeaturedEvent extends React.Component<{
+  featuredInfo: FeaturedInfo,
+}> {
   render() {
     const event = this.props.featuredInfo.event;
     let promotionText = null;
@@ -236,11 +227,9 @@ class FeaturedEvent extends React.Component {
   }
 }
 
-class FeaturedEvents extends React.Component {
-  props: {
-    featuredInfos: Array<FeaturedInfo>,
-  };
-
+class FeaturedEvents extends React.Component<{
+  featuredInfos: Array<FeaturedInfo>,
+}> {
   render() {
     if (!this.props.featuredInfos.length) {
       return null;
@@ -277,11 +266,9 @@ class FeaturedEvents extends React.Component {
   }
 }
 
-class CurrentEvents extends React.Component {
-  props: {
-    events: Array<SearchEvent>,
-  };
-
+class CurrentEvents extends React.Component<{
+  events: Array<SearchEvent>,
+}> {
   render() {
     if (!this.props.events.length) {
       return null;
@@ -306,15 +293,13 @@ class CurrentEvents extends React.Component {
   }
 }
 
-class _EventsList extends React.Component {
-  props: {
-    events: Array<SearchEvent>,
-    loadMoreContent: () => void,
+class _EventsList extends React.Component<{
+  events: Array<SearchEvent>,
+  loadMoreContent: ?() => void | Promise<void>,
 
-    // Self-managed props
-    intl: intlShape,
-  };
-
+  // Self-managed props
+  intl: intlShape,
+}> {
   render() {
     const resultItems = [];
     let overallEventIndex = 0;
@@ -386,11 +371,9 @@ class _EventsList extends React.Component {
 }
 const EventsList = injectIntl(_EventsList);
 
-class _OneboxLinks extends React.Component {
-  props: {
-    links: Array<Onebox>,
-  };
-
+class _OneboxLinks extends React.Component<{
+  links: Array<Onebox>,
+}> {
   render() {
     if (!this.props.links.length) {
       return null;
@@ -413,18 +396,17 @@ class _OneboxLinks extends React.Component {
 }
 const OneboxLinks = injectIntl(_OneboxLinks);
 
-class PersonList extends React.Component {
-  props: {
+class PersonList extends React.Component<
+  {
     title: string,
     subtitle: string,
     categoryOrder: Array<string>,
     people: StylePersonLookup,
-  };
-
-  state: {
+  },
+  {
     category: string,
-  };
-
+  }
+> {
   constructor(props) {
     super(props);
     this.state = {
@@ -480,17 +462,16 @@ class PersonList extends React.Component {
   }
 }
 
-class EventFilters extends React.Component {
-  props: {
+class EventFilters extends React.Component<
+  {
     events: Array<SearchEvent>,
     onChange: (filters: Array<string>) => void,
-  };
-
-  state: {
+  },
+  {
     initialStyles: Array<string>,
     styles: MultiSelectState,
-  };
-
+  }
+> {
   constructor(props) {
     super(props);
     const styles = this.getStyles();
@@ -525,12 +506,10 @@ class EventFilters extends React.Component {
   }
 }
 
-class CallbackOnRender extends React.Component {
-  props: {
-    callback: () => void | Promise<void>,
-    children?: React.Element<*>,
-  };
-
+class CallbackOnRender extends React.Component<{
+  callback: () => void | Promise<void>,
+  children?: React.Element<*>,
+}> {
   render() {
     if (this.props.callback) {
       this.props.callback();
@@ -539,11 +518,9 @@ class CallbackOnRender extends React.Component {
   }
 }
 
-class Loading extends React.Component {
-  props: {
-    style?: Object,
-  };
-
+class Loading extends React.Component<{
+  style?: Object,
+}> {
   render() {
     return (
       <div style={this.props.style}>
@@ -553,17 +530,16 @@ class Loading extends React.Component {
   }
 }
 
-class ResultsList extends React.Component {
-  props: {
+class ResultsList extends React.Component<
+  {
     response: NewSearchResponse,
     showPast: boolean,
-    loadMoreContent: () => void,
-  };
-
-  state: {
+    loadMoreContent: ?() => void | Promise<void>,
+  },
+  {
     filters: Array<String>,
-  };
-
+  }
+> {
   constructor(props) {
     super(props);
     this.state = { filters: [] };
@@ -708,20 +684,19 @@ export async function search(
   return response;
 }
 
-class _PeopleList extends React.Component {
-  props: {
+class _PeopleList extends React.Component<
+  {
     response: NewSearchResponse,
     categoryOrder: Array<string>,
 
     // Self-managed props
     intl: intlShape,
-  };
-
-  state: {
+  },
+  {
     people: PeopleListing,
     failed: boolean,
-  };
-
+  }
+> {
   _loadingPeople: boolean;
 
   constructor(props) {
@@ -822,14 +797,12 @@ class _PeopleList extends React.Component {
 }
 const PeopleList = injectIntl(_PeopleList);
 
-class _Calendar extends React.Component {
-  props: {
-    query: FormSearchQuery,
+class _Calendar extends React.Component<{
+  query: FormSearchQuery,
 
-    // Self-managed props
-    window: windowProps,
-  };
-
+  // Self-managed props
+  window: windowProps,
+}> {
   render() {
     const query = querystring.stringify(this.props.query);
     const calendarUrl = `/calendar/iframe?${query}`;
@@ -851,15 +824,13 @@ class _Calendar extends React.Component {
 }
 const Calendar = wantsWindowSizes(_Calendar);
 
-class ResultTabs extends React.Component {
-  props: {
-    response: NewSearchResponse,
-    query: FormSearchQuery,
-    loading: boolean,
-    categoryOrder: Array<string>,
-    loadMoreContent: () => void,
-  };
-
+class ResultTabs extends React.Component<{
+  response: NewSearchResponse,
+  query: FormSearchQuery,
+  loading: boolean,
+  categoryOrder: Array<string>,
+  loadMoreContent: ?() => void | Promise<void>,
+}> {
   render() {
     const overlayDiv = this.props.loading ? (
       <div
@@ -941,22 +912,21 @@ async function performSearch(query: FormSearchQuery) {
   return response;
 }
 
-class ResultsPage extends React.Component {
-  props: {
+class ResultsPage extends React.Component<
+  {
     response: NewSearchResponse,
     categoryOrder: Array<string>,
     query: Object,
     hasMoreResults: boolean,
-  };
-
-  state: {
+  },
+  {
     loading: boolean,
     query: FormSearchQuery,
     response: NewSearchResponse,
     loadingMore: boolean,
     hasMoreEventsToFetch: boolean,
-  };
-
+  }
+> {
   constructor(props) {
     super(props);
     this.state = {

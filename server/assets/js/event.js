@@ -18,7 +18,11 @@ import {
   formatStartDateOnly,
 } from 'dancedeets-common/js/dates';
 import { BaseEvent, Event } from 'dancedeets-common/js/events/models';
-import type { JSONObject, Admin } from 'dancedeets-common/js/events/models';
+import type {
+  JSONObject,
+  Admin,
+  Post,
+} from 'dancedeets-common/js/events/models';
 import { formatAttending } from 'dancedeets-common/js/events/helpers';
 import messages from 'dancedeets-common/js/events/messages';
 import { getHostname } from 'dancedeets-common/js/util/url';
@@ -53,26 +57,23 @@ function isEventAdsenseSafe(event) {
   return !sexyContent;
 }
 
-class Title extends React.Component {
-  props: {
-    event: Event,
-  };
-
+class Title extends React.Component<{
+  event: Event,
+}> {
   render() {
     return <h2 className="event-page-header">{this.props.event.name}</h2>;
   }
 }
 
-class ImageWithLinks extends React.Component {
-  props: {
+class ImageWithLinks extends React.Component<
+  {
     event: Event,
     amp: ?boolean,
-  };
-
-  state: {
+  },
+  {
     lightbox: boolean,
-  };
-
+  }
+> {
   constructor(props) {
     super(props);
     (this: any).onClick = this.onClick.bind(this);
@@ -195,17 +196,15 @@ function getAddToCalendarLink(event) {
   return `https://www.google.com/calendar/render?${query}`;
 }
 
-class _EventLinks extends React.Component {
-  props: {
-    event: Event,
-    amp: boolean,
-    userId: ?number,
-    userRsvp: ?RsvpValue,
+class _EventLinks extends React.Component<{
+  event: Event,
+  amp: boolean,
+  userId: ?string,
+  userRsvp: ?RsvpValue,
 
-    // Self-managed props
-    intl: intlShape,
-  };
-
+  // Self-managed props
+  intl: intlShape,
+}> {
   render() {
     const event = this.props.event;
     let rsvpElement = null;
@@ -344,6 +343,14 @@ class _EventLinks extends React.Component {
       />
     ) : null;
 
+    let second = null;
+    if (formattedStartEndText.second) {
+      second = [
+        <br />,
+        <FormatText>{formattedStartEndText.second}</FormatText>,
+      ];
+    }
+
     return (
       <Card newStyle>
         <div className="card-header">
@@ -359,8 +366,7 @@ class _EventLinks extends React.Component {
           </ImagePrefix>
           <ImagePrefix iconName="clock-o">
             <FormatText>{formattedStartEndText.first}</FormatText>
-            <br />
-            <FormatText>{formattedStartEndText.second}</FormatText>
+            {second}
           </ImagePrefix>
           <ImagePrefix iconName="calendar-plus-o">
             <a
@@ -386,12 +392,10 @@ class _EventLinks extends React.Component {
 }
 const EventLinks = injectIntl(_EventLinks);
 
-class MapWithLinks extends React.Component {
-  props: {
-    event: Event,
-    amp: ?boolean,
-  };
-
+class MapWithLinks extends React.Component<{
+  event: Event,
+  amp: ?boolean,
+}> {
   mapUrl() {
     const geocode = this.props.event.venue.geocode;
     if (!geocode || !geocode.latitude) {
@@ -501,17 +505,13 @@ class MapWithLinks extends React.Component {
   }
 }
 
-type Post = Object;
+class _WallPost extends React.Component<{
+  post: Post,
+  amp: boolean,
 
-class _WallPost extends React.Component {
-  props: {
-    post: Post,
-    amp: boolean,
-
-    // Self-managed props
-    intl: intlShape,
-  };
-
+  // Self-managed props
+  intl: intlShape,
+}> {
   render() {
     let message = this.props.post.message;
     if (this.props.post.link && !message.includes(this.props.post.link)) {
@@ -538,13 +538,11 @@ class _WallPost extends React.Component {
 }
 const WallPost = injectIntl(_WallPost);
 
-class WallPosts extends React.Component {
-  props: {
-    posts: Array<Post>,
-    admins: Array<Admin>,
-    amp: boolean,
-  };
-
+class WallPosts extends React.Component<{
+  posts: Array<Post>,
+  admins: Array<Admin>,
+  amp?: boolean,
+}> {
   render() {
     const adminIds = this.props.admins.map(x => x.id);
     const adminPosts = this.props.posts.filter(
@@ -560,12 +558,10 @@ class WallPosts extends React.Component {
   }
 }
 
-class ExtraImages extends React.Component {
-  props: {
-    event: Event,
-    amp?: boolean,
-  };
-
+class ExtraImages extends React.Component<{
+  event: Event,
+  amp?: boolean,
+}> {
   render() {
     if (!this.props.event.extraImageCount || !this.props.event.picture) {
       return null;
@@ -588,12 +584,10 @@ class ExtraImages extends React.Component {
   }
 }
 
-class Description extends React.Component {
-  props: {
-    event: Event,
-    amp?: boolean,
-  };
-
+class Description extends React.Component<{
+  event: Event,
+  amp?: boolean,
+}> {
   render() {
     return (
       <Card newStyle>
@@ -612,12 +606,10 @@ class Description extends React.Component {
   }
 }
 
-class AdminButton extends React.Component {
-  props: {
-    path: string,
-    children?: React.Element<*>,
-  };
-
+class AdminButton extends React.Component<{
+  path: string,
+  children?: React.Node,
+}> {
   constructor(props) {
     super(props);
     (this: any).onClick = this.onClick.bind(this);
@@ -636,13 +628,11 @@ class AdminButton extends React.Component {
   }
 }
 
-class AdminPanel extends React.Component {
-  props: {
-    forceAdmin: boolean,
-    event: Event,
-    userId: ?number,
-  };
-
+class AdminPanel extends React.Component<{
+  forceAdmin: ?boolean,
+  event: Event,
+  userId: ?string,
+}> {
   isAdmin() {
     const adminIds = this.props.event.admins.map(x => x.id);
     return this.props.userId && adminIds.includes(this.props.userId);
@@ -679,12 +669,10 @@ class AdminPanel extends React.Component {
   }
 }
 
-class _EventRecommendation extends React.Component {
-  props: {
-    event: BaseEvent,
-    intl: intlShape,
-  };
-
+class _EventRecommendation extends React.Component<{
+  event: BaseEvent,
+  intl: intlShape,
+}> {
   render() {
     const start = this.props.event.getStartMoment({ timezone: false });
     return (
@@ -698,14 +686,12 @@ class _EventRecommendation extends React.Component {
 }
 const EventRecommendation = injectIntl(_EventRecommendation);
 
-class BadEventWarning extends React.Component {
-  props: {
-    messages: string,
-    // include future events from same admins
-    initialQuery: Query,
-    upcomingEvents: Array<BaseEvent>,
-  };
-
+class BadEventWarning extends React.Component<{
+  messages: Array<string>,
+  // include future events from same admins
+  initialQuery: Query,
+  upcomingEvents: Array<BaseEvent>,
+}> {
   render() {
     let upcomingEvents = null;
     if (this.props.upcomingEvents.length) {
@@ -762,30 +748,26 @@ function getSearchUrl(query: Query) {
   return `/?${newQueryString}`;
 }
 
-class HtmlHead extends React.Component {
-  props: {
-    event: Event,
-  };
-
+class HtmlHead extends React.Component<{
+  event: Event,
+}> {
   render() {
     return <Helmet title={this.props.event.name} />;
   }
 }
 
-export class EventPage extends React.Component {
-  props: {
-    event: JSONObject,
-    forceAdmin?: boolean,
-    amp?: boolean,
-    userId?: number,
-    userRsvp?: RsvpValue,
-    // Past event, as defined by the server code
-    pastEvent: boolean,
-    canceledEvent: boolean,
-    // List of events, if we need to display relevant upcoming events
-    upcomingEvents: Array<BaseEvent>,
-  };
-
+export class EventPage extends React.Component<{
+  event: JSONObject,
+  forceAdmin?: boolean,
+  amp?: boolean,
+  userId?: string,
+  userRsvp?: RsvpValue,
+  // Past event, as defined by the server code
+  pastEvent: boolean,
+  canceledEvent: boolean,
+  // List of events, if we need to display relevant upcoming events
+  upcomingEvents: Array<BaseEvent>,
+}> {
   performSearch(query: Query) {
     window.location = getSearchUrl(query);
   }
@@ -880,8 +862,8 @@ export class EventPage extends React.Component {
             <Description event={event} amp={this.props.amp} />
             <WallPosts
               amp={this.props.amp}
-              posts={this.props.event.posts}
-              admins={this.props.event.admins}
+              posts={event.posts}
+              admins={event.admins}
             />
           </div>
         </div>

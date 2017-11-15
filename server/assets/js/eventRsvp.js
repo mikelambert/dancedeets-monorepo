@@ -29,18 +29,17 @@ const choiceStrings = [
 
 export type RsvpValue = 'attending' | 'maybe' | 'declined' | 'none';
 
-class _RsvpComponent extends React.Component {
-  props: {
+class _RsvpComponent extends React.Component<
+  {
     event: Event,
     userRsvp: RsvpValue,
-  };
-
-  state: {
+  },
+  {
     rsvpValue: RsvpValue,
     updated: boolean,
     disableAll: boolean,
-  };
-
+  }
+> {
   _choiceBinds: Array<() => Promise<void>>;
 
   constructor(props) {
