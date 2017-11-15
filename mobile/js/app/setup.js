@@ -25,7 +25,7 @@ type State = {
 export default function setup() {
   console.disableYellowBox = true;
 
-  class Root extends React.Component<null, State> {
+  class Root extends React.Component<{}, State> {
     constructor() {
       super();
       this.state = {

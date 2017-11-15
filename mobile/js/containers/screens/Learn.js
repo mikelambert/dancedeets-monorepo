@@ -5,24 +5,19 @@
  */
 
 import * as React from 'react';
-import { AppState, Image, Platform, StyleSheet, View } from 'react-native';
 import type {
   NavigationAction,
   NavigationRoute,
-  NavigationSceneRendererProps,
   NavigationScreenProp,
 } from 'react-navigation/src/TypeDefinition';
-import { NavigationActions } from 'react-navigation';
-import { connect } from 'react-redux';
-import { injectIntl, intlShape, defineMessages } from 'react-intl';
-import { track, trackWithEvent } from '../../store/track';
+import { defineMessages } from 'react-intl';
+import { track } from '../../store/track';
 import {
   PlaylistListView,
   PlaylistStylesView,
   PlaylistView,
 } from '../../learn/playlistViews';
 import StackNavigator from './Navigator';
-import { gradientBottom, purpleColors } from '../../Colors';
 
 const messages = defineMessages({
   learnTitle: {
@@ -37,14 +32,12 @@ const messages = defineMessages({
   },
 });
 
-class TutorialStylesView extends React.Component {
+class TutorialStylesView extends React.Component<{
+  navigation: NavigationScreenProp<NavigationRoute, NavigationAction>,
+}> {
   static navigationOptions = ({ screenProps }) => ({
     title: screenProps.intl.formatMessage(messages.learnTitle),
   });
-
-  props: {
-    navigation: NavigationScreenProp<NavigationRoute, NavigationAction>,
-  };
 
   constructor(props) {
     super(props);
@@ -63,18 +56,16 @@ class TutorialStylesView extends React.Component {
   }
 }
 
-class TutorialListView extends React.Component {
+class TutorialListView extends React.Component<{
+  navigation: NavigationScreenProp<NavigationRoute, NavigationAction>,
+}> {
   static navigationOptions = ({ navigation, screenProps }) => {
-    const category = navigation.state.params.category;
+    const { category } = navigation.state.params;
     return {
       title: screenProps.intl.formatMessage(messages.styleTutorialTitle, {
         style: category.style.title,
       }),
     };
-  };
-
-  props: {
-    navigation: NavigationScreenProp<NavigationRoute, NavigationAction>,
   };
 
   constructor(props) {
@@ -91,7 +82,7 @@ class TutorialListView extends React.Component {
   }
 
   render() {
-    const category: any = this.props.navigation.state.params.category;
+    const { category } = this.props.navigation.state.params;
     return (
       <PlaylistListView
         playlists={category.tutorials}
@@ -101,18 +92,16 @@ class TutorialListView extends React.Component {
   }
 }
 
-class TutorialView extends React.Component {
+class TutorialView extends React.Component<{
+  navigation: NavigationScreenProp<NavigationRoute, NavigationAction>,
+}> {
   static navigationOptions = ({ navigation, screenProps }) => {
-    const playlist = navigation.state.params.playlist;
+    const { playlist } = navigation.state.params;
     return { title: playlist.title };
   };
 
-  props: {
-    navigation: NavigationScreenProp<NavigationRoute, NavigationAction>,
-  };
-
   render() {
-    const playlist = this.props.navigation.state.params.playlist;
+    const { playlist } = this.props.navigation.state.params;
     return <PlaylistView playlist={playlist} />;
   }
 }

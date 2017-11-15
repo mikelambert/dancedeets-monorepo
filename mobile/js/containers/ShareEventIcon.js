@@ -10,10 +10,9 @@ import Share from 'react-native-share';
 import { Event } from 'dancedeets-common/js/events/models';
 import { trackWithEvent } from '../store/track';
 
-export default class ShareEventIcon extends React.Component {
-  props: {
-    event: Event,
-  };
+export default class ShareEventIcon extends React.Component<{
+  event: Event,
+}> {
   render() {
     return (
       <TouchableOpacity

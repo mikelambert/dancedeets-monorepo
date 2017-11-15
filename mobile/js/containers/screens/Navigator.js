@@ -4,18 +4,11 @@
  * @flow
  */
 
-import * as React from 'react';
-import {
-  addNavigationHelpers,
-  NavigationActions,
-  StackNavigator,
-} from 'react-navigation';
-import { connect } from 'react-redux';
+import { NavigationActions, StackNavigator } from 'react-navigation';
 import type { NavigationRouteConfigMap } from 'react-navigation/src/TypeDefinition';
 import type { StackNavigatorConfig } from 'react-navigation/src/navigators/StackNavigator';
 import { hardwareBackPress } from 'react-native-back-android';
-import { gradientTop, purpleColors } from '../../Colors';
-import type { Dispatch } from '../../actions/types';
+import { gradientTop } from '../../Colors';
 
 const navigateOnce = getStateForAction => (action, state) => {
   const { type, routeName } = action;

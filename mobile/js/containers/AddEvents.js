@@ -9,7 +9,6 @@ import {
   ActivityIndicator,
   FlatList,
   Image,
-  PixelRatio,
   StyleSheet,
   TouchableOpacity,
   View,
@@ -344,7 +343,7 @@ const AddEventList = connect(
   })
 )(_AddEventList);
 
-export default class AddEvents extends React.Component<null> {
+export default class AddEvents extends React.Component<{}> {
   render() {
     return (
       <View style={styles.container}>

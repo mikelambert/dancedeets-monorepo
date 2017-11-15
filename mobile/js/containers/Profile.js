@@ -116,11 +116,9 @@ const shareLinkContent = {
   contentDescription: '',
 };
 
-class _ShareButtons extends React.Component {
-  props: {
-    intl: intlShape,
-  };
-
+class _ShareButtons extends React.Component<{
+  intl: intlShape,
+}> {
   getShareLinkContent() {
     return Object.assign({}, shareLinkContent, {
       contentDescription: this.props.intl.formatMessage(messages.tagline),
@@ -190,15 +188,13 @@ function sendAdvertisingEmail() {
   });
 }
 
-class _UserProfile extends React.Component {
-  props: {
-    // Self-managed props
-    user: UserState,
-    intl: intlShape,
-    logIn: () => void,
-    logOutWithPrompt: intlShape => void,
-  };
-
+class _UserProfile extends React.Component<{
+  // Self-managed props
+  user: UserState,
+  intl: intlShape,
+  logIn: () => void,
+  logOutWithPrompt: intlShape => void,
+}> {
   render() {
     const { userData, isLoggedIn } = this.props.user;
     if (isLoggedIn && !userData) {
@@ -283,7 +279,7 @@ const UserProfile = connect(
   })
 )(injectIntl(_UserProfile));
 
-class HorizontalRule extends React.Component {
+class HorizontalRule extends React.Component<{}> {
   render() {
     return (
       <View
@@ -306,11 +302,9 @@ export function getVersionTitle(intl: intlShape) {
   });
 }
 
-class ButtonIcon extends React.Component {
-  props: {
-    iconName: string,
-  };
-
+class ButtonIcon extends React.Component<{
+  iconName: string,
+}> {
   render() {
     return (
       <Icon
@@ -328,13 +322,11 @@ class ButtonIcon extends React.Component {
     );
   }
 }
-class _Profile extends React.Component {
-  props: {
-    intl: intlShape,
-    onNotificationPreferences: () => void,
-    openCredits: () => void,
-  };
-
+class _Profile extends React.Component<{
+  intl: intlShape,
+  onNotificationPreferences: () => void,
+  openCredits: () => void,
+}> {
   render() {
     // iOS handles notification settings automatically for us, so let's offer this there
     let notificationButton = null;

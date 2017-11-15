@@ -5,10 +5,9 @@
  */
 
 import * as React from 'react';
-import { Image, Platform, StyleSheet, WebView } from 'react-native';
+import { Platform, StyleSheet, WebView } from 'react-native';
 import { TabBarBottom, TabNavigator } from 'react-navigation';
 import type { SceneRendererProps } from 'react-native-tab-view/src/TabViewTypeDefinitions';
-import { connect } from 'react-redux';
 import { defineMessages } from 'react-intl';
 import WKWebView from 'react-native-wkwebview-reborn';
 import Icon from 'react-native-vector-icons/Ionicons';
@@ -16,10 +15,8 @@ import {
   EventScreensNavigator,
   LearnScreensNavigator,
   AboutScreensNavigator,
-  BattleScreensNavigator,
 } from './screens';
 import { semiNormalize } from '../ui';
-import type { Dispatch } from '../actions/types';
 import { purpleColors } from '../Colors';
 
 const messages = defineMessages({
@@ -65,7 +62,7 @@ function image(focused, name) {
 const mediumUrl =
   'https://medium.dancedeets.com/?utm_source=articles_tab&utm_medium=mobile_app&utm_campaign=articles_tab';
 
-class ArticlesScreensNavigator extends React.Component {
+class ArticlesScreensNavigator extends React.Component<{}> {
   render() {
     if (Platform.OS === 'ios') {
       return <WKWebView source={{ uri: mediumUrl }} />;
@@ -111,11 +108,11 @@ const routeConfiguration = {
   },
 };
 
-class SameClickTabBar extends React.PureComponent {
-  props: SceneRendererProps<*> & {
-    navigation: any, // NavigationScreenProp<NavigationState, NavigationAction>,
-  };
+type SameClickProps = SceneRendererProps<*> & {
+  navigation: any, // NavigationScreenProp<NavigationState, NavigationAction>,
+};
 
+class SameClickTabBar extends React.PureComponent<SameClickProps> {
   jumpToIndex(i) {
     // check if clicked on same tab
     if (i === this.props.navigationState.index) {

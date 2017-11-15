@@ -19,13 +19,12 @@ import TabNavigator from './TabNavigator';
 import { TimeTracker } from '../util/timeTracker';
 import { track } from '../store/track';
 
-class TabApp extends React.Component {
-  props: {
-    // Self-managed props
-    dispatch: Dispatch,
-    screens: any,
-    intl: intlShape,
-  };
+class TabApp extends React.Component<{
+  // Self-managed props
+  dispatch: Dispatch,
+  screens: any,
+  intl: intlShape,
+}> {
   render() {
     const { dispatch, screens, intl, ...props } = this.props;
     const navigation = addNavigationHelpers({

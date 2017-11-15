@@ -36,7 +36,7 @@ class CreditSubList extends React.Component<{
 }
 
 export default class Credits extends React.Component<{
-  style: Object,
+  style?: Object,
 }> {
   render() {
     const creditGroups = credits.map(x => (

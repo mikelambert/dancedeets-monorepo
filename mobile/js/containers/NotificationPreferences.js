@@ -4,6 +4,7 @@
  * @flow
  */
 
+import zip from 'lodash/zip';
 import * as React from 'react';
 import { Platform, ScrollView, StyleSheet, Switch } from 'react-native';
 import { injectIntl, intlShape, defineMessages } from 'react-intl';
@@ -35,16 +36,15 @@ const messages = defineMessages({
   },
 });
 
-class NamedSwitch extends React.Component {
-  props: {
+class NamedSwitch extends React.Component<
+  {
     text: string,
     style?: any,
-  };
-
-  state: {
+  },
+  {
     value: boolean,
-  };
-
+  }
+> {
   render() {
     const { style, text, ...otherProps } = this.props;
     return (
@@ -56,19 +56,18 @@ class NamedSwitch extends React.Component {
   }
 }
 
-class _NotificationPreferences extends React.Component {
+class _NotificationPreferences extends React.Component<
+  {
+    intl: intlShape,
+  },
+  {
+    [key: string]: boolean,
+  }
+> {
   static preferenceDefaults = {
     overall: true,
     sounds: true,
     vibration: true,
-  };
-
-  props: {
-    intl: intlShape,
-  };
-
-  state: {
-    [key: string]: boolean,
   };
 
   constructor(props) {
@@ -87,11 +86,14 @@ class _NotificationPreferences extends React.Component {
   }
 
   async loadPreference() {
-    const preferences = {};
     const defaults = this.constructor.preferenceDefaults;
-    for (const key of Object.keys(defaults)) {
-      preferences[key] = await getPreference(key, defaults[key]);
-    }
+    const keys = Object.keys(defaults);
+    const promises = keys.map(key => getPreference(key, defaults[key]));
+    const values = Promise.all(promises);
+    const preferences = {};
+    zip(keys, values).forEach(([key, value]) => {
+      preferences[key] = value;
+    });
     this.setState(preferences);
   }
 

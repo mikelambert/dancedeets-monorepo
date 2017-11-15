@@ -5,18 +5,14 @@
  */
 
 import * as React from 'react';
-import { AppState, Image, StyleSheet, View } from 'react-native';
 import type {
   NavigationAction,
   NavigationRoute,
-  NavigationSceneRendererProps,
   NavigationScreenProp,
 } from 'react-navigation/src/TypeDefinition';
-import { NavigationActions } from 'react-navigation';
-import { connect } from 'react-redux';
-import { injectIntl, intlShape, defineMessages } from 'react-intl';
-import { track, trackWithEvent } from '../../store/track';
-import ProfilePage, { getVersionTitle } from '../Profile';
+import { defineMessages } from 'react-intl';
+import { track } from '../../store/track';
+import ProfilePage from '../Profile';
 import NotificationPreferences from '../NotificationPreferences';
 import StackNavigator from './Navigator';
 import Credits from '../Credits';
@@ -39,14 +35,12 @@ const messages = defineMessages({
   },
 });
 
-class MainScreen extends React.Component {
+class MainScreen extends React.Component<{
+  navigation: NavigationScreenProp<NavigationRoute, NavigationAction>,
+}> {
   static navigationOptions = ({ screenProps }) => ({
     title: screenProps.intl.formatMessage(messages.about),
   });
-
-  props: {
-    navigation: NavigationScreenProp<NavigationRoute, NavigationAction>,
-  };
 
   constructor(props) {
     super(props);
@@ -70,7 +64,7 @@ class MainScreen extends React.Component {
   }
 }
 
-class CreditsScreen extends React.Component {
+class CreditsScreen extends React.Component<{}> {
   static navigationOptions = ({ screenProps }) => ({
     headerTitle: screenProps.intl.formatMessage(messages.credits),
   });
@@ -80,7 +74,7 @@ class CreditsScreen extends React.Component {
   }
 }
 
-class NotificationScreen extends React.Component {
+class NotificationScreen extends React.Component<{}> {
   static navigationOptions = ({ screenProps }) => ({
     title: screenProps.intl.formatMessage(messages.notificationsTitle),
   });

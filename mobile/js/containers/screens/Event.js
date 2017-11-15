@@ -7,10 +7,8 @@
 import * as React from 'react';
 import {
   Animated,
-  AppState,
   Dimensions,
   Image,
-  StyleSheet,
   Text as RealText,
   TouchableWithoutFeedback,
   View,
@@ -18,31 +16,18 @@ import {
 import type {
   NavigationAction,
   NavigationRoute,
-  NavigationSceneRendererProps,
   NavigationScreenProp,
 } from 'react-navigation/src/TypeDefinition';
-import {
-  createNavigator,
-  NavigationActions,
-  StackNavigator,
-} from 'react-navigation';
-import HeaderTitle from 'react-navigation/src/views/HeaderTitle';
+import { StackNavigator } from 'react-navigation';
 import { connect } from 'react-redux';
 import { injectIntl, intlShape, defineMessages } from 'react-intl';
 import TouchableItem from 'react-navigation/src/views/TouchableItem';
 import Icon from 'react-native-vector-icons/Ionicons';
-import { Event } from 'dancedeets-common/js/events/models';
 import type { SearchQuery } from 'dancedeets-common/js/events/search';
 import type { State } from '../../reducers/search';
 import EventListContainer from '../../events/list';
 import EventPager from '../../events/EventPager';
-import {
-  HorizontalView,
-  semiNormalize,
-  Text,
-  TextInput,
-  ZoomableImage,
-} from '../../ui';
+import { HorizontalView, semiNormalize, Text, ZoomableImage } from '../../ui';
 import {
   canGetValidLoginFor,
   performSearch,
@@ -91,15 +76,13 @@ const messages = defineMessages({
   },
 });
 
-class _SearchHeaderTitleSummary extends React.Component {
-  props: {
-    onPress: () => void,
+class _SearchHeaderTitleSummary extends React.Component<{
+  onPress: () => void,
 
-    // Self-managed props
-    searchHeader: any,
-    query: SearchQuery,
-  };
-
+  // Self-managed props
+  searchHeader: any,
+  query: SearchQuery,
+}> {
   render() {
     const searchQuery = this.props.query;
     const keywords = searchQuery.keywords ? (
@@ -187,14 +170,12 @@ const SearchHeaderTitleSummary = connect(state => ({
   searchHeader: state.searchHeader,
 }))(_SearchHeaderTitleSummary);
 
-class NavButton extends React.PureComponent {
-  props: {
-    onPress: () => void,
-    imageSource?: number,
-    text?: string,
-    disabled?: boolean,
-  };
-
+class NavButton extends React.PureComponent<{
+  onPress: () => void,
+  imageSource?: number,
+  text?: string,
+  disabled?: boolean,
+}> {
   render() {
     let contents = [
       this.props.imageSource ? (
@@ -223,7 +204,10 @@ class NavButton extends React.PureComponent {
   }
 }
 
-class EventListScreen extends React.Component {
+class EventListScreen extends React.Component<{
+  navigation: NavigationScreenProp<NavigationRoute, NavigationAction>,
+  screenProps: Object,
+}> {
   static navigationOptions = ({ screenProps }) => {
     // These screens need to be okay runing without a searchHeader (or anything other than intl, really)
     // The outermost TabView computes navigationOptions to request some tabBar* properties
@@ -269,11 +253,6 @@ class EventListScreen extends React.Component {
     };
   };
 
-  props: {
-    navigation: NavigationScreenProp<NavigationRoute, NavigationAction>,
-    screenProps: Object,
-  };
-
   constructor(props) {
     super(props);
     (this: any).onEventSelected = this.onEventSelected.bind(this);
@@ -302,15 +281,13 @@ class EventListScreen extends React.Component {
   }
 }
 
-class FeaturedEventScreen extends React.Component {
+class FeaturedEventScreen extends React.Component<{
+  navigation: NavigationScreenProp<NavigationRoute, NavigationAction>,
+}> {
   static navigationOptions = ({ navigation }) => ({
     title: navigation.state.params.event.name,
     headerRight: <ShareEventIcon event={navigation.state.params.event} />,
   });
-
-  props: {
-    navigation: NavigationScreenProp<NavigationRoute, NavigationAction>,
-  };
 
   constructor(props) {
     super(props);
@@ -323,7 +300,7 @@ class FeaturedEventScreen extends React.Component {
   }
 
   render() {
-    const event = this.props.navigation.state.params.event;
+    const { event } = this.props.navigation.state.params;
     return (
       <PositionProvider
         renderWithPosition={position => (
@@ -338,15 +315,13 @@ class FeaturedEventScreen extends React.Component {
   }
 }
 
-class EventScreen extends React.Component {
+class EventScreen extends React.Component<{
+  navigation: NavigationScreenProp<NavigationRoute, NavigationAction>,
+}> {
   static navigationOptions = ({ navigation }) => ({
     title: navigation.state.params.event.name,
     headerRight: <ShareEventIcon event={navigation.state.params.event} />,
   });
-
-  props: {
-    navigation: NavigationScreenProp<NavigationRoute, NavigationAction>,
-  };
 
   constructor(props) {
     super(props);
@@ -365,7 +340,7 @@ class EventScreen extends React.Component {
   }
 
   render() {
-    const event = this.props.navigation.state.params.event;
+    const { event } = this.props.navigation.state.params;
     return (
       <EventPager
         selectedEvent={event}
@@ -376,17 +351,15 @@ class EventScreen extends React.Component {
   }
 }
 
-class FlyerScreen extends React.Component {
+class FlyerScreen extends React.Component<{
+  navigation: NavigationScreenProp<NavigationRoute, NavigationAction>,
+}> {
   static navigationOptions = ({ screenProps }) => ({
     title: screenProps.intl.formatMessage(messages.viewFlyer),
   });
 
-  props: {
-    navigation: NavigationScreenProp<NavigationRoute, NavigationAction>,
-  };
-
   render() {
-    const event: any = this.props.navigation.state.params.event;
+    const { event } = this.props.navigation.state.params;
     return (
       <ZoomableImage
         url={event.picture.source}
@@ -397,7 +370,7 @@ class FlyerScreen extends React.Component {
   }
 }
 
-class AddEventsScreen extends React.Component {
+class AddEventsScreen extends React.Component<{}> {
   static navigationOptions = ({ screenProps }) => ({
     title: screenProps.intl.formatMessage(messages.addEventTitle),
   });
@@ -415,22 +388,20 @@ const RealEventScreensNavigator = MyNavigator('events', {
   AddEvents: { screen: AddEventsScreen },
 });
 
-class _EventScreensNavigator extends React.Component {
-  props: {
-    navRef?: (nav: StackNavigator) => void,
+class _EventScreensNavigator extends React.Component<{
+  navRef?: (nav: StackNavigator) => void,
 
-    // Self-managed props
-    navigation: NavigationScreenProp<NavigationRoute, NavigationAction>,
-    intl: intlShape,
-    canOpenAddEvent: (props: any) => Promise<boolean>,
-    search: State,
-    canSearch: boolean,
-    searchHeader: SearchHeaderState,
-    showSearchForm: () => void,
-    hideSearchForm: () => void,
-    performSearch: () => Promise<void>,
-  };
-
+  // Self-managed props
+  navigation: NavigationScreenProp<NavigationRoute, NavigationAction>,
+  intl: intlShape,
+  canOpenAddEvent: (props: any) => Promise<boolean>,
+  search: State,
+  canSearch: boolean,
+  searchHeader: SearchHeaderState,
+  showSearchForm: () => void,
+  hideSearchForm: () => void,
+  performSearch: () => Promise<void>,
+}> {
   _nav: StackNavigator;
 
   constructor(props) {

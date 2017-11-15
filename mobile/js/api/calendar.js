@@ -112,7 +112,7 @@ function addAndroid(event: Event) {
 
 export async function add(event: Event) {
   if (Platform.OS === 'ios') {
-    return addIOS(event);
+    return await addIOS(event);
   } else {
     return addAndroid(event);
   }
