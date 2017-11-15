@@ -26,10 +26,10 @@ export function formatAttending(intl: intlShape, rsvp: EventRsvpList) {
   return null;
 }
 
-export function groupEventsByStartDate(
+export function groupEventsByStartDate<T: BaseEvent>(
   intl: intlShape,
-  events: Array<BaseEvent>
-) {
+  events: Array<T>
+): Array<{ header: string, events: Array<T> }> {
   const results = [];
   let currentDate = null;
   events.forEach((event, index) => {

@@ -201,8 +201,8 @@ export class NewEmailWrapper extends React.Component<{
 }
 
 export class EmailWrapper extends React.Component<{
-  header: string,
-  footer: string,
+  header: React.Node,
+  footer: React.Node,
   children: React.Node,
 }> {
   render() {

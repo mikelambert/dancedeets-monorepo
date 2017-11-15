@@ -6,11 +6,9 @@
 
 import * as React from 'react';
 
-export class JsonSchema extends React.Component {
-  props: {
-    json: ?Object,
-  };
-
+export class JsonSchema extends React.Component<{
+  json: ?Object,
+}> {
   render() {
     if (!this.props.json) {
       return null;
