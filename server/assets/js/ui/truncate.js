@@ -16,7 +16,7 @@ type Rect = {
 
 type Props = {
   height: number,
-  children: React.Element<*>,
+  children: React.Node,
 };
 
 export default class Truncate extends React.Component<

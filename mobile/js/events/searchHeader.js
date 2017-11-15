@@ -137,7 +137,7 @@ class SearchInput extends React.Component<
 
 class _SearchHeader extends React.Component<
   {
-    children: Array<React.Element<*>>,
+    children: React.Node,
 
     // Self-managed props
     intl: intlShape,

@@ -282,7 +282,7 @@ class YouTube extends React.Component<{
 class Formatter {
   str: string;
   options: Object;
-  elements: Array<React.Element<*> | string>;
+  elements: Array<React.Node>;
 
   constructor(str, options) {
     this.str = str;
@@ -385,7 +385,7 @@ class Formatter {
       this.elements.push(
         <YouTube key={i} videoId={videoId} amp={this.options.amp} />
       );
-    } else if (parsedUrl.host === 'youtu.be') {
+    } else if (parsedUrl.host === 'youtu.be' && parsedUrl.pathname) {
       const videoId = parsedUrl.pathname.slice(1);
       this.elements.push(
         <YouTube key={i} videoId={videoId} amp={this.options.amp} />

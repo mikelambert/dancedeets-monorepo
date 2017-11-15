@@ -61,7 +61,7 @@ function insertEvery<T>(
   array: Array<T>,
   insertion: (origIndex: number) => T,
   n: number
-) {
+): Array<T> {
   return array.reduce(
     (newArray, member, i) =>
       i % n === n - 1 // If it's our n'th element
@@ -537,7 +537,7 @@ class ResultsList extends React.Component<
     loadMoreContent: ?() => void | Promise<void>,
   },
   {
-    filters: Array<String>,
+    filters: Array<string>,
   }
 > {
   constructor(props) {

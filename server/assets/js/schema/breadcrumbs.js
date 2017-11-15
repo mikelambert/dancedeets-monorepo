@@ -6,7 +6,7 @@
 
 import querystring from 'querystring';
 import { SearchEvent, Event } from 'dancedeets-common/js/events/models';
-import { Address } from 'dancedeets-common/js/events/search';
+import type { Address } from 'dancedeets-common/js/events/search';
 
 type BreadcrumbsSchema = ?Object;
 

@@ -253,7 +253,7 @@ class TextInput extends React.Component<{
   value: string,
   onFocus: (e: SyntheticFocusEvent<>) => void,
   onBlur: (e: SyntheticEvent<>) => void,
-  onSubmit: (e: SyntheticEvent<>) => void,
+  onSubmit: (e: SyntheticEvent<>) => void | Promise<void>,
 
   shouldItemRender?: (item: Object, value: string) => boolean,
   autocomplete?: boolean,
@@ -345,8 +345,8 @@ class SearchBoxItem extends React.Component<
     iconName: string,
     renderItem: ({
       focused: boolean,
-      onFocus: () => void,
-      onBlur: () => void,
+      onFocus: (event: SyntheticEvent<>) => void,
+      onBlur: (event: SyntheticEvent<>) => void,
     }) => React.Element<*>,
   },
   {

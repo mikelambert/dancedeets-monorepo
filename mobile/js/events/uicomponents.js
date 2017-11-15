@@ -124,7 +124,7 @@ class _EventDateTime extends React.Component<{
 
   // Self-managed props
   intl: intlShape,
-  children: Array<React.Element<*>>,
+  children: React.Node,
 }> {
   _interval: number;
 
