@@ -6,7 +6,7 @@
 
 import * as React from 'react';
 import { StyleSheet, View } from 'react-native';
-import { Heading1, normalize, Text } from '../ui';
+import { Text } from '../ui';
 
 const credits = [
   ['Web & App Programming', ['Mike Lambert']],
@@ -22,11 +22,9 @@ const credits = [
   ],
 ];
 
-class CreditSubList extends React.Component {
-  props: {
-    list: Array<string>,
-  };
-
+class CreditSubList extends React.Component<{
+  list: Array<string>,
+}> {
   render() {
     const subcreditGroups = this.props.list.map(x => (
       <Text key={x} style={{ left: 5 }}>
@@ -37,11 +35,9 @@ class CreditSubList extends React.Component {
   }
 }
 
-export default class Credits extends React.Component {
-  props: {
-    style: Object,
-  };
-
+export default class Credits extends React.Component<{
+  style: Object,
+}> {
   render() {
     const creditGroups = credits.map(x => (
       <View key={x[0]}>

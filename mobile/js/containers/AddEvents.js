@@ -92,14 +92,14 @@ const messages = defineMessages({
   },
 });
 
-class _FilterHeader extends React.Component {
-  props: {
-    intl: intlShape,
-    displayOptions: DisplayOptions,
-    setOnlyUnadded: (onlyUnadded: boolean) => void,
-    setSortOrder: (x: string) => void,
-  };
+type FilterProps = {
+  intl: intlShape,
+  displayOptions: DisplayOptions,
+  setOnlyUnadded: (onlyUnadded: boolean) => void,
+  setSortOrder: (x: string) => void,
+};
 
+class _FilterHeader extends React.Component<FilterProps> {
   render() {
     return (
       <View style={styles.header}>
@@ -155,15 +155,15 @@ const FilterHeader = connect(
   })
 )(injectIntl(_FilterHeader));
 
-class _AddEventRow extends React.Component {
-  props: {
-    token: AccessToken,
-    onEventClicked: (event: AddEventData) => void,
-    onEventAdded: (event: AddEventData) => void,
-    event: AddEventData,
-    intl: intlShape.isRequired,
-  };
+type AddEventRowProps = {
+  token: AccessToken,
+  onEventClicked: (event: AddEventData) => void,
+  onEventAdded: (event: AddEventData) => void,
+  event: AddEventData,
+  intl: intlShape.isRequired,
+};
 
+class _AddEventRow extends React.Component<AddEventRowProps> {
   render() {
     const width = semiNormalize(75);
     const imageUrl = `https://graph.facebook.com/${this.props.event
@@ -243,7 +243,21 @@ class _AddEventRow extends React.Component {
 }
 const AddEventRow = injectIntl(_AddEventRow);
 
-class _AddEventList extends React.Component {
+type AddEventListProps = {
+  addEvent: (eventId: string) => void,
+  clickEvent: (eventId: string) => void,
+  addEvents: State,
+  reloadAddEvents: () => void,
+};
+
+type AddEventListState = {
+  token: ?AccessToken,
+};
+
+class _AddEventList extends React.Component<
+  AddEventListProps,
+  AddEventListState
+> {
   static applyFilterSorts(props, results) {
     let finalResults = results;
     if (props.addEvents.displayOptions.onlyUnadded) {
@@ -260,17 +274,6 @@ class _AddEventList extends React.Component {
     }
     return finalResults;
   }
-
-  props: {
-    addEvent: (eventId: string) => void,
-    clickEvent: (eventId: string) => void,
-    addEvents: State,
-    reloadAddEvents: () => void,
-  };
-
-  state: {
-    token: ?AccessToken,
-  };
 
   constructor(props) {
     super(props);
@@ -294,8 +297,7 @@ class _AddEventList extends React.Component {
     });
   }
 
-  renderRow(row) {
-    const item = row.item;
+  renderRow({ item }) {
     return (
       <AddEventRow
         event={item}
@@ -342,7 +344,7 @@ const AddEventList = connect(
   })
 )(_AddEventList);
 
-export default class AddEvents extends React.Component {
+export default class AddEvents extends React.Component<null> {
   render() {
     return (
       <View style={styles.container}>

@@ -17,13 +17,13 @@ import { setup as setupNotifications } from '../notifications/setup';
 import { processUrl } from '../actions';
 import type { State } from '../reducers/user';
 
-class App extends React.Component {
-  props: {
-    processUrl: (url: string) => void,
-    userState: State,
-  };
+type Props = {
+  processUrl: (url: string) => void,
+  userState: State,
+};
 
-  constructor(props, context) {
+class App extends React.Component<Props> {
+  constructor(props: Props, context) {
     super(props, context);
     (this: any).componentDidMount = this.componentDidMount.bind(this);
     (this: any).handleOpenURL = this.handleOpenURL.bind(this);

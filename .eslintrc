@@ -33,6 +33,11 @@
     'generator-star-spacing': 0, // This breaks on async/await
     'no-mixed-operators': 0, // Order of operations isn't that hard to internalize, and lisp toenails get extremely busy
 
+    'function-paren-newline': 0,
+
+    'no-return-await': 0, // I like returning await from async functions for clarity purplses
+    // Also: https://stackoverflow.com/a/42750371/1125823
+
     // TODO: Remove this once https://github.com/airbnb/javascript/pull/1204 is merged and released to NPM
     'import/no-extraneous-dependencies': ['error', {
       devDependencies: [

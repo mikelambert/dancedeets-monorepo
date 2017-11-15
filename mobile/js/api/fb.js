@@ -9,7 +9,7 @@ export function performRequest(
   method: string,
   path: string,
   params: Object = {}
-) {
+): Promise<Object> {
   const newParams = Object.assign({}, params);
   // Jump through hoops to setup the calling convention react-native-fbsdk wants
   Object.keys(newParams).forEach(k => {
@@ -26,7 +26,7 @@ export function performRequest(
         if (error) {
           reject(error);
         } else if (result == null) {
-          reject('Empty result');
+          reject(new Error('Empty result'));
         } else {
           resolve(result);
         }

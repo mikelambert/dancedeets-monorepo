@@ -4,14 +4,11 @@
  * @flow
  */
 
-import querystring from 'querystring';
 import { Platform } from 'react-native';
 import { AccessToken } from 'react-native-fbsdk';
 import Locale from 'react-native-locale';
-import moment from 'moment';
 import { Event } from 'dancedeets-common/js/events/models';
 import type { TimePeriod } from 'dancedeets-common/js/events/search';
-import { sortString } from 'dancedeets-common/js/util/sort';
 import {
   idempotentRetry,
   performRequest as realPerformRequest,
@@ -45,11 +42,11 @@ async function performRequest(
     locale,
     access_token: token ? token.accessToken : null,
   });
-  return realPerformRequest(fetch, path, newArgs, newPostArgs, '1.4');
+  return await realPerformRequest(fetch, path, newArgs, newPostArgs, '1.4');
 }
 
 export async function isAuthenticated() {
-  return AccessToken.getCurrentAccessToken();
+  return await AccessToken.getCurrentAccessToken();
 }
 
 async function verifyAuthenticated(location: string) {
@@ -86,7 +83,9 @@ export async function auth(data: ?Object) {
   const finalData = { ...saveForAuth, ...data };
   saveForAuth = {};
 
-  return idempotentRetry(2000, () => performRequest('auth', {}, finalData));
+  return await idempotentRetry(2000, () =>
+    performRequest('auth', {}, finalData)
+  );
 }
 
 export async function feed(url: string) {
@@ -143,12 +142,14 @@ export async function event(id: string) {
 
 export async function getAddEvents(): Promise<Object> {
   await verifyAuthenticated('getAddEvents');
-  return timeout(10000, performRequest('events_list_to_add', {}));
+  return await timeout(10000, performRequest('events_list_to_add', {}));
 }
 
 export async function userInfo(): Promise<Object> {
   await verifyAuthenticated('userInfo');
-  return retryWithBackoff(2000, 2, 5, () => performRequest('user/info', {}));
+  return await retryWithBackoff(2000, 2, 5, () =>
+    performRequest('user/info', {})
+  );
 }
 
 export async function addEvent(eventId: string): Promise<Object> {
@@ -156,7 +157,7 @@ export async function addEvent(eventId: string): Promise<Object> {
     return new Promise(() => null);
   }
   await verifyAuthenticated('addEvent');
-  return retryWithBackoff(2000, 2, 3, () =>
+  return await retryWithBackoff(2000, 2, 3, () =>
     performRequest('events_add', { event_id: eventId }, { event_id: eventId })
   );
 }
@@ -167,7 +168,10 @@ export async function translateEvent(
 ): Promise<Object> {
   await verifyAuthenticated('translateEvent');
   const params = { event_id: eventId, language };
-  return timeout(10000, performRequest('events_translate', params, params));
+  return await timeout(
+    10000,
+    performRequest('events_translate', params, params)
+  );
 }
 
 export async function eventRegister(
@@ -177,7 +181,7 @@ export async function eventRegister(
 ): Promise<Object> {
   await verifyAuthenticated('eventRegister');
   const params = { event_id: eventId, category_id: categoryId, ...values };
-  return performRequest('event_signups/register', params, params);
+  return await performRequest('event_signups/register', params, params);
 }
 
 export async function eventUnregister(
@@ -191,5 +195,5 @@ export async function eventUnregister(
     category_id: categoryId,
     signup_id: signupId,
   };
-  return performRequest('event_signups/unregister', params, params);
+  return await performRequest('event_signups/unregister', params, params);
 }

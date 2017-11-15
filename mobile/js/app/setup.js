@@ -18,20 +18,20 @@ import ScreenshotSlideshow from '../ScreenshotSlideshow';
 import firestack from '../firestack';
 import { getCurrentLocale } from '../locale';
 
+type State = {
+  store: any,
+};
+
 export default function setup() {
   console.disableYellowBox = true;
 
-  class Root extends React.Component {
+  class Root extends React.Component<null, State> {
     constructor() {
       super();
       this.state = {
         store: configureStore(),
       };
     }
-
-    state: {
-      store: any,
-    };
 
     render() {
       let app = <App />;

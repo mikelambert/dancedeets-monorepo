@@ -13,10 +13,15 @@ import {
 import { performRequest } from './fb';
 import { OkCancelAlert } from '../ui';
 
+type RsvpValue = 'attending' | 'maybe' | 'declined';
+
 export default class RsvpOnFB {
   static RSVPs = ['attending', 'maybe', 'declined'];
 
-  static async getPermissionsAndTryAgain(eventId, rsvpApiValue) {
+  static async getPermissionsAndTryAgain(
+    eventId: string,
+    rsvpApiValue: RsvpValue
+  ) {
     // Need to prime the user before switching apps and asking for "more" permissions
     await OkCancelAlert(
       'RSVP Permissions',
@@ -34,7 +39,7 @@ export default class RsvpOnFB {
     }
   }
 
-  static async send(eventId: string, rsvpApiValue: string) {
+  static async send(eventId: string, rsvpApiValue: RsvpValue) {
     try {
       const path = `${eventId}/${rsvpApiValue}`;
       const result = await performRequest('POST', path);
@@ -48,7 +53,7 @@ export default class RsvpOnFB {
     }
   }
 
-  static getRsvpIndex(eventId: string) {
+  static getRsvpIndex(eventId: string): Promise<number> {
     return new Promise(async (resolve, reject) => {
       const accessToken = await AccessToken.getCurrentAccessToken();
       if (accessToken == null) {

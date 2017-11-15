@@ -4,6 +4,7 @@
  * @flow
  */
 
+import moment from 'moment';
 import { Platform } from 'react-native';
 import Permissions from 'react-native-permissions';
 import CalendarEventsIOS from 'react-native-calendar-events';
@@ -15,7 +16,7 @@ function getDescription(event: Event): string {
   return `${event.getUrl()}\n\n${event.description}`;
 }
 
-function getStartEndTime(event: Event) {
+function getStartEndTime(event: Event): { start: moment, end: moment } {
   const start = event.getStartMoment({ timezone: false });
   const end = event.getEndMoment({ timezone: false, estimate: true });
   return { start, end };
@@ -111,7 +112,7 @@ function addAndroid(event: Event) {
 
 export async function add(event: Event) {
   if (Platform.OS === 'ios') {
-    return await addIOS(event);
+    return addIOS(event);
   } else {
     return addAndroid(event);
   }
