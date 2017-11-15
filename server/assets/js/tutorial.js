@@ -129,7 +129,7 @@ class _TutorialView extends React.Component<
       : backgroundVideoColor;
 
     return (
-      <Link
+      <Link // eslint-disable-line jsx-a11y/anchor-is-valid
         onClick={() => this.onVideoClick(video)}
         style={{
           backgroundColor,

@@ -7,9 +7,16 @@
 import moment from 'moment';
 import { SearchEvent, Event } from 'dancedeets-common/js/events/models';
 
-function formatSchemaDate(dateTime) {
+function formatSchemaDate(dateTime: moment) {
   return dateTime.format('YYYY-MM-DD[T]HH:mm:ss');
 }
+
+type Location = {
+  sameAs?: string,
+  geo?: Object,
+  name?: string,
+  address?: string,
+};
 
 export function getEventSchema(event: Event | SearchEvent) {
   const schema: Object = {
@@ -19,8 +26,11 @@ export function getEventSchema(event: Event | SearchEvent) {
     mainEntityOfPage: event.getUrl(),
     url: event.getUrl(),
     startDate: formatSchemaDate(event.getStartMoment({ timezone: false })),
-    description: event.description,
   };
+  if (event.description) {
+    // only true for full Event objects
+    schema.description = event.description;
+  }
   if (event.admins) {
     schema.organizer = event.admins.map(x => x.name).join(', ');
   }
@@ -30,25 +40,29 @@ export function getEventSchema(event: Event | SearchEvent) {
   if (event.picture) {
     schema.image = event.picture.source;
   }
-  schema.location = {
+  const location: Location = {
     '@type': 'Place',
   };
   if (event.venue.id) {
-    schema.location.sameAs = `https://www.facebook.com/${event.venue.id}`;
+    location.sameAs = `https://www.facebook.com/${event.venue.id}`;
   }
   if (event.venue.geocode) {
-    schema.location.geo = {
+    location.geo = {
       '@type': 'GeoCoordinates',
       latitude: event.venue.geocode.latitude,
       longitude: event.venue.geocode.longitude,
     };
   }
   if (event.venue.name) {
-    schema.location.name = event.venue.name;
+    location.name = event.venue.name;
   }
   if (event.venue.address) {
-    schema.location.address = event.venue.streetCityStateCountry();
+    const address = event.venue.streetCityStateCountry();
+    if (address) {
+      location.address = address;
+    }
   }
+  schema.location = location;
   if (event.ticket_uri) {
     schema.offers = {
       url: event.ticket_uri,

@@ -72,11 +72,6 @@ class ImageWithLinks extends React.Component<
   },
   {}
 > {
-  constructor(props) {
-    super(props);
-    (this: any).onClick = this.onClick.bind(this);
-  }
-
   render() {
     // This is for the small percentage of browsers that don't support srcSet
     // We use 480 since they're likely old browsers, don't need high resolutions, etc

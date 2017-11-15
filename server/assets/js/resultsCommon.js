@@ -18,7 +18,12 @@ const NarrowWindowSize = 768;
 
 export const CalendarRatio = 1.8;
 
-type Query = Object;
+type Query = {
+  location: string,
+  keywords: string,
+  start: string,
+  end: string,
+};
 
 class _DatePicker extends React.Component<
   {
@@ -691,7 +696,7 @@ class _SearchBox extends React.Component<{
 }
 export const SearchBox = injectIntl(_SearchBox);
 
-export function canonicalizeQuery(query) {
+export function canonicalizeQuery(query: Query) {
   const newQuery = {};
   ['location', 'keywords', 'start', 'end'].forEach(key => {
     if (query[key] && query[key].length) {

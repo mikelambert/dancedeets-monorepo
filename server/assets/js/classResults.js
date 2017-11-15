@@ -572,11 +572,16 @@ class App extends React.Component<
                     <DayNavMenu />
                   </td>
                   <td style={{ verticalAlign: 'bottom' }}>
-                    <i // eslint-disable-line jsx-a11y/no-static-element-interactions
-                      id="navbar-collapse-button-icon"
+                    <span // eslint-disable-line jsx-a11y/click-events-have-key-events
                       onClick={toggleSearchBar}
-                      className="fa fa-caret-square-o-up fa-lg"
-                    />
+                      role="button"
+                      tabIndex="-1"
+                    >
+                      <i
+                        id="navbar-collapse-button-icon"
+                        className="fa fa-caret-square-o-up fa-lg"
+                      />
+                    </span>
                   </td>
                 </tr>
               </tbody>

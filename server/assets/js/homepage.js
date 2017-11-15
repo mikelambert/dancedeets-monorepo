@@ -9,7 +9,8 @@ import { cdnBaseUrl } from 'dancedeets-common/js/util/url';
 import './common';
 import jQuery from 'jquery';
 
-global.$ = global.jQuery = jQuery;
+global.$ = jQuery;
+global.jQuery = jQuery;
 
 // These depend on a jQuery being implicitly in scope,
 // so we need to require them instead of importing them.

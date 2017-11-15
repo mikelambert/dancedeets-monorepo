@@ -7,7 +7,8 @@
 import jQuery from 'jquery';
 import './common';
 
-global.$ = global.jQuery = jQuery;
+global.$ = jQuery;
+global.jQuery = jQuery;
 
 function addEvent() {
   const element = jQuery(this);
