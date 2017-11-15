@@ -119,7 +119,7 @@ class _RsvpComponent extends React.Component<
   }
 
   render() {
-    const id = this.props.event.id;
+    const { id } = this.props.event;
 
     const buttons = choiceStrings.map(({ internal, messageName }, index) => {
       const activeClass =

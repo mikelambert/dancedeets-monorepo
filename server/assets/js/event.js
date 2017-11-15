@@ -206,7 +206,7 @@ class _EventLinks extends React.Component<{
   intl: intlShape,
 }> {
   render() {
-    const event = this.props.event;
+    const { event } = this.props;
     let rsvpElement = null;
     if (event.rsvp && (event.rsvp.attending_count || event.rsvp.maybe_count)) {
       let rsvpAction = null;
@@ -397,7 +397,7 @@ class MapWithLinks extends React.Component<{
   amp: ?boolean,
 }> {
   mapUrl() {
-    const geocode = this.props.event.venue.geocode;
+    const { geocode } = this.props.event.venue;
     if (!geocode || !geocode.latitude) {
       return null;
     }
@@ -412,7 +412,7 @@ class MapWithLinks extends React.Component<{
   }
 
   mapHeader() {
-    const geocode = this.props.event.venue.geocode;
+    const { geocode } = this.props.event.venue;
     if (!geocode || !geocode.latitude) {
       return null;
     }
@@ -445,7 +445,7 @@ class MapWithLinks extends React.Component<{
   }
 
   map() {
-    const geocode = this.props.event.venue.geocode;
+    const { geocode } = this.props.event.venue;
     if (!geocode || !geocode.latitude) {
       return null;
     }
@@ -478,7 +478,7 @@ class MapWithLinks extends React.Component<{
   }
 
   render() {
-    const venue = this.props.event.venue;
+    const { venue } = this.props.event;
     if (venue && venue.name) {
       let locationName = <FormatText>{venue.name}</FormatText>;
       if (venue.id) {
@@ -513,7 +513,7 @@ class _WallPost extends React.Component<{
   intl: intlShape,
 }> {
   render() {
-    let message = this.props.post.message;
+    let { message } = this.props.post;
     if (this.props.post.link && !message.includes(this.props.post.link)) {
       message += `\n${this.props.post.link}`;
     }
@@ -710,7 +710,7 @@ class BadEventWarning extends React.Component<{
     }
 
     let nearbyEvents = null;
-    const location = this.props.initialQuery.location;
+    const { location } = this.props.initialQuery;
     if (location) {
       const searchUrl = getSearchUrl(this.props.initialQuery);
 

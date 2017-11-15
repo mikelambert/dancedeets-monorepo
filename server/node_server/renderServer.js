@@ -78,7 +78,7 @@ app.post('/render', (req, res) => {
         markup: null,
       });
     } else {
-      const body = req.body;
+      const { body } = req;
       let component = null;
       // We list this here, so that it applies for the eval.
       // But we don't list it at the top, because any attempt to inline this code

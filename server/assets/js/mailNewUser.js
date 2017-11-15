@@ -186,7 +186,7 @@ class NewUserEmail extends React.Component<{
   render() {
     return (
       <NewEmailWrapper
-        previewText={`Find your dance. Anywhere.`}
+        previewText="Find your dance. Anywhere."
         mobileIosUrl={this.props.mobileIosUrl}
         mobileAndroidUrl={this.props.mobileAndroidUrl}
         emailPreferencesUrl={this.props.emailPreferencesUrl}

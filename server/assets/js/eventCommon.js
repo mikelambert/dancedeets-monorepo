@@ -13,7 +13,7 @@ export class SquareEventFlyer extends React.Component<{
   lazyLoad?: boolean,
 }> {
   render() {
-    const event = this.props.event;
+    const { event } = this.props;
     const width = 180;
     const height = 180;
 
@@ -24,7 +24,7 @@ export class SquareEventFlyer extends React.Component<{
     let imageTag = (
       <div className="square-flyer">
         <img
-          role="presentation"
+          alt=""
           src={croppedPicture.source}
           className="full-width no-border"
         />

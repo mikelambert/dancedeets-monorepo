@@ -35,7 +35,7 @@ export class _TopicEvent extends React.Component<{
   intl: intlShape,
 }> {
   render() {
-    const event = this.props.event;
+    const { event } = this.props;
 
     const eventStartDate = formatStartDateOnly(
       event.getStartMoment({ timezone: false }),
@@ -85,7 +85,7 @@ class Video extends React.Component<{
             >
               <img
                 src={this.props.video.snippet.thumbnails.high.url}
-                role="presentation"
+                alt=""
                 style={{
                   width: '100%',
                 }}
@@ -110,8 +110,8 @@ class Instagram extends React.Component<{
 }> {
   processTitle(text) {
     let newText = text;
-    newText = newText.split('\n')[0];
-    newText = newText.split('. ')[0];
+    newText = newText.split('\n')[0]; // eslint-disable-line prefer-destructuring
+    newText = newText.split('. ')[0]; // eslint-disable-line prefer-destructuring
     newText = newText
       .split(' ')
       .splice(0, 20)
@@ -134,7 +134,7 @@ class Instagram extends React.Component<{
             >
               <img
                 src={this.props.instagram.images.low_resolution.url}
-                role="presentation"
+                alt=""
                 style={{
                   width: '100%',
                 }}
@@ -382,11 +382,7 @@ class TopicPage extends React.Component<{
         <Helmet title={this.props.topic.title} />
         <h2>{this.props.topic.title}</h2>
         <div style={{ float: 'left' }}>
-          <img
-            height={300}
-            role="presentation"
-            src={this.props.topic.image_url}
-          />
+          <img height={300} alt="" src={this.props.topic.image_url} />
         </div>
         <div style={{ float: 'right' }}>
           <SocialLinks topic={this.props.topic} />

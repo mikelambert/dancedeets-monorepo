@@ -14,7 +14,6 @@
   "devDependencies": {
     "babel-core": "^6.18.2",
     "babel-loader": "^6.2.8",
-    "eslint": "^3.11.1",
     "eslint-loader": "^1.6.1",
     "json-loader": "^0.5.4",
     "parse-json": "^2.2.0",

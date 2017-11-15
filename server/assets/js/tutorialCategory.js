@@ -11,6 +11,7 @@ import Helmet from 'react-helmet';
 import Masonry from 'react-masonry-component';
 import LazyLoad from 'react-lazyload';
 import querystring from 'querystring';
+import createBrowserHistory from 'history/createBrowserHistory';
 import { intlWeb } from 'dancedeets-common/js/intl';
 import { getTutorials } from 'dancedeets-common/js/tutorials/playlistConfig';
 import type { Category } from 'dancedeets-common/js/tutorials/playlistConfig';
@@ -149,7 +150,7 @@ class _Tutorial extends React.Component<{
 
   render() {
     // De-Dupe
-    const tutorial = this.props.tutorial;
+    const { tutorial } = this.props;
     const duration = formatDuration(
       this.props.intl.formatMessage,
       tutorial.getDurationSeconds()
@@ -183,7 +184,7 @@ class _Tutorial extends React.Component<{
     let imageTag = (
       <img
         src={tutorial.thumbnail}
-        role="presentation"
+        alt=""
         style={{
           width: '100%',
           display: 'block',
@@ -282,7 +283,7 @@ class _FilterBar extends React.Component<{
           </div>
         </form>
         <div style={{ float: 'right' }}>
-          <ShareLinks url={'https://www.dancedeets.com/tutorials'} />
+          <ShareLinks url="https://www.dancedeets.com/tutorials" />
         </div>
         <div style={{ clear: 'both' }} />
       </Card>
@@ -402,6 +403,7 @@ class _TutorialFilteredLayout extends React.Component<
     const oldHash = window.location.hash || '#';
     const newHash = `#${contents}`;
     if (oldHash !== newHash) {
+      const history = createBrowserHistory();
       history.replaceState(undefined, '', newHash);
     }
   }

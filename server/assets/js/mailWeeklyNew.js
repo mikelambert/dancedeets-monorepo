@@ -7,10 +7,10 @@
 import * as React from 'react';
 import { intlWeb } from 'dancedeets-common/js/intl';
 import { SearchEvent } from 'dancedeets-common/js/events/models';
+import type { NewSearchResponse } from 'dancedeets-common/js/events/search';
 // import { addUrlArgs } from 'dancedeets-common/js/util/url';
 import { NewEmailWrapper, columnPadding, outsideGutter } from './mailCommon';
 import { EventDisplay } from './weeklyMail';
-import type { NewSearchResponse } from 'dancedeets-common/js/events/search';
 
 export type User = {
   userName: string,
@@ -142,7 +142,7 @@ class FeaturePromo extends React.Component<{
   user: User,
 }> {
   render() {
-    const countryName = this.props.user.countryName;
+    const { countryName } = this.props.user;
     return (
       <mj-wrapper mj-class="alternate" padding={`10 ${outsideGutter}`}>
         <mj-section mj-class="alternate" padding="20 0">

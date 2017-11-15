@@ -63,7 +63,7 @@ export function getArticleSchema(event: Event) {
   if (!event.picture) {
     return null;
   }
-  const picture = event.picture;
+  const { picture } = event;
 
   const datePublished = event.annotations.creation
     ? event.annotations.creation.time

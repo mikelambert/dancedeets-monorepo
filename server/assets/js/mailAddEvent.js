@@ -309,7 +309,7 @@ class BodyWrapper extends React.Component<{
   organizerName: string,
 }> {
   render() {
-    const event = this.props.event;
+    const { event } = this.props;
     /*
     const args = {
       utm_source: 'event_add',
@@ -318,7 +318,7 @@ class BodyWrapper extends React.Component<{
     };
     */
     const shortUrl = `https://dd.events/e/${event.id}`;
-    const address = event.venue.address;
+    const { address } = event.venue;
     let city = 'your city';
     if (address && address.city) {
       city = `the ${address.city} area`;
@@ -417,7 +417,7 @@ class AddEventEmail extends React.Component<{
     const event = new Event(this.props.event);
     return (
       <NewEmailWrapper
-        previewText={`We want to help promote your event!`}
+        previewText="We want to help promote your event!"
         mobileIosUrl={this.props.mobileIosUrl}
         mobileAndroidUrl={this.props.mobileAndroidUrl}
         emailPreferencesUrl={this.props.emailPreferencesUrl}

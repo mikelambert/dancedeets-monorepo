@@ -52,7 +52,7 @@ class _MailEvent extends React.Component<{
   intl: intlShape,
 }> {
   render() {
-    const event = this.props.event;
+    const { event } = this.props;
     const size = 180;
     const gutter = 10;
     let flyerImage = null;

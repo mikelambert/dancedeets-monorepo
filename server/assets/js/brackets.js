@@ -67,7 +67,7 @@ class MatchReact extends React.Component<
     if (this.props.match) {
       let img = null;
       if (this.props.match.videoId) {
-        const videoId = this.props.match.videoId;
+        const { videoId } = this.props.match;
         const imageName = this.isHover()
           ? this.state.imageCounter
           : 'sddefault';
@@ -211,7 +211,7 @@ class BracketLines extends React.Component<{
 }
 
 class BracketReact extends React.Component<{
-  bracket: Bracket,
+  // bracket: Bracket,
 }> {
   render() {
     const bracket = {
@@ -304,7 +304,7 @@ class BracketReact extends React.Component<{
       .getMatchAndPositions()
       .map(({ match, position }, index) => (
         <MatchReact
-          key={index}
+          key={match.videoId}
           bracketRenderer={bracketRenderer}
           match={match}
           position={position}

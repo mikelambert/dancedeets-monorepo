@@ -57,7 +57,7 @@ export function fbSetup(
     if (response.status === 'connected') {
       // We want to set this cookie before we attempt to do any reloads below,
       // so that the server will have access to our user_token_ (access token)
-      const accessToken = response.authResponse.accessToken;
+      const { accessToken } = response.authResponse;
       cookies.set(`user_token_${fbAppId}`, accessToken, cookieOptions);
 
       if (response.authResponse.userID !== currentUser()) {

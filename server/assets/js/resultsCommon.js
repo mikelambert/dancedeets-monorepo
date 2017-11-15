@@ -172,8 +172,8 @@ function findNextTabStop(el) {
 }
 
 function HandleSelection(event) {
-  const target = event.target;
-  const key = event.key;
+  const { target } = event;
+  const { key } = event;
   if (!this.isOpen() || this.state.highlightedIndex == null) {
     // menu is closed so there is no selection to accept -> do nothing
     this.setState({ isOpen: false }, () => {
@@ -243,7 +243,8 @@ function HandleArrowUp(event) {
 }
 
 // Make Tab button behave like Enter button
-Autocomplete.keyDownHandlers.Tab = Autocomplete.keyDownHandlers.Enter = HandleSelection;
+Autocomplete.keyDownHandlers.Tab = HandleSelection;
+Autocomplete.keyDownHandlers.Enter = HandleSelection;
 Autocomplete.keyDownHandlers.ArrowDown = HandleArrowDown;
 Autocomplete.keyDownHandlers.ArrowUp = HandleArrowUp;
 

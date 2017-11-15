@@ -183,14 +183,14 @@ class _TutorialView extends React.Component<
       <div>
         {this.renderSectionHeader(section)}
         {section.videos.map((video, index) => (
-          <div key={index}>{this.renderVideoLine(video)}</div>
+          <div key={video.youtubeId}>{this.renderVideoLine(video)}</div>
         ))}
       </div>
     );
   }
 
   renderHeader() {
-    const tutorial = this.props.tutorial;
+    const { tutorial } = this.props;
     const subtitle = tutorial.subtitle ? <div>{tutorial.subtitle}</div> : null;
     const duration = formatDuration(
       this.props.intl.formatMessage,
@@ -213,7 +213,7 @@ class _TutorialView extends React.Component<
 
   renderPlayer() {
     let extraStyles = {};
-    const video = this.state.video;
+    const { video } = this.state;
     if (this.props.window) {
       extraStyles = {
         maxWidth:
@@ -297,7 +297,7 @@ class HtmlHead extends React.Component<{
   videoIndex: ?number,
 }> {
   render() {
-    const tutorial = this.props.tutorial;
+    const { tutorial } = this.props;
     let title = 'Unknown tutorial';
     let metaTags = [];
     if (tutorial) {

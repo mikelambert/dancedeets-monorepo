@@ -36,7 +36,7 @@ export function getBreadcrumbsForEvent(
   event: Event | SearchEvent
 ): BreadcrumbsSchema {
   const listItems = [];
-  const address = event.venue.address;
+  const { address } = event.venue;
   if (!address) {
     return null;
   }

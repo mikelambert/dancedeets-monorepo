@@ -84,7 +84,7 @@ export class HorizontalEventFlyer extends React.Component<{
 }> {
   render() {
     const fbDims = { width: 500, height: 262 };
-    const event = this.props.event;
+    const { event } = this.props;
     const width = 700;
     const height = Math.round(width * fbDims.height / fbDims.width); // This dimension ratio come from what FB shows
 
@@ -102,7 +102,7 @@ export class HorizontalEventFlyer extends React.Component<{
         }}
       >
         <img
-          role="presentation"
+          alt=""
           src={croppedPicture.source}
           className="full-width no-border"
         />
@@ -124,7 +124,7 @@ class _EventDescription extends React.Component<{
   intl: intlShape,
 }> {
   render() {
-    const event = this.props.event;
+    const { event } = this.props;
     const keywords = [...event.annotations.categories];
     if (this.props.indexingBot) {
       keywords.push(...event.annotations.keywords);
@@ -177,7 +177,7 @@ class VerticalEvent extends React.Component<{
   event: SearchEvent,
 }> {
   render() {
-    const event = this.props.event;
+    const { event } = this.props;
     return (
       <Card
         style={{
@@ -205,7 +205,7 @@ class FeaturedEvent extends React.Component<{
   featuredInfo: FeaturedInfo,
 }> {
   render() {
-    const event = this.props.featuredInfo.event;
+    const { event } = this.props.featuredInfo;
     let promotionText = null;
     if (this.props.featuredInfo.promotionText) {
       promotionText = (
@@ -1023,8 +1023,8 @@ class ResultsPage extends React.Component<
     );
     const searchHeaderAd = (
       <GoogleAd
-        key={`ad-searchHeader`}
-        id={`ad-searchHeader`}
+        key="ad-searchHeader"
+        id="ad-searchHeader"
         style={{ display: 'inline-block', width: '100%', height: 100 }}
         data-ad-format="auto"
         data-ad-slot="3343723888"

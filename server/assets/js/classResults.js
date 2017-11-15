@@ -249,7 +249,7 @@ class ClassTitle extends React.Component<{
   filteredClasses: Array<StudioClassType>,
 }> {
   render() {
-    const filteredClasses = this.props.filteredClasses;
+    const { filteredClasses } = this.props;
     return (
       <div>
         <b>Showing {filteredClasses.length} classes:</b>
@@ -264,7 +264,7 @@ class SponsoredSummary extends React.Component<{
   render() {
     const sponsoredStudios = {};
     this.props.classes.forEach(studioClass => {
-      const sponsor = studioClass.sponsor;
+      const { sponsor } = studioClass;
       if (!sponsor) {
         return;
       }
@@ -487,7 +487,7 @@ class App extends React.Component<
 
   filteredClasses() {
     const goodClasses = [];
-    const state = this.state;
+    const { state } = this;
     this.state.initialClasses.forEach(studioClass => {
       // Class filtering logic
       if (state.teacher) {
