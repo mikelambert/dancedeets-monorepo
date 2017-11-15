@@ -164,7 +164,7 @@ class FacebookPost extends React.Component {
 
   props: {
     url: string,
-    amp: Boolean,
+    amp: boolean,
   };
 
   componentDidMount() {
@@ -216,7 +216,7 @@ class FacebookVideo extends React.Component {
 
   props: {
     url: string,
-    amp: Boolean,
+    amp: boolean,
   };
 
   componentDidMount() {
@@ -252,7 +252,7 @@ class FacebookVideo extends React.Component {
 
 class YouTube extends React.Component {
   props: {
-    amp: Boolean,
+    amp: boolean,
     videoId: string,
   };
 

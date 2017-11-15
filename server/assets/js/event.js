@@ -506,7 +506,7 @@ type Post = Object;
 class _WallPost extends React.Component {
   props: {
     post: Post,
-    amp: Boolean,
+    amp: boolean,
 
     // Self-managed props
     intl: intlShape,
@@ -542,7 +542,7 @@ class WallPosts extends React.Component {
   props: {
     posts: Array<Post>,
     admins: Array<Admin>,
-    amp: Boolean,
+    amp: boolean,
   };
 
   render() {

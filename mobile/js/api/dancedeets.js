@@ -45,11 +45,11 @@ async function performRequest(
     locale,
     access_token: token ? token.accessToken : null,
   });
-  return await realPerformRequest(fetch, path, newArgs, newPostArgs, '1.4');
+  return realPerformRequest(fetch, path, newArgs, newPostArgs, '1.4');
 }
 
 export async function isAuthenticated() {
-  return await AccessToken.getCurrentAccessToken();
+  return AccessToken.getCurrentAccessToken();
 }
 
 async function verifyAuthenticated(location: string) {
@@ -141,57 +141,55 @@ export async function event(id: string) {
   return new Event(eventData);
 }
 
-export async function getAddEvents(): Promise<> {
+export async function getAddEvents(): Promise<Object> {
   await verifyAuthenticated('getAddEvents');
-  return await timeout(10000, performRequest('events_list_to_add', {}));
+  return timeout(10000, performRequest('events_list_to_add', {}));
 }
 
-export async function userInfo() {
+export async function userInfo(): Promise<Object> {
   await verifyAuthenticated('userInfo');
-  return await retryWithBackoff(2000, 2, 5, () =>
-    performRequest('user/info', {})
-  );
+  return retryWithBackoff(2000, 2, 5, () => performRequest('user/info', {}));
 }
 
-export async function addEvent(eventId: string) {
+export async function addEvent(eventId: string): Promise<Object> {
   if (writesDisabled) {
-    return null;
+    return new Promise(() => null);
   }
   await verifyAuthenticated('addEvent');
-  return await retryWithBackoff(2000, 2, 3, () =>
+  return retryWithBackoff(2000, 2, 3, () =>
     performRequest('events_add', { event_id: eventId }, { event_id: eventId })
   );
 }
 
-export async function translateEvent(eventId: string) {
+export async function translateEvent(
+  eventId: string,
+  language: string
+): Promise<Object> {
   await verifyAuthenticated('translateEvent');
-  const params = { event_id: eventId };
-  return await timeout(
-    10000,
-    performRequest('events_translate', params, params)
-  );
+  const params = { event_id: eventId, language };
+  return timeout(10000, performRequest('events_translate', params, params));
 }
 
 export async function eventRegister(
   eventId: string,
   categoryId: string,
   values: Object
-) {
+): Promise<Object> {
   await verifyAuthenticated('eventRegister');
   const params = { event_id: eventId, category_id: categoryId, ...values };
-  return await performRequest('event_signups/register', params, params);
+  return performRequest('event_signups/register', params, params);
 }
 
 export async function eventUnregister(
   eventId: string,
   categoryId: string,
   signupId: string
-) {
+): Promise<Object> {
   await verifyAuthenticated('eventUnregister');
   const params = {
     event_id: eventId,
     category_id: categoryId,
     signup_id: signupId,
   };
-  return await performRequest('event_signups/unregister', params, params);
+  return performRequest('event_signups/unregister', params, params);
 }
