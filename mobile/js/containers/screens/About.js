@@ -4,7 +4,7 @@
  * @flow
  */
 
-import React from 'react';
+import * as React from 'react';
 import { AppState, Image, StyleSheet, View } from 'react-native';
 import type {
   NavigationAction,

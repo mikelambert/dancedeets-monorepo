@@ -2,7 +2,7 @@ diff --git a/mobile/js/learn/VideoPlayer.js b/mobile/js/learn/VideoPlayer.js
 index 2a8ecf18..a61f4fa7 100644
 --- a/mobile/js/learn/VideoPlayer.js
 +++ b/mobile/js/learn/VideoPlayer.js
-@@ -8,6 +8,7 @@ import React from 'react';
+@@ -8,6 +8,7 @@ import * as React from 'react';
  import {
    Animated,
    Image,

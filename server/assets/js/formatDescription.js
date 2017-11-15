@@ -4,7 +4,7 @@
  * @flow
  */
 
-import React from 'react';
+import * as React from 'react';
 import Linkify from 'linkify-it';
 import tlds from 'tlds';
 import url from 'url';

@@ -4,7 +4,7 @@
  * @flow
  */
 
-import React from 'react';
+import * as React from 'react';
 import { TouchableHighlight, View } from 'react-native';
 import { connect } from 'react-redux';
 import { AccessToken } from 'react-native-fbsdk';

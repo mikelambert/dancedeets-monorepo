@@ -4,7 +4,7 @@
  * @flow
  */
 
-import React from 'react';
+import * as React from 'react';
 import { View } from 'react-native';
 import type { ShareContent } from 'react-native-fbsdk/js/models/FBShareContent';
 import { ShareDialog } from 'react-native-fbsdk';

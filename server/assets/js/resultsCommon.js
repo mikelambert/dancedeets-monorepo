@@ -4,7 +4,7 @@
  * @flow
  */
 
-import React from 'react';
+import * as React from 'react';
 import moment from 'moment';
 import classNames from 'classnames';
 import { injectIntl } from 'react-intl';

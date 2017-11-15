@@ -4,7 +4,7 @@
  * @flow
  */
 
-import React from 'react';
+import * as React from 'react';
 
 import type { Cover } from 'dancedeets-common/js/events/models';
 

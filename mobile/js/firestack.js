@@ -4,7 +4,7 @@
  * @flow
  */
 
-import React from 'react';
+import * as React from 'react';
 import Firestack from 'react-native-firestack';
 import { connect } from 'react-redux';
 import type { Dispatch } from './actions/types';

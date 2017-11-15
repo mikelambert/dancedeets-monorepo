@@ -4,7 +4,7 @@
  * @flow
  */
 
-import React from 'react';
+import * as React from 'react';
 import { Platform, ScrollView, StyleSheet, Switch } from 'react-native';
 import { injectIntl, intlShape, defineMessages } from 'react-intl';
 import { HorizontalView, Text } from '../ui';

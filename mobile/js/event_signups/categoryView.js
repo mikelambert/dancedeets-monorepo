@@ -4,7 +4,7 @@
  * @flow
  */
 
-import React from 'react';
+import * as React from 'react';
 import { FlatList, View } from 'react-native';
 import { injectIntl, defineMessages } from 'react-intl';
 import { Card, Text } from '../ui';

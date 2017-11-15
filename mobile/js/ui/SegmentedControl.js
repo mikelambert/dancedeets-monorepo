@@ -4,7 +4,7 @@
  * @flow
  */
 
-import React from 'react';
+import * as React from 'react';
 
 import { Platform, SegmentedControlIOS } from 'react-native';
 import normalizeColor from 'react-native/Libraries/StyleSheet/normalizeColor';

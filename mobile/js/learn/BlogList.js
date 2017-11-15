@@ -4,7 +4,7 @@
  * @flow
  */
 
-import React from 'react';
+import * as React from 'react';
 import { FlatList, StyleSheet, TouchableHighlight, View } from 'react-native';
 import WKWebView from 'react-native-wkwebview-reborn';
 import YouTube from 'react-native-youtube';

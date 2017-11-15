@@ -4,7 +4,7 @@
  * @flow
  */
 
-import React from 'react';
+import * as React from 'react';
 import { AppState } from 'react-native';
 import { trackEnd, trackStart } from '../store/track';
 

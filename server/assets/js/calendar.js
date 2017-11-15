@@ -4,7 +4,7 @@
  * @flow
  */
 
-import React from 'react';
+import * as React from 'react';
 import querystring from 'querystring';
 import { intlWeb } from 'dancedeets-common/js/intl';
 import FullCalendar from './FullCalendar';

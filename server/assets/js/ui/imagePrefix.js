@@ -4,7 +4,7 @@
  * @flow
  */
 
-import React from 'react';
+import * as React from 'react';
 import classNames from 'classnames';
 import { AmpImage } from './ampImage';
 import type { RequiredImage } from './ampImage';

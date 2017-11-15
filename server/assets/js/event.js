@@ -4,7 +4,7 @@
  * @flow
  */
 
-import React from 'react';
+import * as React from 'react';
 import moment from 'moment';
 import FormatText from 'react-format-text';
 import querystring from 'querystring';

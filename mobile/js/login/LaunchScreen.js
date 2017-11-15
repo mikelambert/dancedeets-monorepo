@@ -4,7 +4,7 @@
  * @flow
  */
 
-import React from 'react';
+import * as React from 'react';
 import { Image, Platform, StyleSheet } from 'react-native';
 
 export default class LaunchScreen extends React.Component {

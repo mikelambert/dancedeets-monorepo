@@ -4,7 +4,7 @@
  * @flow
  */
 
-import React from 'react';
+import * as React from 'react';
 import { addLocaleData, IntlProvider } from 'react-intl';
 import areIntlLocalesSupported from 'intl-locales-supported';
 import moment from 'moment';

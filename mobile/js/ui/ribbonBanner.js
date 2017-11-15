@@ -4,7 +4,7 @@
  * @flow
  */
 
-import React from 'react';
+import * as React from 'react';
 import { StyleSheet, View } from 'react-native';
 import { semiNormalize } from './normalize';
 import { Text } from './DDText';

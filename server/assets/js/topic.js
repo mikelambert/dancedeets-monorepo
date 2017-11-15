@@ -4,7 +4,7 @@
  * @flow
  */
 
-import React from 'react';
+import * as React from 'react';
 import Masonry from 'react-masonry-component';
 import FormatText from 'react-format-text';
 import Helmet from 'react-helmet';

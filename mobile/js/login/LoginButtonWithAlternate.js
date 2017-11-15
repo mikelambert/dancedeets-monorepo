@@ -4,7 +4,7 @@
  * @flow
  */
 
-import React from 'react';
+import * as React from 'react';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
 import { defineMessages, injectIntl, intlShape } from 'react-intl';
 import { yellowColors } from '../Colors';

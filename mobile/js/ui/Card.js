@@ -1,4 +1,4 @@
-import React from 'react';
+import * as React from 'react';
 import { StyleSheet, View, ViewPropTypes } from 'react-native';
 import { gradientBottom, purpleColors } from '../Colors';
 

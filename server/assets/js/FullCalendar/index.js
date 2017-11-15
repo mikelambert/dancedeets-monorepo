@@ -4,7 +4,7 @@
  * @flow
  */
 
-import React from 'react';
+import * as React from 'react';
 import $ from 'jquery';
 import 'fullcalendar/dist/fullcalendar.css';
 import ExecutionEnvironment from 'exenv';

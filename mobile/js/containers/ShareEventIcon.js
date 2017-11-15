@@ -4,7 +4,7 @@
  * @flow
  */
 
-import React from 'react';
+import * as React from 'react';
 import { Image, Platform, TouchableOpacity } from 'react-native';
 import Share from 'react-native-share';
 import { Event } from 'dancedeets-common/js/events/models';

@@ -4,7 +4,7 @@
  * @flow
  */
 
-import React from 'react';
+import * as React from 'react';
 import { Image, Platform, StyleSheet, WebView } from 'react-native';
 import { TabBarBottom, TabNavigator } from 'react-navigation';
 import type { SceneRendererProps } from 'react-native-tab-view/src/TabViewTypeDefinitions';

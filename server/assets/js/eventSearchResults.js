@@ -4,7 +4,7 @@
  * @flow
  */
 
-import React from 'react';
+import * as React from 'react';
 import FormatText from 'react-format-text';
 import moment from 'moment';
 import ExecutionEnvironment from 'exenv';

@@ -4,7 +4,7 @@
  * @flow
  */
 
-import React from 'react';
+import * as React from 'react';
 
 const accentColor = '#DACCFF';
 const primaryBackgroundColor = '#FFFFFF';

@@ -4,7 +4,7 @@
  * @flow
  */
 
-import React from 'react';
+import * as React from 'react';
 import { Dimensions, FlatList, TouchableHighlight, View } from 'react-native';
 import { injectIntl, defineMessages } from 'react-intl';
 import FitImage from 'react-native-fit-image';

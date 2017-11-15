@@ -5,7 +5,7 @@
  */
 
 import jQuery from 'jquery';
-import React from 'react';
+import * as React from 'react';
 import PropTypes from 'prop-types';
 import Scroll from 'react-scroll';
 import dateFormat from 'date-fns/format';

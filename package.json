@@ -1,33 +1,30 @@
 {
-    "name": "dancedeets-monorepo",
-    "devDependencies": {
-        "babel-core": "^6.21.0",
-        "babel-eslint": "^7.1.1",
-        "babel-plugin-react-intl": "^2.2.0",
-        "babel-polyfill": "^6.23.0",
-        "babel-preset-latest": "^6.16.0",
-        "babel-preset-react": "^6.16.0",
-        "babel-preset-stage-0": "^6.16.0",
-        "eslint": "^3.11.1",
-        "eslint-config-airbnb": "^13.0.0",
-        "eslint-config-prettier": "^1.7.0",
-        "eslint-plugin-flowtype": "^2.32.1",
-        "eslint-plugin-import": "^2.2.0",
-        "eslint-plugin-jsx-a11y": "^2.2.3",
-        "eslint-plugin-prettier": "^2.0.1",
-        "eslint-plugin-react": "^6.7.1",
-        "flow-bin": "^0.49.1",
-        "flow-typed": "^2.1.2",
-        "fs-extra": "^1.0.0",
-        "prettier": "1.6.1",
-        "shebang-loader": "0.0.1"
-    },
-    "scripts": {
-        "eslint-check":
-            "./node_modules/eslint/bin/eslint.js --print-config .eslintrc | node_modules/eslint-config-prettier/bin/cli.js",
-        "js-files":
-            "find . \\! -regex '.*node_modules.*' \\! -regex '.*/lib-.*' \\! -regex '.*/dist/.*' \\! -regex '.*/frankenserver/.*' -name '*.js' \\! -path './common/js/languages/data.js' \\! -path './mobile/js/data/localizedCountries.js' \\! -regex '.*/flow-typed/.*'",
-        "prettier":
-            "npm run --silent js-files | xargs ./node_modules/prettier/bin/prettier.js --single-quote  --trailing-comma es5 --write"
-    }
+  "name": "dancedeets-monorepo",
+  "devDependencies": {
+    "babel-core": "^6.21.0",
+    "babel-eslint": "^7.1.1",
+    "babel-plugin-react-intl": "^2.2.0",
+    "babel-polyfill": "^6.23.0",
+    "babel-preset-latest": "^6.16.0",
+    "babel-preset-react": "^6.16.0",
+    "babel-preset-stage-0": "^6.16.0",
+    "eslint": "^3.11.1",
+    "eslint-config-airbnb": "^13.0.0",
+    "eslint-config-prettier": "^1.7.0",
+    "eslint-plugin-flowtype": "^2.32.1",
+    "eslint-plugin-import": "^2.2.0",
+    "eslint-plugin-jsx-a11y": "^2.2.3",
+    "eslint-plugin-prettier": "^2.0.1",
+    "eslint-plugin-react": "^6.7.1",
+    "flow-bin": "^0.59.0",
+    "flow-typed": "^2.1.2",
+    "fs-extra": "^1.0.0",
+    "prettier": "1.6.1",
+    "shebang-loader": "0.0.1"
+  },
+  "scripts": {
+    "eslint-check": "./node_modules/eslint/bin/eslint.js --print-config .eslintrc | node_modules/eslint-config-prettier/bin/cli.js",
+    "js-files": "find . \\! -regex '.*node_modules.*' \\! -regex '.*/lib-.*' \\! -regex '.*/dist/.*' \\! -regex '.*/frankenserver/.*' -name '*.js' \\! -path './common/js/languages/data.js' \\! -path './mobile/js/data/localizedCountries.js' \\! -regex '.*/flow-typed/.*'",
+    "prettier": "npm run --silent js-files | xargs ./node_modules/prettier/bin/prettier.js --single-quote  --trailing-comma es5 --write"
+  }
 }

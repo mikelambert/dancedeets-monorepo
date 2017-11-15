@@ -4,7 +4,7 @@
  * @flow
  */
 
-import React from 'react';
+import * as React from 'react';
 import { injectIntl, intlShape } from 'react-intl';
 import YouTube from 'react-youtube';
 import Helmet from 'react-helmet';

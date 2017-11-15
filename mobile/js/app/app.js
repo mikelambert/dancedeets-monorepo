@@ -4,7 +4,7 @@
  * @flow
  */
 
-import React from 'react';
+import * as React from 'react';
 import { AppState, Linking, StatusBar, StyleSheet, View } from 'react-native';
 import CodePush from 'react-native-code-push';
 import { connect } from 'react-redux';

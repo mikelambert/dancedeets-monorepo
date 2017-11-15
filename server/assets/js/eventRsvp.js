@@ -4,7 +4,7 @@
  * @flow
  */
 
-import React from 'react';
+import * as React from 'react';
 import { injectIntl } from 'react-intl';
 import messages from 'dancedeets-common/js/events/messages';
 import { Event } from 'dancedeets-common/js/events/models';

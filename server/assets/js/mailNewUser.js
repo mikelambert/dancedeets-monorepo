@@ -4,7 +4,7 @@
  * @flow
  */
 
-import React from 'react';
+import * as React from 'react';
 import { intlWeb } from 'dancedeets-common/js/intl';
 // import { addUrlArgs } from 'dancedeets-common/js/util/url';
 import { ImageThumbnail } from './mailAddEvent';

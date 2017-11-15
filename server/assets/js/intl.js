@@ -4,7 +4,7 @@
  * @flow
  */
 
-import React from 'react';
+import * as React from 'react';
 import { injectIntl, intlShape } from 'react-intl';
 
 class _Message extends React.Component {

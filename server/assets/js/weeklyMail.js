@@ -4,7 +4,7 @@
  * @flow
  */
 
-import React from 'react';
+import * as React from 'react';
 import { injectIntl, intlShape } from 'react-intl';
 import { intlWeb } from 'dancedeets-common/js/intl';
 import { BaseEvent, SearchEvent } from 'dancedeets-common/js/events/models';

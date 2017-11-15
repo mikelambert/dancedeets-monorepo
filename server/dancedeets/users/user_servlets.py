@@ -19,10 +19,14 @@ class UserUnsubscribeHandler(base_servlet.BaseRequestHandler):
         self.errors_are_fatal()
         email = self.request.get('email')
         user = users.User.query(users.User.email == email).get()
-        if user:
-            user.send_email = False
-            user.put()
-        event_emails.unsubscribe_email(email)
+        weekly = True
+        promoter = True
+        if weekly:
+            if user:
+                user.send_email = False
+                user.put()
+        if promoter:
+            event_emails.unsubscribe_email(email)
         self.user.add_message("Successfully unsubscribed %s!" % email)
         self.redirect('/user/edit')
 
