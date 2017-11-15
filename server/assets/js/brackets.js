@@ -211,10 +211,10 @@ class BracketLines extends React.Component<{
 }
 
 class BracketReact extends React.Component<{
-  // bracket: Bracket,
+  bracket: Bracket,
 }> {
   render() {
-    const bracket = {
+    const bracket = this.props.bracket || {
       matches: [
         { videoId: '5Xu_S_SpR0g', first: 'すずきゆうすけ', second: 'Hinoken' },
         {

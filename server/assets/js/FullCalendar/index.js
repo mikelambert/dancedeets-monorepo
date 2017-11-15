@@ -24,8 +24,8 @@ type Props = {
 };
 
 class FullCalendar extends React.Component<Props> {
+  _calendar: any;
   _fullcalendarContainer: ?HTMLDivElement;
-  calendar: any;
 
   componentDidMount() {
     const { options, onDateChanged } = this.props;
@@ -46,11 +46,11 @@ class FullCalendar extends React.Component<Props> {
       return Object.assign({}, defaultOptions, calendarOptions);
     };
 
-    this.calendar = $(this._fullcalendarContainer);
+    this._calendar = $(this._fullcalendarContainer);
 
     const calendarOptions = extendCalendarOptions(options);
 
-    this.calendar.fullCalendar(calendarOptions);
+    this._calendar.fullCalendar(calendarOptions);
   }
 
   componentWillReceiveProps(newProps: Props) {
@@ -63,7 +63,7 @@ class FullCalendar extends React.Component<Props> {
         isOption(optionName) &&
         newOptions[optionName] !== options[optionName]
       ) {
-        this.calendar.fullCalendar(
+        this._calendar.fullCalendar(
           'option',
           optionName,
           newOptions[optionName]
@@ -71,9 +71,9 @@ class FullCalendar extends React.Component<Props> {
       }
     });
 
-    this.calendar.fullCalendar('refetchEvents');
-    this.calendar.fullCalendar('changeView', newOptions.defaultView);
-    this.calendar.fullCalendar('gotoDate', newOptions.defaultDate);
+    this._calendar.fullCalendar('refetchEvents');
+    this._calendar.fullCalendar('changeView', newOptions.defaultView);
+    this._calendar.fullCalendar('gotoDate', newOptions.defaultDate);
   }
 
   render() {

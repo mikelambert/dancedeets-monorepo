@@ -38,7 +38,7 @@ export class AmpImage extends React.Component<{
     } else {
       return (
         <img
-          role="presentation"
+          alt="" // Possibly overridden in caller's props
           src={picture.source}
           width={width}
           srcSet={srcSet}

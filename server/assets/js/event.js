@@ -70,19 +70,11 @@ class ImageWithLinks extends React.Component<
     event: Event,
     amp: ?boolean,
   },
-  {
-    lightbox: boolean,
-  }
+  {}
 > {
   constructor(props) {
     super(props);
     (this: any).onClick = this.onClick.bind(this);
-    this.state = { lightbox: false };
-  }
-
-  onClick() {
-    this.setState({ lightbox: true });
-    return false;
   }
 
   render() {
@@ -124,26 +116,10 @@ class ImageWithLinks extends React.Component<
     );
 
     const link = (
-      <a
-        id="view-flyer"
-        className="link-event-flyer"
-        href={fullImageUrl}
-        onClick={this.onClick}
-      >
+      <a id="view-flyer" className="link-event-flyer" href={fullImageUrl}>
         {image}
       </a>
     );
-
-    /*
-    // TODO: Lightbox
-    let lightbox = null;
-    if (this.state.lightbox) {
-      lightbox = (<Lightbox
-        mainSrc={picture.source}
-        onCloseRequest={() => this.setState({ lightbox: false })}
-      />);
-    }
-    */
 
     return (
       <div className="event-page-image-box">

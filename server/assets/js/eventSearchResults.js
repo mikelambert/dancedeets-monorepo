@@ -811,6 +811,7 @@ class _Calendar extends React.Component<{
       : 500;
     return (
       <iframe
+        title="Event Calendar"
         src={calendarUrl}
         style={{
           width: '100%',

@@ -46,7 +46,15 @@ class StudioImage extends React.Component<{
   render() {
     const imageSrc = `${this.context.imagePath +
       this.props.studioName.toLowerCase()}.png`;
-    return <img src={imageSrc} role="presentation" width="16" height="16" />;
+    return (
+      <img
+        alt={this.props.studioName}
+        src={imageSrc}
+        role="presentation"
+        width="16"
+        height="16"
+      />
+    );
   }
 }
 StudioImage.contextTypes = {

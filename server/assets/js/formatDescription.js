@@ -121,7 +121,7 @@ class FacebookPage extends React.Component<{
         data-href={pageUrl}
         data-height={300}
         data-adapt-container-width
-        data-tabs={'messages'}
+        data-tabs="messages"
         data-show-facepile
         data-small-header={false}
       />
@@ -267,6 +267,7 @@ class YouTube extends React.Component<{
     ) : (
       <div className="video-container">
         <iframe
+          title="Youtube Video"
           id="ytplayer"
           type="text/html"
           width="640"
@@ -365,11 +366,10 @@ class Formatter {
   }
 
   replaceLink(match, i) {
-    let target = this.options.target;
+    let { target, rel } = this.options;
     if (target !== undefined) {
       target = /^http(s)?:/.test(match.url) ? '_blank' : null;
     }
-    let rel = this.options.rel;
     if (rel !== undefined) {
       rel = target === '_blank' ? 'noopener noreferrer' : null;
     }
@@ -423,6 +423,7 @@ class Formatter {
         ) : (
           <div key={i} className="video-container">
             <iframe
+              title="Youtube Video"
               id="ytplayer"
               type="text/html"
               width="640"
@@ -457,7 +458,7 @@ class Formatter {
       parsedUrl.pathname &&
       !/^\/(?:events|groups)/.test(parsedUrl.pathname)
     ) {
-      const pathname = parsedUrl.pathname;
+      const { pathname } = parsedUrl;
       let username = pathname.split('/')[1];
       if (username && username.includes('-')) {
         const splits = username.split('-');
