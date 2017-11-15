@@ -19,12 +19,10 @@ import { EmailWrapper, outsideGutter } from './mailCommon';
 
 const verticalSpacing = 20;
 
-class SmallIcon extends React.Component {
-  props: {
-    url: string,
-    alt: string,
-  };
-
+class SmallIcon extends React.Component<{
+  url: string,
+  alt: string,
+}> {
   render() {
     return (
       <img src={this.props.url} width="16" height="16" alt={this.props.alt} />
@@ -32,12 +30,10 @@ class SmallIcon extends React.Component {
   }
 }
 
-class FontAwesomeIcon extends React.Component {
-  props: {
-    name: ExportedIconsEnum,
-    alt: string,
-  };
-
+class FontAwesomeIcon extends React.Component<{
+  name: ExportedIconsEnum,
+  alt: string,
+}> {
   render() {
     return (
       <SmallIcon
@@ -49,14 +45,12 @@ class FontAwesomeIcon extends React.Component {
   }
 }
 
-class _MailEvent extends React.Component {
-  props: {
-    event: SearchEvent,
+class _MailEvent extends React.Component<{
+  event: SearchEvent,
 
-    // Self-managed props
-    intl: intlShape,
-  };
-
+  // Self-managed props
+  intl: intlShape,
+}> {
   render() {
     const event = this.props.event;
     const size = 180;
@@ -145,11 +139,9 @@ class _MailEvent extends React.Component {
 }
 const MailEvent = injectIntl(_MailEvent);
 
-class DayHeader extends React.Component {
-  props: {
-    title: string,
-  };
-
+class DayHeader extends React.Component<{
+  title: string,
+}> {
   render() {
     return (
       <mj-section
@@ -166,14 +158,12 @@ class DayHeader extends React.Component {
   }
 }
 
-class _EventDisplay extends React.Component {
-  props: {
-    events: Array<BaseEvent>,
+class _EventDisplay extends React.Component<{
+  events: Array<BaseEvent>,
 
-    // Self-managed props
-    intl: intlShape,
-  };
-
+  // Self-managed props
+  intl: intlShape,
+}> {
   render() {
     const eventDisplays = [];
     groupEventsByStartDate(
@@ -190,12 +180,10 @@ class _EventDisplay extends React.Component {
 }
 export const EventDisplay = injectIntl(_EventDisplay);
 
-class BodyWrapper extends React.Component {
-  props: {
-    user: any,
-    response: NewSearchResponse,
-  };
-
+class BodyWrapper extends React.Component<{
+  user: any,
+  response: NewSearchResponse,
+}> {
   render() {
     const resultEvents = this.props.response.results.map(
       eventData => new SearchEvent(eventData)
@@ -242,12 +230,10 @@ class BodyWrapper extends React.Component {
   }
 }
 
-class WeeklyEmail extends React.Component {
-  props: {
-    user: any,
-    response: NewSearchResponse,
-  };
-
+class WeeklyEmail extends React.Component<{
+  user: any,
+  response: NewSearchResponse,
+}> {
   render() {
     return (
       <EmailWrapper

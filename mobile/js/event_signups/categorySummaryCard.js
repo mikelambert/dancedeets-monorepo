@@ -39,12 +39,10 @@ if (Dimensions.get('window').width >= 1024) {
   boxWidth = semiNormalize(350);
 }
 
-class CompactTeam extends React.Component {
-  props: {
-    style: ViewPropTypes.style,
-    team: Signup,
-  };
-
+class CompactTeam extends React.Component<{
+  style: ViewPropTypes.style,
+  team: Signup,
+}> {
   render() {
     return (
       <Text style={[this.props.style, styles.registrationStatusText]}>
@@ -53,20 +51,19 @@ class CompactTeam extends React.Component {
     );
   }
 }
-class _UserRegistrationStatus extends React.Component {
-  props: {
+class _UserRegistrationStatus extends React.Component<
+  {
     category: BattleCategory,
     onRegister: (category: BattleCategory) => void,
     onUnregister: (category: BattleCategory, team: Signup) => void,
 
     // Self-managed props
     user: ?User,
-  };
-
-  state: {
+  },
+  {
     isLoading: boolean,
-  };
-
+  }
+> {
   constructor(props) {
     super(props);
     this.state = { isLoading: false };
@@ -144,13 +141,11 @@ const UserRegistrationStatus = connect(
   (dispatch: Dispatch, props) => ({})
 )(injectIntl(_UserRegistrationStatus));
 
-class CategorySummaryCard extends React.Component {
-  props: {
-    category: BattleCategory,
-    onRegister: (category: BattleCategory) => void,
-    onUnregister: (category: BattleCategory, team: Signup) => void,
-  };
-
+class CategorySummaryCard extends React.Component<{
+  category: BattleCategory,
+  onRegister: (category: BattleCategory) => void,
+  onUnregister: (category: BattleCategory, team: Signup) => void,
+}> {
   _root: View;
 
   setNativeProps(props: any) {

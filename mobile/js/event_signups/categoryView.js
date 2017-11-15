@@ -12,7 +12,7 @@ import type { BattleCategory, Signup } from './models';
 import { getCategorySignups } from './models';
 import CategorySummaryCard from './categorySummaryCard';
 
-class _TeamList extends React.Component {
+class _TeamList extends React.Component<Object> {
   constructor(props: any) {
     super(props);
     (this: any).renderRow = this.renderRow.bind(this);
@@ -45,13 +45,11 @@ class _TeamList extends React.Component {
 }
 const TeamList = injectIntl(_TeamList);
 
-class _CategoryView extends React.Component {
-  props: {
-    category: BattleCategory,
-    onRegister: (category: BattleCategory) => void,
-    onUnregister: (category: BattleCategory, team: Signup) => void,
-  };
-
+class _CategoryView extends React.Component<{
+  category: BattleCategory,
+  onRegister: (category: BattleCategory) => void,
+  onUnregister: (category: BattleCategory, team: Signup) => void,
+}> {
   render() {
     const signups = getCategorySignups(this.props.category);
     return (

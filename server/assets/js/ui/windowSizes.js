@@ -12,11 +12,12 @@ export type windowProps = {
 };
 
 export function wantsWindowSizes(WrappedComponent: Object) {
-  class WindowSizes extends React.Component {
-    state: {
+  class WindowSizes extends React.Component<
+    {},
+    {
       window: ?windowProps,
-    };
-
+    }
+  > {
     constructor(props: Object) {
       super(props);
 
@@ -57,10 +58,11 @@ export function wantsWindowSizes(WrappedComponent: Object) {
           window.innerHeight ||
           (document.documentElement && document.documentElement.clientHeight) ||
           (document.body && document.body.clientHeight);
-        return { window: { width, height } };
-      } else {
-        return { window: null };
+        if (width != null && height != null) {
+          return { window: { width, height } };
+        }
       }
+      return { window: null };
     }
 
     updateDimensions() {
