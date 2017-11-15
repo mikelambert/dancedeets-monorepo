@@ -15,9 +15,9 @@ import OptimizeCssAssetsPlugin from 'optimize-css-assets-webpack-plugin';
 const prod = !env.debug;
 
 export default function uncssWebpackGenerator(
-  outputFilename,
-  htmlFiles,
-  ignore = undefined
+  outputFilename: string,
+  htmlFiles: Array<string>,
+  ignore: ?Array<string> = undefined
 ) {
   return {
     entry: {

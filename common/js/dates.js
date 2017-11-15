@@ -25,7 +25,7 @@ function dateIsNearby(date: moment, intl: intlShape) {
   );
 }
 
-function formatDate(date, intl) {
+function formatDate(date: moment, intl: intlShape) {
   // Use a year for faraway dates
   const format = { ...weekdayDate };
   if (!dateIsNearby(date, intl)) {
@@ -34,11 +34,11 @@ function formatDate(date, intl) {
   return upperFirst(intl.formatDate(date.toDate(), format));
 }
 
-function formatTime(date, intl) {
+function formatTime(date: moment, intl: intlShape) {
   return intl.formatTime(date);
 }
 
-export function formatDateTime(date, intl) {
+export function formatDateTime(date: moment, intl: intlShape) {
   const format = { ...weekdayDate, ...weekdayTime };
   if (!dateIsNearby(date, intl)) {
     format.year = 'numeric';

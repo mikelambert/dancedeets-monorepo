@@ -98,12 +98,10 @@ export function constructIntl(currentLocale: string) {
     .intl;
 }
 
-class Internationalize extends React.Component {
-  props: {
-    currentLocale: string,
-    children?: Array<React.Element<*>>,
-  };
-
+class Internationalize extends React.Component<{
+  currentLocale: string,
+  children?: React.Node,
+}> {
   render() {
     return (
       <IntlProvider {...intlProviderArgs(this.props.currentLocale)}>
