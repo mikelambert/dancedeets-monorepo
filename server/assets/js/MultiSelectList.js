@@ -6,24 +6,26 @@
 
 import * as React from 'react';
 
-export class SelectButton extends React.Component {
-  props: {
-    toggleState: () => void,
-    active: boolean,
-    item: string,
-    itemRenderer?: (item: string) => React.Element<*>,
-  };
+type SelectProps = {
+  toggleState: () => void,
+  active: boolean,
+  item: string,
+  itemRenderer?: (item: string) => React.Element<*>,
+};
 
-  _button: HTMLButtonElement;
+export class SelectButton extends React.Component<SelectProps> {
+  _button: ?HTMLButtonElement;
 
-  constructor(props) {
+  constructor(props: SelectProps) {
     super(props);
     (this: any).toggleState = this.toggleState.bind(this);
   }
 
-  toggleState(e) {
+  toggleState(e: SyntheticEvent<>) {
     this.props.toggleState();
-    this._button.blur();
+    if (this._button) {
+      this._button.blur();
+    }
     e.preventDefault();
   }
 
@@ -61,29 +63,31 @@ export function generateUniformState(list: Array<string>, value: boolean) {
   return newState;
 }
 
-export function caseInsensitiveSort(a, b) {
+export function caseInsensitiveSort(a: string, b: string) {
   return a.toLowerCase().localeCompare(b.toLowerCase());
 }
 
-export function getSelected(state: { [item: string]: boolean }) {
+type State = { [item: string]: boolean };
+
+export function getSelected(state: State) {
   return Object.keys(state)
     .filter(x => state[x])
     .sort(caseInsensitiveSort);
 }
 
-export function isAllSelected(state) {
+export function isAllSelected(state: State) {
   return getSelected(state).length === Object.keys(state).length;
 }
 
-export class MultiSelectList extends React.Component {
-  props: {
-    list: Array<string>,
-    selected: MultiSelectState,
-    itemRenderer?: (item: string) => React.Element<*>,
-    onChange: (state: MultiSelectState) => void,
-  };
+type MultiSelectProps = {
+  list: Array<string>,
+  selected: MultiSelectState,
+  itemRenderer?: (item: string) => React.Element<*>,
+  onChange: (state: MultiSelectState) => void,
+};
 
-  constructor(props) {
+export class MultiSelectList extends React.Component<MultiSelectProps> {
+  constructor(props: MultiSelectProps) {
     super(props);
     (this: any).toggleItem = this.toggleItem.bind(this);
     (this: any).setAll = this.setAll.bind(this);
@@ -93,7 +97,7 @@ export class MultiSelectList extends React.Component {
     this.changedState(generateUniformState(this.props.list, true));
   }
 
-  changedState(newState) {
+  changedState(newState: State) {
     this.props.onChange(newState);
   }
 

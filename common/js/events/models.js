@@ -20,8 +20,8 @@ const squareImageSize = 180;
 
 export type Cover = {
   source: string,
-  height: number,
-  width: number,
+  height?: number,
+  width?: number,
 };
 
 export class JsonDerivedObject {

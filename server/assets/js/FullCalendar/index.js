@@ -18,18 +18,19 @@ if (ExecutionEnvironment.canUseDOM) {
   require('fullcalendar'); // eslint-disable-line global-require
 }
 
-class FullCalendar extends React.Component {
-  props: {
-    options: Object,
-    onDateChanged: (start, end) => void,
-  };
+type Props = {
+  options: Object,
+  onDateChanged: (start: Date, end: Date) => void,
+};
 
-  _fullcalendarContainer: div;
+class FullCalendar extends React.Component<Props> {
+  _fullcalendarContainer: ?HTMLDivElement;
+  calendar: any;
 
   componentDidMount() {
     const { options, onDateChanged } = this.props;
 
-    this.extendCalendarOptions = calendarOptions => {
+    const extendCalendarOptions = calendarOptions => {
       const defaultOptions = {
         viewRender(view) {
           const { intervalStart, intervalEnd } = view;
@@ -47,12 +48,12 @@ class FullCalendar extends React.Component {
 
     this.calendar = $(this._fullcalendarContainer);
 
-    const calendarOptions = this.extendCalendarOptions(options);
+    const calendarOptions = extendCalendarOptions(options);
 
     this.calendar.fullCalendar(calendarOptions);
   }
 
-  componentWillReceiveProps(newProps) {
+  componentWillReceiveProps(newProps: Props) {
     const { options: newOptions } = newProps;
     const { options } = this.props;
 

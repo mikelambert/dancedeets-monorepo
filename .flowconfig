@@ -22,6 +22,8 @@
 
 .*/CodePushHash.json
 
+.*/scrapers/bboylite/download.*/.*\.json
+
 [include]
 
 [libs]

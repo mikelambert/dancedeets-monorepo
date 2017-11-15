@@ -28,19 +28,20 @@ const messages = defineMessages({
   },
 });
 
-class _ScreenshotSlideshow extends React.Component {
-  props: {
-    transitionPage: (page: React.Component<*, *, *>) => void,
-    children: Array<React.Element<*>>,
+type Props = {
+  transitionPage: (page: React.Component) => void,
+  children: React.Node,
 
-    // Self-managed props
-    intl: intlShape,
-  };
-  state: {
-    page: number,
-  };
+  // Self-managed props
+  intl: intlShape,
+};
 
-  constructor(props) {
+type State = {
+  page: number,
+};
+
+class _ScreenshotSlideshow extends React.Component<Props, State> {
+  constructor(props: Props) {
     super(props);
     this.state = {
       page: 0,
@@ -78,7 +79,7 @@ class _ScreenshotSlideshow extends React.Component {
   }
 
   async setupEventView(dispatch) {
-    const fetchedEvent = await event('397757633752918'); // SYGU 2015
+    // const fetchedEvent = await event('397757633752918'); // SYGU 2015
     await dispatch();
     /*
       navigatePush('EVENT_NAV', {
