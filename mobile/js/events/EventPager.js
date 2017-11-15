@@ -7,33 +7,26 @@
 import * as React from 'react';
 import { Dimensions, FlatList, InteractionManager, View } from 'react-native';
 import { connect } from 'react-redux';
-import type {
-  NavigationAction,
-  NavigationRoute,
-  NavigationScreenProp,
-} from 'react-navigation/src/TypeDefinition';
 import { Event } from 'dancedeets-common/js/events/models';
 import type { State } from '../reducers/search';
 import { FullEventView } from './uicomponents';
 import type { ThunkAction } from '../actions/types';
 import { getPosition } from '../util/geo';
-import { trackWithEvent } from '../store/track';
 
-class EventPager extends React.Component {
-  props: {
+class EventPager extends React.Component<
+  {
     onFlyerSelected: (x: Event) => ThunkAction,
     onEventNavigated: (x: Event) => void,
     selectedEvent: Event,
 
     // Self-managed props
     search: State,
-  };
-
-  state: {
+  },
+  {
     position: ?Object,
     loadInProgress: boolean,
-  };
-
+  }
+> {
   constructor(props) {
     super(props);
     this.state = {

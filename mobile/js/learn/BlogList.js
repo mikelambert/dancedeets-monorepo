@@ -15,10 +15,9 @@ import { Blog, FeedBlog, MediumBlog, YoutubePlaylistBlog } from './models';
 
 type Post = any;
 
-export class BlogPostContents extends React.Component {
-  props: {
-    post: Post,
-  };
+export class BlogPostContents extends React.Component<{
+  post: Post,
+}> {
   render() {
     if (this.props.post.youtubeId) {
       return (
@@ -41,11 +40,10 @@ export class BlogPostContents extends React.Component {
   }
 }
 
-export class BlogPostTitle extends React.Component {
-  props: {
-    onPress: (post: Post) => void,
-    post: Post,
-  };
+export class BlogPostTitle extends React.Component<{
+  onPress: (post: Post) => void,
+  post: Post,
+}> {
   render() {
     return (
       <TouchableHighlight
@@ -67,7 +65,7 @@ type BlogPostProps = {
   onSelected: (post: BlogPost) => void,
 };
 
-export class BlogPostList extends React.Component {
+export class BlogPostList extends React.Component<{}> {
   constructor(props: BlogPostProps) {
     super(props);
     (this: any).renderRow = this.renderRow.bind(this);
@@ -85,12 +83,10 @@ export class BlogPostList extends React.Component {
   }
 }
 
-class BlogTitle extends React.Component {
-  props: {
-    onPress: (blog: Blog) => void,
-    blog: Blog,
-  };
-
+class BlogTitle extends React.Component<{
+  onPress: (blog: Blog) => void,
+  blog: Blog,
+}> {
   render() {
     return (
       <TouchableHighlight
@@ -110,13 +106,12 @@ type BlogProps = {
   onSelected: (blog: Blog) => void,
 };
 
-export class BlogList extends React.Component {
-  props: BlogProps;
-
-  state: {
+export class BlogList extends React.Component<
+  BlogProps,
+  {
     dataSource: ListView.DataSource,
-  };
-
+  }
+> {
   constructor(props: BlogProps) {
     super(props);
     const dataSource = new ListView.DataSource({

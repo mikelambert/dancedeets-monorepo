@@ -42,14 +42,13 @@ to help us help your dance scene.
   },
 });
 
-class _NoLoginScreen extends React.Component {
-  props: {
-    onLogin: () => void,
-    onNoLogin: (name: string) => void,
+class _NoLoginScreen extends React.Component<{
+  onLogin: () => void,
+  onNoLogin: (name: string) => void,
 
-    // Self-managed props
-    intl: intlShape,
-  };
+  // Self-managed props
+  intl: intlShape,
+}> {
   render() {
     return (
       <View style={styles.container}>

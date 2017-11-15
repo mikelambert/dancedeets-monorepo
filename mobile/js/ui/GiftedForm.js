@@ -11,7 +11,7 @@ import { purpleColors, yellowColors } from '../Colors';
 import Button from './Button';
 import { defaultFont } from './DDText';
 
-export class MyGiftedSubmitWidget extends GiftedForm.SubmitWidget {
+export class MyGiftedSubmitWidget extends GiftedForm.SubmitWidget<{}> {
   render() {
     return (
       <View>
@@ -31,7 +31,7 @@ export class MyGiftedSubmitWidget extends GiftedForm.SubmitWidget {
   }
 }
 
-export class MyGiftedForm extends React.Component {
+export class MyGiftedForm extends React.Component<{}> {
   render() {
     return (
       <GiftedForm

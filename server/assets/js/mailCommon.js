@@ -17,12 +17,10 @@ export const buttonForegroundColor = '#FFFFFF';
 export const outsideGutter = 30;
 export const columnPadding = 15;
 
-export class MobileAppPromo extends React.Component {
-  props: {
-    mobileIosUrl: string,
-    mobileAndroidUrl: string,
-  };
-
+export class MobileAppPromo extends React.Component<{
+  mobileIosUrl: string,
+  mobileAndroidUrl: string,
+}> {
   render() {
     return (
       <mj-section padding={`40 ${outsideGutter} 0`}>
@@ -77,11 +75,9 @@ export class MobileAppPromo extends React.Component {
   }
 }
 
-export class Footer extends React.Component {
-  props: {
-    emailPreferencesUrl: string,
-  };
-
+export class Footer extends React.Component<{
+  emailPreferencesUrl: string,
+}> {
   render() {
     return [
       <mj-section>
@@ -145,15 +141,13 @@ export class Footer extends React.Component {
   }
 }
 
-export class NewEmailWrapper extends React.Component {
-  props: {
-    previewText: string,
-    mobileIosUrl: string,
-    mobileAndroidUrl: string,
-    emailPreferencesUrl: string,
-    children: React.Element<*>,
-  };
-
+export class NewEmailWrapper extends React.Component<{
+  previewText: string,
+  mobileIosUrl: string,
+  mobileAndroidUrl: string,
+  emailPreferencesUrl: string,
+  children: React.Element<*>,
+}> {
   render() {
     return (
       <mjml>
@@ -206,13 +200,11 @@ export class NewEmailWrapper extends React.Component {
   }
 }
 
-export class EmailWrapper extends React.Component {
-  props: {
-    header: string,
-    footer: string,
-    children: React.Element<*>,
-  };
-
+export class EmailWrapper extends React.Component<{
+  header: string,
+  footer: string,
+  children: React.Element<*>,
+}> {
   render() {
     return (
       <mjml>

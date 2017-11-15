@@ -4,22 +4,28 @@
  */
 
 import * as React from 'react';
-import PropTypes from 'prop-types';
 import { Animated, Easing, View } from 'react-native';
 
 const ANIMATED_EASING_PREFIXES = ['easeInOut', 'easeOut', 'easeIn'];
 
-class Collapsible extends React.Component {
-  static propTypes = {
-    align: PropTypes.oneOf(['top', 'center', 'bottom']),
-    collapsed: PropTypes.bool,
-    collapsedHeight: PropTypes.number,
-    duration: PropTypes.number,
-    easing: PropTypes.oneOfType([PropTypes.string, PropTypes.func]),
+class Collapsible extends React.Component<
+  {
+    align: 'top' | 'center' | 'bottom',
+    collapsed: boolean,
+    collapsedHeight: number,
+    duration: number,
+    easing: string | ((value: number) => number),
     style: View.propTypes.style,
-    children: PropTypes.element,
-  };
-
+    children: React.Node,
+  },
+  {
+    measuring: boolean,
+    measured: boolean,
+    height: Animated.Value,
+    contentHeight: number,
+    animating: boolean,
+  }
+> {
   static defaultProps = {
     align: 'top',
     collapsed: true,
@@ -28,19 +34,11 @@ class Collapsible extends React.Component {
     easing: 'easeOutCubic',
   };
 
-  state: {
-    measuring: boolean,
-    measured: boolean,
-    height: Animated.Value,
-    contentHeight: number,
-    animating: boolean,
-  };
-
   _handleRef = ref => {
     this.contentHandle = ref;
   };
 
-  _animation: Animated.Animation;
+  _animation: ?Animated.Animation;
 
   _measureContent(callback) {
     this.setState(

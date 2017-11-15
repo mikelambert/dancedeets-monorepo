@@ -45,17 +45,17 @@ const messages = defineMessages({
   },
 });
 
-class SearchInput extends React.Component {
-  props: {
+class SearchInput extends React.Component<
+  {
     onFocus?: () => void,
     onBlur?: () => void,
     onSubmitEditing: () => void | Promise<void>,
     iconName: string,
-  };
-  state: {
+  },
+  {
     focused: boolean,
-  };
-
+  }
+> {
   _textInput: TextInput;
 
   constructor(props) {
@@ -135,8 +135,8 @@ class SearchInput extends React.Component {
   }
 }
 
-class _SearchHeader extends React.Component {
-  props: {
+class _SearchHeader extends React.Component<
+  {
     children: Array<React.Element<*>>,
 
     // Self-managed props
@@ -146,12 +146,11 @@ class _SearchHeader extends React.Component {
     updateLocation: (location: string) => void,
     updateKeywords: (keywords: string) => void,
     performSearch: () => Promise<void>,
-  };
-
-  state: {
+  },
+  {
     height: number,
-  };
-
+  }
+> {
   _location: SearchInput;
   _keywords: SearchInput;
   _locationAutocomplete: AutocompleteList;

@@ -114,11 +114,9 @@ const CarouselDotIndicatorSize = 25;
 
 const SectionHeight = semiNormalize(30);
 
-class SectionHeader extends React.PureComponent {
-  props: {
-    title: string,
-  };
-
+class SectionHeader extends React.PureComponent<{
+  title: string,
+}> {
   render() {
     return (
       <View style={styles.sectionHeader}>
@@ -128,11 +126,9 @@ class SectionHeader extends React.PureComponent {
   }
 }
 
-class FeaturedEvent extends React.PureComponent {
-  props: {
-    event: Event,
-  };
-
+class FeaturedEvent extends React.PureComponent<{
+  event: Event,
+}> {
   render() {
     const imageProps = this.props.event.getResponsiveFlyers();
     if (!imageProps) {
@@ -149,12 +145,10 @@ class FeaturedEvent extends React.PureComponent {
   }
 }
 
-class FeaturedEvents extends React.PureComponent {
-  props: {
-    featured: Array<FeaturedInfo>,
-    onEventSelected: (event: Event) => void,
-  };
-
+class FeaturedEvents extends React.PureComponent<{
+  featured: Array<FeaturedInfo>,
+  onEventSelected: (event: Event) => void,
+}> {
   renderPage(index: number) {
     const featuredInfo = this.props.featured[index];
 
@@ -267,11 +261,9 @@ class FeaturedEvents extends React.PureComponent {
   }
 }
 
-class OneboxView extends React.PureComponent {
-  props: {
-    onebox: Onebox,
-  };
-
+class OneboxView extends React.PureComponent<{
+  onebox: Onebox,
+}> {
   constructor(props) {
     super(props);
     (this: any).oneboxClicked = this.oneboxClicked.bind(this);
@@ -306,8 +298,8 @@ class OneboxView extends React.PureComponent {
   }
 }
 
-class _EventListContainer extends React.Component {
-  props: {
+class _EventListContainer extends React.Component<
+  {
     onEventSelected: (event: Event) => void,
     onFeaturedEventSelected: (event: Event) => void,
 
@@ -321,16 +313,15 @@ class _EventListContainer extends React.Component {
     processUrl: (url: string) => Promise<void>,
     loadUserData: () => Promise<void>,
     intl: intlShape,
-  };
-
-  state: {
+  },
+  {
     people: PeopleListing,
     failed: boolean,
-  };
-
+  }
+> {
   _loadingPeople: boolean;
 
-  _listView: SectionList<*>;
+  _listView: ?SectionList<*>;
   /* TODO: Figure out how to typecheck with this:
   {
     item:
@@ -352,7 +343,7 @@ class _EventListContainer extends React.Component {
           renderClass: React.Class,
           key: string,
         },
-  }*/
+  } */
 
   constructor(props) {
     super(props);
@@ -376,10 +367,12 @@ class _EventListContainer extends React.Component {
     ) {
       // Only scroll if there are rendered items we can use to compute.
       // Otherwise we get errors since it doesn't know where "item 0" is.
+      const listView = this._listView;
       if (
-        this._listView._wrapperListRef.getListRef()._highestMeasuredFrameIndex
+        listView &&
+        listView._wrapperListRef.getListRef()._highestMeasuredFrameIndex
       ) {
-        this._listView.scrollToLocation({
+        listView.scrollToLocation({
           animated: false,
           itemIndex: 0,
           sectionIndex: 0,
@@ -665,7 +658,7 @@ class _EventListContainer extends React.Component {
       return null;
     }
     return null;
-    /*(
+    /* (
       <AdMobBanner
         bannerSize={'smartBannerPortrait'}
         adUnitID={adUnitID}
@@ -709,7 +702,7 @@ class _EventListContainer extends React.Component {
   }
 
   renderListView() {
-    const search = this.props.search;
+    const { search } = this.props;
 
     if (
       search.waitingForLocationPermission &&

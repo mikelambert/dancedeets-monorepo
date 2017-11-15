@@ -5,35 +5,32 @@
  */
 
 import * as React from 'react';
-import { StyleSheet } from 'react-native';
-import { injectIntl, defineMessages } from 'react-intl';
+import { injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 import { GiftedForm } from 'react-native-gifted-form';
 import type {
   NavigationAction,
   NavigationRoute,
   NavigationScreenProp,
-  NavigationState,
 } from 'react-navigation/src/TypeDefinition';
 import { MyGiftedForm, MyGiftedSubmitWidget } from '../ui';
-import type { Dispatch, User } from '../actions/types';
+import type { User } from '../actions/types';
 import type { BattleCategory, BattleEvent } from './models';
 import { eventRegister } from '../api/dancedeets';
 
-class _CategorySignupScreen extends React.Component {
-  props: {
+class _CategorySignupScreen extends React.Component<
+  {
     user: ?User,
     battle: BattleEvent,
     category: BattleCategory,
 
     // Self-managed props
     navigation: NavigationScreenProp<NavigationRoute, NavigationAction>,
-  };
-
-  state: {
+  },
+  {
     values: Object,
-  };
-
+  }
+> {
   constructor(props) {
     super(props);
     const state = {
@@ -60,7 +57,7 @@ class _CategorySignupScreen extends React.Component {
   }
 
   teamIndices() {
-    const rules = this.props.category.rules;
+    const { rules } = this.props.category;
     const zeroToN = Array.from(Array(rules.teamSize).keys());
     return zeroToN;
   }
@@ -119,7 +116,7 @@ class _CategorySignupScreen extends React.Component {
   }
 
   render() {
-    const rules = this.props.category.rules;
+    const { rules } = this.props.category;
 
     let teamMember1 = [];
     let teamMembers = rules.teamSize ? this.teamWidgets() : null;
@@ -205,6 +202,7 @@ class _CategorySignupScreen extends React.Component {
                 this.props.category.id,
                 { team: newValues }
               );
+              console.log('register result is', result);
               if (postSubmit) {
                 postSubmit();
               }

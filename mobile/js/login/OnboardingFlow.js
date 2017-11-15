@@ -13,16 +13,15 @@ import { track } from '../store/track';
 
 type ScreenState = 'CAROUSEL' | 'NO_LOGIN';
 
-class OnboardingFlow extends React.Component {
-  props: {
+class OnboardingFlow extends React.Component<
+  {
     onLogin: () => void,
     skipLogin: () => void,
-  };
-
-  state: {
+  },
+  {
     screen: ScreenState,
-  };
-
+  }
+> {
   constructor(props) {
     super(props);
     this.state = {

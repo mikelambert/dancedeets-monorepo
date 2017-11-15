@@ -508,7 +508,7 @@ class EventFilters extends React.Component<
 
 class CallbackOnRender extends React.Component<{
   callback: () => void | Promise<void>,
-  children?: React.Element<*>,
+  children: React.Node,
 }> {
   render() {
     if (this.props.callback) {

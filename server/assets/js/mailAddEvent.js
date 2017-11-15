@@ -16,7 +16,7 @@ import {
   outsideGutter,
 } from './mailCommon';
 
-class GenericCircle extends React.Component {
+class GenericCircle extends React.Component<{}> {
   render() {
     return (
       <img
@@ -29,13 +29,11 @@ class GenericCircle extends React.Component {
   }
 }
 
-class SellingPoint extends React.Component {
-  props: {
-    title: string,
-    contents: string,
-    placement: 'left' | 'right',
-  };
-
+class SellingPoint extends React.Component<{
+  title: string,
+  contents: string,
+  placement: 'left' | 'right',
+}> {
   render() {
     const paddings = {
       'padding-left': this.props.placement === 'right' ? 10 : 0,
@@ -56,7 +54,7 @@ class SellingPoint extends React.Component {
   }
 }
 
-class Upsell extends React.Component {
+class Upsell extends React.Component<{}> {
   render() {
     return [
       <mj-section
@@ -141,11 +139,9 @@ class Upsell extends React.Component {
   }
 }
 
-export class ImageThumbnail extends React.Component {
-  props: {
-    imageName: string,
-  };
-
+export class ImageThumbnail extends React.Component<{
+  imageName: string,
+}> {
   render() {
     const imageUrl = `https://static.dancedeets.com/img/mail/${this.props
       .imageName}`;
@@ -155,7 +151,7 @@ export class ImageThumbnail extends React.Component {
   }
 }
 
-class EventTestimonials extends React.Component {
+class EventTestimonials extends React.Component<{}> {
   render() {
     return (
       <mj-wrapper mj-class="alternate" padding={`10 ${outsideGutter}`}>
@@ -295,7 +291,7 @@ class EventTestimonials extends React.Component {
   }
 }
 
-class HeaderFlyers extends React.Component {
+class HeaderFlyers extends React.Component<{}> {
   render() {
     return (
       <mj-section mj-class="alternate">
@@ -307,13 +303,11 @@ class HeaderFlyers extends React.Component {
   }
 }
 
-class BodyWrapper extends React.Component {
-  props: {
-    event: Event,
-    // organizerEmail: string,
-    organizerName: string,
-  };
-
+class BodyWrapper extends React.Component<{
+  event: Event,
+  // organizerEmail: string,
+  organizerName: string,
+}> {
   render() {
     const event = this.props.event;
     /*
@@ -408,19 +402,17 @@ class BodyWrapper extends React.Component {
   }
 }
 
-class AddEventEmail extends React.Component {
-  props: {
-    event: Event,
-    organizer: {
-      email: string,
-      name: string,
-    },
+class AddEventEmail extends React.Component<{
+  event: Event,
+  organizer: {
+    email: string,
+    name: string,
+  },
 
-    mobileIosUrl: string,
-    mobileAndroidUrl: string,
-    emailPreferencesUrl: string,
-  };
-
+  mobileIosUrl: string,
+  mobileAndroidUrl: string,
+  emailPreferencesUrl: string,
+}> {
   render() {
     const event = new Event(this.props.event);
     return (

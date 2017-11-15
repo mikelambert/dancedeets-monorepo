@@ -6,12 +6,10 @@
 
 import * as React from 'react';
 
-export default class GoogleAd extends React.Component {
-  props: {
-    style: Object,
-    amp?: boolean,
-  };
-
+export default class GoogleAd extends React.Component<{
+  style: Object,
+  amp?: boolean,
+}> {
   componentDidMount() {
     (window.adsbygoogle = window.adsbygoogle || []).push({});
   }

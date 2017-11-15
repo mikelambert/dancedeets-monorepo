@@ -41,7 +41,12 @@ function disabledColor(color: string, multiplier: number = 0.5) {
   return disabledHex;
 }
 
-export default class SegmentedControl extends React.Component {
+export default class SegmentedControl extends React.Component<
+  Props,
+  {
+    selectedIndex: number,
+  }
+> {
   static defaultProps: Props = {
     values: [],
     defaultIndex: -1,
@@ -49,12 +54,6 @@ export default class SegmentedControl extends React.Component {
     tryOnChange: (index, oldIndex) => {},
     tintColor: 'blue',
     style: {},
-  };
-
-  props: Props;
-
-  state: {
-    selectedIndex: number,
   };
 
   constructor(props: Props) {

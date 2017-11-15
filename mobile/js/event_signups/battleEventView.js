@@ -14,15 +14,13 @@ import CategorySummaryCard from './categorySummaryCard';
 
 const boxMargin = 5;
 
-class _BattleEventView extends React.Component {
-  props: {
-    battleId: string,
-    battleEvent: BattleEvent,
-    onSelected: (category: BattleCategory) => void,
-    onRegister: (category: BattleCategory) => void,
-    onUnregister: (category: BattleCategory, team: Signup) => void,
-  };
-
+class _BattleEventView extends React.Component<{
+  battleId: string,
+  battleEvent: BattleEvent,
+  onSelected: (category: BattleCategory) => void,
+  onRegister: (category: BattleCategory) => void,
+  onUnregister: (category: BattleCategory, team: Signup) => void,
+}> {
   constructor(props: any) {
     super(props);
     (this: any).renderHeader = this.renderHeader.bind(this);

@@ -11,12 +11,10 @@ import { trackEnd, trackStart } from '../store/track';
 type TimeTrackerProps = {
   eventName: string,
   eventValue: string,
-  children?: React.Element<*>,
+  children: React.Node,
 };
 
-export class TimeTracker extends React.Component {
-  props: TimeTrackerProps;
-
+export class TimeTracker extends React.Component<TimeTrackerProps> {
   _formatEvent(value: ?string = null) {
     const trackValue = value || this.props.eventValue;
     return `${this.props.eventName}: ${trackValue}`;

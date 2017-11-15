@@ -608,7 +608,7 @@ class Description extends React.Component<{
 
 class AdminButton extends React.Component<{
   path: string,
-  children?: React.Node,
+  children: React.Node,
 }> {
   constructor(props) {
     super(props);

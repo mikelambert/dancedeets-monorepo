@@ -19,18 +19,16 @@ firestack.onReady(() => {
   firestack.database.setPersistence(true);
 });
 
-class _TrackFirebase extends React.Component {
-  props: {
-    path: string,
-    children: React.Node,
-    // If set, render passing in the state, instead of just rendering children
-    renderContents?: (contents: any) => React.Element<*>,
+class _TrackFirebase extends React.Component<{
+  path: string,
+  children: React.Node,
+  // If set, render passing in the state, instead of just rendering children
+  renderContents?: (contents: any) => React.Element<*>,
 
-    // Self-managed props
-    setFirebaseState: (key: string, value: any) => void,
-    firebaseData: Object,
-  };
-
+  // Self-managed props
+  setFirebaseState: (key: string, value: any) => void,
+  firebaseData: Object,
+}> {
   _setHandler: boolean;
 
   constructor(props: any) {

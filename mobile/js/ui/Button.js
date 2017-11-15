@@ -38,7 +38,7 @@ type Props = {
   activityIndicatorColor: string,
 };
 
-class Button extends React.Component {
+class Button extends React.Component<Props> {
   static defaultProps: Props = {
     caption: '',
     icon: null,
@@ -53,8 +53,6 @@ class Button extends React.Component {
     enabled: true,
     activityIndicatorColor: 'white',
   };
-
-  props: Props;
 
   renderRealContent() {
     const caption = this.props.caption;

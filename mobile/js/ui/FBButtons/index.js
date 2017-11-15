@@ -21,15 +21,13 @@ const messages = defineMessages({
   },
 });
 
-class _FBShareButton extends React.Component {
-  props: {
-    shareContent: ShareContent,
-    event?: Event,
+class _FBShareButton extends React.Component<{
+  shareContent: ShareContent,
+  event?: Event,
 
-    // Self-managed props
-    intl: intlShape,
-  };
-
+  // Self-managed props
+  intl: intlShape,
+}> {
   render() {
     return (
       <View style={{ flexDirection: 'row' }}>

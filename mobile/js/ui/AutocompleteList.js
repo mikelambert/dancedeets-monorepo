@@ -60,7 +60,14 @@ function sleep(seconds) {
   });
 }
 
-export default class AutocompleteList extends React.Component {
+export default class AutocompleteList extends React.Component<
+  Props,
+  {
+    listViewDisplayed: boolean,
+    isLoadingLocation: boolean,
+    results: Array<Result>,
+  }
+> {
   static defaultProps: Props = {
     onLocationSelected: x => {},
     minLength: 0,
@@ -83,14 +90,6 @@ export default class AutocompleteList extends React.Component {
       'administrative_area_level_3',
     ],
     predefinedPlacesAlwaysVisible: false,
-  };
-
-  props: Props;
-
-  state: {
-    listViewDisplayed: boolean,
-    isLoadingLocation: boolean,
-    results: Array<Result>,
   };
 
   _requests: XMLHttpRequest[] = [];

@@ -7,7 +7,7 @@
 import * as React from 'react';
 
 export default class Link extends React.Component<{
-  children?: any,
+  children: React.Node,
   style?: any,
 }> {
   render() {

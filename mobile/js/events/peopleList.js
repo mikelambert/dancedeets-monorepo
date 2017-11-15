@@ -25,19 +25,18 @@ import type { State } from '../reducers/search';
 import { openUserId } from '../util/fb';
 import { linkColor } from '../Colors';
 
-class _PersonList extends React.Component {
-  props: {
+class _PersonList extends React.Component<
+  {
     subtitle: string,
     people: StylePersonLookup,
 
     // Self-managed props
     intl: intlShape,
-  };
-
-  state: {
+  },
+  {
     category: string,
-  };
-
+  }
+> {
   constructor(props) {
     super(props);
     this.state = {
@@ -84,19 +83,18 @@ class _PersonList extends React.Component {
 }
 const PersonList = injectIntl(_PersonList);
 
-class HeaderCollapsible extends React.Component {
-  props: {
+class HeaderCollapsible extends React.Component<
+  {
     defaultCollapsed: boolean,
     title: string,
     children: React.Node,
     underlayColor?: string,
     onPress?: () => void | Promise<void>,
-  };
-
-  state: {
+  },
+  {
     collapsed: boolean,
-  };
-
+  }
+> {
   _toggle() {
     if (this.props.onPress) {
       this.props.onPress();
@@ -151,29 +149,25 @@ class HeaderCollapsible extends React.Component {
   }
 }
 
-class _Loading extends React.Component {
-  props: {
-    // Self-managed props
-    intl: intlShape,
-  };
-
+class _Loading extends React.Component<{
+  // Self-managed props
+  intl: intlShape,
+}> {
   render() {
     return <ActivityIndicator style={{ marginLeft: 20, marginBottom: 20 }} />;
   }
 }
 const Loading = injectIntl(_Loading);
 
-class _OrganizerView extends React.Component {
-  props: {
-    defaultCollapsed: boolean,
-    headerStyle: ViewPropTypes.style,
-    people: ?StylePersonLookup,
-    onPress?: () => void | Promise<void>,
+class _OrganizerView extends React.Component<{
+  defaultCollapsed: boolean,
+  headerStyle: ViewPropTypes.style,
+  people: ?StylePersonLookup,
+  onPress?: () => void | Promise<void>,
 
-    // Self-managed props
-    intl: intlShape,
-  };
-
+  // Self-managed props
+  intl: intlShape,
+}> {
   render() {
     const personList = this.props.people ? (
       <PersonList
@@ -200,17 +194,15 @@ class _OrganizerView extends React.Component {
 }
 export const OrganizerView = injectIntl(_OrganizerView);
 
-export class _AttendeeView extends React.Component {
-  props: {
-    defaultCollapsed: boolean,
-    headerStyle: ViewPropTypes.style,
-    people: ?StylePersonLookup,
-    onPress?: () => void | Promise<void>,
+export class _AttendeeView extends React.Component<{
+  defaultCollapsed: boolean,
+  headerStyle: ViewPropTypes.style,
+  people: ?StylePersonLookup,
+  onPress?: () => void | Promise<void>,
 
-    // Self-managed props
-    intl: intlShape,
-  };
-
+  // Self-managed props
+  intl: intlShape,
+}> {
   render() {
     const personList = this.props.people ? (
       <PersonList

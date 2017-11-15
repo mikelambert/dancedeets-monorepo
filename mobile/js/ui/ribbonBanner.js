@@ -12,22 +12,21 @@ import { Text } from './DDText';
 const fontSize = semiNormalize(18);
 const degrees = 30;
 
-export default class RibbonBanner extends React.Component {
-  static defaultProps = {
-    overlayBackgroundColor: '#00000044',
-  };
-
-  props: {
+export default class RibbonBanner extends React.Component<
+  {
     text: string,
     width: number,
     overlayBackgroundColor: string,
-  };
-
-  state: {
+  },
+  {
     dimensions: ?{
       width: number,
       height: number,
     },
+  }
+> {
+  static defaultProps = {
+    overlayBackgroundColor: '#00000044',
   };
 
   constructor(props: Object) {
@@ -39,7 +38,7 @@ export default class RibbonBanner extends React.Component {
   }
 
   onLayout(e: SyntheticEvent<>) {
-    const nativeEvent: any = e.nativeEvent;
+    const { nativeEvent } = e;
     const layout = nativeEvent.layout;
     this.setState({
       dimensions: {
@@ -50,7 +49,7 @@ export default class RibbonBanner extends React.Component {
   }
 
   renderBanner() {
-    const dimensions = this.state.dimensions;
+    const { dimensions } = this.state;
     if (!dimensions) {
       return null;
     }

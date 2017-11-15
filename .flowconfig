@@ -8,6 +8,7 @@
 ; Ignore unexpected extra "@providesModule"
 .*/node_modules/.*/node_modules/fbjs/.*
 .*/common/node_modules/fbjs/.*
+.*/mobile/node_modules/fbjs/.*
 .*/server/node_modules/fbjs/.*
 .*/server/node_server/node_modules/fbjs/.*
 

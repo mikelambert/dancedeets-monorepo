@@ -22,13 +22,11 @@ import CategorySummaryCard from './categorySummaryCard';
 
 const boxMargin = 5;
 
-class _BattleEventHostView extends React.Component {
-  props: {
-    battleId: string,
-    battleEvent: BattleEvent,
-    onSelected: (category: BattleCategory) => void,
-  };
-
+class _BattleEventHostView extends React.Component<{
+  battleId: string,
+  battleEvent: BattleEvent,
+  onSelected: (category: BattleCategory) => void,
+}> {
   constructor(props: any) {
     super(props);
     (this: any).renderHeader = this.renderHeader.bind(this);

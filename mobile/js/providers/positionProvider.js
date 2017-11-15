@@ -8,14 +8,14 @@ import { getAddress, getPosition } from '../util/geo';
 
 type Position = Object;
 
-export default class PositionProvider extends React.Component {
-  props: {
+export default class PositionProvider extends React.Component<
+  {
     renderWithPosition: (position: ?Position) => React.Element<*>,
-  };
-  state: {
+  },
+  {
     position: ?Position,
-  };
-
+  }
+> {
   constructor(props: Object) {
     super(props);
     this.state = { position: null };

@@ -11,13 +11,11 @@ import LaunchScreen from './LaunchScreen';
 import OnboardingFlow from './OnboardingFlow';
 import { autoLoginAtStartup } from '../actions';
 
-class LoginFlow extends React.Component {
-  props: {
-    // Self-managed props
-    isOnboarding: boolean,
-    autoLoginAtStartup: () => void,
-  };
-
+class LoginFlow extends React.Component<{
+  // Self-managed props
+  isOnboarding: boolean,
+  autoLoginAtStartup: () => void,
+}> {
   componentDidMount() {
     this.props.autoLoginAtStartup();
   }

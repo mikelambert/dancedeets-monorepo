@@ -8,16 +8,15 @@ import * as React from 'react';
 import { ListView } from 'react-native';
 
 type Props = {
-  children?: any,
+  children: React.Node,
 };
 
-export default class ProgressiveLayout extends React.Component {
-  props: Props;
-
-  state: {
+export default class ProgressiveLayout extends React.Component<
+  Props,
+  {
     dataSource: ListView.DataSource,
-  };
-
+  }
+> {
   constructor(props: Props) {
     super(props);
     const dataSource = new ListView.DataSource({

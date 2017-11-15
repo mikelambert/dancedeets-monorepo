@@ -60,18 +60,17 @@ function listViewWidth() {
   return Math.floor(Dimensions.get('window').width / fullBox * fullBox) - 10;
 }
 
-class _PlaylistStylesView extends React.Component {
-  props: {
+class _PlaylistStylesView extends React.Component<
+  {
     onSelected: (category: Category) => void,
 
     // Self-managed props
     intl: intlShape,
-  };
-
-  state: {
+  },
+  {
     stylePlaylists: Array<Category>,
-  };
-
+  }
+> {
   constructor(props) {
     super(props);
     (this: any).renderRow = this.renderRow.bind(this);
@@ -186,15 +185,13 @@ type PlaylistListViewProps = {
   playlists: Array<Playlist>,
 };
 
-class _PlaylistListView extends React.Component {
-  props: {
-    playlists: Array<Playlist>,
-    onSelected: (playlist: Playlist) => void,
+class _PlaylistListView extends React.Component<{
+  playlists: Array<Playlist>,
+  onSelected: (playlist: Playlist) => void,
 
-    // Self-managed props
-    intl: intlShape,
-  };
-
+  // Self-managed props
+  intl: intlShape,
+}> {
   constructor(props) {
     super(props);
     (this: any).renderRow = this.renderRow.bind(this);
@@ -323,8 +320,8 @@ class _PlaylistListView extends React.Component {
 }
 export const PlaylistListView = injectIntl(_PlaylistListView);
 
-class _PlaylistView extends React.Component {
-  props: {
+class _PlaylistView extends React.Component<
+  {
     playlist: Playlist,
     tutorialVideoIndex: number,
 
@@ -332,14 +329,13 @@ class _PlaylistView extends React.Component {
     intl: intlShape,
     setTutorialVideoIndex: (x: number) => void,
     mainScreenKey: string,
-  };
-
-  state: {
+  },
+  {
     isPlaying: boolean,
     onScreen: boolean,
     videoUrl: ?string,
-  };
-
+  }
+> {
   _sectionedListView: SectionList<*>;
   _cachedLayout: Array<{ top: number, bottom: number }>;
   _viewDimensions: { top: number, bottom: number };

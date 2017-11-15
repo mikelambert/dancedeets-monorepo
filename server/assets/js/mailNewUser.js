@@ -18,11 +18,9 @@ import {
   outsideGutter,
 } from './mailCommon';
 
-class MainBody extends React.Component {
-  props: {
-    user: User,
-  };
-
+class MainBody extends React.Component<{
+  user: User,
+}> {
   render() {
     return (
       <mj-section>
@@ -65,7 +63,7 @@ class MainBody extends React.Component {
   }
 }
 
-class UserTestimonials extends React.Component {
+class UserTestimonials extends React.Component<{}> {
   render() {
     return (
       <mj-wrapper mj-class="alternate" padding={`10 ${outsideGutter}`}>
@@ -165,11 +163,9 @@ class UserTestimonials extends React.Component {
   }
 }
 
-class BodyWrapper extends React.Component {
-  props: {
-    user: User,
-  };
-
+class BodyWrapper extends React.Component<{
+  user: User,
+}> {
   render() {
     return [
       <NavHeader />,
@@ -180,15 +176,13 @@ class BodyWrapper extends React.Component {
   }
 }
 
-class NewUserEmail extends React.Component {
-  props: {
-    user: User,
+class NewUserEmail extends React.Component<{
+  user: User,
 
-    mobileIosUrl: string,
-    mobileAndroidUrl: string,
-    emailPreferencesUrl: string,
-  };
-
+  mobileIosUrl: string,
+  mobileAndroidUrl: string,
+  emailPreferencesUrl: string,
+}> {
   render() {
     return (
       <NewEmailWrapper

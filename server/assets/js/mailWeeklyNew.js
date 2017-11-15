@@ -10,6 +10,7 @@ import { SearchEvent } from 'dancedeets-common/js/events/models';
 // import { addUrlArgs } from 'dancedeets-common/js/util/url';
 import { NewEmailWrapper, columnPadding, outsideGutter } from './mailCommon';
 import { EventDisplay } from './weeklyMail';
+import type { NewSearchResponse } from 'dancedeets-common/js/events/search';
 
 export type User = {
   userName: string,
@@ -17,7 +18,7 @@ export type User = {
   countryName: string,
 };
 
-export class NavHeader extends React.Component {
+export class NavHeader extends React.Component<{}> {
   render() {
     return (
       <mj-section mj-class="alternate">
@@ -85,12 +86,10 @@ export class NavHeader extends React.Component {
   }
 }
 
-class MainBody extends React.Component {
-  props: {
-    user: User,
-    response: NewSearchResponse,
-  };
-
+class MainBody extends React.Component<{
+  user: User,
+  response: NewSearchResponse,
+}> {
   render() {
     const resultEvents = this.props.response.results.map(
       eventData => new SearchEvent(eventData)
@@ -127,7 +126,7 @@ class MainBody extends React.Component {
   }
 }
 
-export class HeaderFindYourDance extends React.Component {
+export class HeaderFindYourDance extends React.Component<{}> {
   render() {
     return (
       <mj-section mj-class="alternate">
@@ -139,10 +138,9 @@ export class HeaderFindYourDance extends React.Component {
   }
 }
 
-class FeaturePromo extends React.Component {
-  props: {
-    user: User,
-  };
+class FeaturePromo extends React.Component<{
+  user: User,
+}> {
   render() {
     const countryName = this.props.user.countryName;
     return (
@@ -295,12 +293,10 @@ class FeaturePromo extends React.Component {
   }
 }
 
-class BodyWrapper extends React.Component {
-  props: {
-    user: User,
-    response: NewSearchResponse,
-  };
-
+class BodyWrapper extends React.Component<{
+  user: User,
+  response: NewSearchResponse,
+}> {
   render() {
     return [
       <NavHeader />,
@@ -311,16 +307,14 @@ class BodyWrapper extends React.Component {
   }
 }
 
-class AddEventEmail extends React.Component {
-  props: {
-    user: User,
-    response: NewSearchResponse,
+class AddEventEmail extends React.Component<{
+  user: User,
+  response: NewSearchResponse,
 
-    mobileIosUrl: string,
-    mobileAndroidUrl: string,
-    emailPreferencesUrl: string,
-  };
-
+  mobileIosUrl: string,
+  mobileAndroidUrl: string,
+  emailPreferencesUrl: string,
+}> {
   render() {
     return (
       <NewEmailWrapper

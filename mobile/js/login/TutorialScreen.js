@@ -53,13 +53,12 @@ const messages = defineMessages({
   },
 });
 
-class _TopView extends React.Component {
-  props: {
-    page: number,
+class _TopView extends React.Component<{
+  page: number,
 
-    // Self-managed props
-    intl: intlShape,
-  };
+  // Self-managed props
+  intl: intlShape,
+}> {
   render() {
     const page = this.props.page;
     const header = this.props.intl.formatMessage(
@@ -78,15 +77,13 @@ class _TopView extends React.Component {
 }
 const TopView = injectIntl(_TopView);
 
-class _TutorialScreen extends React.Component {
-  props: {
-    onLogin: () => void,
-    onNoLogin: (name: string) => void,
+class _TutorialScreen extends React.Component<{
+  onLogin: () => void,
+  onNoLogin: (name: string) => void,
 
-    // Self-managed props
-    intl: intlShape,
-  };
-
+  // Self-managed props
+  intl: intlShape,
+}> {
   renderPage(pageId: number) {
     const contents = this.renderPageContents(pageId);
     return (

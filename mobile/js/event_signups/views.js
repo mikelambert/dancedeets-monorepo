@@ -46,12 +46,10 @@ import BattleEventView from './battleEventView';
 import BattleEventHostView from './battleEventHostView';
 import BattleHostCategoryView from './battleHostCategoryView';
 
-export class BattleSelector extends React.Component {
-  props: {
-    onBattleSelected: (battleId: string) => void,
-    onBattleHostSelected: (battleId: string) => void,
-  };
-
+export class BattleSelector extends React.Component<{
+  onBattleSelected: (battleId: string) => void,
+  onBattleHostSelected: (battleId: string) => void,
+}> {
   render() {
     const battleId = 'justeDebout';
     return (

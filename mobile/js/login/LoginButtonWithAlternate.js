@@ -18,18 +18,17 @@ const messages = defineMessages({
   },
 });
 
-class _LoginButtonWithAlternate extends React.Component {
-  props: {
+class _LoginButtonWithAlternate extends React.Component<
+  {
     noLoginText: string,
     onLogin: () => void,
     onNoLogin: () => void,
     intl: intlShape.isRequired,
-  };
-
-  state: {
+  },
+  {
     enabled: boolean,
-  };
-
+  }
+> {
   constructor(props) {
     super(props);
     this.state = { enabled: true };

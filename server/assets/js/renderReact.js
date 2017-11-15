@@ -9,10 +9,8 @@ import * as React from 'react';
 import ReactDOM from 'react-dom';
 import { AppContainer } from 'react-hot-loader';
 
-export default function(
-  Component: Class<React.Component<*, *>>,
-  props?: Object
-) {
+// Would like to define it as Class<React.Component<*, *>>, but doesn't work with the functions required by import
+export default function(Component: any, props?: Object) {
   ReactDOM.hydrate(
     <AppContainer>
       <Component {...window._REACT_PROPS} {...props} />

@@ -7,23 +7,21 @@
 import * as React from 'react';
 import { injectIntl, intlShape } from 'react-intl';
 
-class _Message extends React.Component {
-  props: {
-    message: {
-      /* eslint-disable react/no-unused-prop-types */
-      // intlShape defines its formatMessage as func.isRequired,
-      // but we know that it actually takes a few required parameters
-      // which we include here to ensure our callers pass them in.
-      id: string,
-      defaultMessage: string,
-      /* eslint-enable react/no-unused-prop-types */
-    },
-    values?: Object,
+class _Message extends React.Component<{
+  message: {
+    /* eslint-disable react/no-unused-prop-types */
+    // intlShape defines its formatMessage as func.isRequired,
+    // but we know that it actually takes a few required parameters
+    // which we include here to ensure our callers pass them in.
+    id: string,
+    defaultMessage: string,
+    /* eslint-enable react/no-unused-prop-types */
+  },
+  values?: Object,
 
-    // Self-managed props
-    intl: intlShape,
-  };
-
+  // Self-managed props
+  intl: intlShape,
+}> {
   render() {
     return (
       <span>
