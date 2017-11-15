@@ -19,15 +19,14 @@ type Props = {
   children: React.Element<*>,
 };
 
-export default class Truncate extends React.Component {
-  props: Props;
-
-  state: {
+export default class Truncate extends React.Component<
+  Props,
+  {
     expanded: boolean,
     loading: boolean,
     needsToggle: boolean,
-  };
-
+  }
+> {
   _div: React.Element<*>;
 
   constructor(props: Props) {

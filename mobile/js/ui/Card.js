@@ -2,15 +2,13 @@ import * as React from 'react';
 import { StyleSheet, View, ViewPropTypes } from 'react-native';
 import { gradientBottom, purpleColors } from '../Colors';
 
-export default class Card extends React.Component {
-  props: {
-    style: ViewPropTypes.style,
-    titleBackgroundStyle: ViewPropTypes.style,
-    mainBackgroundStyle: ViewPropTypes.style,
-    title: string,
-    children: Array<React.Element<*>>,
-  };
-
+export default class Card extends React.Component<{
+  style: ViewPropTypes.style,
+  titleBackgroundStyle: ViewPropTypes.style,
+  mainBackgroundStyle: ViewPropTypes.style,
+  title: string,
+  children: React.Node,
+}> {
   _root: React.Component;
 
   setNativeProps(props) {

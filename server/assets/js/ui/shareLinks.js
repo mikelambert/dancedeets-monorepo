@@ -8,11 +8,9 @@ import * as React from 'react';
 import { Share as TwitterShare } from 'react-twitter-widgets';
 import FacebookShare from './fbShare';
 
-export default class ShareLinks extends React.Component {
-  props: {
-    url: string,
-  };
-
+export default class ShareLinks extends React.Component<{
+  url: string,
+}> {
   render() {
     return (
       <div>

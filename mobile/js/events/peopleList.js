@@ -88,7 +88,7 @@ class HeaderCollapsible extends React.Component {
   props: {
     defaultCollapsed: boolean,
     title: string,
-    children?: React.Element<*>,
+    children: React.Node,
     underlayColor?: string,
     onPress?: () => void | Promise<void>,
   };

@@ -22,7 +22,7 @@ firestack.onReady(() => {
 class _TrackFirebase extends React.Component {
   props: {
     path: string,
-    children?: React.Element<*>,
+    children: React.Node,
     // If set, render passing in the state, instead of just rendering children
     renderContents?: (contents: any) => React.Element<*>,
 

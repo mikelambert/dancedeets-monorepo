@@ -7,11 +7,9 @@
 import * as React from 'react';
 import { Image, Platform, StyleSheet } from 'react-native';
 
-export default class LaunchScreen extends React.Component {
-  props: {
-    children?: Array<React.Component<*, *, *>>,
-  };
-
+export default class LaunchScreen extends React.Component<{
+  children: React.Node,
+}> {
   render() {
     return (
       <Image

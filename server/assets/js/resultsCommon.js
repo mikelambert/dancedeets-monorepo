@@ -20,10 +20,8 @@ export const CalendarRatio = 1.8;
 
 type Query = Object;
 
-class _DatePicker extends React.Component {
-  static DateFormat = 'MMM Do';
-
-  props: {
+class _DatePicker extends React.Component<
+  {
     query: Query,
     focused: boolean,
     onFocus: () => void,
@@ -33,13 +31,14 @@ class _DatePicker extends React.Component {
     // Self-managed props
     window: windowProps,
     // intl: intlShape,
-  };
-
-  state: {
+  },
+  {
     startDate: ?moment,
     endDate: ?moment,
     focusedInput: any,
-  };
+  }
+> {
+  static DateFormat = 'MMM Do';
 
   constructor(props) {
     super(props);
@@ -248,19 +247,17 @@ Autocomplete.keyDownHandlers.Tab = Autocomplete.keyDownHandlers.Enter = HandleSe
 Autocomplete.keyDownHandlers.ArrowDown = HandleArrowDown;
 Autocomplete.keyDownHandlers.ArrowUp = HandleArrowUp;
 
-class TextInput extends React.Component {
-  props: {
-    id: string,
-    placeholder: string,
-    value: string,
-    onFocus: (e: SyntheticEvent) => void,
-    onBlur: (e: SyntheticEvent) => void,
-    onSubmit: (e: SyntheticEvent) => void,
+class TextInput extends React.Component<{
+  id: string,
+  placeholder: string,
+  value: string,
+  onFocus: (e: SyntheticFocusEvent<>) => void,
+  onBlur: (e: SyntheticEvent<>) => void,
+  onSubmit: (e: SyntheticEvent<>) => void,
 
-    shouldItemRender?: (item: Object, value: string) => boolean,
-    autocomplete?: boolean,
-  };
-
+  shouldItemRender?: (item: Object, value: string) => boolean,
+  autocomplete?: boolean,
+}> {
   constructor(props) {
     super(props);
     (this: any).onFocus = this.onFocus.bind(this);
@@ -343,20 +340,19 @@ class TextInput extends React.Component {
   }
 }
 
-class SearchBoxItem extends React.Component {
-  props: {
+class SearchBoxItem extends React.Component<
+  {
     iconName: string,
     renderItem: ({
       focused: boolean,
       onFocus: () => void,
       onBlur: () => void,
     }) => React.Element<*>,
-  };
-
-  state: {
+  },
+  {
     focused: boolean,
-  };
-
+  }
+> {
   constructor(props) {
     super(props);
     this.state = { focused: false };
@@ -405,17 +401,16 @@ class SearchBoxItem extends React.Component {
   }
 }
 
-class LocationSearchBox extends React.Component {
-  props: {
+class LocationSearchBox extends React.Component<
+  {
     initialLocation: string,
     performSearch: () => Promise<void>,
-  };
-
-  state: {
+  },
+  {
     location: string,
     locationItems: Array<string>,
-  };
-
+  }
+> {
   _autoCompleteService: Object;
 
   constructor(props) {
@@ -497,16 +492,15 @@ class LocationSearchBox extends React.Component {
   }
 }
 
-class KeywordSearchBox extends React.Component {
-  props: {
+class KeywordSearchBox extends React.Component<
+  {
     initialKeywords: string,
     performSearch: () => Promise<void>,
-  };
-
-  state: {
+  },
+  {
     keywords: string,
-  };
-
+  }
+> {
   constructor(props) {
     super(props);
     this.state = {
@@ -597,10 +591,9 @@ class KeywordSearchBox extends React.Component {
   }
 }
 
-class DateSearchBox extends React.Component {
-  props: {
-    query: Query,
-  };
+class DateSearchBox extends React.Component<{
+  query: Query,
+}> {
   render() {
     return (
       <SearchBoxItem
@@ -618,15 +611,13 @@ class DateSearchBox extends React.Component {
   }
 }
 
-class _SearchBox extends React.Component {
-  props: {
-    query: Query,
-    onNewSearch: (form: Object) => void,
-    // Self-managed props
-    // intl: intlShape,
-  };
-
-  _form: Object;
+class _SearchBox extends React.Component<{
+  query: Query,
+  onNewSearch: (form: Object) => void,
+  // Self-managed props
+  // intl: intlShape,
+}> {
+  _form: ?HTMLFormElement;
 
   constructor(props) {
     super(props);

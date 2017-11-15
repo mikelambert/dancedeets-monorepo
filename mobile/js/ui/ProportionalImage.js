@@ -53,7 +53,7 @@ export default class ProportionalImage extends React.PureComponent {
   // onLayout will only get called once when this view is re-used.
   // So don't do any computations that are dependent on this.props here.
   // Instead just save the necessary bits of state and do the computation elsewhere.
-  onLayout(e: SyntheticEvent) {
+  onLayout(e: SyntheticEvent<>) {
     const nativeEvent: any = e.nativeEvent;
     const layout = nativeEvent.layout;
     this.setState({

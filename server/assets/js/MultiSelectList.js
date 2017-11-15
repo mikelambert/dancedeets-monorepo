@@ -10,7 +10,7 @@ type SelectProps = {
   toggleState: () => void,
   active: boolean,
   item: string,
-  itemRenderer?: (item: string) => React.Element<*>,
+  itemRenderer?: (item: string) => React.Node,
 };
 
 export class SelectButton extends React.Component<SelectProps> {
@@ -21,7 +21,7 @@ export class SelectButton extends React.Component<SelectProps> {
     (this: any).toggleState = this.toggleState.bind(this);
   }
 
-  toggleState(e: SyntheticEvent<>) {
+  toggleState(e: SyntheticMouseEvent<>) {
     this.props.toggleState();
     if (this._button) {
       this._button.blur();
@@ -82,7 +82,7 @@ export function isAllSelected(state: State) {
 type MultiSelectProps = {
   list: Array<string>,
   selected: MultiSelectState,
-  itemRenderer?: (item: string) => React.Element<*>,
+  itemRenderer?: (item: string) => React.Node,
   onChange: (state: MultiSelectState) => void,
 };
 

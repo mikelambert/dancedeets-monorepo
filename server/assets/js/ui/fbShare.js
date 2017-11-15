@@ -6,11 +6,9 @@
 
 import * as React from 'react';
 
-export default class FacebookShare extends React.Component {
-  props: {
-    url: string,
-  };
-
+export default class FacebookShare extends React.Component<{
+  url: string,
+}> {
   componentDidMount() {
     if (window.FB) {
       window.FB.XFBML.parse();

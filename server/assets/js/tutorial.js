@@ -24,15 +24,13 @@ const backgroundVideoColorActive = '#E0E0F5';
 
 const headerHeight = 50;
 
-class _Duration extends React.Component {
-  props: {
-    duration: number,
-    style?: Object,
+class _Duration extends React.Component<{
+  duration: number,
+  style?: Object,
 
-    // Self-managed props:
-    intl: intlShape,
-  };
-
+  // Self-managed props:
+  intl: intlShape,
+}> {
   render() {
     const duration = formatDuration(
       this.props.intl.formatMessage,
@@ -52,20 +50,19 @@ class _Duration extends React.Component {
 }
 const Duration = injectIntl(_Duration);
 
-class _TutorialView extends React.Component {
-  props: {
+class _TutorialView extends React.Component<
+  {
     tutorial: Playlist,
     videoIndex: ?number,
 
     // Self-managed props
     intl: intlShape,
     window: windowProps,
-  };
-
-  state: {
+  },
+  {
     video: Video,
-  };
-
+  }
+> {
   _youtube: YouTube;
 
   constructor(props) {
@@ -295,12 +292,10 @@ function findTutorialById(config, id) {
   return foundTutorial;
 }
 
-class HtmlHead extends React.Component {
-  props: {
-    tutorial: ?Playlist,
-    videoIndex: ?number,
-  };
-
+class HtmlHead extends React.Component<{
+  tutorial: ?Playlist,
+  videoIndex: ?number,
+}> {
   render() {
     const tutorial = this.props.tutorial;
     let title = 'Unknown tutorial';
@@ -320,16 +315,14 @@ class HtmlHead extends React.Component {
   }
 }
 
-class _TutorialPage extends React.Component {
-  props: {
-    style: string,
-    tutorial: string,
-    hashLocation: string,
+class _TutorialPage extends React.Component<{
+  style: string,
+  tutorial: string,
+  hashLocation: string,
 
-    // Self-managed props
-    intl: intlShape,
-  };
-
+  // Self-managed props
+  intl: intlShape,
+}> {
   trackTutorial(tutorial) {
     if (!ExecutionEnvironment.canUseDOM) {
       return;

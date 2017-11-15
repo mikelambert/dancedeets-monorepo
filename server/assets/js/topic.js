@@ -26,16 +26,14 @@ import { SelectButton } from './MultiSelectList';
 
 type Topic = Object;
 
-export class _TopicEvent extends React.Component {
-  props: {
-    event: SearchEvent,
-    lazyLoad: boolean,
-    width: number,
+export class _TopicEvent extends React.Component<{
+  event: SearchEvent,
+  lazyLoad: boolean,
+  width: number,
 
-    // Self-managed props
-    intl: intlShape,
-  };
-
+  // Self-managed props
+  intl: intlShape,
+}> {
   render() {
     const event = this.props.event;
 
@@ -66,12 +64,10 @@ const TopicEvent = injectIntl(_TopicEvent);
 
 type VideoData = Object;
 
-class Video extends React.Component {
-  props: {
-    video: VideoData,
-    width: number,
-  };
-
+class Video extends React.Component<{
+  video: VideoData,
+  width: number,
+}> {
   render() {
     const scaledHeight = Math.floor(360 / 480 * 100);
     return (
@@ -107,13 +103,11 @@ class Video extends React.Component {
   }
 }
 
-class Instagram extends React.Component {
-  props: {
-    instagram: Object,
-    width: number,
-    // lazyLoad: boolean,
-  };
-
+class Instagram extends React.Component<{
+  instagram: Object,
+  width: number,
+  // lazyLoad: boolean,
+}> {
   processTitle(text) {
     let newText = text;
     newText = newText.split('\n')[0];
@@ -156,7 +150,10 @@ class Instagram extends React.Component {
   }
 }
 
-class SocialLink extends React.Component {
+class SocialLink extends React.Component<{
+  platform: string,
+  username: string,
+}> {
   static Platforms = {
     fb: {
       link: 'https://www.facebook.com/',
@@ -201,11 +198,6 @@ class SocialLink extends React.Component {
     // tumblr, skype, whatsapp, medium, reddit, pinterest, wechat, line, vimeo,
   };
 
-  props: {
-    platform: string,
-    username: string,
-  };
-
   render() {
     const platformData = SocialLink.Platforms[this.props.platform];
     const link = platformData.link + this.props.username;
@@ -218,11 +210,9 @@ class SocialLink extends React.Component {
   }
 }
 
-class SocialLinks extends React.Component {
-  props: {
-    topic: Topic,
-  };
-
+class SocialLinks extends React.Component<{
+  topic: Topic,
+}> {
   render() {
     const socialLinks = Object.keys(this.props.topic.social).map(key => (
       <div key={key}>
@@ -233,22 +223,21 @@ class SocialLinks extends React.Component {
   }
 }
 
-class _EventList extends React.Component {
-  props: {
+class _EventList extends React.Component<
+  {
     response: NewSearchResponse,
     videos: Object,
     instagrams: Object,
 
     // Self-managed props
     window: windowProps,
-  };
-
-  state: {
+  },
+  {
     showVideos: boolean,
     showEvents: boolean,
     showInstagrams: boolean,
-  };
-
+  }
+> {
   constructor(props) {
     super(props);
     this.state = {
@@ -381,14 +370,12 @@ class _EventList extends React.Component {
 }
 const EventList = wantsWindowSizes(_EventList);
 
-class TopicPage extends React.Component {
-  props: {
-    response: NewSearchResponse,
-    videos: Object,
-    instagrams: Object,
-    topic: Topic,
-  };
-
+class TopicPage extends React.Component<{
+  response: NewSearchResponse,
+  videos: Object,
+  instagrams: Object,
+  topic: Topic,
+}> {
   render() {
     return (
       <div>

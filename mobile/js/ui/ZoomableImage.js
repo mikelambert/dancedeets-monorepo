@@ -21,9 +21,8 @@
  *
  * @flow
  */
-import React, { Element } from 'react';
+import React from 'react';
 import {
-  Dimensions,
   Image,
   Platform,
   ScrollView,
@@ -40,20 +39,19 @@ type Layout = {
   height: number,
 };
 
-export default class ZoomableImage extends React.Component {
-  props: {
+export default class ZoomableImage extends React.Component<
+  {
     url: string,
     width: number,
     height: number,
-  };
-
-  state: {
+  },
+  {
     lastTapTimestamp: number,
     isZoomed: boolean,
     layout: ?Layout,
-  };
-
-  _zoomableScroll: ScrollView;
+  }
+> {
+  _zoomableScroll: ?ScrollView;
 
   constructor() {
     super();
@@ -95,11 +93,11 @@ export default class ZoomableImage extends React.Component {
   }
 */
 
-  onLayout(e: SyntheticEvent) {
+  onLayout(e: SyntheticEvent<>) {
     this.setState({ layout: e.nativeEvent.layout });
   }
 
-  onZoomChanged(e: any) {
+  onZoomChanged(e: SyntheticEvent<>) {
     this.setState({ isZoomed: e.nativeEvent.zoomScale > 1 });
   }
 
@@ -110,11 +108,13 @@ export default class ZoomableImage extends React.Component {
       const size = this.state.isZoomed
         ? { width: 10000, height: 10000 }
         : { width: 0, height: 0 };
-      this._zoomableScroll.scrollResponderZoomTo({
-        x: locationX,
-        y: locationY,
-        ...size,
-      });
+      if (this._zoomableScroll) {
+        this._zoomableScroll.scrollResponderZoomTo({
+          x: locationX,
+          y: locationY,
+          ...size,
+        });
+      }
     }
     this.setState({ lastTapTimestamp: timestamp });
   }

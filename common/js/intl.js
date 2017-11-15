@@ -100,7 +100,7 @@ export function constructIntl(currentLocale: string) {
 
 class Internationalize extends React.Component<{
   currentLocale: string,
-  children?: React.Node,
+  children: React.Node,
 }> {
   render() {
     return (

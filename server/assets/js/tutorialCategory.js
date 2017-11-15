@@ -31,8 +31,8 @@ import {
   generateUniformState,
   isAllSelected,
   MultiSelectList,
-  MultiSelectState,
 } from './MultiSelectList';
+import type { MultiSelectState } from './MultiSelectList';
 
 // Can/should we trim this file? It is 150KB, and we probably only need 10KB of it...
 // import languageData from 'dancedeets-common/js/languages';
@@ -52,12 +52,10 @@ const languageData = {
   zh: 'Chinese',
 };
 
-class MatchedVideo extends React.Component {
-  props: {
-    tutorial: Playlist,
-    video: Video,
-  };
-
+class MatchedVideo extends React.Component<{
+  tutorial: Playlist,
+  video: Video,
+}> {
   render() {
     const tutorialUrl = this.props.tutorial.getUrl();
     const videoIndex = this.props.tutorial.getVideoIndex(this.props.video);
@@ -78,13 +76,11 @@ class MatchedVideo extends React.Component {
   }
 }
 
-class MatchedSection extends React.Component {
-  props: {
-    tutorial: Playlist,
-    section: Section,
-    children?: React.Element<*>,
-  };
-
+class MatchedSection extends React.Component<{
+  tutorial: Playlist,
+  section: Section,
+  children: React.Node,
+}> {
   render() {
     const tutorialUrl = this.props.tutorial.getUrl();
     const videoIndex = this.props.tutorial.getVideoIndex(
@@ -102,17 +98,15 @@ class MatchedSection extends React.Component {
   }
 }
 
-class _Tutorial extends React.Component {
-  props: {
-    tutorial: Playlist,
-    searchKeywords: Array<string>,
-    lazyLoad: boolean,
+class _Tutorial extends React.Component<{
+  tutorial: Playlist,
+  searchKeywords: Array<string>,
+  lazyLoad: boolean,
 
-    // Self-managed-props
-    intl: intlShape,
-    window: windowProps,
-  };
-
+  // Self-managed-props
+  intl: intlShape,
+  window: windowProps,
+}> {
   matchesKeywords(obj: Video | Section) {
     const text = obj.getSearchText();
     return (
@@ -225,21 +219,19 @@ type ValidKey = 'languages' | 'categories' | 'query';
 
 type StringWithFrequency = string;
 
-class _FilterBar extends React.Component {
-  props: {
-    initialLanguages: Array<StringWithFrequency>,
-    initialCategories: Array<StringWithFrequency>,
-    languages: MultiSelectState,
-    categories: MultiSelectState,
-    query: string,
+class _FilterBar extends React.Component<{
+  initialLanguages: Array<StringWithFrequency>,
+  initialCategories: Array<StringWithFrequency>,
+  languages: MultiSelectState,
+  categories: MultiSelectState,
+  query: string,
 
-    onChange: (key: ValidKey, newState: any) => void,
+  onChange: (key: ValidKey, newState: any) => void,
 
-    // Self-managed props
-    // intl: intlShape,
-  };
-
-  _query: HTMLInputElement;
+  // Self-managed props
+  // intl: intlShape,
+}> {
+  _query: ?HTMLInputElement;
 
   render() {
     return (
@@ -282,7 +274,9 @@ class _FilterBar extends React.Component {
                 this._query = x;
               }}
               onChange={state =>
-                this.props.onChange('query', this._query.value)}
+                this._query
+                  ? this.props.onChange('query', this._query.value)
+                  : null}
               placeholder="teacher or dance move"
             />{' '}
           </div>
@@ -297,21 +291,20 @@ class _FilterBar extends React.Component {
 }
 const FilterBar = injectIntl(_FilterBar);
 
-class _TutorialFilteredLayout extends React.Component {
-  props: {
+class _TutorialFilteredLayout extends React.Component<
+  {
     categories: Array<Category>,
     hashLocation: string,
 
     // Self-managed props
     intl: intlShape,
-  };
-
-  state: {
+  },
+  {
     languages: MultiSelectState,
     categories: MultiSelectState,
     query: string,
-  };
-
+  }
+> {
   _tutorials: Array<Playlist>;
   _languages: Array<StringWithFrequency>;
   _categories: Array<StringWithFrequency>;
@@ -482,15 +475,13 @@ class _TutorialFilteredLayout extends React.Component {
 }
 const TutorialFilteredLayout = injectIntl(_TutorialFilteredLayout);
 
-class _TutorialOverview extends React.Component {
-  props: {
-    style: string,
-    hashLocation: string,
+class _TutorialOverview extends React.Component<{
+  style: string,
+  hashLocation: string,
 
-    // Self-managed props
-    intl: intlShape,
-  };
-
+  // Self-managed props
+  intl: intlShape,
+}> {
   render() {
     const categories = getTutorials(this.props.intl.locale);
     if (this.props.style) {

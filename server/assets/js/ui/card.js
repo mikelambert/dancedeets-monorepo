@@ -6,13 +6,11 @@
 
 import * as React from 'react';
 
-export default class Card extends React.Component {
-  props: {
-    children?: Array<React.Element<*>>,
-    className?: string,
-    newStyle?: boolean,
-  };
-
+export default class Card extends React.Component<{
+  children: React.Node,
+  className?: string,
+  newStyle?: boolean,
+}> {
   render() {
     const { children, className, newStyle, ...otherProps } = this.props;
     const realClassName = this.props.newStyle ? 'new-card' : 'card';

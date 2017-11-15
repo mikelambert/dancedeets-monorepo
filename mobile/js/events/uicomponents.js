@@ -50,13 +50,11 @@ import type { TranslatedEvent } from '../reducers/translate';
 import { toggleEventTranslation, canGetValidLoginFor } from '../actions';
 import { openUserId } from '../util/fb';
 
-class SubEventLine extends React.Component {
-  props: {
-    icon: any,
-    children?: React.Element<*>,
-    style?: ViewPropTypes.style,
-  };
-
+class SubEventLine extends React.Component<{
+  icon: any,
+  children: React.Node,
+  style?: ViewPropTypes.style,
+}> {
   render() {
     return (
       <HorizontalView style={[eventStyles.detailLine, this.props.style]}>
@@ -73,11 +71,9 @@ class SubEventLine extends React.Component {
   }
 }
 
-class EventCategories extends React.PureComponent {
-  props: {
-    categories: Array<string>,
-  };
-
+class EventCategories extends React.PureComponent<{
+  categories: Array<string>,
+}> {
   render() {
     if (this.props.categories.length > 0) {
       return (
@@ -93,14 +89,13 @@ class EventCategories extends React.PureComponent {
   }
 }
 
-class _AddToCalendarButton extends React.PureComponent {
-  props: {
-    event: Event,
-    style: ViewPropTypes.style,
+class _AddToCalendarButton extends React.PureComponent<{
+  event: Event,
+  style: ViewPropTypes.style,
 
-    // Self-managed props
-    intl: intlShape,
-  };
+  // Self-managed props
+  intl: intlShape,
+}> {
   render() {
     return (
       <Button
@@ -123,16 +118,14 @@ class _AddToCalendarButton extends React.PureComponent {
 }
 const AddToCalendarButton = injectIntl(_AddToCalendarButton);
 
-class _EventDateTime extends React.Component {
-  props: {
-    start: moment,
-    end: moment,
+class _EventDateTime extends React.Component<{
+  start: moment,
+  end: moment,
 
-    // Self-managed props
-    intl: intlShape,
-    children: Array<React.Element<*>>,
-  };
-
+  // Self-managed props
+  intl: intlShape,
+  children: Array<React.Element<*>>,
+}> {
   _interval: number;
 
   componentDidMount() {
@@ -176,17 +169,15 @@ function formatDistance(intl, distanceKm) {
   }
 }
 
-class _EventVenue extends React.PureComponent {
-  props: {
-    venue: Venue,
-    style: ViewPropTypes.style,
+class _EventVenue extends React.PureComponent<{
+  venue: Venue,
+  style: ViewPropTypes.style,
 
-    currentPosition: ?Object,
+  currentPosition: ?Object,
 
-    // Self-managed props
-    intl: intlShape,
-  };
-
+  // Self-managed props
+  intl: intlShape,
+}> {
   render() {
     const components = [];
     if (this.props.venue.name) {
@@ -230,14 +221,12 @@ class _EventVenue extends React.PureComponent {
 }
 const EventVenue = injectIntl(_EventVenue);
 
-class _EventSource extends React.PureComponent {
-  props: {
-    event: Event,
+class _EventSource extends React.PureComponent<{
+  event: Event,
 
-    // Self-managed props
-    intl: intlShape,
-  };
-
+  // Self-managed props
+  intl: intlShape,
+}> {
   constructor(props: Object) {
     super(props);
     (this: any).onPress = this.onPress.bind(this);
@@ -292,18 +281,17 @@ class _EventSource extends React.PureComponent {
 }
 const EventSource = injectIntl(_EventSource);
 
-class _EventAddedBy extends React.PureComponent {
-  props: {
+class _EventAddedBy extends React.PureComponent<
+  {
     event: Event,
 
     // Self-managed props
     intl: intlShape,
-  };
-
-  state: {
+  },
+  {
     addedBy: ?string,
-  };
-
+  }
+> {
   constructor(props) {
     super(props);
     this.state = {
@@ -352,18 +340,17 @@ class _EventAddedBy extends React.PureComponent {
 }
 const EventAddedBy = injectIntl(_EventAddedBy);
 
-class _EventOrganizers extends React.PureComponent {
-  props: {
+class _EventOrganizers extends React.PureComponent<
+  {
     event: Event,
 
     // Self-managed props
     intl: intlShape,
-  };
-
-  state: {
+  },
+  {
     opened: boolean,
-  };
-
+  }
+> {
   constructor(props) {
     super(props);
     this.state = {
@@ -453,8 +440,8 @@ class _EventOrganizers extends React.PureComponent {
 }
 const EventOrganizers = injectIntl(_EventOrganizers);
 
-class _EventRsvpControl extends React.PureComponent {
-  props: {
+class _EventRsvpControl extends React.PureComponent<
+  {
     event: Event,
     style?: Object,
 
@@ -465,13 +452,12 @@ class _EventRsvpControl extends React.PureComponent {
       feature: string,
       props: { intl: intlShape, user: ?User }
     ) => Promise<void>,
-  };
-
-  state: {
+  },
+  {
     loading: boolean,
     defaultRsvp: number,
-  };
-
+  }
+> {
   constructor(props: Object) {
     super(props);
     this.state = {
@@ -572,14 +558,12 @@ const EventRsvpControl = connect(
   })
 )(injectIntl(_EventRsvpControl));
 
-class _EventRsvp extends React.Component {
-  props: {
-    event: Event,
+class _EventRsvp extends React.Component<{
+  event: Event,
 
-    // Self-managed props
-    intl: intlShape,
-  };
-
+  // Self-managed props
+  intl: intlShape,
+}> {
   render() {
     if (this.props.event.rsvp) {
       const counts = formatAttending(this.props.intl, this.props.event.rsvp);
@@ -605,14 +589,12 @@ class _EventRsvp extends React.Component {
 }
 const EventRsvp = injectIntl(_EventRsvp);
 
-class _EventDescription extends React.PureComponent {
-  props: {
-    event: Event,
+class _EventDescription extends React.PureComponent<{
+  event: Event,
 
-    // Self-managed props
-    translatedEvents: { [id: string]: TranslatedEvent },
-  };
-
+  // Self-managed props
+  translatedEvents: { [id: string]: TranslatedEvent },
+}> {
   render() {
     let description = this.props.event.description;
     const translatedEvent = this.props.translatedEvents[this.props.event.id];
@@ -641,14 +623,12 @@ const EventDescription = connect(state => ({
   translatedEvents: state.translate.events,
 }))(_EventDescription);
 
-class _TranslateButton extends React.PureComponent {
-  props: {
-    event: Event,
+class _TranslateButton extends React.PureComponent<{
+  event: Event,
 
-    // Self-managed props
-    intl: intlShape,
-  };
-
+  // Self-managed props
+  intl: intlShape,
+}> {
   render() {
     if (this.props.event.language !== this.props.intl.locale) {
       return <EventTranslate event={this.props.event} />;
@@ -715,11 +695,9 @@ async function openVenueWithApp(venue: Venue) {
   }
 }
 
-class EventShare extends React.PureComponent {
-  props: {
-    event: Event,
-  };
-
+class EventShare extends React.PureComponent<{
+  event: Event,
+}> {
   render() {
     const shareContent = {
       contentType: 'link',
@@ -733,20 +711,18 @@ class EventShare extends React.PureComponent {
   }
 }
 
-class _EventTranslate extends React.PureComponent {
-  props: {
-    event: Event,
+class _EventTranslate extends React.PureComponent<{
+  event: Event,
 
-    // Self-managed props
-    intl: intlShape,
-    translatedEvents: { [id: string]: TranslatedEvent },
-    toggleEventTranslation: (
-      eventId: string,
-      language: string,
-      intl: intlShape
-    ) => void,
-  };
-
+  // Self-managed props
+  intl: intlShape,
+  translatedEvents: { [id: string]: TranslatedEvent },
+  toggleEventTranslation: (
+    eventId: string,
+    language: string,
+    intl: intlShape
+  ) => void,
+}> {
   render() {
     const translatedEvent = this.props.translatedEvents[this.props.event.id];
     const translatedText =
@@ -780,14 +756,12 @@ const EventTranslate = connect(
   })
 )(injectIntl(_EventTranslate));
 
-class _EventTickets extends React.PureComponent {
-  props: {
-    event: Event,
+class _EventTickets extends React.PureComponent<{
+  event: Event,
 
-    // Self-managed props
-    intl: intlShape,
-  };
-
+  // Self-managed props
+  intl: intlShape,
+}> {
   constructor(props) {
     super(props);
     (this: any).onTicketClicked = this.onTicketClicked.bind(this);
@@ -834,14 +808,12 @@ class _EventTickets extends React.PureComponent {
 }
 const EventTickets = injectIntl(_EventTickets);
 
-class _FullEventView extends React.Component {
-  props: {
-    onFlyerSelected: (x: Event) => ThunkAction,
-    event: Event,
-    currentPosition: any,
-    translatedEvents: { [key: string]: TranslatedEvent },
-  };
-
+class _FullEventView extends React.Component<{
+  onFlyerSelected: (x: Event) => ThunkAction,
+  event: Event,
+  currentPosition: any,
+  translatedEvents: { [key: string]: TranslatedEvent },
+}> {
   constructor(props: Object) {
     super(props);
     (this: any).onLocationClicked = this.onLocationClicked.bind(this);

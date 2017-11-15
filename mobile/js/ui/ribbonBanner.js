@@ -38,7 +38,7 @@ export default class RibbonBanner extends React.Component {
     this.state = { dimensions: null };
   }
 
-  onLayout(e: SyntheticEvent) {
+  onLayout(e: SyntheticEvent<>) {
     const nativeEvent: any = e.nativeEvent;
     const layout = nativeEvent.layout;
     this.setState({

@@ -9,16 +9,14 @@ import classNames from 'classnames';
 import { AmpImage } from './ampImage';
 import type { RequiredImage } from './ampImage';
 
-export class ImagePrefix extends React.Component {
-  props: {
-    icon?: number, // aka required package
-    iconUrl?: string,
-    iconName?: string,
-    className?: string,
-    amp?: boolean,
-    children?: Array<React.Element<*>>,
-  };
-
+export class ImagePrefix extends React.Component<{
+  icon?: number, // aka required package
+  iconUrl?: string,
+  iconName?: string,
+  className?: string,
+  amp?: boolean,
+  children: React.Node,
+}> {
   render() {
     if (!this.props.icon && !this.props.iconName && !this.props.iconUrl) {
       console.error('Missing icon and iconName and iconUrl');
@@ -60,11 +58,10 @@ export class ImagePrefix extends React.Component {
   }
 }
 
-export class ImagePrefixInline extends React.Component {
-  props: {
-    className?: string,
-  };
-
+export class ImagePrefixInline extends React.Component<{
+  className?: string,
+  children: React.Node,
+}> {
   render() {
     const { className, ...otherProps } = this.props;
     return (

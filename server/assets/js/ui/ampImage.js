@@ -15,15 +15,13 @@ export type RequiredImage = {
 };
 type ClientCover = Cover | RequiredImage;
 
-export class AmpImage extends React.Component {
-  props: {
-    picture: ClientCover,
-    amp?: ?boolean,
-    width?: string,
-    srcSet?: string,
-    sizes?: string,
-  };
-
+export class AmpImage extends React.Component<{
+  picture: ClientCover,
+  amp?: ?boolean,
+  width?: string,
+  srcSet?: string,
+  sizes?: string,
+}> {
   render() {
     const { picture, amp, width, srcSet, sizes, ...otherProps } = this.props;
     if (this.props.amp) {
