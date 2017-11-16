@@ -13,6 +13,7 @@ export type SearchQuery = {
   keywords: string,
   timePeriod: TimePeriod,
   locale?: string,
+  deb?: string,
 };
 
 export type Onebox = {

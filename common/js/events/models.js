@@ -12,8 +12,8 @@ export type JSONObject = { [key: string]: JSON };
 type JSONArray = Array<JSON>;
 type MiniImageProp = {
   uri: string,
-  width: ?number,
-  height: ?number,
+  width: number,
+  height: number,
 };
 
 const squareImageSize = 180;
@@ -105,6 +105,51 @@ export type EventRsvpList = {
   maybe_count: number,
 };
 
+export class Picture extends JsonDerivedObject {
+  source: string;
+  height: number;
+  width: number;
+
+  getCroppedCover(width: ?number, height: ?number, index?: number): Cover {
+    let { source } = this;
+    if (index) {
+      source += `/${index}`;
+    }
+    return {
+      source: addUrlArgs(source, { width, height }),
+      width,
+      height,
+    };
+  }
+
+  getFlyer(dimensions: { width?: number, height?: number }): MiniImageProp {
+    let { width, height } = dimensions;
+    if (!width && !height) {
+      return {
+        uri: this.source,
+        width: this.width,
+        height: this.height,
+      };
+    } else {
+      const ratio = this.width / this.height;
+      if (!height && width) {
+        height = Math.floor(width / ratio);
+      } else if (!width && height) {
+        width = Math.floor(height / ratio);
+      }
+      const cover = this.getCroppedCover(width, height);
+      if (!cover.width || !cover.height) {
+        throw new Error('Unexpectedly got cover with');
+      }
+      return {
+        uri: cover.source,
+        width: cover.width,
+        height: cover.height,
+      };
+    }
+  }
+}
+
 export class BaseEvent extends JsonDerivedObject {
   id: string;
   name: string;
@@ -113,10 +158,12 @@ export class BaseEvent extends JsonDerivedObject {
   end_time: ?string; // eslint-disable-line camelcase
   picture: ?SizedCover;
   venue: Venue;
+  picture: ?Picture;
 
   constructor(eventData: JSONObject) {
     super(eventData);
     this.venue = new Venue(eventData.venue);
+    this.picture = eventData.picture ? new Picture(eventData.picture) : null;
   }
 
   getRelativeUrl() {
@@ -132,15 +179,9 @@ export class BaseEvent extends JsonDerivedObject {
     if (!this.picture) {
       return null;
     }
-    let source = this.picture.source;
-    if (index) {
-      source += `/${index}`;
-    }
-    return {
-      source: addUrlArgs(source, { width, height }),
-      width,
-      height,
-    };
+    return this.picture
+      ? this.picture.getCroppedCover(width, height, index)
+      : null;
   }
 
   startTime({ timezone }: { timezone: boolean }) {
@@ -241,7 +282,6 @@ export class Event extends BaseEvent {
     name: string,
   };
   rsvp: ?EventRsvpList;
-  picture: ?SizedCover;
   venue: Venue;
   annotations: {
     categories: Array<string>,
@@ -259,42 +299,22 @@ export class Event extends BaseEvent {
   extraImageCount: number;
 
   getFlyer(dimensions: { width?: number, height?: number }): ?MiniImageProp {
-    if (!this.picture) {
-      return null;
-    }
-    let { width, height } = dimensions;
-    let cover = null;
-    if (!width && !height) {
-      cover = this.picture;
-    }
-
-    const ratio = this.picture.width / this.picture.height;
-    if (!height && width) {
-      height = Math.floor(width / ratio);
-    } else if (!width && height) {
-      width = Math.floor(height / ratio);
-    }
-    cover = this.getCroppedCover(width, height);
-    if (!cover) {
-      // Shouldn't happen since we check this.picture up above,
-      // but this helps with flow type-checking
-      return null;
-    }
-    return {
-      uri: cover.source,
-      width: cover.width,
-      height: cover.height,
-    };
+    return this.picture ? this.picture.getFlyer(dimensions) : null;
   }
 
   getSquareFlyer(): ?MiniImageProp {
-    return this.getFlyer({ width: squareImageSize, height: squareImageSize });
+    return this.picture
+      ? this.picture.getFlyer({
+          width: squareImageSize,
+          height: squareImageSize,
+        })
+      : null;
   }
 
-  getResponsiveFlyers(): Array<?MiniImageProp> {
-    if (!this.picture) {
-      return [];
-    }
-    return [320, 480, 720, 1080, 1440].map(width => this.getFlyer({ width }));
+  getResponsiveFlyers(): Array<MiniImageProp> {
+    const { picture } = this;
+    return picture
+      ? [320, 480, 720, 1080, 1440].map(width => picture.getFlyer({ width }))
+      : [];
   }
 }
