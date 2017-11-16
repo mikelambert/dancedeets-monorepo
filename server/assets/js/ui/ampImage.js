@@ -6,17 +6,25 @@
 
 import * as React from 'react';
 
-import type { Cover } from 'dancedeets-common/js/events/models';
-
-export type RequiredImage = {
-  source: number | string, // aka required package
+export type ImportedImage = {
+  uri: number, // aka require()'d package
+  width: ?number,
+  height: ?number,
+};
+export type RegularImage = {
+  uri: string,
+  width: ?number,
+  height: ?number,
+};
+export type FullImage = {
+  uri: string,
   width: number,
   height: number,
 };
-type ClientCover = Cover | RequiredImage;
+type ClientImage = RegularImage | ImportedImage | FullImage;
 
 export class AmpImage extends React.Component<{
-  picture: ClientCover,
+  picture: ClientImage,
   amp?: ?boolean,
   width?: string,
   srcSet?: string,
@@ -27,7 +35,7 @@ export class AmpImage extends React.Component<{
     if (this.props.amp) {
       return (
         <amp-img
-          src={picture.source}
+          src={picture.uri}
           layout="responsive"
           width={picture.width}
           height={picture.height}
@@ -39,7 +47,7 @@ export class AmpImage extends React.Component<{
       return (
         <img
           alt="" // Possibly overridden in caller's props
-          src={picture.source}
+          src={picture.uri}
           width={width}
           srcSet={srcSet}
           sizes={sizes}

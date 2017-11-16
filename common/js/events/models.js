@@ -10,7 +10,8 @@ import { addUrlArgs } from '../util/url';
 type JSON = string | number | boolean | null | JSONObject | JSONArray;
 export type JSONObject = { [key: string]: JSON };
 type JSONArray = Array<JSON>;
-type MiniImageProp = {
+
+export type MiniImageProp = {
   uri: string,
   width: number,
   height: number,
@@ -18,14 +19,8 @@ type MiniImageProp = {
 
 const squareImageSize = 180;
 
-export type SizedCover = {
-  source: string,
-  height: number,
-  width: number,
-};
-
 export type Cover = {
-  source: string,
+  uri: string,
   height: ?number,
   width: ?number,
 };
@@ -116,7 +111,7 @@ export class Picture extends JsonDerivedObject {
       source += `/${index}`;
     }
     return {
-      source: addUrlArgs(source, { width, height }),
+      uri: addUrlArgs(source, { width, height }),
       width,
       height,
     };
@@ -142,7 +137,7 @@ export class Picture extends JsonDerivedObject {
         throw new Error('Unexpectedly got cover with');
       }
       return {
-        uri: cover.source,
+        uri: cover.uri,
         width: cover.width,
         height: cover.height,
       };
@@ -156,7 +151,6 @@ export class BaseEvent extends JsonDerivedObject {
   slugged_name: string; // eslint-disable-line camelcase
   start_time: string; // eslint-disable-line camelcase
   end_time: ?string; // eslint-disable-line camelcase
-  picture: ?SizedCover;
   venue: Venue;
   picture: ?Picture;
 

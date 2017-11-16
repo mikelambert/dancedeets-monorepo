@@ -438,7 +438,7 @@ class MapWithLinks extends React.Component<{
         <AmpImage
           amp={this.props.amp}
           picture={{
-            source: staticMapImageUrl,
+            uri: staticMapImageUrl,
             width: size,
             height: size,
           }}
@@ -541,14 +541,16 @@ class ExtraImages extends React.Component<{
     let i = 0;
     while (i < this.props.event.extraImageCount) {
       const source = this.props.event.getCroppedCover(480, null, i);
-      images.push(
-        <AmpImage
-          key={i}
-          picture={source}
-          amp={this.props.amp}
-          className="event-flyer"
-        />
-      );
+      if (source) {
+        images.push(
+          <AmpImage
+            key={i}
+            picture={source}
+            amp={this.props.amp}
+            className="event-flyer"
+          />
+        );
+      }
       i += 1;
     }
     return images;

@@ -7,7 +7,7 @@
 import * as React from 'react';
 import classNames from 'classnames';
 import { AmpImage } from './ampImage';
-import type { RequiredImage } from './ampImage';
+import type { RegularImage, ImportedImage } from './ampImage';
 
 export class ImagePrefix extends React.Component<{
   icon?: number, // aka required package
@@ -32,10 +32,9 @@ export class ImagePrefix extends React.Component<{
       ...otherProps
     } = this.props;
     let iconHtml = null;
-    const iconSourceOrUrl = icon || iconUrl;
-    if (iconSourceOrUrl) {
-      const picture: RequiredImage = {
-        source: iconSourceOrUrl,
+    if (icon) {
+      const picture: ImportedImage = {
+        uri: icon,
         width: 18,
         height: 18,
       };
@@ -44,10 +43,19 @@ export class ImagePrefix extends React.Component<{
           <AmpImage picture={picture} width="18" amp={this.props.amp} />
         </span>
       );
-    } else if (this.props.iconName) {
+    } else if (iconUrl) {
+      const picture: RegularImage = {
+        uri: iconUrl,
+        width: 18,
+        height: 18,
+      };
       iconHtml = (
-        <i className={`fa fa-${this.props.iconName} fa-lg image-prefix-icon`} />
+        <span className="fa fa-lg image-prefix-icon image-prefix-dancer">
+          <AmpImage picture={picture} width="18" amp={this.props.amp} />
+        </span>
       );
+    } else if (iconName) {
+      iconHtml = <i className={`fa fa-${iconName} fa-lg image-prefix-icon`} />;
     }
     return (
       <div className={`image-prefix ${className || ''}`} {...otherProps}>

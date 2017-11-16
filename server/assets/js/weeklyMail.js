@@ -68,7 +68,7 @@ class _MailEvent extends React.Component<{
         <mj-image
           align="left"
           padding-right={gutter}
-          src={coverUrl.source}
+          src={coverUrl.uri}
           alt=""
           width={size}
           href={eventUrl}

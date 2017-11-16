@@ -23,11 +23,7 @@ export class SquareEventFlyer extends React.Component<{
     }
     let imageTag = (
       <div className="square-flyer">
-        <img
-          alt=""
-          src={croppedPicture.source}
-          className="full-width no-border"
-        />
+        <img alt="" src={croppedPicture.uri} className="full-width no-border" />
       </div>
     );
     if (this.props.lazyLoad) {

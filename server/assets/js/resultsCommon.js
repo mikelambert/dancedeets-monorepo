@@ -23,6 +23,7 @@ type Query = {
   keywords: string,
   start: string,
   end: string,
+  deb?: string,
 };
 
 class _DatePicker extends React.Component<

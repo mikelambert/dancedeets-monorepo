@@ -101,11 +101,7 @@ export class HorizontalEventFlyer extends React.Component<{
           paddingBottom: `${scaledHeight}%`,
         }}
       >
-        <img
-          alt=""
-          src={croppedPicture.source}
-          className="full-width no-border"
-        />
+        <img alt="" src={croppedPicture.uri} className="full-width no-border" />
       </div>
     );
     return (
