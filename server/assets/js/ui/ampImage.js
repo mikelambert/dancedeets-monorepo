@@ -5,23 +5,17 @@
  */
 
 import * as React from 'react';
+import type {
+  ImageWithSizes,
+  ImageOptionalSizes,
+} from 'dancedeets-common/js/events/models';
 
 export type ImportedImage = {
   uri: number, // aka require()'d package
   width: ?number,
   height: ?number,
 };
-export type RegularImage = {
-  uri: string,
-  width: ?number,
-  height: ?number,
-};
-export type FullImage = {
-  uri: string,
-  width: number,
-  height: number,
-};
-type ClientImage = RegularImage | ImportedImage | FullImage;
+type ClientImage = ImportedImage | ImageOptionalSizes | ImageWithSizes;
 
 export class AmpImage extends React.Component<{
   picture: ClientImage,

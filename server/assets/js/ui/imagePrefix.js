@@ -6,8 +6,9 @@
 
 import * as React from 'react';
 import classNames from 'classnames';
+import type { ImageWithSizes } from 'dancedeets-common/js/events/models';
 import { AmpImage } from './ampImage';
-import type { RegularImage, ImportedImage } from './ampImage';
+import type { ImportedImage } from './ampImage';
 
 export class ImagePrefix extends React.Component<{
   icon?: number, // aka required package
@@ -44,7 +45,7 @@ export class ImagePrefix extends React.Component<{
         </span>
       );
     } else if (iconUrl) {
-      const picture: RegularImage = {
+      const picture: ImageWithSizes = {
         uri: iconUrl,
         width: 18,
         height: 18,

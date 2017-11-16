@@ -11,7 +11,7 @@ type JSON = string | number | boolean | null | JSONObject | JSONArray;
 export type JSONObject = { [key: string]: JSON };
 type JSONArray = Array<JSON>;
 
-export type MiniImageProp = {
+export type ImageWithSizes = {
   uri: string,
   width: number,
   height: number,
@@ -19,7 +19,7 @@ export type MiniImageProp = {
 
 const squareImageSize = 180;
 
-export type Cover = {
+export type ImageOptionalSizes = {
   uri: string,
   height: ?number,
   width: ?number,
@@ -105,7 +105,11 @@ export class Picture extends JsonDerivedObject {
   height: number;
   width: number;
 
-  getCroppedCover(width: ?number, height: ?number, index?: number): Cover {
+  getCroppedCover(
+    width: ?number,
+    height: ?number,
+    index?: number
+  ): ImageOptionalSizes {
     let { source } = this;
     if (index) {
       source += `/${index}`;
@@ -117,7 +121,7 @@ export class Picture extends JsonDerivedObject {
     };
   }
 
-  getFlyer(dimensions: { width?: number, height?: number }): MiniImageProp {
+  getFlyer(dimensions: { width?: number, height?: number }): ImageWithSizes {
     let { width, height } = dimensions;
     if (!width && !height) {
       return {
@@ -169,7 +173,11 @@ export class BaseEvent extends JsonDerivedObject {
     return addUrlArgs(url, args);
   }
 
-  getCroppedCover(width: ?number, height: ?number, index?: number): ?Cover {
+  getCroppedCover(
+    width: ?number,
+    height: ?number,
+    index?: number
+  ): ?ImageOptionalSizes {
     if (!this.picture) {
       return null;
     }
@@ -292,11 +300,11 @@ export class Event extends BaseEvent {
   ticket_uri: string; // eslint-disable-line camelcase
   extraImageCount: number;
 
-  getFlyer(dimensions: { width?: number, height?: number }): ?MiniImageProp {
+  getFlyer(dimensions: { width?: number, height?: number }): ?ImageWithSizes {
     return this.picture ? this.picture.getFlyer(dimensions) : null;
   }
 
-  getSquareFlyer(): ?MiniImageProp {
+  getSquareFlyer(): ?ImageWithSizes {
     return this.picture
       ? this.picture.getFlyer({
           width: squareImageSize,
@@ -305,7 +313,7 @@ export class Event extends BaseEvent {
       : null;
   }
 
-  getResponsiveFlyers(): Array<MiniImageProp> {
+  getResponsiveFlyers(): Array<ImageWithSizes> {
     const { picture } = this;
     return picture
       ? [320, 480, 720, 1080, 1440].map(width => picture.getFlyer({ width }))
