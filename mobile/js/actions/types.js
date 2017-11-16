@@ -22,7 +22,10 @@
  * @flow
  */
 
-import type { NavigationRoute } from 'react-navigation/src/TypeDefinition';
+import type {
+  PossiblyDeprecatedNavigationAction,
+  NavigationRoute,
+} from 'react-navigation/src/TypeDefinition';
 import { AccessToken } from 'react-native-fbsdk';
 import type { SearchResponse } from 'dancedeets-common/js/events/search';
 import type { AddEventList, SortOrder } from '../addEventsModels';
@@ -69,7 +72,12 @@ export type Action =
   | { type: 'FIREBASE_UPDATE', key: string, value: any };
 
 export type Dispatch = (
-  action: Action | ThunkAction | PromiseAction | Array<Action>
+  action:
+    | PossiblyDeprecatedNavigationAction
+    | Action
+    | ThunkAction
+    | PromiseAction
+    | Array<Action>
 ) => any;
 export type GetState = () => Object;
 export type ThunkAction = (dispatch: Dispatch, getState: GetState) => any;

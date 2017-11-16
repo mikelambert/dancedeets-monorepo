@@ -25,7 +25,7 @@ class _CategorySignupScreen extends React.Component<
     category: BattleCategory,
 
     // Self-managed props
-    navigation: NavigationScreenProp<NavigationRoute, NavigationAction>,
+    navigation: NavigationScreenProp<any>,
   },
   {
     values: Object,

@@ -36,7 +36,7 @@ const messages = defineMessages({
 });
 
 class MainScreen extends React.Component<{
-  navigation: NavigationScreenProp<NavigationRoute, NavigationAction>,
+  navigation: NavigationScreenProp<any>,
 }> {
   static navigationOptions = ({ screenProps }) => ({
     title: screenProps.intl.formatMessage(messages.about),

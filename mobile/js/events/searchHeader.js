@@ -150,9 +150,9 @@ class _SearchHeader extends React.Component<
     height: number,
   }
 > {
-  _location: SearchInput;
-  _keywords: SearchInput;
-  _locationAutocomplete: AutocompleteList;
+  _location: ?SearchInput;
+  _keywords: ?SearchInput;
+  _locationAutocomplete: ?AutocompleteList;
 
   constructor(props) {
     super(props);
@@ -191,24 +191,32 @@ class _SearchHeader extends React.Component<
           ref={x => {
             this._location = x;
           }}
-          iconName={'md-locate'}
+          iconName="md-locate"
           style={{ marginTop: 5 }}
           placeholder={this.props.intl.formatMessage(messages.location)}
           returnKeyType="search"
           onChangeText={text => {
             if (this.props.searchQuery.location !== text) {
               this.props.updateLocation(text);
-              this._locationAutocomplete.onTextInputChangeText(text);
+              if (this._locationAutocomplete) {
+                this._locationAutocomplete.onTextInputChangeText(text);
+              }
             }
           }}
           onFocus={() => {
-            this._locationAutocomplete.onTextInputFocus();
+            if (this._locationAutocomplete) {
+              this._locationAutocomplete.onTextInputFocus();
+            }
           }}
           onBlur={() => {
-            this._locationAutocomplete.onTextInputBlur();
+            if (this._locationAutocomplete) {
+              this._locationAutocomplete.onTextInputBlur();
+            }
           }}
           onSubmitEditing={() => {
-            this._locationAutocomplete.onTextInputBlur();
+            if (this._locationAutocomplete) {
+              this._locationAutocomplete.onTextInputBlur();
+            }
             this.props.performSearch();
           }}
           value={this.props.searchQuery.location}
@@ -218,7 +226,7 @@ class _SearchHeader extends React.Component<
           ref={x => {
             this._keywords = x;
           }}
-          iconName={'md-search'}
+          iconName="md-search"
           style={{ marginTop: 5 }}
           placeholder={this.props.intl.formatMessage(messages.keywords)}
           returnKeyType="search"
@@ -248,7 +256,9 @@ class _SearchHeader extends React.Component<
         )}
         onLocationSelected={async text => {
           await this.props.updateLocation(text);
-          this._location.blur();
+          if (this._location) {
+            this._location.blur();
+          }
           await this.props.performSearch();
         }}
         predefinedPlaces={this.props.intl

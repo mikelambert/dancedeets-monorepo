@@ -20,17 +20,16 @@ type Props = {
   initialDimensions?: Dimension,
 };
 
-export default class ProportionalImage extends React.PureComponent {
+export default class ProportionalImage extends React.PureComponent<
+  Props,
+  {
+    dimensions: ?Dimension,
+    opacity: any,
+  }
+> {
   static defaultProps = {
     duration: 200,
     resizeDirection: 'height',
-  };
-
-  props: Props;
-
-  state: {
-    dimensions: ?Dimension,
-    opacity: any,
   };
 
   constructor(props: Props) {
@@ -53,8 +52,8 @@ export default class ProportionalImage extends React.PureComponent {
   // So don't do any computations that are dependent on this.props here.
   // Instead just save the necessary bits of state and do the computation elsewhere.
   onLayout(e: SyntheticEvent<>) {
-    const nativeEvent: any = e.nativeEvent;
-    const layout = nativeEvent.layout;
+    const { nativeEvent } = e;
+    const { layout } = nativeEvent;
     this.setState({
       dimensions: {
         width: layout.width,
@@ -72,7 +71,7 @@ export default class ProportionalImage extends React.PureComponent {
   }
 
   getComputedWidthHeight() {
-    const dimensions = this.state.dimensions;
+    const { dimensions } = this.state;
     if (!dimensions) {
       return {};
     }
@@ -94,7 +93,7 @@ export default class ProportionalImage extends React.PureComponent {
     this.view.setNativeProps(nativeProps);
   }
 
-  view: View;
+  view: ?View;
 
   render() {
     const resizedDimensions = this.getComputedWidthHeight();

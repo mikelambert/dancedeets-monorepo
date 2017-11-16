@@ -8,7 +8,7 @@ import * as React from 'react';
 import { ListView } from 'react-native';
 
 type Props = {
-  children: React.Node,
+  children: Array<React.Element<*>>,
 };
 
 export default class ProgressiveLayout extends React.Component<

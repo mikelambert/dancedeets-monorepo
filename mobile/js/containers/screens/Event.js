@@ -205,7 +205,7 @@ class NavButton extends React.PureComponent<{
 }
 
 class EventListScreen extends React.Component<{
-  navigation: NavigationScreenProp<NavigationRoute, NavigationAction>,
+  navigation: NavigationScreenProp<any>,
   screenProps: Object,
 }> {
   static navigationOptions = ({ screenProps }) => {
@@ -282,7 +282,7 @@ class EventListScreen extends React.Component<{
 }
 
 class FeaturedEventScreen extends React.Component<{
-  navigation: NavigationScreenProp<NavigationRoute, NavigationAction>,
+  navigation: NavigationScreenProp<any>,
 }> {
   static navigationOptions = ({ navigation }) => ({
     title: navigation.state.params.event.name,
@@ -316,7 +316,7 @@ class FeaturedEventScreen extends React.Component<{
 }
 
 class EventScreen extends React.Component<{
-  navigation: NavigationScreenProp<NavigationRoute, NavigationAction>,
+  navigation: NavigationScreenProp<any>,
 }> {
   static navigationOptions = ({ navigation }) => ({
     title: navigation.state.params.event.name,
@@ -352,7 +352,7 @@ class EventScreen extends React.Component<{
 }
 
 class FlyerScreen extends React.Component<{
-  navigation: NavigationScreenProp<NavigationRoute, NavigationAction>,
+  navigation: NavigationScreenProp<any>,
 }> {
   static navigationOptions = ({ screenProps }) => ({
     title: screenProps.intl.formatMessage(messages.viewFlyer),
@@ -392,7 +392,7 @@ class _EventScreensNavigator extends React.Component<{
   navRef?: (nav: StackNavigator) => void,
 
   // Self-managed props
-  navigation: NavigationScreenProp<NavigationRoute, NavigationAction>,
+  navigation: NavigationScreenProp<any>,
   intl: intlShape,
   canOpenAddEvent: (props: any) => Promise<boolean>,
   search: State,
@@ -402,7 +402,7 @@ class _EventScreensNavigator extends React.Component<{
   hideSearchForm: () => void,
   performSearch: () => Promise<void>,
 }> {
-  _nav: StackNavigator;
+  _nav: ?StackNavigator;
 
   constructor(props) {
     super(props);
@@ -422,7 +422,7 @@ class _EventScreensNavigator extends React.Component<{
       <RealEventScreensNavigator
         ref={nav => {
           this._nav = nav;
-          if (this.props.navRef != null) {
+          if (nav && this.props.navRef != null) {
             this.props.navRef(nav);
           }
         }}

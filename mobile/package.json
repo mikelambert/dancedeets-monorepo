@@ -31,7 +31,7 @@
     "react-native-device-info": "^0.9.9",
     "react-native-fabric": "github:corymsmith/react-native-fabric",
     "react-native-fabric-crashlytics": "^0.1.5",
-    "react-native-fbsdk": "^0.6.1",
+    "react-native-fbsdk": "^0.6.3",
     "react-native-firebase3": "0.1.5",
     "react-native-firestack": "github:mikelambert/react-native-firestack",
     "react-native-fit-image": "^1.5.4",

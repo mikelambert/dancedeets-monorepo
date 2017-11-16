@@ -33,7 +33,7 @@ const messages = defineMessages({
 });
 
 class TutorialStylesView extends React.Component<{
-  navigation: NavigationScreenProp<NavigationRoute, NavigationAction>,
+  navigation: NavigationScreenProp<any>,
 }> {
   static navigationOptions = ({ screenProps }) => ({
     title: screenProps.intl.formatMessage(messages.learnTitle),
@@ -57,7 +57,7 @@ class TutorialStylesView extends React.Component<{
 }
 
 class TutorialListView extends React.Component<{
-  navigation: NavigationScreenProp<NavigationRoute, NavigationAction>,
+  navigation: NavigationScreenProp<any>,
 }> {
   static navigationOptions = ({ navigation, screenProps }) => {
     const { category } = navigation.state.params;
@@ -93,7 +93,7 @@ class TutorialListView extends React.Component<{
 }
 
 class TutorialView extends React.Component<{
-  navigation: NavigationScreenProp<NavigationRoute, NavigationAction>,
+  navigation: NavigationScreenProp<any>,
 }> {
   static navigationOptions = ({ navigation, screenProps }) => {
     const { playlist } = navigation.state.params;

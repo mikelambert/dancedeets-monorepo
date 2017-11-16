@@ -5,15 +5,13 @@
  */
 
 import * as React from 'react';
-import { Image, StyleSheet } from 'react-native';
 import { addNavigationHelpers } from 'react-navigation';
 import type {
-  NavigationAction,
+  NavigationNavigateAction,
   NavigationParams,
 } from 'react-navigation/src/TypeDefinition';
 import { connect } from 'react-redux';
 import { injectIntl, intlShape } from 'react-intl';
-import { semiNormalize } from '../ui';
 import type { Dispatch } from '../actions/types';
 import TabNavigator from './TabNavigator';
 import { TimeTracker } from '../util/timeTracker';
@@ -44,11 +42,12 @@ class TabApp extends React.Component<{
             navigate: (
               routeName: string,
               params?: NavigationParams,
-              action?: NavigationAction
+              action?: NavigationNavigateAction
             ) => {
               // Override our navigation.navigate(), so we can track tab switchings
               track('Tab Selected', { Tab: routeName });
               navigation.navigate(routeName, params, action);
+              return true;
             },
           }}
           {...props}
