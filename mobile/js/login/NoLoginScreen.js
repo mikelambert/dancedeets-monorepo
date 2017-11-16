@@ -5,7 +5,7 @@
  */
 
 import * as React from 'react';
-import { Image, StyleSheet, View } from 'react-native';
+import { ImageBackground, StyleSheet, View } from 'react-native';
 import { defineMessages, injectIntl, intlShape } from 'react-intl';
 import LoginButtonWithAlternate from './LoginButtonWithAlternate';
 import { normalize, Text } from '../ui';
@@ -52,7 +52,7 @@ class _NoLoginScreen extends React.Component<{
   render() {
     return (
       <View style={styles.container}>
-        <Image
+        <ImageBackground
           style={[styles.container, styles.topAndBottom]}
           source={require('./images/Onboard4.jpg')}
         >
@@ -66,7 +66,7 @@ class _NoLoginScreen extends React.Component<{
               messages.useWithoutLogin
             )}
           />
-        </Image>
+        </ImageBackground>
       </View>
     );
   }

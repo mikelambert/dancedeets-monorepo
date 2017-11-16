@@ -8,6 +8,7 @@ import * as React from 'react';
 import {
   Animated,
   Image,
+  ImageBackground,
   PanResponder,
   Platform,
   StyleSheet,
@@ -173,7 +174,7 @@ export default class MyVideoPlayer extends VideoPlayer {
           },
         ]}
       >
-        <Image
+        <ImageBackground
           source={require('react-native-video-controls/assets/img/bottom-vignette.png')}
           style={[styles.controls.column, styles.controls.vignette]}
         >
@@ -184,7 +185,7 @@ export default class MyVideoPlayer extends VideoPlayer {
             <View style={styles.controls.seekbar}>{this.renderSeekbar()}</View>
             {this.renderTimer()}
           </View>
-        </Image>
+        </ImageBackground>
       </Animated.View>
     );
   }

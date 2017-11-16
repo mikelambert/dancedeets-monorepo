@@ -5,7 +5,7 @@
  */
 
 import * as React from 'react';
-import { Dimensions, Image, StyleSheet, View } from 'react-native';
+import { Dimensions, ImageBackground, StyleSheet, View } from 'react-native';
 import Carousel from 'react-native-carousel';
 import { defineMessages, injectIntl, intlShape } from 'react-intl';
 import LaunchScreen from './LaunchScreen';
@@ -115,44 +115,44 @@ class _TutorialScreen extends React.Component<{
       return <LaunchScreen>{bottomFade}</LaunchScreen>;
     } else if (pageID === 1) {
       return (
-        <Image
+        <ImageBackground
           style={styles.container}
           source={require('./images/Onboard1.jpg')}
         >
           {bottomFade}
-          <Image
+          <ImageBackground
             style={[styles.container, styles.centerItems]}
             source={require('./images/Onboard1Text.png')}
           >
             <TopView page={0} />
-          </Image>
-        </Image>
+          </ImageBackground>
+        </ImageBackground>
       );
     } else if (pageID === 2) {
       return (
-        <Image
+        <ImageBackground
           style={[styles.container, styles.centerItems]}
           source={require('./images/Onboard2.jpg')}
         >
           {bottomFade}
           <TopView page={1} />
-        </Image>
+        </ImageBackground>
       );
     } else if (pageID === 3) {
       return (
         <View style={styles.container}>
-          <Image
+          <ImageBackground
             style={styles.container}
             source={require('./images/Onboard3.jpg')}
           >
             {bottomFade}
-            <Image
+            <ImageBackground
               style={[styles.container, styles.centerItems]}
               source={require('./images/Onboard3Text.png')}
             >
               <TopView page={2} />
-            </Image>
-          </Image>
+            </ImageBackground>
+          </ImageBackground>
         </View>
       );
     }

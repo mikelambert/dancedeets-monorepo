@@ -9,6 +9,7 @@ import {
   AlertIOS,
   Dimensions,
   Image,
+  ImageBackground,
   Linking,
   Platform,
   ScrollView,
@@ -911,13 +912,13 @@ class _FullEventView extends React.Component<{
           ? 1
           : 2 * Dimensions.get('window').width / squareImageProps.width);
       return (
-        <Image
+        <ImageBackground
           source={squareImageProps}
           style={eventStyles.blurredImage}
           blurRadius={blurRadius}
         >
           {eventView}
-        </Image>
+        </ImageBackground>
       );
     } else {
       return eventView;

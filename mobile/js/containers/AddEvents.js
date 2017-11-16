@@ -8,7 +8,7 @@ import * as React from 'react';
 import {
   ActivityIndicator,
   FlatList,
-  Image,
+  ImageBackground,
   StyleSheet,
   TouchableOpacity,
   View,
@@ -206,7 +206,7 @@ class _AddEventRow extends React.Component<AddEventRowProps> {
       <HorizontalView>
         <View style={styles.leftEventImage}>
           <View style={{ borderRadius: 10, width }}>
-            <Image
+            <ImageBackground
               source={{ uri: imageUrl }}
               style={{ width, height: width }}
             />

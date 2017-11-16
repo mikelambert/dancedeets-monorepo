@@ -5,21 +5,21 @@
  */
 
 import * as React from 'react';
-import { Image, Platform, StyleSheet } from 'react-native';
+import { ImageBackground, Platform, StyleSheet } from 'react-native';
 
 export default class LaunchScreen extends React.Component<{
   children: React.Node,
 }> {
   render() {
     return (
-      <Image
+      <ImageBackground
         style={styles.container}
         source={{
           uri: Platform.OS === 'ios' ? 'launch_screen.jpg' : 'launch_screen',
         }}
       >
         {this.props.children}
-      </Image>
+      </ImageBackground>
     );
   }
 }
