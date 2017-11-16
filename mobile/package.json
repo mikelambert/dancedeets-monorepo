@@ -9,6 +9,7 @@
   },
   "dependencies": {
     "cldr-data": "^29.0.1",
+    "create-react-class": "^15.6.2",
     "dancedeets-common": "file:../common",
     "emoji-flags": "^1.1.0",
     "fbjs": "^0.8.6",
@@ -52,7 +53,7 @@
     "react-native-send-intent": "^1.0.13",
     "react-native-sentry": "^0.19.1",
     "react-native-share": "^1.0.20",
-    "react-native-tab-view": "^0.0.65",
+    "react-native-tab-view": "0.0.70",
     "react-native-trackjs": "^0.1.2",
     "react-native-vector-icons": "^4.2.0",
     "react-native-video": "^2.0.0",
