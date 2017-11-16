@@ -31,7 +31,7 @@ export function getEventSchema(event: Event | SearchEvent) {
     // only true for full Event objects
     schema.description = event.description;
   }
-  if (event.admins) {
+  if (event instanceof Event) {
     schema.organizer = event.admins.map(x => x.name).join(', ');
   }
   if (event.end_time) {

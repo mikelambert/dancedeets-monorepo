@@ -12,3 +12,7 @@ declare var module: {
     accept: (path: string, fn: () => void) => void,
   },
 };
+
+declare module CSSModule {
+  declare var exports: { [key: string]: string };
+}
