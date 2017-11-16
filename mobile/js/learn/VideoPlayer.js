@@ -20,7 +20,7 @@ import VideoPlayer from 'react-native-video-controls';
 const ThumbRadius = 8;
 
 export default class MyVideoPlayer extends VideoPlayer {
-  constructor(props) {
+  constructor(props: any) {
     super(props);
 
     this.events.onScreenPress = () => {};

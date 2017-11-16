@@ -336,7 +336,7 @@ class _PlaylistView extends React.Component<
     videoUrl: ?string,
   }
 > {
-  _sectionedListView: SectionList<*>;
+  _sectionedListView: ?SectionList<*>;
   _cachedLayout: Array<{ top: number, bottom: number }>;
   _viewDimensions: { top: number, bottom: number };
 
@@ -432,12 +432,14 @@ class _PlaylistView extends React.Component<
     // only scroll if necessary
     if (viewPosition !== null) {
       const { section, row } = this.props.playlist.getVideoSectionRow(index);
-      this._sectionedListView.scrollToLocation({
-        itemIndex: row,
-        sectionIndex: section,
-        animated: true,
-        viewPosition,
-      });
+      if (this._sectionedListView) {
+        this._sectionedListView.scrollToLocation({
+          itemIndex: row,
+          sectionIndex: section,
+          animated: true,
+          viewPosition,
+        });
+      }
     }
   }
 

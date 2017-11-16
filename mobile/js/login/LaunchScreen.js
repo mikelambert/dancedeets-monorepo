@@ -8,7 +8,7 @@ import * as React from 'react';
 import { ImageBackground, Platform, StyleSheet } from 'react-native';
 
 export default class LaunchScreen extends React.Component<{
-  children: React.Node,
+  children?: React.Node,
 }> {
   render() {
     return (

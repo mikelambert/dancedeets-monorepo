@@ -107,7 +107,7 @@ class Collapsible extends React.Component<
         easing = Easing[easing];
       }
       if (!easing) {
-        throw new Error(`Invalid easing type "${this.props.easing}"`);
+        throw new Error(`Invalid easing type "${String(this.props.easing)}"`);
       }
     }
 

@@ -6,11 +6,10 @@
 
 import * as React from 'react';
 import { FlatList, TouchableOpacity, View } from 'react-native';
-import { injectIntl, defineMessages } from 'react-intl';
-import { Card, defaultFont, HorizontalView, RibbonBanner, Text } from '../ui';
+import { injectIntl } from 'react-intl';
+import { Card, HorizontalView, RibbonBanner, Text } from '../ui';
 import type { BattleCategory, PrelimStatus, Signup } from './models';
 import { getCategorySignups } from './models';
-import CategorySummaryCard from './categorySummaryCard';
 
 class _TeamList extends React.Component<
   {
@@ -57,7 +56,7 @@ class _TeamList extends React.Component<
 
   renderSignup(signup: Signup) {
     const dancers = (signup.dancers || [])
-      .map((x, index) => <Text key={index}>{x.name}</Text>);
+      .map((x, index) => <Text key={x.name}>{x.name}</Text>);
     return (
       <View>
         <HorizontalView>
@@ -72,7 +71,7 @@ class _TeamList extends React.Component<
     );
   }
 
-  renderRow(row) {
+  renderRow(row: { item: { index: number, prelim: PrelimStatus } }) {
     const { prelim, index } = row.item;
     const signup = this.getSignup(prelim);
     if (!signup) {
@@ -89,7 +88,6 @@ class _TeamList extends React.Component<
     const banner = prelim.auditioned ? (
       <RibbonBanner text="Auditioned" width={width} />
     ) : null;
-    const style = null; // prelim.auditioned ? { backgroundColor: 'red' } : null;
     return (
       <TouchableOpacity onPress={() => this.onSignupPressed(prelim)}>
         <Card>

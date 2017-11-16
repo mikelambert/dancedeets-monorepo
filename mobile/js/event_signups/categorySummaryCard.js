@@ -13,7 +13,7 @@ import {
   View,
   ViewPropTypes,
 } from 'react-native';
-import { injectIntl, defineMessages } from 'react-intl';
+import { injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 import danceStyles from 'dancedeets-common/js/styles';
 import danceStyleIcons from 'dancedeets-common/js/styles/icons';
@@ -22,7 +22,6 @@ import { categoryDisplayName, getCategorySignups } from './models';
 import { purpleColors } from '../Colors';
 import {
   Button,
-  Card,
   HorizontalView,
   normalize,
   ProportionalImage,
@@ -90,7 +89,10 @@ class _UserRegistrationStatus extends React.Component<
       });
       if (signedUpTeams.length) {
         const teamTexts = signedUpTeams.map(team => (
-          <HorizontalView style={styles.registrationLineOuter} key={team}>
+          <HorizontalView
+            style={styles.registrationLineOuter}
+            key={team.teamName}
+          >
             <CompactTeam team={team} style={styles.registrationIndent} />
             <Button
               caption="Unregister"
@@ -146,14 +148,16 @@ class CategorySummaryCard extends React.Component<{
   onRegister: (category: BattleCategory) => void,
   onUnregister: (category: BattleCategory, team: Signup) => void,
 }> {
-  _root: View;
+  _root: ?View;
 
   setNativeProps(props: any) {
-    this._root.setNativeProps(props);
+    if (this._root) {
+      this._root.setNativeProps(props);
+    }
   }
 
   dancerIcons(category: BattleCategory) {
-    const display = category.display;
+    const { display } = category;
     const teamSize = Math.max(category.rules.teamSize, 1);
 
     const images = [];

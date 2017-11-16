@@ -51,7 +51,7 @@ export class MediumBlog extends Blog {
     };
   }
 
-  static async load(name) {
+  static async load(name: string) {
     const feedName = `https://medium.com/${name}?format=json`;
     const result = await fetch(feedName);
     const fullText = await result.text();
@@ -81,7 +81,7 @@ export class FeedBlog extends Blog {
     };
   }
 
-  static async load(url) {
+  static async load(url: string) {
     const json = await feed(url);
     return new FeedBlog(json);
   }
@@ -137,7 +137,7 @@ export class YoutubePlaylistBlog extends Blog {
     return fullPath;
   }
 
-  static async getTimes(playlistItemsJson) {
+  static async getTimes(playlistItemsJson: any) {
     const videoIds = playlistItemsJson.items.map(
       x => x.snippet.resourceId.videoId
     );
@@ -154,7 +154,7 @@ export class YoutubePlaylistBlog extends Blog {
     return videosResult;
   }
 
-  static async load(playlistId) {
+  static async load(playlistId: string) {
     const playlistItemsUrl = YoutubePlaylistBlog.getUrl(
       'https://www.googleapis.com/youtube/v3/playlistItems',
       {

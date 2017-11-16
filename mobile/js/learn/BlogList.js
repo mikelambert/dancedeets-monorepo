@@ -5,7 +5,13 @@
  */
 
 import * as React from 'react';
-import { FlatList, StyleSheet, TouchableHighlight, View } from 'react-native';
+import {
+  FlatList,
+  ListView,
+  StyleSheet,
+  TouchableHighlight,
+  View,
+} from 'react-native';
 import WKWebView from 'react-native-wkwebview-reborn';
 import YouTube from 'react-native-youtube';
 import { Text } from '../ui';
@@ -65,13 +71,13 @@ type BlogPostProps = {
   onSelected: (post: BlogPost) => void,
 };
 
-export class BlogPostList extends React.Component<{}> {
+export class BlogPostList extends React.Component<BlogPostProps> {
   constructor(props: BlogPostProps) {
     super(props);
     (this: any).renderRow = this.renderRow.bind(this);
   }
 
-  renderRow(row) {
+  renderRow(row: { item: Post }) {
     const post = row.item;
     return <BlogPostTitle post={post} onPress={this.props.onSelected} />;
   }

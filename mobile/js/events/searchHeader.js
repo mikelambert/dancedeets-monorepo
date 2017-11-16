@@ -55,7 +55,7 @@ class SearchInput extends React.Component<
     focused: boolean,
   }
 > {
-  _textInput: TextInput;
+  _textInput: ?TextInput;
 
   constructor(props) {
     super(props);
@@ -69,15 +69,21 @@ class SearchInput extends React.Component<
   }
 
   animatedRelayout() {
-    this.setState({ focused: this._textInput.isFocused() });
+    if (this._textInput) {
+      this.setState({ focused: this._textInput.isFocused() });
+    }
   }
 
   blur() {
-    this._textInput.blur();
+    if (this._textInput) {
+      this._textInput.blur();
+    }
   }
 
   focus() {
-    this._textInput.focus();
+    if (this._textInput) {
+      this._textInput.focus();
+    }
   }
 
   render() {
@@ -126,7 +132,9 @@ class SearchInput extends React.Component<
             if (this.props.onSubmitEditing) {
               this.props.onSubmitEditing();
             }
-            this._textInput.blur();
+            if (this._textInput) {
+              this._textInput.blur();
+            }
           }}
         />
       </HorizontalView>
@@ -163,7 +171,7 @@ class _SearchHeader extends React.Component<
   }
 
   onLayout(e: SyntheticEvent<>) {
-    const nativeEvent: any = e.nativeEvent;
+    const { nativeEvent } = e;
     const height = nativeEvent.layout.height;
     this.setState({ height });
   }

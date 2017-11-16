@@ -32,6 +32,8 @@ export default class ProportionalImage extends React.PureComponent<
     resizeDirection: 'height',
   };
 
+  view: ?View;
+
   constructor(props: Props) {
     super(props);
     let initialValue = 0;
@@ -90,10 +92,10 @@ export default class ProportionalImage extends React.PureComponent<
   }
 
   setNativeProps(nativeProps: Object) {
-    this.view.setNativeProps(nativeProps);
+    if (this.view) {
+      this.view.setNativeProps(nativeProps);
+    }
   }
-
-  view: ?View;
 
   render() {
     const resizedDimensions = this.getComputedWidthHeight();

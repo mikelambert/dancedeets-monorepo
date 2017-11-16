@@ -474,7 +474,7 @@ class _EventRsvpControl extends React.PureComponent<
     }
   }
 
-  async onRsvpChange(index: number, oldIndex: number): Promise<> {
+  async onRsvpChange(index: number, oldIndex: number): Promise<void> {
     if (!this.props.user) {
       if (
         !await this.props.canGetValidLoginFor(

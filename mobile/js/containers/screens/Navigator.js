@@ -5,8 +5,10 @@
  */
 
 import { NavigationActions, StackNavigator } from 'react-navigation';
-import type { NavigationRouteConfigMap } from 'react-navigation/src/TypeDefinition';
-import type { StackNavigatorConfig } from 'react-navigation/src/navigators/StackNavigator';
+import type {
+  NavigationRouteConfigMap,
+  StackNavigatorConfig,
+} from 'react-navigation/src/TypeDefinition';
 import { hardwareBackPress } from 'react-native-back-android';
 import { gradientTop } from '../../Colors';
 
