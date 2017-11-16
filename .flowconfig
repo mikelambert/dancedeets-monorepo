@@ -2,8 +2,26 @@
 ; We fork some components by platform
 .*/*[.]android.js
 
+; Ignore templates for 'react-native init'
+.*/local-cli/templates/.*
+
+; Ignore the website subdir
+<PROJECT_ROOT>/website/.*
+
+; Ignore the Dangerfile
+<PROJECT_ROOT>/danger/dangerfile.js
+
 ; Ignore "BUCK" generated dirs
 <PROJECT_ROOT>/\.buckd/
+
+; Ignore duplicate module providers
+; For RN Apps installed via npm, "Libraries" folder is inside
+; "node_modules/react-native" but in the source repo it is in the root
+.*/Libraries/react-native/React.js
+
+; Ignore polyfills
+.*/Libraries/polyfills/.*
+
 
 ; Ignore unexpected extra "@providesModule"
 ; These are all provided in top-level node_modules/fbjs/
@@ -13,27 +31,20 @@
 .*/server/node_modules/fbjs/.*
 .*/server/node_server/node_modules/fbjs/.*
 
-; Ignore duplicate module providers
-; For RN Apps installed via npm, "Libraries" folder is inside
-; "node_modules/react-native" but in the source repo it is in the root
-.*/Libraries/react-native/React.js
-.*/Libraries/react-native/ReactNative.js
-
 .*/node_modules/config-chain/test/.*\.json
 .*/node_modules/npmconf/test/fixtures/.*\.json
 .*/node_modules/google-app-engine/composer\.json
 
-.*/CodePushHash.json
-.*/webpack-client-output.json
+.*/CodePushHash\.json
+.*/webpack-client-output\.json
 
 .*/scrapers/bboylite/download.*/.*\.json
 
 [include]
 
 [libs]
-node_modules/react-native/Libraries/react-native/react-native-interface.js
-node_modules/react-native/flow
-flow/
+mobile/node_modules/react-native/Libraries/react-native/react-native-interface.js
+mobile/node_modules/react-native/flow
 server/assets/js/util/flow/lib.js
 
 [options]
@@ -56,14 +67,17 @@ module.name_mapper='^[./a-zA-Z0-9$_-]+\.\(bmp\|gif\|jpg\|jpeg\|png\|psd\|svg\|we
 
 suppress_type=$FlowIssue
 suppress_type=$FlowFixMe
+suppress_type=$FlowFixMeProps
+suppress_type=$FlowFixMeState
 suppress_type=$FixMe
 
-suppress_comment=\\(.\\|\n\\)*\\$FlowFixMe\\($\\|[^(]\\|(\\(>=0\\.\\(4[0-2]\\|[1-3][0-9]\\|[0-9]\\).[0-9]\\)? *\\(site=[a-z,_]*react_native[a-z,_]*\\)?)\\)
-suppress_comment=\\(.\\|\n\\)*\\$FlowIssue\\((\\(>=0\\.\\(4[0-2]\\|[1-3][0-9]\\|[0-9]\\).[0-9]\\)? *\\(site=[a-z,_]*react_native[a-z,_]*\\)?)\\)?:? #[0-9]+
+suppress_comment=\\(.\\|\n\\)*\\$FlowFixMe\\($\\|[^(]\\|(\\(>=0\\.\\(5[0-6]\\|[1-4][0-9]\\|[0-9]\\).[0-9]\\)? *\\(site=[a-z,_]*[react_native_oss|react_native_fb][a-z,_]*\\)?)\\)
+suppress_comment=\\(.\\|\n\\)*\\$FlowIssue\\((\\(>=0\\.\\(5[0-6]\\|[1-4][0-9]\\|[0-9]\\).[0-9]\\)? *\\(site=[a-z,_]*[react_native_oss|react_native_fb][a-z,_]*\\)?)\\)?:? #[0-9]+
 suppress_comment=\\(.\\|\n\\)*\\$FlowFixedInNextDeploy
 suppress_comment=\\(.\\|\n\\)*\\$FlowExpectedError
 
 unsafe.enable_getters_and_setters=true
+
 
 [version]
 ^0.59
