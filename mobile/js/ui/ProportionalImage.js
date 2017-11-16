@@ -5,7 +5,6 @@
  */
 import * as React from 'react';
 import { Animated, Platform, View } from 'react-native';
-import SyntheticEvent from 'react-native/Libraries/Renderer/src/renderers/shared/shared/event/SyntheticEvent';
 
 type Dimension = {
   width: number,
