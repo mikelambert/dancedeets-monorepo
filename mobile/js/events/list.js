@@ -485,7 +485,7 @@ class _EventListContainer extends React.Component<
         for (const e of sortedResults) {
           // It's difficult to to do time-zone-aware date manipulation on the server,
           // so instead let's filter out those events here.
-          const end = e.getEndMoment({ timezone: true, estimate: true });
+          const end = e.getEndMomentWithFallback({ timezone: true });
           if (end.isBefore(now)) {
             continue;
           }

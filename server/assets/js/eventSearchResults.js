@@ -581,7 +581,7 @@ class ResultsList extends React.Component<
       fullEvents = resultEvents;
     } else {
       currentEvents = resultEvents.filter(event => {
-        const end = event.getEndMoment({ timezone: true, estimate: true });
+        const end = event.getEndMomentWithFallback({ timezone: true });
         return (
           event.getListDateMoment({ timezone: true }).isBefore(now) &&
           now.isBefore(end)

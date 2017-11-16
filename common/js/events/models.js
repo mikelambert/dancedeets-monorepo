@@ -209,21 +209,20 @@ export class BaseEvent extends JsonDerivedObject {
     return moment(this.startTime({ timezone }));
   }
 
-  getEndMoment({
-    timezone,
-    estimate,
-  }: {
-    timezone: boolean,
-    estimate?: boolean,
-  }): ?moment {
+  getEndMoment({ timezone }: { timezone: boolean }): ?moment {
     if (!this.end_time) {
-      if (estimate) {
-        return this.getStartMoment({ timezone }).add(1.5, 'hours');
-      } else {
-        return null;
-      }
+      return null;
     }
     return moment(this.endTime({ timezone }));
+  }
+
+  getEndMomentWithFallback({ timezone }: { timezone: boolean }): moment {
+    const endMoment = this.getEndMoment({ timezone });
+    if (endMoment) {
+      return endMoment;
+    } else {
+      return this.getStartMoment({ timezone }).add(1.5, 'hours');
+    }
   }
 
   getListDateMoment({ timezone }: { timezone: boolean }): moment {

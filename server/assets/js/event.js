@@ -145,7 +145,7 @@ function googleCalendarStartEndFormat(event) {
       .utc()
       .format(fmt);
     const end = event
-      .getEndMoment({ timezone: true, estimate: true })
+      .getEndMomentWithFallback({ timezone: true })
       .utc()
       .format(fmt);
     return `${start}/${end}`;

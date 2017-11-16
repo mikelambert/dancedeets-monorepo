@@ -18,7 +18,7 @@ function getDescription(event: Event): string {
 
 function getStartEndTime(event: Event): { start: moment, end: moment } {
   const start = event.getStartMoment({ timezone: false });
-  const end = event.getEndMoment({ timezone: false, estimate: true });
+  const end = event.getEndMomentWithFallback({ timezone: false });
   return { start, end };
 }
 
