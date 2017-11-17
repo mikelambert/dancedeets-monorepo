@@ -6,19 +6,28 @@
 
 import { NavigationActions, StackNavigator } from 'react-navigation';
 import type {
+  NavigationAction,
   NavigationRouteConfigMap,
+  NavigationState,
   StackNavigatorConfig,
 } from 'react-navigation/src/TypeDefinition';
 import { hardwareBackPress } from 'react-native-back-android';
 import { gradientTop } from '../../Colors';
 
-const navigateOnce = getStateForAction => (action, state) => {
-  const { type, routeName } = action;
-  return state &&
-  type === NavigationActions.NAVIGATE &&
-  routeName === state.routes[state.routes.length - 1].routeName
-    ? state
-    : getStateForAction(action, state);
+const navigateOnce = (
+  getStateForAction: (
+    action: NavigationAction,
+    lastState: ?NavigationState
+  ) => ?NavigationState
+) => (action: NavigationAction, state: NavigationState) => {
+  const { type } = action;
+  if (state && type === NavigationActions.NAVIGATE) {
+    const { routeName } = action;
+    if (routeName === state.routes[state.routes.length - 1].routeName) {
+      return state;
+    }
+  }
+  return getStateForAction(action, state);
 };
 
 export default (

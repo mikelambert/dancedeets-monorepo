@@ -80,5 +80,6 @@ unsafe.enable_getters_and_setters=true
 
 
 [version]
-^0.59
-
+^0.57
+; Can upgrade to 0.57 with RN 0.51
+; Can upgrade to 0.58+ with RN 0.52+?
