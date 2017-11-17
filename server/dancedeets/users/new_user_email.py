@@ -1,6 +1,6 @@
 import logging
 import re
-
+import urllib
 from dancedeets import fb_api
 from dancedeets import render_server
 from dancedeets.loc import names
@@ -15,7 +15,8 @@ class NoEmailException(Exception):
 def email_for_user(user, fbl, should_send=False):
     if not user.send_email:
         raise NoEmailException('User has send_email==False')
-    if not user.email:
+    email_address = user.email
+    if not email_address:
         raise NoEmailException('User does not have an email')
 
     fb_user = fbl.fetched_data(fb_api.LookupUser, fbl.fb_uid)
@@ -23,6 +24,7 @@ def email_for_user(user, fbl, should_send=False):
         raise NoEmailException('Could not find LookupUser: %s', fb_user)
 
     locale = user.locale or 'en_US'
+    email_unsubscribe_url = 'https://www.dancedeets.com/user/unsubscribe?email=%s' % urllib.quote(email_address)
     props = {
         'user': {
             'userName': user.first_name or user.full_name or '',
@@ -32,7 +34,7 @@ def email_for_user(user, fbl, should_send=False):
         'currentLocale': locale.replace('_', '-'),
         'mobileIosUrl': mobile.IOS_URL,
         'mobileAndroidUrl': mobile.ANDROID_URL,
-        'emailPreferencesUrl': None,  # TODO
+        'emailPreferencesUrl': email_unsubscribe_url,
     }
     email_template = 'mailNewUser.js'
     response = render_server.render_jsx(email_template, props, static_html=True)
@@ -60,7 +62,7 @@ def email_for_user(user, fbl, should_send=False):
         'from_name': 'DanceDeets Events',
         'subject': subject,
         'to': [{
-            'email': user.email,
+            'email': email_address,
             'name': user.full_name or user.first_name or '',
             'type': 'to',
         }],

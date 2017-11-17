@@ -242,7 +242,7 @@ class WeeklyEmail extends React.Component<{
         footer={
           <div>
             You may also{' '}
-            <a href="*|UNSUB:https://www.dancedeets.com/user/unsubscribe|*">
+            <a href="https://www.dancedeets.com/user/unsubscribe">
               unsubscribe
             </a>{' '}
             or{' '}

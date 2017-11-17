@@ -1,4 +1,6 @@
 import logging
+import urllib
+
 from dancedeets import render_server
 from dancedeets.events import eventdata
 from dancedeets.events import event_emails
@@ -31,13 +33,15 @@ def send_event_add_emails(event_id, should_send=False):
 def email_for_event(organizer, event, should_send=False):
     locale = 'en_US'
     api_event = api_format.canonicalize_event_data(event, (2, 0))
+    email_address = organizer['email']
+    email_unsubscribe_url = 'https://www.dancedeets.com/user/unsubscribe?email=%s' % urllib.quote(email_address)
     props = {
         'event': api_event,
         'organizer': organizer,
         'currentLocale': locale.replace('_', '-'),
         'mobileIosUrl': mobile.IOS_URL,
         'mobileAndroidUrl': mobile.ANDROID_URL,
-        'emailPreferencesUrl': None,  # TODO
+        'emailPreferencesUrl': email_unsubscribe_url,
     }
     response = render_server.render_jsx('mailAddEvent.js', props, static_html=True)
     if response.error:
@@ -56,7 +60,7 @@ def email_for_event(organizer, event, should_send=False):
         'from_name': 'DanceDeets Events',
         'subject': 'Event Added',  # TODO
         'to': [{
-            'email': organizer['email'],
+            'email': email_address,
             'type': 'to',
         }],
         'html': rendered_html,

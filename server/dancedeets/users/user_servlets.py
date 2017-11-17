@@ -12,6 +12,13 @@ from . import users
 class UserUnsubscribeHandler(base_servlet.BaseRequestHandler):
     def get(self):
         self.finish_preload()
+        #email = self.request.get('email')
+        #email_hash = self.request.get('email_hash')
+        #if compute_email_hash(email) == email_hash:
+        #    self.display['email'] = email
+        #else:
+        #    print error message
+        self.display['email'] = self.request.get('email')
         self.render_template('user_unsubscribe')
 
     def post(self):
