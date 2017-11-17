@@ -16,6 +16,10 @@ class OrganizerEmailUnsubscribed(ndb.Model):
     def email(self):
         return str(self.key.string_id())
 
+    # When did they unsubscribe?
+    date_created = ndb.DateTimeProperty(auto_now_add=True)
+    data = ndb.JsonProperty()
+
 
 email_regex = re.compile((
     "([a-z0-9!#$%&'*+\/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+\/=?^_`"
