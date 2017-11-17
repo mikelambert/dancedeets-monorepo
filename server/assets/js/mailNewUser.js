@@ -69,7 +69,7 @@ class UserTestimonials extends React.Component<{}> {
       <mj-wrapper mj-class="alternate" padding={`10 ${outsideGutter}`}>
         <mj-section mj-class="alternate">
           <mj-column mj-class="alternate">
-            <ImageThumbnail imageName="testimonials/terry.png" />
+            <ImageThumbnail imageName="testimonials/roxit.png" />
             <mj-text
               mj-class="alternate"
               font-size="11px"
@@ -88,13 +88,6 @@ class UserTestimonials extends React.Component<{}> {
             >
               Keane Rox-it Rowley
               <br />
-              <a
-                href="https://www.facebook.com/ELITEFORCECREW/"
-                className="alternate"
-              >
-                Elite Force
-              </a>
-              <br />
               Indianapolis, IL, USA
             </mj-text>
           </mj-column>
@@ -109,8 +102,7 @@ class UserTestimonials extends React.Component<{}> {
               padding-right={columnPadding}
             >
               “DanceDeets is <i>the</i> place to find dance events when you
-              travel! I&#8217;m constantly recommending it to dancers in this
-              scene.”
+              travel! More dancers need to be using this!”
             </mj-text>
             <mj-text
               mj-class="alternate"
@@ -137,8 +129,8 @@ class UserTestimonials extends React.Component<{}> {
               align="center"
               padding-left={columnPadding}
             >
-              “Promoting on DanceDeets was really easy and smooth, only took a
-              few minutes!”
+              “This has helped me countless times when travelling overseas, and
+              helps me find out what’s going on in the local dance communities!”
             </mj-text>
             <mj-text
               mj-class="alternate"

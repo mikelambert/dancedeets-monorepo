@@ -51,10 +51,8 @@ def email_for_user(user, fbl, should_send=False):
 
     subject = 'Welcome to DanceDeets'
 
-    tag = re.sub(r'[^a-z]', '-', message.lower())[:50]
     tags = [
         'new-user',
-        tag,
     ]
 
     message = {

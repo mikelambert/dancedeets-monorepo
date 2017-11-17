@@ -130,7 +130,7 @@ export class Footer extends React.Component<{
             <p>Built for and by Dancers.</p>
             <p>Sent with ❤ from DanceDeets</p>
             <p>
-              <a href={this.props.emailPreferencesUrl}>
+              <a href={this.props.emailPreferencesUrl} className="alternate">
                 Unsubscribe / email preferences
               </a>
             </p>
