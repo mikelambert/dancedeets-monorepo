@@ -684,6 +684,7 @@ PREPROCESS_REMOVAL = Name(
         # positive
         'tap water',  # for theo and dominque's jam
         'house of movement',  # not a vogue keyword!
+        'house of dance',  # not a vogue keyword!
 
         # negative
         "america's got talent",
