@@ -253,6 +253,13 @@ class EventTestimonials extends React.Component<{}> {
               >
                 Midtnorsk Urban Dans
               </a>
+              <br />
+              <a
+                href="https://www.facebook.com/rawdancestudiono"
+                className="alternate"
+              >
+                RAW Dance Studio
+              </a>
               <br />Trondheim, Norway
             </mj-text>
           </mj-column>

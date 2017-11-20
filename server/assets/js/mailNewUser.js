@@ -93,7 +93,7 @@ class UserTestimonials extends React.Component<{}> {
           </mj-column>
 
           <mj-column mj-class="alternate">
-            <ImageThumbnail imageName="testimonials/tomas.png" />
+            <ImageThumbnail imageName="testimonials/stretch.png" />
             <mj-text
               mj-class="alternate"
               font-size="11px"
