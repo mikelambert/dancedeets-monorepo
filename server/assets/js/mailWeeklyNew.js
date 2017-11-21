@@ -9,7 +9,12 @@ import { intlWeb } from 'dancedeets-common/js/intl';
 import { SearchEvent } from 'dancedeets-common/js/events/models';
 import type { NewSearchResponse } from 'dancedeets-common/js/events/search';
 // import { addUrlArgs } from 'dancedeets-common/js/util/url';
-import { NewEmailWrapper, columnPadding, outsideGutter } from './mailCommon';
+import {
+  FeaturePromoBase,
+  NewEmailWrapper,
+  columnPadding,
+  outsideGutter,
+} from './mailCommon';
 import { EventDisplay } from './weeklyMail';
 
 export type User = {
@@ -138,11 +143,14 @@ export class HeaderFindYourDance extends React.Component<{}> {
   }
 }
 
-class FeaturePromo extends React.Component<{
+class AlternateFeaturePromo extends FeaturePromoBase<{
   user: User,
 }> {
+  constructor(props) {
+    super({ className: 'alternate', ...props });
+  }
   render() {
-    const { countryName } = this.props.user;
+    const features = this.getFeatures();
     return (
       <mj-wrapper mj-class="alternate" padding={`10 ${outsideGutter}`}>
         <mj-section mj-class="alternate" padding="20 0">
@@ -155,65 +163,20 @@ class FeaturePromo extends React.Component<{
         <mj-section mj-class="alternate">
           <mj-column mj-class="alternate">
             <mj-image
-              src="https://static.dancedeets.com/img/mail/purple-icons/search.png"
+              src={`https://static.dancedeets.com/img/mail/purple-icons/${features[0]
+                .iconName}.png`}
               width="80px"
               height="80px"
               padding-bottom="20"
             />
             <mj-text mj-class="alternate" padding-right={columnPadding}>
-              Planning your next trip?
-              <p />
-              Check all events in{' '}
-              <a
-                href="https://www.dancedeets.com/?location=NYC"
-                className="alternate"
-              >
-                NYC
-              </a>,{' '}
-              <a
-                href="https://www.dancedeets.com/?location=Paris"
-                className="alternate"
-              >
-                Paris
-              </a>, and{' '}
-              <a
-                href="https://www.dancedeets.com/?location=Los Angeles"
-                className="alternate"
-              >
-                LA
-              </a>.<br />
-              <br />Or all events in {countryName} for:<br />
-              <ul>
-                <li>
-                  <a
-                    href={`https://www.dancedeets.com/?location=${countryName}&keywords=breaking`}
-                    className="alternate"
-                  >
-                    Bboying/Bgirling
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href={`https://www.dancedeets.com/?location=${countryName}&keywords=popping`}
-                    className="alternate"
-                  >
-                    Popping
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href={`https://www.dancedeets.com/?location=${countryName}&keywords=hiphop`}
-                    className="alternate"
-                  >
-                    Hip-Hop
-                  </a>
-                </li>
-              </ul>
+              {features[0].element}
             </mj-text>
           </mj-column>
           <mj-column mj-class="alternate">
             <mj-image
-              src="https://static.dancedeets.com/img/mail/purple-icons/calendar-add.png"
+              src={`https://static.dancedeets.com/img/mail/purple-icons/${features[1]
+                .iconName}.png`}
               width="80px"
               height="80px"
               padding-bottom="20"
@@ -223,68 +186,19 @@ class FeaturePromo extends React.Component<{
               padding-left={columnPadding}
               padding-right={columnPadding}
             >
-              Got an event you would like to share with more dancers?<br />
-              <br />
-              <a
-                href="https://www.dancedeets.com/events_add"
-                className="alternate"
-              >
-                Add an event
-              </a>{' '}
-              with just a few clicks!
+              {features[1].element}
             </mj-text>
           </mj-column>
           <mj-column mj-class="alternate">
             <mj-image
-              src="https://static.dancedeets.com/img/mail/purple-icons/movie.png"
+              src={`https://static.dancedeets.com/img/mail/purple-icons/${features[2]
+                .iconName}.png`}
               width="80px"
               height="80px"
               padding-bottom="20"
             />
             <mj-text mj-class="alternate" padding-left={columnPadding}>
-              Check out the{' '}
-              <a
-                href="https://www.dancedeets.com/tutorials"
-                className="alternate"
-              >
-                best dance tutorials
-              </a>{' '}
-              we found around the world to help you level up.
-              <br />
-              <br />
-              Whether it&#8217;s{' '}
-              <a
-                href="https://www.dancedeets.com/tutorials/break"
-                className="alternate"
-              >
-                bboying
-              </a>,{' '}
-              <a
-                href="https://www.dancedeets.com/tutorials/pop"
-                className="alternate"
-              >
-                popping
-              </a>{' '}
-              or{' '}
-              <a
-                href="https://www.dancedeets.com/tutorials/lock"
-                className="alternate"
-              >
-                locking
-              </a>,{' '}
-              <a
-                href="https://www.dancedeets.com/tutorials/hiphop"
-                className="alternate"
-              >
-                freestyle hiphop
-              </a>{' '}
-              or{' '}
-              <a
-                href="https://www.dancedeets.com/tutorials/house"
-                className="alternate"
-              >
-                house
-              </a>, we&#8217;ve got you covered!
+              {features[2].element}
             </mj-text>
           </mj-column>
         </mj-section>
@@ -302,7 +216,7 @@ class BodyWrapper extends React.Component<{
       <NavHeader />,
       <HeaderFindYourDance />,
       <MainBody user={this.props.user} response={this.props.response} />,
-      <FeaturePromo user={this.props.user} />,
+      <AlternateFeaturePromo user={this.props.user} classNa />,
     ];
   }
 }

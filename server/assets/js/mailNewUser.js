@@ -11,6 +11,7 @@ import { ImageThumbnail } from './mailAddEvent';
 import { NavHeader, HeaderFindYourDance } from './mailWeeklyNew';
 import type { User } from './mailWeeklyNew';
 import {
+  FeaturePromoBase,
   NewEmailWrapper,
   buttonBackgroundColor,
   buttonForegroundColor,
@@ -155,6 +156,41 @@ class UserTestimonials extends React.Component<{}> {
   }
 }
 
+class FeaturePromo extends FeaturePromoBase<{
+  user: User,
+}> {
+  constructor(props) {
+    super({ className: '', ...props });
+  }
+  render() {
+    const features = this.getFeatures();
+    return (
+      <mj-section>
+        <mj-column>
+          <mj-table padding-left="40" padding-right="40">
+            {features.map(feature => (
+              <tr>
+                <td style={{ verticalAlign: 'top' }}>
+                  <img
+                    src={`https://static.dancedeets.com/img/mail/purple-icons/${feature.iconName}.png`}
+                    alt=""
+                    width="80"
+                    height="80"
+                    style={{ paddingBottom: 20 }}
+                  />
+                </td>
+                <td style={{ paddingLeft: 20, paddingBottom: 20 }}>
+                  {feature.element}
+                </td>
+              </tr>
+            ))}
+          </mj-table>
+        </mj-column>
+      </mj-section>
+    );
+  }
+}
+
 class BodyWrapper extends React.Component<{
   user: User,
 }> {
@@ -163,6 +199,7 @@ class BodyWrapper extends React.Component<{
       <NavHeader />,
       <HeaderFindYourDance />,
       <MainBody user={this.props.user} />,
+      <FeaturePromo user={this.props.user} />,
       <UserTestimonials />,
     ];
   }

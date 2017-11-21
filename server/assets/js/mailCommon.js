@@ -75,6 +75,144 @@ export class MobileAppPromo extends React.Component<{
   }
 }
 
+type Feature = {
+  iconName: string,
+  element: React.Element,
+};
+
+export class FeaturePromoBase extends React.Component<{
+  user: User,
+  className: string,
+}> {
+  getFeatures() {
+    const features: Array<Feature> = [
+      {
+        iconName: 'search',
+        element: this.renderSearchElement(),
+      },
+      { iconName: 'calendar-add', element: this.renderAddEventFeature() },
+      { iconName: 'movie', element: this.renderMovieFeature() },
+    ];
+    return features;
+  }
+
+  renderSearchElement() {
+    const { countryName } = this.props.user;
+    return (
+      <div>
+        Planning your next trip?
+        <p />
+        Check all events in{' '}
+        <a
+          href="https://www.dancedeets.com/?location=NYC"
+          className={this.props.className}
+        >
+          NYC
+        </a>,{' '}
+        <a
+          href="https://www.dancedeets.com/?location=Paris"
+          className={this.props.className}
+        >
+          Paris
+        </a>, and{' '}
+        <a
+          href="https://www.dancedeets.com/?location=Los Angeles"
+          className={this.props.className}
+        >
+          LA
+        </a>.
+        <br />Or all events in {countryName} for{' '}
+        <a
+          href={`https://www.dancedeets.com/?location=${countryName}&keywords=breaking`}
+          className={this.props.className}
+        >
+          Bboying/Bgirling
+        </a>
+        , {' '}
+        <a
+          href={`https://www.dancedeets.com/?location=${countryName}&keywords=popping`}
+          className={this.props.className}
+        >
+          Popping
+        </a>
+        , and {' '}
+        <a
+          href={`https://www.dancedeets.com/?location=${countryName}&keywords=hiphop`}
+          className={this.props.className}
+        >
+          Hip-Hop
+        </a>
+      </div>
+    );
+  }
+
+  renderAddEventFeature() {
+    return (
+      <div>
+        Got an event you would like to share with more dancers?<br />
+        <br />
+        <a
+          href="https://www.dancedeets.com/events_add"
+          className={this.props.className}
+        >
+          Add an event
+        </a>{' '}
+        with just a few clicks!
+      </div>
+    );
+  }
+
+  renderMovieFeature() {
+    return (
+      <div>
+        Check out the{' '}
+        <a
+          href="https://www.dancedeets.com/tutorials"
+          className={this.props.className}
+        >
+          best dance tutorials
+        </a>{' '}
+        we found around the world to help you level up.
+        <br />
+        <br />
+        Whether it’s{' '}
+        <a
+          href="https://www.dancedeets.com/tutorials/break"
+          className={this.props.className}
+        >
+          bboying
+        </a>,{' '}
+        <a
+          href="https://www.dancedeets.com/tutorials/pop"
+          className={this.props.className}
+        >
+          popping
+        </a>{' '}
+        or{' '}
+        <a
+          href="https://www.dancedeets.com/tutorials/lock"
+          className={this.props.className}
+        >
+          locking
+        </a>,{' '}
+        <a
+          href="https://www.dancedeets.com/tutorials/hiphop"
+          className={this.props.className}
+        >
+          freestyle hiphop
+        </a>{' '}
+        or{' '}
+        <a
+          href="https://www.dancedeets.com/tutorials/house"
+          className={this.props.className}
+        >
+          house
+        </a>, we’ve got you covered!
+      </div>
+    );
+  }
+}
+
 export class Footer extends React.Component<{
   emailPreferencesUrl: string,
 }> {
