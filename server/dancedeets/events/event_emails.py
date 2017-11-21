@@ -34,7 +34,7 @@ def filter_for_subscribed_emails(emails):
 
 
 def unsubscribe_email(email):
-    o = OrganizerEmailUnsubscribed(key=email)
+    o = OrganizerEmailUnsubscribed(id=email)
     o.put()
 
 
