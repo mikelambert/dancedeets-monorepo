@@ -89,6 +89,7 @@ type Feature = {
 export class FeaturePromoBase extends React.Component<{
   user: User,
   className: string,
+  useNewlines: boolean,
 }> {
   getFeatures() {
     const features: Array<Feature> = [
@@ -102,12 +103,16 @@ export class FeaturePromoBase extends React.Component<{
     return features;
   }
 
+  renderSeparator() {
+    return this.props.useNewlines ? [<br />, <br />] : [<br />];
+  }
+
   renderSearchElement() {
     const { countryName } = this.props.user;
     return (
       <div>
         Planning your next trip?
-        <p />
+        {this.renderSeparator()}
         Check all events in{' '}
         <a
           href="https://www.dancedeets.com/?location=NYC"
@@ -127,7 +132,8 @@ export class FeaturePromoBase extends React.Component<{
         >
           LA
         </a>.
-        <br />Or all events in {countryName} for{' '}
+        {this.renderSeparator()}
+        Or all events in {countryName} for{' '}
         <a
           href={`https://www.dancedeets.com/?location=${countryName}&keywords=breaking`}
           className={this.props.className}
@@ -155,8 +161,8 @@ export class FeaturePromoBase extends React.Component<{
   renderAddEventFeature() {
     return (
       <div>
-        Got an event you would like to share with more dancers?<br />
-        <br />
+        Got an event you would like to share with more dancers?
+        {this.renderSeparator()}
         <a
           href="https://www.dancedeets.com/events_add"
           className={this.props.className}
@@ -179,8 +185,7 @@ export class FeaturePromoBase extends React.Component<{
           best dance tutorials
         </a>{' '}
         we found around the world to help you level up.
-        <br />
-        <br />
+        {this.renderSeparator()}
         Whether it’s{' '}
         <a
           href="https://www.dancedeets.com/tutorials/break"

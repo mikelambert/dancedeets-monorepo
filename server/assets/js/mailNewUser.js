@@ -26,7 +26,7 @@ class MainBody extends React.Component<{
     return (
       <mj-section>
         <mj-column>
-          <mj-text padding={`10px ${outsideGutter}`}>
+          <mj-text padding={`20px ${outsideGutter}`}>
             Hey {this.props.user.userName},
             <br />
             <br />
@@ -67,7 +67,7 @@ class MainBody extends React.Component<{
 class UserTestimonials extends React.Component<{}> {
   render() {
     return (
-      <mj-wrapper mj-class="alternate" padding={`10 ${outsideGutter}`}>
+      <mj-wrapper mj-class="alternate" padding={`20 ${outsideGutter}`}>
         <mj-section mj-class="alternate">
           <mj-column mj-class="alternate">
             <ImageThumbnail imageName="testimonials/roxit.png" />
@@ -194,7 +194,7 @@ class BodyWrapper extends React.Component<{
       <NavHeader />,
       <HeaderFindYourDance />,
       <MainBody user={this.props.user} />,
-      <FeaturePromo user={this.props.user} className="" />,
+      <FeaturePromo user={this.props.user} className="" useNewlines={false} />,
       <UserTestimonials />,
     ];
   }

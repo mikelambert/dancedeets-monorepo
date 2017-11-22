@@ -97,7 +97,7 @@ class MainBody extends React.Component<{
     return [
       <mj-section>
         <mj-column>
-          <mj-text padding={`10px ${outsideGutter}`}>
+          <mj-text padding={`20px ${outsideGutter}`}>
             Hey {this.props.user.userName},
             <br />
             <br />
@@ -142,8 +142,8 @@ class AlternateFeaturePromo extends FeaturePromoBase {
   render() {
     const features = this.getFeatures();
     return (
-      <mj-wrapper mj-class="alternate" padding={`10 ${outsideGutter}`}>
-        <mj-section mj-class="alternate" padding="20 0">
+      <mj-wrapper mj-class="alternate" padding={`30 ${outsideGutter}`}>
+        <mj-section mj-class="alternate" padding="0 0 10">
           <mj-column mj-class="alternate">
             <mj-text mj-class="alternate" align="center" font-size="16px">
               Explore more on DanceDeets...
@@ -206,7 +206,11 @@ class BodyWrapper extends React.Component<{
       <NavHeader />,
       <HeaderFindYourDance />,
       <MainBody user={this.props.user} response={this.props.response} />,
-      <AlternateFeaturePromo user={this.props.user} className="alternate" />,
+      <AlternateFeaturePromo
+        user={this.props.user}
+        className="alternate"
+        useNewlines
+      />,
     ];
   }
 }
