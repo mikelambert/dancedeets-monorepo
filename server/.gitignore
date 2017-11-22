@@ -5,6 +5,7 @@ app-devserver.yaml
 app-memory.yaml
 dist/
 dist-includes/
+webpack-client-output.json
 
 # secret files
 keys*.yaml
