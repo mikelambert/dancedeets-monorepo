@@ -4,6 +4,7 @@ import webapp2
 
 from dancedeets import app
 from dancedeets import keys
+from dancedeets.events import event_emails
 from dancedeets.mail import mailchimp_api
 from dancedeets.users import users
 """
@@ -75,11 +76,12 @@ class MandrillWebhookPageHandler(webapp2.RequestHandler):
                     user = users.User.get_by_id(user_id)
                     if metadata['email_type'] == 'weekly':
                         user.send_email = False
-                        logging.info('Unsubscribing user %s (%s) in response to Mandrill request', user.fb_uid, user.full_name)
+                        logging.info('Unsubscribing user %s (%s) in response to Mandrill %s', user.fb_uid, user.full_name, event['event'])
                     user.put()
                 else:
-                    logging.info('Processing webhook event %s', event)
-                    user_id = metadata['user_id']
+                    email = metadata['email']
+                    logging.info('Unsubscribing %s in response to Mandrill %s', email, event['event'])
+                    event_emails.unsubscribe_email(email)
 
     get = handle
     head = handle
