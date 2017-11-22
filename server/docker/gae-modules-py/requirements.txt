@@ -71,3 +71,6 @@ mandrill==1.0.57
 
 # For debugging memory leaks
 objgraph==3.1.0
+
+# For trimming event names...
+icemac.truncatetext==1.0.post1

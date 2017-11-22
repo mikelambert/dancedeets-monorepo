@@ -1,4 +1,7 @@
+# -*-*- encoding: utf-8 -*-*-
+
 import datetime
+from icemac.truncatetext import truncate
 import logging
 import urllib
 
@@ -59,10 +62,11 @@ def email_for_event(organizer, event, should_send=False):
         raise NoEmailException(message)
     rendered_html = mjml_response['html']
 
+    short_name = truncate(event.name, 30, ellipsis=u'…')
     message = {
         'from_email': 'events@dancedeets.com',
         'from_name': 'DanceDeets Events',
-        'subject': 'DanceDeets found your event, and we want to help promote: %s' % event.name,
+        'subject': 'Your event "%s" has been added to DanceDeets!' % short_name,
         'to': [{
             'email': email_address,
             'type': 'to',
