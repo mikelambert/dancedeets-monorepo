@@ -1,5 +1,7 @@
+# -*-*- encoding: utf-8 -*-*-
+#
+
 import logging
-import re
 import urllib
 from dancedeets import fb_api
 from dancedeets import render_server
@@ -49,7 +51,7 @@ def email_for_user(user, fbl, should_send=False):
         logging.error(message)
         raise NoEmailException(message)
 
-    subject = 'Welcome to DanceDeets! See you on the dance floor…'
+    subject = u'Welcome to DanceDeets! See you on the dance floor…'
 
     tags = [
         'new-user',

@@ -73,7 +73,7 @@ def email_for_event(organizer, event, should_send=False):
             'event_id': event.id,
             'email_type': 'add-event',
         },
-        'tags': 'add-event',
+        'tags': ['add-event'],
     }
     if should_send:
         # And send the message now.
