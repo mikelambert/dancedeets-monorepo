@@ -54,7 +54,9 @@ class SellingPoint extends React.Component<{
   }
 }
 
-class Upsell extends React.Component<{}> {
+class Upsell extends React.Component<{
+  event: Event,
+}> {
   render() {
     return [
       <mj-section
@@ -123,7 +125,7 @@ class Upsell extends React.Component<{}> {
       <mj-section padding={`0 ${outsideGutter} 30`}>
         <mj-column>
           <mj-button
-            href="mailto:partnering@dancedeets.com"
+            href={`mailto:partnering+${event.id}@dancedeets.com`}
             align="center"
             background-color={buttonBackgroundColor}
             color={buttonForegroundColor}
@@ -403,7 +405,7 @@ class BodyWrapper extends React.Component<{
           <mj-text font-weight="bold">Want more promotion? Read on…</mj-text>
         </mj-column>
       </mj-section>,
-      <Upsell />,
+      <Upsell event={this.props.event} />,
       <EventTestimonials />,
     ];
   }
