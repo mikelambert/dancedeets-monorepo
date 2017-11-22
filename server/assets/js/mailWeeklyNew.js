@@ -16,12 +16,7 @@ import {
   outsideGutter,
 } from './mailCommon';
 import { EventDisplay } from './weeklyMail';
-
-export type User = {
-  userName: string,
-  city: string,
-  countryName: string,
-};
+import type { User } from './mailCommon';
 
 export class NavHeader extends React.Component<{}> {
   render() {
@@ -143,12 +138,7 @@ export class HeaderFindYourDance extends React.Component<{}> {
   }
 }
 
-class AlternateFeaturePromo extends FeaturePromoBase<{
-  user: User,
-}> {
-  constructor(props) {
-    super({ className: 'alternate', ...props });
-  }
+class AlternateFeaturePromo extends FeaturePromoBase {
   render() {
     const features = this.getFeatures();
     return (
@@ -216,7 +206,7 @@ class BodyWrapper extends React.Component<{
       <NavHeader />,
       <HeaderFindYourDance />,
       <MainBody user={this.props.user} response={this.props.response} />,
-      <AlternateFeaturePromo user={this.props.user} classNa />,
+      <AlternateFeaturePromo user={this.props.user} className="alternate" />,
     ];
   }
 }

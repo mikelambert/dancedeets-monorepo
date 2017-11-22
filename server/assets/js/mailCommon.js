@@ -17,6 +17,12 @@ export const buttonForegroundColor = '#FFFFFF';
 export const outsideGutter = 30;
 export const columnPadding = 15;
 
+export type User = {
+  userName: string,
+  city: string,
+  countryName: string,
+};
+
 export class MobileAppPromo extends React.Component<{
   mobileIosUrl: string,
   mobileAndroidUrl: string,
@@ -77,7 +83,7 @@ export class MobileAppPromo extends React.Component<{
 
 type Feature = {
   iconName: string,
-  element: React.Element,
+  element: React.Element<*>,
 };
 
 export class FeaturePromoBase extends React.Component<{

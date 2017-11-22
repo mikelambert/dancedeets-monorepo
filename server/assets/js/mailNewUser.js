@@ -9,7 +9,7 @@ import { intlWeb } from 'dancedeets-common/js/intl';
 // import { addUrlArgs } from 'dancedeets-common/js/util/url';
 import { ImageThumbnail } from './mailAddEvent';
 import { NavHeader, HeaderFindYourDance } from './mailWeeklyNew';
-import type { User } from './mailWeeklyNew';
+import type { User } from './mailCommon';
 import {
   FeaturePromoBase,
   NewEmailWrapper,
@@ -156,12 +156,7 @@ class UserTestimonials extends React.Component<{}> {
   }
 }
 
-class FeaturePromo extends FeaturePromoBase<{
-  user: User,
-}> {
-  constructor(props) {
-    super({ className: '', ...props });
-  }
+class FeaturePromo extends FeaturePromoBase {
   render() {
     const features = this.getFeatures();
     return (
@@ -199,7 +194,7 @@ class BodyWrapper extends React.Component<{
       <NavHeader />,
       <HeaderFindYourDance />,
       <MainBody user={this.props.user} />,
-      <FeaturePromo user={this.props.user} />,
+      <FeaturePromo user={this.props.user} className="" />,
       <UserTestimonials />,
     ];
   }
