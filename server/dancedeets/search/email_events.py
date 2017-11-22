@@ -22,7 +22,7 @@ class NoEmailException(Exception):
     pass
 
 
-def email_for_user(user, fbl, should_send=True, new_email=False):
+def email_for_user(user, fbl, should_send=True):
     if not user.send_email:
         raise NoEmailException('User has send_email==False')
     email_address = user.email
@@ -92,10 +92,7 @@ def email_for_user(user, fbl, should_send=True, new_email=False):
         'mobileAndroidUrl': mobile.ANDROID_URL,
         'emailPreferencesUrl': email_unsubscribe_url,
     }
-    if new_email:
-        email_template = 'mailWeeklyNew.js'
-    else:
-        email_template = 'weeklyMail.js'
+    email_template = 'weeklyMail.js'
     response = render_server.render_jsx(email_template, props, static_html=True)
     if response.error:
         message = 'Error rendering weeklyMail.js: %s' % response.error
@@ -152,9 +149,8 @@ def email_for_user(user, fbl, should_send=True, new_email=False):
 class DisplayEmailHandler(base_servlet.UserOperationHandler):
     def user_operation(self, fbl, users):
         fbl.get(fb_api.LookupUser, users[0].fb_uid)
-        new = self.request.get('new') == '1'
         try:
-            message = email_for_user(users[0], fbl, should_send=False, new_email=new)
+            message = email_for_user(users[0], fbl, should_send=False)
         except Exception as e:
             self.response.out.write('Error generating mail html: %s' % e)
         else:
