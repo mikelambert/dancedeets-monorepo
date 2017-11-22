@@ -73,36 +73,11 @@ class UserTestimonials extends React.Component<{}> {
       <mj-wrapper mj-class="alternate" padding={`20 ${outsideGutter}`}>
         <mj-section mj-class="alternate">
           <mj-column mj-class="alternate">
-            <ImageThumbnail imageName="testimonials/roxit.png" />
-            <mj-text
-              mj-class="alternate"
-              font-size="11px"
-              align="center"
-              padding-right={columnPadding}
-            >
-              “I can’t imagine my life without DanceDeets. Five years ago, when
-              I just started dancing, it was DanceDeets who led me into the
-              scene!”
-            </mj-text>
-            <mj-text
-              mj-class="alternate"
-              font-size="11px"
-              align="center"
-              padding="10 0 0"
-            >
-              Keane Rox-it Rowley
-              <br />
-              Indianapolis, IL, USA
-            </mj-text>
-          </mj-column>
-
-          <mj-column mj-class="alternate">
             <ImageThumbnail imageName="testimonials/stretch.png" />
             <mj-text
               mj-class="alternate"
               font-size="11px"
               align="center"
-              padding-left={columnPadding}
               padding-right={columnPadding}
             >
               “DanceDeets is <i>the</i> place to find street dance events, at
@@ -122,6 +97,31 @@ class UserTestimonials extends React.Component<{}> {
                 Elite Force
               </a>
               <br />New York City, NY, USA
+            </mj-text>
+          </mj-column>
+
+          <mj-column mj-class="alternate">
+            <ImageThumbnail imageName="testimonials/roxit.png" />
+            <mj-text
+              mj-class="alternate"
+              font-size="11px"
+              align="center"
+              padding-left={columnPadding}
+              padding-right={columnPadding}
+            >
+              “I can’t imagine my life without DanceDeets. Five years ago, when
+              I just started dancing, it was DanceDeets who led me into the
+              scene!”
+            </mj-text>
+            <mj-text
+              mj-class="alternate"
+              font-size="11px"
+              align="center"
+              padding="10 0 0"
+            >
+              Keane Rox-it Rowley
+              <br />
+              Indianapolis, IL, USA
             </mj-text>
           </mj-column>
 
