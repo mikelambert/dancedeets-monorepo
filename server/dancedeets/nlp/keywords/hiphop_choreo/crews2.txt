@@ -52,7 +52,6 @@ team millennia
 main\W*stacks
 grooveology
 animazing
-full potential
 haluan
 str8jacket
 mandroidz
