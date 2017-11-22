@@ -46,6 +46,6 @@ def create_user_with_fbuser(fb_uid, fb_user, access_token, access_token_expires,
     backgrounder.load_potential_events_for_users([fb_uid])
 
     fbl = fb_api.FBLookup(fb_uid, user.fb_access_token)
-    new_user_email.email_for_user(user, fbl, should_send=False)
+    new_user_email.email_for_user(user, fbl, should_send=True)
 
     return user
