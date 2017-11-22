@@ -68,7 +68,7 @@ def facebook_post(auth_token, db_event):
         'Coming up soon! ',
         'Are you ready? ',
         'Just a few days away... ',
-        'We can\t wait! ',
+        'We can\'t wait! ',
         'Get ready! ',
         '',
     ])
