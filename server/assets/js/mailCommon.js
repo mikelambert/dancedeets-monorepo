@@ -285,7 +285,7 @@ export class Footer extends React.Component<{
             mj-class="alternate"
             color={footerForegroundColor}
           >
-            <p>Built for and by Dancers.</p>
+            <p>Built for and by dancers.</p>
             <p>Sent with ❤ from DanceDeets</p>
             <p>
               <a href={this.props.emailPreferencesUrl} className="alternate">

@@ -31,19 +31,24 @@ class MainBody extends React.Component<{
             <br />
             <br />
             Welcome to DanceDeets, the world’s biggest street dance event
-            platform. You have found the gateway to over 250,000 street dance
-            events around the world.
+            platform. The gateway to over 250,000 street dance events worldwide.
             <br />
             <br />
-            DanceDeets was made by and for dancers. As dancers ourselves, we
-            realized it was extremely difficult to jump into this dance scene,
-            where the information was very much underground. What studios offer
-            hiphop classes? What are the biggest battles next month? What party
-            is popping this Friday night? DanceDeets wants to solving these
-            problems by connecting dancers to the dance world.
+            DanceDeets was made for and by dancers. As dancers ourselves, we
+            realized how difficult it is to find the dance scene when traveling,
+            and how hard it was to jump into the scene when we first started.
+            <ul>
+            <li>What studios offer
+            hiphop classes?
+            <li>What are the biggest battles next month?
+            <li>What party
+            is popping this Friday night?
+            </ul>
+            DanceDeets wants to solving these
+            problems by connecting dancers with the dance communities worldwide.
             <br />
             <br />
-            We appreciate your passion for dance. Now, let us help you take that
+            We love and share your passion for dance. Now, let us help you bring that
             passion to the dance floor…
           </mj-text>
 
