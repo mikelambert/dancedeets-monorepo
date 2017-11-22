@@ -64,6 +64,7 @@ def email_for_user(user, fbl, should_send=False):
             'name': user.full_name or user.first_name or '',
             'type': 'to',
         }],
+        'bcc_address': ['mlambert@dancedeets.com'],
         'html': rendered_html,
         'metadata': {
             'user_id': user.fb_uid,
