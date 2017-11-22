@@ -139,15 +139,8 @@ class UserTestimonials extends React.Component<{}> {
               align="center"
               padding="10 0 0"
             >
-              Elanna Smith<br />
-              <a
-                href="https://www.facebook.com/ElectricFunketeers/"
-                className="alternate"
-              >
-                Electric Funketeers
-              </a>
-              <br />
-              Chicago, USA
+              Jasey<br />
+              <br />Sydney, Australia
             </mj-text>
           </mj-column>
         </mj-section>
