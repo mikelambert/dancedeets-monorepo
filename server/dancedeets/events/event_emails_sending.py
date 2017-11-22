@@ -62,7 +62,7 @@ def email_for_event(organizer, event, should_send=False):
     message = {
         'from_email': 'events@dancedeets.com',
         'from_name': 'DanceDeets Events',
-        'subject': 'Event Added',  # TODO
+        'subject': 'DanceDeets found your event, and we want to help promote: %s' % event.name,
         'to': [{
             'email': email_address,
             'type': 'to',

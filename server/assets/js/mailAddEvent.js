@@ -342,7 +342,7 @@ class BodyWrapper extends React.Component<{
           <mj-text>
             <p>{hiThere}</p>
             <p>
-              We want to help promote your new event, and grow our dance scene:
+              We want to help promote your new event, and grow the dance scene:
             </p>
             <p style={{ paddingLeft: 20 }}>“{event.name}”</p>
             <p>

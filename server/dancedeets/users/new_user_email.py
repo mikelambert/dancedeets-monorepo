@@ -49,7 +49,7 @@ def email_for_user(user, fbl, should_send=False):
         logging.error(message)
         raise NoEmailException(message)
 
-    subject = 'Welcome to DanceDeets'
+    subject = 'Welcome to DanceDeets! See you on the dance floor…'
 
     tags = [
         'new-user',
