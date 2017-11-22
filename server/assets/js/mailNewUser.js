@@ -38,18 +38,16 @@ class MainBody extends React.Component<{
             realized how difficult it is to find the dance scene when traveling,
             and how hard it was to jump into the scene when we first started.
             <ul>
-            <li>What studios offer
-            hiphop classes?
-            <li>What are the biggest battles next month?
-            <li>What party
-            is popping this Friday night?
+              <li>Who's teaching workshops nearby?</li>
+              <li>What are the biggest battles next month?</li>
+              <li>Where are the dance parties this weekend?</li>
             </ul>
-            DanceDeets wants to solving these
-            problems by connecting dancers with the dance communities worldwide.
+            DanceDeets wants to solving these problems by connecting dancers
+            with the dance communities worldwide.
             <br />
             <br />
-            We love and share your passion for dance. Now, let us help you bring that
-            passion to the dance floor…
+            We love and share your passion for dance. Now, let us help you bring
+            that passion to the dance floor…
           </mj-text>
 
           <mj-button
