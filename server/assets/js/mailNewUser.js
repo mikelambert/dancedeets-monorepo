@@ -38,7 +38,7 @@ class MainBody extends React.Component<{
             realized how difficult it is to find the dance scene when traveling,
             and how hard it was to jump into the scene when we first started.
             <ul>
-              <li>Who's teaching workshops nearby?</li>
+              <li>Who’s teaching workshops nearby?</li>
               <li>What are the biggest battles next month?</li>
               <li>Where are the dance parties this weekend?</li>
             </ul>
