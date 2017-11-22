@@ -14,4 +14,5 @@ def send_message(message):
         return result
     except mandrill.Error, e:
         logging.error('A mandrill error occurred: %s: %s', e.__class__, e)
+        logging.error('Erroring message is %s', message)
         return None

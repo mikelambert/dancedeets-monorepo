@@ -67,7 +67,7 @@ def email_for_event(organizer, event, should_send=False):
             'email': email_address,
             'type': 'to',
         }],
-        'bcc_address': ['mlambert@dancedeets.com'],
+        'bcc_address': 'mlambert@dancedeets.com',
         'html': rendered_html,
         'metadata': {
             'event_id': event.id,
