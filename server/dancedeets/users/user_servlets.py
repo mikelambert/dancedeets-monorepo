@@ -72,7 +72,7 @@ class UserHandler(base_servlet.BaseRequestHandler):
         for field in ['location', 'distance_units']:
             form_value = self.request.get(field)
             setattr(user, field, form_value)
-        user.distance = min(self.request.get('distance'), 500)
+        user.distance = min(self.request.get('distance'), '500')
         user.min_attendees = int(self.request.get('min_attendees'))
         if user.location:
             user.compute_derived_properties(self.fbl.fetched_data(fb_api.LookupUser, self.fb_uid))
