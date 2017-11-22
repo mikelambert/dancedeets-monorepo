@@ -159,13 +159,15 @@ class FeaturePromo extends FeaturePromoBase {
             {features.map(feature => (
               <tr>
                 <td style={{ verticalAlign: 'top' }}>
-                  <img
-                    src={`https://static.dancedeets.com/img/mail/purple-icons/${feature.iconName}.png`}
-                    alt=""
-                    width="80"
-                    height="80"
-                    style={{ paddingBottom: 20 }}
-                  />
+                  <a href={feature.url}>
+                    <img
+                      src={`https://static.dancedeets.com/img/mail/purple-icons/${feature.iconName}.png`}
+                      alt=""
+                      width="80"
+                      height="80"
+                      style={{ paddingBottom: 20 }}
+                    />
+                  </a>
                 </td>
                 <td style={{ paddingLeft: 20, paddingBottom: 20 }}>
                   {feature.element}

@@ -155,6 +155,7 @@ class AlternateFeaturePromo extends FeaturePromoBase {
             <mj-image
               src={`https://static.dancedeets.com/img/mail/purple-icons/${features[0]
                 .iconName}.png`}
+              href={features[0].url}
               width="80px"
               height="80px"
               padding-bottom="20"
@@ -167,6 +168,7 @@ class AlternateFeaturePromo extends FeaturePromoBase {
             <mj-image
               src={`https://static.dancedeets.com/img/mail/purple-icons/${features[1]
                 .iconName}.png`}
+              href={features[1].url}
               width="80px"
               height="80px"
               padding-bottom="20"
@@ -183,6 +185,7 @@ class AlternateFeaturePromo extends FeaturePromoBase {
             <mj-image
               src={`https://static.dancedeets.com/img/mail/purple-icons/${features[2]
                 .iconName}.png`}
+              href={features[2].url}
               width="80px"
               height="80px"
               padding-bottom="20"

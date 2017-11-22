@@ -95,10 +95,19 @@ export class FeaturePromoBase extends React.Component<{
     const features: Array<Feature> = [
       {
         iconName: 'search',
+        url: `https://www.dancedeets.com/?location=${this.props.user.city}`,
         element: this.renderSearchElement(),
       },
-      { iconName: 'calendar-add', element: this.renderAddEventFeature() },
-      { iconName: 'movie', element: this.renderMovieFeature() },
+      {
+        iconName: 'calendar-add',
+        url: 'https://www.dancedeets.com/events_add',
+        element: this.renderAddEventFeature(),
+      },
+      {
+        iconName: 'movie',
+        url: 'https://www.dancedeets.com/tutorials',
+        element: this.renderMovieFeature(),
+      },
     ];
     return features;
   }
