@@ -68,13 +68,18 @@ class MandrillWebhookPageHandler(webapp2.RequestHandler):
         logging.info('Processing %s webhook events', len(mandrill_events))
         for event in mandrill_events:
             if event['event'] in ['hard_bounce', 'spam', 'unsub', 'reject']:
+                logging.info('Processing webhook event %s', event)
                 metadata = event['msg']['metadata']
-                user_id = metadata['user_id']
-                user = users.User.get_by_id(user_id)
-                if metadata['email_type'] == 'weekly':
-                    user.send_email = False
-                    logging.info('Unsubscribing user %s (%s) in response to Mandrill request', user.fb_uid, user.full_name)
-                user.put()
+                if 'user_id' in metadata:
+                    user_id = metadata['user_id']
+                    user = users.User.get_by_id(user_id)
+                    if metadata['email_type'] == 'weekly':
+                        user.send_email = False
+                        logging.info('Unsubscribing user %s (%s) in response to Mandrill request', user.fb_uid, user.full_name)
+                    user.put()
+                else:
+                    logging.info('Processing webhook event %s', event)
+                    user_id = metadata['user_id']
 
     get = handle
     head = handle
