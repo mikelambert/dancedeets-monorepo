@@ -102,8 +102,8 @@ class UserTestimonials extends React.Component<{}> {
               padding-left={columnPadding}
               padding-right={columnPadding}
             >
-              “DanceDeets is <i>the</i> place to find dance events when you
-              travel! More dancers need to be using this!”
+              “DanceDeets is <i>the</i> place to find street dance events, at
+              home and when traveling! More dancers need to be using this!”
             </mj-text>
             <mj-text
               mj-class="alternate"
@@ -123,7 +123,7 @@ class UserTestimonials extends React.Component<{}> {
           </mj-column>
 
           <mj-column mj-class="alternate">
-            <ImageThumbnail imageName="testimonials/elena.png" />
+            <ImageThumbnail imageName="testimonials/jasey.png" />
             <mj-text
               mj-class="alternate"
               font-size="11px"
