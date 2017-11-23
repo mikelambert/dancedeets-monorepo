@@ -79,7 +79,7 @@ class MandrillWebhookPageHandler(webapp2.RequestHandler):
                         logging.info('Unsubscribing user %s (%s) in response to Mandrill %s', user.fb_uid, user.full_name, event['event'])
                     user.put()
                 else:
-                    email = metadata['email']
+                    email = event['msg']['email']
                     logging.info('Unsubscribing %s in response to Mandrill %s', email, event['event'])
                     event_emails.unsubscribe_email(email)
 
