@@ -89,6 +89,7 @@ def fetch_updates():
 class MemoryUsers(webapp2.RequestHandler):
     def get(self):
         fetch_updates()
+        self.response.out.write('Done!')
 
 
 if __name__ == '__main__':
