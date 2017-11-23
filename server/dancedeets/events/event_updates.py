@@ -184,6 +184,8 @@ def _inner_make_event_findable_for_fb_event(db_event, fb_dict, fb_event_attendin
 
     location_info = event_locations.LocationInfo(fb_dict, fb_event_attending_maybe=fb_event_attending_maybe, db_event=db_event)
 
+    db_event.attendee_distance_score = 0
+
     # Setup event's attendee-based location guess, in case we need it
     if fb_event_attending_maybe:
         person_ids = fb_events.get_event_attendee_ids(fb_event_attending_maybe)
@@ -191,8 +193,9 @@ def _inner_make_event_findable_for_fb_event(db_event, fb_dict, fb_event_attendin
         if location_info.geocode:
             person_ids = fb_events.get_event_attendee_ids(fb_event_attending_maybe)
             data = person_city.get_data_fields(person_ids, location_info.geocode.latlng())
-            histogram = data['count_histogram']
-            db_event.attendee_distance_score = histogram[0] + 2 * histogram[1] + 3 * histogram[2] + 4 * histogram[3]
+            if data:
+                histogram = data['count_histogram']
+                db_event.attendee_distance_score = histogram[0] + 2 * histogram[1] + 3 * histogram[2] + 4 * histogram[3]
 
         start = time.time()
         top_geoname_id = person_city.get_top_geoname_for(person_ids)
