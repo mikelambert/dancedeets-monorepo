@@ -179,6 +179,9 @@ class SearchHandler(ApiHandler):
         for key in ['locale', 'deb']:
             if self.request.get(key):
                 data[key] = self.request.get(key)
+        for key in ['min_worth']:
+            if self.request.get(key):
+                data[key] = int(self.request.get(key))
         for key in ['start', 'end']:
             if self.request.get(key):
                 dt = datetime.datetime.strptime(self.request.get(key), '%Y-%m-%d')

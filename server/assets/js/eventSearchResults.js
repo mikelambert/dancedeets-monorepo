@@ -55,6 +55,7 @@ type FormSearchQuery = {
   keywords?: string, // eslint-disable-line react/no-unused-prop-types
   start?: string, // eslint-disable-line react/no-unused-prop-types
   end?: string, // eslint-disable-line react/no-unused-prop-types
+  min_worth?: string, // eslint-disable-line react/no-unused-prop-types
 };
 
 function insertEvery<T>(
@@ -648,7 +649,8 @@ export async function search(
   location: ?string,
   keywords: ?string,
   start: ?string,
-  end: ?string
+  end: ?string,
+  min_worth: ?string // eslint-disable-line camelcase
 ) {
   const args = {};
   if (location) {
@@ -662,6 +664,10 @@ export async function search(
   }
   if (end) {
     args.end = end;
+  }
+  // eslint-disable-next-line camelcase
+  if (min_worth) {
+    args.min_worth = min_worth; // eslint-disable-line camelcase
   }
 
   const response = await performRequest(
@@ -904,7 +910,8 @@ async function performSearch(query: FormSearchQuery) {
     query.location,
     query.keywords,
     query.start,
-    query.end
+    query.end,
+    query.min_worth
   );
   return response;
 }
