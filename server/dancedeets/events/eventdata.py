@@ -125,6 +125,7 @@ class DBEvent(ndb.Model):
     nearby_city_names = ndb.StringProperty(indexed=False, repeated=True)  # Unused
 
     nonlocal_fraction = ndb.FloatProperty(indexed=True)  # Fraction of attendees that are non-local dancers
+    attendee_distance_score = ndb.FloatProperty(indexed=True)  # Some functional score of the internationality of the event's attendees
 
     # Things that would be nice to have in DBEvent:
     # - event privacy

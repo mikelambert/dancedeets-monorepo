@@ -135,7 +135,7 @@ def _inner_make_event_findable_for_fb_event(db_event, fb_dict, fb_event_attendin
     # Update this event with the latest time_period regardless (possibly overwritten below)
     db_event.search_time_period = _event_time_period(db_event)
 
-    db_event.nonlocal_fraction = 0
+    db_event.nonlocal_fraction = None
 
     if fb_dict['empty'] == fb_api.EMPTY_CAUSE_DELETED:
         # If this event has already past, don't allow it to be deleted. We want to keep history!
@@ -189,7 +189,10 @@ def _inner_make_event_findable_for_fb_event(db_event, fb_dict, fb_event_attendin
         person_ids = fb_events.get_event_attendee_ids(fb_event_attending_maybe)
 
         if location_info.geocode:
-            db_event.nonlocal_fraction = person_city.get_nonlocal_fraction(person_ids, location_info.geocode.latlng())
+            person_ids = fb_events.get_event_attendee_ids(fb_event_attending_maybe)
+            data = person_city.get_data_fields(person_ids, location_info.geocode.latlng())
+            histogram = data['count_histogram']
+            db_event.attendee_distance_score = histogram[0] + 2 * histogram[1] + 3 * histogram[2] + 4 * histogram[3]
 
         start = time.time()
         top_geoname_id = person_city.get_top_geoname_for(person_ids)
