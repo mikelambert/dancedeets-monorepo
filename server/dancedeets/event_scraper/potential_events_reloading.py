@@ -12,6 +12,7 @@ def mr_load_potential_events(fbl):
         name='Load Potential Events For Users',
         handler_spec='dancedeets.event_scraper.potential_events_reloading.map_load_potential_events',
         entity_kind='dancedeets.users.users.User',
+        filters=[('expired_oauth_token', '=', False)],
     )
 
 

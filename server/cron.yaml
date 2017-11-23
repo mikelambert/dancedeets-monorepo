@@ -29,6 +29,9 @@ cron:
 - description: reload user data
   url: /tasks/reload_all_users?user_id=dummy&allow_cache=0&queue=slow-queue
   schedule: every day 18:00
+- description: reload all user data
+  url: /tasks/reload_all_users?user_id=dummy&allow_cache=0&queue=slow-queue&all_users=1
+  schedule: every monday 10:00
 - description: email users about upcoming events
   url: /tasks/email_all_users?user_id=dummy
   schedule: every monday 12:00

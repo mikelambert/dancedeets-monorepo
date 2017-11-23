@@ -160,6 +160,11 @@ indexes:
   - name: __key__
     direction: desc
 
+- kind: User
+  properties:
+  - name: expired_oauth_token
+  - name: __scatter__
+
 - kind: UserMessage
   properties:
   - name: fb_uid

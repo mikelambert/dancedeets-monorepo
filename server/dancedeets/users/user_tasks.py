@@ -36,13 +36,19 @@ class LoadUserHandler(base_servlet.UserOperationHandler):
 @app.route('/tasks/reload_all_users')
 class ReloadAllUsersHandler(base_servlet.BaseTaskFacebookRequestHandler):
     def get(self):
+        all_users = self.request.get('all_users', '0') == '1'
+        if all_users:
+            filters = []
+        else:
+            filters = [('expired_oauth_token', '=', False)]
         # this calls a map function wrapped by mr_user_wrap, so it works correctly on a per-user basis
         mailchimp_list_id = mailchimp_api.get_list_id()
         fb_mapreduce.start_map(
             fbl=self.fbl,
-            name='Load Users',
+            name='Load %sUsers' % ('All ' if all_users else ''),
             handler_spec='dancedeets.users.user_tasks.map_load_fb_user',
             entity_kind='dancedeets.users.users.User',
+            filters=filters,
             extra_mapper_params={
                 'mailchimp_list_id': mailchimp_list_id,
             },
