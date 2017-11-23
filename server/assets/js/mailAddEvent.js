@@ -153,17 +153,18 @@ export class ImageThumbnail extends React.Component<{
   }
 }
 
-class EventTestimonials extends React.Component<{}> {
+class EventTestimonials extends React.Component<{ upsell: boolean }> {
   render() {
-    return (
-      <mj-wrapper mj-class="alternate" padding={`10 ${outsideGutter}`}>
+    let eventsWorkedWith = null;
+    if (this.props.upsell) {
+      eventsWorkedWith = [
         <mj-section mj-class="alternate" padding="20 0">
           <mj-column mj-class="alternate">
             <mj-text mj-class="alternate" align="center" font-size="16px">
               Events we have worked with:
             </mj-text>
           </mj-column>
-        </mj-section>
+        </mj-section>,
         <mj-section mj-class="alternate">
           <mj-column mj-class="alternate">
             <ImageThumbnail imageName="events/event1.png" />
@@ -183,7 +184,12 @@ class EventTestimonials extends React.Component<{}> {
               Ladies of Hip-Hop
             </mj-text>
           </mj-column>
-        </mj-section>
+        </mj-section>,
+      ];
+    }
+    return (
+      <mj-wrapper mj-class="alternate" padding={`10 ${outsideGutter}`}>
+        {eventsWorkedWith}
         <mj-section mj-class="alternate" padding="40 0 20">
           <mj-column mj-class="alternate">
             <mj-text mj-class="alternate" align="center" font-size="16px">
@@ -336,6 +342,8 @@ class BodyWrapper extends React.Component<{
     if (this.props.organizerName) {
       hiThere = `Hi there ${this.props.organizerName},`;
     }
+    // TODO: enable when we have a pipeline working
+    const upsell = false;
     // TODO: Handle 'intro email' different from 'second email'
     return [
       <HeaderFlyers />,
@@ -402,11 +410,13 @@ class BodyWrapper extends React.Component<{
             </tr>
           </mj-table>
 
-          <mj-text font-weight="bold">Want more promotion? Read on…</mj-text>
+          {upsell ? (
+            <mj-text font-weight="bold">Want more promotion? Read on…</mj-text>
+          ) : null}
         </mj-column>
       </mj-section>,
-      <Upsell event={event} />,
-      <EventTestimonials />,
+      upsell ? <Upsell event={event} /> : null,
+      <EventTestimonials upsell={upsell} />,
     ];
   }
 }
