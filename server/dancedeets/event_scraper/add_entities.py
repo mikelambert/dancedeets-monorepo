@@ -94,8 +94,7 @@ def after_add_event(event_id, fbl, post_pubsub):
     if fbl:
         crawl_event_source(fbl, event_id)
     # This has to occur *after* the event sources have been crawled (and the sources' emails are saved)
-    # Re-enable this (possibly with conditions) when we have more time
-    event_emails_sending.send_event_add_emails(event_id, should_send=False)
+    event_emails_sending.send_event_add_emails(event_id, should_send=True)
 
 
 def crawl_event_source(fbl, event_id):
