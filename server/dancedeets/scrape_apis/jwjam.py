@@ -7,6 +7,8 @@ import json
 import logging
 import urllib
 import urllib2
+import webapp2
+from dancedeets import app
 from dancedeets import keys
 from dancedeets.events import web_events_reloading
 from dancedeets.events import namespaces
@@ -35,7 +37,7 @@ def push_items(items):
 
 
 def fetch_all_ids(namespace, start_id=1):
-    trailing_count = 50
+    trailing_count = 100
     missing = 0
     id = start_id
     while True:
@@ -78,11 +80,23 @@ def fetch_latest(namespace, start_id=0):
     fetch_all_ids(namespace, start_id=start_id)
 
 
-fetch_latest_only = True
-
-if fetch_latest_only:
+def fetch_updates():
     fetch_latest(namespaces.CHINA_JWJAM_JAM, 0)
     fetch_latest(namespaces.CHINA_JWJAM_COURSE, 92)
-else:
-    fetch_all_ids(namespaces.CHINA_JWJAM_JAM, 0)
-    fetch_all_ids(namespaces.CHINA_JWJAM_COURSE, 92)
+
+
+@app.route('/tasks/scrape_apis/jwjam')
+class MemoryUsers(webapp2.RequestHandler):
+    def get(self):
+        fetch_updates()
+
+
+if __name__ == '__main__':
+    fetch_latest_only = True
+
+    if fetch_latest_only:
+        fetch_latest(namespaces.CHINA_JWJAM_JAM, 0)
+        fetch_latest(namespaces.CHINA_JWJAM_COURSE, 92)
+    else:
+        fetch_all_ids(namespaces.CHINA_JWJAM_JAM, 0)
+        fetch_all_ids(namespaces.CHINA_JWJAM_COURSE, 92)

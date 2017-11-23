@@ -71,3 +71,6 @@ cron:
 - description: start posting about events N days out
   url: /tasks/prepare_event_notifications?days=3&min_dancers=50&min_attendees=100
   schedule: every day 10:00
+- description: scrape jwjam
+  url: /tasks/scrape_apis/jwjam
+  schedule: every day 12:00

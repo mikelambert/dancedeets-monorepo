@@ -22,6 +22,7 @@ import dancedeets.pubsub.facebook.auth_setup
 import dancedeets.pubsub.twitter.auth_setup
 import dancedeets.pubsub.weekly_images
 import dancedeets.rankings.rankings_servlets
+import dancedeets.scrape_apis.jwjam
 import dancedeets.search.search_servlets
 import dancedeets.search.search_tasks
 import dancedeets.search.style_servlets
