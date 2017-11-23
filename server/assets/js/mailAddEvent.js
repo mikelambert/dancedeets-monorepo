@@ -125,7 +125,7 @@ class Upsell extends React.Component<{
       <mj-section padding={`0 ${outsideGutter} 30`}>
         <mj-column>
           <mj-button
-            href={`mailto:partnering+${event.id}@dancedeets.com`}
+            href={`mailto:partnering+${this.props.event.id}@dancedeets.com`}
             align="center"
             background-color={buttonBackgroundColor}
             color={buttonForegroundColor}
@@ -405,7 +405,7 @@ class BodyWrapper extends React.Component<{
           <mj-text font-weight="bold">Want more promotion? Read on…</mj-text>
         </mj-column>
       </mj-section>,
-      <Upsell event={this.props.event} />,
+      <Upsell event={event} />,
       <EventTestimonials />,
     ];
   }
