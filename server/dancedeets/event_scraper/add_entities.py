@@ -83,18 +83,19 @@ def add_update_fb_event(
     post_pubsub = newly_created and allow_posting
 
     fbl.clear_local_cache()
-    deferred.defer(after_add_event, e.id, fbl, post_pubsub)
+    deferred.defer(after_add_event, e.id, fbl, newly_created, post_pubsub)
     return e
 
 
-def after_add_event(event_id, fbl, post_pubsub):
+def after_add_event(event_id, fbl, newly_created, post_pubsub):
     logging.info("New event, publishing to twitter/facebook")
     if post_pubsub:
         pubsub.eventually_publish_event(event_id)
     if fbl:
         crawl_event_source(fbl, event_id)
-    # This has to occur *after* the event sources have been crawled (and the sources' emails are saved)
-    event_emails_sending.send_event_add_emails(event_id, should_send=True)
+    if newly_created:
+        # This has to occur *after* the event sources have been crawled (and the sources' emails are saved)
+        event_emails_sending.send_event_add_emails(event_id, should_send=True)
 
 
 def crawl_event_source(fbl, event_id):
