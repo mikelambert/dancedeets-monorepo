@@ -235,7 +235,14 @@ class DBEvent(ndb.Model):
         else:
             event_times = self.fb_event['info'].get('event_times')
             if event_times:
-                return [{'start_time': x['start_time'], 'end_time': x['end_time']} for x in event_times]
+                new_event_times = []
+                for event_time in event_times:
+                    new_event_time = {}
+                    new_event_time['start_time'] = event_time['start_time']
+                    if 'end_time' in event_time:
+                        new_event_time['end_time'] = event_time['end_time']
+                    new_event_times.append(new_event_time)
+                return new_event_times
             else:
                 return None
 
