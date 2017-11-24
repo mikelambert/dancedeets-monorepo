@@ -327,14 +327,10 @@ export class NewEmailWrapper extends React.Component<{
             />
             <mj-preview>{this.props.previewText}</mj-preview>
           </mj-attributes>
-        </mj-head>
-        <mj-body>
-          <mj-container background-color="#EAEAEA">
-            <mj-raw>
-              <style
-                // eslint-disable-next-line react/no-danger
-                dangerouslySetInnerHTML={{
-                  __html: `
+          <mj-style
+            // eslint-disable-next-line react/no-danger
+            dangerouslySetInnerHTML={{
+              __html: `
                   a.alternate:link,
                   a.alternate:visited,
                   a.alternate:hover,
@@ -342,9 +338,11 @@ export class NewEmailWrapper extends React.Component<{
                     color: #9999ff;
                   }
                 `,
-                }}
-              />
-            </mj-raw>
+            }}
+          />
+        </mj-head>
+        <mj-body>
+          <mj-container background-color="#EAEAEA">
             {this.props.children}
             <MobileAppPromo
               mobileAndroidUrl={this.props.mobileAndroidUrl}
