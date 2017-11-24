@@ -351,10 +351,10 @@ class BodyWrapper extends React.Component<{
         <mj-column>
           <mj-text>
             <p>{hiThere}</p>
-            <p>
-              We want to help promote your new event, and grow the dance scene:
+            <p>We want to help promote your new event:</p>
+            <p style={{ paddingLeft: 20 }}>
+              <a href={shortUrl}>“{event.name}”</a>
             </p>
-            <p style={{ paddingLeft: 20 }}>“{event.name}”</p>
             <p>
               To start, we&#8217;ve added your event to DanceDeets, the
               world&#8217;s biggest street dance event platform:
