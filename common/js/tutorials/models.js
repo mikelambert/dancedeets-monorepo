@@ -79,7 +79,7 @@ export class Playlist {
   getVideoIndex(video: Video): number {
     let index = 0;
     for (let i = 0; i < this.sections.length; i += 1) {
-      const videos = this.sections[i].videos;
+      const { videos } = this.sections[i];
       const sectionIndex = videos.findIndex(
         thisVideo => thisVideo.youtubeId === video.youtubeId
       );

@@ -303,7 +303,7 @@ export class Event extends BaseEvent {
   posts: Array<Post>;
   ticket_uri: string; // eslint-disable-line camelcase
   extraImageCount: number;
-  event_times: Array<EventTime>;
+  event_times: Array<EventTime>; // eslint-disable-line camelcase
 
   getFlyer(dimensions: { width?: number, height?: number }): ?ImageWithSizes {
     return this.picture ? this.picture.getFlyer(dimensions) : null;
