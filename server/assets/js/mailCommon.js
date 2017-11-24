@@ -331,10 +331,8 @@ export class NewEmailWrapper extends React.Component<{
             // eslint-disable-next-line react/no-danger
             dangerouslySetInnerHTML={{
               __html: `
-                  a.alternate:link,
-                  a.alternate:visited,
-                  a.alternate:hover,
-                  a.alternate:active {
+                  // pseudo-classes don't seem to render properly on gmail (or others)
+                  a.alternate {
                     color: #9999ff;
                   }
                 `,
