@@ -35,6 +35,7 @@ import type {
   SearchResponse,
   StylePersonLookup,
 } from 'dancedeets-common/js/events/search';
+import { expandResults } from 'dancedeets-common/js/events/helpers';
 import { formatStartDateOnly } from 'dancedeets-common/js/dates';
 import { sortNumber } from 'dancedeets-common/js/util/sort';
 import { EventRow, RowHeight } from './listEvent';
@@ -479,10 +480,12 @@ class _EventListContainer extends React.Component<
       const now = moment(this.props.intl.now());
       if (response.results != null && response.results.length > 0) {
         // Previously sorted by startDate from the server, we want to sort them by our listDate
-        const sortedResults = sortNumber(response.results, x =>
+        let resultEvents = response.results;
+        resultEvents = expandResults(resultEvents, Event);
+        resultEvents = sortNumber(resultEvents, x =>
           x.getListDateMoment({ timezone: false }).valueOf()
         );
-        for (const e of sortedResults) {
+        for (const e of resultEvents) {
           // It's difficult to to do time-zone-aware date manipulation on the server,
           // so instead let's filter out those events here.
           const end = e.getEndMomentWithFallback({ timezone: true });
