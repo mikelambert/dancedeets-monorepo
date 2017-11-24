@@ -229,6 +229,17 @@ class DBEvent(ndb.Model):
             return self.start_time_with_tz + datetime.timedelta(hours=2)
 
     @property
+    def event_times(self):
+        if self.web_event:
+            return None
+        else:
+            event_times = self.fb_event['info'].get('event_times')
+            if event_times:
+                return [{'start_time': x['start_time'], 'end_time': x['end_time']} for x in event_times]
+            else:
+                return None
+
+    @property
     def ticket_uri(self):
         if self.web_event:
             return None

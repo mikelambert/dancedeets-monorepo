@@ -73,6 +73,7 @@ class DisplayEvent(ndb.Model):
                 'maybe_count': db_event.maybe_count,
                 'categories': categories,
                 'keywords': keywords,
+                'event_types': db_event.event_times,
             }
             return display_event
         except:

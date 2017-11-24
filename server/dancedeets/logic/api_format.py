@@ -27,6 +27,8 @@ def canonicalize_search_event_data(result, version):
     event_api['start_time'] = result.data['start_time']
     event_api['end_time'] = result.data['end_time']
 
+    event_api['event_times'] = result.data['event_times']
+
     geocode = None
     if result.data['lng'] and result.data['lat']:
         geocode = {
@@ -107,6 +109,8 @@ def canonicalize_base_event_data(db_event, version):
         event_api['end_time'] = db_event.end_time_with_tz.strftime(DATETIME_FORMAT_TZ)
     else:
         event_api['end_time'] = None
+
+    event_api['event_times'] = db_event.event_times
 
     event_api['extraImageCount'] = len(db_event.extra_image_urls())
 
