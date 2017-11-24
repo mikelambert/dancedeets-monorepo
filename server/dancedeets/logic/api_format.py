@@ -27,7 +27,7 @@ def canonicalize_search_event_data(result, version):
     event_api['start_time'] = result.data['start_time']
     event_api['end_time'] = result.data['end_time']
 
-    event_api['event_times'] = result.data['event_times']
+    event_api['event_times'] = result.data.get('event_times')
 
     geocode = None
     if result.data['lng'] and result.data['lat']:

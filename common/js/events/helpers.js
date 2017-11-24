@@ -45,3 +45,21 @@ export function groupEventsByStartDate<T: BaseEvent>(
   });
   return results;
 }
+
+export function expandResults(events, classType) {
+  const newEvents = [];
+  for (const event of events) {
+    if (event.event_times) {
+      for (const eventTime of event.event_times) {
+        const copiedEvent = new classType(event);
+        copiedEvent.start_time = eventTime.start_time;
+        copiedEvent.end_time = eventTime.end_time;
+        copiedEvent.event_times = null;
+        newEvents.push(copiedEvent);
+      }
+    } else {
+      newEvents.push(event);
+    }
+  }
+  return newEvents;
+}

@@ -276,6 +276,11 @@ export class SearchEvent extends BaseEvent {
 
 export type Post = Object;
 
+export type EventTime = {
+  start_time: string,
+  end_time: string,
+};
+
 export class Event extends BaseEvent {
   description: string;
   source: {
@@ -298,6 +303,7 @@ export class Event extends BaseEvent {
   posts: Array<Post>;
   ticket_uri: string; // eslint-disable-line camelcase
   extraImageCount: number;
+  event_times: Array<EventTime>;
 
   getFlyer(dimensions: { width?: number, height?: number }): ?ImageWithSizes {
     return this.picture ? this.picture.getFlyer(dimensions) : null;

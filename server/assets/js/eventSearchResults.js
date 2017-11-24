@@ -32,7 +32,10 @@ import type {
   PeopleListing,
   StylePersonLookup,
 } from 'dancedeets-common/js/events/search';
-import { groupEventsByStartDate } from 'dancedeets-common/js/events/helpers';
+import {
+  expandResults,
+  groupEventsByStartDate,
+} from 'dancedeets-common/js/events/helpers';
 import { formatStartDateOnly } from 'dancedeets-common/js/dates';
 import { cdnBaseUrl } from 'dancedeets-common/js/util/url';
 import { JsonSchema } from './schema';
@@ -565,6 +568,7 @@ class ResultsList extends React.Component<
     let resultEvents = this.props.response.results.map(
       eventData => new SearchEvent(eventData)
     );
+    resultEvents = expandResults(resultEvents, SearchEvent);
     resultEvents = sortNumber(resultEvents, resultEvent =>
       resultEvent.getListDateMoment({ timezone: false }).valueOf()
     );
