@@ -328,10 +328,12 @@ export class NewEmailWrapper extends React.Component<{
             <mj-preview>{this.props.previewText}</mj-preview>
           </mj-attributes>
           <mj-style
+            // un-inlined link colors don't seem to take sufficient precedence over pseudo-classes
+            inline="inline"
             // eslint-disable-next-line react/no-danger
             dangerouslySetInnerHTML={{
               __html: `
-                  // pseudo-classes don't seem to render properly on gmail (or others)
+                  /* pseudo-classes don't seem to render properly on gmail (or others) */
                   a.alternate {
                     color: #9999ff;
                   }
