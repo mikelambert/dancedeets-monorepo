@@ -240,7 +240,7 @@ class FeaturedEvents extends React.Component<{
     imageEvents.forEach((featuredInfo, index) => {
       // Slider requires children to be actual HTML elements.
       resultItems.push(
-        <div key={featuredInfo.event.id}>
+        <div key={`${featuredInfo.event.id}-${featuredInfo.event.start_time}`}>
           <FeaturedEvent featuredInfo={featuredInfo} />
         </div>
       );
@@ -280,7 +280,10 @@ class CurrentEvents extends React.Component<{
     this.props.events.forEach((event, index) => {
       resultItems.push(
         <div style={{ float: 'left' }}>
-          <VerticalEvent key={event.id} event={event} />
+          <VerticalEvent
+            key={`${event.id}-${event.start_time}`}
+            event={event}
+          />
         </div>
       );
     });
@@ -316,7 +319,7 @@ class _EventsList extends React.Component<{
     ).forEach(({ header, events }) => {
       const renderedEvents = events.map((event, index) => (
         <HorizontalEvent
-          key={event.id}
+          key={`${event.id}-${event.start_time}`}
           event={event}
           lazyLoad={overallEventIndex + index > 8}
         />
@@ -633,7 +636,10 @@ class ResultsList extends React.Component<
 
     const jsonSchema = !ExecutionEnvironment.canUseDOM
       ? resultEvents.map(x => (
-          <JsonSchema key={x.id} json={getEventSchema(x)} />
+          <JsonSchema
+            key={`${x.id}-${x.start_time}`}
+            json={getEventSchema(x)}
+          />
         ))
       : null;
 
