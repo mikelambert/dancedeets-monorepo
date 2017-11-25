@@ -17,6 +17,11 @@ export const buttonForegroundColor = '#FFFFFF';
 export const outsideGutter = 30;
 export const columnPadding = 15;
 
+export function AltA(props: Object) {
+  // eslint-disable-next-line jsx-a11y/anchor-has-context
+  return <a style={{ color: '#9999ff' }} className="alternate" {...props} />;
+}
+
 export type User = {
   userName: string,
   city: string,
@@ -88,7 +93,7 @@ type Feature = {
 
 export class FeaturePromoBase extends React.Component<{
   user: User,
-  className: string,
+  LinkComponent: React.Component<*>,
   useNewlines: boolean,
 }> {
   getFeatures() {
@@ -117,117 +122,105 @@ export class FeaturePromoBase extends React.Component<{
   }
 
   renderSearchElement() {
-    const { countryName } = this.props.user;
+    const { user, LinkComponent } = this.props;
+    const { countryName } = user;
     return (
       <div>
         Planning your next trip?
         {this.renderSeparator()}
         Check all events in{' '}
-        <a
-          href="https://www.dancedeets.com/?location=NYC"
-          className={this.props.className}
-        >
+        <LinkComponent href="https://www.dancedeets.com/?location=NYC">
           NYC
-        </a>,{' '}
-        <a
-          href="https://www.dancedeets.com/?location=Paris"
-          className={this.props.className}
-        >
+        </LinkComponent>,{' '}
+        <LinkComponent href="https://www.dancedeets.com/?location=Paris">
           Paris
-        </a>, and{' '}
-        <a
-          href="https://www.dancedeets.com/?location=Los Angeles"
-          className={this.props.className}
-        >
+        </LinkComponent>, and{' '}
+        <LinkComponent href="https://www.dancedeets.com/?location=Los Angeles">
           LA
-        </a>.
+        </LinkComponent>.
         {this.renderSeparator()}
         Or all events in {countryName} for{' '}
-        <a
+        <LinkComponent
           href={`https://www.dancedeets.com/?location=${countryName}&keywords=breaking`}
-          className={this.props.className}
         >
           Bboying/Bgirling
-        </a>
+        </LinkComponent>
         , {' '}
-        <a
+        <LinkComponent
           href={`https://www.dancedeets.com/?location=${countryName}&keywords=popping`}
-          className={this.props.className}
         >
           Popping
-        </a>
+        </LinkComponent>
         , and {' '}
-        <a
+        <LinkComponent
           href={`https://www.dancedeets.com/?location=${countryName}&keywords=hiphop`}
-          className={this.props.className}
         >
           Hip-Hop
-        </a>
+        </LinkComponent>
       </div>
     );
   }
 
   renderAddEventFeature() {
+    const { LinkComponent } = this.props;
     return (
       <div>
         Got an event you would like to share with more dancers?
         {this.renderSeparator()}
-        <a
-          href="https://www.dancedeets.com/events_add"
-          className={this.props.className}
-        >
+        <LinkComponent href="https://www.dancedeets.com/events_add">
           Add an event
-        </a>{' '}
+        </LinkComponent>{' '}
         with just a few clicks!
       </div>
     );
   }
 
   renderMovieFeature() {
+    const { LinkComponent } = this.props;
     return (
       <div>
         Check out the{' '}
-        <a
+        <LinkComponent
           href="https://www.dancedeets.com/tutorials"
           className={this.props.className}
         >
           best dance tutorials
-        </a>{' '}
+        </LinkComponent>{' '}
         we found around the world to help you level up.
         {this.renderSeparator()}
         Whether it’s{' '}
-        <a
+        <LinkComponent
           href="https://www.dancedeets.com/tutorials/break"
           className={this.props.className}
         >
           bboying
-        </a>,{' '}
-        <a
+        </LinkComponent>,{' '}
+        <LinkComponent
           href="https://www.dancedeets.com/tutorials/pop"
           className={this.props.className}
         >
           popping
-        </a>{' '}
+        </LinkComponent>{' '}
         or{' '}
-        <a
+        <LinkComponent
           href="https://www.dancedeets.com/tutorials/lock"
           className={this.props.className}
         >
           locking
-        </a>,{' '}
-        <a
+        </LinkComponent>,{' '}
+        <LinkComponent
           href="https://www.dancedeets.com/tutorials/hiphop"
           className={this.props.className}
         >
           freestyle hiphop
-        </a>{' '}
+        </LinkComponent>{' '}
         or{' '}
-        <a
+        <LinkComponent
           href="https://www.dancedeets.com/tutorials/house"
           className={this.props.className}
         >
           house
-        </a>, we’ve got you covered!
+        </LinkComponent>, we’ve got you covered!
       </div>
     );
   }
@@ -288,9 +281,9 @@ export class Footer extends React.Component<{
             <p>Built for and by dancers.</p>
             <p>Sent with ❤ from DanceDeets</p>
             <p>
-              <a href={this.props.emailPreferencesUrl} className="alternate">
+              <AltA href={this.props.emailPreferencesUrl}>
                 Unsubscribe / email preferences
-              </a>
+              </AltA>
             </p>
           </mj-text>
         </mj-column>
@@ -307,6 +300,25 @@ export class NewEmailWrapper extends React.Component<{
   children: React.Node,
 }> {
   render() {
+    /*
+    I would love to do this...but unfortunately mj-style grabs web-resource-inliner->datauri,
+    as well as imagesize (dependent require) and mimer (has a data load),
+    all of which don't work well in a precompiled environment.
+    So instead, we try to force our alternate-a tags to use a separate component that sets the color directly.
+      <mj-style
+        // un-inlined link colors don't seem to take sufficient precedence over pseudo-classes
+        // pseudo-classes don't seem to render properly on gmail (or others)
+        inline="inline"
+        // eslint-disable-next-line react/no-danger
+        dangerouslySetInnerHTML={{
+          __html: `
+              a.alternate {
+                color: #9999ff;
+              }
+            `,
+        }}
+      />
+    */
     return (
       <mjml>
         <mj-head>
@@ -327,19 +339,6 @@ export class NewEmailWrapper extends React.Component<{
             />
             <mj-preview>{this.props.previewText}</mj-preview>
           </mj-attributes>
-          <mj-style
-            // un-inlined link colors don't seem to take sufficient precedence over pseudo-classes
-            inline="inline"
-            // eslint-disable-next-line react/no-danger
-            dangerouslySetInnerHTML={{
-              __html: `
-                  /* pseudo-classes don't seem to render properly on gmail (or others) */
-                  a.alternate {
-                    color: #9999ff;
-                  }
-                `,
-            }}
-          />
         </mj-head>
         <mj-body>
           <mj-container background-color="#EAEAEA">

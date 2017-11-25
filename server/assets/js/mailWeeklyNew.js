@@ -10,6 +10,7 @@ import { SearchEvent } from 'dancedeets-common/js/events/models';
 import type { NewSearchResponse } from 'dancedeets-common/js/events/search';
 // import { addUrlArgs } from 'dancedeets-common/js/util/url';
 import {
+  AltA,
   FeaturePromoBase,
   NewEmailWrapper,
   columnPadding,
@@ -211,7 +212,7 @@ class BodyWrapper extends React.Component<{
       <MainBody user={this.props.user} response={this.props.response} />,
       <AlternateFeaturePromo
         user={this.props.user}
-        className="alternate"
+        LinkComponent={AltA}
         useNewlines
       />,
     ];

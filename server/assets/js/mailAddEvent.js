@@ -9,6 +9,7 @@ import { intlWeb } from 'dancedeets-common/js/intl';
 import { Event } from 'dancedeets-common/js/events/models';
 // import { addUrlArgs } from 'dancedeets-common/js/util/url';
 import {
+  AltA,
   NewEmailWrapper,
   buttonBackgroundColor,
   buttonForegroundColor,
@@ -218,19 +219,19 @@ class EventTestimonials extends React.Component<{ upsell: boolean }> {
               padding="10 0 0"
             >
               Brooklyn Terry<br />
-              <a
+              <AltA
                 href="https://www.facebook.com/ELITEFORCECREW/"
                 className="alternate"
               >
                 Elite Force
-              </a>
+              </AltA>
               <br />
-              <a
+              <AltA
                 href="https://www.facebook.com/SpeakeasyTYO"
                 className="alternate"
               >
                 Speakeasy TYO
-              </a>
+              </AltA>
               <br />
               Tokyo, Japan
             </mj-text>
@@ -255,19 +256,19 @@ class EventTestimonials extends React.Component<{ upsell: boolean }> {
               padding="10 0 0"
             >
               Tomas Vikeland<br />
-              <a
+              <AltA
                 href="https://www.facebook.com/midtnorsk.urban.dans"
                 className="alternate"
               >
                 Midtnorsk Urban Dans
-              </a>
+              </AltA>
               <br />
-              <a
+              <AltA
                 href="https://www.facebook.com/rawdancestudiono"
                 className="alternate"
               >
                 RAW Dance Studio
-              </a>
+              </AltA>
               <br />Trondheim, Norway
             </mj-text>
           </mj-column>
@@ -290,12 +291,12 @@ class EventTestimonials extends React.Component<{ upsell: boolean }> {
               padding="10 0 0"
             >
               Elanna Smith<br />
-              <a
+              <AltA
                 href="https://www.facebook.com/ElectricFunketeers/"
                 className="alternate"
               >
                 Electric Funketeers
-              </a>
+              </AltA>
               <br />
               Chicago, USA
             </mj-text>

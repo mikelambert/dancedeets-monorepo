@@ -192,7 +192,11 @@ class BodyWrapper extends React.Component<{
       <NavHeader />,
       <HeaderFindYourDance />,
       <MainBody user={this.props.user} />,
-      <FeaturePromo user={this.props.user} className="" useNewlines={false} />,
+      <FeaturePromo
+        user={this.props.user}
+        LinkComponent="a"
+        useNewlines={false}
+      />,
       <UserTestimonials />,
     ];
   }
