@@ -2,9 +2,9 @@ from atomicwrites import atomic_write
 import sqlite3
 import getpass
 import logging
+import os
 import threading
 import time
-import os
 
 from google.cloud import storage
 
@@ -39,7 +39,7 @@ def _download_sqlite(db_path):
 
 def get_connection(database_name, fallback_database_name=None):
     full_db_name = '%s.db' % database_name
-    if runtime.is_local_appengine():
+    if os.environ.get('TRAVIS') or runtime.is_local_appengine():
         db_path = os.path.join(DEV_PATH, full_db_name)
         if not os.path.exists(db_path):
             db_path = fallback_database_name
