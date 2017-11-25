@@ -9,7 +9,9 @@ from dancedeets.util import urls
 from . import users
 
 
-def create_user_with_fbuser(fb_uid, fb_user, access_token, access_token_expires, location, ip, send_email=True, referer=None, client=None):
+def create_user_with_fbuser(
+    fb_uid, fb_user, access_token, access_token_expires, location, ip, send_email=True, referer=None, client=None, send_new_user_email=True
+):
     user = users.User(id=fb_uid)
     user.ip = ip
     user.fb_access_token = access_token
@@ -46,6 +48,10 @@ def create_user_with_fbuser(fb_uid, fb_user, access_token, access_token_expires,
     backgrounder.load_potential_events_for_users([fb_uid])
 
     fbl = fb_api.FBLookup(fb_uid, user.fb_access_token)
-    new_user_email.email_for_user(user, fbl, should_send=True)
+    if send_new_user_email:
+        try:
+            new_user_email.email_for_user(user, fbl, should_send=True)
+        except new_user_email.NoEmailException:
+            pass
 
     return user

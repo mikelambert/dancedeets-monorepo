@@ -118,6 +118,14 @@ def create_user(user_id='701004', access_token='Access Token', access_token_expi
 
     ip = '127.0.0.1'
     user = user_creation.create_user_with_fbuser(
-        user_id, fb_user, access_token, access_token_expires, location, ip, send_email=True, client=client
+        user_id,
+        fb_user,
+        access_token,
+        access_token_expires,
+        location,
+        ip,
+        send_email=True,
+        client=client,
+        send_new_user_email=False,
     )
     return user
