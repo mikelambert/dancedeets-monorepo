@@ -18,8 +18,13 @@ export const outsideGutter = 30;
 export const columnPadding = 15;
 
 export function AltA(props: Object) {
+  const { children, ...otherProps } = props;
   // eslint-disable-next-line jsx-a11y/anchor-has-context
-  return <a style={{ color: '#9999ff' }} className="alternate" {...props} />;
+  return (
+    <a style={{ color: '#9999ff' }} className="alternate" {...otherProps}>
+      {children}
+    </a>
+  );
 }
 
 export type User = {
@@ -180,45 +185,27 @@ export class FeaturePromoBase extends React.Component<{
     return (
       <div>
         Check out the{' '}
-        <LinkComponent
-          href="https://www.dancedeets.com/tutorials"
-          className={this.props.className}
-        >
+        <LinkComponent href="https://www.dancedeets.com/tutorials">
           best dance tutorials
         </LinkComponent>{' '}
         we found around the world to help you level up.
         {this.renderSeparator()}
         Whether it’s{' '}
-        <LinkComponent
-          href="https://www.dancedeets.com/tutorials/break"
-          className={this.props.className}
-        >
+        <LinkComponent href="https://www.dancedeets.com/tutorials/break">
           bboying
         </LinkComponent>,{' '}
-        <LinkComponent
-          href="https://www.dancedeets.com/tutorials/pop"
-          className={this.props.className}
-        >
+        <LinkComponent href="https://www.dancedeets.com/tutorials/pop">
           popping
         </LinkComponent>{' '}
         or{' '}
-        <LinkComponent
-          href="https://www.dancedeets.com/tutorials/lock"
-          className={this.props.className}
-        >
+        <LinkComponent href="https://www.dancedeets.com/tutorials/lock">
           locking
         </LinkComponent>,{' '}
-        <LinkComponent
-          href="https://www.dancedeets.com/tutorials/hiphop"
-          className={this.props.className}
-        >
+        <LinkComponent href="https://www.dancedeets.com/tutorials/hiphop">
           freestyle hiphop
         </LinkComponent>{' '}
         or{' '}
-        <LinkComponent
-          href="https://www.dancedeets.com/tutorials/house"
-          className={this.props.className}
-        >
+        <LinkComponent href="https://www.dancedeets.com/tutorials/house">
           house
         </LinkComponent>, we’ve got you covered!
       </div>

@@ -35,6 +35,7 @@ function validateAdd() {
   if (jQuery('#event_id_form').val() || jQuery('#event_url_form').val()) {
     return true;
   } else {
+    // eslint-disable-next-line no-alert
     alert(
       'Please select one of your events to add, or enter the URL of the event you wish to add.'
     );
