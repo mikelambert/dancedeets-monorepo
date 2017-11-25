@@ -46,7 +46,10 @@ export function groupEventsByStartDate<T: BaseEvent>(
   return results;
 }
 
-export function expandResults(events, EventClass) {
+export function expandResults(
+  events: Array<BaseEvent>,
+  EventClass: Class<BaseEvent>
+) {
   const newEvents = [];
   for (const event of events) {
     if (event.event_times) {

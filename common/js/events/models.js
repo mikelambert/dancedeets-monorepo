@@ -157,6 +157,7 @@ export class BaseEvent extends JsonDerivedObject {
   end_time: ?string; // eslint-disable-line camelcase
   venue: Venue;
   picture: ?Picture;
+  event_times: ?Array<EventTime>; // eslint-disable-line camelcase
 
   constructor(eventData: JSONObject) {
     super(eventData);
@@ -303,7 +304,6 @@ export class Event extends BaseEvent {
   posts: Array<Post>;
   ticket_uri: string; // eslint-disable-line camelcase
   extraImageCount: number;
-  event_times: Array<EventTime>; // eslint-disable-line camelcase
 
   getFlyer(dimensions: { width?: number, height?: number }): ?ImageWithSizes {
     return this.picture ? this.picture.getFlyer(dimensions) : null;
