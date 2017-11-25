@@ -1,4 +1,5 @@
 import datetime
+import dateutil
 import logging
 from slugify import slugify
 
@@ -329,11 +330,14 @@ def people_groupings(geocode, distance, skip_people):
     return groupings
 
 
+def _parse_fb_time(dt_string):
+    return dateutil.parser.parse(dt_string).date()
+
+
 def build_search_results_api(form, search_query, search_results, version, need_full_event, geocode, distance, skip_people=False):
     if geocode:
         center_latlng, southwest, northeast = search_base.get_center_and_bounds(geocode, distance)
     else:
-        center_latlng = None
         southwest = None
         northeast = None
 
@@ -348,6 +352,20 @@ def build_search_results_api(form, search_query, search_results, version, need_f
                 json_result = canonicalize_event_data(result.db_event, version, event_keywords=result.event_keywords)
             else:
                 json_result = canonicalize_search_event_data(result, version)
+            # Make sure we trim the event_times to the search window
+            if json_result['event_times']:
+                event_times = []
+                for event_time in json_result['event_times']:
+                    if search_query.start_date:
+                        end_date = _parse_fb_time(event_time.get('end_time', event_time['start_time']))
+                        if search_query.start_date > end_date:
+                            continue
+                    if search_query.end_date:
+                        start_date = _parse_fb_time(event_time['start_time'])
+                        if search_query.end_date < start_date:
+                            continue
+                    event_times.append(event_time)
+                json_result['event_times'] = event_times
             json_results.append(json_result)
         except Exception as e:
             logging.exception("Error processing event %s: %s" % (result.event_id, e))
