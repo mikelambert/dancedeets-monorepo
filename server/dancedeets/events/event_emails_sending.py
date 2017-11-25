@@ -22,6 +22,9 @@ def send_event_add_emails(event_id, should_send=False):
     if (event.end_time or event.start_time) < datetime.datetime.now():
         logging.info('Not sending event email because event is in the past.')
         return []
+    # We could also send a single email to all the organizers. Problems with this include:
+    # - It becomes a little more confusing to see what to call the "Dear X"
+    # - It's harder to pre-fill an unsubscribe-email-address
     emails = event_emails.get_emails_for_event(event)
     email_contents = []
     for organizer in emails:
