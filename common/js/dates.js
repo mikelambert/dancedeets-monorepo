@@ -13,6 +13,7 @@ export const weekdayDate = {
   weekday: 'long',
   month: 'long',
   day: 'numeric',
+  year: 'numeric',
 };
 export const weekdayTime = { hour: 'numeric', minute: 'numeric' };
 
@@ -28,9 +29,10 @@ function dateIsNearby(date: moment, intl: intlShape) {
 function formatDate(date: moment, intl: intlShape) {
   // Use a year for faraway dates
   const format = { ...weekdayDate };
-  if (!dateIsNearby(date, intl)) {
-    format.year = 'numeric';
-  }
+  // I would like to only show the year on far-away dates
+  // but unfortunately, the serverside Intl lacks a
+  // year-less long-month-long-weekday formatter,
+  // and ends up formatting it as a short-month-short-weekday.
   return upperFirst(intl.formatDate(date.toDate(), format));
 }
 
@@ -40,9 +42,6 @@ function formatTime(date: moment, intl: intlShape) {
 
 export function formatDateTime(date: moment, intl: intlShape) {
   const format = { ...weekdayDate, ...weekdayTime };
-  if (!dateIsNearby(date, intl)) {
-    format.year = 'numeric';
-  }
   return upperFirst(intl.formatDate(date.toDate(), format));
 }
 

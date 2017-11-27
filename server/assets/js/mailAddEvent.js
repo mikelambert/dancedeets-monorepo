@@ -5,8 +5,9 @@
  */
 
 import * as React from 'react';
-import { intlWeb } from 'dancedeets-common/js/intl';
+import { constructIntl, intlWeb } from 'dancedeets-common/js/intl';
 import { Event } from 'dancedeets-common/js/events/models';
+import { formatStartDateOnly } from 'dancedeets-common/js/dates';
 // import { addUrlArgs } from 'dancedeets-common/js/util/url';
 import {
   AltA,
@@ -343,6 +344,9 @@ class BodyWrapper extends React.Component<{
     if (this.props.organizerName) {
       hiThere = `Hi there ${this.props.organizerName},`;
     }
+    const intl = constructIntl('en');
+    const startDate = event.getStartMoment({ timezone: true });
+    const startDateString = formatStartDateOnly(startDate, intl);
     // TODO: enable when we have a pipeline working
     const upsell = false;
     // TODO: Handle 'intro email' different from 'second email'
@@ -352,7 +356,7 @@ class BodyWrapper extends React.Component<{
         <mj-column>
           <mj-text>
             <p>{hiThere}</p>
-            <p>We want to help promote your new event:</p>
+            <p>We want to help promote your new event on {startDateString}:</p>
             <p style={{ paddingLeft: 20 }}>
               <a href={shortUrl}>“{event.name}”</a>
             </p>
