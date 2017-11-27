@@ -23,7 +23,10 @@ import type {
   Admin,
   Post,
 } from 'dancedeets-common/js/events/models';
-import { formatAttending } from 'dancedeets-common/js/events/helpers';
+import {
+  expandResults,
+  formatAttending,
+} from 'dancedeets-common/js/events/helpers';
 import messages from 'dancedeets-common/js/events/messages';
 import { getHostname } from 'dancedeets-common/js/util/url';
 import { RsvpComponent } from './eventRsvp';
@@ -798,14 +801,16 @@ export class EventPage extends React.Component<{
       );
     }
 
+    // This could be one of many events, so let's be sure to list them all...
+    const recurringEvents = expandResults([event], Event);
+    const jsonSchemas = recurringEvents.map(x => (
+      <JsonSchema key={`${x.id}-${x.start_time}`} json={getEventSchema(x)} />
+    ));
+
     return (
       <div className="container">
         <HtmlHead event={event} />
-        <JsonSchema
-          json={
-            this.props.amp ? getArticleSchema(event) : getEventSchema(event)
-          }
-        />
+        {jsonSchemas}
         <JsonSchema json={getBreadcrumbsForEvent(event)} />
         {searchBox}
         <div className="row">
