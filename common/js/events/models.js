@@ -158,6 +158,7 @@ export class BaseEvent extends JsonDerivedObject {
   venue: Venue;
   picture: ?Picture;
   event_times: ?Array<EventTime>; // eslint-disable-line camelcase
+  had_event_times: ?boolean; // eslint-disable-line camelcase
 
   constructor(eventData: JSONObject) {
     super(eventData);
@@ -166,7 +167,11 @@ export class BaseEvent extends JsonDerivedObject {
   }
 
   getRelativeUrl() {
-    return `/events/${this.id}/${this.slugged_name}`;
+    let url = `/events/${this.id}/${this.slugged_name}`;
+    if (this.had_event_times) {
+      url += `#${this.start_time}`;
+    }
+    return url;
   }
 
   getUrl(args: ?Object) {

@@ -58,6 +58,7 @@ export function expandResults(
         copiedEvent.start_time = eventTime.start_time;
         copiedEvent.end_time = eventTime.end_time;
         copiedEvent.event_times = null;
+        copiedEvent.had_event_times = true;
         newEvents.push(copiedEvent);
       }
     } else {

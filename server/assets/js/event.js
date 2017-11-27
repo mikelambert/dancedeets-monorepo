@@ -33,7 +33,7 @@ import { RsvpComponent } from './eventRsvp';
 import type { RsvpValue } from './eventRsvp';
 import GoogleAd from './googleAd';
 import { JsonSchema } from './schema';
-import { getEventSchema, getArticleSchema } from './schema/event';
+import { getEventSchema } from './schema/event';
 import { getBreadcrumbsForEvent } from './schema/breadcrumbs';
 import { Message } from './intl';
 import { AmpImage, Card, ImagePrefix } from './ui';
@@ -320,8 +320,10 @@ class _EventLinks extends React.Component<{
     let second = null;
     if (formattedStartEndText.second) {
       second = [
-        <br />,
-        <FormatText>{formattedStartEndText.second}</FormatText>,
+        <br key="formatted-date-time-has-second-element" />,
+        <FormatText key="format-text">
+          {formattedStartEndText.second}
+        </FormatText>,
       ];
     }
 
@@ -745,11 +747,24 @@ export class EventPage extends React.Component<{
   upcomingEvents: Array<BaseEvent>,
 }> {
   performSearch(query: Query) {
-    window.location = getSearchUrl(query);
+    global.window.location = getSearchUrl(query);
   }
 
   render() {
-    const event = new Event(this.props.event);
+    const fullEvent = new Event(this.props.event);
+
+    // This could be one of many events, so let's be sure to list them all...
+    const recurringEvents = expandResults([fullEvent], Event);
+    const rightRecurringEvents = recurringEvents.filter(
+      x =>
+        global.window && x.start_time === global.window.location.hash.slice(1)
+    );
+    let event = null;
+    if (rightRecurringEvents.length) {
+      event = rightRecurringEvents[0];
+    } else {
+      event = fullEvent;
+    }
 
     const adsenseSafe = isEventAdsenseSafe(event);
     const adsenseStyle = getAdsenseStyle(this.props.amp);
@@ -801,8 +816,6 @@ export class EventPage extends React.Component<{
       );
     }
 
-    // This could be one of many events, so let's be sure to list them all...
-    const recurringEvents = expandResults([event], Event);
     const jsonSchemas = recurringEvents.map(x => (
       <JsonSchema key={`${x.id}-${x.start_time}`} json={getEventSchema(x)} />
     ));
