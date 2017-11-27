@@ -9,6 +9,7 @@ from dancedeets.pubsub import pubsub
 from dancedeets.nlp import event_classifier
 from dancedeets.util import deferred
 from dancedeets.util import fb_events
+from dancedeets.util import runtime
 from . import potential_events
 from . import thing_db
 
@@ -93,7 +94,7 @@ def after_add_event(event_id, fbl, newly_created, post_pubsub):
         pubsub.eventually_publish_event(event_id)
     if fbl:
         crawl_event_source(fbl, event_id)
-    if newly_created:
+    if newly_created and not runtime.is_local_appengine():
         # This has to occur *after* the event sources have been crawled (and the sources' emails are saved)
         event_emails_sending.send_event_add_emails(event_id, should_send=True)
 
