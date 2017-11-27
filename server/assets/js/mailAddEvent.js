@@ -345,7 +345,7 @@ class BodyWrapper extends React.Component<{
       hiThere = `Hi there ${this.props.organizerName},`;
     }
     const intl = constructIntl('en');
-    const startDate = event.getStartMoment({ timezone: true });
+    const startDate = event.getStartMoment({ timezone: false });
     const startDateString = formatStartDateOnly(startDate, intl);
     // TODO: enable when we have a pipeline working
     const upsell = false;
