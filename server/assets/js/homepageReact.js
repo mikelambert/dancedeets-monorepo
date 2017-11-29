@@ -6,6 +6,7 @@
 
 import * as React from 'react';
 import { cdnBaseUrl } from 'dancedeets-common/js/util/url';
+// We have another import that is only in homepageReactExec.js (since we want it clientside)
 
 type MobileAppUrls = {
   ios: string,
@@ -226,6 +227,7 @@ export default class FullPage extends React.Component<{
   ipLocation: string,
 }> {
   render() {
+    const dummy = <UseCases key="use-cases" />; // eslint-disable-line no-unused-vars
     return [
       <FullPagePromo
         key="promo"
@@ -233,7 +235,6 @@ export default class FullPage extends React.Component<{
         mobileAppUrls={this.props.mobileAppUrls}
         ipLocation={this.props.ipLocation}
       />,
-      // <UseCases key="use-cases" />,
       <FeaturePromos key="feature-promos" />,
       <MultipleItems
         key="cities"
