@@ -651,9 +651,11 @@ class _SearchBox extends React.Component<{
   }
 
   render() {
-    const hiddenFields = this.props.query.deb ? (
-      <input type="hidden" name="deb" value={this.props.query.deb} />
-    ) : null;
+    const hiddenFields = ['deb', 'min_worth']
+      .filter(x => this.props.query[x] != null)
+      .map(x => (
+        <input key={x} type="hidden" name={x} value={this.props.query[x]} />
+      ));
 
     return (
       <div>
