@@ -1,6 +1,7 @@
 # -*-*- encoding: utf-8 -*-*-
 #
 
+import re
 from dancedeets import event_types
 from . import event_classifier
 from . import event_structure
@@ -219,7 +220,6 @@ def get_context(fb_event, keywords):
     name = fb_event['info'].get('name', '')
     description = fb_event['info'].get('description', '')
     search_text = (name + ' ' + description).lower()
-    import re
     contexts = []
     for keyword in keywords:
         try:
