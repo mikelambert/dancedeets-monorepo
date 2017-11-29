@@ -19,7 +19,7 @@ class FullPagePromo extends React.Component<{
   render() {
     const mobilePromos = [
       this.props.mobilePlatform !== 'android' ? (
-        <a href={this.props.mobileAppUrls.ios}>
+        <a href={this.props.mobileAppUrls.ios} key="ios">
           <img
             src={`${cdnBaseUrl}/img/app_store_download.png`}
             className="store-button"
@@ -28,7 +28,7 @@ class FullPagePromo extends React.Component<{
         </a>
       ) : null,
       this.props.mobilePlatform !== 'ios' ? (
-        <a href={this.props.mobileAppUrls.android}>
+        <a href={this.props.mobileAppUrls.android} key="android">
           <img
             src={`${cdnBaseUrl}/img/play_store_download.png`}
             className="store-button"
@@ -91,6 +91,29 @@ class FullPagePromo extends React.Component<{
   }
 }
 
+class UseCases extends React.Component<{ ipLocation: string }> {
+  render() {
+    return (
+      <div>
+        <h2>Lookup Event</h2>
+        <form>
+          <input type="text" name="event_name" />
+          <button>Lookup Event</button>
+        </form>
+        <hr />
+        <h2>Upcoming Events</h2>
+        Near you in {this.props.ipLocation}: Today | Tomorrow | Saturday |
+        Sunday | See All
+        <hr />
+        <h2>Planning a Trip?</h2>
+        [where] and [when] <button>Plan My Trip</button>
+        <hr />
+        <h2>Host an Event</h2>
+        <button>Start Planning!</button>
+      </div>
+    );
+  }
+}
 class FeaturePromos extends React.Component {
   render() {
     return (
@@ -100,9 +123,7 @@ class FeaturePromos extends React.Component {
             <div className="col-md-4 md-margin-bottom-50">
               <img
                 alt=""
-                srcSet={`
-${cdnBaseUrl}/img/deets-activity-dancing.png 1x,
-${cdnBaseUrl}/img/deets-activity-dancing.svg 2x`}
+                srcSet={`${cdnBaseUrl}/img/deets-activity-dancing.png 1x, ${cdnBaseUrl}/img/deets-activity-dancing.svg 2x`}
                 src={`${cdnBaseUrl}/img/deets-activity-dancing.png`}
                 className="deets-activity-image margin-bottom-20"
               />
@@ -118,9 +139,7 @@ ${cdnBaseUrl}/img/deets-activity-dancing.svg 2x`}
             <div className="col-md-4 md-margin-bottom-50">
               <img
                 alt=""
-                srcSet={`
-${cdnBaseUrl}/img/deets-activity-traveling.png 1x,
-${cdnBaseUrl}/img/deets-activity-traveling.svg 2x`}
+                srcSet={`${cdnBaseUrl}/img/deets-activity-traveling.png 1x, ${cdnBaseUrl}/img/deets-activity-traveling.svg 2x`}
                 src={`${cdnBaseUrl}/img/deets-activity-traveling.png`}
                 className="deets-activity-image margin-bottom-20"
               />
@@ -134,9 +153,7 @@ ${cdnBaseUrl}/img/deets-activity-traveling.svg 2x`}
             <div className="col-md-4">
               <img
                 alt=""
-                srcSet={`
-${cdnBaseUrl}/img/deets-activity-flyering.png 1x,
-${cdnBaseUrl}/img/deets-activity-flyering.svg 2x`}
+                srcSet={`${cdnBaseUrl}/img/deets-activity-flyering.png 1x, ${cdnBaseUrl}/img/deets-activity-flyering.svg 2x`}
                 src={`${cdnBaseUrl}/img/deets-activity-flyering.png`}
                 className="deets-activity-image margin-bottom-20"
               />
@@ -176,12 +193,12 @@ class MultipleItems extends React.Component<{
 
         <div className="row">
           {this.props.items.map(item => (
-            <div className="col-md-4">
+            <div key={item.image} className="col-md-4">
               <div className="panel panel-default">
                 <div className="panel-body">
                   <a href={item.url} className="zoom">
                     <div className="text-overlay">{item.text}</div>
-                    <img src={item.image} alt="" />
+                    <img src={`${cdnBaseUrl}${item.image}`} alt="" />
                   </a>
                 </div>
               </div>
@@ -211,12 +228,15 @@ export default class FullPage extends React.Component<{
   render() {
     return [
       <FullPagePromo
+        key="promo"
         mobilePlatform={this.props.mobilePlatform}
         mobileAppUrls={this.props.mobileAppUrls}
         ipLocation={this.props.ipLocation}
       />,
-      <FeaturePromos />,
+      // <UseCases key="use-cases" />,
+      <FeaturePromos key="feature-promos" />,
       <MultipleItems
+        key="cities"
         headerText="Popular Cities"
         items={[
           {
@@ -238,6 +258,7 @@ export default class FullPage extends React.Component<{
         seeMore={{ text: 'See more cities.', url: '/rankings' }}
       />,
       <MultipleItems
+        key="styles"
         headerText="Popular Styles"
         items={[
           {
