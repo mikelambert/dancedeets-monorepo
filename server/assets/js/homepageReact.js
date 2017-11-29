@@ -1,0 +1,263 @@
+/**
+ * Copyright 2016 DanceDeets.
+ *
+ * @flow
+ */
+
+import * as React from 'react';
+import { cdnBaseUrl } from 'dancedeets-common/js/util/url';
+
+type MobileAppUrls = {
+  ios: string,
+  android: string,
+};
+class FullPagePromo extends React.Component<{
+  mobilePlatform: 'android' | 'ios' | null,
+  mobileAppUrls: MobileAppUrls,
+  ipLocation: string,
+}> {
+  render() {
+    const mobilePromos = [
+      this.props.mobilePlatform !== 'android' ? (
+        <a href={this.props.mobileAppUrls.ios}>
+          <img
+            src={`${cdnBaseUrl}/img/app_store_download.png`}
+            className="store-button"
+            alt="Download from App Store"
+          />
+        </a>
+      ) : null,
+      this.props.mobilePlatform !== 'ios' ? (
+        <a href={this.props.mobileAppUrls.android}>
+          <img
+            src={`${cdnBaseUrl}/img/play_store_download.png`}
+            className="store-button"
+            alt="Download from Google Play Store"
+          />
+        </a>
+      ) : null,
+    ];
+
+    return (
+      <div className="flush-top fullscreen-static-image bg-color-darker">
+        <div className="fullscreen-darken-image">
+          <div className="container text-center vertical-center">
+            <div className="dancedeets-tagline color-light margin-bottom-30">
+              Street Dance Events. Worldwide.
+            </div>
+            <div className="col-md-6 col-md-offset-3 margin-bottom-30">
+              <form action="/" className="margin-bottom-20">
+                <div className="input-group">
+                  <input
+                    id="location"
+                    name="location"
+                    type="text"
+                    className="form-control"
+                    placeholder="Enter a city or country"
+                    value={this.props.ipLocation}
+                  />
+                  <span className="input-group-btn">
+                    <button id="location_submit" className="btn btn-primary">
+                      <i className="fa fa-search" /> Find Your Dance
+                    </button>
+                  </span>
+                </div>
+              </form>
+              <div className="color-light margin-bottom-20">
+                or find events on the go
+              </div>
+              {mobilePromos}
+            </div>
+            <div className="dancedeets-tagline-small color-light">
+              Get up offa that thing, and dance ‘til you feel better – James
+              Brown
+            </div>
+          </div>
+          <div
+            style={{
+              position: 'absolute',
+              bottom: 0,
+              right: 0,
+              color: 'white',
+            }}
+          >
+            Photo Credits:{' '}
+            <a href="https://www.facebook.com/mario.lobo.90">Mario Lobo</a> and{' '}
+            <a href="http://dangitslim.com/">Slim</a>.
+          </div>
+        </div>
+      </div>
+    );
+  }
+}
+
+class FeaturePromos extends React.Component {
+  render() {
+    return (
+      <div className="content-md">
+        <div className="container">
+          <div className="row text-center">
+            <div className="col-md-4 md-margin-bottom-50">
+              <img
+                alt=""
+                srcSet={`
+${cdnBaseUrl}/img/deets-activity-dancing.png 1x,
+${cdnBaseUrl}/img/deets-activity-dancing.svg 2x`}
+                src={`${cdnBaseUrl}/img/deets-activity-dancing.png`}
+                className="deets-activity-image margin-bottom-20"
+              />
+              <h2 className="title-v3-md margin-bottom-10">
+                Learning to dance?
+              </h2>
+              <p>
+                Want to go beyond the classroom?<br />
+                Find all the battles, shows,<br />
+                parties, workshops, and more!
+              </p>
+            </div>
+            <div className="col-md-4 md-margin-bottom-50">
+              <img
+                alt=""
+                srcSet={`
+${cdnBaseUrl}/img/deets-activity-traveling.png 1x,
+${cdnBaseUrl}/img/deets-activity-traveling.svg 2x`}
+                src={`${cdnBaseUrl}/img/deets-activity-traveling.png`}
+                className="deets-activity-image margin-bottom-20"
+              />
+              <h2 className="title-v3-md margin-bottom-10">Going on a trip?</h2>
+              <p>
+                Want to meet other dancers?<br />
+                Quickly ﬁnd the dance scene anywhere,<br />
+                and start connecting in real-life!
+              </p>
+            </div>
+            <div className="col-md-4">
+              <img
+                alt=""
+                srcSet={`
+${cdnBaseUrl}/img/deets-activity-flyering.png 1x,
+${cdnBaseUrl}/img/deets-activity-flyering.svg 2x`}
+                src={`${cdnBaseUrl}/img/deets-activity-flyering.png`}
+                className="deets-activity-image margin-bottom-20"
+              />
+              <h2 className="title-v3-md margin-bottom-10">
+                Promoting events?
+              </h2>
+              <p>
+                With over 20,000 dancers monthly,<br />
+                and 80,000 dance events since 2010,<br />
+                it’s the best source for street dance events.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+}
+
+type DisplayItem = {
+  text: string,
+  image: string,
+  url: string,
+};
+
+class MultipleItems extends React.Component<{
+  headerText: string,
+  items: Array<DisplayItem>,
+  seeMore?: Array<DisplayItem>,
+}> {
+  render() {
+    return (
+      <div className="container margin-bottom-60">
+        <div className="headline">
+          <h2>{this.props.headerText}</h2>
+        </div>
+
+        <div className="row">
+          {this.props.items.map(item => (
+            <div className="col-md-4">
+              <div className="panel panel-default">
+                <div className="panel-body">
+                  <a href={item.url} className="zoom">
+                    <div className="text-overlay">{item.text}</div>
+                    <img src={item.image} alt="" />
+                  </a>
+                </div>
+              </div>
+            </div>
+          ))}
+          {this.props.seeMore ? (
+            <div className="row">
+              <div
+                className="col-sm-3 col-sm-offset-9"
+                style={{ textAlign: 'right' }}
+              >
+                <a href={this.props.seeMore.url}>{this.props.seeMore.text}</a>
+              </div>
+            </div>
+          ) : null}
+        </div>
+      </div>
+    );
+  }
+}
+
+export default class FullPage extends React.Component<{
+  mobilePlatform: 'android' | 'ios' | null,
+  mobileAppUrls: MobileAppUrls,
+  ipLocation: string,
+}> {
+  render() {
+    return [
+      <FullPagePromo
+        mobilePlatform={this.props.mobilePlatform}
+        mobileAppUrls={this.props.mobileAppUrls}
+        ipLocation={this.props.ipLocation}
+      />,
+      <FeaturePromos />,
+      <MultipleItems
+        headerText="Popular Cities"
+        items={[
+          {
+            text: 'New York',
+            url: '/?location=NYC',
+            image: '/img/location-new-york.jpg',
+          },
+          {
+            text: 'Los Angeles',
+            url: '/?location=Los+Angeles',
+            image: '/img/location-los-angeles.jpg',
+          },
+          {
+            text: 'Paris',
+            url: '/?location=Paris',
+            image: '/img/location-paris.jpg',
+          },
+        ]}
+        seeMore={{ text: 'See more cities.', url: '/rankings' }}
+      />,
+      <MultipleItems
+        headerText="Popular Styles"
+        items={[
+          {
+            text: 'Breaking',
+            url: '/style/breaking',
+            image: '/img/style-bboy.jpg',
+          },
+          {
+            text: 'Popping',
+            url: '/style/popping',
+            image: '/img/style-popping.jpg',
+          },
+          {
+            text: 'Hiphop & Street-Jazz',
+            url: '/style/hip-hop',
+            image: '/img/style-hiphop.jpg',
+          },
+        ]}
+        seeMore={{ text: 'See more cities.', url: '/rankings' }}
+      />,
+    ];
+  }
+}

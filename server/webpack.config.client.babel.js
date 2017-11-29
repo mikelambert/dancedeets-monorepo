@@ -39,6 +39,7 @@ const entry = {
   addEvent: './assets/js/addEvent.js',
   bracketsExec: './assets/js/bracketsExec.js',
   calendarExec: './assets/js/calendarExec.js',
+  homepageReact: './assets/js/homepageReactExec.js',
   homepage: './assets/js/homepage.js',
   normalPage: './assets/js/normalPage.js',
   classResultsExec: './assets/js/classResultsExec.js',

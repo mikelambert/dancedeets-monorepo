@@ -1,0 +1,44 @@
+{% extends class_base_template %}
+
+{% block title %}
+  DanceDeets: Street Dance Events. Worldwide.
+{% endblock %}
+
+{% block head_metatags %}
+    <meta property="og:image" content="https://www.dancedeets.com/images/deet-city.jpg" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="{{ result_title }}" />
+    <meta property="og:site_name" content="DanceDeets"/>
+    <meta property="og:description"
+          content="Every street dance event. On the web, on your phone. At home, and when traveling."/>
+{% endblock %}
+</head>
+
+{% block head_javascript %}
+  <script defer src="{{ static_path('homepage.js') }}"></script>
+  <script type="text/javascript">
+    mixpanel.track("Homepage");
+  </script>
+{% endblock %}
+
+{% block body %}
+<style type="text/css">
+{# By default, the page is pushed down below the header.
+ # But in the case of our homepage with a fullstretch image,
+ # we want it to slide under the header as appropriate,
+ # so that 100vh is exactly one screen height.
+ # We need to specify the body.class, so that CSS precedence works.
+ #}
+body.header-fixed-space {
+  padding-top: 0px;
+}
+</style>
+
+<div id="react-parent">
+  {{ react_html|safe }}
+</div>
+<script type="text/javascript">
+  window._REACT_PROPS = {{ react_props|safe }};
+  window._REACT_ID = 'react-parent';
+</script>
+{% endblock %}

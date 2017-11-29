@@ -45,14 +45,20 @@ class LoginHandler(base_servlet.BaseRequestHandler):
 
         from dancedeets.util import country_dialing_codes
         self.display['suppress_promos'] = True
-        self.display['country_codes'] = sorted(country_dialing_codes.mapping.items())
-        self.display['android_url'] = mobile.ANDROID_URL
-        self.display['ios_url'] = mobile.IOS_URL
-        self.display['prefix'] = ''
-        self.display['phone'] = ''  # Set the default, and then let any errors-and-refilling occur on /mobile_apps
         self.display['mobile_show_smartbanner'] = False
 
         self.display['next'] = next_url
         logging.info(self.display['next'])
 
-        self.render_template('new_homepage')
+        props = dict(
+            mobilePlatform= self.display['mobile_platform'],
+            mobileAppUrls={
+                'android': mobile.ANDROID_URL,
+                'ios': mobile.IOS_URL,
+            },
+            ipLocation= self.display['ip_location'],
+        )
+        self.setup_react_template('homepageReact.js', props)
+
+
+        self.render_template('homepage_react')

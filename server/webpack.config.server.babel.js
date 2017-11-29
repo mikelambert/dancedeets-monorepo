@@ -18,6 +18,7 @@ module.exports = {
     classResults: './assets/js/classResults.js',
     event: './assets/js/event.js',
     eventSearchResults: './assets/js/eventSearchResults.js',
+    homepageReact: './assets/js/homepageReact.js',
     mailAddEvent: './assets/js/mailAddEvent.js',
     mailWeeklyNew: './assets/js/mailWeeklyNew.js',
     mailNewUser: './assets/js/mailNewUser.js',
