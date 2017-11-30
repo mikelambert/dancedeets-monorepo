@@ -21,6 +21,7 @@ class OrganizerEmailUnsubscribed(ndb.Model):
     data = ndb.JsonProperty()
 
 
+# Must lowercase the input string before running it through this regex
 email_regex = re.compile((
     "([a-z0-9!#$%&'*+\/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+\/=?^_`"
     "{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\."
@@ -42,6 +43,7 @@ def get_emails_from_string(s):
     """Returns an iterator of matched emails found in string s."""
     # Removing lines that start with '//' because the regular expression
     # mistakenly matches patterns like 'http://foo@bar.com' as '//foo@bar.com'.
+    s = s.lower()
     return [email for email in re.findall(email_regex, s) if not email[0].startswith('//')]
 
 

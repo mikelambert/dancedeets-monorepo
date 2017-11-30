@@ -49,6 +49,7 @@ class DisplayAddEventEmailHandler(base_servlet.EventIdOperationHandler):
             self.response.out.write('Error generating mail html: %s' % e)
         else:
             for message in messages:
+                logging.info('Email generated: %s', message)
                 self.response.out.write(message['html'])
 
 

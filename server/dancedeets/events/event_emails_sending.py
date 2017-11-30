@@ -19,6 +19,8 @@ class NoEmailException(Exception):
 
 def send_event_add_emails(event_id, should_send=False):
     event = eventdata.DBEvent.get_by_id(event_id)
+    if not event:
+        raise ValueError('No event with id %s' % event_id)
     if (event.end_time or event.start_time) < datetime.datetime.now():
         logging.info('Not sending event email because event is in the past.')
         return []
