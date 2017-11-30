@@ -51,7 +51,7 @@ def create_user_with_fbuser(
     if send_new_user_email:
         try:
             new_user_email.email_for_user(user, fbl, should_send=True)
-        except new_user_email.NoEmailException:
-            pass
+        except new_user_email.NoEmailException as e:
+            logging.info('Not sending new-user email due to: %s', e)
 
     return user
