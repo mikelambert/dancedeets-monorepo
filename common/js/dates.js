@@ -17,6 +17,7 @@ export const weekdayDate = {
 };
 export const weekdayTime = { hour: 'numeric', minute: 'numeric' };
 
+// eslint-disable-next-line no-unused-vars
 function dateIsNearby(date: moment, intl: intlShape) {
   const now = moment(intl.now());
   const diff = date.diff(now);
