@@ -121,7 +121,14 @@ class RelevantHandler(SearchHandler):
             # Keep in sync with mobile react code? And api.py
             skip_people = True
             json_search_response = api_format.build_search_results_api(
-                form, search_query, search_results, (2, 0), need_full_event, geocode, distance, skip_people=skip_people
+                form,
+                search_query,
+                search_results, (2, 0),
+                need_full_event,
+                geocode,
+                distance,
+                partial_results=has_more_results,
+                skip_people=skip_people
             )
             props = dict(
                 response=json_search_response,

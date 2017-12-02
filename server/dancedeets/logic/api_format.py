@@ -334,7 +334,9 @@ def _parse_fb_time(dt_string):
     return dateutil.parser.parse(dt_string).date()
 
 
-def build_search_results_api(form, search_query, search_results, version, need_full_event, geocode, distance, skip_people=False):
+def build_search_results_api(
+    form, search_query, search_results, version, need_full_event, geocode, distance, partial_results=False, skip_people=False
+):
     if geocode:
         center_latlng, southwest, northeast = search_base.get_center_and_bounds(geocode, distance)
     else:
@@ -346,29 +348,31 @@ def build_search_results_api(form, search_query, search_results, version, need_f
         onebox_links = onebox.get_links_for_query(search_query)
 
     json_results = []
-    for result in search_results:
-        try:
-            if need_full_event:
-                json_result = canonicalize_event_data(result.db_event, version, event_keywords=result.event_keywords)
-            else:
-                json_result = canonicalize_search_event_data(result, version)
-            # Make sure we trim the event_times to the search window
-            if json_result['event_times']:
-                event_times = []
-                for event_time in json_result['event_times']:
-                    if search_query.start_date:
-                        end_date = _parse_fb_time(event_time.get('end_time', event_time['start_time']))
-                        if search_query.start_date > end_date:
-                            continue
-                    if search_query.end_date:
-                        start_date = _parse_fb_time(event_time['start_time'])
-                        if search_query.end_date < start_date:
-                            continue
-                    event_times.append(event_time)
-                json_result['event_times'] = event_times
-            json_results.append(json_result)
-        except Exception as e:
-            logging.exception("Error processing event %s: %s" % (result.event_id, e))
+    if search_results:
+        effective_end_date = search_results[-1].start_time if partial_results else search_query.end_date
+        for result in search_results:
+            try:
+                if need_full_event:
+                    json_result = canonicalize_event_data(result.db_event, version, event_keywords=result.event_keywords)
+                else:
+                    json_result = canonicalize_search_event_data(result, version)
+                # Make sure we trim the event_times to the search window
+                if json_result['event_times']:
+                    event_times = []
+                    for event_time in json_result['event_times']:
+                        if search_query.start_date:
+                            end_date = _parse_fb_time(event_time.get('end_time', event_time['start_time']))
+                            if search_query.start_date > end_date:
+                                continue
+                        if effective_end_date:
+                            start_date = _parse_fb_time(event_time['start_time'])
+                            if effective_end_date < start_date:
+                                continue
+                        event_times.append(event_time)
+                    json_result['event_times'] = event_times
+                json_results.append(json_result)
+            except Exception as e:
+                logging.exception("Error processing event %s: %s" % (result.event_id, e))
 
     real_featured_infos = []
     try:
