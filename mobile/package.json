@@ -34,7 +34,7 @@
     "react-native-fabric-crashlytics": "^0.1.5",
     "react-native-fbsdk": "^0.6.3",
     "react-native-firebase3": "0.1.5",
-    "react-native-firestack": "github:mikelambert/react-native-firestack",
+    "react-native-firestack": "github:fullstackreact/react-native-firestack#v3",
     "react-native-fit-image": "^1.5.4",
     "react-native-geocoder": "^0.5.0",
     "react-native-gifted-form": "^0.1.1",
