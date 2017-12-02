@@ -71,7 +71,7 @@ class _TeamList extends React.Component<
     );
   }
 
-  renderRow(row: { item: PrelimStatus, index: number } }) {
+  renderRow(row: { item: PrelimStatus, index: number }) {
     const { item, index } = row;
     const prelim = item;
     const signup = this.getSignup(prelim);
