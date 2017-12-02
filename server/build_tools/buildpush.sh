@@ -10,5 +10,5 @@ time gcloud docker -- push $REMOTE_IMAGE
 ./build_tools/upload_static_files.py
 # I am sleeping, because it seems running concurrently can trigger this error:
 # Error Response: [13] Unexpected Error. (AppLock already held.)
-sleep 30 && time gcloud app deploy --quiet --image-url $REMOTE_IMAGE batch.yaml &
-time gcloud app deploy --quiet --image-url $REMOTE_IMAGE app.yaml
+sleep 30 && time gcloud app deploy --quiet --image-url $REMOTE_IMAGE batch.yaml "$@" &
+time gcloud app deploy --quiet --image-url $REMOTE_IMAGE app.yaml "$@"
