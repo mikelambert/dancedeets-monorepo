@@ -213,6 +213,15 @@ class FeaturedEvents extends React.PureComponent<{
             >
               {featuredInfo.event.name}
             </Text>
+            <Text
+              numberOfLines={1}
+              style={{
+                textAlign: 'center',
+                fontStyle: 'italic',
+              }}
+            >
+              {featuredInfo.event.venue.cityState()}
+            </Text>
             {promotionText}
           </View>
         </View>
