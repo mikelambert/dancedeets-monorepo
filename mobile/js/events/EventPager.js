@@ -9,14 +9,13 @@ import { Dimensions, FlatList, InteractionManager, View } from 'react-native';
 import { connect } from 'react-redux';
 import { Event } from 'dancedeets-common/js/events/models';
 import type { State } from '../reducers/search';
-import { LoadingEventView, FullEventView } from './uicomponents';
+import { FullEventView } from './uicomponents';
 import type { ThunkAction } from '../actions/types';
 import { getPosition } from '../util/geo';
-import { loadEvent } from '../actions/loadedEvents';
 
 class EventPager extends React.Component<
   {
-    onFlyerSelected: (x: Event) => ThunkAction,
+    onFlyerSelected: (x: SearchEvent) => ThunkAction,
     onEventNavigated: (x: SearchEvent) => void,
     selectedEvent: Event,
 
@@ -131,27 +130,13 @@ class EventPager extends React.Component<
       const width = Dimensions.get('window').width;
       return <View style={{ width }} />;
     }
-    if (eventData.event) {
-      return (
-        <FullEventView
-          onFlyerSelected={this.props.onFlyerSelected}
-          event={eventData.event}
-          currentPosition={eventData.position}
-        />
-      );
-    } else if (eventData.searchEvent) {
-      const loadedEventData = this.props.loadedEvents[eventData.searchEvent.id];
-      if (!loadedEventData) {
-        this.props.loadEvent(eventData.searchEvent.id);
-      }
-      return (
-        <LoadingEventView
-          onFlyerSelected={this.props.onFlyerSelected}
-          event={eventData.searchEvent}
-          currentPosition={eventData.position}
-        />
-      );
-    }
+    return (
+      <FullEventView
+        onFlyerSelected={this.props.onFlyerSelected}
+        event={eventData.event}
+        currentPosition={eventData.position}
+      />
+    );
   }
 
   render() {
@@ -170,16 +155,11 @@ class EventPager extends React.Component<
         return null;
       }
     }
-    const data = this.props.search.response.results.map(searchEvent => {
-      const loadedEventState = this.props.loadedEvents[searchEvent.id];
-      const event = loadedEventState ? loadedEventState.event : null;
-      return {
-        key: searchEvent.id,
-        event,
-        searchEvent,
-        position,
-      };
-    });
+    const data = this.props.search.response.results.map(event => ({
+      key: event.id,
+      event,
+      position,
+    }));
     return (
       <FlatList
         data={data}
@@ -200,12 +180,7 @@ class EventPager extends React.Component<
 }
 const mapStateToProps = state => ({
   search: state.search,
-  loadedEvents: state.loadedEvents,
 });
-const mapDispatchToProps = dispatch => ({
-  loadEvent: async eventId => {
-    await dispatch(loadEvent(eventId));
-  },
-});
+const mapDispatchToProps = dispatch => ({});
 
 export default connect(mapStateToProps, mapDispatchToProps)(EventPager);

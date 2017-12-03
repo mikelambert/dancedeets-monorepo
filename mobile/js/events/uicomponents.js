@@ -48,7 +48,12 @@ import { performRequest } from '../api/fb';
 import RsvpOnFB from '../api/fb-event-rsvp';
 import { trackWithEvent } from '../store/track';
 import type { TranslatedEvent } from '../reducers/translate';
-import { toggleEventTranslation, canGetValidLoginFor } from '../actions';
+import type { LoadedEventState } from '../reducers/loadedEvents';
+import {
+  loadEvent,
+  toggleEventTranslation,
+  canGetValidLoginFor,
+} from '../actions';
 import { openUserId } from '../util/fb';
 
 class SubEventLine extends React.Component<{
@@ -594,11 +599,11 @@ class _EventDescription extends React.PureComponent<{
   event: Event,
 
   // Self-managed props
-  translatedEvents: { [id: string]: TranslatedEvent },
+  translatedEvent: ?TranslatedEvent,
 }> {
   render() {
     let description = this.props.event.description;
-    const translatedEvent = this.props.translatedEvents[this.props.event.id];
+    const translatedEvent = this.props.translatedEvent;
     if (translatedEvent && translatedEvent.visible) {
       description = translatedEvent.translation.description;
     }
@@ -620,8 +625,8 @@ class _EventDescription extends React.PureComponent<{
   }
 }
 
-const EventDescription = connect(state => ({
-  translatedEvents: state.translate.events,
+const EventDescription = connect((state, props) => ({
+  translatedEvent: state.translate.events[props.event.id],
 }))(_EventDescription);
 
 class _TranslateButton extends React.PureComponent<{
@@ -717,7 +722,7 @@ class _EventTranslate extends React.PureComponent<{
 
   // Self-managed props
   intl: intlShape,
-  translatedEvents: { [id: string]: TranslatedEvent },
+  translatedEvent: ?TranslatedEvent,
   toggleEventTranslation: (
     eventId: string,
     language: string,
@@ -748,8 +753,8 @@ class _EventTranslate extends React.PureComponent<{
   }
 }
 const EventTranslate = connect(
-  state => ({
-    translatedEvents: state.translate.events,
+  (state, props) => ({
+    translatedEvent: state.translate.events[props.event.id],
   }),
   (dispatch: Dispatch) => ({
     toggleEventTranslation: (eventId, language, intl) =>
@@ -813,12 +818,19 @@ class _FullEventView extends React.Component<{
   onFlyerSelected: (x: Event) => ThunkAction,
   event: SearchEvent,
   currentPosition: any,
-  translatedEvents: { [key: string]: TranslatedEvent },
+  translatedEvent: ?TranslatedEvent,
+  loadedEvent: ?LoadedEventState,
 }> {
   constructor(props: Object) {
     super(props);
     (this: any).onLocationClicked = this.onLocationClicked.bind(this);
     (this: any).onFlyerClicked = this.onFlyerClicked.bind(this);
+  }
+
+  componentWillMount() {
+    if (!this.props.loadedEvent) {
+      this.props.loadEvent(this.props.event.id);
+    }
   }
 
   async onLocationClicked() {
@@ -828,6 +840,74 @@ class _FullEventView extends React.Component<{
 
   onFlyerClicked() {
     this.props.onFlyerSelected(this.props.event);
+  }
+
+  renderFullEvent(event, width, flyer) {
+    let name = event.name;
+    const translatedEvent = this.props.translatedEvent;
+    if (translatedEvent && translatedEvent.visible) {
+      name = translatedEvent.translation.name;
+    }
+    return (
+      <ScrollView style={[eventStyles.container, { width }]}>
+        {flyer}
+        <Text
+          numberOfLines={2}
+          style={[eventStyles.rowTitle, eventStyles.rowTitlePadding]}
+        >
+          {name}
+        </Text>
+        <EventDateTime
+          start={event.getStartMoment({ timezone: false })}
+          end={event.getEndMoment({ timezone: false })}
+        >
+          <AddToCalendarButton
+            event={event}
+            style={eventStyles.addToCalendarButton}
+          />
+        </EventDateTime>
+        <TouchableOpacity onPress={this.onLocationClicked} activeOpacity={0.5}>
+          <EventVenue
+            style={eventStyles.rowLink}
+            venue={event.venue}
+            currentPosition={this.props.currentPosition}
+          />
+        </TouchableOpacity>
+        <EventCategories categories={event.annotations.categories} />
+        <EventTickets event={event} />
+
+        <EventRsvp event={event} />
+        <EventSource event={event} />
+        <EventAddedBy event={event} />
+        <EventOrganizers event={event} />
+
+        <HorizontalView style={eventStyles.splitButtons}>
+          <EventShare event={event} />
+          <TranslateButton event={event} />
+        </HorizontalView>
+        <EventDescription event={event} />
+      </ScrollView>
+    );
+  }
+
+  renderLoadingEvent(searchEvent, width, flyer) {
+    const name = searchEvent.name;
+    return (
+      <ScrollView style={[eventStyles.container, { width }]}>
+        {flyer}
+        <Text
+          numberOfLines={2}
+          style={[eventStyles.rowTitle, eventStyles.rowTitlePadding]}
+        >
+          {name}
+        </Text>
+        <EventDateTime
+          start={searchEvent.getStartMoment({ timezone: false })}
+          end={searchEvent.getEndMoment({ timezone: false })}
+        />
+        <Text>...Loading...TODO: SPINNER</Text>
+      </ScrollView>
+    );
   }
 
   render() {
@@ -856,52 +936,17 @@ class _FullEventView extends React.Component<{
       );
     }
 
-    let name = this.props.event.name;
-    const translatedEvent = this.props.translatedEvents[this.props.event.id];
-    if (translatedEvent && translatedEvent.visible) {
-      name = translatedEvent.translation.name;
+    let eventView = null;
+    if (this.props.loadedEvent && this.props.loadedEvent.event) {
+      eventView = this.renderFullEvent(
+        this.props.loadedEvent.event,
+        width,
+        flyer
+      );
+    } else {
+      eventView = this.renderLoadingEvent(this.props.event, width, flyer);
     }
 
-    const eventView = (
-      <ScrollView style={[eventStyles.container, { width }]}>
-        {flyer}
-        <Text
-          numberOfLines={2}
-          style={[eventStyles.rowTitle, eventStyles.rowTitlePadding]}
-        >
-          {name}
-        </Text>
-        <EventDateTime
-          start={this.props.event.getStartMoment({ timezone: false })}
-          end={this.props.event.getEndMoment({ timezone: false })}
-        >
-          <AddToCalendarButton
-            event={this.props.event}
-            style={eventStyles.addToCalendarButton}
-          />
-        </EventDateTime>
-        <TouchableOpacity onPress={this.onLocationClicked} activeOpacity={0.5}>
-          <EventVenue
-            style={eventStyles.rowLink}
-            venue={this.props.event.venue}
-            currentPosition={this.props.currentPosition}
-          />
-        </TouchableOpacity>
-        <EventCategories categories={this.props.event.annotations.categories} />
-        <EventTickets event={this.props.event} />
-
-        <EventRsvp event={this.props.event} />
-        <EventSource event={this.props.event} />
-        <EventAddedBy event={this.props.event} />
-        <EventOrganizers event={this.props.event} />
-
-        <HorizontalView style={eventStyles.splitButtons}>
-          <EventShare event={this.props.event} />
-          <TranslateButton event={this.props.event} />
-        </HorizontalView>
-        <EventDescription event={this.props.event} />
-      </ScrollView>
-    );
     if (squareImageProps) {
       // Android and iOS blurRadius act differently, as noticed here:
       // https://github.com/facebook/react-native/commit/fc09c54324ff7fcec41e4f55edcca3854c9fa76b
@@ -925,15 +970,17 @@ class _FullEventView extends React.Component<{
     }
   }
 }
-export const FullEventView = connect(state => ({
-  translatedEvents: state.translate.events,
-}))(_FullEventView);
-
-export class LoadingEventView extends React.Component<{}> {
-  render() {
-    return <Text>Hey</Text>;
-  }
-}
+export const FullEventView = connect(
+  (state, props) => ({
+    translatedEvent: state.translate.events[props.event.id],
+    loadedEvent: state.loadedEvents[props.event.id],
+  }),
+  dispatch => ({
+    loadEvent: async eventId => {
+      await dispatch(loadEvent(eventId));
+    },
+  })
+)(_FullEventView);
 
 const detailHeight = 15;
 

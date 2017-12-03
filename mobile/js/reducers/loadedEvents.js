@@ -6,12 +6,12 @@
 
 import { Event } from 'dancedeets-common/js/events/models';
 import type { Action } from '../actions/types';
-export type LoadEventState = {
+export type LoadedEventState = {
   loading: boolean,
   event?: Event,
 };
 
-type State = { [key: string]: LoadEventState };
+type State = { [key: string]: LoadedEventState };
 
 const initialState = {};
 
