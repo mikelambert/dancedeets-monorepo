@@ -382,6 +382,8 @@ def build_search_results_api(
                 featured_info['event'] = canonicalize_event_data(featured_info['event'], version)
                 if featured_info.get('manualImage'):
                     featured_info['event']['picture']['source'] = featured_info['event']['picture']['source'] + '/manual'
+                    featured_info['event']['picture']['width'] = 1656
+                    featured_info['event']['picture']['height'] = 630
                 real_featured_infos.append(featured_info)
             except Exception as e:
                 logging.exception("Error processing event %s: %s" % (result.event_id, e))
