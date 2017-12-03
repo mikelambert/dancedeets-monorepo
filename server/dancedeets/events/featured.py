@@ -26,6 +26,10 @@ class FeaturedResult(ndb.Model):
     def promotionText(self):
         return self.json_props.get('promotionText', None)
 
+    @property
+    def manualImage(self):
+        return self.json_props.get('manualImage', False)
+
 
 def get_featured_events_for(southwest, northeast):
 
@@ -57,5 +61,6 @@ def get_featured_events_for(southwest, northeast):
             'event': featured_event,
             'showTitle': featured_result.showTitle,
             'promotionText': featured_result.promotionText,
+            'manualImage': featured_result.manualImage,
         })
     return featured_infos

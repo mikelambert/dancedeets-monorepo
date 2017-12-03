@@ -19,6 +19,8 @@ from dancedeets.util import runtime
 EVENT_IMAGE_BUCKET = 'dancedeets-event-flyers-full'
 EVENT_IMAGE_CACHE_BUCKET = 'dancedeets-event-flyers-%s-by-%s'
 
+MANUAL_IMAGE_INDEX = 'manual'
+
 CACHEABLE_SIZES = set([
     (180, 180),
     (720, None),
@@ -53,6 +55,8 @@ NotFoundError = gcs.NotFoundError
 def _raw_get_image(db_event, index):
     if index is None:
         image_url = db_event.full_image_url
+    elif index == MANUAL_IMAGE_INDEX:
+        image_url = 'https://storage.googleapis.com/dancedeets-event-flyers-manual/%s' % db_event.id
     else:
         image_url = db_event.extra_image_urls()[index]
     # For testing purposes:

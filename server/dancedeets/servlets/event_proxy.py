@@ -15,10 +15,11 @@ class ImageProxyHandler(webapp2.RequestHandler):
         if not db_event or not db_event.full_image_url:
             self.response.set_status(404)
             return
-        index = int(index) if index is not None else None
-        if index >= len(db_event.extra_image_urls()):
-            self.response.set_status(404)
-            return
+        if index != event_image.MANUAL_IMAGE_INDEX:
+            index = int(index) if index is not None else None
+            if index >= len(db_event.extra_image_urls()):
+                self.response.set_status(404)
+                return
         width = self.request.get('width')
         if width:
             width = int(width)
