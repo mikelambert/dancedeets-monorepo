@@ -6,7 +6,7 @@ from dancedeets.events import event_image
 from dancedeets.util import urls
 
 
-@app.route(r'/events/image_proxy/(%s)(?:/(\d+))?/?' % urls.EVENT_ID_REGEX)
+@app.route(r'/events/image_proxy/(%s)(?:/(\d+|manual))?/?' % urls.EVENT_ID_REGEX)
 class ImageProxyHandler(webapp2.RequestHandler):
     """Proxies images for use by twitter, where it doesn't need to respect the FB cache server's /robots.txt."""
 
