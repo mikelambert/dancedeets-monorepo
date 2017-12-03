@@ -7,7 +7,7 @@
 import { Platform } from 'react-native';
 import { AccessToken } from 'react-native-fbsdk';
 import Locale from 'react-native-locale';
-import { Event } from 'dancedeets-common/js/events/models';
+import { Event, SearchEvent } from 'dancedeets-common/js/events/models';
 import type { TimePeriod } from 'dancedeets-common/js/events/search';
 import {
   idempotentRetry,
@@ -121,7 +121,7 @@ export async function search(
     ...x,
     event: new Event(x.event),
   }));
-  response.results = response.results.map(x => new Event(x));
+  response.results = response.results.map(x => new SearchEvent(x));
   return response;
 }
 

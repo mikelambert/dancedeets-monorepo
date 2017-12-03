@@ -270,6 +270,26 @@ export class BaseEvent extends JsonDerivedObject {
     }
     return startFinalTimezone;
   }
+
+  getFlyer(dimensions: { width?: number, height?: number }): ?ImageWithSizes {
+    return this.picture ? this.picture.getFlyer(dimensions) : null;
+  }
+
+  getSquareFlyer(): ?ImageWithSizes {
+    return this.picture
+      ? this.picture.getFlyer({
+          width: squareImageSize,
+          height: squareImageSize,
+        })
+      : null;
+  }
+
+  getResponsiveFlyers(): Array<ImageWithSizes> {
+    const { picture } = this;
+    return picture
+      ? [320, 480, 720, 1080, 1440].map(width => picture.getFlyer({ width }))
+      : [];
+  }
 }
 
 export class SearchEvent extends BaseEvent {
@@ -309,24 +329,4 @@ export class Event extends BaseEvent {
   posts: Array<Post>;
   ticket_uri: string; // eslint-disable-line camelcase
   extraImageCount: number;
-
-  getFlyer(dimensions: { width?: number, height?: number }): ?ImageWithSizes {
-    return this.picture ? this.picture.getFlyer(dimensions) : null;
-  }
-
-  getSquareFlyer(): ?ImageWithSizes {
-    return this.picture
-      ? this.picture.getFlyer({
-          width: squareImageSize,
-          height: squareImageSize,
-        })
-      : null;
-  }
-
-  getResponsiveFlyers(): Array<ImageWithSizes> {
-    const { picture } = this;
-    return picture
-      ? [320, 480, 720, 1080, 1440].map(width => picture.getFlyer({ width }))
-      : [];
-  }
 }

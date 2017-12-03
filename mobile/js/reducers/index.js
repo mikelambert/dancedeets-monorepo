@@ -7,6 +7,7 @@
 import { combineReducers } from 'redux';
 import { addEvents } from './addEvents';
 import { firebase } from './firebase';
+import { loadedEvents } from './loadedEvents';
 import { search } from './search';
 import { translate } from './translate';
 import { tutorials } from './tutorials';
@@ -28,6 +29,7 @@ function screens(state, action) {
 export default combineReducers({
   addEvents,
   firebase,
+  loadedEvents,
   screens,
   search,
   searchHeader,

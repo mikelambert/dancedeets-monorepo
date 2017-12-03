@@ -929,6 +929,12 @@ export const FullEventView = connect(state => ({
   translatedEvents: state.translate.events,
 }))(_FullEventView);
 
+export class LoadingEventView extends React.Component<{}> {
+  render() {
+    return <Text>Hey</Text>;
+  }
+}
+
 const detailHeight = 15;
 
 const eventStyles = StyleSheet.create({

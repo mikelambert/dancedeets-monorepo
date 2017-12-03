@@ -27,6 +27,7 @@ import type {
   NavigationRoute,
 } from 'react-navigation/src/TypeDefinition';
 import { AccessToken } from 'react-native-fbsdk';
+import type { Event } from 'dancedeets-common/js/events/models';
 import type { SearchResponse } from 'dancedeets-common/js/events/search';
 import type { AddEventList, SortOrder } from '../addEventsModels';
 
@@ -55,6 +56,8 @@ export type Action =
   | { type: 'textInputs/DETECTED_LOCATION', location: string }
   | { type: 'textInputs/UPDATE_LOCATION', location: string }
   | { type: 'textInputs/UPDATE_KEYWORDS', keywords: string }
+  | { type: 'LOAD_EVENT_START', eventId: string },
+  | { type: 'LOAD_EVENT_DONE', eventId: string, event: Event }
   | { type: 'ADD_EVENTS_RELOAD' }
   | { type: 'ADD_EVENTS_RELOAD_COMPLETE', results: AddEventList }
   | { type: 'ADD_EVENTS_RELOAD_FAILED' }
