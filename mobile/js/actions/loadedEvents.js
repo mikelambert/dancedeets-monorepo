@@ -13,15 +13,9 @@ export function loadEvent(eventId: string): ThunkAction {
   return async (dispatch: Dispatch, getState) => {
     const state = getState();
     const loadedEventState = state.loadedEvents[eventId];
-    console.log('c2', eventId, loadedEventState);
     if (!loadedEventState) {
-      console.log('d');
       await dispatch(loadEventInProgress(eventId));
-      console.log('e');
-      console.log('e2', event(eventId));
-      console.log('e3', await event(eventId));
       const realEvent = await event(eventId);
-      console.log('f');
       await dispatch(loadEventFinished(eventId, realEvent));
     }
   };

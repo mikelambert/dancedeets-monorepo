@@ -170,11 +170,9 @@ class EventPager extends React.Component<
         return null;
       }
     }
-    console.log(this.props.loadedEvents);
     const data = this.props.search.response.results.map(searchEvent => {
       const loadedEventState = this.props.loadedEvents[searchEvent.id];
       const event = loadedEventState ? loadedEventState.event : null;
-      console.log(searchEvent.id, loadedEventState, event);
       return {
         key: searchEvent.id,
         event,
@@ -182,7 +180,6 @@ class EventPager extends React.Component<
         position,
       };
     });
-    console.log(data);
     return (
       <FlatList
         data={data}
@@ -207,9 +204,7 @@ const mapStateToProps = state => ({
 });
 const mapDispatchToProps = dispatch => ({
   loadEvent: async eventId => {
-    console.log('a');
     await dispatch(loadEvent(eventId));
-    console.log('b');
   },
 });
 
