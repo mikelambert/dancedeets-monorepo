@@ -731,9 +731,8 @@ class _EventTranslate extends React.PureComponent<{
   ) => void,
 }> {
   render() {
-    const translatedEvent = this.props.translatedEvents[this.props.event.id];
     const translatedText =
-      translatedEvent && translatedEvent.visible
+      this.props.translatedEvent && this.props.translatedEvent.visible
         ? this.props.intl.formatMessage(messages.untranslate)
         : this.props.intl.formatMessage(messages.translate);
     return (
