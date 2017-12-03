@@ -15,9 +15,10 @@ const configurationOptions = {
 };
 const firestack = new Firestack(configurationOptions);
 firestack.on('debug', msg => console.log('Received debug message', msg));
-firestack.onReady(() => {
-  firestack.database.setPersistence(true);
-});
+// TODO: Set Persistence
+//firestack.onReady(() => {
+//  firestack.database.setPersistence(true);
+//});
 
 class _TrackFirebase extends React.Component<{
   path: string,
