@@ -514,7 +514,10 @@ class _EventListContainer extends React.Component<
             });
           }
           lastSection = sections[sections.length - 1];
-          lastSection.data.push({ event: e, key: `Event: ${e.id}` });
+          lastSection.data.push({
+            event: e,
+            key: `Event: ${e.id}-${e.start_time}`,
+          });
         }
       }
     }
