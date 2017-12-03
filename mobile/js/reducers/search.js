@@ -5,12 +5,12 @@
  */
 
 import { Dimensions } from 'react-native';
-import type { SearchResponse } from 'dancedeets-common/js/events/search';
+import type { NewSearchResponse } from 'dancedeets-common/js/events/search';
 import type { Action } from '../actions/types';
 
 export type State = {
   loading: boolean, // loading indicator
-  response: ?SearchResponse, // our last-searched response
+  response: ?NewSearchResponse, // our last-searched response
   error: boolean, // whether there was an error fetching the current results
   errorString: ?string, // the error message to display to the user, if we have one
   waitingForLocationPermission: boolean, // are we waiitng for the user to grant the location permission

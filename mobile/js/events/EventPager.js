@@ -16,7 +16,7 @@ import { getPosition } from '../util/geo';
 class EventPager extends React.Component<
   {
     onFlyerSelected: (x: Event) => ThunkAction,
-    onEventNavigated: (x: Event) => void,
+    onEventNavigated: (x: SearchEvent) => void,
     selectedEvent: Event,
 
     // Self-managed props
@@ -130,13 +130,23 @@ class EventPager extends React.Component<
       const width = Dimensions.get('window').width;
       return <View style={{ width }} />;
     }
-    return (
-      <FullEventView
-        onFlyerSelected={this.props.onFlyerSelected}
-        event={eventData.event}
-        currentPosition={eventData.position}
-      />
-    );
+    if (eventData.searchEvent) {
+      return (
+        <LoadingEventView
+          onFlyerSelected={this.props.onFlyerSelected}
+          event={eventData.searchEvent}
+          currentPosition={eventData.position}
+        />
+      );
+    } else if (eventData.event) {
+      return (
+        <FullEventView
+          onFlyerSelected={this.props.onFlyerSelected}
+          event={eventData.event}
+          currentPosition={eventData.position}
+        />
+      );
+    }
   }
 
   render() {
@@ -155,9 +165,9 @@ class EventPager extends React.Component<
         return null;
       }
     }
-    const data = this.props.search.response.results.map(event => ({
+    const data = this.props.search.response.results.map(searchEvent => ({
       key: event.id,
-      event,
+      searchEvent,
       position,
     }));
     return (

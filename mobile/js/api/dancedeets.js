@@ -42,7 +42,7 @@ async function performRequest(
     locale,
     access_token: token ? token.accessToken : null,
   });
-  return await realPerformRequest(fetch, path, newArgs, newPostArgs, '1.4');
+  return await realPerformRequest(fetch, path, newArgs, newPostArgs, '2.0');
 }
 
 export async function isAuthenticated() {

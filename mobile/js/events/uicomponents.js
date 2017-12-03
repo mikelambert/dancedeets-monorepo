@@ -811,7 +811,7 @@ const EventTickets = injectIntl(_EventTickets);
 
 class _FullEventView extends React.Component<{
   onFlyerSelected: (x: Event) => ThunkAction,
-  event: Event,
+  event: SearchEvent,
   currentPosition: any,
   translatedEvents: { [key: string]: TranslatedEvent },
 }> {
