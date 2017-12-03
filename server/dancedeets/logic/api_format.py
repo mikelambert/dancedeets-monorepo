@@ -349,7 +349,7 @@ def build_search_results_api(
 
     json_results = []
     if search_results:
-        effective_end_date = search_results[-1].start_time if partial_results else search_query.end_date
+        effective_end_date = search_results[-1].start_time.date() if partial_results else search_query.end_date
         for result in search_results:
             try:
                 if need_full_event:
