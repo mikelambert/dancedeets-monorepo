@@ -6,6 +6,7 @@
 
 import * as React from 'react';
 import {
+  ActivityIndicator,
   AlertIOS,
   Dimensions,
   Image,
@@ -905,7 +906,7 @@ class _FullEventView extends React.Component<{
           start={searchEvent.getStartMoment({ timezone: false })}
           end={searchEvent.getEndMoment({ timezone: false })}
         />
-        <Text>...Loading...TODO: SPINNER</Text>
+        <ActivityIndicator style={{ margin: 50 }} size="large" />
       </ScrollView>
     );
   }
