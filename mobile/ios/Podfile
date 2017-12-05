@@ -2,24 +2,25 @@ source 'https://github.com/CocoaPods/Specs.git'
 
 platform :ios, '8.0'
 
-[
-  'Firebase',
-  'Firebase/Core',
-  'Firebase/Crash',
-  'Firebase/Auth',
-  'Firebase/Storage',
-  'Firebase/Database',
-  'Firebase/RemoteConfig',
-  'Firebase/Messaging',
-  'FBSDKCoreKit',
-  'FBSDKLoginKit',
-  'FBSDKShareKit',
-  'Mixpanel',
-  'Fabric',
-  'Crashlytics'
-].each do |lib|
-  pod lib
-end
-
 target 'DanceDeets' do
+  pod 'Firebase'
+  pod 'Firebase/Core'
+  pod 'Firebase/Crash'
+  pod 'Firebase/Auth'
+  pod 'Firebase/Storage'
+  pod 'Firebase/Database'
+  pod 'Firebase/RemoteConfig'
+  pod 'Firebase/Messaging'
+  pod 'FBSDKCoreKit'
+  pod 'FBSDKLoginKit'
+  pod 'FBSDKShareKit'
+  pod 'Mixpanel'
+  pod 'Fabric'
+  pod 'Crashlytics'
+  pod 'RNFirebase', :path => '../node_modules/react-native-firebase'
+  # We add these here, since they are depended on by RNFirebase
+  # And we don't want them pulling from the server-side pod repo
+  pod 'React', :path => '../node_modules/react-native'
+  pod 'yoga', :path => '../node_modules/react-native/ReactCommon/yoga'
+
 end

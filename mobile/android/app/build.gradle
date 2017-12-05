@@ -176,24 +176,27 @@ configurations.all {
     // React-Native-Compile:
     // exclude group: 'com.facebook.react', module: 'react-native'
     resolutionStrategy {
-        force 'com.google.android.gms:play-services-ads:11.0.+'
-        force 'com.google.android.gms:play-services-base:11.0.+'
-        force 'com.google.android.gms:play-services-location:11.0.+'
-        force 'com.google.android.gms:play-services-maps:11.0.+'
-        force 'com.google.android.gms:play-services-gcm:11.0.+'
-        force 'com.google.firebase:firebase-core:11.0.+'
-        force 'com.google.firebase:firebase-config:11.0.+'
-        force 'com.google.firebase:firebase-crash:11.0.+'
-        force 'com.google.firebase:firebase-auth:11.0.+'
-        force 'com.google.firebase:firebase-analytics:11.0.+'
-        force 'com.google.firebase:firebase-database:11.0.+'
-        force 'com.google.firebase:firebase-storage:11.0.+'
+        force 'com.google.android.gms:play-services-ads:11.6.+'
+        force 'com.google.android.gms:play-services-base:11.6.+'
+        force 'com.google.android.gms:play-services-location:11.6.+'
+        force 'com.google.android.gms:play-services-maps:11.6.+'
+        force 'com.google.android.gms:play-services-gcm:11.6.+'
+        force 'com.google.firebase:firebase-core:11.6.+'
+        force 'com.google.firebase:firebase-config:11.6.+'
+        force 'com.google.firebase:firebase-crash:11.6.+'
+        force 'com.google.firebase:firebase-auth:11.6.+'
+        force 'com.google.firebase:firebase-analytics:11.6.+'
+        force 'com.google.firebase:firebase-database:11.6.+'
+        force 'com.google.firebase:firebase-storage:11.6.+'
         force 'com.google.firebase:firebase-messaging:11.0.+'
         force 'com.android.support:appcompat-v7:23.+'
     }
 }
 
 dependencies {
+    compile(project(':react-native-firebase')) {
+        transitive = false
+    }
     compile project(':react-native-video')
     compile project(':react-native-sentry')
     compile project(':react-native-vector-icons')

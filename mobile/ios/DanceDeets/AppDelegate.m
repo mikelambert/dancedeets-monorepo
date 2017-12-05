@@ -7,6 +7,7 @@
  * of patent rights can be found in the PATENTS file in the same directory.
  */
 
+#import <Firebase.h>
 #import "AppDelegate.h"
 #import <CodePush/CodePush.h>
 #import <React/RCTLog.h>
@@ -30,6 +31,7 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
+  [FIRApp configure];
   #ifdef DEBUG
     [FIRCrash sharedInstance].crashCollectionEnabled = NO;
   #endif
