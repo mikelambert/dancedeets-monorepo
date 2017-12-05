@@ -24,7 +24,7 @@
 
 import Mixpanel from 'react-native-mixpanel';
 // TODO(lambert): Eventually migrate this to react-native-firestack
-import { Analytics } from 'react-native-firebase3';
+import firebase from 'react-native-firebase';
 import { AccessToken, AppEventsLogger } from 'react-native-fbsdk';
 import { Crashlytics } from 'react-native-fabric';
 import DeviceInfo from 'react-native-device-info';
@@ -81,11 +81,11 @@ export function track(eventName: string, params: ?Params) {
     }
     AppEventsLogger.logEvent(eventName, 1, params);
     Mixpanel.trackWithProperties(eventName, params);
-    Analytics.logEvent(firebaseSafe(eventName), firebaseSafeParams);
+    firebase.analytics().logEvent(firebaseSafe(eventName), firebaseSafeParams);
   } else {
     AppEventsLogger.logEvent(eventName, 1);
     Mixpanel.track(eventName);
-    Analytics.logEvent(firebaseSafe(eventName));
+    firebase.analytics().logEvent(firebaseSafe(eventName));
   }
 }
 
@@ -130,7 +130,7 @@ async function setupPersonProperties() {
   }
   Crashlytics.setUserIdentifier(token.userID);
   Mixpanel.identify(token.userID);
-  Analytics.setUserId(token.userID);
+  firebase.analytics().setUserId(token.userID);
 
   const user = await performRequest('GET', 'me', {
     fields: 'id,name,first_name,last_name,gender,locale,timezone,email,link',
@@ -150,15 +150,13 @@ async function setupPersonProperties() {
   });
   Mixpanel.setOnce({ $created: now });
 
-  Analytics.setUserProperties({
-    FBFirstName: user.first_name,
-    FBLastName: user.last_name,
-    FBGender: user.gender,
-    FBLocale: user.locale,
-    FBTimezone: user.timezone.toString(),
-    FBEmail: user.email,
-    LastLogin: now,
-  });
+  firebase.analytics().setUserProperty('FBFirstName', user.first_name);
+  firebase.analytics().setUserProperty('FBLastName', user.last_name);
+  firebase.analytics().setUserProperty('FBGender', user.gender);
+  firebase.analytics().setUserProperty('FBLocale', user.locale);
+  firebase.analytics().setUserProperty('FBTimezone', user.timezone.toString());
+  firebase.analytics().setUserProperty('FBEmail', user.email);
+  firebase.analytics().setUserProperty('LastLogin', now);
 }
 
 export async function trackLogin() {
@@ -179,7 +177,7 @@ export function trackLogout() {
   track('Logout');
   // Mixpanel.removePushToken();
   Mixpanel.reset();
-  Analytics.setUserId(null);
+  firebase.analytics().setUserId(null);
 }
 
 export function trackDispatches(action: Action): void {}
