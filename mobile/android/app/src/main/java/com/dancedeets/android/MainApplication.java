@@ -70,6 +70,7 @@ class MyReactNativeHost extends ReactNativeHost implements ReactInstanceHolder {
       new MainReactPackage(),
             new RNFirebasePackage(),
             new RNFirebaseAnalyticsPackage(),
+            new RNFirebaseRemoteConfigPackage(),
             new ReactVideoPackage(),
       new RNSentryPackage((ReactApplication)getApplication()),
       new VectorIconsPackage(),

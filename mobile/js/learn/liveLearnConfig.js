@@ -4,18 +4,22 @@
  * @flow
  */
 
-import { RemoteConfig } from 'react-native-firebase3';
+import firebase from 'react-native-firebase';
 
+// eslint-disable-next-line no-unused-vars
 async function loadConfig() {
   if (__DEV__) {
-    RemoteConfig.setDeveloperMode(true);
+    firebase.config().enableDeveloperMode();
   }
-  await RemoteConfig.fetchWithExpirationDuration(60 * 10);
-  await RemoteConfig.activateFetched();
+  await firebase.config().fetch();
+  await firebase.config().activateFetched();
 }
 
 // loadConfig();
 
 export async function getRemoteBlogs() {
-  return JSON.parse(await RemoteConfig.getNamespacedString('blogs', 'Learn'));
+  const result = await firebase.config().getValue('Learn:blogs');
+  if (result) {
+    return JSON.parse(result.val());
+  }
 }

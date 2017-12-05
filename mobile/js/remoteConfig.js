@@ -4,22 +4,22 @@
  * @flow
  */
 
-import { RemoteConfig } from 'react-native-firebase3';
+import firebase from 'react-native-firebase';
 
 async function loadConfig() {
   if (__DEV__) {
-    RemoteConfig.setDeveloperMode(true);
+    firebase.config().enableDeveloperMode();
   }
-  await RemoteConfig.fetchWithExpirationDuration(60 * 10); // 10 minutes
-  await RemoteConfig.activateFetched();
+  await firebase.config().fetch();
+  await firebase.config().activateFetched();
 }
 
 loadConfig();
 
-export async function get(value: string): any {
-  const result = await RemoteConfig.getString(value);
+export async function get(value: String): any {
+  const result = await firebase.config().getValue(value);
   if (result) {
-    return JSON.parse(result);
+    return JSON.parse(result.val());
   }
   return null;
 }
