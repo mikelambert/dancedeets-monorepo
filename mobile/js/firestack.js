@@ -5,20 +5,12 @@
  */
 
 import * as React from 'react';
-import Firestack from 'react-native-firestack';
+import firebase from 'react-native-firebase';
 import { connect } from 'react-redux';
 import type { Dispatch } from './actions/types';
 import { setFirebaseState } from './actions';
 
-const configurationOptions = {
-  debug: true,
-};
-const firestack = new Firestack(configurationOptions);
-firestack.on('debug', msg => console.log('Received debug message', msg));
-// TODO: Set Persistence
-//firestack.onReady(() => {
-//  firestack.database.setPersistence(true);
-//});
+// TODO: How do we turn on database persistence? So it saves locally without network?
 
 class _TrackFirebase extends React.Component<{
   path: string,
@@ -39,18 +31,17 @@ class _TrackFirebase extends React.Component<{
   }
 
   componentWillMount() {
-    const dbRef = firestack.database.ref(this.props.path);
-    if (!dbRef.listeners.value) {
-      console.log(`Installing handler on path: ${this.props.path}`);
-      dbRef.on('value', this.handleValueChange);
-      this._setHandler = true;
-    }
+    const dbRef = firebase.database().ref(this.props.path);
+    console.log(`Installing handler on path: ${this.props.path}`);
+    dbRef.on('value', this.handleValueChange);
+    this._setHandler = true;
   }
 
   componentWillUnmount() {
     if (this._setHandler) {
       console.log(`Uninstalling handler on path: ${this.props.path}`);
-      firestack.database
+      firebase
+        .database()
         .ref(this.props.path)
         .off('value', this.handleValueChange);
     }
@@ -81,4 +72,3 @@ export const TrackFirebase = connect(
   })
 )(_TrackFirebase);
 
-export default firestack;

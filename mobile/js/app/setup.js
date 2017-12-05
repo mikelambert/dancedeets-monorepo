@@ -14,8 +14,6 @@ import { intl } from 'dancedeets-common/js/intl';
 import App from './app';
 import configureStore from '../store/configureStore';
 import ScreenshotSlideshow from '../ScreenshotSlideshow';
-// Initialize firestack
-import firestack from '../firestack';
 import { getCurrentLocale } from '../locale';
 
 type State = {

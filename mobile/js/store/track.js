@@ -23,7 +23,6 @@
  */
 
 import Mixpanel from 'react-native-mixpanel';
-// TODO(lambert): Eventually migrate this to react-native-firestack
 import firebase from 'react-native-firebase';
 import { AccessToken, AppEventsLogger } from 'react-native-fbsdk';
 import { Crashlytics } from 'react-native-fabric';
