@@ -308,30 +308,21 @@ class OneboxView extends React.PureComponent<{
   }
 }
 
-class _EventListContainer extends React.Component<
-  {
-    onEventSelected: (event: Event) => void,
-    onFeaturedEventSelected: (event: Event) => void,
+class _EventListContainer extends React.Component<{
+  onEventSelected: (event: Event) => void,
+  onFeaturedEventSelected: (event: Event) => void,
 
-    // Self-managed props
-    search: State,
-    user: ?User,
-    detectedLocation: (location: string) => Promise<void>,
-    performSearch: () => Promise<void>,
-    setWaitingForLocationPermission: (waiting: boolean) => Promise<void>,
-    showSearchForm: () => Promise<void>,
-    processUrl: (url: string) => Promise<void>,
-    loadUserData: () => Promise<void>,
-    intl: intlShape,
-  },
-  {
-    people: PeopleListing,
-    failed: boolean,
-  }
-> {
-  _loadingPeople: boolean;
-
-  _listView: ?SectionList<*>;
+  // Self-managed props
+  search: State,
+  user: ?User,
+  detectedLocation: (location: string) => Promise<void>,
+  performSearch: () => Promise<void>,
+  setWaitingForLocationPermission: (waiting: boolean) => Promise<void>,
+  showSearchForm: () => Promise<void>,
+  processUrl: (url: string) => Promise<void>,
+  loadUserData: () => Promise<void>,
+  intl: intlShape,
+}> {
   /* TODO: Figure out how to typecheck with this:
   {
     item:
@@ -357,15 +348,227 @@ class _EventListContainer extends React.Component<
 
   constructor(props) {
     super(props);
-    (this: any).renderHeader = this.renderHeader.bind(this);
     (this: any).setLocationAndSearch = this.setLocationAndSearch.bind(this);
-    (this: any).renderItem = this.renderItem.bind(this);
     (this: any).fetchLocationAndSearch = this.fetchLocationAndSearch.bind(this);
-    (this: any).loadPeopleIfNeeded = this.loadPeopleIfNeeded.bind(this);
   }
 
   componentDidMount() {
     this.initialize();
+  }
+
+  async setLocationAndSearch(formattedAddress: string) {
+    if (!formattedAddress) {
+      return;
+    }
+
+    // Now do the actual search logic:
+    await this.props.detectedLocation(formattedAddress);
+    await this.props.performSearch();
+
+    // If the user doesn't have a location, let's save one based on their search
+    // Hopefully we'll have loaded the user data by now, after the search has completed...
+    // But this isn't critical functionality, but just a best-effort attempt to save a location
+    if (
+      this.props.user &&
+      this.props.user.ddUser &&
+      !this.props.user.ddUser.location
+    ) {
+      // Run this out-of-band, so don't await on it
+      this.authAndReloadProfile(formattedAddress);
+    }
+  }
+
+  async authAndReloadProfile(address) {
+    if (!isAuthenticated()) {
+      return;
+    }
+    if (!address) {
+      return;
+    }
+    await auth({ location: address });
+    // After sending an auth to update the user's address,
+    // we should reload our local user's data too.
+    this.props.loadUserData();
+  }
+
+  async fetchLocationAndSearch() {
+    // If we are showing the "prompt for location", let's disable it now
+    if (this.props.search.waitingForLocationPermission) {
+      this.props.setWaitingForLocationPermission(false);
+    }
+
+    // Get the address from GPS
+    let address = null;
+    try {
+      address = await getAddress();
+      // Save this location in the user's profile
+      this.authAndReloadProfile(address);
+    } catch (error) {
+      console.log('Error loading GPS address:', error);
+    }
+    // Otherwise, fall back to the last-searched address
+    if (!address) {
+      address = await loadSavedAddress();
+      console.log(
+        'Failed to load GPS, falling back to last-searched address: ',
+        address
+      );
+    }
+
+    // And if we have a location from either place, do a search
+    this.setLocationAndSearch(address);
+  }
+
+  async initialize() {
+    const url: ?string = await Linking.getInitialURL();
+    if (url != null && canHandleUrl(url)) {
+      this.props.processUrl(url);
+    } else if (await hasLocationPermission()) {
+      this.fetchLocationAndSearch();
+    } else {
+      this.promptForLocation();
+    }
+  }
+
+  promptForLocation() {
+    this.props.setWaitingForLocationPermission(true);
+  }
+
+  bannerError(e) {
+    console.log('didFailToReceiveAdWithError', e);
+  }
+
+  renderAd() {
+    // This is dead code. Hide our ads for now, until/unless we decide we have data we really care about.
+    let adUnitID = null;
+    if (__DEV__) {
+      adUnitID = 'ca-app-pub-3940256099942544/6300978111';
+    } else if (Platform.OS === 'ios') {
+      adUnitID = 'ca-app-pub-9162736050652644/3634975775';
+    } else if (Platform.OS === 'android') {
+      adUnitID = 'ca-app-pub-9162736050652644/9681509378';
+    } else {
+      return null;
+    }
+    return null;
+    /* (
+      <AdMobBanner
+        bannerSize={'smartBannerPortrait'}
+        adUnitID={adUnitID}
+        didFailToReceiveAdWithError={this.bannerError}
+      />
+    );
+    */
+  }
+
+  renderWaitingForLocationPermission() {
+    return (
+      <View
+        style={{
+          justifyContent: 'center',
+          alignItems: 'center',
+          flex: 1,
+          margin: 20,
+        }}
+      >
+        <Button
+          style={{ marginBottom: 50 }}
+          onPress={this.props.showSearchForm}
+          caption={this.props.intl.formatMessage(
+            messages.openSearchHeaderButton
+          )}
+        />
+        <Button
+          onPress={this.fetchLocationAndSearch}
+          iconView={
+            <Icon
+              name="md-locate"
+              size={20}
+              style={{ marginRight: 5 }}
+              color="#FFF"
+            />
+          }
+          caption={this.props.intl.formatMessage(messages.useGpsLocation)}
+        />
+      </View>
+    );
+  }
+
+  render() {
+    const { search } = this.props;
+    let listView = null;
+    if (
+      search.waitingForLocationPermission &&
+      !search.response &&
+      !search.loading
+    ) {
+      listView = this.renderWaitingForLocationPermission();
+    } else {
+      listView = (
+        <ListView
+          onEventSelected={this.props.onEventSelected}
+          onFeaturedEventSelected={this.props.onFeaturedEventSelected}
+        />
+      );
+    }
+
+    return (
+      <View style={styles.container}>
+        <SearchHeader>{listView}</SearchHeader>
+      </View>
+    );
+  }
+}
+const EventListContainer = connect(
+  state => ({
+    search: state.search,
+    user: state.user.userData,
+  }),
+  dispatch => ({
+    setWaitingForLocationPermission: async waiting =>
+      await dispatch(setWaitingForLocationPermission(waiting)),
+    detectedLocation: async location => {
+      await dispatch(detectedLocation(location));
+    },
+    performSearch: async () => {
+      await dispatch(performSearch());
+    },
+    processUrl: async url => {
+      await dispatch(processUrl(url));
+    },
+    loadUserData: async () => {
+      await loadUserData(dispatch);
+    },
+    showSearchForm: async () => {
+      await dispatch(showSearchForm());
+    },
+  })
+)(injectIntl(_EventListContainer));
+
+export default EventListContainer;
+
+class _ListView extends React.Component<
+  {
+    search: State,
+
+    // Self-managed props
+    performSearch: () => Promise<void>,
+    intl: intlShape,
+  },
+  {
+    people: PeopleListing,
+    failed: boolean,
+  }
+> {
+  _loadingPeople: boolean;
+
+  _listView: ?SectionList<*>;
+
+  constructor(props) {
+    super(props);
+    (this: any).renderHeader = this.renderHeader.bind(this);
+    (this: any).renderItem = this.renderItem.bind(this);
+    (this: any).loadPeopleIfNeeded = this.loadPeopleIfNeeded.bind(this);
   }
 
   componentWillReceiveProps(nextProps) {
@@ -397,28 +600,6 @@ class _EventListContainer extends React.Component<
         people: nextProps.search.response.people,
         failed: false,
       });
-    }
-  }
-
-  async setLocationAndSearch(formattedAddress: string) {
-    if (!formattedAddress) {
-      return;
-    }
-
-    // Now do the actual search logic:
-    await this.props.detectedLocation(formattedAddress);
-    await this.props.performSearch();
-
-    // If the user doesn't have a location, let's save one based on their search
-    // Hopefully we'll have loaded the user data by now, after the search has completed...
-    // But this isn't critical functionality, but just a best-effort attempt to save a location
-    if (
-      this.props.user &&
-      this.props.user.ddUser &&
-      !this.props.user.ddUser.location
-    ) {
-      // Run this out-of-band, so don't await on it
-      this.authAndReloadProfile(formattedAddress);
     }
   }
 
@@ -524,66 +705,6 @@ class _EventListContainer extends React.Component<
     return sections;
   }
 
-  async authAndReloadProfile(address) {
-    if (!isAuthenticated()) {
-      return;
-    }
-    if (!address) {
-      return;
-    }
-    await auth({ location: address });
-    // After sending an auth to update the user's address,
-    // we should reload our local user's data too.
-    this.props.loadUserData();
-  }
-
-  async fetchLocationAndSearch() {
-    // If we are showing the "prompt for location", let's disable it now
-    if (this.props.search.waitingForLocationPermission) {
-      this.props.setWaitingForLocationPermission(false);
-    }
-
-    // Get the address from GPS
-    let address = null;
-    try {
-      address = await getAddress();
-      // Save this location in the user's profile
-      this.authAndReloadProfile(address);
-    } catch (error) {
-      console.log('Error loading GPS address:', error);
-    }
-    // Otherwise, fall back to the last-searched address
-    if (!address) {
-      address = await loadSavedAddress();
-      console.log(
-        'Failed to load GPS, falling back to last-searched address: ',
-        address
-      );
-    }
-
-    // And if we have a location from either place, do a search
-    this.setLocationAndSearch(address);
-  }
-
-  async initialize() {
-    const url: ?string = await Linking.getInitialURL();
-    if (url != null && canHandleUrl(url)) {
-      this.props.processUrl(url);
-    } else if (await hasLocationPermission()) {
-      this.fetchLocationAndSearch();
-    } else {
-      this.promptForLocation();
-    }
-  }
-
-  promptForLocation() {
-    this.props.setWaitingForLocationPermission(true);
-  }
-
-  bannerError(e) {
-    console.log('didFailToReceiveAdWithError', e);
-  }
-
   async loadPeopleIfNeeded() {
     if (
       // This search area was too large, and we didn't want to do a people calculation
@@ -660,72 +781,9 @@ class _EventListContainer extends React.Component<
     );
   }
 
-  renderAd() {
-    // This is dead code. Hide our ads for now, until/unless we decide we have data we really care about.
-    let adUnitID = null;
-    if (__DEV__) {
-      adUnitID = 'ca-app-pub-3940256099942544/6300978111';
-    } else if (Platform.OS === 'ios') {
-      adUnitID = 'ca-app-pub-9162736050652644/3634975775';
-    } else if (Platform.OS === 'android') {
-      adUnitID = 'ca-app-pub-9162736050652644/9681509378';
-    } else {
-      return null;
-    }
-    return null;
-    /* (
-      <AdMobBanner
-        bannerSize={'smartBannerPortrait'}
-        adUnitID={adUnitID}
-        didFailToReceiveAdWithError={this.bannerError}
-      />
-    );
-    */
-  }
-
-  renderWaitingForLocationPermission() {
-    return (
-      <View
-        style={{
-          justifyContent: 'center',
-          alignItems: 'center',
-          flex: 1,
-          margin: 20,
-        }}
-      >
-        <Button
-          style={{ marginBottom: 50 }}
-          onPress={this.props.showSearchForm}
-          caption={this.props.intl.formatMessage(
-            messages.openSearchHeaderButton
-          )}
-        />
-        <Button
-          onPress={this.fetchLocationAndSearch}
-          iconView={
-            <Icon
-              name="md-locate"
-              size={20}
-              style={{ marginRight: 5 }}
-              color="#FFF"
-            />
-          }
-          caption={this.props.intl.formatMessage(messages.useGpsLocation)}
-        />
-      </View>
-    );
-  }
-
-  renderListView() {
+  render() {
     const { search } = this.props;
 
-    if (
-      search.waitingForLocationPermission &&
-      !search.response &&
-      !search.loading
-    ) {
-      return this.renderWaitingForLocationPermission();
-    }
     const sections = this.getData(search.response);
     // TODO: SectionList is a PureComponent, so we should avoid passing dynamic closures
     return (
@@ -745,47 +803,22 @@ class _EventListContainer extends React.Component<
           <SectionHeader title={upperFirst(section.title)} />
         )}
         stickySectionHeadersEnabled
-        initialNumToRender={20}
-        maxToRenderPerBatch={2}
+        initialNumToRender={5}
+        maxToRenderPerBatch={1}
       />
     );
   }
-
-  render() {
-    return (
-      <View style={styles.container}>
-        <SearchHeader>{this.renderListView()}</SearchHeader>
-      </View>
-    );
-  }
 }
-const EventListContainer = connect(
+const ListView = connect(
   state => ({
     search: state.search,
-    user: state.user.userData,
   }),
   dispatch => ({
-    setWaitingForLocationPermission: async waiting =>
-      await dispatch(setWaitingForLocationPermission(waiting)),
-    detectedLocation: async location => {
-      await dispatch(detectedLocation(location));
-    },
     performSearch: async () => {
       await dispatch(performSearch());
     },
-    processUrl: async url => {
-      await dispatch(processUrl(url));
-    },
-    loadUserData: async () => {
-      await loadUserData(dispatch);
-    },
-    showSearchForm: async () => {
-      await dispatch(showSearchForm());
-    },
   })
-)(injectIntl(_EventListContainer));
-
-export default EventListContainer;
+)(injectIntl(_ListView));
 
 const styles = StyleSheet.create({
   separator: {
