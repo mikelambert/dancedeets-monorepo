@@ -25,8 +25,6 @@ include ':react-native-photo-view'
 project(':react-native-photo-view').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-photo-view/android')
 include ':react-native-permissions'
 project(':react-native-permissions').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-permissions/android')
-include ':react-native-firebase3'
-project(':react-native-firebase3').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-firebase3/android')
 include ':react-native-native-env'
 project(':react-native-native-env').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-native-env/android')
 include ':react-native-locale'
