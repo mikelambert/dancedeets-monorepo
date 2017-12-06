@@ -177,11 +177,12 @@ class NavButton extends React.PureComponent<{
   disabled?: boolean,
 }> {
   render() {
-    let contents = [
-      this.props.imageSource ? (
-        <Image key="image" source={this.props.imageSource} />
-      ) : null,
-      this.props.text ? (
+    let contents = [];
+    if (this.props.imageSource) {
+      contents.push(<Image key="image" source={this.props.imageSource} />);
+    }
+    if (this.props.text) {
+      contents.push(
         <Text
           key="text"
           style={{
@@ -191,9 +192,9 @@ class NavButton extends React.PureComponent<{
         >
           {this.props.text}
         </Text>
-      ) : null,
-    ];
-    if (!this.props.disabled) {
+      );
+    }
+    if (this.props.disabled) {
       contents = (
         <TouchableItem onPress={() => this.props.onPress()}>
           <View>{contents}</View>
