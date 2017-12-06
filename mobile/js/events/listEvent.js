@@ -19,12 +19,10 @@ import { HorizontalView, normalize, semiNormalize, Text } from '../ui';
 
 export const RowHeight = 130;
 
-class EventVenueShort extends React.PureComponent {
-  props: {
-    venue: Venue,
-    style?: ViewPropTypes.style,
-  };
-
+class EventVenueShort extends React.PureComponent<{
+  venue: Venue,
+  style?: ViewPropTypes.style,
+}> {
   render() {
     if (!this.props.venue.address) {
       return null;
@@ -37,13 +35,12 @@ class EventVenueShort extends React.PureComponent {
   }
 }
 
-class _EventRow extends React.PureComponent {
-  props: {
-    onEventSelected: (x: Event) => void,
-    event: Event,
-  };
-
-  constructor(props) {
+type EventRowProps = {
+  onEventSelected: (x: Event) => void,
+  event: Event,
+};
+class _EventRow extends React.PureComponent<EventRowProps> {
+  constructor(props: EventRowProps) {
     super(props);
     (this: any).onPress = this.onPress.bind(this);
   }

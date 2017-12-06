@@ -8,6 +8,7 @@ import * as React from 'react';
 import { Dimensions, FlatList, InteractionManager, View } from 'react-native';
 import { connect } from 'react-redux';
 import { Event } from 'dancedeets-common/js/events/models';
+import type { SearchEvent } from 'dancedeets-common/js/events/models';
 import type { State } from '../reducers/search';
 import { FullEventView } from './uicomponents';
 import type { ThunkAction } from '../actions/types';

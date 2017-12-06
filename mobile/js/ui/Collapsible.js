@@ -15,7 +15,7 @@ class Collapsible extends React.Component<
     collapsedHeight: number,
     duration: number,
     easing: string | ((value: number) => number),
-    style: View.propTypes.style,
+    style: ?View.propTypes.style,
     children: React.Node,
   },
   {

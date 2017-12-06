@@ -554,7 +554,7 @@ class _ListView extends React.Component<
 
     // Self-managed props
     search: State,
-    performSearch: () => Promise<void>,
+    performSearch: () => Promise<void> | void,
     intl: intlShape,
   },
   {
@@ -789,7 +789,7 @@ class _ListView extends React.Component<
   render() {
     // TODO: SectionList is a PureComponent, so we should avoid passing dynamic closures
     // particularly if this render() gets called often.
-    const sections = _ListView.getData(nextProps, nextState);
+    const sections = _ListView.getData(this.props, this.state);
     return (
       <SectionList
         ref={x => {
