@@ -34,8 +34,17 @@
 {% block head_stylesheet %}{% endblock %}
 
 {% if not hot_reloading %}
-<script src="{{ static_path('jquery.js') }}"></script>
-<script src="{{ static_path('common.js') }}"></script>
+<script>
+if (!window.Intl) {
+  document.write(
+    '<script defer ' +
+    'src="https://cdn.polyfill.io/v2/polyfill.min.js?features=Intl.~locale.en"></' +
+    'script>'
+  );
+}
+</script>
+<script defer src="{{ static_path('jquery.js') }}"></script>
+<script defer src="{{ static_path('common.js') }}"></script>
 {% endif %}
 {% block head_javascript %}{% endblock %}
 
