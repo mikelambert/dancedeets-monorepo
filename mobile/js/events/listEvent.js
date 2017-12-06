@@ -43,15 +43,21 @@ class _EventRow extends React.PureComponent {
     event: Event,
   };
 
+  constructor(props) {
+    super(props);
+    (this: any).onPress = this.onPress.bind(this);
+  }
+
+  onPress() {
+    this.props.onEventSelected(this.props.event);
+  }
+
   render() {
     const imageProps = this.props.event.getSquareFlyer();
 
     return (
       <View>
-        <TouchableOpacity
-          onPress={() => this.props.onEventSelected(this.props.event)}
-          activeOpacity={0.5}
-        >
+        <TouchableOpacity onPress={this.onPress} activeOpacity={0.5}>
           <HorizontalView>
             <Image
               source={imageProps}
@@ -72,7 +78,7 @@ class _EventRow extends React.PureComponent {
     );
   }
 }
-export const EventRow = connect(state => ({}))(_EventRow);
+export const EventRow = _EventRow;
 
 const detailHeight = 15;
 

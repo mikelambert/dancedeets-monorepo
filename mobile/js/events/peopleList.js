@@ -159,7 +159,7 @@ class _Loading extends React.Component<{
 }
 const Loading = injectIntl(_Loading);
 
-class _OrganizerView extends React.Component<{
+class _OrganizerView extends React.PureComponent<{
   defaultCollapsed: boolean,
   headerStyle: ViewPropTypes.style,
   people: ?StylePersonLookup,
@@ -194,7 +194,7 @@ class _OrganizerView extends React.Component<{
 }
 export const OrganizerView = injectIntl(_OrganizerView);
 
-export class _AttendeeView extends React.Component<{
+export class _AttendeeView extends React.PureComponent<{
   defaultCollapsed: boolean,
   headerStyle: ViewPropTypes.style,
   people: ?StylePersonLookup,

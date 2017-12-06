@@ -549,14 +549,16 @@ export default EventListContainer;
 
 class _ListView extends React.Component<
   {
-    search: State,
+    onEventSelected: (event: Event) => void,
+    onFeaturedEventSelected: (event: Event) => void,
 
     // Self-managed props
+    search: State,
     performSearch: () => Promise<void>,
     intl: intlShape,
   },
   {
-    people: PeopleListing,
+    people: ?PeopleListing,
     failed: boolean,
   }
 > {
@@ -569,6 +571,11 @@ class _ListView extends React.Component<
     (this: any).renderHeader = this.renderHeader.bind(this);
     (this: any).renderItem = this.renderItem.bind(this);
     (this: any).loadPeopleIfNeeded = this.loadPeopleIfNeeded.bind(this);
+
+    this.state = {
+      failed: false,
+      people: props.search.response ? props.search.response.people : {},
+    };
   }
 
   componentWillReceiveProps(nextProps) {
@@ -595,22 +602,24 @@ class _ListView extends React.Component<
         });
       }
     }
-    if (nextProps.search.response) {
+    if (nextProps.search) {
       this.setState({
-        people: nextProps.search.response.people,
         failed: false,
+        people: nextProps.search.response
+          ? nextProps.search.response.people
+          : null,
       });
     }
   }
 
-  getData(response: ?SearchResponse) {
+  static getData(props, state) {
+    const { intl, search } = props;
+    const { response } = search;
     const sections = [];
 
     if (response) {
       if (response.featuredInfos && response.featuredInfos.length) {
-        const featuredTitle = this.props.intl.formatMessage(
-          messages.featuredEvent
-        );
+        const featuredTitle = intl.formatMessage(messages.featuredEvent);
         sections.push({
           key: 'Featured Event Header',
           title: featuredTitle,
@@ -623,7 +632,7 @@ class _ListView extends React.Component<
         });
       }
 
-      if (this.state.people) {
+      if (state.people) {
         // Keep in sync with web?
         const defaultCollapsed = !(response.results.length < 10);
 
@@ -631,20 +640,18 @@ class _ListView extends React.Component<
         peopleData.push({
           key: 'Admin Row',
           renderClass: OrganizerView,
-          people: this.state.people.ADMIN,
+          people: state.people.ADMIN,
           defaultCollapsed,
         });
         peopleData.push({
           key: 'Attendee Row',
           renderClass: AttendeeView,
-          people: this.state.people.ATTENDEE,
+          people: state.people.ATTENDEE,
           defaultCollapsed,
         });
 
         if (peopleData.length) {
-          const peopleTitle = this.props.intl.formatMessage(
-            messages.peopleHeader
-          );
+          const peopleTitle = intl.formatMessage(messages.peopleHeader);
 
           sections.push({
             key: 'People Header',
@@ -655,9 +662,7 @@ class _ListView extends React.Component<
       }
 
       if (response.onebox_links != null && response.onebox_links.length > 0) {
-        const oneboxTitle = this.props.intl.formatMessage(
-          messages.specialLinks
-        );
+        const oneboxTitle = intl.formatMessage(messages.specialLinks);
         sections.push({
           key: 'Onebox Header',
           title: oneboxTitle,
@@ -667,7 +672,7 @@ class _ListView extends React.Component<
           })),
         });
       }
-      const now = moment(this.props.intl.now());
+      const now = moment(intl.now());
       if (response.results != null && response.results.length > 0) {
         // Previously sorted by startDate from the server, we want to sort them by our listDate
         let resultEvents = response.results;
@@ -684,7 +689,7 @@ class _ListView extends React.Component<
           }
           const formattedStart = formatStartDateOnly(
             e.getListDateMoment({ timezone: false }),
-            this.props.intl
+            intl
           );
           let lastSection = sections[sections.length - 1];
           if (!lastSection || lastSection.title !== formattedStart) {
@@ -782,29 +787,30 @@ class _ListView extends React.Component<
   }
 
   render() {
-    const { search } = this.props;
-
-    const sections = this.getData(search.response);
     // TODO: SectionList is a PureComponent, so we should avoid passing dynamic closures
+    // particularly if this render() gets called often.
+    const sections = _ListView.getData(nextProps, nextState);
     return (
       <SectionList
         ref={x => {
           this._listView = x;
         }}
-        style={[styles.listView]}
+        style={styles.listView}
         ListHeaderComponent={this.renderHeader}
         ItemSeparatorComponent={() => <View style={styles.separator} />}
         // Refresher
-        onRefresh={() => this.props.performSearch()}
-        refreshing={search.loading}
+        onRefresh={this.props.performSearch}
+        refreshing={this.props.search.loading}
         sections={sections}
         renderItem={this.renderItem}
         renderSectionHeader={({ section }) => (
           <SectionHeader title={upperFirst(section.title)} />
         )}
         stickySectionHeadersEnabled
-        initialNumToRender={5}
-        maxToRenderPerBatch={1}
+        // For now...render lots of these in big batches
+        // See https://github.com/facebook/react-native/issues/17091
+        initialNumToRender={50}
+        maxToRenderPerBatch={50}
       />
     );
   }
