@@ -437,13 +437,16 @@ class LocationSearchBox extends React.Component<
       return;
     }
     // TODO: Cancel/ignore old prediction requests, in case they arrive out-of-order
-    this.getAutocompleteService().getPlacePredictions(
-      {
-        input: value,
-        types: ['(regions)'],
-      },
-      this.onLocationLookup
-    );
+    const autocompleteService = this.getAutocompleteService();
+    if (autocompleteService) {
+      autocompleteService.getPlacePredictions(
+        {
+          input: value,
+          types: ['(regions)'],
+        },
+        this.onLocationLookup
+      );
+    }
   }
 
   onLocationLookup(predictions, status) {
@@ -466,8 +469,12 @@ class LocationSearchBox extends React.Component<
     if (this._autoCompleteService) {
       return this._autoCompleteService;
     }
-    this._autoCompleteService = new window.google.maps.places
-      .AutocompleteService();
+    // Try to construct it if possible, otherwise leave it alone
+    // and let it try again next time, when the maps js may have downloaded
+    if (window.google && window.google.maps && window.google.maps.places) {
+      this._autoCompleteService = new window.google.maps.places
+        .AutocompleteService();
+    }
     return this._autoCompleteService;
   }
 
