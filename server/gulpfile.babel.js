@@ -452,6 +452,8 @@ gulp.task(
 );
 
 function startDevAppServer(port) {
+  // NOTE: If dev_appserver.py ever gets upgraded to the Dec 5, 2017 version,
+  // we'll probably need to start using --enable_host_checking=false.
   return $.shell.task([
     `PYTHONPATH=lib-local ${argv.gae_dir}/dev_appserver.py app-devserver.yaml --port=${port} --runtime=python-compat --storage_path=${storagePath} 2>&1 | ~/Library/Python/2.7/bin/technicolor-yawn`,
   ]);
