@@ -210,6 +210,15 @@ def _inner_make_event_findable_for_fb_event(db_event, fb_dict, fb_event_attendin
 
             logging.info('Guessing top city from attendees: %s', top_city.display_name())
 
+            # If we have a location from the event, and a location from the attendees
+            if top_geoname_id and location_info.geocode:
+                latlong = location_info.geocode.latlong()
+                # Let's verify they're not too far apart
+                if not top_city.closer_than(latlong, 300):
+                    error = 'Event %s geocodes %s, too far from expected location %s!' % (
+                        db_event.id, location_info.geocode.formatted_address(), top_city.display_name()
+                    )
+                    logging.exception(error)  # So we see it. Should we do better?
     _update_geodata(db_event, location_info, disable_updates)
 
 

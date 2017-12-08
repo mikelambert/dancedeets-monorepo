@@ -33,6 +33,7 @@ def _get_cities(person_ids):
 
 
 def _distance_to(geoname_id, latlng):
+    """returns distance in km from latlng to geoname_id"""
     city = cities_db.lookup_city_from_geoname_ids([geoname_id])[0]
     distance = city.distance_to(latlng)
     return distance
