@@ -216,7 +216,7 @@ def _inner_make_event_findable_for_fb_event(db_event, fb_dict, fb_event_attendin
                 if not event_locations._get_latlng_from_event(fb_dict):
                     latlong = location_info.geocode.latlng()
                     # Let's verify they're not too far apart!
-                    if not top_city.closer_than(latlong, 500):
+                    if not top_city.closer_than(latlong, 800):
                         error = 'Event %s is too far (%s km). Geocodes at %s, attendees are at %s!' % (
                             db_event.id, top_city.distance_to(latlong), location_info.geocode.formatted_address(), top_city.display_name()
                         )
