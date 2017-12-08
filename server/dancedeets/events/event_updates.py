@@ -217,8 +217,8 @@ def _inner_make_event_findable_for_fb_event(db_event, fb_dict, fb_event_attendin
                     latlong = location_info.geocode.latlng()
                     # Let's verify they're not too far apart!
                     if not top_city.closer_than(latlong, 500):
-                        error = 'Event %s geocodes %s, too far from expected location %s!' % (
-                            db_event.id, location_info.geocode.formatted_address(), top_city.display_name()
+                        error = 'Event %s is too far (%s km). Geocodes at %s, attendees are at %s!' % (
+                            db_event.id, top_city.distance_to(latlong), location_info.geocode.formatted_address(), top_city.display_name()
                         )
                         logging.exception(error)  # So we see it. Should we do better?
     _update_geodata(db_event, location_info, disable_updates)
