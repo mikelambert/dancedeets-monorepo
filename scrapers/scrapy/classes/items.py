@@ -123,7 +123,7 @@ class StudioScraper(scrapy.Spider):
             studio_class['end_time'] += datetime.timedelta(days=7)
 
     def _bogus_item(self, item):
-        max_style = len('advanced intermediate hip hop with something else mixed in')
+        max_style = len('advanced intermediate hip hop performance industry class with l5 category')
         max_teacher = len('someones longish-teacher and-last-name sub for crazy-long foreign-teacher different-name')
         if len(item['style']) > max_style or len(item['teacher']) > max_teacher:
             logging.error("Item contained too long properties: %s", item)
