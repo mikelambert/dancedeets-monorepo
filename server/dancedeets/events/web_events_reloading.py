@@ -11,7 +11,7 @@ from . import namespaces
 
 urls = {
     namespaces.CHINA_JWJAM_JAM: 'http://jamyo.jamyooo.com/Lite/Jam/jam_detail?id=%s',
-    namespaces.CHINA_JWJAM_COURSE: 'https://jamyo.jamyooo.com/Lite/Course/course_details?course_id=%s',
+    namespaces.CHINA_JWJAM_COURSE: 'http://jamyo.jamyooo.com/Lite/Course/course_details?course_id=%s',
 }
 
 
