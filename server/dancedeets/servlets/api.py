@@ -200,10 +200,7 @@ class SearchHandler(ApiHandler):
 
         geocode = None
         distance = None
-        if not form.location.data:
-            if not form.keywords.data:
-                self.add_error('Please enter a location or keywords')
-        else:
+        if form.location.data:
             try:
                 geocode, distance = search_base.get_geocode_with_distance(form)
             except:
