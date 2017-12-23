@@ -13,6 +13,21 @@ resources:
 manual_scaling:
   instances: 2
 
+readiness_check:
+  path: '/healthzz'
+  check_interval_sec: 5
+  timeout_sec: 4
+  failure_threshold: 2
+  success_threshold: 2
+  app_start_timeout_sec: 300
+
+liveness_check:
+   path: '/healthzz'
+   check_interval_sec: 30
+   timeout_sec: 4
+   failure_threshold: 2
+   success_threshold: 2
+
 default_expiration: 10d
 handlers:
 # Unused graphql:

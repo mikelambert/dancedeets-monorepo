@@ -17,15 +17,17 @@ from dancedeets.users import new_user_email
 from dancedeets.util import fb_events
 from dancedeets.util import mr
 from dancedeets.util import fb_mapreduce
+from dancedeets.util import sqlite_db
 
 
-# This code is used by Lets Encrypt Acme to prove ownership of dancedeets.com
-# We were trying to enable SSL, and while we didn't ultimately succeed,
-# it's probably worth keeping this around for whenever we want to try again.
-@app.route('/.well-known/acme-challenge/J2lIvB957EnuN8U4ynpr7RX_2GbgJ9v66R7k9HEXD-o')
+@app.route('/healthzz')
 class SSL(webapp2.RequestHandler):
     def get(self):
-        self.response.out.write('J2lIvB957EnuN8U4ynpr7RX_2GbgJ9v66R7k9HEXD-o.XQbaOct9vX37AOs7-ADz5xfdu5eOwjUmk3FbCoPpNw8')
+        # Download the necessary files, to avoid serving delays
+        sqlite_db.get_connection('pr_person_city')
+        sqlite_db.get_connection('pr_city_category')
+        sqlite_db.get_connection('cities')
+        self.response.out.write('OK')
 
 
 @app.route('/tools/memory_top_users')
