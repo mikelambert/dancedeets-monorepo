@@ -1,6 +1,6 @@
 #!/bin/bash
 
-cat app.yaml | sed 's/instances: [0-9]*/instances: 2/' > app-devserver.yaml
+cat app.yaml | sed 's/instances: [0-9]*/instances: 2/' | awk 'BEGIN { del=0 } /(liveness_check|readiness_check):/ { del=1 } del<=0 { print } /^$/ { del = 0 }' > app-devserver.yaml
 ENV=""
 if [ "$HOT_SERVER_PORT" != "" ]; then
   echo 'Enabling hot reloader'
