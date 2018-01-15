@@ -29,7 +29,7 @@ class ComeOn5678Scraper(fbitems.FbEventScraper):
         urls = [link.url for link in e.extract_links(response)]
         for url in urls:
             if response.url != url:
-                yield self.addurl(url)
+                yield self.add_url(url)
         if urls:
             qs = urlparse.parse_qs(urlparse.urlparse(response.url).query)
             qs = dict((k, v[0]) for (k, v) in qs.iteritems())
