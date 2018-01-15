@@ -1,7 +1,8 @@
 # -*-*- encoding: utf-8 -*-*-
 
 KOREA_SDK = 'street-dance-korea'
-JAPAN_DD = 'dance-delight'
+JAPAN_DD = 'dance-delight-1'
+JAPAN_DD2 = 'dance-delight-2'
 JAPAN_TDL = 'tokyo-dance-life'
 JAPAN_DEWS = 'dews'
 JAPAN_ETS = 'enter-the-stage'
@@ -28,8 +29,14 @@ _NAMESPACE_LIST = [
     Namespace(
         JAPAN_DD,
         'Dance Delight',
-        'http://www.dancedelight.net/wordpress/?cat=6',
-        lambda x: 'http://www.dancedelight.net/wordpress/?p=%s' % x.namespaced_id,
+        'https://www.dancedelight.net/wordpress/?cat=6',
+        lambda x: 'https://www.dancedelight.net/wordpress/?p=%s' % x.namespaced_id,
+    ),
+    Namespace(
+        JAPAN_DD2,
+        'Dance Delight',
+        'http://www.dancedelight.net/event/',
+        lambda x: 'http://www.dancedelight.net/event/%s' % x.namespaced_id,
     ),
     Namespace(
         JAPAN_TDL,
