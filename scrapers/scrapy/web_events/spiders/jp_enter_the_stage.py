@@ -1,6 +1,7 @@
 # -*-*- encoding: utf-8 -*-*-
 
 import datetime
+import logging
 import re
 
 import scrapy
@@ -46,18 +47,27 @@ class EnterTheStageScraper(items.WebEventScraper):
     namespace = namespaces.JAPAN_ETS
 
     def start_requests(self):
-        yield scrapy.Request('http://et-stage.net/event_list.php')
+        yield scrapy.Request('http://et-stage.net/eventList.php')
 
     def parse(self, response):
-        if 'event_list.php' in response.url:
+        if 'eventList.php' in response.url:
             return self.parseList(response)
         elif '/event/' in response.url:
             return self.parseEvent(response)
 
     def parseList(self, response):
-        urls = response.xpath('//a[@class="block"]/@href').extract()
+        urls = response.css('div.event-list').xpath('./a/@href').extract()
         for url in urls:
             yield scrapy.Request(self.abs_url(response, url))
+
+    def parseDateTimes(self, content_date):
+        if ' ' in content_date:
+            date_string, times_string = content_date.split(' ', 1)
+        else:
+            date_string = content_date
+            times_string = ''
+        date = datetime.datetime.strptime(date_string.strip(), '%Y.%m.%d').date()
+        return jp_spider.parse_date_times(date, times_string.strip())
 
     def parseEvent(self, response):
         def _get(css_id):
@@ -67,23 +77,28 @@ class EnterTheStageScraper(items.WebEventScraper):
         item['country'] = 'JP'
         item['namespace'] = self.namespace
         item['namespaced_id'] = re.search(r'/event/(\w+)/', response.url).group(1)
-        item['name'] = _get('u474-4')
-        image_url = response.xpath('//img[@id="u469_img"]/@src').extract()[0]
-        image_url = self.abs_url(response, image_url)
-        if image_url == 'http://et-stage.net/event_image/no_image_big.jpg':
-            image_url = None
-        item['photo'] = image_url
 
-        # cost = _get('u511-7')
-        # email = _get('u512-4')
+        item['description'] = items.extract_text(response.css('div.eventdetail'))
 
-        item['description'] = _get('u468-156')
-        item['start_time'], item['end_time'] = parse_times(_get('u506-2'))
+        tds = response.css('div.visible-xs table.table td')
+        if len(tds) != 6:
+            logging.error('Problem with unknown %s tds:\n%s', len(tds), '\n'.join(str(x) for x in tds))
 
-        venue = _get('u507-4')
+        item['name'] = items.extract_text(tds[0].xpath('.//text()'))
+        item['start_time'], item['end_time'] = self.parseDateTimes(items.extract_text(tds[1].xpath('.//text()')))
+        venue = items.extract_text(tds[2].xpath('.//text()'))
+        address = items.extract_text(tds[3].xpath('.//text()'))
         if not venue:
             venue = jp_spider.get_venue_from_description(item['description'])
-        jp_addresses = japanese_addresses.find_addresses(_get('u509-11'))
+        jp_addresses = japanese_addresses.find_addresses(address)
         jp_spider.setup_location(venue, jp_addresses, item)
+
+        image_elements = response.xpath("//img[@data-target='#image_Modal']/@src").extract()
+        if image_elements:
+            image_url = image_elements[0]
+            image_url = self.abs_url(response, image_url)
+        else:
+            image_url = None
+        item['photo'] = image_url
 
         yield item

@@ -60,7 +60,7 @@ class DanceDelightScraper(items.WebEventScraper):
         else:
             item['photo'] = None
 
-        item['description'] = items.format_text(response.css('div.tag_preview').extract()[0])
+        item['description'] = items.extract_text(response.css('div.tag_preview'))
 
         jp_addresses = japanese_addresses.find_addresses(item['description'])
         venue = jp_spider.get_venue_from_description(item['description'])
