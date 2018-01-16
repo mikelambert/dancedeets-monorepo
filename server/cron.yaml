@@ -50,6 +50,9 @@ cron:
 - description: scrape all classes and index them
   url: /tasks/crawl_and_index_classes
   schedule: every 6 hours
+- description: scrape all websites for events
+  url: /tasks/web_events/start_spiders
+  schedule: every 12 hours
 - description: calculate periodic statistics and rankings
   url: /tasks/compute_rankings # runs on slow-queue
   schedule: every day 10:00

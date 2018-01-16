@@ -60,7 +60,7 @@ def start_spiders(spiders):
     return job_keys
 
 
-@app.route('/web_events/start_spiders')
+@app.route('/tasks/web_events/start_spiders')
 class MemoryUsers(webapp2.RequestHandler):
     def get(self):
         start_spiders(get_spiders())
