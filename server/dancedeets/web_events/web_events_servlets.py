@@ -2,6 +2,7 @@ import json
 import logging
 from dancedeets import keys
 import urllib
+import scrapinghub
 import webapp2
 
 from dancedeets import app
@@ -29,3 +30,39 @@ class WebMultiUploadHandler(JsonDataHandler):
             add_entities.add_update_web_event(json_body)
 
         self.response.status = 200
+
+
+def get_spiders():
+    return [
+        'EnterTheStage',
+        'Dews',
+        'StreetDanceKorea',
+        'ComeOn5678',
+        'TokyoDanceLife',
+        'BBoyBattles',
+        'DanceDelight',
+    ]
+
+
+def get_shub_project():
+    conn = scrapinghub.Connection(keys.get('scrapinghub_key'))
+    project = scrapinghub.Project(conn, 27474)
+    return project
+
+
+def start_spiders(spiders):
+    project = get_shub_project()
+    job_keys = []
+    for spider in spiders:
+        job_id = project.schedule(spider)
+        job_keys.append(job_id)
+    logging.info("Scheduled jobs: %s", job_keys)
+    return job_keys
+
+
+@app.route('/web_events/start_spiders')
+class MemoryUsers(webapp2.RequestHandler):
+    def get(self):
+        start_spiders(get_spiders())
+
+    post = get
