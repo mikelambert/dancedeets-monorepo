@@ -405,7 +405,7 @@ class _TutorialFilteredLayout extends React.Component<
     if (oldHash !== newHash) {
       const history = createBrowserHistory();
       if (history) {
-        history.replaceState(undefined, '', newHash);
+        history.replace(window.location.pathname, '', newHash);
       } else {
         console.log(
           'Failed to create browser history object, falling back to direct manipulation.'
