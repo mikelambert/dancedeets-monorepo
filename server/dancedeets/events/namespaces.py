@@ -53,7 +53,7 @@ _NAMESPACE_LIST = [
     Namespace(
         JAPAN_ETS,
         'Enter The Stage',
-        'http://et-stage.net/event_list.php',
+        'http://et-stage.net/eventList.php',
         lambda x: 'http://et-stage.net/event/%s/' % x.namespaced_id,
     ),
     Namespace(
