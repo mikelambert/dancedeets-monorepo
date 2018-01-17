@@ -26,5 +26,8 @@
     "eslint-check": "./node_modules/eslint/bin/eslint.js --print-config .eslintrc | node_modules/eslint-config-prettier/bin/cli.js",
     "js-files": "find . \\! -regex '.*node_modules.*' \\! -regex '.*/lib-.*' \\! -regex '.*/dist/.*' \\! -regex '.*/frankenserver/.*' -name '*.js' \\! -path './common/js/languages/data.js' \\! -path './mobile/js/data/localizedCountries.js' \\! -regex '.*/flow-typed/.*'",
     "prettier": "npm run --silent js-files | xargs ./node_modules/prettier/bin/prettier.js --single-quote  --trailing-comma es5 --write"
+  },
+  "dependencies": {
+    "babel-eslint": "^8.2.1"
   }
 }
