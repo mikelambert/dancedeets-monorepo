@@ -193,6 +193,7 @@ configurations.all {
 }
 
 dependencies {
+    compile project(':react-native-version-number')
     compile(project(':react-native-firebase')) {
         transitive = false
     }

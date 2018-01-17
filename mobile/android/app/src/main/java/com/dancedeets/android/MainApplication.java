@@ -16,6 +16,7 @@ import com.facebook.CallbackManager;
 import com.facebook.FacebookSdk;
 import com.facebook.appevents.AppEventsLogger;
 import com.facebook.react.ReactApplication;
+import com.apsl.versionnumber.RNVersionNumberPackage;
 import io.invertase.firebase.RNFirebasePackage;
 import com.brentvatne.react.ReactVideoPackage;
 import io.sentry.RNSentryPackage;
@@ -65,6 +66,7 @@ class MyReactNativeHost extends ReactNativeHost implements ReactInstanceHolder {
   protected List<ReactPackage> getPackages() {
     return Arrays.<ReactPackage>asList(
       new MainReactPackage(),
+            new RNVersionNumberPackage(),
             new RNFirebasePackage(),
             new RNFirebaseAnalyticsPackage(),
             new RNFirebaseRemoteConfigPackage(),

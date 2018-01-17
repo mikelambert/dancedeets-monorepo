@@ -67,6 +67,7 @@
 		E8D9C69005EB427BBC2011B4 /* libRCTVideo.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 87A4003EC85F41F8BD980EC2 /* libRCTVideo.a */; };
 		F40FFD9BFCDC46148C69F041 /* Foundation.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F348A7FE1F3948AA99F95376 /* Foundation.ttf */; };
 		FBBD7E3449F246CAAF149818 /* libBVLinearGradient.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8153A686C12B4C4581BC7BC5 /* libBVLinearGradient.a */; };
+		A414B00BEAA849B8A4406693 /* libRNVersionNumber.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 52FBDDD07DCA42CB9E87B39A /* libRNVersionNumber.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -589,6 +590,8 @@
 		F33F4F5DCEB28B5ACFB6FDF7 /* Pods-DanceDeets.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-DanceDeets.debug.xcconfig"; path = "Pods/Target Support Files/Pods-DanceDeets/Pods-DanceDeets.debug.xcconfig"; sourceTree = "<group>"; };
 		F348A7FE1F3948AA99F95376 /* Foundation.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Foundation.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Foundation.ttf"; sourceTree = "<group>"; };
 		FE3208D676EE4DD8846E3AEC /* FontAwesome.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = FontAwesome.ttf; path = "../node_modules/react-native-vector-icons/Fonts/FontAwesome.ttf"; sourceTree = "<group>"; };
+		20D028D5D8274BC7B8546D26 /* RNVersionNumber.xcodeproj */ = {isa = PBXFileReference; name = "RNVersionNumber.xcodeproj"; path = "../node_modules/react-native-version-number/ios/RNVersionNumber.xcodeproj"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = wrapper.pb-project; explicitFileType = undefined; includeInIndex = 0; };
+		52FBDDD07DCA42CB9E87B39A /* libRNVersionNumber.a */ = {isa = PBXFileReference; name = "libRNVersionNumber.a"; path = "libRNVersionNumber.a"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = archive.ar; explicitFileType = undefined; includeInIndex = 0; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -631,6 +634,7 @@
 				DC71F25CC3D145BFAD4B0917 /* libRNSentry.a in Frameworks */,
 				E8D9C69005EB427BBC2011B4 /* libRCTVideo.a in Frameworks */,
 				60D76B9B951C4382903CBF3E /* libRNPhotoView.a in Frameworks */,
+				A414B00BEAA849B8A4406693 /* libRNVersionNumber.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1081,6 +1085,7 @@
 				2A5AE210282E45198BA11E12 /* RCTVideo.xcodeproj */,
 				B3A618FFFC3F44E9AE554C70 /* AirMaps.xcodeproj */,
 				B0719449F9244F778251EAB5 /* RNPhotoView.xcodeproj */,
+				20D028D5D8274BC7B8546D26 /* RNVersionNumber.xcodeproj */,
 			);
 			name = Libraries;
 			sourceTree = "<group>";
@@ -2090,11 +2095,13 @@
 					"$(SRCROOT)/../node_modules/react-native-photo-view/ios/**",
 					"$(SRCROOT)/../node_modules/react-native-maps/lib/ios/**",
 					"$(SRCROOT)/../node_modules/react-native-photo-view/ios/**",
+					"$(SRCROOT)/../node_modules/react-native-version-number/ios",
 				);
 				INFOPLIST_FILE = DanceDeets/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
+					"\"$(SRCROOT)/DanceDeets Debug\"",
 				);
 				OTHER_LDFLAGS = (
 					"-ObjC",
@@ -2148,6 +2155,7 @@
 					"$(SRCROOT)/../node_modules/react-native-photo-view/ios/**",
 					"$(SRCROOT)/../node_modules/react-native-maps/lib/ios/**",
 					"$(SRCROOT)/../node_modules/react-native-photo-view/ios/**",
+					"$(SRCROOT)/../node_modules/react-native-version-number/ios",
 				);
 				INFOPLIST_FILE = DanceDeets/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -2236,6 +2244,7 @@
 					"$(SRCROOT)/../node_modules/react-native-photo-view/ios/**",
 					"$(SRCROOT)/../node_modules/react-native-maps/lib/ios/**",
 					"$(SRCROOT)/../node_modules/react-native-photo-view/ios/**",
+					"$(SRCROOT)/../node_modules/react-native-version-number/ios",
 				);
 				INFOPLIST_FILE = "DanceDeets-tvOS/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -2288,6 +2297,7 @@
 					"$(SRCROOT)/../node_modules/react-native-photo-view/ios/**",
 					"$(SRCROOT)/../node_modules/react-native-maps/lib/ios/**",
 					"$(SRCROOT)/../node_modules/react-native-photo-view/ios/**",
+					"$(SRCROOT)/../node_modules/react-native-version-number/ios",
 				);
 				INFOPLIST_FILE = "DanceDeets-tvOS/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
