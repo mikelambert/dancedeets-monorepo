@@ -79,7 +79,7 @@ def eventually_publish_city_key(city_key):
 
 
 def _sanitize(x):
-    return re.sub(r'[^a-zA-Z0-9_-]', '-', x)
+    return re.sub(r'[^a-zA-Z0-9_-]', '-', x.replace(':', '-colon-'))
 
 
 def _get_type_and_data_names(data):

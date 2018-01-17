@@ -1,7 +1,8 @@
 # -*-*- encoding: utf-8 -*-*-
 
 KOREA_SDK = 'street-dance-korea'
-JAPAN_DD = 'dance-delight-1'
+JAPAN_DD = 'dance-delight'
+JAPAN_DD1 = 'dance-delight-1'
 JAPAN_DD2 = 'dance-delight-2'
 JAPAN_TDL = 'tokyo-dance-life'
 JAPAN_DEWS = 'dews'
@@ -28,6 +29,12 @@ _NAMESPACE_LIST = [
     ),
     Namespace(
         JAPAN_DD,
+        'Dance Delight',
+        'https://www.dancedelight.net/wordpress/?cat=6',
+        lambda x: 'https://www.dancedelight.net/wordpress/?p=%s' % x.namespaced_id,
+    ),
+    Namespace(
+        JAPAN_DD1,
         'Dance Delight',
         'https://www.dancedelight.net/wordpress/?cat=6',
         lambda x: 'https://www.dancedelight.net/wordpress/?p=%s' % x.namespaced_id,
@@ -78,12 +85,5 @@ _NAMESPACE_LIST = [
         lambda x: 'http://jwjam.com/Jwjam/Jam/jam_list',
     ),
 ]
-
-# Ensure our namespaces don't conflict with each other.
-# This is especially important when we have to remove the ':' in our taskqueue task names.
-for a in _NAMESPACE_LIST:
-    for b in _NAMESPACE_LIST:
-        if a != b and a.short_name.startswith(b.short_name):
-            raise ValueError("Namespaces need different prefixes: %r, %r", a.short_name, b.short_name)
 
 NAMESPACES = dict((x.short_name, x) for x in _NAMESPACE_LIST)
