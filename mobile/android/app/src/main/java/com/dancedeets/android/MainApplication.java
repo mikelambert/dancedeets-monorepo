@@ -29,13 +29,11 @@ import com.facebook.soloader.SoLoader;
 import com.google.firebase.crash.FirebaseCrash;
 import com.higo.zhangyp.segmented.AndroidSegmentedPackage;
 import com.inprogress.reactnativeyoutube.ReactNativeYouTube;
-import com.joshblour.reactnativepermissions.ReactNativePermissionsPackage;
 import com.kevinejohn.RNMixpanel.RNMixpanel;
 import com.microsoft.codepush.react.CodePush;
 import com.microsoft.codepush.react.ReactInstanceHolder;
 import com.reactnative.photoview.PhotoViewPackage;
 import com.smixx.fabric.FabricPackage;
-import com.xgfe.reactnativeenv.RCTNativeEnvPackage;
 
 import org.jall.reactnative.firebase.FirebasePackage;
 import org.jall.reactnative.googleapiavailability.GoogleApiAvailabilityPackage;
@@ -79,7 +77,6 @@ class MyReactNativeHost extends ReactNativeHost implements ReactInstanceHolder {
       new GoogleApiAvailabilityPackage(),
       new ReactNativePushNotificationPackage(),
       new PhotoViewPackage(),
-      new ReactNativePermissionsPackage(),
       new FirebasePackage(),
       new RCTNativeEnvPackage(BuildConfig.class),
       new RCTLocalePackage(),

@@ -107,7 +107,6 @@ def enableProguardInReleaseBuilds = false
 
 android {
     compileSdkVersion 25
-    buildToolsVersion "25.0.3"
 
     defaultConfig {
         applicationId "com.dancedeets.android"
@@ -206,8 +205,6 @@ dependencies {
     compile project(':react-native-google-api-availability')
     compile project(':react-native-push-notification')
     compile project(':react-native-photo-view')
-    compile project(':react-native-permissions')
-    compile project(':react-native-native-env')
     compile project(':react-native-locale')
     compile project(':react-native-code-push')
     compile project(':react-native-share')

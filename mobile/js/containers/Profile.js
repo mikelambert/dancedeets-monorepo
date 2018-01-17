@@ -17,7 +17,7 @@ import { connect } from 'react-redux';
 import { ShareDialog, MessageDialog } from 'react-native-fbsdk';
 import Share from 'react-native-share';
 import { injectIntl, intlShape, defineMessages } from 'react-intl';
-import NativeEnv from 'react-native-native-env';
+import VersionNumber from 'react-native-version-number';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { logOutWithPrompt, loginButtonPressed } from '../actions';
 import { Button, Card, Heading1, HorizontalView, normalize, Text } from '../ui';
@@ -298,7 +298,7 @@ class HorizontalRule extends React.Component<{}> {
 
 export function getVersionTitle(intl: intlShape) {
   return intl.formatMessage(messages.credits, {
-    version: `v${NativeEnv.get('VERSION_NAME')}`,
+    version: `v${VersionNumber.appVersion}`,
   });
 }
 
