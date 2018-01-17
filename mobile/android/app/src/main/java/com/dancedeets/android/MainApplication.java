@@ -18,6 +18,9 @@ import com.facebook.appevents.AppEventsLogger;
 import com.facebook.react.ReactApplication;
 import com.apsl.versionnumber.RNVersionNumberPackage;
 import io.invertase.firebase.RNFirebasePackage;
+import io.invertase.firebase.analytics.RNFirebaseAnalyticsPackage;
+import io.invertase.firebase.config.RNFirebaseRemoteConfigPackage;
+import io.invertase.firebase.database.RNFirebaseDatabasePackage;
 import com.brentvatne.react.ReactVideoPackage;
 import io.sentry.RNSentryPackage;
 import com.oblador.vectoricons.VectorIconsPackage;
@@ -36,7 +39,6 @@ import com.microsoft.codepush.react.ReactInstanceHolder;
 import com.reactnative.photoview.PhotoViewPackage;
 import com.smixx.fabric.FabricPackage;
 
-import org.jall.reactnative.firebase.FirebasePackage;
 import org.jall.reactnative.googleapiavailability.GoogleApiAvailabilityPackage;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -79,8 +81,6 @@ class MyReactNativeHost extends ReactNativeHost implements ReactInstanceHolder {
       new GoogleApiAvailabilityPackage(),
       new ReactNativePushNotificationPackage(),
       new PhotoViewPackage(),
-      new FirebasePackage(),
-      new RCTNativeEnvPackage(BuildConfig.class),
       new RCTLocalePackage(),
       new CodePush(BuildConfig.CODEPUSH_KEY, getApplication(), BuildConfig.DEBUG),
       new RNSharePackage(),

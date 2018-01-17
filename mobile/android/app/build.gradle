@@ -106,7 +106,7 @@ def enableSeparateBuildPerCPUArchitecture = false
 def enableProguardInReleaseBuilds = false
 
 android {
-    compileSdkVersion 25
+    compileSdkVersion 26
 
     defaultConfig {
         applicationId "com.dancedeets.android"
@@ -188,7 +188,7 @@ configurations.all {
         force 'com.google.firebase:firebase-database:11.6.+'
         force 'com.google.firebase:firebase-storage:11.6.+'
         force 'com.google.firebase:firebase-messaging:11.0.+'
-        force 'com.android.support:appcompat-v7:23.+'
+        force 'com.android.support:appcompat-v7:26.+'
     }
 }
 
@@ -226,8 +226,7 @@ dependencies {
     compile fileTree(dir: "libs", include: ["*.jar"])
 
     // We need this for multidex support, or it may break crash reporting on samsung devices
-    compile 'com.android.support:multidex:'
-
+    compile 'com.android.support:multidex:1.0.0'
 
     compile 'com.google.firebase:firebase-core:11.0.+'
     compile 'com.google.firebase:firebase-config:11.0.+'
