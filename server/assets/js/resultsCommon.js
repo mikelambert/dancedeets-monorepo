@@ -24,6 +24,7 @@ type Query = {
   start: string,
   end: string,
   deb?: string,
+  min_worth?: number,
 };
 
 class _DatePicker extends React.Component<
@@ -708,10 +709,15 @@ export const SearchBox = injectIntl(_SearchBox);
 
 export function canonicalizeQuery(query: Query) {
   const newQuery = {};
+  console.log('old query', query);
   ['location', 'keywords', 'start', 'end'].forEach(key => {
     if (query[key] && query[key].length) {
       newQuery[key] = query[key];
     }
   });
+  if (query.min_worth) {
+    newQuery.min_worth = query.min_worth;
+  }
+  console.log('canonicalized query', newQuery);
   return newQuery;
 }
