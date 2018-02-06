@@ -10,6 +10,9 @@ from . import users
 
 @app.route('/user/unsubscribe')
 class UserUnsubscribeHandler(base_servlet.BaseRequestHandler):
+    def requires_login(self):
+        return False
+
     def get(self):
         self.finish_preload()
         #email = self.request.get('email')
