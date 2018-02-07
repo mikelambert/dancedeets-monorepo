@@ -37,8 +37,8 @@ class UserUnsubscribeHandler(base_servlet.BaseRequestHandler):
                 user.put()
         if promoter:
             event_emails.unsubscribe_email(email)
-        self.user.add_message("Successfully unsubscribed %s!" % email)
         if user:
+            self.user.add_message("Successfully unsubscribed %s!" % email)
             self.redirect('/user/edit')
         else:
             self.redirect('/')
