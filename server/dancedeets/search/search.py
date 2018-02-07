@@ -244,6 +244,8 @@ class EventsIndex(index.BaseIndex):
 
     @classmethod
     def _create_doc_event(cls, db_event):
+        if db_event.excluded_event:
+            return None
         if not db_event.has_content():
             return None
         if db_event.is_canceled():

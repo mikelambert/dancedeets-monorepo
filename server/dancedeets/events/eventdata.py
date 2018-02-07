@@ -71,6 +71,9 @@ class DBEvent(ndb.Model):
         else:
             raise ValueError("Not an FB Event: %s" % self.id)
 
+    # Use this for now to separate our shown-events vs non-shown-events
+    excluded_event = ndb.BooleanProperty()
+
     # Fields unique to Facebook:
     owner_fb_uid = ndb.StringProperty()
     admin_fb_uids = ndb.StringProperty(repeated=True)

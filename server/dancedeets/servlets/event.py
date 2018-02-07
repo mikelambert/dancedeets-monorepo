@@ -107,6 +107,10 @@ class ShowEventHandler(base_servlet.BaseRequestHandler):
         db_event = eventdata.DBEvent.get_by_id(event_id)
         if not db_event:
             self.abort(404)
+            return
+        if db_event.excluded_event:
+            self.abort(404)
+            return
         if not db_event.has_content():
             self.response.out.write('This event was %s.' % db_event.empty_reason)
             return
@@ -422,6 +426,7 @@ class AdminEditHandler(base_servlet.BaseRequestHandler):
         event_id = self.request.get('event_id')
         remapped_address = self.request.get('remapped_address')
         override_address = self.request.get('override_address')
+        excluded_event = bool(self.request.get('excluded_event'))
 
         if self.request.get('delete'):
             e = eventdata.DBEvent.get_by_id(event_id)
@@ -447,7 +452,8 @@ class AdminEditHandler(base_servlet.BaseRequestHandler):
                 creating_uid=self.user.fb_uid,
                 remapped_address=remapped_address,
                 override_address=override_address,
-                creating_method=eventdata.CM_ADMIN
+                creating_method=eventdata.CM_ADMIN,
+                excluded_event=excluded_event
             )
             self.response.out.write("<title>Added!</title>Added!")
         else:
@@ -458,7 +464,8 @@ class AdminEditHandler(base_servlet.BaseRequestHandler):
                     creating_uid=self.user.fb_uid,
                     remapped_address=remapped_address,
                     override_address=override_address,
-                    creating_method=eventdata.CM_ADMIN
+                    creating_method=eventdata.CM_ADMIN,
+                    excluded_event=excluded_event
                 )
             except Exception as e:
                 logging.exception('Error adding event')
@@ -587,8 +594,9 @@ class AdminPotentialEventViewHandler(base_servlet.BaseRequestHandler):
 
         number_of_events = int(self.request.get('number_of_events', '20'))
         unseen_potential_events = list(
-            potential_events.PotentialEvent.
-            gql("WHERE looked_at = NULL AND match_score > 0 %s ORDER BY match_score DESC LIMIT %s" % (past_event_query, number_of_events))
+            potential_events.PotentialEvent.gql(
+                "WHERE looked_at = NULL AND match_score > 0 %s ORDER BY match_score DESC LIMIT %s" % (past_event_query, number_of_events)
+            )
         )
         if len(unseen_potential_events) < number_of_events:
             unseen_potential_events += list(

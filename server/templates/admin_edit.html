@@ -73,6 +73,16 @@ Edit Event
           {{ attendee_distance_info }}
         </td></tr>
 
+        <tr><td>
+          Excluded Event:
+        </td><td>
+          <input type="checkbox" name="excluded_event"
+          {% if event and event.excluded_event %}
+            checked
+          {% endif %}
+          />
+        </td></tr>
+
       </table>
       <div>
       <table><tr><td>Description:</td><td><div style="height: 25px" id="google_translate_element"></div></td></tr></table>

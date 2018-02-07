@@ -27,7 +27,8 @@ def add_update_web_event(json_body, allow_posting=True):
     event_updates.update_and_save_web_events([(e, json_body)])
 
     post_pubsub = newly_created and allow_posting
-    deferred.defer(after_add_event, e.id, None, newly_created, post_pubsub)
+    send_email = newly_created
+    deferred.defer(after_add_event, e.id, None, send_email, post_pubsub)
 
 
 def add_update_fb_event(
@@ -38,7 +39,8 @@ def add_update_fb_event(
     remapped_address=None,
     override_address=None,
     creating_method=None,
-    allow_posting=True
+    allow_posting=True,
+    excluded_event=False,
 ):
     if not fb_events.is_public_ish(fb_event):
         raise AddEventException('Cannot add secret/closed events to dancedeets!')
@@ -72,6 +74,8 @@ def add_update_fb_event(
             visible_to_fb_uids = []
     e.visible_to_fb_uids = visible_to_fb_uids
 
+    e.excluded_event = excluded_event
+
     try:
         fb_event_attending_maybe = fbl.get(fb_api.LookupEventAttendingMaybe, event_id)
     except fb_api.NoFetchedDataException as error:
@@ -81,20 +85,21 @@ def add_update_fb_event(
     # Updates and saves the event
     event_updates.update_and_save_fb_events([(e, fb_event, fb_event_attending_maybe)])
 
-    post_pubsub = newly_created and allow_posting
+    post_pubsub = newly_created and allow_posting and not e.excluded_event
 
     fbl.clear_local_cache()
-    deferred.defer(after_add_event, e.id, fbl, newly_created, post_pubsub)
+    send_email = newly_created and not e.excluded_event
+    deferred.defer(after_add_event, e.id, fbl, send_email, post_pubsub)
     return e
 
 
-def after_add_event(event_id, fbl, newly_created, post_pubsub):
+def after_add_event(event_id, fbl, send_email, post_pubsub):
     logging.info("New event, publishing to twitter/facebook")
     if post_pubsub:
         pubsub.eventually_publish_event(event_id)
     if fbl:
         crawl_event_source(fbl, event_id)
-    if newly_created and not runtime.is_local_appengine():
+    if send_email and not runtime.is_local_appengine():
         # This has to occur *after* the event sources have been crawled (and the sources' emails are saved)
         event_emails_sending.send_event_add_emails(event_id, should_send=True)
 
