@@ -41,6 +41,26 @@ class MemoryUsers(webapp2.RequestHandler):
             self.response.out.write(data + '\n')
 
 
+def resave_object(obj):
+    from dancedeets import event_types
+    obj.verticals = [event_types.VERTICALS.STREET]
+    yield op.db.Put(obj)
+
+
+@app.route('/tools/fixup')
+class FixupObjects(webapp2.RequestHandler):
+    def get(self):
+        control.start_map(
+            name='Fixup Events',
+            reader_spec='mapreduce.input_readers.DatastoreInputReader',
+            handler_spec='dancedeets.servlets.tools.resave_object',
+            mapper_parameters={
+                'entity_kind': 'dancedeets.events.eventdata.DBEvent',
+            },
+            shard_count=16,
+        )
+
+
 @app.route('/tools/email/add_event')
 class DisplayAddEventEmailHandler(base_servlet.EventIdOperationHandler):
     def event_id_operation(self, fbl, event_ids):
