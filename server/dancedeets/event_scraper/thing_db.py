@@ -157,8 +157,7 @@ def get_lookup_for_graph_type(graph_type):
         raise ValueError('Unknown graph type %s' % graph_type)
 
 
-#TODO(verticals): mark these sources as...excluded_sources, if we are creating them off excluded_events?
-def create_source_from_id(fbl, source_id):
+def create_source_from_id(fbl, source_id, verticals=None):
     logging.info('create_source_from_id: %s', source_id)
     if not source_id:
         return None
@@ -179,6 +178,7 @@ def create_source_from_id(fbl, source_id):
         source = Source.get_by_key_name(source_id) or Source(key_name=source_id, street_dance_related=False)
         logging.info('Getting source for id %s: %s', source.graph_id, source.name)
         new_source = (not source.creation_time)
+        source.verticals = verticals or []
         source.compute_derived_properties(fb_source_common, fb_source_data)
         source.put()
         if new_source:
@@ -191,10 +191,10 @@ def create_source_from_id(fbl, source_id):
 
 def create_sources_from_event(fbl, db_event):
     logging.info('create_sources_from_event: %s', db_event.id)
-    create_source_from_id(fbl, db_event.owner_fb_uid)
+    create_source_from_id(fbl, db_event.owner_fb_uid, verticals=db_event.verticals)
     for admin in db_event.admins:
         if admin['id'] != db_event.owner_fb_uid:
-            create_source_from_id(fbl, admin['id'])
+            create_source_from_id(fbl, admin['id'], verticals=db_event.verticals)
 
 
 map_create_sources_from_event = fb_mapreduce.mr_wrap(create_sources_from_event)

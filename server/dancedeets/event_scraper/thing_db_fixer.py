@@ -27,6 +27,7 @@ def function_migrate_thing_to_new_id(fbapi_obj, old_source_id, new_source_id):
     new_source.creating_fb_uid = new_source.creating_fb_uid or old_source.creating_fb_uid
     new_source.creation_time = new_source.creation_time or old_source.creation_time
     new_source.last_scrape_time = new_source.last_scrape_time or old_source.last_scrape_time
+    new_source.verticals = new_source.verticals or old_source.verticals
 
     new_source.num_all_events = (new_source.num_all_events or 0) + (old_source.num_all_events or 0)
     new_source.num_potential_events = (new_source.num_potential_events or 0) + (old_source.num_potential_events or 0)
