@@ -4,10 +4,10 @@ SouthAfrica = {
 
 ONEBOX_DATA = {
     (40.7029741, -74.2598655): {
-        'NYC Wiki Info': 'http://dance-wiki.appspot.com/New_York',
+        'NYC Wiki Info': 'http://wiki.dancedeets.com/New_York',
     },
     (34.0201812, -118.6919122): {
-        'Los Angeles Wiki Info': 'http://dance-wiki.appspot.com/Los_Angeles',
+        'Los Angeles Wiki Info': 'http://wiki.dancedeets.com/Los_Angeles',
     },
     (1.3147298, 103.7769793): {
         'Singapore Blog: Dance Meets': 'http://www.dancemeets.com/',
