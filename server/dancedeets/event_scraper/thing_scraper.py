@@ -216,7 +216,7 @@ def build_discovered_from_feed(source, feed_data, post_high_watermark):
                 if m:
                     eid = m.group(1)
             if eid:
-                extra_source_id = post['from']['id']
+                extra_source_id = post.get('from', {}).get('id')
                 if source and source.graph_id == extra_source_id:
                     extra_source_id = None
                 updated_time = dateparser.parse(post['updated_time'])
