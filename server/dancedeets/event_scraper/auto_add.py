@@ -62,6 +62,8 @@ def really_classify_events(fbl, new_pe_list, new_fb_list, allow_posting=True):
     for pe, fb_event, fb_event_attending_maybe in zip(new_pe_list, new_fb_list, fb_attending_maybe_list):
         event_id = fb_event['info']['id']
         logging.info('Is Good Event By Text: %s: Checking...', event_id)
+        # TODO(verticals): Run multiple classifiers for multiple styles
+        # And then classify it appropriately
         classified_event = event_classifier.get_classified_event(fb_event)
         auto_add_result = event_auto_classifier.is_auto_add_event(classified_event)
         logging.info('Is Good Event By Text: %s: %s', event_id, auto_add_result)

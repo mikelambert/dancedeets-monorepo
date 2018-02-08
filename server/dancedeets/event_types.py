@@ -1,3 +1,12 @@
+class Verticals(object):
+    pass
+
+
+VERTICALS = Verticals()
+VERTICALS.STREET = 'STREET'
+VERTICALS.LATIN = 'LATIN'
+
+
 class EventType(object):
     def __init__(self, index_name, public_name, public_name_plural):
         self.index_name = index_name

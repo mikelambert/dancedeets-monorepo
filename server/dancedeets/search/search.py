@@ -9,6 +9,7 @@ import time
 from google.appengine.ext import ndb
 from google.appengine.api import search
 
+from dancedeets import event_types
 from dancedeets.events import eventdata
 from dancedeets.util import dates
 from . import index
@@ -244,7 +245,7 @@ class EventsIndex(index.BaseIndex):
 
     @classmethod
     def _create_doc_event(cls, db_event):
-        if db_event.excluded_event:
+        if event_types.VERTICALS.STREET not in db_event.verticals:
             return None
         if not db_event.has_content():
             return None

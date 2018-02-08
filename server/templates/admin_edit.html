@@ -74,13 +74,9 @@ Edit Event
         </td></tr>
 
         <tr><td>
-          Excluded Event:
+          Verticals (comma-sep):
         </td><td>
-          <input type="checkbox" name="excluded_event"
-          {% if event and event.excluded_event %}
-            checked
-          {% endif %}
-          />
+          <input type="text" name="verticals" value="{{ event.verticals }}" />
         </td></tr>
 
       </table>

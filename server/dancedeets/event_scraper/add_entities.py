@@ -1,5 +1,6 @@
 import logging
 
+from dacendeets import event_types
 from dancedeets import fb_api
 from dancedeets.events import eventdata
 from dancedeets.events import event_emails_sending
@@ -40,7 +41,7 @@ def add_update_fb_event(
     override_address=None,
     creating_method=None,
     allow_posting=True,
-    excluded_event=False,
+    verticals=None,
 ):
     if not fb_events.is_public_ish(fb_event):
         raise AddEventException('Cannot add secret/closed events to dancedeets!')
@@ -74,7 +75,7 @@ def add_update_fb_event(
             visible_to_fb_uids = []
     e.visible_to_fb_uids = visible_to_fb_uids
 
-    e.excluded_event = excluded_event
+    e.verticals = verticals or []
 
     try:
         fb_event_attending_maybe = fbl.get(fb_api.LookupEventAttendingMaybe, event_id)
@@ -85,10 +86,10 @@ def add_update_fb_event(
     # Updates and saves the event
     event_updates.update_and_save_fb_events([(e, fb_event, fb_event_attending_maybe)])
 
-    post_pubsub = newly_created and allow_posting and not e.excluded_event
+    post_pubsub = newly_created and allow_posting and event_types.VERTICALS.STREET in e.verticals
 
     fbl.clear_local_cache()
-    send_email = newly_created and not e.excluded_event
+    send_email = newly_created and event_types.VERTICALS.STREET in verticals
     deferred.defer(after_add_event, e.id, fbl, send_email, post_pubsub)
     return e
 

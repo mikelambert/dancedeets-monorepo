@@ -157,6 +157,7 @@ def get_lookup_for_graph_type(graph_type):
         raise ValueError('Unknown graph type %s' % graph_type)
 
 
+#TODO(verticals): mark these sources as...excluded_sources, if we are creating them off excluded_events?
 def create_source_from_id(fbl, source_id):
     logging.info('create_source_from_id: %s', source_id)
     if not source_id:

@@ -11,6 +11,7 @@ import urllib
 
 from dancedeets import app
 from dancedeets import base_servlet
+from dancedeets import event_types
 from dancedeets.event_attendees import event_attendee_classifier
 from dancedeets.event_attendees import person_city
 from dancedeets.event_scraper import add_entities
@@ -108,7 +109,7 @@ class ShowEventHandler(base_servlet.BaseRequestHandler):
         if not db_event:
             self.abort(404)
             return
-        if db_event.excluded_event:
+        if event_types.VERTICALS.STREET not in db_event.verticals:
             self.abort(404)
             return
         if not db_event.has_content():
@@ -426,7 +427,7 @@ class AdminEditHandler(base_servlet.BaseRequestHandler):
         event_id = self.request.get('event_id')
         remapped_address = self.request.get('remapped_address')
         override_address = self.request.get('override_address')
-        excluded_event = bool(self.request.get('excluded_event'))
+        verticals = self.request.get('verticals').split(',')
 
         if self.request.get('delete'):
             e = eventdata.DBEvent.get_by_id(event_id)
@@ -453,7 +454,7 @@ class AdminEditHandler(base_servlet.BaseRequestHandler):
                 remapped_address=remapped_address,
                 override_address=override_address,
                 creating_method=eventdata.CM_ADMIN,
-                excluded_event=excluded_event
+                verticals=verticals
             )
             self.response.out.write("<title>Added!</title>Added!")
         else:
@@ -465,7 +466,7 @@ class AdminEditHandler(base_servlet.BaseRequestHandler):
                     remapped_address=remapped_address,
                     override_address=override_address,
                     creating_method=eventdata.CM_ADMIN,
-                    excluded_event=excluded_event
+                    verticals=verticals
                 )
             except Exception as e:
                 logging.exception('Error adding event')
