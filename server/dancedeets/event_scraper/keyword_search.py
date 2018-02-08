@@ -38,8 +38,8 @@ def two(w):
     return keywords
 
 
-def search_fb(fbl):
-    obvious_keywords = ([
+obvious_style_keywords = {
+    'street': ([
         'bboys',
         'bboying',
         'bgirl',
@@ -93,8 +93,30 @@ def search_fb(fbl):
         'cypher',
         'cypher battle',
         'cypher jam',
-    ] + two('electro dance') + two('lite feet'))
-    too_popular_keywords = ([
+    ] + two('electro dance') + two('lite feet')),
+    'latin': [
+        'ladies styling',
+        'salsa on1',
+        'salsa on2',
+        'cuban salsa',
+        'salsa cubaine',
+        'salsa styling',
+        'salsa shine',
+        'salsa dance',
+        u'サルサ',
+        u'サンバ',
+        u'バチャータ',
+    ]
+}
+
+#        'jive',
+#        'foxtrot',
+#        'waltz',
+#        'tango',
+#        'quickstep',
+
+too_popular_style_keywords = {
+    'street': ([
         'bboy',
         'breaking',
         'breakdance',
@@ -119,7 +141,25 @@ def search_fb(fbl):
         'vogue',
         'all styles',
         'freestyle',
-    ] + two('hip hop') + two('street dance') + two('new style') + two('all styles'))
+    ] + two('hip hop') + two('street dance') + two('new style') + two('all styles')),
+    'latin': [
+        'chacha',
+        'samba',
+        'bachata',
+        'rumba',
+        'merengue',
+        'salsa',
+        'afro-cuba',
+        'afro-cuban',
+        'afrocuban',
+        'salsa dance',
+    ]
+}
+
+
+def search_fb(fbl, style):
+    obvious_keywords = obvious_style_keywords[style]
+    too_popular_keywords = too_popular_style_keywords[style]
     event_types = [
         'session',
         'workshop',
@@ -180,4 +220,5 @@ def search_fb(fbl):
 @app.route('/tools/search_fb_for_events')
 class ByBaseHandler(base_servlet.BaseTaskFacebookRequestHandler):
     def get(self):
-        search_fb(self.fbl)
+        style = self.request.get('style', 'street')  # default to street
+        search_fb(self.fbl, style)
