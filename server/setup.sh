@@ -94,6 +94,8 @@ if [ "$TRAVIS" != true ]; then
   # Our replacement dev_appserver
   if [ ! -e $BASE_DIR/frankenserver ]; then
     git clone https://github.com/Khan/frankenserver $BASE_DIR/frankenserver
+    cd $BASE_DIR/frankenserver
+    git checkout 1.9.36
   fi
   # Install the modules that make frankenserver amazing
   cd $BASE_DIR/frankenserver && $PIP install $USER_FLAG -r requirements.txt
