@@ -86,10 +86,10 @@ def add_update_fb_event(
     # Updates and saves the event
     event_updates.update_and_save_fb_events([(e, fb_event, fb_event_attending_maybe)])
 
-    post_pubsub = newly_created and allow_posting and event_types.VERTICALS.STREET in e.verticals
+    post_pubsub = newly_created and allow_posting and event_types.should_show(e)
 
     fbl.clear_local_cache()
-    send_email = newly_created and event_types.VERTICALS.STREET in verticals
+    send_email = newly_created and event_types.should_show(e)
     deferred.defer(after_add_event, e.id, fbl, send_email, post_pubsub)
     return e
 

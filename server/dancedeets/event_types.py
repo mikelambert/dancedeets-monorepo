@@ -7,6 +7,11 @@ VERTICALS.STREET = 'STREET'
 VERTICALS.LATIN = 'LATIN'
 
 
+def should_show(e):
+    print e.verticals
+    return not e.verticals or VERTICALS.STREET in e.verticals
+
+
 class EventType(object):
     def __init__(self, index_name, public_name, public_name_plural):
         self.index_name = index_name

@@ -109,7 +109,7 @@ class ShowEventHandler(base_servlet.BaseRequestHandler):
         if not db_event:
             self.abort(404)
             return
-        if event_types.VERTICALS.STREET not in db_event.verticals:
+        if not event_types.should_show(db_event):
             self.abort(404)
             return
         if not db_event.has_content():
@@ -427,7 +427,7 @@ class AdminEditHandler(base_servlet.BaseRequestHandler):
         event_id = self.request.get('event_id')
         remapped_address = self.request.get('remapped_address')
         override_address = self.request.get('override_address')
-        verticals = self.request.get('verticals').split(',')
+        verticals = [x for x in self.request.get('verticals').split(',') if x]
 
         if self.request.get('delete'):
             e = eventdata.DBEvent.get_by_id(event_id)

@@ -245,7 +245,7 @@ class EventsIndex(index.BaseIndex):
 
     @classmethod
     def _create_doc_event(cls, db_event):
-        if event_types.VERTICALS.STREET not in db_event.verticals:
+        if not event_types.should_show(db_event):
             return None
         if not db_event.has_content():
             return None
