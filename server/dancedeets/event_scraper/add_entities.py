@@ -1,6 +1,6 @@
 import logging
 
-from dacendeets import event_types
+from dancedeets import event_types
 from dancedeets import fb_api
 from dancedeets.events import eventdata
 from dancedeets.events import event_emails_sending
