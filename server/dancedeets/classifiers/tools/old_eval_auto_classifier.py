@@ -130,7 +130,8 @@ def basic_match(fb_event):
     if not full_run:
         print e.processed_text.get_tokenized_text()
     if positive_classifier:
-        result = event_auto_classifier.is_auto_add_event(e)
+        c = event_auto_classifier.is_auto_add_event(e)
+        result = c.result
         #result = event_auto_classifier.has_good_djs_title(e)
         #result = event_auto_classifier.is_workshop(e)
     else:

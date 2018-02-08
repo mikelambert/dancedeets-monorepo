@@ -425,13 +425,16 @@ def is_intentional(classified_event):
 def is_auto_add_event(classified_event):
     c = AutoClassifier(classified_event)
     c.classify()
-    return c.result
+    return c
 
 
 class AutoClassifier(object):
     def __init__(self, classified_event):
         self.classified_event = classified_event
         self.result = None
+
+    def __repr__(self):
+        return repr(self.result)
 
     def _run_classify(self):
         result = is_intentional(self.classified_event)
@@ -468,6 +471,12 @@ class AutoClassifier(object):
 
     def classify(self):
         self.result = self._run_classify()
+
+    def is_good_event(self):
+        return self.result[0]
+
+    def reason(self):
+        return self.result[1]
 
 
 def is_bad_club(classified_event):
@@ -518,9 +527,9 @@ def is_bad_wrong_dance(classified_event):
 
 
 def is_auto_notadd_event(classified_event, auto_add_result=None):
-    result = auto_add_result or is_auto_add_event(classified_event)
-    if result[0]:
-        return False, 'is auto_add_event: %s' % result[1]
+    c = auto_add_result or is_auto_add_event(classified_event)
+    if c.is_good_event():
+        return False, 'is auto_add_event: %s' % c.reason()
 
     result = is_bad_club(classified_event)
     if result[0]:

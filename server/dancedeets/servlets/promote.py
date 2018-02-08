@@ -85,7 +85,7 @@ class PromoteHandler(base_servlet.BaseRequestHandler):
         classified_event = event_classifier.classified_event_from_fb_event(fb_event)
         classified_event.classify()
         auto_add_result = event_auto_classifier.is_auto_add_event(classified_event)
-        if not auto_add_result[0]:
+        if not auto_add_result.is_good_event():
             event_warnings.append(
                 "The event wouldn't be automatically added. There weren't enough strong keywords for the system to identify it."
             )

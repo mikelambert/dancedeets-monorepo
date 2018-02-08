@@ -361,8 +361,8 @@ class AdminEditHandler(base_servlet.BaseRequestHandler):
         timelog.log_time_since('Running Text Classifier', start)
 
         auto_classified = ''
-        if add_result[0]:
-            auto_classified += 'add: %s.\n' % add_result[1]
+        if add_result.is_good_event():
+            auto_classified += 'add: %s.\n' % add_result
         if notadd_result[0]:
             auto_classified += 'notadd: %s.\n' % notadd_result[1]
 

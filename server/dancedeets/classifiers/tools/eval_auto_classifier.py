@@ -25,7 +25,8 @@ def basic_match(fb_event):
     if not full_run:
         print e.processed_text.get_tokenized_text()
     if positive_classifier:
-        result = event_auto_classifier.is_auto_add_event(e)
+        c = event_auto_classifier.is_auto_add_event(e)
+        result = c.result
     else:
         result = event_auto_classifier.is_auto_notadd_event(e)
     # classified as good, but not supposed to be in the good set of ids:

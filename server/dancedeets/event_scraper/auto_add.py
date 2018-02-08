@@ -15,7 +15,7 @@ from . import potential_events
 
 
 def is_good_event_by_text(fb_event, classified_event):
-    return event_auto_classifier.is_auto_add_event(classified_event)[0]
+    return event_auto_classifier.is_auto_add_event(classified_event).is_good_event()
 
 
 def classify_events(fbl, pe_list, fb_list):
@@ -66,8 +66,8 @@ def really_classify_events(fbl, new_pe_list, new_fb_list, allow_posting=True):
         auto_add_result = event_auto_classifier.is_auto_add_event(classified_event)
         logging.info('Is Good Event By Text: %s: %s', event_id, auto_add_result)
         good_event = False
-        if auto_add_result and auto_add_result[0]:
-            good_event = auto_add_result[0]
+        if auto_add_result.is_good_event():
+            good_event = True
             method = eventdata.CM_AUTO
         elif fb_event_attending_maybe:
             logging.info('Is Good Event By Attendees: %s: Checking...', event_id)
