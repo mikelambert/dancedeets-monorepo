@@ -9,12 +9,19 @@ Name = grammar.Name
 connected = grammar.connected
 commutative_connected = grammar.commutative_connected
 
-CAPOEIRA = Any(
-    commutative_connected(Any('capoeira'), Any('angola')),
-    commutative_connected(Any('capoeira'), Any('regional')),
-    commutative_connected(Any('capoeira'), Any('contemp\w+')),
-    'capoeiristas?',
+CAPOEIRA_WORD = Any(
     'capoeira',
+    u'巴西戰舞',  # chinese capoeira
+    u'卡波耶拉',  # chinese capoeira
+    u'카포에라',  # korean capoeira
+)
+
+CAPOEIRA = Any(
+    commutative_connected(CAPOEIRA_WORD, Any('angola')),
+    commutative_connected(CAPOEIRA_WORD, Any('regional')),
+    commutative_connected(CAPOEIRA_WORD, Any('contemp\w+')),
+    CAPOEIRA_WORD,
+    'capoeiristas?',
 )
 
 EVENT = Any(

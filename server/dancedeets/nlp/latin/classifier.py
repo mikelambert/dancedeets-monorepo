@@ -12,8 +12,21 @@ commutative_connected = grammar.commutative_connected
 REAL_DANCE = Name(
     'LATIN_REAL_DANCE',
     Any(
-        'salsa on1', 'salsa on2', 'cuban salsa', 'salsa cuba\w+', 'salsa footwork', 'salsa styling', 'salsa shines?', 'salsa\W?tanz',
-        'lad(?:y|ies) styling|styling ladies', 'shines ladies|ladies shines', 'salser[oa]s?', 'bachatango', 'bachata sensual'
+        'salsa on1',
+        'salsa on2',
+        'cuban salsa',
+        'salsa cuba\w+',
+        'salsa footwork',
+        'salsa styling',
+        'salsa shines?',
+        'lad(?:y|ies) styling|styling ladies',
+        'shines ladies|ladies shines',
+        'salser[oa]s?',
+        'bachatango',
+        'bachata sensual',
+        u'莎莎舞',  # chinese salsa dance
+        u'恰恰舞',  # chinese cha cha dance
+        u'倫巴舞',  # chinese rumba dance
     )
 )
 
@@ -27,6 +40,16 @@ AMBIGUOUS_DANCE_MUSIC = Name(
     Any(
         'cha\W?cha',
         'cha\W?cha\W?cha',
+        u'莎莎',  # chinese salsa dance
+        u'恰恰恰',  # chinese cha cha dance
+        u'倫巴',  # chinese rumba dance
+        u'桑巴',  # chinese samba
+        u'살사',  # korean salsa
+        u'바차타',  # korean bachata
+        u'차차차?',  # korean chacha
+        u'메렝게',  # korean merenge
+        u'륨바',  # korean rumba
+        u'삼바',  # kroean samba
         'samba',
         u'samba no p[ée]',
         'samba de gafieira',
