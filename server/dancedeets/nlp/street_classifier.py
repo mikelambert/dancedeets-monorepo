@@ -467,17 +467,3 @@ def is_bad_wrong_dance(classified_event):
             strong_classical_dance_keywords + weak_classical_dance_keywords, real_dance_keywords.union(manual_keywords)
         )
     return False, 'not a bad classical dance event'
-
-
-def is_auto_notadd_event(classified_event, auto_add_result=None):
-    c = auto_add_result or is_auto_add_event(classified_event)
-    if c.is_good_event():
-        return False, 'is auto_add_event: %s' % c.reason()
-
-    result = is_bad_club(classified_event)
-    if result[0]:
-        return result
-    result = is_bad_wrong_dance(classified_event)
-    if result[0]:
-        return result
-    return False, 'not a bad enough event'
