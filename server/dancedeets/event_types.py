@@ -3,8 +3,11 @@ class Verticals(object):
 
 
 VERTICALS = Verticals()
-VERTICALS.STREET = 'STREET'
-VERTICALS.LATIN = 'LATIN'
+VERTICALS.STREET = 'STREET'  # hiphop, house, breaking, popping, locking, waacking, vogue, krump, etc
+VERTICALS.LATIN = 'LATIN'  # salsa, bachata, chacha, rumba, merengue
+VERTICALS.CAPOEIRA = 'CAPOEIRA'
+VERTICALS.SPANISH = 'SPANISH'  # tango, bachata?
+VERTICALS.SWING = 'SWING'  # swing, lindy, etc
 
 
 def should_show(e):

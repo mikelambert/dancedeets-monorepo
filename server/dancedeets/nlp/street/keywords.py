@@ -949,7 +949,7 @@ CLASS = Name(
         u'הקורס',  # hebrew course
         u'hội thảo',  # vietnamese workshop
         'cursillo',  # spanish workshop
-        'ateliers',  # french workshop
+        'ateliers?',  # french workshop
         'workshopy',  # czech workshop
         u'סדנאות',  # hebrew workshops
         u'סדנה',  # hebew workshop

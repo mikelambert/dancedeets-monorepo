@@ -154,6 +154,13 @@ too_popular_style_keywords = {
         u'サルサ',
         u'サンバ',
         u'バチャータ',
+    ],
+    'capoeira': [
+        'capoeira',
+        'capoeira angola',
+        'capoeira regional',
+        'capoeira contemporânea',
+        'capoeira roda',
     ]
 }
 

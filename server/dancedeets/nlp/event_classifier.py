@@ -150,6 +150,7 @@ class StringProcessor(object):
 
 def classified_event_from_fb_event(fb_event, language=None):
     return ClassifiedEvent(
+        fb_event,
         fb_event['info'].get('name', ''),
         fb_event['info'].get('description', ''),
         dates.parse_fb_start_time(fb_event),
@@ -159,7 +160,8 @@ def classified_event_from_fb_event(fb_event, language=None):
 
 
 class ClassifiedEvent(object):
-    def __init__(self, name, description, start_time, end_time, language=None):
+    def __init__(self, fb_event, name, description, start_time, end_time, language=None):
+        self.fb_event = fb_event
         self.title = name.lower()
         # use a separator here, so 'actors workshop' 'breaking boundaries...' doesn't match 'workshop breaking'
         self.search_text = ('%s . . . . %s' % (name, description)).lower()
