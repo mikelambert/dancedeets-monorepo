@@ -9,13 +9,14 @@ Name = grammar.Name
 connected = grammar.connected
 commutative_connected = grammar.commutative_connected
 
-REAL_SALSA = Name(
-    'LATIN_REAL_SALSA',
+REAL_DANCE = Name(
+    'LATIN_REAL_DANCE',
     Any(
         'salsa on1',
         'salsa on2',
         'cuban salsa',
         'salsa cuba\w+',
+        'salsa footwork',
         'salsa styling',
         'salsa shines?',
         'salsa\W?tanz',
@@ -43,7 +44,7 @@ AMBIGUOUS_DANCE_MUSIC = Name(
     )
 )
 
-ALL_LATIN_STYLES = Any(REAL_SALSA, SALSA, AMBIGUOUS_DANCE_MUSIC)
+ALL_LATIN_STYLES = Any(REAL_DANCE, SALSA, AMBIGUOUS_DANCE_MUSIC)
 
 FOOD = Any(
     'food',
@@ -51,20 +52,25 @@ FOOD = Any(
     'cinco de mayo',
 )
 
-GOOD_DANCE = commutative_connected(AMBIGUOUS_DANCE_MUSIC, keywords.EASY_DANCE)
+GOOD_DANCE = Any(REAL_DANCE, commutative_connected(AMBIGUOUS_DANCE_MUSIC, keywords.EASY_DANCE))
+GOOD_BATTLE = Any(keywords.BATTLE, keywords.N_X_N, keywords.CONTEST)
+GOOD_DANCE_BATTLE = Name('LATIN_GOOD_DANCE_BATTLE', commutative_connected(AMBIGUOUS_DANCE_MUSIC, GOOD_BATTLE))
 
-good_battle = Any(keywords.BATTLE, keywords.N_X_N, keywords.CONTEST)
-GOOD_DANCE_BATTLE = Name('LATIN_GOOD_DANCE_BATTLE', commutative_connected(AMBIGUOUS_DANCE_MUSIC, good_battle))
+SALSA_DANCE_BATTLE = Name('LATIN_SALSA_DANCE_BATTLE', commutative_connected(SALSA, GOOD_BATTLE))
 
-SALSA_DANCE_BATTLE = Name('LATIN_SALSA_DANCE_BATTLE', commutative_connected(SALSA, good_battle))
+class_keywords = Any(keywords.CLASS, 'batch')
 
-all_class = Any(keywords.CLASS, Any(keywords.PERFORMANCE, keywords.CLASS))
+all_class = Any(class_keywords, commutative_connected(keywords.PERFORMANCE, class_keywords))
 
 STYLE_CLASS = commutative_connected(ALL_LATIN_STYLES, all_class)
 
 
 def is_salsa_event(classified_event):
     result = is_dance_event(classified_event)
+    if result[0]:
+        return result
+
+    result = is_many_latin_styles(classified_event)
     if result[0]:
         return result
 
@@ -79,8 +85,16 @@ def is_salsa_event(classified_event):
     return result
 
 
+def is_many_latin_styles(classified_event):
+    all_keywords = classified_event.processed_text.get_tokens(ALL_LATIN_STYLES)
+    if len(set(all_keywords)) >= 3:
+        return (True, 'Found many latin keywords: %s' % all_keywords, event_types.VERTICALS.LATIN)
+
+    return (False, '', [])
+
+
 def is_dance_event(classified_event):
-    real_keywords = classified_event.processed_text.get_tokens(REAL_SALSA)
+    real_keywords = classified_event.processed_text.get_tokens(REAL_DANCE)
     if real_keywords:
         return (True, 'Found strong keywords: %s' % real_keywords, event_types.VERTICALS.LATIN)
 

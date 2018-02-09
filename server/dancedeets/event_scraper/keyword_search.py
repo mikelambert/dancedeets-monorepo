@@ -95,17 +95,7 @@ obvious_style_keywords = {
         'cypher jam',
     ] + two('electro dance') + two('lite feet')),
     'latin': [
-        'ladies styling',
-        'salsa on1',
-        'salsa on2',
-        'cuban salsa',
-        'salsa cubaine',
-        'salsa styling',
-        'salsa shine',
-        'salsa dance',
-        u'サルサ',
-        u'サンバ',
-        u'バチャータ',
+        'salsa footwork',
     ]
 }
 
@@ -153,6 +143,17 @@ too_popular_style_keywords = {
         'afro-cuban',
         'afrocuban',
         'salsa dance',
+        'ladies styling',
+        'salsa on1',
+        'salsa on2',
+        'cuban salsa',
+        'salsa cubaine',
+        'salsa styling',
+        'salsa shine',
+        'salsa dance',
+        u'サルサ',
+        u'サンバ',
+        u'バチャータ',
     ]
 }
 

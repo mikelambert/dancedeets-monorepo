@@ -46,6 +46,21 @@ class TestLatinCompetition(TestClassifier):
         self.assertEvent('165088020802863')
 
 
+class TestLatinClass(TestClassifier):
+    def runTest(self):
+        self.assertEvent('154418185279514')
+        self.assertEvent('176239869784234')
+        self.assertEvent('141598903209252')
+        self.assertEvent('1801249549949792')
+        self.assertEvent('1819024858358233')
+        self.assertEvent('192105941525864')
+        self.assertEvent('958189144215292')
+        self.assertEvent('313780035693230')
+        self.assertEvent('10153148050940861')
+
+
+# Salsa intermedia performance group
+# self.assertEvent('710368129168209')
 # dance contest, with salsa/bachata keywords
 #        self.assertEvent('1765036530470368')
 
