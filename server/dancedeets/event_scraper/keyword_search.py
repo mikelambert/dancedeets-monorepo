@@ -218,14 +218,15 @@ def search_fb(fbl, style):
 
     logging.info('Looking up %s search queries', len(all_keywords))
 
-    all_ids = set()
     oldest_allowed = fbl.db.oldest_allowed
     # Still want to re-run these queries...but allow re-repeated re-runs to work without hammering FB
     # And we want the searches to expire much more quickly than the servlet as a whole (and event/attending lookups)
     fbl.db.oldest_allowed = datetime.datetime.now() - datetime.timedelta(hours=6)
 
     for query in all_keywords:
+        all_ids = set()
         old_fb_fetches = fbl.fb.fb_fetches
+        lookup_time = time.time()
         search_results = fbl.get(LookupSearchEvents, query)
         ids = [x['id'] for x in search_results['results']['data']]
         all_ids.update(ids)
@@ -234,16 +235,20 @@ def search_fb(fbl, style):
         for x in search_results['results']['data']:
             logging.info('Found %s: %s', x['id'], x.get('name'))
 
+        # This may take awhile...give some breathing room to our FB queries:
+
+        # Run these all_ids in a queue of some sort...to process later, in groups?
+        discovered_list = [potential_events.DiscoveredEvent(id, None, thing_db.FIELD_SEARCH) for id in sorted(all_ids)]
+        event_pipeline.process_discovered_events(fbl, discovered_list)
+
         # Only sleep and space things out, if we actually hit the FB server...
         if old_fb_fetches != fbl.fb.fb_fetches:
-            time.sleep(2)
+            elapsed_time = time.time() - lookup_time
+            sleep_time = 2 - elapsed_time
+            if sleep_time > 0:
+                time.sleep(sleep_time)
 
     fbl.db.oldest_allowed = oldest_allowed
-
-    # Run these all_ids in a queue of some sort...to process later, in groups?
-    discovered_list = [potential_events.DiscoveredEvent(id, None, thing_db.FIELD_SEARCH) for id in sorted(all_ids)]
-
-    event_pipeline.process_discovered_events(fbl, discovered_list)
 
 
 @app.route('/tools/search_fb_for_events')
