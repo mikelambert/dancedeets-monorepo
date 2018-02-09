@@ -1,9 +1,9 @@
 # -*-*- encoding: utf-8 -*-*-
 #
 
-from . import grammar
-from .grammar import Any
-from .grammar import Name
+from .. import grammar
+Any = grammar.Any
+Name = grammar.Name
 
 
 def GenFileBackedKeywords(name, filename):
@@ -667,9 +667,8 @@ CLUB_ONLY = Name(
 )
 
 POP_MUSIC = Any(
-    * [
-        '%s\W+pop'
-        for x in
+    *[
+        '%s\W+pop' for x in
         # List grabbed off wikipedia, but leaving electropop
         [
             'art', 'avant', 'bubble\W+gum', 'chamber', 'country', 'dark', 'dream', 'emo', 'experim\w+', 'folk', 'indie', 'jangle', 'kraut',

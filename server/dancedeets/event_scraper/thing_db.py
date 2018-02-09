@@ -48,6 +48,8 @@ class Source(db.Model):
 
     street_dance_related = db.BooleanProperty()
 
+    verticals = db.ListProperty(str, indexed=True)
+
     # probably to assume for a given event? rough weighting factor?
     # do we want to delete these now?
     freestyle = db.FloatProperty(indexed=False)

@@ -5,9 +5,9 @@ import re
 from dancedeets import event_types
 from . import event_classifier
 from . import event_structure
-from . import keywords
 from . import grammar
-from .grammar import Any
+from .street import keywords
+Any = grammar.Any
 
 ANY_BREAK = Any(
     keywords.STYLE_BREAK,

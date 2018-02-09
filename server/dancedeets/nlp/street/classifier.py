@@ -11,11 +11,11 @@ except ImportError as e:
     import re
 
 from dancedeets import event_types
-from . import categories
-from . import event_classifier
-from . import event_structure
+from .. import categories
+from .. import event_classifier
+from .. import event_structure
+from .. import grammar
 from . import keywords
-from . import grammar
 from . import rules
 
 

@@ -10,9 +10,9 @@ except ImportError as e:
     import re
 
 from . import event_classifier
-from . import keywords
 from . import regex_keywords
-from . import rules
+from .street import keywords
+from .street import rules
 
 
 def find_competitor_list(search_text):

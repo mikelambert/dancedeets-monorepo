@@ -1,7 +1,7 @@
-from . import grammar
+from .. import grammar
 from . import keywords
-from .grammar import Any
-from .grammar import Name
+Any = grammar.Any
+Name = grammar.Name
 
 
 def connected(a, b):
@@ -87,10 +87,9 @@ ambiguous_battle = Any(keywords.JAM)
 GOOD_DANCE_BATTLE = Name(
     'GOOD_DANCE_BATTLE',
     Any(
-        keywords.OBVIOUS_BATTLE,
-        connected(keywords.BONNIE_AND_CLYDE, keywords.BATTLE),
-        grammar.Ordered(Any('king of (?:the )?'), keywords.CYPHER),
-        connected(keywords.CYPHER, Any('king')), commutative_connected(good_battle_dance, good_battle)
+        keywords.OBVIOUS_BATTLE, connected(keywords.BONNIE_AND_CLYDE, keywords.BATTLE),
+        grammar.Ordered(Any('king of (?:the )?'), keywords.CYPHER), connected(keywords.CYPHER, Any('king')),
+        commutative_connected(good_battle_dance, good_battle)
     )
 )
 

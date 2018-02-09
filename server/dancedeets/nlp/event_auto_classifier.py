@@ -1,7 +1,7 @@
 # -*-*- encoding: utf-8 -*-*-
 
 from dancedeets import event_types
-from . import street_classifier
+from .street import classifier as street_classifier
 
 
 def is_auto_add_event(classified_event):

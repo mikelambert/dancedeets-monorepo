@@ -15,8 +15,8 @@ import scrapy
 from scrapy import item
 
 from dancedeets.nlp import event_classifier
-from dancedeets.nlp import keywords
-from dancedeets.nlp import rules
+from dancedeets.nlp.street import keywords
+from dancedeets.nlp.street import rules
 from scrapy_lib import pipelines
 from dancedeets.util import strip_markdown
 

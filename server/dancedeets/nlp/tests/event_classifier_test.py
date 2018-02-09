@@ -4,8 +4,8 @@
 import unittest
 
 from dancedeets.nlp import event_classifier
-from dancedeets.nlp import keywords
 from dancedeets.nlp import grammar
+from dancedeets.nlp.street import keywords
 
 
 class TestSoulSessionsOslo(unittest.TestCase):

@@ -8,8 +8,8 @@ from scrapy import spiders
 from scrapy.linkextractors import LinkExtractor
 from dancedeets.nlp import event_classifier
 from dancedeets.nlp import regex_keywords
-from dancedeets.nlp import keywords
-from dancedeets.nlp import rules
+from dancedeets.nlp.street import keywords
+from dancedeets.nlp.street import rules
 
 from .. import yelp
 from .. import facebook
