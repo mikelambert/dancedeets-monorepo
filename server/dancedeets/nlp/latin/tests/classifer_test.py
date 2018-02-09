@@ -11,7 +11,7 @@ class TestClassifier(unittest.TestCase):
 
     def setUp(self):
         super(TestClassifier, self).setUp()
-        self.fbl = fb_api.FBLookup("dummyid", None)
+        self.fbl = fb_api.FBLookup("dummyid", unittest.get_local_access_token_for_testing())
 
     def get_event(self, event_id):
         return self.fbl.get(fb_api.LookupEvent, event_id)
@@ -20,13 +20,13 @@ class TestClassifier(unittest.TestCase):
         fb_event = self.get_event(event_id)
         classified_event = event_classifier.get_classified_event(fb_event)
         data = classifier.is_dance_event(classified_event)
-        self.assertTrue(data[0], data[1])
+        self.assertTrue(data[0], 'Failed on event %s: %s' % (event_id, data[1]))
 
     def assertNotEvent(self, event_id):
         fb_event = self.get_event(event_id)
         classified_event = event_classifier.get_classified_event(fb_event)
         data = classifier.is_dance_event(classified_event)
-        self.assertFalse(data[0], data[1])
+        self.assertFalse(data[0], 'Failed on event %s: %s' % (event_id, data[1]))
 
 
 class TestFoodSalsa(TestClassifier):
@@ -41,7 +41,13 @@ class TestLatinCompetition(TestClassifier):
         self.assertEvent('235945840191010')
         self.assertEvent('2092023671075343')
         self.assertEvent('1553984067995241')
+        self.assertEvent('1422208217907436')
+        self.assertEvent('344249636077753')
+        self.assertEvent('165088020802863')
 
+
+# dance contest, with salsa/bachata keywords
+#        self.assertEvent('1765036530470368')
 
 if __name__ == '__main__':
     print unittest.main()
