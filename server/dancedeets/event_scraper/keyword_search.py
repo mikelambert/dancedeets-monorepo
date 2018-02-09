@@ -96,7 +96,14 @@ obvious_style_keywords = {
     ] + two('electro dance') + two('lite feet')),
     'latin': [
         'salsa footwork',
-    ]
+    ],
+    'capoeira': [
+        'capoeira',
+        'capoeira angola',
+        'capoeira regional',
+        'capoeira contemporânea',
+        'capoeira roda',
+    ],
 }
 
 #        'jive',
@@ -175,8 +182,6 @@ def search_fb(fbl, style):
         'taller',
         'stage',
         'lesson',
-        'battle',
-        'jam',
         'competition',
         'competición',
         'competencia',
@@ -187,12 +192,28 @@ def search_fb(fbl, style):
         'spectacle',
         'audition',
         'audiciones',
-        'bonnie and clyde',
     ]
+    style_event_types = {
+        'street': [
+            'battle',
+            'jam',
+            'bonnie and clyde',
+        ],
+        'latin': [],
+        'capoeira': [
+            'roda',
+            'encontro',
+            'demo',
+            'demonstration',
+        ]
+    }
+
     all_keywords = obvious_keywords[:]
     for x in too_popular_keywords:
         all_keywords.append(x)
         for y in event_types:
+            all_keywords.append('%s %s' % (x, y))
+        for y in style_event_types[style]:
             all_keywords.append('%s %s' % (x, y))
 
     logging.info('Looking up %s search queries', len(all_keywords))
