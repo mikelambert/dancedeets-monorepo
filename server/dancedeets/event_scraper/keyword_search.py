@@ -223,8 +223,9 @@ def search_fb(fbl, style):
     # And we want the searches to expire much more quickly than the servlet as a whole (and event/attending lookups)
     fbl.db.oldest_allowed = datetime.datetime.now() - datetime.timedelta(hours=6)
 
+    all_ids = set()
+
     for query in all_keywords:
-        all_ids = set()
         old_fb_fetches = fbl.fb.fb_fetches
         lookup_time = time.time()
         search_results = fbl.get(LookupSearchEvents, query)
@@ -235,10 +236,11 @@ def search_fb(fbl, style):
         for x in search_results['results']['data']:
             logging.info('Found %s: %s', x['id'], x.get('name'))
 
-        # This may take awhile...give some breathing room to our FB queries:
+        new_ids = set(ids).difference(all_ids)
+        all_ids.update(ids)
 
-        # Run these all_ids in a queue of some sort...to process later, in groups?
-        discovered_list = [potential_events.DiscoveredEvent(id, None, thing_db.FIELD_SEARCH) for id in sorted(all_ids)]
+        # This may take awhile...give some breathing room to our FB queries:
+        discovered_list = [potential_events.DiscoveredEvent(id, None, thing_db.FIELD_SEARCH) for id in sorted(new_ids)]
         event_pipeline.process_discovered_events(fbl, discovered_list)
 
         # Only sleep and space things out, if we actually hit the FB server...
