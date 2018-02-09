@@ -20,13 +20,18 @@ class AutoClassifier(object):
         return repr(self.result)
 
     def _run_classify(self):
+        verticals = []
+
         result = latin_classifier.is_salsa_event(self.classified_event)
         if result[0]:
-            return result
+            verticals.append(result[2])
 
         result = street_classifier.is_street_event(self.classified_event)
         if result[0]:
-            return result
+            verticals.append(result[2])
+
+        if verticals:
+            return (True, 'found some', verticals)
 
         return (False, 'nothing', [])
 
