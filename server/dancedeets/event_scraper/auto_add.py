@@ -4,6 +4,7 @@ import re
 
 from dancedeets import fb_api
 
+from dancedeets import event_types
 from dancedeets.event_attendees import event_attendee_classifier
 from dancedeets.events import eventdata
 from dancedeets.nlp import event_auto_classifier
