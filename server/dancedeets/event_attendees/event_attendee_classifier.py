@@ -7,8 +7,8 @@ from google.cloud import datastore
 from dancedeets.events import event_locations
 from dancedeets import fb_api
 from dancedeets.loc import math
-from dancedeets.nlp import event_auto_classifier
 from dancedeets.nlp import event_classifier
+from dancedeets.nlp.street import street_classifier
 from dancedeets.rankings import cities_db
 from dancedeets.util import fb_events
 from . import popular_people
@@ -103,8 +103,9 @@ class AttendeeMatch(object):
                 debug_keys.append(client.key('PRDebugAttendee', debug_key))
             debug_attendees.extend(client.get_multi(debug_keys, missing_keys))
 
-        person_to_hash_and_event_ids = [('%s: %s' % (x['person_id'], x['city']), json.loads(x['grouped_event_ids']))
-                                        for x in debug_attendees]
+        person_to_hash_and_event_ids = [
+            ('%s: %s' % (x['person_id'], x['city']), json.loads(x['grouped_event_ids'])) for x in debug_attendees
+        ]
         person_to_hash_and_event_ids = sorted(person_to_hash_and_event_ids, key=lambda x: -len(x[1]))
         return person_to_hash_and_event_ids
 
@@ -143,7 +144,8 @@ class EventAttendeeMatcher(object):
 
             # Raise the threshold for regular wrong-dance-style events.
             # They may totally be legit regardless of keywords...but we just want a higher threshold for them
-            only_wrong_style_keywords = event_auto_classifier.is_bad_wrong_dance(self.classified_event)
+            #TODO(verticals): Make this work better with other-style dances
+            only_wrong_style_keywords = street_classifier.is_bad_wrong_dance(self.classified_event)
             logging.info('Is it a wrong-style event: %s: %s', only_wrong_style_keywords[0], only_wrong_style_keywords[1])
             if only_wrong_style_keywords[0]:
                 mult *= 2.0
