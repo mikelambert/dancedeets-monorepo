@@ -12,6 +12,8 @@ from dancedeets.util import gcs
 
 
 class TestCase(RealTestCase):
+    memory_memcache = True
+
     def setUp(self):
         self.testbed = testbed.Testbed()
         self.testbed.activate()
@@ -24,7 +26,7 @@ class TestCase(RealTestCase):
         self.taskqueue_stub = self.testbed.get_stub(testbed.TASKQUEUE_SERVICE_NAME)
         self.testbed.init_urlfetch_stub()
         self.fb_api = fb_api_stub.Stub()
-        self.fb_api.activate()
+        self.fb_api.activate(memory_memcache=self.memory_memcache)
         self.gmaps_stub = gmaps_stub.Stub()
         self.gmaps_stub.activate()
         #TODO(lambert): move this into some testbed wrapper code, or port upstream

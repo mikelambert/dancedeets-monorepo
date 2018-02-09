@@ -13,6 +13,10 @@ def get_object(string_key):
     return json.loads(open('test_data/FacebookCachedObject/%s' % string_key).read())
 
 
+def save_object(string_key, data):
+    return open('test_data/FacebookCachedObject/%s' % string_key, 'w').write(json.dumps(data))
+
+
 class Stub(object):
     def activate(self, memory_memcache=True, disk_db=True):
         self.real_fb_api = fb_api.FBAPI
@@ -44,6 +48,14 @@ class DiskDBCache(fb_api.DBCache):
             except IOError:
                 pass
         return fetched_objects
+
+    def save_objects(self, keys_to_objects):
+        if not keys_to_objects:
+            return
+        for k, v in keys_to_objects.iteritems():
+            if self._is_cacheable(k, v):
+                cache_key = self.key_to_cache_key(k)
+                save_object(cache_key, v)
 
 
 class FakeRPC(object):
