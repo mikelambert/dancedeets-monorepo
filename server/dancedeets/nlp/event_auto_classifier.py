@@ -467,7 +467,7 @@ class AutoClassifier(object):
         result = has_many_street_styles(self.classified_event)
         if result[0]:
             return result
-        return (False, 'nothing')
+        return (False, 'nothing', [])
 
     def classify(self):
         self.result = self._run_classify()
@@ -477,6 +477,12 @@ class AutoClassifier(object):
 
     def reason(self):
         return self.result[1]
+
+    def verticals(self):
+        try:
+            return self.result[2]
+        except:
+            return [event_types.VERTICALS.STREET]
 
 
 def is_bad_club(classified_event):

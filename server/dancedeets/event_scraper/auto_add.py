@@ -71,6 +71,7 @@ def really_classify_events(fbl, new_pe_list, new_fb_list, allow_posting=True):
         if auto_add_result.is_good_event():
             good_event = True
             method = eventdata.CM_AUTO
+            verticals = auto_add_result.verticals()
         elif fb_event_attending_maybe:
             logging.info('Is Good Event By Attendees: %s: Checking...', event_id)
             good_event = event_attendee_classifier.is_good_event_by_attendees(
@@ -78,13 +79,19 @@ def really_classify_events(fbl, new_pe_list, new_fb_list, allow_posting=True):
             )
             logging.info('Is Good Event By Attendees: %s: %s', event_id, good_event)
             method = eventdata.CM_AUTO_ATTENDEE
+            verticals = [event_types.VERTICALS.STREET]
         if good_event:
             result = '+%s\n' % '\t'.join((event_id, fb_event['info'].get('name', '')))
             try:
                 invite_ids = pe.get_invite_uids() if pe else []
                 logging.info('VTFI %s: Adding event %s, due to pe-invite-ids: %s', event_id, event_id, invite_ids)
                 e = add_entities.add_update_fb_event(
-                    fb_event, fbl, visible_to_fb_uids=invite_ids, creating_method=method, allow_posting=allow_posting
+                    fb_event,
+                    fbl,
+                    visible_to_fb_uids=invite_ids,
+                    creating_method=method,
+                    allow_posting=allow_posting,
+                    verticals=verticals,
                 )
                 pe2 = potential_events.PotentialEvent.get_by_key_name(event_id)
                 pe2.looked_at = True
