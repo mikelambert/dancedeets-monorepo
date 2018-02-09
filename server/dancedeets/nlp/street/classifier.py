@@ -19,6 +19,40 @@ from . import keywords
 from . import rules
 
 
+def is_street_event(classified_event):
+    result = is_intentional(classified_event)
+    if result[0]:
+        return result
+    result = is_battle(classified_event)
+    if result[0]:
+        return result
+    result = is_audition(classified_event)
+    if result[0]:
+        return result
+    result = is_workshop(classified_event)
+    if result[0]:
+        return result
+    result = has_list_of_good_classes(classified_event)
+    if result[0]:
+        return result
+    result = is_vogue_event(classified_event)
+    if result[0]:
+        return result
+    result = has_standalone_keywords(classified_event)
+    if result[0]:
+        return result
+    result = has_good_event_title(classified_event)
+    if result[0]:
+        return result
+    result = is_performance_or_practice(classified_event)
+    if result[0]:
+        return result
+    result = has_many_street_styles(classified_event)
+    if result[0]:
+        return result
+    return result
+
+
 def has_many_street_styles(classified_event):
     title_wrong_style_matches = classified_event.processed_title.has_token(keywords.DANCE_WRONG_STYLE)
     if title_wrong_style_matches:

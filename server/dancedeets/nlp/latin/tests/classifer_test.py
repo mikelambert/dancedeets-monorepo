@@ -19,13 +19,13 @@ class TestClassifier(unittest.TestCase):
     def assertEvent(self, event_id):
         fb_event = self.get_event(event_id)
         classified_event = event_classifier.get_classified_event(fb_event)
-        data = classifier.is_dance_event(classified_event)
+        data = classifier.is_salsa_event(classified_event)
         self.assertTrue(data[0], 'Failed on event %s: %s' % (event_id, data[1]))
 
     def assertNotEvent(self, event_id):
         fb_event = self.get_event(event_id)
         classified_event = event_classifier.get_classified_event(fb_event)
-        data = classifier.is_dance_event(classified_event)
+        data = classifier.is_salsa_event(classified_event)
         self.assertFalse(data[0], 'Failed on event %s: %s' % (event_id, data[1]))
 
 

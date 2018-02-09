@@ -20,40 +20,14 @@ class AutoClassifier(object):
         return repr(self.result)
 
     def _run_classify(self):
-        result = latin_classifier.is_dance_event(self.classified_event)
+        result = latin_classifier.is_salsa_event(self.classified_event)
         if result[0]:
             return result
 
-        result = street_classifier.is_intentional(self.classified_event)
+        result = street_classifier.is_street_event(self.classified_event)
         if result[0]:
             return result
-        result = street_classifier.is_battle(self.classified_event)
-        if result[0]:
-            return result
-        result = street_classifier.is_audition(self.classified_event)
-        if result[0]:
-            return result
-        result = street_classifier.is_workshop(self.classified_event)
-        if result[0]:
-            return result
-        result = street_classifier.has_list_of_good_classes(self.classified_event)
-        if result[0]:
-            return result
-        result = street_classifier.is_vogue_event(self.classified_event)
-        if result[0]:
-            return result
-        result = street_classifier.has_standalone_keywords(self.classified_event)
-        if result[0]:
-            return result
-        result = street_classifier.has_good_event_title(self.classified_event)
-        if result[0]:
-            return result
-        result = street_classifier.is_performance_or_practice(self.classified_event)
-        if result[0]:
-            return result
-        result = street_classifier.has_many_street_styles(self.classified_event)
-        if result[0]:
-            return result
+
         return (False, 'nothing', [])
 
     def classify(self):

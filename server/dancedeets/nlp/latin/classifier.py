@@ -17,7 +17,7 @@ REAL_SALSA = Name(
         'cuban salsa',
         'salsa cuba\w+',
         'salsa styling',
-        'salsa shine',
+        'salsa shines?',
         'salsa\W?tanz',
         'lad(?:y|ies) styling|styling ladies',
         'shines ladies|ladies shines',
@@ -43,6 +43,8 @@ AMBIGUOUS_DANCE_MUSIC = Name(
     )
 )
 
+ALL_LATIN_STYLES = Any(REAL_SALSA, SALSA, AMBIGUOUS_DANCE_MUSIC)
+
 FOOD = Any(
     'food',
     'tastings',
@@ -56,12 +58,44 @@ GOOD_DANCE_BATTLE = Name('LATIN_GOOD_DANCE_BATTLE', commutative_connected(AMBIGU
 
 SALSA_DANCE_BATTLE = Name('LATIN_SALSA_DANCE_BATTLE', commutative_connected(SALSA, good_battle))
 
+all_class = Any(keywords.CLASS, Any(keywords.PERFORMANCE, keywords.CLASS))
+
+STYLE_CLASS = commutative_connected(ALL_LATIN_STYLES, all_class)
+
+
+def is_salsa_event(classified_event):
+    result = is_dance_event(classified_event)
+    if result[0]:
+        return result
+
+    result = is_dance_workshop(classified_event)
+    if result[0]:
+        return result
+
+    result = is_dance_battle(classified_event)
+    if result[0]:
+        return result
+
+    return result
+
 
 def is_dance_event(classified_event):
     real_keywords = classified_event.processed_text.get_tokens(REAL_SALSA)
     if real_keywords:
         return (True, 'Found strong keywords: %s' % real_keywords, event_types.VERTICALS.LATIN)
 
+    return (False, '', [])
+
+
+def is_dance_workshop(classified_event):
+    dance_class = classified_event.processed_text.get_tokens(STYLE_CLASS)
+    if dance_class:
+        return (True, 'Found dance class: %s' % dance_class, event_types.VERTICALS.LATIN)
+
+    return (False, '', [])
+
+
+def is_dance_battle(classified_event):
     dance_keywords = classified_event.processed_text.get_tokens(GOOD_DANCE)
     if dance_keywords:
         return (True, 'Found strong dance keywords: %s' % dance_keywords, event_types.VERTICALS.LATIN)
