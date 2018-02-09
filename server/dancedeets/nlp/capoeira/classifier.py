@@ -22,6 +22,7 @@ CAPOEIRA = Any(
     commutative_connected(CAPOEIRA_WORD, Any('contemp\w+')),
     CAPOEIRA_WORD,
     'capoeiristas?',
+    u'maculel[êe]',
 )
 
 EVENT = Any(
@@ -31,6 +32,7 @@ EVENT = Any(
     'encontro',
     'demo',
     'demonstration',
+    'seminar',
 )
 
 KEYWORDS = Any(
