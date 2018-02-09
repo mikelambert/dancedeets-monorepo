@@ -8,7 +8,7 @@ from dancedeets.events import event_locations
 from dancedeets import fb_api
 from dancedeets.loc import math
 from dancedeets.nlp import event_classifier
-from dancedeets.nlp.street import street_classifier
+from dancedeets.nlp.street import classifier as street_classifier
 from dancedeets.rankings import cities_db
 from dancedeets.util import fb_events
 from . import popular_people
