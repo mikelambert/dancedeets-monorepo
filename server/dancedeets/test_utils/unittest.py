@@ -6,6 +6,7 @@ from unittest import TestCase as RealTestCase
 
 from google.appengine.ext import testbed
 
+from dancedeets import keys
 from dancedeets.loc import gmaps_stub
 from dancedeets.test_utils import fb_api_stub
 from dancedeets.util import gcs
@@ -43,3 +44,7 @@ class TestCase(RealTestCase):
         self.fb_api.deactivate()
         gcs.test_mode = False
         self.testbed.deactivate()
+
+
+def get_local_access_token_for_testing():
+    return keys.get('local_access_token_for_testing')
