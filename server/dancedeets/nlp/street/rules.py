@@ -2,18 +2,8 @@ from .. import grammar
 from . import keywords
 Any = grammar.Any
 Name = grammar.Name
-
-
-def connected(a, b):
-    return grammar.Ordered(a, keywords.CONNECTOR, b)
-
-
-def commutative_connected(a, b):
-    return Any(
-        connected(a, b),
-        connected(b, a),
-    )
-
+connected = grammar.connected
+commutative_connected = grammar.commutative_connected
 
 MUSIC = Name('MUSIC', Any(
     keywords.AMBIGUOUS_DANCE_MUSIC,

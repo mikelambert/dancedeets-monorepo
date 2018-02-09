@@ -1,3 +1,5 @@
+# -*-*- encoding: utf-8 -*-*-
+
 import codecs
 import glob
 import itertools
@@ -198,3 +200,34 @@ class Name(_BaseAlternation):
 
     def __repr__(self):
         return '%s(%r, %r)' % (self.__class__.__name__, self._name, self._sub_rule)
+
+
+# TODO(lambert): we need to remove the empty CONNECTOR here, and probably spaces as well, and handle that in the rules? or just ensure this never gets applied except as part of rules
+CONNECTOR = Name(
+    'CONNECTOR',
+    Any(
+        ' ?',
+        ' di ',
+        ' de ',
+        ' ?: ?',
+        u' bài ',  # vietnamese
+        u'な',  # japanese
+        u'の',  # japanese
+        u'的',  # chinese
+        '-',
+        # TODO(lambert): explore adding these variations, and their impact on quality
+        # r' ?[^\w\s] ?',
+        # ' \W ',
+    )
+)
+
+
+def connected(a, b):
+    return Ordered(a, CONNECTOR, b)
+
+
+def commutative_connected(a, b):
+    return Any(
+        connected(a, b),
+        connected(b, a),
+    )

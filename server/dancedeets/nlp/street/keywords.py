@@ -1299,25 +1299,6 @@ DANCE_WRONG_STYLE_TITLE_ONLY = Name(
     )
 )
 
-# TODO(lambert): we need to remove the empty CONNECTOR here, and probably spaces as well, and handle that in the rules? or just ensure this never gets applied except as part of rules
-CONNECTOR = Name(
-    'CONNECTOR',
-    Any(
-        ' ?',
-        ' di ',
-        ' de ',
-        ' ?: ?',
-        u' bài ',  # vietnamese
-        u'な',  # japanese
-        u'の',  # japanese
-        u'的',  # chinese
-        '-',
-        # TODO(lambert): explore adding these variations, and their impact on quality
-        # r' ?[^\w\s] ?',
-        # ' \W ',
-    )
-)
-
 AMBIGUOUS_WRONG_STYLE = Name('AMBIGUOUS_WRONG_STYLE', Any(
     'modern',
     'ballet',

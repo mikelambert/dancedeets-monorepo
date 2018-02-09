@@ -2,6 +2,7 @@
 
 from dancedeets import event_types
 from .street import classifier as street_classifier
+from .latin import classifier as latin_classifier
 
 
 def is_auto_add_event(classified_event):
@@ -19,6 +20,10 @@ class AutoClassifier(object):
         return repr(self.result)
 
     def _run_classify(self):
+        result = latin_classifier.is_dance_event(self.classified_event)
+        if result[0]:
+            return result
+
         result = street_classifier.is_intentional(self.classified_event)
         if result[0]:
             return result
