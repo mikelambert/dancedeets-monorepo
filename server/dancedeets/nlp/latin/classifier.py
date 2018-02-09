@@ -12,17 +12,8 @@ commutative_connected = grammar.commutative_connected
 REAL_DANCE = Name(
     'LATIN_REAL_DANCE',
     Any(
-        'salsa on1',
-        'salsa on2',
-        'cuban salsa',
-        'salsa cuba\w+',
-        'salsa footwork',
-        'salsa styling',
-        'salsa shines?',
-        'salsa\W?tanz',
-        'lad(?:y|ies) styling|styling ladies',
-        'shines ladies|ladies shines',
-        'salser[oa]s?',
+        'salsa on1', 'salsa on2', 'cuban salsa', 'salsa cuba\w+', 'salsa footwork', 'salsa styling', 'salsa shines?', 'salsa\W?tanz',
+        'lad(?:y|ies) styling|styling ladies', 'shines ladies|ladies shines', 'salser[oa]s?', 'bachatango', 'bachata sensual'
     )
 )
 
@@ -32,9 +23,17 @@ SALSA = Any(
 )
 
 AMBIGUOUS_DANCE_MUSIC = Name(
-    'LATIN_AMBIGUOUS_DANCE_MUSIC', Any(
-        'chacha',
+    'LATIN_AMBIGUOUS_DANCE_MUSIC',
+    Any(
+        'cha\W?cha',
+        'cha\W?cha\W?cha',
         'samba',
+        u'samba no p[ée]',
+        'samba de gafieira',
+        'samba pagode',
+        u'samba ax[ée]',
+        'samba\W?rock',
+        'samba de roda',
         u'サンバ',
         'bachata',
         u'バチャータ',
