@@ -9,42 +9,31 @@ class TestFoodSalsa(classifier_util.TestClassifier):
     classifier_func = staticmethod(classifier.is_salsa_event)
 
     def runTest(self):
-        self.assertNotEvent('1837327442944312')
+        for event_id in [
+            '597069203796616',
+            '314224369066155',
+            '394488887658045',
+            '137419906955466',
+            '1883229155325758',
+            '1490262087724919',
+            '241729456364219',
+            '166178407473901',
+            '328346594242548',
+            '1487841387998564',
+            '298460944016731',
+            '2063158660376210',
+            '167367140518143',
+            '786669468197169',
+            '1667505486635344',
+            '184798295440137',
+            '736502189887397',
+            '448420245336858',
+            '1917059178551409',
+            '505865189813278',
+            '119912795431444',
+        ]:
+            self.assertEvent(event_id)
 
-
-class TestLatinCompetition(classifier_util.TestClassifier):
-    classifier_func = staticmethod(classifier.is_salsa_event)
-
-    def runTest(self):
-        self.assertEvent('151555808837731')
-        self.assertEvent('1821516191478841')
-        self.assertEvent('235945840191010')
-        self.assertEvent('2092023671075343')
-        self.assertEvent('1553984067995241')
-        self.assertEvent('1422208217907436')
-        self.assertEvent('344249636077753')
-        self.assertEvent('165088020802863')
-
-
-class TestLatinClass(classifier_util.TestClassifier):
-    classifier_func = staticmethod(classifier.is_salsa_event)
-
-    def runTest(self):
-        self.assertEvent('154418185279514')
-        self.assertEvent('176239869784234')
-        self.assertEvent('141598903209252')
-        self.assertEvent('1801249549949792')
-        self.assertEvent('1819024858358233')
-        self.assertEvent('192105941525864')
-        self.assertEvent('958189144215292')
-        self.assertEvent('313780035693230')
-        self.assertEvent('10153148050940861')
-
-
-# Salsa intermedia performance group
-# self.assertEvent('710368129168209')
-# dance contest, with salsa/bachata keywords
-#        self.assertEvent('1765036530470368')
 
 if __name__ == '__main__':
     print unittest.main()

@@ -38,7 +38,7 @@ BALLROOM_KEYWORDS = Any(
 )
 
 
-def is_salsa_event(classified_event):
+def is_ballroom_event(classified_event):
     result = is_many_ballroom_styles(classified_event)
     if result[0]:
         return result
