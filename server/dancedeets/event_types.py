@@ -4,6 +4,7 @@ class Verticals(object):
 
 VERTICALS = Verticals()
 VERTICALS.STREET = 'STREET'  # hiphop, house, breaking, popping, locking, waacking, vogue, krump, etc
+VERTICALS.BALLROOM = 'BALLROOM'
 VERTICALS.LATIN = 'LATIN'  # salsa, bachata, chacha, rumba, merengue
 VERTICALS.CAPOEIRA = 'CAPOEIRA'
 VERTICALS.SPANISH = 'SPANISH'  # tango, bachata?

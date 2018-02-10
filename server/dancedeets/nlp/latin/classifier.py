@@ -116,9 +116,9 @@ def is_many_latin_styles(classified_event):
 
 
 def is_dance_event(classified_event):
-    real_keywords = classified_event.processed_text.get_tokens(REAL_DANCE)
-    if real_keywords:
-        return (True, 'Found strong keywords: %s' % real_keywords, event_types.VERTICALS.LATIN)
+    dance_keywords = classified_event.processed_text.get_tokens(GOOD_DANCE)
+    if dance_keywords:
+        return (True, 'Found strong dance keywords: %s' % dance_keywords, event_types.VERTICALS.LATIN)
 
     return (False, '', [])
 
@@ -132,10 +132,6 @@ def is_dance_workshop(classified_event):
 
 
 def is_dance_battle(classified_event):
-    dance_keywords = classified_event.processed_text.get_tokens(GOOD_DANCE)
-    if dance_keywords:
-        return (True, 'Found strong dance keywords: %s' % dance_keywords, event_types.VERTICALS.LATIN)
-
     good_contest = classified_event.processed_text.get_tokens(GOOD_DANCE_BATTLE)
     if good_contest:
         return (True, 'Found dance contest: %s' % good_contest, event_types.VERTICALS.LATIN)

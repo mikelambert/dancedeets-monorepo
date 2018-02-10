@@ -1,8 +1,11 @@
 # -*-*- encoding: utf-8 -*-*-
 
 from dancedeets import event_types
-from .street import classifier as street_classifier
+from .ballroom import classifier as ballroom_classifier
+from .capoeira import classifier as capoeira_classifier
 from .latin import classifier as latin_classifier
+from .street import classifier as street_classifier
+from .swing import classifier as swing_classifier
 
 
 def is_auto_add_event(classified_event):
@@ -23,6 +26,22 @@ class AutoClassifier(object):
         verticals = []
 
         result = latin_classifier.is_salsa_event(self.classified_event)
+        if result[0]:
+            verticals.append(result[2])
+
+        result = street_classifier.is_street_event(self.classified_event)
+        if result[0]:
+            verticals.append(result[2])
+
+        result = capoeira_classifier.is_capoeira_event(self.classified_event)
+        if result[0]:
+            verticals.append(result[2])
+
+        result = ballroom_classifier.is_ballroom_event(self.classified_event)
+        if result[0]:
+            verticals.append(result[2])
+
+        result = swing_classifier.is_swing_event(self.classified_event)
         if result[0]:
             verticals.append(result[2])
 
