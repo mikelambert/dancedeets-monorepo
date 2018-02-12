@@ -111,11 +111,11 @@ class DanceStyleEventClassifier(object):
         result = self.has_strong_title()
         if result: return result
 
-        result = self.is_workshop()
+        result = self.is_competition()
         if result: return result
 
         # generally catches practice or performances
-        result = self.has_strong_event_on_short_line()
+        result = self.has_strong_body()
         if result: return result
 
         # has a list of scheduled timeslots with some good styles in it
@@ -253,6 +253,3 @@ class DanceStyleEventClassifier(object):
             if len(good_lines) > len(schedule_lines) / 10:
                 return 'found schedule list with good styles'
         return False
-
-    def has_many_street_styles(self):
-        pass
