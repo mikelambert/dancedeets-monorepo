@@ -4,6 +4,7 @@ import codecs
 import glob
 import itertools
 import logging
+import os
 import re
 
 from . import regex_keywords
@@ -20,6 +21,9 @@ class GrammarRule(object):
 
     def __init__(self):
         self._cached_double_regex = {}
+
+    def name(self):
+        return 'GrammarRule?'
 
     def hack_double_regex(self, flags=0):
         if flags not in self._cached_double_regex:
@@ -82,6 +86,9 @@ class Any(_BaseAlternation):
             raise ValueError("Any() arguments need to be str, unicode, or a GrammarRule object: %s" % non_rule_or_string)
         self._keywords = tuple(keywords)
 
+    def name(self):
+        return 'Any(%s,%s,...)' % tuple(self._keywords[0:2])
+
 
 STRONG = 0
 STRONG_WEAK = 1
@@ -93,6 +100,9 @@ class FileBackedKeyword(_BaseAlternation):
         self._filename = filename
         self._strength = strength
         self.__keywords = None
+
+    def name(self):
+        return os.path.basename(self._filename)
 
     @property
     def _keywords(self):
@@ -145,6 +155,9 @@ class Ordered(GrammarRule):
         super(Ordered, self).__init__()
         self.args = args
 
+    def name(self):
+        return 'Ordered(%s)' % ', '.join([x.name() for x in self.args])
+
     def children(self):
         return self.args
 
@@ -159,6 +172,9 @@ class RegexRule(GrammarRule):
     def __init__(self, regex):
         super(RegexRule, self).__init__()
         self.regex = regex
+
+    def name(self):
+        return 'Regex(\'%s...\')' % self.regex[:10]
 
     def children(self):
         return []
@@ -184,6 +200,9 @@ class Name(_BaseAlternation):
                 non_rules = [x for x in rules if not isinstance(x, GrammarRule)]
                 raise ValueError("Found non-GrammarRule in input rule %s: %s" % (sub_rule, non_rules))
             rules = list(itertools.chain(*(list(x.children()) for x in rules)))
+
+    def name(self):
+        return self._name
 
     def replace_string(self, *args):
         if args:
