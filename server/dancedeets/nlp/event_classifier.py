@@ -216,6 +216,10 @@ class ClassifiedEvent(object):
         self.processed_text.real_tokenize(keywords.STYLE_BEBOP)
         self.processed_text.real_tokenize(keywords.STYLE_ALLSTYLE)
 
+        # Or if there are bad keywords, lets see if we can find good keywords on a short line
+        short_lines = [line for line in self.final_search_text.split('\n') if len(line) > 500]
+        self.processed_short_lines = StringProcessor('\n'.join(short_lines), self.boundaries)
+
         self.final_search_text = self.processed_text.get_tokenized_text()
         search_text = self.final_search_text
 

@@ -435,16 +435,7 @@ def has_good_djs_title(classified_event):
 
 
 def is_performance_or_practice(classified_event):
-    text = classified_event.processed_text.get_tokenized_text()
-
-    performances_and_practices = []
-    for line in text.split('\n'):
-        pline = event_classifier.StringProcessor(line, classified_event.boundaries)
-        if len(line) > 500:
-            continue
-        pp = pline.has_token(rules.PERFORMANCE_PRACTICE)
-        if pp:
-            performances_and_practices.append(pp)
+    performances_and_practices = classified_event.processed_short_lines.has_token(rules.PERFORMANCE_PRACTICE)
     if performances_and_practices:
         return True, 'found good performance/practice keywords: %s' % performances_and_practices
     return False, 'no good keywords'
