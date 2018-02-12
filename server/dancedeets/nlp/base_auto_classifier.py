@@ -1,3 +1,4 @@
+import datetime
 from . import event_classifier
 from . import event_structure
 from . import grammar
@@ -25,6 +26,7 @@ def _log_to_bucket(category):
 
 AMBIGUOUS_DANCE = keywords.AMBIGUOUS_DANCE_MUSIC
 GOOD_DANCE = Any(rules.good_dance, rules.MANUAL_DANCER[grammar.STRONG_WEAK])
+GOOD_OR_AMBIGUOUS_DANCE = Any(AMBIGUOUS_DANCE, GOOD_DANCE)
 BAD_DANCE = Any(
     keywords.DANCE_WRONG_STYLE,
     keywords.DANCE_WRONG_STYLE_TITLE_ONLY,
@@ -65,19 +67,34 @@ class DanceStyleEventClassifier(object):
             raise ValueError('Need to configure vertical')
 
     # utility methods
+    def _short_lines_get(self, keyword):
+        result = self._classified_event.processed_short_lines.get_tokens(keyword)
+        self._log('Searching short lines for %s, got: %s', keyword.name(), result)
+        return result
+
+    def _short_lines_get(self, keyword):
+        result = self._classified_event.processed_short_lines.get_tokens(keyword)
+        self._log('Searching short lines for %s, got: %s', keyword.name(), result)
+        return result
+
+    def _get(self, keyword):
+        result = self._classified_event.processed_text.get_tokens(keyword)
+        self._log('Searching text for %s, got: %s', keyword.name(), result)
+        return result
+
     def _title_has(self, keyword):
         result = self._classified_event.processed_title.has_token(keyword)
-        self._log('Searching title for %s, found: %s', keyword.name(), result)
+        self._log('Searching title for %s, have: %s', keyword.name(), result)
         return result
 
     def _short_lines_have(self, keyword):
         result = self._classified_event.processed_short_lines.has_token(keyword)
-        self._log('Searching short lines for %s, found: %s', keyword.name(), result)
+        self._log('Searching short lines for %s, have: %s', keyword.name(), result)
         return result
 
     def _has(self, keyword):
         result = self._classified_event.processed_text.has_token(keyword)
-        self._log('Searching text for %s, found: %s', keyword.name(), result)
+        self._log('Searching text for %s, have: %s', keyword.name(), result)
         return result
 
     def _log(self, log, *args):
@@ -98,6 +115,10 @@ class DanceStyleEventClassifier(object):
 
         # generally catches practice or performances
         result = self.has_strong_event_on_short_line()
+        if result: return result
+
+        # has a list of scheduled timeslots with some good styles in it
+        result = self.has_list_of_good_classes()
         if result: return result
 
         return False
@@ -168,7 +189,7 @@ class DanceStyleEventClassifier(object):
 
     @_log_to_bucket('competition')
     def is_competition(self):
-        if not self.quick_is_dance_event():
+        if not self._quick_is_dance_event():
             self._log('not a sufficiently dancey event')
             return False
 
@@ -177,11 +198,48 @@ class DanceStyleEventClassifier(object):
         has_start_judge = self._has(rules.START_JUDGE)
         is_battle_event = (has_start_judge or has_competitors or has_competition)
 
-        if is_battle_event and len(set(self._short_lines_have(GOOD_DANCE))) >= 2 and not self._short_lines_have(BAD_DANCE):
+        if is_battle_event and len(set(self._short_lines_get(GOOD_DANCE))) >= 2 and not self._short_lines_have(BAD_DANCE):
             return True
 
     def has_list_of_good_classes(self):
-        pass
+        if not self._quick_is_dance_event():
+            return False
+
+        start_time = self._classified_event.start_time
+        end_time = self._classified_event.end_time
+        # Ignore club events (ends in the morning and less than 12 hours long)
+        if end_time and end_time.time() < datetime.time(12) and end_time - start_time < datetime.timedelta(hours=12):
+            return False
+
+        if len(set(self._get(keywords.CLUB_ONLY))) > 2:
+            return False
+        if self._title_has(keywords.DANCE_WRONG_STYLE):
+            return False
+
+        # if title is good strong keyword, and we have a list of classes:
+        # why doesn't this get found by the is_workshop title classifier? where is our "camp" keyword
+        # https://www.dancedeets.com/events/admin_edit?event_id=317006008387038
+
+        schedule_groups = event_structure.get_schedule_line_groups(self._classified_event)
+        for schedule_lines in schedule_groups:
+            good_lines = []
+            for line in schedule_lines:
+                proc_line = event_classifier.StringProcessor(line, self._classified_event.boundaries)
+                good_matches = proc_line.get_tokens(GOOD_OR_AMBIGUOUS_DANCE)
+                has_bad_matches = proc_line.has_token(BAD_DANCE)
+
+                # Sometimes we have a schedule with hiphop and ballet
+                # Sometimes we have a schedule with hiphop and dj and beatbox/rap (more on music side)
+                # Sometimes we have a schedule with hiphop, house, and beatbox (legit, crosses boundaries)
+                # TODO: Should do a better job of classifying the ambiguous music/dance types, based on the presence of non-ambiguous dance types too
+                if good_matches and not has_bad_matches:
+                    self._log('Found %s in line', good_matches)
+                    good_lines.append(good_matches)
+            # If more than 10% are good, then we found a good class
+            self._log('Found %s of %s events with good styles', len(good_lines), len(schedule_lines))
+            if len(good_lines) > len(schedule_lines) / 10:
+                return True
+        return False
 
     def has_many_street_styles(self):
         pass

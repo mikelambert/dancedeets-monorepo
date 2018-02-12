@@ -81,6 +81,12 @@ def has_list_of_good_classes(classified_event):
     if not classified_event.is_dance_event():
         return (False, 'not a dance event')
 
+    start_time = classified_event.start_time
+    end_time = classified_event.end_time
+    # Ignore club events (ends in the morning and less than 12 hours long)
+    if end_time and end_time.time() < datetime.time(12) and end_time - start_time < datetime.timedelta(hours=12):
+        return False, 'end time indicates club event'
+
     club_only_matches = classified_event.processed_text.get_tokens(keywords.CLUB_ONLY)
     if len(club_only_matches) > 2:
         return False, 'too many club keywords: %s' % club_only_matches
@@ -109,11 +115,7 @@ def has_list_of_good_classes(classified_event):
             # TODO: Should do a better job of classifying the ambiguous music/dance types, based on the presence of non-ambiguous dance types too
             if (dance_class_style_matches or manual_dancers or dance_and_music_matches) and not dance_wrong_style_matches:
                 good_lines.append(dance_class_style_matches + manual_dancers + dance_and_music_matches)
-        start_time = classified_event.start_time
-        end_time = classified_event.end_time
-        if len(good_lines) > len(schedule_lines) / 10 and (
-            not end_time or end_time.time() > datetime.time(12) or end_time - start_time > datetime.timedelta(hours=12)
-        ):
+        if len(good_lines) > len(schedule_lines) / 10:
             return True, 'found good schedule: %s: %s' % ('\n'.join(schedule_lines), good_lines)
     return False, ''
 
