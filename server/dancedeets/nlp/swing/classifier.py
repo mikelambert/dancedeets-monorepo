@@ -20,6 +20,7 @@ REAL_DANCE = Any(
     'st louis shag',
     'modern jive',
     'jitterbug',
+    'slow drag',
 )
 
 AMBIGUOUS_WORDS = Any(
