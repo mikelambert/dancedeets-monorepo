@@ -67,9 +67,9 @@ class DanceStyleEventClassifier(object):
             raise ValueError('Need to configure vertical')
 
     # utility methods
-    def _short_lines_get(self, keyword):
-        result = self._classified_event.processed_short_lines.get_tokens(keyword)
-        self._log('Searching short lines for %s, got: %s', keyword.name(), result)
+    def _title_get(self, keyword):
+        result = self._classified_event.processed_title.get_tokens(keyword)
+        self._log('Searching title for %s, got: %s', keyword.name(), result)
         return result
 
     def _short_lines_get(self, keyword):
