@@ -1,4 +1,5 @@
 import datetime
+import re
 from . import event_classifier
 from . import event_structure
 from . import grammar
@@ -177,13 +178,25 @@ class DanceStyleEventClassifier(object):
         else:
             good_dance_event = GOOD_DANCE_EVENT
 
-        # Body has "hiphop dance workshop" and body doesn't disqualify it ("modern dance")
         if self._has(good_dance_event) and not self._has(BAD_DANCE):
             return "body has good dance event, and title does not have bad keywords"
 
-        good_event_types = self._classified_event.processed_short_lines.has_token(rules.PERFORMANCE_PRACTICE)
-        if good_event_types:
+        if self._short_lines_have(good_dance_event):
             return "body has short line containing good dance event"
+
+        # have some strong keywords on lines by themselves
+        solo_lines_regex = GOOD_DANCE.hack_double_regex()[self._classified_event.boundaries]
+        good_matches = set()
+        for line in self._classified_event.search_text.split('\n'):
+            alpha_line = re.sub(r'\W+', '', line)
+            if not alpha_line:
+                continue
+            remaining_line = solo_lines_regex.sub('', line)
+            deleted_length = len(line) - len(remaining_line)
+            if 0.5 < 1.0 * deleted_length / len(alpha_line):
+                good_matches.add(solo_lines_regex.findall(line)[0])  # at most one keyword per line
+        if len(good_matches) >= 2:
+            return 'found good keywords on lines by themselves: %s' % set(good_matches)
 
         return False
 
@@ -199,7 +212,7 @@ class DanceStyleEventClassifier(object):
         is_battle_event = (has_start_judge or has_competitors or has_competition)
 
         if is_battle_event and len(set(self._short_lines_get(GOOD_DANCE))) >= 2 and not self._short_lines_have(BAD_DANCE):
-            return True
+            return 'is battle event, with a few good keywords, and no bad keywords'
 
     def has_list_of_good_classes(self):
         if not self._quick_is_dance_event():
@@ -238,11 +251,8 @@ class DanceStyleEventClassifier(object):
             # If more than 10% are good, then we found a good class
             self._log('Found %s of %s events with good styles', len(good_lines), len(schedule_lines))
             if len(good_lines) > len(schedule_lines) / 10:
-                return True
+                return 'found schedule list with good styles'
         return False
 
     def has_many_street_styles(self):
-        pass
-
-    def has_standalone_keywords(self):
         pass
