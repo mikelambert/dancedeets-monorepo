@@ -1,4 +1,5 @@
 from . import event_classifier
+from . import event_structure
 from . import grammar
 from street import keywords
 from street import rules
@@ -22,12 +23,22 @@ def _log_to_bucket(category):
     return wrap_func
 
 
-STRONG_EVENT = Name(
-    'PERFORMANCE_PRACTICE', commutative_connected(rules.GOOD_DANCE, Any(
-        keywords.PERFORMANCE,
-        keywords.PRACTICE,
-        keywords.BATTLE,
-    ))
+GOOD_DANCE = Any(rules.good_dance, rules.MANUAL_DANCER[grammar.STRONG_WEAK])
+EVENT_TYPE = Any(
+    keywords.CLASS,
+    keywords.AUDITION,
+    keywords.PERFORMANCE,
+    keywords.PRACTICE,
+    keywords.BATTLE,
+)
+EVENT_TYPE_ROMANCE = Any(EVENT_TYPE, keywords.ROMANCE_EXTENDED_CLASS)
+GOOD_DANCE_EVENT = commutative_connected(rules.good_dance, EVENT_TYPE)
+GOOD_DANCE_EVENT_ROMANCE = commutative_connected(rules.good_dance, EVENT_TYPE_ROMANCE)
+BAD_DANCE_KEYWORDS = Any(
+    keywords.DANCE_WRONG_STYLE,
+    keywords.DANCE_WRONG_STYLE_TITLE_ONLY,
+    keywords.WRONG_BATTLE_STYLE,
+    keywords.WRONG_AUDITION,
 )
 
 
@@ -64,7 +75,8 @@ class DanceStyleEventClassifier(object):
 
     # top-level function
     def is_dance_event(self):
-        result = self.is_audition()
+        # Handles all audition cases
+        result = self.has_strong_title()
         if result: return result
 
         result = self.is_workshop()
@@ -91,85 +103,62 @@ class DanceStyleEventClassifier(object):
                 return True
         return False
 
-    @_log_to_bucket('audition')
-    def is_audition(self):
-        if not self._quick_is_dance_event():
-            self._log('not a sufficiently dancey event')
-            return False
-
-        # first check for audition in title
-        has_audition = self._title_has(keywords.AUDITION)
-        if not has_audition:
-            return False
-
-        # now check for good keywords in title
-        has_good_dance_title = self._title_has(rules.GOOD_DANCE)
-        has_extended_good_crew_title = self._title_has(rules.MANUAL_DANCER[grammar.STRONG_WEAK])
-        if has_good_dance_title or has_extended_good_crew_title:
-            return "audition title and good keywords"
-
-        # now check the body for good stuff and no bad stuff
-        has_good_dance = self._has(rules.GOOD_DANCE)
-        if not has_good_dance:
-            return False
-
-        has_wrong_style = self._has(rules.DANCE_WRONG_STYLE_TITLE)
-        has_wrong_audition = self._has(keywords.WRONG_AUDITION)
-        if has_wrong_style or has_wrong_audition:
-            return False
-
-        return "audition title and body has good and not bad keywords"
-
-    @_log_to_bucket('workshop')
-    def is_workshop(self):
+    @_log_to_bucket('strong_title')
+    def has_strong_title(self):
         if self._has_wrong_meaning_for_style(self):
             return False
 
-        # Has "hiphop dance workshop"
-        has_good_dance_class_title = self._title_has(rules.GOOD_DANCE_CLASS)
-        if has_good_dance_class_title:
-            return "title has good dance workshop"
-
-        # Has "workshop" and ("hiphop dance" or "moptop") and not "modern"
-        #TODO: solve the problem of "modern hiphop dance workshop" or "hiphop dance at my ballet studio" titles again.
         # Some super-basic language specialization
         if self._has(keywords.ROMANCE):
-            has_class_title = self._title_has(rules.ROMANCE_EXTENDED_CLASS)
+            event_type = EVENT_TYPE_ROMANCE
+            good_dance_event = GOOD_DANCE_EVENT_ROMANCE
         else:
-            has_class_title = self._title_has(keywords.CLASS)
-        has_good_dance_title = self._title_has(rules.GOOD_DANCE)
-        has_extended_good_crew_title = self._title_has(rules.MANUAL_DANCER[grammar.STRONG_WEAK])
-        has_wrong_style_title = self._title_has(rules.DANCE_WRONG_STYLE_TITLE)
-        if has_class_title and (has_good_dance_title or has_extended_good_crew_title) and not has_wrong_style_title:
-            return "title has workshop, good and not bad keywords"
+            event_type = EVENT_TYPE
+            good_dance_event = GOOD_DANCE_EVENT
+
+        # Has "hiphop dance workshop/battle/audition"
+        if self._title_has(good_dance_event):
+            return "title has good_dance-event_type"
+
+        # Has "workshop" and ("hiphop dance" or "moptop") and not "modern"
+        # If the title contains a good keyword, and the body contains a bad keyword, this one will trigger (but the one below will not)
+        if self._title_has(event_type) and self._title_has(GOOD_DANCE) and not self._title_has(BAD_DANCE_KEYWORDS):
+            return "title has event_type, good and not bad keywords"
 
         # Has "workshop" and body has ("hiphop dance" but not "ballet")
-        has_wrong_style = self._has(rules.DANCE_WRONG_STYLE_TITLE)
-        has_good_dance = self._has(rules.GOOD_DANCE)
-        has_good_crew = self._has(rules.MANUAL_DANCER[grammar.STRONG])
-        if has_class_title and not has_wrong_style and (has_good_dance or has_good_crew):
-            return "title has workshop, body had good and not bad keywords"
-
-        # Body has "workshop" and title doesn't disqualify it ("modern dance workshop")
-        has_good_dance_class = self._has(rules.GOOD_DANCE_CLASS)
-        if has_good_dance_class and not has_wrong_style_title:
-            return "body has good dance workshop, and title does not have bad keywords"
+        if self._title_has(event_type) and self._has(GOOD_DANCE) and not self._has(BAD_DANCE_KEYWORDS):
+            return "title has event_type, body had good and not bad keywords"
 
         return False
 
-    @_log_to_bucket('strong_event_on_short_line')
-    def has_strong_event_on_short_line(self):
+    @_log_to_bucket('strong_body')
+    def has_strong_body(self):
+        if self._has_wrong_meaning_for_style(self):
+            return False
+
         text = self._classified_event.processed_text.get_tokenized_text()
 
+        # Some super-basic language specialization
+        if self._has(keywords.ROMANCE):
+            good_dance_event = GOOD_DANCE_EVENT_ROMANCE
+        else:
+            good_dance_event = GOOD_DANCE_EVENT
+
+        # Body has "hiphop dance workshop" and body doesn't disqualify it ("modern dance")
+        if self._has(good_dance_event) and not self._has(BAD_DANCE_KEYWORDS):
+            return "body has good dance event, and title does not have bad keywords"
+
+        # Or if there are bad keywords, lets see if we can find good keywords on a short line
         for line in text.split('\n'):
             pline = event_classifier.StringProcessor(line, self._classified_event.boundaries)
             # Skip the long bios with crap in them
             if len(line) > 500:
                 continue
-            pp = pline.has_token(STRONG_EVENT)
+            pp = pline.has_token(good_dance_event)
             if pp:
                 self._log('found strong event (%s) on short line: %s', pp, pline)
-                return True
+                return "body has short line containing good dance event"
+
         return False
 
     def has_list_of_good_classes(self):
