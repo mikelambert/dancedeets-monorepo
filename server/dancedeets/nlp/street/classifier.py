@@ -81,60 +81,21 @@ def has_list_of_good_classes(classified_event):
     if not classified_event.is_dance_event():
         return (False, 'not a dance event')
 
-    # if title is good strong keyword, and we have a list of classes:
-    # why doesn't this get found by the is_workshop title classifier? where is our "camp" keyword
-    # https://www.dancedeets.com/events/admin_edit?event_id=317006008387038
-
-    # (?!20[01][05])
-    time = r'\b[012]?\d[:.,h]?(?:[0-5][05])?(?:am|pm)?\b'
-    time_with_minutes = r'\b[012]?\d[:.,h]?(?:[0-5][05])(?:am|pm)?\b'
-    time_to_time = r'%s ?(?:to|do|до|til|till|alle|a|-|–|[^\w,.]) ?%s' % (time, time)
-
-    text = classified_event.final_search_text
     club_only_matches = classified_event.processed_text.get_tokens(keywords.CLUB_ONLY)
     if len(club_only_matches) > 2:
         return False, 'too many club keywords: %s' % club_only_matches
     title_wrong_style_matches = classified_event.processed_title.has_token(keywords.DANCE_WRONG_STYLE)
     if title_wrong_style_matches:
         return False, 'wrong style in the title: %s' % title_wrong_style_matches
-    # We try to grab all lines in schedule up until schedule ends,
-    # so we need a "non-schedule line at the end", aka ['']
-    lines = text.split('\n') + ['']
-    idx = 0
-    schedule_lines = []
-    while idx < len(lines):
-        first_idx = idx
-        while idx < len(lines):
-            line = lines[idx]
-            # if it has
-            # grab time one and time two, store diff
-            # store delimiters
-            # maybe store description as well?
-            # compare delimiters, times, time diffs, styles, etc
-            times = re.findall(time_to_time, line)
-            if not times or len(line) > 80:
-                if idx - first_idx >= 1:
-                    schedule_lines.append(lines[first_idx:idx])
-                break
-            idx += 1
-        first_idx = idx
-        while idx < len(lines):
-            line = lines[idx]
-            times = re.findall(time, line)
-            # TODO(lambert): Somehow track "1)" that might show up here? :(
-            times = [x for x in times if x not in ['1.', '2.']]
-            if not times or len(line) > 80:
-                if idx - first_idx >= 3:
-                    schedule_lines.append(lines[first_idx:idx])
-                break
-            idx += 1
-        idx += 1
 
-    for sub_lines in schedule_lines:
+    # if title is good strong keyword, and we have a list of classes:
+    # why doesn't this get found by the is_workshop title classifier? where is our "camp" keyword
+    # https://www.dancedeets.com/events/admin_edit?event_id=317006008387038
+
+    schedule_groups = event_structure.get_schedule_line_groups(classified_event)
+    for schedule_lines in schedule_groups:
         good_lines = []
-        if not [x for x in sub_lines if re.search(time_with_minutes, x)]:
-            continue
-        for line in sub_lines:
+        for line in schedule_lines:
             proc_line = event_classifier.StringProcessor(line, classified_event.boundaries)
             proc_line.tokenize(keywords.AMBIGUOUS_DANCE_MUSIC)
             dance_class_style_matches = proc_line.get_tokens(rules.GOOD_DANCE)
@@ -150,10 +111,10 @@ def has_list_of_good_classes(classified_event):
                 good_lines.append(dance_class_style_matches + manual_dancers + dance_and_music_matches)
         start_time = classified_event.start_time
         end_time = classified_event.end_time
-        if len(good_lines) > len(sub_lines) / 10 and (
+        if len(good_lines) > len(schedule_lines) / 10 and (
             not end_time or end_time.time() > datetime.time(12) or end_time - start_time > datetime.timedelta(hours=12)
         ):
-            return True, 'found good schedule: %s: %s' % ('\n'.join(sub_lines), good_lines)
+            return True, 'found good schedule: %s: %s' % ('\n'.join(schedule_lines), good_lines)
     return False, ''
 
 

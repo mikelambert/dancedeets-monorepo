@@ -45,3 +45,53 @@ def find_competitor_list(search_text):
                 if avg_words < 3:
                     return numbered_list
     return None
+
+
+def get_schedule_line_groups(classified_event):
+    text = classified_event.final_search_text
+
+    # (?!20[01][05])
+    time = r'\b[012]?\d[:.,h]?(?:[0-5][05])?(?:am|pm)?\b'
+    time_with_minutes = r'\b[012]?\d[:.,h]?(?:[0-5][05])(?:am|pm)?\b'
+    time_to_time = r'%s ?(?:to|do|до|til|till|alle|a|-|–|[^\w,.]) ?%s' % (time, time)
+
+    # We try to grab all lines in schedule up until schedule ends,
+    # so we need a "non-schedule line at the end", aka ['']
+    lines = text.split('\n') + ['']
+    idx = 0
+    schedule_lines = []
+    while idx < len(lines):
+        first_idx = idx
+        while idx < len(lines):
+            line = lines[idx]
+            # if it has
+            # grab time one and time two, store diff
+            # store delimiters
+            # maybe store description as well?
+            # compare delimiters, times, time diffs, styles, etc
+            times = re.findall(time_to_time, line)
+            if not times or len(line) > 80:
+                if idx - first_idx >= 1:
+                    schedule_lines.append(lines[first_idx:idx])
+                break
+            idx += 1
+        first_idx = idx
+        while idx < len(lines):
+            line = lines[idx]
+            times = re.findall(time, line)
+            # TODO(lambert): Somehow track "1)" that might show up here? :(
+            times = [x for x in times if x not in ['1.', '2.']]
+            if not times or len(line) > 80:
+                if idx - first_idx >= 3:
+                    schedule_lines.append(lines[first_idx:idx])
+                break
+            idx += 1
+        idx += 1
+
+    schedule_groups = []
+    for sub_lines in schedule_lines:
+        if not [x for x in sub_lines if re.search(time_with_minutes, x)]:
+            continue
+        schedule_groups.append(sub_lines)
+
+    return schedule_groups
