@@ -960,6 +960,7 @@ ACTUAL_LEVELS = Any(
 CLASS_LEVELS = Any(
     'intro(?:duction)? to',
     grammar.connected(LEVEL, grammar.RegexRule('[123]')),
+    ACTUAL_LEVELS,
     grammar.commutative_connected(ACTUAL_LEVELS, ACTUAL_LEVELS),
     grammar.commutative_connected(ACTUAL_LEVELS, LEVEL),
 )
