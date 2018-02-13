@@ -13,7 +13,7 @@ class TestFoodSalsa(classifier_util.TestClassifier):
 
 
 class TestLatinCompetition(classifier_util.TestClassifier):
-    classifier_func = staticmethod(classifier.is_salsa_event2)
+    classifier_func = staticmethod(classifier.is_salsa_event)
 
     def runTest(self):
         self.assertEvents(
@@ -31,7 +31,7 @@ class TestLatinCompetition(classifier_util.TestClassifier):
 
 
 class TestLatinClass(classifier_util.TestClassifier):
-    classifier_func = staticmethod(classifier.is_salsa_event2)
+    classifier_func = staticmethod(classifier.is_salsa_event)
 
     def runTest(self):
         self.assertEvents(
@@ -51,7 +51,7 @@ class TestLatinClass(classifier_util.TestClassifier):
 
 
 class TestSwingDance(classifier_util.TestClassifier):
-    classifier_func = staticmethod(classifier.is_salsa_event2)
+    classifier_func = staticmethod(classifier.is_salsa_event)
 
     def runTest(self):
         self.assertNotEvents(1.0, ['460976420932784'])

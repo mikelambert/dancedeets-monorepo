@@ -36,7 +36,8 @@ class RuleGenerator(type):
             return
         #TODO: temporary support for not having BAD_DANCE keywords set up across the board...
         cls.BAD_DANCE = cls.BAD_DANCE or Any('NEVER_FOUND_TOKEN')
-        cls.GOOD_OR_AMBIGUOUS_DANCE = Any(cls.AMBIGUOUS_DANCE, cls.GOOD_DANCE)
+        UNAMBIGUOUS_DANCE = commutative_connected(cls.AMBIGUOUS_DANCE, keywords.EASY_DANCE)
+        cls.GOOD_OR_AMBIGUOUS_DANCE = Any(cls.AMBIGUOUS_DANCE, UNAMBIGUOUS_DANCE, cls.GOOD_DANCE)
         cls.COMPETITIONS = Any(
             keywords.BATTLE,
             keywords.CONTEST,
@@ -50,7 +51,7 @@ class RuleGenerator(type):
             cls.COMPETITIONS,
         )
         cls.EVENT_TYPE_ROMANCE = Any(cls.EVENT_TYPE, keywords.ROMANCE_LANGUAGE_CLASS)
-        cls.GOOD_DANCE_COMPETITION = commutative_connected(Any(cls.GOOD_DANCE, cls.AMBIGUOUS_DANCE), cls.COMPETITIONS)
+        cls.GOOD_DANCE_COMPETITION = commutative_connected(Any(cls.GOOD_DANCE, cls.AMBIGUOUS_DANCE, UNAMBIGUOUS_DANCE), cls.COMPETITIONS)
         cls.GOOD_DANCE_EVENT = commutative_connected(cls.GOOD_DANCE, cls.EVENT_TYPE)
         cls.GOOD_DANCE_EVENT_ROMANCE = commutative_connected(cls.GOOD_DANCE, cls.EVENT_TYPE_ROMANCE)
         cls.BAD_DANCE_EVENT = commutative_connected(cls.BAD_DANCE, cls.EVENT_TYPE)
