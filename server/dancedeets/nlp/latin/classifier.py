@@ -1,9 +1,9 @@
 # -*-*- encoding: utf-8 -*-*-
 
 from dancedeets import event_types
+from .. import base_auto_classifier
 from .. import grammar
 from ..street import keywords
-
 Any = grammar.Any
 Name = grammar.Name
 connected = grammar.connected
@@ -87,7 +87,17 @@ all_class = Any(class_keywords, commutative_connected(keywords.PERFORMANCE, clas
 STYLE_CLASS = commutative_connected(ALL_LATIN_STYLES, all_class)
 
 
+class LatinClassifier(base_auto_classifier.DanceStyleEventClassifier):
+    vertical = 'latin'
+
+    AMBIGUOUS_DANCE = AMBIGUOUS_DANCE_MUSIC
+    GOOD_DANCE = Any(REAL_DANCE, SALSA)
+    BAD_DANCE = None
+    GOOD_BAD_PAIRINGS = [(SALSA, FOOD)]
+
+
 def is_salsa_event(classified_event):
+
     result = is_dance_event(classified_event)
     if result[0]:
         return result

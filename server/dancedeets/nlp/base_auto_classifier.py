@@ -25,23 +25,6 @@ def _log_to_bucket(category):
     return wrap_func
 
 
-AMBIGUOUS_DANCE = keywords.AMBIGUOUS_DANCE_MUSIC
-GOOD_DANCE = Any(rules.good_dance, rules.MANUAL_DANCER[grammar.STRONG_WEAK])
-GOOD_BAD_PAIRINGS = [
-    (keywords.STYLE_HOUSE, keywords.WRONG_HOUSE),
-    (keywords.STYLE_BREAK, keywords.WRONG_BREAK),
-    (keywords.STYLE_LOCK, keywords.WRONG_LOCK),
-    (keywords.STYLE_FLEX, keywords.WRONG_FLEX),
-    (keywords.STYLE_FLEX, keywords.WRONG_FLEX),
-]
-BAD_DANCE = Any(
-    keywords.DANCE_WRONG_STYLE,
-    keywords.DANCE_WRONG_STYLE_TITLE_ONLY,
-    keywords.WRONG_BATTLE_STYLE,
-    keywords.WRONG_AUDITION,
-)
-
-
 class RuleGenerator(type):
     def __init__(cls, name, parents, attr):
         super(RuleGenerator, cls).__init__(name, parents, attr)
@@ -178,11 +161,11 @@ class DanceStyleEventClassifier(object):
 
         # Has "workshop" and ("hiphop dance" or "moptop") and not "modern"
         # If the title contains a good keyword, and the body contains a bad keyword, this one will trigger (but the one below will not)
-        if self._title_has(event_type) and self._title_has(GOOD_DANCE) and not self._title_has(BAD_DANCE):
+        if self._title_has(event_type) and self._title_has(self.GOOD_DANCE) and not self._title_has(self.BAD_DANCE):
             return "title has event_type, good and not bad keywords"
 
         # Has "workshop" and body has ("hiphop dance" but not "ballet")
-        if self._title_has(event_type) and self._has(GOOD_DANCE) and not self._has(BAD_DANCE):
+        if self._title_has(event_type) and self._has(self.GOOD_DANCE) and not self._has(self.BAD_DANCE):
             return "title has event_type, body had good and not bad keywords"
 
         return False
@@ -195,14 +178,14 @@ class DanceStyleEventClassifier(object):
         else:
             good_dance_event = self.GOOD_DANCE_EVENT
 
-        if self._has(good_dance_event) and not self._has(BAD_DANCE):
+        if self._has(good_dance_event) and not self._has(self.BAD_DANCE):
             return "body has good dance event, and title does not have bad keywords"
 
         if self._short_lines_have(good_dance_event):
             return "body has short line containing good dance event"
 
         # have some strong keywords on lines by themselves
-        solo_lines_regex = GOOD_DANCE.hack_double_regex()[self._classified_event.boundaries]
+        solo_lines_regex = self.GOOD_DANCE.hack_double_regex()[self._classified_event.boundaries]
         good_matches = set()
         for line in self._classified_event.search_text.split('\n'):
             alpha_line = re.sub(r'\W+', '', line)
@@ -224,7 +207,7 @@ class DanceStyleEventClassifier(object):
         has_start_judge = self._has(rules.START_JUDGE)
         is_battle_event = (has_start_judge or has_competitors or has_competition)
 
-        if is_battle_event and len(set(self._short_lines_get(GOOD_DANCE))) >= 2 and not self._short_lines_have(BAD_DANCE):
+        if is_battle_event and len(set(self._short_lines_get(self.GOOD_DANCE))) >= 2 and not self._short_lines_have(self.BAD_DANCE):
             return 'is battle event, with a few good keywords, and no bad keywords'
 
         return False
@@ -265,3 +248,23 @@ class DanceStyleEventClassifier(object):
             if len(good_lines) > len(schedule_lines) / 10:
                 return 'found schedule list with good styles'
         return False
+
+
+class StreetClassifier(DanceStyleEventClassifier):
+    vertical = 'street'
+
+    AMBIGUOUS_DANCE = keywords.AMBIGUOUS_DANCE_MUSIC
+    GOOD_DANCE = Any(rules.good_dance, rules.MANUAL_DANCER[grammar.STRONG_WEAK])
+    GOOD_BAD_PAIRINGS = [
+        (keywords.STYLE_HOUSE, keywords.WRONG_HOUSE),
+        (keywords.STYLE_BREAK, keywords.WRONG_BREAK),
+        (keywords.STYLE_LOCK, keywords.WRONG_LOCK),
+        (keywords.STYLE_FLEX, keywords.WRONG_FLEX),
+        (keywords.STYLE_FLEX, keywords.WRONG_FLEX),
+    ]
+    BAD_DANCE = Any(
+        keywords.DANCE_WRONG_STYLE,
+        keywords.DANCE_WRONG_STYLE_TITLE_ONLY,
+        keywords.WRONG_BATTLE_STYLE,
+        keywords.WRONG_AUDITION,
+    )
