@@ -95,6 +95,14 @@ class LatinClassifier(base_auto_classifier.DanceStyleEventClassifier):
     BAD_DANCE = None
     GOOD_BAD_PAIRINGS = [(SALSA, FOOD)]
 
+    def is_dance_event(self):
+        return True
+
+
+def is_salsa_event2(classified_event):
+    classifier = LatinClassifier(classified_event)
+    return classifier.is_dance_event(), ''
+
 
 def is_salsa_event(classified_event):
 

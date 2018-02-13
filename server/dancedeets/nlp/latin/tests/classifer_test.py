@@ -13,32 +13,40 @@ class TestFoodSalsa(classifier_util.TestClassifier):
 
 
 class TestLatinCompetition(classifier_util.TestClassifier):
-    classifier_func = staticmethod(classifier.is_salsa_event)
+    classifier_func = staticmethod(classifier.is_salsa_event2)
 
     def runTest(self):
-        self.assertEvent('151555808837731')
-        self.assertEvent('1821516191478841')
-        self.assertEvent('235945840191010')
-        self.assertEvent('2092023671075343')
-        self.assertEvent('1553984067995241')
-        self.assertEvent('1422208217907436')
-        self.assertEvent('344249636077753')
-        self.assertEvent('165088020802863')
+        self.assertEvents(
+            1.0, [
+                '151555808837731',
+                '1821516191478841',
+                '235945840191010',
+                '2092023671075343',
+                '1553984067995241',
+                '1422208217907436',
+                '344249636077753',
+                '165088020802863',
+            ]
+        )
 
 
 class TestLatinClass(classifier_util.TestClassifier):
-    classifier_func = staticmethod(classifier.is_salsa_event)
+    classifier_func = staticmethod(classifier.is_salsa_event2)
 
     def runTest(self):
-        self.assertEvent('154418185279514')
-        self.assertEvent('176239869784234')
-        self.assertEvent('141598903209252')
-        self.assertEvent('1801249549949792')
-        self.assertEvent('1819024858358233')
-        self.assertEvent('192105941525864')
-        self.assertEvent('958189144215292')
-        self.assertEvent('313780035693230')
-        self.assertEvent('10153148050940861')
+        self.assertEvents(
+            1.0, [
+                '154418185279514',
+                '176239869784234',
+                '141598903209252',
+                '1801249549949792',
+                '1819024858358233',
+                '192105941525864',
+                '958189144215292',
+                '313780035693230',
+                '10153148050940861',
+            ]
+        )
 
 
 # Salsa intermedia performance group
