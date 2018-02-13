@@ -34,36 +34,47 @@ GOOD_BAD_PAIRINGS = [
     (keywords.STYLE_FLEX, keywords.WRONG_FLEX),
     (keywords.STYLE_FLEX, keywords.WRONG_FLEX),
 ]
-
-GOOD_OR_AMBIGUOUS_DANCE = Any(AMBIGUOUS_DANCE, GOOD_DANCE)
 BAD_DANCE = Any(
     keywords.DANCE_WRONG_STYLE,
     keywords.DANCE_WRONG_STYLE_TITLE_ONLY,
     keywords.WRONG_BATTLE_STYLE,
     keywords.WRONG_AUDITION,
 )
-COMPETITIONS = Any(
-    keywords.BATTLE,
-    keywords.CONTEST,
-    keywords.JAM,
-)
-EVENT_TYPE = Any(
-    keywords.CLASS,
-    keywords.AUDITION,
-    keywords.PERFORMANCE,
-    keywords.PRACTICE,
-    COMPETITIONS,
-)
-EVENT_TYPE_ROMANCE = Any(EVENT_TYPE, keywords.ROMANCE_EXTENDED_CLASS)
-GOOD_DANCE_COMPETITION = commutative_connected(Any(GOOD_DANCE, AMBIGUOUS_DANCE), COMPETITIONS)
-GOOD_DANCE_EVENT = commutative_connected(GOOD_DANCE, EVENT_TYPE)
-GOOD_DANCE_EVENT_ROMANCE = commutative_connected(GOOD_DANCE, EVENT_TYPE_ROMANCE)
-BAD_DANCE_EVENT = commutative_connected(BAD_DANCE, EVENT_TYPE)
-BAD_DANCE_EVENT_ROMANCE = commutative_connected(BAD_DANCE, EVENT_TYPE_ROMANCE)
+
+
+class RuleGenerator(type):
+    def __init__(cls, name, parents, attr):
+        super(RuleGenerator, cls).__init__(name, parents, attr)
+
+        cls.GOOD_OR_AMBIGUOUS_DANCE = Any(cls.AMBIGUOUS_DANCE, cls.GOOD_DANCE)
+        cls.COMPETITIONS = Any(
+            keywords.BATTLE,
+            keywords.CONTEST,
+            keywords.JAM,
+        )
+        cls.EVENT_TYPE = Any(
+            keywords.CLASS,
+            keywords.AUDITION,
+            keywords.PERFORMANCE,
+            keywords.PRACTICE,
+            cls.COMPETITIONS,
+        )
+        cls.EVENT_TYPE_ROMANCE = Any(cls.EVENT_TYPE, keywords.ROMANCE_EXTENDED_CLASS)
+        cls.GOOD_DANCE_COMPETITION = commutative_connected(Any(cls.GOOD_DANCE, cls.AMBIGUOUS_DANCE), cls.COMPETITIONS)
+        cls.GOOD_DANCE_EVENT = commutative_connected(cls.GOOD_DANCE, cls.EVENT_TYPE)
+        cls.GOOD_DANCE_EVENT_ROMANCE = commutative_connected(cls.GOOD_DANCE, cls.EVENT_TYPE_ROMANCE)
+        cls.BAD_DANCE_EVENT = commutative_connected(cls.BAD_DANCE, cls.EVENT_TYPE)
+        cls.BAD_DANCE_EVENT_ROMANCE = commutative_connected(cls.BAD_DANCE, cls.EVENT_TYPE_ROMANCE)
 
 
 class DanceStyleEventClassifier(object):
+    __meta__ = RuleGenerator
+
+    # mostly used for logging, for now...
     vertical = None
+
+    # rules and keywords
+    AMBIGUOUS_DANCE = None
     GOOD_DANCE = None
     BAD_DANCE = None
     GOOD_BAD_PAIRINGS = []
@@ -155,11 +166,11 @@ class DanceStyleEventClassifier(object):
     def has_strong_title(self):
         # Some super-basic language specialization
         if self._has(keywords.ROMANCE):
-            event_type = EVENT_TYPE_ROMANCE
-            good_dance_event = GOOD_DANCE_EVENT_ROMANCE
+            event_type = self.EVENT_TYPE_ROMANCE
+            good_dance_event = self.GOOD_DANCE_EVENT_ROMANCE
         else:
-            event_type = EVENT_TYPE
-            good_dance_event = GOOD_DANCE_EVENT
+            event_type = self.EVENT_TYPE
+            good_dance_event = self.GOOD_DANCE_EVENT
 
         # Has "hiphop dance workshop/battle/audition"
         if self._title_has(good_dance_event):
@@ -180,9 +191,9 @@ class DanceStyleEventClassifier(object):
     def has_strong_body(self):
         # Some super-basic language specialization
         if self._has(keywords.ROMANCE):
-            good_dance_event = GOOD_DANCE_EVENT_ROMANCE
+            good_dance_event = self.GOOD_DANCE_EVENT_ROMANCE
         else:
-            good_dance_event = GOOD_DANCE_EVENT
+            good_dance_event = self.GOOD_DANCE_EVENT
 
         if self._has(good_dance_event) and not self._has(BAD_DANCE):
             return "body has good dance event, and title does not have bad keywords"
@@ -208,7 +219,7 @@ class DanceStyleEventClassifier(object):
 
     @_log_to_bucket('competition')
     def is_competition(self):
-        has_competition = self._short_lines_have(GOOD_DANCE_COMPETITION)
+        has_competition = self._short_lines_have(self.GOOD_DANCE_COMPETITION)
         has_competitors = event_structure.find_competitor_list(self._classified_event.search_text)
         has_start_judge = self._has(rules.START_JUDGE)
         is_battle_event = (has_start_judge or has_competitors or has_competition)
@@ -239,8 +250,8 @@ class DanceStyleEventClassifier(object):
             good_lines = []
             for line in schedule_lines:
                 proc_line = event_classifier.StringProcessor(line, self._classified_event.boundaries)
-                good_matches = proc_line.get_tokens(GOOD_OR_AMBIGUOUS_DANCE)
-                has_bad_matches = proc_line.has_token(BAD_DANCE)
+                good_matches = proc_line.get_tokens(self.GOOD_OR_AMBIGUOUS_DANCE)
+                has_bad_matches = proc_line.has_token(self.BAD_DANCE)
 
                 # Sometimes we have a schedule with hiphop and ballet
                 # Sometimes we have a schedule with hiphop and dj and beatbox/rap (more on music side)
