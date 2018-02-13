@@ -76,6 +76,7 @@ FOOD = Any(
 
 GOOD_DANCE = Any(REAL_DANCE, commutative_connected(AMBIGUOUS_DANCE_MUSIC, keywords.EASY_DANCE))
 
+#TODO(all-styles): incorporate these...."additions"
 class_keywords = Any(keywords.CLASS, 'batch')
 all_class = Any(class_keywords, commutative_connected(keywords.PERFORMANCE, class_keywords))
 
@@ -94,4 +95,4 @@ class LatinClassifier(base_auto_classifier.DanceStyleEventClassifier):
 
 def is_salsa_event(classified_event):
     classifier = LatinClassifier(classified_event)
-    return classifier.is_dance_event(), classifier.debug_info()
+    return classifier.is_dance_event(), classifier.debug_info(), event_types.VERTICALS.LATIN
