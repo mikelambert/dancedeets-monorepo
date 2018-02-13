@@ -62,7 +62,7 @@ class RuleGenerator(type):
         cls.GOOD_DANCE_COMPETITION = Name(
             'GOOD_DANCE_COMPETITION', commutative_connected(Any(cls.GOOD_DANCE, cls.AMBIGUOUS_DANCE, UNAMBIGUOUS_DANCE), cls.COMPETITIONS)
         )
-        cls.GOOD_DANCE_EVENT = Name('GOOD_DANCE_EVENT', commutative_connected(cls.GOOD_DANCE, cls.EVENT_TYPE))
+        cls.GOOD_DANCE_EVENT = Name('GOOD_DANCE_EVENT', commutative_connected(Any(cls.GOOD_DANCE, UNAMBIGUOUS_DANCE), cls.EVENT_TYPE))
         cls.GOOD_DANCE_EVENT_ROMANCE = Name('GOOD_DANCE_EVENT_ROMANCE', commutative_connected(cls.GOOD_DANCE, cls.EVENT_TYPE_ROMANCE))
         cls.BAD_DANCE_EVENT = Name('BAD_DANCE_EVENT', commutative_connected(cls.BAD_DANCE, cls.EVENT_TYPE))
         cls.BAD_DANCE_EVENT_ROMANCE = Name('GOOD_DANCE_EVENT_ROMANCE', commutative_connected(cls.BAD_DANCE, cls.EVENT_TYPE_ROMANCE))
@@ -190,6 +190,10 @@ class DanceStyleEventClassifier(object):
         else:
             event_type = self.EVENT_TYPE
             good_dance_event = self.GOOD_DANCE_EVENT
+
+        # Has 'popping' and actually seems related-to-dance-as-a-whole
+        if self._title_has(self.GOOD_DANCE) and len(list(self._get(self.GOOD_OR_AMBIGUOUS_DANCE))) >= 3:
+            return 'title has good_dance'
 
         # Has 'hiphop dance workshop/battle/audition'
         if self._title_has(good_dance_event):

@@ -3,6 +3,7 @@
 from dancedeets import event_types
 from .. import base_auto_classifier
 from .. import grammar
+from ..ballroom import classifier as ballroom_classifier
 from ..street import keywords
 Any = grammar.Any
 Name = grammar.Name
@@ -98,5 +99,8 @@ class LatinClassifier(base_auto_classifier.DanceStyleEventClassifier):
 
 
 def is_salsa_event(classified_event):
+    if ballroom_classifier.is_ballroom_event(classified_event)[0]:
+        return (False, '', [])
+
     classifier = LatinClassifier(classified_event)
     return classifier.is_dance_event(), classifier.debug_info(), classifier.vertical

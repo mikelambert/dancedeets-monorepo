@@ -89,6 +89,7 @@ EASY_DANCE = Name(
         'bail[ae]\w*',  # dance spanish
         'danzas',  # dance spanish
         'ballerin[io]',  # dancer italian
+        'ballano',  # dance italian
         'dansare',  # dancers swedish
         'dansat',  # dancing swedish
         'dansama',  # dancers swedish

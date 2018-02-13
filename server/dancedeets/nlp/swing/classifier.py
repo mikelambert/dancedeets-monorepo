@@ -1,9 +1,10 @@
 # -*-*- encoding: utf-8 -*-*-
 
 from dancedeets import event_types
+from .. import base_auto_classifier
 from .. import grammar
-from ..street import keywords
 from ..ballroom import classifier as ballroom_classifier
+from ..street import keywords
 
 Any = grammar.Any
 Name = grammar.Name
@@ -17,19 +18,18 @@ REAL_DANCE = Any(
     'solo jazz',
     'carolina shag',
     'collegiate shag',
-    'st louis shag',
+    'st\W? louis shag',
     'modern jive',
     'jitterbug',
     'slow drag',
 )
 
 AMBIGUOUS_WORDS = Any(
-    'jive',
-    'swing',
-    'balboa',
+    'jive\w*',
+    'swing\w*',
+    'balboa\w*',
     'charleston',
     'shag',
-    'jive',
 )
 
 AMBIGUOUS_DANCE_MUSIC = Any('blues',)
@@ -48,9 +48,23 @@ STYLE_CLASS = commutative_connected(
 ALL_SWING_STYLES = Any(REAL_DANCE, AMBIGUOUS_WORDS, AMBIGUOUS_DANCE_MUSIC)
 
 
+class SwingClassifier(base_auto_classifier.DanceStyleEventClassifier):
+    vertical = event_types.VERTICALS.SWING
+
+    AMBIGUOUS_DANCE = Any(AMBIGUOUS_WORDS, AMBIGUOUS_DANCE_MUSIC)
+    GOOD_DANCE = REAL_DANCE
+    BAD_DANCE = None
+
+    def _quick_is_dance_event(self):
+        return True
+
+
 def is_swing_event(classified_event):
-    if ballroom_classifier.is_ballroom_event(classified_event):
-        return (False, '', [])
+    if ballroom_classifier.is_ballroom_event(classified_event)[0]:
+        return (False, ['Ballroom event'], [])
+
+    classifier = SwingClassifier(classified_event)
+    return classifier.is_dance_event(), classifier.debug_info(), classifier.vertical
 
     result = is_dance_event(classified_event)
     if result[0]:

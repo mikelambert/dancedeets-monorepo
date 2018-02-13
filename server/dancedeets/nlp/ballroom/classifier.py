@@ -66,8 +66,10 @@ def is_many_ballroom_styles(classified_event):
     all_styles = classified_event.processed_text.get_tokens(BALLROOM_STYLES)
     all_keywords = classified_event.processed_text.get_tokens(BALLROOM_KEYWORDS)
 
-    logging.warning('%s found styles %s, keywords %s', classified_event.fb_event['info']['id'], all_styles, all_keywords)
-    if len(set(all_keywords)) >= 1:
+    logging.info(
+        'ballroom classifier: event %s found styles %s, keywords %s', classified_event.fb_event['info']['id'], all_styles, all_keywords
+    )
+    if len(set(all_keywords)) >= 2:
         return (True, 'Found many ballroom styles: %s' % all_styles, event_types.VERTICALS.BALLROOM)
 
     if len(set(all_styles)) >= 1 and len(set(all_keywords)) >= 2:
@@ -76,4 +78,4 @@ def is_many_ballroom_styles(classified_event):
     if len(set(all_styles)) >= 3:
         return (True, 'Found many ballroom keywords (%s)' % all_keywords, event_types.VERTICALS.BALLROOM)
 
-    return (False, '', [])
+    return (False, '', None)
