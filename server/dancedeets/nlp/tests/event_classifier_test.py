@@ -18,12 +18,14 @@ class TestSoulSessionsOslo(unittest.TestCase):
 
 class TestDanceClass(unittest.TestCase):
     def runTest(self):
-        fb_event = dict(info=dict(name="FB Event", description="more stuff here with dance class"))
+        fb_event = dict(info=dict(name="FB Event", description="more stuff here, dance class"))
         classified_event = event_classifier.get_classified_event(fb_event)
         self.assertEqual(set(['dance']), classified_event.dance_matches())
         self.assertEqual(set(['class']), classified_event.event_matches())
 
         string_processor = event_classifier.StringProcessor(u'beginner breakdance')
+        self.assertTrue(string_processor.get_tokens(keywords.CLASS))
+        string_processor = event_classifier.StringProcessor(u'beginner')
         self.assertTrue(string_processor.get_tokens(keywords.CLASS))
 
 

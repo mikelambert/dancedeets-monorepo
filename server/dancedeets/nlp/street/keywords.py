@@ -957,95 +957,134 @@ ACTUAL_LEVELS = Any(
     'mixed',
     'open',
 )
-CLASS_LEVELS = Any(
+INTRODUCTION = Any(
     'intro(?:duction)? to',
+    u'iniciação ao',  # portuguese
+    u'introducción a',  # spanish
+    u'introduction à',  # french
+    'introduzione a',  # italian
+    u'einführung zu',  # german
+    u'紹介',  # japanese
+    u'介紹',  # chinese
+    u'소개',  # korean
+)
+CLASS_LEVELS = Any(
+    INTRODUCTION,
     grammar.connected(LEVEL, grammar.RegexRule('[123]')),
     ACTUAL_LEVELS,
     grammar.commutative_connected(ACTUAL_LEVELS, ACTUAL_LEVELS),
     grammar.commutative_connected(ACTUAL_LEVELS, LEVEL),
 )
 
+WITH = Name(
+    'WITH',
+    Any(
+        'with',
+        'avec',  # french
+        'con',  # spanish, italian
+        'mit',  # german
+        'ja',  # finish
+        u'同',
+        u'跟',
+        u'と',
+        u'와',
+    )
+)
+
+CLASS_ONLY = Any(
+    'work\W?shop(?:\W?s)?',
+    'ws',  # japanese workshop WS
+    'w\.s\.',  # japanese workshop W.S.
+    u'ワークショップ',  # japanese workshop
+    u'작업장',  # korean workshop
+    u'סדנת',  # hebrew workshop
+    u'בסדנה',  # hebrew workshop
+    u'בסדנא',  # hebrew workshop
+    u'הקורס',  # hebrew course
+    u'hội thảo',  # vietnamese workshop
+    'cursillo',  # spanish workshop
+    'ateliers?',  # french workshop
+    'workshopy',  # czech workshop
+    u'סדנאות',  # hebrew workshops
+    u'סדנה',  # hebew workshop
+    u'הסדנא',  # hebrew workshop
+    u'שיעורים',  # hebrew lessons
+    # 'taller', # workshop spanish
+    'delavnice',  # workshop slovak
+    'talleres',  # workshops spanish
+    'radionicama',  # workshop croatian
+    'warsztaty',  # polish workshop
+    u'warsztatów',  # polish workshop
+    u'seminarų',  # lithuanian workshop
+    'taller de',  # spanish workshop
+    'workshoppien',  # finnish workshops
+    'intensives?',
+    'intensivo',  # spanish intensive
+    'open class.?',
+    'class',
+    'master\W?class(?:es)?',
+    'company class',
+    u'мастер-класса?',  # russian master class
+    u'классa?',  # russian class
+    'class(?:es)?',
+    'lessons?',
+    'courses?',
+    # TODO: should i do a "class(?!ic)"
+    'klass(?:en)?',  # slovakian class
+    u'수업',  # korean class
+    u'수업을',  # korean classes
+    'lekc[ie]',  # czech lesson
+    u'課程',  # course chinese
+    u'課',  # class chinese
+    u'堂課',  # lesson chinese
+    u'表演班',  # performance class
+    u'專攻班',  # chinese specialized class
+    u'コース',  # course japanese
+    'cors[io]',  # course italian
+    'concorso',  # course italian
+    'concurso',  # course spanish
+    'cursuri',  # course romanian
+    'kur[sz](?:y|en)?',  # course german/polish/czech
+    'aulas?',  # portuguese class(?:es)?
+    u'특강',  # korean lecture
+    'lektion(?:en)?',  # german lecture
+    'lekcie',  # slovak lessons
+    'dansklasser',  # swedish dance classes
+    'lekcj[ai]',  # polish lesson
+    'eigoje',  # lithuanian course
+    'pamokas',  # lithuanian lesson
+    'kursai',  # course lithuanian
+    'kursas',  # course lithuanian
+    'lez\.',  # lesson italian
+    'lezion[ei]?',  # lesson italian
+    u'zajęciach',  # class polish
+    u'zajęcia',  # classes polish
+    u'คลาส',  # class thai
+    'classe',  # class italian
+    'classi',  # classes italin
+    'klasser?',  # norwegian class
+    'cours',
+    'clases?',
+    'formazione',  # training italian
+    'formazioni',  # training italian
+    u'トレーニング',  # japanese training
+    'teach(?:ing?|ers?)',
+)
+FREE = Any(
+    'free',
+    'kostenlose',  # german
+    'grat\w+',  # latin/romance languages
+    u'無料',  # japanese
+    u'免費',  # chinese
+    u'무료',  # kroean
+)
 CLASS = Name(
     'CLASS',
     Any(
+        CLASS_ONLY,
         CLASS_LEVELS,
-        'work\W?shop(?:\W?s)?',
-        'ws',  # japanese workshop WS
-        'w\.s\.',  # japanese workshop W.S.
-        u'ワークショップ',  # japanese workshop
-        u'작업장',  # korean workshop
-        u'סדנת',  # hebrew workshop
-        u'בסדנה',  # hebrew workshop
-        u'בסדנא',  # hebrew workshop
-        u'הקורס',  # hebrew course
-        u'hội thảo',  # vietnamese workshop
-        'cursillo',  # spanish workshop
-        'ateliers?',  # french workshop
-        'workshopy',  # czech workshop
-        u'סדנאות',  # hebrew workshops
-        u'סדנה',  # hebew workshop
-        u'הסדנא',  # hebrew workshop
-        u'שיעורים',  # hebrew lessons
-        # 'taller', # workshop spanish
-        'delavnice',  # workshop slovak
-        'talleres',  # workshops spanish
-        'radionicama',  # workshop croatian
-        'warsztaty',  # polish workshop
-        u'warsztatów',  # polish workshop
-        u'seminarų',  # lithuanian workshop
-        'taller de',  # spanish workshop
-        'workshoppien',  # finnish workshops
-        'intensives?',
-        'intensivo',  # spanish intensive
-        'open class.?',
-        'class with',
-        'master\W?class(?:es)?',
-        'company class',
-        u'мастер-класса?',  # russian master class
-        u'классa?',  # russian class
-        'class(?:es)?',
-        'lessons?',
-        'courses?',
-        # TODO: should i do a "class(?!ic)"
-        'klass(?:en)?',  # slovakian class
-        u'수업',  # korean class
-        u'수업을',  # korean classes
-        'lekc[ie]',  # czech lesson
-        u'課程',  # course chinese
-        u'課',  # class chinese
-        u'堂課',  # lesson chinese
-        u'表演班',  # performance class
-        u'專攻班',  # chinese specialized class
-        u'コース',  # course japanese
-        'cors[io]',  # course italian
-        'concorso',  # course italian
-        'concurso',  # course spanish
-        'cursuri',  # course romanian
-        'kur[sz](?:y|en)?',  # course german/polish/czech
-        'aulas?',  # portuguese class(?:es)?
-        u'특강',  # korean lecture
-        'lektion(?:en)?',  # german lecture
-        'lekcie',  # slovak lessons
-        'dansklasser',  # swedish dance classes
-        'lekcj[ai]',  # polish lesson
-        'eigoje',  # lithuanian course
-        'pamokas',  # lithuanian lesson
-        'kursai',  # course lithuanian
-        'kursas',  # course lithuanian
-        'lez\.',  # lesson italian
-        'lezion[ei]?',  # lesson italian
-        u'zajęciach',  # class polish
-        u'zajęcia',  # classes polish
-        u'คลาส',  # class thai
-        'classe',  # class italian
-        'classi',  # classes italin
-        'klasser?',  # norwegian class
-        'cours',
-        'clases?',
-        'formazione',  # training italian
-        'formazioni',  # training italian
-        u'トレーニング',  # japanese training
-        'teach(?:ing?|ers?)',
+        #WITH,
+        grammar.commutative_connected(CLASS_ONLY, Any(FREE, CLASS_LEVELS, WITH)),
     )
 )
 

@@ -63,8 +63,20 @@ class RuleGenerator(type):
         cls.GOOD_DANCE_COMPETITION = Name(
             'GOOD_DANCE_COMPETITION', commutative_connected(Any(cls.GOOD_DANCE_FULL, cls.AMBIGUOUS_DANCE), cls.COMPETITIONS)
         )
-        cls.GOOD_DANCE_EVENT = Name('GOOD_DANCE_EVENT', commutative_connected(cls.GOOD_DANCE_FULL, cls.EVENT_TYPE))
-        cls.GOOD_DANCE_EVENT_ROMANCE = Name('GOOD_DANCE_EVENT_ROMANCE', commutative_connected(cls.GOOD_DANCE_FULL, cls.EVENT_TYPE_ROMANCE))
+        cls.GOOD_DANCE_EVENT = Name(
+            'GOOD_DANCE_EVENT',
+            Any(
+                commutative_connected(cls.GOOD_DANCE_FULL, cls.EVENT_TYPE),
+                commutative_connected(cls.AMBIGUOUS_DANCE, keywords.CLASS),
+            )
+        )
+        cls.GOOD_DANCE_EVENT_ROMANCE = Name(
+            'GOOD_DANCE_EVENT_ROMANCE',
+            Any(
+                commutative_connected(cls.GOOD_DANCE_FULL, cls.EVENT_TYPE_ROMANCE),
+                commutative_connected(cls.AMBIGUOUS_DANCE, Any(keywords.CLASS, keywords.ROMANCE_LANGUAGE_CLASS)),
+            )
+        )
         cls.BAD_DANCE_EVENT = Name('BAD_DANCE_EVENT', commutative_connected(cls.BAD_DANCE, cls.EVENT_TYPE))
         cls.BAD_DANCE_EVENT_ROMANCE = Name('GOOD_DANCE_EVENT_ROMANCE', commutative_connected(cls.BAD_DANCE, cls.EVENT_TYPE_ROMANCE))
 
@@ -259,6 +271,7 @@ class DanceStyleEventClassifier(object):
 
         return False
 
+    @_log_to_bucket('list_of_good_classes')
     def has_list_of_good_classes(self):
         start_time = self._classified_event.start_time
         end_time = self._classified_event.end_time
