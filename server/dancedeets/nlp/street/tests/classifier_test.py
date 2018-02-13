@@ -93,5 +93,8 @@ class TestDanceBattle(TestClassifier):
         self.assertTrue(is_battle)
 
 
+# shoudld be breakdance event
+# '114633285919267'
+
 if __name__ == '__main__':
     print unittest.main()

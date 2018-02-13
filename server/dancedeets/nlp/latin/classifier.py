@@ -18,7 +18,6 @@ REAL_DANCE = Name(
         'cuban salsa',
         'salsa rueda',
         'rueda casino',
-        'salsa',
         'salsa cuba\w+',
         'salsa footwork',
         'salsa styling',
