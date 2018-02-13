@@ -82,7 +82,7 @@ all_class = Any(class_keywords, commutative_connected(keywords.PERFORMANCE, clas
 
 
 class LatinClassifier(base_auto_classifier.DanceStyleEventClassifier):
-    vertical = 'latin'
+    vertical = event_types.VERTICALS.LATIN
 
     AMBIGUOUS_DANCE = AMBIGUOUS_DANCE_MUSIC
     GOOD_DANCE = Any(REAL_DANCE, SALSA)
@@ -95,4 +95,4 @@ class LatinClassifier(base_auto_classifier.DanceStyleEventClassifier):
 
 def is_salsa_event(classified_event):
     classifier = LatinClassifier(classified_event)
-    return classifier.is_dance_event(), classifier.debug_info(), event_types.VERTICALS.LATIN
+    return classifier.is_dance_event(), classifier.debug_info(), classifier.vertical
