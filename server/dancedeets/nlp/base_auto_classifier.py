@@ -27,6 +27,9 @@ def _log_to_bucket(category):
     return wrap_func
 
 
+NEVER_TOKEN = Any('_NEVER_FOUND_TOKEN_WINVO:INDLKESP_')
+
+
 class RuleGenerator(type):
     def __init__(cls, name, parents, attr):
         super(RuleGenerator, cls).__init__(name, parents, attr)
@@ -34,10 +37,14 @@ class RuleGenerator(type):
             # Skip all this logic if we're building DanceStyleEventClassifier.
             # Only run these for the subclasses of DanceStyleEventClassifier.
             return
-        #TODO: temporary support for not having BAD_DANCE keywords set up across the board...
-        cls.BAD_DANCE = cls.BAD_DANCE or Any('NEVER_FOUND_TOKEN')
+        #TODO: setup BAD_DANCE keywords set up across the board...
+        cls.GOOD_DANCE = Name('GOOD_DANCE', cls.GOOD_DANCE or NEVER_TOKEN)
+        cls.AMBIGUOUS_DANCE = Name('AMBIGUOUS_DANCE', cls.AMBIGUOUS_DANCE or NEVER_TOKEN)
+        cls.BAD_DANCE = Name('BAD_DANCE', cls.BAD_DANCE or NEVER_TOKEN)
+        cls.ADDITIONAL_EVENT_TYPE = cls.ADDITIONAL_EVENT_TYPE or NEVER_TOKEN
+
         UNAMBIGUOUS_DANCE = commutative_connected(cls.AMBIGUOUS_DANCE, keywords.EASY_DANCE)
-        cls.GOOD_OR_AMBIGUOUS_DANCE = Any(cls.AMBIGUOUS_DANCE, UNAMBIGUOUS_DANCE, cls.GOOD_DANCE)
+        cls.GOOD_OR_AMBIGUOUS_DANCE = Name('GOOD_OR_AMBIGUOUS_DANCE', Any(cls.AMBIGUOUS_DANCE, UNAMBIGUOUS_DANCE, cls.GOOD_DANCE))
         cls.COMPETITIONS = Any(
             keywords.BATTLE,
             keywords.CONTEST,
@@ -49,13 +56,16 @@ class RuleGenerator(type):
             keywords.PERFORMANCE,
             keywords.PRACTICE,
             cls.COMPETITIONS,
+            cls.ADDITIONAL_EVENT_TYPE,
         )
         cls.EVENT_TYPE_ROMANCE = Any(cls.EVENT_TYPE, keywords.ROMANCE_LANGUAGE_CLASS)
-        cls.GOOD_DANCE_COMPETITION = commutative_connected(Any(cls.GOOD_DANCE, cls.AMBIGUOUS_DANCE, UNAMBIGUOUS_DANCE), cls.COMPETITIONS)
-        cls.GOOD_DANCE_EVENT = commutative_connected(cls.GOOD_DANCE, cls.EVENT_TYPE)
-        cls.GOOD_DANCE_EVENT_ROMANCE = commutative_connected(cls.GOOD_DANCE, cls.EVENT_TYPE_ROMANCE)
-        cls.BAD_DANCE_EVENT = commutative_connected(cls.BAD_DANCE, cls.EVENT_TYPE)
-        cls.BAD_DANCE_EVENT_ROMANCE = commutative_connected(cls.BAD_DANCE, cls.EVENT_TYPE_ROMANCE)
+        cls.GOOD_DANCE_COMPETITION = Name(
+            'GOOD_DANCE_COMPETITION', commutative_connected(Any(cls.GOOD_DANCE, cls.AMBIGUOUS_DANCE, UNAMBIGUOUS_DANCE), cls.COMPETITIONS)
+        )
+        cls.GOOD_DANCE_EVENT = Name('GOOD_DANCE_EVENT', commutative_connected(cls.GOOD_DANCE, cls.EVENT_TYPE))
+        cls.GOOD_DANCE_EVENT_ROMANCE = Name('GOOD_DANCE_EVENT_ROMANCE', commutative_connected(cls.GOOD_DANCE, cls.EVENT_TYPE_ROMANCE))
+        cls.BAD_DANCE_EVENT = Name('BAD_DANCE_EVENT', commutative_connected(cls.BAD_DANCE, cls.EVENT_TYPE))
+        cls.BAD_DANCE_EVENT_ROMANCE = Name('GOOD_DANCE_EVENT_ROMANCE', commutative_connected(cls.BAD_DANCE, cls.EVENT_TYPE_ROMANCE))
 
 
 class DanceStyleEventClassifier(object):
@@ -68,6 +78,7 @@ class DanceStyleEventClassifier(object):
     AMBIGUOUS_DANCE = None
     GOOD_DANCE = None
     BAD_DANCE = None
+    ADDITIONAL_EVENT_TYPE = None
     GOOD_BAD_PAIRINGS = []
 
     def __init__(self, classified_event, debug=True):

@@ -1,6 +1,7 @@
 # -*-*- encoding: utf-8 -*-*-
 
 from dancedeets import event_types
+from .. import base_auto_classifier
 from .. import grammar
 from ..street import keywords
 
@@ -16,32 +17,31 @@ CAPOEIRA_WORD = Any(
     u'카포에라',  # korean capoeira
 )
 
-CAPOEIRA = Any(
-    commutative_connected(CAPOEIRA_WORD, Any('angola')),
-    commutative_connected(CAPOEIRA_WORD, Any('regional')),
-    commutative_connected(CAPOEIRA_WORD, Any('contemp\w+')),
-    CAPOEIRA_WORD,
-    'capoeiristas?',
-    u'maculel[êe]',
+CAPOEIRA = Name(
+    'CAPOEIRA',
+    Any(
+        commutative_connected(CAPOEIRA_WORD, Any('angola')),
+        commutative_connected(CAPOEIRA_WORD, Any('regional')),
+        commutative_connected(CAPOEIRA_WORD, Any('contemp\w+')),
+        CAPOEIRA_WORD,
+        'capoeiristas?',
+        u'maculel[êe]',
+    )
 )
 
 EVENT = Any(
-    keywords.CLASS,
-    keywords.PERFORMANCE,
     'rodas?',
     'encontro',
     'demo',
     'demonstration',
     'seminar',
+    'rencontre',
 )
 
 KEYWORDS = Any(
     'contra\W?mestre',
     'c\.mestres',
     'mestres?',
-    'rodas?',
-    'encontro',
-    'rencontre',
 )
 
 OBVIOUS_KEYWORDS = Any(
@@ -54,10 +54,27 @@ OBVIOUS_KEYWORDS = Any(
 
 CAP_EVENT = commutative_connected(CAPOEIRA, EVENT)
 
-CAP_CLASS = commutative_connected(CAPOEIRA, Any('adult', 'kids?', 'beginner', 'mixed\W?level', 'intermediate'))
+CAP_CLASS = commutative_connected(CAPOEIRA, keywords.CLASS_LEVELS)
+
+
+class CapoeiraClassifier(base_auto_classifier.DanceStyleEventClassifier):
+    vertical = event_types.VERTICALS.CAPOEIRA
+
+    GOOD_DANCE = CAPOEIRA
+    BAD_DANCE = None
+    ADDITIONAL_EVENT_TYPE = EVENT
+    GOOD_KEYWORDS = OBVIOUS_KEYWORDS, KEYWORDS
+
+    def _quick_is_dance_event(self):
+        return self._has(CAPOEIRA)
 
 
 def is_capoeira_event(classified_event):
+    classifier = CapoeiraClassifier(classified_event)
+    return classifier.is_dance_event(), classifier.debug_info(), classifier.vertical
+
+
+def is_capoeira_event2(classified_event):
     result = is_basic_capoeira_event(classified_event)
     if result[0]:
         return result
