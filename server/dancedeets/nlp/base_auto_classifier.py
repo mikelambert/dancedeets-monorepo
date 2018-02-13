@@ -18,6 +18,7 @@ def _log_to_bucket(category):
             try:
                 result = func(self, *args, **kwargs)
                 self._log('Final result: %s', result)
+                return result
             finally:
                 self._log_category = None
 
@@ -211,11 +212,16 @@ class DanceStyleEventClassifier(object):
     @_log_to_bucket('competition')
     def is_competition(self):
         has_competition = self._short_lines_have(self.GOOD_DANCE_COMPETITION)
+
+        has_bad_keywords = self._short_lines_have(self.BAD_DANCE)
+        if has_competition and not has_bad_keywords:
+            return 'is good-dance battle event, with no bad keywords'
+
         has_competitors = event_structure.find_competitor_list(self._classified_event.search_text)
         has_start_judge = self._has(rules.START_JUDGE)
-        is_battle_event = (has_start_judge or has_competitors or has_competition)
+        is_battle_event = (has_start_judge or has_competitors)
 
-        if is_battle_event and len(set(self._short_lines_get(self.GOOD_DANCE))) >= 2 and not self._short_lines_have(self.BAD_DANCE):
+        if is_battle_event and len(self._short_lines_get(self.GOOD_DANCE)) >= 2 and not has_bad_keywords:
             return 'is battle event, with a few good keywords, and no bad keywords'
 
         return False
