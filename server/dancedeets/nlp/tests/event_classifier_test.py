@@ -28,6 +28,9 @@ class TestDanceClass(unittest.TestCase):
         string_processor = event_classifier.StringProcessor(u'beginner')
         self.assertTrue(string_processor.get_tokens(keywords.CLASS))
 
+        string_processor = event_classifier.StringProcessor(u'χορός')
+        self.assertTrue(string_processor.get_tokens(keywords.EASY_DANCE))
+
 
 class TestKeywordLoader(unittest.TestCase):
     def runTest(self):
