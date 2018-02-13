@@ -27,6 +27,14 @@ def _log_to_bucket(category):
 
 AMBIGUOUS_DANCE = keywords.AMBIGUOUS_DANCE_MUSIC
 GOOD_DANCE = Any(rules.good_dance, rules.MANUAL_DANCER[grammar.STRONG_WEAK])
+GOOD_BAD_PAIRINGS = [
+    (keywords.STYLE_HOUSE, keywords.WRONG_HOUSE),
+    (keywords.STYLE_BREAK, keywords.WRONG_BREAK),
+    (keywords.STYLE_LOCK, keywords.WRONG_LOCK),
+    (keywords.STYLE_FLEX, keywords.WRONG_FLEX),
+    (keywords.STYLE_FLEX, keywords.WRONG_FLEX),
+]
+
 GOOD_OR_AMBIGUOUS_DANCE = Any(AMBIGUOUS_DANCE, GOOD_DANCE)
 BAD_DANCE = Any(
     keywords.DANCE_WRONG_STYLE,
@@ -56,6 +64,9 @@ BAD_DANCE_EVENT_ROMANCE = commutative_connected(BAD_DANCE, EVENT_TYPE_ROMANCE)
 
 class DanceStyleEventClassifier(object):
     vertical = None
+    GOOD_DANCE = None
+    BAD_DANCE = None
+    GOOD_BAD_PAIRINGS = []
 
     def __init__(self, classified_event, debug=True):
         self._classified_event = classified_event
@@ -107,6 +118,13 @@ class DanceStyleEventClassifier(object):
 
     # top-level function
     def is_dance_event(self):
+        if not self._quick_is_dance_event():
+            self._log('not a sufficiently dancey event')
+            return False
+
+        if self._has_wrong_meaning_for_style(self):
+            return False
+
         # Handles all audition cases
         result = self.has_strong_title()
         if result: return result
@@ -128,22 +146,13 @@ class DanceStyleEventClassifier(object):
         raise NotImplementedError()
 
     def _has_wrong_meaning_for_style(self):
-        good_bad_pairings = [
-            (keywords.STYLE_HOUSE, keywords.WRONG_HOUSE),
-            (keywords.STYLE_BREAK, keywords.WRONG_BREAK),
-            (keywords.STYLE_LOCK, keywords.WRONG_LOCK),
-            (keywords.STYLE_FLEX, keywords.WRONG_FLEX),
-        ]
-        for good, bad in good_bad_pairings:
+        for good, bad in self.GOOD_BAD_PAIRINGS:
             if self._has(good) and self._has(bad):
                 return True
         return False
 
     @_log_to_bucket('strong_title')
     def has_strong_title(self):
-        if self._has_wrong_meaning_for_style(self):
-            return False
-
         # Some super-basic language specialization
         if self._has(keywords.ROMANCE):
             event_type = EVENT_TYPE_ROMANCE
@@ -169,9 +178,6 @@ class DanceStyleEventClassifier(object):
 
     @_log_to_bucket('strong_body')
     def has_strong_body(self):
-        if self._has_wrong_meaning_for_style(self):
-            return False
-
         # Some super-basic language specialization
         if self._has(keywords.ROMANCE):
             good_dance_event = GOOD_DANCE_EVENT_ROMANCE
@@ -202,10 +208,6 @@ class DanceStyleEventClassifier(object):
 
     @_log_to_bucket('competition')
     def is_competition(self):
-        if not self._quick_is_dance_event():
-            self._log('not a sufficiently dancey event')
-            return False
-
         has_competition = self._short_lines_have(GOOD_DANCE_COMPETITION)
         has_competitors = event_structure.find_competitor_list(self._classified_event.search_text)
         has_start_judge = self._has(rules.START_JUDGE)
@@ -214,10 +216,9 @@ class DanceStyleEventClassifier(object):
         if is_battle_event and len(set(self._short_lines_get(GOOD_DANCE))) >= 2 and not self._short_lines_have(BAD_DANCE):
             return 'is battle event, with a few good keywords, and no bad keywords'
 
-    def has_list_of_good_classes(self):
-        if not self._quick_is_dance_event():
-            return False
+        return False
 
+    def has_list_of_good_classes(self):
         start_time = self._classified_event.start_time
         end_time = self._classified_event.end_time
         # Ignore club events (ends in the morning and less than 12 hours long)
