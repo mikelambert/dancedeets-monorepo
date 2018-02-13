@@ -87,7 +87,8 @@ class Any(_BaseAlternation):
         self._keywords = tuple(keywords)
 
     def name(self):
-        return 'Any(%s,%s,...)' % tuple(self._keywords[0:2])
+        strs = [x if isinstance(x, basestring) else x.name() for x in self._keywords[0:2]]
+        return 'Any(%s,...)' % ','.join(strs)
 
 
 STRONG = 0

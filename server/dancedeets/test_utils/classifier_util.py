@@ -50,7 +50,7 @@ class TestClassifier(unittest.TestCase):
         )
         for event_id in failed:
             data = self._run_event(event_id)
-            logging.warning('Event failed: %s: %s', event_id, data[1])
+            logging.warning('Event failed: %s: %s', event_id, '\n'.join(data[1]))
 
         self.assertTrue(fraction <= passed_fraction, 'Too many events failed: %s of %s' % (len(failed), len(event_ids)))
 
@@ -64,6 +64,6 @@ class TestClassifier(unittest.TestCase):
         )
         for event_id in passed:
             data = self._run_event(event_id)
-            logging.warning('Event unwantedly passed: %s: %s', event_id, data[1])
+            logging.warning('Event unexpectedly passed: %s: %s', event_id, '\n'.join(data[1]))
 
         self.assertTrue(fraction <= failed_fraction, 'Too many events passed: %s of %s' % (len(passed), len(event_ids)))

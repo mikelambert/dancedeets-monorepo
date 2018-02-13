@@ -33,6 +33,8 @@ class RuleGenerator(type):
             # Skip all this logic if we're building DanceStyleEventClassifier.
             # Only run these for the subclasses of DanceStyleEventClassifier.
             return
+        #TODO: temporary support for not having BAD_DANCE keywords set up across the board...
+        cls.BAD_DANCE = cls.BAD_DANCE or Any('NEVER_FOUND_TOKEN')
         cls.GOOD_OR_AMBIGUOUS_DANCE = Any(cls.AMBIGUOUS_DANCE, cls.GOOD_DANCE)
         cls.COMPETITIONS = Any(
             keywords.BATTLE,
