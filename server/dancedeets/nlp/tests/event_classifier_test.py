@@ -23,6 +23,9 @@ class TestDanceClass(unittest.TestCase):
         self.assertEqual(set(['dance']), classified_event.dance_matches())
         self.assertEqual(set(['class']), classified_event.event_matches())
 
+        string_processor = event_classifier.StringProcessor(u'beginner breakdance')
+        self.assertTrue(string_processor.get_tokens(keywords.CLASS))
+
 
 class TestKeywordLoader(unittest.TestCase):
     def runTest(self):

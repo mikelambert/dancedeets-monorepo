@@ -935,9 +935,29 @@ BATTLE = Name(
     )
 )
 
+levels = [
+    'beg(?:inner|inning|\.)?',
+    'int(?:ermediate?|\.)?',
+    'adv(?:anced?|\.)?',
+    'master',
+    'professional',
+    'adults?',
+    'kids?',
+    'all',
+    'mixed',
+    'open',
+]
+level_levels = []
+for level in levels:
+    level_levels.append(level)
+    level_levels.append('%s\W?\W?levels?' % level)
+    level_levels.extend('%s\W?\W?%s' % (level, x) for x in levels)
+CLASS_LEVELS = Any(*level_levels)
+
 CLASS = Name(
     'CLASS',
     Any(
+        CLASS_LEVELS,
         'work\W?shop(?:\W?s)?',
         'ws',  # japanese workshop WS
         'w\.s\.',  # japanese workshop W.S.
