@@ -70,36 +70,12 @@ class CapoeiraClassifier(base_auto_classifier.DanceStyleEventClassifier):
 
 
 def is_capoeira_event(classified_event):
-    classifier = CapoeiraClassifier(classified_event)
-    return classifier.is_dance_event(), classifier.debug_info(), classifier.vertical
-
-
-def is_capoeira_event2(classified_event):
-    result = is_basic_capoeira_event(classified_event)
-    if result[0]:
-        return result
-
-    result = is_capoeira_class(classified_event)
-    if result[0]:
-        return result
-
     result = has_capoeira_keywords(classified_event)
     if result[0]:
         return result
 
-    result = has_capoeira_organizer(classified_event)
-    if result[0]:
-        return result
-
-    return result
-
-
-def has_capoeira_organizer(classified_event):
-    org_name = classified_event.fb_event['info'].get('owner', {}).get('name', '').lower()
-    if 'capoeira' in org_name:
-        return (True, 'Found capoeira in organization name: %s' % org_name, event_types.VERTICALS.CAPOEIRA)
-
-    return (False, '', [])
+    classifier = CapoeiraClassifier(classified_event)
+    return classifier.is_dance_event(), classifier.debug_info(), classifier.vertical
 
 
 def has_capoeira_keywords(classified_event):
@@ -111,21 +87,5 @@ def has_capoeira_keywords(classified_event):
     cap_keywords = classified_event.processed_text.get_tokens(OBVIOUS_KEYWORDS)
     if cap_keywords:
         return (True, 'Found obvious capoeira keywords: %s' % cap_keywords, event_types.VERTICALS.CAPOEIRA)
-
-    return (False, '', [])
-
-
-def is_basic_capoeira_event(classified_event):
-    cap_event = classified_event.processed_text.get_tokens(CAP_EVENT)
-    if cap_event:
-        return (True, 'Found capoeira event: %s' % cap_event, event_types.VERTICALS.CAPOEIRA)
-
-    return (False, '', [])
-
-
-def is_capoeira_class(classified_event):
-    cap_event = classified_event.processed_text.get_tokens(CAP_CLASS)
-    if cap_event:
-        return (True, 'Found capoeira event: %s' % cap_event, event_types.VERTICALS.CAPOEIRA)
 
     return (False, '', [])

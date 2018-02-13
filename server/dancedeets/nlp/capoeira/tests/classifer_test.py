@@ -10,7 +10,7 @@ class TestCapoeiraEvent(classifier_util.TestClassifier):
 
     def runTest(self):
         self.assertEvents(
-            1.0,
+            0.97,
             [
                 '1767626209978304',
                 '873254002842696',
@@ -30,7 +30,7 @@ class TestCapoeiraEvent(classifier_util.TestClassifier):
                 '1856958091000671',
                 '150696805664800',
                 # capoeirista demo recruiting
-                # '459049704496882',
+                '459049704496882',
                 '1601837459859562',
                 '1576138179089584',
                 '554676728241563',
@@ -50,7 +50,7 @@ class TestCapoeiraEvent(classifier_util.TestClassifier):
                 '1905753863072933',
                 '1908956572698373',
                 # related keywords but can't hone it down well enough:
-                # '914805012026431',
+                '914805012026431',
                 '124061214898601',
                 '179321819288342',
                 '436248133442117',
