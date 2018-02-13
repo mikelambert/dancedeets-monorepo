@@ -23,6 +23,8 @@ BALLROOM_STYLES = Any(
     'east coast swing',
     'bolero',
     'mambo',
+    'country (?:2|two)\W?step',
+    'american tango',
 )
 
 BALLROOM = Any(
@@ -39,8 +41,9 @@ BALLROOM = Any(
     u'사교',
 )
 
+BALLROOM_DANCE = commutative_connected(BALLROOM, keywords.EASY_DANCE)
 BALLROOM_KEYWORDS = Any(
-    commutative_connected(BALLROOM, keywords.EASY_DANCE),
+    BALLROOM_DANCE,
     'dance\W?sport',
     'international ballroom',
     'international latin',
@@ -63,19 +66,22 @@ def is_ballroom_event(classified_event):
 
 
 def is_many_ballroom_styles(classified_event):
-    all_styles = classified_event.processed_text.get_tokens(BALLROOM_STYLES)
-    all_keywords = classified_event.processed_text.get_tokens(BALLROOM_KEYWORDS)
+    all_styles = set(classified_event.processed_text.get_tokens(BALLROOM_STYLES))
+    all_keywords = set(classified_event.processed_text.get_tokens(BALLROOM_KEYWORDS))
 
     logging.info(
         'ballroom classifier: event %s found styles %s, keywords %s', classified_event.fb_event['info']['id'], all_styles, all_keywords
     )
-    if len(set(all_keywords)) >= 2:
+    if classified_event.processed_title.has_token(BALLROOM_DANCE):
+        return True, 'obviously ballroom dance event', event_types.VERTICALS.BALLROOM
+
+    if len(all_keywords) >= 2:
         return (True, 'Found many ballroom styles: %s' % all_styles, event_types.VERTICALS.BALLROOM)
 
-    if len(set(all_styles)) >= 1 and len(set(all_keywords)) >= 2:
+    if len(all_styles) >= 1 and len(all_keywords) >= 2:
         return (True, 'Found many ballroom styles (%s) and keywords (%s)' % (all_styles, all_keywords), event_types.VERTICALS.BALLROOM)
 
-    if len(set(all_styles)) >= 3:
+    if len(all_styles) >= 3:
         return (True, 'Found many ballroom keywords (%s)' % all_keywords, event_types.VERTICALS.BALLROOM)
 
     return (False, '', None)
