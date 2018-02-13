@@ -69,12 +69,16 @@ AMBIGUOUS_DANCE_MUSIC = Name(
 ALL_LATIN_STYLES = Any(REAL_DANCE, SALSA, AMBIGUOUS_DANCE_MUSIC)
 
 FOOD = Any(
-    'food',
-    'tastings',
+    'spicy',
+    'chili',
+    'chefs?',
+    'cooks?',
+    'tastings?',
     'cinco de mayo',
 )
 
-GOOD_DANCE = Any(REAL_DANCE, commutative_connected(AMBIGUOUS_DANCE_MUSIC, keywords.EASY_DANCE))
+DANCER = Any('queen')
+GOOD_DANCE = Any(REAL_DANCE, commutative_connected(AMBIGUOUS_DANCE_MUSIC, Any(keywords.EASY_DANCE, DANCER)))
 
 #TODO(all-styles): incorporate these...."additions"
 class_keywords = Any(keywords.CLASS, 'batch')
@@ -85,7 +89,7 @@ class LatinClassifier(base_auto_classifier.DanceStyleEventClassifier):
     vertical = event_types.VERTICALS.LATIN
 
     AMBIGUOUS_DANCE = AMBIGUOUS_DANCE_MUSIC
-    GOOD_DANCE = Any(REAL_DANCE, SALSA)
+    GOOD_DANCE = Any(GOOD_DANCE, SALSA)
     BAD_DANCE = None
     GOOD_BAD_PAIRINGS = [(SALSA, FOOD)]
 

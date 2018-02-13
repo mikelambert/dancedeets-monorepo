@@ -29,6 +29,8 @@ class TestLatinCompetition(classifier_util.TestClassifier):
                 '165088020802863',
                 # bachata bash
                 '448420245336858',
+                '1323845821048791',
+                '343106972764666',
             ]
         )
 
@@ -49,6 +51,7 @@ class TestLatinClass(classifier_util.TestClassifier):
                 '313780035693230',
                 '10153148050940861',
                 '519492811755048',
+                '1761559964152613',
             ]
         )
 
