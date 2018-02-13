@@ -84,7 +84,7 @@ class SwingClassifier(base_auto_classifier.DanceStyleEventClassifier):
         return False
 
     def is_wcs(self):
-        if self._has(WCS) and self._has(WCS_BASICS):
+        if self._title_has(WCS) and self._has(WCS_BASICS):
             return 'has wcs and wcs keywords'
 
         return False

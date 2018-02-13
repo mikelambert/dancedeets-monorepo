@@ -10,7 +10,7 @@ class TestSwingDance(classifier_util.TestClassifier):
 
     def runTest(self):
         self.assertEvents(
-            1.0,
+            0.9,
             [
                 '519492811755048',
                 '460976420932784',
@@ -69,13 +69,14 @@ class TestWCS(classifier_util.TestClassifier):
 
     def runTest(self):
         self.assertEvents(
-            0.85,
+            0.80,
             [
                 # only teacher names
                 '467976933581754',
                 '182127055715910',
                 # just instructors
                 '993731020765760',
+                # WCS not in title
                 '1970534596495858',
                 # just wcs in title, but no other clues
                 '1655103394511761',
