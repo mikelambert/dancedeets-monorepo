@@ -9,6 +9,7 @@ VERTICALS.LATIN = 'LATIN'  # salsa, bachata, chacha, rumba, merengue
 VERTICALS.CAPOEIRA = 'CAPOEIRA'
 VERTICALS.SPANISH = 'SPANISH'  # tango, bachata?
 VERTICALS.SWING = 'SWING'  # swing, lindy, etc
+VERTICALS.TANGO = 'TANGO'
 
 
 def should_show(e):
