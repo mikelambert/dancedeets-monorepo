@@ -164,7 +164,8 @@ class ClassifiedEvent(object):
         self.fb_event = fb_event
         self.title = name.lower()
         # use a separator here, so 'actors workshop' 'breaking boundaries...' doesn't match 'workshop breaking'
-        self.search_text = ('%s . . . . %s' % (name, description)).lower()
+        org_name = fb_event['info'].get('owner', {}).get('name', '').lower()
+        self.search_text = ('\n.\n.\n.\n'.join([name, org_name, description])).lower()
         self.start_time = start_time
         self.end_time = end_time
         self.language = language

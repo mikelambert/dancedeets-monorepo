@@ -148,6 +148,10 @@ class DanceStyleEventClassifier(object):
         result = self.has_strong_body()
         if result: return result
 
+        # generally catches practice or performances
+        result = self.has_strong_organizer()
+        if result: return result
+
         # has a list of scheduled timeslots with some good styles in it
         result = self.has_list_of_good_classes()
         if result: return result
@@ -166,6 +170,17 @@ class DanceStyleEventClassifier(object):
                 return True
         return False
 
+    @_log_to_bucket('organizer')
+    def has_strong_organizer(self):
+        org_name = self._classified_event.fb_event['info'].get('owner', {}).get('name', '').lower()
+        sp = event_classifier.StringProcessor(org_name)
+        has_dance_organizer = sp.has_token(self.GOOD_DANCE)
+        self._log('Searching organizer (%s) for %s, has: %s', org_name, self.GOOD_DANCE.name(), has_dance_organizer)
+        if has_dance_organizer:
+            self._log('Has good dance in event organizer: %s' % has_dance_organizer)
+            return 'Has good dance in event organizer'
+        return False
+
     @_log_to_bucket('strong_title')
     def has_strong_title(self):
         # Some super-basic language specialization
@@ -176,18 +191,18 @@ class DanceStyleEventClassifier(object):
             event_type = self.EVENT_TYPE
             good_dance_event = self.GOOD_DANCE_EVENT
 
-        # Has "hiphop dance workshop/battle/audition"
+        # Has 'hiphop dance workshop/battle/audition'
         if self._title_has(good_dance_event):
-            return "title has good_dance-event_type"
+            return 'title has good_dance-event_type'
 
-        # Has "workshop" and ("hiphop dance" or "moptop") and not "modern"
+        # Has 'workshop' and ('hiphop dance' or 'moptop') and not 'modern'
         # If the title contains a good keyword, and the body contains a bad keyword, this one will trigger (but the one below will not)
         if self._title_has(event_type) and self._title_has(self.GOOD_DANCE) and not self._title_has(self.BAD_DANCE):
-            return "title has event_type, good and not bad keywords"
+            return 'title has event_type, good and not bad keywords'
 
-        # Has "workshop" and body has ("hiphop dance" but not "ballet")
+        # Has 'workshop' and body has ('hiphop dance' but not 'ballet')
         if self._title_has(event_type) and self._has(self.GOOD_DANCE) and not self._has(self.BAD_DANCE):
-            return "title has event_type, body had good and not bad keywords"
+            return 'title has event_type, body had good and not bad keywords'
 
         return False
 
@@ -200,10 +215,10 @@ class DanceStyleEventClassifier(object):
             good_dance_event = self.GOOD_DANCE_EVENT
 
         if self._has(good_dance_event) and not self._has(self.BAD_DANCE):
-            return "body has good dance event, and title does not have bad keywords"
+            return 'body has good dance event, and title does not have bad keywords'
 
         if self._short_lines_have(good_dance_event):
-            return "body has short line containing good dance event"
+            return 'body has short line containing good dance event'
 
         # have some strong keywords on lines by themselves
         solo_lines_regex = self.GOOD_DANCE.hack_double_regex()[self._classified_event.boundaries]
@@ -251,7 +266,7 @@ class DanceStyleEventClassifier(object):
             return False
 
         # if title is good strong keyword, and we have a list of classes:
-        # why doesn't this get found by the is_workshop title classifier? where is our "camp" keyword
+        # why doesn't this get found by the is_workshop title classifier? where is our 'camp' keyword
         # https://www.dancedeets.com/events/admin_edit?event_id=317006008387038
 
         schedule_groups = event_structure.get_schedule_line_groups(self._classified_event)
