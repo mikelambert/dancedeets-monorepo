@@ -22,14 +22,26 @@ REAL_DANCE = Any(
     'modern jive',
     'jitterbug',
     'slow drag',
+    'balboa\w*',
 )
 
 AMBIGUOUS_WORDS = Any(
     'jive\w*',
     'swing\w*',
-    'balboa\w*',
     'charleston',
     'shag',
+    'wcs',
+    'ecs',
+)
+
+WCS = Any('wcs')
+
+WCS_BASICS = Any(
+    'sugar push',
+    'sugar tuck',
+    'left side pass',
+    'under arm',
+    'whip',
 )
 
 AMBIGUOUS_DANCE_MUSIC = Any('blues',)
@@ -58,60 +70,27 @@ class SwingClassifier(base_auto_classifier.DanceStyleEventClassifier):
     def _quick_is_dance_event(self):
         return True
 
+    def is_dance_event(self):
+        result = super(SwingClassifier, self).is_dance_event()
+        if result:
+            return result
+
+        result = self.is_wcs()
+        if result:
+            return result
+
+        return False
+
+    def is_wcs(self):
+        if self._has(WCS) and self._has(WCS_BASICS):
+            return 'has wcs and wcs keywords'
+
+        return False
+
 
 def is_swing_event(classified_event):
     if ballroom_classifier.is_ballroom_event(classified_event)[0]:
-        return (False, ['Ballroom event'], [])
+        return (False, ['Ballroom event'], None)
 
     classifier = SwingClassifier(classified_event)
     return classifier.is_dance_event(), classifier.debug_info(), classifier.vertical
-
-    result = is_dance_event(classified_event)
-    if result[0]:
-        return result
-
-    result = is_many_swing_styles(classified_event)
-    if result[0]:
-        return result
-
-    result = is_dance_workshop(classified_event)
-    if result[0]:
-        return result
-
-    result = is_dance_battle(classified_event)
-    if result[0]:
-        return result
-
-    return result
-
-
-def is_many_swing_styles(classified_event):
-    all_keywords = classified_event.processed_text.get_tokens(ALL_SWING_STYLES)
-    if len(set(all_keywords)) >= 3:
-        return (True, 'Found many swing keywords: %s' % all_keywords, event_types.VERTICALS.SWING)
-
-    return (False, '', [])
-
-
-def is_dance_event(classified_event):
-    dance_keywords = classified_event.processed_text.get_tokens(GOOD_DANCE)
-    if dance_keywords:
-        return (True, 'Found strong dance keywords: %s' % dance_keywords, event_types.VERTICALS.SWING)
-
-    return (False, '', [])
-
-
-def is_dance_workshop(classified_event):
-    dance_class = classified_event.processed_text.get_tokens(STYLE_CLASS)
-    if dance_class:
-        return (True, 'Found dance class: %s' % dance_class, event_types.VERTICALS.SWING)
-
-    return (False, '', [])
-
-
-def is_dance_battle(classified_event):
-    good_contest = classified_event.processed_text.get_tokens(GOOD_DANCE_BATTLE)
-    if good_contest:
-        return (True, 'Found dance contest: %s' % good_contest, event_types.VERTICALS.SWING)
-
-    return (False, '', [])

@@ -29,10 +29,11 @@ FLEX_KEYWORD = GenFileBackedKeywords('FLEX', 'flex/keywords')
 EASY_DANCE = Name(
     'EASY_DANCE',
     Any(
-        'dance style[sz]',
         'dances?',
         "dancin[g']?",
         'dancers?',
+        'dance style[sz]',
+        'social\W?dance',
         u'رقص',  # arabic dance native
         u'دانس',  # arabic dance transliteration
         u'댄스',  # korean dance
@@ -936,7 +937,15 @@ BATTLE = Name(
     )
 )
 
-levels = [
+LEVEL = Any(
+    'levels?',
+    u'レベル',
+    u'水平',
+    'niveau',
+    'nivel',
+    'livello',
+)
+ACTUAL_LEVELS = Any(
     'beg(?:inner|inning|\.)?',
     'int(?:ermediate?|\.)?',
     'adv(?:anced?|\.)?',
@@ -947,13 +956,13 @@ levels = [
     'all',
     'mixed',
     'open',
-]
-level_levels = ['intro(?:duction)? to']
-for level in levels:
-    level_levels.append(level)
-    level_levels.append('%s\W?\W?levels?' % level)
-    level_levels.extend('%s\W?\W?%s' % (level, x) for x in levels)
-CLASS_LEVELS = Any(*level_levels)
+)
+CLASS_LEVELS = Any(
+    'intro(?:duction)? to',
+    grammar.connected(LEVEL, grammar.RegexRule('[123]')),
+    grammar.commutative_connected(ACTUAL_LEVELS, ACTUAL_LEVELS),
+    grammar.commutative_connected(ACTUAL_LEVELS, LEVEL),
+)
 
 CLASS = Name(
     'CLASS',
