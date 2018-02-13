@@ -16,6 +16,8 @@ REAL_DANCE = Any(
     'west coast swing',
     'east coast swing',
     'solo jazz',
+    'solo charleston',
+    'partner charleston',
     'carolina shag',
     'collegiate shag',
     'st\W? louis shag',
