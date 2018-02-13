@@ -16,6 +16,7 @@ ARGENTINE = Any(
     u'アルゼンチン',
     u'阿根廷',
     u'아르헨티나',
+    u'аргентинское',  # russian
 )
 
 TANGO = Any(
@@ -23,6 +24,7 @@ TANGO = Any(
     u'タンゴ',
     u'探戈',
     u'탱고',
+    u'танго',  # russian
 )
 TANGO_TYPES = Any(
     'traditional',

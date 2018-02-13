@@ -54,6 +54,8 @@ class TestLatinClass(classifier_util.TestClassifier):
                 '10153148050940861',
                 '519492811755048',
                 '1761559964152613',
+                # eddie torress salsa shines class
+                '149445905767490',
             ]
         )
 

@@ -204,14 +204,19 @@ class DanceStyleEventClassifier(object):
             event_type = self.EVENT_TYPE
             good_dance_event = self.GOOD_DANCE_EVENT
 
+        is_dance_ish = len(list(self._get(self.GOOD_OR_AMBIGUOUS_DANCE) + self._get(keywords.EASY_DANCE))) >= 3
         # Has 'popping' and actually seems related-to-dance-as-a-whole
-        if self._title_has(self.GOOD_DANCE_FULL
-                          ) and len(list(self._get(self.GOOD_OR_AMBIGUOUS_DANCE) + self._get(keywords.EASY_DANCE))) >= 3:
-            return 'title has good_dance'
+        if self._title_has(self.GOOD_DANCE_FULL) and is_dance_ish:
+            return 'title has good_dance, and is dance-y event'
 
         # Has 'hiphop dance workshop/battle/audition'
         if self._title_has(good_dance_event):
             return 'title has good_dance-event_type'
+
+        # Has 'workshop' and ('hiphop' or 'tango') and seems dance-y
+        # If the title contains a good keyword, and the body contains a bad keyword, this one will trigger (but the one below will not)
+        if self._title_has(event_type) and self._title_has(self.GOOD_OR_AMBIGUOUS_DANCE) and is_dance_ish:
+            return 'title has event_type and ambiguous-or-good dance word, and is dance-y event'
 
         # Has 'workshop' and ('hiphop dance' or 'moptop') and not 'modern'
         # If the title contains a good keyword, and the body contains a bad keyword, this one will trigger (but the one below will not)
@@ -273,6 +278,9 @@ class DanceStyleEventClassifier(object):
 
     @_log_to_bucket('list_of_good_classes')
     def has_list_of_good_classes(self):
+        # A "list of times with dance/music things" can often be clubs as well as classes
+
+        # So let's try to throw out club-things first
         start_time = self._classified_event.start_time
         end_time = self._classified_event.end_time
         # Ignore club events (ends in the morning and less than 12 hours long)

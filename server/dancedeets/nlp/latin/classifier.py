@@ -30,6 +30,8 @@ REAL_DANCE = Name(
         u'莎莎舞',  # chinese salsa dance
         u'恰恰舞',  # chinese cha cha dance
         u'倫巴舞',  # chinese rumba dance
+        'shines?\W+partner',
+        'partner\W+shines?',
     )
 )
 

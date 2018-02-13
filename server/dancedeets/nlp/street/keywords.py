@@ -34,11 +34,13 @@ EASY_DANCE = Name(
         'dancers?',
         'dance style[sz]',
         'social\W?dance',
+        u'χορ[όέ]\w*',  # greek dance
         u'رقص',  # arabic dance native
         u'دانس',  # arabic dance transliteration
         u'댄스',  # korean dance
         u'댄서',  # korean dancer
         u'танцы',  # russian dancing
+        u'танцор',  # russian dancer
         u'танцоров',  # russian dancers
         u'танцуват',  # bulgarian dance
         u'танцува',  # bulgarian dance
@@ -1009,6 +1011,7 @@ CLASS_ONLY = Any(
     u'סדנה',  # hebew workshop
     u'הסדנא',  # hebrew workshop
     u'שיעורים',  # hebrew lessons
+    u'μάθημα',  # greek lesson
     # 'taller', # workshop spanish
     'delavnice',  # workshop slovak
     'talleres',  # workshops spanish

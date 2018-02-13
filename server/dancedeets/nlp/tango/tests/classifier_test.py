@@ -10,7 +10,8 @@ class TestTangoDance(classifier_util.TestClassifier):
 
     def runTest(self):
         self.assertEvents(
-            1.0, [
+            1.0,
+            [
                 '143395409622891',
                 '1110602889040187',
                 '154425685338767',
@@ -22,6 +23,7 @@ class TestTangoDance(classifier_util.TestClassifier):
                 '1733936033581274',
                 '183166825610163',
                 '893547427477612',
+                # doesn't have any dance-y-ness at all! so the title isn't enough
                 '1675186629181954',
                 '2031277610490215',
                 '471332453012659',
@@ -59,12 +61,15 @@ class TestTangoDance(classifier_util.TestClassifier):
                 '597103427133871',
                 '177823876301174',
                 '312908442528533',
+                # really hard to tell, except for photos of the organizing page, that this is music party for dancers
                 '160964504647924',
                 '382848595479056',
                 '1512109815529415',
+                # cataniatangofestival in title, not strong enough body
                 '938497682985096',
                 '1278733645565059',
                 '1617098248328561',
+                # Lab esperienziale di Tangoterapia
                 '865790983558775',
                 '1817810721843804',
                 '1309855745826392',
@@ -73,6 +78,7 @@ class TestTangoDance(classifier_util.TestClassifier):
                 '1204345789697231',
                 '2000208013601622',
                 '190416948203173',
+                # tango festival, but again nothing dance-y in the event itself
                 '876688962514053',
                 '504934906552950',
                 '1415618191840257',
