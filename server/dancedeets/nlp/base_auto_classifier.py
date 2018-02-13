@@ -1,4 +1,5 @@
 import datetime
+import logging
 import re
 from . import event_classifier
 from . import event_structure
@@ -28,7 +29,10 @@ def _log_to_bucket(category):
 class RuleGenerator(type):
     def __init__(cls, name, parents, attr):
         super(RuleGenerator, cls).__init__(name, parents, attr)
-
+        if parents == (object,):
+            # Skip all this logic if we're building DanceStyleEventClassifier.
+            # Only run these for the subclasses of DanceStyleEventClassifier.
+            return
         cls.GOOD_OR_AMBIGUOUS_DANCE = Any(cls.AMBIGUOUS_DANCE, cls.GOOD_DANCE)
         cls.COMPETITIONS = Any(
             keywords.BATTLE,
@@ -42,7 +46,7 @@ class RuleGenerator(type):
             keywords.PRACTICE,
             cls.COMPETITIONS,
         )
-        cls.EVENT_TYPE_ROMANCE = Any(cls.EVENT_TYPE, keywords.ROMANCE_EXTENDED_CLASS)
+        cls.EVENT_TYPE_ROMANCE = Any(cls.EVENT_TYPE, keywords.ROMANCE_LANGUAGE_CLASS)
         cls.GOOD_DANCE_COMPETITION = commutative_connected(Any(cls.GOOD_DANCE, cls.AMBIGUOUS_DANCE), cls.COMPETITIONS)
         cls.GOOD_DANCE_EVENT = commutative_connected(cls.GOOD_DANCE, cls.EVENT_TYPE)
         cls.GOOD_DANCE_EVENT_ROMANCE = commutative_connected(cls.GOOD_DANCE, cls.EVENT_TYPE_ROMANCE)
@@ -51,7 +55,7 @@ class RuleGenerator(type):
 
 
 class DanceStyleEventClassifier(object):
-    __meta__ = RuleGenerator
+    __metaclass__ = RuleGenerator
 
     # mostly used for logging, for now...
     vertical = None
@@ -63,14 +67,14 @@ class DanceStyleEventClassifier(object):
     GOOD_BAD_PAIRINGS = []
 
     def __init__(self, classified_event, debug=True):
+        if not self.vertical:
+            raise ValueError('Need to configure vertical')
+
         self._classified_event = classified_event
         self._debug = debug
 
-        self._logs = {}
+        self._logs = []
         self._log_category = None
-
-        if not self.vertical:
-            raise ValueError('Need to configure vertical')
 
     # utility methods
     def _title_get(self, keyword):
@@ -106,9 +110,7 @@ class DanceStyleEventClassifier(object):
     def _log(self, log, *args):
         if not self._debug:
             return
-        if self._log_category not in self._logs:
-            self._logs[self._log_category] = []
-        self._logs[self._log_category].append(log % args)
+        self._logs.append('%s: %s' % (self._log_category, log % args))
 
     # top-level function
     def is_dance_event(self):
@@ -116,7 +118,8 @@ class DanceStyleEventClassifier(object):
             self._log('not a sufficiently dancey event')
             return False
 
-        if self._has_wrong_meaning_for_style(self):
+        if self._has_wrong_meaning_for_style():
+            self._log('wrong meaning for style')
             return False
 
         # Handles all audition cases
@@ -135,6 +138,9 @@ class DanceStyleEventClassifier(object):
         if result: return result
 
         return False
+
+    def debug_info(self):
+        return self._logs
 
     def _quick_is_dance_event(self):
         raise NotImplementedError()

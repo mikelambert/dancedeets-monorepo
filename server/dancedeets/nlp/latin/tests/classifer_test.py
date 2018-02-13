@@ -45,8 +45,16 @@ class TestLatinClass(classifier_util.TestClassifier):
                 '958189144215292',
                 '313780035693230',
                 '10153148050940861',
+                '519492811755048',
             ]
         )
+
+
+class TestSwingDance(classifier_util.TestClassifier):
+    classifier_func = staticmethod(classifier.is_salsa_event2)
+
+    def runTest(self):
+        self.assertNotEvents(1.0, ['460976420932784'])
 
 
 # Salsa intermedia performance group
