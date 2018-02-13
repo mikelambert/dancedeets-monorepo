@@ -29,6 +29,7 @@ class TestSwingDance(classifier_util.TestClassifier):
             '524655034557876',
             '530686140648826',
             '1783960065239641',
+            '119912795431444',
         ]:
             self.assertEvent(event_id)
 
@@ -54,6 +55,7 @@ class TestLindyHop(classifier_util.TestClassifier):
             '124120538150413',
             '137729153572921',
             '1697615750295549',
+            '1917059178551409',
         ]:
             self.assertEvent(event_id)
 

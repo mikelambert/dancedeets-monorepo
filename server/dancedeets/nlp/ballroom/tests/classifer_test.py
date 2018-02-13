@@ -10,7 +10,7 @@ class TestBallroom(classifier_util.TestClassifier):
 
     def runTest(self):
         self.assertEvents(
-            1.0, [
+            0.9, [
                 '314224369066155',
                 '394488887658045',
                 '137419906955466',
@@ -27,10 +27,6 @@ class TestBallroom(classifier_util.TestClassifier):
                 '1667505486635344',
                 '184798295440137',
                 '736502189887397',
-                '448420245336858',
-                '1917059178551409',
-                '505865189813278',
-                '119912795431444',
             ]
         )
 
@@ -39,8 +35,19 @@ class TestNotBallroom(classifier_util.TestClassifier):
     classifier_func = staticmethod(classifier.is_ballroom_event)
 
     def runTest(self):
+        self.assertNotEvents([
+            '1917059178551409',
+            '505865189813278',
+        ])
+
+
+class TestNotBallroom(classifier_util.TestClassifier):
+    classifier_func = staticmethod(classifier.is_ballroom_event)
+
+    def runTest(self):
         self.assertNotEvents(1.0, [
             '597069203796616',
+            '119912795431444',
         ])
 
 

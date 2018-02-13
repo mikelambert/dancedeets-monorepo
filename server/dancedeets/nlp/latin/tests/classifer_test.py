@@ -17,7 +17,8 @@ class TestLatinCompetition(classifier_util.TestClassifier):
 
     def runTest(self):
         self.assertEvents(
-            1.0, [
+            0.9,
+            [
                 '151555808837731',
                 '1821516191478841',
                 '235945840191010',
@@ -26,6 +27,8 @@ class TestLatinCompetition(classifier_util.TestClassifier):
                 '1422208217907436',
                 '344249636077753',
                 '165088020802863',
+                # bachata bash
+                '448420245336858',
             ]
         )
 

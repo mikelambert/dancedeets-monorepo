@@ -947,7 +947,7 @@ levels = [
     'mixed',
     'open',
 ]
-level_levels = []
+level_levels = ['intro(?:duction)? to']
 for level in levels:
     level_levels.append(level)
     level_levels.append('%s\W?\W?levels?' % level)
