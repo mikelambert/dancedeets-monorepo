@@ -22,6 +22,7 @@ class TestSwingDance(classifier_util.TestClassifier):
                 '239980933117412',
                 '1820958151495719',
                 '395244410898308',
+                '1598521753543374',
                 '1565762550147066',
                 '1716559228403289',
                 '137538773588963',
@@ -33,16 +34,6 @@ class TestSwingDance(classifier_util.TestClassifier):
                 '530686140648826',
                 '1783960065239641',
                 '119912795431444',
-            ]
-        )
-
-
-class TestLindyHop(classifier_util.TestClassifier):
-    classifier_func = staticmethod(classifier.is_swing_event)
-
-    def runTest(self):
-        self.assertEvents(
-            1.0, [
                 '1918041211789895',
                 '1659438694078105',
                 '1566310336809842',

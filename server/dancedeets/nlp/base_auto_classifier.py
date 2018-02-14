@@ -12,7 +12,7 @@ Name = grammar.Name
 commutative_connected = grammar.commutative_connected
 
 
-def _log_to_bucket(category):
+def log_to_bucket(category):
     def wrap_func(func):
         def outer_func(self, *args, **kwargs):
             self._log_category = category
@@ -217,7 +217,7 @@ class DanceStyleEventClassifier(object):
                 return True
         return False
 
-    @_log_to_bucket('organizer')
+    @log_to_bucket('organizer')
     def has_strong_organizer(self):
         org_name = self._classified_event.fb_event['info'].get('owner', {}).get('name', '').lower()
         sp = event_classifier.StringProcessor(org_name)
@@ -228,7 +228,7 @@ class DanceStyleEventClassifier(object):
             return 'Has good dance in event organizer'
         return False
 
-    @_log_to_bucket('strong_title')
+    @log_to_bucket('strong_title')
     def has_strong_title(self):
         # Some super-basic language specialization
         if self._has(keywords.ROMANCE):
@@ -267,7 +267,7 @@ class DanceStyleEventClassifier(object):
 
         return False
 
-    @_log_to_bucket('strong_body')
+    @log_to_bucket('strong_body')
     def has_strong_body(self):
         # Some super-basic language specialization
         if self._has(keywords.ROMANCE):
@@ -297,7 +297,7 @@ class DanceStyleEventClassifier(object):
 
         return False
 
-    @_log_to_bucket('competition')
+    @log_to_bucket('competition')
     def is_competition(self):
         has_competition = self._short_lines_have(self.GOOD_DANCE_COMPETITION)
 
@@ -314,7 +314,7 @@ class DanceStyleEventClassifier(object):
 
         return False
 
-    @_log_to_bucket('list_of_good_classes')
+    @log_to_bucket('list_of_good_classes')
     def has_list_of_good_classes(self):
         # A "list of times with dance/music things" can often be clubs as well as classes
 

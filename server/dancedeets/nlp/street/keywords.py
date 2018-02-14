@@ -957,6 +957,8 @@ ACTUAL_LEVELS = Any(
     'professional',
     'adults?',
     'kids?',
+)
+ALL_LEVELS = Any(
     'all',
     'mixed',
     'open',
@@ -976,6 +978,7 @@ CLASS_LEVELS = Any(
     INTRODUCTION,
     grammar.connected(LEVEL, grammar.RegexRule('[12345]')),
     ACTUAL_LEVELS,
+    grammar.commutative_connected(ACTUAL_LEVELS, ALL_LEVELS),
     grammar.commutative_connected(ACTUAL_LEVELS, ACTUAL_LEVELS),
     grammar.commutative_connected(ACTUAL_LEVELS, LEVEL),
 )
