@@ -14,7 +14,6 @@ VERTICALS.ZOUK = 'ZOUK'
 
 
 def should_show(e):
-    print e.verticals
     return not e.verticals or VERTICALS.STREET in e.verticals
 
 
