@@ -52,6 +52,9 @@ STYLE_CLASS = commutative_connected(
 
 ALL_SWING_STYLES = Any(REAL_DANCE, AMBIGUOUS_WORDS, AMBIGUOUS_DANCE_MUSIC)
 
+# Event Sites:
+# http://www.swingplanit.com/
+
 
 class SwingClassifier(base_auto_classifier.DanceStyleEventClassifier):
     vertical = event_types.VERTICALS.SWING
