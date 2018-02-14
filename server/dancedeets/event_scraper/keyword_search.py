@@ -140,7 +140,7 @@ too_popular_style_keywords = {
         'freestyle',
     ] + two('hip hop') + two('street dance') + two('new style') + two('all styles')),
     'latin': [
-        'chacha',
+        'cha-cha',
         'samba',
         'bachata',
         'rumba',
@@ -168,13 +168,61 @@ too_popular_style_keywords = {
         'capoeira regional',
         'capoeira contemporânea',
         'capoeira roda',
-    ]
+    ],
+    'swing': [
+        'swing dance',
+        'east coast swing',
+        'west coast swing',
+        'swing out',
+        'wcs',
+        'lindy hop',
+        'lindy',
+        'balboa',
+        'solo jazz',
+        'solo charleston',
+        'partner charleston',
+        'carolina shag',
+        'collegiate shag',
+        'st\W? louis shag',
+        'modern jive',
+        'jitterbug',
+        'slow drag',
+    ],
+    'zouk': [
+        'zouk',
+        'brazilian zouk',
+        'zouk lambada',
+    ],
+    'ballroom': [
+        'ballroom dance',
+        'latin ballroom',
+        'waltz',
+        'viennese waltz',
+        'tango',
+        'foxtrot',
+        'quick step',
+        'samba',
+        'cha cha',
+        'rumba',
+        'paso doble',
+        'jive',
+        'east coast swing',
+        'bolero',
+        'mambo',
+        'country 2 step',
+        'american tango',
+    ],
+    'tango': [
+        'argentine tango',
+        'tango',
+        'milonga',
+    ],
 }
 
 
 def search_fb(fbl, style):
-    obvious_keywords = obvious_style_keywords[style]
-    too_popular_keywords = too_popular_style_keywords[style]
+    obvious_keywords = obvious_style_keywords.get(style, [])
+    too_popular_keywords = too_popular_style_keywords.get(style, [])
     event_types = [
         'session',
         'workshop',
@@ -205,7 +253,17 @@ def search_fb(fbl, style):
             'encontro',
             'demo',
             'demonstration',
-        ]
+        ],
+        'swing': [],
+        'zouk': [
+            'meeting',
+            'incontro',
+            'festival',
+            'marathon',
+            'social',
+        ],
+        'ballroom': [],
+        'tango': [],
     }
 
     all_keywords = obvious_keywords[:]
@@ -213,7 +271,7 @@ def search_fb(fbl, style):
         all_keywords.append(x)
         for y in event_types:
             all_keywords.append('%s %s' % (x, y))
-        for y in style_event_types[style]:
+        for y in style_event_types.get(style, []):
             all_keywords.append('%s %s' % (x, y))
 
     logging.info('Looking up %s search queries', len(all_keywords))
@@ -230,7 +288,6 @@ def search_fb(fbl, style):
         lookup_time = time.time()
         search_results = fbl.get(LookupSearchEvents, query)
         ids = [x['id'] for x in search_results['results']['data']]
-        all_ids.update(ids)
         logging.info('Keyword %r returned %s results:', query, len(ids))
         # Debug code
         for x in search_results['results']['data']:
@@ -256,5 +313,5 @@ def search_fb(fbl, style):
 @app.route('/tools/search_fb_for_events')
 class ByBaseHandler(base_servlet.BaseTaskFacebookRequestHandler):
     def get(self):
-        style = self.request.get('style', 'street')  # default to street
+        style = self.request.get('vertical', 'street')  # default to street
         search_fb(self.fbl, style)
