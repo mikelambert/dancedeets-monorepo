@@ -157,14 +157,17 @@ def classified_event_from_fb_event(fb_event, language=None):
         fb_event['info'].get('description', ''),
         dates.parse_fb_start_time(fb_event),
         dates.parse_fb_end_time(fb_event),
-        language=language
+        language=language,
+        include_first_line_in_title=True
     )
 
 
 class ClassifiedEvent(object):
-    def __init__(self, fb_event, name, description, start_time, end_time, language=None):
+    def __init__(self, fb_event, name, description, start_time, end_time, language=None, include_first_line_in_title=False):
         self.fb_event = fb_event
         self.title = name.lower()
+        if include_first_line_in_title:
+            self.title += '\n' + description.split('\n')[0].lower()
         # use a separator here, so 'actors workshop' 'breaking boundaries...' doesn't match 'workshop breaking'
         org_name = fb_event['info'].get('owner', {}).get('name', '').lower()
         self.search_text = ('\n.\n.\n.\n'.join([name, org_name, description])).lower()

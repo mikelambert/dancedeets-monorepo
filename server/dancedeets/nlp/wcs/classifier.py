@@ -11,9 +11,11 @@ Name = grammar.Name
 connected = grammar.connected
 commutative_connected = grammar.commutative_connected
 
-REAL_DANCE = Any('west coast swing',)
+WEST_COAST_SWING = Any('west coast swing\w*',)
 
 WCS = Any('wcs')
+
+WESTIES = Any('westies?')
 
 WCS_BASICS = Any(
     'sugar push',
@@ -23,14 +25,14 @@ WCS_BASICS = Any(
     'whip',
 )
 
-AMBIGUOUS_WORDS = WCS
+AMBIGUOUS_WORDS = Any(WCS, WESTIES)
 
 
 class WcsClassifier(base_auto_classifier.DanceStyleEventClassifier):
     vertical = event_types.VERTICALS.WCS
 
     AMBIGUOUS_DANCE = AMBIGUOUS_WORDS
-    GOOD_DANCE = REAL_DANCE
+    GOOD_DANCE = WEST_COAST_SWING
     BAD_DANCE = None
 
     def _quick_is_dance_event(self):
@@ -47,16 +49,24 @@ class WcsClassifier(base_auto_classifier.DanceStyleEventClassifier):
 
         return False
 
+    @base_auto_classifier.log_to_bucket('is_wcs')
     def is_wcs(self):
-        if self._title_has(WCS):
+        if self._title_has(WEST_COAST_SWING):
+            return 'has west coast swing title'
+
+        if self._title_has(WESTIES) or self._title_has(WCS):
+            if self._has(WEST_COAST_SWING):
+                return 'has wcs/westies title, and west coast swing keywords'
+
             if self._has(WCS_BASICS):
-                return 'has wcs title, and wcs keywords'
+                return 'has wcs/westies title, and wcs keywords'
 
-            if self._title_has(WCS) and self._has(keywords.EASY_DANCE):
-                return 'has wcs title, and dance keywords'
+            if self._has(keywords.EASY_DANCE):
+                return 'has wcs/westies title, and dance keywords'
 
-            if self._title_has(WCS) and self._title_has(keywords.EASY_CLUB):
-                return 'has wcs title, and party title'
+        if self._title_has(WESTIES) and (self._has(WCS) or self._has(WEST_COAST_SWING)):
+            return 'has westies title, and wcs keywords'
+
         return False
 
 
