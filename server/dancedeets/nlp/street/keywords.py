@@ -1217,10 +1217,12 @@ DANCE_STYLE_LATIN = Any(
     u'륨바',  # korean rumba
     'salsy',  # salsa czech
     'salser[oa]s?',
+)
+
+DANCE_STYLE_ZOUK = Any(
     'zouk',
     u'ズーク',  # japanese zouk
 )
-
 DANCE_STYLE_SWING = Any(
     'balboa',
     'lindy',
@@ -1300,6 +1302,59 @@ DANCE_STYLE_BALLROOM = Any(
     u'ワルツ',  # japanese waltz
 )
 
+DANCE_STYLE_CAPOEIRA = Any(
+    'capoeira',
+    u'カポエイラ',  # japanese capoeira
+)
+
+DANCE_STYLE_MISC = Any(
+    'parkour',
+    'flamenco',
+    'disco dance',
+    'disco tan\w+',  # czech disco dance
+    'dance partner',
+    'hula',
+    'hoop',
+    'ghost',
+    'ghosting',
+    'tumbling',
+    'cheer',
+    'butoh',
+    u'舞踏',  # japanese butoh
+    'musical theat(?:re|er)',
+    'persiana?',
+    'arabe',
+    'arabic',
+    'araba',
+    'oriental\w*',
+    'oriente',
+    'cubana',
+    'soca',
+    'tahitian dancing',
+    'tahitienne',
+    'folklor\w+',
+    'artist\Win\Wresidence',
+    'residency',
+    'disciplinary',
+    'reflective',
+    'clogging',
+    'acroyoga',
+    'hoop\W?dance',
+    'pilates',
+    u'ピラティス',  # japanese pilates
+    'aerial silk',
+    'silk',
+    'aerial',
+    'zumba',
+    'belly\W?danc(?:e(?:rs?)?|ing)',
+    'bellycraft',
+    'worldbellydancealliance',
+    u'ベリーダンス',  # japanese bellydance
+    'technique',
+    'guest artists?',
+    'partnering',
+)
+
 DANCE_WRONG_STYLE = Name(
     'DANCE_WRONG_STYLE',
     Any(
@@ -1311,53 +1366,9 @@ DANCE_WRONG_STYLE = Name(
         DANCE_STYLE_INDIAN,
         DANCE_STYLE_SEXY,
         DANCE_STYLE_BALLROOM,
-        'parkour',
-        'flamenco',
-        'disco dance',
-        'disco tan\w+',  # czech disco dance
-        'dance partner',
-        'hula',
-        'hoop',
-        'ghost',
-        'ghosting',
-        'tumbling',
-        'cheer',
-        'butoh',
-        u'舞踏',  # japanese butoh
-        'musical theat(?:re|er)',
-        'persiana?',
-        'arabe',
-        'arabic',
-        'araba',
-        'oriental\w*',
-        'oriente',
-        'cubana',
-        'soca',
-        'capoeira',
-        u'カポエイラ',  # japanese capoeira
-        'tahitian dancing',
-        'tahitienne',
-        'folklor\w+',
-        'artist\Win\Wresidence',
-        'residency',
-        'disciplinary',
-        'reflective',
-        'clogging',
-        'acroyoga',
-        'hoop\W?dance',
-        'pilates',
-        u'ピラティス',  # japanese pilates
-        'aerial silk',
-        'silk',
-        'aerial',
-        'zumba',
-        'belly\W?danc(?:e(?:rs?)?|ing)',
-        'bellycraft',
-        'worldbellydancealliance',
-        u'ベリーダンス',  # japanese bellydance
-        'technique',
-        'guest artists?',
-        'partnering',
+        DANCE_STYLE_CAPOEIRA,
+        DANCE_STYLE_ZOUK,
+        DANCE_STYLE_MISC,
     )
 )
 

@@ -10,26 +10,27 @@ MUSIC = Name('MUSIC', Any(
     keywords.MUSIC_ONLY,
 ))
 
-DANCE = Name(
-    'DANCE',
-    Any(
-        keywords.DANCE,
-        keywords.STYLE_BREAK,
-        keywords.STYLE_ROCK,
-        keywords.STYLE_POP,
-        keywords.STYLE_LOCK,
-        keywords.STYLE_WAACK,
-        keywords.STYLE_HOUSE,
-        keywords.STYLE_HIPHOP,
-        keywords.STYLE_DANCEHALL,
-        keywords.STYLE_KRUMP,
-        keywords.STYLE_TURF,
-        keywords.STYLE_LITEFEET,
-        keywords.STYLE_FLEX,
-        keywords.STYLE_BEBOP,
-        keywords.STYLE_ALLSTYLE,
-    )
+STREET_STYLES = Any(
+    keywords.STYLE_BREAK,
+    keywords.STYLE_ROCK,
+    keywords.STYLE_POP,
+    keywords.STYLE_LOCK,
+    keywords.STYLE_WAACK,
+    keywords.STYLE_HOUSE,
+    keywords.STYLE_HIPHOP,
+    keywords.STYLE_DANCEHALL,
+    keywords.STYLE_KRUMP,
+    keywords.STYLE_TURF,
+    keywords.STYLE_LITEFEET,
+    keywords.STYLE_FLEX,
+    keywords.STYLE_BEBOP,
+    keywords.STYLE_ALLSTYLE,
 )
+
+DANCE = Name('DANCE', Any(
+    keywords.DANCE,
+    STREET_STYLES,
+))
 
 GOOD_DANCE = Name(
     'GOOD_DANCE',
