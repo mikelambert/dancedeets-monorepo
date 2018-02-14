@@ -10,7 +10,7 @@ class TestWCS(classifier_util.TestClassifier):
 
     def runTest(self):
         self.assertEvents(
-            0.90,
+            1.0,
             [
                 # only teacher names
                 '467976933581754',
