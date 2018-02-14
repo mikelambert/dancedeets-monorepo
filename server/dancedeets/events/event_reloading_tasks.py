@@ -183,7 +183,14 @@ load_fb_event = fb_mapreduce.nomr_wrap(yield_load_fb_event)
 
 
 def mr_load_fb_events(
-    fbl, display_event=False, load_attending=False, time_period=None, disable_updates=None, only_if_updated=True, queue='slow-queue'
+    fbl,
+    display_event=False,
+    load_attending=False,
+    time_period=None,
+    disable_updates=None,
+    only_if_updated=True,
+    queue='slow-queue',
+    vertical=None
 ):
     if display_event:
         event_or_attending = 'Display Events'
@@ -192,6 +199,9 @@ def mr_load_fb_events(
         event_or_attending = 'Events'
         mr_func = 'map_load_fb_event'
     filters = []
+    if vertical:
+        filters.append(('verticals', '=', vertical))
+        event_or_attending = '%s %s' % (vertical, event_or_attending)
     if time_period:
         filters.append(('search_time_period', '=', time_period))
         name = 'Load %s %s' % (time_period, event_or_attending)
@@ -204,8 +214,10 @@ def mr_load_fb_events(
         entity_kind='dancedeets.events.eventdata.DBEvent',
         handle_batch_size=20,
         filters=filters,
-        extra_mapper_params={'disable_updates': disable_updates,
-                             'only_if_updated': only_if_updated},
+        extra_mapper_params={
+            'disable_updates': disable_updates,
+            'only_if_updated': only_if_updated
+        },
         queue=queue,
     )
 
@@ -311,6 +323,7 @@ class ReloadEventsHandler(base_servlet.BaseTaskFacebookRequestHandler):
         load_attending = self.request.get('load_attending', '0') != '0'
         display_event = self.request.get('display_event', '0') != '0'
         queue = self.request.get('queue', 'slow-queue')
+        vertical = self.request.get('vertical', None)
         mr_load_fb_events(
             self.fbl,
             display_event=display_event,
@@ -318,6 +331,7 @@ class ReloadEventsHandler(base_servlet.BaseTaskFacebookRequestHandler):
             time_period=time_period,
             disable_updates=disable_updates,
             only_if_updated=only_if_updated,
+            vertical,
             queue=queue
         )
 

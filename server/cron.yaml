@@ -1,7 +1,7 @@
 cron:
 # These rely on 701004
 - description: reload future facebook event data
-  url: /tasks/reload_events?user_id=701004&allow_cache=0&only_if_updated=1&time_period=FUTURE&disable_updates=&queue=slow-queue
+  url: /tasks/reload_events?user_id=701004&allow_cache=0&only_if_updated=1&time_period=FUTURE&disable_updates=&queue=slow-queue&vertical=STREET
   schedule: every 3 hours
 # If we are trying to run this quickly, we may be interested in using disable_updates=regeocode,geodata,photo,index depending:
 # www.dancedeets.com/tasks/reload_events?user_id=701004&allow_cache=1&only_if_updated=0&disable_updates=regeocode,photo,geodata,index&queue=fast-queue
@@ -40,7 +40,7 @@ cron:
   url: /tasks/social_publisher
   schedule: every 1 minutes
 - description: search fb for more events
-  url: /tools/search_fb_for_events?user_id=random
+  url: /tools/search_fb_for_events?user_id=random&vertical=STREET
   schedule: every 8 hours
 # This seems to be too spammy, and has a negative effect on users :(
 # So let's disable it for now, until we can find a better threshold/metric for whether to notify users
@@ -70,10 +70,10 @@ cron:
 #  url: /tasks/weekly_posts?user_id=701004&limit=30
 #  schedule: every monday 12:00
 - description: generate sitemaps/*-*.xml
-  url: /tasks/generate_sitemaps?user_id=701004
+  url: /tasks/generate_sitemaps?user_id=701004&vertical=STREET
   schedule: every tuesday 12:00
 - description: generate sitemaps/recent.xml
-  url: /tasks/generate_sitemaps?user_id=701004&time_period=FUTURE
+  url: /tasks/generate_sitemaps?user_id=701004&time_period=FUTURE&vertical=STREET
   schedule: every day 12:00
 - description: start posting about events N days out
   url: /tasks/prepare_event_notifications?days=3&min_dancers=50&min_attendees=100

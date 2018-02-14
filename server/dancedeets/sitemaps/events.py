@@ -76,13 +76,20 @@ class ReloadEventsHandler(base_servlet.BaseTaskFacebookRequestHandler):
     def get(self):
         queue = self.request.get('queue', 'fast-queue')
         time_period = self.request.get('time_period', None)
+        vertical = self.request.get('vertical', None)
 
         filters = []
+        if vertical:
+            filters.append(('verticals', '=', vertical))
+            vertical_string = '%s ' % vertical
+        else:
+            vertical_string = ''
+
         if time_period:
             filters.append(('search_time_period', '=', time_period))
-            name = 'Generate %s Sitemaps' % time_period
+            name = 'Generate %s %sSitemaps' % (time_period, vertical_string)
         else:
-            name = 'Generate Sitemaps'
+            name = 'Generate %sSitemaps' % vertical_string
         fb_mapreduce.start_map(
             fbl=self.fbl,
             name=name,
