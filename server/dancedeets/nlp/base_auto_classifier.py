@@ -110,8 +110,8 @@ class RuleGenerator(type):
                 commutative_connected(cls.AMBIGUOUS_DANCE, Any(keywords.CLASS, keywords.ROMANCE_LANGUAGE_CLASS)),
             )
         )
-        cls.BAD_DANCE_EVENT = Name('BAD_DANCE_EVENT', commutative_connected(cls.BAD_DANCE, cls.EVENT_TYPE))
-        cls.BAD_DANCE_EVENT_ROMANCE = Name('GOOD_DANCE_EVENT_ROMANCE', commutative_connected(cls.BAD_DANCE, cls.EVENT_TYPE_ROMANCE))
+        cls.BAD_DANCE_EVENT = Name('BAD_DANCE_EVENT', commutative_connected(cls.BAD_DANCE_FULL, cls.EVENT_TYPE))
+        cls.BAD_DANCE_EVENT_ROMANCE = Name('GOOD_DANCE_EVENT_ROMANCE', commutative_connected(cls.BAD_DANCE_FULL, cls.EVENT_TYPE_ROMANCE))
 
 
 class DanceStyleEventClassifier(object):
@@ -237,7 +237,7 @@ class DanceStyleEventClassifier(object):
             event_type = self.EVENT_TYPE
             good_dance_event = self.GOOD_DANCE_EVENT
 
-        is_dance_ish = len(list(self._get(self.GOOD_OR_AMBIGUOUS_DANCE) + self._get(keywords.EASY_DANCE))) >= 3
+        is_dance_ish = len(list(self._get(self.GOOD_OR_AMBIGUOUS_DANCE) + self._get(keywords.EASY_DANCE))) >= 2
         # Has 'popping' and actually seems related-to-dance-as-a-whole
         if self._title_has(self.GOOD_DANCE_FULL) and is_dance_ish:
             return 'title has good_dance, and is dance-y event'
@@ -257,11 +257,11 @@ class DanceStyleEventClassifier(object):
 
         # Has 'workshop' and ('hiphop dance' or 'moptop') and not 'modern'
         # If the title contains a good keyword, and the body contains a bad keyword, this one will trigger (but the one below will not)
-        if self._title_has(event_type) and self._title_has(self.GOOD_DANCE_FULL) and not self._title_has(self.BAD_DANCE):
+        if self._title_has(event_type) and self._title_has(self.GOOD_DANCE_FULL) and not self._title_has(self.BAD_DANCE_FULL):
             return 'title has event_type, good and not bad keywords'
 
         # Has 'workshop' and body has ('hiphop dance' but not 'ballet')
-        if self._title_has(event_type) and self._has(self.GOOD_DANCE_FULL) and not self._has(self.BAD_DANCE):
+        if self._title_has(event_type) and self._has(self.GOOD_DANCE_FULL) and not self._has(self.BAD_DANCE_FULL):
             return 'title has event_type, body had good and not bad keywords'
 
         return False
@@ -274,7 +274,7 @@ class DanceStyleEventClassifier(object):
         else:
             good_dance_event = self.GOOD_DANCE_EVENT
 
-        if self._has(good_dance_event) and not self._has(self.BAD_DANCE):
+        if self._has(good_dance_event) and not self._has(self.BAD_DANCE_FULL):
             return 'body has good dance event, and title does not have bad keywords'
 
         if self._short_lines_have(good_dance_event):
@@ -300,7 +300,7 @@ class DanceStyleEventClassifier(object):
     def is_competition(self):
         has_competition = self._short_lines_have(self.GOOD_DANCE_COMPETITION)
 
-        has_bad_keywords = self._short_lines_have(self.BAD_DANCE)
+        has_bad_keywords = self._short_lines_have(self.BAD_DANCE_FULL)
         if has_competition and not has_bad_keywords:
             return 'is good-dance battle event, with no bad keywords'
 
@@ -326,7 +326,7 @@ class DanceStyleEventClassifier(object):
 
         if len(set(self._get(keywords.CLUB_ONLY))) > 2:
             return False
-        if self._title_has(keywords.DANCE_WRONG_STYLE):
+        if self._title_has(self.BAD_DANCE_FULL):
             return False
 
         # if title is good strong keyword, and we have a list of classes:
@@ -339,7 +339,7 @@ class DanceStyleEventClassifier(object):
             for line in schedule_lines:
                 proc_line = event_classifier.StringProcessor(line, self._classified_event.boundaries)
                 good_matches = proc_line.get_tokens(self.GOOD_OR_AMBIGUOUS_DANCE)
-                has_bad_matches = proc_line.has_token(self.BAD_DANCE)
+                has_bad_matches = proc_line.has_token(self.BAD_DANCE_FULL)
 
                 # Sometimes we have a schedule with hiphop and ballet
                 # Sometimes we have a schedule with hiphop and dj and beatbox/rap (more on music side)
