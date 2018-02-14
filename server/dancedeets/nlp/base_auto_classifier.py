@@ -1,11 +1,12 @@
 import datetime
 import logging
 import re
+from dancedeets import event_types
 from . import event_classifier
 from . import event_structure
 from . import grammar
-from street import keywords
-from street import rules
+from .street import keywords
+from .street import rules
 Any = grammar.Any
 Name = grammar.Name
 commutative_connected = grammar.commutative_connected
@@ -29,6 +30,31 @@ def _log_to_bucket(category):
 
 NEVER_TOKEN = Any('_NEVER_FOUND_TOKEN_WINVO:INDLKESP_')
 
+style_keywords = {
+    event_types.VERTICALS.STREET: rules.STREET_STYLES,
+    event_types.VERTICALS.LATIN: keywords.DANCE_STYLE_LATIN,
+    event_types.VERTICALS.SWING: keywords.DANCE_STYLE_SWING,
+    event_types.VERTICALS.TANGO: keywords.DANCE_STYLE_TANGO,
+    event_types.VERTICALS.CAPOEIRA: keywords.DANCE_STYLE_CAPOEIRA,
+    event_types.VERTICALS.BALLROOM: keywords.DANCE_STYLE_BALLROOM,
+    event_types.VERTICALS.ZOUK: keywords.DANCE_STYLE_ZOUK,
+}
+
+misc_keyword_sets = [
+    keywords.DANCE_STYLE_CLASSICAL,
+    keywords.DANCE_STYLE_AFRICAN,
+    keywords.DANCE_STYLE_INDIAN,
+    keywords.DANCE_STYLE_SEXY,
+    keywords.DANCE_STYLE_MISC,
+]
+
+
+def all_styles_except(vertical):
+    keyword_sets = set(style_keywords.values())
+    keyword_sets.update(misc_keyword_sets)
+    keyword_sets.remove(style_keywords[vertical])
+    return Any(*keyword_sets)
+
 
 class RuleGenerator(type):
     def __init__(cls, name, parents, attr):
@@ -42,6 +68,13 @@ class RuleGenerator(type):
         cls.AMBIGUOUS_DANCE = Name('AMBIGUOUS_DANCE', cls.AMBIGUOUS_DANCE or NEVER_TOKEN)
         cls.BAD_DANCE = Name('BAD_DANCE', cls.BAD_DANCE or NEVER_TOKEN)
         cls.ADDITIONAL_EVENT_TYPE = cls.ADDITIONAL_EVENT_TYPE or NEVER_TOKEN
+
+        cls.BAD_DANCE_FULL = Any(
+            cls.BAD_DANCE,
+            keywords.WRONG_BATTLE_STYLE,
+            keywords.WRONG_AUDITION,
+            all_styles_except(cls.vertical),
+        )
 
         UNAMBIGUOUS_DANCE = commutative_connected(cls.AMBIGUOUS_DANCE, keywords.EASY_DANCE)
         cls.GOOD_DANCE_FULL = Any(UNAMBIGUOUS_DANCE, cls.GOOD_DANCE)
@@ -323,7 +356,7 @@ class DanceStyleEventClassifier(object):
 
 
 class StreetClassifier(DanceStyleEventClassifier):
-    vertical = 'street'
+    vertical = event_types.VERTICALS.STREET
 
     AMBIGUOUS_DANCE = keywords.AMBIGUOUS_DANCE_MUSIC
     GOOD_DANCE = Any(rules.good_dance, rules.MANUAL_DANCER[grammar.STRONG_WEAK])
