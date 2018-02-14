@@ -12,7 +12,7 @@ connected = grammar.connected
 commutative_connected = grammar.commutative_connected
 
 REAL_DANCE = Any(
-    'lindy\W?hop',
+    'lindy\W?hop\w*',
     'west coast swing',
     'east coast swing',
     'solo jazz',
