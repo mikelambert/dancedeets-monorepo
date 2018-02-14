@@ -209,6 +209,10 @@ class DanceStyleEventClassifier(object):
         if self._title_has(self.GOOD_DANCE_FULL) and is_dance_ish:
             return 'title has good_dance, and is dance-y event'
 
+        # Has 'popping with' and has some class-y stuff in the body
+        if self._title_has(self.GOOD_DANCE_FULL) and self._title_has(keywords.WITH) and len(list(self._get(keywords.CLASS))) >= 2:
+            return 'title has good_dance, and is dance-y event'
+
         # Has 'hiphop dance workshop/battle/audition'
         if self._title_has(good_dance_event):
             return 'title has good_dance-event_type'

@@ -26,14 +26,17 @@ TANGO = Any(
     u'탱고',
     u'танго',  # russian
 )
+MILONGA = Any(
+    'milongas?',
+    u'ミロンガ',
+    u'밀롱가',
+)
 TANGO_TYPES = Any(
+    MILONGA,
     'traditional',
     'nuevo',
     u'ヌオーバ',
     u'새로운',
-    'milonga',
-    u'ミロンガ',
-    u'밀롱가',
     'vals',
     u'バルス',
     u'왈츠',
@@ -76,7 +79,7 @@ class TangoClassifier(base_auto_classifier.DanceStyleEventClassifier):
         return False
 
     def is_tango(self):
-        if self._title_has(TANGO) and len(list(self._get(EXTRAS))) >= 2:
+        if (self._title_has(TANGO) or self._title_has(MILONGA)) and len(list(self._get(EXTRAS))) >= 2:
             return 'has tango title and tango/dance keywords'
 
         return False

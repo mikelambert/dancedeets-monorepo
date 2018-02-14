@@ -10,7 +10,7 @@ class TestTangoDance(classifier_util.TestClassifier):
 
     def runTest(self):
         self.assertEvents(
-            1.0,
+            0.87,
             [
                 '143395409622891',
                 '1110602889040187',
@@ -105,6 +105,7 @@ class TestArgentineTango(classifier_util.TestClassifier):
         self.assertEvents(
             1.0, [
                 '1988917208036138',
+                '161987814529460',
                 '1618437668195235',
                 '163467564301076',
                 '345849422559031',
@@ -193,7 +194,6 @@ class TestNotArgentineTango(classifier_util.TestClassifier):
             1.0, [
                 '207098266513986',
                 '901694419980766',
-                '161987814529460',
                 '2022928017926728',
                 '1133278066779245',
                 '533868250332853',
