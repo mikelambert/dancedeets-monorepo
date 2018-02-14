@@ -1,16 +1,18 @@
 # -*-*- encoding: utf-8 -*-*-
 
 import datetime
+import logging
 import time
 
 from dancedeets import base_servlet
 from dancedeets import app
-import logging
+from dancedeets import event_types
 from dancedeets import fb_api
 from dancedeets.util import mr
 from . import thing_db
 from . import potential_events
 from . import event_pipeline
+VERTICALS = event_types.VERTICALS
 
 
 class LookupSearchEvents(fb_api.LookupType):
@@ -39,7 +41,7 @@ def two(w):
 
 
 obvious_style_keywords = {
-    'street': ([
+    VERTICALS.STREET: ([
         'bboys',
         'bboying',
         'bgirl',
@@ -94,10 +96,10 @@ obvious_style_keywords = {
         'cypher battle',
         'cypher jam',
     ] + two('electro dance') + two('lite feet')),
-    'latin': [
+    VERTICALS.LATIN: [
         'salsa footwork',
     ],
-    'capoeira': [
+    VERTICALS.CAPOEIRA: [
         'capoeira',
         'capoeira angola',
         'capoeira regional',
@@ -113,7 +115,7 @@ obvious_style_keywords = {
 #        'quickstep',
 
 too_popular_style_keywords = {
-    'street': ([
+    VERTICALS.STREET: ([
         'bboy',
         'breaking',
         'breakdance',
@@ -139,7 +141,7 @@ too_popular_style_keywords = {
         'all styles',
         'freestyle',
     ] + two('hip hop') + two('street dance') + two('new style') + two('all styles')),
-    'latin': [
+    VERTICALS.LATIN: [
         'cha-cha',
         'samba',
         'bachata',
@@ -162,14 +164,14 @@ too_popular_style_keywords = {
         u'サンバ',
         u'バチャータ',
     ],
-    'capoeira': [
+    VERTICALS.CAPOEIRA: [
         'capoeira',
         'capoeira angola',
         'capoeira regional',
         'capoeira contemporânea',
         'capoeira roda',
     ],
-    'swing': [
+    VERTICALS.SWING: [
         'swing dance',
         'east coast swing',
         'west coast swing',
@@ -188,12 +190,12 @@ too_popular_style_keywords = {
         'jitterbug',
         'slow drag',
     ],
-    'zouk': [
+    VERTICALS.ZOUK: [
         'zouk',
         'brazilian zouk',
         'zouk lambada',
     ],
-    'ballroom': [
+    VERTICALS.BALLROOM: [
         'ballroom dance',
         'latin ballroom',
         'waltz',
@@ -212,7 +214,7 @@ too_popular_style_keywords = {
         'country 2 step',
         'american tango',
     ],
-    'tango': [
+    VERTICALS.TANGO: [
         'argentine tango',
         'tango',
         'milonga',
@@ -242,28 +244,25 @@ def search_fb(fbl, style):
         'audiciones',
     ]
     style_event_types = {
-        'street': [
+        VERTICALS.STREET: [
             'battle',
             'jam',
             'bonnie and clyde',
         ],
-        'latin': [],
-        'capoeira': [
+        VERTICALS.CAPOEIRA: [
             'roda',
             'encontro',
             'demo',
             'demonstration',
         ],
-        'swing': [],
-        'zouk': [
+        VERTICALS.SWING: [],
+        VERTICALS.ZOUK: [
             'meeting',
             'incontro',
             'festival',
             'marathon',
             'social',
         ],
-        'ballroom': [],
-        'tango': [],
     }
 
     all_keywords = obvious_keywords[:]
