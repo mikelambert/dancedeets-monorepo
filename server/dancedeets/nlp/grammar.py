@@ -96,7 +96,7 @@ STRONG_WEAK = 1
 
 
 class FileBackedKeyword(_BaseAlternation):
-    def __init__(self, filename, strength):
+    def __init__(self, filename, strength=STRONG):
         super(FileBackedKeyword, self).__init__()
         self._filename = filename
         self._strength = strength
@@ -127,6 +127,8 @@ class FileBackedKeyword(_BaseAlternation):
         for filename in glob.glob(glob_path):
             f = codecs.open(filename, encoding='utf-8')
             lines.extend(f.readlines())
+        if not lines:
+            raise Exception('Could not find any keywords for filename: %s' % filename)
         result = cls._parse_keywords(lines)
         return result
 

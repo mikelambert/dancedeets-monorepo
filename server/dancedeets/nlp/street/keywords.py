@@ -17,7 +17,7 @@ CHOREO_DANCER = GenFileBackedKeywords('CHOREO_DANCER', 'hiphop_choreo/dancers*')
 FREESTYLE_CREW = GenFileBackedKeywords('FREESTYLE_CREW', 'freestyle/crews*')
 FREESTYLE_DANCER = GenFileBackedKeywords('FREESTYLE_DANCER', 'freestyle/dancers*')
 
-CHOREO_KEYWORD = GenFileBackedKeywords('CHOREO_KEYWORD', 'choreo/keywords')
+CHOREO_KEYWORD = GenFileBackedKeywords('CHOREO_KEYWORD', 'hiphop_choreo/keywords')
 FREESTYLE_KEYWORD = GenFileBackedKeywords('FREESTYLE_KEYWORD', 'freestyle/keywords')
 COMPETITION = GenFileBackedKeywords('COMPETITION', 'competitions')
 GOOD_DJ = GenFileBackedKeywords('GOOD_DJ', 'djs')
