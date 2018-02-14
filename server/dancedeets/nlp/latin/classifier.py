@@ -104,7 +104,7 @@ class LatinClassifier(base_auto_classifier.DanceStyleEventClassifier):
 
 
 def is_salsa_event(classified_event):
-    ballroom = ballroom_classifier.is_many_ballroom_styles(classified_event)[0]
+    ballroom = ballroom_classifier.is_many_ballroom_styles(classified_event)
     if ballroom[0]:
         return (False, ['Ballroom event: %s' % ballroom[1]], None)
 

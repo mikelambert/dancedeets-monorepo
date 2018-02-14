@@ -64,10 +64,7 @@ class AutoClassifier(object):
         return self.result[1]
 
     def verticals(self):
-        try:
-            return self.result[2]
-        except:
-            return [event_types.VERTICALS.STREET]
+        return self.result[2]
 
 
 def is_auto_notadd_event(classified_event, auto_add_result=None):
