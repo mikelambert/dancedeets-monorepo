@@ -553,6 +553,7 @@ EASY_CLUB = Any(
     'after\Wparty',
     'pre\Wparty',
     'party',
+    'social',
     u'클럽',  # korean club
     u'クラブ',  # japanese club
 )
@@ -1227,14 +1228,19 @@ DANCE_STYLE_SWING = Any(
     'balboa',
     'lindy',
     'lindyhop\w*',
+    'east coast swing',
     u'リンディ',  # japanese lindy
     u'린디',  # korean lindy
     'swing',
-    'wcs',
     'charleston',
     'quickstep',
     'blues',
     u'ブルース',  # japanese blues
+)
+
+DANCE_STYLE_WCS = Any(
+    'west coast swing',
+    'wcs',
 )
 
 DANCE_STYLE_CLASSICAL = Any(

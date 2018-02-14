@@ -38,6 +38,7 @@ style_keywords = {
     event_types.VERTICALS.CAPOEIRA: keywords.DANCE_STYLE_CAPOEIRA,
     event_types.VERTICALS.BALLROOM: keywords.DANCE_STYLE_BALLROOM,
     event_types.VERTICALS.ZOUK: keywords.DANCE_STYLE_ZOUK,
+    event_types.VERTICALS.WCS: keywords.DANCE_STYLE_WCS,
 }
 
 misc_keyword_sets = [

@@ -13,7 +13,6 @@ commutative_connected = grammar.commutative_connected
 
 REAL_DANCE = Any(
     'lindy\W?hop\w*',
-    'west coast swing',
     'east coast swing',
     'solo jazz',
     'solo charleston',
@@ -21,29 +20,21 @@ REAL_DANCE = Any(
     'carolina shag',
     'collegiate shag',
     'st\W? louis shag',
-    'modern jive',
-    'jitterbug',
     'slow drag',
     'balboa\w*',
+    'authentic jazz',
+    #
+    'modern jive',
+    'jitterbug',
 )
 
 AMBIGUOUS_WORDS = Any(
-    'jive\w*',
     'swing\w*',
     'charleston',
     'shag',
-    'wcs',
     'ecs',
-)
-
-WCS = Any('wcs')
-
-WCS_BASICS = Any(
-    'sugar push',
-    'sugar tuck',
-    'left side pass',
-    'under arm',
-    'whip',
+    #
+    'jive\w*',
 )
 
 AMBIGUOUS_DANCE_MUSIC = Any('blues',)
@@ -76,16 +67,6 @@ class SwingClassifier(base_auto_classifier.DanceStyleEventClassifier):
         result = super(SwingClassifier, self).is_dance_event()
         if result:
             return result
-
-        result = self.is_wcs()
-        if result:
-            return result
-
-        return False
-
-    def is_wcs(self):
-        if self._title_has(WCS) and self._has(WCS_BASICS):
-            return 'has wcs and wcs keywords'
 
         return False
 
