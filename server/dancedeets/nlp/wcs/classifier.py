@@ -29,6 +29,9 @@ WCS_BASICS = Any(
 
 AMBIGUOUS_WORDS = Any(WCS, WESTIES)
 
+# Event Sites:
+# https://www.worldsdc.com/events/
+
 
 class WcsClassifier(base_auto_classifier.DanceStyleEventClassifier):
     vertical = event_types.VERTICALS.WCS
