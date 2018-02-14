@@ -331,8 +331,8 @@ class ReloadEventsHandler(base_servlet.BaseTaskFacebookRequestHandler):
             time_period=time_period,
             disable_updates=disable_updates,
             only_if_updated=only_if_updated,
-            vertical,
-            queue=queue
+            queue=queue,
+            vertical=vertical,
         )
 
     post = get
