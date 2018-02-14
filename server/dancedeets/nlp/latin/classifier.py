@@ -32,6 +32,7 @@ REAL_DANCE = Name(
         u'倫巴舞',  # chinese rumba dance
         'shines?\W+partner',
         'partner\W+shines?',
+        'sensual\W?bachata',
     )
 )
 
@@ -103,8 +104,9 @@ class LatinClassifier(base_auto_classifier.DanceStyleEventClassifier):
 
 
 def is_salsa_event(classified_event):
-    if ballroom_classifier.is_ballroom_event(classified_event)[0]:
-        return (False, '', [])
+    ballroom = ballroom_classifier.is_many_ballroom_styles(classified_event)[0]
+    if ballroom[0]:
+        return (False, ['Ballroom event: %s' % ballroom[1]], None)
 
     classifier = LatinClassifier(classified_event)
     return classifier.is_dance_event(), classifier.debug_info(), classifier.vertical

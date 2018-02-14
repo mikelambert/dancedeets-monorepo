@@ -86,8 +86,9 @@ class TangoClassifier(base_auto_classifier.DanceStyleEventClassifier):
 
 
 def is_tango_dance(classified_event):
-    if ballroom_classifier.is_ballroom_event(classified_event)[0]:
-        return (False, ['Ballroom event'], None)
+    ballroom = ballroom_classifier.is_many_ballroom_styles(classified_event)[0]
+    if ballroom[0]:
+        return (False, ['Ballroom event: %s' % ballroom[1]], None)
 
     classifier = TangoClassifier(classified_event)
     return classifier.is_dance_event(), classifier.debug_info(), classifier.vertical
