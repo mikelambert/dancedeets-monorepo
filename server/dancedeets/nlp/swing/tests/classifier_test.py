@@ -10,7 +10,7 @@ class TestSwingDance(classifier_util.TestClassifier):
 
     def runTest(self):
         self.assertEvents(
-            0.9,
+            0.93,
             [
                 '519492811755048',
                 '460976420932784',

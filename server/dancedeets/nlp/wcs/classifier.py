@@ -11,7 +11,9 @@ Name = grammar.Name
 connected = grammar.connected
 commutative_connected = grammar.commutative_connected
 
-WEST_COAST_SWING = Any('west coast swing\w*',)
+PROFESSIONALS = grammar.FileBackedKeyword('../wcs/professionals')
+
+WEST_COAST_SWING = Any('west coast swing\w*', PROFESSIONALS)
 
 WCS = Any('wcs')
 
@@ -66,6 +68,9 @@ class WcsClassifier(base_auto_classifier.DanceStyleEventClassifier):
 
         if self._title_has(WESTIES) and (self._has(WCS) or self._has(WEST_COAST_SWING)):
             return 'has westies title, and wcs keywords'
+
+        if len(list(self._get(WEST_COAST_SWING))) >= 2:
+            return 'has two or more names'
 
         return False
 
