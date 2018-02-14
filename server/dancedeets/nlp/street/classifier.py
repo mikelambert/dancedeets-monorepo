@@ -22,35 +22,36 @@ from . import rules
 def is_street_event(classified_event):
     result = is_intentional(classified_event)
     if result[0]:
-        return result
+        return result[0], result[1], event_types.VERTICALS.STREET
     result = is_battle(classified_event)
     if result[0]:
-        return result
+        return result[0], result[1], event_types.VERTICALS.STREET
     result = is_audition(classified_event)
     if result[0]:
-        return result
+        return result[0], result[1], event_types.VERTICALS.STREET
     result = is_workshop(classified_event)
     if result[0]:
-        return result
+        return result[0], result[1], event_types.VERTICALS.STREET
     result = has_list_of_good_classes(classified_event)
     if result[0]:
-        return result
+        return result[0], result[1], event_types.VERTICALS.STREET
     result = is_vogue_event(classified_event)
     if result[0]:
-        return result
+        return result[0], result[1], event_types.VERTICALS.STREET
     result = has_standalone_keywords(classified_event)
     if result[0]:
-        return result
+        return result[0], result[1], event_types.VERTICALS.STREET
     result = has_good_event_title(classified_event)
     if result[0]:
-        return result
+        return result[0], result[1], event_types.VERTICALS.STREET
     result = is_performance_or_practice(classified_event)
     if result[0]:
-        return result
+        return result[0], result[1], event_types.VERTICALS.STREET
     result = has_many_street_styles(classified_event)
     if result[0]:
-        return result
-    return result
+        return result[0], result[1], event_types.VERTICALS.STREET
+
+    return result[0], result[1], event_types.VERTICALS.STREET
 
 
 def has_many_street_styles(classified_event):
