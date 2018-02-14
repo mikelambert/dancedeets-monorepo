@@ -552,6 +552,7 @@ EASY_CLUB = Any(
     'club',
     'after\Wparty',
     'pre\Wparty',
+    'party',
     u'클럽',  # korean club
     u'クラブ',  # japanese club
 )
@@ -972,7 +973,7 @@ INTRODUCTION = Any(
 )
 CLASS_LEVELS = Any(
     INTRODUCTION,
-    grammar.connected(LEVEL, grammar.RegexRule('[123]')),
+    grammar.connected(LEVEL, grammar.RegexRule('[12345]')),
     ACTUAL_LEVELS,
     grammar.commutative_connected(ACTUAL_LEVELS, ACTUAL_LEVELS),
     grammar.commutative_connected(ACTUAL_LEVELS, LEVEL),
@@ -1047,6 +1048,8 @@ CLASS_ONLY = Any(
     'concorso',  # course italian
     'concurso',  # course spanish
     'cursuri',  # course romanian
+    'tanzanleitung',  # dance-instruction german
+    'anleitung',  # guidance/instruction german
     'kur[sz](?:y|en)?',  # course german/polish/czech
     'aulas?',  # portuguese class(?:es)?
     u'특강',  # korean lecture
@@ -1086,6 +1089,7 @@ CLASS = Name(
     Any(
         CLASS_ONLY,
         CLASS_LEVELS,
+        grammar.connected(CLASS_ONLY, Any('in')),
         #WITH,
         grammar.commutative_connected(CLASS_ONLY, Any(FREE, CLASS_LEVELS, WITH)),
     )
