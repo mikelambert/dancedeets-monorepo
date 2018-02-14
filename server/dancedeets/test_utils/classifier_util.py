@@ -13,7 +13,11 @@ class TestClassifier(unittest.TestCase):
         self.fbl = fb_api.FBLookup("dummyid", unittest.get_local_access_token_for_testing())
 
     def get_event(self, event_id):
-        return self.fbl.get(fb_api.LookupEvent, event_id)
+        try:
+            return self.fbl.get(fb_api.LookupEvent, event_id)
+        except:
+            logging.error('Error loading event %s', event_id)
+            raise
 
     def _run_event(self, event_id):
         fb_event = self.get_event(event_id)
