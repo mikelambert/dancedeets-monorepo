@@ -1,23 +1,24 @@
 #!/usr/bin/python
+"""Grab all the top dancers from the WSDC, for use as keywords"""
 
 import json
 import os
 import urllib2
 
+import dancedeets
+
 ids = set()
-#for i in range(ord('a'), ord('z') + 1):
-#    c = chr(i)
-#    names = json.loads(urllib2.urlopen('https://points.worldsdc.com/lookup/autocomplete?q=%s' % c).read())
-#    ids.update([x['wscid'] for x in names])
 
-#ids = sorted(list(ids))
+dirname = os.path.join(os.path.dirname(dancedeets.__file__), '..', '..', 'scrapers', 'wsdc_dancers')
+print dirname
+if not os.path.exists(dirname):
+    os.makedirs(dirname)
 
-if not os.path.exists('wsdc_dancers'):
-    os.makedirs('wsdc_dancers')
+show_points = False
 
 
 def get(id):
-    filename = 'wsdc_dancers/%s.txt' % id
+    filename = os.path.join(dirname, '%s.txt' % id)
     if os.path.exists(filename):
         data_string = open(filename).read()
     else:
@@ -33,21 +34,33 @@ def get(id):
     return data
 
 
-for id in range(17500):
+LIMIT = 11100  # 17500
+
+for id in range(LIMIT):
     data = get(id)
     if not data:
         continue
     if data['type'] == 'dancer':
         if data['placements']:
+            name = '%s %s' % (data['dancer']['first_name'], data['dancer']['last_name'])
+            name = name.lower()
+
             divisions = data['placements'].get('West Coast Swing', [])
             div_points = dict((x['division']['name'], x['total_points']) for x in divisions)
-            good_division_names = {'All-Stars': 30, 'Champions': 10, 'Invitational': 10, 'Professional': 30}
+            good_division_names = {
+                'All-Stars': 20,
+                'Champions': 8,
+                'Invitational': 8,
+                'Professional': 20,
+                'Advanced': 50,
+            }
             serious = False
             for div_name in good_division_names:
                 if div_points.get(div_name, 0) > good_division_names[div_name]:
                     serious = True
 
             if serious:
-                name = '%s %s' % (data['dancer']['first_name'], data['dancer']['last_name'])
-                name = name.lower()
-                print id, name, json.dumps(div_points)
+                if show_points:
+                    print id, name, json.dumps(div_points)
+                else:
+                    print name
