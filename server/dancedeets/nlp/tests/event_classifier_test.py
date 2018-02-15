@@ -16,20 +16,24 @@ class TestSoulSessionsOslo(unittest.TestCase):
         self.assertEqual(set(['sessions', 'jam', 'battles', 'cyphers']), classified_event.event_matches())
 
 
+class RuleMatches(unittest.TestCase):
+    def matchRule(self, rule, s):
+        string_processor = event_classifier.StringProcessor(s)
+        self.assertTrue(string_processor.get_tokens(rule))
+
+    def runTest(self):
+        self.matchRule(keywords.CLASS, 'beginner breakdance')
+        self.matchRule(keywords.CLASS, 'beginner')
+        self.matchRule(keywords.EASY_DANCE, u'χορός')
+        self.matchRule(keywords.EASY_DANCE, u'www.danceaholics.co.uk')
+
+
 class TestDanceClass(unittest.TestCase):
     def runTest(self):
         fb_event = dict(info=dict(name="FB Event", description="more stuff here, dance class"))
         classified_event = event_classifier.get_classified_event(fb_event)
         self.assertEqual(set(['dance']), classified_event.dance_matches())
         self.assertEqual(set(['class']), classified_event.event_matches())
-
-        string_processor = event_classifier.StringProcessor(u'beginner breakdance')
-        self.assertTrue(string_processor.get_tokens(keywords.CLASS))
-        string_processor = event_classifier.StringProcessor(u'beginner')
-        self.assertTrue(string_processor.get_tokens(keywords.CLASS))
-
-        string_processor = event_classifier.StringProcessor(u'χορός')
-        self.assertTrue(string_processor.get_tokens(keywords.EASY_DANCE))
 
 
 class TestKeywordLoader(unittest.TestCase):
