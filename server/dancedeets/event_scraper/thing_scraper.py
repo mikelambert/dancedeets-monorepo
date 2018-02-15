@@ -78,7 +78,7 @@ def discover_events_from_sources(fbl, sources):
     #sources = [x for x in sources if x.fraction_potential_are_real() > 0.05]
 
     if fbl.allow_cache:
-        logging.error('discover_events_from_sources unexpectedly called with a disabled cache!')
+        logging.error('discover_events_from_sources unexpectedly called with an enabled cache!')
     if fbl.db:
         logging.error('discover_events_from_sources unexpectedly called with a db. This could get expensive!')
 
