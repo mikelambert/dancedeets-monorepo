@@ -38,6 +38,10 @@ class WcsClassifier(base_auto_classifier.DanceStyleEventClassifier):
 
     AMBIGUOUS_DANCE = AMBIGUOUS_WORDS
     GOOD_DANCE = WEST_COAST_SWING
+    ADDITIONAL_EVENT_TYPE = Any(
+        'festival',
+        'marathon',
+    )
     BAD_DANCE = None
 
     def _quick_is_dance_event(self):

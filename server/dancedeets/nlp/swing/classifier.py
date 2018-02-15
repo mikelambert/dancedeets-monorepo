@@ -61,6 +61,10 @@ class SwingClassifier(base_auto_classifier.DanceStyleEventClassifier):
 
     AMBIGUOUS_DANCE = Any(AMBIGUOUS_WORDS, AMBIGUOUS_DANCE_MUSIC)
     GOOD_DANCE = REAL_DANCE
+    ADDITIONAL_EVENT_TYPE = Any(
+        'festival',
+        'marathon',
+    )
     BAD_DANCE = None
 
     def _quick_is_dance_event(self):
