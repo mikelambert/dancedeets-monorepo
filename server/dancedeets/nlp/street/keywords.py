@@ -240,6 +240,7 @@ AMBIGUOUS_DANCE_MUSIC_FULL = Any(
     'samba',
     'latin',
     'blues',
+    'country',
 )
 
 MUSIC_ONLY = Name(
@@ -256,7 +257,6 @@ MUSIC_ONLY = Name(
         'folk',
         'blues',
         'dubstep',
-        'country',
         'bluegrass',
         'electro',
         'electronica',

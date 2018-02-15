@@ -248,11 +248,12 @@ class TestFusion(classifier_util.TestClassifier):
                 '1300043146806244',
                 '1736631849715492',
                 '1802821303346657',
+                '401153043672740',
             ]
         )
 
 
-class TestNotWCS(classifier_util.TestClassifier):
+class TestNotFusion(classifier_util.TestClassifier):
     classifier_func = staticmethod(classifier.is_fusion_event)
 
     def runTest(self):
