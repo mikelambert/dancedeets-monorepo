@@ -120,7 +120,6 @@ class FileBackedKeyword(_BaseAlternation):
     #TODO(lambert): maybe handle 'byronom coxom' in slovakian with these keywords
     @classmethod
     def _get_manual_dance_keywords(cls, filename):
-        import os
         base_dir = os.path.dirname(__file__)
         glob_path = '%s/keywords/%s.txt' % (base_dir, filename)
         lines = []
@@ -231,7 +230,7 @@ CONNECTOR = Name(
         ' ?',
         ' di ',
         ' de ',
-        ' ?: ?',
+        ' ?[:/&] ?',
         u' bài ',  # vietnamese
         u'な',  # japanese
         u'の',  # japanese
