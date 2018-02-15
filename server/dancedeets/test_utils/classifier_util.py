@@ -45,6 +45,8 @@ class TestClassifier(unittest.TestCase):
         return passed, failed
 
     def assertEvents(self, fraction, event_ids):
+        if not event_ids:
+            return
         passed, failed = self._pass_fails(event_ids)
         passed_fraction = 1.0 * len(passed) / len(event_ids)
         failed_fraction = 1.0 * len(failed) / len(event_ids)
@@ -60,6 +62,8 @@ class TestClassifier(unittest.TestCase):
         self.assertTrue(fraction <= passed_fraction, 'Too many events failed: %s of %s: %s' % (len(failed), len(event_ids), failed_string))
 
     def assertNotEvents(self, fraction, event_ids):
+        if not event_ids:
+            return
         passed, failed = self._pass_fails(event_ids)
         passed_fraction = 1.0 * len(passed) / len(event_ids)
         failed_fraction = 1.0 * len(failed) / len(event_ids)
