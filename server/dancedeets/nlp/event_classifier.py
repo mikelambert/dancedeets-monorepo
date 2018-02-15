@@ -167,7 +167,9 @@ class ClassifiedEvent(object):
         self.fb_event = fb_event
         self.title = name.lower()
         if include_first_line_in_title:
-            self.title += '\n' + description.split('\n')[0].lower()
+            first_line = description.split('\n')[0].lower()
+            if len(first_line) < 200:
+                self.title += '\n' + first_line
         # use a separator here, so 'actors workshop' 'breaking boundaries...' doesn't match 'workshop breaking'
         org_name = fb_event['info'].get('owner', {}).get('name', '').lower()
         self.search_text = ('\n.\n.\n.\n'.join([name, org_name, description])).lower()
