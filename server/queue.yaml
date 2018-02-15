@@ -17,5 +17,8 @@ queue:
   rate: 60/s
   target: batch
 - name: keyword-search
+  # one at a time, and only every few seconds
   rate: 30/m
+  max_concurrent_requests: 1
+  bucket_size: 1
   target: batch
