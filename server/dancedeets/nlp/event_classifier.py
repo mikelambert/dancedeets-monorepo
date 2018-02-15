@@ -167,6 +167,8 @@ class ClassifiedEvent(object):
         self.fb_event = fb_event
         self.title = name.lower()
         if include_first_line_in_title:
+            # Using the full first line can cause problems when it is a paragraph!
+            # So let's be a bit conservative here...
             first_line = description.split('\n')[0].lower()
             if len(first_line) < 200:
                 self.title += '\n' + first_line
