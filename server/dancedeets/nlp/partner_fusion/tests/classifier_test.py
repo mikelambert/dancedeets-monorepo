@@ -11,6 +11,7 @@ class TestFusion(classifier_util.TestClassifier):
     def runTest(self):
         self.assertEvents(
             0.93, [
+                '669291039861387',
                 '921918057981374',
                 '1274685369328652',
                 '366520323793999',
