@@ -64,7 +64,12 @@ class CountryClassifier(base_auto_classifier.DanceStyleEventClassifier):
 
     GOOD_DANCE = REAL_DANCE
     AMBIGUOUS_DANCE = AMBIGUOUS_DANCE
-    ADDITIONAL_EVENT_TYPE = Any('social', 'convention')
+    ADDITIONAL_EVENT_TYPE = Any(
+        'social',
+        'convention',
+        'festival',
+        'marathon',
+    )
 
     def _quick_is_dance_event(self):
         return True
