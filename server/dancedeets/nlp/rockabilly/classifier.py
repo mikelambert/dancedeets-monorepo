@@ -39,7 +39,10 @@ class RockabillyClassifier(base_auto_classifier.DanceStyleEventClassifier):
         u'バール',
         'festival',
     )
-    BAD_DANCE = None
+    BAD_DANCE = Any('modern jive',)
+    GOOD_BAD_PAIRINGS = [
+        (Any('jive'), Any('modern jive')),
+    ]
 
     def _quick_is_dance_event(self):
         return True
