@@ -39,6 +39,7 @@ style_keywords = {
     event_types.VERTICALS.BALLROOM: keywords.DANCE_STYLE_BALLROOM,
     event_types.VERTICALS.ZOUK: keywords.DANCE_STYLE_ZOUK,
     event_types.VERTICALS.WCS: keywords.DANCE_STYLE_WCS,
+    event_types.VERTICALS.PARTNER_FUSION: keywords.NO_MATCH,
 }
 
 misc_keyword_sets = [
@@ -53,8 +54,12 @@ misc_keyword_sets = [
 def all_styles_except(vertical):
     keyword_sets = set(style_keywords.values())
     keyword_sets.update(misc_keyword_sets)
-    keyword_sets.remove(style_keywords[vertical])
+    if vertical:
+        keyword_sets.remove(style_keywords[vertical])
     return Any(*keyword_sets)
+
+
+ALL_STYLES = all_styles_except(None)
 
 
 class RuleGenerator(type):
@@ -65,15 +70,19 @@ class RuleGenerator(type):
             # Only run these for the subclasses of DanceStyleEventClassifier.
             return
         #TODO: setup BAD_DANCE keywords set up across the board...
-        cls.GOOD_DANCE = Name('GOOD_DANCE', cls.GOOD_DANCE or NEVER_TOKEN)
-        cls.AMBIGUOUS_DANCE = Name('AMBIGUOUS_DANCE', cls.AMBIGUOUS_DANCE or NEVER_TOKEN)
-        cls.BAD_DANCE = Name('BAD_DANCE', cls.BAD_DANCE or NEVER_TOKEN)
-        cls.ADDITIONAL_EVENT_TYPE = cls.ADDITIONAL_EVENT_TYPE or NEVER_TOKEN
+        cls.GOOD_DANCE = Name('GOOD_DANCE', cls.GOOD_DANCE or keywords.NO_MATCH)
+        cls.AMBIGUOUS_DANCE = Name('AMBIGUOUS_DANCE', cls.AMBIGUOUS_DANCE or keywords.NO_MATCH)
+        cls.BAD_DANCE = Name('BAD_DANCE', cls.BAD_DANCE or keywords.NO_MATCH)
+        cls.ADDITIONAL_EVENT_TYPE = cls.ADDITIONAL_EVENT_TYPE or keywords.NO_MATCH
+
+        cls.NOT_DANCE = Any(
+            keywords.WRONG_BATTLE_STYLE,
+            keywords.WRONG_AUDITION,
+        )
 
         cls.BAD_DANCE_FULL = Any(
             cls.BAD_DANCE,
-            keywords.WRONG_BATTLE_STYLE,
-            keywords.WRONG_AUDITION,
+            cls.NOT_DANCE,
             all_styles_except(cls.vertical),
         )
 
@@ -238,7 +247,9 @@ class DanceStyleEventClassifier(object):
             event_type = self.EVENT_TYPE
             good_dance_event = self.GOOD_DANCE_EVENT
 
-        is_dance_ish = len(list(self._get(self.GOOD_OR_AMBIGUOUS_DANCE) + self._get(keywords.EASY_DANCE))) >= 2
+        is_dance_ish = (
+            len(list(self._get(self.GOOD_OR_AMBIGUOUS_DANCE) + self._get(keywords.EASY_DANCE))) >= 2 and not self._get(self.NOT_DANCE)
+        )
         # Has 'popping' and actually seems related-to-dance-as-a-whole
         if self._title_has(self.GOOD_DANCE_FULL) and is_dance_ish:
             return 'title has good_dance, and is dance-y event'
@@ -258,8 +269,8 @@ class DanceStyleEventClassifier(object):
 
         # Has 'workshop' and ('hiphop dance' or 'moptop') and not 'modern'
         # If the title contains a good keyword, and the body contains a bad keyword, this one will trigger (but the one below will not)
-        if self._title_has(event_type) and self._title_has(self.GOOD_DANCE_FULL) and not self._title_has(self.BAD_DANCE_FULL):
-            return 'title has event_type, good and not bad keywords'
+        if self._title_has(event_type) and self._title_has(self.GOOD_DANCE_FULL):
+            return 'title has event_type, good keywords'
 
         # Has 'workshop' and body has ('hiphop dance' but not 'ballet')
         if self._title_has(event_type) and self._has(self.GOOD_DANCE_FULL) and not self._has(self.BAD_DANCE_FULL):

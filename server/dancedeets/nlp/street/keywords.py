@@ -5,6 +5,8 @@ from .. import grammar
 Any = grammar.Any
 Name = grammar.Name
 
+NO_MATCH = grammar.RegexRule('a^')
+
 
 def GenFileBackedKeywords(name, filename):
     return [Name(name, grammar.FileBackedKeyword(filename, strength=i)) for i in [grammar.STRONG, grammar.STRONG_WEAK]]
@@ -32,6 +34,7 @@ EASY_DANCE = Name(
         'dances?',
         "dancin[g']?",
         'dancers?',
+        'dance\w+',
         'dance style[sz]',
         'social\W?dance',
         u'χορ[όέ]\w*',  # greek dance
@@ -93,6 +96,7 @@ EASY_DANCE = Name(
         'danzas',  # dance spanish
         'ballerin[io]',  # dancer italian
         'ballano',  # dance italian
+        'ballem',  # dance catalan
         'dansare',  # dancers swedish
         'dansat',  # dancing swedish
         'dansama',  # dancers swedish
@@ -203,6 +207,7 @@ STYLE_DANCEHALL_WEAK = Any(
     u'레게',  # korean reggae
 )
 STYLE_BEBOP_WEAK = Any('be\W?bop',)
+
 AMBIGUOUS_DANCE_MUSIC = Name(
     'AMBIGUOUS_DANCE_MUSIC',
     Any(
@@ -225,6 +230,14 @@ AMBIGUOUS_DANCE_MUSIC = Name(
         u'얼반',  # korean urban
         'vogue',
     )
+)
+
+AMBIGUOUS_DANCE_MUSIC_FULL = Any(
+    AMBIGUOUS_DANCE_MUSIC,
+    'jazz',
+    'samba',
+    'latin',
+    'blues',
 )
 
 MUSIC_ONLY = Name(
@@ -554,6 +567,7 @@ EASY_CLUB = Any(
     'pre\Wparty',
     'party',
     'social',
+    u'soirée',
     u'클럽',  # korean club
     u'クラブ',  # japanese club
 )
@@ -950,13 +964,14 @@ LEVEL = Any(
     'livello',
 )
 ACTUAL_LEVELS = Any(
-    'beg(?:inner|inning|\.)?',
-    'int(?:ermediate?|\.)?',
+    'beg(?:inners?|inning|\.)?',
+    'int(?:ermediates?|\.)?',
     'adv(?:anced?|\.)?',
     'master',
     'professional',
     'adults?',
     'kids?',
+    u'初心者?',
 )
 ALL_LEVELS = Any(
     'all',
@@ -1391,7 +1406,7 @@ DANCE_WRONG_STYLE_TITLE_ONLY = Name(
         'yoga',
         'talent shows?',  # we don't care about talent shows that offer dance options
         'stiletto',
-        '\w+ball',  # basketball/baseball/football tryouts
+        '\w{,10}(?:ball|bolu?)',  # basketball/baseball/football tryouts
         'pole',
     )
 )
