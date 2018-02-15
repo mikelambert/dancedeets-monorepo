@@ -118,6 +118,10 @@ def yield_load_fb_event(fbl, all_events):
         disable_updates = []
         only_if_updated = True
 
+    for event in all_events:
+        for vertical in event.verticals:
+            mr.increment('event-vertical-%s' % vertical)
+
     # Process web_events
     web_events = [x for x in all_events if not x.is_fb_event]
     web_events_to_update = []
