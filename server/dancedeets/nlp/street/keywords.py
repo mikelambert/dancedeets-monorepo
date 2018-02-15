@@ -492,7 +492,6 @@ legit_dance = [
     'katutanssi\w*',  # finnish streetdance
     "jookin[g']?",
     "footworkin[g']?",
-    'footworks',  # spanish footworks
     u'フットワーキング',  # japanese footworking
     'soul dance',
     u'ソウルダンス',  # soul dance japanese
@@ -973,7 +972,7 @@ ACTUAL_LEVELS = Any(
     'beg(?:inners?|inning|\.)?',
     'int(?:ermediates?|\.)?',
     'medel\w*',  # swedish
-    'adv(?:anced?|\.)?',
+    'adv(?:anced|\.)?',
     'avancerad',  # swedish
     'master',
     'professional',
