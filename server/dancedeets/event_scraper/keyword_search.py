@@ -1,6 +1,7 @@
 # -*-*- encoding: utf-8 -*-*-
 
 import datetime
+import json
 import logging
 import time
 
@@ -9,6 +10,8 @@ from dancedeets import app
 from dancedeets import event_types
 from dancedeets import fb_api
 from dancedeets.util import mr
+from dancedeets.util import taskqueue
+from dancedeets.util import urls
 from . import thing_db
 from . import potential_events
 from . import event_pipeline
@@ -335,14 +338,6 @@ def get_chunks(style):
     return chunks
 
 
-def get_keywords(style):
-    chunks = get_chunks(style)
-    all_keywords = []
-    for chunk in chunks:
-        all_keywords.extend(expand_chunk(chunk))
-    return all_keywords
-
-
 def expand_chunk(chunk):
     if chunk['type'] == OBVIOUS:
         return [chunk['keyword']]
@@ -399,12 +394,25 @@ def get_ids_for_keyword(fbl, query):
 
 
 def search_fb(fbl, style):
-    all_keywords = get_keywords(style)
-    lookup_keywords(fbl, all_keywords)
+    chunks = get_chunks(style)
+    for chunk in chunks[:20]:
+        taskqueue.add(
+            method='GET',
+            url='/tools/search_fb_for_events_for_chunk?' + urls.urlencode(dict(user_id=fbl.fb_uid or 'random', chunk=json.dumps(chunk))),
+            queue_name='keyword-search',
+        )
+
+
+@app.route('/tools/search_fb_for_events_for_chunk')
+class SearchFbChunkHandler(base_servlet.BaseTaskFacebookRequestHandler):
+    def get(self):
+        chunk = json.loads(self.request.get('chunk'))
+        all_keywords = expand_chunk(chunk)
+        lookup_keywords(self.fbl, all_keywords)
 
 
 @app.route('/tools/search_fb_for_events')
-class ByBaseHandler(base_servlet.BaseTaskFacebookRequestHandler):
+class SearchFbAllHandler(base_servlet.BaseTaskFacebookRequestHandler):
     def get(self):
-        style = self.request.get('vertical', 'street')  # default to street
+        style = self.request.get('vertical')
         search_fb(self.fbl, style)

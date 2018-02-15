@@ -16,3 +16,6 @@ queue:
 - name: mobile-notify-queue
   rate: 60/s
   target: batch
+- name: keyword-search
+  rate: 30/m
+  target: batch
