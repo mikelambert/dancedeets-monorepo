@@ -23,9 +23,6 @@ REAL_DANCE = Any(
     'slow drag',
     'balboa\w*',
     'authentic jazz',
-    #
-    'modern jive',
-    'jitterbug',
 )
 
 AMBIGUOUS_WORDS = Any(
@@ -33,8 +30,6 @@ AMBIGUOUS_WORDS = Any(
     'charleston',
     'shag',
     'ecs',
-    #
-    'jive\w*',
 )
 
 AMBIGUOUS_DANCE_MUSIC = Any('blues',)
