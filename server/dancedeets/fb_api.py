@@ -91,7 +91,8 @@ class LookupType(object):
                 raise ValueError('Must pass in a list to fields: %r' % fields)
             kwargs['fields'] = ','.join(fields)
         if kwargs:
-            return '/%s/%s?%s' % (cls.version, path, urls.urlencode(kwargs))
+            delimiter = '&' if '?' in path else '?'
+            return '/%s/%s%s%s' % (cls.version, path, delimiter, urls.urlencode(kwargs))
         else:
             return '/%s/%s' % (cls.version, path)
 
@@ -318,7 +319,7 @@ class LookupThingCommon(LookupType):
             # We need to use limit=10, otherwise we trigger "Please reduce the amount of data you're asking for, then retry your request"
             # on pages that have a feed full of events.
             ('feed', cls.url('%s/feed' % object_id, fields=['created_time', 'updated_time', 'from', 'link', 'message'], limit=10)),
-            ('events', cls.url('%s/events?limit=100' % object_id, fields=['id', 'updated_time'])),
+            ('events', cls.url('%s/events' % object_id, limit=500, fields=['id', 'updated_time'])),
         ]
 
     @classmethod
