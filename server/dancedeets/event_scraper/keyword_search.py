@@ -215,12 +215,60 @@ too_popular_style_keywords = {
         'country 2 step',
         'american tango',
     ],
+    VERTICALS.WCS: [
+        'west coast swing',
+        'wcs',
+    ],
     VERTICALS.TANGO: [
         'argentine tango',
         'tango',
         'milonga',
     ],
+    VERTICALS.PARTNER_FUSION: [
+        'blues fusion',
+        'modern jive',
+        'ceroc',
+        'leroc',
+        'le-roc',
+        'fusion',
+        'fusion dance',
+    ],
+    VERTICALS.ROCKABILLY: [
+        'rockabilly',
+        'jive',
+        'boogie woogie',
+        'rock n roll',
+        'rock and roll',
+        'rock n roll dance',
+        'rock and roll dance',
+        'r n r',
+        'boogie',
+    ],
+    VERTICALS.COUNTRY: [
+        'country western',
+        'country dance',
+        'barn dance',
+        'square dance',
+        'country line',
+        'contra barn',
+        'cowboy dance',
+        'two step',
+        'c/w dance',
+        'western dance',
+        'modern western',
+    ],
 }
+
+PARTNER = [
+    'meeting',
+    'incontro',
+    'marathon',
+    'social',
+    'party',
+    'jack & jill',
+    'weekend',
+    'festival',
+]
 
 
 def search_fb(fbl, style):
@@ -257,29 +305,14 @@ def search_fb(fbl, style):
             'demo',
             'demonstration',
         ],
-        VERTICALS.WCS: [
-            'social',
-            'party',
-            'jack & jill',
-            'weekend',
-            'festival',
-        ],
-        VERTICALS.SWING: [
-            'social',
-            'party',
-            'jack & jill',
-            'weekend',
-            'festival',
+        VERTICALS.WCS: PARTNER + [],
+        VERTICALS.SWING: PARTNER + [
             'hop',
         ],
-        VERTICALS.ZOUK: [
-            'meeting',
-            'incontro',
-            'festival',
-            'marathon',
-            'social',
-            'party',
-        ],
+        VERTICALS.ZOUK: PARTNER + [],
+        VERTICALS.PARTNER_FUSION: PARTNER + [],
+        VERTICALS.ROCKABILLY: PARTNER + [],
+        VERTICALS.COUNTRY: PARTNER + [],
     }
 
     all_keywords = obvious_keywords[:]
