@@ -99,6 +99,7 @@ class RuleGenerator(type):
             keywords.AUDITION,
             keywords.PERFORMANCE,
             keywords.PRACTICE,
+            keywords.EASY_CLUB,
             cls.COMPETITIONS,
             cls.ADDITIONAL_EVENT_TYPE,
         )
@@ -247,15 +248,15 @@ class DanceStyleEventClassifier(object):
             event_type = self.EVENT_TYPE
             good_dance_event = self.GOOD_DANCE_EVENT
 
-        is_dance_ish = (
-            len(list(self._get(self.GOOD_OR_AMBIGUOUS_DANCE) + self._get(keywords.EASY_DANCE))) >= 2 and not self._get(self.NOT_DANCE)
-        )
+        is_dance_ish = len(set(self._get(self.GOOD_OR_AMBIGUOUS_DANCE) + self._get(keywords.EASY_DANCE))) >= 2
+        self._log('is_dance_ish: %s', is_dance_ish)
+
         # Has 'popping' and actually seems related-to-dance-as-a-whole
         if self._title_has(self.GOOD_DANCE_FULL) and is_dance_ish:
             return 'title has good_dance, and is dance-y event'
 
         # Has 'popping with' and has some class-y stuff in the body
-        if self._title_has(self.GOOD_DANCE_FULL) and self._title_has(keywords.WITH) and len(list(self._get(keywords.CLASS))) >= 2:
+        if self._title_has(self.GOOD_DANCE_FULL) and self._title_has(keywords.WITH) and len(set(self._get(keywords.CLASS))) >= 2:
             return 'title has good_dance, and is dance-y event'
 
         # Has 'hiphop dance workshop/battle/audition'

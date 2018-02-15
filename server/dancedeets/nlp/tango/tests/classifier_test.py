@@ -10,7 +10,7 @@ class TestTangoDance(classifier_util.TestClassifier):
 
     def runTest(self):
         self.assertEvents(
-            0.87,
+            0.9,
             [
                 '143395409622891',
                 '1110602889040187',
@@ -94,16 +94,6 @@ class TestTangoDance(classifier_util.TestClassifier):
                 '1570077399706605',
                 '103354760490626',
                 '114633285919267',
-            ]
-        )
-
-
-class TestArgentineTango(classifier_util.TestClassifier):
-    classifier_func = staticmethod(classifier.is_tango_dance)
-
-    def runTest(self):
-        self.assertEvents(
-            1.0, [
                 '1988917208036138',
                 '161987814529460',
                 '1618437668195235',
@@ -182,6 +172,7 @@ class TestArgentineTango(classifier_util.TestClassifier):
                 '184437952147705',
                 '613511422374020',
                 '904749786346126',
+                '1133278066779245',
             ]
         )
 
@@ -195,7 +186,6 @@ class TestNotArgentineTango(classifier_util.TestClassifier):
                 '207098266513986',
                 '901694419980766',
                 '2022928017926728',
-                '1133278066779245',
                 '533868250332853',
                 '155402755240933',
                 '142595719749818',

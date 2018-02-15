@@ -5,12 +5,12 @@ from dancedeets.test_utils import unittest
 from dancedeets.test_utils import classifier_util
 
 
-class TestWCS(classifier_util.TestClassifier):
+class TestFusion(classifier_util.TestClassifier):
     classifier_func = staticmethod(classifier.is_fusion_event)
 
     def runTest(self):
         self.assertEvents(
-            0.95, [
+            0.93, [
                 '921918057981374',
                 '1274685369328652',
                 '366520323793999',
