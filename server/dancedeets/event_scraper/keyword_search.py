@@ -330,11 +330,16 @@ TOO_POPULAR = 'TOO_POPULAR'
 
 
 def get_chunks(style):
-    obvious_keywords = obvious_style_keywords.get(style, [])
-    too_popular_keywords = too_popular_style_keywords.get(style, [])
+    if not style:
+        styles = event_types.VERTICALS.__dict__.keys()
+    else:
+        styles = [style]
     chunks = []
-    chunks.extend({'type': OBVIOUS, 'keyword': x} for x in obvious_keywords)
-    chunks.extend({'type': TOO_POPULAR, 'keyword': x, 'style': style} for x in too_popular_keywords)
+    for style in styles:
+        obvious_keywords = obvious_style_keywords.get(style, [])
+        too_popular_keywords = too_popular_style_keywords.get(style, [])
+        chunks.extend({'type': OBVIOUS, 'keyword': x} for x in obvious_keywords)
+        chunks.extend({'type': TOO_POPULAR, 'keyword': x, 'style': style} for x in too_popular_keywords)
     return chunks
 
 
@@ -395,7 +400,7 @@ def get_ids_for_keyword(fbl, query):
 
 def search_fb(fbl, style):
     chunks = get_chunks(style)
-    for chunk in chunks[:20]:
+    for chunk in chunks:
         taskqueue.add(
             method='GET',
             url='/tools/search_fb_for_events_for_chunk?' + urls.urlencode(dict(user_id=fbl.fb_uid or 'random', chunk=json.dumps(chunk))),
