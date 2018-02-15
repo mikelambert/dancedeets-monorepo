@@ -10,8 +10,6 @@ Name = grammar.Name
 connected = grammar.connected
 commutative_connected = grammar.commutative_connected
 
-PROFESSIONALS = grammar.FileBackedKeyword('../wcs/professionals')
-
 REAL_DANCE = Any('modern jive', 'ceroc', 'leroc', 'le-roc')
 
 FUSION = Any(

@@ -109,6 +109,8 @@ EASY_DANCE = Name(
         'footwork',
         'plesa',  # dance croatian
         'plesu',  # dancing croatian
+        u'plešete',  # dancing croatian
+        u'zaplešite',  # dance croatian
         u'nhảy',  # dance vietnamese
         u'tänzer',  # dancer german
     )
@@ -966,7 +968,9 @@ LEVEL = Any(
 ACTUAL_LEVELS = Any(
     'beg(?:inners?|inning|\.)?',
     'int(?:ermediates?|\.)?',
+    'medel\w*',  # swedish
     'adv(?:anced?|\.)?',
+    'avancerad',  # swedish
     'master',
     'professional',
     'adults?',
@@ -1036,6 +1040,7 @@ CLASS_ONLY = Any(
     'delavnice',  # workshop slovak
     'talleres',  # workshops spanish
     'radionicama',  # workshop croatian
+    u'časovi',  # class croatian
     'warsztaty',  # polish workshop
     u'warsztatów',  # polish workshop
     u'seminarų',  # lithuanian workshop
