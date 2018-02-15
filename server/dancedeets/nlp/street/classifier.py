@@ -20,6 +20,11 @@ from . import rules
 
 
 def is_street_event(classified_event):
+    result = _is_street_event(classified_event)
+    return result[0], [result[1]], result[2]
+
+
+def _is_street_event(classified_event):
     result = is_intentional(classified_event)
     if result[0]:
         return result[0], result[1], event_types.VERTICALS.STREET
