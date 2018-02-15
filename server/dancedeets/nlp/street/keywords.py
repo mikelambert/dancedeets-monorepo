@@ -736,6 +736,9 @@ PREPROCESS_REMOVAL = Name(
         'cherry popp\w+',
         POP_MUSIC,
 
+        #lock
+        'leg\W?lock\w+',
+
         # refers to ninjitsu stuff, not flexing stuff
         'bone\W*breaking\W+techniques?',
 
@@ -1580,6 +1583,10 @@ EASY_VOGUE = Name(
 WRONG_LOCK = Name(
     'WRONG_LOCK',
     Any(
+        'mma',
+        'jiu\W?jitsu',
+        'leg',
+        'grappl\w+',
         'picking',
         'cracking',
         'crack',

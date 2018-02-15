@@ -26,7 +26,6 @@ anbu black ops
 and what!\?
 annual streets head
 aota crew
-aov,0
 aqces dancerz
 areakidz
 asu hip hop
@@ -393,6 +392,6 @@ wrebellious
 wyldstyl
 xtreme dance force
 yfamd
-young lions
+young lions,0
 zee hype
 zenith dance crew
