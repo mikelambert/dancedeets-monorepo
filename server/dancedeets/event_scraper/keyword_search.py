@@ -271,7 +271,7 @@ PARTNER = [
 ]
 
 
-def search_fb(fbl, style):
+def get_keywords(style):
     obvious_keywords = obvious_style_keywords.get(style, [])
     too_popular_keywords = too_popular_style_keywords.get(style, [])
     event_types = [
@@ -322,6 +322,17 @@ def search_fb(fbl, style):
             all_keywords.append('%s %s' % (x, y))
         for y in style_event_types.get(style, []):
             all_keywords.append('%s %s' % (x, y))
+    return all_keywords
+
+
+def process_ids(fbl, new_ids):
+    # This may take awhile...give some breathing room to our FB queries:
+    discovered_list = [potential_events.DiscoveredEvent(id, None, thing_db.FIELD_SEARCH) for id in sorted(new_ids)]
+    event_pipeline.process_discovered_events(fbl, discovered_list)
+
+
+def search_fb(fbl, style):
+    all_keywords = get_keywords(style)
 
     logging.info('Looking up %s search queries', len(all_keywords))
 
@@ -335,19 +346,9 @@ def search_fb(fbl, style):
     for query in all_keywords:
         old_fb_fetches = fbl.fb.fb_fetches
         lookup_time = time.time()
-        search_results = fbl.get(LookupSearchEvents, query)
-        ids = [x['id'] for x in search_results['results']['data']]
-        logging.info('Keyword %r returned %s results:', query, len(ids))
-        # Debug code
-        for x in search_results['results']['data']:
-            logging.info('Found %s: %s', x['id'], x.get('name'))
-
+        ids = get_ids_for_keyword(fbl, query)
         new_ids = set(ids).difference(all_ids)
         all_ids.update(ids)
-
-        # This may take awhile...give some breathing room to our FB queries:
-        discovered_list = [potential_events.DiscoveredEvent(id, None, thing_db.FIELD_SEARCH) for id in sorted(new_ids)]
-        event_pipeline.process_discovered_events(fbl, discovered_list)
 
         # Only sleep and space things out, if we actually hit the FB server...
         if old_fb_fetches != fbl.fb.fb_fetches:
@@ -356,7 +357,20 @@ def search_fb(fbl, style):
             if sleep_time > 0:
                 time.sleep(sleep_time)
 
+        process_ids(fbl, new_ids)
+
     fbl.db.oldest_allowed = oldest_allowed
+
+
+def get_ids_for_keyword(fbl, query):
+    search_results = fbl.get(LookupSearchEvents, query)
+    ids = [x['id'] for x in search_results['results']['data']]
+    logging.info('Keyword %r returned %s results:', query, len(ids))
+    # Debug code
+    for x in search_results['results']['data']:
+        logging.info('Found %s: %s', x['id'], x.get('name'))
+
+    return ids
 
 
 @app.route('/tools/search_fb_for_events')
