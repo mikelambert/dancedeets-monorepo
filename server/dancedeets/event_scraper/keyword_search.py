@@ -312,18 +312,44 @@ STYLE_EVENT_TYPES = {
 }
 
 
-def get_keywords(style):
+def expand_keyword(keyword, style):
+    all_keywords = []
+    all_keywords.append(keyword)
+    for y in EVERNT_TYPES:
+        all_keywords.append('%s %s' % (keyword, y))
+    for y in STYLE_EVENT_TYPES.get(style, []):
+        all_keywords.append('%s %s' % (keyword, y))
+    return all_keywords
+
+
+OBVIOUS = 'OBVIOUS'
+TOO_POPULAR = 'TOO_POPULAR'
+
+
+def get_chunks(style):
     obvious_keywords = obvious_style_keywords.get(style, [])
     too_popular_keywords = too_popular_style_keywords.get(style, [])
+    chunks = []
+    chunks.extend({'type': OBVIOUS, 'keyword': x} for x in obvious_keywords)
+    chunks.extend({'type': TOO_POPULAR, 'keyword': x, 'style': style} for x in too_popular_keywords)
+    return chunks
 
-    all_keywords = obvious_keywords[:]
-    for x in too_popular_keywords:
-        all_keywords.append(x)
-        for y in EVERNT_TYPES:
-            all_keywords.append('%s %s' % (x, y))
-        for y in STYLE_EVENT_TYPES.get(style, []):
-            all_keywords.append('%s %s' % (x, y))
+
+def get_keywords(style):
+    chunks = get_chunks(style)
+    all_keywords = []
+    for chunk in chunks:
+        all_keywords.extend(expand_chunk(chunk))
     return all_keywords
+
+
+def expand_chunk(chunk):
+    if chunk['type'] == OBVIOUS:
+        return [chunk['keyword']]
+    elif chunk['type'] == TOO_POPULAR:
+        return expand_keyword(chunk['keyword'], chunk['style'])
+    else:
+        raise ValueError('Unknown chunk: %s' % chunk)
 
 
 def process_ids(fbl, new_ids):
