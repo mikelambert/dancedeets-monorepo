@@ -779,6 +779,7 @@ PREPROCESS_REMOVAL = Name(
         'latin street',
         'marvellous dance crew',
         'johnny soultrain',  # some artist in SF who is named 'soultrain'
+        'opera\W?house',
 
         # class
         '1st class',
