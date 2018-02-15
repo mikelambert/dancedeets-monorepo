@@ -1618,7 +1618,7 @@ OBVIOUS_BATTLE = Name('OBVIOUS_BATTLE', Any(
 ))
 
 # TODO(lambert): is it worth having all these here as super-basic keywords? Should we instead just list these directly in rules.py?
-BONNIE_AND_CLYDE = Name('BONNIE_AND_CLYDE', Any('bonnie\s*(?:and|&)\s*clyde'))
+BONNIE_AND_CLYDE = Name('BONNIE_AND_CLYDE', Any('bonnie\s*(?:and|&)\s*clyde' 'jack\s*(?:and|&)\s*jill',))
 
 KING_OF_THE = Name('KING_OF_THE', Any('king of (?:the )?',))
 
