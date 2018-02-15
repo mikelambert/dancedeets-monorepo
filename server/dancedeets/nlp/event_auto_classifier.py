@@ -3,9 +3,15 @@
 from dancedeets import event_types
 from .ballroom import classifier as ballroom_classifier
 from .capoeira import classifier as capoeira_classifier
+from .country import classifier as country_classifier
 from .latin import classifier as latin_classifier
+from .partner_fusion import classifier as partner_fusion_classifier
+from .rockabilly import classifier as rockabilly_classifier
 from .street import classifier as street_classifier
 from .swing import classifier as swing_classifier
+from .tango import classifier as tango_classifier
+from .wcs import classifier as wcs_classifier
+from .zouk import classifier as zouk_classifier
 
 
 def is_auto_add_event(classified_event):
@@ -23,34 +29,31 @@ class AutoClassifier(object):
         return repr(self.result)
 
     def _run_classify(self):
-        verticals = []
+        results = []
 
-        result = latin_classifier.is_salsa_event(self.classified_event)
-        if result[0]:
-            verticals.append(result[2])
+        classifiers = [
+            ballroom_classifier.is_ballroom_event,
+            capoeira_classifier.is_capoeira_event,
+            country_classifier.is_country_event,
+            latin_classifier.is_salsa_event,
+            partner_fusion_classifier.is_fusion_event,
+            rockabilly_classifier.is_rockabilly_event,
+            street_classifier.is_street_event,
+            swing_classifier.is_swing_event,
+            tango_classifier.is_tango_dance,
+            wcs_classifier.is_wcs_event,
+            zouk_classifier.is_zouk_dance,
+        ]
+        for classifier in classifiers:
+            result = classifier(self.classified_event)
+            if result[0]:
+                results.append(result)
 
-        result = street_classifier.is_street_event(self.classified_event)
-        if result[0]:
-            verticals.append(result[2])
-
-        result = capoeira_classifier.is_capoeira_event(self.classified_event)
-        if result[0]:
-            verticals.append(result[2])
-
-        result = ballroom_classifier.is_ballroom_event(self.classified_event)
-        if result[0]:
-            verticals.append(result[2])
-
-        result = swing_classifier.is_swing_event(self.classified_event)
-        if result[0]:
-            verticals.append(result[2])
-
-        result = street_classifier.is_street_event(self.classified_event)
-        if result[0]:
-            verticals.append(result[2])
+        reasons = [x[1] for x in results]
+        verticals = [x[2] for x in results]
 
         if verticals:
-            return (True, 'found some', verticals)
+            return (True, 'found some:\n%s' % reasons, verticals)
 
         return (False, 'nothing', [])
 
