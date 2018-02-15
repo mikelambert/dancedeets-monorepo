@@ -1,0 +1,11 @@
+dispatch:
+- url: "*/tasks/*"
+  service: batch
+- url: "*/tools/*"
+  service: batch
+- url: "*/admin/*"
+  service: batch
+- url: "*/mapreduce/*"
+  service: batch
+- url: "*/_pipeline/*"
+  service: batch
