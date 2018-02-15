@@ -270,57 +270,58 @@ PARTNER = [
     'festival',
 ]
 
+EVERNT_TYPES = [
+    'session',
+    'workshop',
+    'class',
+    'taller',
+    'stage',
+    'lesson',
+    'intensive',
+    'competition',
+    u'competición',
+    'competencia',
+    'contest',
+    'concours',
+    'tournaments',
+    'performance',
+    'spectacle',
+    'audition',
+    'audiciones',
+]
+STYLE_EVENT_TYPES = {
+    VERTICALS.STREET: [
+        'battle',
+        'jam',
+        'bonnie and clyde',
+    ],
+    VERTICALS.CAPOEIRA: [
+        'roda',
+        'encontro',
+        'demo',
+        'demonstration',
+    ],
+    VERTICALS.WCS: PARTNER + [],
+    VERTICALS.SWING: PARTNER + [
+        'hop',
+    ],
+    VERTICALS.ZOUK: PARTNER + [],
+    VERTICALS.PARTNER_FUSION: PARTNER + [],
+    VERTICALS.ROCKABILLY: PARTNER + [],
+    VERTICALS.COUNTRY: PARTNER + [],
+}
+
 
 def get_keywords(style):
     obvious_keywords = obvious_style_keywords.get(style, [])
     too_popular_keywords = too_popular_style_keywords.get(style, [])
-    event_types = [
-        'session',
-        'workshop',
-        'class',
-        'taller',
-        'stage',
-        'lesson',
-        'intensive',
-        'competition',
-        u'competición',
-        'competencia',
-        'contest',
-        'concours',
-        'tournaments',
-        'performance',
-        'spectacle',
-        'audition',
-        'audiciones',
-    ]
-    style_event_types = {
-        VERTICALS.STREET: [
-            'battle',
-            'jam',
-            'bonnie and clyde',
-        ],
-        VERTICALS.CAPOEIRA: [
-            'roda',
-            'encontro',
-            'demo',
-            'demonstration',
-        ],
-        VERTICALS.WCS: PARTNER + [],
-        VERTICALS.SWING: PARTNER + [
-            'hop',
-        ],
-        VERTICALS.ZOUK: PARTNER + [],
-        VERTICALS.PARTNER_FUSION: PARTNER + [],
-        VERTICALS.ROCKABILLY: PARTNER + [],
-        VERTICALS.COUNTRY: PARTNER + [],
-    }
 
     all_keywords = obvious_keywords[:]
     for x in too_popular_keywords:
         all_keywords.append(x)
-        for y in event_types:
+        for y in EVERNT_TYPES:
             all_keywords.append('%s %s' % (x, y))
-        for y in style_event_types.get(style, []):
+        for y in STYLE_EVENT_TYPES.get(style, []):
             all_keywords.append('%s %s' % (x, y))
     return all_keywords
 
@@ -331,9 +332,7 @@ def process_ids(fbl, new_ids):
     event_pipeline.process_discovered_events(fbl, discovered_list)
 
 
-def search_fb(fbl, style):
-    all_keywords = get_keywords(style)
-
+def lookup_keywords(fbl, all_keywords):
     logging.info('Looking up %s search queries', len(all_keywords))
 
     oldest_allowed = fbl.db.oldest_allowed
@@ -371,6 +370,11 @@ def get_ids_for_keyword(fbl, query):
         logging.info('Found %s: %s', x['id'], x.get('name'))
 
     return ids
+
+
+def search_fb(fbl, style):
+    all_keywords = get_keywords(style)
+    lookup_keywords(fbl, all_keywords)
 
 
 @app.route('/tools/search_fb_for_events')
