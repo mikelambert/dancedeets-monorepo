@@ -108,6 +108,7 @@ GOOD_DANCE_CLASS = Name(
 )
 # TODO: is this one necessary? we could do it as a regex, but we could also do it as a rule...
 ROMANCE_EXTENDED_CLASS = Name('ROMANCE_EXTENDED_CLASS', Any(keywords.CLASS, keywords.ROMANCE_LANGUAGE_CLASS))
+ROMANCE_EXTENDED_CLASS_ONLY = Name('ROMANCE_EXTENDED_CLASS_ONLY', Any(keywords.CLASS_ONLY, keywords.ROMANCE_LANGUAGE_CLASS))
 
 full_judge = Any(
     keywords.JUDGE,
