@@ -318,7 +318,7 @@ class LookupThingCommon(LookupType):
             # We need to use limit=10, otherwise we trigger "Please reduce the amount of data you're asking for, then retry your request"
             # on pages that have a feed full of events.
             ('feed', cls.url('%s/feed' % object_id, fields=['created_time', 'updated_time', 'from', 'link', 'message'], limit=10)),
-            ('events', cls.url('%s/events' % object_id, fields=['id', 'updated_time'])),
+            ('events', cls.url('%s/events?limit=100' % object_id, fields=['id', 'updated_time'])),
         ]
 
     @classmethod
