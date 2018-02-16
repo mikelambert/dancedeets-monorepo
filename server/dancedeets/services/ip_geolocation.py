@@ -79,7 +79,11 @@ def get_location_data_for(ip):
         start = time.time()
         results = urllib.urlopen(url).read()
         timelog.log_time_since('Getting IPData', start)
-        data = json.loads(results)
+        try:
+            data = json.loads(results)
+        except:
+            logging.error('Error processing freegeoip results: %s', results)
+            raise
         start = time.time()
         _save_cache(ip, data)
         timelog.log_time_since('Saving IPCache', start)
