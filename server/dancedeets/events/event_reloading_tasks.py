@@ -119,6 +119,12 @@ def yield_load_fb_event(fbl, all_events):
         only_if_updated = True
 
     for event in all_events:
+        # Temporary hack to fix our double-street events
+        verticals = sorted(list(set(event.verticals)))
+        if verticals != sorted(event.verticals):
+            event.verticals = verticals
+            event.put()
+
         for vertical in event.verticals:
             mr.increment('event-vertical-%s' % vertical)
 
