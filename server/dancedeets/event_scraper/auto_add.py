@@ -102,7 +102,7 @@ def really_classify_events(fbl, new_pe_list, new_fb_list, allow_posting=True):
                 mr.increment('auto-added-dance-events')
                 if e.start_time < datetime.datetime.now():
                     mr.increment('auto-added-dance-events-past')
-                    mr.increment('auto-added-dance-events-past-eventid-%s' % event_id)
+                    # mr.increment('auto-added-dance-events-past-eventid-%s' % event_id)
                 else:
                     mr.increment('auto-added-dance-events-future')
             except fb_api.NoFetchedDataException as e:
