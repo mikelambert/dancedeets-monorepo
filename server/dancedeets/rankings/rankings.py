@@ -63,12 +63,16 @@ def count_user_for_city(user):
 
 
 def begin_ranking_calculations():
+    #TODO(allstyles): support different/all verticals
+    filters = [('verticals', '=', 'STREET')]
+
     #TODO(lambert): move these into mapreduce.yaml, and expose them via a simple /XX API that we can trigger as needed
     control.start_map(
         name='Compute City Rankings by Events',
         reader_spec='mapreduce.input_readers.DatastoreInputReader',
         handler_spec='dancedeets.rankings.rankings.count_event_for_city',
         mapper_parameters={'entity_kind': 'dancedeets.events.eventdata.DBEvent'},
+        filters=filters,
         queue_name='fast-queue',
         shard_count=16,
         _app=EVENT_FOR_CITY_RANKING,
