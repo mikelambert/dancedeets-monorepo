@@ -39,7 +39,7 @@ style_keywords = {
     event_types.VERTICALS.BALLROOM: keywords.DANCE_STYLE_BALLROOM,
     event_types.VERTICALS.ZOUK: keywords.DANCE_STYLE_ZOUK,
     event_types.VERTICALS.WCS: keywords.DANCE_STYLE_WCS,
-    event_types.VERTICALS.PARTNER_FUSION: keywords.NO_MATCH,
+    event_types.VERTICALS.PARTNER_FUSION: keywords.DANCE_STYLE_FUSION,
     event_types.VERTICALS.ROCKABILLY: keywords.NO_MATCH,
     event_types.VERTICALS.COUNTRY: keywords.NO_MATCH,
 }

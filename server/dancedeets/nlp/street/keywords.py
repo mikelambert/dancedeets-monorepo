@@ -765,6 +765,7 @@ PREPROCESS_REMOVAL = Name(
         'waking',
 
         # house
+        'power\W?house',
         'at battle house',  # To get rid of most events from 1753270238323171
         'wave\W?house',  # venue in san diego
         'full house',
@@ -778,10 +779,12 @@ PREPROCESS_REMOVAL = Name(
         'log\W*house',
         'stagehouse',
         'stage\W*house tavern',
+        'opera\W?house',
+
+        # extra
         'latin street',
         'marvellous dance crew',
         'johnny soultrain',  # some artist in SF who is named 'soultrain'
-        'opera\W?house',
 
         # class
         '1st class',
@@ -974,7 +977,8 @@ ACTUAL_LEVELS = Any(
     'medel\w*',  # swedish
     'adv(?:anced|\.)?',
     'avancerad',  # swedish
-    'master',
+    #triggers on hiphop master, funk master
+    #'master',
     'professional',
     'adults?',
     'kids?',
@@ -1379,12 +1383,20 @@ DANCE_STYLE_MISC = Any(
     'aerial',
     'zumba',
     'belly\W?danc(?:e(?:rs?)?|ing)',
+    'belly\w*',
     'bellycraft',
     'worldbellydancealliance',
     u'ベリーダンス',  # japanese bellydance
     'technique',
     'guest artists?',
     'partnering',
+)
+
+DANCE_STYLE_FUSION = Any(
+    'modern\W?jive',
+    'ceroc',
+    'leroc',
+    'le-roc',
 )
 
 DANCE_WRONG_STYLE = Name(
@@ -1398,6 +1410,7 @@ DANCE_WRONG_STYLE = Name(
         DANCE_STYLE_INDIAN,
         DANCE_STYLE_SEXY,
         DANCE_STYLE_BALLROOM,
+        DANCE_STYLE_FUSION,
         DANCE_STYLE_CAPOEIRA,
         DANCE_STYLE_ZOUK,
         DANCE_STYLE_MISC,
@@ -1613,6 +1626,12 @@ WRONG_HOUSE = Name('WRONG_HOUSE', Any(
     'kitchen',
     'houses',
 ))
+
+WRONG_POP = Any(
+    'popstar',
+    'concert',
+    'idol',
+)
 
 WRONG_BREAK = Name(
     'WRONG_BREAK',
