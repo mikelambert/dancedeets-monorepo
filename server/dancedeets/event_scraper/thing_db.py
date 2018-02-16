@@ -163,32 +163,44 @@ def create_source_from_id(fbl, source_id, verticals=None):
     logging.info('create_source_from_id: %s', source_id)
     if not source_id:
         return None
-    # technically we could check if the object exists in the db, before we bother fetching the feed
-    fb_source_common = fbl.get(fb_api.LookupThingCommon, source_id)
-    if fb_source_common['empty']:
-        logging.error('Error loading Common Fields for Source: %s', source_id)
+
+    # Don't create the source if we already have it
+    source = Source.get_by_key_name(source_id)
+    if source:
+        return
+
+    original_allow_cache = fbl.allow_cache
+    fbl.allow_cache = True
+    try:
+
+        # technically we could check if the object exists in the db, before we bother fetching the feed
+        fb_source_common = fbl.get(fb_api.LookupThingCommon, source_id)
+        if fb_source_common['empty']:
+            logging.error('Error loading Common Fields for Source: %s', source_id)
+            return None
+
+        if source_id != fb_source_common['info']['id']:
+            source_id = fb_source_common['info']['id']
+            logging.info('found proper id for source: %s', source_id)
+
+        if not fb_source_common['empty']:
+            graph_type = _type_for_fb_source(fb_source_common)
+            fb_source_data = fbl.get(get_lookup_for_graph_type(graph_type), source_id)
+
+            source = Source(key_name=source_id)
+            logging.info('Getting source for id %s: %s', source.graph_id, source.name)
+            new_source = (not source.creation_time)
+            source.verticals = verticals or []
+            source.compute_derived_properties(fb_source_common, fb_source_data)
+            source.put()
+            if new_source:
+                # It seems some "new" sources are existing sources without a creation_time set, so let's force-set it here
+                source.creation_time = datetime.datetime.now()
+                backgrounder.load_sources([source_id], fb_uid=fbl.fb_uid)
+            return source
         return None
-
-    if source_id != fb_source_common['info']['id']:
-        source_id = fb_source_common['info']['id']
-        logging.info('found proper id for source: %s', source_id)
-
-    if not fb_source_common['empty']:
-        graph_type = _type_for_fb_source(fb_source_common)
-        fb_source_data = fbl.get(get_lookup_for_graph_type(graph_type), source_id)
-
-        source = Source.get_by_key_name(source_id) or Source(key_name=source_id, street_dance_related=False)
-        logging.info('Getting source for id %s: %s', source.graph_id, source.name)
-        new_source = (not source.creation_time)
-        source.verticals = verticals or []
-        source.compute_derived_properties(fb_source_common, fb_source_data)
-        source.put()
-        if new_source:
-            # It seems some "new" sources are existing sources without a creation_time set, so let's force-set it here
-            source.creation_time = datetime.datetime.now()
-            backgrounder.load_sources([source_id], fb_uid=fbl.fb_uid)
-        return source
-    return None
+    finally:
+        fbl.allow_cache = original_allow_cache
 
 
 def create_sources_from_event(fbl, db_event):
