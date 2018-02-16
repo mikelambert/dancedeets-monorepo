@@ -25,6 +25,17 @@ def is_street_event(classified_event):
 
 
 def _is_street_event(classified_event):
+    good_bad_pairings = [
+        (keywords.STYLE_HOUSE, keywords.WRONG_HOUSE),
+        (keywords.STYLE_BREAK, keywords.WRONG_BREAK),
+        (keywords.STYLE_LOCK, keywords.WRONG_LOCK),
+        (keywords.STYLE_FLEX, keywords.WRONG_FLEX),
+        (grammar.Any(keywords.STYLE_POP, 'pop'), keywords.WRONG_POP),
+    ]
+    for good, bad in good_bad_pairings:
+        if classified_event.processed_text.has_token(good) and classified_event.processed_text.has_token(bad):
+            return (False, 'has bad-token for equivalent good-token, skipping', None)
+
     result = is_intentional(classified_event)
     if result[0]:
         return result[0], result[1], event_types.VERTICALS.STREET
@@ -314,16 +325,6 @@ def is_workshop(classified_event):
 
     has_good_crew = classified_event.processed_text.has_token(rules.MANUAL_DANCER[grammar.STRONG])
 
-    good_bad_pairings = [
-        (keywords.STYLE_HOUSE, keywords.WRONG_HOUSE),
-        (keywords.STYLE_BREAK, keywords.WRONG_BREAK),
-        (keywords.STYLE_LOCK, keywords.WRONG_LOCK),
-        (keywords.STYLE_FLEX, keywords.WRONG_FLEX),
-    ]
-    for good, bad in good_bad_pairings:
-        if classified_event.processed_text.has_token(good) and classified_event.processed_text.has_token(bad):
-            return (False, 'has bad-token for equivalent good-token, skipping')
-
     # print has_class_title
     # print has_good_dance_title
     # print has_extended_good_crew_title
@@ -346,9 +347,7 @@ def is_workshop(classified_event):
     elif classified_event.is_dance_event() and lee_lee_hiphop and not has_wrong_style_title and not has_non_dance_event_title:
         return (True, 'has class with strong style-title: %s %s' % (has_good_dance_title, has_extended_good_crew_title))
     elif has_class_title and not has_wrong_style and (has_good_dance or has_good_crew):
-        return (
-            True, 'has dance class title: %s, that contains strong description %s, %s' % (has_class_title, has_good_dance, has_good_crew)
-        )
+        return (True, 'has class title: %s, that contains strong description %s, %s' % (has_class_title, has_good_dance, has_good_crew))
     elif has_good_dance_class_title:
         return (True, 'has good dance class title: %s' % has_good_dance_class_title)
     elif has_good_dance_class and not has_wrong_style_title:

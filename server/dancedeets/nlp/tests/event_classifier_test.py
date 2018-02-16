@@ -26,6 +26,7 @@ class RuleMatches(unittest.TestCase):
         self.matchRule(keywords.CLASS, 'beginner')
         self.matchRule(keywords.EASY_DANCE, u'χορός')
         self.matchRule(keywords.EASY_DANCE, u'www.danceaholics.co.uk')
+        self.matchRule(keywords.DANCE_WRONG_STYLE, 'khaligi-belly')
 
 
 class TestDanceClass(unittest.TestCase):

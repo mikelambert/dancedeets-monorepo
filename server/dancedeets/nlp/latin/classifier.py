@@ -33,6 +33,7 @@ REAL_DANCE = Name(
         'shines?\W+partner',
         'partner\W+shines?',
         'sensual\W?bachata',
+        'latin\W?techni\w+',
     )
 )
 
