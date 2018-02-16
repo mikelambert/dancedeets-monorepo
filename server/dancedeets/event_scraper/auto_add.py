@@ -105,6 +105,8 @@ def really_classify_events(fbl, new_pe_list, new_fb_list, allow_posting=True):
                     # mr.increment('auto-added-dance-events-past-eventid-%s' % event_id)
                 else:
                     mr.increment('auto-added-dance-events-future')
+                for vertical in e.verticals:
+                    mr.increment('auto-added-dance-event-vertical-%s' % vertical)
             except fb_api.NoFetchedDataException as e:
                 logging.error("Error adding event %s, no fetched data: %s", event_id, e)
             except add_entities.AddEventException as e:
