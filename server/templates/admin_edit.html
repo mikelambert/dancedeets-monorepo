@@ -99,10 +99,21 @@ Edit Event
       <br>
       {% endif %}
 
-      {% if auto_classified_types %}<b>{% endif %}
+      {% if auto_classified_add.is_good_event() %}<b>{% endif %}
       Auto-classified Keywords:
-      {% if auto_classified_types %}</b>{% endif %}
-      {{ auto_classified_types }}<br>
+      {% if auto_classified_add.is_good_event() %}</b>{% endif %}
+      {% for vertical, reasons in zip(auto_classified_add.verticals(), auto_classified_add.reasons()): %}
+        <p>
+        <b>{{ vertical }}</b><br>
+        {% for reason in reasons %}
+          {% if 'Final result' in reason and 'False' not in reason %}
+            <b>{{reason}}</b><br>
+          {% else %}
+            {{reason}}<br>
+          {% endif %}
+        {% endfor %}
+      {% endfor %}
+      <br>
 
       {% if auto_add_attendee_ids %}<b>{% endif %}
       Auto-classified Attendees:

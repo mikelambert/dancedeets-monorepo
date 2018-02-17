@@ -73,15 +73,15 @@ def is_many_ballroom_styles(classified_event):
         'ballroom classifier: event %s found styles %s, keywords %s', classified_event.fb_event['info']['id'], all_styles, all_keywords
     )
     if classified_event.processed_title.has_token(BALLROOM_DANCE):
-        return True, 'obviously ballroom dance event', event_types.VERTICALS.BALLROOM
+        return True, ['obviously ballroom dance event'], event_types.VERTICALS.BALLROOM
 
     if len(all_keywords) >= 2:
-        return (True, 'Found many ballroom styles: %s' % all_styles, event_types.VERTICALS.BALLROOM)
+        return (True, ['Found many ballroom styles: %s' % all_styles], event_types.VERTICALS.BALLROOM)
 
     if len(all_styles) >= 1 and len(all_keywords) >= 2:
-        return (True, 'Found many ballroom styles (%s) and keywords (%s)' % (all_styles, all_keywords), event_types.VERTICALS.BALLROOM)
+        return (True, ['Found many ballroom styles (%s) and keywords (%s)' % (all_styles, all_keywords)], event_types.VERTICALS.BALLROOM)
 
     if len(all_styles) >= 3:
-        return (True, 'Found many ballroom keywords (%s)' % all_keywords, event_types.VERTICALS.BALLROOM)
+        return (True, ['Found many ballroom keywords (%s)' % all_keywords], event_types.VERTICALS.BALLROOM)
 
-    return (False, '', None)
+    return (False, [], None)

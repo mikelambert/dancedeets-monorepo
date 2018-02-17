@@ -367,7 +367,8 @@ class AdminEditHandler(base_servlet.BaseRequestHandler):
         if notadd_result[0]:
             auto_classified += 'notadd: %s.\n' % notadd_result[1]
 
-        self.display['auto_classified_types'] = auto_classified
+        self.display['auto_classified_add'] = add_result
+        self.display['auto_classified_notadd'] = notadd_result
         styles = categories.find_styles(fb_event)
         event_types = styles + categories.find_event_types(fb_event)
         self.display['auto_categorized_types'] = ', '.join(x.public_name for x in event_types)
