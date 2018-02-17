@@ -167,7 +167,7 @@ def create_source_from_id(fbl, source_id, verticals=None):
     # Don't create the source if we already have it
     source = Source.get_by_key_name(source_id)
     if source:
-        return
+        return source
 
     original_allow_cache = fbl.allow_cache
     fbl.allow_cache = True
