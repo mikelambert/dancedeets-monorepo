@@ -4,7 +4,7 @@ import json
 import logging
 import os
 import time
-import urllib
+import urllib2
 
 from google.appengine.api import memcache
 from google.cloud import datastore
@@ -77,7 +77,12 @@ def get_location_data_for(ip):
         #TODO: consider using http://geoiplookup.net/ , which might offer better granularity/resolution
         url = 'http://freegeoip.net/json/%s' % ip
         start = time.time()
-        results = urllib.urlopen(url).read()
+        opener = urllib2.build_opener()
+        opener.addheaders = [(
+            'User-agent',
+            'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.132 Safari/537.36'
+        )]
+        results = opener.open(url).read()
         timelog.log_time_since('Getting IPData', start)
         try:
             data = json.loads(results)
