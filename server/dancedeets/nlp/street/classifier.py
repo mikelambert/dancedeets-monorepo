@@ -200,7 +200,7 @@ def is_battle(classified_event):
         return (True, 'real dance-style battle/comp! %s' % has_good_dance_battle)
     elif has_dance_battle and not is_wrong_competition_title and not is_wrong_style_battle_title and not has_wrong_battle:
         return (
-            True, 'good-style real dance battle/comp! %s with keywords %s' %
+            True, 'good-style real dance battle/comp! %r with keywords %s' %
             (has_dance_battle, (classified_event.real_dance_matches or classified_event.manual_dance_keywords_matches))
         )
     elif has_n_x_n and has_battle and not has_wrong_battle:
