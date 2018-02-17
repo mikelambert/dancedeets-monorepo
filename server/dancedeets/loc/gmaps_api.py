@@ -214,23 +214,23 @@ def lookup_string(s, language=None, check_places=True):
     if geocode:
         if 'address_components' in geocode.json_data and 'geometry' in geocode.json_data:
             return geocode
-        else:
+        elif 'formatted_address' in geocode.json_data:
             logging.info(
                 'lookup_string result does not have address or geometry, doing geocode address lookup on: %s', geocode.formatted_address()
             )
             new_geocode = lookup_address(geocode.formatted_address(), check_places=False)
             if new_geocode:
                 return new_geocode
-            else:
-                if second_best_geocode:
-                    if 'address_components' not in geocode.json_data and 'address_components' in second_best_geocode.json_data:
-                        geocode.json_data['address_components'] = second_best_geocode.json_data['address_components']
-                    if 'geometry' not in geocode.json_data and 'geomtry' in second_best_geocode.json_data:
-                        geocode.json_data['geometry'] = second_best_geocode.json_data['geometry']
-                if 'address_components' not in geocode.json_data and 'address_components' not in geocode.json_data:
-                    logging.info('Faking an empty address_components for now, since at least the latlong is correct')
-                    geocode.json_data['address_components'] = []
-                return geocode
+
+        if second_best_geocode:
+            if 'address_components' not in geocode.json_data and 'address_components' in second_best_geocode.json_data:
+                geocode.json_data['address_components'] = second_best_geocode.json_data['address_components']
+            if 'geometry' not in geocode.json_data and 'geomtry' in second_best_geocode.json_data:
+                geocode.json_data['geometry'] = second_best_geocode.json_data['geometry']
+        if 'address_components' not in geocode.json_data and 'address_components' not in geocode.json_data:
+            logging.info('Faking an empty address_components for now, since at least the latlong is correct')
+            geocode.json_data['address_components'] = []
+        return geocode
     else:
         return None
 
