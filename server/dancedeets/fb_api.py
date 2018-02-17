@@ -86,6 +86,8 @@ class LookupType(object):
 
     @classmethod
     def url(cls, path, fields=None, **kwargs):
+        if path is None:
+            raise ValueError('Must pass non-empty path argument')
         if fields:
             if isinstance(fields, basestring):
                 raise ValueError('Must pass in a list to fields: %r' % fields)
@@ -741,6 +743,8 @@ class FBLookup(object):
 
     def request_multi(self, cls, object_ids, allow_cache=True):
         for object_id in object_ids:
+            if object_id is None:
+                raise ValueError('Must pass a non-empty object id')
             key = generate_key(cls, object_id)
             if allow_cache:
                 self._keys_to_fetch.add(key)
