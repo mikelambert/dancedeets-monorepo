@@ -169,18 +169,20 @@ def _choose_best_geocode(g1, g2):
     min([g1, g2], lambda g: _get_size(g))
     g1_size = _get_size(g1)
     g2_size = _get_size(g2)
-    if g1_size is not None and g2_size is not None:
-        if g1_size > g2_size:
-            return g2, g1
-        else:
-            return g1, g2
-    else:
+    if g1_size is None or g2_size is None:
         g1_size = g1.formatted_address()
         g2_size = g2.formatted_address()
-        if g1_size > g2_size:
-            return g1, g2
-        else:
-            return g2, g1
+    if g1_size > g2_size:
+        return g2, g1
+    elif g2_size > g1_size:
+        return g1, g2
+    elif 'formatted_address' in g1.json_data:
+        return g1, g2
+    elif 'formatted_address' in g2.json_data:
+        return g2, g1
+    else:
+        # arbitrary!
+        return g1, g2
 
 
 def _find_best_geocode(s, language=None, check_places=True):
@@ -225,8 +227,10 @@ def lookup_string(s, language=None, check_places=True):
         if second_best_geocode:
             if 'address_components' not in geocode.json_data and 'address_components' in second_best_geocode.json_data:
                 geocode.json_data['address_components'] = second_best_geocode.json_data['address_components']
-            if 'geometry' not in geocode.json_data and 'geomtry' in second_best_geocode.json_data:
+            if 'geometry' not in geocode.json_data and 'geometry' in second_best_geocode.json_data:
                 geocode.json_data['geometry'] = second_best_geocode.json_data['geometry']
+            if 'formatted_address' not in geocode.json_data and 'formatted_address' in second_best_geocode.json_data:
+                geocode.json_data['formatted_address'] = second_best_geocode.json_data['formatted_address']
         if 'address_components' not in geocode.json_data and 'address_components' not in geocode.json_data:
             logging.info('Faking an empty address_components for now, since at least the latlong is correct')
             geocode.json_data['address_components'] = []
