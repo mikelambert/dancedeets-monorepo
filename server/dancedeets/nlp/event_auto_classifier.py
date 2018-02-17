@@ -49,11 +49,11 @@ class AutoClassifier(object):
             if result[0]:
                 results.append(result)
 
-        reasons = [x[1] for x in results]
-        verticals = [x[2] for x in results]
+        self._reasons = [x[1] for x in results]
+        self._verticals = [x[2] for x in results]
 
-        if verticals:
-            return (True, 'found some:\n%s' % reasons, verticals)
+        if self._verticals:
+            return (True, 'found some:\n%s' % self._reasons, self._verticals)
 
         return (False, 'nothing', [])
 
@@ -66,8 +66,11 @@ class AutoClassifier(object):
     def reason(self):
         return self.result[1]
 
+    def reasons(self):
+        return self._reasons
+
     def verticals(self):
-        return self.result[2]
+        return self._verticals
 
 
 def is_auto_notadd_event(classified_event, auto_add_result=None):
