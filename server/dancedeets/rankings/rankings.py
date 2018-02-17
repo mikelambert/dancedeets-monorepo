@@ -71,8 +71,10 @@ def begin_ranking_calculations():
         name='Compute City Rankings by Events',
         reader_spec='mapreduce.input_readers.DatastoreInputReader',
         handler_spec='dancedeets.rankings.rankings.count_event_for_city',
-        mapper_parameters={'entity_kind': 'dancedeets.events.eventdata.DBEvent'},
-        filters=filters,
+        mapper_parameters={
+            'entity_kind': 'dancedeets.events.eventdata.DBEvent',
+            'filters': filters,
+        },
         queue_name='fast-queue',
         shard_count=16,
         _app=EVENT_FOR_CITY_RANKING,
