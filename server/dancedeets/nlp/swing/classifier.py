@@ -27,6 +27,7 @@ REAL_DANCE = Any(
 
 AMBIGUOUS_WORDS = Any(
     'swing\w*',
+    u'سوينغ',  # arabic swing
     'charleston',
     'shag',
     'ecs',
