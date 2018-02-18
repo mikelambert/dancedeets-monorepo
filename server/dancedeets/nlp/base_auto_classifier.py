@@ -89,7 +89,7 @@ class RuleGenerator(type):
         )
 
         UNAMBIGUOUS_DANCE = commutative_connected(cls.AMBIGUOUS_DANCE, keywords.EASY_DANCE)
-        cls.GOOD_DANCE_FULL = Any(UNAMBIGUOUS_DANCE, cls.GOOD_DANCE)
+        cls.GOOD_DANCE_FULL = Name('GOOD_DANCE_FULL', Any(UNAMBIGUOUS_DANCE, cls.GOOD_DANCE))
         cls.GOOD_OR_AMBIGUOUS_DANCE = Name('GOOD_OR_AMBIGUOUS_DANCE', Any(cls.AMBIGUOUS_DANCE, UNAMBIGUOUS_DANCE, cls.GOOD_DANCE))
         cls.COMPETITIONS = Any(
             keywords.BATTLE,
