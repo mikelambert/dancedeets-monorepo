@@ -48,7 +48,7 @@ class ZoukClassifier(base_auto_classifier.DanceStyleEventClassifier):
         return True
 
     def is_dance_event(self):
-        result = self.is_tango()
+        result = self.is_zouk()
         if result:
             return result
 
@@ -58,7 +58,8 @@ class ZoukClassifier(base_auto_classifier.DanceStyleEventClassifier):
 
         return False
 
-    def is_tango(self):
+    @base_auto_classifier.log_to_bucket('is_zouk')
+    def is_zouk(self):
         if self._title_has(ZOUK):
             return 'has zouk title'
 
