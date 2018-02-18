@@ -1075,6 +1075,7 @@ CLASS_ONLY = Any(
     u'堂課',  # lesson chinese
     u'表演班',  # performance class
     u'專攻班',  # chinese specialized class
+    u'工作坊',  # chinese workshop/lab
     u'コース',  # course japanese
     'cors[io]',  # course italian
     'concorso',  # course italian
