@@ -1,0 +1,28 @@
+{% extends "_bigbox_base.html" %}
+
+{% block title %}
+Events without Locations
+{% endblock %}
+
+{% block inner_body %}
+<table>
+  {% for event in events %}
+  <tr
+  {{ loop.cycle('style="background-color: lightgrey"', '') }}
+  >
+    <td>
+      <a href="/events/admin_edit?event_id={{ event.id }}">
+        <img src="https://flyers.dancedeets.com/{{ event.id }}?width=180&height=180" alt="">
+      </a>
+    </td>
+
+    <td style="padding-left: 50px">
+      <a href="/events/admin_edit?event_id={{ event.id }}">{{ event.name }}</a><br>
+      {{ event.verticals|join(', ') }}<br>
+      {{ event.creation_time }}
+    </td>
+</td>
+  </tr>
+  {% endfor %}
+</table>
+{% endblock %}

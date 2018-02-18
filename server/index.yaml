@@ -67,6 +67,12 @@ indexes:
   - name: verticals
   - name: __scatter__
 
+- kind: DBEvent
+  properties:
+  - name: verticals
+  - name: creation_time
+    direction: desc
+
 - kind: ExceptionRecord
   properties:
   - name: date
