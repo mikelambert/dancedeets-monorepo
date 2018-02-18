@@ -233,7 +233,7 @@ hareesh kapoor
 hazel mede ulrich
 heather fronczak
 heather mcpherson
-heather powers
+#heather powers
 heather wagner
 heidi groskreutz
 heidi mongeau
@@ -511,7 +511,7 @@ pj turner
 priscilla christie
 rachel baumgardner
 rachel mcenaney
-rachel smith
+#rachel smith
 rachele smith
 raine salo
 rajeev hotchandani

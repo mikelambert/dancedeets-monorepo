@@ -21,7 +21,6 @@ REAL_DANCE = Any(
     'contra\W?barn',
     'deux\W?temp',
     'texas shuffle step\w*',
-    '(?:two|2)\W?step\w*',
     'clogging',
     'contredanse',
     'contra\W?danc\w+',
@@ -44,6 +43,7 @@ AMBIGUOUS_DANCE = Any(
     'modern\W?western\W?square',
     'western\W?square',
     'american\W?square',
+    '(?:two|2)\W?step\w*',
     'square',
     u'スクエア',
     'mwsd',
@@ -71,6 +71,10 @@ class CountryClassifier(base_auto_classifier.DanceStyleEventClassifier):
         'marathon',
     )
 
+    def __init__(self):
+        super(CountryClassifier, self).__init__()
+        self.LINE_DANCE_EVENT = commutative_connected(LINE_DANCE, self.EVENT_TYPE)
+
     def _quick_is_dance_event(self):
         return True
 
@@ -88,6 +92,9 @@ class CountryClassifier(base_auto_classifier.DanceStyleEventClassifier):
     def is_line_dance(self):
         if self._title_has(LINE_DANCE) and self._title_has(self.AMBIGUOUS_DANCE):
             return 'title has line dance'
+
+        if self._has(self.LINE_DANCE_EVENT):
+            return 'body has line dance event'
 
         return False
 

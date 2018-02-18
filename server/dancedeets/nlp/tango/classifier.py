@@ -45,7 +45,9 @@ TANGO_TYPES = Any(
 REAL_DANCE = commutative_connected(ARGENTINE, TANGO)
 
 AMBIGUOUS_WORDS = Any(
-    TANGO_TYPES,
+    MILONGA,
+    # 'traditional dance' or 'alternative dance' would trigger...
+    #TANGO_TYPES,
     TANGO,
     commutative_connected(TANGO_TYPES, TANGO),
 )
