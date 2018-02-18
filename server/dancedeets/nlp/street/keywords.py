@@ -219,7 +219,8 @@ AMBIGUOUS_DANCE_MUSIC = Name(
         STYLE_ALLSTYLE_WEAK,
         STYLE_DANCEHALL_WEAK,
         STYLE_BEBOP_WEAK,
-        'shuffle',
+        # Starts conflicting with texas city shuffle and shuffle line dances
+        #'shuffle',
         'afrobeat',
         'funk',
         'jerk',
@@ -1561,6 +1562,7 @@ VOGUE = Name(
 )
 
 VOGUE_EVENT = Any('mini\W?ball',)
+
 # We want to ignore these when trying to match against house events (r'\bhouse\b')
 # But at the same time, we want to include them when trying to match against vogue events (r'\bhouse of\b')
 HOUSE_OF = Name('HOUSE_OF', Any('house of',))
