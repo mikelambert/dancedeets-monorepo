@@ -1555,12 +1555,12 @@ VOGUE = Name(
         'vou?guin',
         'vou?guer[sz]?',
         'trans\W?man',
-        'mini\W?ball',
         'ota face',
         'ota realness',
     )
 )
 
+VOGUE_EVENT = Any('mini\W?ball',)
 # We want to ignore these when trying to match against house events (r'\bhouse\b')
 # But at the same time, we want to include them when trying to match against vogue events (r'\bhouse of\b')
 HOUSE_OF = Name('HOUSE_OF', Any('house of',))
