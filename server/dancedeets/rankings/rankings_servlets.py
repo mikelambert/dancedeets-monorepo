@@ -15,7 +15,7 @@ class RankingsHandler(base_servlet.BaseRequestHandler):
         vertical = self.request.get('vertical', 'STREET')
         time_period = self.request.get('time_period', rankings.ALL_TIME)
         event_rankings = rankings.compute_city_template_rankings(rankings.get_city_by_event_rankings(vertical), time_period)
-        user_rankings = rankings.compute_city_template_rankings(rankings.get_city_by_user_rankings(vertical), time_period)
+        user_rankings = rankings.compute_city_template_rankings(rankings.get_city_by_user_rankings(), time_period)
 
         self.display['vertical'] = vertical
         self.display['event_rankings'] = event_rankings
@@ -28,8 +28,14 @@ class RankingsHandler(base_servlet.BaseRequestHandler):
         self.render_template('rankings')
 
 
-@app.route('/tasks/compute_rankings')
-class ComputeRankingsHandler(webapp2.RequestHandler):
+@app.route('/tasks/compute_event_rankings')
+class ComputeEventRankingsHandler(webapp2.RequestHandler):
     def get(self):
         vertical = self.request.get('vertical', 'STREET')
-        rankings.begin_ranking_calculations(vertical)
+        rankings.begin_event_ranking_calculations(vertical)
+
+
+@app.route('/tasks/compute_user_rankings')
+class ComputeUserRankingsHandler(webapp2.RequestHandler):
+    def get(self):
+        rankings.begin_user_ranking_calculations()
