@@ -197,14 +197,16 @@ def _compute_sum(all_rankings, time_period):
     return total_count
 
 
-def compute_city_template_rankings(all_rankings, time_period, use_url=True):
+def compute_city_template_rankings(all_rankings, time_period, vertical=None, use_url=True):
     city_ranking = []
     for city, times in all_rankings.iteritems():
         if city == 'Unknown':
             continue
         count = times.get(time_period, {})
         if count:
-            if use_url:
+            if use_url == 'ADMIN':
+                url = '/tools/recent_events?vertical=%s&city=%s' % (vertical, city)
+            elif use_url:
                 url = '/city/%s' % city
             else:
                 url = None
