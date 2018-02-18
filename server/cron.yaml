@@ -54,8 +54,11 @@ cron:
 - description: scrape all websites for events
   url: /tasks/web_events/start_spiders
   schedule: every 12 hours
-- description: calculate periodic statistics and rankings
-  url: /tasks/compute_rankings # runs on slow-queue
+- description: calculate periodic event statistics and rankings
+  url: /tasks/compute_event_rankings?vertical=STREET # runs on slow-queue
+  schedule: every day 10:00
+- description: calculate periodic user statistics and rankings
+  url: /tasks/compute_user_rankings # runs on slow-queue
   schedule: every day 10:00
 #- description: reload past facebook event data
 #  url: /tasks/reload_events?user_id=dummy&allow_cache=0&time_period=FUTURE
