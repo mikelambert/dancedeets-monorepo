@@ -3,6 +3,7 @@
 from dancedeets import event_types
 from .ballroom import classifier as ballroom_classifier
 from .capoeira import classifier as capoeira_classifier
+from .contact import classifier as contact_classifier
 from .country import classifier as country_classifier
 from .latin import classifier as latin_classifier
 from .partner_fusion import classifier as partner_fusion_classifier
@@ -43,6 +44,7 @@ class AutoClassifier(object):
             tango_classifier.is_tango_dance,
             wcs_classifier.is_wcs_event,
             zouk_classifier.is_zouk_dance,
+            contact_classifier.is_contact_improv_event,
         ]
         for classifier in classifiers:
             result = classifier(self.classified_event)

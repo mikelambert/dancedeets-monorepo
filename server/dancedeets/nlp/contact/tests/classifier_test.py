@@ -10,7 +10,7 @@ class TestContact(classifier_util.TestClassifier):
 
     def runTest(self):
         self.assertEvents(
-            0.95, [
+            0.96, [
                 '188518311900331',
                 '331758814010931',
                 '185298802076147',
@@ -36,6 +36,20 @@ class TestContact(classifier_util.TestClassifier):
                 '1796341603999669',
                 '744728512387350',
                 '331758814010931',
+                '165250377560917',
+                '408844392907915',
+                '1998943853678300',
+                '1924866001099177',
+                '333489140473013',
+                '163482180969963',
+                '1717239484982398',
+                '163692737569115',
+                '2007890929468879',
+                '550993618600306',
+                '154344305198280',
+                '219619141938956',
+                '153626071877993',
+                '1998943853678300',
             ]
         )
 
@@ -44,7 +58,12 @@ class TestNotContact(classifier_util.TestClassifier):
     classifier_func = staticmethod(classifier.is_contact_improv_event)
 
     def runTest(self):
-        self.assertNotEvents(1.0, [])
+        self.assertNotEvents(1.0, [
+            '343280622823619',
+            '336606790080595',
+            '191827318217821',
+            '1237530229726081',
+        ])
 
 
 if __name__ == '__main__':

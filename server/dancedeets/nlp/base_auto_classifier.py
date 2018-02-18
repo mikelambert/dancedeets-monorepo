@@ -42,6 +42,7 @@ style_keywords = {
     event_types.VERTICALS.PARTNER_FUSION: keywords.DANCE_STYLE_FUSION,
     event_types.VERTICALS.ROCKABILLY: keywords.NO_MATCH,
     event_types.VERTICALS.COUNTRY: keywords.NO_MATCH,
+    event_types.VERTICALS.CONTACT: keywords.DANCE_STYLE_CONTACT,
 }
 
 misc_keyword_sets = [

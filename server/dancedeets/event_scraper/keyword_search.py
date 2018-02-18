@@ -115,6 +115,9 @@ obvious_style_keywords = {
         '即興接觸',
         'contacto improvisación',
         'improvisacion de contacto',
+        'ci with',
+        'ci class',
+        'ci jam',
     ]
 }
 
