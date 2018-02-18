@@ -117,7 +117,8 @@ class TestNotWCS(classifier_util.TestClassifier):
 
     def runTest(self):
         self.assertNotEvents(
-            1.0, [
+            1.0,
+            [
                 '1663168040417693',
                 '559043477806194',
                 '1457729371006014',
@@ -133,6 +134,12 @@ class TestNotWCS(classifier_util.TestClassifier):
                 '1704450649591890',
                 '530327094004152',
                 '401153043672740',
+                # 'rock and roll marathon'
+                '555978618114008',
+                # working class rock and roll
+                '1649158265100633',
+                # acoustic sessions, rock & roll
+                '1449709878397698',
             ]
         )
 

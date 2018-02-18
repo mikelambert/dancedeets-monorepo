@@ -394,6 +394,7 @@ class TestCountry(classifier_util.TestClassifier):
                 '196156077634935',
                 '1955431391377502',
                 '213418272537390',
+                '1942482922684665',
             ]
         )
 
@@ -403,7 +404,8 @@ class TestNotCountry(classifier_util.TestClassifier):
 
     def runTest(self):
         self.assertNotEvents(
-            1.0, [
+            1.0,
+            [
                 '394438080969596',
                 '2048139472097730',
                 '421504348283004',
@@ -416,6 +418,14 @@ class TestNotCountry(classifier_util.TestClassifier):
                 '758472404353684',
                 '1939779416284472',
                 '1550112445015853',
+                # there are two steps
+                '385828378527108',
+                # two steps forward
+                '1473504826100680',
+                # two steps dance studio
+                '405188053270007',
+                # X and the two steps
+                '156346261686143',
             ]
         )
 

@@ -597,7 +597,6 @@ PRACTICE = Name(
     'PRACTICE',
     Any(
         'sesja',  # polish session
-        'sessions',
         'practice',
         'session',  # the plural 'sessions' is handled up above under club-and-event keywords
         u'セッション',  # japanese session
