@@ -231,6 +231,10 @@ class DanceStyleEventClassifier(object):
 
     @log_to_bucket('organizer')
     def has_strong_organizer(self):
+        title_is_other_dance = self._title_has(self.BAD_DANCE_FULL)
+        if title_is_other_dance:
+            return False
+
         org_name = self._classified_event.fb_event['info'].get('owner', {}).get('name', '').lower()
         sp = event_classifier.StringProcessor(org_name)
         has_dance_organizer = sp.has_token(self.GOOD_DANCE_FULL)
