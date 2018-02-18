@@ -43,7 +43,20 @@ indexes:
 - kind: DBEvent
   properties:
   - name: city_name
+  - name: creation_time
+    direction: desc
+
+- kind: DBEvent
+  properties:
+  - name: city_name
   - name: start_time
+    direction: desc
+
+- kind: DBEvent
+  properties:
+  - name: city_name
+  - name: verticals
+  - name: creation_time
     direction: desc
 
 - kind: DBEvent

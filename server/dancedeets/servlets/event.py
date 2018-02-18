@@ -585,13 +585,18 @@ class AdminRecentEventsHandler(base_servlet.BaseRequestHandler):
     def get(self):
         num_events = int(self.request.get('num_events', 100))
         vertical = self.request.get('vertical')
+        city = self.request.get('city')
 
         filters = []
         if vertical:
-            filters = [eventdata.DBEvent.verticals == vertical]
+            filters += [eventdata.DBEvent.verticals == vertical]
+        if city:
+            filters += [eventdata.DBEvent.city_name == city]
 
         db_events = eventdata.DBEvent.query(*filters).order(-eventdata.DBEvent.creation_time).fetch(num_events)
         db_events = [x for x in db_events if x.fb_event]
+        self.display['vertical'] = vertical
+        self.display['city'] = city
         self.display['events'] = db_events
         self.render_template('admin_recent_events')
 
