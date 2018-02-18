@@ -118,7 +118,17 @@ obvious_style_keywords = {
         'ci with',
         'ci class',
         'ci jam',
-    ]
+    ],
+    VERTICALS.AFRICAN: [
+        'gumboot',
+        'kpanlogo',
+        'pantsula',
+        'yankadi',
+        'kpanlogo',
+        'azonto',
+        'coupé décalé',
+        'adowa',
+    ],
 }
 
 #        'jive',
@@ -270,9 +280,25 @@ too_popular_style_keywords = {
         'western dance',
         'modern western',
     ],
-    VERTICALS: [
+    VERTICALS.CONTACT: [
         'contact improv',
         'contact improvisaton',
+    ],
+    VERTICALS.AFRICAN: [
+        'senegalese sabar',
+        'sabar',
+        'african',
+        'joneeba african',
+        'kizomba',
+        'kizomba dance',
+        'kuduro',
+        'kuduro dance',
+        'african dance',
+        'afrobeat dance',
+        'アフリカンダンス',
+        u'キゾンバ',
+        u'クドゥーロ',
+        u'非洲舞蹈',
     ]
 }
 

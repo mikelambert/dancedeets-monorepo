@@ -1,6 +1,7 @@
 # -*-*- encoding: utf-8 -*-*-
 
 from dancedeets import event_types
+from .african import classifier as african_classifier
 from .ballroom import classifier as ballroom_classifier
 from .capoeira import classifier as capoeira_classifier
 from .contact import classifier as contact_classifier
@@ -45,6 +46,7 @@ class AutoClassifier(object):
             wcs_classifier.is_wcs_event,
             zouk_classifier.is_zouk_dance,
             contact_classifier.is_contact_improv_event,
+            african_classifier.is_african_event,
         ]
         for classifier in classifiers:
             result = classifier(self.classified_event)
