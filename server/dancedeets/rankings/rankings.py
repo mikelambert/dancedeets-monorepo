@@ -11,8 +11,6 @@ from . import cities_db
 
 EVENT_FOR_CITY_RANKING = 'CITY_EVENT_RANKING'
 USER_FOR_CITY_RANKING = 'CITY_USER_RANKING'
-EVENT_FOR_USER_RANKING = 'EVENT_USER_RANKING'
-USER_FOR_USER_RANKING = 'USER_USER_RANKING'
 
 # location is a city in cities/state/country
 # time_period is one of ALL_TIME, LAST_MONTH, LAST_WEEK
@@ -43,7 +41,7 @@ def get_time_periods(timestamp):
 
 
 def make_key_name(key_name, **kwargs):
-    return '%s/%s' % (key_name, '/'.join('%s=%s' % (k, v) for (k, v) in kwargs.iteritems()))
+    return '%s/%s' % (key_name, '/'.join('%s=%s' % (k, v) for (k, v) in sorted(kwargs.iteritems())))
 
 
 def count_event_for_city(dbevent):
@@ -54,6 +52,7 @@ def count_event_for_city(dbevent):
     city = dbevent.city_name
     for time_period in get_time_periods(dbevent.creation_time or dbevent.start_time):
         yield op.counters.Increment(make_key_name("City", city=city, time_period=time_period))
+        yield op.counters.Increment(make_key_name("Country", country=dbevent.country, time_period=time_period))
 
 
 def count_user_for_city(user):
@@ -62,13 +61,12 @@ def count_user_for_city(user):
         yield op.counters.Increment(make_key_name("City", city=user_city, time_period=time_period))
 
 
-def begin_ranking_calculations():
-    #TODO(allstyles): support different/all verticals
-    filters = [('verticals', '=', 'STREET')]
+def begin_ranking_calculations(vertical):
+    filters = [('verticals', '=', vertical)]
 
     #TODO(lambert): move these into mapreduce.yaml, and expose them via a simple /XX API that we can trigger as needed
     control.start_map(
-        name='Compute City Rankings by Events',
+        name='Compute City Rankings by %s Events' % vertical,
         reader_spec='mapreduce.input_readers.DatastoreInputReader',
         handler_spec='dancedeets.rankings.rankings.count_event_for_city',
         mapper_parameters={
@@ -77,7 +75,7 @@ def begin_ranking_calculations():
         },
         queue_name='fast-queue',
         shard_count=16,
-        _app=EVENT_FOR_CITY_RANKING,
+        _app=_get_app_id(EVENT_FOR_CITY_RANKING, vertical),
     )
     #TODO(lambert): Make the above have a done callback triggering this one:
     control.start_map(
@@ -87,7 +85,7 @@ def begin_ranking_calculations():
         mapper_parameters={'entity_kind': 'dancedeets.users.users.User'},
         queue_name='fast-queue',
         shard_count=16,
-        _app=USER_FOR_CITY_RANKING,
+        _app=_get_app_id(USER_FOR_CITY_RANKING, vertical),
     )
     #TODO(lambert): move this into a /done callback on the above two. use pipeline api?
     _compute_summary(expiry=5 * 60)  # 5 minutes
@@ -104,14 +102,21 @@ def retrieve_summary():
     return totals
 
 
+def _get_app_id(app_name, vertical):
+    return '%s:%s' % (app_name, vertical)
+
+
 def _compute_summary(expiry=TOTALS_EXPIRY):
+    #TODO: make this handle non-street events better
+    vertical = 'STREET'
+
     # IN PROGRESS
-    event_rankings = get_city_by_event_rankings()
+    event_rankings = get_city_by_event_rankings(vertical)
     if event_rankings:
         total_events = _compute_sum(event_rankings, ALL_TIME)
     else:
         total_events = 0
-    user_rankings = get_city_by_user_rankings()
+    user_rankings = get_city_by_user_rankings(vertical)
     if user_rankings:
         total_users = _compute_sum(user_rankings, ALL_TIME)
     else:
@@ -167,16 +172,16 @@ def _group_users_time_period(final_counter_map, city):
     return users
 
 
-def get_city_by_event_rankings():
-    final_counter_map = _get_counter_map_for_ranking(EVENT_FOR_CITY_RANKING)
+def get_city_by_event_rankings(vertical):
+    final_counter_map = _get_counter_map_for_ranking(_get_app_id(EVENT_FOR_CITY_RANKING, vertical))
     if not final_counter_map:
         return {}
     cities = _group_cities_time_period(final_counter_map)
     return cities
 
 
-def get_city_by_user_rankings():
-    final_counter_map = _get_counter_map_for_ranking(USER_FOR_CITY_RANKING)
+def get_city_by_user_rankings(vertical):
+    final_counter_map = _get_counter_map_for_ranking(_get_app_id(USER_FOR_CITY_RANKING, vertical))
     if not final_counter_map:
         return {}
     cities = _group_cities_time_period(final_counter_map)
