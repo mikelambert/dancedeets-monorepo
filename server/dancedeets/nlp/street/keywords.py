@@ -1298,11 +1298,11 @@ DANCE_STYLE_AFRICAN = Any(
     'african dance',
     u'アフリカンダンス',  # african dance
     'afro dance',
-    'afro mundo',
     'tribal',
-    'africa\w+',
+    'afr[iy][ck]?[ck]\w*',
     'sabar',
     'kizomba',
+    'kuduro',
 )
 
 DANCE_STYLE_INDIAN = Any(

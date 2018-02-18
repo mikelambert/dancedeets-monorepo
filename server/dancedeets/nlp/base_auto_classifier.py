@@ -43,11 +43,11 @@ style_keywords = {
     event_types.VERTICALS.ROCKABILLY: keywords.NO_MATCH,
     event_types.VERTICALS.COUNTRY: keywords.NO_MATCH,
     event_types.VERTICALS.CONTACT: keywords.DANCE_STYLE_CONTACT,
+    event_types.VERTICALS.AFRICAN: keywords.DANCE_STYLE_AFRICAN,
 }
 
 misc_keyword_sets = [
     keywords.DANCE_STYLE_CLASSICAL,
-    keywords.DANCE_STYLE_AFRICAN,
     keywords.DANCE_STYLE_INDIAN,
     keywords.DANCE_STYLE_SEXY,
     keywords.DANCE_STYLE_MISC,
