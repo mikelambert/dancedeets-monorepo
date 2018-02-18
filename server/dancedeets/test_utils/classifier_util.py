@@ -59,7 +59,7 @@ class TestClassifier(unittest.TestCase):
             logging.warning('Event failed: %s: %s', event_id, '\n'.join(data[1]))
 
         failed_string = '\n'.join('%s: %s' % (x, self.get_event(x)['info']['name']) for x in failed)
-        self.assertTrue(fraction <= passed_fraction, 'Too many events failed: %s of %s: %s' % (len(failed), len(event_ids), failed_string))
+        self.assertTrue(fraction <= passed_fraction, 'Too many events failed: %s of %s:\n%s' % (len(failed), len(event_ids), failed_string))
 
     def assertNotEvents(self, fraction, event_ids):
         if not event_ids:
@@ -76,4 +76,4 @@ class TestClassifier(unittest.TestCase):
             logging.warning('Event unexpectedly passed: %s: %s', event_id, '\n'.join(data[1]))
 
         passed_string = '\n'.join('%s: %s' % (x, self.get_event(x)['info']['name']) for x in passed)
-        self.assertTrue(fraction <= failed_fraction, 'Too many events passed: %s of %s: %s' % (len(passed), len(event_ids), passed_string))
+        self.assertTrue(fraction <= failed_fraction, 'Too many events passed: %s of %s:\n%s' % (len(passed), len(event_ids), passed_string))
