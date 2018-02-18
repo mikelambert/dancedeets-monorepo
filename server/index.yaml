@@ -62,6 +62,11 @@ indexes:
   - name: search_time_period
   - name: __scatter__
 
+- kind: DBEvent
+  properties:
+  - name: verticals
+  - name: __scatter__
+
 - kind: ExceptionRecord
   properties:
   - name: date
