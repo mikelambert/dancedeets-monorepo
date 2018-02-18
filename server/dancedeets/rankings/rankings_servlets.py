@@ -14,8 +14,16 @@ class RankingsHandler(base_servlet.BaseRequestHandler):
         self.finish_preload()
         vertical = self.request.get('vertical', 'STREET')
         time_period = self.request.get('time_period', rankings.ALL_TIME)
-        event_rankings = rankings.compute_city_template_rankings(rankings.get_city_by_event_rankings(vertical), time_period)
+        use_url = 'ADMIN' if self.request.get('admin') else None
+        event_rankings = rankings.compute_city_template_rankings(
+            rankings.get_city_by_event_rankings(vertical),
+            time_period,
+            vertical=vertical,
+            use_url=use_url,
+        )
         user_rankings = rankings.compute_city_template_rankings(rankings.get_city_by_user_rankings(), time_period)
+
+        self.display['admin'] = self.request.get('admin')
 
         self.display['vertical'] = vertical
         self.display['event_rankings'] = event_rankings
