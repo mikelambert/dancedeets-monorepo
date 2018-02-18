@@ -1,7 +1,10 @@
 {% extends "_bigbox_base.html" %}
 
 {% block title %}
-Recently added {{ vertical.lower() }} events
+  Recently added {{ vertical.lower() }} events
+  {% if city %}
+    in {{ city }}
+  {% endif %}
 {% endblock %}
 
 {% block inner_body %}
