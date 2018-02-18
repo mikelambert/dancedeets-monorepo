@@ -580,6 +580,22 @@ class AdminNoLocationEventsHandler(base_servlet.BaseRequestHandler):
         self.render_template('admin_nolocation_events')
 
 
+@app.route('/tools/recent_events')
+class AdminRecentEventsHandler(base_servlet.BaseRequestHandler):
+    def get(self):
+        num_events = int(self.request.get('num_events', 100))
+        vertical = self.request.get('vertical')
+
+        filters = []
+        if vertical:
+            filters = [eventdata.DBEvent.verticals == vertical]
+
+        db_events = eventdata.DBEvent.query(*filters).order(-eventdata.DBEvent.creation_time).fetch(num_events)
+        db_events = [x for x in db_events if x.fb_event]
+        self.display['events'] = db_events
+        self.render_template('admin_recent_events')
+
+
 @app.route('/events/admin_potential_events')
 class AdminPotentialEventViewHandler(base_servlet.BaseRequestHandler):
     def get(self):

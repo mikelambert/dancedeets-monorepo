@@ -43,7 +43,7 @@ class MemoryUsers(webapp2.RequestHandler):
 
 def resave_object(obj):
     from dancedeets import event_types
-    if not obj.verticals:
+    if obj.verticals == [event_types.VERTICALS.STREET, event_types.VERTICALS.STREET]:
         obj.verticals = [event_types.VERTICALS.STREET]
     yield op.db.Put(obj)
 
