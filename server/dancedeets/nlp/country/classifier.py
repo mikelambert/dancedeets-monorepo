@@ -71,8 +71,8 @@ class CountryClassifier(base_auto_classifier.DanceStyleEventClassifier):
         'marathon',
     )
 
-    def __init__(self):
-        super(CountryClassifier, self).__init__()
+    def __init__(self, classified_event):
+        super(CountryClassifier, self).__init__(classified_event)
         self.LINE_DANCE_EVENT = commutative_connected(LINE_DANCE, self.EVENT_TYPE)
 
     def _quick_is_dance_event(self):
