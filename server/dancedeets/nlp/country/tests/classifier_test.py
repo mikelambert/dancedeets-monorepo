@@ -426,6 +426,10 @@ class TestNotCountry(classifier_util.TestClassifier):
                 '405188053270007',
                 # X and the two steps
                 '156346261686143',
+                # soul line dance
+                '350125698512777',
+                # soul line dance
+                '171634273580841',
             ]
         )
 

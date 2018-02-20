@@ -58,12 +58,21 @@ class TestNotContact(classifier_util.TestClassifier):
     classifier_func = staticmethod(classifier.is_contact_improv_event)
 
     def runTest(self):
-        self.assertNotEvents(1.0, [
-            '343280622823619',
-            '336606790080595',
-            '191827318217821',
-            '1237530229726081',
-        ])
+        self.assertNotEvents(
+            1.0,
+            [
+                '343280622823619',
+                '336606790080595',
+                '191827318217821',
+                '1237530229726081',
+                # wejściówka was matching 'ci' on non-unicode regexes
+                '462115054126197',
+                # wejściówka was matching 'ci' on non-unicode regexes
+                '327973137673346',
+                # świadomości was matching 'ci' on non-unicode regexes
+                '283417325509347',
+            ]
+        )
 
 
 if __name__ == '__main__':
