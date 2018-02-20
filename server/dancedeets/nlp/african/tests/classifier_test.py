@@ -5,7 +5,7 @@ from dancedeets.test_utils import unittest
 from dancedeets.test_utils import classifier_util
 
 
-class TestContact(classifier_util.TestClassifier):
+class TestAfrican(classifier_util.TestClassifier):
     classifier_func = staticmethod(classifier.is_african_event)
 
     def runTest(self):
@@ -33,7 +33,7 @@ class TestContact(classifier_util.TestClassifier):
         )
 
 
-class TestNotContact(classifier_util.TestClassifier):
+class TestNotAfrican(classifier_util.TestClassifier):
     classifier_func = staticmethod(classifier.is_african_event)
 
     def runTest(self):

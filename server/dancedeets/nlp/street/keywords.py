@@ -40,6 +40,7 @@ EASY_DANCE = Name(
         u'χορ[όέ]\w*',  # greek dance
         u'رقص',  # arabic dance native
         u'دانس',  # arabic dance transliteration
+        u'नृत्य',  # hindi dance
         u'댄스',  # korean dance
         u'댄서',  # korean dancer
         u'танцы',  # russian dancing
@@ -53,6 +54,7 @@ EASY_DANCE = Name(
         u'בלרקוד',  # hebrew dancing
         u'כשרוקדים',  # hebrew 'when dancing'
         u'ריקודים',  # hebrew dances
+        u'ריקודי',  # hebrew dance
         u'ダンサー',  # japanese dance
         u'ダンス',  # japanese dance
         u'춤.?',  # korean dance
@@ -1378,6 +1380,13 @@ DANCE_STYLE_ROCKABILLY = Any(
     'rock\W?\W?(?:n|and|&|\+)\W?\W?roll\w*',
 )
 
+DANCE_STYLE_BELLY = Any(
+    'belly\W?danc(?:e(?:rs?)?|ing)',
+    'belly\w*',
+    'bellycraft',
+    'worldbellydancealliance',
+    u'ベリーダンス',  # japanese bellydance
+)
 DANCE_STYLE_MISC = Any(
     'parkour',
     'flamenco',
@@ -1417,11 +1426,6 @@ DANCE_STYLE_MISC = Any(
     'silk',
     'aerial',
     'zumba',
-    'belly\W?danc(?:e(?:rs?)?|ing)',
-    'belly\w*',
-    'bellycraft',
-    'worldbellydancealliance',
-    u'ベリーダンス',  # japanese bellydance
     'technique',
     'guest artists?',
     'partnering',

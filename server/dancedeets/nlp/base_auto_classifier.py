@@ -44,6 +44,7 @@ style_keywords = {
     event_types.VERTICALS.COUNTRY: keywords.DANCE_STYLE_COUNTRY,
     event_types.VERTICALS.CONTACT: keywords.DANCE_STYLE_CONTACT,
     event_types.VERTICALS.AFRICAN: keywords.DANCE_STYLE_AFRICAN,
+    event_types.VERTICALS.BELLY: keywords.DANCE_STYLE_BELLY,
 }
 
 misc_keyword_sets = [

@@ -129,6 +129,11 @@ obvious_style_keywords = {
         'coupé décalé',
         'adowa',
     ],
+    VERTICALS.BELLY: [
+        'bauch tanz',
+        u'ריקודי בטן',
+        u'肚皮',
+    ],
 }
 
 #        'jive',
@@ -299,7 +304,16 @@ too_popular_style_keywords = {
         u'キゾンバ',
         u'クドゥーロ',
         u'非洲舞蹈',
-    ]
+    ],
+    VERTICALS.BELLY: [
+        'oriental dance',
+        'egyptian dance',
+        'middle eastern dance',
+        'rasq sharqi',
+        'tribal fusion',
+        u'ベリーダンス',
+        u'شرقي‎',
+    ],
 }
 
 PARTNER = [
@@ -313,7 +327,7 @@ PARTNER = [
     'festival',
 ]
 
-EVERNT_TYPES = [
+EVENT_TYPES = [
     'session',
     'workshop',
     'class',
@@ -358,7 +372,7 @@ STYLE_EVENT_TYPES = {
 def expand_keyword(keyword, style):
     all_keywords = []
     all_keywords.append(keyword)
-    for y in EVERNT_TYPES:
+    for y in EVENT_TYPES:
         all_keywords.append('%s %s' % (keyword, y))
     for y in STYLE_EVENT_TYPES.get(style, []):
         all_keywords.append('%s %s' % (keyword, y))
