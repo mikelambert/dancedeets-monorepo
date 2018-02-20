@@ -14,7 +14,7 @@ class TestSoulSessionsOslo(unittest.TestCase):
         fb_event = dict(info=dict(name="FB Event", description="sessions jam battles cyphers dj's"))
         classified_event = event_classifier.get_classified_event(fb_event)
         self.assertEqual(set([]), classified_event.dance_matches())
-        self.assertEqual(set(['sessions', 'jam', 'battles', 'cyphers']), classified_event.event_matches())
+        self.assertEqual(set(['jam', 'battles', 'cyphers']), classified_event.event_matches())
 
 
 class RuleMatches(unittest.TestCase):
@@ -34,6 +34,9 @@ class RuleMatches(unittest.TestCase):
         self.matchRule(keywords.DANCE_WRONG_STYLE, 'khaligi-belly')
         self.matchRule(rules.GOOD_DANCE, 'hiphop dance')
         self.notMatchRule(rules.GOOD_DANCE, 'hiphop.\ndance')
+        #self.matchRule(rules., 'classic w/ mark oliver')
+        self.notMatchRule(grammar.Any('[ck]\W?i\W?'), u'wej\u015bci\xf3wka!')
+        self.matchRule(rules.GOOD_DANCE, 'hiphop dance')
 
 
 class TestDanceClass(unittest.TestCase):

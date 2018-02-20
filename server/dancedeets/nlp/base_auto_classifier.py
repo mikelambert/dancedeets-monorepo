@@ -40,8 +40,8 @@ style_keywords = {
     event_types.VERTICALS.ZOUK: keywords.DANCE_STYLE_ZOUK,
     event_types.VERTICALS.WCS: keywords.DANCE_STYLE_WCS,
     event_types.VERTICALS.PARTNER_FUSION: keywords.DANCE_STYLE_FUSION,
-    event_types.VERTICALS.ROCKABILLY: keywords.NO_MATCH,
-    event_types.VERTICALS.COUNTRY: keywords.NO_MATCH,
+    event_types.VERTICALS.ROCKABILLY: keywords.DANCE_STYLE_ROCKABILLY,
+    event_types.VERTICALS.COUNTRY: keywords.DANCE_STYLE_COUNTRY,
     event_types.VERTICALS.CONTACT: keywords.DANCE_STYLE_CONTACT,
     event_types.VERTICALS.AFRICAN: keywords.DANCE_STYLE_AFRICAN,
 }
