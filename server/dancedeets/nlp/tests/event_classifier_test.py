@@ -36,7 +36,10 @@ class RuleMatches(unittest.TestCase):
         self.notMatchRule(rules.GOOD_DANCE, 'hiphop.\ndance')
         #self.matchRule(rules., 'classic w/ mark oliver')
         self.notMatchRule(grammar.Any('[ck]\W?i\W?'), u'wej\u015bci\xf3wka!')
-        self.matchRule(rules.GOOD_DANCE, 'hiphop dance')
+
+        # Ensure commutative_connected
+        self.matchRule(rules.GOOD_DANCE, 'lock dance')
+        self.matchRule(rules.GOOD_DANCE, 'lockdance')
 
 
 class TestDanceClass(unittest.TestCase):
