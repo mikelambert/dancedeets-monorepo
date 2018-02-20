@@ -40,7 +40,7 @@ REAL_DANCE = Any(
     'raqs baladi',  # romanization of the arabic
     # for an explanation of these, see http://www.shira.net/musings/dance-by-any-other-name.htm
     'transnational fusion',
-    'tribal fusion',
+    u'tribal\W?fusi[oó]n',
     'bellycraft',
 )
 

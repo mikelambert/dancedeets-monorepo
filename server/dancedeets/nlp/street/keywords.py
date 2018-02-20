@@ -43,13 +43,8 @@ EASY_DANCE = Name(
         u'नृत्य',  # hindi dance
         u'댄스',  # korean dance
         u'댄서',  # korean dancer
-        u'танцы',  # russian dancing
-        u'танцор',  # russian dancer
-        u'танцоров',  # russian dancers
-        u'танцуват',  # bulgarian dance
-        u'танцува',  # bulgarian dance
-        u'танцовия',  # bulgarian dance
-        u'изтанцуват',  # bulgarian dancing
+        u'танц\w*', # russian/bulgarian dance
+        u'изтанц\w*',  # russian/bulgarian dance
         u'רקוד',  # hebrew dancing
         u'בלרקוד',  # hebrew dancing
         u'כשרוקדים',  # hebrew 'when dancing'
@@ -1067,8 +1062,8 @@ CLASS_ONLY = Any(
     'class',
     'master\W?class(?:es)?',
     'company class',
-    u'мастер-класса?',  # russian master class
-    u'классa?',  # russian class
+    u'мастер\W?класса?',  # russian master class
+    u'класса?',  # russian class (this is not a normal 'a')
     'class(?:es)?',
     'lessons?',
     'courses?',
