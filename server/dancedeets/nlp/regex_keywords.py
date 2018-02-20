@@ -27,8 +27,7 @@ def _wrap_regex(regex_string, matching=False, word_boundaries=True, match_cjk=Fa
         regex_string = u'(?:' + regex_string + u')'
     if word_boundaries:
         # It seems like we might only care about this in match_cjk cases...but greek is important. We need it for greek matches.
-        if not re2:
-            regex_string = '(?u)%s' % regex_string
+        regex_string = '(?u)%s' % regex_string
         if match_cjk:
             regex_string = r"(?:\b|%s)%s(?:\b|%s)" % (_CJK_ADJACENT_STRING, regex_string, _CJK_ADJACENT_STRING)
         else:
