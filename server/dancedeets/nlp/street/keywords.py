@@ -565,6 +565,7 @@ JAM = Name(
 
 EASY_CLUB = Any(
     'club',
+    'klub',
     'after\Wparty',
     'pre\Wparty',
     'party',
@@ -1051,6 +1052,8 @@ CLASS_ONLY = Any(
     u'časovi',  # class croatian
     'warsztaty',  # polish workshop
     u'warsztatów',  # polish workshop
+    u'nauka',  # polish instructional
+    u'uczyli',  # polish teaching
     u'seminarų',  # lithuanian workshop
     'taller de',  # spanish workshop
     'workshoppien',  # finnish workshops

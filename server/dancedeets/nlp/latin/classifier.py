@@ -67,6 +67,7 @@ AMBIGUOUS_DANCE_MUSIC = Name(
         u'samba ax[ée]',
         'samba\W?rock',
         'samba de roda',
+        'cuban',
         u'サンバ',
         'bachata',
         u'バチャータ',
