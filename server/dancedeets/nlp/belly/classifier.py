@@ -46,7 +46,7 @@ REAL_DANCE = Any(
 
 
 class BellyClassifier(base_auto_classifier.DanceStyleEventClassifier):
-    vertical = event_types.VERTICALS.AFRICAN
+    vertical = event_types.VERTICALS.BELLY
 
     GOOD_DANCE = REAL_DANCE
     AMBIGUOUS_DANCE = NON_BELLY_AMBIGUOUS_DANCE
