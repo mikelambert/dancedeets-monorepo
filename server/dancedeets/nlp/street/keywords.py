@@ -37,7 +37,7 @@ EASY_DANCE = Name(
         'dance\w+',
         'dance style[sz]',
         'social\W?dance',
-        u'χορ[όέ]\w*',  # greek dance
+        u'χορ[όέ]\w*',  # greek dance/choreography
         u'رقص',  # arabic dance native
         u'دانس',  # arabic dance transliteration
         u'नृत्य',  # hindi dance
@@ -128,6 +128,7 @@ EASY_CHOREO = Name(
         u'biên đạo',  # vietnamese choreography
         u'кореограф',  # macedonian
         u'안무',
+        u'χορογραφια\w*',
     )
 )
 
@@ -1047,6 +1048,7 @@ CLASS_ONLY = Any(
     u'הסדנא',  # hebrew workshop
     u'שיעורים',  # hebrew lessons
     u'μάθημα',  # greek lesson
+    u'σεμιναριο',  # greek seminar
     # 'taller', # workshop spanish
     'delavnice',  # workshop slovak
     'talleres',  # workshops spanish
@@ -1387,6 +1389,7 @@ DANCE_STYLE_BELLY = Any(
     'worldbellydancealliance',
     u'ベリーダンス',  # japanese bellydance
 )
+
 DANCE_STYLE_MISC = Any(
     'parkour',
     'flamenco',

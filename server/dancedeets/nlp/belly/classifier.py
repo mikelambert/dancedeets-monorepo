@@ -11,6 +11,15 @@ Name = grammar.Name
 connected = grammar.connected
 commutative_connected = grammar.commutative_connected
 
+NON_BELLY_AMBIGUOUS_DANCE = Any(
+    u'شرقي‎',  # arabic, but means 'oriental'
+    u'بلدي‎',  # arabic, but means 'folk'
+    # for an explanation of these, see http://www.shira.net/musings/dance-by-any-other-name.htm
+    'oriental',  # oriental dance
+    'egyptian',  # egyptian dance
+    'middle eastern',  # middle eastern dance
+)
+
 BELLY = Any(
     'belly',
     'bauch',  # german
@@ -23,16 +32,10 @@ BELLY = Any(
     u'पेट',  # hindi
     u'बेली',  # hindi
     u'בטן',  # hebrew
-    u'شرقي‎',  # arabic, but means 'oriental'
-    u'بلدي‎',  # arabic, but means 'folk'
-    # for an explanation of these, see http://www.shira.net/musings/dance-by-any-other-name.htm
-    'oriental',  # oriental dance
-    'egyptian',  # egyptian dance
-    'middle eastern',  # middle eastern dance
 )
 
 REAL_DANCE = Any(
-    commutative_connected(BELLY, keywords.EASY_DANCE),
+    commutative_connected(Any(BELLY, NON_BELLY_AMBIGUOUS_DANCE), keywords.EASY_DANCE),
     'raqs sharqi',  # romanization of the arabic
     'raqs baladi',  # romanization of the arabic
     # for an explanation of these, see http://www.shira.net/musings/dance-by-any-other-name.htm
@@ -46,6 +49,7 @@ class BellyClassifier(base_auto_classifier.DanceStyleEventClassifier):
     vertical = event_types.VERTICALS.AFRICAN
 
     GOOD_DANCE = REAL_DANCE
+    AMBIGUOUS_DANCE = NON_BELLY_AMBIGUOUS_DANCE
 
     def _quick_is_dance_event(self):
         return True
