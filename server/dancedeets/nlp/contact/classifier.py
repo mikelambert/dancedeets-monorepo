@@ -11,7 +11,7 @@ connected = grammar.connected
 commutative_connected = grammar.commutative_connected
 
 CONTACT = '[ck]onta[ck]t\w*'
-IMPROV = 'impro[wv]\w*'
+IMPROV = 'impro(?:[wv]\w*)?'
 
 REAL_DANCE = Any(
     '%s\W?%s' % (CONTACT, IMPROV),
@@ -71,6 +71,7 @@ class ContactClassifier(base_auto_classifier.DanceStyleEventClassifier):
 
         return False
 
+    @base_auto_classifier.log_to_bucket('is_ci_dance')
     def is_ci_dance(self):
         title_is_ambiguous = self._title_has(AMBIGUOUS_CONTACT)
         has_contact_improv = self._has(self.GOOD_DANCE_FULL)

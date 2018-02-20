@@ -1356,6 +1356,25 @@ DANCE_STYLE_CONTACT = Any(
     u'接觸即興',  # chinese
 )
 
+# Copied from country/classiifer
+DANCE_STYLE_COUNTRY = Any(
+    'country',
+    'square',
+    'contra',
+    'texas shuffle',
+    'clogging',
+    'contredanse',
+)
+
+# Copied from rockabilly/classifier
+DANCE_STYLE_ROCKABILLY = Any(
+    'rockabilly',
+    'jive\W?bop',
+    'barn',
+    'boogie\W?woogie',
+    'rock\W?\W?(?:n|and|&|\+)\W?\W?roll\w*',
+)
+
 DANCE_STYLE_MISC = Any(
     'parkour',
     'flamenco',

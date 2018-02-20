@@ -89,10 +89,12 @@ class CountryClassifier(base_auto_classifier.DanceStyleEventClassifier):
 
         return False
 
+    @base_auto_classifier.log_to_bucket('is_line_dance')
     def is_line_dance(self):
         if self._title_has(LINE_DANCE) and self._title_has(self.AMBIGUOUS_DANCE):
             return 'title has line dance'
 
+        # TODO: This overmatches on 'soul line dance'
         if self._has(self.LINE_DANCE_EVENT):
             return 'body has line dance event'
 
