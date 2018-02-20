@@ -1590,7 +1590,8 @@ EASY_VOGUE = Name(
         'never walked',
         'virgin',
         'drags?',
-        'twist',
+        # twist-o-flex
+        # 'twist',
         'realness',
         'runway',
         'female figure',
