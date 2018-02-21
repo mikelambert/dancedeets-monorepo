@@ -35,7 +35,7 @@ def filter_for_subscribed_emails(emails):
 
 
 def unsubscribe_email(email):
-    o = OrganizerEmailUnsubscribed(id=email)
+    o = OrganizerEmailUnsubscribed(id=email.lower())
     o.put()
 
 
@@ -63,4 +63,4 @@ def get_emails_for_event(event):
 
     if len(emails) > 1:
         logging.warning('Event %s (%s) has 2+ emails: %s', event.id, event.name, emails.items())
-    return [{'email': email, 'name': name} for (email, name) in emails.items()]
+    return [{'email': email.lower(), 'name': name} for (email, name) in emails.items()]

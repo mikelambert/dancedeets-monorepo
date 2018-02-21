@@ -30,6 +30,9 @@ def send_event_add_emails(event_id, should_send=False):
     emails = event_emails.get_emails_for_event(event)
     email_contents = []
     for organizer in emails:
+        if not event_emails.filter_for_subscribed_emails([organizer['email']]):
+            continue
+
         try:
             email_contents.append(email_for_event(organizer, event, should_send=should_send))
             logging.info('Sent email: %s', email_contents)
