@@ -1059,7 +1059,6 @@ CLASS_ONLY = Any(
     'intensives?',
     'intensivo',  # spanish intensive
     'open class.?',
-    'class',
     'master\W?class(?:es)?',
     'company class',
     u'мастер\W?класса?',  # russian master class
