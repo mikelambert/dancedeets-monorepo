@@ -28,6 +28,10 @@ class UserUnsubscribeHandler(base_servlet.BaseRequestHandler):
         self.finish_preload()
         self.errors_are_fatal()
         email = self.request.get('email')
+        if not email:
+            self.redirect('/')
+
+        email = email.lower()
         user = users.User.query(users.User.email == email).get()
         weekly = True
         promoter = True
