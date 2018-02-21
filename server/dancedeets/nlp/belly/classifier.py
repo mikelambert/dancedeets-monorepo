@@ -40,8 +40,18 @@ REAL_DANCE = Any(
     'raqs baladi',  # romanization of the arabic
     # for an explanation of these, see http://www.shira.net/musings/dance-by-any-other-name.htm
     'transnational fusion',
-    u'tribal\W?fusi[oó]n',
+    commutative_connected(Any(u'tribal'), Any(u'fusi[oó]n\w*')),
     'bellycraft',
+    'bellyfit',
+    'its unmata',  # ITS unmata
+)
+
+RELATED_KEYWORDS = Any(
+    'amy sigil',
+    'unmata',
+    'modern fusion',
+    'isolat\w+',
+    'sufi',
 )
 
 

@@ -62,8 +62,8 @@ REAL_DANCE = Any(
     'yankadi',
 )
 
-AMBIGUOUS_CONTACT = Name(
-    'AMBIGUOUS_CONTACT',
+AMBIGUOUS_AFRICAN = Name(
+    'AMBIGUOUS_AFRICAN',
     Any(
         'adowa',
         'aduma',
@@ -98,6 +98,7 @@ AMBIGUOUS_CONTACT = Name(
         'suo',
         'tribal',
         'tufo',
+        u'mand[ée]',
     )
 )
 
@@ -106,7 +107,7 @@ class AfricanClassifier(base_auto_classifier.DanceStyleEventClassifier):
     vertical = event_types.VERTICALS.AFRICAN
 
     GOOD_DANCE = REAL_DANCE
-    AMBIGUOUS_DANCE = AMBIGUOUS_CONTACT
+    AMBIGUOUS_DANCE = AMBIGUOUS_AFRICAN
     ADDITIONAL_EVENT_TYPE = Any('congress',)
 
     def _quick_is_dance_event(self):
