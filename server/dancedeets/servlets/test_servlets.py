@@ -5,15 +5,14 @@ from dancedeets import base_servlet
 from dancedeets.nlp import event_classifier
 
 
+# TODO: Ensure our loading/changing test_data files doesn't cause the server to restart. Move test_data outside the watch dirs?
 @app.route('/tests/nlp')
 class TestNlpHandler(base_servlet.BaseRequestHandler):
     def get(self):
-        import dancedeets.nlp.belly.classifier
-        dancedeets.nlp.belly.classifier.is_belly_event
-        from dancedeets.nlp.belly.tests import classifier_test
+        from dancedeets.nlp.soulline.tests import classifier_test
         from dancedeets.test_utils import classifier_util
 
-        tb = classifier_test.TestBelly()
+        tb = classifier_test.TestSoulLine()
         tb.setUp()
 
         event_runs = []
@@ -36,6 +35,6 @@ class TestNlpHandler(base_servlet.BaseRequestHandler):
 
         self.display['false_negatives'] = len([x for x in event_runs if not x['result'] and x['desired_result']])
         self.display['false_positives'] = len([x for x in event_runs if x['result'] and not x['desired_result']])
-        self.display['vertical'] = 'belly'
+        self.display['vertical'] = 'soul line'
         self.display['event_runs'] = event_runs
         self.render_template('test_nlp_results')
