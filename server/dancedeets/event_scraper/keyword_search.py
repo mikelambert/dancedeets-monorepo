@@ -318,6 +318,10 @@ too_popular_style_keywords = {
         'soul line',
         'baltimore line',
         'urban line',
+        'wobble line',
+        'zydeco',
+        'chicago line',
+        'hip-hop line',
     ],
 }
 
