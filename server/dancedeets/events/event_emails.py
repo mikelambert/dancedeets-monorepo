@@ -20,6 +20,16 @@ class OrganizerEmailUnsubscribed(ndb.Model):
     date_created = ndb.DateTimeProperty(auto_now_add=True)
     data = ndb.JsonProperty()
 
+    @classmethod
+    def get_by_ids(cls, id_list, keys_only=False):
+        if not id_list:
+            return []
+        keys = [ndb.Key(cls, x) for x in id_list]
+        if keys_only:
+            return cls.query(cls.key.IN(keys)).fetch(len(keys), keys_only=True)
+        else:
+            return ndb.get_multi(keys)
+
 
 # Must lowercase the input string before running it through this regex
 email_regex = re.compile((
@@ -30,7 +40,7 @@ email_regex = re.compile((
 
 
 def filter_for_subscribed_emails(emails):
-    unsubscribes_found = OrganizerEmailUnsubscribed.get_by_key_name(emails)
+    unsubscribes_found = OrganizerEmailUnsubscribed.get_by_ids(emails, keys_only=True)
     return [email for unsubscribed, email in zip(unsubscribes_found, emails) if not unsubscribed]
 
 
