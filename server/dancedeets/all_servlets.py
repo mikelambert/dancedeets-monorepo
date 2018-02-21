@@ -40,10 +40,11 @@ import dancedeets.servlets.promote
 import dancedeets.servlets.profile_page
 import dancedeets.servlets.static
 import dancedeets.servlets.static_db
+import dancedeets.servlets.test_servlets
 import dancedeets.servlets.tools
+import dancedeets.servlets.youtube_simple_api
 import dancedeets.sitemaps.events
 import dancedeets.sitemaps.serve
-import dancedeets.servlets.youtube_simple_api
 import dancedeets.topics.topic_servlets
 import dancedeets.tutorials.servlets
 import dancedeets.users.user_event_tasks
