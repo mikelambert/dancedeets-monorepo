@@ -1,6 +1,5 @@
 # -*-*- encoding: utf-8 -*-*-
 
-from dancedeets import event_types
 from .african import classifier as african_classifier
 from .ballroom import classifier as ballroom_classifier
 from .belly import classifier as belly_classifier
@@ -10,6 +9,7 @@ from .country import classifier as country_classifier
 from .latin import classifier as latin_classifier
 from .partner_fusion import classifier as partner_fusion_classifier
 from .rockabilly import classifier as rockabilly_classifier
+from .soulline import classifier as soulline_classifier
 from .street import classifier as street_classifier
 from .swing import classifier as swing_classifier
 from .tango import classifier as tango_classifier
@@ -49,6 +49,7 @@ class AutoClassifier(object):
             contact_classifier.is_contact_improv_event,
             african_classifier.is_african_event,
             belly_classifier.is_belly_event,
+            soulline_classifier.is_line_event,
         ]
         for classifier in classifiers:
             result = classifier(self.classified_event)

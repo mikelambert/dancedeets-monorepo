@@ -314,6 +314,11 @@ too_popular_style_keywords = {
         u'ベリーダンス',
         u'شرقي‎',
     ],
+    VERTICALS.SOULLINE: [
+        'soul line',
+        'baltimore line',
+        'urban line',
+    ],
 }
 
 PARTNER = [
