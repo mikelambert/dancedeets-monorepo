@@ -12,7 +12,7 @@ connected = grammar.connected
 commutative_connected = grammar.commutative_connected
 
 ARGENTINE = Any(
-    'argentin\w+',
+    'argentin\w*',
     u'アルゼンチン',
     u'阿根廷',
     u'아르헨티나',
