@@ -58,6 +58,8 @@ CAP_CLASS = commutative_connected(CAPOEIRA, keywords.CLASS_LEVELS)
 
 
 class CapoeiraClassifier(base_auto_classifier.DanceStyleEventClassifier):
+    __metaclass__ = base_auto_classifier.AutoRuleGenerator
+
     vertical = event_types.VERTICALS.CAPOEIRA
 
     GOOD_DANCE = CAPOEIRA

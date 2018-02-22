@@ -34,6 +34,8 @@ AMBIGUOUS_WORDS = Any(WCS, WESTIES)
 
 
 class WcsClassifier(base_auto_classifier.DanceStyleEventClassifier):
+    __metaclass__ = base_auto_classifier.AutoRuleGenerator
+
     vertical = event_types.VERTICALS.WCS
 
     AMBIGUOUS_DANCE = AMBIGUOUS_WORDS

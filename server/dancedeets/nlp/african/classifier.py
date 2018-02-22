@@ -104,6 +104,7 @@ AMBIGUOUS_AFRICAN = Name(
 
 
 class AfricanClassifier(base_auto_classifier.DanceStyleEventClassifier):
+    __metaclass__ = base_auto_classifier.AutoRuleGenerator
     vertical = event_types.VERTICALS.AFRICAN
 
     GOOD_DANCE = REAL_DANCE

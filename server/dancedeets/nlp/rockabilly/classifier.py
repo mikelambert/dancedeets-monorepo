@@ -30,6 +30,8 @@ AMBIGUOUS_DANCE = Any(
 
 
 class RockabillyClassifier(base_auto_classifier.DanceStyleEventClassifier):
+    __metaclass__ = base_auto_classifier.AutoRuleGenerator
+
     vertical = event_types.VERTICALS.ROCKABILLY
 
     GOOD_DANCE = REAL_DANCE

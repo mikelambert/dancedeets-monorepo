@@ -24,6 +24,8 @@ LINE_DANCE = Any(
 
 
 class SoulLineClassifier(base_auto_classifier.DanceStyleEventClassifier):
+    __metaclass__ = base_auto_classifier.AutoRuleGenerator
+
     vertical = event_types.VERTICALS.SOULLINE
 
     GOOD_DANCE = LINE_DANCE

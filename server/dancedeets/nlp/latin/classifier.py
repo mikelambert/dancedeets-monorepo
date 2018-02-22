@@ -97,6 +97,8 @@ all_class = Any(class_keywords, commutative_connected(keywords.PERFORMANCE, clas
 
 
 class LatinClassifier(base_auto_classifier.DanceStyleEventClassifier):
+    __metaclass__ = base_auto_classifier.AutoRuleGenerator
+
     vertical = event_types.VERTICALS.LATIN
 
     AMBIGUOUS_DANCE = AMBIGUOUS_DANCE_MUSIC
