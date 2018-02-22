@@ -1,6 +1,7 @@
 # -*-*- encoding: utf-8 -*-*-
 
 from dancedeets import event_types
+from dancedeets.nlp import base_auto_classifier
 from dancedeets.nlp import grammar
 from dancedeets.nlp import style_base
 
@@ -25,9 +26,6 @@ EVENT_TYPES = Any(
     'miss',  # miss pole dance
     'series',
 )
-
-#TODO: fix this one in the rework, as we unwrap the import hell
-from dancedeets.nlp import base_auto_classifier
 
 
 class Classifier(base_auto_classifier.DanceStyleEventClassifier):
@@ -69,8 +67,7 @@ class Style(style_base.Style):
         ]
 
     @classmethod
-    def get_classifier(cls, other_style_regex):
-        Classifier.finalize_class(Any(other_style_regex))
+    def _get_classifier(cls):
         return Classifier
 
     @classmethod

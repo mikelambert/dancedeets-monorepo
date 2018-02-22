@@ -19,8 +19,14 @@ class Style(object):
         return []
 
     @classmethod
-    def get_classifier(cls, other_style_regex):
+    def _get_classifier(cls):
         raise NotImplementedError()
+
+    @classmethod
+    def get_classifier(cls, other_style_regex):
+        classifier = cls._get_classifier()
+        classifier.finalize_class(other_style_regex)
+        return classifier
 
     @classmethod
     def get_basic_regex(cls):
