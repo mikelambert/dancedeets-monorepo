@@ -31,7 +31,6 @@ class FusionClassifier(base_auto_classifier.DanceStyleEventClassifier):
 
     GOOD_DANCE = REAL_DANCE
     AMBIGUOUS_DANCE = AMBIGUOUS_DANCE
-    BAD_DANCE = None
 
     def _quick_is_dance_event(self):
         return True

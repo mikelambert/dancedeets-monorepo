@@ -1,5 +1,6 @@
 # -*-*- encoding: utf-8 -*-*-
 
+from dancedeets.nlp import styles
 from .african import classifier as african_classifier
 from .ballroom import classifier as ballroom_classifier
 from .belly import classifier as belly_classifier
@@ -16,6 +17,7 @@ from .tango import classifier as tango_classifier
 from .wcs import classifier as wcs_classifier
 from .zouk import classifier as zouk_classifier
 
+CLASSIFIERS = styles.get_classifiers()
 
 def is_auto_add_event(classified_event):
     c = AutoClassifier(classified_event)
@@ -55,6 +57,10 @@ class AutoClassifier(object):
             result = classifier(self.classified_event)
             if result[0]:
                 results.append(result)
+        for classifier in CLASSIFIERS:
+            this_classifier = classifier.Classifier(self.classified_event)
+            if this_classifier.is_dance_event():
+                results.append(this_classifier.is_dance_event(), this_classifier.debug_info(), this_classifier.vertical)
 
         self._reasons = [x[1] for x in results]
         self._verticals = [x[2] for x in results]

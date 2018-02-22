@@ -101,7 +101,6 @@ class LatinClassifier(base_auto_classifier.DanceStyleEventClassifier):
 
     AMBIGUOUS_DANCE = AMBIGUOUS_DANCE_MUSIC
     GOOD_DANCE = Any(GOOD_DANCE, SALSA)
-    BAD_DANCE = None
     GOOD_BAD_PAIRINGS = [(SALSA, FOOD)]
 
     def _quick_is_dance_event(self):
