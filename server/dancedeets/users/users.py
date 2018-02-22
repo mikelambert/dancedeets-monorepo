@@ -15,6 +15,7 @@ from dancedeets.loc import math
 from dancedeets.mail import mailchimp_api
 from dancedeets.util import dates
 from dancedeets.util import mr
+from dancedeets.util import runtime
 
 timezone_finder = TimezoneFinder()
 
@@ -243,13 +244,14 @@ def update_mailchimp(user):
         else:
             logging.warning('User %s (%s) had un-geocodable address: %s', user.fb_uid, user.full_name, user.location)
 
-    mr.increment('mailchimp-api-call')
-    result = mailchimp_api.add_members(mailchimp_list_id, [member])
-    if result['errors']:
-        mr.increment('mailchimp-error-response')
-        logging.error('Writing user %s to mailchimp returned %s on input: %s', user.fb_uid, result['errors'], member)
-    else:
-        logging.info('Writing user %s to mailchimp returned OK', user.fb_uid)
+    if not runtime.is_prod_appengine():
+        mr.increment('mailchimp-api-call')
+        result = mailchimp_api.add_members(mailchimp_list_id, [member])
+        if result['errors']:
+            mr.increment('mailchimp-error-response')
+            logging.error('Writing user %s to mailchimp returned %s on input: %s', user.fb_uid, result['errors'], member)
+        else:
+            logging.info('Writing user %s to mailchimp returned OK', user.fb_uid)
 
 
 class UserFriendsAtSignup(ndb.Model):
