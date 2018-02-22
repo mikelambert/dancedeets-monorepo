@@ -259,7 +259,7 @@ class DanceStyleEventClassifier(object):
         else:
             good_dance_event = self.GOOD_DANCE_EVENT
 
-        if self._has(good_dance_event) and not self._has(self.OTHER_DANCE_FULL):
+        if self._has(good_dance_event) and not self._title_has(self.OTHER_DANCE_FULL):
             return 'body has good dance event, and title does not have bad keywords'
 
         if self._short_lines_have(good_dance_event):
