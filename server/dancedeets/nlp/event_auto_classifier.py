@@ -17,7 +17,6 @@ from .tango import classifier as tango_classifier
 from .wcs import classifier as wcs_classifier
 from .zouk import classifier as zouk_classifier
 
-CLASSIFIERS = styles.get_classifiers()
 
 def is_auto_add_event(classified_event):
     c = AutoClassifier(classified_event)
@@ -57,7 +56,7 @@ class AutoClassifier(object):
             result = classifier(self.classified_event)
             if result[0]:
                 results.append(result)
-        for classifier in CLASSIFIERS:
+        for classifier in styles.CLASSIFIERS:
             this_classifier = classifier.Classifier(self.classified_event)
             if this_classifier.is_dance_event():
                 results.append(this_classifier.is_dance_event(), this_classifier.debug_info(), this_classifier.vertical)
