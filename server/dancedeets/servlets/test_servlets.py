@@ -1,19 +1,20 @@
 import logging
 
+from dancedeets import fb_api
 from dancedeets import app
 from dancedeets import base_servlet
 from dancedeets.nlp import event_classifier
-
+from dancedeets.test_utils import classifier_util
+from dancedeets.test_utils import unittest
 
 # TODO: Ensure our loading/changing test_data files doesn't cause the server to restart. Move test_data outside the watch dirs?
 @app.route('/tests/nlp')
 class TestNlpHandler(base_servlet.BaseRequestHandler):
     def get(self):
         from dancedeets.nlp.soulline.tests import classifier_test
-        from dancedeets.test_utils import classifier_util
 
         tb = classifier_test.TestSoulLine()
-        tb.setUp()
+        tb.fbl = fb_api.FBLookup("dummyid", unittest.get_local_access_token_for_testing())
 
         event_runs = []
 
