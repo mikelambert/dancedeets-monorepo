@@ -3,6 +3,7 @@
 from dancedeets import event_types
 from .. import base_auto_classifier
 from .. import grammar
+from ..soulline import classifier as soulline_classifier
 from ..street import keywords
 
 Any = grammar.Any
@@ -94,9 +95,11 @@ class CountryClassifier(base_auto_classifier.DanceStyleEventClassifier):
         if self._title_has(LINE_DANCE) and self._title_has(self.AMBIGUOUS_DANCE):
             return 'title has line dance'
 
-        # TODO: This overmatches on 'soul line dance'
         if self._has(self.LINE_DANCE_EVENT):
-            return 'body has line dance event'
+            # "Line dance" by itself is good, unless its a soul line dance event
+            sl_classifier = soulline_classifier.SoulLineClassifier(self._classified_event)
+            if not sl_classifier.is_dance_event():
+                return 'body has line dance event'
 
         return False
 
