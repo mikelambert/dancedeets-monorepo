@@ -56,6 +56,7 @@ class Style(style_base.Style):
 
     @classmethod
     def get_classifier(cls, other_style_regex):
+        #TODO: fix this one in the rework, as we unwrap the import hell
         from dancedeets.nlp import base_auto_classifier
 
         class Classifier(base_auto_classifier.DanceStyleEventClassifier):
