@@ -45,6 +45,8 @@ KEYWORDS = Name(
 
 
 class ContactClassifier(base_auto_classifier.DanceStyleEventClassifier):
+    __metaclass__ = base_auto_classifier.AutoRuleGenerator
+
     vertical = event_types.VERTICALS.CONTACT
 
     GOOD_DANCE = REAL_DANCE

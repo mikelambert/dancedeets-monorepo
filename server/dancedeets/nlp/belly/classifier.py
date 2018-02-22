@@ -56,6 +56,8 @@ RELATED_KEYWORDS = Any(
 
 
 class BellyClassifier(base_auto_classifier.DanceStyleEventClassifier):
+    __metaclass__ = base_auto_classifier.AutoRuleGenerator
+
     vertical = event_types.VERTICALS.BELLY
 
     GOOD_DANCE = REAL_DANCE

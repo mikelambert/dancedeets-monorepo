@@ -26,6 +26,20 @@ EVENT_TYPES = Any(
     'series',
 )
 
+#TODO: fix this one in the rework, as we unwrap the import hell
+from dancedeets.nlp import base_auto_classifier
+
+
+class Classifier(base_auto_classifier.DanceStyleEventClassifier):
+    vertical = 'AERIAL_POLE'
+
+    GOOD_DANCE = DANCE
+    AMBIGUOUS_DANCE = AMBIGUOUS_DANCE
+    EVENT_TYPES = EVENT_TYPES
+
+    def _quick_is_dance_event(self):
+        return True
+
 
 class Style(style_base.Style):
     @classmethod
@@ -56,19 +70,8 @@ class Style(style_base.Style):
 
     @classmethod
     def get_classifier(cls, other_style_regex):
-        #TODO: fix this one in the rework, as we unwrap the import hell
-        from dancedeets.nlp import base_auto_classifier
-
-        class Classifier(base_auto_classifier.DanceStyleEventClassifier):
-            vertical = 'AERIAL_POLE'
-
-            GOOD_DANCE = DANCE
-            AMBIGUOUS_DANCE = AMBIGUOUS_DANCE
-            EVENT_TYPES = EVENT_TYPES
-            ALL_OTHER_DANCE = Any(other_style_regex)
-
-            def _quick_is_dance_event(self):
-                return True
+        Classifier.finalize_class(Any(other_style_regex))
+        return Classifier
 
     @classmethod
     def get_basic_regex(cls):

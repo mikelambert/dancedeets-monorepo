@@ -27,6 +27,8 @@ AMBIGUOUS_DANCE = Any(
 
 
 class FusionClassifier(base_auto_classifier.DanceStyleEventClassifier):
+    __metaclass__ = base_auto_classifier.AutoRuleGenerator
+
     vertical = event_types.VERTICALS.PARTNER_FUSION
 
     GOOD_DANCE = REAL_DANCE

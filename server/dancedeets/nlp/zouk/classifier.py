@@ -29,6 +29,8 @@ AMBIGUOUS_WORDS = Any(ZOUK)
 
 
 class ZoukClassifier(base_auto_classifier.DanceStyleEventClassifier):
+    __metaclass__ = base_auto_classifier.AutoRuleGenerator
+
     vertical = event_types.VERTICALS.ZOUK
 
     AMBIGUOUS_DANCE = AMBIGUOUS_WORDS

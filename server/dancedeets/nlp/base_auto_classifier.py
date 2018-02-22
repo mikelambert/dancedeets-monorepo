@@ -5,7 +5,6 @@ from dancedeets import event_types
 from . import event_classifier
 from . import event_structure
 from . import grammar
-from . import styles
 from .street import keywords
 from .street import rules
 Any = grammar.Any
@@ -49,12 +48,6 @@ class RuleGenerator(type):
             keywords.WRONG_AUDITION,
         )
 
-        cls.OTHER_DANCE_FULL = Any(
-            cls.OTHER_DANCE,
-            cls.NOT_DANCE,
-            cls.ALL_OTHER_DANCE or styles._all_styles_except(cls.vertical) or keywords.NO_MATCH,
-        )
-
         UNAMBIGUOUS_DANCE = commutative_connected(cls.AMBIGUOUS_DANCE, keywords.EASY_DANCE)
         cls.GOOD_DANCE_FULL = Name('GOOD_DANCE_FULL', Any(UNAMBIGUOUS_DANCE, cls.GOOD_DANCE))
         cls.GOOD_OR_AMBIGUOUS_DANCE = Name('GOOD_OR_AMBIGUOUS_DANCE', Any(cls.AMBIGUOUS_DANCE, UNAMBIGUOUS_DANCE, cls.GOOD_DANCE))
@@ -91,6 +84,26 @@ class RuleGenerator(type):
             )
         )
 
+        @classmethod
+        def finalize_class(cls, other_style_regex):
+            cls.OTHER_DANCE_FULL = Any(
+                cls.OTHER_DANCE,
+                cls.NOT_DANCE,
+                other_style_regex,
+            )
+            # make this function a no-op the next time it's called
+            cls.finalize_class = lambda x, y: None
+
+        cls.finalize_class = finalize_class
+
+
+class AutoRuleGenerator(RuleGenerator):
+    def __init__(cls, name, parents, attr):
+        super(AutoRuleGenerator, cls).__init__(name, parents, attr)
+        from . import styles
+        other_style_regex = styles.all_styles_except(cls.vertical)
+        cls.finalize_class(other_style_regex)
+
 
 class DanceStyleEventClassifier(object):
     __metaclass__ = RuleGenerator
@@ -102,7 +115,6 @@ class DanceStyleEventClassifier(object):
     AMBIGUOUS_DANCE = None
     GOOD_DANCE = None
     OTHER_DANCE = None
-    ALL_OTHER_DANCE = None
     ADDITIONAL_EVENT_TYPE = None
     GOOD_BAD_PAIRINGS = []
 
@@ -338,23 +350,3 @@ class DanceStyleEventClassifier(object):
             if len(good_lines) > len(schedule_lines) / 10:
                 return 'found schedule list with good styles'
         return False
-
-
-class StreetClassifier(DanceStyleEventClassifier):
-    vertical = event_types.VERTICALS.STREET
-
-    AMBIGUOUS_DANCE = keywords.AMBIGUOUS_DANCE_MUSIC
-    GOOD_DANCE = Any(rules.good_dance, rules.MANUAL_DANCER[grammar.STRONG_WEAK])
-    GOOD_BAD_PAIRINGS = [
-        (keywords.STYLE_HOUSE, keywords.WRONG_HOUSE),
-        (keywords.STYLE_BREAK, keywords.WRONG_BREAK),
-        (keywords.STYLE_LOCK, keywords.WRONG_LOCK),
-        (keywords.STYLE_FLEX, keywords.WRONG_FLEX),
-        (keywords.STYLE_FLEX, keywords.WRONG_FLEX),
-    ]
-    OTHER_DANCE = Any(
-        keywords.DANCE_WRONG_STYLE,
-        keywords.DANCE_WRONG_STYLE_TITLE_ONLY,
-        keywords.WRONG_BATTLE_STYLE,
-        keywords.WRONG_AUDITION,
-    )

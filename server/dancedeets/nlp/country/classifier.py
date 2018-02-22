@@ -61,6 +61,8 @@ GOOD_KEYWORDS = Any(
 
 
 class CountryClassifier(base_auto_classifier.DanceStyleEventClassifier):
+    __metaclass__ = base_auto_classifier.AutoRuleGenerator
+
     vertical = event_types.VERTICALS.COUNTRY
 
     GOOD_DANCE = REAL_DANCE

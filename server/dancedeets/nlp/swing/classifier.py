@@ -53,6 +53,8 @@ ALL_SWING_STYLES = Any(REAL_DANCE, AMBIGUOUS_WORDS, AMBIGUOUS_DANCE_MUSIC)
 
 
 class SwingClassifier(base_auto_classifier.DanceStyleEventClassifier):
+    __metaclass__ = base_auto_classifier.AutoRuleGenerator
+
     vertical = event_types.VERTICALS.SWING
 
     AMBIGUOUS_DANCE = Any(AMBIGUOUS_WORDS, AMBIGUOUS_DANCE_MUSIC)

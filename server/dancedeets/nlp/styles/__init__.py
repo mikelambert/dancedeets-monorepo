@@ -45,7 +45,7 @@ misc_keyword_sets = [
 ]
 
 
-def _all_styles_except(vertical):
+def all_styles_except(vertical):
     regexes = set()
     for regex_style in _STYLE_LIST:
         if regex_style != style:
@@ -69,6 +69,6 @@ def get_classifiers():
     #
     CLASSIFIERS = []
     for style in _STYLE_LIST:
-        regexes = _all_styles_except(style)
-        CLASSIFIERS.append(style.get_classifier(regexes))
+        other_style_regex = all_styles_except(style.get_name())
+        CLASSIFIERS.append(style.get_classifier(other_style_regex))
     return CLASSIFIERS

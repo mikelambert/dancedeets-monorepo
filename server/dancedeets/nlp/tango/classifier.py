@@ -56,6 +56,8 @@ EXTRAS = Any(ARGENTINE, TANGO_TYPES, keywords.EASY_DANCE)
 
 
 class TangoClassifier(base_auto_classifier.DanceStyleEventClassifier):
+    __metaclass__ = base_auto_classifier.AutoRuleGenerator
+
     vertical = event_types.VERTICALS.TANGO
 
     AMBIGUOUS_DANCE = AMBIGUOUS_WORDS
