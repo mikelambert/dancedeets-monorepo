@@ -61,7 +61,6 @@ class TangoClassifier(base_auto_classifier.DanceStyleEventClassifier):
     AMBIGUOUS_DANCE = AMBIGUOUS_WORDS
     GOOD_DANCE = REAL_DANCE
     ADDITIONAL_EVENT_TYPE = Any('meeting', 'incontro', 'festival', 'marathon', 'milongas?')
-    BAD_DANCE = None
     GOOD_BAD_PAIRINGS = [
         (TANGO, Any('whiskey tango')),
     ]

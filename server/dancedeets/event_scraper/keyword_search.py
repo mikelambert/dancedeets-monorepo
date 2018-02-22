@@ -9,6 +9,7 @@ from dancedeets import base_servlet
 from dancedeets import app
 from dancedeets import event_types
 from dancedeets import fb_api
+from dancedeets.nlp import styles
 from dancedeets.util import mr
 from dancedeets.util import taskqueue
 from dancedeets.util import urls
@@ -376,6 +377,12 @@ STYLE_EVENT_TYPES = {
     VERTICALS.ROCKABILLY: PARTNER + [],
     VERTICALS.COUNTRY: PARTNER + [],
 }
+
+# Load all the relevant data from our parameterized styles
+for style in styles.STYLES.values():
+    STYLE_EVENT_TYPES[style.get_name()] = style.get_keyword_event_types()
+    obvious_style_keywords[style.get_name()] = style.get_rare_search_keywords()
+    too_popular_style_keywords[style.get_name()] = style.get_popular_search_keywords()
 
 
 def expand_keyword(keyword, style):

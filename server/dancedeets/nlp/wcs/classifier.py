@@ -42,7 +42,6 @@ class WcsClassifier(base_auto_classifier.DanceStyleEventClassifier):
         'festival',
         'marathon',
     )
-    BAD_DANCE = None
 
     def _quick_is_dance_event(self):
         return True

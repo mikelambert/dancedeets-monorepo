@@ -61,7 +61,6 @@ class CapoeiraClassifier(base_auto_classifier.DanceStyleEventClassifier):
     vertical = event_types.VERTICALS.CAPOEIRA
 
     GOOD_DANCE = CAPOEIRA
-    BAD_DANCE = None
     ADDITIONAL_EVENT_TYPE = EVENT
     GOOD_KEYWORDS = OBVIOUS_KEYWORDS, KEYWORDS
 
