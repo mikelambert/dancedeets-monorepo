@@ -58,17 +58,13 @@ def all_styles_except(vertical):
     return grammar.Any(*regexes)
 
 
-# This is a function for now, while we work through the migration issues causing import problems
-# TODO: move this back inline to make it a global, once the above dict is gone
-def get_classifiers():
-    # Classifiers need to generate a BAD_KEYWORDS of "other" styles of dance,
-    # which are dependent on having access to all the other styles of dance.
-    #
-    # So let's generate a regex of "other dance styles" for each style,
-    # and use it to construct a Classifer once (and all its associated regexes).
-    #
-    CLASSIFIERS = []
-    for style in _STYLE_LIST:
-        other_style_regex = all_styles_except(style.get_name())
-        CLASSIFIERS.append(style.get_classifier(other_style_regex))
-    return CLASSIFIERS
+# Classifiers need to generate a BAD_KEYWORDS of "other" styles of dance,
+# which are dependent on having access to all the other styles of dance.
+#
+# So let's generate a regex of "other dance styles" for each style,
+# and use it to construct a Classifer once (and all its associated regexes).
+#
+CLASSIFIERS = []
+for style in _STYLE_LIST:
+    other_style_regex = all_styles_except(style.get_name())
+    CLASSIFIERS.append(style.get_classifier(other_style_regex))
