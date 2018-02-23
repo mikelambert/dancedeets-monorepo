@@ -29,6 +29,7 @@ class TestAfrican(classifier_util.TestClassifier):
                 '130904450785969',
                 '625677964290835',
                 '760794604070401',
+                '290723231391803',
             ]
         )
 

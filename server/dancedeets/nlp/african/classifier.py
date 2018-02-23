@@ -14,6 +14,7 @@ commutative_connected = grammar.commutative_connected
 REAL_DANCE = Any(
     # any dance can be an afro-dance!
     commutative_connected(Any('(?:african|afro)'), Any(keywords.DANCE_WRONG_STYLE, rules.STREET_STYLES)),
+    'urban kiz',
     'senegalese sabar',
     'joneeba african',
     u'coup[eé]\W?d[eé]cal[eé]',
