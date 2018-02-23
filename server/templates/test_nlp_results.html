@@ -1,0 +1,67 @@
+{% extends "_bigbox_base.html" %}
+
+{% block title %}
+Test Results for {{vertical}}
+{% endblock %}
+
+{% block inner_body %}
+<form>
+<div>
+  {{ false_negatives }} false negatives,
+  {{ false_positives }} false positives
+</div>
+{% for event_run in event_runs %}
+<div
+{% if event_run.desired_result != event_run.result %}
+style="background-color: #ffcccc"
+{% endif %}
+">
+<input type="checkbox"
+name="event_{{event_run.id}}"
+{% if event_run.desired_result %}
+checked
+{% endif %}
+>
+{{event_run.result}}:
+<a href="https://www.facebook.com/events/{{event_run.id}}">{{event_run.id}}</a>: {{event_run.event.info.name}}<br>
+</div>
+{% endfor %}
+
+<button type="button" onclick="generateIdLists();">Generate New ID Lists</button>
+
+</form>
+
+<script type="text/javascript">
+function generateIdLists() {
+  var elements = document.forms[0].elements;
+  var good = [];
+  var bad = [];
+  for (var i=0; i<elements.length; i++) {
+    var element = elements[i];
+    var id = element.name.split('_')[1];
+    if (element.checked) {
+      good.push(id);
+    } else {
+      bad.push(id);
+    }
+  }
+  console.log(good);
+  console.log(bad);
+}
+</script>
+
+{% endblock %}
+
+
+{% block bottom_javascript %}
+<script type="text/javascript">
+function googleTranslateElementInit() {
+  new google.translate.TranslateElement({
+    layout: google.translate.TranslateElement.InlineLayout.SIMPLE,
+    multilanguagePage: true,
+  }, 'google_translate_element');
+}
+</script>
+<script type="text/javascript" src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+{% endblock %}
+
