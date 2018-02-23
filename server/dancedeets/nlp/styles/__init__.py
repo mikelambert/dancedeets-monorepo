@@ -64,7 +64,7 @@ def all_styles_except(vertical):
 # So let's generate a regex of "other dance styles" for each style,
 # and use it to construct a Classifer once (and all its associated regexes).
 #
-CLASSIFIERS = []
+CLASSIFIERS = {}
 for style in _STYLE_LIST:
     other_style_regex = all_styles_except(style.get_name())
-    CLASSIFIERS.append(style.get_classifier(other_style_regex))
+    CLASSIFIERS[style.get_name()] = style.get_classifier(other_style_regex)
