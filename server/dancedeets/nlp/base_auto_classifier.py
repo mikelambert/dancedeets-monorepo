@@ -333,6 +333,7 @@ class DanceStyleEventClassifier(object):
         schedule_groups = event_structure.get_schedule_line_groups(self._classified_event)
         for schedule_lines in schedule_groups:
             good_lines = []
+            bad_lines = []
             for line in schedule_lines:
                 proc_line = event_classifier.StringProcessor(line, self._classified_event.boundaries)
                 good_matches = proc_line.get_tokens(self.GOOD_OR_AMBIGUOUS_DANCE)
@@ -345,8 +346,12 @@ class DanceStyleEventClassifier(object):
                 if good_matches and not has_bad_matches:
                     self._log('Found %s in line', good_matches)
                     good_lines.append(good_matches)
+                if not good_matches and has_bad_matches:
+                    bad_lines.append(has_bad_matches)
+            num_dance_lines = len(good_lines) + len(bad_lines)
+            self._log('Found %s of %s lines with dance styles', num_dance_lines, len(schedule_lines))
             # If more than 10% are good, then we found a good class
-            self._log('Found %s of %s events with good styles', len(good_lines), len(schedule_lines))
-            if len(good_lines) > len(schedule_lines) / 10:
+            self._log('Found %s of %s lines with good styles', len(good_lines), len(schedule_lines))
+            if len(good_lines) > len(schedule_lines) / 10 and num_dance_lines >= 2:
                 return 'found schedule list with good styles'
         return False
