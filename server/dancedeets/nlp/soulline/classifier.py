@@ -12,7 +12,7 @@ commutative_connected = grammar.commutative_connected
 
 LINE_DANCE = Any(
     # with dance suffix
-    '(?:baltimore|b\W?more|chicago|chi\W?town)?\Wline\W?danc\w*',
+    '(?:baltimore|b\W?more|chicago|chi\W?town)\Wline\W?danc\w*',
     '(?:urban|hip\W?hop|r\W+b)\W?line\W?danc\w*',
     # without dance suffix
     'soul\W?line\w*',
