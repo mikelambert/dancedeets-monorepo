@@ -156,6 +156,8 @@ class TestNotLatin(classifier_util.TestClassifier):
                 '460976420932784',
                 # food salsa event
                 '1837327442944312',
+                # cha cha class non-class
+                '942691712553909',
             ]
         )
 
