@@ -214,10 +214,6 @@ too_popular_style_keywords = {
         'country 2 step',
         'american tango',
     ],
-    VERTICALS.WCS: [
-        'west coast swing',
-        'wcs',
-    ],
     VERTICALS.TANGO: [
         'argentine tango',
         'tango',
@@ -300,7 +296,6 @@ STYLE_EVENT_TYPES = {
         'demo',
         'demonstration',
     ],
-    VERTICALS.WCS: PARTNER + [],
     VERTICALS.SWING: PARTNER + [
         'hop',
     ],

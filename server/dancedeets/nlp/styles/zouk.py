@@ -1,12 +1,9 @@
 # -*-*- encoding: utf-8 -*-*-
 
-from dancedeets import event_types
 from dancedeets.nlp import base_auto_classifier
 from dancedeets.nlp import grammar
 from dancedeets.nlp import style_base
 from dancedeets.nlp.styles import partner
-from ..ballroom import classifier as ballroom_classifier
-from ..street import keywords
 
 Any = grammar.Any
 Name = grammar.Name

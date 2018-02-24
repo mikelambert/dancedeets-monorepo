@@ -1,9 +1,9 @@
 # -*-*- encoding: utf-8 -*-*-
 
-from dancedeets import event_types
-from .. import base_auto_classifier
-from .. import grammar
-from ..ballroom import classifier as ballroom_classifier
+from dancedeets.nlp import base_auto_classifier
+from dancedeets.nlp import grammar
+from dancedeets.nlp import style_base
+from dancedeets.nlp.styles import partner
 from ..street import keywords
 
 Any = grammar.Any
@@ -11,7 +11,7 @@ Name = grammar.Name
 connected = grammar.connected
 commutative_connected = grammar.commutative_connected
 
-PROFESSIONALS = grammar.FileBackedKeyword('../wcs/professionals')
+PROFESSIONALS = grammar.FileBackedKeyword('../styles/wcs_dancers')
 
 WEST_COAST_SWING = Any('west coast swing\w*', PROFESSIONALS)
 
@@ -33,11 +33,7 @@ AMBIGUOUS_WORDS = Any(WCS, WESTIES)
 # https://www.worldsdc.com/events/
 
 
-class WcsClassifier(base_auto_classifier.DanceStyleEventClassifier):
-    __metaclass__ = base_auto_classifier.AutoRuleGenerator
-
-    vertical = event_types.VERTICALS.WCS
-
+class Classifier(base_auto_classifier.DanceStyleEventClassifier):
     AMBIGUOUS_DANCE = AMBIGUOUS_WORDS
     GOOD_DANCE = WEST_COAST_SWING
     ADDITIONAL_EVENT_TYPE = Any(
@@ -49,7 +45,7 @@ class WcsClassifier(base_auto_classifier.DanceStyleEventClassifier):
         return True
 
     def is_dance_event(self):
-        result = super(WcsClassifier, self).is_dance_event()
+        result = super(Classifier, self).is_dance_event()
         if result:
             return result
 
@@ -83,6 +79,30 @@ class WcsClassifier(base_auto_classifier.DanceStyleEventClassifier):
         return False
 
 
-def is_wcs_event(classified_event):
-    classifier = WcsClassifier(classified_event)
-    return classifier.is_dance_event(), classifier.debug_info(), classifier.vertical
+class Style(style_base.Style):
+    @classmethod
+    def get_name(cls):
+        return 'WCS'
+
+    @classmethod
+    def get_rare_search_keywords(cls):
+        return []
+
+    @classmethod
+    def get_popular_search_keywords(cls):
+        return [
+            'west coast swing',
+            'wcs',
+        ]
+
+    @classmethod
+    def get_search_keyword_event_types(cls):
+        return partner.EVENT_TYPES
+
+    @classmethod
+    def _get_classifier(cls):
+        return Classifier
+
+    @classmethod
+    def get_basic_regex(cls):
+        return Any(WEST_COAST_SWING, WCS)

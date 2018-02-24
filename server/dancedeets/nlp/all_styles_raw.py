@@ -35,11 +35,6 @@ DANCE_STYLE_SWING = Any(
     u'ブルース',  # japanese blues
 )
 
-DANCE_STYLE_WCS = Any(
-    'west coast swing',
-    'wcs',
-)
-
 DANCE_STYLE_CLASSICAL = Any(
     'barre',
     'contato improv\w*',

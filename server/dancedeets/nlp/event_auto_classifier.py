@@ -10,7 +10,6 @@ from .rockabilly import classifier as rockabilly_classifier
 from .street import classifier as street_classifier
 from .swing import classifier as swing_classifier
 from .tango import classifier as tango_classifier
-from .wcs import classifier as wcs_classifier
 
 
 def is_auto_add_event(classified_event):
@@ -40,7 +39,6 @@ class AutoClassifier(object):
             street_classifier.is_street_event,
             swing_classifier.is_swing_event,
             tango_classifier.is_tango_dance,
-            wcs_classifier.is_wcs_event,
         ]
         for classifier in classifiers:
             result = classifier(self.classified_event)
