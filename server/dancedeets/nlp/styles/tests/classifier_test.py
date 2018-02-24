@@ -15,8 +15,8 @@ TEST_IDS_PATH = os.path.join(os.path.dirname(styles.__file__), 'test_ids')
 
 
 def get_positive_negative_ids():
-    positive = {}
-    negative = {}
+    positives = {}
+    negatives = {}
 
     for filename in os.listdir(TEST_IDS_PATH):
         full_path = os.path.join(TEST_IDS_PATH, filename)
@@ -26,23 +26,22 @@ def get_positive_negative_ids():
                 continue
             classification, event_id = line.split(':')
             if classification.startswith('-'):
-                lookup = negative
+                lookup = negatives
                 key = classification[1:]
             else:
-                lookup = positive
+                lookup = positives
                 key = classification
             if key not in lookup:
                 lookup[key] = set()
             lookup[key].add(event_id)
 
-    return positive, negative
+    return positives, negatives
 
 
-def get_false_positives_and_negatives(positive, negative, get_event):
-
+def get_false_positives_and_negatives(positives, negatives, get_event):
     false_negatives = {}
     false_positives = {}
-    for style_name, event_ids in positive.iteritems():
+    for style_name, event_ids in positives.iteritems():
         classifier_class = styles.CLASSIFIERS[style_name]
         for event_id in event_ids:
             fb_event = get_event(event_id)
@@ -53,7 +52,7 @@ def get_false_positives_and_negatives(positive, negative, get_event):
                 logging.warning('Event unexpectedly failed: %s: %s', event_id, '\n'.join(classifier.debug_info()))
                 false_negatives.setdefault(style_name, []).append(event_id)
 
-    for style_name, event_ids in negative.iteritems():
+    for style_name, event_ids in negatives.iteritems():
         classifier_class = styles.CLASSIFIERS[style_name]
         for event_id in event_ids:
             fb_event = get_event(event_id)
@@ -67,9 +66,9 @@ def get_false_positives_and_negatives(positive, negative, get_event):
     return false_positives, false_negatives
 
 
-def print_stats(positive, negative, false_positives, false_negatives, get_event):
-    positive_count = sum(len(x) for x in positive)
-    negative_count = sum(len(x) for x in negative)
+def print_stats(positives, negatives, false_positives, false_negatives, get_event):
+    positive_count = sum(len(x) for x in positives)
+    negative_count = sum(len(x) for x in negatives)
     false_positive_count = sum(len(x) for x in false_positives.values())
     false_negative_count = sum(len(x) for x in false_negatives.values())
 
@@ -92,9 +91,9 @@ def print_stats(positive, negative, false_positives, false_negatives, get_event)
 
 class TestFiles(classifier_util.TestClassifier):
     def runTest(self):
-        positive, negative = get_positive_negative_ids()
-        false_positives, false_negatives = get_false_positives_and_negatives(positive, negative, self.get_event)
-        print_stats(positive, negative, false_positives, false_negatives, self.get_event)
+        positives, negatives = get_positive_negative_ids()
+        false_positives, false_negatives = get_false_positives_and_negatives(positives, negatives, self.get_event)
+        print_stats(positives, negatives, false_positives, false_negatives, self.get_event)
 
 
 if __name__ == '__main__':
