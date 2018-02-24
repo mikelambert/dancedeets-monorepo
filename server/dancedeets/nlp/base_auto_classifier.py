@@ -48,7 +48,7 @@ class RuleGenerator(type):
             keywords.WRONG_AUDITION,
         )
 
-        UNAMBIGUOUS_DANCE = commutative_connected(cls.AMBIGUOUS_DANCE, keywords.EASY_DANCE)
+        UNAMBIGUOUS_DANCE = commutative_connected(cls.AMBIGUOUS_DANCE, Any(keywords.EASY_DANCE, keywords.EASY_CHOREO))
         cls.GOOD_DANCE_FULL = Name('GOOD_DANCE_FULL', Any(UNAMBIGUOUS_DANCE, cls.GOOD_DANCE))
         cls.GOOD_OR_AMBIGUOUS_DANCE = Name('GOOD_OR_AMBIGUOUS_DANCE', Any(cls.AMBIGUOUS_DANCE, UNAMBIGUOUS_DANCE, cls.GOOD_DANCE))
         cls.COMPETITIONS = Any(
@@ -160,12 +160,15 @@ class DanceStyleEventClassifier(object):
         return result
 
     def _log(self, log, *args):
+        self._logs.append('%s: %s' % (self._log_category, log % args))
         if not self._debug:
             return
-        self._logs.append('%s: %s' % (self._log_category, log % args))
+        logging.info('%s: %s', self._log_category, log % args)
 
     # top-level function
     def is_dance_event(self):
+        self._log('Starting %s classifier', self.vertical)
+
         if not self._quick_is_dance_event():
             self._log('not a sufficiently dancey event')
             return False
