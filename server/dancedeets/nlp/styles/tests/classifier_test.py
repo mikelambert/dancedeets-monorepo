@@ -67,8 +67,8 @@ def get_false_positives_and_negatives(positives, negatives, get_event):
 
 
 def print_stats(positives, negatives, false_positives, false_negatives, get_event):
-    positive_count = sum(len(x) for x in positives)
-    negative_count = sum(len(x) for x in negatives)
+    positive_count = sum(len(x) for x in positives.values())
+    negative_count = sum(len(x) for x in negatives.values())
     false_positive_count = sum(len(x) for x in false_positives.values())
     false_negative_count = sum(len(x) for x in false_negatives.values())
 
