@@ -58,8 +58,9 @@ class AutoClassifier(object):
                 results.append(result)
         for classifier in styles.CLASSIFIERS.values():
             this_classifier = classifier(self.classified_event)
-            if this_classifier.is_dance_event():
-                results.append((this_classifier.is_dance_event(), this_classifier.debug_info(), this_classifier.vertical))
+            is_dance_event = this_classifier.is_dance_event()
+            if is_dance_event:
+                results.append((is_dance_event, this_classifier.debug_info(), this_classifier.vertical))
 
         self._reasons = [x[1] for x in results]
         self._verticals = [x[2] for x in results]
