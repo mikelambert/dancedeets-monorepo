@@ -38,38 +38,42 @@ def get_positive_negative_ids():
     return positive, negative
 
 
+def get_false_positives_and_negatives(positive, negative, get_event):
+
+    false_negatives = {}
+    false_positives = {}
+    for style_name, event_ids in positive.iteritems():
+        classifier_class = styles.CLASSIFIERS[style_name]
+        for event_id in event_ids:
+            fb_event = get_event(event_id)
+            classified_event = event_classifier.get_classified_event(fb_event)
+            classifier = classifier_class(classified_event)
+            is_dance_event = classifier.is_dance_event()
+            if not is_dance_event:
+                logging.warning('Event unexpectedly failed: %s: %s', event_id, '\n'.join(classifier.debug_info()))
+                false_negatives.setdefault(style_name, []).append(event_id)
+
+    for style_name, event_ids in negative.iteritems():
+        classifier_class = styles.CLASSIFIERS[style_name]
+        for event_id in event_ids:
+            fb_event = get_event(event_id)
+            classified_event = event_classifier.get_classified_event(fb_event)
+            classifier = classifier_class(classified_event)
+            is_dance_event = classifier.is_dance_event()
+            if is_dance_event:
+                logging.warning('Event unexpectedly passed: %s: %s', event_id, '\n'.join(classifier.debug_info()))
+                false_positives.setdefault(style_name, []).append(event_id)
+
+    return false_positives, false_negatives
+
+
 class TestFiles(classifier_util.TestClassifier):
     def runTest(self):
         positive, negative = get_positive_negative_ids()
+        false_positives, false_negatives = get_false_positives_and_negatives(positive, negative, self.get_event)
 
-        false_negatives = {}
-        false_positives = {}
-        positive_count = 0
-        negative_count = 0
-        for style_name, event_ids in positive.iteritems():
-            classifier_class = styles.CLASSIFIERS[style_name]
-            for event_id in event_ids:
-                positive_count += 1
-                fb_event = self.get_event(event_id)
-                classified_event = event_classifier.get_classified_event(fb_event)
-                classifier = classifier_class(classified_event)
-                is_dance_event = classifier.is_dance_event()
-                if not is_dance_event:
-                    logging.warning('Event unexpectedly failed: %s: %s', event_id, '\n'.join(classifier.debug_info()))
-                    false_negatives.setdefault(style_name, []).append(event_id)
-
-        for style_name, event_ids in negative.iteritems():
-            classifier_class = styles.CLASSIFIERS[style_name]
-            for event_id in event_ids:
-                negative_count += 1
-                fb_event = self.get_event(event_id)
-                classified_event = event_classifier.get_classified_event(fb_event)
-                classifier = classifier_class(classified_event)
-                is_dance_event = classifier.is_dance_event()
-                if is_dance_event:
-                    logging.warning('Event unexpectedly passed: %s: %s', event_id, '\n'.join(classifier.debug_info()))
-                    false_positives.setdefault(style_name, []).append(event_id)
-
+        positive_count = sum(len(x) for x in positive)
+        negative_count = sum(len(x) for x in negative)
         false_positive_count = sum(len(x) for x in false_positives.values())
         false_negative_count = sum(len(x) for x in false_negatives.values())
 
