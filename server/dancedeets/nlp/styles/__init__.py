@@ -1,10 +1,10 @@
 # TODO: clean up our module names
-from aerial_pole import classifier as aerial_pole_classifier
+from dancedeets.nlp.styles import aerial_pole
 
 # TODO: decide on Style vs Vertical
 # Each import must have a Style that fits the base_styles.Style API
 _STYLE_LIST = [
-    aerial_pole_classifier.Style,
+    aerial_pole.Style,
 ]
 
 # Generate a keyed lookup of styles (for any name-dependent lookups from URLs)
