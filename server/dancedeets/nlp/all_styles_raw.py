@@ -83,9 +83,7 @@ DANCE_STYLE_TANGO = Any(
 
 DANCE_STYLE_SEXY = Any(
     'exotic',
-    'pole danc\w+',
     'flirt danc\w+',
-    u'ポールダンス',  # japanese pole dance
     u'폴 ?댄스',  # korean pole dance
     'go\W?go',
     'burlesque',
