@@ -2,6 +2,7 @@
 from dancedeets.nlp.styles import aerial_pole
 from dancedeets.nlp.styles import african
 from dancedeets.nlp.styles import belly
+from dancedeets.nlp.styles import contact
 
 # TODO: decide on Style vs Vertical
 # Each import must have a Style that fits the base_styles.Style API
@@ -9,6 +10,7 @@ _STYLE_LIST = [
     aerial_pole.Style,
     african.Style,
     belly.Style,
+    contact.Style,
 ]
 
 # Generate a keyed lookup of styles (for any name-dependent lookups from URLs)
@@ -36,7 +38,6 @@ style_keywords = {
     event_types.VERTICALS.PARTNER_FUSION: all_styles_raw.DANCE_STYLE_FUSION,
     event_types.VERTICALS.ROCKABILLY: all_styles_raw.DANCE_STYLE_ROCKABILLY,
     event_types.VERTICALS.COUNTRY: all_styles_raw.DANCE_STYLE_COUNTRY,
-    event_types.VERTICALS.CONTACT: all_styles_raw.DANCE_STYLE_CONTACT,
     event_types.VERTICALS.SOULLINE: all_styles_raw.DANCE_STYLE_SOULLINE,
 }
 misc_keyword_sets = [

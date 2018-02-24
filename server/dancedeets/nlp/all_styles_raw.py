@@ -101,17 +101,6 @@ DANCE_STYLE_CAPOEIRA = Any(
     u'カポエイラ',  # japanese capoeira
 )
 
-# Copied from the contact-improv classifier
-CONTACT = '[ck]onta[ck]t\w*'
-IMPROV = 'impro[wv]\w*'
-DANCE_STYLE_CONTACT = Any(
-    '%s\W?%s' % (CONTACT, IMPROV),
-    grammar.commutative_connected(Any(IMPROV), Any(CONTACT)),
-    u'接触即興',  # japanese
-    u'即興接觸',  # chinese
-    u'接觸即興',  # chinese
-)
-
 # Copied from country/classiifer
 DANCE_STYLE_COUNTRY = Any(
     'country',

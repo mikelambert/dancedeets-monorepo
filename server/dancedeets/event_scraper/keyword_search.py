@@ -110,16 +110,6 @@ obvious_style_keywords = {
         'capoeira contemporânea',
         'capoeira roda',
     ],
-    VERTICALS.CONTACT: [
-        'kontaktní improvizace',
-        'kontaktimprovisation',
-        '即興接觸',
-        'contacto improvisación',
-        'improvisacion de contacto',
-        'ci with',
-        'ci class',
-        'ci jam',
-    ],
 }
 
 #        'jive',
@@ -270,10 +260,6 @@ too_popular_style_keywords = {
         'c/w dance',
         'western dance',
         'modern western',
-    ],
-    VERTICALS.CONTACT: [
-        'contact improv',
-        'contact improvisaton',
     ],
     VERTICALS.SOULLINE: [
         'soul line',

@@ -1,8 +1,9 @@
 # -*-*- encoding: utf-8 -*-*-
 
 from dancedeets import event_types
-from .. import base_auto_classifier
-from .. import grammar
+from dancedeets.nlp import base_auto_classifier
+from dancedeets.nlp import grammar
+from dancedeets.nlp import style_base
 from ..street import keywords
 
 Any = grammar.Any
@@ -44,11 +45,7 @@ KEYWORDS = Name(
 )
 
 
-class ContactClassifier(base_auto_classifier.DanceStyleEventClassifier):
-    __metaclass__ = base_auto_classifier.AutoRuleGenerator
-
-    vertical = event_types.VERTICALS.CONTACT
-
+class Classifier(base_auto_classifier.DanceStyleEventClassifier):
     GOOD_DANCE = REAL_DANCE
     # Too many false positives
     # AMBIGUOUS_DANCE = AMBIGUOUS_CONTACT
@@ -63,7 +60,7 @@ class ContactClassifier(base_auto_classifier.DanceStyleEventClassifier):
         return True
 
     def is_dance_event(self):
-        result = super(ContactClassifier, self).is_dance_event()
+        result = super(Classifier, self).is_dance_event()
         if result:
             return result
 
@@ -87,6 +84,39 @@ class ContactClassifier(base_auto_classifier.DanceStyleEventClassifier):
         return False
 
 
-def is_contact_improv_event(classified_event):
-    classifier = ContactClassifier(classified_event)
-    return classifier.is_dance_event(), classifier.debug_info(), classifier.vertical
+class Style(style_base.Style):
+    @classmethod
+    def get_name(cls):
+        return 'CONTACT'
+
+    @classmethod
+    def get_rare_search_keywords(cls):
+        return [
+            'kontaktní improvizace',
+            'kontaktimprovisation',
+            '即興接觸',
+            'contacto improvisación',
+            'improvisacion de contacto',
+            'ci with',
+            'ci class',
+            'ci jam',
+        ]
+
+    @classmethod
+    def get_popular_search_keywords(cls):
+        return [
+            'contact improv',
+            'contact improvisaton',
+        ]
+
+    @classmethod
+    def get_search_keyword_event_types(cls):
+        return []
+
+    @classmethod
+    def _get_classifier(cls):
+        return Classifier
+
+    @classmethod
+    def get_basic_regex(cls):
+        return REAL_DANCE

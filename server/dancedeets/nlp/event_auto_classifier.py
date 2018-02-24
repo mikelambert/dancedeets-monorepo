@@ -3,7 +3,6 @@
 from dancedeets.nlp import styles
 from .ballroom import classifier as ballroom_classifier
 from .capoeira import classifier as capoeira_classifier
-from .contact import classifier as contact_classifier
 from .country import classifier as country_classifier
 from .latin import classifier as latin_classifier
 from .partner_fusion import classifier as partner_fusion_classifier
