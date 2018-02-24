@@ -11,9 +11,12 @@ Name = grammar.Name
 connected = grammar.connected
 commutative_connected = grammar.commutative_connected
 
+#TODO: Fix me
+OTHER_STYLES = Any('BLAAAAAAAAH')
+
 REAL_DANCE = Any(
     # any dance can be an afro-dance!
-    commutative_connected(Any('(?:african|afro)'), Any(keywords.DANCE_WRONG_STYLE, rules.STREET_STYLES)),
+    commutative_connected(Any('(?:african|afro)'), OTHER_STYLES),
     'urban kiz',
     'senegalese sabar',
     'joneeba african',

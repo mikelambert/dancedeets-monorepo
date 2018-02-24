@@ -91,8 +91,13 @@ class RuleGenerator(type):
                 cls.NOT_DANCE,
                 other_style_regex,
             )
+
             # make this function a no-op the next time it's called
-            cls.finalize_class = lambda x, y: None
+            @classmethod
+            def dummy_finalize_class(*args):
+                pass
+
+            cls.finalize_class = dummy_finalize_class
 
         cls.finalize_class = finalize_class
 
