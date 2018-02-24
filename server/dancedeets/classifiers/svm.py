@@ -13,7 +13,7 @@ from dancedeets.classifiers import processing
 from dancedeets.nlp import grammar
 from dancedeets.nlp.street import rules
 from dancedeets.nlp.street import keywords
-skip_rules = ['EVENT', 'EVENT_WITH_ROMANCE_EVENT', 'ANY_GOOD', 'ANY_BAD']
+skip_rules = ['EVENT', 'EVENT_WITH_ROMANCE_EVENT', 'ANY_GOOD']
 skip_keywords = ['CONNECTOR', 'ROMANCE', 'KING']
 skip_names = ['nlp.keywords.%s' % x for x in skip_keywords] + ['nlp.rules.%s' % x for x in skip_rules]
 

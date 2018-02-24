@@ -51,8 +51,6 @@ RELATED_KEYWORDS = Any(
 
 
 class Classifier(base_auto_classifier.DanceStyleEventClassifier):
-    vertical = 'AERIAL_POLE'
-
     GOOD_DANCE = DANCE
     AMBIGUOUS_DANCE = AMBIGUOUS_DANCE
     EVENT_TYPES = EVENT_TYPES

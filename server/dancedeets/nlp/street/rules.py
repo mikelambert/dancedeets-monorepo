@@ -173,11 +173,6 @@ MANUAL_DANCE = [
 
 GOOD_SOLO_LINE = Name('GOOD_SOLO_LINE', Any(GOOD_DANCE, MANUAL_DANCER[grammar.STRONG]))
 
-ANY_BAD = Name('ANY_BAD', Any(
-    keywords.CLUB_ONLY,
-    keywords.DANCE_WRONG_STYLE,
-))
-
 STREET_STYLE = Name(
     'STREET_STYLE',
     Any(

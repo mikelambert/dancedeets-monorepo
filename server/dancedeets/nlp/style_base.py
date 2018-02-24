@@ -25,6 +25,7 @@ class Style(object):
     @classmethod
     def get_classifier(cls, other_style_regex):
         classifier = cls._get_classifier()
+        classifier.vertical = cls.get_name()
         classifier.finalize_class(other_style_regex)
         return classifier
 
