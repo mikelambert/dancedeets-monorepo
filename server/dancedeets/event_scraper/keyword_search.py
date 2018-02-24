@@ -219,17 +219,6 @@ too_popular_style_keywords = {
         'tango',
         'milonga',
     ],
-    VERTICALS.ROCKABILLY: [
-        'rockabilly',
-        'jive',
-        'boogie woogie',
-        'rock n roll',
-        'rock and roll',
-        'rock n roll dance',
-        'rock and roll dance',
-        'r n r',
-        'boogie',
-    ],
     VERTICALS.COUNTRY: [
         'country western',
         'country dance',
@@ -290,7 +279,6 @@ STYLE_EVENT_TYPES = {
     VERTICALS.SWING: PARTNER + [
         'hop',
     ],
-    VERTICALS.ROCKABILLY: PARTNER + [],
     VERTICALS.COUNTRY: PARTNER + [],
 }
 

@@ -102,15 +102,6 @@ DANCE_STYLE_COUNTRY = Any(
     'contredanse',
 )
 
-# Copied from rockabilly/classifier
-DANCE_STYLE_ROCKABILLY = Any(
-    'rockabilly',
-    'jive\W?bop',
-    'barn',
-    'boogie\W?woogie',
-    'rock\W?\W?(?:n|and|&|\+)\W?\W?roll\w*',
-)
-
 DANCE_STYLE_MISC = Any(
     'parkour',
     'flamenco',
