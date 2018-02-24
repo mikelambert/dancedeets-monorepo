@@ -67,31 +67,34 @@ def get_false_positives_and_negatives(positive, negative, get_event):
     return false_positives, false_negatives
 
 
+def print_stats(positive, negative, false_positives, false_negatives, get_event):
+    positive_count = sum(len(x) for x in positive)
+    negative_count = sum(len(x) for x in negative)
+    false_positive_count = sum(len(x) for x in false_positives.values())
+    false_negative_count = sum(len(x) for x in false_negatives.values())
+
+    false_positive_rate = 1.0 * false_positive_count / negative_count
+    false_negative_rate = 1.0 * false_negative_count / positive_count
+
+    print 'FP %s: %2.f%%' % (false_positive_count, 100 * false_positive_rate)
+    print 'FN %s: %2.f%%' % (false_negative_count, 100 * false_negative_rate)
+
+    for style_name, event_ids in false_negatives.iteritems():
+        for event_id in event_ids:
+            event = get_event(event_id)
+            print 'FN-%s: %s: %s' % (style_name, event_id, event['info']['name'])
+
+    for style_name, event_ids in false_positives.iteritems():
+        for event_id in event_ids:
+            event = get_event(event_id)
+            print 'FP-%s: %s: %s' % (style_name, event_id, event['info']['name'])
+
+
 class TestFiles(classifier_util.TestClassifier):
     def runTest(self):
         positive, negative = get_positive_negative_ids()
         false_positives, false_negatives = get_false_positives_and_negatives(positive, negative, self.get_event)
-
-        positive_count = sum(len(x) for x in positive)
-        negative_count = sum(len(x) for x in negative)
-        false_positive_count = sum(len(x) for x in false_positives.values())
-        false_negative_count = sum(len(x) for x in false_negatives.values())
-
-        false_positive_rate = 1.0 * false_positive_count / negative_count
-        false_negative_rate = 1.0 * false_negative_count / positive_count
-
-        print 'FP %s: %2.f%%' % (false_positive_count, 100 * false_positive_rate)
-        print 'FN %s: %2.f%%' % (false_negative_count, 100 * false_negative_rate)
-
-        for style_name, event_ids in false_negatives.iteritems():
-            for event_id in event_ids:
-                event = self.get_event(event_id)
-                print 'FN-%s: %s: %s' % (style_name, event_id, event['info']['name'])
-
-        for style_name, event_ids in false_positives.iteritems():
-            for event_id in event_ids:
-                event = self.get_event(event_id)
-                print 'FP-%s: %s: %s' % (style_name, event_id, event['info']['name'])
+        print_stats(positive, negative, false_positives, false_negatives, self.get_event)
 
 
 if __name__ == '__main__':
