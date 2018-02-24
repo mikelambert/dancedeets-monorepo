@@ -7,7 +7,6 @@ from .country import classifier as country_classifier
 from .latin import classifier as latin_classifier
 from .partner_fusion import classifier as partner_fusion_classifier
 from .rockabilly import classifier as rockabilly_classifier
-from .soulline import classifier as soulline_classifier
 from .street import classifier as street_classifier
 from .swing import classifier as swing_classifier
 from .tango import classifier as tango_classifier
@@ -42,7 +41,6 @@ class AutoClassifier(object):
             swing_classifier.is_swing_event,
             tango_classifier.is_tango_dance,
             wcs_classifier.is_wcs_event,
-            soulline_classifier.is_line_event,
         ]
         for classifier in classifiers:
             result = classifier(self.classified_event)

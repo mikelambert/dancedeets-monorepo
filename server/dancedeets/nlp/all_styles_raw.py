@@ -116,13 +116,6 @@ DANCE_STYLE_ROCKABILLY = Any(
     'rock\W?\W?(?:n|and|&|\+)\W?\W?roll\w*',
 )
 
-# Copied from soulline/classifier
-DANCE_STYLE_SOULLINE = Any(
-    'soul\W?line',
-    '(?:baltimore|b\W?more)? linedance',
-    'urban\W?line\W?dance',
-)
-
 DANCE_STYLE_MISC = Any(
     'parkour',
     'flamenco',

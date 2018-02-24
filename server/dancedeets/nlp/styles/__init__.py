@@ -3,6 +3,7 @@ from dancedeets.nlp.styles import aerial_pole
 from dancedeets.nlp.styles import african
 from dancedeets.nlp.styles import belly
 from dancedeets.nlp.styles import contact
+from dancedeets.nlp.styles import soulline
 from dancedeets.nlp.styles import zouk
 
 # TODO: decide on Style vs Vertical
@@ -12,6 +13,7 @@ _STYLE_LIST = [
     african.Style,
     belly.Style,
     contact.Style,
+    soulline.Style,
     zouk.Style,
 ]
 
@@ -39,7 +41,6 @@ style_keywords = {
     event_types.VERTICALS.PARTNER_FUSION: all_styles_raw.DANCE_STYLE_FUSION,
     event_types.VERTICALS.ROCKABILLY: all_styles_raw.DANCE_STYLE_ROCKABILLY,
     event_types.VERTICALS.COUNTRY: all_styles_raw.DANCE_STYLE_COUNTRY,
-    event_types.VERTICALS.SOULLINE: all_styles_raw.DANCE_STYLE_SOULLINE,
 }
 misc_keyword_sets = [
     all_styles_raw.DANCE_STYLE_CLASSICAL,

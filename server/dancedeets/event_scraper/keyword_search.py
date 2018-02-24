@@ -256,15 +256,6 @@ too_popular_style_keywords = {
         'western dance',
         'modern western',
     ],
-    VERTICALS.SOULLINE: [
-        'soul line',
-        'baltimore line',
-        'urban line',
-        'wobble line',
-        'zydeco',
-        'chicago line',
-        'hip-hop line',
-    ],
 }
 
 PARTNER = [
