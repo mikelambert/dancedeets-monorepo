@@ -1,9 +1,7 @@
 # -*-*- encoding: utf-8 -*-*-
 
 from dancedeets.nlp import styles
-from .african import classifier as african_classifier
 from .ballroom import classifier as ballroom_classifier
-from .belly import classifier as belly_classifier
 from .capoeira import classifier as capoeira_classifier
 from .contact import classifier as contact_classifier
 from .country import classifier as country_classifier
@@ -48,8 +46,6 @@ class AutoClassifier(object):
             wcs_classifier.is_wcs_event,
             zouk_classifier.is_zouk_dance,
             contact_classifier.is_contact_improv_event,
-            african_classifier.is_african_event,
-            belly_classifier.is_belly_event,
             soulline_classifier.is_line_event,
         ]
         for classifier in classifiers:

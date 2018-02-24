@@ -138,14 +138,6 @@ DANCE_STYLE_SOULLINE = Any(
     'urban\W?line\W?dance',
 )
 
-DANCE_STYLE_BELLY = Any(
-    'belly\W?danc(?:e(?:rs?)?|ing)',
-    'belly\w*',
-    'bellycraft',
-    'worldbellydancealliance',
-    u'ベリーダンス',  # japanese bellydance
-)
-
 DANCE_STYLE_MISC = Any(
     'parkour',
     'flamenco',
