@@ -14,28 +14,33 @@ BAD_IDS = []
 TEST_IDS_PATH = os.path.join(os.path.dirname(styles.__file__), 'test_ids')
 
 
+def get_positive_negative_ids():
+    positive = {}
+    negative = {}
+
+    for filename in os.listdir(TEST_IDS_PATH):
+        full_path = os.path.join(TEST_IDS_PATH, filename)
+        for line in open(full_path).readlines():
+            line = line.split('#')[0].strip()
+            if not line:
+                continue
+            classification, event_id = line.split(':')
+            if classification.startswith('-'):
+                lookup = negative
+                key = classification[1:]
+            else:
+                lookup = positive
+                key = classification
+            if key not in lookup:
+                lookup[key] = set()
+            lookup[key].add(event_id)
+
+    return positive, negative
+
+
 class TestFiles(classifier_util.TestClassifier):
     def runTest(self):
-
-        positive = {}
-        negative = {}
-
-        for filename in os.listdir(TEST_IDS_PATH):
-            full_path = os.path.join(TEST_IDS_PATH, filename)
-            for line in open(full_path).readlines():
-                line = line.split('#')[0].strip()
-                if not line:
-                    continue
-                classification, event_id = line.split(':')
-                if classification.startswith('-'):
-                    lookup = negative
-                    key = classification[1:]
-                else:
-                    lookup = positive
-                    key = classification
-                if key not in lookup:
-                    lookup[key] = set()
-                lookup[key].add(event_id)
+        positive, negative = get_positive_negative_ids()
 
         false_negatives = {}
         false_positives = {}
