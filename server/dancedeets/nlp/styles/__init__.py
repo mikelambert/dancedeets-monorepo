@@ -1,10 +1,12 @@
 # TODO: clean up our module names
 from dancedeets.nlp.styles import aerial_pole
+from dancedeets.nlp.styles import african
 
 # TODO: decide on Style vs Vertical
 # Each import must have a Style that fits the base_styles.Style API
 _STYLE_LIST = [
     aerial_pole.Style,
+    african.Style,
 ]
 
 # Generate a keyed lookup of styles (for any name-dependent lookups from URLs)
@@ -33,7 +35,6 @@ style_keywords = {
     event_types.VERTICALS.ROCKABILLY: keywords.DANCE_STYLE_ROCKABILLY,
     event_types.VERTICALS.COUNTRY: keywords.DANCE_STYLE_COUNTRY,
     event_types.VERTICALS.CONTACT: keywords.DANCE_STYLE_CONTACT,
-    event_types.VERTICALS.AFRICAN: keywords.DANCE_STYLE_AFRICAN,
     event_types.VERTICALS.BELLY: keywords.DANCE_STYLE_BELLY,
     event_types.VERTICALS.SOULLINE: keywords.DANCE_STYLE_SOULLINE,
 }

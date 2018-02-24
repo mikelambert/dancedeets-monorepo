@@ -1298,17 +1298,6 @@ DANCE_STYLE_CLASSICAL = Any(
     u'탭 ?댄스',  # korean tap dance
 )
 
-DANCE_STYLE_AFRICAN = Any(
-    'african dance',
-    u'アフリカンダンス',  # african dance
-    'afro dance',
-    'tribal',
-    'afr[iy][ck]?[ck]\w*',
-    'sabar',
-    'kizomba',
-    'kuduro',
-)
-
 DANCE_STYLE_INDIAN = Any(
     'bollywood',
     u'볼리우드',  # bollywood
@@ -1442,6 +1431,7 @@ DANCE_STYLE_FUSION = Any(
     'le-roc',
 )
 
+#TODO: Need to include AFRICAN in this!
 DANCE_WRONG_STYLE = Name(
     'DANCE_WRONG_STYLE',
     Any(
@@ -1449,7 +1439,6 @@ DANCE_WRONG_STYLE = Name(
         DANCE_STYLE_SWING,
         DANCE_STYLE_TANGO,
         DANCE_STYLE_CLASSICAL,
-        DANCE_STYLE_AFRICAN,
         DANCE_STYLE_INDIAN,
         DANCE_STYLE_SEXY,
         DANCE_STYLE_BALLROOM,

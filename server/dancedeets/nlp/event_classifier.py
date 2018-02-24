@@ -359,8 +359,7 @@ def relevant_keywords(event):
     text = get_relevant_text(event)
     processed_text = StringProcessor(text)
     good_keywords = processed_text.get_tokens(rules.ANY_GOOD)
-    bad_keywords = processed_text.get_tokens(rules.ANY_BAD)
-    return sorted(set(good_keywords).union(bad_keywords))
+    return sorted(set(good_keywords))
 
 
 def highlight_keywords(text):
@@ -369,7 +368,6 @@ def highlight_keywords(text):
     processed_text.replace_with(
         rules.ANY_GOOD, lambda match: jinja2.Markup('<span class="matched-text">%s</span>') % match.group(0), flags=re.I
     )
-    processed_text.replace_with(rules.ANY_BAD, lambda match: jinja2.Markup('<span class="bad-matched-text">%s</span>') % match.group(0))
     return jinja2.Markup(processed_text.get_tokenized_text())
 
 

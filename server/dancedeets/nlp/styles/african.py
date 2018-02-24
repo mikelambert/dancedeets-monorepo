@@ -1,8 +1,8 @@
 # -*-*- encoding: utf-8 -*-*-
 
-from dancedeets import event_types
-from .. import base_auto_classifier
-from .. import grammar
+from dancedeets.nlp import base_auto_classifier
+from dancedeets.nlp import grammar
+from dancedeets.nlp import style_base
 from ..street import keywords
 from ..street import rules
 
@@ -104,10 +104,7 @@ AMBIGUOUS_AFRICAN = Name(
 )
 
 
-class AfricanClassifier(base_auto_classifier.DanceStyleEventClassifier):
-    __metaclass__ = base_auto_classifier.AutoRuleGenerator
-    vertical = event_types.VERTICALS.AFRICAN
-
+class Classifier(base_auto_classifier.DanceStyleEventClassifier):
     GOOD_DANCE = REAL_DANCE
     AMBIGUOUS_DANCE = AMBIGUOUS_AFRICAN
     ADDITIONAL_EVENT_TYPE = Any('congress',)
@@ -116,13 +113,58 @@ class AfricanClassifier(base_auto_classifier.DanceStyleEventClassifier):
         return True
 
     def is_dance_event(self):
-        result = super(AfricanClassifier, self).is_dance_event()
+        result = super(Classifier, self).is_dance_event()
         if result:
             return result
 
         return False
 
 
-def is_african_event(classified_event):
-    classifier = AfricanClassifier(classified_event)
-    return classifier.is_dance_event(), classifier.debug_info(), classifier.vertical
+class Style(style_base.Style):
+    @classmethod
+    def get_name(cls):
+        return 'AFRICAN'
+
+    @classmethod
+    def get_rare_search_keywords(cls):
+        return [
+            'gumboot',
+            'kpanlogo',
+            'pantsula',
+            'yankadi',
+            'kpanlogo',
+            'azonto',
+            'coupé décalé',
+            'adowa',
+        ]
+
+    @classmethod
+    def get_popular_search_keywords(cls):
+        return [
+            'senegalese sabar',
+            'sabar',
+            'african',
+            'joneeba african',
+            'kizomba',
+            'kizomba dance',
+            'kuduro',
+            'kuduro dance',
+            'african dance',
+            'afrobeat dance',
+            'アフリカンダンス',
+            u'キゾンバ',
+            u'クドゥーロ',
+            u'非洲舞蹈',
+        ]
+
+    @classmethod
+    def get_search_keyword_event_types(cls):
+        return []
+
+    @classmethod
+    def _get_classifier(cls):
+        return Classifier
+
+    @classmethod
+    def get_basic_regex(cls):
+        return Any(REAL_DANCE, AMBIGUOUS_AFRICAN)
