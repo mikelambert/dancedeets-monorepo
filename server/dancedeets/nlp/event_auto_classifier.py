@@ -44,7 +44,6 @@ class AutoClassifier(object):
             tango_classifier.is_tango_dance,
             wcs_classifier.is_wcs_event,
             zouk_classifier.is_zouk_dance,
-            contact_classifier.is_contact_improv_event,
             soulline_classifier.is_line_event,
         ]
         for classifier in classifiers:
