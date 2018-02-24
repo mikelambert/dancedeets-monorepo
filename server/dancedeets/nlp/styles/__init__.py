@@ -48,11 +48,11 @@ misc_keyword_sets = [
 def all_styles_except(vertical):
     regexes = set()
     for regex_style in _STYLE_LIST:
-        if regex_style != style:
+        if regex_style != vertical:
             regexes.add(regex_style.get_basic_regex())
     #TODO: remove these eventually once the above dict is gone
     for regex_style in style_keywords:
-        if regex_style != style:
+        if regex_style != vertical:
             regexes.add(style_keywords[regex_style])
     regexes.update(misc_keyword_sets)
     return grammar.Any(*regexes)
