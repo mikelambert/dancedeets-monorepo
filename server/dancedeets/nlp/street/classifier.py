@@ -13,9 +13,9 @@ except ImportError as e:
 from dancedeets import event_types
 from .. import all_styles
 from .. import categories
-from .. import event_classifier
 from .. import event_structure
 from .. import grammar
+from .. import grammar_matcher
 from . import keywords
 from . import rules
 
@@ -120,7 +120,7 @@ def has_list_of_good_classes(classified_event):
     for schedule_lines in schedule_groups:
         good_lines = []
         for line in schedule_lines:
-            proc_line = event_classifier.StringProcessor(line, classified_event.boundaries)
+            proc_line = grammar_matcher.StringProcessor(line, classified_event.boundaries)
             proc_line.tokenize(keywords.AMBIGUOUS_DANCE_MUSIC)
             dance_class_style_matches = proc_line.get_tokens(rules.GOOD_DANCE)
             dance_and_music_matches = proc_line.get_tokens(keywords.AMBIGUOUS_DANCE_MUSIC)
@@ -436,7 +436,7 @@ def is_bad_wrong_dance(classified_event):
     real_dance_keywords = set(classified_event.real_dance_matches + dance_and_music_matches)
     manual_keywords = classified_event.manual_dance_keywords_matches
 
-    nodance_processed_text = event_classifier.StringProcessor(classified_event.search_text, classified_event.boundaries)
+    nodance_processed_text = grammar_matcher.StringProcessor(classified_event.search_text, classified_event.boundaries)
     nodance_processed_text.real_tokenize(rules.MANUAL_DANCE[grammar.STRONG])
     nodance_processed_text.real_tokenize(rules.GOOD_DANCE)
     weak_classical_dance_keywords = nodance_processed_text.get_tokens(keywords.SEMI_BAD_DANCE)

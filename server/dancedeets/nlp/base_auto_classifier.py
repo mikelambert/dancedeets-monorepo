@@ -2,9 +2,9 @@ import datetime
 import logging
 import re
 from dancedeets import event_types
-from . import event_classifier
 from . import event_structure
 from . import grammar
+from . import grammar_matcher
 from .street import keywords
 from .street import rules
 Any = grammar.Any
@@ -217,7 +217,7 @@ class DanceStyleEventClassifier(object):
             return False
 
         org_name = self._classified_event.fb_event['info'].get('owner', {}).get('name', '').lower()
-        sp = event_classifier.StringProcessor(org_name)
+        sp = grammar_matcher.StringProcessor(org_name)
         has_dance_organizer = sp.has_token(self.GOOD_DANCE_FULL)
         self._log('Searching organizer (%s) for %s, has: %s', org_name, self.GOOD_DANCE_FULL.name(), has_dance_organizer)
         if has_dance_organizer:
@@ -338,7 +338,7 @@ class DanceStyleEventClassifier(object):
             good_lines = []
             bad_lines = []
             for line in schedule_lines:
-                proc_line = event_classifier.StringProcessor(line, self._classified_event.boundaries)
+                proc_line = grammar_matcher.StringProcessor(line, self._classified_event.boundaries)
                 good_matches = proc_line.get_tokens(self.GOOD_OR_AMBIGUOUS_DANCE)
                 has_bad_matches = proc_line.has_token(self.OTHER_DANCE_FULL)
 

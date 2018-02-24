@@ -9,21 +9,21 @@ except ImportError as e:
     re2 = None
     import re
 
-from . import event_classifier
+from . import grammar_matcher
 from . import regex_keywords
 from .street import keywords
 from .street import rules
 
 
 def find_competitor_list(search_text):
-    processed_text = event_classifier.StringProcessor(search_text)
+    processed_text = grammar_matcher.StringProcessor(search_text)
     results_match = re.search(r'\n0*1[^\d].+\n^0*2[^\d].+\n(?:^\d+.+\n){2,}', processed_text.text, re.MULTILINE)
     if results_match:
         numbered_list = results_match.group(0)
         num_lines = numbered_list.count('\n')
         if len(re.findall(r'\d ?[.:h] ?\d\d|\bam\b|\bpm\b', numbered_list)) > num_lines / 4:
             return None  # good list of times! workshops, etc! performance/shows/club-set times!
-        processed_numbered_list = event_classifier.StringProcessor(numbered_list, processed_text.match_on_word_boundaries)
+        processed_numbered_list = grammar_matcher.StringProcessor(numbered_list, processed_text.match_on_word_boundaries)
         event_keywords = processed_numbered_list.get_tokens(rules.EVENT)
         if len(event_keywords) > num_lines / 8:
             return None

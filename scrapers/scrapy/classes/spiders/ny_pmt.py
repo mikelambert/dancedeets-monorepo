@@ -7,7 +7,7 @@ import scrapyjs
 
 from .. import items
 
-from dancedeets.nlp import event_classifier
+from dancedeets.nlp import grammar_matcher
 from dancedeets.nlp import rules
 
 
@@ -53,7 +53,7 @@ class PMTHouseOfDance(items.StudioScraper):
             href_cell = cells[3].xpath('.//@href').extract()
 
             # Use our NLP event classification keywords to figure out which BDC classes to keep
-            processor = event_classifier.StringProcessor(classname)
+            processor = grammar_matcher.StringProcessor(classname)
             if not processor.has_token(rules.DANCE_STYLE):
                 continue
 
