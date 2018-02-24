@@ -37,8 +37,8 @@ class TestFiles(classifier_util.TestClassifier):
                     lookup[key] = set()
                 lookup[key].add(event_id)
 
-        false_negatives = []
-        false_positives = []
+        false_negatives = {}
+        false_positives = {}
         positive_count = 0
         negative_count = 0
         for style_name, event_ids in positive.iteritems():
@@ -51,7 +51,7 @@ class TestFiles(classifier_util.TestClassifier):
                 is_dance_event = classifier.is_dance_event()
                 if not is_dance_event:
                     logging.warning('Event unexpectedly failed: %s: %s', event_id, '\n'.join(classifier.debug_info()))
-                    false_negatives.append(event_id)
+                    false_negatives.setdefault(style_name, []).append(event_id)
 
         for style_name, event_ids in negative.iteritems():
             classifier_class = styles.CLASSIFIERS[style_name]
@@ -63,21 +63,26 @@ class TestFiles(classifier_util.TestClassifier):
                 is_dance_event = classifier.is_dance_event()
                 if is_dance_event:
                     logging.warning('Event unexpectedly passed: %s: %s', event_id, '\n'.join(classifier.debug_info()))
-                    false_positives.append(event_id)
+                    false_positives.setdefault(style_name, []).append(event_id)
 
-        false_positive_rate = 1.0 * len(false_positives) / negative_count
-        false_negative_rate = 1.0 * len(false_negatives) / positive_count
+        false_positive_count = sum(len(x) for x in false_positives.values())
+        false_negative_count = sum(len(x) for x in false_negatives.values())
 
-        print 'FP %s: %2.f%%' % (len(false_positives), 100 * false_positive_rate)
-        print 'FN %s: %2.f%%' % (len(false_negatives), 100 * false_negative_rate)
+        false_positive_rate = 1.0 * false_positive_count / negative_count
+        false_negative_rate = 1.0 * false_negative_count / positive_count
 
-        for event_id in false_negatives:
-            event = self.get_event(event_id)
-            print 'FN: %s: %s' % (event_id, event['info']['name'])
+        print 'FP %s: %2.f%%' % (false_positive_count, 100 * false_positive_rate)
+        print 'FN %s: %2.f%%' % (false_negative_count, 100 * false_negative_rate)
 
-        for event_id in false_positives:
-            event = self.get_event(event_id)
-            print 'FP: %s: %s' % (event_id, event['info']['name'])
+        for style_name, event_ids in false_negatives.iteritems():
+            for event_id in event_ids:
+                event = self.get_event(event_id)
+                print 'FN-%s: %s: %s' % (style_name, event_id, event['info']['name'])
+
+        for style_name, event_ids in false_positives.iteritems():
+            for event_id in event_ids:
+                event = self.get_event(event_id)
+                print 'FP-%s: %s: %s' % (style_name, event_id, event['info']['name'])
 
 
 if __name__ == '__main__':
