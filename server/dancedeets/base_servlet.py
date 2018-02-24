@@ -162,6 +162,8 @@ class BareBaseRequestHandler(webapp2.RequestHandler, FacebookMixinHandler):
                 self.display['hot_reloading'] = False
         self.display['static_path'] = self._get_static_path_for
 
+        self.display['enable_page_level_ads'] = True
+
         logging.info("Appengine Request Headers:")
         for x in request.headers:
             if x.lower().startswith('x-'):

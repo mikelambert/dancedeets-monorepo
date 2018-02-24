@@ -29,6 +29,7 @@ class LoginHandler(base_servlet.BaseRequestHandler):
 
         want_specific_page = (next_url != '/?')
         if want_specific_page:
+            self.display['enable_page_level_ads'] = False
             self.display['next'] = next_url
             self.display['suppress_promos'] = True
             logging.info(self.display['next'])
@@ -51,14 +52,13 @@ class LoginHandler(base_servlet.BaseRequestHandler):
         logging.info(self.display['next'])
 
         props = dict(
-            mobilePlatform= self.display['mobile_platform'],
+            mobilePlatform=self.display['mobile_platform'],
             mobileAppUrls={
                 'android': mobile.ANDROID_URL,
                 'ios': mobile.IOS_URL,
             },
-            ipLocation= self.display['ip_location'],
+            ipLocation=self.display['ip_location'],
         )
         self.setup_react_template('homepageReact.js', props)
-
 
         self.render_template('homepage_react')
