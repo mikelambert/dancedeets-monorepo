@@ -3,9 +3,9 @@
 
 import re
 from dancedeets import event_types
-from . import event_classifier
 from . import event_structure
 from . import grammar
+from . import grammar_matcher
 from .street import keywords
 Any = grammar.Any
 
@@ -189,7 +189,7 @@ BROAD_STYLES[event_types.BREAK] = ANY_BREAK_BROAD
 
 
 def format_as_search_query(text, broad=True):
-    processed_text = event_classifier.StringProcessor(text)
+    processed_text = grammar_matcher.StringProcessor(text)
     category_list = EVENT_TYPES.copy()
     category_list.update(BROAD_STYLES if broad else STYLES)
     for category, rule in category_list.iteritems():
@@ -205,7 +205,7 @@ def find_rules_in_text(text, rule_dict):
     found_styles = {}
     # Only grab the first 400 lines
     trimmed_text = '\n'.join(text.lower().split('\n')[:400])
-    processed_text = event_classifier.StringProcessor(trimmed_text)
+    processed_text = grammar_matcher.StringProcessor(trimmed_text)
     processed_text.real_tokenize(keywords.PREPROCESS_REMOVAL)
     # so we can match this with vogue, but not with house
     processed_text.real_tokenize(keywords.HOUSE_OF)

@@ -84,7 +84,7 @@ sample_weights = np.array(sample_weights_list, "f")
 
 import array
 from sklearn import base
-from dancedeets.nlp import event_classifier
+from dancedeets.nlp import grammar_matcher
 from sklearn.externals.joblib import Parallel, delayed
 
 import re
@@ -92,8 +92,8 @@ import re
 
 def process_doc(fb_event):
     values = array.array(str("f"))
-    processed_title = event_classifier.StringProcessor(fb_event['info'].get('name', '').lower())
-    processed_text = event_classifier.StringProcessor(fb_event['info'].get('description', '').lower())
+    processed_title = grammar_matcher.StringProcessor(fb_event['info'].get('name', '').lower())
+    processed_text = grammar_matcher.StringProcessor(fb_event['info'].get('description', '').lower())
     dummy, title_word_count = re.subn(r'\w+', '', processed_title.text)
     dummy, text_word_count = re.subn(r'\w+', '', processed_text.text)
     values.append(title_word_count)
@@ -126,7 +126,7 @@ class GrammarFeatureVector(base.BaseEstimator):
 
         values = array.array(str("f"))
         print "Preloading regexes"
-        dummy_processor = event_classifier.StringProcessor('')
+        dummy_processor = grammar_matcher.StringProcessor('')
         for name, rule in named_rules_list:
             dummy_processor.count_tokens(rule)
 

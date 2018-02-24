@@ -14,7 +14,7 @@ import HTMLParser
 import scrapy
 from scrapy import item
 
-from dancedeets.nlp import event_classifier
+from dancedeets.nlp import grammar_matcher
 from dancedeets.nlp.street import keywords
 from dancedeets.nlp.street import rules
 from scrapy_lib import pipelines
@@ -111,7 +111,7 @@ class WebEventScraper(scrapy.Spider):
     @staticmethod
     def _street_style(style):
         # Use our NLP event classifition keywords to figure out which BDC classes to keep
-        processor = event_classifier.StringProcessor(style)
+        processor = grammar_matcher.StringProcessor(style)
         # Get rid of "Ballet with Pop Music"
         processor.real_tokenize(keywords.PREPROCESS_REMOVAL)
         return processor.has_token(rules.DANCE_STYLE)

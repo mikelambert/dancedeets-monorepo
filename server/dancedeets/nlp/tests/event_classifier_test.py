@@ -6,6 +6,7 @@ import unittest
 from dancedeets.nlp import all_styles
 from dancedeets.nlp import event_classifier
 from dancedeets.nlp import grammar
+from dancedeets.nlp import grammar_matcher
 from dancedeets.nlp.street import keywords
 from dancedeets.nlp.street import rules
 
@@ -20,11 +21,11 @@ class TestSoulSessionsOslo(unittest.TestCase):
 
 class RuleMatches(unittest.TestCase):
     def matchRule(self, rule, s):
-        string_processor = event_classifier.StringProcessor(s)
+        string_processor = grammar_matcher.StringProcessor(s)
         self.assertTrue(string_processor.get_tokens(rule))
 
     def notMatchRule(self, rule, s):
-        string_processor = event_classifier.StringProcessor(s)
+        string_processor = grammar_matcher.StringProcessor(s)
         self.assertFalse(string_processor.get_tokens(rule))
 
     def runTest(self):
@@ -62,22 +63,22 @@ class TestKeywordLoader(unittest.TestCase):
 
 class TestCJKAndWordBreaks(unittest.TestCase):
     def runTest(self):
-        string_processor = event_classifier.StringProcessor(u'the blocking dance')
+        string_processor = grammar_matcher.StringProcessor(u'the blocking dance')
         self.assertFalse(string_processor.get_tokens(keywords.STYLE_LOCK))
 
-        string_processor = event_classifier.StringProcessor(u'the locking dance')
+        string_processor = grammar_matcher.StringProcessor(u'the locking dance')
         self.assertTrue(string_processor.get_tokens(keywords.STYLE_LOCK))
 
-        string_processor = event_classifier.StringProcessor(u'今日はblockingです')
+        string_processor = grammar_matcher.StringProcessor(u'今日はblockingです')
         self.assertFalse(string_processor.get_tokens(keywords.STYLE_LOCK))
 
-        string_processor = event_classifier.StringProcessor(u'今日はlockingです')
+        string_processor = grammar_matcher.StringProcessor(u'今日はlockingです')
         self.assertTrue(string_processor.get_tokens(keywords.STYLE_LOCK))
 
-        string_processor = event_classifier.StringProcessor(u'今日はロックイングです')
+        string_processor = grammar_matcher.StringProcessor(u'今日はロックイングです')
         self.assertTrue(string_processor.get_tokens(keywords.STYLE_LOCK))
 
-        string_processor = event_classifier.StringProcessor(u'今日はブロックイングです')
+        string_processor = grammar_matcher.StringProcessor(u'今日はブロックイングです')
         # Ideally we'd like this to return false,
         # but word segmentation is near-impossible with cjk (and japanese katakana phrases)
         self.assertTrue(string_processor.get_tokens(keywords.STYLE_LOCK))
