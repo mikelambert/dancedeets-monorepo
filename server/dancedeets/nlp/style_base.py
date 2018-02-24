@@ -1,7 +1,9 @@
-# This is the basic API each style should export
+import logging
 
 
 class Style(object):
+    """This is the basic API each style should export"""
+
     @classmethod
     def get_name(cls):
         raise NotImplementedError()
@@ -24,6 +26,7 @@ class Style(object):
 
     @classmethod
     def get_classifier(cls, other_style_regex):
+        logging.info('Initializing classifier for %s', cls.get_name())
         classifier = cls._get_classifier()
         classifier.vertical = cls.get_name()
         classifier.finalize_class(other_style_regex)
