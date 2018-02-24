@@ -1,8 +1,10 @@
 # -*-*- encoding: utf-8 -*-*-
 
 from dancedeets import event_types
-from .. import base_auto_classifier
-from .. import grammar
+from dancedeets.nlp import base_auto_classifier
+from dancedeets.nlp import grammar
+from dancedeets.nlp import style_base
+from dancedeets.nlp.styles import partner
 from ..ballroom import classifier as ballroom_classifier
 from ..street import keywords
 
@@ -15,7 +17,7 @@ REAL_DANCE = Any(
     u'ズーク',
     'zouk\w+',  # not just plain zouk
     'zouk\W?lambada',
-    'brazilian\w?zouk',
+    'brazilian\W?zouk',
     'traditional zouk',
     'lambda\W?zouk',
     'modern\W?zouk',
@@ -28,10 +30,7 @@ ZOUK = Any('zouk', u'ズウォーク', '\w{,7}zouk')
 AMBIGUOUS_WORDS = Any(ZOUK)
 
 
-class ZoukClassifier(base_auto_classifier.DanceStyleEventClassifier):
-    __metaclass__ = base_auto_classifier.AutoRuleGenerator
-
-    vertical = event_types.VERTICALS.ZOUK
+class Classifier(base_auto_classifier.DanceStyleEventClassifier):
 
     AMBIGUOUS_DANCE = AMBIGUOUS_WORDS
     GOOD_DANCE = REAL_DANCE
@@ -54,7 +53,7 @@ class ZoukClassifier(base_auto_classifier.DanceStyleEventClassifier):
         if result:
             return result
 
-        result = super(ZoukClassifier, self).is_dance_event()
+        result = super(Classifier, self).is_dance_event()
         if result:
             return result
 
@@ -68,6 +67,31 @@ class ZoukClassifier(base_auto_classifier.DanceStyleEventClassifier):
         return False
 
 
-def is_zouk_dance(classified_event):
-    classifier = ZoukClassifier(classified_event)
-    return classifier.is_dance_event(), classifier.debug_info(), classifier.vertical
+class Style(style_base.Style):
+    @classmethod
+    def get_name(cls):
+        return 'ZOUK'
+
+    @classmethod
+    def get_rare_search_keywords(cls):
+        return []
+
+    @classmethod
+    def get_popular_search_keywords(cls):
+        return [
+            'zouk',
+            'brazilian zouk',
+            'zouk lambada',
+        ]
+
+    @classmethod
+    def get_search_keyword_event_types(cls):
+        return partner.EVENT_TYPES
+
+    @classmethod
+    def _get_classifier(cls):
+        return Classifier
+
+    @classmethod
+    def get_basic_regex(cls):
+        return Any(AMBIGUOUS_WORDS, REAL_DANCE)

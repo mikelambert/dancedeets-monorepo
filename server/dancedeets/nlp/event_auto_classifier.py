@@ -12,7 +12,6 @@ from .street import classifier as street_classifier
 from .swing import classifier as swing_classifier
 from .tango import classifier as tango_classifier
 from .wcs import classifier as wcs_classifier
-from .zouk import classifier as zouk_classifier
 
 
 def is_auto_add_event(classified_event):
@@ -43,7 +42,6 @@ class AutoClassifier(object):
             swing_classifier.is_swing_event,
             tango_classifier.is_tango_dance,
             wcs_classifier.is_wcs_event,
-            zouk_classifier.is_zouk_dance,
             soulline_classifier.is_line_event,
         ]
         for classifier in classifiers:

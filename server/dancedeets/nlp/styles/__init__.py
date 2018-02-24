@@ -3,6 +3,7 @@ from dancedeets.nlp.styles import aerial_pole
 from dancedeets.nlp.styles import african
 from dancedeets.nlp.styles import belly
 from dancedeets.nlp.styles import contact
+from dancedeets.nlp.styles import zouk
 
 # TODO: decide on Style vs Vertical
 # Each import must have a Style that fits the base_styles.Style API
@@ -11,6 +12,7 @@ _STYLE_LIST = [
     african.Style,
     belly.Style,
     contact.Style,
+    zouk.Style,
 ]
 
 # Generate a keyed lookup of styles (for any name-dependent lookups from URLs)
@@ -33,7 +35,6 @@ style_keywords = {
     event_types.VERTICALS.TANGO: all_styles_raw.DANCE_STYLE_TANGO,
     event_types.VERTICALS.CAPOEIRA: all_styles_raw.DANCE_STYLE_CAPOEIRA,
     event_types.VERTICALS.BALLROOM: all_styles_raw.DANCE_STYLE_BALLROOM,
-    event_types.VERTICALS.ZOUK: all_styles_raw.DANCE_STYLE_ZOUK,
     event_types.VERTICALS.WCS: all_styles_raw.DANCE_STYLE_WCS,
     event_types.VERTICALS.PARTNER_FUSION: all_styles_raw.DANCE_STYLE_FUSION,
     event_types.VERTICALS.ROCKABILLY: all_styles_raw.DANCE_STYLE_ROCKABILLY,

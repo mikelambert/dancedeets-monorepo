@@ -21,10 +21,6 @@ DANCE_STYLE_LATIN = Any(
     'salser[oa]s?',
 )
 
-DANCE_STYLE_ZOUK = Any(
-    'zouk',
-    u'ズーク',  # japanese zouk
-)
 DANCE_STYLE_SWING = Any(
     'balboa',
     'lindy',

@@ -195,11 +195,6 @@ too_popular_style_keywords = {
         'jitterbug',
         'slow drag',
     ],
-    VERTICALS.ZOUK: [
-        'zouk',
-        'brazilian zouk',
-        'zouk lambada',
-    ],
     VERTICALS.BALLROOM: [
         'ballroom dance',
         'latin ballroom',
@@ -318,7 +313,6 @@ STYLE_EVENT_TYPES = {
     VERTICALS.SWING: PARTNER + [
         'hop',
     ],
-    VERTICALS.ZOUK: PARTNER + [],
     VERTICALS.PARTNER_FUSION: PARTNER + [],
     VERTICALS.ROCKABILLY: PARTNER + [],
     VERTICALS.COUNTRY: PARTNER + [],
