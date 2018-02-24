@@ -5,7 +5,6 @@ from .ballroom import classifier as ballroom_classifier
 from .capoeira import classifier as capoeira_classifier
 from .country import classifier as country_classifier
 from .latin import classifier as latin_classifier
-from .partner_fusion import classifier as partner_fusion_classifier
 from .rockabilly import classifier as rockabilly_classifier
 from .street import classifier as street_classifier
 from .swing import classifier as swing_classifier
@@ -34,7 +33,6 @@ class AutoClassifier(object):
             capoeira_classifier.is_capoeira_event,
             country_classifier.is_country_event,
             latin_classifier.is_salsa_event,
-            partner_fusion_classifier.is_fusion_event,
             rockabilly_classifier.is_rockabilly_event,
             street_classifier.is_street_event,
             swing_classifier.is_swing_event,

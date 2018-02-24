@@ -219,15 +219,6 @@ too_popular_style_keywords = {
         'tango',
         'milonga',
     ],
-    VERTICALS.PARTNER_FUSION: [
-        'blues fusion',
-        'modern jive',
-        'ceroc',
-        'leroc',
-        'le-roc',
-        'fusion',
-        'fusion dance',
-    ],
     VERTICALS.ROCKABILLY: [
         'rockabilly',
         'jive',
@@ -299,7 +290,6 @@ STYLE_EVENT_TYPES = {
     VERTICALS.SWING: PARTNER + [
         'hop',
     ],
-    VERTICALS.PARTNER_FUSION: PARTNER + [],
     VERTICALS.ROCKABILLY: PARTNER + [],
     VERTICALS.COUNTRY: PARTNER + [],
 }

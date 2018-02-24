@@ -39,6 +39,10 @@ def get_positive_negative_ids():
 
 
 def get_false_positives_and_negatives(positives, negatives, get_event):
+    # Quick test, verify we have classifiers for everything
+    for style_name in positives:
+        assert styles.CLASSIFIERS[style_name]
+
     false_negatives = {}
     false_positives = {}
     for style_name, event_ids in positives.iteritems():

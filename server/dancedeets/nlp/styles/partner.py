@@ -9,4 +9,5 @@ EVENT_TYPES = [
     'jack & jill',
     'weekend',
     'festival',
+    'ball',
 ]

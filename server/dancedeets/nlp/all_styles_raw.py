@@ -151,10 +151,3 @@ DANCE_STYLE_MISC = Any(
     'guest artists?',
     'partnering',
 )
-
-DANCE_STYLE_FUSION = Any(
-    'modern\W?jive',
-    'ceroc',
-    'leroc',
-    'le-roc',
-)
