@@ -12,19 +12,41 @@ commutative_connected = grammar.commutative_connected
 
 DANCE = Any(
     'pole\W?ates',
-    'aerial\Whoop',
-    'aerial\Wfabric',
+    'aerial\Whoops?',
+    'aerial\Wfabrics?',
+    'aerial\Wsilks?',
+    u'空中シルク',
+    u'空中布',
+    u'空中フープ',
 )
 AMBIGUOUS_DANCE = Any(
     'pole',
+    u'ポール',
     'aerials?',
-    'hoops?',
+    u'空中',
+    #'hoops?',
     'fabrics?',
+    u'布',
     'silks?',
+    u'シルク',
+    'lyra',
 )
 EVENT_TYPES = Any(
     'miss',  # miss pole dance
     'series',
+)
+
+# Not currently used
+RELATED_KEYWORDS = Any(
+    'straddles?',
+    'butterfl(?:y|ies)',
+    'tricks',
+    'tricksters?',
+    'pole',
+    'polers?',
+    'climb',
+    'aerial',
+    'blackgirlspole',
 )
 
 
@@ -54,9 +76,10 @@ class Style(style_base.Style):
             'pole dance',
             'aerial hoop',
             'aerial fabric',
+            'aerial silks',
             'hoop dance',
             'pole',
-            'slik dance',
+            'silk dance',
             'pole-ates',
         ]
 
@@ -72,4 +95,4 @@ class Style(style_base.Style):
 
     @classmethod
     def get_basic_regex(cls):
-        raise Any(DANCE, AMBIGUOUS_DANCE)
+        return Any(DANCE, AMBIGUOUS_DANCE)

@@ -1078,6 +1078,7 @@ CLASS_ONLY = Any(
     u'專攻班',  # chinese specialized class
     u'工作坊',  # chinese workshop/lab
     u'コース',  # course japanese
+    u'交流会', # exchange meeting japanese
     'cors[io]',  # course italian
     'concorso',  # course italian
     'concurso',  # course spanish
@@ -1428,9 +1429,6 @@ DANCE_STYLE_MISC = Any(
     'hoop\W?dance',
     'pilates',
     u'ピラティス',  # japanese pilates
-    'aerial silk',
-    'silk',
-    'aerial',
     'zumba',
     'technique',
     'guest artists?',
