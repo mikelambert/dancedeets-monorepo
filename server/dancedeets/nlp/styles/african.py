@@ -11,12 +11,7 @@ Name = grammar.Name
 connected = grammar.connected
 commutative_connected = grammar.commutative_connected
 
-#TODO: Fix me
-OTHER_STYLES = Any('BLAAAAAAAAH')
-
 REAL_DANCE = Any(
-    # any dance can be an afro-dance!
-    commutative_connected(Any('(?:african|afro)'), OTHER_STYLES),
     'urban kiz',
     'senegalese sabar',
     'joneeba african',
@@ -111,6 +106,11 @@ class Classifier(base_auto_classifier.DanceStyleEventClassifier):
     GOOD_DANCE = REAL_DANCE
     AMBIGUOUS_DANCE = AMBIGUOUS_AFRICAN
     ADDITIONAL_EVENT_TYPE = Any('congress',)
+
+    # any dance can be an afro-dance!
+    # afro-house, afro-salsa, afro-latin, etc
+    # Something like:
+    # cls.GOOD_DANCE = Any(cls.GOOD_DANCE, commutative_connected(Any('(?:african|afro)'), styles.all))
 
     def _quick_is_dance_event(self):
         return True
