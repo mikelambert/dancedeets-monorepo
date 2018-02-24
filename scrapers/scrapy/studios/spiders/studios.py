@@ -6,9 +6,9 @@ import scrapy
 from scrapy import item
 from scrapy import spiders
 from scrapy.linkextractors import LinkExtractor
+from dancedeets.nlp import all_styles
 from dancedeets.nlp import event_classifier
 from dancedeets.nlp import regex_keywords
-from dancedeets.nlp.street import keywords
 from dancedeets.nlp.street import rules
 
 from .. import yelp
@@ -110,7 +110,7 @@ class AllStudiosScraper(spiders.CrawlSpider):
         text_contents = ' '.join(response.selector.xpath('//*[not(self::script|self::style)]/text()').extract()).lower()
 
         processed_text = event_classifier.StringProcessor(text_contents, regex_keywords.WORD_BOUNDARIES)
-        wrong = processed_text.get_tokens(keywords.DANCE_WRONG_STYLE)
+        wrong = processed_text.get_tokens(all_styles.DANCE_WRONG_STYLE)
         good = processed_text.get_tokens(rules.STREET_STYLE)
         if (wrong or good):
             #print response.url, set(wrong), set(good)

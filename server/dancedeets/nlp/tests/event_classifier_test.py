@@ -3,6 +3,7 @@
 
 import unittest
 
+from dancedeets.nlp import all_styles
 from dancedeets.nlp import event_classifier
 from dancedeets.nlp import grammar
 from dancedeets.nlp.street import keywords
@@ -31,7 +32,7 @@ class RuleMatches(unittest.TestCase):
         self.matchRule(keywords.CLASS, 'beginner')
         self.matchRule(keywords.EASY_DANCE, u'χορός')
         self.matchRule(keywords.EASY_DANCE, u'www.danceaholics.co.uk')
-        self.matchRule(keywords.DANCE_WRONG_STYLE, 'khaligi-belly')
+        self.matchRule(all_styles.DANCE_WRONG_STYLE, 'khaligi-belly')
         self.matchRule(rules.GOOD_DANCE, 'hiphop dance')
         self.notMatchRule(rules.GOOD_DANCE, 'hiphop.\ndance')
         #self.matchRule(rules., 'classic w/ mark oliver')
