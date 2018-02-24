@@ -127,8 +127,6 @@ START_JUDGE = Name('START_JUDGE', grammar.Ordered(start_line, full_judge))
 
 PERFORMANCE_PRACTICE = Name('PERFORMANCE_PRACTICE', commutative_connected(GOOD_DANCE, Any(keywords.PERFORMANCE, keywords.PRACTICE)))
 
-DANCE_WRONG_STYLE_TITLE = Name('DANCE_WRONG_STYLE_TITLE', Any(keywords.DANCE_WRONG_STYLE, keywords.DANCE_WRONG_STYLE_TITLE_ONLY))
-
 EVENT = Name(
     'EVENT',
     Any(

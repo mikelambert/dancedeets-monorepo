@@ -19,30 +19,30 @@ for style in _STYLE_LIST:
 
 #TODO: slowly migrate away from this dictionary in favor of Styles
 from dancedeets import event_types
+from dancedeets.nlp import all_styles
 from dancedeets.nlp import grammar
 from dancedeets.nlp.street import rules
-from dancedeets.nlp.street import keywords
 style_keywords = {
     event_types.VERTICALS.STREET: rules.STREET_STYLES,
-    event_types.VERTICALS.LATIN: keywords.DANCE_STYLE_LATIN,
-    event_types.VERTICALS.SWING: keywords.DANCE_STYLE_SWING,
-    event_types.VERTICALS.TANGO: keywords.DANCE_STYLE_TANGO,
-    event_types.VERTICALS.CAPOEIRA: keywords.DANCE_STYLE_CAPOEIRA,
-    event_types.VERTICALS.BALLROOM: keywords.DANCE_STYLE_BALLROOM,
-    event_types.VERTICALS.ZOUK: keywords.DANCE_STYLE_ZOUK,
-    event_types.VERTICALS.WCS: keywords.DANCE_STYLE_WCS,
-    event_types.VERTICALS.PARTNER_FUSION: keywords.DANCE_STYLE_FUSION,
-    event_types.VERTICALS.ROCKABILLY: keywords.DANCE_STYLE_ROCKABILLY,
-    event_types.VERTICALS.COUNTRY: keywords.DANCE_STYLE_COUNTRY,
-    event_types.VERTICALS.CONTACT: keywords.DANCE_STYLE_CONTACT,
-    event_types.VERTICALS.BELLY: keywords.DANCE_STYLE_BELLY,
-    event_types.VERTICALS.SOULLINE: keywords.DANCE_STYLE_SOULLINE,
+    event_types.VERTICALS.LATIN: all_styles.DANCE_STYLE_LATIN,
+    event_types.VERTICALS.SWING: all_styles.DANCE_STYLE_SWING,
+    event_types.VERTICALS.TANGO: all_styles.DANCE_STYLE_TANGO,
+    event_types.VERTICALS.CAPOEIRA: all_styles.DANCE_STYLE_CAPOEIRA,
+    event_types.VERTICALS.BALLROOM: all_styles.DANCE_STYLE_BALLROOM,
+    event_types.VERTICALS.ZOUK: all_styles.DANCE_STYLE_ZOUK,
+    event_types.VERTICALS.WCS: all_styles.DANCE_STYLE_WCS,
+    event_types.VERTICALS.PARTNER_FUSION: all_styles.DANCE_STYLE_FUSION,
+    event_types.VERTICALS.ROCKABILLY: all_styles.DANCE_STYLE_ROCKABILLY,
+    event_types.VERTICALS.COUNTRY: all_styles.DANCE_STYLE_COUNTRY,
+    event_types.VERTICALS.CONTACT: all_styles.DANCE_STYLE_CONTACT,
+    event_types.VERTICALS.BELLY: all_styles.DANCE_STYLE_BELLY,
+    event_types.VERTICALS.SOULLINE: all_styles.DANCE_STYLE_SOULLINE,
 }
 misc_keyword_sets = [
-    keywords.DANCE_STYLE_CLASSICAL,
-    keywords.DANCE_STYLE_INDIAN,
-    keywords.DANCE_STYLE_SEXY,
-    keywords.DANCE_STYLE_MISC,
+    all_styles.DANCE_STYLE_CLASSICAL,
+    all_styles.DANCE_STYLE_INDIAN,
+    all_styles.DANCE_STYLE_SEXY,
+    all_styles.DANCE_STYLE_MISC,
 ]
 
 
