@@ -65,13 +65,6 @@ DANCE_STYLE_INDIAN = Any(
     'indienne',
 )
 
-DANCE_STYLE_TANGO = Any(
-    'tango',
-    'milonga',
-    u'タンゴ',  # japanese tango
-    u'탱고',  # korean tango
-)
-
 DANCE_STYLE_SEXY = Any(
     'exotic',
     'flirt danc\w+',

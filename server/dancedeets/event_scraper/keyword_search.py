@@ -214,11 +214,6 @@ too_popular_style_keywords = {
         'country 2 step',
         'american tango',
     ],
-    VERTICALS.TANGO: [
-        'argentine tango',
-        'tango',
-        'milonga',
-    ],
     VERTICALS.COUNTRY: [
         'country western',
         'country dance',

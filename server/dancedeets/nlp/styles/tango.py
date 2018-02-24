@@ -1,10 +1,11 @@
 # -*-*- encoding: utf-8 -*-*-
 
-from dancedeets import event_types
-from .. import base_auto_classifier
-from .. import grammar
-from ..ballroom import classifier as ballroom_classifier
-from ..street import keywords
+from dancedeets.nlp import base_auto_classifier
+from dancedeets.nlp import grammar
+from dancedeets.nlp import style_base
+from dancedeets.nlp.street import keywords
+from dancedeets.nlp.styles import partner
+from dancedeets.nlp.ballroom import classifier as ballroom_classifier
 
 Any = grammar.Any
 Name = grammar.Name
@@ -55,11 +56,7 @@ AMBIGUOUS_WORDS = Any(
 EXTRAS = Any(ARGENTINE, TANGO_TYPES, keywords.EASY_DANCE)
 
 
-class TangoClassifier(base_auto_classifier.DanceStyleEventClassifier):
-    __metaclass__ = base_auto_classifier.AutoRuleGenerator
-
-    vertical = event_types.VERTICALS.TANGO
-
+class Classifier(base_auto_classifier.DanceStyleEventClassifier):
     AMBIGUOUS_DANCE = AMBIGUOUS_WORDS
     GOOD_DANCE = REAL_DANCE
     ADDITIONAL_EVENT_TYPE = Any('meeting', 'incontro', 'festival', 'marathon', 'milongas?')
@@ -68,10 +65,13 @@ class TangoClassifier(base_auto_classifier.DanceStyleEventClassifier):
     ]
 
     def _quick_is_dance_event(self):
+        ballroom = ballroom_classifier.is_many_ballroom_styles(self._classified_event)
+        if ballroom[0]:
+            return False
         return True
 
     def is_dance_event(self):
-        result = super(TangoClassifier, self).is_dance_event()
+        result = super(Classifier, self).is_dance_event()
         if result:
             return result
 
@@ -88,10 +88,31 @@ class TangoClassifier(base_auto_classifier.DanceStyleEventClassifier):
         return False
 
 
-def is_tango_dance(classified_event):
-    ballroom = ballroom_classifier.is_many_ballroom_styles(classified_event)
-    if ballroom[0]:
-        return (False, ['Ballroom event: %s' % ballroom[1]], None)
+class Style(style_base.Style):
+    @classmethod
+    def get_name(cls):
+        return 'TANGO'
 
-    classifier = TangoClassifier(classified_event)
-    return classifier.is_dance_event(), classifier.debug_info(), classifier.vertical
+    @classmethod
+    def get_rare_search_keywords(cls):
+        return []
+
+    @classmethod
+    def get_popular_search_keywords(cls):
+        return [
+            'argentine tango',
+            'tango',
+            'milonga',
+        ]
+
+    @classmethod
+    def get_search_keyword_event_types(cls):
+        return partner.EVENT_TYPES
+
+    @classmethod
+    def _get_classifier(cls):
+        return Classifier
+
+    @classmethod
+    def get_basic_regex(cls):
+        return Any(AMBIGUOUS_WORDS, REAL_DANCE)
