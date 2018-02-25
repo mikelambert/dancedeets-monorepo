@@ -22,5 +22,4 @@ case $key in
 esac
 shift # past argument or value
 done
-
-PYTHONPATH=. APPLICATION_ID=dancedeets-hrd $COVERAGE_PREFIX $(dirname $0)/testrunner.py $ARGS
+PYTHONPATH=. APPLICATION_ID=dancedeets-hrd $COVERAGE_PREFIX $(dirname $0)/testrunner.py ${ARGS[@]}
