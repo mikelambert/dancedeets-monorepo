@@ -12,9 +12,8 @@ commutative_connected = grammar.commutative_connected
 
 REAL_DANCE = Any(
     '(?:nyc?|new york)\W?hustl\w*',
-    'discofox',
-    'latin hustle',
-    'nsh',
+    'disco\W?fox\w*',
+    'latin hustl\w*',
     'new\W?style\W?hustl\w*',
 )
 
@@ -28,12 +27,22 @@ class Classifier(base_auto_classifier.DanceStyleEventClassifier):
     GOOD_DANCE = REAL_DANCE
     AMBIGUOUS_DANCE = AMBIGUOUS_DANCE
 
-    GOOD_BAD_PAIRINGS = [(Any('hustle'), Any(
-        'dirt\w*',
-        'road\w*',
-        'race\w*',
-        'racing',
-    ))]
+    GOOD_BAD_PAIRINGS = [(
+        Any('hustle'),
+        Any(
+            'dirt\w*',
+            'road\w*',
+            'race\w*',
+            'racing',
+            '5k',
+            'networking',
+            'side hustle',
+            'run\w*',
+            'walk\w*',
+            'hustle bustle',
+            'survive',
+        )
+    )]
 
     def _quick_is_dance_event(self):
         return True
