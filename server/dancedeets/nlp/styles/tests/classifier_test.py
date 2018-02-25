@@ -10,11 +10,13 @@ from dancedeets.test_utils import unittest
 TEST_IDS_PATH = os.path.join(os.path.dirname(styles.__file__), 'test_ids')
 
 
-def get_positive_negative_ids():
+def get_positive_negative_ids(style_name):
     positives = {}
     negatives = {}
 
     for filename in os.listdir(TEST_IDS_PATH):
+        if filename != '%s.txt' % style_name:
+            continue
         full_path = os.path.join(TEST_IDS_PATH, filename)
         for line in open(full_path).readlines():
             try:
@@ -75,11 +77,13 @@ def print_stats(positives, negatives, false_positives, false_negatives, get_even
     false_positive_count = sum(len(x) for x in false_positives.values())
     false_negative_count = sum(len(x) for x in false_negatives.values())
 
-    false_positive_rate = 1.0 * false_positive_count / negative_count
-    false_negative_rate = 1.0 * false_negative_count / positive_count
+    if negative_count:
+        false_positive_rate = 1.0 * false_positive_count / negative_count
+        print 'FP %s: %2.f%%' % (false_positive_count, 100 * false_positive_rate)
 
-    print 'FP %s: %2.f%%' % (false_positive_count, 100 * false_positive_rate)
-    print 'FN %s: %2.f%%' % (false_negative_count, 100 * false_negative_rate)
+    if positive_count:
+        false_negative_rate = 1.0 * false_negative_count / positive_count if positive_count else 'N/A'
+        print 'FN %s: %2.f%%' % (false_negative_count, 100 * false_negative_rate)
 
     for style_name, event_ids in false_negatives.iteritems():
         for event_id in event_ids:
@@ -94,7 +98,8 @@ def print_stats(positives, negatives, false_positives, false_negatives, get_even
 
 class TestFiles(classifier_util.TestClassifier):
     def runTest(self):
-        positives, negatives = get_positive_negative_ids()
+        style_name = os.environ.get('EXTRA_ARGS')
+        positives, negatives = get_positive_negative_ids(style_name)
         false_positives, false_negatives = get_false_positives_and_negatives(positives, negatives, self.get_event)
         print_stats(positives, negatives, false_positives, false_negatives, self.get_event)
 
