@@ -44,18 +44,17 @@ OBVIOUS = 'OBVIOUS'
 TOO_POPULAR = 'TOO_POPULAR'
 
 
-def get_chunks(style):
-    if not style:
-        style_names = styles.STYLES.keys()
+def get_chunks(style_name):
+    if not style_name:
+        style_list = styles.STYLES.values()
     else:
-        style_names = [style]
+        style_list = [styles.STYLES[style_name]]
     chunks = []
-    for style_name in style_names:
-        style = styles.STYLES[style_name]
+    for style in style_list:
         obvious_keywords = style.get_rare_search_keywords()
         too_popular_keywords = style.get_popular_search_keywords()
         chunks.extend({'type': OBVIOUS, 'keyword': x} for x in obvious_keywords)
-        chunks.extend({'type': TOO_POPULAR, 'keyword': x, 'style': style} for x in too_popular_keywords)
+        chunks.extend({'type': TOO_POPULAR, 'keyword': x, 'style': style.get_name()} for x in too_popular_keywords)
     return chunks
 
 
@@ -114,8 +113,8 @@ def get_ids_for_keyword(fbl, query):
     return ids
 
 
-def search_fb(fbl, style):
-    chunks = get_chunks(style)
+def search_fb(fbl, style_name):
+    chunks = get_chunks(style_name)
     for chunk in chunks:
         taskqueue.add(
             method='GET',
