@@ -43,7 +43,7 @@ EASY_DANCE = Name(
         u'नृत्य',  # hindi dance
         u'댄스',  # korean dance
         u'댄서',  # korean dancer
-        u'танц\w*', # russian/bulgarian dance
+        u'танц\w*',  # russian/bulgarian dance
         u'изтанц\w*',  # russian/bulgarian dance
         u'רקוד',  # hebrew dancing
         u'בלרקוד',  # hebrew dancing
@@ -395,6 +395,7 @@ STYLE_ALLSTYLE = Name(
 STYLE_HOUSE = Name(
     'STYLE_HOUSE',
     Any(
+        u'浩室舞',
         'houser[sz]?',
         'afro\W?house',
         'dance house',  # seen in italian
@@ -530,6 +531,7 @@ HOUSE = Name(
         u'ハウス',  # japanese house
         u'хаус',  # russian house
         u'האוס',  # hebrew house
+        u'浩室',  # chinese house
     )
 )
 
@@ -1078,7 +1080,7 @@ CLASS_ONLY = Any(
     u'專攻班',  # chinese specialized class
     u'工作坊',  # chinese workshop/lab
     u'コース',  # course japanese
-    u'交流会', # exchange meeting japanese
+    u'交流会',  # exchange meeting japanese
     'cors[io]',  # course italian
     'concorso',  # course italian
     'concurso',  # course spanish
@@ -1096,8 +1098,8 @@ CLASS_ONLY = Any(
     'pamokas',  # lithuanian lesson
     'kursai',  # course lithuanian
     'kursas',  # course lithuanian
-    'kurs', # course dutch
-    'choreokurs\w*', # choreo course dutch
+    'kurs',  # course dutch
+    'choreokurs\w*',  # choreo course dutch
     'lez\.',  # lesson italian
     'lezion[ei]?',  # lesson italian
     u'zajęciach',  # class polish
@@ -1239,7 +1241,6 @@ ROMANCE_LANGUAGE_CLASS = Name('ROMANCE_LANGUAGE_CLASS', Any(
     'stage',
     'stages',
 ))
-
 
 AMBIGUOUS_WRONG_STYLE = Name('AMBIGUOUS_WRONG_STYLE', Any(
     'modern',
