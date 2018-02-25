@@ -5,7 +5,6 @@ from .ballroom import classifier as ballroom_classifier
 from .capoeira import classifier as capoeira_classifier
 from .latin import classifier as latin_classifier
 from .street import classifier as street_classifier
-from .swing import classifier as swing_classifier
 
 
 def is_auto_add_event(classified_event):
@@ -30,7 +29,6 @@ class AutoClassifier(object):
             capoeira_classifier.is_capoeira_event,
             latin_classifier.is_salsa_event,
             street_classifier.is_street_event,
-            swing_classifier.is_swing_event,
         ]
         for classifier in classifiers:
             result = classifier(self.classified_event)

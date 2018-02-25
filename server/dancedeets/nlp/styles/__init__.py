@@ -7,6 +7,7 @@ from dancedeets.nlp.styles import country
 from dancedeets.nlp.styles import partner_fusion
 from dancedeets.nlp.styles import rockabilly
 from dancedeets.nlp.styles import soulline
+from dancedeets.nlp.styles import swing
 from dancedeets.nlp.styles import tango
 from dancedeets.nlp.styles import wcs
 from dancedeets.nlp.styles import zouk
@@ -22,6 +23,7 @@ _STYLE_LIST = [
     partner_fusion.Style,
     rockabilly.Style,
     soulline.Style,
+    swing.Style,
     tango.Style,
     wcs.Style,
     zouk.Style,
@@ -43,7 +45,6 @@ from dancedeets.nlp.street import rules
 style_keywords = {
     event_types.VERTICALS.STREET: rules.STREET_STYLES,
     event_types.VERTICALS.LATIN: all_styles_raw.DANCE_STYLE_LATIN,
-    event_types.VERTICALS.SWING: all_styles_raw.DANCE_STYLE_SWING,
     event_types.VERTICALS.CAPOEIRA: all_styles_raw.DANCE_STYLE_CAPOEIRA,
     event_types.VERTICALS.BALLROOM: all_styles_raw.DANCE_STYLE_BALLROOM,
 }

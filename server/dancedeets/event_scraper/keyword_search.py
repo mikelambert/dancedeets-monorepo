@@ -175,26 +175,6 @@ too_popular_style_keywords = {
         'capoeira contemporânea',
         'capoeira roda',
     ],
-    VERTICALS.SWING: [
-        'swing dance',
-        'east coast swing',
-        'ecs',
-        'west coast swing',
-        'swing out',
-        'wcs',
-        'lindy hop',
-        'lindy',
-        'balboa',
-        'solo jazz',
-        'solo charleston',
-        'partner charleston',
-        'carolina shag',
-        'collegiate shag',
-        'st louis shag',
-        'modern jive',
-        'jitterbug',
-        'slow drag',
-    ],
     VERTICALS.BALLROOM: [
         'ballroom dance',
         'latin ballroom',
@@ -257,9 +237,6 @@ STYLE_EVENT_TYPES = {
         'encontro',
         'demo',
         'demonstration',
-    ],
-    VERTICALS.SWING: PARTNER + [
-        'hop',
     ],
 }
 
