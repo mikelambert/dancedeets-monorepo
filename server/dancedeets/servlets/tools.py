@@ -13,6 +13,7 @@ from dancedeets import app
 from dancedeets import base_servlet
 from dancedeets import fb_api
 from dancedeets.events import eventdata
+from dancedeets.nlp.styles import street
 from dancedeets.users import new_user_email
 from dancedeets.util import fb_events
 from dancedeets.util import mr
@@ -42,9 +43,9 @@ class MemoryUsers(webapp2.RequestHandler):
 
 
 def resave_object(obj):
-    from dancedeets import event_types
-    if obj.verticals == [event_types.VERTICALS.STREET, event_types.VERTICALS.STREET]:
-        obj.verticals = [event_types.VERTICALS.STREET]
+    STREET = street.Style.get_name()
+    if obj.verticals == [STREET, STREET]:
+        obj.verticals = [STREET]
     yield op.db.Put(obj)
 
 

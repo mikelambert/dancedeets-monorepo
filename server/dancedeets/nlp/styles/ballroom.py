@@ -15,6 +15,9 @@ commutative_connected = grammar.commutative_connected
 BALLROOM_STYLES = Any(
     'waltz',
     'viennese waltz',
+    'waltz',
+    u'왈츠',  # korean waltz
+    u'ワルツ',  # japanese waltz
     'tango',
     'foxtrot',
     'quick\W?step',

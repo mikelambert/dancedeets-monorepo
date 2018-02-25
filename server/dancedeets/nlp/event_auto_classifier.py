@@ -1,7 +1,7 @@
 # -*-*- encoding: utf-8 -*-*-
 
 from dancedeets.nlp import styles
-from .street import classifier as street_classifier
+from dancedeets.nlp.street import classifier as street_classifier
 
 
 def is_auto_add_event(classified_event):
@@ -20,14 +20,6 @@ class AutoClassifier(object):
 
     def _run_classify(self):
         results = []
-
-        classifiers = [
-            street_classifier.is_street_event,
-        ]
-        for classifier in classifiers:
-            result = classifier(self.classified_event)
-            if result[0]:
-                results.append(result)
         for classifier in styles.CLASSIFIERS.values():
             this_classifier = classifier(self.classified_event)
             is_dance_event = this_classifier.is_dance_event()

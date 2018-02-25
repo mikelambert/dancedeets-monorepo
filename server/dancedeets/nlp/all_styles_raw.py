@@ -5,20 +5,6 @@ from . import grammar
 Any = grammar.Any
 Name = grammar.Name
 
-DANCE_STYLE_SWING = Any(
-    'balboa',
-    'lindy',
-    'lindyhop\w*',
-    'east coast swing',
-    u'リンディ',  # japanese lindy
-    u'린디',  # korean lindy
-    'swing',
-    'charleston',
-    'quickstep',
-    'blues',
-    u'ブルース',  # japanese blues
-)
-
 DANCE_STYLE_CLASSICAL = Any(
     'barre',
     'contato improv\w*',
@@ -56,12 +42,6 @@ DANCE_STYLE_SEXY = Any(
     'go\W?go',
     'burlesque',
     u'バーレスク',  # japanese burlesque
-)
-
-DANCE_STYLE_BALLROOM = Any(
-    'waltz',
-    u'왈츠',  # korean waltz
-    u'ワルツ',  # japanese waltz
 )
 
 DANCE_STYLE_MISC = Any(

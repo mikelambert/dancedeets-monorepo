@@ -4,11 +4,11 @@ import re
 
 from dancedeets import fb_api
 
-from dancedeets import event_types
 from dancedeets.event_attendees import event_attendee_classifier
 from dancedeets.events import eventdata
 from dancedeets.nlp import event_auto_classifier
 from dancedeets.nlp import event_classifier
+from dancedeets.nlp.styles import street
 from dancedeets.util import fb_mapreduce
 from dancedeets.util import mr
 from . import add_entities
@@ -79,7 +79,7 @@ def really_classify_events(fbl, new_pe_list, new_fb_list, allow_posting=True):
             )
             logging.info('Is Good Event By Attendees: %s: %s', event_id, good_event)
             method = eventdata.CM_AUTO_ATTENDEE
-            verticals = [event_types.VERTICALS.STREET]
+            verticals = [street.Style.get_name()]
         if good_event:
             result = '+%s\n' % '\t'.join((event_id, fb_event['info'].get('name', '')))
             try:

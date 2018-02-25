@@ -21,11 +21,6 @@ from . import rules
 
 
 def is_street_event(classified_event):
-    result = _is_street_event(classified_event)
-    return result[0], [result[1]], result[2]
-
-
-def _is_street_event(classified_event):
     good_bad_pairings = [
         (keywords.STYLE_HOUSE, keywords.WRONG_HOUSE),
         (keywords.STYLE_BREAK, keywords.WRONG_BREAK),
@@ -35,40 +30,40 @@ def _is_street_event(classified_event):
     ]
     for good, bad in good_bad_pairings:
         if classified_event.processed_text.has_token(good) and classified_event.processed_text.has_token(bad):
-            return (False, 'has bad-token for equivalent good-token, skipping', None)
+            return (False, 'has bad-token for equivalent good-token, skipping')
 
     result = is_intentional(classified_event)
     if result[0]:
-        return result[0], result[1], event_types.VERTICALS.STREET
+        return result[0], result[1]
     result = is_battle(classified_event)
     if result[0]:
-        return result[0], result[1], event_types.VERTICALS.STREET
+        return result[0], result[1]
     result = is_audition(classified_event)
     if result[0]:
-        return result[0], result[1], event_types.VERTICALS.STREET
+        return result[0], result[1]
     result = is_workshop(classified_event)
     if result[0]:
-        return result[0], result[1], event_types.VERTICALS.STREET
+        return result[0], result[1]
     result = has_list_of_good_classes(classified_event)
     if result[0]:
-        return result[0], result[1], event_types.VERTICALS.STREET
+        return result[0], result[1]
     result = is_vogue_event(classified_event)
     if result[0]:
-        return result[0], result[1], event_types.VERTICALS.STREET
+        return result[0], result[1]
     result = has_standalone_keywords(classified_event)
     if result[0]:
-        return result[0], result[1], event_types.VERTICALS.STREET
+        return result[0], result[1]
     result = has_good_event_title(classified_event)
     if result[0]:
-        return result[0], result[1], event_types.VERTICALS.STREET
+        return result[0], result[1]
     result = is_performance_or_practice(classified_event)
     if result[0]:
-        return result[0], result[1], event_types.VERTICALS.STREET
+        return result[0], result[1]
     result = has_many_street_styles(classified_event)
     if result[0]:
-        return result[0], result[1], event_types.VERTICALS.STREET
+        return result[0], result[1]
 
-    return result[0], result[1], event_types.VERTICALS.STREET
+    return result[0], result[1]
 
 
 def has_many_street_styles(classified_event):

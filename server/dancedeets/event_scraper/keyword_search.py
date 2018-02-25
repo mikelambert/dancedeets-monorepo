@@ -7,7 +7,6 @@ import time
 
 from dancedeets import base_servlet
 from dancedeets import app
-from dancedeets import event_types
 from dancedeets import fb_api
 from dancedeets.nlp import styles
 from dancedeets.util import mr
@@ -16,7 +15,6 @@ from dancedeets.util import urls
 from . import thing_db
 from . import potential_events
 from . import event_pipeline
-VERTICALS = event_types.VERTICALS
 
 
 class LookupSearchEvents(fb_api.LookupType):
@@ -34,119 +32,6 @@ class LookupSearchEvents(fb_api.LookupType):
     def cache_key(cls, object_id, fetching_uid):
         return (fb_api.USERLESS_UID, object_id, 'OBJ_SEARCH')
 
-
-def two(w):
-    a, b = w.split(' ')
-    keywords = [
-        '%s %s' % (a, b),
-        '%s%s' % (a, b),
-    ]
-    return keywords
-
-
-obvious_style_keywords = {
-    VERTICALS.STREET: ([
-        'bboys',
-        'bboying',
-        'bgirl',
-        'bgirls',
-        'bgirling',
-        'breakdancing',
-        'breakdancers',
-        'breakdanse',
-        'hiphop',
-        'hip hop',
-        'new style',
-        'house danse',
-        'afro house',
-        'afrohouse',
-        'poppers',
-        'poplock',
-        'tutting',
-        'bopping',
-        'boppers',
-        'lockers',
-        'locking',
-        'waacking',
-        'waackers',
-        'waack',
-        'whacking',
-        'whackers',
-        'jazzrock',
-        'jazz rock',
-        'jazz-rock',
-        'ragga jam',
-        'krump',
-        'krumperz',
-        'krumping',
-        'streetjazz',
-        'voguing',
-        'house danse',
-        'hiphop dance',
-        'hiphop danse',
-        'hip hop danse',
-        'tous style',
-        'urban dance',
-        'afro house',
-        'urban style',
-        'turfing',
-        'baile urbano',
-        'soul dance',
-        'footwork',
-        '7 to smoke',
-        u'ストリートダンス',
-        u'ブレックダンス',
-        'cypher',
-        'cypher battle',
-        'cypher jam',
-    ] + two('electro dance') + two('lite feet')),
-}
-
-#        'jive',
-#        'foxtrot',
-#        'waltz',
-#        'tango',
-#        'quickstep',
-
-too_popular_style_keywords = {
-    VERTICALS.STREET: ([
-        'bboy',
-        'breaking',
-        'breakdance',
-        'house dance',
-        'bebop',
-        'dancehall',
-        'street jazz',
-        'street-jazz',
-        'hip hop dance',
-        # 'house workshop'....finds auto-add events we don't want labelled as house or as dance events
-        # so we don't want to list it here..
-        #'waving',
-        #'boogaloo',
-        # 'uk jazz', 'uk jazz', 'jazz fusion',
-        # 'flexing',
-        'lock',
-        'popping',
-        'dance',
-        'choreo',
-        'choreography',
-        #'kpop', 'k pop',
-        'vogue',
-        'all styles',
-        'freestyle',
-    ] + two('hip hop') + two('street dance') + two('new style') + two('all styles')),
-}
-
-PARTNER = [
-    'meeting',
-    'incontro',
-    'marathon',
-    'social',
-    'party',
-    'jack & jill',
-    'weekend',
-    'festival',
-]
 
 EVENT_TYPES = [
     'session',
@@ -167,13 +52,10 @@ EVENT_TYPES = [
     'audition',
     'audiciones',
 ]
-STYLE_EVENT_TYPES = {
-    VERTICALS.STREET: [
-        'battle',
-        'jam',
-        'bonnie and clyde',
-    ],
-}
+
+STYLE_EVENT_TYPES = {}
+obvious_style_keywords = {}
+too_popular_style_keywords = {}
 
 # Load all the relevant data from our parameterized styles
 for style in styles.STYLES.values():
@@ -198,11 +80,11 @@ TOO_POPULAR = 'TOO_POPULAR'
 
 def get_chunks(style):
     if not style:
-        styles = event_types.VERTICALS.__dict__.keys()
+        style_names = styles.STYLES.keys()
     else:
-        styles = [style]
+        style_names = [style]
     chunks = []
-    for style in styles:
+    for style in style_names:
         obvious_keywords = obvious_style_keywords.get(style, [])
         too_popular_keywords = too_popular_style_keywords.get(style, [])
         chunks.extend({'type': OBVIOUS, 'keyword': x} for x in obvious_keywords)

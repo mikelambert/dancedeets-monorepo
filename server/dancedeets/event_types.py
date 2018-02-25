@@ -1,15 +1,5 @@
-class Verticals(object):
-    pass
-
-
-VERTICALS = Verticals()
-VERTICALS.STREET = 'STREET'  # hiphop, house, breaking, popping, locking, waacking, vogue, krump, etc
-VERTICALS.BALLROOM = 'BALLROOM'
-VERTICALS.CAPOEIRA = 'CAPOEIRA'
-
-
 def should_show(e):
-    return not e.verticals or VERTICALS.STREET in e.verticals
+    return not e.verticals or 'STREET' in e.verticals
 
 
 class EventType(object):

@@ -13,6 +13,8 @@ commutative_connected = grammar.commutative_connected
 
 REAL_DANCE = Any(
     'lindy\W?hop\w*',
+    u'リンディ',  # japanese lindy
+    u'린디',  # korean lindy
     'east coast swing',
     'solo jazz',
     'solo charleston',
@@ -33,7 +35,10 @@ AMBIGUOUS_WORDS = Any(
     'ecs',
 )
 
-AMBIGUOUS_DANCE_MUSIC = Any('blues',)
+AMBIGUOUS_DANCE_MUSIC = Any(
+    'blues',
+    u'ブルース',  # japanese blues
+)
 
 # Event Sites:
 # http://www.swingplanit.com/

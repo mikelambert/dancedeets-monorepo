@@ -1,4 +1,5 @@
-# TODO: clean up our module names
+from dancedeets.nlp import all_styles_raw
+from dancedeets.nlp import grammar
 from dancedeets.nlp.styles import aerial_pole
 from dancedeets.nlp.styles import african
 from dancedeets.nlp.styles import ballroom
@@ -10,6 +11,7 @@ from dancedeets.nlp.styles import latin
 from dancedeets.nlp.styles import partner_fusion
 from dancedeets.nlp.styles import rockabilly
 from dancedeets.nlp.styles import soulline
+from dancedeets.nlp.styles import street
 from dancedeets.nlp.styles import swing
 from dancedeets.nlp.styles import tango
 from dancedeets.nlp.styles import wcs
@@ -29,6 +31,7 @@ _STYLE_LIST = [
     partner_fusion.Style,
     rockabilly.Style,
     soulline.Style,
+    street.Style,
     swing.Style,
     tango.Style,
     wcs.Style,
@@ -43,14 +46,6 @@ for style in _STYLE_LIST:
         raise ImportError('Style name duplicated: %s' % style.get_name())
     STYLES[style.get_name()] = style
 
-#TODO: slowly migrate away from this dictionary in favor of Styles
-from dancedeets import event_types
-from dancedeets.nlp import all_styles_raw
-from dancedeets.nlp import grammar
-from dancedeets.nlp.street import rules
-style_keywords = {
-    event_types.VERTICALS.STREET: rules.STREET_STYLES,
-}
 misc_keyword_sets = [
     all_styles_raw.DANCE_STYLE_CLASSICAL,
     all_styles_raw.DANCE_STYLE_INDIAN,
@@ -64,10 +59,6 @@ def all_styles_except(vertical):
     for regex_style in _STYLE_LIST:
         if regex_style != vertical:
             regexes.add(regex_style.get_basic_regex())
-    #TODO: remove these eventually once the above dict is gone
-    for regex_style in style_keywords:
-        if regex_style != vertical:
-            regexes.add(style_keywords[regex_style])
     regexes.update(misc_keyword_sets)
     return grammar.Any(*regexes)
 
