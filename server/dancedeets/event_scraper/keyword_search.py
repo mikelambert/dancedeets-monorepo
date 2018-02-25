@@ -35,7 +35,7 @@ class LookupSearchEvents(fb_api.LookupType):
 
 def expand_keyword(keyword, style_name):
     style = styles.STYLES[style_name]
-    all_keywords = ['%s %s' % (keyword, x) for x in style.get_keyword_event_types()]
+    all_keywords = ['%s %s' % (keyword, x) for x in style.get_all_keyword_event_types()]
     all_keywords.append(keyword)
     return all_keywords
 

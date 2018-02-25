@@ -21,10 +21,10 @@ class Style(object):
 
     @classmethod
     def get_all_keyword_event_types(cls):
-        return event_types.EVENT_TYPES + cls.get_keyword_event_types()
+        return event_types.EVENT_TYPES + cls.get_search_keyword_event_types()
 
     @classmethod
-    def get_keyword_event_types(cls):
+    def get_search_keyword_event_types(cls):
         return []
 
     @classmethod
