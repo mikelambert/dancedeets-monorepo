@@ -2,6 +2,7 @@
 
 import logging
 import os
+import sys
 import time
 
 logging.basicConfig(level=logging.INFO)
@@ -38,8 +39,7 @@ def write_ids(filename, style_name, ids):
     f.close()
 
 
-def main():
-    style_name = 'HUSTLE'
+def main(style_name):
 
     filename = os.path.join(TEST_IDS_PATH, '%s.txt' % style_name)
     if os.path.exists(filename):
@@ -53,4 +53,4 @@ def main():
 
 
 if __name__ == '__main__':
-    main()
+    main(sys.argv[1])
