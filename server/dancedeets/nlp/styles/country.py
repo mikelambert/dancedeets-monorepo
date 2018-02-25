@@ -1,10 +1,11 @@
 # -*-*- encoding: utf-8 -*-*-
 
-from dancedeets import event_types
-from .. import base_auto_classifier
-from .. import grammar
-from ..soulline import classifier as soulline_classifier
-from ..street import keywords
+from dancedeets.nlp import base_auto_classifier
+from dancedeets.nlp import grammar
+from dancedeets.nlp import style_base
+from dancedeets.nlp.street import keywords
+from dancedeets.nlp.styles import partner
+from dancedeets.nlp.styles import soulline
 
 Any = grammar.Any
 Name = grammar.Name
@@ -60,11 +61,7 @@ GOOD_KEYWORDS = Any(
 )
 
 
-class CountryClassifier(base_auto_classifier.DanceStyleEventClassifier):
-    __metaclass__ = base_auto_classifier.AutoRuleGenerator
-
-    vertical = event_types.VERTICALS.COUNTRY
-
+class Classifier(base_auto_classifier.DanceStyleEventClassifier):
     GOOD_DANCE = REAL_DANCE
     AMBIGUOUS_DANCE = AMBIGUOUS_DANCE
     ADDITIONAL_EVENT_TYPE = Any(
@@ -74,15 +71,18 @@ class CountryClassifier(base_auto_classifier.DanceStyleEventClassifier):
         'marathon',
     )
 
-    def __init__(self, classified_event):
-        super(CountryClassifier, self).__init__(classified_event)
-        self.LINE_DANCE_EVENT = commutative_connected(LINE_DANCE, self.EVENT_TYPE)
+    @classmethod
+    def finalize_class(cls, other_style_regex):
+        print 1, super(Classifier, cls).finalize_class
+        super(Classifier, cls).finalize_class(other_style_regex)
+        cls.LINE_DANCE_EVENT = commutative_connected(LINE_DANCE, cls.EVENT_TYPE)
+        print 2, cls.LINE_DANCE_EVENT
 
     def _quick_is_dance_event(self):
         return True
 
     def is_dance_event(self):
-        result = super(CountryClassifier, self).is_dance_event()
+        result = super(Classifier, self).is_dance_event()
         if result:
             return result
 
@@ -99,13 +99,46 @@ class CountryClassifier(base_auto_classifier.DanceStyleEventClassifier):
 
         if self._has(self.LINE_DANCE_EVENT):
             # "Line dance" by itself is good, unless its a soul line dance event
-            sl_classifier = soulline_classifier.SoulLineClassifier(self._classified_event)
+            sl_classifier = soulline.Classifier(self._classified_event)
             if not sl_classifier.is_dance_event():
                 return 'body has line dance event'
 
         return False
 
 
-def is_country_event(classified_event):
-    classifier = CountryClassifier(classified_event)
-    return classifier.is_dance_event(), classifier.debug_info(), classifier.vertical
+class Style(style_base.Style):
+    @classmethod
+    def get_name(cls):
+        return 'COUNTRY'
+
+    @classmethod
+    def get_rare_search_keywords(cls):
+        return []
+
+    @classmethod
+    def get_popular_search_keywords(cls):
+        return [
+            'country western',
+            'country dance',
+            'barn dance',
+            'square dance',
+            'country line',
+            'contra barn',
+            'cowboy dance',
+            'two step',
+            'c/w dance',
+            'western dance',
+            'modern western',
+        ]
+
+    @classmethod
+    def get_search_keyword_event_types(cls):
+        return partner.EVENT_TYPES
+
+    @classmethod
+    def _get_classifier(cls):
+        return Classifier
+
+    @classmethod
+    def get_basic_regex(cls):
+        return Any(AMBIGUOUS_DANCE, REAL_DANCE)

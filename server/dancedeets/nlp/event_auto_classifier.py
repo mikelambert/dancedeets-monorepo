@@ -3,7 +3,6 @@
 from dancedeets.nlp import styles
 from .ballroom import classifier as ballroom_classifier
 from .capoeira import classifier as capoeira_classifier
-from .country import classifier as country_classifier
 from .latin import classifier as latin_classifier
 from .rockabilly import classifier as rockabilly_classifier
 from .street import classifier as street_classifier
@@ -31,7 +30,6 @@ class AutoClassifier(object):
         classifiers = [
             ballroom_classifier.is_ballroom_event,
             capoeira_classifier.is_capoeira_event,
-            country_classifier.is_country_event,
             latin_classifier.is_salsa_event,
             rockabilly_classifier.is_rockabilly_event,
             street_classifier.is_street_event,

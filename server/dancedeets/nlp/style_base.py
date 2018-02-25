@@ -29,6 +29,7 @@ class Style(object):
         logging.info('Initializing classifier for %s', cls.get_name())
         classifier = cls._get_classifier()
         classifier.vertical = cls.get_name()
+        print 0, classifier, classifier.finalize_class
         classifier.finalize_class(other_style_regex)
         return classifier
 

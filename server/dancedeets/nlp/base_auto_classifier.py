@@ -84,23 +84,6 @@ class RuleGenerator(type):
             )
         )
 
-        @classmethod
-        def finalize_class(cls, other_style_regex):
-            cls.OTHER_DANCE_FULL = Any(
-                cls.OTHER_DANCE,
-                cls.NOT_DANCE,
-                other_style_regex,
-            )
-
-            # make this function a no-op the next time it's called
-            @classmethod
-            def dummy_finalize_class(*args):
-                pass
-
-            cls.finalize_class = dummy_finalize_class
-
-        cls.finalize_class = finalize_class
-
 
 class AutoRuleGenerator(RuleGenerator):
     def __init__(cls, name, parents, attr):
@@ -132,6 +115,21 @@ class DanceStyleEventClassifier(object):
 
         self._logs = []
         self._log_category = None
+
+    @classmethod
+    def finalize_class(cls, other_style_regex):
+        cls.OTHER_DANCE_FULL = Any(
+            cls.OTHER_DANCE,
+            cls.NOT_DANCE,
+            other_style_regex,
+        )
+
+        # make this function a no-op the next time it's called
+        @classmethod
+        def dummy_finalize_class(*args):
+            pass
+
+        cls.finalize_class = dummy_finalize_class
 
     # utility methods
     def _title_get(self, keyword):

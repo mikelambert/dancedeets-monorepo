@@ -85,16 +85,6 @@ DANCE_STYLE_CAPOEIRA = Any(
     u'カポエイラ',  # japanese capoeira
 )
 
-# Copied from country/classiifer
-DANCE_STYLE_COUNTRY = Any(
-    'country',
-    'square',
-    'contra',
-    'texas shuffle',
-    'clogging',
-    'contredanse',
-)
-
 DANCE_STYLE_MISC = Any(
     'parkour',
     'flamenco',

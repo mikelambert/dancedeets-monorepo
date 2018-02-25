@@ -214,19 +214,6 @@ too_popular_style_keywords = {
         'country 2 step',
         'american tango',
     ],
-    VERTICALS.COUNTRY: [
-        'country western',
-        'country dance',
-        'barn dance',
-        'square dance',
-        'country line',
-        'contra barn',
-        'cowboy dance',
-        'two step',
-        'c/w dance',
-        'western dance',
-        'modern western',
-    ],
 }
 
 PARTNER = [
@@ -274,7 +261,6 @@ STYLE_EVENT_TYPES = {
     VERTICALS.SWING: PARTNER + [
         'hop',
     ],
-    VERTICALS.COUNTRY: PARTNER + [],
 }
 
 # Load all the relevant data from our parameterized styles

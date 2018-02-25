@@ -3,6 +3,7 @@ from dancedeets.nlp.styles import aerial_pole
 from dancedeets.nlp.styles import african
 from dancedeets.nlp.styles import belly
 from dancedeets.nlp.styles import contact
+from dancedeets.nlp.styles import country
 from dancedeets.nlp.styles import partner_fusion
 from dancedeets.nlp.styles import rockabilly
 from dancedeets.nlp.styles import soulline
@@ -17,6 +18,7 @@ _STYLE_LIST = [
     african.Style,
     belly.Style,
     contact.Style,
+    country.Style,
     partner_fusion.Style,
     rockabilly.Style,
     soulline.Style,
@@ -44,7 +46,6 @@ style_keywords = {
     event_types.VERTICALS.SWING: all_styles_raw.DANCE_STYLE_SWING,
     event_types.VERTICALS.CAPOEIRA: all_styles_raw.DANCE_STYLE_CAPOEIRA,
     event_types.VERTICALS.BALLROOM: all_styles_raw.DANCE_STYLE_BALLROOM,
-    event_types.VERTICALS.COUNTRY: all_styles_raw.DANCE_STYLE_COUNTRY,
 }
 misc_keyword_sets = [
     all_styles_raw.DANCE_STYLE_CLASSICAL,
