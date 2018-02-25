@@ -73,10 +73,8 @@ class Classifier(base_auto_classifier.DanceStyleEventClassifier):
 
     @classmethod
     def finalize_class(cls, other_style_regex):
-        print 1, super(Classifier, cls).finalize_class
         super(Classifier, cls).finalize_class(other_style_regex)
         cls.LINE_DANCE_EVENT = commutative_connected(LINE_DANCE, cls.EVENT_TYPE)
-        print 2, cls.LINE_DANCE_EVENT
 
     def _quick_is_dance_event(self):
         return True
