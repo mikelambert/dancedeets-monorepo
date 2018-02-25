@@ -2,6 +2,7 @@
 from dancedeets.nlp.styles import aerial_pole
 from dancedeets.nlp.styles import african
 from dancedeets.nlp.styles import belly
+from dancedeets.nlp.styles import capoeira
 from dancedeets.nlp.styles import contact
 from dancedeets.nlp.styles import country
 from dancedeets.nlp.styles import latin
@@ -19,6 +20,7 @@ _STYLE_LIST = [
     aerial_pole.Style,
     african.Style,
     belly.Style,
+    capoeira.Style,
     contact.Style,
     country.Style,
     latin.Style,
@@ -46,7 +48,6 @@ from dancedeets.nlp import grammar
 from dancedeets.nlp.street import rules
 style_keywords = {
     event_types.VERTICALS.STREET: rules.STREET_STYLES,
-    event_types.VERTICALS.CAPOEIRA: all_styles_raw.DANCE_STYLE_CAPOEIRA,
     event_types.VERTICALS.BALLROOM: all_styles_raw.DANCE_STYLE_BALLROOM,
 }
 misc_keyword_sets = [

@@ -64,11 +64,6 @@ DANCE_STYLE_BALLROOM = Any(
     u'ワルツ',  # japanese waltz
 )
 
-DANCE_STYLE_CAPOEIRA = Any(
-    'capoeira',
-    u'カポエイラ',  # japanese capoeira
-)
-
 DANCE_STYLE_MISC = Any(
     'parkour',
     'flamenco',
