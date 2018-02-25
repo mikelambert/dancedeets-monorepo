@@ -1,5 +1,7 @@
 import logging
 
+from dancedeets.nlp import event_types
+
 
 class Style(object):
     """This is the basic API each style should export"""
@@ -16,6 +18,10 @@ class Style(object):
     @classmethod
     def get_rare_search_keywords(cls):
         raise NotImplementedError()
+
+    @classmethod
+    def get_all_keyword_event_types(cls):
+        return event_types.EVENT_TYPES + cls.get_keyword_event_types()
 
     @classmethod
     def get_keyword_event_types(cls):

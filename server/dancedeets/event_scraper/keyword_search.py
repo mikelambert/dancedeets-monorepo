@@ -33,44 +33,10 @@ class LookupSearchEvents(fb_api.LookupType):
         return (fb_api.USERLESS_UID, object_id, 'OBJ_SEARCH')
 
 
-EVENT_TYPES = [
-    'session',
-    'workshop',
-    'class',
-    'taller',
-    'stage',
-    'lesson',
-    'intensive',
-    'competition',
-    u'competición',
-    'competencia',
-    'contest',
-    'concours',
-    'tournaments',
-    'performance',
-    'spectacle',
-    'audition',
-    'audiciones',
-]
-
-STYLE_EVENT_TYPES = {}
-obvious_style_keywords = {}
-too_popular_style_keywords = {}
-
-# Load all the relevant data from our parameterized styles
-for style in styles.STYLES.values():
-    STYLE_EVENT_TYPES[style.get_name()] = style.get_keyword_event_types()
-    obvious_style_keywords[style.get_name()] = style.get_rare_search_keywords()
-    too_popular_style_keywords[style.get_name()] = style.get_popular_search_keywords()
-
-
-def expand_keyword(keyword, style):
-    all_keywords = []
+def expand_keyword(keyword, style_name):
+    style = styles.STYLES[style_name]
+    all_keywords = ['%s %s' % (keyword, x) for x in style.get_keyword_event_types()]
     all_keywords.append(keyword)
-    for y in EVENT_TYPES:
-        all_keywords.append('%s %s' % (keyword, y))
-    for y in STYLE_EVENT_TYPES.get(style, []):
-        all_keywords.append('%s %s' % (keyword, y))
     return all_keywords
 
 
@@ -84,9 +50,10 @@ def get_chunks(style):
     else:
         style_names = [style]
     chunks = []
-    for style in style_names:
-        obvious_keywords = obvious_style_keywords.get(style, [])
-        too_popular_keywords = too_popular_style_keywords.get(style, [])
+    for style_name in style_names:
+        style = styles.STYLES[style_name]
+        obvious_keywords = style.get_rare_search_keywords()
+        too_popular_keywords = style.get_popular_search_keywords()
         chunks.extend({'type': OBVIOUS, 'keyword': x} for x in obvious_keywords)
         chunks.extend({'type': TOO_POPULAR, 'keyword': x, 'style': style} for x in too_popular_keywords)
     return chunks
