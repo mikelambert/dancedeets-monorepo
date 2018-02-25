@@ -6,6 +6,7 @@ import logging
 import random
 import re
 import urllib
+import urllib2
 
 from dancedeets import facebook
 from google.appengine.ext import db
@@ -559,15 +560,19 @@ class FBAPI(CacheSystem):
 
     @staticmethod
     def _map_rpc_to_data(object_rpc):
-        try:
-            result = object_rpc.get_result()
-            if result.status_code != 200:
-                logging.warning("BatchLookup: Error downloading, error code is %s, body is %s", result.status_code, result.content)
-            if result.status_code in [200, 400]:
-                text = result.content
-                return json.loads(text)
-        except urlfetch.DownloadError, e:
-            logging.warning("BatchLookup: Error downloading: %s", e)
+        if isinstance(object_rpc, urllib2.addinfourl):
+            text = object_rpc.read()
+            return json.loads(text)
+        else:
+            try:
+                result = object_rpc.get_result()
+                if result.status_code != 200:
+                    logging.warning("BatchLookup: Error downloading, error code is %s, body is %s", result.status_code, result.content)
+                if result.status_code in [200, 400]:
+                    text = result.content
+                    return json.loads(text)
+            except urlfetch.DownloadError, e:
+                logging.warning("BatchLookup: Error downloading: %s", e)
         return None
 
     def _create_rpc_for_batch(self, batch_list, use_access_token):
@@ -579,8 +584,11 @@ class FBAPI(CacheSystem):
             post_args["access_token"] = '%s|%s' % (facebook.FACEBOOK_CONFIG['app_id'], facebook.FACEBOOK_CONFIG['secret_key'])
         post_args["include_headers"] = False  # Don't need to see all the caching headers per response
         post_data = None if post_args is None else urls.urlencode(post_args)
-        rpc = urlfetch.create_rpc(deadline=DEADLINE)
-        urlfetch.make_fetch_call(rpc, "https://graph.facebook.com/", post_data, "POST")
+        try:
+            rpc = urlfetch.create_rpc(deadline=DEADLINE)
+            urlfetch.make_fetch_call(rpc, "https://graph.facebook.com/", post_data, "POST")
+        except AssertionError:
+            rpc = urllib2.urlopen("https://graph.facebook.com/", data=post_data, timeout=DEADLINE)
         self.fb_fetches += len(batch_list)
         return rpc, token
 
