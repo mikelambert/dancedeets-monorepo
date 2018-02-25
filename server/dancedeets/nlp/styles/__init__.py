@@ -4,6 +4,7 @@ from dancedeets.nlp.styles import african
 from dancedeets.nlp.styles import belly
 from dancedeets.nlp.styles import contact
 from dancedeets.nlp.styles import country
+from dancedeets.nlp.styles import latin
 from dancedeets.nlp.styles import partner_fusion
 from dancedeets.nlp.styles import rockabilly
 from dancedeets.nlp.styles import soulline
@@ -20,6 +21,7 @@ _STYLE_LIST = [
     belly.Style,
     contact.Style,
     country.Style,
+    latin.Style,
     partner_fusion.Style,
     rockabilly.Style,
     soulline.Style,
@@ -44,7 +46,6 @@ from dancedeets.nlp import grammar
 from dancedeets.nlp.street import rules
 style_keywords = {
     event_types.VERTICALS.STREET: rules.STREET_STYLES,
-    event_types.VERTICALS.LATIN: all_styles_raw.DANCE_STYLE_LATIN,
     event_types.VERTICALS.CAPOEIRA: all_styles_raw.DANCE_STYLE_CAPOEIRA,
     event_types.VERTICALS.BALLROOM: all_styles_raw.DANCE_STYLE_BALLROOM,
 }

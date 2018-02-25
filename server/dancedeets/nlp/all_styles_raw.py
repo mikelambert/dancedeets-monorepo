@@ -5,22 +5,6 @@ from . import grammar
 Any = grammar.Any
 Name = grammar.Name
 
-DANCE_STYLE_LATIN = Any(
-    'styling',
-    'salsa',
-    'bachata',
-    'latin',
-    'samba',
-    u'サルサ',  # japanese salsa
-    u'소스',  # korean salsa
-    'latines',
-    'rumba',
-    'cha\W?cha',
-    u'륨바',  # korean rumba
-    'salsy',  # salsa czech
-    'salser[oa]s?',
-)
-
 DANCE_STYLE_SWING = Any(
     'balboa',
     'lindy',

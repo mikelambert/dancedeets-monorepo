@@ -1,10 +1,12 @@
 # -*-*- encoding: utf-8 -*-*-
 
-from dancedeets import event_types
-from .. import base_auto_classifier
-from .. import grammar
-from ..ballroom import classifier as ballroom_classifier
-from ..street import keywords
+from dancedeets.nlp import base_auto_classifier
+from dancedeets.nlp import grammar
+from dancedeets.nlp import style_base
+from dancedeets.nlp.street import keywords
+from dancedeets.nlp.styles import partner
+from dancedeets.nlp.ballroom import classifier as ballroom_classifier
+
 Any = grammar.Any
 Name = grammar.Name
 connected = grammar.connected
@@ -74,12 +76,15 @@ AMBIGUOUS_DANCE_MUSIC = Name(
         'merengue',
         'rh?umba',
         'afro\W?[ck]uba\w+',
+        'latin',
+        'salsy',
     )
 )
 
 ALL_LATIN_STYLES = Any(REAL_DANCE, SALSA, AMBIGUOUS_DANCE_MUSIC)
 
 FOOD = Any(
+    u'소스',  # korean sause
     'spicy',
     'chili',
     'chefs?',
@@ -96,23 +101,63 @@ class_keywords = Any(keywords.CLASS, 'batch')
 all_class = Any(class_keywords, commutative_connected(keywords.PERFORMANCE, class_keywords))
 
 
-class LatinClassifier(base_auto_classifier.DanceStyleEventClassifier):
-    __metaclass__ = base_auto_classifier.AutoRuleGenerator
-
-    vertical = event_types.VERTICALS.LATIN
-
+class Classifier(base_auto_classifier.DanceStyleEventClassifier):
     AMBIGUOUS_DANCE = AMBIGUOUS_DANCE_MUSIC
     GOOD_DANCE = Any(GOOD_DANCE, SALSA)
     GOOD_BAD_PAIRINGS = [(SALSA, FOOD)]
 
     def _quick_is_dance_event(self):
+        ballroom = ballroom_classifier.is_many_ballroom_styles(self._classified_event)
+        if ballroom[0]:
+            return False
         return True
 
 
-def is_salsa_event(classified_event):
-    ballroom = ballroom_classifier.is_many_ballroom_styles(classified_event)
-    if ballroom[0]:
-        return (False, ['Ballroom event: %s' % ballroom[1]], None)
+class Style(style_base.Style):
+    @classmethod
+    def get_name(cls):
+        return 'LATIN'
 
-    classifier = LatinClassifier(classified_event)
-    return classifier.is_dance_event(), classifier.debug_info(), classifier.vertical
+    @classmethod
+    def get_rare_search_keywords(cls):
+        return [
+            'salsa footwork',
+        ]
+
+    @classmethod
+    def get_popular_search_keywords(cls):
+        return [
+            'cha-cha',
+            'samba',
+            'bachata',
+            'rumba',
+            'merengue',
+            'salsa',
+            'afro-cuba',
+            'afro-cuban',
+            'afrocuban',
+            'salsa dance',
+            'ladies styling',
+            'salsa on1',
+            'salsa on2',
+            'cuban salsa',
+            'salsa cubaine',
+            'salsa styling',
+            'salsa shine',
+            'salsa dance',
+            u'サルサ',
+            u'サンバ',
+            u'バチャータ',
+        ]
+
+    @classmethod
+    def get_search_keyword_event_types(cls):
+        return partner.EVENT_TYPES
+
+    @classmethod
+    def _get_classifier(cls):
+        return Classifier
+
+    @classmethod
+    def get_basic_regex(cls):
+        return Any(AMBIGUOUS_DANCE_MUSIC, REAL_DANCE, SALSA)
