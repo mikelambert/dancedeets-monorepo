@@ -17,20 +17,23 @@ def get_positive_negative_ids():
     for filename in os.listdir(TEST_IDS_PATH):
         full_path = os.path.join(TEST_IDS_PATH, filename)
         for line in open(full_path).readlines():
-            line = line.split('#')[0].strip()
-            if not line:
-                continue
-            classification, event_id = line.split(':')
-            if classification.startswith('-'):
-                lookup = negatives
-                key = classification[1:]
-            else:
-                lookup = positives
-                key = classification
-            if key not in lookup:
-                lookup[key] = set()
-            lookup[key].add(event_id)
-
+            try:
+                line = line.split('#')[0].strip()
+                if not line:
+                    continue
+                classification, event_id = line.split(':')
+                if classification.startswith('-'):
+                    lookup = negatives
+                    key = classification[1:]
+                else:
+                    lookup = positives
+                    key = classification
+                if key not in lookup:
+                    lookup[key] = set()
+                lookup[key].add(event_id)
+            except:
+                logging.exception('Error processing line: %s', line)
+                raise
     return positives, negatives
 
 
