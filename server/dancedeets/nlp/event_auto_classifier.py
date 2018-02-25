@@ -1,7 +1,6 @@
 # -*-*- encoding: utf-8 -*-*-
 
 from dancedeets.nlp import styles
-from .ballroom import classifier as ballroom_classifier
 from .street import classifier as street_classifier
 
 
@@ -23,7 +22,6 @@ class AutoClassifier(object):
         results = []
 
         classifiers = [
-            ballroom_classifier.is_ballroom_event,
             street_classifier.is_street_event,
         ]
         for classifier in classifiers:

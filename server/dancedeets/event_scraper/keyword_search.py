@@ -100,13 +100,6 @@ obvious_style_keywords = {
         'cypher battle',
         'cypher jam',
     ] + two('electro dance') + two('lite feet')),
-    VERTICALS.CAPOEIRA: [
-        'capoeira',
-        'capoeira angola',
-        'capoeira regional',
-        'capoeira contemporânea',
-        'capoeira roda',
-    ],
 }
 
 #        'jive',
@@ -142,32 +135,6 @@ too_popular_style_keywords = {
         'all styles',
         'freestyle',
     ] + two('hip hop') + two('street dance') + two('new style') + two('all styles')),
-    VERTICALS.CAPOEIRA: [
-        'capoeira',
-        'capoeira angola',
-        'capoeira regional',
-        'capoeira contemporânea',
-        'capoeira roda',
-    ],
-    VERTICALS.BALLROOM: [
-        'ballroom dance',
-        'latin ballroom',
-        'waltz',
-        'viennese waltz',
-        'tango',
-        'foxtrot',
-        'quick step',
-        'samba',
-        'cha cha',
-        'rumba',
-        'paso doble',
-        'jive',
-        'east coast swing',
-        'bolero',
-        'mambo',
-        'country 2 step',
-        'american tango',
-    ],
 }
 
 PARTNER = [
@@ -205,12 +172,6 @@ STYLE_EVENT_TYPES = {
         'battle',
         'jam',
         'bonnie and clyde',
-    ],
-    VERTICALS.CAPOEIRA: [
-        'roda',
-        'encontro',
-        'demo',
-        'demonstration',
     ],
 }
 

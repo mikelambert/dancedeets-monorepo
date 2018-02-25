@@ -4,8 +4,8 @@ from dancedeets.nlp import base_auto_classifier
 from dancedeets.nlp import grammar
 from dancedeets.nlp import style_base
 from dancedeets.nlp.street import keywords
+from dancedeets.nlp.styles import ballroom
 from dancedeets.nlp.styles import partner
-from dancedeets.nlp.ballroom import classifier as ballroom_classifier
 
 Any = grammar.Any
 Name = grammar.Name
@@ -107,8 +107,8 @@ class Classifier(base_auto_classifier.DanceStyleEventClassifier):
     GOOD_BAD_PAIRINGS = [(SALSA, FOOD)]
 
     def _quick_is_dance_event(self):
-        ballroom = ballroom_classifier.is_many_ballroom_styles(self._classified_event)
-        if ballroom[0]:
+        result = ballroom.Style.get_classifier()(self._classified_event).is_dance_event()
+        if result:
             return False
         return True
 
