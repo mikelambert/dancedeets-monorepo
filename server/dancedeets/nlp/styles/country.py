@@ -1,9 +1,9 @@
 # -*-*- encoding: utf-8 -*-*-
 
 from dancedeets.nlp import base_auto_classifier
+from dancedeets.nlp import dance_keywords
 from dancedeets.nlp import grammar
 from dancedeets.nlp import style_base
-from dancedeets.nlp.street import keywords
 from dancedeets.nlp.styles import partner
 from dancedeets.nlp.styles import soulline
 
@@ -18,7 +18,7 @@ REAL_DANCE = Any(
     commutative_connected(Any(
         'square',
         'barn',
-    ), keywords.EASY_DANCE),
+    ), dance_keywords.EASY_DANCE),
     '(?:country\W?(?:and|&|\+)?\W?western|c\Ww|texas|rhythm|double|night\W?club)\W?(?:two|2)\W?step',
     'contra\W?barn',
     'deux\W?temp',
@@ -31,7 +31,7 @@ REAL_DANCE = Any(
 LINE_DANCE = commutative_connected(Any(
     'line',
     u'ライン',
-), keywords.EASY_DANCE)
+), dance_keywords.EASY_DANCE)
 
 AMBIGUOUS_DANCE = Any(
     'country',

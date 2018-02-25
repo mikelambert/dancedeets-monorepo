@@ -1,10 +1,9 @@
 # -*-*- encoding: utf-8 -*-*-
 
-from dancedeets import event_types
 from dancedeets.nlp import base_auto_classifier
+from dancedeets.nlp import dance_keywords
 from dancedeets.nlp import grammar
 from dancedeets.nlp import style_base
-from ..street import keywords
 
 Any = grammar.Any
 Name = grammar.Name
@@ -74,7 +73,7 @@ class Classifier(base_auto_classifier.DanceStyleEventClassifier):
     def is_ci_dance(self):
         title_is_ambiguous = self._title_has(AMBIGUOUS_CONTACT)
         has_contact_improv = self._has(self.GOOD_DANCE_FULL)
-        num_keywords = len(set(self._get(KEYWORDS))) + len(set(self._get(keywords.EASY_DANCE)))
+        num_keywords = len(set(self._get(KEYWORDS))) + len(set(self._get(dance_keywords.EASY_DANCE)))
         if title_is_ambiguous and has_contact_improv:
             return 'title has CI/contact, body has contact improv'
 

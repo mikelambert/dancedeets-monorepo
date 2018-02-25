@@ -1,11 +1,9 @@
 # -*-*- encoding: utf-8 -*-*-
 
-from dancedeets import event_types
 from dancedeets.nlp import base_auto_classifier
+from dancedeets.nlp import dance_keywords
 from dancedeets.nlp import grammar
 from dancedeets.nlp import style_base
-from ..street import keywords
-from ..street import rules
 
 Any = grammar.Any
 Name = grammar.Name
@@ -36,7 +34,7 @@ BELLY = Any(
 )
 
 REAL_DANCE = Any(
-    commutative_connected(Any(BELLY, NON_BELLY_AMBIGUOUS_DANCE), keywords.EASY_DANCE),
+    commutative_connected(Any(BELLY, NON_BELLY_AMBIGUOUS_DANCE), dance_keywords.EASY_DANCE),
     'raqs sharqi',  # romanization of the arabic
     'raqs baladi',  # romanization of the arabic
     # for an explanation of these, see http://www.shira.net/musings/dance-by-any-other-name.htm

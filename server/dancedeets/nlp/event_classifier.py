@@ -12,11 +12,12 @@ except ImportError as e:
 else:
     re.set_fallback_notification(re.FALLBACK_WARNING)
 import time
-from . import all_styles
-from . import cjk_detect
-from . import grammar
-from . import grammar_matcher
-from . import regex_keywords
+from dancedeets.nlp import all_styles
+from dancedeets.nlp import cjk_detect
+from dancedeets.nlp import dance_keywords
+from dancedeets.nlp import grammar
+from dancedeets.nlp import grammar_matcher
+from dancedeets.nlp import regex_keywords
 from .street import keywords
 from .street import rules
 
@@ -155,15 +156,15 @@ class ClassifiedEvent(object):
         self.manual_dance_keywords_matches = self.processed_text.get_tokens(rules.MANUAL_DANCE[grammar.STRONG])
         self.times['manual_regex'] = time.time() - b
         self.real_dance_matches = self.processed_text.get_tokens(rules.GOOD_DANCE)
-        if self.processed_text.get_tokens(keywords.ROMANCE):
+        if self.processed_text.get_tokens(dance_keywords.ROMANCE):
             event_matches = self.processed_text.get_tokens(rules.EVENT_WITH_ROMANCE_EVENT)
         else:
             event_matches = self.processed_text.get_tokens(rules.EVENT)
-        club_and_event_matches = self.processed_text.get_tokens(keywords.PRACTICE, keywords.PERFORMANCE, keywords.CONTEST)
+        club_and_event_matches = self.processed_text.get_tokens(dance_keywords.PRACTICE, dance_keywords.PERFORMANCE, dance_keywords.CONTEST)
         self.times['all_regexes'] = time.time() - a
 
         self.found_dance_matches = self.real_dance_matches + self.processed_text.get_tokens(
-            keywords.EASY_DANCE, keywords.AMBIGUOUS_DANCE_MUSIC, keywords.EASY_CHOREO, keywords.HOUSE, keywords.TOO_EASY_VOGUE,
+            dance_keywords.EASY_DANCE, keywords.AMBIGUOUS_DANCE_MUSIC, dance_keywords.EASY_CHOREO, keywords.HOUSE, keywords.TOO_EASY_VOGUE,
             keywords.EASY_VOGUE
         ) + self.manual_dance_keywords_matches
         self.found_event_matches = event_matches + self.processed_text.get_tokens(
@@ -183,7 +184,7 @@ class ClassifiedEvent(object):
         else:
             self.calc_inverse_keyword_density = -math.log(fraction_matched, 2)
 
-        #print self.processed_text.count_tokens(keywords.EASY_DANCE)
+        #print self.processed_text.count_tokens(dance_keywords.EASY_DANCE)
         #print len(club_and_event_matches)
         #print self.processed_text.count_tokens(all_styles.DANCE_WRONG_STYLE)
         #print self.processed_text.count_tokens(keywords.CLUB_ONLY)
@@ -212,21 +213,21 @@ class ClassifiedEvent(object):
             self.dance_event = False
 
         elif music_or_dance_keywords >= 1 and (
-            len(event_matches) + self.processed_text.count_tokens(keywords.EASY_CHOREO)
+            len(event_matches) + self.processed_text.count_tokens(dance_keywords.EASY_CHOREO)
         ) >= 1 and self.calc_inverse_keyword_density < 5 and not (title_wrong_style_matches and not title_good_matches):
             self.dance_event = 'hiphop/funk and good event type'
         # one critical event and a basic dance keyword and not a wrong-dance-style and not a generic-club
-        elif self.processed_text.count_tokens(keywords.EASY_DANCE) >= 1 and (
-            len(event_matches) + self.processed_text.count_tokens(keywords.EASY_CHOREO)
+        elif self.processed_text.count_tokens(dance_keywords.EASY_DANCE) >= 1 and (
+            len(event_matches) + self.processed_text.count_tokens(dance_keywords.EASY_CHOREO)
         ) >= 1 and not self.processed_text.count_tokens(all_styles.DANCE_WRONG_STYLE) and self.calc_inverse_keyword_density < 5:
             self.dance_event = 'dance event thats not a bad-style'
-        elif self.processed_text.count_tokens(keywords.EASY_DANCE) >= 1 and len(
+        elif self.processed_text.count_tokens(dance_keywords.EASY_DANCE) >= 1 and len(
             self.found_event_matches
         ) >= 1 and not self.processed_text.count_tokens(all_styles.DANCE_WRONG_STYLE) and self.processed_text.count_tokens(
             keywords.CLUB_ONLY
         ) == 0:
             self.dance_event = 'dance show thats not a club'
-        elif music_or_dance_keywords >= 1 and self.processed_text.count_tokens(keywords.EASY_DANCE) >= 1:
+        elif music_or_dance_keywords >= 1 and self.processed_text.count_tokens(dance_keywords.EASY_DANCE) >= 1:
             self.dance_event = 'good music and dance keyword'
         else:
             self.dance_event = False

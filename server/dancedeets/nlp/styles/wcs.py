@@ -1,10 +1,10 @@
 # -*-*- encoding: utf-8 -*-*-
 
 from dancedeets.nlp import base_auto_classifier
+from dancedeets.nlp import dance_keywords
 from dancedeets.nlp import grammar
 from dancedeets.nlp import style_base
 from dancedeets.nlp.styles import partner
-from ..street import keywords
 
 Any = grammar.Any
 Name = grammar.Name
@@ -67,7 +67,7 @@ class Classifier(base_auto_classifier.DanceStyleEventClassifier):
             if self._has(WCS_BASICS):
                 return 'has wcs/westies title, and wcs keywords'
 
-            if self._has(keywords.EASY_DANCE):
+            if self._has(dance_keywords.EASY_DANCE):
                 return 'has wcs/westies title, and dance keywords'
 
         if self._title_has(WESTIES) and (self._has(WCS) or self._has(WEST_COAST_SWING)):

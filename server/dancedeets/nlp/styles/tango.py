@@ -1,9 +1,9 @@
 # -*-*- encoding: utf-8 -*-*-
 
 from dancedeets.nlp import base_auto_classifier
+from dancedeets.nlp import dance_keywords
 from dancedeets.nlp import grammar
 from dancedeets.nlp import style_base
-from dancedeets.nlp.street import keywords
 from dancedeets.nlp.styles import ballroom
 from dancedeets.nlp.styles import partner
 
@@ -53,7 +53,7 @@ AMBIGUOUS_WORDS = Any(
     commutative_connected(TANGO_TYPES, TANGO),
 )
 
-EXTRAS = Any(ARGENTINE, TANGO_TYPES, keywords.EASY_DANCE)
+EXTRAS = Any(ARGENTINE, TANGO_TYPES, dance_keywords.EASY_DANCE)
 
 
 class Classifier(base_auto_classifier.DanceStyleEventClassifier):

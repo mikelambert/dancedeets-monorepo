@@ -1,9 +1,9 @@
 # -*-*- encoding: utf-8 -*-*-
 
 from dancedeets.nlp import base_auto_classifier
+from dancedeets.nlp import dance_keywords
 from dancedeets.nlp import grammar
 from dancedeets.nlp import style_base
-from dancedeets.nlp.street import keywords
 from dancedeets.nlp.styles import ballroom
 from dancedeets.nlp.styles import partner
 
@@ -94,11 +94,11 @@ FOOD = Any(
 )
 
 DANCER = Any('queen')
-GOOD_DANCE = Any(REAL_DANCE, commutative_connected(AMBIGUOUS_DANCE_MUSIC, Any(keywords.EASY_DANCE, DANCER)))
+GOOD_DANCE = Any(REAL_DANCE, commutative_connected(AMBIGUOUS_DANCE_MUSIC, Any(dance_keywords.EASY_DANCE, DANCER)))
 
 #TODO(all-styles): incorporate these...."additions"
-class_keywords = Any(keywords.CLASS, 'batch')
-all_class = Any(class_keywords, commutative_connected(keywords.PERFORMANCE, class_keywords))
+class_keywords = Any(dance_keywords.CLASS, 'batch')
+all_class = Any(class_keywords, commutative_connected(dance_keywords.PERFORMANCE, class_keywords))
 
 
 class Classifier(base_auto_classifier.DanceStyleEventClassifier):

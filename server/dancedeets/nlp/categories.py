@@ -3,9 +3,10 @@
 
 import re
 from dancedeets import event_types
-from . import event_structure
-from . import grammar
-from . import grammar_matcher
+from dancedeets.nlp import dance_keywords
+from dancedeets.nlp import event_structure
+from dancedeets.nlp import grammar
+from dancedeets.nlp import grammar_matcher
 from .street import keywords
 Any = grammar.Any
 
@@ -110,7 +111,7 @@ ANY_VOGUE = Any(
     keywords.EASY_VOGUE,
 )
 
-ANY_KIDS = Any(keywords.KIDS,)
+ANY_KIDS = Any(dance_keywords.KIDS,)
 
 STRICT_STYLES = {
     event_types.BREAK: ANY_BREAK,
@@ -151,14 +152,14 @@ ANY_BATTLE = Any(
     keywords.JUDGE,
     keywords.OBVIOUS_BATTLE,
     keywords.BONNIE_AND_CLYDE,
-    keywords.BATTLE,
+    dance_keywords.BATTLE,
     keywords.N_X_N,
-    keywords.CONTEST,
+    dance_keywords.CONTEST,
 )
 
-ANY_PERFORMANCE = Any(keywords.PERFORMANCE,)
+ANY_PERFORMANCE = Any(dance_keywords.PERFORMANCE,)
 
-ANY_WORKSHOP = Any(keywords.CLASS,)
+ANY_WORKSHOP = Any(dance_keywords.CLASS,)
 
 ANY_PARTY = Any(
     keywords.CYPHER,
@@ -169,11 +170,11 @@ ANY_PARTY = Any(
 )
 
 ANY_SESSION = Any(
-    keywords.PRACTICE,
+    dance_keywords.PRACTICE,
     keywords.EASY_SESSION,
 )
 
-ANY_AUDITION = Any(keywords.AUDITION,)
+ANY_AUDITION = Any(dance_keywords.AUDITION,)
 
 EVENT_TYPES = {
     event_types.BATTLE: ANY_BATTLE,

@@ -4,6 +4,7 @@
 import unittest
 
 from dancedeets.nlp import all_styles
+from dancedeets.nlp import dance_keywords
 from dancedeets.nlp import event_classifier
 from dancedeets.nlp import grammar
 from dancedeets.nlp import grammar_matcher
@@ -29,10 +30,10 @@ class RuleMatches(unittest.TestCase):
         self.assertFalse(string_processor.get_tokens(rule))
 
     def runTest(self):
-        self.matchRule(keywords.CLASS, 'beginner breakdance')
-        self.matchRule(keywords.CLASS, 'beginner')
-        self.matchRule(keywords.EASY_DANCE, u'χορός')
-        self.matchRule(keywords.EASY_DANCE, u'www.danceaholics.co.uk')
+        self.matchRule(dance_keywords.CLASS, 'beginner breakdance')
+        self.matchRule(dance_keywords.CLASS, 'beginner')
+        self.matchRule(dance_keywords.EASY_DANCE, u'χορός')
+        self.matchRule(dance_keywords.EASY_DANCE, u'www.danceaholics.co.uk')
         self.matchRule(all_styles.DANCE_WRONG_STYLE, 'khaligi-belly')
         self.matchRule(rules.GOOD_DANCE, 'hiphop dance')
         self.notMatchRule(rules.GOOD_DANCE, 'hiphop.\ndance')

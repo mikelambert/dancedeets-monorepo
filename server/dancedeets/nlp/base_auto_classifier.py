@@ -1,10 +1,10 @@
 import datetime
 import logging
 import re
-from dancedeets import event_types
-from . import event_structure
-from . import grammar
-from . import grammar_matcher
+from dancedeets.nlp import dance_keywords
+from dancedeets.nlp import event_structure
+from dancedeets.nlp import grammar
+from dancedeets.nlp import grammar_matcher
 from .street import keywords
 from .street import rules
 Any = grammar.Any
@@ -48,24 +48,24 @@ class RuleGenerator(type):
             keywords.WRONG_AUDITION,
         )
 
-        UNAMBIGUOUS_DANCE = commutative_connected(cls.AMBIGUOUS_DANCE, Any(keywords.EASY_DANCE, keywords.EASY_CHOREO))
+        UNAMBIGUOUS_DANCE = commutative_connected(cls.AMBIGUOUS_DANCE, Any(dance_keywords.EASY_DANCE, dance_keywords.EASY_CHOREO))
         cls.GOOD_DANCE_FULL = Name('GOOD_DANCE_FULL', Any(UNAMBIGUOUS_DANCE, cls.GOOD_DANCE))
         cls.GOOD_OR_AMBIGUOUS_DANCE = Name('GOOD_OR_AMBIGUOUS_DANCE', Any(cls.AMBIGUOUS_DANCE, UNAMBIGUOUS_DANCE, cls.GOOD_DANCE))
         cls.COMPETITIONS = Any(
-            keywords.BATTLE,
-            keywords.CONTEST,
+            dance_keywords.BATTLE,
+            dance_keywords.CONTEST,
             keywords.JAM,
         )
         cls.EVENT_TYPE = Any(
-            keywords.CLASS,
-            keywords.AUDITION,
-            keywords.PERFORMANCE,
-            keywords.PRACTICE,
+            dance_keywords.CLASS,
+            dance_keywords.AUDITION,
+            dance_keywords.PERFORMANCE,
+            dance_keywords.PRACTICE,
             keywords.EASY_CLUB,
             cls.COMPETITIONS,
             cls.ADDITIONAL_EVENT_TYPE,
         )
-        cls.EVENT_TYPE_ROMANCE = Any(cls.EVENT_TYPE, keywords.ROMANCE_LANGUAGE_CLASS)
+        cls.EVENT_TYPE_ROMANCE = Any(cls.EVENT_TYPE, dance_keywords.ROMANCE_LANGUAGE_CLASS)
         cls.GOOD_DANCE_COMPETITION = Name(
             'GOOD_DANCE_COMPETITION', commutative_connected(Any(cls.GOOD_DANCE_FULL, cls.AMBIGUOUS_DANCE), cls.COMPETITIONS)
         )
@@ -73,14 +73,14 @@ class RuleGenerator(type):
             'GOOD_DANCE_EVENT',
             Any(
                 commutative_connected(cls.GOOD_DANCE_FULL, cls.EVENT_TYPE),
-                commutative_connected(cls.AMBIGUOUS_DANCE, keywords.CLASS),
+                commutative_connected(cls.AMBIGUOUS_DANCE, dance_keywords.CLASS),
             )
         )
         cls.GOOD_DANCE_EVENT_ROMANCE = Name(
             'GOOD_DANCE_EVENT_ROMANCE',
             Any(
                 commutative_connected(cls.GOOD_DANCE_FULL, cls.EVENT_TYPE_ROMANCE),
-                commutative_connected(cls.AMBIGUOUS_DANCE, Any(keywords.CLASS, keywords.ROMANCE_LANGUAGE_CLASS)),
+                commutative_connected(cls.AMBIGUOUS_DANCE, Any(dance_keywords.CLASS, dance_keywords.ROMANCE_LANGUAGE_CLASS)),
             )
         )
 
@@ -231,14 +231,14 @@ class DanceStyleEventClassifier(object):
     @log_to_bucket('strong_title')
     def has_strong_title(self):
         # Some super-basic language specialization
-        if self._has(keywords.ROMANCE):
+        if self._has(dance_keywords.ROMANCE):
             event_type = self.EVENT_TYPE_ROMANCE
             good_dance_event = self.GOOD_DANCE_EVENT_ROMANCE
         else:
             event_type = self.EVENT_TYPE
             good_dance_event = self.GOOD_DANCE_EVENT
 
-        is_dance_ish = len(set(self._get(self.GOOD_OR_AMBIGUOUS_DANCE) + self._get(keywords.EASY_DANCE))) >= 2
+        is_dance_ish = len(set(self._get(self.GOOD_OR_AMBIGUOUS_DANCE) + self._get(dance_keywords.EASY_DANCE))) >= 2
         self._log('is_dance_ish: %s', is_dance_ish)
 
         # Has 'popping' and actually seems related-to-dance-as-a-whole
@@ -246,7 +246,8 @@ class DanceStyleEventClassifier(object):
             return 'title has good_dance, and is dance-y event'
 
         # Has 'popping with' and has some class-y stuff in the body
-        if self._title_has(self.GOOD_DANCE_FULL) and self._title_has(keywords.WITH) and len(set(self._get(keywords.CLASS))) >= 2:
+        if self._title_has(self.GOOD_DANCE_FULL) and self._title_has(dance_keywords.WITH
+                                                                    ) and len(set(self._get(dance_keywords.CLASS))) >= 2:
             return 'title has good_dance, and is dance-y event'
 
         # Has 'hiphop dance workshop/battle/audition'
@@ -272,7 +273,7 @@ class DanceStyleEventClassifier(object):
     @log_to_bucket('strong_body')
     def has_strong_body(self):
         # Some super-basic language specialization
-        if self._has(keywords.ROMANCE):
+        if self._has(dance_keywords.ROMANCE):
             good_dance_event = self.GOOD_DANCE_EVENT_ROMANCE
         else:
             good_dance_event = self.GOOD_DANCE_EVENT

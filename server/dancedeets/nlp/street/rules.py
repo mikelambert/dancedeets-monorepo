@@ -1,5 +1,6 @@
-from .. import grammar
-from . import keywords
+from dancedeets.nlp import dance_keywords
+from dancedeets.nlp import grammar
+from dancedeets.nlp.street import keywords
 Any = grammar.Any
 Name = grammar.Name
 connected = grammar.connected
@@ -39,8 +40,8 @@ GOOD_DANCE = Name(
         keywords.VOGUE,
         # This may seem strange to list 'dance dance' essentially twice,
         # but necessary for "battles de danses breakdance" or 'afro-house dance workshop'.
-        commutative_connected(Any(keywords.HOUSE, keywords.FREESTYLE, keywords.AMBIGUOUS_DANCE_MUSIC, DANCE), keywords.EASY_DANCE),
-        commutative_connected(keywords.STREET, Any(keywords.EASY_CHOREO, keywords.EASY_DANCE)),
+        commutative_connected(Any(keywords.HOUSE, keywords.FREESTYLE, keywords.AMBIGUOUS_DANCE_MUSIC, DANCE), dance_keywords.EASY_DANCE),
+        commutative_connected(keywords.STREET, Any(dance_keywords.EASY_DANCE, dance_keywords.EASY_DANCE)),
     )
 )
 
@@ -49,11 +50,14 @@ DECENT_DANCE = Name('DECENT_DANCE', Any(
     keywords.AMBIGUOUS_DANCE_MUSIC,
 ))
 
-WRONG_CLASS = Name('WRONG_CLASS', commutative_connected(keywords.AMBIGUOUS_WRONG_STYLE, keywords.CLASS))
+WRONG_CLASS = Name('WRONG_CLASS', commutative_connected(keywords.AMBIGUOUS_WRONG_STYLE, dance_keywords.CLASS))
 
 WRONG_BATTLE = Name(
     'WRONG_BATTLE',
-    Any(keywords.WRONG_BATTLE, commutative_connected(keywords.WRONG_BATTLE_STYLE, Any(keywords.BATTLE, keywords.N_X_N, keywords.CONTEST)))
+    Any(
+        keywords.WRONG_BATTLE,
+        commutative_connected(keywords.WRONG_BATTLE_STYLE, Any(dance_keywords.BATTLE, keywords.N_X_N, dance_keywords.CONTEST))
+    )
 )
 
 RIGHT_NAME_WRONG_KIND = Name(
@@ -72,13 +76,13 @@ DANCE_STYLE = Name('DANCE_STYLE', Any(keywords.AMBIGUOUS_DANCE_MUSIC, DANCE, key
 # GOOD_DANCE does include 'hip hop dance' though, to allow 'hip hop dance battle' to work.
 # In the meantime, we miss https://www.facebook.com/events/788310961258392/ and '2v2 breakin battle'
 good_battle_dance = Any(GOOD_DANCE, keywords.HOUSE)
-ambiguous_battle_dance = Any(keywords.AMBIGUOUS_DANCE_MUSIC, keywords.EASY_DANCE, keywords.EASY_CHOREO)
-good_battle = Any(keywords.BATTLE, keywords.N_X_N, keywords.CONTEST)
+ambiguous_battle_dance = Any(keywords.AMBIGUOUS_DANCE_MUSIC, dance_keywords.EASY_DANCE, dance_keywords.EASY_DANCE)
+good_battle = Any(dance_keywords.BATTLE, keywords.N_X_N, dance_keywords.CONTEST)
 ambiguous_battle = Any(keywords.JAM)
 GOOD_DANCE_BATTLE = Name(
     'GOOD_DANCE_BATTLE',
     Any(
-        keywords.OBVIOUS_BATTLE, connected(keywords.BONNIE_AND_CLYDE, keywords.BATTLE),
+        keywords.OBVIOUS_BATTLE, connected(keywords.BONNIE_AND_CLYDE, dance_keywords.BATTLE),
         grammar.Ordered(Any('king of (?:the )?'), keywords.CYPHER), connected(keywords.CYPHER, Any('king')),
         commutative_connected(good_battle_dance, good_battle)
     )
@@ -94,29 +98,29 @@ DANCE_BATTLE = Name(
     )
 )
 
-BATTLE = Name('BATTLE', Any(keywords.BATTLE, keywords.OBVIOUS_BATTLE))
+BATTLE = Name('BATTLE', Any(dance_keywords.BATTLE, keywords.OBVIOUS_BATTLE))
 
 good_dance = Any(keywords.AMBIGUOUS_DANCE_MUSIC, GOOD_DANCE, keywords.HOUSE)
 
 GOOD_DANCE_CLASS = Name(
     'GOOD_DANCE_CLASS',
     Any(
-        commutative_connected(good_dance, keywords.CLASS),
+        commutative_connected(good_dance, dance_keywords.CLASS),
         # only do one direction here, since we don't want "house stage" and "funk stage"
-        connected(keywords.ROMANCE_LANGUAGE_CLASS, good_dance),
+        connected(dance_keywords.ROMANCE_LANGUAGE_CLASS, good_dance),
     )
 )
 # TODO: is this one necessary? we could do it as a regex, but we could also do it as a rule...
-ROMANCE_EXTENDED_CLASS = Name('ROMANCE_EXTENDED_CLASS', Any(keywords.CLASS, keywords.ROMANCE_LANGUAGE_CLASS))
-ROMANCE_EXTENDED_CLASS_ONLY = Name('ROMANCE_EXTENDED_CLASS_ONLY', Any(keywords.CLASS_ONLY, keywords.ROMANCE_LANGUAGE_CLASS))
+ROMANCE_EXTENDED_CLASS = Name('ROMANCE_EXTENDED_CLASS', Any(dance_keywords.CLASS, dance_keywords.ROMANCE_LANGUAGE_CLASS))
+ROMANCE_EXTENDED_CLASS_ONLY = Name('ROMANCE_EXTENDED_CLASS_ONLY', Any(dance_keywords.CLASS_ONLY, dance_keywords.ROMANCE_LANGUAGE_CLASS))
 
 full_judge = Any(
     keywords.JUDGE,
     commutative_connected(
         keywords.JUDGE,
         Any(
-            GOOD_DANCE, keywords.EASY_DANCE, keywords.AMBIGUOUS_DANCE_MUSIC, keywords.HOUSE, keywords.EASY_CHOREO, keywords.CONTEST,
-            keywords.BATTLE, keywords.N_X_N
+            GOOD_DANCE, dance_keywords.EASY_DANCE, keywords.AMBIGUOUS_DANCE_MUSIC, keywords.HOUSE, dance_keywords.EASY_DANCE,
+            dance_keywords.CONTEST, dance_keywords.BATTLE, keywords.N_X_N
         )
     )
 )
@@ -125,22 +129,24 @@ start_line = grammar.RegexRule(r'^(?m)[^\w\n]*')
 
 START_JUDGE = Name('START_JUDGE', grammar.Ordered(start_line, full_judge))
 
-PERFORMANCE_PRACTICE = Name('PERFORMANCE_PRACTICE', commutative_connected(GOOD_DANCE, Any(keywords.PERFORMANCE, keywords.PRACTICE)))
+PERFORMANCE_PRACTICE = Name(
+    'PERFORMANCE_PRACTICE', commutative_connected(GOOD_DANCE, Any(dance_keywords.PERFORMANCE, dance_keywords.PRACTICE))
+)
 
 EVENT = Name(
     'EVENT',
     Any(
-        keywords.CLASS,
+        dance_keywords.CLASS,
         keywords.N_X_N,
-        keywords.BATTLE,
+        dance_keywords.BATTLE,
         keywords.OBVIOUS_BATTLE,
-        keywords.AUDITION,
+        dance_keywords.AUDITION,
         keywords.CYPHER,
         keywords.JUDGE,
     )
 )
 
-EVENT_WITH_ROMANCE_EVENT = Name('EVENT_WITH_ROMANCE_EVENT', Any(keywords.ROMANCE_LANGUAGE_CLASS, EVENT))
+EVENT_WITH_ROMANCE_EVENT = Name('EVENT_WITH_ROMANCE_EVENT', Any(dance_keywords.ROMANCE_LANGUAGE_CLASS, EVENT))
 
 MANUAL_DANCER = [
     Name(
@@ -189,8 +195,8 @@ ANY_GOOD = Name(
     'ANY_GOOD',
     Any(
         MANUAL_DANCE[grammar.STRONG],  # includes MANUAL_DANCER
-        keywords.EASY_DANCE,
-        keywords.EASY_CHOREO,
+        dance_keywords.EASY_DANCE,
+        dance_keywords.EASY_CHOREO,
         STREET_STYLE,
         keywords.TOO_EASY_VOGUE,
         keywords.BONNIE_AND_CLYDE,
@@ -199,10 +205,10 @@ ANY_GOOD = Name(
         keywords.EASY_EVENT,
         keywords.JAM,
         keywords.JUDGE,
-        keywords.PRACTICE,
-        keywords.PERFORMANCE,
-        keywords.CONTEST,
+        dance_keywords.PRACTICE,
+        dance_keywords.PERFORMANCE,
+        dance_keywords.CONTEST,
         keywords.FORMAT_TYPE,
-        keywords.ROMANCE_LANGUAGE_CLASS,
+        dance_keywords.ROMANCE_LANGUAGE_CLASS,
     )
 )

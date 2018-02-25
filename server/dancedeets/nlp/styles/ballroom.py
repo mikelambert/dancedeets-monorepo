@@ -1,10 +1,9 @@
 # -*-*- encoding: utf-8 -*-*-
-import logging
 
 from dancedeets.nlp import base_auto_classifier
+from dancedeets.nlp import dance_keywords
 from dancedeets.nlp import grammar
 from dancedeets.nlp import style_base
-from dancedeets.nlp.street import keywords
 from dancedeets.nlp.styles import partner
 
 Any = grammar.Any
@@ -47,7 +46,7 @@ BALLROOM = Any(
     u'사교',
 )
 
-BALLROOM_DANCE = commutative_connected(BALLROOM, keywords.EASY_DANCE)
+BALLROOM_DANCE = commutative_connected(BALLROOM, dance_keywords.EASY_DANCE)
 BALLROOM_KEYWORDS = Any(
     BALLROOM_DANCE,
     'dance\W?sport',
