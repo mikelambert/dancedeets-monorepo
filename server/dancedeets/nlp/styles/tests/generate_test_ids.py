@@ -31,8 +31,7 @@ def load_for(style_name, fbl):
     return all_ids
 
 
-def write_ids(style_name, ids):
-    filename = os.path.join(TEST_IDS_PATH, '%s.txt' % style_name)
+def write_ids(filename, style_name, ids):
     f = open(filename, 'w')
     for id in ids:
         f.write('%s:%s\n' % (style_name, id))
@@ -41,10 +40,16 @@ def write_ids(style_name, ids):
 
 def main():
     style_name = 'HUSTLE'
+
+    filename = os.path.join(TEST_IDS_PATH, '%s.txt' % style_name)
+    if os.path.exists(filename):
+        raise Exception('File already exists: %s' % filename)
+
     fbl = fb_api.FBLookup("dummyid", unittest.get_local_access_token_for_testing())
     fbl.make_passthrough()
+
     all_ids = load_for(style_name, fbl)
-    write_ids(style_name, all_ids)
+    write_ids(filename, style_name, all_ids)
 
 
 if __name__ == '__main__':
