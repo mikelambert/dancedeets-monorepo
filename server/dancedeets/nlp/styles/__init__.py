@@ -7,6 +7,7 @@ from dancedeets.nlp.styles import belly
 from dancedeets.nlp.styles import capoeira
 from dancedeets.nlp.styles import contact
 from dancedeets.nlp.styles import country
+from dancedeets.nlp.styles import discofox
 from dancedeets.nlp.styles import hustle
 from dancedeets.nlp.styles import latin
 from dancedeets.nlp.styles import partner_fusion
@@ -28,6 +29,7 @@ _STYLE_LIST = [
     capoeira.Style,
     contact.Style,
     country.Style,
+    discofox.Style,
     hustle.Style,
     latin.Style,
     partner_fusion.Style,

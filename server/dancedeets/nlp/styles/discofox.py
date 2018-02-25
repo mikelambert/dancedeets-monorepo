@@ -11,40 +11,19 @@ connected = grammar.connected
 commutative_connected = grammar.commutative_connected
 
 REAL_DANCE = Any(
-    '(?:nyc?|new york)\W?hustl\w*',
-    'latin hustl\w*',
-    'new\W?style\W?hustl\w*',
+    'disco\W?fox\w*',
+    'disco\W?hustle',
+    'swing\W?fox',
+    'disco\W?swing',
+    'rock\W?fox',
 )
 
-AMBIGUOUS_DANCE = Any(
-    'hustle',
-    'nsh',
-)
+AMBIGUOUS_DANCE = Any(u'Хастл',)
 
 
 class Classifier(base_auto_classifier.DanceStyleEventClassifier):
     GOOD_DANCE = REAL_DANCE
     AMBIGUOUS_DANCE = AMBIGUOUS_DANCE
-
-    GOOD_BAD_PAIRINGS = [(
-        Any('hustle'),
-        Any(
-            'dirt[^y\W]\w*',
-            'dirt',
-            'road\w*',
-            'race\w*',
-            'racing',
-            '5k',
-            '10k',
-            'miles?',
-            'networking',
-            'side hustle',
-            'walk\w+',  # avoid 'walk-in', but catch 'walking'
-            'hustle bustle',
-            'survive',
-            'ddr',
-        )
-    )]
 
     def _quick_is_dance_event(self):
         return True
@@ -53,7 +32,7 @@ class Classifier(base_auto_classifier.DanceStyleEventClassifier):
 class Style(style_base.Style):
     @classmethod
     def get_name(cls):
-        return 'HUSTLE'
+        return 'DISCOFOX'
 
     @classmethod
     def get_rare_search_keywords(cls):
@@ -62,12 +41,12 @@ class Style(style_base.Style):
     @classmethod
     def get_popular_search_keywords(cls):
         return [
-            'hustle',
-            'new york hustle',
-            'ny hustle',
-            'latin hustle',
-            'hustle dance',
-            'nsh',
+            'discofox',
+            'disco hustle',
+            'swing fox',
+            'disco swing',
+            'rock fox',
+            u'Хастл',
         ]
 
     @classmethod

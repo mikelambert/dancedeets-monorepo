@@ -30,6 +30,7 @@ EASY_DANCE = Name(
         u'ריקודי',  # hebrew dance
         u'ダンサー',  # japanese dance
         u'ダンス',  # japanese dance
+        u'踊',  # japanese dance prefix
         u'춤.?',  # korean dance
         u'추고.?.?',  # korean dancing
         u'댄서.?.?',  # korean dancers
