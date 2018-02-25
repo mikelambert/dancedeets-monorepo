@@ -94,11 +94,8 @@ class RelevantHandler(SearchHandler):
                     search_results = searcher.get_search_results(full_event=True)
                     search_results = [x for x in search_results if x.db_event.is_indexable()]
                 else:
-                    # TODO: This is disabled for now.
-                    # Turns out setting a limit doesn't return the highest-20-ranked items.
-                    # Instead it returns a random selection. Making it harder to use.
                     if not re.search('bot|crawl|spider', (self.request.user_agent or '').lower()):
-                        initial_result_limit = 20
+                        initial_result_limit = 50
                         searcher.top_n = initial_result_limit
                     search_results = searcher.get_search_results()
                     has_more_results = searcher.limit_hit
