@@ -7,10 +7,6 @@ from dancedeets.nlp import styles
 from dancedeets.test_utils import classifier_util
 from dancedeets.test_utils import unittest
 
-GOOD_IDS = []
-
-BAD_IDS = []
-
 TEST_IDS_PATH = os.path.join(os.path.dirname(styles.__file__), 'test_ids')
 
 
