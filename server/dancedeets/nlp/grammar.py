@@ -230,6 +230,8 @@ CONNECTOR = Name(
         ' ?',
         ' di ',
         ' de ',
+        ' du ',
+        ' del ',
         u' på ',
         ' ?[:/&] ?',
         u' bài ',  # vietnamese
