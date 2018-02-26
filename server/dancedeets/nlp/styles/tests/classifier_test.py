@@ -7,6 +7,7 @@ from dancedeets.nlp import event_classifier
 from dancedeets.nlp import styles
 from dancedeets.test_utils import classifier_util
 from dancedeets.test_utils import unittest
+from dancedeets.nlp.styles import street
 from dancedeets.nlp.styles.tests import util
 
 TEST_IDS_PATH = util.TEST_IDS_PATH
@@ -41,6 +42,16 @@ def get_positive_negative_ids(style_name):
     return positives, negatives
 
 
+def get_classified_event(fb_event, style_name):
+    street_name = street.Style.get_name()
+    if style_name == street_name:
+        classifier_type = event_classifier.ClassifiedEvent
+    else:
+        classifier_type = event_classifier.BasicClassifiedEvent
+    classified_event = event_classifier.get_classified_event(fb_event, classifier_type=classifier_type)
+    return classified_event
+
+
 def get_false_positives_and_negatives(positives, negatives, get_event):
     # Quick test, verify we have classifiers for everything
     for style_name in positives:
@@ -52,7 +63,7 @@ def get_false_positives_and_negatives(positives, negatives, get_event):
         classifier_class = styles.CLASSIFIERS[style_name]
         for event_id in event_ids:
             fb_event = get_event(event_id)
-            classified_event = event_classifier.get_classified_event(fb_event)
+            classified_event = get_classified_event(fb_event, style_name)
             classifier = classifier_class(classified_event)
             is_dance_event = classifier.is_dance_event()
             if not is_dance_event:
@@ -63,7 +74,7 @@ def get_false_positives_and_negatives(positives, negatives, get_event):
         classifier_class = styles.CLASSIFIERS[style_name]
         for event_id in event_ids:
             fb_event = get_event(event_id)
-            classified_event = event_classifier.get_classified_event(fb_event)
+            classified_event = get_classified_event(fb_event, style_name)
             classifier = classifier_class(classified_event)
             is_dance_event = classifier.is_dance_event()
             if is_dance_event:
