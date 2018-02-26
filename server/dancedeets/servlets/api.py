@@ -13,16 +13,13 @@ from dancedeets import base_servlet
 from dancedeets.event_scraper import add_entities
 from dancedeets.events import add_events
 from dancedeets.events import eventdata
-from dancedeets.events import featured
 from dancedeets import fb_api
 from dancedeets import keys
-from dancedeets.search import onebox
 from dancedeets.search import search
 from dancedeets.search import search_base
 from dancedeets.users import user_creation
 from dancedeets.users import users
 from dancedeets.util import ips
-from dancedeets.util import language
 from dancedeets.util import taskqueue
 from dancedeets.util import urls
 from dancedeets.logic import api_format
@@ -224,8 +221,8 @@ class SearchHandler(ApiHandler):
         search_results = searcher.get_search_results(full_event=need_full_event)
 
         logging.info(
-            "Found %s keyword=%r events within %s %s of %s",
-            len(search_results), form.keywords.data, form.distance.data, form.distance_units.data, form.location.data
+            "Found %s keyword=%r events within %s %s of %s", len(search_results), form.keywords.data, form.distance.data,
+            form.distance_units.data, form.location.data
         )
 
         # Keep in sync with mobile react code? And search_servlets
