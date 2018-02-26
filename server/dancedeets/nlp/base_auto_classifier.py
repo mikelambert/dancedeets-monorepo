@@ -253,10 +253,16 @@ class DanceStyleEventClassifier(object):
 
     @log_to_bucket('dance_ish')
     def is_dance_ish(self):
-        is_dance_ish = len(
-            set(self._get(self.GOOD_OR_AMBIGUOUS_DANCE) + self._get(dance_keywords.EASY_DANCE) + self._get(self.DANCE_KEYWORDS))
-        ) >= 2
-        self._log('is_dance_ish: %s', is_dance_ish)
+        keywords = set()
+        for x in [
+            self._get(self.GOOD_OR_AMBIGUOUS_DANCE),
+            self._get(dance_keywords.EASY_DANCE),
+            self._get(dance_keywords.EASY_CHOREO),
+            self._get(self.DANCE_KEYWORDS),
+        ]:
+            keywords.update(x)
+        is_dance_ish = len(keywords) >= 2
+        self._log('is_dance_ish: %s with keywords: %s', is_dance_ish, keywords)
         return is_dance_ish
 
     @log_to_bucket('strong_title')
