@@ -313,7 +313,8 @@ def is_workshop(classified_event):
 
     has_wrong_style_title = classified_event.processed_title.has_token(all_styles.DANCE_WRONG_STYLE_TITLE)
 
-    lee_lee_hiphop = 'lee lee' in classified_event.final_title and re.findall('hip\W?hop', classified_event.final_title)
+    final_title = classified_event.processed_title.get_tokenized_text()
+    lee_lee_hiphop = 'lee lee' in final_title and re.findall('hip\W?hop', final_title)
 
     trimmed_text = classified_event.processed_text.delete_with_rule(rules.WRONG_CLASS)
     has_good_dance_class = trimmed_text.has_token(rules.GOOD_DANCE_CLASS)
@@ -327,7 +328,6 @@ def is_workshop(classified_event):
     # print has_extended_good_crew_title
     # print has_wrong_style_title
 
-    # print classified_event.final_search_text
     # print classified_event.processed_text.get_tokenized_text()
     # print ''
     # print has_class_title
@@ -408,7 +408,7 @@ def is_performance_or_practice(classified_event):
 
 
 def is_intentional(classified_event):
-    if 'dancedeets' in classified_event.final_search_text:
+    if 'dancedeets' in classified_event.processed_text.get_tokenized_text():
         return True, 'found dancedeets reference'
     return False, 'no dancedeets reference'
 

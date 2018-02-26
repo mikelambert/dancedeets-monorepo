@@ -48,7 +48,7 @@ def find_competitor_list(search_text):
 
 
 def get_schedule_line_groups(classified_event):
-    text = classified_event.final_search_text
+    text = classified_event.processed_text.get_tokenized_text()
 
     # (?!20[01][05])
     time = r'\b[012]?\d[:.,h]?(?:[0-5][05])?(?:am|pm)?\b'

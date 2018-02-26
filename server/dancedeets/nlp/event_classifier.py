@@ -60,19 +60,7 @@ def get_relevant_text(event):
     return search_text
 
 
-def classified_event_from_fb_event(fb_event, language=None):
-    return ClassifiedEvent(
-        fb_event,
-        fb_event['info'].get('name', ''),
-        fb_event['info'].get('description', ''),
-        dates.parse_fb_start_time(fb_event),
-        dates.parse_fb_end_time(fb_event),
-        language=language,
-        include_first_line_in_title=True
-    )
-
-
-class ClassifiedEvent(object):
+class BasicClassifiedEvent(object):
     def __init__(self, fb_event, name, description, start_time, end_time, language=None, include_first_line_in_title=False):
         self.fb_event = fb_event
         self.title = name.lower()
@@ -101,9 +89,21 @@ class ClassifiedEvent(object):
         else:
             self.boundaries = regex_keywords.WORD_BOUNDARIES
 
+        self.processed_title = grammar_matcher.StringProcessor(self.title, self.boundaries)
+        self.processed_title.real_tokenize(keywords.PREPROCESS_REMOVAL)
+
         self.processed_text = grammar_matcher.StringProcessor(self.search_text, self.boundaries)
         # This must be first, to remove the fake keywords
         self.processed_text.real_tokenize(keywords.PREPROCESS_REMOVAL)
+
+        # Or if there are bad keywords, lets see if we can find good keywords on a short line
+        short_lines = [line for line in self.processed_text.get_tokenized_text().split('\n') if len(line) < 500]
+        self.processed_short_lines = grammar_matcher.StringProcessor('\n'.join(short_lines), self.boundaries)
+
+
+class ClassifiedEvent(BasicClassifiedEvent):
+    def classify(self):
+        super(ClassifiedEvent, self).classify()
 
         # Running real_tokenize() on a rule replaces it with the name of the high-level rule.
         # Instead, let's grab the contents of the rule, which will assume is an Any(), and run on each of the Any()
@@ -136,17 +136,11 @@ class ClassifiedEvent(object):
         self.processed_text.real_tokenize(keywords.STYLE_BEBOP)
         self.processed_text.real_tokenize(keywords.STYLE_ALLSTYLE)
 
-        self.final_search_text = self.processed_text.get_tokenized_text()
+        search_text = self.processed_text.get_tokenized_text()
 
         # Or if there are bad keywords, lets see if we can find good keywords on a short line
-        short_lines = [line for line in self.final_search_text.split('\n') if len(line) < 500]
+        short_lines = [line for line in search_text.split('\n') if len(line) < 500]
         self.processed_short_lines = grammar_matcher.StringProcessor('\n'.join(short_lines), self.boundaries)
-
-        search_text = self.final_search_text
-
-        self.processed_title = grammar_matcher.StringProcessor(self.title, self.boundaries)
-        self.processed_title.real_tokenize(keywords.PREPROCESS_REMOVAL)
-        self.final_title = self.processed_title.get_tokenized_text()
 
         #if not self.processed_text.get_tokens(rules.ANY_GOOD):
         #    self.dance_event = False
@@ -260,7 +254,15 @@ class ClassifiedEvent(object):
 
 
 def get_classified_event(fb_event, language=None):
-    classified_event = classified_event_from_fb_event(fb_event, language)
+    classified_event = ClassifiedEvent(
+        fb_event,
+        fb_event['info'].get('name', ''),
+        fb_event['info'].get('description', ''),
+        dates.parse_fb_start_time(fb_event),
+        dates.parse_fb_end_time(fb_event),
+        language=language,
+        include_first_line_in_title=True
+    )
     classified_event.classify()
     return classified_event
 
