@@ -13,10 +13,10 @@ runner.setup()
 
 from dancedeets import fb_api
 from dancedeets.event_scraper import keyword_search
-from dancedeets.nlp import styles
 from dancedeets.test_utils import unittest
+from dancedeets.nlp.styles.tests import util
 
-TEST_IDS_PATH = os.path.join(os.path.dirname(styles.__file__), 'test_ids')
+TEST_IDS_PATH = util.TEST_IDS_PATH
 
 
 def load_for(style_name, fbl):

@@ -1,5 +1,6 @@
 import json
 import logging
+import os
 from google.appengine.api import urlfetch
 
 from dancedeets import fb_api
@@ -8,17 +9,19 @@ RESULT_TIMEOUT = 'RESULT_TIMEOUT'
 
 EXPIRED_ACCESS_TOKEN = 'EXPIRED_ACCESS_TOKEN'
 
-
-def get_object(string_key):
-    return json.loads(open('test_data/FacebookCachedObject/%s' % string_key).read())
+DEFAULT_CACHE_PATH = 'test_data/FacebookCachedObject'
 
 
-def save_object(string_key, data):
-    return open('test_data/FacebookCachedObject/%s' % string_key, 'w').write(json.dumps(data))
+def get_object(path, string_key):
+    return json.loads(open(os.path.join(path, string_key)).read())
+
+
+def save_object(path, string_key, data):
+    return open(os.path.join(path, string_key), 'w').write(json.dumps(data))
 
 
 class Stub(object):
-    def activate(self, memory_memcache=True, disk_db=True):
+    def activate(self, memory_memcache=True, disk_db=True, cache_path=None):
         self.real_fb_api = fb_api.FBAPI
         if memory_memcache:
             fb_api.FBAPI = MemoryFBAPI
@@ -26,7 +29,7 @@ class Stub(object):
             fb_api.FBAPI.results = {}
         self.real_db_cache = fb_api.DBCache
         if disk_db:
-            fb_api.DBCache = DiskDBCache
+            fb_api.DBCache = get_disk_cache(cache_path or DEFAULT_CACHE_PATH)
         self.real_lookup_debug_tokens = fb_api.lookup_debug_tokens
         fb_api.lookup_debug_tokens = fake_lookup_debug_tokens
 
@@ -39,23 +42,30 @@ def fake_lookup_debug_tokens(tokens):
     return [{'empty': False, 'token': {'data': {'is_valid': True, 'expires_at': 0}}} for x in tokens]
 
 
-class DiskDBCache(fb_api.DBCache):
-    def fetch_keys(self, keys):
-        fetched_objects = {}
-        for key in keys:
-            try:
-                fetched_objects[key] = get_object(self.key_to_cache_key(key))
-            except IOError:
-                pass
-        return fetched_objects
+def get_disk_cache(cache_path):
+    class DiskDBCache(fb_api.DBCache):
+        def __init__(self, *args, **kwargs):
+            super(DiskDBCache, self).__init__(*args, **kwargs)
+            self.cache_path = cache_path
 
-    def save_objects(self, keys_to_objects):
-        if not keys_to_objects:
-            return
-        for k, v in keys_to_objects.iteritems():
-            if self._is_cacheable(k, v):
-                cache_key = self.key_to_cache_key(k)
-                save_object(cache_key, v)
+        def fetch_keys(self, keys):
+            fetched_objects = {}
+            for key in keys:
+                try:
+                    fetched_objects[key] = get_object(self.cache_path, self.key_to_cache_key(key))
+                except IOError:
+                    pass
+            return fetched_objects
+
+        def save_objects(self, keys_to_objects):
+            if not keys_to_objects:
+                return
+            for k, v in keys_to_objects.iteritems():
+                if self._is_cacheable(k, v):
+                    cache_key = self.key_to_cache_key(k)
+                    save_object(self.cache_path, cache_key, v)
+
+    return DiskDBCache
 
 
 class FakeRPC(object):

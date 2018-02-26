@@ -6,8 +6,9 @@ from dancedeets.nlp import event_classifier
 from dancedeets.nlp import styles
 from dancedeets.test_utils import classifier_util
 from dancedeets.test_utils import unittest
+from dancedeets.nlp.styles.tests import util
 
-TEST_IDS_PATH = os.path.join(os.path.dirname(styles.__file__), 'test_ids')
+TEST_IDS_PATH = util.TEST_IDS_PATH
 
 
 def get_positive_negative_ids(style_name):
@@ -97,6 +98,8 @@ def print_stats(positives, negatives, false_positives, false_negatives, get_even
 
 
 class TestFiles(classifier_util.TestClassifier):
+    cache_db_path = util.CACHE_PATH
+
     def runTest(self):
         style_name = os.environ.get('EXTRA_ARGS')
         positives, negatives = get_positive_negative_ids(style_name)
