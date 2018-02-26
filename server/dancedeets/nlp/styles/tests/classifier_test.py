@@ -2,6 +2,7 @@
 
 import logging
 import os
+from dancedeets import fb_api
 from dancedeets.nlp import event_classifier
 from dancedeets.nlp import styles
 from dancedeets.test_utils import classifier_util
@@ -97,14 +98,27 @@ def print_stats(positives, negatives, false_positives, false_negatives, get_even
             print 'FP-%s: %s: %s' % (style_name, event_id, event['info']['name'])
 
 
+def get_event_data(fbl, ids):
+    ids = list(ids)
+    return dict((id, event) for (id, event) in zip(ids, fbl.get_multi(fb_api.LookupEvent, ids)))
+
+
 class TestFiles(classifier_util.TestClassifier):
     cache_db_path = util.CACHE_PATH
 
     def runTest(self):
         style_name = os.environ.get('EXTRA_ARGS')
         positives, negatives = get_positive_negative_ids(style_name)
-        false_positives, false_negatives = get_false_positives_and_negatives(positives, negatives, self.get_event)
-        print_stats(positives, negatives, false_positives, false_negatives, self.get_event)
+        all_ids = set()
+        for event_ids in positives.values():
+            all_ids.update(event_ids)
+        for event_ids in negatives.values():
+            all_ids.update(event_ids)
+
+        event_data = get_event_data(self.fbl, all_ids)
+        get_event = lambda x: event_data[x]
+        false_positives, false_negatives = get_false_positives_and_negatives(positives, negatives, get_event)
+        print_stats(positives, negatives, false_positives, false_negatives, get_event)
 
 
 if __name__ == '__main__':
