@@ -181,6 +181,7 @@ BATTLE = Name(
         u'באליפות',  # hebrew championship
         u'לקרבות',  # hebrew battles
         u'תחרות',  # hebrew competition
+        'queen',  # dancehall competition
     )
 )
 

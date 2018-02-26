@@ -9,6 +9,7 @@ from dancedeets.nlp.styles import burlesque
 from dancedeets.nlp.styles import capoeira
 from dancedeets.nlp.styles import contact
 from dancedeets.nlp.styles import country
+from dancedeets.nlp.styles import dancehall
 from dancedeets.nlp.styles import discofox
 from dancedeets.nlp.styles import five_rhythms
 from dancedeets.nlp.styles import hustle
@@ -35,6 +36,7 @@ _STYLE_LIST = [
     capoeira.Style,
     contact.Style,
     country.Style,
+    dancehall.Style,
     discofox.Style,
     five_rhythms.Style,
     hustle.Style,
