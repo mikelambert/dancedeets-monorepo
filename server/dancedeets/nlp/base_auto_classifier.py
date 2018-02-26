@@ -43,6 +43,7 @@ class RuleGenerator(type):
         cls.AMBIGUOUS_DANCE = Name('AMBIGUOUS_DANCE', cls.AMBIGUOUS_DANCE or keywords.NO_MATCH)
         cls.OTHER_DANCE = Name('OTHER_DANCE', cls.OTHER_DANCE or keywords.NO_MATCH)
         cls.ADDITIONAL_EVENT_TYPE = cls.ADDITIONAL_EVENT_TYPE or keywords.NO_MATCH
+        cls.DANCE_KEYWORDS = cls.DANCE_KEYWORDS or keywords.NO_MATCH
 
         cls.NOT_DANCE = Any(
             keywords.WRONG_BATTLE_STYLE,
@@ -106,6 +107,7 @@ class DanceStyleEventClassifier(object):
     SUPER_STRONG_KEYWORDS = None
     OTHER_DANCE = None
     ADDITIONAL_EVENT_TYPE = None
+    DANCE_KEYWORDS = None
     GOOD_BAD_PAIRINGS = []
 
     def __init__(self, classified_event, debug=True):
@@ -259,7 +261,9 @@ class DanceStyleEventClassifier(object):
             event_type = self.EVENT_TYPE
             good_dance_event = self.GOOD_DANCE_EVENT
 
-        is_dance_ish = len(set(self._get(self.GOOD_OR_AMBIGUOUS_DANCE) + self._get(dance_keywords.EASY_DANCE))) >= 2
+        is_dance_ish = len(
+            set(self._get(self.GOOD_OR_AMBIGUOUS_DANCE) + self._get(dance_keywords.EASY_DANCE) + self._get(self.DANCE_KEYWORDS))
+        ) >= 2
         self._log('is_dance_ish: %s', is_dance_ish)
 
         # Has 'popping' and actually seems related-to-dance-as-a-whole
