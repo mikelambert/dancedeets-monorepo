@@ -28,8 +28,8 @@ LANGUAGES = [
     #
     ('ja', 'japanese'),
     ('ko', 'korean'),
-    ('zh-Hant', 'chinese'),
-    ('zh-Hans', 'chinese'),
+    ('zh-Hant', 'chinese traditional'),
+    ('zh-Hans', 'chinese simplified'),
     #
     ('ar', 'arabic'),
     ('he', 'hebrew'),
@@ -58,17 +58,18 @@ def my_repr(s):
         return ("u'%s'" % s)
 
 
-def translate(q):
+def translate(queries):
     service = build('translate', 'v2', developerKey=keys.get('google_server_key'))
 
     translations = []
-    translations.append('%s, # %s' % (my_repr(q).lower(), 'english'))
-    for language, language_name in LANGUAGES:
-        result = service.translations().list(target=language, format='text', q=[q]).execute()
-        result_translations = [x['translatedText'] for x in result['translations']]
-        translations.append('%s, # %s' % (my_repr(result_translations[0]).lower(), language_name))
+    for q in queries:
+        translations.append('%s, # %s' % (my_repr(q).lower(), 'english'))
+        for language, language_name in LANGUAGES:
+            result = service.translations().list(target=language, format='text', q=[q]).execute()
+            result_translations = [x['translatedText'] for x in result['translations']]
+            translations.append('%s, # %s' % (my_repr(result_translations[0]).lower(), language_name))
     print '\n'.join(sorted(translations))
 
 
 if __name__ == '__main__':
-    translate(sys.argv[1])
+    translate(sys.argv[1:])
