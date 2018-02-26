@@ -102,14 +102,19 @@ def lookup_keywords(fbl, all_keywords):
     fbl.db.oldest_allowed = oldest_allowed
 
 
-def get_ids_for_keyword(fbl, query):
+def get_id_titles_for_keyword(fbl, query):
     search_results = fbl.get(LookupSearchEvents, query)
-    ids = [x['id'] for x in search_results['results']['data']]
-    logging.info('Keyword %r returned %s results:', query, len(ids))
+    data = search_results['results']['data']
+    logging.info('Keyword %r returned %s results:', query, len(data))
     # Debug code
-    for x in search_results['results']['data']:
+    for x in data:
         logging.info('Found %s: %s', x['id'], x.get('name'))
+    return data
 
+
+def get_ids_for_keyword(fbl, query):
+    data = get_id_titles_for_keyword(fbl, query)
+    ids = [x['id'] for x in data]
     return ids
 
 

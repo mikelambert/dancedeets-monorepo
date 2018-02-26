@@ -26,16 +26,16 @@ def load_for(style_name, fbl):
         all_keywords = keyword_search.expand_chunk(chunk)
         for query in all_keywords:
             logging.info('Loading %s', query)
-            ids = keyword_search.get_ids_for_keyword(fbl, query)
+            id_titles = keyword_search.get_id_titles_for_keyword(fbl, query)
             time.sleep(2)
-            all_ids.update(ids)
+            all_ids.update('%s # %s' % (x['id'], x['name']) for x in id_titles)
     return all_ids
 
 
 def write_ids(filename, style_name, ids):
     f = open(filename, 'w')
     for id in ids:
-        f.write('%s:%s\n' % (style_name, id))
+        f.write('%s:%s\n' % (style_name, id.encode('utf-8')))
     f.close()
 
 
