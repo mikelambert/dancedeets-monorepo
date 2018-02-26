@@ -23,9 +23,11 @@ REAL_DANCE = Any(
     'contra\W?barn',
     'deux\W?temp',
     'texas shuffle step\w*',
+    'mambo shuffle',
     'clogging',
     'contredanse',
     'contra\W?danc\w+',
+    'triple\W?two\W?step',
 )
 
 LINE_DANCE = commutative_connected(Any(
