@@ -251,6 +251,14 @@ class DanceStyleEventClassifier(object):
             return 'Has super-strong dance in event organizer'
         return False
 
+    @log_to_bucket('dance_ish')
+    def is_dance_ish(self):
+        is_dance_ish = len(
+            set(self._get(self.GOOD_OR_AMBIGUOUS_DANCE) + self._get(dance_keywords.EASY_DANCE) + self._get(self.DANCE_KEYWORDS))
+        ) >= 2
+        self._log('is_dance_ish: %s', is_dance_ish)
+        return is_dance_ish
+
     @log_to_bucket('strong_title')
     def has_strong_title(self):
         # Some super-basic language specialization
@@ -261,10 +269,7 @@ class DanceStyleEventClassifier(object):
             event_type = self.EVENT_TYPE
             good_dance_event = self.GOOD_DANCE_EVENT
 
-        is_dance_ish = len(
-            set(self._get(self.GOOD_OR_AMBIGUOUS_DANCE) + self._get(dance_keywords.EASY_DANCE) + self._get(self.DANCE_KEYWORDS))
-        ) >= 2
-        self._log('is_dance_ish: %s', is_dance_ish)
+        is_dance_ish = self.is_dance_ish()
 
         # Has 'popping' and actually seems related-to-dance-as-a-whole
         if self._title_has(self.GOOD_DANCE_FULL) and is_dance_ish:

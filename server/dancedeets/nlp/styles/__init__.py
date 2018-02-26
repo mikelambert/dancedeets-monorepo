@@ -5,6 +5,7 @@ from dancedeets.nlp.styles import african
 from dancedeets.nlp.styles import ballroom
 from dancedeets.nlp.styles import belly
 from dancedeets.nlp.styles import biodanza
+from dancedeets.nlp.styles import burlesque
 from dancedeets.nlp.styles import capoeira
 from dancedeets.nlp.styles import contact
 from dancedeets.nlp.styles import country
@@ -29,6 +30,7 @@ _STYLE_LIST = [
     ballroom.Style,
     belly.Style,
     biodanza.Style,
+    burlesque.Style,
     capoeira.Style,
     contact.Style,
     country.Style,

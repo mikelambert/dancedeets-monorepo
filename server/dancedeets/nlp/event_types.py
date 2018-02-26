@@ -18,4 +18,5 @@ EVENT_TYPES = [
     'spectacle',
     'audition',
     'audiciones',
+    'show',
 ]

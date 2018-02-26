@@ -246,7 +246,7 @@ WITH = Name(
 )
 
 CLASS_ONLY = Any(
-    'work\W?shop(?:\W?s)?',
+    'work\W?shop(?:\W?s|\w+)?',
     'ws',  # japanese workshop WS
     'w\.s\.',  # japanese workshop W.S.
     u'ワークショップ',  # japanese workshop
