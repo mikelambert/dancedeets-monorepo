@@ -4,10 +4,12 @@ from dancedeets.nlp.styles import aerial_pole
 from dancedeets.nlp.styles import african
 from dancedeets.nlp.styles import ballroom
 from dancedeets.nlp.styles import belly
+from dancedeets.nlp.styles import biodanza
 from dancedeets.nlp.styles import capoeira
 from dancedeets.nlp.styles import contact
 from dancedeets.nlp.styles import country
 from dancedeets.nlp.styles import discofox
+from dancedeets.nlp.styles import five_rhythms
 from dancedeets.nlp.styles import hustle
 from dancedeets.nlp.styles import latin
 from dancedeets.nlp.styles import partner_fusion
@@ -26,10 +28,12 @@ _STYLE_LIST = [
     african.Style,
     ballroom.Style,
     belly.Style,
+    biodanza.Style,
     capoeira.Style,
     contact.Style,
     country.Style,
     discofox.Style,
+    five_rhythms.Style,
     hustle.Style,
     latin.Style,
     partner_fusion.Style,
