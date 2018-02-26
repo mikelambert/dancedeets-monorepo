@@ -38,6 +38,7 @@ class RuleGenerator(type):
             # Skip all this logic if we're building DanceStyleEventClassifier.
             # Only run these for the subclasses of DanceStyleEventClassifier.
             return
+        cls.SUPER_STRONG_KEYWORDS = Name('SUPER_STRONG_KEYWORDS', cls.SUPER_STRONG_KEYWORDS or keywords.NO_MATCH)
         cls.GOOD_DANCE = Name('GOOD_DANCE', cls.GOOD_DANCE or keywords.NO_MATCH)
         cls.AMBIGUOUS_DANCE = Name('AMBIGUOUS_DANCE', cls.AMBIGUOUS_DANCE or keywords.NO_MATCH)
         cls.OTHER_DANCE = Name('OTHER_DANCE', cls.OTHER_DANCE or keywords.NO_MATCH)
@@ -102,6 +103,7 @@ class DanceStyleEventClassifier(object):
     # rules and keywords
     AMBIGUOUS_DANCE = None
     GOOD_DANCE = None
+    SUPER_STRONG_KEYWORDS = None
     OTHER_DANCE = None
     ADDITIONAL_EVENT_TYPE = None
     GOOD_BAD_PAIRINGS = []
@@ -180,7 +182,9 @@ class DanceStyleEventClassifier(object):
             self._log('wrong meaning for style')
             return False
 
-        # Handles all audition cases
+        result = self.has_super_strong()
+        if result: return result
+
         result = self.has_strong_title()
         if result: return result
 
@@ -213,6 +217,16 @@ class DanceStyleEventClassifier(object):
                 return True
         return False
 
+    @log_to_bucket('super_strong')
+    def has_super_strong(self):
+        if self._title_has(self.SUPER_STRONG_KEYWORDS):
+            return 'title has super-strong keyword'
+
+        if self._has(self.SUPER_STRONG_KEYWORDS) and self._get(dance_keywords.EASY_DANCE):
+            return 'body has super-strong keyword and seems dance-y'
+
+        return False
+
     @log_to_bucket('organizer')
     def has_strong_organizer(self):
         title_is_other_dance = self._title_has(self.OTHER_DANCE_FULL)
@@ -221,11 +235,18 @@ class DanceStyleEventClassifier(object):
 
         org_name = self._classified_event.fb_event['info'].get('owner', {}).get('name', '').lower()
         sp = grammar_matcher.StringProcessor(org_name)
+
         has_dance_organizer = sp.has_token(self.GOOD_DANCE_FULL)
         self._log('Searching organizer (%s) for %s, has: %s', org_name, self.GOOD_DANCE_FULL.name(), has_dance_organizer)
         if has_dance_organizer:
             self._log('Has good dance in event organizer: %s' % has_dance_organizer)
             return 'Has good dance in event organizer'
+
+        has_super_strong_dance_organizer = sp.has_token(self.SUPER_STRONG_KEYWORDS)
+        self._log('Searching organizer (%s) for %s, has: %s', org_name, self.SUPER_STRONG_KEYWORDS.name(), has_dance_organizer)
+        if has_super_strong_dance_organizer:
+            self._log('Has super-strong dance in event organizer: %s' % has_dance_organizer)
+            return 'Has super-strong dance in event organizer'
         return False
 
     @log_to_bucket('strong_title')
