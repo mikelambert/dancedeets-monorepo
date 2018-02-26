@@ -99,7 +99,7 @@ class Style(style_base.Style):
 
     @classmethod
     def get_search_keyword_event_types(cls):
-        return []
+        return ['revue']
 
     @classmethod
     def _get_classifier(cls):

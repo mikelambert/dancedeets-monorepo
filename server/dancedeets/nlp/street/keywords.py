@@ -122,10 +122,10 @@ AMBIGUOUS_DANCE_MUSIC = Name(
         'afrobeat',
         'funk',
         'jerk',
-        'k\W?pop',
-        'pop',
+        'k\W?pop\w*',
         u'케이팝',  # korean kpop
         u'كي بوب',  # arabic kpop
+        'pop',
         'hard\Whitting',
         'electro\W?dance',
         u'얼반',  # korean urban

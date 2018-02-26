@@ -30,7 +30,6 @@ CAPOEIRA = Name(
 
 EVENT = Any(
     'rodas?',
-    'encontro',
     'demo',
     'demonstration',
     'seminar',

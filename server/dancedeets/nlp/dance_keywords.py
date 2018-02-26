@@ -95,7 +95,7 @@ EASY_DANCE = Name(
 EASY_CHOREO = Name(
     'EASY_CHOREO',
     Any(
-        u'(?:ch|k|c)oe?re[o|ó]?gra(?:ph|f)\w*',  # english, italian, finnish, swedish, german, lithuanian, polish, italian, spanish, portuguese, danish
+        u'(?:ch|k|c)oe?re[o|ó]?gr[aá](?:ph|f)\w*',  # english, italian, finnish, swedish, german, lithuanian, polish, italian, spanish, portuguese, danish
         'choreo',
         u'chorée',  # french choreo
         u'chorégraph\w*',  # french choreographer
@@ -424,6 +424,7 @@ PERFORMANCE = Name(
         'performances?',
         'festival',
         'show\W?case',
+        'encontro',  # portuguese meeting/festival
         u'représentation',  # french performance
         'espectaculo',  # spanish performance
         u'espectáculo',  # spanish performance
