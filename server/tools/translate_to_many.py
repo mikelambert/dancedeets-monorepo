@@ -43,7 +43,6 @@ LANGUAGES = [
     #
     ('bn', 'bengali'),
     ('pa', 'punjabi'),
-    ('id', 'indonesian'),
     ('ms', 'malay'),
     ('tl', 'tagalog'),
     ('vi', 'vietnamese'),
@@ -65,7 +64,7 @@ def translate(queries):
     for q in queries:
         translations.append('%s, # %s' % (my_repr(q).lower(), 'english'))
         for language, language_name in LANGUAGES:
-            result = service.translations().list(target=language, format='text', q=[q]).execute()
+            result = service.translations().list(source='en', target=language, format='text', q=[q]).execute()
             result_translations = [x['translatedText'] for x in result['translations']]
             translations.append('%s, # %s' % (my_repr(result_translations[0]).lower(), language_name))
     print '\n'.join(sorted(translations))
