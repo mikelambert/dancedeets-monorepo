@@ -253,8 +253,8 @@ class ClassifiedEvent(BasicClassifiedEvent):
         return self.calc_inverse_keyword_density
 
 
-def get_classified_event(fb_event, language=None):
-    classified_event = ClassifiedEvent(
+def get_classified_event(fb_event, language=None, classifier_type=ClassifiedEvent):
+    classified_event = classifier_type(
         fb_event,
         fb_event['info'].get('name', ''),
         fb_event['info'].get('description', ''),

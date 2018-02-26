@@ -1,7 +1,9 @@
 # -*-*- encoding: utf-8 -*-*-
 
+from dancedeets.nlp import event_classifier
 from dancedeets.nlp import styles
 from dancedeets.nlp.street import classifier as street_classifier
+from dancedeets.nlp.styles import street
 
 
 def is_auto_add_event(classified_event):
@@ -19,9 +21,18 @@ class AutoClassifier(object):
         return repr(self.result)
 
     def _run_classify(self):
+        basic_classified_event = event_classifier.get_classified_event(
+            self._classified_event.fb_event, language=self._classified_event.language, classifier_type=event_classifier.ClassifiedEvent
+        )
+        street_name = street.Style.get_name()
+
         results = []
-        for classifier in styles.CLASSIFIERS.values():
-            this_classifier = classifier(self.classified_event)
+        for style_name, classifier in styles.CLASSIFIERS.iteritems():
+            if style_name == street_name:
+                classified_event = self.classified_event
+            else:
+                classified_event = basic_classified_event
+            this_classifier = classifier(classified_event)
             is_dance_event = this_classifier.is_dance_event()
             if is_dance_event:
                 results.append((is_dance_event, this_classifier.debug_info(), this_classifier.vertical))
