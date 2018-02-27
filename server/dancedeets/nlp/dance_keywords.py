@@ -21,7 +21,7 @@ EASY_DANCE = Name(
         u'नृत्य',  # hindi dance
         u'댄스',  # korean dance
         u'댄서',  # korean dancer
-        u'танц\w*',  # russian/bulgarian dance
+        u'тане?ц\w*',  # russian/bulgarian dance
         u'изтанц\w*',  # russian/bulgarian dance
         u'רקוד',  # hebrew dancing
         u'בלרקוד',  # hebrew dancing
@@ -101,6 +101,7 @@ EASY_CHOREO = Name(
         u'chorégraph\w*',  # french choreographer
         u'biên đạo',  # vietnamese choreography
         u'кореограф',  # macedonian
+        u'балетмейстерски\w*',  # russain choreography (ballet master)
         u'안무',
         u'χορογραφια\w*',
     )
@@ -304,7 +305,7 @@ CLASS_ONLY = Any(
     'cors[io]',  # course italian
     'concorso',  # course italian
     'concurso',  # course spanish
-    'cursuri',  # course romanian
+    u'cursuri\w*',  # course romanian
     'tanzanleitung',  # dance-instruction german
     'anleitung',  # guidance/instruction german
     'kur[sz](?:y|en)?',  # course german/polish/czech
@@ -315,7 +316,8 @@ CLASS_ONLY = Any(
     'dansklasser',  # swedish dance classes
     'lekcj[ai]',  # polish lesson
     'eigoje',  # lithuanian course
-    'pamokas',  # lithuanian lesson
+    u'pamokas?',  # lithuanian lesson
+    u'pamokėlės?',  # lithuanian lessons
     'kursai',  # course lithuanian
     'kursas',  # course lithuanian
     'kurs',  # course dutch
@@ -403,6 +405,7 @@ CONTEST = Name(
         'konkurrencer',  # danish contest
         'konkuranser',  # norwegian contest/competition
         'dancecontests',  # dance contests german
+        u'コンクール',  # japanese contest
     )
 )
 PRACTICE = Name(
@@ -438,6 +441,7 @@ PERFORMANCE = Name(
         u'展',  # chinese exhibition/show
         u'果展',  # chinese exhibition
         u'表演',  # chinese performance
+        u'спектакль',  # russian performance
         u'biểu diễn',  # vietnamese performance
         u'trình diễn',  # vietnamese performance
         u'vystoupení',  # czech performances

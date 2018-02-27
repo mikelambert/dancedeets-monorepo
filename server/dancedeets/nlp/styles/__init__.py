@@ -2,6 +2,7 @@ from dancedeets.nlp import all_styles_raw
 from dancedeets.nlp import grammar
 from dancedeets.nlp.styles import aerial_pole
 from dancedeets.nlp.styles import african
+from dancedeets.nlp.styles import ballet
 from dancedeets.nlp.styles import ballroom
 from dancedeets.nlp.styles import belly
 from dancedeets.nlp.styles import biodanza
@@ -30,6 +31,7 @@ from dancedeets.nlp.styles import zouk
 _STYLE_LIST = [
     aerial_pole.Style,
     african.Style,
+    ballet.Style,
     ballroom.Style,
     belly.Style,
     biodanza.Style,
