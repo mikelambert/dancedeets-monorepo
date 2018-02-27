@@ -22,7 +22,7 @@ class AutoClassifier(object):
 
     def _run_classify(self):
         basic_classified_event = event_classifier.get_classified_event(
-            self._classified_event.fb_event, language=self._classified_event.language, classifier_type=event_classifier.ClassifiedEvent
+            self.classified_event.fb_event, language=self.classified_event.language, classifier_type=event_classifier.ClassifiedEvent
         )
         street_name = street.Style.get_name()
 
