@@ -35,18 +35,20 @@ LANGUAGES = [
     ('he', 'hebrew'),
     #
     ('cs', 'czech'),
-    ('sk', 'slovak'),
     ('el', 'greek'),
     ('tr', 'turkish'),
     ('hu', 'hungarian'),
     ('ru', 'russian'),
+    ('hr', 'croatian'),
+    ('mk', 'macedonian'),
     #
-    ('bn', 'bengali'),
-    ('pa', 'punjabi'),
+    # not popular enough
+    #('bn', 'bengali'),
+    #('pa', 'punjabi'),
     ('ms', 'malay'),
     ('tl', 'tagalog'),
     ('vi', 'vietnamese'),
-    ('th', 'thailand'),
+    ('th', 'thai'),
 ]
 
 
@@ -60,14 +62,16 @@ def my_repr(s):
 def translate(queries):
     service = build('translate', 'v2', developerKey=keys.get('google_server_key'))
 
-    translations = []
+    translations = {}
     for q in queries:
-        translations.append('%s, # %s' % (my_repr(q).lower(), 'english'))
+        translations[my_repr(q.lower())] = 'english'
         for language, language_name in LANGUAGES:
             result = service.translations().list(source='en', target=language, format='text', q=[q]).execute()
             result_translations = [x['translatedText'] for x in result['translations']]
-            translations.append('%s, # %s' % (my_repr(result_translations[0]).lower(), language_name))
-    print '\n'.join(sorted(translations))
+            translation = my_repr(result_translations[0].lower())
+            translations[translation] = language_name
+
+    print '\n'.join(sorted('%s, # %s' % x for x in translations.items()))
 
 
 if __name__ == '__main__':
