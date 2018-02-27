@@ -41,6 +41,7 @@ LANGUAGES = [
     ('ru', 'russian'),
     ('hr', 'croatian'),
     ('mk', 'macedonian'),
+    ('ro', 'romanian'),
     #
     # not popular enough
     #('bn', 'bengali'),
