@@ -30,6 +30,7 @@ EASY_DANCE = Name(
         u'dans[aeç]\w*',
         u'danza',  # italian
         u'dança\w*',  # portuguese
+        u'điệu nhảy',  # vietnamese
         u'khiêu vũ',  # vietnamese
         u'mananayaw',  # tagalog
         u'menari',  #  malay
@@ -40,7 +41,6 @@ EASY_DANCE = Name(
         u'plesu',  # dancing croatian
         u'plešete',  # dancing croatian
         u'sayaw\w*',  # tagalog
-        u'sayawan',  # tagalog
         u'social\W?dance',
         u'tancerz',  # polish
         u'tane?[cč]\w*',  # czech
@@ -80,6 +80,7 @@ EASY_DANCE = Name(
         u'راقصة?',  # arabic
         u'دانس',  # arabic dance transliteration
         u'رقص',  # arabic
+        u'الرقص',  # arabic
         u'แดนซ์',  # dance thai
         u'(?:การ)?(?:ลีลาศ|ฟ้อนรำ|ร่ายรำ|เริงระบำ|ก?เต้น\w*)',  # thai
         u'ダンサー',  # japanese

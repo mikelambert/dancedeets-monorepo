@@ -39,8 +39,8 @@ class Classifier(base_auto_classifier.DanceStyleEventClassifier):
     GOOD_DANCE = REAL_DANCE
     AMBIGUOUS_DANCE = AMBIGUOUS_DANCE
     ADDITIONAL_EVENT_TYPE = Any(
-        'recital',
-        'gala',
+        u'recital',
+        u'gala',
         u'ガラ',
     )
 

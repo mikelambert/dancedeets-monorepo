@@ -9,6 +9,7 @@ from dancedeets.nlp.styles import biodanza
 from dancedeets.nlp.styles import burlesque
 from dancedeets.nlp.styles import capoeira
 from dancedeets.nlp.styles import contact
+from dancedeets.nlp.styles import contemporary
 from dancedeets.nlp.styles import country
 from dancedeets.nlp.styles import dancehall
 from dancedeets.nlp.styles import discofox
@@ -38,6 +39,7 @@ _STYLE_LIST = [
     burlesque.Style,
     capoeira.Style,
     contact.Style,
+    contemporary.Style,
     country.Style,
     dancehall.Style,
     discofox.Style,
