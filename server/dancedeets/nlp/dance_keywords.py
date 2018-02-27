@@ -9,27 +9,23 @@ Name = grammar.Name
 EASY_DANCE = Name(
     'EASY_DANCE',
     Any(
-        u'dances?',
-        u'dancers?',
-        u'dance\w+',
-        u'dance style[sz]',
-        u"dancin[g']?",
-        u'danse\w*',  # french and danish
-        u'dans',  # swedish danish dance
-        u'dansa\w*',  # dance-* swedish
-        u'dansgolv',  # dance floor swedish
-        u'danza\w*',  # dance italian
-        u'danç\w*',  # dance/dancers portuguese
         u'bail[ae]\w*',  # spanish
         u'ballerin[io]',  # dancer italian
         u'ballano',  # dance italian
         u'ballem',  # dance catalan
         u'dancer?s?',  # english
-        u'dancing',  # english
+        u'dance\w+',
+        u'dance style[sz]',
+        u"dancin[g']?",
         u'dans',
+        u'dansles',
         u'dans[aeç]\w*',
-        u'danza',  # italian
-        u'dança\w*',  # portuguese
+        u'danse\w*',  # french and danish
+        u'dansa\w*',  # dance-* swedish
+        u'dansul\w*',  # dance romanian
+        u'dansgolv',  # dance floor swedish
+        u'danza\w*',  # dance italian
+        u'danç\w*',  # dance/dancers portuguese
         u'điệu nhảy',  # vietnamese
         u'khiêu vũ',  # vietnamese
         u'mananayaw',  # tagalog
@@ -315,6 +311,8 @@ CLASS_ONLY = Any(
     u'класса?',  # russian class (this is not a normal 'a')
     'class(?:es)?',
     'lessons?',
+    'lessens?',
+    'dansles',  # dance lesson
     'courses?',
     # TODO: should i do a "class(?!ic)"
     'klass(?:en)?',  # slovakian class
@@ -376,6 +374,7 @@ CLASS = Name(
     'CLASS',
     Any(
         CLASS_ONLY,
+        grammar.connected(Any(EASY_DANCE, EASY_CHOREO), CLASS_ONLY),
         _CLASS_LEVELS,
         grammar.connected(CLASS_ONLY, Any('in')),
         #WITH,
@@ -398,6 +397,7 @@ _CAMP = Name(
         'kemp',
         u'캠프',  # korean camp
         u'營',  # chinese camp
+        'danskamp',
     )
 )
 
@@ -440,7 +440,7 @@ AUDITION = Name(
         'casting call',
         'castingul',  # romanian casting
         u'トライアウト',  # japanese tryout
-        'audizione',  # italian audition
+        'audizion\w*',  # italian audition
         'naborem',  # polish recruitment/audition
         'rehearsal',
         u'綵排',  # chinese rehearsal
@@ -498,6 +498,8 @@ PRACTICE = Name(
         u'연습',  # korean practice/runthrough
     )
 )
+
+#TODO: Add recitals. dansrecital
 
 PERFORMANCE = Name(
     'PERFORMANCE',

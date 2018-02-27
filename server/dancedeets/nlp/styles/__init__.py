@@ -17,6 +17,7 @@ from dancedeets.nlp.styles import five_rhythms
 from dancedeets.nlp.styles import hustle
 from dancedeets.nlp.styles import kpop
 from dancedeets.nlp.styles import latin
+from dancedeets.nlp.styles import modern
 from dancedeets.nlp.styles import lion
 from dancedeets.nlp.styles import partner_fusion
 from dancedeets.nlp.styles import rockabilly
@@ -47,6 +48,7 @@ _STYLE_LIST = [
     hustle.Style,
     kpop.Style,
     latin.Style,
+    modern.Style,
     lion.Style,
     partner_fusion.Style,
     rockabilly.Style,
