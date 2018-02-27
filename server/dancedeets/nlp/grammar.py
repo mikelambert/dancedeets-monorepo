@@ -27,7 +27,11 @@ class GrammarRule(object):
 
     def hack_double_regex(self, flags=0):
         if flags not in self._cached_double_regex:
-            self._cached_double_regex[flags] = regex_keywords.make_regexes_raw(self.as_expanded_regex(), flags=flags)
+            try:
+                self._cached_double_regex[flags] = regex_keywords.make_regexes_raw(self.as_expanded_regex(), flags=flags)
+            except:
+                print 'Problems encoding:', repr(self.as_expanded_regex())
+                raise
         return self._cached_double_regex[flags]
 
     def get_regex_alternations(self):
