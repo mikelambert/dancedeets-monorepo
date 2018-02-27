@@ -9,41 +9,83 @@ Name = grammar.Name
 EASY_DANCE = Name(
     'EASY_DANCE',
     Any(
-        'dances?',
-        "dancin[g']?",
-        'dancers?',
-        'dance\w+',
-        'dance style[sz]',
-        'social\W?dance',
+        u'dances?',
+        u'dancers?',
+        u'dance\w+',
+        u'dance style[sz]',
+        u"dancin[g']?",
+        u'danse\w*',  # french and danish
+        u'dans',  # swedish danish dance
+        u'dansa\w*',  # dance-* swedish
+        u'dansgolv',  # dance floor swedish
+        u'danza\w*',  # dance italian
+        u'danç\w*',  # dance/dancers portuguese
+        u'bail[ae]\w*',  # spanish
+        u'ballerin[io]',  # dancer italian
+        u'ballano',  # dance italian
+        u'ballem',  # dance catalan
+        u'dancer?s?',  # english
+        u'dancing',  # english
+        u'dans',
+        u'dans[aeç]\w*',
+        u'danza',  # italian
+        u'dança\w*',  # portuguese
+        u'khiêu vũ',  # vietnamese
+        u'mananayaw',  # tagalog
+        u'menari',  #  malay
+        u'múa',  # dance vietnamese
+        u'nhảy',  # vietnamese
+        u'penari',  #  malay
+        u'plesa',  # dance croatian
+        u'plesu',  # dancing croatian
+        u'plešete',  # dancing croatian
+        u'sayaw\w*',  # tagalog
+        u'sayawan',  # tagalog
+        u'social\W?dance',
+        u'tancerz',  # polish
+        u'tane?[cč]\w*',  # czech
+        u'tańe?c\w*',  # dance polish/czech
+        u'taniec',  # polish
+        u'tanssi\w*',  # finnish
+        u'tanzen',  # german
+        u'tarian',  # malay
+        u'tánc\w*',  # hungarian
+        u't[aä]nz\w*',  # german
+        u'vũ công',  # vietnamese
+        u'vũ đạo',  # dance vietnamese
+        u'zaplešite',  # dance croatian
+        u'zatanč\w*',  # dance czech
+        u'šok\w*',  # dance lithuanian
         u'χορ[όέ]\w*',  # greek dance/choreography
-        u'رقص',  # arabic dance native
-        u'دانس',  # arabic dance transliteration
-        u'नृत्य',  # hindi dance
-        u'댄스',  # korean dance
-        u'댄서',  # korean dancer
-        u'тане?ц\w*',  # russian/bulgarian dance
+        u'тане?ц\w*',  # russian
+        u'танчер',  # dancer macedonian
+        u'танцовиот',  # dance macedonian
         u'изтанц\w*',  # russian/bulgarian dance
-        u'רקוד',  # hebrew dancing
+        u'לִרְקוֹד',  # hebrew
+        u'רַקדָן',  # hebrew
+        u'ריקוד',  # hebrew
         u'בלרקוד',  # hebrew dancing
+        u'רקוד',  # hebrew dancing
         u'כשרוקדים',  # hebrew 'when dancing'
         u'ריקודים',  # hebrew dances
         u'ריקודי',  # hebrew dance
-        u'ダンサー',  # japanese dance
-        u'ダンス',  # japanese dance
-        u'踊',  # japanese dance prefix
-        u'춤.?',  # korean dance
-        u'추고.?.?',  # korean dancing
-        u'댄서.?.?',  # korean dancers
-        u'踊り',  # japanese dance
         u'רוקד',  # hebrew dance
+        u'רוקדים',  # hebrew dance
         u'רקדם',  # hebrew dancers
         u'הריקוד',  # hebrew dance
-        u'רוקדים',  # hebrew dance
         u'רקדנים',  # hebrew dancers
         u'לרקדני',  # hebrew dancers
-        u'לרקדנים',  # hebrew 'for the dancers'
+        u'לרקדנים?',  # hebrew 'for the dancers'
         u'רקדן',  # hebrew dancer
-        u'ריקוד',  # hebrew dance
+        u'راقصة?',  # arabic
+        u'دانس',  # arabic dance transliteration
+        u'رقص',  # arabic
+        u'แดนซ์',  # dance thai
+        u'(?:การ)?(?:ลีลาศ|ฟ้อนรำ|ร่ายรำ|เริงระบำ|ก?เต้น\w*)',  # thai
+        u'ダンサー',  # japanese
+        u'ダンシング',  # japanese
+        u'ダンス',  # japanese
+        u'踊り',  # japanese dance
         u'舞者',  # chinese dancer
         u'舞技',  # chinese dancing
         u'舞.?蹈',  # chinese dance
@@ -51,59 +93,43 @@ EASY_DANCE = Name(
         u'排舞',  # chinese dance
         u'蹈',  # chinese dance
         u'跳.?舞',  # chinese dance
-        u'แดนซ์',  # dance thai
-        u'เต้น',  # dance thai
-        u'กเต้น',  # dancers thai
-        u'nhảy',  # dance vietnamese
-        u'vũ đạo',  # dance vietnamese
-        u'múa',  # dance vietnamese
-        'danse\w*',  # french and danish
-        'taniec',  # dance polish
-        u'tane?[cč][íú\w]*',  # dance slovak/czech
-        u'zatanč\w*',  # dance czech
-        u'tańe?c\w*',  # dance polish/czech
-        u'danç\w*',  # dance/dancers portuguese
-        'danza\w*',  # dance italian
-        u'šok\w*',  # dance lithuanian
-        'tanz\w*',  # dance german
-        u'tänz\w*',  # dance german
-        'tanssi\w*',  # finnish dance
-        'bail[ae]\w*',  # dance spanish
-        'danzas',  # dance spanish
-        'ballerin[io]',  # dancer italian
-        'ballano',  # dance italian
-        'ballem',  # dance catalan
-        'dansare',  # dancers swedish
-        'dansat',  # dancing swedish
-        'dansama',  # dancers swedish
-        'dansa\w*',  # dance-* swedish
-        'dansgolv',  # dance floor swedish
-        'dans',  # swedish danish dance
-        u'tänzern',  # dancer german
-        u'танчер',  # dancer macedonian
-        u'танцовиот',  # dance macedonian
-        'footwork',
-        'plesa',  # dance croatian
-        'plesu',  # dancing croatian
-        u'plešete',  # dancing croatian
-        u'zaplešite',  # dance croatian
-        u'nhảy',  # dance vietnamese
-        u'tänzer',  # dancer german
+        u'댄스',  # korean
+        u'댄서',  # korean dancer
+        u'춤추는?',  # korean
+        u'नृत्य',  # hindi dance
+        u'ダンサー',  # japanese dance
+        u'ダンス',  # japanese dance
+        u'踊',  # japanese dance prefix
+        u'춤.?',  # korean dance
+        u'추고.?.?',  # korean dancing
+        u'댄서.?.?',  # korean dancers
+        u'footwork',
     )
 )
 
 EASY_CHOREO = Name(
     'EASY_CHOREO',
     Any(
-        u'(?:ch|k|c)oe?re[o|ó]?gr[aá](?:ph|f)\w*',  # english, italian, finnish, swedish, german, lithuanian, polish, italian, spanish, portuguese, danish
-        'choreo',
+        u'biên đạo(?: múa)?',  # vietnamese
+        u'(?:c|ch|k)oreo',
+        u'(?:c|ch|k)or(?:eo|eó|é)gr[aá]\w+',
         u'chorée',  # french choreo
-        u'chorégraph\w*',  # french choreographer
-        u'biên đạo',  # vietnamese choreography
-        u'кореограф',  # macedonian
+        u'kareogra\w+',  # turkish
+        u'χορογρ\+',  # greek
+        u'кореограф\w*',  # macedonian
+        u'хорео\w*',  # macedonian/russian
         u'балетмейстерски\w*',  # russain choreography (ballet master)
-        u'안무',
         u'χορογραφια\w*',
+        u'כּוֹרֵיאוֹגר\w*',  # hebrew
+        u'مدير الرقص',  # arabic
+        u'นัก|การออกแบบท่าเต้น',  # thai
+        u'ท่าเต้น',  # thai
+        u'ออกแบบท่าเต้น',  # thai
+        u'振り付け',  # japanese
+        u'振付師',  # japanese
+        u'編舞',  # chinese traditional
+        u'编舞',  # chinese simplified
+        u'안무가?',  # korean
     )
 )
 
@@ -374,22 +400,45 @@ _CAMP = Name(
     )
 )
 
+AUDITION_ONLY = Any(
+    u'audicija\s*',  # croatian
+    u'audi[tc]i[óo]n\s*',  # spanish
+    u'auditie\w*',  # dutch
+    u'audição\w*',  # portuguese
+    u'esiintymiskoe',  # finnish
+    u'işitme',  # turkish
+    u'klausymasis',  # lithuanian
+    u'konkur[sz]',  # czech
+    u'meghallgatás',  # hungarian
+    u'provino',  # italian
+    u'przesłuchanie',  # polish
+    u'thử vai',  # vietnamese
+    u'uji bakat',  # malay
+    u'vorsprechen',  # german
+    u'ακοή',  # greek
+    u'аудиција',  # macedonian
+    u'прослушивание',  # russian
+    u'אודישן',  # hebrew
+    u'الاختبار',  # arabic
+    u'การได้ยิน',  # thai
+    u'オーディション',  # japanese
+    u'面試',  # chinese traditional
+    u'面试',  # chinese simplified
+    u'試鏡',  # chinese traditional
+    u'试音',  # chinese simplfiied
+    u'오디션',  # korean
+)
+
 AUDITION = Name(
     'AUDITION',
     Any(
+        AUDITION_ONLY,
         'try\W?outs?',
         'casting',
         'castingi',  # polish casting
         'casting call',
         'castingul',  # romanian casting
-        'auditions?',
-        'audicija',  # audition croatia
-        'audiciones',  # spanish audition
-        'konkurz',  # audition czech
-        u'オーディション',  # japanese audition
         u'トライアウト',  # japanese tryout
-        u'試鏡',  # chinese audition
-        u'오디션',  # korean audition
         'audizione',  # italian audition
         'naborem',  # polish recruitment/audition
         'rehearsal',
@@ -400,12 +449,40 @@ AUDITION = Name(
 CONTEST = Name(
     'CONTEST',
     Any(
-        'contests?',
-        'concours',  # french contest
-        'konkurrencer',  # danish contest
-        'konkuranser',  # norwegian contest/competition
-        'dancecontests',  # dance contests german
+        u'conc(?:o|u|ou)rs\w*',  # portuguese
+        u'contests?',  # norwegian
+        u'cuộc thi',  # vietnamese
+        u'des concours',  # french
+        u'kilpailu\w*',  # finnish
+        u'konkurr[ae]n[cs]e\w*',  # danish, norwegian
+        u'konkurs\w*',  # lithuanian, polish
+        u'mga paligsahan',  # tagalog
+        u'natjecanj\w*',  # croatian
+        u'paligsahan',  # tagalog
+        u'pertandingan',  # malay
+        u'soutěž\w*',  # czech
+        u'tävling\w*',  # swedish
+        u'verseny\w*',  # hungarian
+        u'wedstrijd\w*',  # dutch
+        u'wettbewerb\w*',  # german
+        u'yarışma\w*',  # turkish
+        u'zawody',  # polish
+        u'διαγωνισμο\w*',  # greek
+        u'конкурс\w*',  # russian
+        u'натпревар\w*',  # macedonian
+        u'תַחֲרוּת',  # hebrew
+        u'תחרויות',  # hebrew
+        u'مسابق\w*',  # arabic
+        u'การประกวด',  # thai
+        u'การแข่งขัน',  # thai
         u'コンクール',  # japanese contest
+        u'コンテスト',  # japanese
+        u'比賽',  # chinese traditional
+        u'比赛',  # chinese simplified
+        u'竞赛',  # chinese simplified
+        u'競賽',  # chinese traditional
+        u'경연',  # korean
+        'dancecontests',  # dance contests german
     )
 )
 PRACTICE = Name(
