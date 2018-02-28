@@ -11,20 +11,25 @@ connected = grammar.connected
 commutative_connected = grammar.commutative_connected
 
 DANCE = Any(
-    'pole\W?ates',
-    'aerial\Whoops?',
-    'aerial\Wfabrics?',
-    'aerial\Wsilks?',
+    u'pole\W?ates',
+    u'aerial\Whoops?',
+    u'aerial\Wfabrics?',
+    u'aerial\Wsilks?',
+    u'aerial\Wspirals?',
+    u'cerceau aérien',
     u'空中シルク',
     u'空中布',
     u'空中フープ',
+    'pole\W?fit(?:ness)?',
 )
+
 AMBIGUOUS_DANCE = Any(
     'pole',
     u'ポール',
     'aerials?',
     u'空中',
     #'hoops?',
+    u'cerceaux?',
     'fabrics?',
     u'布',
     'silks?',
