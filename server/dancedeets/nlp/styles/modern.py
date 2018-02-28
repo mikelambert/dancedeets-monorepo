@@ -10,6 +10,13 @@ Name = grammar.Name
 connected = grammar.connected
 commutative_connected = grammar.commutative_connected
 
+TECHNIQUES = Any(
+    'horton',
+    'graham',
+)
+
+REAL_DANCE = Any(connected(TECHNIQUES, Any('techniques?')),)
+
 AMBIGUOUS_DANCE = Any(
     u'modern\w*',
     u'moden',
@@ -25,6 +32,7 @@ AMBIGUOUS_DANCE = Any(
 
 
 class Classifier(base_auto_classifier.DanceStyleEventClassifier):
+    GOOD_DANCE = REAL_DANCE
     AMBIGUOUS_DANCE = AMBIGUOUS_DANCE
     ADDITIONAL_EVENT_TYPE = Any(u'recital',)
 

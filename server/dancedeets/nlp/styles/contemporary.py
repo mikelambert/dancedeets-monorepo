@@ -9,6 +9,18 @@ Name = grammar.Name
 connected = grammar.connected
 commutative_connected = grammar.commutative_connected
 
+TECHNIQUES = Any(
+    'limon',
+    'hawkins',
+    'cunningham',
+    'release',
+    'alexander',
+    'taylor',
+    'humphrey-weidman',
+)
+
+REAL_DANCE = Any(connected(TECHNIQUES, Any('techniques?')),)
+
 AMBIGUOUS_DANCE = Any(
     u'contemp',
     u'contempor\w+',
@@ -35,6 +47,7 @@ AMBIGUOUS_DANCE = Any(
 
 
 class Classifier(base_auto_classifier.DanceStyleEventClassifier):
+    REAL_DANCE = REAL_DANCE
     AMBIGUOUS_DANCE = AMBIGUOUS_DANCE
     ADDITIONAL_EVENT_TYPE = Any(
         u'recital',
