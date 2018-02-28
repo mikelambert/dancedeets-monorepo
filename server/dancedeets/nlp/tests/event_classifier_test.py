@@ -50,7 +50,7 @@ class TestDanceClass(unittest.TestCase):
         fb_event = dict(info=dict(name="FB Event", description="more stuff here, dance class"))
         classified_event = event_classifier.get_classified_event(fb_event)
         self.assertEqual(set(['dance']), classified_event.dance_matches())
-        self.assertEqual(set(['class']), classified_event.event_matches())
+        self.assertEqual(set(['dance class']), classified_event.event_matches())
 
 
 class TestKeywordLoader(unittest.TestCase):
