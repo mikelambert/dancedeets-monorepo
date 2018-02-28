@@ -22,6 +22,7 @@ EASY_DANCE = Name(
         u'dans[aeç]\w*',
         u'danse\w*',  # french and danish
         u'dansa\w*',  # dance-* swedish
+        u'dansı\w*',  # turkish
         u'dansul\w*',  # dance romanian
         u'dansgolv',  # dance floor swedish
         u'danza\w*',  # dance italian
