@@ -77,6 +77,8 @@ class Style(style_base.Style):
     def get_popular_search_keywords(cls):
         return [
             'pole dance',
+            'pole fitness',
+            'pole fit',
             'aerial hoop',
             'aerial fabric',
             'aerial silks',
