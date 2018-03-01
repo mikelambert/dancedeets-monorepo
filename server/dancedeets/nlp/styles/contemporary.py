@@ -27,9 +27,10 @@ CONTEMPORARY = Any(
     u'kortárs',  # hungarian
     u'nutidig',  # danish
     u'nykytanssi',  # finnish
+    u'súčasný',  # contemporary slovak
     u'současný',  # czech
     u'suvremeni',  # croatian
-    u'współczesny',  # polish
+    u'współczesn\w+',  # polish
     u'kontemporari',  # malay
     u'zeitgenössischer',  # german
     u'çağdaş',  # turkish

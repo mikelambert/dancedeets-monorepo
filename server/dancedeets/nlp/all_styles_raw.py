@@ -6,27 +6,13 @@ Any = grammar.Any
 Name = grammar.Name
 
 DANCE_STYLE_CLASSICAL = Any(
-    'barre',
-    'contato improv\w*',
-    'contact improv\w*',
-    u'コンタクトインプロビゼーション',  # japanese contact improv
     'contratto mimo',  # italian contact mime
-    'limon',
-    'modern dance',
-    'jazz',
-    u'재즈',  # korean jazz
-    'contemporary',
-    u'súčasný',  # contemporary slovak
-    u'współczesnego',  # contemporary polish
-    'contempor\w*',  # contemporary italian, french
     'class?ic[ao]',
     'tap',
     u'탭 ?댄스',  # korean tap dance
 )
 
 DANCE_STYLE_INDIAN = Any(
-    'bollywood',
-    u'볼리우드',  # bollywood
     'kalbeliya',
     'bhawai',
     'teratali',
@@ -51,36 +37,34 @@ DANCE_STYLE_MISC = Any(
     'disco tan\w+',  # czech disco dance
     'dance partner',
     'hula',
-    'hoop',
     'ghost',
     'ghosting',
     'tumbling',
     'cheer',
     'butoh',
     u'舞踏',  # japanese butoh
-    'musical theat(?:re|er)',
     'persiana?',
     'arabe',
     'arabic',
     'araba',
     'oriental\w*',
     'oriente',
-    'cubana',
     'soca',
     'tahitian dancing',
     'tahitienne',
     'folklor\w+',
+    'clogging',
+    'acroyoga',
+    'pilates',
+    u'ピラティス',  # japanese pilates
+    'zumba',
+)
+"""
     'artist\Win\Wresidence',
     'residency',
     'disciplinary',
     'reflective',
-    'clogging',
-    'acroyoga',
-    'hoop\W?dance',
-    'pilates',
-    u'ピラティス',  # japanese pilates
-    'zumba',
     'technique',
-    'guest artists?',
     'partnering',
-)
+    'guest artists?',
+"""
