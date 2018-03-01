@@ -10,6 +10,7 @@ connected = grammar.connected
 commutative_connected = grammar.commutative_connected
 
 BALLET = Any(
+    u'balet',
     u'ballet\w*',
     u'ball?ett[io]?',
     u'baletas',  # lithuanian
