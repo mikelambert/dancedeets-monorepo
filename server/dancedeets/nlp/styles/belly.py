@@ -17,6 +17,7 @@ NON_BELLY_AMBIGUOUS_DANCE = Any(
     'oriental',  # oriental dance
     'egyptian',  # egyptian dance
     'middle eastern',  # middle eastern dance
+    u'itämais\w+',  # oriential finnish
 )
 
 BELLY = Any(
