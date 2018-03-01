@@ -13,35 +13,48 @@ connected = grammar.connected
 commutative_connected = grammar.commutative_connected
 
 ARGENTINE = Any(
-    'argentin\w*',
+    u'argent[iy]\w*',
+    u'αργεντίνικο ταγκό',  # greek
+    u'аргентин\w*',  # russian, macedonian
+    u'ארגנטינאי',  # hebrew
+    u'อาร์เจนตินา',  # thai
     u'アルゼンチン',
     u'阿根廷',
     u'아르헨티나',
-    u'аргентинское',  # russian
 )
 
 TANGO = Any(
-    'tango',
+    u'tang[oó]',
+    u'ταγκό',  # greek
+    u'танго',  # russian, macedonian
+    u'טנגו',  # hebrew
+    u'تانغو',  # arabic
+    u'แทงโก',  # thai
     u'タンゴ',
     u'探戈',
     u'탱고',
-    u'танго',  # russian
 )
+
 MILONGA = Any(
-    'milongas?',
+    u'milongas?',
+    u'милонга',  # macedonian, russian
+    u'מילונגה',  # hebrew
     u'ミロンガ',
+    u'舞会',  # chinese simplified
+    u'舞會',  # chinese traditional
     u'밀롱가',
 )
+
 TANGO_TYPES = Any(
     MILONGA,
-    'traditional',
-    'nuevo',
+    u'traditional',
+    u'nuevo',
     u'ヌオーバ',
     u'새로운',
-    'vals',
+    u'vals',
     u'バルス',
     u'왈츠',
-    'alternative',
+    u'alternative',
 )
 REAL_DANCE = commutative_connected(ARGENTINE, TANGO)
 

@@ -67,9 +67,16 @@ AMBIGUOUS_AFRICAN = Name(
         'adowa',
         'aduma',
         'afr[iy][ck]?[ck]\w*',
+        u'αφρικ\w*',  # greek
+        u'африк\w*',  # russian
+        u'אפריקני',  # hebrew
+        u'الأفريقي'  # arabic
+        u'แอฟริกา',  # thai
         u'アフリカン',
         u'アフロ',
         u'非洲',
+        u'아프리카\w*',
+        u'아프리카 ?인?',  # korean
         'afrobeat',
         u'アフロビート',
         'afro\W?house',

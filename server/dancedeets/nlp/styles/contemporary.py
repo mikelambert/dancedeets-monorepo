@@ -3,6 +3,7 @@
 from dancedeets.nlp import base_auto_classifier
 from dancedeets.nlp import grammar
 from dancedeets.nlp import style_base
+from dancedeets.nlp.styles import ballet
 
 Any = grammar.Any
 Name = grammar.Name
@@ -19,9 +20,7 @@ TECHNIQUES = Any(
     'humphrey-weidman',
 )
 
-REAL_DANCE = Any(connected(TECHNIQUES, Any('techniques?')),)
-
-AMBIGUOUS_DANCE = Any(
+CONTEMPORARY = Any(
     u'contemp',
     u'contempor\w+',
     u'kontemporaryong',  # tagalog
@@ -44,6 +43,13 @@ AMBIGUOUS_DANCE = Any(
     u'การเต้นร่วมสมัย',  # thai
     u'コンテンポラリー',  # japanese
 )
+
+REAL_DANCE = Any(
+    commutative_connected(CONTEMPORARY, ballet.BALLET),
+    connected(TECHNIQUES, Any('techniques?')),
+)
+
+AMBIGUOUS_DANCE = CONTEMPORARY
 
 
 class Classifier(base_auto_classifier.DanceStyleEventClassifier):

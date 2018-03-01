@@ -9,7 +9,7 @@ Name = grammar.Name
 connected = grammar.connected
 commutative_connected = grammar.commutative_connected
 
-REAL_DANCE = Any(
+BALLET = Any(
     u'ballet\w*',
     u'ball?ett[io]?',
     u'baletas',  # lithuanian
@@ -26,7 +26,13 @@ REAL_DANCE = Any(
     u'danza classica',
     u'danse classique',
 )
-AMBIGUOUS_DANCE = Any(u'bal[ée]',)
+AMBIGUOUS_BALLET = Any(u'bal[ée]',)
+
+REAL_DANCE = BALLET
+AMBIGUOUS_DANCE = AMBIGUOUS_BALLET
+
+# Exported and used elsewhere
+ALL_BALLET = Any(BALLET, AMBIGUOUS_BALLET)
 
 STRONG_KEYWORDS = Any(
     u'swan lake',

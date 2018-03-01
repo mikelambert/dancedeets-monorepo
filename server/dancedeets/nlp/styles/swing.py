@@ -13,7 +13,9 @@ commutative_connected = grammar.commutative_connected
 
 REAL_DANCE = Any(
     'lindy\W?hop\w*',
+    u'линди-хоп',  # russian
     u'リンディ',  # japanese lindy
+    u'リンジーホップ',
     u'린디',  # korean lindy
     'east coast swing',
     'solo jazz',

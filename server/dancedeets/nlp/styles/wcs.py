@@ -13,7 +13,11 @@ commutative_connected = grammar.commutative_connected
 
 PROFESSIONALS = grammar.FileBackedKeyword('../styles/wcs_dancers')
 
-WEST_COAST_SWING = Any('west coast swing\w*', PROFESSIONALS)
+WEST_COAST_SWING = Any(
+    PROFESSIONALS,
+    u'west coast swing\w*',
+    u'ウェストコーストスイング',
+)
 
 WCS = Any('wcs')
 

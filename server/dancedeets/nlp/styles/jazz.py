@@ -9,7 +9,7 @@ Name = grammar.Name
 connected = grammar.connected
 commutative_connected = grammar.commutative_connected
 
-AMBIGUOUS_DANCE = Any(
+JAZZ = Any(
     u'jazz',
     u"ג'אז",  # hebrew
     u'caz',  # turkish
@@ -24,11 +24,33 @@ AMBIGUOUS_DANCE = Any(
     u'爵士',  # chinese simplified
     u'재즈',  # korean
 )
+AMBIGUOUS_DANCE = JAZZ
 
 
 class Classifier(base_auto_classifier.DanceStyleEventClassifier):
     AMBIGUOUS_DANCE = AMBIGUOUS_DANCE
     ADDITIONAL_EVENT_TYPE = Any(u'recital',)
+    GOOD_BAD_PAIRINGS = [(
+        JAZZ,
+        Any(
+            u'ensemble',
+            u'bossa nova',
+            u'blues',
+            u'jazz standards',
+            u'bebop',
+            u'free\Wjazz',
+            u'jazz music',
+            u'cotton\W?club',
+            u'concert',
+            u'stan getz',
+            u'miles davis',
+            u'bille holiday',
+            u'chet baker',
+            u'louis armstrong',
+            u'duke ellington',
+            u'john coltrane',
+        )
+    )]
 
     def _quick_is_dance_event(self):
         return True

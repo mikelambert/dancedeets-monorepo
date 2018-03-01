@@ -310,6 +310,8 @@ CLASS_ONLY = Any(
     'company class',
     u'мастер\W?класса?',  # russian master class
     u'класса?',  # russian class (this is not a normal 'a')
+    u'(?:спец)?курс',  # russian course
+    u'семинар',  # russian seminar
     'class(?:es)?',
     'lessons?',
     'lessens?',

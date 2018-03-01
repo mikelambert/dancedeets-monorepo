@@ -4,6 +4,7 @@ from dancedeets.nlp import base_auto_classifier
 from dancedeets.nlp import grammar
 from dancedeets.nlp import style_base
 from dancedeets.nlp.styles import partner_fusion
+from dancedeets.nlp.styles import contemporary
 
 Any = grammar.Any
 Name = grammar.Name
@@ -15,9 +16,7 @@ TECHNIQUES = Any(
     'graham',
 )
 
-REAL_DANCE = Any(connected(TECHNIQUES, Any('techniques?')),)
-
-AMBIGUOUS_DANCE = Any(
+MODERN = Any(
     u'modern\w*',
     u'moden',
     u'hiện đại',
@@ -29,6 +28,13 @@ AMBIGUOUS_DANCE = Any(
     u'การเต้นรำสมัยใหม่',
     u'モダン',
 )
+
+REAL_DANCE = Any(
+    commutative_connected(MODERN, contemporary.CONTEMPORARY),
+    connected(TECHNIQUES, Any('techniques?')),
+)
+
+AMBIGUOUS_DANCE = MODERN
 
 
 class Classifier(base_auto_classifier.DanceStyleEventClassifier):
