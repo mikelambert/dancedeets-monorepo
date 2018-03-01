@@ -25,8 +25,6 @@ REAL_DANCE = Any(
     'texas shuffle step\w*',
     'mambo shuffle',
     'clogging',
-    'contredanse',
-    'contra\W?danc\w+',
     'triple\W?two\W?step',
 )
 
@@ -38,7 +36,7 @@ LINE_DANCE = commutative_connected(Any(
 AMBIGUOUS_DANCE = Any(
     'country',
     u'カントリー',
-    'c\Ww',
+    'c/w',  # not \W, or 'classi' + 'c w' matches 'classic w/ mark oliver' :/
     'cowboy',
     u'カウボーイ',
     'traveling cha\W?cha',
@@ -52,7 +50,7 @@ AMBIGUOUS_DANCE = Any(
     u'スクエア',
     'mwsd',
     'clog',
-    'contradanza',
+    u'contr[ae]',
 )
 
 GOOD_KEYWORDS = Any(
