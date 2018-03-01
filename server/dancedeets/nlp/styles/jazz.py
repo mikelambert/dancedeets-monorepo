@@ -33,6 +33,7 @@ class Classifier(base_auto_classifier.DanceStyleEventClassifier):
     GOOD_BAD_PAIRINGS = [(
         JAZZ,
         Any(
+            u'vintage',  # vintage jazz!
             u'ensemble',
             u'bossa nova',
             u'blues',
@@ -42,13 +43,28 @@ class Classifier(base_auto_classifier.DanceStyleEventClassifier):
             u'jazz music',
             u'cotton\W?club',
             u'concert',
-            u'stan getz',
-            u'miles davis',
+            u'musicians?',
+            u'jazz\W?festival',
+            u'jam\W?sessions?',
+            u'drums?',
+            u'double\W+bass',
+            u'trios?',
+            u'quartets?',
+            u'quintets?',
+            u'ensembles?',
+            # artists
+            u'armstrong',
             u'bille holiday',
             u'chet baker',
-            u'louis armstrong',
+            u'coltrane',
             u'duke ellington',
+            u'ellington\w*',
+            u'etta james',
             u'john coltrane',
+            u'louis armstrong',
+            u'miles davis',
+            u'ray charles',
+            u'stan getz',
         )
     )]
 

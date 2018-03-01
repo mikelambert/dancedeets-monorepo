@@ -27,6 +27,7 @@ REAL_DANCE = Any(
     'slow drag',
     'balboa\w*',
     'authentic jazz',
+    'vintage jazz',
 )
 
 AMBIGUOUS_WORDS = Any(
