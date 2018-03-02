@@ -384,6 +384,10 @@ CLASS = Name(
         grammar.commutative_connected(CLASS_ONLY, Any(FREE, _CLASS_LEVELS, WITH)),
     )
 )
+SPANISH_CLASS = Any(
+    u'taller',
+    u'talleres',
+)
 
 ROMANCE_LANGUAGE_CLASS = Name('ROMANCE_LANGUAGE_CLASS', Any(
     'spectacle',

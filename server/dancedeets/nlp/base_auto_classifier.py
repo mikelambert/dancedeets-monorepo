@@ -68,6 +68,7 @@ class RuleGenerator(type):
             cls.ADDITIONAL_EVENT_TYPE,
         )
         cls.EVENT_TYPE_ROMANCE = Any(cls.EVENT_TYPE, dance_keywords.ROMANCE_LANGUAGE_CLASS)
+        cls.EVENT_TYPE_SPANISH = Any(cls.EVENT_TYPE, dance_keywords.SPANISH_CLASS)
         cls.GOOD_DANCE_COMPETITION = Name(
             'GOOD_DANCE_COMPETITION', commutative_connected(Any(cls.GOOD_DANCE_FULL, cls.AMBIGUOUS_DANCE), cls.COMPETITIONS)
         )
@@ -83,6 +84,13 @@ class RuleGenerator(type):
             Any(
                 commutative_connected(cls.GOOD_DANCE_FULL, cls.EVENT_TYPE_ROMANCE),
                 commutative_connected(cls.AMBIGUOUS_DANCE, Any(dance_keywords.CLASS, dance_keywords.ROMANCE_LANGUAGE_CLASS)),
+            )
+        )
+        cls.GOOD_DANCE_EVENT_SPANISH = Name(
+            'GOOD_DANCE_EVENT_SPANISH',
+            Any(
+                commutative_connected(cls.GOOD_DANCE_FULL, cls.EVENT_TYPE_SPANISH),
+                commutative_connected(cls.AMBIGUOUS_DANCE, Any(dance_keywords.CLASS, dance_keywords.SPANISH_CLASS)),
             )
         )
 
@@ -269,7 +277,10 @@ class DanceStyleEventClassifier(object):
     @log_to_bucket('strong_title')
     def has_strong_title(self):
         # Some super-basic language specialization
-        if self._has(dance_keywords.ROMANCE):
+        if self._classified_event.language == 'es':
+            event_type = self.EVENT_TYPE_SPANISH
+            good_dance_event = self.GOOD_DANCE_EVENT_SPANISH
+        elif self._has(dance_keywords.ROMANCE):
             event_type = self.EVENT_TYPE_ROMANCE
             good_dance_event = self.GOOD_DANCE_EVENT_ROMANCE
         else:
@@ -310,7 +321,9 @@ class DanceStyleEventClassifier(object):
     @log_to_bucket('strong_body')
     def has_strong_body(self):
         # Some super-basic language specialization
-        if self._has(dance_keywords.ROMANCE):
+        if self._classified_event.language == 'es':
+            good_dance_event = self.GOOD_DANCE_EVENT_SPANISH
+        elif self._has(dance_keywords.ROMANCE):
             good_dance_event = self.GOOD_DANCE_EVENT_ROMANCE
         else:
             good_dance_event = self.GOOD_DANCE_EVENT

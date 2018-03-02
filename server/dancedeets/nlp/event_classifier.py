@@ -18,10 +18,10 @@ from dancedeets.nlp import dance_keywords
 from dancedeets.nlp import grammar
 from dancedeets.nlp import grammar_matcher
 from dancedeets.nlp import regex_keywords
-from .street import keywords
-from .street import rules
-
-from ..util import dates
+from dancedeets.nlp.street import keywords
+from dancedeets.nlp.street import rules
+from dancedeets.util import dates
+from dancedeets.util import language as language_util
 
 USE_UNICODE = False
 
@@ -79,6 +79,9 @@ class BasicClassifiedEvent(object):
         self.search_text = ('\n.\n.\n.\n'.join([name, org_name, description])).lower()
         self.start_time = start_time
         self.end_time = end_time
+        if not language:
+            text = '%s. %s' % (fb_event['info'].get('name', ''), fb_event['info'].get('description', ''))
+            language = language_util.detect(text)
         self.language = language
         self.times = {}
 

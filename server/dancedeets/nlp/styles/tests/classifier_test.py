@@ -5,10 +5,10 @@ import os
 from dancedeets import fb_api
 from dancedeets.nlp import event_classifier
 from dancedeets.nlp import styles
-from dancedeets.test_utils import classifier_util
-from dancedeets.test_utils import unittest
 from dancedeets.nlp.styles import street
 from dancedeets.nlp.styles.tests import util
+from dancedeets.test_utils import classifier_util
+from dancedeets.test_utils import unittest
 
 TEST_IDS_PATH = util.TEST_IDS_PATH
 
@@ -48,6 +48,7 @@ def get_classified_event(fb_event, style_name):
         classifier_type = event_classifier.ClassifiedEvent
     else:
         classifier_type = event_classifier.BasicClassifiedEvent
+
     classified_event = event_classifier.get_classified_event(fb_event, classifier_type=classifier_type)
     return classified_event
 
