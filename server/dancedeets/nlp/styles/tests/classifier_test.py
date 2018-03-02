@@ -26,7 +26,10 @@ def get_positive_negative_ids(style_name):
                 line = line.split('#')[0].strip()
                 if not line:
                     continue
-                classification, event_id = line.split(':')
+                try:
+                    classification, event_id = line.split(':', 1)
+                except:
+                    logging.exception('Error on line: %r', line)
                 if classification.startswith('-'):
                     lookup = negatives
                     key = classification[1:]
