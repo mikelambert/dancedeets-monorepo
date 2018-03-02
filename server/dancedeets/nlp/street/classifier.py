@@ -117,7 +117,6 @@ def has_list_of_good_classes(classified_event):
         good_lines = []
         for line in schedule_lines:
             proc_line = grammar_matcher.StringProcessor(line, classified_event.boundaries)
-            proc_line.tokenize(keywords.AMBIGUOUS_DANCE_MUSIC)
             dance_class_style_matches = proc_line.get_tokens(rules.GOOD_DANCE)
             dance_and_music_matches = proc_line.get_tokens(keywords.AMBIGUOUS_DANCE_MUSIC)
             manual_dancers = proc_line.get_tokens(rules.MANUAL_DANCER[grammar.STRONG])

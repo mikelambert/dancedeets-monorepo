@@ -64,14 +64,18 @@ class BasicClassifiedEvent(object):
     def __init__(self, fb_event, name, description, start_time, end_time, language=None, include_first_line_in_title=False):
         self.fb_event = fb_event
         self.title = name.lower()
+
+        org_name = fb_event['info'].get('owner', {}).get('name', '').lower()
+
         if include_first_line_in_title:
             # Using the full first line can cause problems when it is a paragraph!
             # So let's be a bit conservative here...
             first_line = description.split('\n')[0].lower()
             if len(first_line) < 200:
-                self.title += '\n' + first_line
+                # And sometimes the org name triggers false positives, and is basically irrelevant if its just being listed in the first line
+                if org_name not in first_line:
+                    self.title += '\n' + first_line
         # use a separator here, so 'actors workshop' 'breaking boundaries...' doesn't match 'workshop breaking'
-        org_name = fb_event['info'].get('owner', {}).get('name', '').lower()
         self.search_text = ('\n.\n.\n.\n'.join([name, org_name, description])).lower()
         self.start_time = start_time
         self.end_time = end_time
