@@ -15,13 +15,13 @@ commutative_connected = grammar.commutative_connected
 def log_to_bucket(category):
     def wrap_func(func):
         def outer_func(self, *args, **kwargs):
-            self._log_category = category
+            self._log_category.append(category)
             try:
                 result = func(self, *args, **kwargs)
                 self._log('Final result: %s', result)
                 return result
             finally:
-                self._log_category = None
+                self._log_category.pop()
 
         return outer_func
 
@@ -118,13 +118,14 @@ class DanceStyleEventClassifier(object):
         self._debug = debug
 
         self._logs = []
-        self._log_category = None
+        self._log_category = ['global']
 
     @classmethod
     def finalize_class(cls, other_style_regex):
         cls.OTHER_DANCE_FULL = Any(
             cls.OTHER_DANCE,
             cls.NOT_DANCE,
+            keywords.OTHER_SHOW,
             other_style_regex,
         )
 
@@ -167,10 +168,10 @@ class DanceStyleEventClassifier(object):
         return result
 
     def _log(self, log, *args):
-        self._logs.append('%s: %s' % (self._log_category, log % args))
+        self._logs.append('%s: %s' % (self._log_category[0], log % args))
         if not self._debug:
             return
-        logging.info('%s: %s', self._log_category, log % args)
+        logging.info('%s: %s', self._log_category[0], log % args)
 
     # top-level function
     def is_dance_event(self):
