@@ -127,6 +127,7 @@ class DanceStyleEventClassifier(object):
 
         self._logs = []
         self._log_category = ['global']
+        self._log('Detected language %s', self._classified_event.language)
 
     @classmethod
     def finalize_class(cls, other_style_regex):
@@ -277,10 +278,10 @@ class DanceStyleEventClassifier(object):
     @log_to_bucket('strong_title')
     def has_strong_title(self):
         # Some super-basic language specialization
-        if self._classified_event.language == 'es':
+        if self._classified_event.language == ['es', 'pt']:
             event_type = self.EVENT_TYPE_SPANISH
             good_dance_event = self.GOOD_DANCE_EVENT_SPANISH
-        elif self._has(dance_keywords.ROMANCE):
+        elif self._classified_event.language == ['fr', 'it']:
             event_type = self.EVENT_TYPE_ROMANCE
             good_dance_event = self.GOOD_DANCE_EVENT_ROMANCE
         else:
@@ -321,9 +322,9 @@ class DanceStyleEventClassifier(object):
     @log_to_bucket('strong_body')
     def has_strong_body(self):
         # Some super-basic language specialization
-        if self._classified_event.language == 'es':
+        if self._classified_event.language == ['es', 'pt']:
             good_dance_event = self.GOOD_DANCE_EVENT_SPANISH
-        elif self._has(dance_keywords.ROMANCE):
+        elif self._classified_event.language == ['fr', 'it']:
             good_dance_event = self.GOOD_DANCE_EVENT_ROMANCE
         else:
             good_dance_event = self.GOOD_DANCE_EVENT
