@@ -30,6 +30,7 @@ from dancedeets.nlp.styles import soulline
 from dancedeets.nlp.styles import street
 from dancedeets.nlp.styles import swing
 from dancedeets.nlp.styles import tango
+from dancedeets.nlp.styles import tap
 from dancedeets.nlp.styles import wcs
 from dancedeets.nlp.styles import zouk
 
@@ -66,6 +67,7 @@ _STYLE_LIST = [
     street.Style,
     swing.Style,
     tango.Style,
+    tap.Style,
     wcs.Style,
     zouk.Style,
 ]
