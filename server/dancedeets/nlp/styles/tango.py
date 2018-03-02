@@ -120,7 +120,9 @@ class Style(style_base.Style):
 
     @classmethod
     def get_search_keyword_event_types(cls):
-        return partner.EVENT_TYPES
+        return partner.EVENT_TYPES + [
+            'milonga',
+        ]
 
     @classmethod
     def _get_classifier(cls):
