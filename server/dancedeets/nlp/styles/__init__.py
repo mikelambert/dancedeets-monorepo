@@ -17,6 +17,7 @@ from dancedeets.nlp.styles import dancehall
 from dancedeets.nlp.styles import discofox
 from dancedeets.nlp.styles import exotic
 from dancedeets.nlp.styles import five_rhythms
+from dancedeets.nlp.styles import flamenco
 from dancedeets.nlp.styles import hustle
 from dancedeets.nlp.styles import jazz
 from dancedeets.nlp.styles import kpop
@@ -54,6 +55,7 @@ _STYLE_LIST = [
     discofox.Style,
     exotic.Style,
     five_rhythms.Style,
+    flamenco.Style,
     hustle.Style,
     jazz.Style,
     kpop.Style,
