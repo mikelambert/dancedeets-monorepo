@@ -168,10 +168,10 @@ class DanceStyleEventClassifier(object):
         return result
 
     def _log(self, log, *args):
-        self._logs.append('%s: %s' % (self._log_category[0], log % args))
+        self._logs.append('%s: %s' % (self._log_category[-1], log % args))
         if not self._debug:
             return
-        logging.info('%s: %s', self._log_category[0], log % args)
+        logging.info('%s: %s', self._log_category[-1], log % args)
 
     # top-level function
     def is_dance_event(self):
