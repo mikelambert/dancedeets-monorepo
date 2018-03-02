@@ -19,6 +19,7 @@ from dancedeets.nlp.styles import exotic
 from dancedeets.nlp.styles import five_rhythms
 from dancedeets.nlp.styles import flamenco
 from dancedeets.nlp.styles import hustle
+from dancedeets.nlp.styles import indian
 from dancedeets.nlp.styles import jazz
 from dancedeets.nlp.styles import kpop
 from dancedeets.nlp.styles import latin
@@ -58,6 +59,7 @@ _STYLE_LIST = [
     five_rhythms.Style,
     flamenco.Style,
     hustle.Style,
+    indian.Style,
     jazz.Style,
     kpop.Style,
     latin.Style,
