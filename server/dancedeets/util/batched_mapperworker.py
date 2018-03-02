@@ -50,3 +50,20 @@ class BatchedMapperWorkerCallbackHandler(fixed_mappers.FixedMapperWorkerCallback
             logging.debug("Spent %s seconds. Rescheduling", self._time() - self._start_time)
             return False
         return True
+
+    def _has_old_request_ended(self, shard_state):
+        """
+        The current _has_old_request_ended fails due to:
+          File "/env/local/lib/python2.7/site-packages/mapreduce/handlers.py", line 240, in _try_acquire_lease
+            if not self._has_old_request_ended(shard_state):
+          File "/env/local/lib/python2.7/site-packages/mapreduce/handlers.py", line 305, in _has_old_request_ended
+            logs = list(logservice.fetch(request_ids=request_ids))
+          File "/env/local/lib/python2.7/site-packages/google/appengine/datastore/datastore_rpc.py", line 103, in positional_wrapper
+            return wrapped(*args, **kwds)
+          File "/env/local/lib/python2.7/site-packages/google/appengine/api/logservice/logservice.py", line 1103, in fetch
+            '%s is not a valid request log id' % request_id)
+          InvalidArgumentError:  is not a valid request log id
+
+        So let's try to no-op it entirely, since it won't work for us anyway
+        """
+        return False
