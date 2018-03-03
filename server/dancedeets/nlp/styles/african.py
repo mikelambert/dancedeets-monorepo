@@ -3,8 +3,6 @@
 from dancedeets.nlp import base_auto_classifier
 from dancedeets.nlp import grammar
 from dancedeets.nlp import style_base
-from ..street import keywords
-from ..street import rules
 
 Any = grammar.Any
 Name = grammar.Name
@@ -91,8 +89,6 @@ AMBIGUOUS_AFRICAN = Name(
         'galala',
         u'guérewol',
         'gumboot',
-        'kizomba',
-        u'キゾンバ',
         'kuduro\w*',
         u'クドゥーロ',
         'kutiro',
@@ -102,7 +98,7 @@ AMBIGUOUS_AFRICAN = Name(
         'serere',
         'sokkie',
         'suo',
-        'tribal',
+        'tribal',  # matches the whole 'tribal fusion bellydance stuff'
         'tufo',
         u'mand[ée]',
     )
@@ -113,6 +109,12 @@ class Classifier(base_auto_classifier.DanceStyleEventClassifier):
     GOOD_DANCE = REAL_DANCE
     AMBIGUOUS_DANCE = AMBIGUOUS_AFRICAN
     ADDITIONAL_EVENT_TYPE = Any('congress',)
+    GOOD_BAD_PAIRINGS = [
+        (Any('tribal'), Any(
+            'belly\w*',
+            'fusion',
+        )),
+    ]
 
     # any dance can be an afro-dance!
     # afro-house, afro-salsa, afro-latin, etc
@@ -155,14 +157,11 @@ class Style(style_base.Style):
             'sabar',
             'african',
             'joneeba african',
-            'kizomba',
-            'kizomba dance',
             'kuduro',
             'kuduro dance',
             'african dance',
             'afrobeat dance',
             'アフリカンダンス',
-            u'キゾンバ',
             u'クドゥーロ',
             u'非洲舞蹈',
         ]

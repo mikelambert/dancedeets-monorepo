@@ -22,6 +22,7 @@ from dancedeets.nlp.styles import hulahoop
 from dancedeets.nlp.styles import hustle
 from dancedeets.nlp.styles import indian
 from dancedeets.nlp.styles import jazz
+from dancedeets.nlp.styles import kizomba
 from dancedeets.nlp.styles import kpop
 from dancedeets.nlp.styles import latin
 from dancedeets.nlp.styles import modern
@@ -41,7 +42,7 @@ from dancedeets.nlp.styles import zumba
 # TODO: decide on Style vs Vertical
 # Each import must have a Style that fits the base_styles.Style API
 _STYLE_LIST = [
-    aerial_pole.Style,
+    aerial_pole.Style,  # SPLIT
     african.Style,
     ballet.Style,
     ballroom.Style,
@@ -63,16 +64,17 @@ _STYLE_LIST = [
     hustle.Style,
     indian.Style,
     jazz.Style,
+    kizomba.Style,
     kpop.Style,
-    latin.Style,
+    latin.Style,  # SPLIT
     modern.Style,
     musical_theater.Style,
     lion.Style,
     partner_fusion.Style,
     rockabilly.Style,
     soulline.Style,
-    street.Style,
-    swing.Style,
+    street.Style,  # SPLIT
+    swing.Style,  # SPLIT
     tango.Style,
     tap.Style,
     wcs.Style,
