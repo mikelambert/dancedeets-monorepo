@@ -7,6 +7,7 @@ from dancedeets.nlp import grammar
 from dancedeets.nlp import grammar_matcher
 from .street import keywords
 from .street import rules
+from dancedeets.util import runtime
 Any = grammar.Any
 Name = grammar.Name
 commutative_connected = grammar.commutative_connected
@@ -118,11 +119,13 @@ class DanceStyleEventClassifier(object):
     DANCE_KEYWORDS = None
     GOOD_BAD_PAIRINGS = []
 
-    def __init__(self, classified_event, debug=True):
+    def __init__(self, classified_event, debug=None):
         if not self.vertical:
             raise ValueError('Need to configure vertical')
 
         self._classified_event = classified_event
+        if debug is None:
+            debug = runtime.is_local_appengine()
         self._debug = debug
 
         self._logs = []
