@@ -29,7 +29,7 @@ def load_for(style_name, fbl):
             logging.info('Loading %s', query)
             id_titles = keyword_search.get_id_titles_for_keyword(fbl, query)
             time.sleep(2)
-            all_ids.update('%s # %s: %s' % (x['id'], query, x['name'].sub('\n', ' ')) for x in id_titles)
+            all_ids.update('%s # %s: %s' % (x['id'], query, x['name'].replace('\n', ' ')) for x in id_titles)
     return all_ids
 
 
