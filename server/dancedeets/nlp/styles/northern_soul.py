@@ -14,6 +14,10 @@ GOOD_DANCE = Any('northern soul')
 
 class Classifier(base_auto_classifier.DanceStyleEventClassifier):
     GOOD_DANCE = GOOD_DANCE
+    ADDITIONAL_EVENT_TYPE = Any(
+        'weekender',
+        'alldayer',
+    )
 
     def _quick_is_dance_event(self):
         return True
