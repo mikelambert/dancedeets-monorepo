@@ -103,7 +103,15 @@ FOLK_DANCES = [
     u'yakshagana',
 ]
 
-DANCE_NAMES = CLASSICAL_DANCES + DIVINE_DANCES + FOLK_DANCES
+OTHER_DANCES = [
+    u'kalbeliya',
+    u'bhawai',
+    u'teratali',
+    u'ghumar',
+    u'kirtan',
+]
+
+DANCE_NAMES = CLASSICAL_DANCES + DIVINE_DANCES + FOLK_DANCES + OTHER_DANCES
 AMBIGUOUS_DANCE = Any(CLASSICAL_INDIAN, *DANCE_NAMES)
 
 

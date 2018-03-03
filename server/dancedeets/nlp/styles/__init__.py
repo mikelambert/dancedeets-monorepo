@@ -102,8 +102,6 @@ for style in _STYLE_LIST:
 
 misc_keyword_sets = [
     all_styles_raw.DANCE_STYLE_CLASSICAL,
-    all_styles_raw.DANCE_STYLE_INDIAN,
-    all_styles_raw.DANCE_STYLE_SEXY,
     all_styles_raw.DANCE_STYLE_MISC,
 ]
 

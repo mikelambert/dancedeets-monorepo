@@ -20,6 +20,7 @@ DANCE = Any(
     u'空中シルク',
     u'空中布',
     u'空中フープ',
+    u'폴댄스',  # korean pole dance
     'pole\W?fit(?:ness)?',
 )
 

@@ -7,32 +7,10 @@ Name = grammar.Name
 
 DANCE_STYLE_CLASSICAL = Any(
     'contratto mimo',  # italian contact mime
-    'class?ic[ao]',
-    'tap',
-    u'탭 ?댄스',  # korean tap dance
-)
-
-DANCE_STYLE_INDIAN = Any(
-    'kalbeliya',
-    'bhawai',
-    'teratali',
-    'ghumar',
-    'kirtan',
-    'indienne',
-)
-
-DANCE_STYLE_SEXY = Any(
-    'exotic',
-    'flirt danc\w+',
-    u'폴 ?댄스',  # korean pole dance
-    'go\W?go',
-    'burlesque',
-    u'バーレスク',  # japanese burlesque
 )
 
 DANCE_STYLE_MISC = Any(
     'parkour',
-    'flamenco',
     'disco dance',
     'disco tan\w+',  # czech disco dance
     'dance partner',
@@ -47,8 +25,6 @@ DANCE_STYLE_MISC = Any(
     'arabe',
     'arabic',
     'araba',
-    'oriental\w*',
-    'oriente',
     'soca',
     'tahitian dancing',
     'tahitienne',
@@ -57,7 +33,6 @@ DANCE_STYLE_MISC = Any(
     'acroyoga',
     'pilates',
     u'ピラティス',  # japanese pilates
-    'zumba',
 )
 """
     'artist\Win\Wresidence',

@@ -13,6 +13,7 @@ AMBIGUOUS_DANCE = Any(
     'lap',
     'heels',
     'chair',
+    'exotic',
     'flirt',
     'sexy',
     'strip\W?tease',
