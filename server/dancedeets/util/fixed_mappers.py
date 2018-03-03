@@ -100,9 +100,9 @@ class FixedMapperWorkerCallbackHandler(handlers.MapperWorkerCallbackHandler):
     def _drop_gracefully(self):
         """Drop worker task gracefully.
 
-    Set current shard_state to failed. Controller logic will take care of
-    other shards and the entire MR.
-    """
+        Set current shard_state to failed. Controller logic will take care of
+        other shards and the entire MR.
+        """
         shard_id = self.request.headers[util._MR_SHARD_ID_TASK_HEADER]
         mr_id = self.request.headers[util._MR_ID_TASK_HEADER]
         shard_state, mr_state = db.get([model.ShardState.get_key_by_shard_id(shard_id), model.MapreduceState.get_key_by_job_id(mr_id)])
@@ -114,3 +114,20 @@ class FixedMapperWorkerCallbackHandler(handlers.MapperWorkerCallbackHandler):
             # config = util.create_datastore_write_config(mr_state.mapreduce_spec)
             # shard_state.put(config=config)
             raise Exception('Worker cannot run due to attempt to drop gracefully.')
+
+    def _has_old_request_ended(self, shard_state):
+        """
+        The current _has_old_request_ended fails due to:
+          File "/env/local/lib/python2.7/site-packages/mapreduce/handlers.py", line 240, in _try_acquire_lease
+            if not self._has_old_request_ended(shard_state):
+          File "/env/local/lib/python2.7/site-packages/mapreduce/handlers.py", line 305, in _has_old_request_ended
+            logs = list(logservice.fetch(request_ids=request_ids))
+          File "/env/local/lib/python2.7/site-packages/google/appengine/datastore/datastore_rpc.py", line 103, in positional_wrapper
+            return wrapped(*args, **kwds)
+          File "/env/local/lib/python2.7/site-packages/google/appengine/api/logservice/logservice.py", line 1103, in fetch
+            '%s is not a valid request log id' % request_id)
+          InvalidArgumentError:  is not a valid request log id
+
+        So let's try to no-op it entirely, since it won't work for us anyway
+        """
+        return False
