@@ -1,104 +1,65 @@
+import importlib
+
 from dancedeets.nlp import all_styles_raw
 from dancedeets.nlp import grammar
-from dancedeets.nlp.styles import aerial_pole
-from dancedeets.nlp.styles import african
-from dancedeets.nlp.styles import ballet
-from dancedeets.nlp.styles import ballroom
-from dancedeets.nlp.styles import belly
-from dancedeets.nlp.styles import bhangra
-from dancedeets.nlp.styles import biodanza
-from dancedeets.nlp.styles import bollywood
-from dancedeets.nlp.styles import bugg
-from dancedeets.nlp.styles import burlesque
-from dancedeets.nlp.styles import butoh
-from dancedeets.nlp.styles import capoeira
-from dancedeets.nlp.styles import contact
-from dancedeets.nlp.styles import contemporary
-from dancedeets.nlp.styles import country
-from dancedeets.nlp.styles import dancehall
-from dancedeets.nlp.styles import discofox
-from dancedeets.nlp.styles import exotic
-from dancedeets.nlp.styles import five_rhythms
-from dancedeets.nlp.styles import flamenco
-from dancedeets.nlp.styles import folk
-from dancedeets.nlp.styles import forro
-from dancedeets.nlp.styles import hulahoop
-from dancedeets.nlp.styles import hustle
-from dancedeets.nlp.styles import indian
-from dancedeets.nlp.styles import irish
-from dancedeets.nlp.styles import jazz
-from dancedeets.nlp.styles import kizomba
-from dancedeets.nlp.styles import kompa
-from dancedeets.nlp.styles import kpop
-from dancedeets.nlp.styles import latin
-from dancedeets.nlp.styles import modern
-from dancedeets.nlp.styles import musical_theater
-from dancedeets.nlp.styles import northern_soul
-from dancedeets.nlp.styles import lion
-from dancedeets.nlp.styles import partner_fusion
-from dancedeets.nlp.styles import rockabilly
-from dancedeets.nlp.styles import soulline
-from dancedeets.nlp.styles import street
-from dancedeets.nlp.styles import swing
-from dancedeets.nlp.styles import tango
-from dancedeets.nlp.styles import tap
-from dancedeets.nlp.styles import wcs
-from dancedeets.nlp.styles import zapateado
-from dancedeets.nlp.styles import zouk
-from dancedeets.nlp.styles import zumba
-from dancedeets.nlp.styles import zydeco
+
+STYLE_NAMES = [
+    'aerial_pole',
+    'african',
+    'ballet',
+    'ballroom',
+    'belly',
+    'bhangra',
+    'biodanza',
+    'bollywood',
+    'bugg',
+    'burlesque',
+    'butoh',
+    'capoeira',
+    'contact',
+    'contemporary',
+    'country',
+    'dancehall',
+    'discofox',
+    'exotic',
+    'five_rhythms',
+    'flamenco',
+    'folk',
+    'forro',
+    'hulahoop',
+    'hustle',
+    'indian',
+    'irish',
+    'jazz',
+    'kizomba',
+    'kompa',
+    'kpop',
+    'latin',
+    'modern',
+    'musical_theater',
+    'northern_soul',
+    'lion',
+    'partner_fusion',
+    'rockabilly',
+    'soulline',
+    'street',
+    'swing',
+    'tango',
+    'tap',
+    'wcs',
+    'zapateado',
+    'zouk',
+    'zumba',
+    'zydeco',
+]
+
+_STYLE_LIST = []
 
 # TODO: decide on Style vs Vertical
 # Each import must have a Style that fits the base_styles.Style API
-_STYLE_LIST = [
-    aerial_pole.Style,  # SPLIT
-    african.Style,
-    ballet.Style,
-    ballroom.Style,
-    belly.Style,
-    bhangra.Style,
-    biodanza.Style,
-    bollywood.Style,
-    bugg.Style,
-    burlesque.Style,
-    butoh.Style,
-    capoeira.Style,
-    contact.Style,
-    contemporary.Style,
-    country.Style,
-    dancehall.Style,
-    discofox.Style,
-    exotic.Style,
-    five_rhythms.Style,
-    flamenco.Style,
-    forro.Style,
-    folk.Style,
-    hulahoop.Style,
-    hustle.Style,
-    indian.Style,
-    irish.Style,
-    jazz.Style,
-    kizomba.Style,
-    kompa.Style,
-    kpop.Style,
-    latin.Style,  # SPLIT
-    modern.Style,
-    musical_theater.Style,
-    northern_soul.Style,
-    lion.Style,
-    partner_fusion.Style,
-    rockabilly.Style,
-    soulline.Style,
-    street.Style,  # SPLIT
-    swing.Style,  # SPLIT
-    tango.Style,
-    tap.Style,
-    wcs.Style,
-    zapateado.Style,
-    zouk.Style,
-    zumba.Style,
-    zydeco.Style,
-]
+for style_name in STYLE_NAMES:
+    module = importlib.import_module('dancedeets.nlp.styles.%s' % style_name)
+    _STYLE_LIST.append(module.Style)
 
 # Generate a keyed lookup of styles (for any name-dependent lookups from URLs)
 # and ensure they are all unique.
