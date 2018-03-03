@@ -10,6 +10,7 @@ from dancedeets.nlp.styles import biodanza
 from dancedeets.nlp.styles import bollywood
 from dancedeets.nlp.styles import bugg
 from dancedeets.nlp.styles import burlesque
+from dancedeets.nlp.styles import butoh
 from dancedeets.nlp.styles import capoeira
 from dancedeets.nlp.styles import contact
 from dancedeets.nlp.styles import contemporary
@@ -57,6 +58,7 @@ _STYLE_LIST = [
     bollywood.Style,
     bugg.Style,
     burlesque.Style,
+    butoh.Style,
     capoeira.Style,
     contact.Style,
     contemporary.Style,
