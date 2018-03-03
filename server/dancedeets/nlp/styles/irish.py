@@ -71,19 +71,20 @@ class Style(style_base.Style):
 
     @classmethod
     def get_rare_search_keywords(cls):
-        return []
+        return [
+            u'irish set',
+            u'irish step',
+            u'irish hard shoe',
+            u'irish soft shoe',
+            u'riverdance',
+            u'sean-nós',
+        ]
 
     @classmethod
     def get_popular_search_keywords(cls):
         return [
             u'irish',
-            u'irish set',
-            u'irish step',
             u'irish dance',
-            u'irish hard shoe',
-            u'irish soft shoe',
-            u'riverdance',
-            u'sean-nós',
         ]
 
     @classmethod
