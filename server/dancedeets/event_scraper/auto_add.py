@@ -139,7 +139,8 @@ def mr_classify_potential_events(fbl, past_event, dancey_only):
         'dancedeets.event_scraper.auto_add.map_classify_events',
         'dancedeets.event_scraper.potential_events.PotentialEvent',
         filters=filters,
-        handle_batch_size=20,
+        # Make sure we don't process so many that we cause the tasks to time out
+        handle_batch_size=10,
         queue='fast-queue',
         output_writer_spec='mapreduce.output_writers.GoogleCloudStorageOutputWriter',
         output_writer={

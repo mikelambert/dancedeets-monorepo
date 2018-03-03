@@ -18,7 +18,7 @@ mapreduce__CONTROLLER_PERIOD_SEC = 5
 # There's no reason to make them 15 seconds in an age without task runtime limits.
 # And sometimes the TransientShareState goes above 1MB and can't be saved,
 # resulting in an impossible-to-complete mapreduce. This just helps it avoid that.
-mapreduce__SLICE_DURATION_SEC = 60
+mapreduce__SLICE_DURATION_SEC = 30
 
 # Ugh, we are running a super-long mapreduce for now. Let's avoid failures...eventually we'll reduce these.
 # How many times to re-attempt the data in this slice, before giving up and restarting the entire shard
