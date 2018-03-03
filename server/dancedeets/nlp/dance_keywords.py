@@ -342,6 +342,7 @@ CLASS_ONLY = Any(
     'lektion(?:en)?',  # german lecture
     'lekcie',  # slovak lessons
     'dansklasser',  # swedish dance classes
+    u'(?:nybörjar|introduktions|fördjupnings)(?:kurs|klass)(?:er)?',  # swedish beginners/intro/advanced course/class singular/plural
     'lekcj[ai]',  # polish lesson
     'eigoje',  # lithuanian course
     u'pamokas?',  # lithuanian lesson

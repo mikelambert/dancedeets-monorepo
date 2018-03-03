@@ -73,7 +73,8 @@ AMBIGUOUS_DANCE_MUSIC = Name(
         u'サンバ',
         'bachata',
         u'バチャータ',
-        'merengue',
+        'merengue',  # DR
+        'mereng',  # haitain
         'rh?umba',
         'afro\W?[ck]uba\w+',
         'latin',

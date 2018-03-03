@@ -8,6 +8,7 @@ from dancedeets.nlp.styles import belly
 from dancedeets.nlp.styles import bhangra
 from dancedeets.nlp.styles import biodanza
 from dancedeets.nlp.styles import bollywood
+from dancedeets.nlp.styles import bugg
 from dancedeets.nlp.styles import burlesque
 from dancedeets.nlp.styles import capoeira
 from dancedeets.nlp.styles import contact
@@ -18,11 +19,13 @@ from dancedeets.nlp.styles import discofox
 from dancedeets.nlp.styles import exotic
 from dancedeets.nlp.styles import five_rhythms
 from dancedeets.nlp.styles import flamenco
+from dancedeets.nlp.styles import forro
 from dancedeets.nlp.styles import hulahoop
 from dancedeets.nlp.styles import hustle
 from dancedeets.nlp.styles import indian
 from dancedeets.nlp.styles import jazz
 from dancedeets.nlp.styles import kizomba
+from dancedeets.nlp.styles import kompa
 from dancedeets.nlp.styles import kpop
 from dancedeets.nlp.styles import latin
 from dancedeets.nlp.styles import modern
@@ -52,6 +55,7 @@ _STYLE_LIST = [
     bhangra.Style,
     biodanza.Style,
     bollywood.Style,
+    bugg.Style,
     burlesque.Style,
     capoeira.Style,
     contact.Style,
@@ -62,11 +66,13 @@ _STYLE_LIST = [
     exotic.Style,
     five_rhythms.Style,
     flamenco.Style,
+    forro.Style,
     hulahoop.Style,
     hustle.Style,
     indian.Style,
     jazz.Style,
     kizomba.Style,
+    kompa.Style,
     kpop.Style,
     latin.Style,  # SPLIT
     modern.Style,
