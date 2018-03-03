@@ -38,6 +38,7 @@ from dancedeets.nlp.styles import tap
 from dancedeets.nlp.styles import wcs
 from dancedeets.nlp.styles import zouk
 from dancedeets.nlp.styles import zumba
+from dancedeets.nlp.styles import zydeco
 
 # TODO: decide on Style vs Vertical
 # Each import must have a Style that fits the base_styles.Style API
@@ -80,6 +81,7 @@ _STYLE_LIST = [
     wcs.Style,
     zouk.Style,
     zumba.Style,
+    zydeco.Style,
 ]
 
 # Generate a keyed lookup of styles (for any name-dependent lookups from URLs)
