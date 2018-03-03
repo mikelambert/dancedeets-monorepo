@@ -36,6 +36,7 @@ from dancedeets.nlp.styles import swing
 from dancedeets.nlp.styles import tango
 from dancedeets.nlp.styles import tap
 from dancedeets.nlp.styles import wcs
+from dancedeets.nlp.styles import zapateado
 from dancedeets.nlp.styles import zouk
 from dancedeets.nlp.styles import zumba
 from dancedeets.nlp.styles import zydeco
@@ -79,6 +80,7 @@ _STYLE_LIST = [
     tango.Style,
     tap.Style,
     wcs.Style,
+    zapateado.Style,
     zouk.Style,
     zumba.Style,
     zydeco.Style,
