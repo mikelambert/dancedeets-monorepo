@@ -25,6 +25,7 @@ from dancedeets.nlp.styles import forro
 from dancedeets.nlp.styles import hulahoop
 from dancedeets.nlp.styles import hustle
 from dancedeets.nlp.styles import indian
+from dancedeets.nlp.styles import irish
 from dancedeets.nlp.styles import jazz
 from dancedeets.nlp.styles import kizomba
 from dancedeets.nlp.styles import kompa
@@ -75,6 +76,7 @@ _STYLE_LIST = [
     hulahoop.Style,
     hustle.Style,
     indian.Style,
+    irish.Style,
     jazz.Style,
     kizomba.Style,
     kompa.Style,
