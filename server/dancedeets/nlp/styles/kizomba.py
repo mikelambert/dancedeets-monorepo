@@ -10,8 +10,19 @@ connected = grammar.connected
 commutative_connected = grammar.commutative_connected
 
 KIZOMBA = Any(
-    'kizomba',
+    'kizomba\w*',
     u'キゾンバ',
+    'semba',
+    'tarraxa',
+    'tarraxinha',
+    u'semba',  # thai
+    u'самбийского',  # russian
+    u'семба',  # macedonian
+    u'סמבה',  # hebrew
+    u'セムバ',  # japanese
+    u'桥西',  # chinese simplified
+    u'橋西',  # chinese traditional
+    u'세미 바',  # korean
 )
 AMBIGUOUS_DANCE = KIZOMBA
 
