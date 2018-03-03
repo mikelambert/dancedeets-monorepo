@@ -43,7 +43,7 @@ def patch_function():
         # or if the result_status/active/input_finished changed.
         if (
             other_state.slice_id >= self.slice_id or (
-                other_state.active != self.active or other_state.result_status != self.result_stats or
+                other_state.active != self.active or other_state.result_status != self.result_status or
                 other_state.input_finished != self.input_finished
             )
         ):
