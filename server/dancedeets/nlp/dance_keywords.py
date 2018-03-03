@@ -101,6 +101,7 @@ EASY_DANCE = Name(
         u'춤.?',  # korean dance
         u'추고.?.?',  # korean dancing
         u'댄서.?.?',  # korean dancers
+        u'무용',
         u'footwork',
     )
 )

@@ -20,6 +20,7 @@ from dancedeets.nlp.styles import discofox
 from dancedeets.nlp.styles import exotic
 from dancedeets.nlp.styles import five_rhythms
 from dancedeets.nlp.styles import flamenco
+from dancedeets.nlp.styles import folk
 from dancedeets.nlp.styles import forro
 from dancedeets.nlp.styles import hulahoop
 from dancedeets.nlp.styles import hustle
@@ -31,6 +32,7 @@ from dancedeets.nlp.styles import kpop
 from dancedeets.nlp.styles import latin
 from dancedeets.nlp.styles import modern
 from dancedeets.nlp.styles import musical_theater
+from dancedeets.nlp.styles import northern_soul
 from dancedeets.nlp.styles import lion
 from dancedeets.nlp.styles import partner_fusion
 from dancedeets.nlp.styles import rockabilly
@@ -69,6 +71,7 @@ _STYLE_LIST = [
     five_rhythms.Style,
     flamenco.Style,
     forro.Style,
+    folk.Style,
     hulahoop.Style,
     hustle.Style,
     indian.Style,
@@ -79,6 +82,7 @@ _STYLE_LIST = [
     latin.Style,  # SPLIT
     modern.Style,
     musical_theater.Style,
+    northern_soul.Style,
     lion.Style,
     partner_fusion.Style,
     rockabilly.Style,
