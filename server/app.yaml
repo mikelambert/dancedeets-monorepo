@@ -13,16 +13,22 @@ resources:
 manual_scaling:
   instances: 2
 
+# It seems I cannot change the path, so cannot get these requests
+# to go to new paths which will reach the app container.
+# Which means for now, they won't work. :(
+# Waiting on https://issuetracker.google.com/issues/74128304
+#
 #readiness_check:
-#  path: '/health_check'
+#  # Changing this seems to have no effect...
+#  path: /my_readiness_check # should this be different for app.yaml vs batch.yaml?
 #  check_interval_sec: 5
 #  timeout_sec: 4
 #  failure_threshold: 2
 #  success_threshold: 2
-#  app_start_timeout_sec: 600
+#  app_start_timeout_sec: 600 # seems to take a few minutes to compile regexes?
 #
 #liveness_check:
-#  path: '/health_check'
+#  path: /my_readiness_check
 #  check_interval_sec: 30
 #  timeout_sec: 4
 #  failure_threshold: 2

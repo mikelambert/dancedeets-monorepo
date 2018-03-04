@@ -21,13 +21,24 @@ from dancedeets.util import fb_mapreduce
 from dancedeets.util import sqlite_db
 
 
-@app.route('/health_check')
-class HealthzHandler(webapp2.RequestHandler):
+@app.route('/my_liveness_check')
+class HealthzLiveHandler(webapp2.RequestHandler):
     def get(self):
-        # Download the necessary files, to avoid serving delays
-        sqlite_db.get_connection('pr_person_city')
-        sqlite_db.get_connection('pr_city_category')
-        sqlite_db.get_connection('cities')
+        self.response.out.write('OK')
+
+
+def preload():
+    # Download the necessary files, to avoid serving delays
+    sqlite_db.get_connection('pr_person_city')
+    sqlite_db.get_connection('pr_city_category')
+    sqlite_db.get_connection('cities')
+    # Load and compile regexes!
+
+
+@app.route('/my_readiness_check')
+class HealthzReadyHandler(webapp2.RequestHandler):
+    def get(self):
+        preload()
         self.response.out.write('OK')
 
 
