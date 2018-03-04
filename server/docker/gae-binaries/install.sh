@@ -8,5 +8,5 @@ curl -L https://github.com/pornel/giflossy/archive/v1.88.tar.gz | tar xvz
 #tar xvzf giflossy.tar.gz
 cd giflossy-1.88/
 autoreconf -i
-./configure
+./configure || cat config.log
 make install
