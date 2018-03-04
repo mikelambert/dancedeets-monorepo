@@ -17,7 +17,6 @@ EASY_DANCE = Name(
         u'dance\w+',
         u'dance style[sz]',
         u"dancin[g']?",
-        u'dans',
         u'dansles',
         u'dans[aeç]\w*',
         u'danse\w*',  # french and danish
@@ -25,6 +24,7 @@ EASY_DANCE = Name(
         u'dansı\w*',  # turkish
         u'dansul\w*',  # dance romanian
         u'dansgolv',  # dance floor swedish
+        u'dans',  # let the above, try to match first!
         u'danza\w*',  # dance italian
         u'danç\w*',  # dance/dancers portuguese
         u'điệu nhảy',  # vietnamese
@@ -77,6 +77,7 @@ EASY_DANCE = Name(
         u'راقصة?',  # arabic
         u'دانس',  # arabic dance transliteration
         u'رقص',  # arabic
+        u'رقصة',  # arabic
         u'الرقص',  # arabic
         u'แดนซ์',  # dance thai
         u'(?:การ)?(?:ลีลาศ|ฟ้อนรำ|ร่ายรำ|เริงระบำ|ก?เต้น\w*)',  # thai
@@ -238,11 +239,12 @@ _ALL_LEVELS = Any(
     'open',
 )
 _INTRODUCTION = Any(
-    'intro(?:duction)? to',
+    u'basics',
+    u'intro(?:duction)? to',
     u'iniciação ao',  # portuguese
     u'introducción a',  # spanish
     u'introduction à',  # french
-    'introduzione a',  # italian
+    u'introduzione a',  # italian
     u'einführung zu',  # german
     u'紹介',  # japanese
     u'介紹',  # chinese

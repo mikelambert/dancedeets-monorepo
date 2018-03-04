@@ -17,21 +17,38 @@ NON_BELLY_AMBIGUOUS_DANCE = Any(
     'oriental',  # oriental dance
     'egyptian',  # egyptian dance
     'middle eastern',  # middle eastern dance
-    u'itämais\w+',  # oriential finnish
+    'arabic',
+    u'itämais\w+',  # oriental finnish
 )
 
 BELLY = Any(
-    'belly',
-    'bauch',  # german
-    'brzucha',  # polish
-    'vi?entre',  # romance languages
-    u'buik',  # danish
-    u'肚皮',  # chinese
+    u'bauch',  # german
+    u'belly',  # english
+    u'brzucha',  # polish
+    u'buik',  # dutch
+    u'břišní',  # czech
+    u'buric',  # romanian
+    u'mag',  # swedish
+    u'mage',  # norwegian
+    u'mave',  # danish
+    u'ventre',  # italian
+    u'vientre',  # spanish
+    u'oryantal',  # turkish
+    u'perut',  # malay
+    u'pilvo',  # lithuanian
+    u'trbušni',  # croatian
+    u'vatsa',  # finnish
+    u'τηςκοιλιάς',  # greek
+    u'живота',  # russian
+    u'стомачен',  # macedonian
+    u'בטן',  # hebrew
+    u'الشرقي',  # arabic
+    u'ระบำหน้าท้อง',  # thai
     u'ベリー',  # japanese
+    u'肚皮',  # chinese simplified
     u'배꼽',  # korean
     u'पेट',  # hindi
     u'बेली',  # hindi
-    u'בטן',  # hebrew
 )
 
 REAL_DANCE = Any(

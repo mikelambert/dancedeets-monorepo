@@ -232,10 +232,10 @@ CONNECTOR = Name(
     'CONNECTOR',
     Any(
         ' ?',
-        ' di ',
-        ' de ',
-        ' du ',
-        ' del ',
+        ' d[eiu] ',
+        ' do ?',
+        ' din ?',
+        ' del ?',
         u' på ',
         ' ?[:/&] ?',
         u' bài ',  # vietnamese
