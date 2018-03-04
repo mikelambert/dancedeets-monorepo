@@ -18,7 +18,9 @@ def get_positive_negative_ids(style_name):
     negatives = {}
 
     for filename in os.listdir(TEST_IDS_PATH):
-        if filename != '%s.txt' % style_name:
+        if not filename.endswith('.txt'):
+            continue
+        if style_name and filename != '%s.txt' % style_name:
             continue
         full_path = os.path.join(TEST_IDS_PATH, filename)
         for line in open(full_path).readlines():
@@ -67,6 +69,8 @@ def get_false_positives_and_negatives(positives, negatives, get_event):
         classifier_class = styles.CLASSIFIERS[style_name]
         for event_id in event_ids:
             fb_event = get_event(event_id)
+            if fb_event.get('empty'):
+                continue
             classified_event = get_classified_event(fb_event, style_name)
             classifier = classifier_class(classified_event)
             is_dance_event = classifier.is_dance_event()
@@ -78,6 +82,8 @@ def get_false_positives_and_negatives(positives, negatives, get_event):
         classifier_class = styles.CLASSIFIERS[style_name]
         for event_id in event_ids:
             fb_event = get_event(event_id)
+            if fb_event.get('empty'):
+                continue
             classified_event = get_classified_event(fb_event, style_name)
             classifier = classifier_class(classified_event)
             is_dance_event = classifier.is_dance_event()
