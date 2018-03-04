@@ -12,7 +12,6 @@ Name = grammar.Name
 connected = grammar.connected
 commutative_connected = grammar.commutative_connected
 
-print '\n'.join(ballroom_keywords.BALLROOM_STYLES)
 BALLROOM_STYLES = Any(*ballroom_keywords.BALLROOM_STYLES)
 
 BALLROOM = Any(
