@@ -5,6 +5,7 @@ from dancedeets.nlp import dance_keywords
 from dancedeets.nlp import grammar
 from dancedeets.nlp import style_base
 from dancedeets.nlp.styles import ballroom
+from dancedeets.nlp.styles import ballroom_keywords
 from dancedeets.nlp.styles import partner
 
 Any = grammar.Any
@@ -16,6 +17,7 @@ ARGENTINE = Any(
     u'argent[iy]\w*',
     u'αργεντίνικο ταγκό',  # greek
     u'аргентин\w*',  # russian, macedonian
+    u'аргентинский',
     u'ארגנטינאי',  # hebrew
     u'อาร์เจนตินา',  # thai
     u'アルゼンチン',
@@ -23,17 +25,7 @@ ARGENTINE = Any(
     u'아르헨티나',
 )
 
-TANGO = Any(
-    u'tang[oó]',
-    u'ταγκό',  # greek
-    u'танго',  # russian, macedonian
-    u'טנגו',  # hebrew
-    u'تانغو',  # arabic
-    u'แทงโก',  # thai
-    u'タンゴ',
-    u'探戈',
-    u'탱고',
-)
+TANGO = Any(*ballroom_keywords.TANGO)
 
 MILONGA = Any(
     u'milongas?',
@@ -52,6 +44,7 @@ TANGO_TYPES = Any(
     u'ヌオーバ',
     u'새로운',
     u'vals',
+    u'вальс',
     u'バルス',
     u'왈츠',
     u'alternative',
@@ -108,7 +101,7 @@ class Style(style_base.Style):
 
     @classmethod
     def get_rare_search_keywords(cls):
-        return []
+        return ballroom_keywords.TANGO
 
     @classmethod
     def get_popular_search_keywords(cls):

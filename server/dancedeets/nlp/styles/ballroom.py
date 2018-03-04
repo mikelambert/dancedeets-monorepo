@@ -4,6 +4,7 @@ from dancedeets.nlp import base_auto_classifier
 from dancedeets.nlp import dance_keywords
 from dancedeets.nlp import grammar
 from dancedeets.nlp import style_base
+from dancedeets.nlp.styles import ballroom_keywords
 from dancedeets.nlp.styles import partner
 
 Any = grammar.Any
@@ -11,26 +12,8 @@ Name = grammar.Name
 connected = grammar.connected
 commutative_connected = grammar.commutative_connected
 
-BALLROOM_STYLES = Any(
-    'waltz',
-    'viennese waltz',
-    'waltz',
-    u'왈츠',  # korean waltz
-    u'ワルツ',  # japanese waltz
-    'tango',
-    'foxtrot',
-    'quick\W?step',
-    'samba',
-    'cha\W?cha',
-    'rumba',
-    'paso doble',
-    'jive',
-    'east coast swing',
-    'bolero',
-    'mambo',
-    'country (?:2|two)\W?step',
-    'american tango',
-)
+print '\n'.join(ballroom_keywords.BALLROOM_STYLES)
+BALLROOM_STYLES = Any(*ballroom_keywords.BALLROOM_STYLES)
 
 BALLROOM = Any(
     'ballroom',
@@ -53,11 +36,15 @@ BALLROOM_KEYWORDS = Any(
     'international ballroom',
     'international latin',
     'american smooth',
+    u'американ смус',
     'american rhythm',
     'collegiate ballroom',
     'world dancesport federation',
-    'wdsf',
     'world dance council',
+)
+EASY_BALLROOM_KEYWORDS = Any(
+    BALLROOM,
+    'wdsf',
     'wdc',
 )
 
@@ -69,19 +56,22 @@ class Classifier(base_auto_classifier.DanceStyleEventClassifier):
 
     def is_dance_event(self):
         all_styles = set(self._get(BALLROOM_STYLES))
-        all_keywords = set(self._get(BALLROOM_KEYWORDS))
+
+        all_hard_keywords = set(self._get(BALLROOM_KEYWORDS))
+        all_easy_keywords = set(self._get(EASY_BALLROOM_KEYWORDS))
+        all_keyword_score = 2 * len(all_hard_keywords) + len(all_easy_keywords)
 
         self._log(
             'ballroom classifier: event %s found styles %s, keywords %s', self._classified_event.fb_event['info']['id'], all_styles,
-            all_keywords
+            all_hard_keywords.union(all_easy_keywords)
         )
         if self._title_has(BALLROOM_DANCE):
             return 'obviously ballroom dance event'
 
-        if len(all_keywords) >= 2:
+        if all_keyword_score >= 2:
             return 'Found many ballroom styles'
 
-        if len(all_styles) >= 1 and len(all_keywords) >= 2:
+        if len(all_styles) >= 1 and all_keyword_score >= 2:
             return 'Found many ballroom styles and keywords'
 
         if len(all_styles) >= 3:

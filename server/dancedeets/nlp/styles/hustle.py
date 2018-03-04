@@ -14,6 +14,7 @@ REAL_DANCE = Any(
     '(?:nyc?|new york)\W?hustl\w*',
     'latin hustl\w*',
     'new\W?style\W?hustl\w*',
+    u'хастл',  # russian hustle
 )
 
 AMBIGUOUS_DANCE = Any(

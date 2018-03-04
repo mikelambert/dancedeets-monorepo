@@ -16,6 +16,7 @@ PROFESSIONALS = grammar.FileBackedKeyword('../styles/wcs_dancers')
 WEST_COAST_SWING = Any(
     PROFESSIONALS,
     u'west coast swing\w*',
+    u'вест кост свинг',
     u'ウェストコーストスイング',
 )
 

@@ -14,6 +14,7 @@ REAL_DANCE = Any(
     'disco\W?fox\w*',
     'disco\W?hustle',
     'swing\W?fox',
+    u'дискофокс',
     'disco\W?swing',
     'rock\W?fox',
 )

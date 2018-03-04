@@ -13,7 +13,7 @@ commutative_connected = grammar.commutative_connected
 
 REAL_DANCE = Any(
     'lindy\W?hop\w*',
-    u'линди-хоп',  # russian
+    u'линди\W+хоп',  # russian
     u'リンディ',  # japanese lindy
     u'リンジーホップ',
     u'린디',  # korean lindy
@@ -21,13 +21,17 @@ REAL_DANCE = Any(
     'solo jazz',
     'solo charleston',
     'partner charleston',
+    u'чарльстон',  # russian charleston
     'carolina shag',
     'collegiate shag',
     'st\W? louis shag',
     'slow drag',
     'balboa\w*',
+    u'бальбоа'
     'authentic jazz',
     'vintage jazz',
+    u'jitterbug',
+    u'джиттербаг',
 )
 
 AMBIGUOUS_WORDS = Any(

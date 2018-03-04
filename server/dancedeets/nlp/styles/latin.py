@@ -44,25 +44,22 @@ REAL_DANCE = Name(
 
 SALSA = Any(
     'salsa',
+    u'сальса',
     u'サルサ',
 )
 
 AMBIGUOUS_DANCE_MUSIC = Name(
     'LATIN_AMBIGUOUS_DANCE_MUSIC',
     Any(
+        u'莎莎',  # chinese salsa dance
+        u'살사',  # korean salsa
         'cha\W?cha',
         'cha\W?cha\W?cha',
-        u'莎莎',  # chinese salsa dance
         u'恰恰恰',  # chinese cha cha dance
-        u'倫巴',  # chinese rumba dance
-        u'桑巴',  # chinese samba
-        u'살사',  # korean salsa
-        u'바차타',  # korean bachata
         u'차차차?',  # korean chacha
-        u'메렝게',  # korean merenge
-        u'륨바',  # korean rumba
-        u'삼바',  # kroean samba
         'samba',
+        u'桑巴',  # chinese samba
+        u'삼바',  # kroean samba
         u'samba no p[ée]',
         'samba de gafieira',
         'samba pagode',
@@ -72,10 +69,16 @@ AMBIGUOUS_DANCE_MUSIC = Name(
         'cuban',
         u'サンバ',
         'bachata',
+        u'бачата',
+        u'바차타',  # korean bachata
         u'バチャータ',
         'merengue',  # DR
         'mereng',  # haitain
+        u'меренге',
+        u'메렝게',  # korean merenge
         'rh?umba',
+        u'倫巴',  # chinese rumba dance
+        u'륨바',  # korean rumba
         'afro\W?[ck]uba\w+',
         'latin',
         'salsy',
