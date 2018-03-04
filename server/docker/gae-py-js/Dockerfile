@@ -1,6 +1,7 @@
 # This basically pulls from:
 # https://github.com/GoogleCloudPlatform/python-compat-runtime/blob/master/Dockerfile
-FROM gcr.io/google_appengine/python-compat-multicore
+# We run our own python-compat-multicore since the real one is out of date with respect to github
+FROM gcr.io/dancedeets-hrd/python-compat-multicore
 
 # Add the node version install script
 ADD setup_node.sh /app/setup_node.sh
