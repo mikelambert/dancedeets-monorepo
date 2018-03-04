@@ -86,7 +86,7 @@ class Style(style_base.Style):
 
     @classmethod
     def get_rare_search_keywords(cls):
-        return []
+        return ballroom_keywords.BALLROOM_STYLES
 
     @classmethod
     def get_popular_search_keywords(cls):
