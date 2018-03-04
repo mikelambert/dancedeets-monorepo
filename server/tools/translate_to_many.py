@@ -1,6 +1,7 @@
 #!/usr/bin/python
 
-import sys
+import argparse
+import re
 
 from dancedeets import runner
 
@@ -8,6 +9,8 @@ runner.setup()
 
 from googleapiclient.discovery import build
 from dancedeets import keys
+from dancedeets.nlp import dance_keywords
+from dancedeets.nlp import grammar
 
 LANGUAGES = [
     #
@@ -60,20 +63,43 @@ def my_repr(s):
         return ("u'%s'" % s)
 
 
-def translate(queries):
+dance_re = re.compile(dance_keywords.EASY_DANCE.as_expanded_regex())
+connector_re = re.compile(grammar.CONNECTOR.as_expanded_regex())
+
+
+def canonicalize(translation, options):
+    translation = translation.lower()
+    if options.no_dance:
+        translation = dance_re.sub('', translation)
+        translation = connector_re.sub('', translation).strip()
+    return translation
+
+
+def translate(options):
+    queries = options.keywords
     service = build('translate', 'v2', developerKey=keys.get('google_server_key'))
 
     translations = {}
     for q in queries:
-        translations[my_repr(q.lower())] = 'english'
         for language, language_name in LANGUAGES:
             result = service.translations().list(source='en', target=language, format='text', q=[q]).execute()
             result_translations = [x['translatedText'] for x in result['translations']]
-            translation = my_repr(result_translations[0].lower())
-            translations[translation] = language_name
+            translation = result_translations[0].lower()
+            translation_repr = my_repr(canonicalize(translation, options))
+            translations[translation_repr] = language_name
+        translations[my_repr(canonicalize(q, options))] = 'english'
 
     print '\n'.join(sorted('%s, # %s' % x for x in translations.items()))
 
 
+def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--no-dance', '-n', help='remove dance from keywords', action='store_true')
+    parser.add_argument('keywords', nargs='*')
+    args = parser.parse_args()
+
+    translate(args)
+
+
 if __name__ == '__main__':
-    translate(sys.argv[1:])
+    main()
