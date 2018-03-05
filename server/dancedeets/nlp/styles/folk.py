@@ -129,7 +129,34 @@ FOLK = Any(
     u'民间',  # chinese simplified
     u'포크',  # korean
 )
-GOOD_DANCE = commutative_connected(Any(FOLK, TRADITIONAL), dance_keywords.EASY_DANCE)
+
+GOOD_DANCE = Any(
+    commutative_connected(Any(FOLK, TRADITIONAL), dance_keywords.EASY_DANCE),
+    u'balfolk',  # english
+    u'balfour',  # french
+    u'balvolk',  # german
+    u'バフォフォーク',  # japanese
+)
+
+# Not yet used
+BALFOLK_DANCE_TYPES = Any(
+    u'schottisches?',
+    u'bourrées?'
+    u'waltz',
+    u'polkas',
+    u'mazurkas'
+    u'polska',
+    u'chapelloise',
+    u'gigues?',
+    u'circassian circle',
+    u'breton dance',
+    u'contra dances',
+)
+
+AMBIGUOUS_DANCE = Any(
+    u'bal folk',
+    u'folk bal',
+)
 
 
 class Classifier(base_auto_classifier.DanceStyleEventClassifier):
@@ -151,6 +178,8 @@ class Style(style_base.Style):
     @classmethod
     def get_popular_search_keywords(cls):
         return [
+            u'bal folk',
+            u'balfolk',
             u'folk dance',
             u'traditional dance',
         ]
