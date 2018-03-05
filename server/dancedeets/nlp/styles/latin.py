@@ -12,42 +12,6 @@ Name = grammar.Name
 connected = grammar.connected
 commutative_connected = grammar.commutative_connected
 
-REAL_DANCE = Name(
-    'LATIN_REAL_DANCE',
-    Any(
-        commutative_connected(Any(
-            'cuban',
-            'on1',
-            'on2',
-            'rueda',
-            'cuba\w+',
-            'footwork\w*',
-            'styling?',
-            'shines?',
-        ), Any('salsa')),
-        'salsa rueda',
-        'rueda (?:de )?casino',
-        'lad(?:y|ies) styling|styling ladies',
-        'shines ladies|ladies shines',
-        'salser[oa]s?',
-        'bachatango',
-        'bachata sensual',
-        u'莎莎舞',  # chinese salsa dance
-        u'恰恰舞',  # chinese cha cha dance
-        u'倫巴舞',  # chinese rumba dance
-        'shines?\W+partner',
-        'partner\W+shines?',
-        'sensual\W?bachata',
-        'latin\W?techni\w+',
-    )
-)
-
-SALSA = Any(
-    'salsa',
-    u'сальса',
-    u'サルサ',
-)
-
 AMBIGUOUS_DANCE_MUSIC = Name(
     'LATIN_AMBIGUOUS_DANCE_MUSIC',
     Any(
@@ -55,7 +19,7 @@ AMBIGUOUS_DANCE_MUSIC = Name(
         u'살사',  # korean salsa
         'cha\W?cha',
         'cha\W?cha\W?cha',
-        u'恰恰恰',  # chinese cha cha dance
+        u'恰恰恰?',  # chinese cha cha dance
         u'차차차?',  # korean chacha
         'samba',
         u'桑巴',  # chinese samba
@@ -66,6 +30,7 @@ AMBIGUOUS_DANCE_MUSIC = Name(
         u'samba ax[ée]',
         'samba\W?rock',
         'samba de roda',
+        u'pachanga',
         'cuban',
         u'サンバ',
         'bachata',
@@ -82,6 +47,64 @@ AMBIGUOUS_DANCE_MUSIC = Name(
         'afro\W?[ck]uba\w+',
         'latin',
         'salsy',
+    )
+)
+
+SALSA = Any(
+    u'salsa',
+    u'сальса',
+    u'サルサ',
+)
+
+LADIES = Any(
+    u'lad(?:y|ies)',
+    u'レディース',
+)
+STYLING = Any(
+    u'styling?',
+    u'スタイリング',
+)
+SHINES = Any(
+    u'shines?',
+    u'シャイン',
+)
+PARTNER = Any(u'partner(?:ing)?',)
+REAL_DANCE = Name(
+    'LATIN_REAL_DANCE',
+    Any(
+        commutative_connected(
+            Any(
+                dance_keywords.EASY_DANCE,
+                'cuban',
+                'on1',
+                'on2',
+                'rueda',
+                'cuba\w+',
+                'footwork\w*',
+                LADIES,
+                STYLING,
+                SHINES,
+                PARTNER,
+            ), SALSA
+        ),
+        commutative_connected(LADIES, Any(STYLING, SHINES, PARTNER)),
+        commutative_connected(PARTNER, Any(STYLING, SHINES)),
+        commutative_connected(
+            Any(SALSA, AMBIGUOUS_DANCE_MUSIC),
+            Any(
+                LADIES,
+                PARTNER,
+                SHINES,
+                STYLING,
+            ),
+        ),
+        'salsa rueda',
+        'rueda (?:de )?casino',
+        'salser[oa]s?',
+        'bachatango',
+        'bachata sensual',
+        'sensual\W?bachata',
+        'latin\W?techni\w+',
     )
 )
 
@@ -109,9 +132,13 @@ class Classifier(base_auto_classifier.DanceStyleEventClassifier):
     AMBIGUOUS_DANCE = AMBIGUOUS_DANCE_MUSIC
     GOOD_DANCE = Any(GOOD_DANCE, SALSA)
     GOOD_BAD_PAIRINGS = [(SALSA, FOOD)]
+    ADDITIONAL_EVENT_TYPE = Any('social')
 
     def _quick_is_dance_event(self):
-        result = ballroom.Style.get_classifier()(self._classified_event).is_dance_event()
+        ballroom_classifier = ballroom.Style.get_classifier()(self._classified_event)
+        result = ballroom_classifier.is_dance_event()
+        for log in ballroom_classifier.debug_info():
+            self._log(log)
         if result:
             return False
         return True
