@@ -129,6 +129,7 @@ EASY_CHOREO = Name(
         u'振付師',  # japanese
         u'編舞',  # chinese traditional
         u'编舞',  # chinese simplified
+        u'排舞',  # chinese choreography/formation
         u'안무가?',  # korean
     )
 )
@@ -453,6 +454,7 @@ AUDITION = Name(
         u'トライアウト',  # japanese tryout
         'audizion\w*',  # italian audition
         'naborem',  # polish recruitment/audition
+        'sign\W?ups',
         'rehearsal',
         u'綵排',  # chinese rehearsal
     )
@@ -520,11 +522,14 @@ PERFORMANCE = Name(
         'festival',
         'show\W?case',
         'encontro',  # portuguese meeting/festival
+        u'esibiziones?',  # italian performance
         u'représentation',  # french performance
         'espectaculo',  # spanish performance
         u'espectáculo',  # spanish performance
         u'퍼포먼스',  # korean performance
         u'쇼케이스',  # korean showcase
+        u'공연',  # korean performance
+        u'공연이',  # korean performance
         u'ショーケース',  # japanese showcase
         u'成果發表會',  # chinese 'result presentation' (final performance)
         u'秀',  # chinese show
