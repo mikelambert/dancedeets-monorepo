@@ -42,18 +42,19 @@ DANCE = Any(
     u'啦啦隊',  # chinese traditional
     u'拉拉队长',  # chinese simplified
     u'拉拉隊長',  # chinese traditional
-)
-
-AMBIGUOUS_DANCE = Any(
+    #
     'cheer',
     u'チア',
     u'치어',
 )
 
+AMBIGUOUS_DANCE = Any()
+
 
 class Classifier(base_auto_classifier.DanceStyleEventClassifier):
     GOOD_DANCE = DANCE
-    AMBIGUOUS_DANCE = AMBIGUOUS_DANCE
+
+    #AMBIGUOUS_DANCE = AMBIGUOUS_DANCE
 
     def _quick_is_dance_event(self):
         return True
