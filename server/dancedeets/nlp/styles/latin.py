@@ -119,6 +119,7 @@ FOOD = Any(
     'cooks?',
     'tastings?',
     'cinco de mayo',
+    'chips',  # chips n salsa
 )
 
 DANCER = Any('queen')
