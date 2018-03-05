@@ -6,6 +6,7 @@ from dancedeets.nlp import grammar
 STYLE_NAMES = [
     'aerial_pole',
     'african',
+    'afro_cuban',
     'ballet',
     'ballroom',
     'belly',

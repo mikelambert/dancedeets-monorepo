@@ -10,7 +10,7 @@ connected = grammar.connected
 commutative_connected = grammar.commutative_connected
 
 KOMPA = Any(
-    u'ko[mn]pas?',
+    u'[ck]o[mn]pas?',
     u'компа',  # macedonian
 )
 AMBIGUOUS_DANCE = KOMPA
@@ -30,11 +30,16 @@ class Style(style_base.Style):
 
     @classmethod
     def get_rare_search_keywords(cls):
-        return []
+        return [
+            'compa',
+            'conpa',
+        ]
 
     @classmethod
     def get_popular_search_keywords(cls):
         return [
+            'konpa',
+            'konpa dance',
             'kompa',
             'kompa dance',
         ]
