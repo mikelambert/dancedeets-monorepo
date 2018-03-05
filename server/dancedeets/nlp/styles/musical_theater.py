@@ -1,6 +1,7 @@
 # -*-*- encoding: utf-8 -*-*-
 
 from dancedeets.nlp import base_auto_classifier
+from dancedeets.nlp import dance_keywords
 from dancedeets.nlp import grammar
 from dancedeets.nlp import style_base
 
@@ -56,13 +57,12 @@ REAL_DANCE = Any(
     u'múa hát',  # vietnamese musical dance
     u'nhà hát nhạc kịch',  # vietnamese musical theater
     commutative_connected(MUSICAL, THEATER),
+    commutative_connected(THEATER, dance_keywords.EASY_DANCE)
 )
-AMBIGUOUS_DANCE = Any(THEATER,)
 
 
 class Classifier(base_auto_classifier.DanceStyleEventClassifier):
     GOOD_DANCE = REAL_DANCE
-    AMBIGUOUS_DANCE = AMBIGUOUS_DANCE
     ADDITIONAL_EVENT_TYPE = Any(u'recital',)
 
     def _quick_is_dance_event(self):
@@ -171,4 +171,4 @@ class Style(style_base.Style):
 
     @classmethod
     def get_basic_regex(cls):
-        return Any(AMBIGUOUS_DANCE)
+        return Any(REAL_DANCE)

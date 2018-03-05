@@ -1,6 +1,7 @@
 # -*-*- encoding: utf-8 -*-*-
 
 from dancedeets.nlp import base_auto_classifier
+from dancedeets.nlp import dance_keywords
 from dancedeets.nlp import grammar
 from dancedeets.nlp import style_base
 
@@ -128,11 +129,11 @@ FOLK = Any(
     u'民间',  # chinese simplified
     u'포크',  # korean
 )
-AMBIGUOUS_DANCE = Any(FOLK, TRADITIONAL)
+GOOD_DANCE = commutative_connected(Any(FOLK, TRADITIONAL), dance_keywords.EASY_DANCE)
 
 
 class Classifier(base_auto_classifier.DanceStyleEventClassifier):
-    AMBIGUOUS_DANCE = AMBIGUOUS_DANCE
+    GOOD_DANCE = GOOD_DANCE
 
     def _quick_is_dance_event(self):
         return True
@@ -164,4 +165,4 @@ class Style(style_base.Style):
 
     @classmethod
     def get_basic_regex(cls):
-        return Any(AMBIGUOUS_DANCE)
+        return Any(GOOD_DANCE)
