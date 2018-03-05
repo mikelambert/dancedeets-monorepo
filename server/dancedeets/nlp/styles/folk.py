@@ -136,6 +136,7 @@ GOOD_DANCE = Any(
     u'balfour',  # french
     u'balvolk',  # german
     u'バフォフォーク',  # japanese
+    u'liscio',
 )
 
 # Not yet used
