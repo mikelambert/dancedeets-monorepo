@@ -13,6 +13,7 @@ connected = grammar.connected
 commutative_connected = grammar.commutative_connected
 
 BALLROOM_STYLES = Any(*ballroom_keywords.BALLROOM_STYLES)
+LATIN_BALLROOM_STYLES = Any(*ballroom_keywords.LATIN_BALLROOM_STYLES)
 
 BALLROOM = Any(
     'ballroom',
@@ -55,6 +56,7 @@ class Classifier(base_auto_classifier.DanceStyleEventClassifier):
 
     def is_dance_event(self):
         all_styles = set(self._get(BALLROOM_STYLES))
+        all_latin_styles = set(self._get(LATIN_BALLROOM_STYLES))
 
         all_hard_keywords = set(self._get(BALLROOM_KEYWORDS))
         all_easy_keywords = set(self._get(EASY_BALLROOM_KEYWORDS))
@@ -73,8 +75,15 @@ class Classifier(base_auto_classifier.DanceStyleEventClassifier):
         if len(all_styles) >= 1 and all_keyword_score >= 2:
             return 'Found many ballroom styles and keywords'
 
-        if len(all_styles) >= 3:
-            return 'Found many ballroom keywords'
+        if len(all_styles) >= 4:
+            return 'Found many overall ballroom keywords'
+
+        non_latin_styles = all_styles.difference(all_latin_styles)
+        if len(non_latin_styles) >= 2 and len(all_latin_styles):
+            return 'Found non-latin and latin ballroom styles together'
+
+        if len(non_latin_styles) >= 3:
+            return 'Found many non-latin ballroom keywords'
 
         return False
 
