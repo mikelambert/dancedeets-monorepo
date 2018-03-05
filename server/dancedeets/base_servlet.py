@@ -528,7 +528,7 @@ class BaseRequestHandler(BareBaseRequestHandler):
         hour_ago = datetime.datetime.now() - datetime.timedelta(hours=1)
         if not getattr(self.user, 'last_login_time', None) or self.user.last_login_time < hour_ago:
             # Do this in a separate request so we don't increase latency on this call
-            deferred.defer(update_last_login_time, self.user.fb_uid, datetime.datetime.now(), _queue='slow-queue')
+            deferred.defer(update_last_login_time, self.user.fb_uid, datetime.datetime.now())
             backgrounder.load_users([self.fb_uid], allow_cache=False)
 
     def handle_exception(self, e, debug):

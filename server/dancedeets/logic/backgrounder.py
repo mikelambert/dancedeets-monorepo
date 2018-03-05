@@ -10,7 +10,6 @@ def load_users(user_ids, allow_cache=True, **kwargs):
         taskqueue.add(
             method='GET',
             url='/tasks/load_users?' + urls.urlencode(dict(user_id=fb_uid, user_ids=fb_uid, allow_cache=allow_cache_arg)),
-            queue_name='slow-queue',
             **kwargs
         )
 
