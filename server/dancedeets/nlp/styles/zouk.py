@@ -14,8 +14,13 @@ REAL_DANCE = Any(
     u'ズーク',
     'zouk\w+',  # not just plain zouk
     'zouk\W?lambada',
-    'brazilian\W?zouk',
+    # Yes, I know carribean/traditional and brazilian/lambada are totally different dances.
+    # Unfortunately, it's super-hard for a computer to separate out these dances,
+    # when most of the world uses zouk for everything. So we combine them here,
+    # and leave it to the dancer. (This is similar to what we do with 'hiphop dance'.)
+    'carribean\W?zouk',
     'traditional zouk',
+    'brazilian\W?zouk',
     'lambda\W?zouk',
     'modern\W?zouk',
     'mzouk',
