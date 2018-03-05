@@ -15,4 +15,5 @@ python setup.py build
 python setup.py install
 cd ..
 
-rm -rf re2-masterpyre2-master
+rm -rf re2-master
+rm -rf pyre2-master

@@ -10,3 +10,6 @@ cd giflossy-1.88/
 autoreconf -i
 ./configure || cat config.log
 make install
+
+cd ..
+rm -rf giflossy-1.88/

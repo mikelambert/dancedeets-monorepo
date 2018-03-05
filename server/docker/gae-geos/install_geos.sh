@@ -14,3 +14,7 @@ tar xf geos.tar.bz2 -C ./geos --strip-components=1
 cd geos
 ./configure && make -j $PROCESSOR_COUNT && make install
 ldconfig
+
+cd ..
+rm -rf geos
+rm -rf geos.tar.bz2
