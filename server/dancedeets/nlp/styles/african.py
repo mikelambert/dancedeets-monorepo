@@ -57,6 +57,34 @@ REAL_DANCE = Any(
     'toyi-toyi',
     'xibelani',
     'yankadi',
+    u'azonto',
+    # too popular: u'bolo',
+    u'coupé décalé',
+    u'dialgati',
+    u'ëpukay',
+    u'flékélé',
+    u'funana',
+    u'gweta',  # disambiguate!
+    u'hapingo',
+    u'ikoku',
+    u'jazzé',
+    # too popular: u'kizomba',
+    u'logobi',
+    u'mulay ceuguin',
+    u'ndombolo',
+    # umm...not african: u'oriental',  # ???
+    u'pantsula',
+    u'rimbaxpaxpax',
+    # in ambiguous: u'sabar',
+    u'skelewu',
+    u'taracha',
+    u'thiaxagün',
+    u'vooga',
+    u'wati dance',
+    u'xeccël mbalu jënn',
+    u'youza',
+    u'zoropoto',
+    u'mapouka',
 )
 
 AMBIGUOUS_AFRICAN = Name(
@@ -101,6 +129,8 @@ AMBIGUOUS_AFRICAN = Name(
         'tribal',  # matches the whole 'tribal fusion bellydance stuff'
         'tufo',
         u'mand[ée]',
+        u'ndem',
+        u'rass',
     )
 )
 
