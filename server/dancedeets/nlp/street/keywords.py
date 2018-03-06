@@ -544,6 +544,9 @@ POP_MUSIC = Any(
 PREPROCESS_REMOVAL = Name(
     'PREPROCESS_REMOVAL',
     Any(
+        # french uses 'dans' for 'into' when most other languages use it for 'dance' :(
+        u'dans une?',
+        u'dans les',
         # positive
         'tap water',  # for theo and dominque's jam
         'house of movement',  # not a vogue keyword!

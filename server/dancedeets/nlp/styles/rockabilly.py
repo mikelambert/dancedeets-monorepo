@@ -46,6 +46,7 @@ class Classifier(base_auto_classifier.DanceStyleEventClassifier):
     OTHER_DANCE = Any('modern jive',)
     GOOD_BAD_PAIRINGS = [
         (Any('jive'), Any('modern jive')),
+        (Any('twist'), Any('a twist')),
     ]
 
     def _quick_is_dance_event(self):

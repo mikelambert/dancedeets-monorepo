@@ -354,6 +354,7 @@ CLASS_ONLY = Any(
     'kursai',  # course lithuanian
     'kursas',  # course lithuanian
     'kurs',  # course dutch
+    u'kurssin?',  # course finnish
     'choreokurs\w*',  # choreo course dutch
     'lez\.',  # lesson italian
     'lezion[ei]?',  # lesson italian
