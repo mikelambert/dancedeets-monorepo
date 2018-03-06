@@ -292,6 +292,7 @@ CLASS_ONLY = Any(
     u'סדנאות',  # hebrew workshops
     u'סדנה',  # hebew workshop
     u'הסדנא',  # hebrew workshop
+    u'unterricht',  # german lessons
     u'שיעורים',  # hebrew lessons
     u'μάθημα',  # greek lesson
     u'σεμιναριο',  # greek seminar

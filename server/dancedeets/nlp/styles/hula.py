@@ -79,7 +79,6 @@ class Classifier(base_auto_classifier.DanceStyleEventClassifier):
     GOOD_DANCE = GOOD_DANCE
     AMBIGUOUS_DANCE = AMBIGUOUS_DANCE
     ADDITIONAL_EVENT_TYPE = Any()
-    OTHER_DANCE = Any('modern jive',)
     GOOD_BAD_PAIRINGS = [
         (HULA, hulahoop.HULAHOOP),
     ]
