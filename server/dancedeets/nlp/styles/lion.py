@@ -1,6 +1,7 @@
 # -*-*- encoding: utf-8 -*-*-
 
 from dancedeets.nlp import base_auto_classifier
+from dancedeets.nlp import dance_keywords
 from dancedeets.nlp import grammar
 from dancedeets.nlp import style_base
 
@@ -29,11 +30,12 @@ DRAGON = Any(
     u'龍',
     u'龙',
 )
-AMBIGUOUS_DANCE = Any(LION)
+
+GOOD_DANCE = commutative_connected(Any(LION, DRAGON), dance_keywords.EASY_DANCE)
 
 
 class Classifier(base_auto_classifier.DanceStyleEventClassifier):
-    AMBIGUOUS_DANCE = AMBIGUOUS_DANCE
+    GOOD_DANCE = GOOD_DANCE
     ADDITIONAL_EVENT_TYPE = Any(
         'parade',
         'chinese new year',
@@ -79,4 +81,4 @@ class Style(style_base.Style):
 
     @classmethod
     def get_basic_regex(cls):
-        return Any(AMBIGUOUS_DANCE)
+        return Any(GOOD_DANCE)
