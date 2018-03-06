@@ -56,6 +56,7 @@ class Classifier(base_auto_classifier.DanceStyleEventClassifier):
     AMBIGUOUS_DANCE = AMBIGUOUS_DANCE
     ADDITIONAL_EVENT_TYPE = EVENT_TYPES
     DANCE_KEYWORDS = DANCE_KEYWORDS
+    GOOD_BAD_PAIRINGS = [(CABARET, Any('com[eé]d\w+'))]
 
     def _quick_is_dance_event(self):
         return True

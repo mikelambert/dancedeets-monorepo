@@ -53,6 +53,9 @@ AMBIGUOUS_DANCE = Any()
 
 class Classifier(base_auto_classifier.DanceStyleEventClassifier):
     GOOD_DANCE = DANCE
+    GOOD_BAD_PAIRINGS = [
+        (Any('cheer'), Any('cheer\w* up')),
+    ]
 
     #AMBIGUOUS_DANCE = AMBIGUOUS_DANCE
 

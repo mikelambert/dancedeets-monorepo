@@ -12,22 +12,14 @@ commutative_connected = grammar.commutative_connected
 AMBIGUOUS_DANCE = Any()
 
 IRISH = Any(
-    u'irlandez',  # romanian
-    u'irlandaise',  # french
-    u'irlandesa',  # spanish
-    u'irlandese',  # italian
-    u'irlandesa',  # portuguese
+    u'irl[aä]nd\w*',
     u'ierse',  # dutch
-    u'irischer',  # german
-    u'irish',  # tagalog
-    u'irlanda',  # turkish
+    u'irisc?h\w*',
     u'irlantilaista',  # finnish
-    u'irländsk',  # swedish
     u'irsk',  # norwegian
     u'irski',  # croatian
     u'irský',  # czech
     u'islamas',  # lithuanian
-    u'irlandzki',  # polish
     u'ír',  # hungarian
     u'ιρλανδικό',  # greek
     u'ирландский',  # russian
@@ -59,6 +51,7 @@ GOOD_DANCE = Any(
 
 class Classifier(base_auto_classifier.DanceStyleEventClassifier):
     GOOD_DANCE = GOOD_DANCE
+    ADDITIONAL_EVENT_TYPE = Any('bal')
 
     def _quick_is_dance_event(self):
         return True
