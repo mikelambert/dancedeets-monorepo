@@ -44,6 +44,7 @@ STYLE_NAMES = [
     'northern_soul',
     'lion',
     'partner_fusion',
+    'poi_staff',
     'polka',
     'rockabilly',
     'soulline',
