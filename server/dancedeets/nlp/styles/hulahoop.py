@@ -9,7 +9,7 @@ Name = grammar.Name
 connected = grammar.connected
 commutative_connected = grammar.commutative_connected
 
-KEYWORDS = [
+HULAHOOP_KEYWORDS = [
     u'hula\W?hoop',
     u'hoelahoep',
     u'хула хоп',  # macedonian
@@ -20,7 +20,8 @@ KEYWORDS = [
     u'呼啦圈',  # chinese simplified
     u'훌라후프',  # korean
 ]
-AMBIGUOUS_DANCE = Any(*KEYWORDS)
+HULAHOOP = Any(*HULAHOOP_KEYWORDS)
+AMBIGUOUS_DANCE = HULAHOOP
 
 
 class Classifier(base_auto_classifier.DanceStyleEventClassifier):

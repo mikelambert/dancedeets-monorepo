@@ -28,6 +28,7 @@ STYLE_NAMES = [
     'flamenco',
     'folk',
     'forro',
+    'hula',
     'hulahoop',
     'hustle',
     'indian',
