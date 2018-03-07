@@ -10,6 +10,19 @@ Name = grammar.Name
 connected = grammar.connected
 commutative_connected = grammar.commutative_connected
 
+JA_HULA = Any(u'フラ')
+
+JA_HULA_KEYWORDS = Any(
+    u'hula',
+    u'hawaii\w*',
+    u'ハワイ',
+    u'ダンス',
+    u'aloha',
+    u'アロハ',
+    u'ohana',
+    u'オハナ',
+)
+
 HULA = Any(
     u'hula',  # english
     u'χούλα',  # greek
@@ -63,6 +76,12 @@ POLYNESIAN = Any(
     u'폴리네시아 인',  # korean
 )
 
+LUAU = Any(
+    u'luau',
+    u'ルアウ',  # japanese
+    u'루아 ?우',  # korean
+)
+
 GOOD_DANCE = Any(
     HULA,
     u'kahiko hula',
@@ -78,12 +97,20 @@ AMBIGUOUS_DANCE = Any(
 class Classifier(base_auto_classifier.DanceStyleEventClassifier):
     GOOD_DANCE = GOOD_DANCE
     AMBIGUOUS_DANCE = AMBIGUOUS_DANCE
-    ADDITIONAL_EVENT_TYPE = Any()
+    ADDITIONAL_EVENT_TYPE = LUAU
     GOOD_BAD_PAIRINGS = [
         (HULA, hulahoop.HULAHOOP),
     ]
 
     def _quick_is_dance_event(self):
+        # Turns out フラ without \b is too common.
+        # It matches フランス, フランク, and more...
+        # So if we have フラ, ensure we have other hula-esque keywords.
+        if self._has(JA_HULA):
+            if self._has(JA_HULA_KEYWORDS):
+                return True
+            else:
+                return False
         return True
 
     def is_dance_event(self):
@@ -122,7 +149,7 @@ class Style(style_base.Style):
 
     @classmethod
     def get_search_keyword_event_types(cls):
-        return []
+        return ['luau']
 
     @classmethod
     def _get_classifier(cls):
