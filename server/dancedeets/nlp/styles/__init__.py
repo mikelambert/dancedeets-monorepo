@@ -18,6 +18,7 @@ STYLE_NAMES = [
     'butoh',
     'capoeira',
     'cheer',
+    'clogging',
     'contact',
     'contemporary',
     'country',
