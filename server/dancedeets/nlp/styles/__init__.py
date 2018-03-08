@@ -78,7 +78,6 @@ for style in _STYLE_LIST:
     STYLES[style.get_name()] = style
 
 misc_keyword_sets = [
-    all_styles_raw.DANCE_STYLE_CLASSICAL,
     all_styles_raw.DANCE_STYLE_MISC,
 ]
 
