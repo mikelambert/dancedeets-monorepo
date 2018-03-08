@@ -12,6 +12,7 @@ commutative_connected = grammar.commutative_connected
 KOMPA = Any(
     u'[ck]o[mn]pas?',
     u'компа',  # macedonian
+    # TODO: 'afro-haitian',
 )
 AMBIGUOUS_DANCE = KOMPA
 
