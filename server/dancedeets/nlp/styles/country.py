@@ -24,7 +24,6 @@ REAL_DANCE = Any(
     'deux\W?temp',
     'texas shuffle step\w*',
     'mambo shuffle',
-    'clogging',
     'triple\W?two\W?step',
 )
 
@@ -49,7 +48,6 @@ AMBIGUOUS_DANCE = Any(
     'square',
     u'スクエア',
     'mwsd',
-    'clog',
     u'contr[ae]',
 )
 
