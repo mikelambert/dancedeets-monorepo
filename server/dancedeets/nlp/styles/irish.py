@@ -25,7 +25,7 @@ IRISH = Any(
     u'islamas',  # lithuanian
     u'ír',  # hungarian
     u'ιρλανδικό',  # greek
-    u'ирландский',  # russian
+    u'ирландски\w*',  # russian
     u'ирски',  # macedonian
     u'ריקוד אירי',  # hebrew
     u'الأيرلندية',  # arabic

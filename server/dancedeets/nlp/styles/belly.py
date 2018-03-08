@@ -41,6 +41,7 @@ BELLY = Any(
     u'trbušni',  # croatian
     u'vatsa',  # finnish
     u'τηςκοιλιάς',  # greek
+    u'восточны\w*',  # russian for 'eastern'
     u'живота',  # russian
     u'стомачен',  # macedonian
     u'בטן',  # hebrew

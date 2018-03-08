@@ -16,7 +16,7 @@ CONTACT = Any(
 )
 IMPROV = Any(
     'impro(?:[wv]\w*)?',
-    'импровизация',
+    u'импровизация',
 )
 
 REAL_DANCE = Any(

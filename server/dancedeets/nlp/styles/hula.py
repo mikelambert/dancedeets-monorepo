@@ -50,7 +50,7 @@ TAHITIAN = Any(
 HAWAIIAN = Any(
     u'ha[vw]a[iïj]\w*',
     u'χαβάης',  # greek
-    u'гавайский',  # russian
+    u'гавайски\w*',  # russian
     u'хавајски',  # macedonian
     u'הוואי',  # hebrew
     u'هاواي',  # arabic
@@ -65,8 +65,7 @@ HAWAIIAN = Any(
 POLYNESIAN = Any(
     u'pol[iy]n[eé][sz]\w+'
     u'πολυνησιακό',  # greek
-    u'полинезийский',  # russian
-    u'полинезиски',  # macedonian
+    u'полинезий?ски\w*',  # russian
     u'פולינזי',  # hebrew
     u'البولينيزية',  # arabic
     u'โพลินีเชีย',  # thai

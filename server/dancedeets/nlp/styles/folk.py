@@ -119,8 +119,7 @@ FOLK = Any(
     u'volks',  # dutch
     u'volks',  # german
     u'λαϊκοί',  # greek
-    u'народен',  # macedonian
-    u'народный',  # russian
+    u'народе?н\w+',  # russian
     u'ריקוד עם',  # hebrew
     u'الشعبي',  # arabic
     u'พื้นบ้าน',  # thai
