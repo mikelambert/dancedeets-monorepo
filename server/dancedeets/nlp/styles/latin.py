@@ -76,7 +76,7 @@ REAL_DANCE = Name(
         commutative_connected(
             Any(
                 dance_keywords.EASY_DANCE,
-                'cuban',
+                'cubana?',
                 'on1',
                 'on2',
                 'rueda',

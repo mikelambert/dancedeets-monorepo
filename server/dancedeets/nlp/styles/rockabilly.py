@@ -21,7 +21,8 @@ AMBIGUOUS_DANCE = Any(
     'jive',
     'boogie\W?woogie',
     'rock\W?\W?(?:n|and|&|\+)\W?\W?roll\w*',
-    u'рок-н-рол',  # russian rock-n-roll
+    u'акробатический рок-н-рол\w*',
+    u'рок-н-рол\w*',  # russian rock-n-roll
     'rockabilly',
     u'рокабилли',
     'r\Wn\Wr',

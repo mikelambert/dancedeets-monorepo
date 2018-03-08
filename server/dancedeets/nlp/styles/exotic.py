@@ -17,6 +17,7 @@ AMBIGUOUS_DANCE = Any(
     'flirt',
     'sexy',
     'strip\W?tease',
+    u'стрипластика',  # strip-plastic (strip dancing?)
     'go\W?go',
 )
 EVENT_TYPES = Any(

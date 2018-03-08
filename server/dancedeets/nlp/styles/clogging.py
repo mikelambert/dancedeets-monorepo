@@ -9,6 +9,12 @@ Name = grammar.Name
 connected = grammar.connected
 commutative_connected = grammar.commutative_connected
 
+SUPER_STRONG_KEYWORDS = Any(
+    'america\'s clogging hall of fame',
+    'clogging champions of america',
+    'america onstage',
+)
+
 AMBIGUOUS_DANCE = Any(u'clog')
 
 CLOGGING = Any(u'clogging', commutative_connected(Any(u'clog'), dance_keywords.EASY_DANCE))
@@ -18,6 +24,7 @@ GOOD_DANCE = CLOGGING
 class Classifier(base_auto_classifier.DanceStyleEventClassifier):
     GOOD_DANCE = GOOD_DANCE
     AMBIGUOUS_DANCE = AMBIGUOUS_DANCE
+    SUPER_STRONG_KEYWORDS = SUPER_STRONG_KEYWORDS
 
     def _quick_is_dance_event(self):
         return True

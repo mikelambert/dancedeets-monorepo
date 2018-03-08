@@ -16,6 +16,7 @@ JAZZ = Any(
     u'džiazo',  # lithuanian
     u'jazzo[vw]\w+',  # czech
     u'τζαζ',  # greek
+    u'джаз\w+',  # russian
     u'джазовый',  # russian
     u'џез',  # macedonian
     u'الجاز',  # arabic

@@ -37,8 +37,8 @@ CONTEMPORARY = Any(
     u'đương đại',  # vietnamese
     u'šiuolaikinis',  # lithuanian
     u'σύγχρονο',  # greek
-    u'современ',  # macedonian
-    u'современный',  # russian
+    u'современ\w*',  # macedonian
+    u'контепорари',  # russian
     u'עכשווי',  # hebrew
     u'المعاصر',  # arabic
     u'การเต้นร่วมสมัย',  # thai

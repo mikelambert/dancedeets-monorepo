@@ -11,6 +11,7 @@ commutative_connected = grammar.commutative_connected
 
 CAPOEIRA_WORD = Any(
     'capoeira\w*',
+    u'капоэйра',
     u'巴西戰舞',  # chinese capoeira
     u'卡波耶拉',  # chinese capoeira
     u'카포에라',  # korean capoeira

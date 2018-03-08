@@ -16,7 +16,13 @@ DANCE = Any(
     u'aerial\Wfabrics?',
     u'aerial\Wsilks?',
     u'aerial\Wspirals?',
+    u'aerial\W?tissues?',
+    u'air equilibre',
+    u'equilibre air',
     u'cerceau aérien',
+    u'воздушн\w+ кольце',  # aerial hoop
+    u'воздушн\w+ полотна\w*',  # aerial silks
+    u'воздушн\w+ эквилибр',  # russian 'airborne equilibrium'
     u'空中シルク',
     u'空中布',
     u'空中フープ',

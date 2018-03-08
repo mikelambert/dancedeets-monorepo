@@ -10,12 +10,24 @@ connected = grammar.connected
 commutative_connected = grammar.commutative_connected
 
 BURLESQUE = Any(
-    'burles\w+',
-    u'バーレスク',
+    u'burles[ckqz]\w*',
+    u'бурлеск\w*',  # russian
+    u'בּוּרלֶסקָה',  # hebrew
+    u'バーレスク',  # japanese
+    u'滑稽戏',  # chinese simplified
+    u'滑稽戲',  # chinese traditional
 )
 CABARET = Any(
-    'cabaret',
-    u'キャバレー',
+    u'[ck]abar[eé]\w*',  # hungarian
+    u'quán rượu',  # vietnamese
+    u'καμπαρέ',  # greek
+    u'кабаре',  # macedonian
+    u'קַבָּרֶט',  # hebrew
+    u'ملهى',  # arabic
+    u'คาบาเร่ต์',  # thai
+    u'キャバレー',  # japanese
+    u'歌舞表演',  # chinese simplified
+    u'카바레',  # korean
 )
 REAL_DANCE = Any(commutative_connected(BURLESQUE, CABARET))
 AMBIGUOUS_DANCE = Any(BURLESQUE, CABARET)

@@ -43,9 +43,10 @@ DANCE = Any(
     u'拉拉队长',  # chinese simplified
     u'拉拉隊長',  # chinese traditional
     #
-    'cheer',
+    u'cheer',
     u'チア',
     u'치어',
+    u'Черлидинг',  # russian cheerleading
 )
 
 AMBIGUOUS_DANCE = Any()

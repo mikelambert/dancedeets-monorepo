@@ -9,7 +9,10 @@ Name = grammar.Name
 connected = grammar.connected
 commutative_connected = grammar.commutative_connected
 
-AMBIGUOUS_DANCE = Any()
+AMBIGUOUS_DANCE = Any(
+    'jigs',
+    u'джига',
+)
 
 IRISH = Any(
     u'irl[aä]nd\w*',
@@ -36,7 +39,7 @@ IRISH = Any(
 STEP = Any('step',)
 
 GOOD_DANCE = Any(
-    commutative_connected(IRISH, dance_keywords.EASY_DANCE),
+    commutative_connected(Any(IRISH, 'reel'), dance_keywords.EASY_DANCE),
     commutative_connected(IRISH, Any(
         STEP,
         u'hard shoe',
@@ -46,6 +49,15 @@ GOOD_DANCE = Any(
     )),
     u'riverdance',
     u'sean-nós',
+    # jigs!
+    'light jigs?',
+    'slip jigs?',
+    'single jigs?',
+    'double jigs?',
+    'hop jigs?',
+    'treble jigs?',
+    'straight jigs?',
+    'sand jigs?',
 )
 
 
@@ -65,6 +77,8 @@ class Style(style_base.Style):
     @classmethod
     def get_rare_search_keywords(cls):
         return [
+            u'jigs dance',
+            u'reel dance',
             u'irish set',
             u'irish step',
             u'irish hard shoe',
@@ -75,10 +89,7 @@ class Style(style_base.Style):
 
     @classmethod
     def get_popular_search_keywords(cls):
-        return [
-            u'irish',
-            u'irish dance',
-        ]
+        return [u'irish', u'irish dance', u'irish jig']
 
     @classmethod
     def get_search_keyword_event_types(cls):

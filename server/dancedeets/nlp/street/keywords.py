@@ -79,7 +79,7 @@ STYLE_HIPHOP_WEAK = Any(
     u'והיפ הופ',  # hebrew hiphop
     u'هيب هوب',  # arabic hiphop
     u'الهيب هوب.',  # arabic 'the hiphop'
-    u'хипхоп',  # macedonian hiphop
+    u'хип\W?хоп\w*',  # russian hiphop (хип-хопа)
     u'ヒップホップ',  # hiphop japanese
     u'힙합',  # korean hiphop
     'hip\W?hop\w*',  # lithuanian, polish hiphop
@@ -149,7 +149,9 @@ MUSIC_ONLY = Name(
         'new wave',
         'rhythm\W?(?:and|&|\+)\W?blues',
         'disco',
+        u'диско',  # disco
         'trance',
+        u'транс',  # trance
         'techno',
         'techy',
         'alternative',
@@ -204,6 +206,7 @@ STYLE_BREAK = Name(
         'break\W?danc\w+',
         'power\W?moves?',
         'b\W?(?:boy|girl)\w*',
+        u'брейк\W?данс\w*',  # russian breakdance
         u'ברייקדאנס',  # hebrew breakdancing
         u'בברייקדאנס',  # hebrew breakdancing
         u'הברייקדאנס',  # hebrew breakdance
@@ -275,6 +278,7 @@ STYLE_WAACK = Name(
     Any(
         "[uw]h?aa?c?c?k(?:er[sz]?|inn?[g']?)",  # waacking
         'waack',
+        u'вакинг',  # russian waacking
         u'왁킹',  # korean waacking
         u'ワッキング',  # japanese waacking
         u'パーンキング',  # japanese punking
@@ -295,6 +299,7 @@ STYLE_ALLSTYLE = Name(
 STYLE_HOUSE = Name(
     'STYLE_HOUSE',
     Any(
+        u'хаус',  # russian
         u'浩室舞',
         'houser[sz]?',
         'afro\W?house',
@@ -324,6 +329,7 @@ STYLE_HIPHOP = Name(
         'hip\W?hopp?er[sz]?',
         'video\W?funk',
         'street\W?jazz',
+        u'стрит\W?джаз',  # street jazz
         'street\W?funk',
         'jazz\W?funk',
         'funk\W?jazz',
@@ -398,10 +404,12 @@ legit_dance = [
     #'soul train',...do we want this?
     u'소울트레인',  # korean soul train
     "twerk(?:in[g']?)?",
+    u'тверк',  # twerking
     'dance crew[sz]?',
     u'댄스 ?승무원',  # korean dance crew
     'melbourne shuffle',
     'mj\W+style',
+    u'майкл джексон стайл',  # michael jackson style
     'michael jackson style',
     'new\W?style hustle',
     'urban danc\w*',
@@ -450,6 +458,7 @@ STREET = Name(
     Any(
         'street',
         'urban',
+        u'уличные',
         u'스트리트',  # korean street
     )
 )
@@ -465,6 +474,7 @@ JAM = Name(
 
 EASY_CLUB = Any(
     'club',
+    u'клубные',  # club
     'klub',
     'after\Wparty',
     'pre\Wparty',
@@ -909,6 +919,7 @@ PRIZE = Name(
 VOGUE = Name(
     'VOGUE',
     Any(
+        u'танцы вог',  # vogue dance
         'butch realness',
         'butch queen',
         'vogue fem',
@@ -955,6 +966,7 @@ EASY_VOGUE = Name(
         r'f\.?q\.?',
         r'b\.?q\.?',
         'vogue',
+        u'вог',
         'old way',
         'new way',
         'ball',

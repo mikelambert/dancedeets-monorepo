@@ -10,11 +10,16 @@ Name = grammar.Name
 connected = grammar.connected
 commutative_connected = grammar.commutative_connected
 
-CONTACT = '[ck]onta[ck]t\w*'
-IMPROV = 'impro(?:[wv]\w*)?'
+CONTACT = Any(
+    '[ck]onta[ck]t\w*',
+    u'контактная',
+)
+IMPROV = Any(
+    'impro(?:[wv]\w*)?',
+    'импровизация',
+)
 
 REAL_DANCE = Any(
-    '%s\W?%s' % (CONTACT, IMPROV),
     commutative_connected(Any(IMPROV), Any(CONTACT)),
     u'接触即興',  # japanese
     u'即興接觸',  # chinese
