@@ -4,6 +4,7 @@ from dancedeets.nlp import all_styles_raw
 from dancedeets.nlp import grammar
 
 STYLE_NAMES = [
+    '_generic_dance',
     'aerial_pole',
     'african',
     'afro_cuban',
@@ -86,7 +87,9 @@ def all_styles_except(vertical):
     regexes = set()
     for regex_style in _STYLE_LIST:
         if regex_style != vertical:
-            regexes.add(regex_style.get_basic_regex())
+            regex = regex_style.get_basic_regex()
+            if regex:
+                regexes.add(regex)
     regexes.update(misc_keyword_sets)
     return grammar.Any(*regexes)
 
