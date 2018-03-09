@@ -50,7 +50,6 @@ class TestRules(RuleMatches):
 class ComplexConnections(RuleMatches):
     def runTest(self):
         rule = grammar.connected(grammar.Any('hiphop'), grammar.Any('dance'))
-        print rule.as_expanded_regex()
         self.matchRule(rule, 'hiphop dance')
         self.matchRule(rule, 'hiphop & salsa dance')
         self.matchRule(rule, 'hiphop&salsa dance')
