@@ -29,6 +29,8 @@ class RuleMatches(unittest.TestCase):
         string_processor = grammar_matcher.StringProcessor(s)
         self.assertFalse(string_processor.get_tokens(rule))
 
+
+class TestRules(RuleMatches):
     def runTest(self):
         self.matchRule(dance_keywords.CLASS, 'beginner breakdance')
         self.matchRule(dance_keywords.CLASS, 'beginner')
@@ -43,6 +45,18 @@ class RuleMatches(unittest.TestCase):
         # Ensure commutative_connected
         self.matchRule(rules.GOOD_DANCE, 'lock dance')
         self.matchRule(rules.GOOD_DANCE, 'lockdance')
+
+
+class ComplexConnections(RuleMatches):
+    def runTest(self):
+        rule = grammar.connected(grammar.Any('hiphop'), grammar.Any('dance'))
+        print rule.as_expanded_regex()
+        self.matchRule(rule, 'hiphop dance')
+        self.matchRule(rule, 'hiphop & salsa dance')
+        self.matchRule(rule, 'hiphop&salsa dance')
+        self.notMatchRule(rule, 'hiphop. salsa dance')
+        self.notMatchRule(rule, 'hiphop and salsa. dance')
+        self.notMatchRule(rule, 'hiphop and other music where we dance')
 
 
 class TestDanceClass(unittest.TestCase):

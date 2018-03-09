@@ -227,6 +227,42 @@ class Name(_BaseAlternation):
         return '%s(%r, %r)' % (self.__class__.__name__, self._name, self._sub_rule)
 
 
+AND_WORDS = [
+    u'a',  # czech
+    u'and',  # english
+    u'at',  # tagalog
+    u'dan',  # malay
+    u'e',  # portuguese
+    u'en',  # dutch
+    u'et',  # french
+    u'i',  # croatian
+    u'ir',  # lithuanian
+    u'ja',  # finnish
+    u'och',  # swedish
+    u'og',  # norwegian
+    u'und',  # german
+    u've',  # turkish
+    u'và',  # vietnamese
+    u'y',  # spanish
+    u'és',  # hungarian
+    u'și',  # romanian
+    u'και',  # greek
+    u'а также',  # russian
+    u'и',  # macedonian
+    u'ו',  # hebrew
+    u'و',  # arabic
+    u'และ',  # thai
+    u'と',  # japanese
+    u'和',  # chinese simplified
+    u'와',  # korean
+    u'과',  # korean
+    u'&',
+    u'/',
+]
+AND = Any(u' *(?:&|/|%s) *' % '|'.join(AND_WORDS))
+
+OneOrTwoWord = Any('\w+\s*(?:\w+\s*)?')
+
 # TODO(lambert): we need to remove the empty CONNECTOR here, and probably spaces as well, and handle that in the rules? or just ensure this never gets applied except as part of rules
 CONNECTOR = Name(
     'CONNECTOR',
@@ -237,7 +273,7 @@ CONNECTOR = Name(
         ' din ?',
         ' del ?',
         u' på ',
-        ' ?[:/&] ?',
+        ' ?: ?',
         u' bài ',  # vietnamese
         u'な',  # japanese
         u'の',  # japanese
@@ -246,6 +282,7 @@ CONNECTOR = Name(
         # TODO(lambert): explore adding these variations, and their impact on quality
         # r' ?[^\w\s] ?',
         # ' \W ',
+        Ordered(AND, OneOrTwoWord),
     )
 )
 
