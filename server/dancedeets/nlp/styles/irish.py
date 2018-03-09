@@ -4,6 +4,8 @@ from dancedeets.nlp import base_auto_classifier
 from dancedeets.nlp import dance_keywords
 from dancedeets.nlp import grammar
 from dancedeets.nlp import style_base
+from dancedeets.nlp.styles import tap
+
 Any = grammar.Any
 Name = grammar.Name
 connected = grammar.connected
@@ -40,6 +42,7 @@ STEP = Any('step',)
 
 GOOD_DANCE = Any(
     commutative_connected(Any(IRISH, 'reel'), dance_keywords.EASY_DANCE),
+    commutative_connected(IRISH, tap.TAP),
     commutative_connected(IRISH, Any(
         STEP,
         u'hard shoe',

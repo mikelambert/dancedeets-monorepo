@@ -17,7 +17,11 @@ SUPER_STRONG_KEYWORDS = Any(
 
 AMBIGUOUS_DANCE = Any(u'clog')
 
-CLOGGING = Any(u'clogging', commutative_connected(Any(u'clog'), dance_keywords.EASY_DANCE))
+CLOGGING = Any(
+    u'clogging',
+    u'cloggers?',
+    commutative_connected(Any(u'clog'), dance_keywords.EASY_DANCE),
+)
 GOOD_DANCE = CLOGGING
 
 

@@ -126,7 +126,7 @@ AMBIGUOUS_AFRICAN = Name(
         'serere',
         'sokkie',
         'suo',
-        'tribal',  # matches the whole 'tribal fusion bellydance stuff'
+        #'tribal',  # matches the whole 'tribal fusion bellydance stuff'
         'tufo',
         u'mand[ée]',
         u'ndem',

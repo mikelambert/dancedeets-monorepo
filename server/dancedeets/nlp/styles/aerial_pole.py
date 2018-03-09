@@ -4,6 +4,7 @@ from dancedeets import event_types
 from dancedeets.nlp import base_auto_classifier
 from dancedeets.nlp import grammar
 from dancedeets.nlp import style_base
+from dancedeets.nlp.styles import swing
 
 Any = grammar.Any
 Name = grammar.Name
@@ -30,11 +31,16 @@ DANCE = Any(
     'pole\W?fit(?:ness)?',
 )
 
+AERIALS = Any(
+    u'aerials?',
+    u'אריאלס',  # hebrew aerials
+    u'空中',
+)
+
 AMBIGUOUS_DANCE = Any(
     'pole',
     u'ポール',
-    'aerials?',
-    u'空中',
+    AERIALS,
     #'hoops?',
     u'cerceaux?',
     'fabrics?',
@@ -66,6 +72,10 @@ class Classifier(base_auto_classifier.DanceStyleEventClassifier):
     GOOD_DANCE = DANCE
     AMBIGUOUS_DANCE = AMBIGUOUS_DANCE
     EVENT_TYPES = EVENT_TYPES
+    GOOD_BAD_PAIRINGS = [
+        # Don't include "lindy aerials"
+        (AERIALS, swing.Style.get_basic_regex()),
+    ]
 
     def _quick_is_dance_event(self):
         return True

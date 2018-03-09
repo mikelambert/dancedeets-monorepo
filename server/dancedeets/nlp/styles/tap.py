@@ -3,7 +3,6 @@
 from dancedeets.nlp import base_auto_classifier
 from dancedeets.nlp import grammar
 from dancedeets.nlp import style_base
-from dancedeets.nlp.styles import ballet
 
 Any = grammar.Any
 Name = grammar.Name
@@ -44,6 +43,7 @@ REAL_DANCE = Any(
     'rhythm\W?tap',
     'theater\W?tap',
     'broadway\W?tap',
+    'body\W?percussion',
 )
 
 AMBIGUOUS_DANCE = TAP
@@ -53,6 +53,12 @@ class Classifier(base_auto_classifier.DanceStyleEventClassifier):
     REAL_DANCE = REAL_DANCE
     AMBIGUOUS_DANCE = AMBIGUOUS_DANCE
     DANCE_KEYWORDS = KEYWORDS
+    GOOD_BAD_PAIRINGS = [
+        (Any('step'), Any(
+            'quick\W?step',
+            '(?:two|2)\W*step',
+        )),
+    ]
 
     def _quick_is_dance_event(self):
         return True

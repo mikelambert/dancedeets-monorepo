@@ -686,6 +686,10 @@ PREPROCESS_REMOVAL = Name(
         'juste debout school',
         'baile funk',
         'champs\W+sur',  # french city champs-sur-marne is not a championship event
+
+        # 'step dance' and 'kids classes'
+        u'step\W?kids?',
+        u'stepping\W?stones?',
     )
 )
 
