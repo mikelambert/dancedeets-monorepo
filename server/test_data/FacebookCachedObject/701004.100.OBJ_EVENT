@@ -1,0 +1,7 @@
+{	
+  "empty": false,	
+  "info": {	
+    "name": "event with no venue information, just raw location",	
+    "location": "San Francisco"	
+  }	
+}
