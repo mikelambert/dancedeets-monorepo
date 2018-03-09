@@ -29,6 +29,7 @@ from dancedeets.events import eventdata
 from dancedeets import event_types
 from dancedeets import facebook
 from dancedeets import fb_api
+from dancedeets import login_logic
 from dancedeets.logic import backgrounder
 from dancedeets.logic import mobile
 from dancedeets.rankings import rankings
@@ -303,23 +304,6 @@ class BareBaseRequestHandler(webapp2.RequestHandler, FacebookMixinHandler):
         return os.getenv('CURRENT_VERSION_ID').split('.')[-1]
 
 
-def generate_userlogin_hash(user_login_cookie):
-    raw_string = ','.join('%r: %r' % (k.encode('ascii'), v.encode('ascii')) for (k, v) in sorted(user_login_cookie.items()) if k != 'hash')
-    m = hashlib.md5()
-    m.update(facebook.FACEBOOK_CONFIG['secret_key'])
-    m.update(raw_string)
-    m.update(facebook.FACEBOOK_CONFIG['secret_key'])
-    return m.hexdigest()
-
-
-def validate_hashed_userlogin(user_login_cookie):
-    passed_hash = user_login_cookie['hash']
-    computed_hash = generate_userlogin_hash(user_login_cookie)
-    if passed_hash != computed_hash:
-        logging.error("For user_login_data %s, passed_in_hash %s != computed_hash %s", user_login_cookie, passed_hash, computed_hash)
-    return passed_hash == computed_hash
-
-
 def get_location(fb_user):
     if fb_user['profile'].get('location'):
         facebook_location = fb_user['profile']['location']['name']
@@ -355,21 +339,15 @@ class BaseRequestHandler(BareBaseRequestHandler):
         }
         if access_token_md5:
             user_login_cookie['access_token_md5'] = access_token_md5
-        user_login_cookie['hash'] = generate_userlogin_hash(user_login_cookie)
+        user_login_cookie['hash'] = login_logic.generate_userlogin_hash(user_login_cookie)
         user_login_string = urllib.quote(json.dumps(user_login_cookie))
-        self.response.set_cookie(self._get_login_cookie_name(), user_login_string, max_age=30 * 24 * 60 * 60, path='/')
+        self.response.set_cookie(login_logic.get_login_cookie_name(), user_login_string, max_age=30 * 24 * 60 * 60, path='/')
 
     def _get_cookie_domain(self):
         domain = self.request.host
         if ':' in domain:
             domain = domain.split(':')[0]
         return domain
-
-    def _get_login_cookie_name(self):
-        return 'user_login_' + facebook.FACEBOOK_CONFIG['app_id']
-
-    def get_login_cookie(self):
-        return self.request.cookies.get(self._get_login_cookie_name(), self.request.cookies.get('user_login', ''))
 
     def setup_login_state(self, request):
         #TODO(lambert): change fb api to not request access token, and instead pull it from the user
@@ -383,46 +361,26 @@ class BaseRequestHandler(BareBaseRequestHandler):
             logging.error('Have too many nt= parameters, something is Very Wrong!')
             for k, v in request.cookies.iteritems():
                 logging.info("DEBUG: cookie %r = %r", k, v)
-        # Load Facebook cookie
-        try:
-            response = facebook.parse_signed_request_cookie(request.cookies)
-        except Cookie.CookieError:
-            logging.exception("Error processing cookie: %s")
-            return
-        fb_cookie_uid = None
-        if response:
-            fb_cookie_uid = response['user_id']
-        logging.info("fb cookie id is %s", fb_cookie_uid)
+
+        fb_cookie_uid = login_logic.get_uid_from_fb_cookie(request.cookies)
+        our_cookie_uid, set_by_access_token_param = login_logic.get_uid_from_user_login_cookie(request.cookies)
 
         # Normally, our trusted source of login id is the FB cookie,
-        # though we may override it below in the case of access_token_md5
-        trusted_cookie_uid = fb_cookie_uid
+        # though we may override it if access_token_md5 is set from the app
+        if set_by_access_token_param:
+            trusted_cookie_uid = our_cookie_uid
+            logging.info("Validated cookie, logging in as %s", our_cookie_uid)
+        else:
+            trusted_cookie_uid = fb_cookie_uid
 
-        # for k, v in self.request.cookies.iteritems():
-        #     logging.info('cookie %s = %s', k, v)
-
-        # Load our dancedeets logged-in user/state
-        our_cookie_uid = None
-        user_login_string = self.get_login_cookie()
-        if user_login_string:
-            user_login_cookie = json.loads(urllib.unquote(user_login_string))
-            logging.info("Got login cookie: %s", user_login_cookie)
-            if validate_hashed_userlogin(user_login_cookie):
-                our_cookie_uid = user_login_cookie['uid']
-                # If we have a browser cookie that's verified via access_token_md5,
-                # so let's trust it as authoritative here and ignore the fb cookie
-                if not trusted_cookie_uid and user_login_cookie.get('access_token_md5'):
-                    trusted_cookie_uid = our_cookie_uid
-                    logging.info("Validated cookie, logging in as %s", our_cookie_uid)
+        # If the user has changed facebook users, let's automatically re-login at dancedeets
+        if fb_cookie_uid and fb_cookie_uid != our_cookie_uid:
+            self.set_login_cookie(fb_cookie_uid)
+            our_cookie_uid = fb_cookie_uid
 
         if self.request.cookies.get('user_login', ''):
             logging.info("Deleting old-style user_login cookie")
             self.response.set_cookie('user_login', '', max_age=0, path='/', domain=self._get_cookie_domain())
-
-        # If the user has changed facebook users, let's automatically re-login at dancedeets
-        if trusted_cookie_uid and trusted_cookie_uid != our_cookie_uid:
-            self.set_login_cookie(trusted_cookie_uid)
-            our_cookie_uid = trusted_cookie_uid
 
         # Don't force-logout the user if there is a our_cookie_uid but not a trusted_cookie_uid
         # The fb cookie probably expired after a couple hours, and we'd prefer to keep our users logged-in

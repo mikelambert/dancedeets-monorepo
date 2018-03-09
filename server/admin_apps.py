@@ -7,6 +7,7 @@ from dancedeets import pipeline_wrapper
 
 from dancedeets import admin
 from dancedeets import facebook
+from dancedeets import login_logic
 from dancedeets.login_admin import authorize_middleware
 from dancedeets.redirect_canonical import redirect_canonical
 import main
@@ -14,10 +15,9 @@ import main
 
 def _get_facebook_user_id(environ):
     request_cookies = RequestCookies(environ)
-    user_data = facebook.parse_signed_request_cookie(request_cookies)
-    user_id = user_data.get('user_id', None)
-    logging.info('Got request with user id: %s', user_id)
-    return user_id
+    our_cookie_uid, set_by_access_token_param = login_logic.get_uid_from_user_login_cookie(request_cookies)
+    logging.info('Got request with user id: %s', our_cookie_uid)
+    return our_cookie_uid
 
 
 admin_ids = ['701004', '1199838260131297']
