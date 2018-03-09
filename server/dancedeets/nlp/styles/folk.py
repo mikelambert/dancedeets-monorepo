@@ -131,10 +131,21 @@ FOLK = Any(
 
 GOOD_DANCE = Any(
     commutative_connected(Any(FOLK, TRADITIONAL), dance_keywords.EASY_DANCE),
+    # mazurka
+    u'mazurka',
+    u'mazurek',
+    u'мазурка',
+    # krakowiak
+    u'krakowiak',
+    u'krakauer',
+    u'краковяк'
+    u'cracovienne',
+    # balfolk
     u'balfolk',  # english
     u'balfour',  # french
     u'balvolk',  # german
     u'バフォフォーク',  # japanese
+    #
     u'liscio',
 )
 

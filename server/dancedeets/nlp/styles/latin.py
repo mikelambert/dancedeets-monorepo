@@ -46,6 +46,7 @@ AMBIGUOUS_DANCE_MUSIC = Name(
         u'倫巴',  # chinese rumba dance
         u'륨바',  # korean rumba
         'afro\W?[ck]uba\w+',
+        'latin\W?american',
         'latin',
         'salsy',
     )
