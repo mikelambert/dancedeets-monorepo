@@ -61,6 +61,7 @@ VIENNESE_WALTZ = [
     u'ヴィエンヌワルツ',  # japanese
     u'維也納華爾茲',  # chinese traditional
     u'维也纳华尔兹',  # chinese simplified
+    u'비엔나왈츠',  # korean
     u'비엔나 ?왈츠',  # korean
 ]
 
@@ -88,19 +89,23 @@ FOXTROT = [
     u'είδος',  # greek
     u'фокстрот',  # macedonian
     u'פוקסטרוט',  # hebrew
+    u'خطوةالثعلب',  # arabic
     u'خطوة ?الثعلب',  # arabic
     u'フォックストレイ',  # japanese
     u'狐步舞',  # chinese simplified
-    u'폭스 ?트롯',  # korean
+    u'폭스트롯',  # korean
+    u'폭스 트롯',  # korean
 ]
 
 QUICKSTEP = [
-    u'quickstep',  # spanish
+    u'quickstep',
+    u'quick-step',
     u'квикстеп',
     u'การเต้นรำแบบรวดเร็ว',  # thai
     u'クイックステップ',  # japanese
     u'快步',  # chinese simplified
-    u'퀵 ?스텝',  # korean
+    u'퀵스텝',  # korean
+    u'퀵 스텝',  # korean
 ]
 
 SAMBA = [
@@ -136,6 +141,7 @@ CHACHA = [
 
 RUMBA = [
     u'rumba',  # english
+    u'rhumba',  # english
     u'ρούμπα',  # greek
     u'румба',  # macedonian
     u'רומבה',  # hebrew
@@ -171,6 +177,7 @@ EAST_COAST_SWING = [
     u'東海岸のスイング',  # japanese
     u'东海岸swing',  # chinese
     u'東海岸搖擺',  # chinese traditional
+    u'이스트코스트스윙',  # korean
     u'이스트 ?코스트 ?스윙',  # korean
 ]
 
