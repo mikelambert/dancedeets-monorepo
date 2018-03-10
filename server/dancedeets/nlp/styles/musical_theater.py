@@ -57,13 +57,17 @@ REAL_DANCE = Any(
     u'múa hát',  # vietnamese musical dance
     u'nhà hát nhạc kịch',  # vietnamese musical theater
     commutative_connected(MUSICAL, THEATER),
-    commutative_connected(THEATER, dance_keywords.EASY_DANCE)
+    commutative_connected(THEATER, dance_keywords.EASY_DANCE),
+    'broadway dance',
 )
 
 
 class Classifier(base_auto_classifier.DanceStyleEventClassifier):
     GOOD_DANCE = REAL_DANCE
     ADDITIONAL_EVENT_TYPE = Any(u'recital',)
+    GOOD_BAD_PAIRINGS = [
+        (Any('broadway dance'), Any('broadway dance center')),
+    ]
 
     def _quick_is_dance_event(self):
         return True
