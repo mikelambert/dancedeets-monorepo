@@ -95,28 +95,13 @@ class Style(style_base.Style):
 
     @classmethod
     def get_rare_search_keywords(cls):
-        return ballroom_keywords.BALLROOM_STYLES
+        return ballroom_keywords.BALLROOM
 
     @classmethod
     def get_popular_search_keywords(cls):
         return [
             'ballroom dance',
             'latin ballroom',
-            'waltz',
-            'viennese waltz',
-            'tango',
-            'foxtrot',
-            'quick step',
-            'samba',
-            'cha cha',
-            'rumba',
-            'paso doble',
-            'jive',
-            'east coast swing',
-            'bolero',
-            'mambo',
-            'country 2 step',
-            'american tango',
         ]
 
     @classmethod
