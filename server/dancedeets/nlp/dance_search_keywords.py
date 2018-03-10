@@ -69,6 +69,35 @@ CHOREO = [
     u'합창',  # korean
 ]
 
+DANCE = [
+    u'baile',  # spanish
+    u'dance',  # english
+    u'dans',  # romanian
+    u'dansa',  # swedish
+    u'danse',  # norwegian
+    u'danza',  # italian
+    u'dança',  # portuguese
+    u'nhảy',  # vietnamese
+    u'ples',  # croatian
+    u'sayaw',  # tagalog
+    u'tanec',  # czech
+    u'taniec',  # polish
+    u'tanssi',  # finnish
+    u'tanzen',  # german
+    u'tarian',  # malay
+    u'tánc',  # hungarian
+    u'šokis',  # lithuanian
+    u'χορός',  # greek
+    u'танец',  # russian
+    u'танц',  # macedonian
+    u'לִרְקוֹד',  # hebrew
+    u'رقص',  # arabic
+    u'เต้นรำ',  # thai
+    u'ダンス',  # japanese
+    u'舞蹈',  # chinese simplified
+    u'댄스',  # korean
+]
+
 DANCE_SCHOOL = [
     u'dance school',  # english
     u'dans okulu',  # turkish
@@ -499,6 +528,7 @@ OBVIOUS_KEYWORDS = []
 OBVIOUS_KEYWORDS.extend(BALLROOM)
 OBVIOUS_KEYWORDS.extend(CHOREOGRAPHY)
 OBVIOUS_KEYWORDS.extend(CHOREO)
+OBVIOUS_KEYWORDS.extend(DANCE)
 OBVIOUS_KEYWORDS.extend(DANCE_SCHOOL)
 OBVIOUS_KEYWORDS.extend(DANCE_HALL)
 OBVIOUS_KEYWORDS.extend(DANCE_STUDIO)
