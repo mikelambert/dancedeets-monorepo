@@ -222,7 +222,7 @@ def mr_load_fb_events(
         name=name,
         handler_spec='dancedeets.events.event_reloading_tasks.%s' % mr_func,
         entity_kind='dancedeets.events.eventdata.DBEvent',
-        handle_batch_size=20,
+        handle_batch_size=10,
         filters=filters,
         extra_mapper_params={
             'disable_updates': disable_updates,
