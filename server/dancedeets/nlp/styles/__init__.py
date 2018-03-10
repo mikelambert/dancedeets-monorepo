@@ -25,6 +25,8 @@ STYLE_NAMES = [
     'contemporary',
     'country',
     'dancehall',
+    'dc_hand',
+    'detroit_ballroom',
     'discofox',
     'exotic',
     'five_rhythms',
