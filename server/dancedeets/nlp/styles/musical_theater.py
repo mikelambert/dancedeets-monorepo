@@ -163,6 +163,7 @@ class Style(style_base.Style):
             u'theatrical dance',
             u'theater dance',
             u'musical theater',
+            u'broadway dance',
         ]
 
     @classmethod
