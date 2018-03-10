@@ -20,6 +20,7 @@ STYLE_NAMES = [
     'bugg',
     'burlesque',
     'butoh',
+    'cancan',
     'capoeira',
     'chacha',
     'cheer',
