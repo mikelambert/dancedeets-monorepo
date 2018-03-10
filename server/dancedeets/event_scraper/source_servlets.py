@@ -28,7 +28,7 @@ class AdminEditHandler(base_servlet.BaseRequestHandler):
             source_id = get_id_from_url(self.request.get('source_url'))
         elif self.request.get('source_id'):
             source_id = self.request.get('source_id')
-        s = thing_db.create_source_from_id(self.fbl, source_id)
+        s = thing_db.create_source_from_id_without_saving(self.fbl, source_id)
 
         #STR_ID_MIGRATE
         source_potential_events = potential_events.PotentialEvent.gql('WHERE source_ids = :graph_id', graph_id=long(s.graph_id)).fetch(1000)

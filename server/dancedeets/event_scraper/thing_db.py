@@ -160,6 +160,18 @@ def get_lookup_for_graph_type(graph_type):
 
 
 def create_source_from_id(fbl, source_id, verticals=None):
+    source = create_source_from_id_without_saving(fbl, source_id, verticals=verticals)
+    if source:
+        new_source = (not source.creation_time)
+        source.put()
+        if new_source:
+            # It seems some "new" sources are existing sources without a creation_time set, so let's force-set it here
+            source.creation_time = datetime.datetime.now()
+            backgrounder.load_sources([source_id], fb_uid=fbl.fb_uid)
+    return source
+
+
+def create_source_from_id_without_saving(fbl, source_id, verticals=None):
     logging.info('create_source_from_id: %s', source_id)
     if not source_id:
         return None
@@ -189,14 +201,8 @@ def create_source_from_id(fbl, source_id, verticals=None):
 
             source = Source(key_name=source_id)
             logging.info('Getting source for id %s: %s', source.graph_id, source.name)
-            new_source = (not source.creation_time)
             source.verticals = verticals or []
             source.compute_derived_properties(fb_source_common, fb_source_data)
-            source.put()
-            if new_source:
-                # It seems some "new" sources are existing sources without a creation_time set, so let's force-set it here
-                source.creation_time = datetime.datetime.now()
-                backgrounder.load_sources([source_id], fb_uid=fbl.fb_uid)
             return source
         return None
     finally:
