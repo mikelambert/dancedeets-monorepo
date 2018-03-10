@@ -252,6 +252,8 @@ AND_WORDS = [
     u'ו',  # hebrew
     u'و',  # arabic
     u'และ',  # thai
+]
+AND_NON_WORDS = [
     u'と',  # japanese
     u'和',  # chinese simplified
     u'와',  # korean
@@ -259,9 +261,12 @@ AND_WORDS = [
     u'&',
     u'/',
 ]
-AND = Any(u' *(?:&|/|%s) *' % '|'.join(AND_WORDS))
+_and_words = '|'.join(' %s ' % x for x in AND_WORDS)
+_and_non_words = '|'.join(AND_NON_WORDS)
 
-OneOrTwoWord = Any('\w+\s*(?:\w+\s*)?')
+# Do not try to run these two rules directly...they will not work as expected due to being wrapped in \b
+_AND = Any(u' *(?:%s|%s) *' % (_and_non_words, _and_words))
+_OneOrTwoWord = Any(u'\w+(?: +\w+)? +')
 
 # TODO(lambert): we need to remove the empty CONNECTOR here, and probably spaces as well, and handle that in the rules? or just ensure this never gets applied except as part of rules
 CONNECTOR = Name(
@@ -282,7 +287,7 @@ CONNECTOR = Name(
         # TODO(lambert): explore adding these variations, and their impact on quality
         # r' ?[^\w\s] ?',
         # ' \W ',
-        Ordered(AND, OneOrTwoWord),
+        Ordered(_AND, _OneOrTwoWord),
     )
 )
 

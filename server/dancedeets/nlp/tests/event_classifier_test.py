@@ -57,6 +57,13 @@ class ComplexConnections(RuleMatches):
         self.notMatchRule(rule, 'hiphop and salsa. dance')
         self.notMatchRule(rule, 'hiphop and other music where we dance')
 
+        # Ensure our 'intermediate word' doesn't match falsely!
+        class_blues = grammar.commutative_connected(
+            grammar.Any('int'),
+            grammar.Any('blues'),
+        )
+        self.notMatchRule(class_blues, 'international blues')
+
 
 class TestDanceClass(unittest.TestCase):
     def runTest(self):
