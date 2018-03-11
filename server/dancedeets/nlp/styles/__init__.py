@@ -1,7 +1,6 @@
 import importlib
 
 from dancedeets.nlp import all_styles_raw
-from dancedeets.nlp import grammar
 
 STYLE_NAMES = [
     '_generic_dance',
@@ -39,6 +38,7 @@ STYLE_NAMES = [
     'flamenco',
     'folk',
     'forro',
+    'hamachacha',
     'hula',
     'hulahoop',
     'hustle',
