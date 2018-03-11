@@ -42,12 +42,11 @@ class Classifier(base_auto_classifier.DanceStyleEventClassifier):
     GOOD_DANCE = REAL_DANCE
     AMBIGUOUS_DANCE = AMBIGUOUS_DANCE
     ADDITIONAL_EVENT_TYPE = Any(u'recital',)
+    GOOD_BAD_PAIRINGS = [
+        (MODERN, Any('modern jive')),
+    ]
 
     def _quick_is_dance_event(self):
-        # Ignore modern jive events
-        result = partner_fusion.Style.get_classifier()(self._classified_event).is_dance_event()
-        if result:
-            return False
         return True
 
 

@@ -22,7 +22,7 @@ class Classifier(base_auto_classifier.DanceStyleEventClassifier):
     ]
 
     def _quick_is_dance_event(self):
-        ballroom_classifier = ballroom.Style.get_classifier()(self._classified_event)
+        ballroom_classifier = ballroom.Style.get_classifier()(self._classified_event, debug=self._debug)
         result = ballroom_classifier.is_dance_event()
         for log in ballroom_classifier.debug_info():
             self._log(log)
