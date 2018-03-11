@@ -3,7 +3,6 @@
 from dancedeets.nlp import base_auto_classifier
 from dancedeets.nlp import grammar
 from dancedeets.nlp import style_base
-from dancedeets.nlp.styles import partner_fusion
 from dancedeets.nlp.styles import contemporary
 
 Any = grammar.Any

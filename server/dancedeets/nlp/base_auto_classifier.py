@@ -91,14 +91,6 @@ class RuleGenerator(type):
         )
 
 
-class AutoRuleGenerator(RuleGenerator):
-    def __init__(cls, name, parents, attr):
-        super(AutoRuleGenerator, cls).__init__(name, parents, attr)
-        from . import styles
-        other_style_regexes = styles.all_styles_except(cls.vertical)
-        cls.finalize_class(other_style_regexes)
-
-
 class DanceStyleEventClassifier(object):
     __metaclass__ = RuleGenerator
 
@@ -400,8 +392,8 @@ class DanceStyleEventClassifier(object):
 
         if len(set(self._get(keywords.CLUB_ONLY))) > 2:
             return False
-        if self._title_has_other():
-            return False
+        #if self._title_has_other():
+        #    return False
 
         # if title is good strong keyword, and we have a list of classes:
         # why doesn't this get found by the is_workshop title classifier? where is our 'camp' keyword
@@ -415,21 +407,19 @@ class DanceStyleEventClassifier(object):
                 proc_line = grammar_matcher.StringProcessor(line, self._classified_event.boundaries)
                 good_matches = proc_line.get_tokens(self.GOOD_OR_AMBIGUOUS_DANCE)
 
-                has_bad_matches = False
+                bad_matches = set()
                 for x in self.OTHER_REGEXES:
-                    result = proc_line.has_token(x)
-                    if result:
-                        has_bad_matches = True
+                    bad_matches.update(proc_line.get_tokens(x))
 
                 # Sometimes we have a schedule with hiphop and ballet
                 # Sometimes we have a schedule with hiphop and dj and beatbox/rap (more on music side)
                 # Sometimes we have a schedule with hiphop, house, and beatbox (legit, crosses boundaries)
                 # TODO: Should do a better job of classifying the ambiguous music/dance types, based on the presence of non-ambiguous dance types too
-                if good_matches and not has_bad_matches:
+                if good_matches and not bad_matches:
                     self._log('Found %s in line', good_matches)
                     good_lines.append(good_matches)
-                if not good_matches and has_bad_matches:
-                    bad_lines.append(has_bad_matches)
+                if not good_matches and bad_matches:
+                    bad_lines.append(bad_matches)
             num_dance_lines = len(good_lines) + len(bad_lines)
             self._log('Found %s of %s lines with dance styles', num_dance_lines, len(schedule_lines))
             # If more than 10% are good, then we found a good class
