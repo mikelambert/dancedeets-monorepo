@@ -6,6 +6,7 @@ from dancedeets.nlp import event_types
 class Style(object):
     """This is the basic API each style should export"""
     _classifier = None
+    _cached_regex = None
 
     @classmethod
     def get_name(cls):
@@ -50,3 +51,9 @@ class Style(object):
     @classmethod
     def get_basic_regex(cls):
         raise NotImplementedError()
+
+    @classmethod
+    def get_cached_basic_regex(cls):
+        if not cls._cached_regex:
+            cls._cached_regex = cls.get_basic_regex()
+        return cls._cached_regex

@@ -74,7 +74,7 @@ class Classifier(base_auto_classifier.DanceStyleEventClassifier):
     EVENT_TYPES = EVENT_TYPES
     GOOD_BAD_PAIRINGS = [
         # Don't include "lindy aerials"
-        (AERIALS, swing.Style.get_basic_regex()),
+        (AERIALS, swing.Style.get_cached_basic_regex()),
     ]
 
     def _quick_is_dance_event(self):
