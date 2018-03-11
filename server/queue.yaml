@@ -6,7 +6,7 @@ queue:
   target: batch
 - name: fast-queue
   rate: 1/s
-  max_concurrent_requests: 9
+  max_concurrent_requests: 12
   bucket_size: 1
   target: batch
 - name: event-publishing-pull-queue
