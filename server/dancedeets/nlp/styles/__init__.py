@@ -106,7 +106,7 @@ def all_styles_except(vertical):
             if regex:
                 regexes.add(regex)
     regexes.update(misc_keyword_sets)
-    return grammar.Any(*regexes)
+    return regexes
 
 
 # Classifiers need to generate a BAD_KEYWORDS of "other" styles of dance,
@@ -117,5 +117,5 @@ def all_styles_except(vertical):
 #
 CLASSIFIERS = {}
 for style in _STYLE_LIST:
-    other_style_regex = all_styles_except(style.get_name())
-    CLASSIFIERS[style.get_name()] = style.get_classifier(other_style_regex)
+    other_style_regexes = all_styles_except(style.get_name())
+    CLASSIFIERS[style.get_name()] = style.get_classifier(other_style_regexes)

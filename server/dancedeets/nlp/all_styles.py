@@ -10,7 +10,7 @@ from dancedeets.nlp import styles
 
 #TODO: Need to include AFRICAN in this!
 
-DANCE_WRONG_STYLE = Name('DANCE_WRONG_STYLE', styles.all_styles_except('STREET'))
+DANCE_WRONG_STYLE = Name('DANCE_WRONG_STYLE', Any(*styles.all_styles_except('STREET')))
 
 # These are okay to see in event descriptions, but we don't want it to be in the event title, or it is too strong for us
 DANCE_WRONG_STYLE_TITLE_ONLY = Name(

@@ -46,11 +46,6 @@ class RuleGenerator(type):
         cls.ADDITIONAL_EVENT_TYPE = cls.ADDITIONAL_EVENT_TYPE or keywords.NO_MATCH
         cls.DANCE_KEYWORDS = cls.DANCE_KEYWORDS or keywords.NO_MATCH
 
-        cls.NOT_DANCE = Any(
-            keywords.WRONG_BATTLE_STYLE,
-            keywords.WRONG_AUDITION,
-        )
-
         UNAMBIGUOUS_DANCE = commutative_connected(cls.AMBIGUOUS_DANCE, Any(dance_keywords.EASY_DANCE, dance_keywords.EASY_CHOREO))
         cls.GOOD_DANCE_FULL = Name('GOOD_DANCE_FULL', Any(UNAMBIGUOUS_DANCE, cls.GOOD_DANCE))
         cls.GOOD_OR_AMBIGUOUS_DANCE = Name('GOOD_OR_AMBIGUOUS_DANCE', Any(cls.AMBIGUOUS_DANCE, UNAMBIGUOUS_DANCE, cls.GOOD_DANCE))
@@ -100,8 +95,8 @@ class AutoRuleGenerator(RuleGenerator):
     def __init__(cls, name, parents, attr):
         super(AutoRuleGenerator, cls).__init__(name, parents, attr)
         from . import styles
-        other_style_regex = styles.all_styles_except(cls.vertical)
-        cls.finalize_class(other_style_regex)
+        other_style_regexes = styles.all_styles_except(cls.vertical)
+        cls.finalize_class(other_style_regexes)
 
 
 class DanceStyleEventClassifier(object):
@@ -133,13 +128,13 @@ class DanceStyleEventClassifier(object):
         self._log('Detected language %s', self._classified_event.language)
 
     @classmethod
-    def finalize_class(cls, other_style_regex):
-        cls.OTHER_DANCE_FULL = Any(
+    def finalize_class(cls, other_style_regexes):
+        cls.OTHER_REGEXES = [
             cls.OTHER_DANCE,
-            cls.NOT_DANCE,
+            keywords.WRONG_BATTLE_STYLE,
+            keywords.WRONG_AUDITION,
             keywords.OTHER_SHOW,
-            other_style_regex,
-        )
+        ] + list(other_style_regexes)
 
         # make this function a no-op the next time it's called
         @classmethod
@@ -149,6 +144,27 @@ class DanceStyleEventClassifier(object):
         cls.finalize_class = dummy_finalize_class
 
     # utility methods
+    def _title_has_other(self):
+        for x in self.OTHER_REGEXES:
+            result = self._title_has(x)
+            if result:
+                return result
+        return None
+
+    def _has_other(self):
+        for x in self.OTHER_REGEXES:
+            result = self._has(x)
+            if result:
+                return result
+        return None
+
+    def _short_lines_have_other(self):
+        for x in self.OTHER_REGEXES:
+            result = self._short_lines_have(x)
+            if result:
+                return result
+        return None
+
     def _title_get(self, keyword):
         result = self._classified_event.processed_title.get_tokens(keyword)
         self._log('Searching title for %s, got: %s', keyword.name(), result)
@@ -244,7 +260,7 @@ class DanceStyleEventClassifier(object):
 
     @log_to_bucket('organizer')
     def has_strong_organizer(self):
-        title_is_other_dance = self._title_has(self.OTHER_DANCE_FULL)
+        title_is_other_dance = self._title_has_other()
         if title_is_other_dance:
             return False
 
@@ -317,7 +333,7 @@ class DanceStyleEventClassifier(object):
             return 'title has event_type, good keywords'
 
         # Has 'workshop' and body has ('hiphop dance' but not 'ballet')
-        if self._title_has(event_type) and self._has(self.GOOD_DANCE_FULL) and not self._has(self.OTHER_DANCE_FULL):
+        if self._title_has(event_type) and self._has(self.GOOD_DANCE_FULL) and not self._has_other():
             return 'title has event_type, body had good and not bad keywords'
 
         return False
@@ -332,7 +348,7 @@ class DanceStyleEventClassifier(object):
         else:
             good_dance_event = self.GOOD_DANCE_EVENT
 
-        if self._has(good_dance_event) and not self._title_has(self.OTHER_DANCE_FULL):
+        if self._has(good_dance_event) and not self._title_has_other():
             return 'body has good dance event, and title does not have bad keywords'
 
         if self._short_lines_have(good_dance_event):
@@ -358,7 +374,7 @@ class DanceStyleEventClassifier(object):
     def is_competition(self):
         has_competition = self._short_lines_have(self.GOOD_DANCE_COMPETITION)
 
-        has_bad_keywords = self._short_lines_have(self.OTHER_DANCE_FULL)
+        has_bad_keywords = self._short_lines_have_other()
         if has_competition and not has_bad_keywords:
             return 'is good-dance battle event, with no bad keywords'
 
@@ -384,7 +400,7 @@ class DanceStyleEventClassifier(object):
 
         if len(set(self._get(keywords.CLUB_ONLY))) > 2:
             return False
-        if self._title_has(self.OTHER_DANCE_FULL):
+        if self._title_has_other():
             return False
 
         # if title is good strong keyword, and we have a list of classes:
@@ -398,7 +414,12 @@ class DanceStyleEventClassifier(object):
             for line in schedule_lines:
                 proc_line = grammar_matcher.StringProcessor(line, self._classified_event.boundaries)
                 good_matches = proc_line.get_tokens(self.GOOD_OR_AMBIGUOUS_DANCE)
-                has_bad_matches = proc_line.has_token(self.OTHER_DANCE_FULL)
+
+                has_bad_matches = False
+                for x in self.OTHER_REGEXES:
+                    result = proc_line.has_token(x)
+                    if result:
+                        has_bad_matches = True
 
                 # Sometimes we have a schedule with hiphop and ballet
                 # Sometimes we have a schedule with hiphop and dj and beatbox/rap (more on music side)
