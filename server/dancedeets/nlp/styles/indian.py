@@ -61,6 +61,7 @@ CLASSICAL_DANCES = [
     u'kuchipudi',
     u'manipuri',
     u'mohiniyattam',
+    u'mohiniattam',
     u'odissi',
     u'sattriya',
     u'nataraja',
