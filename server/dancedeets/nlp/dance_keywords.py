@@ -233,6 +233,8 @@ _ACTUAL_LEVELS = Any(
     'adults?',
     'kids?',
     u'初心者?',
+    u'alkeet',  # finnish basic
+    u'alkeisjatko',  # finnish beginners
 )
 _ALL_LEVELS = Any(
     'all',
