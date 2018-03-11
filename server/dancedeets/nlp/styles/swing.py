@@ -43,17 +43,12 @@ AMBIGUOUS_WORDS = Any(
     'ecs',
 )
 
-AMBIGUOUS_DANCE_MUSIC = Any(
-    'blues',
-    u'ブルース',  # japanese blues
-)
-
 # Event Sites:
 # http://www.swingplanit.com/
 
 
 class Classifier(base_auto_classifier.DanceStyleEventClassifier):
-    AMBIGUOUS_DANCE = Any(AMBIGUOUS_WORDS, AMBIGUOUS_DANCE_MUSIC)
+    AMBIGUOUS_DANCE = Any(AMBIGUOUS_WORDS)
     GOOD_DANCE = REAL_DANCE
     ADDITIONAL_EVENT_TYPE = Any(
         'festival',

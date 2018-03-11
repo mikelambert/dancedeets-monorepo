@@ -1,9 +1,9 @@
 # -*-*- encoding: utf-8 -*-*-
 
 from dancedeets.nlp import base_auto_classifier
+from dancedeets.nlp import dance_keywords
 from dancedeets.nlp import grammar
 from dancedeets.nlp import style_base
-from dancedeets.nlp.street import keywords
 from dancedeets.nlp.styles import partner
 
 Any = grammar.Any
@@ -18,12 +18,17 @@ FUSION = Any(
     u'fusión?',
 )
 
-BLUES = Any('blues')
+BLUES = Any(
+    'blues',
+    u'ブルース',  # japanese blues
+)
 
 AMBIGUOUS_DANCE = Any(
-    BLUES,
-    commutative_connected(BLUES, FUSION),
-    commutative_connected(FUSION, keywords.DANCE),
+    commutative_connected(
+        BLUES,
+        Any(FUSION, dance_keywords.EASY_DANCE),
+    ),
+    commutative_connected(FUSION, dance_keywords.EASY_DANCE),
 )
 
 
