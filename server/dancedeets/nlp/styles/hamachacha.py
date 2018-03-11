@@ -10,7 +10,15 @@ Name = grammar.Name
 connected = grammar.connected
 commutative_connected = grammar.commutative_connected
 
-GOOD_DANCE = connected(Any(u'フリー', u'ハマ', u'hama', u'free'), ballroom_keywords.CHACHA)
+GOOD_DANCE = connected(
+    Any(
+        u'フリー',
+        u'ハマ',
+        u'hama',
+        u'free',
+    ),
+    Any(*ballroom_keywords.CHACHA),
+)
 
 
 class Classifier(base_auto_classifier.DanceStyleEventClassifier):

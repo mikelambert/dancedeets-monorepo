@@ -19,6 +19,7 @@ class Classifier(base_auto_classifier.DanceStyleEventClassifier):
     GOOD_DANCE = GOOD_DANCE
     GOOD_BAD_PAIRINGS = [
         (Any(u'チャチャ'), Any(u'フリー', u'ハマ')),
+        (Any(u'chachapoyas'), Any(u'chachapoyas')),  # a peruvian city
     ]
 
     def _quick_is_dance_event(self):

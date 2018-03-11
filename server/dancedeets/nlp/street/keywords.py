@@ -554,6 +554,8 @@ POP_MUSIC = Any(
 PREPROCESS_REMOVAL = Name(
     'PREPROCESS_REMOVAL',
     Any(
+        u'cha\W?cha\W?s\Wcantina',  # cha cha's cantina
+        #
         # french uses 'dans' for 'into' when most other languages use it for 'dance' :(
         u'dans une?',
         u'dans les',
