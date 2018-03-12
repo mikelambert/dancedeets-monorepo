@@ -18,7 +18,14 @@ BURLESQUE = Any(
     u'滑稽戲',  # chinese traditional
 )
 CABARET = Any(
-    u'[ck]abar[eé]\w*',  # hungarian
+    u'cabaret\w*',  # dutch, english, french, italian, romanian, spanish, tagalog
+    u'cabaré\w*',  # portuguese
+    # Seems 'cabaret' gets a lot of the non-dance meaning in europe, so disable it here
+    # u'kabaree\w*',  # finnish
+    # u'kabaret\w*',  # czech, danish, malay, norwegian, polish
+    # u'kabarett\w*',  # german
+    # u'kabaretas\w*',  # lithuanian
+    # u'kabaré\w*',  # hungarian
     u'quán rượu',  # vietnamese
     u'καμπαρέ',  # greek
     u'кабаре',  # macedonian
@@ -113,7 +120,3 @@ class Style(style_base.Style):
     @classmethod
     def _get_classifier(cls):
         return Classifier
-
-    @classmethod
-    def get_basic_regex(cls):
-        return Any(AMBIGUOUS_DANCE)
