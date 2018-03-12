@@ -86,10 +86,11 @@ def translate(options):
             result_translations = [x['translatedText'] for x in result['translations']]
             translation = result_translations[0].lower()
             translation_repr = my_repr(canonicalize(translation, options))
-            translations[translation_repr] = language_name
-        translations[my_repr(canonicalize(q, options))] = 'english'
+            translations.setdefault(translation_repr, []).append(language_name)
+        translation_repr = my_repr(canonicalize(q, options))
+        translations.setdefault(translation_repr, []).append('english')
 
-    print '\n'.join(sorted('%s, # %s' % x for x in translations.items()))
+    print '\n'.join(sorted('%s, # %s' % (k, ', '.join(sorted(v))) for (k, v) in translations.items()))
 
 
 def main():
