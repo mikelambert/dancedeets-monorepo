@@ -55,6 +55,7 @@ class Classifier(base_auto_classifier.DanceStyleEventClassifier):
         pass
 
     def is_dance_event(self):
+        self._log('Starting %s classifier', self.vertical)
         all_styles = set(self._get(BALLROOM_STYLES))
         all_latin_styles = set(self._get(LATIN_BALLROOM_STYLES))
 
