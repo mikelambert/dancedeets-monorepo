@@ -17,15 +17,15 @@ BURLESQUE = Any(
     u'滑稽戏',  # chinese simplified
     u'滑稽戲',  # chinese traditional
 )
+
 CABARET = Any(
     u'cabaret\w*',  # dutch, english, french, italian, romanian, spanish, tagalog
     u'cabaré\w*',  # portuguese
-    # Seems 'cabaret' gets a lot of the non-dance meaning in europe, so disable it here
-    # u'kabaree\w*',  # finnish
-    # u'kabaret\w*',  # czech, danish, malay, norwegian, polish
-    # u'kabarett\w*',  # german
-    # u'kabaretas\w*',  # lithuanian
-    # u'kabaré\w*',  # hungarian
+    u'kabaree\w*',  # finnish
+    u'kabaret\w*',  # czech, danish, malay, norwegian, polish
+    u'kabarett\w*',  # german
+    u'kabaretas\w*',  # lithuanian
+    u'kabaré\w*',  # hungarian
     u'quán rượu',  # vietnamese
     u'καμπαρέ',  # greek
     u'кабаре',  # macedonian
@@ -37,7 +37,9 @@ CABARET = Any(
     u'카바레',  # korean
 )
 REAL_DANCE = Any(commutative_connected(BURLESQUE, CABARET))
-AMBIGUOUS_DANCE = Any(BURLESQUE, CABARET)
+# Intentionally do not include cabaret in AMBIGUOUS_DANCE
+# There are too many 1920s non-burlesque cabaret shows, in all languages.
+AMBIGUOUS_DANCE = Any(BURLESQUE)
 
 EVENT_TYPES = Any(
     'miss',  # miss pole dance
@@ -75,7 +77,6 @@ class Classifier(base_auto_classifier.DanceStyleEventClassifier):
     AMBIGUOUS_DANCE = AMBIGUOUS_DANCE
     ADDITIONAL_EVENT_TYPE = EVENT_TYPES
     DANCE_KEYWORDS = DANCE_KEYWORDS
-    GOOD_BAD_PAIRINGS = [(CABARET, Any(u'com[eé]d\w+'))]
 
     def _quick_is_dance_event(self):
         return True
