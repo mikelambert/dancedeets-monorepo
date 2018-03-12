@@ -262,7 +262,9 @@ class DanceStyleEventClassifier(object):
         if self._title_has(self.SUPER_STRONG_KEYWORDS):
             return 'title has super-strong keyword'
 
-        if self._has(self.SUPER_STRONG_KEYWORDS) and self._get(dance_keywords.EASY_DANCE):
+        # Only check short-lines, not all body...because we don't want to match against biographies.
+        # This is different from has_strong_body, because that checks "dance_style event", not just "dance_style".
+        if self._short_lines_have(self.SUPER_STRONG_KEYWORDS) and self._get(dance_keywords.EASY_DANCE):
             return 'body has super-strong keyword and seems dance-y'
 
         return False
