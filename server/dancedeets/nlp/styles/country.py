@@ -18,6 +18,8 @@ REAL_DANCE = Any(
     commutative_connected(Any(
         'square',
         'barn',
+        'cowboy',
+        u'カウボーイ',
     ), dance_keywords.EASY_DANCE),
     '(?:country\W?(?:and|&|\+)?\W?western|c\Ww|texas|rhythm|double|night\W?club)\W?(?:two|2)\W?step',
     'contra\W?barn',
@@ -36,8 +38,6 @@ AMBIGUOUS_DANCE = Any(
     'country',
     u'カントリー',
     'c/w',  # not \W, or 'classi' + 'c w' matches 'classic w/ mark oliver' :/
-    'cowboy',
-    u'カウボーイ',
     'traveling cha\W?cha',
     'polka (?:ten|10)\W?step',
     'modern\W?western',
