@@ -444,3 +444,6 @@ class DanceStyleEventClassifier(object):
             if len(good_lines) > len(schedule_lines) / 10 and num_dance_lines >= 2:
                 return 'found schedule list with good styles'
         return False
+
+    def perform_extra_checks(self):
+        return False

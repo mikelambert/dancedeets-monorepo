@@ -32,7 +32,7 @@ class AutoClassifier(object):
                 classified_event = self.classified_event
             else:
                 classified_event = basic_classified_event
-            this_classifier = classifier(classified_event, debug=True)
+            this_classifier = classifier(classified_event, debug=False)
             is_dance_event = this_classifier.is_dance_event()
             if is_dance_event:
                 results.append((is_dance_event, this_classifier.debug_info(), this_classifier.vertical))
