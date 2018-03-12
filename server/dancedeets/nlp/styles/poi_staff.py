@@ -110,13 +110,6 @@ class Classifier(base_auto_classifier.DanceStyleEventClassifier):
     def _quick_is_dance_event(self):
         return True
 
-    def is_dance_event(self):
-        result = super(Classifier, self).is_dance_event()
-        if result:
-            return result
-
-        return False
-
 
 class Style(style_base.Style):
     @classmethod
@@ -144,7 +137,3 @@ class Style(style_base.Style):
     @classmethod
     def _get_classifier(cls):
         return Classifier
-
-    @classmethod
-    def get_basic_regex(cls):
-        return Any(GOOD_DANCE,)

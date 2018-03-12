@@ -173,7 +173,3 @@ class Style(style_base.Style):
     @classmethod
     def _get_classifier(cls):
         return Classifier
-
-    @classmethod
-    def get_basic_regex(cls):
-        return Any(REAL_DANCE)

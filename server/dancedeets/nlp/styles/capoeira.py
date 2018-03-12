@@ -60,11 +60,7 @@ class Classifier(base_auto_classifier.DanceStyleEventClassifier):
     def _quick_is_dance_event(self):
         return self._has(CAPOEIRA)
 
-    def is_dance_event(self):
-        result = super(Classifier, self).is_dance_event()
-        if result:
-            return result
-
+    def perform_extra_checks(self):
         result = self.has_capoeira_keywords()
         if result:
             return result
@@ -114,7 +110,3 @@ class Style(style_base.Style):
     @classmethod
     def _get_classifier(cls):
         return Classifier
-
-    @classmethod
-    def get_basic_regex(cls):
-        return CAPOEIRA

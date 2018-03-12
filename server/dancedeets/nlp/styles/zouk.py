@@ -33,7 +33,6 @@ AMBIGUOUS_WORDS = Any(ZOUK)
 
 
 class Classifier(base_auto_classifier.DanceStyleEventClassifier):
-
     AMBIGUOUS_DANCE = AMBIGUOUS_WORDS
     GOOD_DANCE = REAL_DANCE
     ADDITIONAL_EVENT_TYPE = Any(
@@ -50,12 +49,8 @@ class Classifier(base_auto_classifier.DanceStyleEventClassifier):
     def _quick_is_dance_event(self):
         return True
 
-    def is_dance_event(self):
+    def perform_extra_checks(self):
         result = self.is_zouk()
-        if result:
-            return result
-
-        result = super(Classifier, self).is_dance_event()
         if result:
             return result
 
@@ -93,7 +88,3 @@ class Style(style_base.Style):
     @classmethod
     def _get_classifier(cls):
         return Classifier
-
-    @classmethod
-    def get_basic_regex(cls):
-        return Any(AMBIGUOUS_WORDS, REAL_DANCE)

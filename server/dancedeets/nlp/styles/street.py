@@ -6,11 +6,22 @@ from dancedeets.nlp.street import rules
 
 
 class Classifier(base_auto_classifier.DanceStyleEventClassifier):
+    @base_auto_classifier.log_to_bucket('has_any_relevant_keywords')
+    def _has_any_relevant_keywords(self):
+        # Has at least one of the major keywords we're expecting
+        return self._has(rules.STREET_STYLES)
+
     @classmethod
     def finalize_class(cls, other_style_regex):
         pass
 
     def is_dance_event(self):
+        self._log('Starting %s classifier', self.vertical)
+
+        if not self._has_any_relevant_keywords():
+            self._log('does not have any relevant keywords for this style')
+            return False
+
         #TODO: until we fix our delay-load import problems
         from dancedeets.nlp.street import classifier
         result = classifier.is_street_event(self._classified_event)
@@ -130,7 +141,3 @@ class Style(style_base.Style):
     @classmethod
     def _get_classifier(cls):
         return Classifier
-
-    @classmethod
-    def get_basic_regex(cls):
-        return rules.STREET_STYLES

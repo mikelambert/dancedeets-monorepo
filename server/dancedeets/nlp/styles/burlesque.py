@@ -73,11 +73,7 @@ class Classifier(base_auto_classifier.DanceStyleEventClassifier):
     def _quick_is_dance_event(self):
         return True
 
-    def is_dance_event(self):
-        result = super(Classifier, self).is_dance_event()
-        if result:
-            return result
-
+    def perform_extra_checks(self):
         result = self.burlesque_cabaret_title()
         if result:
             return result

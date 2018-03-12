@@ -77,19 +77,11 @@ RELATED_KEYWORDS = Any(
 
 
 class Classifier(base_auto_classifier.DanceStyleEventClassifier):
-
     GOOD_DANCE = REAL_DANCE
     AMBIGUOUS_DANCE = NON_BELLY_AMBIGUOUS_DANCE
 
     def _quick_is_dance_event(self):
         return True
-
-    def is_dance_event(self):
-        result = super(Classifier, self).is_dance_event()
-        if result:
-            return result
-
-        return False
 
 
 class Style(style_base.Style):
@@ -125,7 +117,3 @@ class Style(style_base.Style):
     @classmethod
     def _get_classifier(cls):
         return Classifier
-
-    @classmethod
-    def get_basic_regex(cls):
-        return Any(BELLY, REAL_DANCE)

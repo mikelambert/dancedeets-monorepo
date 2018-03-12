@@ -555,6 +555,7 @@ PREPROCESS_REMOVAL = Name(
     'PREPROCESS_REMOVAL',
     Any(
         u'cha\W?cha\W?s\Wcantina',  # cha cha's cantina
+        u'ooh cha cha',  # an event organizer and location
         #
         # french uses 'dans' for 'into' when most other languages use it for 'dance' :(
         u'dans une?',

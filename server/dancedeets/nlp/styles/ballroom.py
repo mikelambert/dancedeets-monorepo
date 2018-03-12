@@ -50,12 +50,29 @@ EASY_BALLROOM_KEYWORDS = Any(
 
 
 class Classifier(base_auto_classifier.DanceStyleEventClassifier):
+    COMBINED_KEYWORDS = Any(
+        BALLROOM_KEYWORDS,
+        BALLROOM_STYLES,
+        LATIN_BALLROOM_STYLES,
+    )
+
+    @base_auto_classifier.log_to_bucket('has_any_relevant_keywords')
+    def _has_any_relevant_keywords(self):
+        # Override this here.
+        # Don't use the other_bad_regex and GOOD/AMBIGUOUS keywords
+        return self._has(self.COMBINED_KEYWORDS)
+
     @classmethod
     def finalize_class(cls, other_style_regex):
         pass
 
     def is_dance_event(self):
         self._log('Starting %s classifier', self.vertical)
+
+        if not self._has_any_relevant_keywords():
+            self._log('does not have any relevant keywords for this style')
+            return False
+
         all_styles = set(self._get(BALLROOM_STYLES))
         all_latin_styles = set(self._get(LATIN_BALLROOM_STYLES))
 
@@ -112,7 +129,3 @@ class Style(style_base.Style):
     @classmethod
     def _get_classifier(cls):
         return Classifier
-
-    @classmethod
-    def get_basic_regex(cls):
-        return Any(BALLROOM_KEYWORDS)

@@ -79,11 +79,7 @@ class Classifier(base_auto_classifier.DanceStyleEventClassifier):
             return False
         return True
 
-    def is_dance_event(self):
-        result = super(Classifier, self).is_dance_event()
-        if result:
-            return result
-
+    def perform_extra_checks(self):
         result = self.is_tango()
         if result:
             return result
@@ -123,7 +119,3 @@ class Style(style_base.Style):
     @classmethod
     def _get_classifier(cls):
         return Classifier
-
-    @classmethod
-    def get_basic_regex(cls):
-        return Any(AMBIGUOUS_WORDS, REAL_DANCE)

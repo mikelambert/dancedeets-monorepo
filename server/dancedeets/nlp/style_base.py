@@ -1,6 +1,7 @@
 import logging
 
 from dancedeets.nlp import event_types
+from dancedeets.nlp import grammar
 
 
 class Style(object):
@@ -43,17 +44,22 @@ class Style(object):
         else:
             logging.info('Initializing classifier for %s', cls.get_name())
             classifier = cls._get_classifier()
+            classifier.style = cls
             classifier.vertical = cls.get_name()
             classifier.finalize_class(other_style_regex)
             cls._classifier = classifier
             return classifier
 
     @classmethod
-    def get_basic_regex(cls):
-        raise NotImplementedError()
+    def get_basic_regex_new(cls):
+        return grammar.Any(
+            cls._get_classifier().SUPER_STRONG_KEYWORDS,
+            cls._get_classifier().GOOD_DANCE,
+            cls._get_classifier().AMBIGUOUS_DANCE,
+        )
 
     @classmethod
     def get_cached_basic_regex(cls):
         if not cls._cached_regex:
-            cls._cached_regex = cls.get_basic_regex()
+            cls._cached_regex = cls.get_basic_regex_new()
         return cls._cached_regex

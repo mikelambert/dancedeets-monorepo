@@ -96,6 +96,8 @@ class DanceStyleEventClassifier(object):
 
     # mostly used for logging, for now...
     vertical = None
+    # The parent "style" that returns this classifier. So we can access get_cached_basic_regex
+    style = None
 
     # rules and keywords
     AMBIGUOUS_DANCE = None
@@ -105,6 +107,8 @@ class DanceStyleEventClassifier(object):
     ADDITIONAL_EVENT_TYPE = None
     DANCE_KEYWORDS = None
     GOOD_BAD_PAIRINGS = []
+
+    _cached_regex = None
 
     def __init__(self, classified_event, debug=None):
         if not self.vertical:
@@ -197,6 +201,10 @@ class DanceStyleEventClassifier(object):
     def is_dance_event(self):
         self._log('Starting %s classifier', self.vertical)
 
+        if not self._has_any_relevant_keywords():
+            self._log('does not have any relevant keywords for this style')
+            return False
+
         if not self._quick_is_dance_event():
             self._log('not a sufficiently dancey event')
             return False
@@ -226,6 +234,9 @@ class DanceStyleEventClassifier(object):
         result = self.has_list_of_good_classes()
         if result: return result
 
+        result = self.perform_extra_checks()
+        if result: return result
+
         return False
 
     def debug_info(self):
@@ -234,6 +245,12 @@ class DanceStyleEventClassifier(object):
     def _quick_is_dance_event(self):
         raise NotImplementedError()
 
+    @log_to_bucket('has_any_relevant_keywords')
+    def _has_any_relevant_keywords(self):
+        # Has at least one of the major keywords we're expecting
+        return self._has(self.style.get_cached_basic_regex())
+
+    @log_to_bucket('has_wrong_meaning_for_style')
     def _has_wrong_meaning_for_style(self):
         for good, bad in self.GOOD_BAD_PAIRINGS:
             if self._has(good) and self._has(bad):

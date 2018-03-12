@@ -130,7 +130,9 @@ FOLK = Any(
 )
 
 GOOD_DANCE = Any(
-    commutative_connected(Any(FOLK, TRADITIONAL), dance_keywords.EASY_DANCE),
+    # "Traditional dance" matches "not like a traditional dance class" ... ?
+    # commutative_connected(Any(FOLK, TRADITIONAL), dance_keywords.EASY_DANCE),
+    commutative_connected(Any(FOLK), dance_keywords.EASY_DANCE),
     # mazurka
     u'mazurka',
     u'mazurek',
@@ -202,7 +204,3 @@ class Style(style_base.Style):
     @classmethod
     def _get_classifier(cls):
         return Classifier
-
-    @classmethod
-    def get_basic_regex(cls):
-        return Any(GOOD_DANCE)
