@@ -1,15 +1,27 @@
 # -*-*- encoding: utf-8 -*-*-
 
 from dancedeets.nlp import base_auto_classifier
+from dancedeets.nlp import grammar
 from dancedeets.nlp import style_base
+from dancedeets.nlp.street import keywords
 from dancedeets.nlp.street import rules
+
+Any = grammar.Any
+Name = grammar.Name
+connected = grammar.connected
+commutative_connected = grammar.commutative_connected
 
 
 class Classifier(base_auto_classifier.DanceStyleEventClassifier):
+    COMBINED_KEYWORDS = Any(
+        keywords.AMBIGUOUS_DANCE_MUSIC,
+        rules.STREET_STYLES,
+    )
+
     @base_auto_classifier.log_to_bucket('has_any_relevant_keywords')
     def _has_any_relevant_keywords(self):
         # Has at least one of the major keywords we're expecting
-        return self._has(rules.STREET_STYLES)
+        return self._has(self.COMBINED_KEYWORDS)
 
     @classmethod
     def finalize_class(cls, other_style_regex):
