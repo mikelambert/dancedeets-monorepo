@@ -554,6 +554,13 @@ POP_MUSIC = Any(
 PREPROCESS_REMOVAL = Name(
     'PREPROCESS_REMOVAL',
     Any(
+        u'country club',  # its not country music dance!
+        u'marriott international',  # marriott international ballroom, hah
+        u'ex forno mambo',
+        u'mambo beach club',
+        u'cafe mambo',
+        u'mambo italiano',
+        u'(?:first|second|third)\W?hand',
         u'cha\W?cha\W?s\Wcantina',  # cha cha's cantina
         u'ooh cha cha',  # an event organizer and location
         #
