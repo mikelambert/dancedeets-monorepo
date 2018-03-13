@@ -1,6 +1,7 @@
 # -*-*- encoding: utf-8 -*-*-
 
 from dancedeets.nlp import base_auto_classifier
+from dancedeets.nlp import dance_keywords
 from dancedeets.nlp import grammar
 from dancedeets.nlp import style_base
 
@@ -9,16 +10,23 @@ Name = grammar.Name
 connected = grammar.connected
 commutative_connected = grammar.commutative_connected
 
+GOOD_DANCE = commutative_connected(Any(
+    'chair',
+    'lap',
+    'exotic',
+    'strip',
+    'go\W?go',
+), dance_keywords.EASY_DANCE)
 AMBIGUOUS_DANCE = Any(
     'lap',
-    'heels',
-    'chair',
+    # Should we do a separate 'heels' category?
+    # Was accidentally triggering a country/western 'kick up your heels'
+    #'heels',
     'exotic',
     'flirt',
     'sexy',
     'strip\W?tease',
     u'стрипластика',  # strip-plastic (strip dancing?)
-    'go\W?go',
 )
 EVENT_TYPES = Any(
     'miss',  # miss pole dance
@@ -27,8 +35,12 @@ EVENT_TYPES = Any(
 
 
 class Classifier(base_auto_classifier.DanceStyleEventClassifier):
+    GOOD_DANCE = GOOD_DANCE
     AMBIGUOUS_DANCE = AMBIGUOUS_DANCE
     EVENT_TYPES = EVENT_TYPES
+    GOOD_BAD_PAIRINGS = [
+        (Any('lap'), Any('race')),
+    ]
 
     def _quick_is_dance_event(self):
         return True
