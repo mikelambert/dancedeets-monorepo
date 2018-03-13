@@ -21,8 +21,10 @@ dance_not_dancehall = Any(
 EASY_DANCE = Name(
     'EASY_DANCE',
     Any(
-        u'bail[ae]\w*',  # spanish
-        u'ballerin[io]',  # dancer italian
+        u'baila\w*',  # spanish
+        u'baile',  # spanish
+        u'baile[^y]\w*',  # spanish (avoid baileys)
+        u'ballerin[io]s?',  # dancer italian
         u'ballano',  # dance italian
         u'ballem',  # dance catalan
         u'dancer?s?',  # english
@@ -67,8 +69,7 @@ EASY_DANCE = Name(
         u'šok\w*',  # dance lithuanian
         u'χορ[όέ]\w*',  # greek dance/choreography
         u'тане?ц\w*',  # russian
-        u'танчер',  # dancer macedonian
-        u'танцовиот',  # dance macedonian
+        u'танчер\w*',  # dancer macedonian
         u'изтанц\w*',  # russian/bulgarian dance
         u'לִרְקוֹד',  # hebrew
         u'רַקדָן',  # hebrew
