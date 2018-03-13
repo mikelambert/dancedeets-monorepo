@@ -5,6 +5,17 @@ from dancedeets.nlp import grammar
 Any = grammar.Any
 Name = grammar.Name
 
+dance_not_dancehall = Any(
+    # 'dance\w*' minus 'dancehall'
+    u'dance',
+    u'dance[^h\W]\w*',
+    u'danceh',
+    u'danceh[^a\W]\w*',
+    u'danceha',
+    u'danceha[^l\W]\w*',
+    u'dancehal',
+    u'dancehal[^l\W]\w*',
+)
 # 'crew' biases dance one way, 'company' biases it another
 EASY_DANCE = Name(
     'EASY_DANCE',
@@ -14,7 +25,7 @@ EASY_DANCE = Name(
         u'ballano',  # dance italian
         u'ballem',  # dance catalan
         u'dancer?s?',  # english
-        u'dance\w+',
+        dance_not_dancehall,
         u'dance style[sz]',
         u"dancin[g']?",
         u'dansles',

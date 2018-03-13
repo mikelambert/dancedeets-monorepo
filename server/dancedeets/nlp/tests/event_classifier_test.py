@@ -47,6 +47,16 @@ class TestRules(RuleMatches):
         self.matchRule(rules.GOOD_DANCE, 'lockdance')
 
 
+class TestXNotY(RuleMatches):
+    def runTest(self):
+        self.matchRule(dance_keywords.dance_not_dancehall, 'dance')
+        self.matchRule(dance_keywords.dance_not_dancehall, 'dancehalf')
+        self.matchRule(dance_keywords.dance_not_dancehall, 'danceh')
+        self.matchRule(dance_keywords.dance_not_dancehall, 'dancers')
+        self.notMatchRule(dance_keywords.dance_not_dancehall, 'dancehall')
+        self.notMatchRule(dance_keywords.dance_not_dancehall, 'dancehallclass')
+
+
 class ComplexConnections(RuleMatches):
     def runTest(self):
         rule = grammar.connected(grammar.Any('hiphop'), grammar.Any('dance'))
