@@ -5,6 +5,7 @@ from dancedeets.nlp import grammar
 Any = grammar.Any
 Name = grammar.Name
 
+# Can we generate this automatically from two params?
 dance_not_dancehall = Any(
     # 'dance\w*' minus 'dancehall'
     u'dance',

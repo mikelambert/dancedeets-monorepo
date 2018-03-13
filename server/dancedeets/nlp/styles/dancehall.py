@@ -77,6 +77,8 @@ class Classifier(base_auto_classifier.DanceStyleEventClassifier):
     REAL_DANCE = REAL_DANCE
     AMBIGUOUS_DANCE = AMBIGUOUS_DANCE
 
+    INCLUDE_PARTY_EVENTS = False
+
     def _quick_is_dance_event(self):
         return True
 

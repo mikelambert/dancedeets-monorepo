@@ -38,21 +38,6 @@ class GrammarRule(object):
         return [self.as_expanded_regex()]
 
 
-def XButNotY(x, y):
-    """
-    x = 'dance\w*'
-    y = 'dancehall'
-
-    can we construct this automatically:
-    u'dance',
-    u'dance[^h\W]\w*',
-    u'danceh[^a\W]\w*',
-    u'danceha[^l\W]\w*',
-    u'dancehal[^l\W]\w*',
-    """
-    pass
-
-
 class _BaseAlternation(GrammarRule):
     def __init__(self):
         super(_BaseAlternation, self).__init__()

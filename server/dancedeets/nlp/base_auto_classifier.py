@@ -54,15 +54,18 @@ class RuleGenerator(type):
             dance_keywords.CONTEST,
             keywords.JAM,
         )
-        cls.EVENT_TYPE = Any(
+
+        EVENT_TYPES = [
             dance_keywords.CLASS,
             dance_keywords.AUDITION,
             dance_keywords.PERFORMANCE,
             dance_keywords.PRACTICE,
-            keywords.EASY_CLUB,
             cls.COMPETITIONS,
             cls.ADDITIONAL_EVENT_TYPE,
-        )
+        ]
+        if cls.INCLUDE_PARTY_EVENTS:
+            EVENT_TYPES.append(keywords.EASY_CLUB)
+        cls.EVENT_TYPE = Any(*EVENT_TYPES)
         cls.EVENT_TYPE_ROMANCE = Any(cls.EVENT_TYPE, dance_keywords.ROMANCE_LANGUAGE_CLASS)
         cls.EVENT_TYPE_SPANISH = Any(cls.EVENT_TYPE, dance_keywords.SPANISH_CLASS)
         cls.GOOD_DANCE_COMPETITION = Name(
@@ -107,6 +110,9 @@ class DanceStyleEventClassifier(object):
     ADDITIONAL_EVENT_TYPE = None
     DANCE_KEYWORDS = None
     GOOD_BAD_PAIRINGS = []
+
+    # Set this to false for hiphop/dancehall/house/etc that have too-popular parties
+    INCLUDE_PARTY_EVENTS = True
 
     _cached_regex = None
 
