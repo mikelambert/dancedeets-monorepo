@@ -42,7 +42,6 @@ class RuleGenerator(type):
         cls.SUPER_STRONG_KEYWORDS = Name('SUPER_STRONG_KEYWORDS', cls.SUPER_STRONG_KEYWORDS or keywords.NO_MATCH)
         cls.GOOD_DANCE = Name('GOOD_DANCE', cls.GOOD_DANCE or keywords.NO_MATCH)
         cls.AMBIGUOUS_DANCE = Name('AMBIGUOUS_DANCE', cls.AMBIGUOUS_DANCE or keywords.NO_MATCH)
-        cls.OTHER_DANCE = Name('OTHER_DANCE', cls.OTHER_DANCE or keywords.NO_MATCH)
         cls.ADDITIONAL_EVENT_TYPE = cls.ADDITIONAL_EVENT_TYPE or keywords.NO_MATCH
         cls.DANCE_KEYWORDS = cls.DANCE_KEYWORDS or keywords.NO_MATCH
 
@@ -106,7 +105,6 @@ class DanceStyleEventClassifier(object):
     AMBIGUOUS_DANCE = None
     GOOD_DANCE = None
     SUPER_STRONG_KEYWORDS = None
-    OTHER_DANCE = None
     ADDITIONAL_EVENT_TYPE = None
     DANCE_KEYWORDS = None
     GOOD_BAD_PAIRINGS = []
@@ -131,12 +129,12 @@ class DanceStyleEventClassifier(object):
 
     @classmethod
     def finalize_class(cls, other_style_regexes):
+        cls.OTHER_DANCES = list(other_style_regexes)
         cls.OTHER_REGEXES = [
-            cls.OTHER_DANCE,
             keywords.WRONG_BATTLE_STYLE,
             keywords.WRONG_AUDITION,
             keywords.OTHER_SHOW,
-        ] + list(other_style_regexes)
+        ] + cls.OTHER_DANCES
 
         # make this function a no-op the next time it's called
         @classmethod
@@ -433,7 +431,7 @@ class DanceStyleEventClassifier(object):
                 good_matches = proc_line.get_tokens(self.GOOD_OR_AMBIGUOUS_DANCE)
 
                 bad_matches = set()
-                for x in self.OTHER_REGEXES:
+                for x in self.OTHER_DANCES:
                     bad_matches.update(proc_line.get_tokens(x))
 
                 # Sometimes we have a schedule with hiphop and ballet
@@ -446,9 +444,9 @@ class DanceStyleEventClassifier(object):
                 if not good_matches and bad_matches:
                     bad_lines.append(bad_matches)
             num_dance_lines = len(good_lines) + len(bad_lines)
-            self._log('Found %s of %s lines with dance styles', num_dance_lines, len(schedule_lines))
+            self._log('Found %s of %s lines with dance styles: %s', num_dance_lines, len(schedule_lines), good_lines + bad_lines)
             # If more than 10% are good, then we found a good class
-            self._log('Found %s of %s lines with good styles', len(good_lines), len(schedule_lines))
+            self._log('Found %s of %s lines with good styles: %s', len(good_lines), len(schedule_lines), good_lines)
             if len(good_lines) > len(schedule_lines) / 10 and num_dance_lines >= 2:
                 return 'found schedule list with good styles'
         return False
