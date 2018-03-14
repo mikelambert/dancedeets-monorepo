@@ -44,7 +44,6 @@ class Classifier(base_auto_classifier.DanceStyleEventClassifier):
         u'バール',
         'festival',
     )
-    OTHER_DANCE = Any('modern jive',)
     GOOD_BAD_PAIRINGS = [
         (Any('jive'), Any('modern jive')),
         (Any('twist'), Any('a twist')),

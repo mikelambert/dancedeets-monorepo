@@ -41,9 +41,16 @@ class Classifier(base_auto_classifier.DanceStyleEventClassifier):
     GOOD_DANCE = REAL_DANCE
     AMBIGUOUS_DANCE = AMBIGUOUS_DANCE
     ADDITIONAL_EVENT_TYPE = Any(u'recital',)
-    GOOD_BAD_PAIRINGS = [
-        (MODERN, Any('modern jive')),
-    ]
+
+    @classmethod
+    def finalize_class(cls, other_style_regexes):
+        # Don't allow "modern jazz", "modern bachata", etc to count as modern
+        cls.GOOD_BAD_PAIRINGS = [
+            (MODERN, Any(
+                'modern jive',
+                commutative_connected(MODERN, Any(*other_style_regexes)),
+            )),
+        ]
 
     def _quick_is_dance_event(self):
         return True

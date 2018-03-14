@@ -21,6 +21,7 @@ NON_BELLY_AMBIGUOUS_DANCE = Any(
     'araba',
     'arabic',
     u'itämais\w+',  # oriental finnish
+    'ats',
 )
 
 BELLY = Any(
@@ -54,7 +55,7 @@ BELLY = Any(
     u'बेली',  # hindi
 )
 
-REAL_DANCE = Any(
+GOOD_DANCE = Any(
     commutative_connected(Any(BELLY, NON_BELLY_AMBIGUOUS_DANCE), dance_keywords.EASY_DANCE),
     'raqs sharqi',  # romanization of the arabic
     'raqs baladi',  # romanization of the arabic
@@ -64,6 +65,7 @@ REAL_DANCE = Any(
     'bellycraft',
     'bellyfit',
     'its unmata',  # ITS unmata
+    'american tribal style',
 )
 
 RELATED_KEYWORDS = Any(
@@ -77,7 +79,7 @@ RELATED_KEYWORDS = Any(
 
 
 class Classifier(base_auto_classifier.DanceStyleEventClassifier):
-    GOOD_DANCE = REAL_DANCE
+    GOOD_DANCE = GOOD_DANCE
     AMBIGUOUS_DANCE = NON_BELLY_AMBIGUOUS_DANCE
 
     def _quick_is_dance_event(self):

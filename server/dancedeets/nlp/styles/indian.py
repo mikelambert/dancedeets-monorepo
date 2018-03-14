@@ -1,6 +1,7 @@
 # -*-*- encoding: utf-8 -*-*-
 
 from dancedeets.nlp import base_auto_classifier
+from dancedeets.nlp import dance_keywords
 from dancedeets.nlp import grammar
 from dancedeets.nlp import style_base
 
@@ -82,7 +83,8 @@ FOLK_DANCES = [
     u'bihu',
     u'bagurumba',
     # u'bhangra',
-    u'chang',
+    # um, way too popular
+    #u'chang',
     u'cheraw',
     u'chhau',
     u'dollu',
@@ -109,14 +111,17 @@ OTHER_DANCES = [
     u'bhawai',
     u'teratali',
     u'ghumar',
-    u'kirtan',
+    # a Sanskrit word that means "narrating, reciting, telling, describing" of an idea or story
+    #u'kirtan',
 ]
 
 DANCE_NAMES = CLASSICAL_DANCES + DIVINE_DANCES + FOLK_DANCES + OTHER_DANCES
 AMBIGUOUS_DANCE = Any(CLASSICAL_INDIAN, *DANCE_NAMES)
+GOOD_DANCE = commutative_connected(INDIAN, dance_keywords.EASY_DANCE)
 
 
 class Classifier(base_auto_classifier.DanceStyleEventClassifier):
+    GOOD_DANCE = GOOD_DANCE
     AMBIGUOUS_DANCE = AMBIGUOUS_DANCE
 
     def _quick_is_dance_event(self):

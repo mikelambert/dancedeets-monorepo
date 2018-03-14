@@ -21,7 +21,7 @@ BALLROOM = Any(
     u'tane\w+ sál',  # czech
     'salle de bal',  # french
     u'salón de baile',  # spanish
-    'sala balowa',  # polish
+    u'towarzyski\w*',  # polish
     u'бальный',  # russian
     u'phòng khiêu vũ',  # vietnamese
     u'舞廳',

@@ -16,11 +16,11 @@ JA_HULA_KEYWORDS = Any(
     u'hula',
     u'hawaii\w*',
     u'ハワイ',
-    u'ダンス',
     u'aloha',
     u'アロハ',
     u'ohana',
     u'オハナ',
+    # Don't include ダンス, as that applies to フラメンコ too
 )
 
 HULA = Any(
@@ -101,6 +101,7 @@ class Classifier(base_auto_classifier.DanceStyleEventClassifier):
         (HULA, hulahoop.HULAHOOP),
     ]
 
+    @base_auto_classifier.log_to_bucket('quick_is_dance_event')
     def _quick_is_dance_event(self):
         # Turns out フラ without \b is too common.
         # It matches フランス, フランク, and more...
