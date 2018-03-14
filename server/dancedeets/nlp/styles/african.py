@@ -87,6 +87,11 @@ REAL_DANCE = Any(
     u'mapouka',
 )
 
+AFRO = Any(
+    u'afro',
+    u'アフロ',
+)
+
 AMBIGUOUS_AFRICAN = Name(
     'AMBIGUOUS_AFRICAN',
     Any(
@@ -107,7 +112,14 @@ AMBIGUOUS_AFRICAN = Name(
         u'アフロビート',
         'afro\W?house',
         u'アフロハウス',
-        'afro'
+        # "afro X" is basically just a variant of X.
+        # ie, afro house, afro modern, afro salsa, etc
+        # So let's not match it here.
+        # It would be tempting to leave it here,
+        # but de-match it in GOOD_BAD_PAIRINGS...
+        # but then "afro" would be in every other dance's keywords
+        # and we would no longer match afro-modern or afro-contemporary
+        # AFRO,
         'balante',
         'batuque',
         'borrowdale',
@@ -139,12 +151,6 @@ class Classifier(base_auto_classifier.DanceStyleEventClassifier):
     GOOD_DANCE = REAL_DANCE
     AMBIGUOUS_DANCE = AMBIGUOUS_AFRICAN
     ADDITIONAL_EVENT_TYPE = Any('congress',)
-    GOOD_BAD_PAIRINGS = [
-        (Any('tribal'), Any(
-            'belly\w*',
-            'fusion',
-        )),
-    ]
 
     # any dance can be an afro-dance!
     # afro-house, afro-salsa, afro-latin, etc
