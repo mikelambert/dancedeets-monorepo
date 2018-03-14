@@ -13,7 +13,7 @@ connected = grammar.connected
 commutative_connected = grammar.commutative_connected
 
 BALLROOM_STYLES = Any(*ballroom_keywords.BALLROOM_STYLES)
-LATIN_BALLROOM_STYLES = Any(*ballroom_keywords.LATIN_BALLROOM_STYLES)
+LATIN_STYLES = Any(*ballroom_keywords.LATIN_STYLES)
 
 BALLROOM = Any(
     'ballroom',
@@ -53,7 +53,6 @@ class Classifier(base_auto_classifier.DanceStyleEventClassifier):
     COMBINED_KEYWORDS = Any(
         BALLROOM_KEYWORDS,
         BALLROOM_STYLES,
-        LATIN_BALLROOM_STYLES,
     )
 
     @base_auto_classifier.log_to_bucket('has_any_relevant_keywords')
@@ -63,9 +62,11 @@ class Classifier(base_auto_classifier.DanceStyleEventClassifier):
         return self._has(self.COMBINED_KEYWORDS)
 
     @classmethod
-    def finalize_class(cls, other_style_regex):
+    def finalize_class(cls, other_style_regexes):
+        super(Classifier, cls).finalize_class(other_style_regexes)
         pass
 
+    @base_auto_classifier.log_to_bucket('is_dance_event')
     def is_dance_event(self):
         self._log('Starting %s classifier', self.vertical)
 
@@ -74,7 +75,7 @@ class Classifier(base_auto_classifier.DanceStyleEventClassifier):
             return False
 
         all_styles = set(self._get(BALLROOM_STYLES))
-        all_latin_styles = set(self._get(LATIN_BALLROOM_STYLES))
+        all_latin_styles = set(self._get(LATIN_STYLES))
 
         all_hard_keywords = set(self._get(BALLROOM_KEYWORDS))
         all_easy_keywords = set(self._get(EASY_BALLROOM_KEYWORDS))
@@ -93,15 +94,20 @@ class Classifier(base_auto_classifier.DanceStyleEventClassifier):
         if len(all_styles) >= 1 and all_keyword_score >= 2:
             return 'Found many ballroom styles and keywords'
 
-        if len(all_styles) >= 4:
-            return 'Found many overall ballroom keywords'
+        if len(all_styles) >= 5:
+            return 'Found many overall ballroom styles'
 
         non_latin_styles = all_styles.difference(all_latin_styles)
+        self._log('found non-latin styles %s and latin styles %s', non_latin_styles, all_latin_styles)
+
         if len(non_latin_styles) >= 2 and len(all_latin_styles):
             return 'Found non-latin and latin ballroom styles together'
 
         if len(non_latin_styles) >= 3:
-            return 'Found many non-latin ballroom keywords'
+            return 'Found many non-latin ballroom styles'
+
+        if len(all_latin_styles) >= 3 and self._has(BALLROOM):
+            return 'Found enough latin ballroom styles, and the word ballroom too'
 
         return False
 
