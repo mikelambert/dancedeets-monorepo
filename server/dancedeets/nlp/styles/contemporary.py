@@ -61,13 +61,15 @@ class Classifier(base_auto_classifier.DanceStyleEventClassifier):
         u'gala',
         u'ガラ',
     )
-    GOOD_BAD_PAIRINGS = [
-        (Any(u'šiuolaikinis'), Any(
+
+    @classmethod
+    def finalize_class(cls, other_style_regexes):
+        # Don't allow "modern jazz", "modern bachata", etc to count as modern
+        cls.GOOD_BAD_PAIRINGS = cls.GOOD_[(Any(u'šiuolaikinis'), Any(
             u'nails?',
             u'nagų\w*',
             u'paznokci\w*',
-        )),
-    ]
+        )), (CONTEMPORARY, Any(commutative_connected(CONTEMPORARY, Any(*other_style_regexes)),)),]
 
     def _quick_is_dance_event(self):
         return True
