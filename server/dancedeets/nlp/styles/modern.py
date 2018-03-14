@@ -44,6 +44,7 @@ class Classifier(base_auto_classifier.DanceStyleEventClassifier):
 
     @classmethod
     def finalize_class(cls, other_style_regexes):
+        super(Classifier, cls).finalize_class(other_style_regexes)
         # Don't allow "modern jazz", "modern bachata", etc to count as modern
         cls.GOOD_BAD_PAIRINGS = [
             (MODERN, Any(

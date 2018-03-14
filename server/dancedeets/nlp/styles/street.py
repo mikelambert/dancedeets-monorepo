@@ -24,7 +24,7 @@ class Classifier(base_auto_classifier.DanceStyleEventClassifier):
         return self._has(self.COMBINED_KEYWORDS)
 
     @classmethod
-    def finalize_class(cls, other_style_regex):
+    def finalize_class(cls, other_style_regexes):
         pass
 
     def is_dance_event(self):
