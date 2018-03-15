@@ -5,6 +5,7 @@ from dancedeets.nlp import grammar
 from dancedeets.nlp import style_base
 from dancedeets.nlp.styles import ballroom
 from dancedeets.nlp.styles import partner
+from dancedeets.nlp.street import keywords
 
 Any = grammar.Any
 Name = grammar.Name
@@ -51,8 +52,9 @@ class Classifier(base_auto_classifier.DanceStyleEventClassifier):
     AMBIGUOUS_DANCE = Any(AMBIGUOUS_WORDS)
     GOOD_DANCE = REAL_DANCE
     ADDITIONAL_EVENT_TYPE = Any(
-        'festival',
-        'marathon',
+        u'festival',
+        u'marathon',
+        keywords.JAM,
     )
 
     def _quick_is_dance_event(self):

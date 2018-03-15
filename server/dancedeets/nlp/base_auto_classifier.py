@@ -51,7 +51,9 @@ class RuleGenerator(type):
         cls.COMPETITIONS = Any(
             dance_keywords.BATTLE,
             dance_keywords.CONTEST,
-            keywords.JAM,
+            # This is really only important for a few styles (CI, STREET, SWING),
+            # and otherwise (JAZZ) causes false positives
+            # keywords.JAM,
         )
 
         EVENT_TYPES = [

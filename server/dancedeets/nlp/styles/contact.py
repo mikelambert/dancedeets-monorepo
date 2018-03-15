@@ -4,6 +4,7 @@ from dancedeets.nlp import base_auto_classifier
 from dancedeets.nlp import dance_keywords
 from dancedeets.nlp import grammar
 from dancedeets.nlp import style_base
+from dancedeets.nlp.street import keywords
 
 Any = grammar.Any
 Name = grammar.Name
@@ -54,10 +55,11 @@ class Classifier(base_auto_classifier.DanceStyleEventClassifier):
     # Too many false positives
     # AMBIGUOUS_DANCE = AMBIGUOUS_CONTACT
     ADDITIONAL_EVENT_TYPE = Any(
-        'jam',
+        u'jam',
         u'dżemów',
-        'lab',
-        'festival',
+        u'lab',
+        u'festival',
+        keywords.JAM,
     )
 
     def _quick_is_dance_event(self):
