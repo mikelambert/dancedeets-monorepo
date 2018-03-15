@@ -5,6 +5,82 @@ from dancedeets.nlp import grammar
 Any = grammar.Any
 Name = grammar.Name
 
+MUSIC = Any(
+    u'awit',  # tagalog
+    u'bài hát',  # vietnamese, vietnamese
+    u'canciones',  # spanish
+    u'canción',  # spanish
+    u'canzone',  # italian
+    u'canzoni',  # italian
+    u'canção',  # portuguese
+    u'chanson',  # french
+    u'chansons',  # french
+    u'cântec',  # romanian
+    u'cântece',  # romanian
+    u'daina',  # lithuanian
+    u'dainos',  # lithuanian
+    u'dal',  # hungarian
+    u'dalok',  # hungarian
+    u'glazba, muzika',  # croatian
+    u'hudba',  # czech
+    u'hudební',  # czech
+    u'kanta',  # tagalog
+    u'lagu',  # malay
+    u'lagu-lagu',  # malay
+    u'laulu',  # finnish
+    u'lauluja',  # finnish
+    u'lied',  # dutch, german
+    u'lieder',  # german
+    u'låt',  # swedish
+    u'låtar',  # swedish
+    u'mjuzikl',  # croatian
+    u'm[uúü][sz]i[ie]?[ckq]\w*',
+    u'muzyka',  # polish
+    u'piosenk\w+',  # polish
+    u'pjesm\w+',  # croatian
+    u'píseň',  # czech
+    u'písně',  # czech
+    u'sang',  # danish, norwegian
+    u'sange',  # danish
+    u'sanger',  # norwegian
+    u'song',  # english
+    u'songs',  # dutch, english
+    u'zene',  # hungarian
+    u'zenei',  # hungarian
+    u'âm nhạc',  # vietnamese
+    u'şarkı',  # turkish
+    u'şarkılar',  # turkish
+    u'μιούζικαλ',  # greek
+    u'μουσικα κομματια',  # greek
+    u'μουσικη',  # greek
+    u'τραγούδι',  # greek
+    u'музич?к\w+',  # macedonian
+    u'музыка\w*',  # russian
+    u'песн\w+',  # macedonian
+    u'מוּסִיקָה',  # hebrew
+    u'מוּסִיקָלִי',  # hebrew
+    u'שִׁיר',  # hebrew
+    u'שירים',  # hebrew
+    u'أغنية',  # arabic
+    u'الأغاني',  # arabic
+    u'موسيقى',  # arabic
+    u'موسيقي',  # arabic
+    u'ดนตรี',  # thai
+    u'เพลง',  # thai, thai, thai
+    u'ミュージカル',  # japanese
+    u'曲',  # japanese
+    u'歌',  # japanese
+    u'歌曲',  # chinese simplified, chinese simplified, chinese traditional, chinese traditional
+    u'音乐',  # chinese simplified
+    u'音乐',  # chinese simplified
+    u'音楽',  # japanese
+    u'音樂',  # chinese traditio
+    u'音樂',  # chinese traditional
+    u'노래',  # korean
+    u'노래들',  # korean
+    u'음악',  # korean
+)
+
 # Can we generate this automatically from two params?
 dance_not_dancehall = Any(
     # 'dance\w*' minus 'dancehall'

@@ -1,6 +1,7 @@
 # -*-*- encoding: utf-8 -*-*-
 
 from dancedeets.nlp import base_auto_classifier
+from dancedeets.nlp import dance_keywords
 from dancedeets.nlp import grammar
 from dancedeets.nlp import style_base
 from dancedeets.nlp.styles import ballet
@@ -72,7 +73,7 @@ class Classifier(base_auto_classifier.DanceStyleEventClassifier):
                 u'nagų\w*',
                 u'paznokci\w*',
             )),
-            (CONTEMPORARY, Any(commutative_connected(CONTEMPORARY, Any(*other_style_regexes)),)),
+            (CONTEMPORARY, Any(commutative_connected(CONTEMPORARY, Any(dance_keywords.MUSIC, *other_style_regexes)),)),
         ]
 
     def _quick_is_dance_event(self):
