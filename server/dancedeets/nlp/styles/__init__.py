@@ -15,6 +15,7 @@ STYLE_NAMES = [
     'biodanza',
     'bolero',
     'bollywood',
+    'bokwa',
     'bugg',
     'burlesque',
     'butoh',
