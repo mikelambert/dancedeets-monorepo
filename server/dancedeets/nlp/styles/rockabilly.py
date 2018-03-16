@@ -31,7 +31,7 @@ AMBIGUOUS_DANCE = Any(
     u'буги-вуги',  # russian boogie woogie
     u'ロッカビリー',
     u'ブギウギ',
-    u'twist',
+    u'the twist',
     u'твист',
 )
 

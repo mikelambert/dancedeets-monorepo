@@ -23,7 +23,8 @@ FLAMENCO_KEYWORDS = [
     u'弗拉门戈',  # chinese simplified
     u'플라멩코',  # korean
 ]
-FLAMENCO = Any(*FLAMENCO_KEYWORDS)
+# sevillanas is not flamenco but super closely related
+FLAMENCO = Any(u'sevillanas', *FLAMENCO_KEYWORDS)
 
 AMBIGUOUS_DANCE = FLAMENCO
 
@@ -52,6 +53,7 @@ class Style(style_base.Style):
             u'flamenco dance',
             u'flamenko',
             u'flamingo dance',
+            u'sevillanas',
         ]
 
     @classmethod

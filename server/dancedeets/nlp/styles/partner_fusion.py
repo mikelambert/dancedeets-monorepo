@@ -36,6 +36,14 @@ class Classifier(base_auto_classifier.DanceStyleEventClassifier):
     GOOD_DANCE = REAL_DANCE
     AMBIGUOUS_DANCE = AMBIGUOUS_DANCE
 
+    @classmethod
+    def finalize_class(cls, other_style_regexes):
+        super(Classifier, cls).finalize_class(other_style_regexes)
+        # Don't allow "dancehall / reggae fusion dance"
+        cls.GOOD_BAD_PAIRINGS = [
+            (FUSION, commutative_connected(FUSION, Any(dance_keywords.MUSIC, *other_style_regexes))),
+        ]
+
     def _quick_is_dance_event(self):
         return True
 

@@ -554,6 +554,12 @@ POP_MUSIC = Any(
 PREPROCESS_REMOVAL = Name(
     'PREPROCESS_REMOVAL',
     Any(
+        'jazz it up',  # usually its the non-jazz things being "jazzed up"
+        u'on\W?tap',  # tap dance is definitely not on tap
+        u'watch y\w+\W+step',
+        u'step\W?(?:by|x)\W?step',
+        u'mambo club',
+        u'mambo brothers',  # don't dj mambo music at all...
         u'quick\W?step floors',  # it's a cycling team...
         u'baton rouge',  # not a majorette's baton!
         u'gogo inflight',

@@ -489,7 +489,6 @@ SPANISH_CLASS = Any(
 )
 
 ROMANCE_LANGUAGE_CLASS = Name('ROMANCE_LANGUAGE_CLASS', Any(
-    'spectacle',
     'stage',
     'stages',
 ))
@@ -612,6 +611,7 @@ PERFORMANCE = Name(
     'PERFORMANCE',
     Any(
         'shows?',
+        'spectacle',
         'performances?',
         'festival',
         'show\W?case',

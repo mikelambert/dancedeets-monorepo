@@ -1,8 +1,10 @@
 # -*-*- encoding: utf-8 -*-*-
 
 from dancedeets.nlp import base_auto_classifier
+from dancedeets.nlp import dance_keywords
 from dancedeets.nlp import grammar
 from dancedeets.nlp import style_base
+from dancedeets.nlp.street import keywords
 
 Any = grammar.Any
 Name = grammar.Name
@@ -10,6 +12,10 @@ connected = grammar.connected
 commutative_connected = grammar.commutative_connected
 
 TAP_DANCE = Any(
+    commutative_connected(Any(
+        u'step',
+        u'tap',
+    ), dance_keywords.EASY_DANCE),
     u'claquettes',  # french
     u'dzsiggelés',  # hungarian
     u'sapateado',  # portuguese
@@ -19,9 +25,9 @@ TAP_DANCE = Any(
 
 TAP = Any(
     u'bakstelėkite',  # lithuanian
+    # u'step' found too many things by itself...step by step, watch your step, one step, etc
     u'tap',
-    u'tapp\w+',
-    u'step',
+    u'tapikin',  # tagalog
     u'stepp\w*',  # polish
     u'tapikin ang',  # tagalog
     u'допрете',  # macedonian
@@ -53,10 +59,16 @@ class Classifier(base_auto_classifier.DanceStyleEventClassifier):
     REAL_DANCE = REAL_DANCE
     AMBIGUOUS_DANCE = AMBIGUOUS_DANCE
     DANCE_KEYWORDS = KEYWORDS
+    ADDITIONAL_EVENT_TYPE = keywords.JAM
     GOOD_BAD_PAIRINGS = [
-        (Any('step'), Any(
-            'quick\W?step',
-            '(?:two|2)\W*step',
+        (Any(u'step'), Any(
+            u'quick\W?step',
+            u'(?:two|2)\W*step',
+            u'bokwa step',
+        )),
+        (Any('taps?'), Any(
+            u'brewer\w*',
+            u'craft beer',
         )),
     ]
 

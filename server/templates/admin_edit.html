@@ -106,7 +106,7 @@ Edit Event
         <p>
         <b>{{ vertical }}</b><br>
         {% for reason in reasons %}
-          {% if 'Final result' in reason and 'False' not in reason %}
+          {% if 'Final result' in reason %}
             <b>{{reason}}</b><br>
           {% else %}
             {{reason}}<br>
