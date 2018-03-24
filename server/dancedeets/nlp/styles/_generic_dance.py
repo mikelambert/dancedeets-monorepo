@@ -3,6 +3,7 @@
 # This is a "fake" Style/Classifier, just used to initiate searches
 from dancedeets.nlp import base_auto_classifier
 from dancedeets.nlp import dance_search_keywords
+from dancedeets.nlp import grammar
 from dancedeets.nlp import style_base
 
 
@@ -28,6 +29,13 @@ class Style(style_base.Style):
     @classmethod
     def get_search_keyword_event_types(cls):
         return []
+
+    @classmethod
+    def get_preprocess_removal(cls):
+        return {
+            'fr': grammar.Any('dans'),  # in
+            'ro': grammar.Any('a'),  # of (not 'and')
+        }
 
     @classmethod
     def _get_classifier(cls):

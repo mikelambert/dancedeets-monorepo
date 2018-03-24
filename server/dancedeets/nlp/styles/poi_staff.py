@@ -135,5 +135,11 @@ class Style(style_base.Style):
         return []
 
     @classmethod
+    def get_preprocess_removal(cls):
+        return {
+            'it': grammar.Any('poi')  # then
+        }
+
+    @classmethod
     def _get_classifier(cls):
         return Classifier

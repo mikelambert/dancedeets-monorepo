@@ -2,6 +2,7 @@ import importlib
 import logging
 
 from dancedeets.nlp import all_styles_raw
+from dancedeets.nlp import grammar
 
 STYLE_NAMES = [
     '_generic_dance',
@@ -137,3 +138,14 @@ CLASSIFIERS = {}
 for style in _STYLE_LIST:
     other_style_regexes = all_styles_except(style.get_name())
     CLASSIFIERS[style.get_name()] = style.get_classifier(other_style_regexes)
+
+_global_preprocess_removal = {}
+for style in _STYLE_LIST:
+    for language, rule in style.get_preprocess_removal().iteritems():
+        if language not in _global_preprocess_removal:
+            _global_preprocess_removal[language] = []
+        _global_preprocess_removal[language].append(rule)
+
+PREPROCESS_REMOVAL = {}
+for language, rules in _global_preprocess_removal.iteritems():
+    PREPROCESS_REMOVAL[language] = grammar.Name('PREPROCESS_REMOVAL_%s' % language, *rules)

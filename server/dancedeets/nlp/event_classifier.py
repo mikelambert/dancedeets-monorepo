@@ -18,6 +18,7 @@ from dancedeets.nlp import dance_keywords
 from dancedeets.nlp import grammar
 from dancedeets.nlp import grammar_matcher
 from dancedeets.nlp import regex_keywords
+from dancedeets.nlp import styles
 from dancedeets.nlp.street import keywords
 from dancedeets.nlp.street import rules
 from dancedeets.util import dates
@@ -102,6 +103,13 @@ class BasicClassifiedEvent(object):
         self.processed_text = grammar_matcher.StringProcessor(self.search_text, self.boundaries)
         # This must be first, to remove the fake keywords
         self.processed_text.real_tokenize(keywords.PREPROCESS_REMOVAL)
+
+        global_rule = styles.PREPROCESS_REMOVAL.get(None)
+        per_language_rule = styles.PREPROCESS_REMOVAL.get(self.language)
+        if global_rule:
+            self.processed_text.real_tokenize(global_rule)
+        if per_language_rule:
+            self.processed_text.real_tokenize(per_language_rule)
 
         # Or if there are bad keywords, lets see if we can find good keywords on a short line
         short_lines = [line for line in self.processed_text.get_tokenized_text().split('\n') if len(line) < 500]

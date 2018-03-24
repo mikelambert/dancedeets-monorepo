@@ -30,6 +30,10 @@ class Style(object):
         return []
 
     @classmethod
+    def get_preprocess_removal(cls):
+        return {}
+
+    @classmethod
     def _get_classifier(cls):
         raise NotImplementedError()
 

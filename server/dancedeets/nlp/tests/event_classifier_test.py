@@ -47,6 +47,13 @@ class TestRules(RuleMatches):
         self.matchRule(rules.GOOD_DANCE, 'lockdance')
 
 
+class TestLanguageSpecific(RuleMatches):
+    def runTest(self):
+        fb_event = dict(info=dict(name=u'evento di danza', description=u'prima andiamo qui, poi andiamo lì'))
+        classified_event = event_classifier.get_classified_event(fb_event)
+        self.assertNotIn('poi', classified_event.processed_text.text)
+
+
 class TestXNotY(RuleMatches):
     def runTest(self):
         self.matchRule(dance_keywords.dance_not_dancehall, 'dance')
