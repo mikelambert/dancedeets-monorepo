@@ -259,11 +259,10 @@ BALLROOM_STYLES += AMERICAN_TANGO
 
 LATIN_STYLES = SAMBA + CHACHA + RUMBA + BOLERO + MAMBO
 
-BALLROOM = Any(
+BALLROOM = [
     u'ballroom',
     u'бальные',
     u'ballsaal',  # german
-    u'tane\w+ sál',  # czech
     u'salle de bal',  # french
     u'salón de baile',  # spanish
     u'towarzyski',  # polish
@@ -273,4 +272,4 @@ BALLROOM = Any(
     u'舞廳',
     u'ボールルーム',
     u'사교',
-)
+]

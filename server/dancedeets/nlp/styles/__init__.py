@@ -1,4 +1,5 @@
 import importlib
+import logging
 
 from dancedeets.nlp import all_styles_raw
 
@@ -93,6 +94,22 @@ for style in _STYLE_LIST:
     if style.get_name() in STYLES:
         raise ImportError('Style name duplicated: %s' % style.get_name())
     STYLES[style.get_name()] = style
+    try:
+        # Ensure we can iterate over everything we need:
+        for x in style.get_all_keyword_event_types():
+            pass
+        # Ensure we can iterate over everything we need:
+        for x in style.get_search_keyword_event_types():
+            pass
+        # Ensure we can iterate over everything we need:
+        for x in style.get_popular_search_keywords():
+            pass
+        # Ensure we can iterate over everything we need:
+        for x in style.get_rare_search_keywords():
+            pass
+    except:
+        logging.exception('Verifying style %s is iterable' % style.get_name())
+        raise
 
 misc_keyword_sets = [
     all_styles_raw.DANCE_STYLE_MISC,

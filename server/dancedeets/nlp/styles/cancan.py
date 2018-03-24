@@ -43,7 +43,7 @@ class Style(style_base.Style):
 
     @classmethod
     def get_rare_search_keywords(cls):
-        return
+        return []
 
     @classmethod
     def get_popular_search_keywords(cls):
