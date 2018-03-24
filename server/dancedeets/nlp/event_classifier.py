@@ -98,17 +98,19 @@ class BasicClassifiedEvent(object):
             self.boundaries = regex_keywords.WORD_BOUNDARIES
 
         self.processed_title = grammar_matcher.StringProcessor(self.title, self.boundaries)
-        self.processed_title.real_tokenize(keywords.PREPROCESS_REMOVAL)
-
         self.processed_text = grammar_matcher.StringProcessor(self.search_text, self.boundaries)
+
         # This must be first, to remove the fake keywords
+        self.processed_title.real_tokenize(keywords.PREPROCESS_REMOVAL)
         self.processed_text.real_tokenize(keywords.PREPROCESS_REMOVAL)
 
         global_rule = styles.PREPROCESS_REMOVAL.get(None)
         per_language_rule = styles.PREPROCESS_REMOVAL.get(self.language)
         if global_rule:
+            self.processed_title.real_tokenize(global_rule)
             self.processed_text.real_tokenize(global_rule)
         if per_language_rule:
+            self.processed_title.real_tokenize(per_language_rule)
             self.processed_text.real_tokenize(per_language_rule)
 
         # Or if there are bad keywords, lets see if we can find good keywords on a short line
