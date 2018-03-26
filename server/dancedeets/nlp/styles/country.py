@@ -128,5 +128,11 @@ class Style(style_base.Style):
         return partner.EVENT_TYPES
 
     @classmethod
+    def get_preprocess_removal(cls):
+        return {
+            None: Any('square one', 'square 1'),
+        }
+
+    @classmethod
     def _get_classifier(cls):
         return Classifier
