@@ -12,11 +12,21 @@ Name = grammar.Name
 connected = grammar.connected
 commutative_connected = grammar.commutative_connected
 
-GOOD_DANCE = Any(*ballroom_keywords.RUMBA)
+SAMBA_KEYWORDS = Any(
+    *[
+        u'samba no p[ée]',
+        u'samba de gafieira',
+        u'samba pagode',
+        u'samba ax[ée]',
+        u'samba\W?rock',
+        u'samba de roda',
+        u'roda de samba',
+    ] + ballroom_keywords.SAMBA
+)
 
 
 class Classifier(base_auto_classifier.DanceStyleEventClassifier):
-    GOOD_DANCE = GOOD_DANCE
+    AMBIGUOUS_DANCE = SAMBA_KEYWORDS
 
     def _quick_is_dance_event(self):
         ballroom_classifier = ballroom.Style.get_classifier()(self._classified_event, debug=self._debug)
@@ -31,28 +41,24 @@ class Classifier(base_auto_classifier.DanceStyleEventClassifier):
 class Style(style_base.Style):
     @classmethod
     def get_name(cls):
-        return 'RUMBA'
+        return 'SAMBA'
 
     @classmethod
     def get_rare_search_keywords(cls):
-        return ballroom_keywords.RUMBA
+        return ballroom_keywords.SAMBA
 
     @classmethod
     def get_popular_search_keywords(cls):
         return [
-            'rumba',
-            'rhumba',
+            'samba',
+            'samba de gafieira',
+            'samba pagode',
+            'samba',
         ]
 
     @classmethod
     def get_search_keyword_event_types(cls):
         return partner.EVENT_TYPES
-
-    @classmethod
-    def get_preprocess_removal(cls):
-        return {
-            None: Any('rumba room'),
-        }
 
     @classmethod
     def _get_classifier(cls):

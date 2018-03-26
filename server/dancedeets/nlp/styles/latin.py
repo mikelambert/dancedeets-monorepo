@@ -5,6 +5,8 @@ from dancedeets.nlp import dance_keywords
 from dancedeets.nlp import grammar
 from dancedeets.nlp import style_base
 from dancedeets.nlp.styles import ballroom
+from dancedeets.nlp.styles import ballroom_keywords
+from dancedeets.nlp.styles import merengue
 from dancedeets.nlp.styles import partner
 
 Any = grammar.Any
@@ -15,36 +17,14 @@ commutative_connected = grammar.commutative_connected
 AMBIGUOUS_DANCE_MUSIC = Name(
     'LATIN_AMBIGUOUS_DANCE_MUSIC',
     Any(
+        ballroom_keywords.CHACHA,
+        ballroom_keywords.SAMBA,
+        ballroom_keywords.RUMBA,
+        merengue.MERENGUE_KEYWORDS,
         u'莎莎',  # chinese salsa dance
         u'살사',  # korean salsa
-        'cha\W?cha',
-        'cha\W?cha\W?cha',
-        u'恰恰恰?',  # chinese cha cha dance
-        u'차차차?',  # korean chacha
-        'samba',
-        u'桑巴',  # chinese samba
-        u'삼바',  # kroean samba
-        u'samba no p[ée]',
-        'samba de gafieira',
-        'samba pagode',
-        u'samba ax[ée]',
-        'samba\W?rock',
-        'samba de roda',
-        'roda de samba',
         u'pachanga',
         'cuban',
-        u'サンバ',
-        'bachata',
-        u'бачата',
-        u'바차타',  # korean bachata
-        u'バチャータ',
-        'merengue',  # DR
-        'mereng',  # haitain
-        u'меренге',
-        u'메렝게',  # korean merenge
-        'rh?umba',
-        u'倫巴',  # chinese rumba dance
-        u'륨바',  # korean rumba
         'latin\W?american',
         'latin',
         'salsy',
@@ -170,7 +150,6 @@ class Style(style_base.Style):
             'cha-cha',
             'cuban salsa',
             'ladies styling',
-            'merengue',
             'rhumba',
             'rueda de casion',
             'rumba',
@@ -182,11 +161,7 @@ class Style(style_base.Style):
             'salsa shine',
             'salsa styling',
             'salsa',
-            'samba de gafieira',
-            'samba pagode',
-            'samba',
             u'サルサ',
-            u'サンバ',
             u'バチャータ',
         ]
 
