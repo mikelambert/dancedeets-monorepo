@@ -21,7 +21,7 @@ BACHATA_KEYWORDS = [
 
 
 class Classifier(base_auto_classifier.DanceStyleEventClassifier):
-    AMBIGUOUS_DANCE = BACHATA_KEYWORDS
+    AMBIGUOUS_DANCE = Any(*BACHATA_KEYWORDS)
 
 
 class Style(style_base.Style):

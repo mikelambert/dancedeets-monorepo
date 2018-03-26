@@ -14,22 +14,20 @@ Name = grammar.Name
 connected = grammar.connected
 commutative_connected = grammar.commutative_connected
 
-AMBIGUOUS_DANCE_MUSIC = Name(
-    'LATIN_AMBIGUOUS_DANCE_MUSIC',
-    Any(
-        ballroom_keywords.CHACHA,
-        ballroom_keywords.SAMBA,
-        ballroom_keywords.RUMBA,
-        merengue.MERENGUE_KEYWORDS,
-        u'莎莎',  # chinese salsa dance
-        u'살사',  # korean salsa
-        u'pachanga',
-        'cuban',
-        'latin\W?american',
-        'latin',
-        'salsy',
-    )
-)
+DANCE_MUSIC_KEYWORDS = [
+    u'莎莎',  # chinese salsa dance
+    u'살사',  # korean salsa
+    u'pachanga',
+    'cuban',
+    'latin\W?american',
+    'latin',
+    'salsy',
+]
+DANCE_MUSIC_KEYWORDS.extend(ballroom_keywords.CHACHA)
+DANCE_MUSIC_KEYWORDS.extend(ballroom_keywords.RUMBA)
+DANCE_MUSIC_KEYWORDS.extend(merengue.MERENGUE_KEYWORDS)
+
+AMBIGUOUS_DANCE_MUSIC = Name('LATIN_AMBIGUOUS_DANCE_MUSIC', Any(*DANCE_MUSIC_KEYWORDS))
 
 SALSA = Any(
     u'salsa',

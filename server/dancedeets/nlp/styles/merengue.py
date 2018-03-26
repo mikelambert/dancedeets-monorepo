@@ -24,7 +24,7 @@ MERENGUE_KEYWORDS = [
 
 
 class Classifier(base_auto_classifier.DanceStyleEventClassifier):
-    AMBIGUOUS_DANCE = Any(MERENGUE_KEYWORDS)
+    AMBIGUOUS_DANCE = Any(*MERENGUE_KEYWORDS)
 
 
 class Style(style_base.Style):

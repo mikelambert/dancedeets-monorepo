@@ -151,4 +151,4 @@ for style in _STYLE_LIST:
 
 PREPROCESS_REMOVAL = {}
 for language, rules in _global_preprocess_removal.iteritems():
-    PREPROCESS_REMOVAL[language] = grammar.Name('PREPROCESS_REMOVAL_%s' % language, *rules)
+    PREPROCESS_REMOVAL[language] = grammar.Name('PREPROCESS_REMOVAL_%s' % language, grammar.Any(*rules))
