@@ -19,9 +19,16 @@ BACHATA_KEYWORDS = [
     u'バチャータ',
 ]
 
+BACHATA_DANCE = Any(
+    'bachatango',
+    'bachata sensual',
+    'sensual\W?bachata',
+)
+
 
 class Classifier(base_auto_classifier.DanceStyleEventClassifier):
     AMBIGUOUS_DANCE = Any(*BACHATA_KEYWORDS)
+    GOOD_DANCE = BACHATA_DANCE
 
     def _quick_is_dance_event(self):
         return True
@@ -34,12 +41,15 @@ class Style(style_base.Style):
 
     @classmethod
     def get_rare_search_keywords(cls):
-        return BACHATA_KEYWORDS
+        return BACHATA_KEYWORDS + [
+            'bachatango',
+        ]
 
     @classmethod
     def get_popular_search_keywords(cls):
         return [
             'bachata',
+            u'バチャータ',
         ]
 
     @classmethod

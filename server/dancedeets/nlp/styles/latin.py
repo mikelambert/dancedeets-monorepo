@@ -4,10 +4,12 @@ from dancedeets.nlp import base_auto_classifier
 from dancedeets.nlp import dance_keywords
 from dancedeets.nlp import grammar
 from dancedeets.nlp import style_base
+from dancedeets.nlp.styles import bachata
 from dancedeets.nlp.styles import ballroom
 from dancedeets.nlp.styles import ballroom_keywords
 from dancedeets.nlp.styles import merengue
 from dancedeets.nlp.styles import partner
+from dancedeets.nlp.styles import salsa
 
 Any = grammar.Any
 Name = grammar.Name
@@ -26,68 +28,29 @@ DANCE_MUSIC_KEYWORDS = [
 DANCE_MUSIC_KEYWORDS.extend(ballroom_keywords.CHACHA)
 DANCE_MUSIC_KEYWORDS.extend(ballroom_keywords.RUMBA)
 DANCE_MUSIC_KEYWORDS.extend(merengue.MERENGUE_KEYWORDS)
+DANCE_MUSIC_KEYWORDS.extend(salsa.DANCE_MUSIC_KEYWORDS)
 
 AMBIGUOUS_DANCE_MUSIC = Name('LATIN_AMBIGUOUS_DANCE_MUSIC', Any(*DANCE_MUSIC_KEYWORDS))
 
-SALSA = Any(
-    u'salsa',
-    u'сальса',
-    u'サルサ',
-)
-
-LADIES = Any(
-    u'lad(?:y|ies)',
-    u'レディース',
-)
-STYLING = Any(
-    u'styling?',
-    u'スタイリング',
-)
-SHINES = Any(
-    u'shines?',
-    u'シャイン',
-)
-PARTNER = Any(u'partner(?:ing)?',)
 REAL_DANCE = Name(
     'LATIN_REAL_DANCE',
     Any(
+        commutative_connected(salsa.LADIES, Any(salsa.STYLING, salsa.SHINES, salsa.PARTNER)),
+        commutative_connected(salsa.PARTNER, Any(salsa.STYLING, salsa.SHINES)),
         commutative_connected(
+            Any(AMBIGUOUS_DANCE_MUSIC),
             Any(
-                dance_keywords.EASY_DANCE,
-                'cubana?',
-                'on1',
-                'on2',
-                'rueda',
-                'cuba\w+',
-                'footwork\w*',
-                LADIES,
-                STYLING,
-                SHINES,
-                PARTNER,
-            ), SALSA
-        ),
-        commutative_connected(LADIES, Any(STYLING, SHINES, PARTNER)),
-        commutative_connected(PARTNER, Any(STYLING, SHINES)),
-        commutative_connected(
-            Any(SALSA, AMBIGUOUS_DANCE_MUSIC),
-            Any(
-                LADIES,
-                PARTNER,
-                SHINES,
-                STYLING,
+                salsa.LADIES,
+                salsa.PARTNER,
+                salsa.SHINES,
+                salsa.STYLING,
             ),
         ),
-        'salsa rueda',
-        'rueda (?:de )?casino',
-        'salser[oa]s?',
-        'bachatango',
-        'bachata sensual',
-        'sensual\W?bachata',
+        salsa.GOOD_DANCE,
+        bachata.BACHATA_DANCE,
         'latin\W?techni\w+',
     )
 )
-
-ALL_LATIN_STYLES = Any(REAL_DANCE, SALSA, AMBIGUOUS_DANCE_MUSIC)
 
 FOOD = Any(
     u'소스',  # korean sause
@@ -101,7 +64,11 @@ FOOD = Any(
 )
 
 DANCER = Any('queen')
-GOOD_DANCE = Any(REAL_DANCE, commutative_connected(AMBIGUOUS_DANCE_MUSIC, Any(dance_keywords.EASY_DANCE, DANCER)))
+GOOD_DANCE = Any(
+    salsa.SALSA,
+    REAL_DANCE,
+    commutative_connected(AMBIGUOUS_DANCE_MUSIC, Any(dance_keywords.EASY_DANCE, DANCER)),
+)
 
 #TODO(all-styles): incorporate these...."additions"
 class_keywords = Any(dance_keywords.CLASS, 'batch')
@@ -110,8 +77,8 @@ all_class = Any(class_keywords, commutative_connected(dance_keywords.PERFORMANCE
 
 class Classifier(base_auto_classifier.DanceStyleEventClassifier):
     AMBIGUOUS_DANCE = AMBIGUOUS_DANCE_MUSIC
-    GOOD_DANCE = Any(GOOD_DANCE, SALSA)
-    GOOD_BAD_PAIRINGS = [(SALSA, FOOD)]
+    GOOD_DANCE = GOOD_DANCE
+    GOOD_BAD_PAIRINGS = [(salsa.SALSA, FOOD)]
     ADDITIONAL_EVENT_TYPE = Any('social')
 
     def _quick_is_dance_event(self):
@@ -132,35 +99,15 @@ class Style(style_base.Style):
     @classmethod
     def get_rare_search_keywords(cls):
         return [
-            'salsa footwork',
             'ladies styling',
             'ladies shine',
             'partner styling',
-            'bachatango',
         ]
 
     @classmethod
     def get_popular_search_keywords(cls):
         return [
-            'afro-cuba',
-            'afro-cuban',
-            'bachata',
-            'cha-cha',
-            'cuban salsa',
             'ladies styling',
-            'rhumba',
-            'rueda de casion',
-            'rumba',
-            'salsa cubaine',
-            'salsa dance',
-            'salsa on1',
-            'salsa on2',
-            'salsa rueda',
-            'salsa shine',
-            'salsa styling',
-            'salsa',
-            u'サルサ',
-            u'バチャータ',
         ]
 
     @classmethod

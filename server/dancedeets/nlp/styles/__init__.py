@@ -68,6 +68,7 @@ STYLE_NAMES = [
     'quickstep',
     'rockabilly',
     'rumba',
+    'salsa',
     'samba',
     'soulline',
     'street',
