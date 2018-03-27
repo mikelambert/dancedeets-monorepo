@@ -18,18 +18,7 @@ FUSION = Any(
     u'fusión?',
 )
 
-BLUES = Any(
-    'blues',
-    u'ブルース',  # japanese blues
-)
-
-AMBIGUOUS_DANCE = Any(
-    commutative_connected(
-        BLUES,
-        Any(FUSION, dance_keywords.EASY_DANCE),
-    ),
-    commutative_connected(FUSION, dance_keywords.EASY_DANCE),
-)
+AMBIGUOUS_DANCE = Any(commutative_connected(FUSION, dance_keywords.EASY_DANCE),)
 
 
 class Classifier(base_auto_classifier.DanceStyleEventClassifier):
@@ -60,7 +49,6 @@ class Style(style_base.Style):
     @classmethod
     def get_popular_search_keywords(cls):
         return [
-            'blues fusion',
             'modern jive',
             'ceroc',
             'leroc',

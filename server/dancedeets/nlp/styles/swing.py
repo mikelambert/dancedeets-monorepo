@@ -3,9 +3,16 @@
 from dancedeets.nlp import base_auto_classifier
 from dancedeets.nlp import grammar
 from dancedeets.nlp import style_base
+from dancedeets.nlp.styles import authentic_jazz
+from dancedeets.nlp.styles import balboa
 from dancedeets.nlp.styles import ballroom
+from dancedeets.nlp.styles import charleston
+from dancedeets.nlp.styles import east_coast_swing
+from dancedeets.nlp.styles import jitterbug
+from dancedeets.nlp.styles import lindy
 from dancedeets.nlp.styles import partner
 from dancedeets.nlp.street import keywords
+from dancedeets.nlp.styles import shag
 
 Any = grammar.Any
 Name = grammar.Name
@@ -13,35 +20,21 @@ connected = grammar.connected
 commutative_connected = grammar.commutative_connected
 
 REAL_DANCE = Any(
-    'lindy\W?hop\w*',
-    u'לינדי',  # hebrew lindy
-    u'линди\W+хоп',  # russian
-    u'リンディ',  # japanese lindy
-    u'リンジーホップ',
-    u'린디',  # korean lindy
-    'east coast swing',
-    'solo jazz',
-    'solo charleston',
-    'partner charleston',
-    u'чарльстон',  # russian charleston
-    'carolina shag',
-    'collegiate shag',
-    'st\W? louis shag',
-    'slow drag',
-    'balboa\w*',
-    u'бальбоа'
-    'authentic jazz',
-    'vintage jazz',
-    u'jitterbug',
-    u'джиттербаг',
+    authentic_jazz.AUTHENTIC_JAZZ,
+    balboa.BALBOA,
+    charleston.CHARLESTON,
+    east_coast_swing.GOOD_DANCE,
+    jitterbug.JITTERBUG,
+    lindy.LINDY,
+    shag.SHAG,
 )
 
 AMBIGUOUS_WORDS = Any(
     'swing\w*',
     u'سوينغ',  # arabic swing
-    'charleston',
-    'shag',
-    'ecs',
+    charleston.AMBIGUOUS_DANCE,
+    east_coast_swing.AMBIGUOUS_DANCE,
+    shag.AMBIGUOUS_DANCE,
 )
 
 # Event Sites:
@@ -49,7 +42,7 @@ AMBIGUOUS_WORDS = Any(
 
 
 class Classifier(base_auto_classifier.DanceStyleEventClassifier):
-    AMBIGUOUS_DANCE = Any(AMBIGUOUS_WORDS)
+    AMBIGUOUS_DANCE = AMBIGUOUS_WORDS
     GOOD_DANCE = REAL_DANCE
     ADDITIONAL_EVENT_TYPE = Any(
         u'festival',
@@ -80,22 +73,7 @@ class Style(style_base.Style):
     def get_popular_search_keywords(cls):
         return [
             'swing dance',
-            'east coast swing',
-            'ecs',
-            'west coast swing',
             'swing out',
-            'lindy hop',
-            'lindy',
-            'balboa',
-            'solo jazz',
-            'solo charleston',
-            'partner charleston',
-            'carolina shag',
-            'collegiate shag',
-            'st louis shag',
-            'modern jive',
-            'jitterbug',
-            'slow drag',
         ]
 
     @classmethod
