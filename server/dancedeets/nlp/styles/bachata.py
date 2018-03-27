@@ -23,6 +23,9 @@ BACHATA_KEYWORDS = [
 class Classifier(base_auto_classifier.DanceStyleEventClassifier):
     AMBIGUOUS_DANCE = Any(*BACHATA_KEYWORDS)
 
+    def _quick_is_dance_event(self):
+        return True
+
 
 class Style(style_base.Style):
     @classmethod
