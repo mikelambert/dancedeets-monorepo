@@ -74,6 +74,7 @@ STYLE_POP_WEAK = Any(
 )
 STYLE_HIPHOP_WEAK = Any(
     'hip\W?hop',
+    u'хип\W?хоп',
     u'嘻哈',  # chinese hiphop
     u'ההיפ הופ',  # hebrew hiphop
     u'והיפ הופ',  # hebrew hiphop
@@ -236,6 +237,12 @@ STYLE_POP = Name(
         'poppers?',
         'popp?i?ng',  # listing poppin in the ambiguous keywords
         'poppeurs?',
+        u'паппинг',  # popping
+        u'тикинг',  # ticking
+        u'вибрация',  # vibrating
+        u'анимация',  # animation
+        u'крейзи\W?легз',  # crazy legs
+        u'быстрая перемотка',  # fast forward
         u'팝핀',  # korean popping
         "pop\W{0,3}(?:(?:N|and|an)\W{1,3})?lock(?:in[g']?|er[sz]?)",  # dupe
         'dubstepp?ing',
@@ -266,6 +273,7 @@ STYLE_LOCK = Name(
         "pop\W{0,3}(?:(?:N|and|an)\W{1,3})?lock(?:in[g']?|er[sz]?)",  # dupe
         "lock(?:er[sz]?|in[g']?)?",
         'lock dance',
+        u'локинг',
         u'ロックイング',  # japanese locking (japanese rock/lock is too common)
         u'ロッカーズ',  # japanese lockers
         u'ロッカ',  # japanese lock
@@ -359,6 +367,7 @@ STYLE_KRUMP = Name(
         'krump',
         "krumpin[g']?",
         'krumper[sz]?',
+        u'крамп',  # krump
         u'크럼핑',  # korean krumping
         u'קראמפ',  # hebrew krump
         u'קראמפר',  # hebrew krumper
