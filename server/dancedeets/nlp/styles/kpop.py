@@ -39,6 +39,7 @@ class Style(style_base.Style):
     def get_popular_search_keywords(cls):
         return [
             'kpop',
+            'k pop',
             u'케이팝',
         ]
 

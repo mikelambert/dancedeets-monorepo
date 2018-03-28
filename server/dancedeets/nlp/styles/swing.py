@@ -8,9 +8,9 @@ from dancedeets.nlp.styles import balboa
 from dancedeets.nlp.styles import ballroom
 from dancedeets.nlp.styles import charleston
 from dancedeets.nlp.styles import east_coast_swing
+from dancedeets.nlp.styles import event_types
 from dancedeets.nlp.styles import jitterbug
 from dancedeets.nlp.styles import lindy
-from dancedeets.nlp.styles import partner
 from dancedeets.nlp.street import keywords
 from dancedeets.nlp.styles import shag
 
@@ -78,7 +78,7 @@ class Style(style_base.Style):
 
     @classmethod
     def get_search_keyword_event_types(cls):
-        return partner.EVENT_TYPES + ['hop']
+        return event_types.PARTNER_EVENT_TYPESS + ['hop']
 
     @classmethod
     def _get_classifier(cls):

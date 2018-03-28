@@ -17,7 +17,7 @@ REAL_DANCE = Any(
 )
 
 DANCEHALL = Any(
-    u'dancehall',
+    u'dancehall\w*',
     u'ダンスホール',
     u'댄스홀',
 )

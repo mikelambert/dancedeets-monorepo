@@ -1,6 +1,6 @@
 # -*-*- encoding: utf-8 -*-*-
 
-EVENT_TYPES = [
+PARTNER_EVENT_TYPES = [
     'meeting',
     'incontro',
     'marathon',
@@ -10,4 +10,10 @@ EVENT_TYPES = [
     'weekend',
     'festival',
     'ball',
+]
+
+STREET_EVENT_TYPES = [
+    'battle',
+    'jam',
+    'bonnie and clyde',
 ]
