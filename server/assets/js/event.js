@@ -545,7 +545,13 @@ class ExtraImages extends React.Component<{
     const images = [];
     let i = 0;
     while (i < this.props.event.extraImageCount) {
-      const source = this.props.event.getCroppedCover(480, null, i);
+      let source = null;
+      if (i == 0) {
+        // Ensure we get the magical 'height' calculated for us
+        source = this.props.event.getFlyer({ width: 480 });
+      } else {
+        source = this.props.event.getCroppedCover(480, null, i);
+      }
       if (source) {
         images.push(
           <AmpImage
