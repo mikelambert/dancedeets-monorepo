@@ -3,8 +3,7 @@
 from dancedeets.nlp import base_auto_classifier
 from dancedeets.nlp import grammar
 from dancedeets.nlp import style_base
-from dancedeets.nlp.styles import aerial
-from dancedeets.nlp.styles import pole
+from dancedeets.nlp.styles import swing
 
 Any = grammar.Any
 Name = grammar.Name
@@ -26,7 +25,6 @@ DANCE = Any(
     u'空中シルク',
     u'空中布',
     u'空中フープ',
-    pole.DANCE,
 )
 
 AERIALS = Any(
@@ -36,7 +34,6 @@ AERIALS = Any(
 )
 
 AMBIGUOUS_DANCE = Any(
-    pole.AMBIGUOUS_DANCE,
     AERIALS,
     #'hoops?',
     u'cerceaux?',
@@ -51,25 +48,15 @@ EVENT_TYPES = Any(
     'series',
 )
 
-# Not currently used
-RELATED_KEYWORDS = Any(
-    'straddles?',
-    'butterfl(?:y|ies)',
-    'tricks',
-    'tricksters?',
-    'pole',
-    'polers?',
-    'climb',
-    'aerial',
-    'blackgirlspole',
-)
-
 
 class Classifier(base_auto_classifier.DanceStyleEventClassifier):
-    GOOD_DANCE = Any(aerial.Classifier.GOOD_DANCE, pole.Classifier.GOOD_DANCE)
-    AMBIGUOUS_DANCE = Any(aerial.Classifier.AMBIGUOUS_DANCE, pole.Classifier.AMBIGUOUS_DANCE)
-    ADDITIONAL_EVENT_TYPE = Any(aerial.Classifier.ADDITIONAL_EVENT_TYPE, pole.Classifier.ADDITIONAL_EVENT_TYPE)
-    GOOD_BAD_PAIRINGS = aerial.Classifier.GOOD_BAD_PAIRINGS + pole.Classifier.GOOD_BAD_PAIRINGS
+    GOOD_DANCE = DANCE
+    AMBIGUOUS_DANCE = AMBIGUOUS_DANCE
+    ADDITIONAL_EVENT_TYPE = EVENT_TYPES
+    GOOD_BAD_PAIRINGS = [
+        # Don't include "lindy aerials"
+        (AERIALS, swing.Style.get_cached_basic_regex()),
+    ]
 
     def _quick_is_dance_event(self):
         return True
@@ -78,7 +65,7 @@ class Classifier(base_auto_classifier.DanceStyleEventClassifier):
 class Style(style_base.Style):
     @classmethod
     def get_name(cls):
-        return 'AERIAL_POLE'
+        return 'AERIAL'
 
     @classmethod
     def get_rare_search_keywords(cls):
@@ -86,11 +73,19 @@ class Style(style_base.Style):
 
     @classmethod
     def get_popular_search_keywords(cls):
-        return []
+        return [
+            'aerial hoop',
+            'aerial fabric',
+            'aerial silks',
+            'hoop dance',
+            'silk dance',
+        ]
 
     @classmethod
     def get_search_keyword_event_types(cls):
-        return []
+        return [
+            'series',
+        ]
 
     @classmethod
     def _get_classifier(cls):

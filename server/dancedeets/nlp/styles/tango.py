@@ -25,7 +25,7 @@ ARGENTINE = Any(
     u'아르헨티나',
 )
 
-TANGO = Any(*ballroom_keywords.TANGO)
+TANGO = Any(u'tango\w+', *ballroom_keywords.TANGO)
 
 MILONGA = Any(
     u'milongas?',

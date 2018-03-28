@@ -1,7 +1,6 @@
 # -*-*- encoding: utf-8 -*-*-
 
 from dancedeets.nlp import base_auto_classifier
-from dancedeets.nlp import dance_keywords
 from dancedeets.nlp import grammar
 from dancedeets.nlp import style_base
 
@@ -10,37 +9,40 @@ Name = grammar.Name
 connected = grammar.connected
 commutative_connected = grammar.commutative_connected
 
-GOOD_DANCE = commutative_connected(Any(
-    'chair',
-    'lap',
-    'exotic',
-    'strip',
-    'go\W?go',
-), dance_keywords.EASY_DANCE)
+DANCE = Any(
+    u'pole\W?ates',
+    u'폴댄스',  # korean pole dance
+    'pole\W?fit(?:ness)?',
+)
+
 AMBIGUOUS_DANCE = Any(
-    'lap',
-    # Should we do a separate 'heels' category?
-    # Was accidentally triggering a country/western 'kick up your heels'
-    #'heels',
-    'exotic',
-    'flirt',
-    'sexy',
-    'strip\W?tease',
-    u'стрипластика',  # strip-plastic (strip dancing?)
+    'pole',
+    u'ポール',
 )
 EVENT_TYPES = Any(
     'miss',  # miss pole dance
     'series',
 )
 
+# Not currently used
+RELATED_KEYWORDS = Any(
+    'straddles?',
+    'butterfl(?:y|ies)',
+    'tricks',
+    'tricksters?',
+    'pole',
+    'polers?',
+    'climb',
+    'aerial',
+    'blackgirlspole',
+)
+
 
 class Classifier(base_auto_classifier.DanceStyleEventClassifier):
-    GOOD_DANCE = GOOD_DANCE
+    GOOD_DANCE = DANCE
     AMBIGUOUS_DANCE = AMBIGUOUS_DANCE
     ADDITIONAL_EVENT_TYPE = EVENT_TYPES
-    GOOD_BAD_PAIRINGS = [
-        (Any('lap'), Any('race')),
-    ]
+    GOOD_BAD_PAIRINGS = []
 
     def _quick_is_dance_event(self):
         return True
@@ -49,7 +51,7 @@ class Classifier(base_auto_classifier.DanceStyleEventClassifier):
 class Style(style_base.Style):
     @classmethod
     def get_name(cls):
-        return 'EXOTIC'
+        return 'POLE'
 
     @classmethod
     def get_rare_search_keywords(cls):
@@ -58,11 +60,11 @@ class Style(style_base.Style):
     @classmethod
     def get_popular_search_keywords(cls):
         return [
-            'lap dance',
-            'heels dance',
-            'chair dance',
-            'flirt dance',
             'pole dance',
+            'pole fitness',
+            'pole fit',
+            'pole',
+            'pole-ates',
         ]
 
     @classmethod
