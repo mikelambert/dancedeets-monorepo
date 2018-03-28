@@ -17,13 +17,10 @@ connected = grammar.connected
 commutative_connected = grammar.commutative_connected
 
 DANCE_MUSIC_KEYWORDS = [
-    u'莎莎',  # chinese salsa dance
-    u'살사',  # korean salsa
     u'pachanga',
     'cuban',
     'latin\W?american',
     'latin',
-    'salsy',
 ]
 DANCE_MUSIC_KEYWORDS.extend(ballroom_keywords.CHACHA)
 DANCE_MUSIC_KEYWORDS.extend(ballroom_keywords.RUMBA)
