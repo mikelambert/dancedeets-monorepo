@@ -1,10 +1,9 @@
 # -*-*- encoding: utf-8 -*-*-
 
 from dancedeets.nlp import base_auto_classifier
+from dancedeets.nlp import event_types
 from dancedeets.nlp import grammar
 from dancedeets.nlp import style_base
-from dancedeets.nlp.street import classifier
-from dancedeets.nlp.styles import event_types
 from dancedeets.nlp.street import keywords
 
 Any = grammar.Any
@@ -35,6 +34,7 @@ class Classifier(base_auto_classifier.DanceStyleEventClassifier):
             self._log('does not have any relevant keywords for this style')
             return False
 
+        from dancedeets.nlp.street import classifier
         is_vogue = classifier.is_vogue_event(self._classified_event)
         self._log(is_vogue[1])
 

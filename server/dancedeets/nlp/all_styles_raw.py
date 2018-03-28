@@ -1,7 +1,7 @@
 # -*-*- encoding: utf-8 -*-*-
 #
 
-from . import grammar
+from dancedeets.nlp import grammar
 Any = grammar.Any
 Name = grammar.Name
 

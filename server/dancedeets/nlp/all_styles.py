@@ -1,16 +1,32 @@
 # -*-*- encoding: utf-8 -*-*-
 #
 
-from . import all_styles_raw
-from . import grammar
+from dancedeets.nlp import grammar
+from dancedeets.nlp import styles
+
 Any = grammar.Any
 Name = grammar.Name
 
-from dancedeets.nlp import styles
-
 #TODO: Need to include AFRICAN in this!
 
-DANCE_WRONG_STYLE = Name('DANCE_WRONG_STYLE', Any(*styles.all_styles_except('STREET')))
+DANCE_WRONG_STYLE = Name(
+    'DANCE_WRONG_STYLE',
+    Any(
+        *styles.all_styles_except(
+            'STREET',
+            'POPPING',
+            'LOCKING',
+            'HIPHOP',
+            'HOUSE',
+            'WAACKING',
+            'VOGUE',
+            'BEBOP',
+            'KRUMPING',
+            'FLEXING',
+            'ROCKING',
+        )
+    )
+)
 
 # These are okay to see in event descriptions, but we don't want it to be in the event title, or it is too strong for us
 DANCE_WRONG_STYLE_TITLE_ONLY = Name(

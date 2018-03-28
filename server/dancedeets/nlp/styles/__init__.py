@@ -141,10 +141,10 @@ misc_keyword_sets = [
 ]
 
 
-def all_styles_except(vertical):
+def all_styles_except(*verticals):
     regexes = set()
     for regex_style in _STYLE_LIST:
-        if regex_style.get_name() != vertical:
+        if regex_style.get_name() not in verticals:
             regex = regex_style.get_cached_basic_regex()
             if regex:
                 regexes.add(regex)

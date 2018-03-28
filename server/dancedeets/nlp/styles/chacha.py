@@ -1,11 +1,11 @@
 # -*-*- encoding: utf-8 -*-*-
 
 from dancedeets.nlp import base_auto_classifier
+from dancedeets.nlp import event_types
 from dancedeets.nlp import grammar
 from dancedeets.nlp import style_base
 from dancedeets.nlp.styles import ballroom
 from dancedeets.nlp.styles import ballroom_keywords
-from dancedeets.nlp.styles import event_types
 
 Any = grammar.Any
 Name = grammar.Name
@@ -52,7 +52,7 @@ class Style(style_base.Style):
 
     @classmethod
     def get_search_keyword_event_types(cls):
-        return event_types.PARTNER_EVENT_TYPESS
+        return event_types.PARTNER_EVENT_TYPES
 
     @classmethod
     def _get_classifier(cls):
