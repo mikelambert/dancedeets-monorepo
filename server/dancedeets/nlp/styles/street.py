@@ -49,7 +49,7 @@ class Classifier(base_auto_classifier.DanceStyleEventClassifier):
         #TODO: until we fix our delay-load import problems
         from dancedeets.nlp.street import classifier
         result = classifier.is_street_event(self._classified_event)
-        self._logs = [result[1]]
+        self._log(result[1])
         return result[0]
 
 
