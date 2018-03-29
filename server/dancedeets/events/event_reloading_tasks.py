@@ -5,14 +5,17 @@ from mapreduce import operation as op
 
 from dancedeets import app
 from dancedeets import base_servlet
-from dancedeets.event_attendees import event_attendee_classifier
 from dancedeets import fb_api
+from dancedeets.events import eventdata
+from dancedeets.events import event_updates
+from dancedeets.event_attendees import event_attendee_classifier
+from dancedeets.event_scraper import thing_db
+from dancedeets.nlp import event_auto_classifier
+from dancedeets.nlp import event_classifier
 from dancedeets.users import users
 from dancedeets.util import deferred
 from dancedeets.util import fb_mapreduce
 from dancedeets.util import mr
-from . import eventdata
-from . import event_updates
 
 DATETIME_FORMAT = "%Y-%m-%dT%H:%M:%S"
 
@@ -230,6 +233,76 @@ def mr_load_fb_events(
         },
         queue=queue,
     )
+
+
+def yield_cleanup_verticals(fbl, db_event):
+    ctx = context.get()
+    if ctx:
+        params = ctx.mapreduce_spec.mapper.params
+        allow_deletes = params['allow_deletes']
+    else:
+        allow_deletes = False
+
+    if db_event.creating_method not in [eventdata.CM_AUTO_ATTENDEE, eventdata.CM_AUTO]:
+        return
+
+    if db_event.fb_event['empty']:
+        return
+
+    has_street = 'STREET' in db_event.verticals
+
+    logging.info('Is Good Event By Text: %s: Checking...', db_event.id)
+    classified_event = event_classifier.get_classified_event(db_event.fb_event)
+    auto_add_result = event_auto_classifier.is_auto_add_event(classified_event)
+    logging.info('Is Good Event By Text: %s: %s', db_event.id, auto_add_result)
+
+    verticals = []
+    if auto_add_result.is_good_event():
+        verticals = auto_add_result.verticals()
+
+    if has_street and 'STREET' not in verticals:
+        verticals += ['STREET']
+
+    if not verticals:
+        admin_ids = [admin['id'] for admin in db_event.admins]
+        if allow_deletes:
+            db_event.key.delete()
+        mr.increment('deleting-bad-event')
+        sources = thing_db.Source.get_by_key_name(admin_ids)
+        for source in sources:
+            num_events = eventdata.DBEvent.query(eventdata.DBEvent.admin_fb_uids == source.graph_id).count(1000)
+            if num_events == 0:
+                if allow_deletes:
+                    source.delete()
+                mr.increment('deleting-bad-source')
+
+
+map_cleanup_verticals = fb_mapreduce.mr_wrap(yield_cleanup_verticals)
+
+
+@app.route('/tasks/fixup_verticals')
+class DeleteBadAutoAddsHandler(base_servlet.EventOperationHandler):
+    def get(self):
+        queue = self.request.get('queue', 'fast-queue')
+        allow_deletes = self.request.get('allow_deletes', None) == '1'
+        extra_mapper_params = {
+            'allow_deletes': allow_deletes,
+        }
+        fb_mapreduce.start_map(
+            fbl=self.fbl,
+            name='Cleanup Verticals',
+            handler_spec='dancedeets.events.event_reloading_tasks.map_cleanup_verticals',
+            entity_kind='dancedeets.events.eventdata.DBEvent',
+            extra_mapper_params=extra_mapper_params,
+            queue=queue,
+            output_writer_spec='mapreduce.output_writers.GoogleCloudStorageOutputWriter',
+            output_writer={
+                'mime_type': 'text/plain',
+                'bucket_name': 'dancedeets-hrd.appspot.com',
+            },
+        )
+
+    post = get
 
 
 def yield_maybe_delete_bad_event(fbl, db_event):
