@@ -198,15 +198,19 @@ class DanceStyleEventClassifier(object):
         return result
 
     def _log(self, log, *args):
-        try:
-            formatted_log = '%s: %s' % (self._log_category[-1], log % args)
-        except TypeError:
-            logging.exception('Error formatting log: %r %% %r', log, args)
-            raise
-        self._logs.append(formatted_log)
+        if args:
+            try:
+                formatted_log = log % args
+            except TypeError:
+                logging.error('Error formatting log: %r %% %r', log, args)
+                raise
+        else:
+            formatted_log = log
+        formatted_full_log = '%s: %s' % (self._log_category[-1], formatted_log)
+        self._logs.append(formatted_full_log)
         if not self._debug:
             return
-        logging.info(formatted_log)
+        logging.info(formatted_full_log)
 
     # top-level function
     def is_dance_event(self):
