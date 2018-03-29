@@ -19,11 +19,21 @@ GOOD_DANCE = MAMBO
 class Classifier(base_auto_classifier.DanceStyleEventClassifier):
     GOOD_DANCE = GOOD_DANCE
     GOOD_BAD_PAIRINGS = [
-        (MAMBO, Any(
-            'edm',
-            'house music',
-            'ibiza',
-        )),
+        (
+            MAMBO,
+            Any(
+                u'edm',
+                u'house music',
+                u'ibiza',
+                u'ex forno mambo',
+                u'mambo club',
+                u'mambo brothers',  # don't dj mambo music at all...
+                u'mambo beach club',
+                u'café mambo',
+                u'cafe mambo',
+                u'mambo italiano',
+            )
+        ),
     ]
 
     def _quick_is_dance_event(self):

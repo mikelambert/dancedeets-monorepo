@@ -567,8 +567,6 @@ PREPROCESS_REMOVAL = Name(
         u'on\W?tap',  # tap dance is definitely not on tap
         u'watch y\w+\W+step',
         u'step\W?(?:by|x)\W?step',
-        u'mambo club',
-        u'mambo brothers',  # don't dj mambo music at all...
         u'quick\W?step floors',  # it's a cycling team...
         u'baton rouge',  # not a majorette's baton!
         u'gogo inflight',
@@ -576,10 +574,6 @@ PREPROCESS_REMOVAL = Name(
         u'high performance',  # its not a performance
         u'country club',  # its not country music dance!
         u'marriott international',  # marriott international ballroom, hah
-        u'ex forno mambo',
-        u'mambo beach club',
-        u'cafe mambo',
-        u'mambo italiano',
         u'(?:first|second|third)\W?hand',
         u'cha\W?cha\W?s\Wcantina',  # cha cha's cantina
         u'ooh cha cha',  # an event organizer and location
@@ -631,8 +625,8 @@ PREPROCESS_REMOVAL = Name(
         # lock
         'on lock',
         'lock(?:ing|ed|s)? (?:in|out|your|our|the|a|it|down|up)',
-        'lock\s*(?:and|&)\s*key',
-        'lock\s*(?:and|&)\s*load',
+        'lock\s*(?:and|\W?n\W?|&)\s*key',
+        'lock\s*(?:and|\W?n\W?|&)\s*load',
         'zip\W?lock',
         'lock\Win',
         'lock\W?down',

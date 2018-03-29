@@ -1,10 +1,10 @@
 # -*-*- encoding: utf-8 -*-*-
 
-from dancedeets.nlp import base_auto_classifier
 from dancedeets.nlp import event_types
 from dancedeets.nlp import grammar
 from dancedeets.nlp import style_base
 from dancedeets.nlp.street import keywords
+from dancedeets.nlp.styles import street
 
 Any = grammar.Any
 Name = grammar.Name
@@ -12,12 +12,9 @@ connected = grammar.connected
 commutative_connected = grammar.commutative_connected
 
 
-class Classifier(base_auto_classifier.DanceStyleEventClassifier):
+class Classifier(street.StreetBaseClassifier):
     GOOD_DANCE = keywords.STYLE_BEBOP
     AMBIGUOUS_DANCE = keywords.STYLE_BEBOP_WEAK
-
-    def _quick_is_dance_event(self):
-        return True
 
 
 class Style(style_base.Style):

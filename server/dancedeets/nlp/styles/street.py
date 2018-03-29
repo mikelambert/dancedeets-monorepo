@@ -13,6 +13,17 @@ connected = grammar.connected
 commutative_connected = grammar.commutative_connected
 
 
+class StreetBaseClassifier(base_auto_classifier.DanceStyleEventClassifier):
+    def _quick_is_dance_event(self):
+        street_classifier = Style.get_classifier()(self._classified_event, debug=self._debug)
+        result = street_classifier.is_dance_event()
+        for log in street_classifier.debug_info():
+            self._log(log)
+        if result:
+            return True
+        return False
+
+
 class Classifier(base_auto_classifier.DanceStyleEventClassifier):
     COMBINED_KEYWORDS = Any(
         keywords.AMBIGUOUS_DANCE_MUSIC,

@@ -8,6 +8,7 @@ from dancedeets.nlp import style_base
 from dancedeets.nlp.styles import bachata
 from dancedeets.nlp.styles import ballroom
 from dancedeets.nlp.styles import ballroom_keywords
+from dancedeets.nlp.styles import mambo
 from dancedeets.nlp.styles import merengue
 from dancedeets.nlp.styles import salsa
 
@@ -23,6 +24,7 @@ DANCE_MUSIC_KEYWORDS = [
     'latin',
 ]
 DANCE_MUSIC_KEYWORDS.extend(ballroom_keywords.CHACHA)
+DANCE_MUSIC_KEYWORDS.extend(ballroom_keywords.MAMBO)
 DANCE_MUSIC_KEYWORDS.extend(ballroom_keywords.RUMBA)
 DANCE_MUSIC_KEYWORDS.extend(merengue.MERENGUE_KEYWORDS)
 DANCE_MUSIC_KEYWORDS.extend(salsa.DANCE_MUSIC_KEYWORDS)
@@ -75,7 +77,7 @@ all_class = Any(class_keywords, commutative_connected(dance_keywords.PERFORMANCE
 class Classifier(base_auto_classifier.DanceStyleEventClassifier):
     AMBIGUOUS_DANCE = AMBIGUOUS_DANCE_MUSIC
     GOOD_DANCE = GOOD_DANCE
-    GOOD_BAD_PAIRINGS = [(salsa.SALSA, FOOD)]
+    GOOD_BAD_PAIRINGS = salsa.Classifier.GOOD_BAD_PAIRINGS + mambo.Classifier.GOOD_BAD_PAIRINGS
     ADDITIONAL_EVENT_TYPE = Any('social')
 
     def _quick_is_dance_event(self):
