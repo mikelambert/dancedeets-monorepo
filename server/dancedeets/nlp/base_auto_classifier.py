@@ -202,7 +202,12 @@ class DanceStyleEventClassifier(object):
             try:
                 formatted_log = log % args
             except TypeError:
-                logging.error('Error formatting log: %r %% %r', log, args)
+                logging.error(
+                    'Error formatting log for event %s: %r %% %r',
+                    self._classified_event.fb_event['info']['id'],
+                    log,
+                    args,
+                )
                 raise
         else:
             formatted_log = log
