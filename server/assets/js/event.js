@@ -546,7 +546,7 @@ class ExtraImages extends React.Component<{
     let i = 0;
     while (i < this.props.event.extraImageCount) {
       let source = null;
-      if (i == 0) {
+      if (i === 0) {
         // Ensure we get the magical 'height' calculated for us
         source = this.props.event.getFlyer({ width: 480 });
       } else {
