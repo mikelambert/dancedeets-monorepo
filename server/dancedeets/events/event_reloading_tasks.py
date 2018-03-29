@@ -1,3 +1,4 @@
+import datetime
 import logging
 
 from mapreduce import context
@@ -263,13 +264,36 @@ def yield_cleanup_verticals(fbl, db_event):
     if has_street and 'STREET' not in verticals:
         verticals += ['STREET']
 
-    if not verticals:
+    for vertical in set(verticals).difference(db_event.verticals):
+        mr.increment('adding-new-vertical-%s' % vertical)
+    for vertical in set(db_event.verticals).difference(verticals):
+        mr.increment('removing-old-vertical-%s' % vertical)
+
+    db_event.verticals = verticals
+    mr.increment('event-resave')
+    for vertical in db_event.verticals:
+        mr.increment('event-vertical-total-%s' % vertical)
+
+    if db_event.start_time < datetime.datetime.now():
+        mr.increment('event-resave-past')
+        for vertical in db_event.verticals:
+            mr.increment('event-vertical-past-%s' % vertical)
+    else:
+        mr.increment('event-resave-future')
+        for vertical in db_event.verticals:
+            mr.increment('event-vertical-future-%s' % vertical)
+
+    if verticals:
+        db_event.put()
+    else:
         admin_ids = [admin['id'] for admin in db_event.admins]
         if allow_deletes:
             db_event.key.delete()
         mr.increment('deleting-bad-event')
         sources = thing_db.Source.get_by_key_name(admin_ids)
         for source in sources:
+            if not source:
+                continue
             num_events = eventdata.DBEvent.query(eventdata.DBEvent.admin_fb_uids == source.graph_id).count(1000)
             if num_events == 0:
                 if allow_deletes:
