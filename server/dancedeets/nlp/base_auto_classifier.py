@@ -72,26 +72,16 @@ class RuleGenerator(type):
         cls.GOOD_DANCE_COMPETITION = Name(
             'GOOD_DANCE_COMPETITION', commutative_connected(Any(cls.GOOD_DANCE_FULL, cls.AMBIGUOUS_DANCE), cls.COMPETITIONS)
         )
-        cls.GOOD_DANCE_EVENT = Name(
-            'GOOD_DANCE_EVENT',
-            Any(
-                commutative_connected(cls.GOOD_DANCE_FULL, cls.EVENT_TYPE),
-                commutative_connected(cls.AMBIGUOUS_DANCE, dance_keywords.CLASS),
-            )
+        cls.GOOD_DANCE_EVENT = Name('GOOD_DANCE_EVENT', commutative_connected(cls.GOOD_DANCE_FULL, cls.EVENT_TYPE))
+        cls.GOOD_DANCE_EVENT_ROMANCE = Name('GOOD_DANCE_EVENT_ROMANCE', commutative_connected(cls.GOOD_DANCE_FULL, cls.EVENT_TYPE_ROMANCE))
+        cls.GOOD_DANCE_EVENT_SPANISH = Name('GOOD_DANCE_EVENT_SPANISH', commutative_connected(cls.GOOD_DANCE_FULL, cls.EVENT_TYPE_SPANISH))
+        cls.AMBIGUOUS_CLASS = Name('AMBIGUOUS_CLASS', commutative_connected(cls.AMBIGUOUS_DANCE, dance_keywords.CLASS))
+        cls.AMBIGUOUS_CLASS_ROMANCE = Name(
+            'AMBIGUOUS_CLASS_ROMANCE',
+            commutative_connected(cls.AMBIGUOUS_DANCE, Any(dance_keywords.CLASS, dance_keywords.ROMANCE_LANGUAGE_CLASS))
         )
-        cls.GOOD_DANCE_EVENT_ROMANCE = Name(
-            'GOOD_DANCE_EVENT_ROMANCE',
-            Any(
-                commutative_connected(cls.GOOD_DANCE_FULL, cls.EVENT_TYPE_ROMANCE),
-                commutative_connected(cls.AMBIGUOUS_DANCE, Any(dance_keywords.CLASS, dance_keywords.ROMANCE_LANGUAGE_CLASS)),
-            )
-        )
-        cls.GOOD_DANCE_EVENT_SPANISH = Name(
-            'GOOD_DANCE_EVENT_SPANISH',
-            Any(
-                commutative_connected(cls.GOOD_DANCE_FULL, cls.EVENT_TYPE_SPANISH),
-                commutative_connected(cls.AMBIGUOUS_DANCE, Any(dance_keywords.CLASS, dance_keywords.SPANISH_CLASS)),
-            )
+        cls.AMBIGUOUS_CLASS_SPANISH = Name(
+            'AMBIGUOUS_CLASS_SPANISH', commutative_connected(cls.AMBIGUOUS_DANCE, Any(dance_keywords.CLASS, dance_keywords.SPANISH_CLASS))
         )
 
 
@@ -331,12 +321,15 @@ class DanceStyleEventClassifier(object):
         if self._classified_event.language in ['es', 'pt']:
             event_type = self.EVENT_TYPE_SPANISH
             good_dance_event = self.GOOD_DANCE_EVENT_SPANISH
+            ambiguous_class = self.AMBIGUOUS_CLASS_SPANISH
         elif self._classified_event.language in ['fr', 'it']:
             event_type = self.EVENT_TYPE_ROMANCE
             good_dance_event = self.GOOD_DANCE_EVENT_ROMANCE
+            ambiguous_class = self.AMBIGUOUS_CLASS_ROMANCE
         else:
             event_type = self.EVENT_TYPE
             good_dance_event = self.GOOD_DANCE_EVENT
+            ambiguous_class = self.AMBIGUOUS_CLASS
 
         is_dance_ish = self.is_dance_ish()
 
@@ -352,6 +345,9 @@ class DanceStyleEventClassifier(object):
         # Has 'hiphop dance workshop/battle/audition'
         if self._title_has(good_dance_event):
             return 'title has good_dance-event_type'
+
+        if self._title_has(ambiguous_class) and is_dance_ish:
+            return 'title has ambiguous-style class and is-dance-y'
 
         # Has 'workshop' and ('hiphop' or 'tango') and seems dance-y
         # If the title contains a good keyword, and the body contains a bad keyword, this one will trigger (but the one below will not)
@@ -374,16 +370,27 @@ class DanceStyleEventClassifier(object):
         # Some super-basic language specialization
         if self._classified_event.language in ['es', 'pt']:
             good_dance_event = self.GOOD_DANCE_EVENT_SPANISH
+            ambiguous_class = self.AMBIGUOUS_CLASS_SPANISH
         elif self._classified_event.language in ['fr', 'it']:
             good_dance_event = self.GOOD_DANCE_EVENT_ROMANCE
+            ambiguous_class = self.AMBIGUOUS_CLASS_ROMANCE
         else:
             good_dance_event = self.GOOD_DANCE_EVENT
+            ambiguous_class = self.AMBIGUOUS_CLASS
+
+        is_dance_ish = self.is_dance_ish()
 
         if self._has(good_dance_event) and not self._title_has_other():
             return 'body has good dance event, and title does not have bad keywords'
 
         if self._short_lines_have(good_dance_event):
             return 'body has short line containing good dance event'
+
+        if self._has(ambiguous_class) and not self._title_has_other() and is_dance_ish:
+            return 'body has ambiguous class, and title does not have bad keywords, and is dance-y'
+
+        if self._short_lines_have(ambiguous_class) and is_dance_ish:
+            return 'body has short line containing ambiguous class, and is dance-y'
 
         # have some strong keywords on lines by themselves
         solo_lines_regex = self.GOOD_DANCE_FULL.hack_double_regex()[self._classified_event.boundaries]
@@ -396,6 +403,7 @@ class DanceStyleEventClassifier(object):
             deleted_length = len(line) - len(remaining_line)
             if 0.5 < 1.0 * deleted_length / len(alpha_line):
                 good_matches.add(solo_lines_regex.findall(line)[0])  # at most one keyword per line
+        self._log('Found %s good matches on lines by themselves: %s', len(good_matches), good_matches)
         if len(good_matches) >= 2:
             return 'found good keywords on lines by themselves: %s' % set(good_matches)
 
