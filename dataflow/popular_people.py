@@ -103,6 +103,23 @@ def ExportPeople((db_event, fb_event, attending)):
 
 def track_person(person_type, db_event, person, count_once_per):
     '''Yields json({person-type, category, city}) to 'count_once_per: id: name' '''
+    now = datetime.datetime.now()
+    how_old = now - db_event['start_time']
+    years_old = 1.0 * how_old.days / 365
+
+    num_verticals = len(db_event.get('verticals', []))
+    if not num_verticals:
+        return
+
+    # 0 years old is full weight
+    # 1 year old is half weight
+    # 3 years old is quarter weight
+    #
+    # 1 vertical is full weight
+    # 2 verticals is half weight
+    # 4 verticals is quarter weight
+    weight = 1.0 * (1.0 / (1 + years_old)) * (1.0 / num_verticals)
+
     base_key = {
         'person_type': person_type,
         'geoname_id': db_event['nearby_geoname_id'],
@@ -110,11 +127,8 @@ def track_person(person_type, db_event, person, count_once_per):
         'person_id': person['id'],
         'person_name': person.get('name'),
         'event_id': db_event.key.name,
+        'weight': weight
     }
-
-    key = base_key.copy()
-    key['category'] = ''
-    yield key
 
     for category in db_event.get('verticals', []):
         key = base_key.copy()
@@ -268,6 +282,7 @@ def GroupPeopleByCategory(data):
         'count_once_per': data['count_once_per'],
         'person_id': data['person_id'],
         'person_name': data['person_name'],
+        'weight': data['weight'],
     }
     # key contains {person_type, city, category}
     yield (new_key, new_value)
@@ -281,10 +296,11 @@ def CountPeopleInfos((key, people_infos)):
     for people_info_items in set(array_of_frozen_sets):
         people_info = dict(people_info_items)
         person_id = people_info['person_id']
+        weight = people_counts['weight']
         if person_id in people_counts:
-            people_counts[person_id] += 1
+            people_counts[person_id] += weight
         else:
-            people_counts[person_id] = 1
+            people_counts[person_id] = weight
         person_lookup[person_id] = people_info['person_name']
 
     # We use the person_id in there for repeat-stability when choosing the top people
