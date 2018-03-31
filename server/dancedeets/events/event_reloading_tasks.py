@@ -269,6 +269,7 @@ def yield_cleanup_verticals(fbl, db_event):
     for vertical in set(db_event.verticals).difference(verticals):
         mr.increment('removing-old-vertical-%s' % vertical)
 
+    old_verticals = db_event.verticals
     db_event.verticals = verticals
     mr.increment('event-resave')
     for vertical in db_event.verticals:
@@ -283,8 +284,11 @@ def yield_cleanup_verticals(fbl, db_event):
         for vertical in db_event.verticals:
             mr.increment('event-vertical-future-%s' % vertical)
 
+    changed = set(old_verticals) != set(verticals)
+
     if verticals:
-        db_event.put()
+        if changed:
+            db_event.put()
     else:
         admin_ids = [admin['id'] for admin in db_event.admins]
         if allow_deletes:
