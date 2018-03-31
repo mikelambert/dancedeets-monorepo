@@ -14,7 +14,7 @@ commutative_connected = grammar.commutative_connected
 
 
 def log_to_bucket(category):
-    def wrap_func(func):
+    def decorator(func):
         def outer_func(self, *args, **kwargs):
             self._log_category.append(category)
             try:
@@ -26,7 +26,7 @@ def log_to_bucket(category):
 
         return outer_func
 
-    return wrap_func
+    return decorator
 
 
 NEVER_TOKEN = Any('_NEVER_FOUND_TOKEN_WINVO:INDLKESP_')
@@ -85,6 +85,32 @@ class RuleGenerator(type):
         )
 
 
+def with_log_suppression(suppress_all_logs):
+    def decorator(func):
+        def wrapper(self, *args, **kwargs):
+            orig_suppress_all_logs = self._suppress_all_logs
+            try:
+                self._suppress_all_logs = suppress_all_logs
+                return func(self, *args, **kwargs)
+            finally:
+                self._suppress_all_logs = orig_suppress_all_logs
+
+        return wrapper
+
+    return decorator
+
+
+def only_debug_result(func):
+    no_debug_func = with_log_suppression(True)(func)
+
+    def decorator(self, *args, **kwargs):
+        result = no_debug_func(self, *args, **kwargs)
+        self._log('result of %s: %r', func.__name__, result)
+        return result
+
+    return decorator
+
+
 class DanceStyleEventClassifier(object):
     __metaclass__ = RuleGenerator
 
@@ -114,6 +140,7 @@ class DanceStyleEventClassifier(object):
         if debug is None:
             debug = runtime.is_local_appengine()
         self._debug = debug
+        self._suppress_all_logs = False
 
         self._logs = []
         self._log_category = ['global']
@@ -136,6 +163,7 @@ class DanceStyleEventClassifier(object):
         cls.finalize_class = dummy_finalize_class
 
     # utility methods
+    @only_debug_result
     def _title_has_other(self):
         for x in self.OTHER_REGEXES:
             result = self._title_has(x)
@@ -143,6 +171,7 @@ class DanceStyleEventClassifier(object):
                 return result
         return None
 
+    @only_debug_result
     def _has_other(self):
         for x in self.OTHER_REGEXES:
             result = self._has(x)
@@ -150,6 +179,7 @@ class DanceStyleEventClassifier(object):
                 return result
         return None
 
+    @only_debug_result
     def _short_lines_have_other(self):
         for x in self.OTHER_REGEXES:
             result = self._short_lines_have(x)
@@ -188,6 +218,8 @@ class DanceStyleEventClassifier(object):
         return result
 
     def _log(self, log, *args):
+        if self._suppress_all_logs:
+            return
         if args:
             try:
                 formatted_log = log % args
