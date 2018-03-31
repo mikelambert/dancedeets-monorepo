@@ -116,7 +116,7 @@ def track_person(person_type, db_event, person, count_once_per):
     key['category'] = ''
     yield key
 
-    for category in db_event.get('auto_categories', []):
+    for category in db_event.get('verticals', []):
         key = base_key.copy()
         key['category'] = category
         yield key
@@ -198,7 +198,7 @@ def GroupAttendenceByPerson(data):
     if data['category'] != '':
         return
     # If the event doesn't have a location, don't worry about using it to infer location
-    if data['category'] == 'Unknown':
+    if data['geoname_id'] is None:
         return
     yield data['person_id'], data['geoname_id']
 
