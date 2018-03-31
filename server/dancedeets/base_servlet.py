@@ -130,16 +130,17 @@ class BareBaseRequestHandler(webapp2.RequestHandler, FacebookMixinHandler):
             'user_agent': self.request.headers.get('user-agent', 'NO_USER_AGENT'),
         }
         logging.info(combined_log)
-        try:
-            for arg in sorted(self.request.GET):
-                logging.info("GET %r = %r", arg, self.request.GET.getall(arg))
-        except UnicodeDecodeError:
-            logging.info('Error processing GET due to UnicodeDecodeError: %s', http_request)
-        try:
-            for arg in sorted(self.request.POST):
-                logging.info("POST %r = %r", arg, self.request.POST.getall(arg))
-        except UnicodeDecodeError:
-            logging.info('Error processing POST due to UnicodeDecodeError: %s', http_request)
+        # fix this, combine into single log?
+        if self.request.GET:
+            try:
+                logging.info('GET: %r', dict(self.request.GET.items()))
+            except UnicodeDecodeError:
+                logging.info('Error processing GET due to UnicodeDecodeError: %s', http_request)
+        if self.request.POST:
+            try:
+                logging.info('POST: %r', dict(self.request.POST.items()))
+            except UnicodeDecodeError:
+                logging.info('Error processing POST due to UnicodeDecodeError: %s', http_request)
 
         user_agent = (self.request.user_agent or '').lower()
         self.indexing_bot = 'googlebot' in user_agent or 'bingbot' in user_agent
@@ -165,10 +166,11 @@ class BareBaseRequestHandler(webapp2.RequestHandler, FacebookMixinHandler):
 
         self.display['enable_page_level_ads'] = True
 
-        logging.info("Appengine Request Headers:")
-        for x in request.headers:
-            if x.lower().startswith('x-'):
-                logging.info("%s: %s", x, request.headers[x])
+        if False:  # disabled due to cost of writing logs
+            logging.info("Appengine Request Headers:")
+            for x in request.headers:
+                if x.lower().startswith('x-'):
+                    logging.info("%s: %s", x, request.headers[x])
 
     def _get_static_path_for(self, path):
         if self.request.app.prod_mode:
