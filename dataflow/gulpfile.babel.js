@@ -29,20 +29,17 @@ function generateArgString(args: { [string]: any }) {
 }
 
 function remoteJob(name, module, args) {
+  args.run_on_fraction = true;
   const jobName = name.toLowerCase().replace(/[^-a-z0-9]/, '-');
   const argsString = generateArgString(args);
-  console.log(
-    `/usr/local/bin/python -m ${module} --log=DEBUG --project dancedeets-hrd --job_name=${jobName} --runner DataflowRunner --staging_location ${bucket}/staging --temp_location ${bucket}/temp --output ${bucket}/output --setup_file ./setup.py --num_workers 50 ${argsString}`
-  );
-  return $.shell.task([
-    `/usr/local/bin/python -m ${module} --log=DEBUG --project dancedeets-hrd --job_name=${jobName} --runner DataflowRunner --staging_location ${bucket}/staging --temp_location ${bucket}/temp --output ${bucket}/output --setup_file ./setup.py --num_workers 50 ${argsString}`,
-  ]);
+  const command = `/usr/bin/python -m ${module} --log=DEBUG --project dancedeets-hrd --job_name=${jobName} --runner DataflowRunner --staging_location ${bucket}/staging --temp_location ${bucket}/temp --output ${bucket}/output --setup_file ./setup.py --num_workers 50 ${argsString}`;
+  return $.shell.task([command]);
 }
 
 function localJob(name, module, args) {
   const argsString = generateArgString(args);
   return $.shell.task([
-    `/usr/local/bin/python -m ${module} --log=DEBUG --run_locally=true ${argsString}`,
+    `/usr/bin/python -m ${module} --log=DEBUG --run_locally=true ${argsString}`,
   ]);
 }
 

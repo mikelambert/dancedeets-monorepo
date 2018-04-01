@@ -38,7 +38,11 @@ def ConvertToEntity(element):
     return helpers.entity_from_protobuf(element)
 
 
-def CountableEvent(db_event, ground_truth_events):
+def CountableEvent(db_event, ground_truth_events, run_on_fraction):
+    if run_on_fraction:
+        if db_event.key.name < '999' or db_event.key.name >= 'A':
+            return
+
     # Don't use auto-events to train...could have a runaway AI system there!
     #TODO: Use Constants
     if ':' in db_event.key.name:
@@ -104,7 +108,7 @@ def ExportPeople((db_event, fb_event, attending)):
 def track_person(person_type, db_event, person, count_once_per):
     '''Yields json({person-type, category, city}) to 'count_once_per: id: name' '''
     now = datetime.datetime.now()
-    how_old = now - db_event['start_time']
+    how_old = now - db_event['start_time'].replace(tzinfo=None)
     years_old = 1.0 * how_old.days / 365
 
     num_verticals = len(db_event.get('verticals', []))
@@ -296,7 +300,7 @@ def CountPeopleInfos((key, people_infos)):
     for people_info_items in set(array_of_frozen_sets):
         people_info = dict(people_info_items)
         person_id = people_info['person_id']
-        weight = people_counts['weight']
+        weight = people_info['weight']
         if person_id in people_counts:
             people_counts[person_id] += weight
         else:
@@ -361,9 +365,11 @@ def Logger(entity, prefix):
     yield entity
 
 
-def run_pipeline(project, pipeline_options, run_locally, args):
+def run_pipeline(project, pipeline_options, args):
     """Creates a pipeline that reads entities from Cloud Datastore."""
 
+    run_locally = args.run_locally
+    run_on_fraction = args.run_on_fraction
     ground_truth_events = args.ground_truth_events
     debug_attendees = args.debug_attendees
     want_top_attendees = args.want_top_attendees
@@ -387,7 +393,7 @@ def run_pipeline(project, pipeline_options, run_locally, args):
         'read from datastore' >> ReadFromDatastore(project, query._pb_from_query(q), num_splits=400) |
         'convert to entity' >> beam.Map(ConvertToEntity) |
         # Find the events we want to count, and expand all the admins/attendees
-        'filter events' >> beam.FlatMap(CountableEvent, ground_truth_events) |
+        'filter events' >> beam.FlatMap(CountableEvent, ground_truth_events, run_on_fraction) |
         'load fb attending' >> beam.ParDo(GetEventAndAttending()) |
         'export attendees' >> beam.FlatMap(ExportPeople)
     ) # yapf: disable
@@ -445,7 +451,7 @@ def run_pipeline(project, pipeline_options, run_locally, args):
             'group the attendee-debug info with the is-it-a-top-attendee info' >> beam.GroupByKey() |
             'filter for TOP_ATTENDEE' >> beam.FlatMap(DebugFilterForTopAttendee) |
             'build PRDebugAttendee' >> beam.ParDo(DebugBuildPRDebugAttendee(), timestamp) |
-            'write PRDebugAttendee to datastore (unbatched)' >> beam.ParDo(WriteToDatastoreSingle(), actually_save=not run_locally)
+            'write PRDebugAttendee to datastore (unbatched)' >> beam.ParDo(WriteToDatastoreSingle(), actually_save=not run_locally and not run_on_fraction)
         ) # yapf: disable
     """
     (output
@@ -464,6 +470,7 @@ def run_pipeline(project, pipeline_options, run_locally, args):
 def run():
     parser = argparse.ArgumentParser()
     parser.add_argument('--run_locally', dest='run_locally', default='', help='Run data subset and do not save.')
+    parser.add_argument('--run_on_fraction', dest='run_on_fraction', default='', help='Run data subset and do not save.')
     parser.add_argument('--debug_attendees', dest='debug_attendees', default=False, type=bool, help='Generate PRDebugAttendee data')
     parser.add_argument('--want_top_attendees', dest='want_top_attendees', default=False, type=bool, help='Generate PRCityCategory data')
     parser.add_argument('--person_locations', dest='person_locations', default=False, type=bool, help='Generate PRPersonCity data')
@@ -478,7 +485,7 @@ def run():
     pipeline_options = PipelineOptions(pipeline_args)
     pipeline_options.view_as(SetupOptions).save_main_session = True
     gcloud_options = pipeline_options.view_as(GoogleCloudOptions)
-    run_pipeline('dancedeets-hrd', gcloud_options, known_args.run_locally, known_args)
+    run_pipeline('dancedeets-hrd', gcloud_options, known_args)
 
 
 if __name__ == '__main__':

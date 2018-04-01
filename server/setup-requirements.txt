@@ -1,3 +1,5 @@
 # This module breaks GAE if we install it directly into the site-packages (a conflict?)
 # So let's just install it manually into our lib/ here
 requests==2.18.4
+# Necessary to get dataflow running/operating correctly, default Mac OS X version isn't new enough
+six==1.11.0
