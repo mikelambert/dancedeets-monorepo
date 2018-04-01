@@ -55,6 +55,11 @@ function isEventAdsenseSafe(event) {
   const sexyContent =
     description.includes('twerk') ||
     description.includes('queer') ||
+    description.includes('pole') ||
+    description.includes('burlesque') ||
+    // I have no idea why this is required,
+    // but adsense detected sexual content triggered on event 206873196500106
+    description.includes('k-pop') ||
     description.match(/\bcum\b/) ||
     event.annotations.categories.includes('Vogue');
   return !sexyContent;
