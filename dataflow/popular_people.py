@@ -77,6 +77,8 @@ class GetEventAndAttending(beam.DoFn):
                     logging.warning('Strange attending object: %s: %s', key, fb_event_attending)
             else:
                 logging.warning('Strange attending record: %s: %s', key, fb_event_attending_record)
+        else:
+            logging.info('Could not find attending for event %s', db_event.key.name)
 
 
 def ExportPeople((db_event, fb_event, attending)):

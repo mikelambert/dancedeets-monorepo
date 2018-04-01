@@ -88,6 +88,11 @@ def add_update_fb_event(
 
     post_pubsub = newly_created and allow_posting and event_types.should_show(e)
 
+    # Trigger lookup requests (these will be refreshed later, but we want them populated here at least)
+    fbl.request(fb_api.LookupEventWall, event_id)
+    fbl.request(fb_api.LookupEventAttending, event_id)
+    fbl.batch_fetch()
+
     fbl.clear_local_cache()
     send_email = newly_created and event_types.should_show(e)
     deferred.defer(after_add_event, e.id, fbl, send_email, post_pubsub)
