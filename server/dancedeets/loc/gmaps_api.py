@@ -148,7 +148,7 @@ def lookup_address(address, language=None, check_places=True):
             params['language'] = language
         place_json = places_api.get_json(**params)
         place_geocode = _build_geocode_from_json(place_json)
-        if place_geocode:
+        if place_geocode and 'formatted_address' in place_geocode.json_data:
             params = {'address': place_geocode.json_data['formatted_address']}
             if language:
                 params['language'] = language
