@@ -89,7 +89,8 @@ class CustomCommands(setuptools.Command):
 # so this dependency will not trigger anything to be installed unless a version
 # restriction is specified.
 REQUIRED_PACKAGES = [
-    'google-cloud-datastore',
+    # Keep this in sync with setup.sh
+    'google-cloud-datastore==1.3.0',
 ]
 
 setuptools.setup(
