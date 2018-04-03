@@ -214,7 +214,7 @@ def _find_best_geocode(s, language=None, check_places=True):
 def lookup_string(s, language=None, check_places=True):
     geocode, second_best_geocode = _find_best_geocode(s, language=language, check_places=check_places)
     if geocode:
-        if 'address_components' in geocode.json_data and 'geometry' in geocode.json_data:
+        if 'address_components' in geocode.json_data and 'geometry' in geocode.json_data and 'formatted_address' in geocode.json_data:
             return geocode
         elif 'formatted_address' in geocode.json_data:
             logging.info(
@@ -234,6 +234,10 @@ def lookup_string(s, language=None, check_places=True):
         if 'address_components' not in geocode.json_data and 'address_components' not in geocode.json_data:
             logging.info('Faking an empty address_components for now, since at least the latlong is correct')
             geocode.json_data['address_components'] = []
+
+        if 'formatted_address' not in geocode.json_data:
+            return None
+
         return geocode
     else:
         return None
