@@ -409,14 +409,41 @@ def run_pipeline(project, pipeline_options, args):
             'group by category' >> beam.GroupByKey() |
             'build top-people lists' >> beam.FlatMap(CountPeopleInfos)
         ) # yapf: disable
-    if want_top_attendees:
-        (
-            top_attendee_lists |
-            'convert dict to json' >> beam.ParDo(ConvertDictToText) |
-            'write json' >> WriteToText('gs://dancedeets-hrd.appspot.com/people-ranking-outputs/city-category/%s/data' % timestamp, file_name_suffix='.txt')
-            #'generate PRCityCategory database record' >> beam.ParDo(BuildPRCityCategory(), timestamp, 'PRCityCategory', TOP_CITY_N) |
-            #'write PRCityCategory to datastore (unbatched)' >> beam.ParDo(WriteToDatastoreSingle(), actually_save=not run_locally)
-        ) # yapf: disable
+        if want_top_attendees:
+            (
+                top_attendee_lists |
+                'convert dict to json' >> beam.ParDo(ConvertDictToText) |
+                'write json' >> WriteToText('gs://dancedeets-hrd.appspot.com/people-ranking-outputs/city-category/%s/data' % timestamp, file_name_suffix='.txt')
+                #'generate PRCityCategory database record' >> beam.ParDo(BuildPRCityCategory(), timestamp, 'PRCityCategory', TOP_CITY_N) |
+                #'write PRCityCategory to datastore (unbatched)' >> beam.ParDo(WriteToDatastoreSingle(), actually_save=not run_locally)
+            ) # yapf: disable
+
+        if debug_attendees:
+            attendee_event_debugging = (
+                produce_attendees |
+                'map city-attendee -> event' >> beam.FlatMap(DebugExportEventPeopleForGrouping) |
+                'group by city-attendee' >> beam.GroupByKey() |
+                'within city-attendee, group event_ids by admin_hash' >> beam.FlatMap(DebugGroupEventIds)
+            ) # yapf: disable
+
+            exploded_top_attendees = (
+                top_attendee_lists |
+                'explode the top attendees into a mapping: category-attendee -> YES' >> beam.FlatMap(DebugExplodeAttendeeList)
+                # We don't deal with duplicates, since it requires the objects (ie our dicts) to be hashable
+                # Instead, we rely on DebugFilterForTopAttendee to filter out duplicates created by the above
+                # | 'remove duplicates from multiple overlapping attendee-lists' >> beam.RemoveDuplicates()
+            ) # yapf: disable
+
+            (
+                # These both have the same keys:
+                # key contains {person_type, city, category, person_id}
+                (attendee_event_debugging, exploded_top_attendees) | beam.Flatten() |
+                # keys are {city, person_id}
+                'group the attendee-debug info with the is-it-a-top-attendee info' >> beam.GroupByKey() |
+                'filter for TOP_ATTENDEE' >> beam.FlatMap(DebugFilterForTopAttendee) |
+                'build PRDebugAttendee' >> beam.ParDo(DebugBuildPRDebugAttendee(), timestamp) |
+                'write PRDebugAttendee to datastore (unbatched)' >> beam.ParDo(WriteToDatastoreSingle(), actually_save=not run_locally and not run_on_fraction)
+            ) # yapf: disable
 
     if person_locations:
         build_person_cities = (
@@ -430,32 +457,6 @@ def run_pipeline(project, pipeline_options, args):
             #'write PRPersonCity to datastore (unbatched)' >> beam.ParDo(WriteToDatastoreSingle(), actually_save=not run_locally)
         ) # yapf: disable
 
-    if debug_attendees:
-        attendee_event_debugging = (
-            produce_attendees |
-            'map city-attendee -> event' >> beam.FlatMap(DebugExportEventPeopleForGrouping) |
-            'group by city-attendee' >> beam.GroupByKey() |
-            'within city-attendee, group event_ids by admin_hash' >> beam.FlatMap(DebugGroupEventIds)
-        ) # yapf: disable
-
-        exploded_top_attendees = (
-            top_attendee_lists |
-            'explode the top attendees into a mapping: category-attendee -> YES' >> beam.FlatMap(DebugExplodeAttendeeList)
-            # We don't deal with duplicates, since it requires the objects (ie our dicts) to be hashable
-            # Instead, we rely on DebugFilterForTopAttendee to filter out duplicates created by the above
-            # | 'remove duplicates from multiple overlapping attendee-lists' >> beam.RemoveDuplicates()
-        ) # yapf: disable
-
-        (
-            # These both have the same keys:
-            # key contains {person_type, city, category, person_id}
-            (attendee_event_debugging, exploded_top_attendees) | beam.Flatten() |
-            # keys are {city, person_id}
-            'group the attendee-debug info with the is-it-a-top-attendee info' >> beam.GroupByKey() |
-            'filter for TOP_ATTENDEE' >> beam.FlatMap(DebugFilterForTopAttendee) |
-            'build PRDebugAttendee' >> beam.ParDo(DebugBuildPRDebugAttendee(), timestamp) |
-            'write PRDebugAttendee to datastore (unbatched)' >> beam.ParDo(WriteToDatastoreSingle(), actually_save=not run_locally and not run_on_fraction)
-        ) # yapf: disable
     """
     (output
         | 'convert from entity' >> beam.Map(ConvertFromEntity)
