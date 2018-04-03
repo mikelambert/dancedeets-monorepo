@@ -284,6 +284,7 @@ def GroupPeopleByCategory(data):
     del new_key['count_once_per']
     del new_key['person_id']
     del new_key['person_name']
+    del new_key['weight']
     new_value = {
         'count_once_per': data['count_once_per'],
         'person_id': data['person_id'],

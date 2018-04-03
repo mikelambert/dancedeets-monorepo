@@ -29,7 +29,7 @@ function generateArgString(args: { [string]: any }) {
 }
 
 function remoteJob(name, module, args) {
-  args.run_on_fraction = true;
+  // args.run_on_fraction = true;
   const jobName = name.toLowerCase().replace(/[^-a-z0-9]/, '-');
   const argsString = generateArgString(args);
   const command = `/usr/bin/python -m ${module} --log=DEBUG --project dancedeets-hrd --job_name=${jobName} --runner DataflowRunner --staging_location ${bucket}/staging --temp_location ${bucket}/temp --output ${bucket}/output --setup_file ./setup.py --num_workers 50 ${argsString}`;
