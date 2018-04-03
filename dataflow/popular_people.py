@@ -40,7 +40,7 @@ def ConvertToEntity(element):
 
 def CountableEvent(db_event, ground_truth_events, run_on_fraction):
     if run_on_fraction:
-        if db_event.key.name < '999' or db_event.key.name >= 'A':
+        if hash(db_event.key.name) % 100 != 0:
             return
 
     # Don't use auto-events to train...could have a runaway AI system there!
