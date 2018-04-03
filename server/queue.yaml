@@ -22,3 +22,7 @@ queue:
   max_concurrent_requests: 1
   bucket_size: 1
   target: batch
+- name: default
+  rate: 5/s
+  bucket_size: 5
+  max_concurrent_requests: 0
