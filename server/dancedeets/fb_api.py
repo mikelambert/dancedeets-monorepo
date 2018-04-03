@@ -677,10 +677,12 @@ class FBAPI(CacheSystem):
                     ]:
                         # Handle errors as documented here: https://developers.facebook.com/docs/graph-api/using-graph-api/v2.0#errors
                         logging.warning("BatchLookup: Error code from FB server for %s: %s: %s", object_rpc_name, error_code, object_json)
+                        mr.increment('fb-lookups-errors-%s-%s' % (object_rpc_name, error_code))
                         if object_rpc_name not in cls.optional_keys:
                             object_is_bad = True
                     elif error_code:
                         logging.error("BatchLookup: Error code from FB server for %s: %s: %s", object_rpc_name, error_code, object_json)
+                        mr.increment('fb-lookups-errors-%s-%s' % (object_rpc_name, error_code))
                         if object_rpc_name not in cls.optional_keys:
                             object_is_bad = True
                     elif object_json == False:
