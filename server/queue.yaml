@@ -4,6 +4,11 @@ queue:
   max_concurrent_requests: 3
   bucket_size: 1
   target: batch
+- name: super-slow-queue
+  rate: 20/m
+  max_concurrent_requests: 1
+  bucket_size: 1
+  target: batch
 - name: fast-queue
   rate: 1/s
   max_concurrent_requests: 9
@@ -25,4 +30,5 @@ queue:
 - name: default
   rate: 5/s
   bucket_size: 5
-  max_concurrent_requests: 0
+  target: batch
+  max_concurrent_requests: 20
