@@ -436,9 +436,8 @@ def run_pipeline(project, pipeline_options, args):
 
             (
                 # These both have the same keys:
-                # key contains {person_type, city, category, person_id}
-                (attendee_event_debugging, exploded_top_attendees) | beam.Flatten() |
                 # keys are {city, person_id}
+                (attendee_event_debugging, exploded_top_attendees) | beam.Flatten() |
                 'group the attendee-debug info with the is-it-a-top-attendee info' >> beam.GroupByKey() |
                 'filter for TOP_ATTENDEE' >> beam.FlatMap(DebugFilterForTopAttendee) |
                 'build PRDebugAttendee' >> beam.ParDo(DebugBuildPRDebugAttendee(), timestamp) |
