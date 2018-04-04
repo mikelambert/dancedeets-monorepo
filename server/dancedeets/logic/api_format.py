@@ -290,12 +290,6 @@ def people_groupings(geocode, distance, skip_people):
                 logging.info('Search area >1000km, skipping person groupings')
                 # Too big a search area, not worth showing promoters or dancers
             else:
-                # TODO: Replace with a call to get_attendees_within (that also gets ADMIN people)
-                southwest_baseline, northeast_baseline = math.expand_bounds((center_latlng, center_latlng), cities_db.NEARBY_DISTANCE_KM)
-                distance_km_baseline = math.get_inner_box_radius_km(southwest_baseline, northeast_baseline)
-                if distance_km < distance_km_baseline:
-                    southwest = southwest_baseline
-                    northeast = northeast_baseline
                 logging.info('Searching for cities within %s', (southwest, northeast))
                 included_cities = cities_db.get_contained_cities((southwest, northeast))
                 biggest_cities = sorted(included_cities, key=lambda x: -x.population)[:10]
