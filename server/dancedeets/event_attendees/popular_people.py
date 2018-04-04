@@ -67,13 +67,15 @@ class PeopleRanking(object):
         self.person_type = person_type
         self.top_people_json = top_people_json
 
+    def name(self):
+        return 'PeopleRanking(geoname=%s, category=%s, person_type=%s)' % (self.geoname_id, self.category, self.person_type)
+
     def __repr__(self):
         return 'PeopleRanking(%s, %s, %s,\n%s\n)' % (self.geoname_id, self.category, self.person_type, self.top_people_json)
 
     @property
     def human_category(self):
-        # '' represents 'Overall'
-        return event_types.CATEGORY_LOOKUP.get(self.category, '')
+        return event_types.CATEGORY_LOOKUP.get(self.category)
 
     def worthy_top_people(self, person_index=10, cutoff=0.0):
         results = self._worthy_top_people(person_index, cutoff)
@@ -92,9 +94,9 @@ class PeopleRanking(object):
         # will be drastically different relative to the remainder in the scene.
         # So let's filter people out to ensure they're close to the top-person.
         if self.person_type == 'ATTENDEE':
-            minimum = 3
+            minimum = 0.5
         elif self.person_type == 'ADMIN':
-            minimum = 2
+            minimum = 0.25
         else:
             logging.error('Unknown person type: %s', self.person_type)
         top_person = self.top_people_json[person_index]
@@ -105,7 +107,8 @@ class PeopleRanking(object):
 def get_people_rankings_for_city_names(geoname_ids, attendees_only=False):
     start = time.time()
     pr_city_categories = get_people_rankings_for_city_names_sqlite(geoname_ids, attendees_only)
-    logging.info('Loading PRCityCategory took %0.3f seconds', time.time() - start)
+    category_list = ', '.join(sorted(set(x.category for x in pr_city_categories)))
+    logging.info('Loading PRCityCategory took %0.3f seconds: %s', time.time() - start, category_list)
 
     results = []
     for city_category in pr_city_categories:
@@ -218,9 +221,9 @@ def combine_rankings(rankings, max_people=0):
     for key in groupings:
         city, person_type, category = key
         if person_type == 'ATTENDEE':
-            limit = 3
+            limit = 0.5
         elif person_type == 'ADMIN':
-            limit = 2
+            limit = 0.25
         else:
             logging.error('Unknown person type: %s', person_type)
         # Remove low/bad frequency data

@@ -314,14 +314,14 @@ def people_groupings(geocode, distance, skip_people):
                     }
                     # These lists can get huge now...make sure we trim them down for what clients need!
                     for person_type, styles in groupings.iteritems():
-                        for style in event_types.STYLES + ['']:
-                            index_style_name = style.index_name if style else ''
-                            public_style_name = style.public_name if style else ''
+                        for style in event_types.STYLES:
+                            index_style_name = style.index_name
+                            public_style_name = style.public_name
                             good_style = None
-                            for style in styles:
-                                style_name, city = style.split(': ', 2)
+                            for try_style in styles:
+                                style_name, city = try_style.split(': ', 2)
                                 if popular_people.is_summed_area(city) and style_name == index_style_name:
-                                    good_style = style
+                                    good_style = try_style
                             if good_style:
                                 new_groupings[person_type][public_style_name] = styles[good_style][:10]
                     groupings = new_groupings

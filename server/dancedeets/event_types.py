@@ -48,23 +48,25 @@ class Style(object):
         return self.public_name.lower()
 
 
-BREAK = Style('BREAK', 'Breaking')
+BREAK = Style('BREAKING', 'Breaking')
 HIPHOP = Style('HIPHOP', 'Hip-Hop')
 HOUSE = Style('HOUSE', 'House')
-POP = Style('POP', 'Popping')
-LOCK = Style('LOCK', 'Locking')
-WAACK = Style('WAACK', 'Waacking')
+POP = Style('POPPING', 'Popping')
+LOCK = Style('LOCKING', 'Locking')
+WAACK = Style('WAACKING', 'Waacking')
 DANCEHALL = Style('DANCEHALL', 'Dancehall')
 VOGUE = Style('VOGUE', 'Vogue')
-KRUMP = Style('KRUMP', 'Krumping')
-TURF = Style('TURF', 'Turfing')
+KRUMP = Style('KRUMPING', 'Krumping')
+TURF = Style('TURFING', 'Turfing')
 LITEFEET = Style('LITEFEET', 'Litefeet')
-FLEX = Style('FLEX', 'Flexing')
+FLEX = Style('FLEXING', 'Flexing')
 BEBOP = Style('BEBOP', 'Bebop')
 ALLSTYLE = Style('ALLSTYLE', 'All-Styles')
 KIDS = Style('KIDS', 'Kids')
+STREET = Style('STREET', 'Street Dance')
 
 STYLES = [
+    STREET,
     BREAK,
     HIPHOP,
     HOUSE,

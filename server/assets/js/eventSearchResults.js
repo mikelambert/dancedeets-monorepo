@@ -413,7 +413,7 @@ class PersonList extends React.Component<
   constructor(props) {
     super(props);
     this.state = {
-      category: '',
+      category: 'Street Dance',
     };
   }
 
@@ -429,7 +429,7 @@ class PersonList extends React.Component<
     }
     const peopleList = this.props.people[this.state.category].slice(0, 10);
     const categories = this.props.categoryOrder.filter(
-      x => x === '' || this.props.people[x]
+      x => this.props.people[x]
     );
 
     const selector = (
