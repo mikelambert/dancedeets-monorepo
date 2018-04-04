@@ -49,6 +49,7 @@ def get_connection(database_name, fallback_database_name=None):
             start = time.time()
             _download_sqlite(db_path)
             timelog.log_time_since('Downloading PRCityCategory sqlite db', start)
+    logging.info('Opening db %s', db_path)
     conn = sqlite3.connect(db_path)
     # Cannot be shared between threads, be careful if making this global!
     return conn

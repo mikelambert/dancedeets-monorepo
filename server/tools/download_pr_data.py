@@ -31,13 +31,14 @@ def download_files():
     #    os.remove(os.path.join(path, filename))
 
     print 'Downloading CSV files'
-    commands.getoutput('gsutil -m cp -R -n gs://dancedeets-hrd.appspot.com/people-ranking-outputs/ %s' % path)
+    command = 'gsutil -m rsync -R -C -d gs://dancedeets-hrd.appspot.com/people-ranking-outputs/ %s/people-ranking-outputs/' % path
+    commands.getoutput(command)
 
 
 def iterate_most_recent(job_name):
     job_path = get_most_recent(job_name)
     for filename in os.listdir(job_path):
-        print 'Loading file %s' % filename
+        print 'Importing file %s' % filename
         for row in open(os.path.join(job_path, filename)):
             yield json.loads(row.strip())
 
