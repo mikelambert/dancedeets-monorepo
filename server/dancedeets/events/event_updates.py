@@ -173,7 +173,7 @@ def _inner_make_event_findable_for_fb_event(db_event, fb_dict, fb_event_attendin
     db_event.search_time_period = _event_time_period(db_event)
 
     db_event.event_keywords = event_classifier.relevant_keywords(fb_dict)
-    db_event.auto_categories = [x.index_name for x in categories.find_styles(fb_dict) + categories.find_event_types(fb_dict)]
+    db_event.auto_categories = [x.categories_name for x in categories.find_styles(fb_dict) + categories.find_event_types(fb_dict)]
 
     _inner_common_setup(db_event, disable_updates=disable_updates)
 
@@ -253,7 +253,7 @@ def _inner_make_event_findable_for_web_event(db_event, web_event, disable_update
     db_event.search_time_period = _event_time_period(db_event)
 
     db_event.event_keywords = event_classifier.relevant_keywords(db_event)
-    db_event.auto_categories = [x.index_name for x in categories.find_styles(db_event) + categories.find_event_types(db_event)]
+    db_event.auto_categories = [x.categories_name for x in categories.find_styles(db_event) + categories.find_event_types(db_event)]
 
     geocode = None
     if web_event.get('location_address'):

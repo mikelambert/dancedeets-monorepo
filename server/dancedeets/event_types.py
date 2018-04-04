@@ -36,30 +36,31 @@ EVENT_TYPES = [
 
 
 class Style(object):
-    def __init__(self, index_name, public_name):
+    def __init__(self, index_name, public_name, categories_name=None):
         self.index_name = index_name
         self.public_name = public_name
+        self.categories_name = categories_name or self.index_name
 
     def __repr__(self):
-        return 'Style(%s, %s)' % (self.index_name, self.public_name)
+        return 'Style(%s, %s, %s)' % (self.index_name, self.public_name, self.categories_name)
 
     @property
     def url_name(self):
         return self.public_name.lower()
 
 
-BREAK = Style('BREAKING', 'Breaking')
+BREAK = Style('BREAKING', 'Breaking', categories_name='BREAK')
 HIPHOP = Style('HIPHOP', 'Hip-Hop')
 HOUSE = Style('HOUSE', 'House')
-POP = Style('POPPING', 'Popping')
-LOCK = Style('LOCKING', 'Locking')
-WAACK = Style('WAACKING', 'Waacking')
+POP = Style('POPPING', 'Popping', categories_name='POP')
+LOCK = Style('LOCKING', 'Locking', categories_name='LOCK')
+WAACK = Style('WAACKING', 'Waacking', categories_name='WAACK')
 DANCEHALL = Style('DANCEHALL', 'Dancehall')
 VOGUE = Style('VOGUE', 'Vogue')
-KRUMP = Style('KRUMPING', 'Krumping')
-TURF = Style('TURFING', 'Turfing')
+KRUMP = Style('KRUMPING', 'Krumping', categories_name='KRUMP')
+TURF = Style('TURFING', 'Turfing', categories_name='TURF')
 LITEFEET = Style('LITEFEET', 'Litefeet')
-FLEX = Style('FLEXING', 'Flexing')
+FLEX = Style('FLEXING', 'Flexing', categories_name='FLEX')
 BEBOP = Style('BEBOP', 'Bebop')
 ALLSTYLE = Style('ALLSTYLE', 'All-Styles')
 KIDS = Style('KIDS', 'Kids')
