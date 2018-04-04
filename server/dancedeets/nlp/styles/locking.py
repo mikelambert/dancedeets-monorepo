@@ -40,5 +40,11 @@ class Style(style_base.Style):
         return event_types.STREET_EVENT_TYPES
 
     @classmethod
+    def get_preprocess_removal(cls):
+        return {
+            None: grammar.Any('brentford lock'),
+        }
+
+    @classmethod
     def _get_classifier(cls):
         return Classifier

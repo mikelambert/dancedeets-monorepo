@@ -10,6 +10,7 @@ connected = grammar.connected
 commutative_connected = grammar.commutative_connected
 
 KPOP = Any(
+    'korean\W?pop',
     'k\W?pop\w*',
     u'케이팝',  # korean kpop
     u'كي بوب',  # arabic kpop

@@ -382,7 +382,7 @@ STYLE_LITEFEET = Name('STYLE_LITEFEET', Any(
     "gettin[g']?\W?(?:lite|light)",
 ))
 STYLE_FLEX = Name('STYLE_FLEX', Any(
-    "flex(?:in[g']?|er[sz]?)",
+    "flex(?:in[g']?|er[sz])",
     "bone break(?:in[g']?|er[sz]?)",
 ))
 STYLE_BEBOP = Name(
