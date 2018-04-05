@@ -11,9 +11,9 @@ def get_decorated_user_events(fbl):
     for e in events:
         if 'picture' in e:
             e['image_url'] = e['picture']['data']['url']
+            del e['picture']
         else:
             e['image_url'] = 'https://graph.facebook.com/%s/picture' % e['id']
-        del e['picture']
         if 'admins' in e:
             e['admins'] = [x['name'] for x in e['admins']['data']]
         else:

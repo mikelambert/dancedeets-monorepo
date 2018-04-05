@@ -7,6 +7,7 @@ class EventType(object):
         self.index_name = index_name
         self.public_name = public_name
         self.public_name_plural = public_name_plural
+        self.categories_name = index_name
 
     def __repr__(self):
         return 'EventType(%s, %s, %s)' % (self.index_name, self.public_name, self.public_name_plural)
@@ -85,7 +86,7 @@ STYLES = [
     KIDS,
 ]
 
-CATEGORY_LOOKUP = dict([(x.index_name, x.public_name) for x in STYLES + EVENT_TYPES])
+CATEGORY_LOOKUP = dict([(x.categories_name, x.public_name) for x in STYLES + EVENT_TYPES])
 
 
 def humanize_categories(categories):
