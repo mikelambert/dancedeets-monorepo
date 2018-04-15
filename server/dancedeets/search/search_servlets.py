@@ -131,7 +131,7 @@ class RelevantHandler(SearchHandler):
                 response=json_search_response,
                 hasMoreResults=has_more_results,
                 showPeople=not skip_people,
-                categoryOrder=[''] + [x.public_name for x in event_types.STYLES],
+                categoryOrder=[x.public_name for x in event_types.STYLES],
                 query=form.url_params(),
             )
             self.setup_react_template('eventSearchResults.js', props)

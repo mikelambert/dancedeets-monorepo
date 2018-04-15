@@ -64,7 +64,7 @@ class _PersonList extends React.Component<
       );
     }
     const peopleList = this.props.people[this.state.category].slice(0, 10);
-    // const categories = this.props.categoryOrder.filter(x => x === '' || this.props.people[x]);
+    // const categories = this.props.categoryOrder.filter(x => this.props.people[x]);
     // {categories.map(x => <option key={x} value={x}>{x || 'Overall'}</option>)}
 
     if (!peopleList.length) {
