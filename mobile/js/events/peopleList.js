@@ -40,7 +40,7 @@ class _PersonList extends React.Component<
   constructor(props) {
     super(props);
     this.state = {
-      category: '',
+      category: 'Street Dance',
     };
   }
 
