@@ -60,7 +60,8 @@ class FacebookMixinHandler(object):
         expiry_days = int(self.request.get('expiry_days', 0)) or None
         if expiry_days:
             expiry_days += random.uniform(-0.5, 0.5)
-            self.fbl.db.oldest_allowed = datetime.datetime.now() - datetime.timedelta(days=expiry_days)
+            #TODO: API CUTOFF
+            #self.fbl.db.oldest_allowed = datetime.datetime.now() - datetime.timedelta(days=expiry_days)
 
 
 class BareBaseRequestHandler(webapp2.RequestHandler, FacebookMixinHandler):
