@@ -1,4 +1,4 @@
-Pillow==3.4.2
+Pillow==8.1.1
 cld2-cffi==0.1.4
 Shapely==1.5.17.post1
 dateparser==0.5.1
