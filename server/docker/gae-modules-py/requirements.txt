@@ -56,7 +56,7 @@ python-resize-image==1.1.11
 
 # ScrapingHub API
 scrapinghub==1.9.0
-scrapy==1.3.2
+scrapy==1.8.2
 scrapyjs==0.2
 html2text==2016.9.19
 
