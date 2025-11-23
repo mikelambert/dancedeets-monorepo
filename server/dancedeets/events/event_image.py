@@ -8,9 +8,7 @@ except ImportError:
     Image = None
     resizeimage = None
 import io
-import urllib2
-
-from google.appengine.api import images
+import urllib.error
 
 from dancedeets.util import fetch
 from dancedeets.util import gcs
@@ -32,7 +30,7 @@ CACHEABLE_SIZES = set([
 
 
 def test_jpeg(h, f):
-    if h[:4] in ['\xff\xd8\xff\xe2', '\xff\xd8\xff\xe1', '\xff\xd8\xff\xe0', '\xff\xd8\xff\xdb']:
+    if h[:4] in [b'\xff\xd8\xff\xe2', b'\xff\xd8\xff\xe1', b'\xff\xd8\xff\xe0', b'\xff\xd8\xff\xdb']:
         return 'jpeg'
 
 
@@ -68,9 +66,9 @@ def _raw_get_image(db_event, index):
         logging.info('Fetching image for event %s: %s', db_event.id, image_url)
         mimetype, response = fetch.fetch_data(image_url)
         return mimetype, response
-    except urllib2.HTTPError as e:
+    except urllib.error.HTTPError as e:
         raise DownloadError(e.code)
-    except urllib2.URLError:
+    except urllib.error.URLError:
         raise DownloadError(404)
 
 
@@ -104,8 +102,10 @@ def cache_image_and_get_size(event, index=None):
                 logging.exception('Error saving event image: %s', event.id)
             else:
                 raise
-        img = images.Image(response)
-        return img.width, img.height
+        # Use PIL to get image dimensions instead of App Engine images API
+        img_bytes = io.BytesIO(response)
+        with Image.open(img_bytes) as img:
+            return img.width, img.height
 
 
 def _render_image(event_id, index):
