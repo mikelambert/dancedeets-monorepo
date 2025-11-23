@@ -219,7 +219,7 @@ def canonicalize_event_data(db_event, version, event_wall=None, event_keywords=N
         # bwcompat that let's this work without the need to re-save
         text = '%s. %s' % (event_api['name'], event_api['description'])
         try:
-            event_api['language'] = language.detect(text)
+            event_api['language'] = language.detect_language(text)
         except ValueError:
             logging.exception('Error detecting language on event %s with text %r', db_event.id, text)
             event_api['language'] = None

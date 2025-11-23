@@ -4,10 +4,8 @@
 # Image processing
 Pillow>=10.0.0
 
-# Language detection (cld2-cffi is deprecated, use langdetect or pycld3)
-# cld2-cffi is not Python 3 compatible, consider alternatives:
-# langdetect>=1.0.9
-# or: pycld3>=0.22
+# Language detection (replaces deprecated cld2-cffi which is not Python 3 compatible)
+langdetect>=1.0.9
 
 # Geospatial
 Shapely>=2.0.0

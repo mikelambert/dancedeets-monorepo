@@ -343,7 +343,7 @@ def _inner_common_setup(db_event, disable_updates=None):
         _inner_cache_photo(db_event)
 
     text = '%s. %s' % (db_event.name, db_event.description)
-    db_event.json_props['language'] = language.detect(text)
+    db_event.json_props['language'] = language.detect_language(text)
 
 
 def _update_geodata(db_event, location_info, disable_updates):
