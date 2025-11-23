@@ -1,67 +1,161 @@
-import logging
-import pylibmc
+"""Memcache client abstraction layer.
 
-try:
-    from google.appengine.api import memcache as gae_memcache
-except ImportError:
-    logging.error('Failed to import memcache')
-    gae_memcache = None
+This provides a consistent memcache API that works with:
+- pylibmc (connecting to Memcached or Redis with memcache protocol)
+- A simple in-memory fallback for development
+
+For production, configure redis_memcache_endpoint in keys.
+"""
+
+import logging
+import os
 
 from dancedeets import keys
 
-
-def init_memcache():
-    client = pylibmc.Client([keys.get('redis_memcache_endpoint')],
-                            binary=True,
-                            username='dancedeets',
-                            password=keys.get('redis_memcache_password'))
-
-    # Non-existent functions necessary to adhere to the memcache API expected by gae_memcache's setup_client()
-    client.set_servers = None
-    client.forget_dead_hosts = None
-    client.debuglog = None
-    client.replace_multi = None
-    client.offset_multi = None
-    if gae_memcache:
-        # Try to use this redis memcache for all GAE stuff seamlessly
-        gae_memcache.setup_client(client)
-    return client
+# Try to import pylibmc
+try:
+    import pylibmc
+    HAS_PYLIBMC = True
+except ImportError:
+    logging.warning('pylibmc not available, using in-memory cache')
+    HAS_PYLIBMC = False
 
 
-from dancedeets.util import runtime
-if runtime.is_local_appengine():
-    memcache_client = gae_memcache._CLIENT
-else:
-    # TODO: enable this Redis memcache (and pay for it) when we need to switch off the built-in GAE memcache
-    # memcache_client = init_memcache()
-    pass
+class InMemoryCache:
+    """Simple in-memory cache for development/testing."""
 
-# Expose a simplified memcache_client API here...will we need it at all?
+    def __init__(self):
+        self._cache = {}
+
+    def get(self, key):
+        return self._cache.get(key)
+
+    def get_multi(self, keys):
+        return {k: self._cache[k] for k in keys if k in self._cache}
+
+    def set(self, key, value, time=0):
+        self._cache[key] = value
+        return True
+
+    def set_multi(self, mapping, time=0):
+        self._cache.update(mapping)
+        return []
+
+    def delete(self, key):
+        if key in self._cache:
+            del self._cache[key]
+            return True
+        return False
+
+    def delete_multi(self, keys):
+        deleted = False
+        for key in keys:
+            if key in self._cache:
+                del self._cache[key]
+                deleted = True
+        return deleted
+
+    def flush_all(self):
+        self._cache.clear()
+        return True
 
 
+def _init_memcache_client():
+    """Initialize and return the appropriate memcache client."""
+    # Check if we're in local development
+    is_local = os.environ.get('GAE_ENV', '') != 'standard' and not os.environ.get('GOOGLE_CLOUD_PROJECT')
+
+    # Try to get Redis/Memcache configuration
+    endpoint = keys.get('redis_memcache_endpoint') if keys else None
+
+    if endpoint and HAS_PYLIBMC:
+        try:
+            password = keys.get('redis_memcache_password')
+            if password:
+                client = pylibmc.Client(
+                    [endpoint],
+                    binary=True,
+                    username='dancedeets',
+                    password=password
+                )
+            else:
+                client = pylibmc.Client([endpoint], binary=True)
+
+            # Test the connection
+            client.get('__test__')
+            logging.info('Connected to memcache at %s', endpoint)
+            return client
+        except Exception as e:
+            logging.warning('Failed to connect to memcache at %s: %s', endpoint, e)
+
+    # Fall back to in-memory cache
+    logging.info('Using in-memory cache')
+    return InMemoryCache()
+
+
+# Initialize the client
+memcache_client = _init_memcache_client()
+
+
+# Public API functions
 def get(key):
-    return memcache_client.get(key)
+    """Get a value from cache."""
+    try:
+        return memcache_client.get(key)
+    except Exception as e:
+        logging.error('Memcache get error: %s', e)
+        return None
 
 
-def get_multi(keys):
-    return memcache_client.get_multi(keys)
+def get_multi(cache_keys):
+    """Get multiple values from cache."""
+    try:
+        return memcache_client.get_multi(cache_keys)
+    except Exception as e:
+        logging.error('Memcache get_multi error: %s', e)
+        return {}
 
 
 def set(key, value, time=0):
-    return memcache_client.set(key, value, time=time)
+    """Set a value in cache."""
+    try:
+        return memcache_client.set(key, value, time=time)
+    except Exception as e:
+        logging.error('Memcache set error: %s', e)
+        return False
 
 
 def set_multi(mapping, time=0):
-    return memcache_client.set(mapping, time=time)
-
-
-def flush_all():
-    return memcache_client.flush_all()
+    """Set multiple values in cache."""
+    try:
+        return memcache_client.set_multi(mapping, time=time)
+    except Exception as e:
+        logging.error('Memcache set_multi error: %s', e)
+        return list(mapping.keys())
 
 
 def delete(key):
-    return memcache_client.delete(key)
+    """Delete a value from cache."""
+    try:
+        return memcache_client.delete(key)
+    except Exception as e:
+        logging.error('Memcache delete error: %s', e)
+        return False
 
 
-def delete_multi(keys):
-    return memcache_client.delete_multi(keys)
+def delete_multi(cache_keys):
+    """Delete multiple values from cache."""
+    try:
+        return memcache_client.delete_multi(cache_keys)
+    except Exception as e:
+        logging.error('Memcache delete_multi error: %s', e)
+        return False
+
+
+def flush_all():
+    """Flush all values from cache."""
+    try:
+        return memcache_client.flush_all()
+    except Exception as e:
+        logging.error('Memcache flush_all error: %s', e)
+        return False

@@ -82,7 +82,7 @@ class BasicClassifiedEvent(object):
         self.end_time = end_time
         if not language:
             text = '%s. %s' % (fb_event['info'].get('name', ''), fb_event['info'].get('description', ''))
-            language = language_util.detect(text)
+            language = language_util.detect_language(text)
         self.language = language
         self.times = {}
 
