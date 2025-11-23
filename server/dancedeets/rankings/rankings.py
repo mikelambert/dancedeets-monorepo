@@ -1,10 +1,10 @@
 import datetime
 
-from google.appengine.api import memcache
+from dancedeets.util import memcache
 
-from mapreduce import control
-from mapreduce import model
-from mapreduce import operation as op
+# Note: MapReduce is no longer available in App Engine Flexible.
+# These imports are kept for reference but the functions won't work.
+# Use Cloud Dataflow for batch processing.
 
 from dancedeets.loc import gmaps_api
 from . import cities_db
@@ -41,7 +41,7 @@ def get_time_periods(timestamp):
 
 
 def make_key_name(key_name, **kwargs):
-    return '%s/%s' % (key_name, '/'.join('%s=%s' % (k, v) for (k, v) in sorted(kwargs.iteritems())))
+    return '%s/%s' % (key_name, '/'.join('%s=%s' % (k, v) for (k, v) in sorted(kwargs.items())))
 
 
 def count_event_for_city(dbevent):

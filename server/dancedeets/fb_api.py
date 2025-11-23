@@ -5,17 +5,15 @@ import json
 import logging
 import random
 import re
-import urllib
-import urllib2
+import urllib.parse
+import urllib.request
+
+import requests
+from google.cloud import ndb
 
 from dancedeets import facebook
-from google.appengine.ext import db
-from google.appengine.api import datastore
-from google.appengine.api import memcache
-from google.appengine.api import urlfetch
-from google.appengine.runtime import apiproxy_errors
-
 from dancedeets.util import fb_events
+from dancedeets.util import memcache
 from dancedeets.util import mr
 from dancedeets.util import properties
 from dancedeets.util import urls
@@ -52,17 +50,26 @@ OBJ_SOURCE_PAGE_FIELDS = (
 USERLESS_UID = '701004'
 
 
-class FacebookCachedObject(db.Model):
-    json_data = db.TextProperty()
-    data = properties.json_property(json_data)
-    date_cached = db.DateTimeProperty(auto_now=True, indexed=False)
+class FacebookCachedObject(ndb.Model):
+    json_data = ndb.TextProperty()
+    date_cached = ndb.DateTimeProperty(auto_now=True, indexed=False)
+
+    @property
+    def data(self):
+        if self.json_data:
+            return json.loads(self.json_data)
+        return None
+
+    @data.setter
+    def data(self, value):
+        self.json_data = json.dumps(value) if value else None
 
     def encode_data(self, obj_dict):
         self.data = obj_dict
 
     def decode_data(self):
         if not self.json_data:
-            self.delete()  # hack fix to get these objects purged from the system
+            self.key.delete()  # hack fix to get these objects purged from the system
         return self.data
 
 
@@ -90,7 +97,7 @@ class LookupType(object):
         if path is None:
             raise ValueError('Must pass non-empty path argument')
         if fields:
-            if isinstance(fields, basestring):
+            if isinstance(fields, str):
                 raise ValueError('Must pass in a list to fields: %r' % fields)
             kwargs['fields'] = ','.join(fields)
         if kwargs:
@@ -392,7 +399,7 @@ class CacheSystem(object):
         return '.'.join(self._normalize_key(key))
 
     def _normalize_key(self, key):
-        return tuple(re.sub(r'[."\']', '-', urllib.quote(x.encode('utf-8')) if x else 'None') for x in key)
+        return tuple(re.sub(r'[."\']', '-', urllib.parse.quote(x.encode('utf-8') if isinstance(x, str) else x) if x else 'None') for x in key)
 
     def key_to_cache_key(self, key):
         cls, oid = break_key(key)
@@ -429,20 +436,20 @@ class Memcache(CacheSystem):
 
     def fetch_keys(self, keys):
         cache_key_mapping = dict((self.key_to_cache_key(key), key) for key in keys)
-        objects = memcache.get_multi(cache_key_mapping.keys())
-        object_map = dict((cache_key_mapping[k], v) for (k, v) in objects.iteritems())
+        objects = memcache.get_multi(list(cache_key_mapping.keys()))
+        object_map = dict((cache_key_mapping[k], v) for (k, v) in objects.items())
 
         # DEBUG!
         #get_size = len(pickle.dumps(objects))
         #logging.info("BatchLookup: memcache get_multi return size: %s", get_size)
-        logging.info("BatchLookup: memcache get_multi objects found: %s", objects.keys())
+        logging.info("BatchLookup: memcache get_multi objects found: %s", list(objects.keys()))
         return object_map
 
     def save_objects(self, keys_to_objects):
         if not keys_to_objects:
             return
         memcache_set = {}
-        for k, v in keys_to_objects.iteritems():
+        for k, v in keys_to_objects.items():
             if self._is_cacheable(k, v):
                 cache_key = self.key_to_cache_key(k)
                 memcache_set[cache_key] = v
@@ -454,6 +461,9 @@ class Memcache(CacheSystem):
 
 
 class DBCache(CacheSystem):
+    # Maximum number of entities in a single get_multi call
+    MAX_ALLOWABLE_QUERIES = 500
+
     def __init__(self, fetching_uid):
         self.fetching_uid = fetching_uid
         self.db_updates = 0
@@ -465,37 +475,39 @@ class DBCache(CacheSystem):
     def fetch_keys(self, keys):
         cache_key_mapping = dict((self.key_to_cache_key(key), key) for key in keys)
         object_map = {}
-        max_in_queries = datastore.MAX_ALLOWABLE_QUERIES
-        cache_keys = cache_key_mapping.keys()
+        max_in_queries = self.MAX_ALLOWABLE_QUERIES
+        cache_keys = list(cache_key_mapping.keys())
         for i in range(0, len(cache_keys), max_in_queries):
-            objects = FacebookCachedObject.get_by_key_name(cache_keys[i:i + max_in_queries])
+            batch_keys = [ndb.Key(FacebookCachedObject, k) for k in cache_keys[i:i + max_in_queries]]
+            objects = ndb.get_multi(batch_keys)
             for o in objects:
                 if o:
                     # Sometimes objects get created without json_data, so we need to manually purge those from our DB and not pass them on to clients
                     if o.json_data:
                         if o.date_cached > self.oldest_allowed:
-                            object_map[cache_key_mapping[o.key().name()]] = o.decode_data()
+                            object_map[cache_key_mapping[o.key.string_id()]] = o.decode_data()
                     else:
-                        o.delete()
-        logging.info("BatchLookup: db lookup objects found: %s", object_map.keys())
+                        o.key.delete()
+        logging.info("BatchLookup: db lookup objects found: %s", list(object_map.keys()))
         return object_map
 
     def save_objects(self, keys_to_objects):
-        cache_keys = [self.key_to_cache_key(object_key) for object_key, this_object in keys_to_objects.iteritems()]
+        cache_keys = [self.key_to_cache_key(object_key) for object_key, this_object in keys_to_objects.items()]
         if cache_keys:
-            existing_objects = FacebookCachedObject.get_by_key_name(cache_keys)
+            batch_keys = [ndb.Key(FacebookCachedObject, k) for k in cache_keys]
+            existing_objects = ndb.get_multi(batch_keys)
         else:
             existing_objects = []
 
         db_objects_to_put = []
-        for obj, (object_key, this_object) in zip(existing_objects, keys_to_objects.iteritems()):
+        for obj, (object_key, this_object) in zip(existing_objects, keys_to_objects.items()):
             if not self._is_cacheable(object_key, this_object):
                 #TODO(lambert): cache the fact that it's a private-unshowable event somehow? same as deleted events?
                 logging.warning("BatchLookup: Looked up id %s but is not cacheable.", object_key)
                 continue
             cache_key = self.key_to_cache_key(object_key)
             if not obj:
-                obj = FacebookCachedObject(key_name=cache_key)
+                obj = FacebookCachedObject(id=cache_key)
             old_json_data = obj.json_data
             obj.encode_data(this_object)
             if old_json_data != obj.json_data:
@@ -503,14 +515,14 @@ class DBCache(CacheSystem):
                 db_objects_to_put.append(obj)
         if db_objects_to_put:
             try:
-                db.put(db_objects_to_put)
-            except apiproxy_errors.CapabilityDisabledError as e:
-                logging.warning('CapabilityDisabledError: %s', e)
+                ndb.put_multi(db_objects_to_put)
+            except Exception as e:
+                logging.warning('Error saving to datastore: %s', e)
 
     def invalidate_keys(self, keys):
         cache_keys = [self.key_to_cache_key(key) for key in keys]
-        entity_keys = [db.Key.from_path('FacebookCachedObject', x) for x in cache_keys]
-        db.delete(entity_keys)
+        entity_keys = [ndb.Key(FacebookCachedObject, x) for x in cache_keys]
+        ndb.delete_multi(entity_keys)
 
 
 class FBAPI(CacheSystem):
@@ -553,25 +565,24 @@ class FBAPI(CacheSystem):
                 post_args["access_token"] = token
             else:
                 args["access_token"] = token
-        post_data = None if post_args is None else urls.urlencode(post_args)
-        f = urllib.urlopen("https://graph.facebook.com/" + path + "?" + urls.urlencode(args), post_data)
-        result = f.read()
-        return json.loads(result)
+        url = "https://graph.facebook.com/" + path + "?" + urls.urlencode(args)
+        if post_args:
+            response = requests.post(url, data=post_args, timeout=DEADLINE)
+        else:
+            response = requests.get(url, timeout=DEADLINE)
+        return response.json()
 
     @staticmethod
     def _map_rpc_to_data(object_rpc):
-        if isinstance(object_rpc, urllib2.addinfourl):
-            text = object_rpc.read()
-            return json.loads(text)
-        else:
+        # object_rpc is now a requests Response or Future
+        if hasattr(object_rpc, 'json'):
+            # It's a requests Response
             try:
-                result = object_rpc.get_result()
-                if result.status_code != 200:
-                    logging.warning("BatchLookup: Error downloading, error code is %s, body is %s", result.status_code, result.content)
-                if result.status_code in [200, 400]:
-                    text = result.content
-                    return json.loads(text)
-            except urlfetch.DownloadError, e:
+                if object_rpc.status_code != 200:
+                    logging.warning("BatchLookup: Error downloading, error code is %s, body is %s", object_rpc.status_code, object_rpc.text)
+                if object_rpc.status_code in [200, 400]:
+                    return object_rpc.json()
+            except requests.exceptions.RequestException as e:
                 logging.warning("BatchLookup: Error downloading: %s", e)
         return None
 
@@ -583,12 +594,8 @@ class FBAPI(CacheSystem):
         else:
             post_args["access_token"] = '%s|%s' % (facebook.FACEBOOK_CONFIG['app_id'], facebook.FACEBOOK_CONFIG['secret_key'])
         post_args["include_headers"] = False  # Don't need to see all the caching headers per response
-        post_data = None if post_args is None else urls.urlencode(post_args)
-        try:
-            rpc = urlfetch.create_rpc(deadline=DEADLINE)
-            urlfetch.make_fetch_call(rpc, "https://graph.facebook.com/", post_data, "POST")
-        except AssertionError:
-            rpc = urllib2.urlopen("https://graph.facebook.com/", data=post_data, timeout=DEADLINE)
+        # Use requests library instead of urlfetch
+        rpc = requests.post("https://graph.facebook.com/", data=post_args, timeout=DEADLINE)
         self.fb_fetches += len(batch_list)
         return rpc, token
 
@@ -608,7 +615,7 @@ class FBAPI(CacheSystem):
 
         # fetch RPCs
         fetched_objects = {}
-        for object_key, (object_rpc, object_token) in object_keys_to_rpcs.iteritems():
+        for object_key, (object_rpc, object_token) in object_keys_to_rpcs.items():
             cls, oid = break_key(object_key)
             parts_to_urls = cls.get_lookups(oid)
             mini_batch_list = [dict(name=part_key, relative_url=url) for (part_key, url) in parts_to_urls]
@@ -736,7 +743,7 @@ class FBLookup(object):
             'fb_uid', 'access_token', 'allow_cache', 'allow_memcache_read', 'allow_memcache_write', 'allow_dbcache', 'resave_to_memcache',
             'debug'
         ])
-        newdict = dict(kv for kv in self.__dict__.iteritems() if kv[0] in keys)
+        newdict = dict(kv for kv in self.__dict__.items() if kv[0] in keys)
         return 'FBLookup(%r)' % newdict
 
     def __getstate__(self):
@@ -871,7 +878,7 @@ class FBLookup(object):
     def _cleanup_object_map(object_map):
         """NOTE: modifies object_map in-place"""
         # Clean up objects
-        for k, v in object_map.iteritems():
+        for k, v in object_map.items():
             cls, oid = break_key(k)
             object_map[k] = cls.cleanup_data(v)
         return object_map

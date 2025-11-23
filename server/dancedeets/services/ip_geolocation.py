@@ -4,12 +4,12 @@ import json
 import logging
 import os
 import time
-import urllib2
+import urllib.request
 
-from google.appengine.api import memcache
 from google.cloud import datastore
 from google.cloud import exceptions
 
+from dancedeets.util import memcache
 from dancedeets.util import runtime
 from dancedeets.util import timelog
 
@@ -77,12 +77,10 @@ def get_location_data_for(ip):
         #TODO: consider using http://geoiplookup.net/ , which might offer better granularity/resolution
         url = 'http://freegeoip.net/json/%s' % ip
         start = time.time()
-        opener = urllib2.build_opener()
-        opener.addheaders = [(
-            'User-agent',
-            'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.132 Safari/537.36'
-        )]
-        results = opener.open(url).read()
+        req = urllib.request.Request(url, headers={
+            'User-agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.132 Safari/537.36'
+        })
+        results = urllib.request.urlopen(req).read()
         timelog.log_time_since('Getting IPData', start)
         try:
             data = json.loads(results)

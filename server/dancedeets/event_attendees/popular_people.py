@@ -4,7 +4,6 @@ import logging
 import re
 import time
 
-from google.appengine.api import memcache
 from google.cloud import ndb
 from google.cloud import datastore
 
@@ -12,6 +11,7 @@ from dancedeets import app
 from dancedeets import base_servlet
 from dancedeets import event_types
 from dancedeets.rankings import cities_db
+from dancedeets.util import memcache
 from dancedeets.util import runtime
 from . import popular_people_sqlite
 
