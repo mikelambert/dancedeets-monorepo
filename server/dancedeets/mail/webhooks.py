@@ -1,12 +1,12 @@
 import json
 import logging
-import webapp2
 
 from dancedeets import app
 from dancedeets import keys
 from dancedeets.events import event_emails
 from dancedeets.mail import mailchimp_api
 from dancedeets.users import users
+from dancedeets.util.flask_adapter import BaseHandler
 """
 type=upemail&fired_at=2017-04-23+08%3A08%3A31&data%5Bnew_id%5D=50696b797a&data%5Bnew_email%5D=mlambert%2Btest%40gmail.com&data%5Bold_email%5D=mlambert%40gmail.com&data%5Blist_id%5D=93ab23d636"
 aka:
@@ -20,7 +20,7 @@ aka:
 
 
 @app.route('/webhooks/mailchimp')
-class MailchimpWebhookPageHandler(webapp2.RequestHandler):
+class MailchimpWebhookPageHandler(BaseHandler):
     def handle(self):
         logging.info('Mailchimp webhook: %s', self.request)
         if self.request.get('secret_key') != keys.get('mailchimp_webhook_secret'):
@@ -49,7 +49,7 @@ class MailchimpWebhookPageHandler(webapp2.RequestHandler):
 
 
 @app.route('/webhooks/mandrill')
-class MandrillWebhookPageHandler(webapp2.RequestHandler):
+class MandrillWebhookPageHandler(BaseHandler):
     def handle(self):
         logging.info('Mandrill webhook: %s', self.request)
         if self.request.get('secret_key') != keys.get('mandrill_webhook_secret'):

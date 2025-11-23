@@ -1,7 +1,6 @@
-import webapp2
-
 from dancedeets import app
 from dancedeets import base_servlet
+from dancedeets.util.flask_adapter import BaseHandler
 from . import rankings
 
 
@@ -37,13 +36,13 @@ class RankingsHandler(base_servlet.BaseRequestHandler):
 
 
 @app.route('/tasks/compute_event_rankings')
-class ComputeEventRankingsHandler(webapp2.RequestHandler):
+class ComputeEventRankingsHandler(BaseHandler):
     def get(self):
         vertical = self.request.get('vertical', 'STREET')
         rankings.begin_event_ranking_calculations(vertical)
 
 
 @app.route('/tasks/compute_user_rankings')
-class ComputeUserRankingsHandler(webapp2.RequestHandler):
+class ComputeUserRankingsHandler(BaseHandler):
     def get(self):
         rankings.begin_user_ranking_calculations()

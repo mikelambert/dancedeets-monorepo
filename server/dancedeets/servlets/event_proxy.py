@@ -1,13 +1,12 @@
-import webapp2
-
 from dancedeets import app
 from dancedeets.events import eventdata
 from dancedeets.events import event_image
 from dancedeets.util import urls
+from dancedeets.util.flask_adapter import BaseHandler
 
 
 @app.route(r'/events/image_proxy/(%s)(?:/(\d+|manual))?/?' % urls.EVENT_ID_REGEX)
-class ImageProxyHandler(webapp2.RequestHandler):
+class ImageProxyHandler(BaseHandler):
     """Proxies images for use by twitter, where it doesn't need to respect the FB cache server's /robots.txt."""
 
     def get(self, event_id, index=None):

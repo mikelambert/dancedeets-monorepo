@@ -2,14 +2,14 @@ import hashlib
 import hmac
 import json
 import logging
-import urllib
-import webapp2
+import urllib.parse
 
 from dancedeets import app
 from dancedeets import facebook
 from dancedeets import fb_api
 from dancedeets import keys
 from dancedeets.users import users
+from dancedeets.util.flask_adapter import BaseHandler
 from . import event_pipeline
 from . import potential_events
 from . import thing_db
@@ -18,7 +18,7 @@ from . import thing_db
 # curl 'http://dev.dancedeets.com:8080/webhooks/user' --data '{"object": "user","entry":[{"changed_fields":["events"],"id": "701004"}]}'
 # curl 'http://dev.dancedeets.com:8080/webhooks/user' --data '{"entry": [{"time": 1492571621, "changes": [{"field": "events", "value": {"event_id": 4444444444, "verb": "accept"}}], "id": "701004", "uid": "701004"}], "object": "user"}'
 @app.route('/webhooks/user')
-class WebhookPageHandler(webapp2.RequestHandler):
+class WebhookPageHandler(BaseHandler):
     def get(self):
         if self.request.get('hub.mode') == 'subscribe':
             if self.request.get('hub.verify_token') != keys.get('fb_webhook_verify_token'):
@@ -41,7 +41,7 @@ class WebhookPageHandler(webapp2.RequestHandler):
             return
 
         logging.info("Request body: %r", self.request.body)
-        escaped_body = urllib.unquote_plus(self.request.body.strip('='))
+        escaped_body = urllib.parse.unquote_plus(self.request.body.decode('utf-8').strip('='))
         json_body = json.loads(escaped_body)
         logging.info("json_request: %s", json.dumps(json_body))
         if json_body['object'] == 'user':
@@ -53,7 +53,7 @@ class WebhookPageHandler(webapp2.RequestHandler):
                 event_ids = []
                 for change in entry['changes']:
                     if change['field'] == 'events':
-                        event_ids.append(unicode(change['value']['event_id']))
+                        event_ids.append(str(change['value']['event_id']))
 
                 discovered_list = []
                 for event_id in event_ids:

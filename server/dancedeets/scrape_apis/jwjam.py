@@ -5,14 +5,14 @@ site.addsitedir('lib-local')
 from google.cloud import datastore
 import json
 import logging
-import urllib
-import urllib2
-import webapp2
+import urllib.parse
+import urllib.request
 from dancedeets import app
 from dancedeets import keys
 from dancedeets.events import web_events_reloading
 from dancedeets.events import namespaces
 from dancedeets.util import dates
+from dancedeets.util.flask_adapter import BaseHandler
 
 logging.getLogger().setLevel(logging.INFO)
 
@@ -21,8 +21,8 @@ def make_request(server, path, params):
     new_params = params.copy()
     new_params['scrapinghub_key'] = keys.get('scrapinghub_key')
     data = json.dumps(new_params)
-    quoted_data = urllib.quote_plus(data)
-    f = urllib2.urlopen('http://%s/%s' % (server, path), quoted_data)
+    quoted_data = urllib.parse.quote_plus(data)
+    f = urllib.request.urlopen('http://%s/%s' % (server, path), quoted_data.encode('utf-8'))
     result = f.read()
     return result
 
@@ -86,7 +86,7 @@ def fetch_updates():
 
 
 @app.route('/tasks/scrape_apis/jwjam')
-class MemoryUsers(webapp2.RequestHandler):
+class JwjamScrapeHandler(BaseHandler):
     def get(self):
         fetch_updates()
         self.response.out.write('Done!')
