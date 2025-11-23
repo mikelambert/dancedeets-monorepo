@@ -7,8 +7,8 @@ import pprint
 import time
 
 from google.cloud import ndb
-from google.appengine.api import search
 
+from dancedeets.util import search_compat as search
 from dancedeets import event_types
 from dancedeets.events import eventdata
 from dancedeets.util import dates
@@ -40,8 +40,8 @@ class DisplayEvent(ndb.Model):
             display_event = cls(id=db_event.id)
             # The event_keywords are actually _BaseValue objects, not strings.
             # So they fail json serialization, and must be converted manually here.
-            keywords = [unicode(x) for x in db_event.event_keywords]
-            categories = [unicode(x) for x in db_event.auto_categories]
+            keywords = [str(x) for x in db_event.event_keywords]
+            categories = [str(x) for x in db_event.auto_categories]
 
             if db_event.has_image:
                 picture = {

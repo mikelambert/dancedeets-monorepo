@@ -1,7 +1,8 @@
 import re
 
 from google.cloud import ndb
-from google.appengine.api.search import search
+
+from dancedeets.util import search_compat as search
 
 DATETIME_FORMAT = '%Y-%m-%dT%H:%M:%S'
 
@@ -23,7 +24,9 @@ class StudioClass(ndb.Model):
             teacher = kwargs['teacher']
             computed_id = self.compute_id(studio_name, start_time, teacher)
             kwargs['id'] = computed_id
-            search._CheckDocumentId(kwargs['id'])
+            # Validate document ID format (max 500 chars, no spaces)
+            if len(kwargs['id']) > 500 or ' ' in kwargs['id']:
+                raise ValueError("Invalid document ID: %s" % kwargs['id'])
         super(StudioClass, self).__init__(**kwargs)
 
     @classmethod

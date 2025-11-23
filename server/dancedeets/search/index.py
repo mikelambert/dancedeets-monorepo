@@ -1,9 +1,8 @@
 import logging
 
-from google.appengine.ext import db
 from google.cloud import ndb
-from google.appengine.api import search
 
+from dancedeets.util import search_compat as search
 from dancedeets.util import deferred
 
 MAX_OBJECTS = 100000
@@ -36,20 +35,13 @@ class BaseIndex(object):
 
     @classmethod
     def _get_id(cls, obj):
-        if cls._is_ndb():
-            if not isinstance(obj, ndb.Key):
-                # Turn objects into keys
-                key = obj.key
-            else:
-                key = obj
-            obj_id = key.string_id()
+        # Cloud NDB only - old db module not supported
+        if not isinstance(obj, ndb.Key):
+            # Turn objects into keys
+            key = obj.key
         else:
-            if not isinstance(obj, db.Key):
-                # Turn objects into keys
-                key = obj.key()
-            else:
-                key = obj
-            obj_id = key.name()
+            key = obj
+        obj_id = key.string_id()
         return obj_id
 
     @classmethod
@@ -101,10 +93,8 @@ class BaseIndex(object):
     @classmethod
     def rebuild_from_query(cls, force=False):
         logging.info("Loading Index")
-        if cls._is_ndb():
-            db_query = cls.obj_type.query(*cls._get_query_params_for_indexing())
-        else:
-            db_query = cls.obj_type.all()
+        # Cloud NDB only
+        db_query = cls.obj_type.query(*cls._get_query_params_for_indexing())
         object_keys = db_query.fetch(MAX_OBJECTS, keys_only=True)
         object_ids = set(cls._get_id(x) for x in object_keys)
 
@@ -148,10 +138,8 @@ class BaseIndex(object):
     def _save_ids(cls, object_ids):
         # TODO(lambert): how will we ensure we only update changed events?
         logging.info("Loading %s objects", len(object_ids))
-        if cls._is_ndb():
-            objects = cls.obj_type.get_by_ids(object_ids)
-        else:
-            objects = cls.obj_type.get_by_key_name(object_ids)
+        # Cloud NDB only
+        objects = cls.obj_type.get_by_ids(object_ids)
         if None in objects:
             logging.error("Lookup returned at least one None!")
         objects = [x for x in objects if x]
