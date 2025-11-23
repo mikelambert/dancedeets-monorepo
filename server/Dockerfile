@@ -1,17 +1,81 @@
-FROM gcr.io/dancedeets-hrd/gae-modules-py
+# DanceDeets App Engine Flexible Environment Dockerfile
+# Multi-stage build for Python + Node.js + Nginx
 
-# Build for GAE Flex deployment
-# Depends on the dockerfiles built in docker/
+FROM python:3.11-slim-bookworm
 
-# We want this fix for Python 2.7's multiprocessing.pool:
-# https://github.com/python/cpython/commit/5084ff7ddfe68969d95af12075016f309718aea8#diff-2d95253d6de7bbeebbeb131c5f3aecd9
-# But this is in Python 2.7.14, which won't be in Debian or GCE for a looooong time:
-# https://github.com/GoogleCloudPlatform/python-compat-runtime/issues/95#issuecomment-304770651
-# So instead, let's monkeypatch this file here...
-ADD ./dancedeets/hacks/fixed_multiprocessing_pool.py /usr/lib/python2.7/multiprocessing/pool.py
+# Set environment variables
+ENV PYTHONUNBUFFERED=1 \
+    PYTHONDONTWRITEBYTECODE=1 \
+    PIP_NO_CACHE_DIR=1 \
+    PIP_DISABLE_PIP_VERSION_CHECK=1 \
+    NODE_ENV=production
 
-# But let's change the final script to run node *and* python *and* nginx servers
-ADD run-servers.sh /usr/local/bin/run-servers.sh
-ENTRYPOINT ["bash", "run-servers.sh"]
+# Install system dependencies
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    # Build tools
+    build-essential \
+    curl \
+    git \
+    ca-certificates \
+    # For nginx
+    nginx \
+    # For memcached (pylibmc)
+    libmemcached-dev \
+    libsasl2-dev \
+    # For GEOS/Shapely
+    libgeos-dev \
+    # For Pillow
+    libjpeg-dev \
+    libpng-dev \
+    zlib1g-dev \
+    # For image processing
+    imagemagick \
+    gifsicle \
+    # For lxml/xml processing
+    libxml2-dev \
+    libxslt1-dev \
+    # Misc
+    netbase \
+    && rm -rf /var/lib/apt/lists/*
 
-ADD . /app/
+# Install Node.js 20 LTS
+RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - \
+    && apt-get install -y nodejs \
+    && rm -rf /var/lib/apt/lists/*
+
+# Create working directory
+WORKDIR /app
+
+# Install Python dependencies first (for caching)
+COPY docker/gae-modules/requirements.txt /tmp/requirements-base.txt
+COPY docker/gae-modules-py/requirements.txt /tmp/requirements-app.txt
+
+# Create a combined requirements file and install
+RUN pip install --upgrade pip setuptools wheel \
+    && pip install gunicorn gevent \
+    && pip install -r /tmp/requirements-base.txt || true \
+    && pip install -r /tmp/requirements-app.txt || true
+
+# Install Node.js dependencies for the render server
+COPY package.json package-lock.json* /app/
+RUN npm install --omit=dev || true
+
+# Copy application code
+COPY . /app/
+
+# Configure nginx (ensure it can write to required directories)
+RUN mkdir -p /var/lib/nginx/body /var/lib/nginx/proxy /var/lib/nginx/fastcgi /run \
+    && chown -R www-data:www-data /var/lib/nginx
+
+# Make startup script executable
+RUN chmod +x /app/run-servers.sh
+
+# Expose the port that App Engine expects
+EXPOSE 8080
+
+# Health check endpoint
+HEALTHCHECK --interval=30s --timeout=10s --start-period=60s --retries=3 \
+    CMD curl -f http://localhost:8080/_ah/health || exit 1
+
+# Run the startup script
+ENTRYPOINT ["bash", "/app/run-servers.sh"]
