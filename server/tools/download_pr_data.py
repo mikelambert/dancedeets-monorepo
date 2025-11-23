@@ -1,12 +1,12 @@
 #!/usr/bin/python
 #
 # import PR data into sqlite
-import commands
 import json
 import getpass
 import os
 import site
 import sqlite3
+import subprocess
 
 site.addsitedir('lib-local')
 
@@ -27,20 +27,21 @@ def download_files():
     except OSError:
         pass
     #for filename in os.listdir(path):
-    #    print 'deleting', filename
+    #    print('deleting', filename)
     #    os.remove(os.path.join(path, filename))
 
-    print 'Downloading CSV files'
+    print('Downloading CSV files')
     command = 'gsutil -m rsync -R -C -d gs://dancedeets-hrd.appspot.com/people-ranking-outputs/ %s/people-ranking-outputs/' % path
-    commands.getoutput(command)
+    subprocess.run(command, shell=True)
 
 
 def iterate_most_recent(job_name):
     job_path = get_most_recent(job_name)
     for filename in os.listdir(job_path):
-        print 'Importing file %s' % filename
-        for row in open(os.path.join(job_path, filename)):
-            yield json.loads(row.strip())
+        print('Importing file %s' % filename)
+        with open(os.path.join(job_path, filename)) as f:
+            for row in f:
+                yield json.loads(row.strip())
 
 
 def get_most_recent(job_name):

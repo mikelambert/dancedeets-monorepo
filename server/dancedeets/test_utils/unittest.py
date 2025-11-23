@@ -4,7 +4,7 @@ from __future__ import absolute_import
 from unittest import *
 from unittest import TestCase as RealTestCase
 
-from google.appengine.ext import testbed
+from dancedeets.test_utils import testbed_compat as testbed
 
 from dancedeets import keys
 from dancedeets.loc import gmaps_stub
