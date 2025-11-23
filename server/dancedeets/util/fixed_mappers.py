@@ -2,7 +2,7 @@ import logging
 
 from google.appengine.api import datastore_errors
 from google.appengine.ext import db
-from google.appengine.ext import ndb
+from google.cloud import ndb
 
 from dancedeets.compat.mapreduce import context
 from dancedeets.compat.mapreduce import handlers

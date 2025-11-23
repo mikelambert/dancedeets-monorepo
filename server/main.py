@@ -26,10 +26,14 @@ except ImportError:
     memory_leaks = None
 
 from dancedeets.redirect_canonical import redirect_canonical  # noqa: E402
+from dancedeets.util.ndb_client import ndb_wsgi_middleware  # noqa: E402
 
 
 def add_wsgi_middleware(app):
     """Add WSGI middleware to the application."""
+    # Add NDB context for Cloud NDB
+    app = ndb_wsgi_middleware(app)
+
     # Memory leak debugging middleware (only in debug mode)
     if os.environ.get('DEBUG_MEMORY_LEAKS') and memory_leaks:
         app = memory_leaks.leak_middleware(app)

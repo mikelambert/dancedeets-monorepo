@@ -1,7 +1,7 @@
 import logging
 import re
 
-from google.appengine.ext import ndb
+from google.cloud import ndb
 
 from dancedeets.event_scraper import thing_db
 from dancedeets.events import eventdata

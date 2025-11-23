@@ -1,7 +1,7 @@
 import logging
 import time
 
-from google.appengine.ext import ndb
+from google.cloud import ndb
 
 from dancedeets import fb_api
 from . import users

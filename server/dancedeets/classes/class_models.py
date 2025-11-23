@@ -1,6 +1,6 @@
 import re
 
-from google.appengine.ext import ndb
+from google.cloud import ndb
 from google.appengine.api.search import search
 
 DATETIME_FORMAT = '%Y-%m-%dT%H:%M:%S'

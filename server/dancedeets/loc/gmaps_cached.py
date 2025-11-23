@@ -1,6 +1,6 @@
 import logging
 
-from google.appengine.ext import ndb
+from google.cloud import ndb
 
 from . import gmaps
 from . import gmaps_backends

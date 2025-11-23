@@ -4,7 +4,7 @@ import logging
 import re
 import pytz
 
-from google.appengine.ext import ndb
+from google.cloud import ndb
 
 from dancedeets import event_types
 from dancedeets.events import event_locations
