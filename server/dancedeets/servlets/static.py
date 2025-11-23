@@ -1,9 +1,9 @@
 import mimetypes
 import os
 import re
-import webapp2
 
 from dancedeets import app
+from dancedeets.util.flask_adapter import BaseHandler
 
 mappings = [(r'^/(dancedeets\.png)', './'), (r'^/(robots\.txt)', './'), (r'^/(favicon\.ico)', './'), (r'^/v?css/(.*)', 'css/'),
             (r'^/v?js/(.*)', 'js/'), (r'^/dist[^/]*/(.*)', 'dist/'), (r'^/images/(.*)', 'images/'),
@@ -16,7 +16,7 @@ mimetypes.add_type('application/font-woff2', '.woff2')
 
 
 @app.route(all_static)
-class StaticHandler(webapp2.RequestHandler):
+class StaticHandler(BaseHandler):
     def get(self, *args):
         for regex, path in compiled_mappings:
             result = regex.match(self.request.path)
@@ -30,6 +30,6 @@ class StaticHandler(webapp2.RequestHandler):
                     if self.request.app.prod_mode:
                         self.response.headers['Cache-Control'] = 'public, max-age=%s' % (7 * 24 * 60 * 60)
                         self.response.headers['Vary'] = 'Accept-Encoding'
-                    self.response.out.write(open(full_path).read())
+                    self.response.out.write(open(full_path, 'rb').read())
                 else:
                     self.response.set_status(404)

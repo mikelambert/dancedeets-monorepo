@@ -1,13 +1,7 @@
+import io
 import logging
 import objgraph
-import StringIO
 import sys
-import webapp2
-
-from google.appengine.api import memcache
-
-from mapreduce import control
-from mapreduce import operation as op
 
 from dancedeets import app
 from dancedeets import base_servlet
@@ -19,10 +13,16 @@ from dancedeets.util import fb_events
 from dancedeets.util import mr
 from dancedeets.util import fb_mapreduce
 from dancedeets.util import sqlite_db
+from dancedeets.util import memcache
+from dancedeets.util.flask_adapter import BaseHandler
+
+# Note: MapReduce is no longer available in App Engine Flexible.
+# The mapreduce handlers below are kept for reference but will not work.
+# Use Cloud Dataflow for batch processing tasks.
 
 
 @app.route('/my_liveness_check')
-class HealthzLiveHandler(webapp2.RequestHandler):
+class HealthzLiveHandler(BaseHandler):
     def get(self):
         self.response.out.write('OK')
 
@@ -36,14 +36,14 @@ def preload():
 
 
 @app.route('/my_readiness_check')
-class HealthzReadyHandler(webapp2.RequestHandler):
+class HealthzReadyHandler(BaseHandler):
     def get(self):
         preload()
         self.response.out.write('OK')
 
 
 @app.route('/tools/memory_top_users')
-class MemoryUsers(webapp2.RequestHandler):
+class MemoryUsers(BaseHandler):
     def get(self):
         results = objgraph.most_common_types(limit=100, shortnames=False)
         self.response.headers["Content-Type"] = "text/plain"
@@ -54,24 +54,19 @@ class MemoryUsers(webapp2.RequestHandler):
 
 
 def resave_object(obj):
+    """Note: MapReduce not available in Flexible Environment. Use Cloud Dataflow."""
     STREET = street.Style.get_name()
     if obj.verticals == [STREET, STREET]:
         obj.verticals = [STREET]
-    yield op.db.Put(obj)
+    obj.put()
 
 
 @app.route('/tools/fixup')
-class FixupObjects(webapp2.RequestHandler):
+class FixupObjects(BaseHandler):
     def get(self):
-        control.start_map(
-            name='Fixup Events',
-            reader_spec='mapreduce.input_readers.DatastoreInputReader',
-            handler_spec='dancedeets.servlets.tools.resave_object',
-            mapper_parameters={
-                'entity_kind': 'dancedeets.events.eventdata.DBEvent',
-            },
-            shard_count=16,
-        )
+        # MapReduce not available in Flexible Environment
+        # Use Cloud Dataflow for batch processing
+        self.response.out.write('MapReduce not available. Use Cloud Dataflow for batch processing.')
 
 
 @app.route('/tools/email/add_event')
@@ -101,7 +96,7 @@ class DisplayNewUserEmailHandler(base_servlet.UserOperationHandler):
 
 
 @app.route('/tools/memory_dump_objgraph')
-class MemoryDumper(webapp2.RequestHandler):
+class MemoryDumper(BaseHandler):
     def get(self):
         count = int(self.request.get('count', '20'))
         max_depth = int(self.request.get('max_depth', '10'))
@@ -113,14 +108,14 @@ class MemoryDumper(webapp2.RequestHandler):
             id(sys._getframe(1)),
             id(sys._getframe(1).f_locals),
         ]
-        sio = StringIO.StringIO()
+        sio = io.StringIO()
         objgraph.show_backrefs(all_objects[:count], max_depth=max_depth, shortnames=False, extra_ignore=ignore, output=sio)
         self.response.headers["Content-Type"] = "text/plain"
         self.response.out.write(sio.getvalue())
 
 
 @app.route('/tools/unprocess_future_events')
-class UnprocessFutureEventsHandler(webapp2.RequestHandler):
+class UnprocessFutureEventsHandler(BaseHandler):
     def get(self):
         # TODO(lambert): reimplement if needed:
         # if entity.key().name().endswith('OBJ_EVENT'):
@@ -137,11 +132,12 @@ class UnprocessFutureEventsHandler(webapp2.RequestHandler):
 
 
 def map_delete_cached_with_wrong_user_id(fbo):
-    user_id, obj_id, obj_type = fbo.key().name().split('.')
+    """Note: MapReduce not available in Flexible Environment."""
+    user_id, obj_id, obj_type = fbo.key.string_id().split('.')
     bl = fb_api.BatchLookup
     bl_types = (bl.OBJECT_EVENT, bl.OBJECT_EVENT_ATTENDING, bl.OBJECT_EVENT_MEMBERS, bl.OBJECT_THING_FEED, bl.OBJECT_VENUE)
     if obj_type in bl_types and user_id != '701004':
-        yield op.db.Delete(fbo)
+        fbo.key.delete()
 
 
 def count_private_events(fbl, e_list):
@@ -189,59 +185,49 @@ class OneOffHandler(base_servlet.BaseTaskFacebookRequestHandler):
 
 
 @app.route('/tools/owned_events')
-class OwnedEventsHandler(webapp2.RequestHandler):
+class OwnedEventsHandler(BaseHandler):
     def get(self):
         db_events_query = eventdata.DBEvent.query(eventdata.DBEvent.owner_fb_uid == self.request.get('owner_id'))
         db_events = db_events_query.fetch(1000)
 
-        print 'Content-type: text/plain\n\n'
+        self.response.headers['Content-Type'] = 'text/plain'
         keys = [fb_api.generate_key(fb_api.LookupEvent, x.fb_event_id) for x in db_events]
-        fb_events = fb_api.DBCache(None).fetch_keys(keys)
-        for db_event, fb_event in zip(db_events, fb_events):
+        fb_events_data = fb_api.DBCache(None).fetch_keys(keys)
+        for db_event, fb_event in zip(db_events, fb_events_data):
             real_fb_event = fb_event.decode_data()
-            print db_event.tags, real_fb_event['info']['name']
+            self.response.out.write('%s %s\n' % (db_event.tags, real_fb_event['info']['name']))
 
 
 @app.route('/tools/clear_memcache')
-class ClearMemcacheHandler(webapp2.RequestHandler):
+class ClearMemcacheHandler(BaseHandler):
     def get(self):
         memcache.flush_all()
         self.response.out.write("Flushed memcache!")
 
 
 def resave_table(obj):
-    yield op.db.Put(obj)
+    """Note: MapReduce not available in Flexible Environment."""
+    obj.put()
 
 
 @app.route('/tools/resave_table')
-class ResaveHandler(webapp2.RequestHandler):
+class ResaveHandler(BaseHandler):
     def get(self):
-        table = self.request.get('table')  # users.users.User or events.eventdata.DBEvent or ...
-        control.start_map(
-            name='Resave %s' % table,
-            reader_spec='mapreduce.input_readers.DatastoreInputReader',
-            handler_spec='dancedeets.servlets.tools.resave_table',
-            mapper_parameters={
-                'entity_kind': table,
-            },
-        )
+        # MapReduce not available in Flexible Environment
+        # Use Cloud Dataflow for batch processing
+        self.response.out.write('MapReduce not available. Use Cloud Dataflow for batch processing.')
 
 
 def delete_table(obj):
+    """Note: MapReduce not available in Flexible Environment."""
     if obj.created_date is None:
         logging.info('Deleting %s', obj)
-        yield op.db.Delete(obj)
+        obj.key.delete()
 
 
 @app.route('/tools/delete_table')
-class DeleteTableHandler(webapp2.RequestHandler):
+class DeleteTableHandler(BaseHandler):
     def get(self):
-        table = 'rankings.cities.City'
-        control.start_map(
-            name='Delete %s' % table,
-            reader_spec='mapreduce.input_readers.DatastoreInputReader',
-            handler_spec='dancedeets.servlets.tools.delete_table',
-            mapper_parameters={
-                'entity_kind': table,
-            },
-        )
+        # MapReduce not available in Flexible Environment
+        # Use Cloud Dataflow for batch processing
+        self.response.out.write('MapReduce not available. Use Cloud Dataflow for batch processing.')
