@@ -1,7 +1,7 @@
 import logging
 
 from google.appengine.ext import db
-from google.appengine.ext import ndb
+from google.cloud import ndb
 from google.appengine.api import search
 
 from dancedeets.util import deferred

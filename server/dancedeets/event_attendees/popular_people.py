@@ -5,7 +5,7 @@ import re
 import time
 
 from google.appengine.api import memcache
-from google.appengine.ext import ndb
+from google.cloud import ndb
 from google.cloud import datastore
 
 from dancedeets import app

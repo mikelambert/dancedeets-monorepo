@@ -6,7 +6,7 @@ import logging
 import re
 import time
 
-from google.appengine.ext import ndb
+from google.cloud import ndb
 
 from dancedeets.events import eventdata
 from dancedeets.util import taskqueue

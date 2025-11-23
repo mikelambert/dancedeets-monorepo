@@ -6,7 +6,7 @@ import re
 import time
 from timezonefinder import TimezoneFinder
 
-from google.appengine.ext import ndb
+from google.cloud import ndb
 
 from dancedeets import fb_api
 from dancedeets.event_attendees import person_city

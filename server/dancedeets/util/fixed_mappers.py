@@ -2,7 +2,7 @@ import logging
 
 from google.appengine.api import datastore_errors
 from google.appengine.ext import db
-from google.appengine.ext import ndb
+from google.cloud import ndb
 
 from mapreduce import context
 from mapreduce import handlers

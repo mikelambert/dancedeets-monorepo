@@ -1,7 +1,7 @@
 import logging
 from timezonefinder import TimezoneFinder
 
-from google.appengine.ext import ndb
+from google.cloud import ndb
 from google.appengine.api import datastore_errors
 from google.appengine.runtime import apiproxy_errors
 

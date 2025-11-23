@@ -1,7 +1,7 @@
 import base64
 import pickle
 
-from google.appengine.ext import ndb
+from google.cloud import ndb
 from google.appengine.api import search
 from google.appengine.ext import testbed
 

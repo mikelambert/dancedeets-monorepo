@@ -6,7 +6,7 @@ import logging
 import pprint
 import time
 
-from google.appengine.ext import ndb
+from google.cloud import ndb
 from google.appengine.api import search
 
 from dancedeets import event_types
