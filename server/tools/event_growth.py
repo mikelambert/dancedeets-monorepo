@@ -1,6 +1,7 @@
 #!/usr/bin/python
 
 import re
+from functools import reduce
 
 'cat local_data/DBEvent.csv | cut -f4 -d, | sort | cut -c1-6 | uniq -c | cut -b1-4'
 
@@ -35,7 +36,7 @@ c = [int(x) for x in b]
 c = reduce(lambda x, y: x + [y + x[-1]], c[1:], c[:1])
 #[57, 121, 226, 434, 660, 901, 1263, 1602, 2020, 2429, 3161, 3900]
 
-d = [x * 100 / max(c) for x in c]
+d = [x * 100 // max(c) for x in c]
 
 e = ','.join([str(x) for x in d])
 
@@ -45,4 +46,4 @@ f = "https://chart.googleapis.com/chart?cht=lc&chs=300x200&chd=t:%s&chxt=x,y&chx
     e, max(c), int(max(c) / 5)
 )
 
-print f
+print(f)

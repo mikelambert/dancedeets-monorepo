@@ -58,9 +58,9 @@ LANGUAGES = [
 
 def my_repr(s):
     if "'" in s:
-        return ('u"%s"' % s)
+        return ('"%s"' % s)
     else:
-        return ("u'%s'" % s)
+        return ("'%s'" % s)
 
 
 dance_re = re.compile(dance_keywords.EASY_DANCE.as_expanded_regex())
@@ -90,7 +90,7 @@ def translate(options):
         translation_repr = my_repr(canonicalize(q, options))
         translations.setdefault(translation_repr, []).append('english')
 
-    print '\n'.join(sorted('%s, # %s' % (k, ', '.join(sorted(v))) for (k, v) in translations.items()))
+    print('\n'.join(sorted('%s, # %s' % (k, ', '.join(sorted(v))) for (k, v) in translations.items())))
 
 
 def main():

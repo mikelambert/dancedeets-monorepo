@@ -1,5 +1,10 @@
 #!/usr/bin/python
+"""
+DEPRECATED: This script requires the legacy App Engine SDK for entity_pb and datastore modules.
+It was used for dumping FacebookCachedObject data and may not work in App Engine Flexible Environment.
 
+To use this script, you need the old App Engine SDK installed and available in your path.
+"""
 import sqlite3
 
 import sys
@@ -22,6 +27,5 @@ for entity_id, entity in cursor:
     if str(entity_id).endswith('OBJ_EVENT'):
         real_id = str(entity_id).split(':')[-1]
         if 'json_data' in e:
-            f = open('test_data/FacebookCachedObject/%s' % real_id, 'w')
-            f.write(e['json_data'])
-            f.close()
+            with open('test_data/FacebookCachedObject/%s' % real_id, 'w') as f:
+                f.write(e['json_data'])

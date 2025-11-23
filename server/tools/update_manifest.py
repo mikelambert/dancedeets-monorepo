@@ -4,8 +4,9 @@ import json
 
 filename = 'dist/img/favicons/manifest.json'
 
-f = open(filename)
-manifest = json.loads(f.read())
+with open(filename) as f:
+    manifest = json.loads(f.read())
+
 manifest.update({
     "short_name": "DanceDeets",
     "prefer_related_applications": True,
@@ -17,4 +18,5 @@ manifest.update({
     ],
 })
 
-open(filename, 'w').write(json.dumps(manifest, indent=2))
+with open(filename, 'w') as f:
+    f.write(json.dumps(manifest, indent=2))
