@@ -2,7 +2,7 @@
 # -*-*- encoding: utf-8 -*-*-
 
 import base64
-import Cookie
+from http import cookies as Cookie
 import datetime
 import jinja2
 import json
@@ -15,12 +15,12 @@ import os
 import re
 import time
 import traceback
-import urllib
-import urlparse
-import webapp2
+import urllib.parse as urllib
+import urllib.parse as urlparse
 
-from google.appengine.api.app_identity import app_identity
-from google.appengine.ext import db
+from flask import redirect as flask_redirect, make_response
+
+from google.cloud import ndb
 
 from dancedeets import abuse
 from dancedeets.users import users
@@ -64,19 +64,26 @@ class FacebookMixinHandler(object):
             #self.fbl.db.oldest_allowed = datetime.datetime.now() - datetime.timedelta(days=expiry_days)
 
 
-class BareBaseRequestHandler(webapp2.RequestHandler, FacebookMixinHandler):
+class BareBaseRequestHandler(FacebookMixinHandler):
+    """Base request handler compatible with Flask.
+
+    This provides webapp2-style interface while working with Flask.
+    """
     allow_minify = True
 
     def __init__(self, *args, **kwargs):
         self.display = {}
         self._errors = []
+        self.request = None
+        self.response = None
+        self._app = None
 
         self.jinja_env = jinja2.Environment(loader=jinja2.FileSystemLoader(['templates', 'dist/templates']), autoescape=True)
 
-        # This is necessary because appengine comes with Jinja 2.6 pre-installed, and this was added in 2.7+.
+        # URL encoding filter
         def do_urlencode(value):
             """Escape for use in URLs."""
-            return urllib.quote(value.encode('utf8'))
+            return urllib.quote(value.encode('utf8') if isinstance(value, str) else value)
 
         self.jinja_env.filters['urlencode'] = do_urlencode
         self.jinja_env.filters['format_html'] = text.format_html
@@ -93,7 +100,7 @@ class BareBaseRequestHandler(webapp2.RequestHandler, FacebookMixinHandler):
         self.jinja_env.filters['linkify'] = text.linkify
         self.jinja_env.filters['format_js'] = text.format_js
         self.display['urllib_quote_plus'] = urllib.quote_plus
-        self.display['urlencode'] = lambda x: urllib.quote_plus(x.encode('utf8'))
+        self.display['urlencode'] = lambda x: urllib.quote_plus(x.encode('utf8') if isinstance(x, str) else x)
 
         self.display['date_format'] = text.date_format
         self.display['format'] = text.format
@@ -103,10 +110,14 @@ class BareBaseRequestHandler(webapp2.RequestHandler, FacebookMixinHandler):
         self.display['track_analytics'] = True
 
         if not os.environ.get('HOT_SERVER_PORT'):
-            self.display['webpack_manifest'] = open('dist/chunk-manifest.json').read()
-        self.full_manifest = json.loads(open('dist/manifest.json').read())
-
-        super(BareBaseRequestHandler, self).__init__(*args, **kwargs)
+            try:
+                self.display['webpack_manifest'] = open('dist/chunk-manifest.json').read()
+            except FileNotFoundError:
+                self.display['webpack_manifest'] = '{}'
+        try:
+            self.full_manifest = json.loads(open('dist/manifest.json').read())
+        except FileNotFoundError:
+            self.full_manifest = {}
 
     def get(self, *args, **kwargs):
         raise NotImplementedError()
@@ -117,8 +128,13 @@ class BareBaseRequestHandler(webapp2.RequestHandler, FacebookMixinHandler):
         # Perhaps could run for everything but search-requests...?
         # return self.get(*args, **kwargs)
 
-    def initialize(self, request, response):
-        super(BareBaseRequestHandler, self).initialize(request, response)
+    def initialize(self, request, app):
+        """Initialize the handler with Flask request and app."""
+        from dancedeets.util.flask_adapter import Webapp2Request, Webapp2Response
+        self.request = Webapp2Request(request)
+        self.request._app = app  # For prod_mode access
+        self.response = Webapp2Response()
+        self._app = app
         http_request = '%s %s' % (self.request.method, self.request.url)
         logging.info(http_request)
         # LogFormat "%h %l %u %t \"%r\" %>s %b \"%{Referer}i\" \"%{User-agent}i\"" combined
@@ -867,41 +883,65 @@ class BaseRequestHandler(BareBaseRequestHandler):
 
 
 def update_last_login_time(user_id, login_time):
+    @ndb.transactional()
     def _update_last_login_time():
         user = users.User.get_by_id(user_id)
-        user.last_login_time = login_time
-        if user.login_count:
-            user.login_count += 1
-        else:
-            # once for this one, once for initial creation
-            user.login_count = 2
-        # in read-only, keep trying until we succeed
-        user.put()
+        if user:
+            user.last_login_time = login_time
+            if user.login_count:
+                user.login_count += 1
+            else:
+                # once for this one, once for initial creation
+                user.login_count = 2
+            # in read-only, keep trying until we succeed
+            user.put()
 
-    db.run_in_transaction(_update_last_login_time)
+    _update_last_login_time()
 
 
-class JsonDataHandler(webapp2.RequestHandler):
-    def initialize(self, request, response):
-        super(JsonDataHandler, self).initialize(request, response)
+class JsonDataHandler:
+    """Handler for JSON data requests."""
+
+    def __init__(self):
+        self.request = None
+        self.response = None
+        self.json_body = None
+
+    def initialize(self, request, app):
+        from dancedeets.util.flask_adapter import Webapp2Request, Webapp2Response
+        self.request = Webapp2Request(request)
+        self.response = Webapp2Response()
 
         if self.request.body:
-            escaped_body = urllib.unquote_plus(self.request.body.strip('='))
+            escaped_body = urllib.unquote_plus(self.request.body.decode('utf-8').strip('='))
             self.json_body = json.loads(escaped_body)
         else:
             self.json_body = None
 
 
-class BaseTaskRequestHandler(webapp2.RequestHandler):
-    pass
+class BaseTaskRequestHandler:
+    """Base handler for task requests."""
+
+    def __init__(self):
+        self.request = None
+        self.response = None
+
+    def initialize(self, request, app):
+        from dancedeets.util.flask_adapter import Webapp2Request, Webapp2Response
+        self.request = Webapp2Request(request)
+        self.response = Webapp2Response()
+
+    def abort(self, code, detail=None):
+        from flask import abort as flask_abort
+        flask_abort(code, description=detail)
 
 
 class BaseTaskFacebookRequestHandler(BaseTaskRequestHandler, FacebookMixinHandler):
     def requires_login(self):
         return False
 
-    def initialize(self, request, response):
-        super(BaseTaskFacebookRequestHandler, self).initialize(request, response)
+    def initialize(self, request, app):
+        super().initialize(request, app)
 
         if self.request.get('user_id') == 'dummy':
             self.fb_uid = None

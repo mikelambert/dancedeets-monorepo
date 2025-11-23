@@ -1,16 +1,24 @@
+"""Admin-authorized WSGI applications.
+
+These wrap various WSGI applications with admin authorization middleware.
+"""
+
 import logging
 from webob.cookies import RequestCookies
-
-import google.appengine.ext.deferred
-import mapreduce.main
-from dancedeets import pipeline_wrapper
 
 from dancedeets import admin
 from dancedeets import facebook
 from dancedeets import login_logic
 from dancedeets.login_admin import authorize_middleware
 from dancedeets.redirect_canonical import redirect_canonical
+from dancedeets.util.deferred_handler import application as deferred_application
 import main
+
+# Note: MapReduce and Pipeline are no longer supported in App Engine Flexible.
+# These have been removed:
+# - google.appengine.ext.deferred.application -> dancedeets.util.deferred_handler.application
+# - mapreduce.main.APP -> removed (use Cloud Dataflow instead)
+# - pipeline_wrapper._APP -> removed (use Cloud Workflows instead)
 
 
 def _get_facebook_user_id(environ):
@@ -32,8 +40,11 @@ def middleware(app):
     return redirect_canonical(authorize_middleware(app, is_admin), 'dancedeets.com', 'www.dancedeets.com')
 
 
-authorized_deferred_app = middleware(google.appengine.ext.deferred.application)
-authorized_pipeline_app = middleware(pipeline_wrapper._APP)
-authorized_mapreduce_app = middleware(mapreduce.main.APP)
+authorized_deferred_app = middleware(deferred_application)
 authorized_main_app = middleware(main.application)
 authorized_admin_app = middleware(admin.app)
+
+# Legacy references - these handlers need to be migrated to Cloud alternatives
+# For now, point them to the main app which will return 404 for unhandled routes
+authorized_pipeline_app = authorized_main_app
+authorized_mapreduce_app = authorized_main_app
