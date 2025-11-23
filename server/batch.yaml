@@ -1,29 +1,42 @@
-runtime: custom
-threadsafe: true
-api_version: 1
-service: batch
-env: flex
-beta_settings:
-  enable_app_engine_apis: true
+# DanceDeets App Engine Flexible Environment Configuration
+# Batch service for background tasks, mapreduce, and pipelines
 
+runtime: custom
+env: flex
+service: batch
+
+# Resource allocation
 resources:
   memory_gb: 2.0
-  cpu: 1.0
+  cpu: 1
+  disk_size_gb: 10
 
+# Automatic scaling for batch processing
 automatic_scaling:
   min_num_instances: 1
   max_num_instances: 10
   cpu_utilization:
     target_utilization: 0.85
 
-handlers:
-- url: /_pipeline(/.*)?
-  script: admin_apps.authorized_pipeline_app
-- url: /mapreduce/worker_callback.*
-  script: admin_apps.authorized_main_app
-- url: /mapreduce(/.*)?
-  script: admin_apps.authorized_mapreduce_app
-- url: /_ah/queue/deferred
-  script: admin_apps.authorized_deferred_app
-- url: .*
-  script: main.application
+# Health checks
+readiness_check:
+  path: /_ah/health
+  check_interval_sec: 5
+  timeout_sec: 4
+  failure_threshold: 2
+  success_threshold: 2
+  app_start_timeout_sec: 300
+
+liveness_check:
+  path: /_ah/health
+  check_interval_sec: 30
+  timeout_sec: 4
+  failure_threshold: 3
+  success_threshold: 2
+
+# Environment variables
+env_variables:
+  PYTHONUNBUFFERED: "1"
+
+# Note: In Flexible environment, routing is handled by the application itself.
+# MapReduce, Pipeline, and deferred task handlers are all handled by the WSGI app.

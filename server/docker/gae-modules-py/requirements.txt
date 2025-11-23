@@ -1,76 +1,97 @@
+# Application dependencies for DanceDeets
+# Python 3.11 compatible versions
 
-# Because the published version has a bug with media uploads:
-git+https://github.com/sixohsix/twitter
+# Twitter API (use tweepy instead of deprecated sixohsix/twitter)
+tweepy>=4.0.0
 
-atomicwrites==1.1.5
+# Utilities
+atomicwrites>=1.4.0
 
-# Date Manip
-icalendar==3.11
-# Included in docker gae-modules:
-# dateparser
-# timezonefinder
+# Date/Calendar
+icalendar>=5.0.0
+iso3166>=2.0.0
 
-iso3166==0.7
-oauth2==1.9.0.post1
-twilio==5.6.0
-python-gcm==0.4
-python-gflags==3.1.0
-Jinja2==2.8
-humanize==0.5.1
-htmlmin==0.1.11
+# Authentication
+oauth2>=1.9.0.post1
+# Note: python-oauth2 may need to be replaced with authlib or oauthlib
 
-urllib3==1.21.1
-requests-toolbelt==0.7.0
+# Push notifications
+twilio>=8.0.0
+# python-gcm is deprecated, use firebase-admin for FCM
+firebase-admin>=6.0.0
 
-# WebApps
-webapp2==2.5.2
-Flask==0.11.1
-Flask-Admin==1.4.2
-WTForms==2.1
-# Because the published version doesn't work with JsonProperty:
-# https://github.com/wtforms/wtforms-appengine/commit/841b76c15a2658c73c7e705fb810fe7c224b104b
-git+https://github.com/wtforms/wtforms-appengine
+# CLI/Config
+python-gflags>=3.1.2
 
-# Relay / GraphQL
-Flask-GraphQL==1.3.1
-graphene==1.1.2
+# Templating
+Jinja2>=3.0.0
 
-# For /event/222/title-is-here URLs
-slugify==0.0.1
+# Text processing
+humanize>=4.0.0
+htmlmin>=0.1.12
 
-# In case we want to parse rss/atom feeds
-feedparser==5.2.1
+# HTTP
+urllib3>=2.0.0
+requests>=2.28.0
+requests-toolbelt>=1.0.0
 
-# Google
-# This git repo has https://github.com/GoogleCloudPlatform/appengine-mapreduce/pull/111
-git+https://github.com/mikelambert/appengine-mapreduce#egg=GoogleAppEngineMapReduce&subdirectory=python/src
-GoogleAppEnginePipeline==1.9.22.1
-GoogleAppEngineCloudStorageClient==1.9.22.1
-gdata==2.0.18
+# Web frameworks
+# webapp2 is App Engine Standard only - removed
+Flask>=2.0.0
+Flask-Admin>=1.6.0
+WTForms>=3.0.0
 
-python-firebase-gae==1.0.1
+# GraphQL
+Flask-GraphQL>=2.0.0
+graphene>=3.0.0
 
-Markdown==2.6.7
+# URL utilities
+python-slugify>=8.0.0
 
-python-resize-image==1.1.11
+# RSS/Atom feeds
+feedparser>=6.0.0
 
-# ScrapingHub API
-scrapinghub==1.9.0
-scrapy==1.3.2
-scrapyjs==0.2
-html2text==2016.9.19
+# App Engine specific (these may need migration to Cloud equivalents)
+# GoogleAppEngineMapReduce - deprecated, consider Cloud Dataflow
+# GoogleAppEnginePipeline - deprecated
+# GoogleAppEngineCloudStorageClient - use google-cloud-storage instead
 
-pyyaml==3.12
+# Google services
+# gdata is deprecated, use google-api-python-client instead
 
-pycountry==17.1.8
+# Firebase
+# python-firebase-gae is deprecated, use firebase-admin
 
-IPy==0.83
+# Markdown
+Markdown>=3.4.0
 
-mailchimp3==2.0.11
-mandrill==1.0.57
+# Image processing
+python-resize-image>=1.1.20
 
-# For debugging memory leaks
-objgraph==3.1.0
+# Web scraping
+scrapinghub>=2.4.0
+Scrapy>=2.8.0
+html2text>=2020.1.16
 
-# For trimming event names...
-icemac.truncatetext==1.0.post1
+# Config
+PyYAML>=6.0
+
+# Localization
+pycountry>=22.0.0
+
+# Networking
+IPy>=1.1
+
+# Email services
+mailchimp3>=3.0.0
+# mandrill is deprecated, use mailchimp-transactional
+mailchimp-transactional>=1.0.0
+
+# Debugging
+objgraph>=3.5.0
+
+# Text utilities
+# icemac.truncatetext may not be maintained, consider textwrap stdlib
+
+# Additional Python 3 compatibility
+six>=1.16.0
