@@ -4,8 +4,7 @@ import datetime
 import logging
 import time
 
-from google.appengine.api import search
-
+from dancedeets.util import search_compat as search
 from dancedeets.loc import gmaps_api
 from dancedeets.loc import math
 from dancedeets.search import index

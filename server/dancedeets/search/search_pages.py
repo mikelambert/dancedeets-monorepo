@@ -1,8 +1,7 @@
 import logging
 import time
 
-from google.appengine.api import search
-
+from dancedeets.util import search_compat as search
 from dancedeets.event_scraper import thing_db
 from . import search_source
 
