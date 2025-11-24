@@ -1,8 +1,8 @@
 import logging
 import urllib
 
-from google.appengine.ext import blobstore
-from google.appengine.ext.webapp import blobstore_handlers
+from dancedeets.compat import blobstore
+from dancedeets.compat import blobstore_handlers
 
 from dancedeets import app
 from dancedeets import base_servlet

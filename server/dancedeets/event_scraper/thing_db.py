@@ -3,9 +3,9 @@ import json
 import logging
 
 from google.appengine.ext import db
-from mapreduce import json_util
-from mapreduce import mapreduce_pipeline
-from mapreduce import operation
+from dancedeets.compat.mapreduce import json_util
+from dancedeets.compat.mapreduce import mapreduce_pipeline
+from dancedeets.compat.mapreduce import operation
 
 from dancedeets.events import eventdata
 from dancedeets import fb_api

@@ -16,8 +16,11 @@ vendor.add('lib-both')
 if runtime.is_local_appengine():
     vendor.add('lib-local')
 
-from pipeline.handlers import _APP
-
-# Disables the pipeline auth checking, since we now handle that ourselves
-import pipeline
-pipeline.set_enforce_auth(False)
+from dancedeets.compat import LEGACY_APIS_ENABLED
+if LEGACY_APIS_ENABLED:
+    from pipeline.handlers import _APP
+    # Disables the pipeline auth checking, since we now handle that ourselves
+    import pipeline
+    pipeline.set_enforce_auth(False)
+else:
+    from dancedeets.compat.pipeline.handlers import _APP

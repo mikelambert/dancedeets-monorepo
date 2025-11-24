@@ -1,9 +1,9 @@
 import logging
 
 from dancedeets import app
-from mapreduce import context
-from mapreduce import input_readers
-from mapreduce import parameters
+from dancedeets.compat.mapreduce import context
+from dancedeets.compat.mapreduce import input_readers
+from dancedeets.compat.mapreduce import parameters
 
 from dancedeets.util import fixed_mappers
 

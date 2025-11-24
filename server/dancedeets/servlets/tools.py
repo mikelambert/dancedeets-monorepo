@@ -6,8 +6,8 @@ import webapp2
 
 from google.appengine.api import memcache
 
-from mapreduce import control
-from mapreduce import operation as op
+from dancedeets.compat.mapreduce import control
+from dancedeets.compat.mapreduce import operation as op
 
 from dancedeets import app
 from dancedeets import base_servlet

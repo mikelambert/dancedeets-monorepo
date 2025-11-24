@@ -2,7 +2,7 @@ import logging
 from webob.cookies import RequestCookies
 
 import google.appengine.ext.deferred
-import mapreduce.main
+from dancedeets.compat.mapreduce import main as mapreduce_main
 from dancedeets import pipeline_wrapper
 
 from dancedeets import admin
@@ -34,6 +34,6 @@ def middleware(app):
 
 authorized_deferred_app = middleware(google.appengine.ext.deferred.application)
 authorized_pipeline_app = middleware(pipeline_wrapper._APP)
-authorized_mapreduce_app = middleware(mapreduce.main.APP)
+authorized_mapreduce_app = middleware(mapreduce_main.APP)
 authorized_main_app = middleware(main.application)
 authorized_admin_app = middleware(admin.app)

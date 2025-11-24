@@ -3,8 +3,8 @@
 import datetime
 import logging
 
-from pipeline import common
-from pipeline import pipeline
+from dancedeets.compat.pipeline import common
+from dancedeets.compat.pipeline import pipeline
 import scrapinghub
 
 from dancedeets import app

@@ -1,14 +1,16 @@
 """We monkey patch this function, so that mapreduce jobs are always run on the latest uploaded code version."""
 
+import logging
 import os
-from mapreduce import model
-from mapreduce import parameters
-from mapreduce import util as mapreduce_util
-from pipeline import util as pipeline_util
+from dancedeets.compat import LEGACY_APIS_ENABLED
+from dancedeets.compat.mapreduce import model
+from dancedeets.compat.mapreduce import parameters
+from dancedeets.compat.mapreduce import util as mapreduce_util
+from dancedeets.compat.pipeline import util as pipeline_util
 
 
 def _get_task_host():
-    default_host = os.environ["DEFAULT_VERSION_HOSTNAME"]
+    default_host = os.environ.get("DEFAULT_VERSION_HOSTNAME", "localhost")
     module = _get_task_target()
     if module == "default":
         return "%s" % (default_host)
@@ -16,12 +18,16 @@ def _get_task_host():
 
 
 def _get_task_target():
-    module = os.environ["CURRENT_MODULE_ID"]
+    module = os.environ.get("CURRENT_MODULE_ID", "default")
     module = 'batch'
     return module
 
 
 def patch_function():
+    if not LEGACY_APIS_ENABLED:
+        logging.info("Legacy APIs (mapreduce/pipeline) are disabled, skipping patches")
+        return
+
     mapreduce_util._get_task_host = _get_task_host
     pipeline_util._get_task_target = _get_task_target
 

@@ -2,9 +2,9 @@ import datetime
 
 from google.appengine.api import memcache
 
-from mapreduce import control
-from mapreduce import model
-from mapreduce import operation as op
+from dancedeets.compat.mapreduce import control
+from dancedeets.compat.mapreduce import model
+from dancedeets.compat.mapreduce import operation as op
 
 from dancedeets.loc import gmaps_api
 from . import cities_db
