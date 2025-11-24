@@ -19,7 +19,7 @@ Jinja2==2.11.3
 humanize==0.5.1
 htmlmin==0.1.11
 
-urllib3==1.21.1
+urllib3==1.26.5
 requests-toolbelt==0.7.0
 
 # WebApps
