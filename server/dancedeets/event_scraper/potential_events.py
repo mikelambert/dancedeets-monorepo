@@ -1,7 +1,6 @@
 import logging
 
-from google.appengine.ext import db
-from google.appengine.runtime import apiproxy_errors
+from google.cloud import ndb
 
 from dancedeets.util import dates
 from . import thing_db
@@ -17,7 +16,7 @@ class DiscoveredEvent(object):
         self.extra_source_id = extra_source_id
 
     def __repr__(self):
-        return '%s(%r)' % (self.__class__.__name__, ', '.join('%s=%s' % x for x in self.__dict__.iteritems()))
+        return '%s(%r)' % (self.__class__.__name__, ', '.join('%s=%s' % x for x in self.__dict__.items()))
 
     def _cmprepr(self):
         return (self.event_id, self.source_id, self.source_field, self.extra_source_id)
@@ -25,11 +24,15 @@ class DiscoveredEvent(object):
     def __hash__(self):
         return hash(self._cmprepr())
 
-    def __cmp__(self, other):
+    def __eq__(self, other):
         if isinstance(other, DiscoveredEvent):
-            return cmp(self._cmprepr(), other._cmprepr())
-        else:
-            return -1
+            return self._cmprepr() == other._cmprepr()
+        return False
+
+    def __lt__(self, other):
+        if isinstance(other, DiscoveredEvent):
+            return self._cmprepr() < other._cmprepr()
+        return NotImplemented
 
 
 class PESource(object):
@@ -50,26 +53,26 @@ class PESource(object):
         return '%s(**%r)' % (self.__class__.__name__, self.__dict__)
 
 
-class PotentialEvent(db.Model):
-    fb_event_id = property(lambda x: str(x.key().name()))
+class PotentialEvent(ndb.Model):
+    fb_event_id = property(lambda x: str(x.key.string_id()))
 
-    language = db.StringProperty(indexed=False)
-    looked_at = db.BooleanProperty()
-    auto_looked_at = db.BooleanProperty(indexed=False)
+    language = ndb.StringProperty(indexed=False)
+    looked_at = ndb.BooleanProperty()
+    auto_looked_at = ndb.BooleanProperty(indexed=False)
 
     # TODO: Should remove these...but keeping until we fixup all our related queries
-    match_score = db.IntegerProperty()
-    dance_bias_score = db.FloatProperty(indexed=False)
-    non_dance_bias_score = db.FloatProperty(indexed=False)
-    should_look_at = db.BooleanProperty()
-    show_even_if_no_score = db.BooleanProperty()
+    match_score = ndb.IntegerProperty()
+    dance_bias_score = ndb.FloatProperty(indexed=False)
+    non_dance_bias_score = ndb.FloatProperty(indexed=False)
+    should_look_at = ndb.BooleanProperty()
+    show_even_if_no_score = ndb.BooleanProperty()
 
     #STR_ID_MIGRATE
-    source_ids = db.ListProperty(int)
-    source_fields = db.ListProperty(str, indexed=False)
+    source_ids = ndb.IntegerProperty(repeated=True)
+    source_fields = ndb.StringProperty(indexed=False, repeated=True)
 
     # This is a representation of FUTURE vs PAST, so we can filter in our mapreduce criteria for relevant future events easily
-    past_event = db.BooleanProperty()
+    past_event = ndb.BooleanProperty()
 
     def get_invite_uids(self):
         return [source.id for source in self.sources(thing_db.FIELD_INVITES)]
@@ -89,7 +92,7 @@ class PotentialEvent(db.Model):
     def set_sources(self, sources):
         source_infos_list = list(sources)
         #STR_ID_MIGRATE
-        self.source_ids = [long(x.id or 0) for x in source_infos_list]
+        self.source_ids = [int(x.id or 0) for x in source_infos_list]
         self.source_fields = [x.field for x in source_infos_list]
 
     def has_discovered(self, discovered_event):
@@ -122,18 +125,19 @@ def _common_potential_event_setup(potential_event):
 
 
 def make_potential_event_without_source(fb_event_id):
+    @ndb.transactional()
     def _internal_add_potential_event():
-        potential_event = PotentialEvent.get_by_key_name(fb_event_id)
+        potential_event = PotentialEvent.get_by_id(fb_event_id)
         if not potential_event:
-            potential_event = PotentialEvent(key_name=fb_event_id)
+            potential_event = PotentialEvent(id=fb_event_id)
             # TODO(lambert): this may re-duplicate this work for potential events that already exist. is this okay or not?
             _common_potential_event_setup(potential_event)
             potential_event.put()
         return potential_event
 
     try:
-        potential_event = db.run_in_transaction(_internal_add_potential_event)
-    except apiproxy_errors.CapabilityDisabledError, e:
+        potential_event = _internal_add_potential_event()
+    except Exception as e:
         logging.error("Error saving potential event %s due to %s", fb_event_id, e)
 
     return potential_event
@@ -148,8 +152,9 @@ def make_potential_event_with_source(discovered):
     else:
         show_all_events = discovered.source_field != thing_db.FIELD_INVITES
 
+    @ndb.transactional()
     def _internal_add_source_for_event_id():
-        potential_event = PotentialEvent.get_by_key_name(fb_event_id) or PotentialEvent(key_name=fb_event_id)
+        potential_event = PotentialEvent.get_by_id(fb_event_id) or PotentialEvent(id=fb_event_id)
         # If already added, return
         if potential_event.has_source_with_field(discovered.source_id, discovered.source_field):
             return False
@@ -171,14 +176,14 @@ def make_potential_event_with_source(discovered):
 
     new_source = False
     try:
-        new_source = db.run_in_transaction(_internal_add_source_for_event_id)
-    except apiproxy_errors.CapabilityDisabledError, e:
+        new_source = _internal_add_source_for_event_id()
+    except Exception as e:
         logging.error("Error saving potential event %s due to %s", fb_event_id, e)
-    potential_event = PotentialEvent.get_by_key_name(fb_event_id)
+    potential_event = PotentialEvent.get_by_id(fb_event_id)
     logging.info('VTFI %s: Just loaded potential event %s, now with sources: %s', fb_event_id, fb_event_id, potential_event.sources())
 
     if new_source and discovered.source_id:
-        s = thing_db.Source.get_by_key_name(discovered.source_id)
+        s = thing_db.Source.get_by_id(discovered.source_id)
         if s:
             s.num_all_events = (s.num_all_events or 0) + 1
             s.put()

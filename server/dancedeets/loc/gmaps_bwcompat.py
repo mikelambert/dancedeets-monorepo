@@ -1,4 +1,4 @@
-from google.appengine.ext import db
+from google.cloud import ndb
 
 import json
 from dancedeets.loc import gmaps_backends
@@ -6,9 +6,9 @@ from dancedeets.loc import gmaps_backends
 LOCATION_EXPIRY = 24 * 60 * 60
 
 
-class GeoCode(db.Model):
-    address = property(lambda x: int(x.key().name()))
-    json_data = db.TextProperty()
+class GeoCode(ndb.Model):
+    address = property(lambda x: x.key.string_id())
+    json_data = ndb.TextProperty()
 
 
 class BwCachedBackend(gmaps_backends.GMapsBackend):
@@ -24,7 +24,7 @@ class BwCachedBackend(gmaps_backends.GMapsBackend):
         if address:
             byte_length = len(repr(address))
             if byte_length > 450:
-                return address[:(len(address) * 450 / byte_length)]
+                return address[:(len(address) * 450 // byte_length)]
             else:
                 return address
         else:
@@ -42,7 +42,7 @@ class BwCachedBackend(gmaps_backends.GMapsBackend):
             if address and address.endswith('United States'):
                 address = address.replace('United States', 'US')
             geocode_key = self._geocode_key(address, latlng)
-            geocode = GeoCode.get_by_key_name(geocode_key)
+            geocode = GeoCode.get_by_id(geocode_key)
             if geocode:
                 try:
                     geocoded_data = json.loads(geocode.json_data)

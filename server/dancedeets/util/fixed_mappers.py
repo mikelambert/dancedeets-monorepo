@@ -1,8 +1,7 @@
 import logging
 
-from google.appengine.api import datastore_errors
-from google.appengine.ext import db
 from google.cloud import ndb
+from google.cloud.ndb import exceptions as ndb_exceptions
 
 from mapreduce import context
 from mapreduce import handlers
@@ -13,7 +12,7 @@ from mapreduce import util
 #    def __iter__(self):
 #        try:
 #            return super(self, FixedKeyRangeEntityIterator).__iter__()
-#        except datastore_errors.Timeout as e:
+#        except ndb_exceptions.Timeout as e:
 #            logging.warning("Got timeout while iterating: %s", e)
 #            # Timeouts happen repeatedly on Managed VMs mapreduces, versus python27.
 #            # However, if we've made forward progress, then a timeout is still
@@ -53,13 +52,17 @@ class FixedMapperWorkerCallbackHandler(handlers.MapperWorkerCallbackHandler):
 
         while True:
             try:
-                entity = iterator.next()
-            except datastore_errors.Timeout as e:
-                logging.warning("Got timeout while iterating, going to finish and retry: %s", e)
-                finished_shard = False
-                break
-            except StopIteration:
-                break
+                entity = next(iterator)
+            except Exception as e:
+                # Handle timeout-like exceptions
+                if 'timeout' in str(e).lower():
+                    logging.warning("Got timeout while iterating, going to finish and retry: %s", e)
+                    finished_shard = False
+                    break
+                elif isinstance(e, StopIteration):
+                    break
+                else:
+                    raise
             # Reading input got exception. If we assume
             # 1. The input reader have done enough retries.
             # 2. The input reader can still serialize correctly after this exception.
@@ -71,9 +74,7 @@ class FixedMapperWorkerCallbackHandler(handlers.MapperWorkerCallbackHandler):
             # TODO(user): Validate these assumptions on all readers. MR should
             # also have a way to detect fake forward progress.
 
-            if isinstance(entity, db.Model):
-                shard_state.last_work_item = repr(entity.key())
-            elif isinstance(entity, ndb.Model):
+            if isinstance(entity, ndb.Model):
                 shard_state.last_work_item = repr(entity.key)
             else:
                 shard_state.last_work_item = repr(entity)[:100]
@@ -105,7 +106,8 @@ class FixedMapperWorkerCallbackHandler(handlers.MapperWorkerCallbackHandler):
         """
         shard_id = self.request.headers[util._MR_SHARD_ID_TASK_HEADER]
         mr_id = self.request.headers[util._MR_ID_TASK_HEADER]
-        shard_state, mr_state = db.get([model.ShardState.get_key_by_shard_id(shard_id), model.MapreduceState.get_key_by_job_id(mr_id)])
+        shard_state = model.ShardState.get_by_shard_id(shard_id)
+        mr_state = model.MapreduceState.get_by_job_id(mr_id)
 
         if shard_state and shard_state.active:
             logging.error('Would normally mark this shard for failure...and kill the entire mapreduce!')

@@ -11,7 +11,7 @@ logging.getLogger().setLevel(logging.DEBUG)
 from unittest import result
 from webtest import TestApp
 
-from google.appengine.ext import testbed
+from dancedeets.test_utils import testbed_compat as testbed
 
 from dancedeets.events import event_updates
 import main
@@ -31,8 +31,8 @@ class TestEvent(unittest.TestCase):
         # or it will destroy the CSS we produce for our AMP pages. :(
         if 'Add to Calendar' not in body:
             raise Exception('Could not find generated HTML in result: %s' % body)
-        f = open(path, 'w')
-        f.write(body.encode('utf-8'))
+        with open(path, 'w') as f:
+            f.write(body)
 
     def runTest(self):
         event = fixtures.create_event()

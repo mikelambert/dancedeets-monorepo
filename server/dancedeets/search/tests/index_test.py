@@ -2,8 +2,8 @@ import base64
 import pickle
 
 from google.cloud import ndb
-from google.appengine.api import search
-from google.appengine.ext import testbed
+from dancedeets.util import search_compat as search
+from dancedeets.test_utils import testbed_compat as testbed
 
 from dancedeets.search import index
 from dancedeets.test_utils import fb_api_stub

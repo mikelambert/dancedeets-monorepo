@@ -3,8 +3,7 @@ import pycountry
 import re
 import time
 
-from google.appengine.ext import db
-from google.appengine.runtime import apiproxy_errors
+from google.cloud import ndb
 
 from dancedeets.event_attendees import person_city
 from dancedeets.loc import gmaps_api
@@ -24,8 +23,8 @@ ONLINE_ADDRESS = 'ONLINE'
 # TODO(lambert): when we get an un-geocodable address, stick with last-known-address in the DBEvent, and do not overwrite with None
 
 
-class LocationMapping(db.Model):
-    remapped_address = db.StringProperty(indexed=False)
+class LocationMapping(ndb.Model):
+    remapped_address = ndb.StringProperty(indexed=False)
 
 
 def state_name_for_fb_location(location):
@@ -115,7 +114,7 @@ def _get_remapped_address_for(address):
     # map locations to corrected locations for events that have wrong or incomplete info
     # TODO(lambert): How about we have a sharded-memcache-key based on first hexadecimal character of md5-hash of address. this key-value would store all re-mappings with that prefix, and could be db-and-memcached easily.
     # TODO(lambert): Write a mapreduce which goes through events looking for unnecessary mappings to clear out the mapping space.
-    location_mapping = LocationMapping.get_by_key_name(address)
+    location_mapping = LocationMapping.get_by_id(address)
     if location_mapping:
         return location_mapping.remapped_address
     else:
@@ -127,18 +126,18 @@ def _save_remapped_address_for(original_address, new_remapped_address):
     if new_remapped_address != ' ':
         new_remapped_address = (new_remapped_address or '').strip()
     if original_address:
-        location_mapping = LocationMapping.get_by_key_name(original_address)
+        location_mapping = LocationMapping.get_by_id(original_address)
         if new_remapped_address:
             if not location_mapping:
-                location_mapping = LocationMapping(key_name=original_address)
+                location_mapping = LocationMapping(id=original_address)
             location_mapping.remapped_address = new_remapped_address
             try:
                 location_mapping.put()
-            except apiproxy_errors.CapabilityDisabledError, e:
+            except Exception as e:
                 logging.error("failed to save location mapping due to %s", e)
         else:
             if location_mapping:
-                location_mapping.delete()
+                location_mapping.key.delete()
 
 
 def update_remapped_address(fb_event, new_remapped_address):

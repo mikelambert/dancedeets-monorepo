@@ -2,8 +2,6 @@ import logging
 from timezonefinder import TimezoneFinder
 
 from google.cloud import ndb
-from google.appengine.api import datastore_errors
-from google.appengine.runtime import apiproxy_errors
 
 from mapreduce import context
 
@@ -116,7 +114,7 @@ class User(ndb.Model):
         self.locale = fb_user['profile'].get('locale')
         try:
             self.timezone_offset = float(fb_user['profile'].get('timezone'))
-        except (datastore_errors.BadValueError, TypeError) as e:
+        except (ValueError, TypeError) as e:
             logging.error("Failed to save timezone %s: %s", fb_user['profile'].get('timezone'), e)
 
     def preput(self):
@@ -146,7 +144,7 @@ class User(ndb.Model):
         )
         try:
             user_message.put()
-        except apiproxy_errors.CapabilityDisabledError:
+        except Exception:
             pass
         return user_message
 
@@ -226,8 +224,8 @@ def update_mailchimp(user):
             'LASTNAME': user.last_name or '',
             'FULLNAME': user.full_name or '',
             'NAME': user.first_name or user.full_name or '',
-            'WEEKLY': unicode(user.send_email),
-            'EXPIRED': unicode(user.expired_oauth_token),
+            'WEEKLY': str(user.send_email),
+            'EXPIRED': str(user.expired_oauth_token),
             'LASTLOGIN': user.last_login_time.strftime('%Y-%m-%d') if user.last_login_time else '',
         },
         'timestamp_signup': user.creation_time.strftime('%Y-%m-%dT%H:%M:%S'),

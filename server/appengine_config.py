@@ -1,15 +1,23 @@
+"""App Engine configuration for Flexible Environment.
+
+In Flexible Environment with Docker, dependencies are installed via pip
+and don't need vendor setup. This file is kept for mapreduce configuration.
+"""
 import logging
 import os
-from google.appengine.ext import vendor
+import sys
+
 from dancedeets.util import runtime
 
-vendor.add('lib-both')
-
+# Add local libraries to path if needed
+lib_paths = ['lib-both']
 if runtime.is_local_appengine():
-    vendor.add('lib-local')
-else:
-    # Import our lib/ directory on dev only (on prod, they should be installed in the Docker image)
-    os.environ['GAE_USE_SOCKETS_HTTPLIB'] = '1'
+    lib_paths.append('lib-local')
+
+for lib_path in lib_paths:
+    lib_dir = os.path.join(os.path.dirname(__file__), lib_path)
+    if os.path.exists(lib_dir) and lib_dir not in sys.path:
+        sys.path.insert(0, lib_dir)
 
 # We don't need such real-time statistics (normally 1 second) on the mapreduce job.
 # More of an optimization to save on the associated database Get/Put every second.

@@ -2,7 +2,7 @@ import datetime
 import json
 import logging
 
-from google.appengine.ext import db
+from google.cloud import ndb
 from mapreduce import json_util
 from mapreduce import mapreduce_pipeline
 from mapreduce import operation
@@ -34,38 +34,38 @@ FIELD_INVITES = 'FIELD_INVITES'  # fql query on invites for signed-up users
 FIELD_SEARCH = 'FIELD_SEARCH'  # /search?q=
 
 
-class Source(db.Model):
-    graph_id = property(lambda x: str(x.key().name()))
-    graph_type = db.StringProperty(choices=GRAPH_TYPES)
+class Source(ndb.Model):
+    graph_id = property(lambda x: str(x.key.string_id()))
+    graph_type = ndb.StringProperty(choices=GRAPH_TYPES)
 
     # cached/derived from fb data
-    name = db.StringProperty(indexed=False)
-    feed_history_in_seconds = db.IntegerProperty(indexed=False)
+    name = ndb.StringProperty(indexed=False)
+    feed_history_in_seconds = ndb.IntegerProperty(indexed=False)
 
-    fb_info = json_util.JsonProperty(dict, indexed=False)
-    latitude = db.FloatProperty(indexed=False)
-    longitude = db.FloatProperty(indexed=False)
+    fb_info = ndb.JsonProperty()
+    latitude = ndb.FloatProperty(indexed=False)
+    longitude = ndb.FloatProperty(indexed=False)
 
-    street_dance_related = db.BooleanProperty()
+    street_dance_related = ndb.BooleanProperty()
 
-    verticals = db.ListProperty(str, indexed=True)
+    verticals = ndb.StringProperty(indexed=True, repeated=True)
 
     # probably to assume for a given event? rough weighting factor?
     # do we want to delete these now?
-    freestyle = db.FloatProperty(indexed=False)
-    choreo = db.FloatProperty(indexed=False)
+    freestyle = ndb.FloatProperty(indexed=False)
+    choreo = ndb.FloatProperty(indexed=False)
 
     #STR_ID_MIGRATE
-    creating_fb_uid = db.IntegerProperty(indexed=False)
-    creation_time = db.DateTimeProperty(indexed=False, auto_now_add=True)
-    last_scrape_time = db.DateTimeProperty(indexed=False)
+    creating_fb_uid = ndb.IntegerProperty(indexed=False)
+    creation_time = ndb.DateTimeProperty(indexed=False, auto_now_add=True)
+    last_scrape_time = ndb.DateTimeProperty(indexed=False)
 
-    num_all_events = db.IntegerProperty(indexed=False)
-    num_potential_events = db.IntegerProperty(indexed=False)
-    num_real_events = db.IntegerProperty(indexed=False)
-    num_false_negatives = db.IntegerProperty(indexed=False)
+    num_all_events = ndb.IntegerProperty(indexed=False)
+    num_potential_events = ndb.IntegerProperty(indexed=False)
+    num_real_events = ndb.IntegerProperty(indexed=False)
+    num_false_negatives = ndb.IntegerProperty(indexed=False)
 
-    emails = db.ListProperty(str, indexed=True)
+    emails = ndb.StringProperty(indexed=True, repeated=True)
 
     def fraction_potential_are_real(self, bias=1):
         num_real_events = (self.num_real_events or 0) + bias
@@ -177,7 +177,7 @@ def create_source_from_id_without_saving(fbl, source_id, verticals=None):
         return None
 
     # Don't create the source if we already have it
-    source = Source.get_by_key_name(source_id)
+    source = Source.get_by_id(source_id)
     if source:
         return source
 
@@ -199,7 +199,7 @@ def create_source_from_id_without_saving(fbl, source_id, verticals=None):
             graph_type = _type_for_fb_source(fb_source_common)
             fb_source_data = fbl.get(get_lookup_for_graph_type(graph_type), source_id)
 
-            source = Source(key_name=source_id)
+            source = Source(id=source_id)
             logging.info('Getting source for id %s: %s', source.graph_id, source.name)
             source.verticals = verticals or []
             source.compute_derived_properties(fb_source_common, fb_source_data)
@@ -233,7 +233,7 @@ def explode_per_source_count(pe):
 
 
 def combine_source_count(source_id, counts_to_sum):
-    s = Source.get_by_key_name(source_id)
+    s = Source.get_by_id(source_id)
     if not s:
         return
 

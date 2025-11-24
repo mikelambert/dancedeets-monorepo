@@ -3,7 +3,7 @@
 import re
 import unittest
 
-from google.appengine.ext import testbed
+from dancedeets.test_utils import testbed_compat as testbed
 
 from dancedeets import fb_api
 from dancedeets.test_utils import fb_api_stub

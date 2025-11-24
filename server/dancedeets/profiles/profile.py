@@ -1,11 +1,11 @@
-from google.appengine.ext import db
+from google.cloud import ndb
 
 
-class Profile(db.Model):
-    fb_uid = property(lambda x: int(x.key().name()))
-    fb_name = db.StringProperty()
+class Profile(ndb.Model):
+    fb_uid = property(lambda x: int(x.key.string_id()))
+    fb_name = ndb.StringProperty()
 
-    dance_names = db.StringListProperty(indexed=False)
+    dance_names = ndb.StringProperty(indexed=False, repeated=True)
 
     def get_by_name(name):
         pass
