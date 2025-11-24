@@ -29,6 +29,10 @@ module.exports = {
   ],
   resolve: {
     extensions: ['.js', '.jsx', '.json'],
+    modules: [
+      path.resolve(__dirname, 'node_modules'),
+      'node_modules',
+    ],
   },
   module: {
     rules: [
@@ -40,11 +44,13 @@ module.exports = {
           options: {
             babelrc: false,
             presets: [
-              ['latest', { es2015: { modules: false } }],
-              'react',
-              'stage-0',
+              [require.resolve('babel-preset-latest'), { es2015: { modules: false } }],
+              require.resolve('babel-preset-react'),
+              require.resolve('babel-preset-stage-0'),
             ],
-            plugins: ['transform-flow-strip-types'],
+            plugins: [
+              require.resolve('babel-plugin-transform-flow-strip-types'),
+            ],
           },
         },
       },

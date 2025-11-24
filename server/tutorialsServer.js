@@ -32,9 +32,10 @@ function tutorialTemplate(props, scriptName, title) {
   <link rel="stylesheet" href="/css/font-awesome.min.css">
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
-    body {
+    html, body {
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
       background: #f5f5f5;
+      min-height: 100%;
     }
     a { color: #4a4a8a; }
     .navbar {
@@ -42,10 +43,59 @@ function tutorialTemplate(props, scriptName, title) {
       color: white;
       padding: 15px 20px;
       margin-bottom: 0;
+      height: 50px;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 1000;
     }
     .navbar h1 { font-size: 20px; margin: 0; }
     .navbar a { color: white; text-decoration: none; }
-    .body-contents { margin-top: 0; }
+    .body-contents {
+      margin-top: 50px;
+      padding: 10px;
+    }
+    #react-parent {
+      min-height: calc(100vh - 50px);
+    }
+    /* YouTube player responsive wrapper */
+    .youtube-container {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+    }
+    .youtube-container iframe {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+    }
+    /* Responsive video layout */
+    .video-player-container {
+      flex: 2;
+      width: 66.666%;
+      max-height: 100%;
+    }
+
+    /* Tutorial page specific - fixed height container */
+    .media-width-row-or-column {
+      max-height: calc(100vh - 50px);
+    }
+
+    /* On mobile/narrow screens, stack vertically */
+    @media (max-width: 900px) {
+      .media-width-row-or-column {
+        flex-direction: column !important;
+      }
+      .video-player-container {
+        width: 100%;
+        flex: none;
+      }
+    }
   </style>
 </head>
 <body>
@@ -54,7 +104,6 @@ function tutorialTemplate(props, scriptName, title) {
   </nav>
   <div id="react-parent" class="body-contents">
     <!-- React will render here -->
-    <div style="padding: 20px; text-align: center;">Loading tutorials...</div>
   </div>
   <script>
     // Mock global variables expected by the app
@@ -64,7 +113,16 @@ function tutorialTemplate(props, scriptName, title) {
     window.baseHostname = 'localhost';
     window.showSmartBanner = false;
     window.mixpanel = { track: function() {} };
+    window.sentMixpanelPing = false;
+
+    // Detect locale from browser
+    var browserLocale = navigator.language || navigator.userLanguage || 'en-US';
+
     window._REACT_PROPS = ${JSON.stringify(props)};
+    // Override currentLocale with browser locale if not already set
+    if (!window._REACT_PROPS.currentLocale) {
+      window._REACT_PROPS.currentLocale = browserLocale;
+    }
     window._REACT_ID = 'react-parent';
   </script>
   <script src="/dist/js/${scriptName}.js"></script>
@@ -77,6 +135,7 @@ function tutorialTemplate(props, scriptName, title) {
 app.get('/tutorials', (req, res) => {
   const props = {
     hashLocation: '',
+    // currentLocale will be set by browser detection in the template
   };
   res.send(tutorialTemplate(props, 'tutorialCategoryExec', 'All Tutorials'));
 });
@@ -89,6 +148,7 @@ app.get('/tutorials/:style/:tutorialId', (req, res) => {
     tutorial,
     style,
     hashLocation: '',
+    // currentLocale will be set by browser detection in the template
   };
   res.send(tutorialTemplate(props, 'tutorialExec', `${tutorialId} - ${style}`));
 });

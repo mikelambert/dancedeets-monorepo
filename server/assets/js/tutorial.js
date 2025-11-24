@@ -86,14 +86,12 @@ class _TutorialView extends React.Component<
     (this: any).onVideoEnd = this.onVideoEnd.bind(this);
   }
 
-  componentWillReceiveProps(nextProps) {
-    if (nextProps.videoIndex !== this.props.videoIndex) {
-      const video = this.props.tutorial.getVideo(nextProps.videoIndex || 0);
+  componentDidUpdate(prevProps, prevState) {
+    if (this.props.videoIndex !== prevProps.videoIndex) {
+      const video = this.props.tutorial.getVideo(this.props.videoIndex || 0);
       this.setState({ video });
     }
-  }
 
-  componentDidUpdate(prevProps, prevState) {
     if (prevState.video !== this.state.video) {
       const videoIndex = this.props.tutorial.getVideoIndex(this.state.video);
       const oldHash = window.location.hash || '#0';
@@ -212,40 +210,45 @@ class _TutorialView extends React.Component<
   }
 
   renderPlayer() {
-    let extraStyles = {};
     const { video } = this.state;
-    if (this.props.window) {
-      extraStyles = {
-        maxWidth:
-          (this.props.window.height - headerHeight) *
-          video.width /
-          video.height,
-        maxHeight: this.props.window.width * video.height / video.width,
-      };
-    }
+    // Standard YouTube aspect ratio is 16:9
+    const aspectRatio = 16 / 9;
+
     return (
       <div
+        className="video-player-container"
         style={{
-          flex: 2,
-          width: '100%',
-          height: '100%',
-          ...extraStyles,
+          backgroundColor: '#000',
+          flexShrink: 0,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
         }}
       >
-        <YouTube
-          ref={x => {
-            this._youtube = x;
-          }}
-          opts={{
+        <div
+          style={{
+            position: 'relative',
             width: '100%',
-            height: '100%',
-            playerVars: {
-              autoplay: 1,
-            },
+            paddingBottom: `${100 / aspectRatio}%`, // 56.25% for 16:9
+            height: 0,
           }}
-          videoId={video.youtubeId}
-          onEnd={this.onVideoEnd}
-        />
+        >
+          <YouTube
+            ref={x => {
+              this._youtube = x;
+            }}
+            containerClassName="youtube-container"
+            opts={{
+              width: '100%',
+              height: '100%',
+              playerVars: {
+                autoplay: 1,
+              },
+            }}
+            videoId={video.youtubeId}
+            onEnd={this.onVideoEnd}
+          />
+        </div>
       </div>
     );
   }
@@ -266,7 +269,9 @@ class _TutorialView extends React.Component<
         <div
           style={{
             flex: 1,
-            overflow: 'scroll',
+            overflow: 'auto',
+            minHeight: 0,
+            minWidth: 0,
           }}
         >
           {this.renderHeader()}
