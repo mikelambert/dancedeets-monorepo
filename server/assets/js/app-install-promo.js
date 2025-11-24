@@ -40,4 +40,4 @@ function initAppPromos() {
   }
 }
 
-module.exports = initAppPromos;
+export default initAppPromos;
