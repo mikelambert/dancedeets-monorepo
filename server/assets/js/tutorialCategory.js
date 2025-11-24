@@ -11,7 +11,7 @@ import Helmet from 'react-helmet';
 import Masonry from 'react-masonry-component';
 import LazyLoad from 'react-lazyload';
 import querystring from 'querystring';
-import createBrowserHistory from 'history/createBrowserHistory';
+import { createBrowserHistory } from 'history';
 import { intlWeb } from 'dancedeets-common/js/intl';
 import { getTutorials } from 'dancedeets-common/js/tutorials/playlistConfig';
 import type { Category } from 'dancedeets-common/js/tutorials/playlistConfig';
@@ -194,8 +194,15 @@ class _Tutorial extends React.Component<{
       />
     );
     if (this.props.lazyLoad) {
+      // Try to get the scroll container - in this case it's the parent element with overflow
+      // LazyLoad will use this to detect when to load images
       imageTag = (
-        <LazyLoad height={imageHeight} once offset={300}>
+        <LazyLoad
+          height={imageHeight}
+          once
+          offset={300}
+          overflow
+        >
           {imageTag}
         </LazyLoad>
       );
@@ -349,9 +356,9 @@ class _TutorialFilteredLayout extends React.Component<
     (this: any).onChange = this.onChange.bind(this);
   }
 
-  componentWillUpdate(newProps, newState) {
-    if (newState !== this.state) {
-      this.updateHash(newState);
+  componentDidUpdate(prevProps, prevState) {
+    if (prevState !== this.state) {
+      this.updateHash(this.state);
     }
   }
 
@@ -457,7 +464,7 @@ class _TutorialFilteredLayout extends React.Component<
         key={tutorial.getId()}
         tutorial={tutorial}
         searchKeywords={keywords}
-        lazyLoad={index > 30}
+        lazyLoad={index > 5}
       />
     ));
     const title = 'Dance Tutorials';

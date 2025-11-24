@@ -23,6 +23,10 @@ firebase-admin>=6.0.0
 # CLI/Config
 python-gflags>=3.1.2
 
+# Because the published version doesn't work with JsonProperty:
+# https://github.com/wtforms/wtforms-appengine/commit/841b76c15a2658c73c7e705fb810fe7c224b104b
+git+https://github.com/wtforms/wtforms-appengine
+
 # Templating
 Jinja2>=3.0.0
 
