@@ -2,7 +2,7 @@ import datetime
 import logging
 import time
 
-from mapreduce import control
+from dancedeets.compat.mapreduce import control
 
 from dancedeets import app
 from dancedeets import base_servlet

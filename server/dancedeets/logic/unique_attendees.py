@@ -1,6 +1,6 @@
 import logging
 
-from mapreduce import mapreduce_pipeline
+from dancedeets.compat.mapreduce import mapreduce_pipeline
 
 from dancedeets import app
 from dancedeets import base_servlet

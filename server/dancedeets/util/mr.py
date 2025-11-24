@@ -1,5 +1,5 @@
 import json
-from mapreduce import context
+from dancedeets.compat.mapreduce import context
 
 
 def increment(key, delta=1):

@@ -5,7 +5,7 @@ from google.appengine.ext import ndb
 from google.appengine.api import datastore_errors
 from google.appengine.runtime import apiproxy_errors
 
-from mapreduce import context
+from dancedeets.compat.mapreduce import context
 
 import datetime
 from dancedeets import fb_api

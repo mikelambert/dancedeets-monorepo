@@ -2,12 +2,12 @@ import logging
 
 import cloudstorage
 
-from mapreduce import base_handler
-from mapreduce import context
-from mapreduce import mapper_pipeline
-from mapreduce import mapreduce_pipeline
-from mapreduce import pipeline_base
-from mapreduce import util
+from dancedeets.compat.mapreduce import base_handler
+from dancedeets.compat.mapreduce import context
+from dancedeets.compat.mapreduce import mapper_pipeline
+from dancedeets.compat.mapreduce import mapreduce_pipeline
+from dancedeets.compat.mapreduce import pipeline_base
+from dancedeets.compat.mapreduce import util
 
 from dancedeets import app
 from dancedeets import base_servlet

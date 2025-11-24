@@ -6,9 +6,9 @@ import re
 import urlparse
 
 from dancedeets import fb_api
-from mapreduce import context
-from mapreduce import control
-from mapreduce import operation
+from dancedeets.compat.mapreduce import context
+from dancedeets.compat.mapreduce import control
+from dancedeets.compat.mapreduce import operation
 
 from dancedeets.users import users
 from dancedeets.util import deferred
