@@ -1,5 +1,5 @@
 import logging
-import urllib
+import urllib.parse
 
 from dancedeets.compat import blobstore
 from dancedeets.compat import blobstore_handlers
@@ -18,7 +18,7 @@ class GenerateTrainingDataHandler(base_servlet.BaseTaskFacebookRequestHandler):
 @app.route('/tools/download_training_data/([^/]+)?')
 class DownloadTrainingDataHandler(blobstore_handlers.BlobstoreDownloadHandler):
     def get(self, resource):
-        resource = str(urllib.unquote(resource))
+        resource = str(urllib.parse.unquote(resource))
         blob_info = blobstore.BlobInfo.get(resource)
         logging.info("resource is %s, blob_info is %s", resource, blob_info)
         self.send_blob(blob_info, save_as=resource)

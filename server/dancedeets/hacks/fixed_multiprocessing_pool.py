@@ -113,7 +113,7 @@ def worker(inqueue, outqueue, initializer=None, initargs=(), maxtasks=None):
         job, i, func, args, kwds = task
         try:
             result = (True, func(*args, **kwds))
-        except Exception, e:
+        except Exception as e:
             result = (False, e)
         try:
             put((job, i, result))

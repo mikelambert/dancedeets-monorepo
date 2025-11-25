@@ -307,7 +307,7 @@ def people_groupings(geocode, distance, skip_people):
                         'ATTENDEE': {},
                     }
                     # These lists can get huge now...make sure we trim them down for what clients need!
-                    for person_type, styles in groupings.iteritems():
+                    for person_type, styles in groupings.items():
                         for style in event_types.STYLES:
                             index_style_name = style.index_name
                             public_style_name = style.public_name
@@ -320,7 +320,7 @@ def people_groupings(geocode, distance, skip_people):
                                 new_groupings[person_type][public_style_name] = styles[good_style][:10]
                     groupings = new_groupings
 
-                    logging.info('Person Groupings:\n%s', '\n'.join('%s: %s' % kv for kv in groupings.iteritems()))
+                    logging.info('Person Groupings:\n%s', '\n'.join('%s: %s' % kv for kv in groupings.items()))
     return groupings
 
 

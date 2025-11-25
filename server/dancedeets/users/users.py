@@ -23,10 +23,10 @@ timezone_finder = TimezoneFinder()
 class User(ndb.Model):
     # SSO
     fb_uid = property(lambda x: str(x.key.string_id()))
-    fb_access_token = ndb.StringProperty(indexed=False)
+    fb_access_token = ndb.TextProperty()
     fb_access_token_expires = ndb.DateTimeProperty(indexed=False)
     expired_oauth_token = ndb.BooleanProperty()
-    expired_oauth_token_reason = ndb.StringProperty(indexed=False)
+    expired_oauth_token_reason = ndb.TextProperty()
     ip = ndb.StringProperty()
 
     # Statistics
@@ -36,7 +36,7 @@ class User(ndb.Model):
     #STR_ID_MIGRATE
     inviting_fb_uid = ndb.IntegerProperty(indexed=False)
 
-    clients = ndb.StringProperty(indexed=False, repeated=True)
+    clients = ndb.StringProperty(repeated=True)  # repeated=True not compatible with TextProperty
 
     json_data = ndb.JsonProperty()
 
@@ -47,15 +47,15 @@ class User(ndb.Model):
     num_hand_added_own_events = ndb.IntegerProperty(indexed=False)
 
     # Search preferences
-    location = ndb.StringProperty(indexed=False)
-    distance = ndb.StringProperty(indexed=False)  # WHY NOT INT???
-    distance_units = ndb.StringProperty(indexed=False)
+    location = ndb.TextProperty()
+    distance = ndb.TextProperty()  # WHY NOT INT???
+    distance_units = ndb.TextProperty()
     min_attendees = ndb.IntegerProperty(indexed=False)
 
     # TODO(lambert): Get rid of these eventually??
-    dance_type = ndb.StringProperty(indexed=False)
-    freestyle = ndb.StringProperty(indexed=False)
-    choreo = ndb.StringProperty(indexed=False)
+    dance_type = ndb.TextProperty()
+    freestyle = ndb.TextProperty()
+    choreo = ndb.TextProperty()
 
     # Other preferences
     send_email = ndb.BooleanProperty()
@@ -65,12 +65,12 @@ class User(ndb.Model):
 
     # Derived from fb_user
     full_name = ndb.StringProperty()  # Indexed to make it easier for me to find a user for manual support
-    first_name = ndb.StringProperty(indexed=False)
-    last_name = ndb.StringProperty(indexed=False)
+    first_name = ndb.TextProperty()
+    last_name = ndb.TextProperty()
     email = ndb.StringProperty()  # Indexed to make it easier for me to find a user for manual support
     mailchimp_email = ndb.StringProperty()  # Indexed to make it easier for me to find a user for manual support
 
-    locale = ndb.StringProperty(indexed=False)
+    locale = ndb.TextProperty()
     timezone_offset = ndb.FloatProperty()
 
     weekly_email_send_date = ndb.DateTimeProperty(indexed=False)
@@ -256,7 +256,7 @@ def update_mailchimp(user):
 
 class UserFriendsAtSignup(ndb.Model):
     fb_uid = property(lambda x: str(x.key.string_id()))
-    registered_friend_string_ids = ndb.StringProperty(indexed=False, repeated=True)
+    registered_friend_string_ids = ndb.StringProperty(repeated=True)  # repeated=True not compatible with TextProperty
     # deprecated
     registered_friend_ids = ndb.IntegerProperty(indexed=False, repeated=True)
 
@@ -264,4 +264,4 @@ class UserFriendsAtSignup(ndb.Model):
 class UserMessage(ndb.Model):
     real_fb_uid = ndb.StringProperty()
     creation_time = ndb.DateTimeProperty()
-    message = ndb.TextProperty(indexed=False)
+    message = ndb.TextProperty()

@@ -75,7 +75,7 @@ class RelevantHandler(base_servlet.BaseRequestHandler):
 
 def process_uploaded_item(json_body):
     #TODO: And maybe only save/reindex if there were legit changes?
-    for key, value in json_body.iteritems():
+    for key, value in json_body.items():
         if key in ['start_time', 'end_time', 'scrape_time']:
             json_body[key] = datetime.datetime.strptime(value, DATETIME_FORMAT)
     studio_class = class_models.StudioClass(**json_body)
@@ -109,7 +109,7 @@ def process_upload_finalization(studio_name):
     classes_by_date = {}
     for studio_class in results:
         classes_by_date.setdefault(studio_class.start_time.date(), []).append(studio_class)
-    for date, classes in classes_by_date.iteritems():
+    for date, classes in classes_by_date.items():
         # RISKY!!! uses current date (in what timezone??)
         if date < datetime.date.today():
             scrape_time_to_keep = max(classes, key=lambda x: x.scrape_time).scrape_time

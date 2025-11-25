@@ -7,7 +7,8 @@ import yaml
 def _get_config(filename):
     _filename = os.path.join(os.path.dirname(__file__), '..', filename)
     if os.path.exists(_filename):
-        return yaml.load(file(_filename, 'r'))
+        with open(_filename, 'r') as f:
+            return yaml.safe_load(f)
     else:
         logging.error('Cannot find %s, using an empty keys file instead.', filename)
         return {}

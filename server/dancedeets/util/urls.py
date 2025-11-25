@@ -1,5 +1,5 @@
 import re
-import urllib
+import urllib.parse
 from slugify import slugify
 
 EVENT_ID_REGEX = r'(?:\d+|[^/?#]+:[^/?#]+)'
@@ -11,11 +11,11 @@ def dd_event_url(eid, kwargs=None):
 
 
 def dd_relative_event_url(eid):
-    if isinstance(eid, basestring):
+    if isinstance(eid, str):
         return '/events/%s/' % eid
     else:
         event = eid
-        slug = slugify(unicode(event.name))
+        slug = slugify(str(event.name))
         return '/events/%s/%s' % (event.id, slug)
 
 
@@ -54,12 +54,12 @@ def dd_search_url(location, keywords=''):
 def urlencode(kwargs, doseq=False):
     if doseq:
         new_kwargs = {}
-        for k, v in kwargs.iteritems():
-            new_kwargs[unicode(k).encode('utf-8')] = [unicode(v_x).encode('utf-8') for v_x in v]
+        for k, v in kwargs.items():
+            new_kwargs[str(k)] = [str(v_x) for v_x in v]
         kwargs = new_kwargs
     else:
-        kwargs = dict((unicode(k).encode('utf-8'), unicode(v).encode('utf-8')) for (k, v) in kwargs.iteritems())
-    return urllib.urlencode(kwargs, doseq=doseq)
+        kwargs = dict((str(k), str(v)) for (k, v) in kwargs.items())
+    return urllib.parse.urlencode(kwargs, doseq=doseq)
 
 
 def get_event_id_from_url(url):

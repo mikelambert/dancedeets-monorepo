@@ -461,7 +461,7 @@ class EventHandler(ApiHandler):
             self.response.out.write('Need an event_id.')
             return
         else:
-            event_id = urllib.unquote_plus(path_bits[1].strip('/'))
+            event_id = urllib.parse.unquote_plus(path_bits[1].strip('/'))
             db_event = eventdata.DBEvent.get_by_id(event_id)
             if not db_event:
                 self.add_error('No event found')

@@ -378,7 +378,7 @@ class BaseRequestHandler(BareBaseRequestHandler):
 
         if len(request.get_all('nt')) > 1:
             logging.error('Have too many nt= parameters, something is Very Wrong!')
-            for k, v in request.cookies.iteritems():
+            for k, v in request.cookies.items():
                 logging.info("DEBUG: cookie %r = %r", k, v)
 
         fb_cookie_uid = login_logic.get_uid_from_fb_cookie(request.cookies)

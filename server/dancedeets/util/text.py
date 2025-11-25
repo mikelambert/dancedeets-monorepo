@@ -14,7 +14,6 @@ def format_html(value):
 # Commented multi-line version:
 url_finder_re = re.compile(
     r"""
-(?xi)
 \b
 (                            # Capture 1: entire matched URL
     (?:
@@ -57,7 +56,8 @@ url_finder_re = re.compile(
         (?!@)            # not succeeded by a @, avoid matching "foo.na" in "foo.na@example.com"
     )
 )
-"""
+""",
+    re.VERBOSE | re.IGNORECASE,
 )
 
 
@@ -92,13 +92,13 @@ def escapejs(value):
 
 
 def format_js(value):
-    if isinstance(value, basestring):
+    if isinstance(value, str):
         value = value.replace('\\', '\\\\')
         value = value.replace('"', '\\"')
         value = value.replace("'", "\\'")
         value = value.replace("\n", "\\n")
         return value
-    elif isinstance(value, (int, long, float)):
+    elif isinstance(value, (int, float)):
         return str(value)
     else:
         return ''

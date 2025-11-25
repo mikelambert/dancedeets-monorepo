@@ -1,8 +1,8 @@
-import Cookie
+import http.cookies
 import hashlib
 import json
 import logging
-import urllib
+import urllib.parse
 
 from dancedeets import facebook
 
@@ -38,7 +38,7 @@ def get_uid_from_user_login_cookie(cookies):
     set_by_access_token_param = None
     user_login_string = get_login_cookie(cookies)
     if user_login_string:
-        user_login_cookie = json.loads(urllib.unquote(user_login_string))
+        user_login_cookie = json.loads(urllib.parse.unquote(user_login_string))
         logging.info("Got login cookie: %s", user_login_cookie)
         if validate_hashed_userlogin(user_login_cookie):
             our_cookie_uid = user_login_cookie['uid']
@@ -50,7 +50,7 @@ def get_uid_from_fb_cookie(cookies):
     # Load Facebook cookie
     try:
         response = facebook.parse_signed_request_cookie(cookies)
-    except Cookie.CookieError:
+    except http.cookies.CookieError:
         logging.exception("Error processing cookie: %s")
         return
     fb_cookie_uid = None

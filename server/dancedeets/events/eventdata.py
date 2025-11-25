@@ -77,7 +77,7 @@ class DBEvent(ndb.Model):
     # Fields unique to Facebook:
     owner_fb_uid = ndb.StringProperty()
     admin_fb_uids = ndb.StringProperty(repeated=True)
-    visible_to_fb_uids = ndb.StringProperty(indexed=False, repeated=True)
+    visible_to_fb_uids = ndb.StringProperty(repeated=True)  # repeated=True not compatible with TextProperty
     # derived data from fb_event itself
     fb_event = ndb.JsonProperty(indexed=False)
 
@@ -105,7 +105,7 @@ class DBEvent(ndb.Model):
     attendee_count = ndb.IntegerProperty(indexed=False)
 
     # extra cached properties
-    address = ndb.StringProperty(indexed=False)  # manually overridden address
+    address = ndb.TextProperty()  # manually overridden address
     actual_city_name = ndb.StringProperty()  # city for this event
     # Index is needed for city_name=Unknown searches in admin_nolocation_events
     city_name = ndb.StringProperty()  # largest nearby city for this event
@@ -118,14 +118,14 @@ class DBEvent(ndb.Model):
 
     location_geocode = ndb.JsonProperty(indexed=False)
 
-    event_keywords = ndb.StringProperty(indexed=False, repeated=True)
-    auto_categories = ndb.StringProperty(indexed=False, repeated=True)
-    country = ndb.StringProperty(indexed=False)
+    event_keywords = ndb.StringProperty(repeated=True)  # repeated=True not compatible with TextProperty
+    auto_categories = ndb.StringProperty(repeated=True)  # repeated=True not compatible with TextProperty
+    country = ndb.TextProperty()
 
     # TODO(lambert): right now this is unused, but maybe we want to cache our "ish" tags or something to that effect?
     # Was originally used to track manually-applied tags, and contains that data for some old events...
-    tags = ndb.StringProperty(indexed=False, repeated=True)
-    nearby_city_names = ndb.StringProperty(indexed=False, repeated=True)  # Unused
+    tags = ndb.StringProperty(repeated=True)  # repeated=True not compatible with TextProperty
+    nearby_city_names = ndb.StringProperty(repeated=True)  # Unused, repeated=True not compatible with TextProperty
 
     nonlocal_fraction = ndb.FloatProperty(indexed=True)  # Fraction of attendees that are non-local dancers
     attendee_distance_score = ndb.FloatProperty(indexed=True)  # Some functional score of the internationality of the event's attendees
@@ -372,7 +372,7 @@ class DBEvent(ndb.Model):
             picture_url = self.fb_event.get('fql_info') or self.fb_event.get('picture_urls')
             # TODO(FB2.0): cleanup!
             if self.fb_event.get('picture'):
-                if isinstance(self.fb_event['picture'], basestring):
+                if isinstance(self.fb_event['picture'], str):
                     return self.fb_event['picture']
                 else:
                     return self.fb_event['picture']['data']['url']

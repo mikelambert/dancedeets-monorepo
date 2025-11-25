@@ -165,11 +165,11 @@ for style in _STYLE_LIST:
 
 _global_preprocess_removal = {}
 for style in _STYLE_LIST:
-    for language, rule in style.get_preprocess_removal().iteritems():
+    for language, rule in style.get_preprocess_removal().items():
         if language not in _global_preprocess_removal:
             _global_preprocess_removal[language] = []
         _global_preprocess_removal[language].append(rule)
 
 PREPROCESS_REMOVAL = {}
-for language, rules in _global_preprocess_removal.iteritems():
+for language, rules in _global_preprocess_removal.items():
     PREPROCESS_REMOVAL[language] = grammar.Name('PREPROCESS_REMOVAL_%s' % language, grammar.Any(*rules))

@@ -117,7 +117,7 @@ class EmailErrors(fixed_pipelines.Pipeline):
             return
 
         rendered = ["The following crawl errors occurred:"]
-        for crawler, errors in error_lines.iteritems():
+        for crawler, errors in error_lines.items():
             rendered += ["%s:" % crawler]
             rendered += errors
             rendered += []

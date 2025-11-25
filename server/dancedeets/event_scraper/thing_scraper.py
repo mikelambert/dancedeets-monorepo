@@ -95,7 +95,7 @@ def discover_events_from_sources(fbl, sources):
     for source in sources:
         try:
             discovered_list.update(_process_thing_feed(fbl, source))
-        except fb_api.NoFetchedDataException, e:
+        except fb_api.NoFetchedDataException as e:
             logging.warning("Failed to fetch data for thing: %s", str(e))
     logging.info("Discovered %s items: %s", len(discovered_list), discovered_list)
     return discovered_list

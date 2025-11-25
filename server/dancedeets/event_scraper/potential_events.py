@@ -17,7 +17,7 @@ class DiscoveredEvent(object):
         self.extra_source_id = extra_source_id
 
     def __repr__(self):
-        return '%s(%r)' % (self.__class__.__name__, ', '.join('%s=%s' % x for x in self.__dict__.iteritems()))
+        return '%s(%r)' % (self.__class__.__name__, ', '.join('%s=%s' % x for x in self.__dict__.items()))
 
     def _cmprepr(self):
         return (self.event_id, self.source_id, self.source_field, self.extra_source_id)
@@ -133,7 +133,7 @@ def make_potential_event_without_source(fb_event_id):
 
     try:
         potential_event = db.run_in_transaction(_internal_add_potential_event)
-    except apiproxy_errors.CapabilityDisabledError, e:
+    except apiproxy_errors.CapabilityDisabledError as e:
         logging.error("Error saving potential event %s due to %s", fb_event_id, e)
 
     return potential_event
@@ -172,7 +172,7 @@ def make_potential_event_with_source(discovered):
     new_source = False
     try:
         new_source = db.run_in_transaction(_internal_add_source_for_event_id)
-    except apiproxy_errors.CapabilityDisabledError, e:
+    except apiproxy_errors.CapabilityDisabledError as e:
         logging.error("Error saving potential event %s due to %s", fb_event_id, e)
     potential_event = PotentialEvent.get_by_key_name(fb_event_id)
     logging.info('VTFI %s: Just loaded potential event %s, now with sources: %s', fb_event_id, fb_event_id, potential_event.sources())

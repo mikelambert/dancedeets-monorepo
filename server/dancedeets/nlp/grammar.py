@@ -30,7 +30,7 @@ class GrammarRule(object):
             try:
                 self._cached_double_regex[flags] = regex_keywords.make_regexes_raw(self.as_expanded_regex(), flags=flags)
             except:
-                print 'Problems encoding:', repr(self.as_expanded_regex())
+                print('Problems encoding:', repr(self.as_expanded_regex()))
                 raise
         return self._cached_double_regex[flags]
 
@@ -45,7 +45,7 @@ class _BaseAlternation(GrammarRule):
         # Subclass must set up self._keywords
 
     def children(self):
-        return [x for x in self._keywords if not isinstance(x, basestring)]
+        return [x for x in self._keywords if not isinstance(x, str)]
 
     @staticmethod
     def flatten_regex(strings):
@@ -85,13 +85,13 @@ class _BaseAlternation(GrammarRule):
 class Any(_BaseAlternation):
     def __init__(self, *keywords):
         super(Any, self).__init__()
-        non_rule_or_string = [x for x in keywords if not isinstance(x, (GrammarRule, basestring))]
+        non_rule_or_string = [x for x in keywords if not isinstance(x, (GrammarRule, str))]
         if non_rule_or_string:
             raise ValueError("Any() arguments need to be str, unicode, or a GrammarRule object: %s" % non_rule_or_string)
         self._keywords = tuple(keywords)
 
     def name(self):
-        strs = [x if isinstance(x, basestring) else x.name() for x in self._keywords[0:2]]
+        strs = [x if isinstance(x, str) else x.name() for x in self._keywords[0:2]]
         return 'Any(%s,...)' % ','.join(strs)
 
 

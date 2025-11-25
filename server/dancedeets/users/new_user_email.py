@@ -2,7 +2,7 @@
 #
 
 import logging
-import urllib
+import urllib.parse
 from dancedeets import fb_api
 from dancedeets import render_server
 from dancedeets.loc import names
@@ -26,7 +26,7 @@ def email_for_user(user, fbl, should_send=False):
         raise NoEmailException('Could not find LookupUser: %s', fb_user)
 
     locale = user.locale or 'en_US'
-    email_unsubscribe_url = 'https://www.dancedeets.com/user/unsubscribe?email=%s' % urllib.quote(email_address)
+    email_unsubscribe_url = 'https://www.dancedeets.com/user/unsubscribe?email=%s' % urllib.parse.quote(email_address)
     props = {
         'user': {
             'userName': user.first_name or user.full_name or '',
