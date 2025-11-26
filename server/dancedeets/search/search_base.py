@@ -34,9 +34,9 @@ def _no_wiki_or_html(form, field):
 
 
 def _valid_query(form, field):
-    keywords = _get_parsed_keywords(field.data.encode('utf-8'))
+    keywords = _get_parsed_keywords(field.data)
     try:
-        search._CheckQuery(keywords.decode('utf-8'))
+        search._CheckQuery(keywords)
     except search.QueryError as e:
         raise wtforms.ValidationError(str(e))
 

@@ -727,9 +727,12 @@ class BaseRequestHandler(BareBaseRequestHandler):
         self.jinja_env.globals['event_image_url'] = urls.event_image_url
 
         locales = self.request.headers.get('Accept-Language', '').split(',')
-        self.locales = [x.split(';')[0] for x in locales]
+        self.locales = [x.split(';')[0] for x in locales if x.split(';')[0]]
         if self.request.get('hl'):
             self.locales = self.request.get('hl').split(',')
+        # Default to 'en' if no valid locale was found
+        if not self.locales:
+            self.locales = ['en']
         logging.info('Accept-Language is %s, final locales are %s', self.request.headers.get('Accept-Language', ''), self.locales)
         self.display['request'] = request
         self.display['app_id'] = facebook.FACEBOOK_CONFIG['app_id']

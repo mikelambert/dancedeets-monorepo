@@ -160,7 +160,7 @@ def _get_counter_map_for_ranking(ranking):
 
 def _group_cities_time_period(final_counter_map):
     cities = {}
-    for k, counter in final_counter_map.iteritems():
+    for k, counter in final_counter_map.items():
         prefix, kwargs = _parse_key_name(k)
         if prefix != "City":
             continue
@@ -170,7 +170,7 @@ def _group_cities_time_period(final_counter_map):
 
 def _group_users_time_period(final_counter_map, city):
     users = {}
-    for k, counter in final_counter_map.iteritems():
+    for k, counter in final_counter_map.items():
         prefix, kwargs = _parse_key_name(k)
         if prefix != "User":
             continue
@@ -200,7 +200,7 @@ def get_city_by_user_rankings():
 
 def _compute_sum(all_rankings, time_period):
     total_count = 0
-    for city, times in all_rankings.iteritems():
+    for city, times in all_rankings.items():
         count = times.get(time_period, {})
         total_count += count
     return total_count
@@ -210,7 +210,7 @@ def compute_city_template_rankings(
     all_rankings, time_period, vertical=None, use_url=True
 ):
     city_ranking = []
-    for city, times in all_rankings.iteritems():
+    for city, times in all_rankings.items():
         if city == "Unknown":
             continue
         count = times.get(time_period, {})
