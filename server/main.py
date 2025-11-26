@@ -6,9 +6,60 @@ This module initializes the WSGI application and imports all servlets.
 
 import logging
 import os
+import subprocess
 
 # Determine if we're in production mode
 prod_mode = os.environ.get('GAE_ENV') == 'standard' or os.environ.get('GOOGLE_CLOUD_PROJECT')
+
+# Check render server status at startup
+def check_render_server():
+    """Check if Node.js render server is running."""
+    try:
+        # Check if Node is installed
+        node_version = subprocess.run(['node', '--version'], capture_output=True, text=True, timeout=5)
+        logging.info(f"Node.js version: {node_version.stdout.strip()} (stderr: {node_version.stderr.strip()})")
+    except Exception as e:
+        logging.error(f"Node.js not available: {e}")
+
+    try:
+        # Check if dist/js-server exists
+        js_server_dir = '/app/dist/js-server'
+        if os.path.exists(js_server_dir):
+            files = os.listdir(js_server_dir)
+            logging.info(f"Files in {js_server_dir}: {files[:10]}")  # First 10 files
+        else:
+            logging.error(f"Directory {js_server_dir} does not exist!")
+    except Exception as e:
+        logging.error(f"Error checking js-server dir: {e}")
+
+    try:
+        # Check if render server is responding
+        import urllib.request
+        import json
+        req = urllib.request.Request(
+            'http://localhost:8090/render',
+            data=json.dumps({"path": "/app/dist/js-server/tutorialCategory.js", "serializedProps": "{}", "toStaticMarkup": False}).encode(),
+            headers={'Content-Type': 'application/json'},
+            method='POST'
+        )
+        with urllib.request.urlopen(req, timeout=5) as response:
+            data = response.read().decode()
+            logging.info(f"Render server response: {data[:200]}...")
+    except Exception as e:
+        logging.error(f"Render server NOT responding: {e}")
+
+    try:
+        # Check running processes
+        ps_output = subprocess.run(['ps', 'aux'], capture_output=True, text=True, timeout=5)
+        node_processes = [line for line in ps_output.stdout.split('\n') if 'node' in line.lower()]
+        logging.info(f"Node processes running: {node_processes}")
+    except Exception as e:
+        logging.error(f"Error checking processes: {e}")
+
+# Run diagnostics at startup
+logging.info("=== STARTUP DIAGNOSTICS ===")
+check_render_server()
+logging.info("=== END DIAGNOSTICS ===")
 
 # Initialize memcache
 from dancedeets.services import memcache  # noqa: E402

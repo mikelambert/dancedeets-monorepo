@@ -21,4 +21,23 @@ NO_KEY = 'NO_KEY'
 
 
 def get(key):
-    return __KEY_CONFIG.get(key, __DEV_KEY_CONFIG.get(key, NO_KEY))
+    """Get a key from config files or environment variables.
+
+    Priority order:
+    1. keys.yaml
+    2. keys-dev.yaml
+    3. Environment variable (uppercase with underscores, e.g. google_server_key -> GOOGLE_SERVER_KEY)
+    4. NO_KEY fallback
+    """
+    # First check config files
+    value = __KEY_CONFIG.get(key, __DEV_KEY_CONFIG.get(key))
+    if value:
+        return value
+
+    # Then check environment variable (convert to uppercase with underscores)
+    env_key = key.upper()
+    env_value = os.environ.get(env_key)
+    if env_value:
+        return env_value
+
+    return NO_KEY
