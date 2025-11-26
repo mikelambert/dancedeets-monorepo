@@ -6,18 +6,10 @@ from dancedeets.compat import LEGACY_APIS_ENABLED
 if LEGACY_APIS_ENABLED:
     from mapreduce.main import *
 else:
-    import webapp2
-
-    class _StubHandler(webapp2.RequestHandler):
-        def get(self):
-            logging.warning("MapReduce is disabled")
-            self.response.write("MapReduce is disabled")
-
-        def post(self):
-            logging.warning("MapReduce is disabled")
-            self.response.write("MapReduce is disabled")
-
-    # Create a stub WSGI app
-    APP = webapp2.WSGIApplication([
-        (r'/mapreduce.*', _StubHandler),
-    ], debug=True)
+    # Stub WSGI app - MapReduce is disabled in Flex environment
+    def APP(environ, start_response):
+        logging.warning("MapReduce is disabled")
+        status = '503 Service Unavailable'
+        response_headers = [('Content-Type', 'text/plain')]
+        start_response(status, response_headers)
+        return [b'MapReduce is disabled']

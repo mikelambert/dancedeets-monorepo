@@ -7,13 +7,10 @@ from dancedeets.compat import LEGACY_APIS_ENABLED
 if LEGACY_APIS_ENABLED:
     from mapreduce.handlers import *
 else:
-    import webapp2
-
-    class MapperWorkerCallbackHandler(webapp2.RequestHandler):
-        """Stub handler that provides enough interface for subclasses"""
+    class MapperWorkerCallbackHandler:
+        """Stub handler - MapReduce is disabled in Flex environment"""
 
         def __init__(self, *args, **kwargs):
-            super(MapperWorkerCallbackHandler, self).__init__(*args, **kwargs)
             self._start_time = time.time()
             self.slice_context = _StubSliceContext()
 

@@ -10,17 +10,13 @@ from dancedeets.compat import LEGACY_APIS_ENABLED
 if LEGACY_APIS_ENABLED:
     from google.appengine.ext.webapp.blobstore_handlers import *
 else:
-    import webapp2
-
-    class BlobstoreDownloadHandler(webapp2.RequestHandler):
-        """Stub BlobstoreDownloadHandler"""
+    class BlobstoreDownloadHandler:
+        """Stub BlobstoreDownloadHandler - blobstore is disabled in Flex environment"""
         def send_blob(self, blob_info, save_as=None):
             logging.warning("Blobstore is disabled. Cannot send blob")
-            self.response.set_status(503)
-            self.response.write("Blobstore is disabled")
 
-    class BlobstoreUploadHandler(webapp2.RequestHandler):
-        """Stub BlobstoreUploadHandler"""
+    class BlobstoreUploadHandler:
+        """Stub BlobstoreUploadHandler - blobstore is disabled in Flex environment"""
         def get_uploads(self, field_name=None):
             logging.warning("Blobstore is disabled. Cannot get uploads")
             return []

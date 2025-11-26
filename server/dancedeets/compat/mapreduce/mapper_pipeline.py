@@ -7,6 +7,8 @@ if LEGACY_APIS_ENABLED:
 else:
     class MapperPipeline:
         """Stub MapperPipeline"""
+        output_names = []
+
         def __init__(self, *args, **kwargs):
             pass
 

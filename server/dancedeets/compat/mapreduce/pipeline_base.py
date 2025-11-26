@@ -12,3 +12,7 @@ else:
 
         def start(self, *args, **kwargs):
             pass
+
+    class _OutputSlotsMixin:
+        """Stub _OutputSlotsMixin for pipeline outputs"""
+        output_names = []
