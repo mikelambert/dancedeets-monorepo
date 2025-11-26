@@ -63,7 +63,7 @@ function intlProviderArgs(currentLocale) {
   // Our Locale.constants().localeIdentifier returns zh-Hant_US (converted to zh-Hant-US).
   // But moment locales are zh-tw (traditional) and zh-cn (simplified).
   // So manually convert the currentLocale to the 'zh-tw' moment needs:
-  let locale = currentLocale.toLowerCase();
+  let locale = (currentLocale || defaultLocale).toLowerCase();
   if (locale.includes('zh-hant')) {
     locale = 'zh-tw';
   }
