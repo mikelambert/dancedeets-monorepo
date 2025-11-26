@@ -1,10 +1,10 @@
-# Core dependencies for DanceDeets
+# Base dependencies for DanceDeets
 # Python 3.11 compatible versions
 
 # Image processing
 Pillow>=10.0.0
 
-# Language detection
+# Language detection (replaces deprecated cld2-cffi which is not Python 3 compatible)
 langdetect>=1.0.9
 
 # Geospatial
@@ -23,6 +23,3 @@ google-cloud-storage>=2.0.0
 google-cloud-datastore>=2.0.0
 google-cloud-ndb>=2.0.0
 google-cloud-tasks>=2.0.0
-
-# App Engine compatibility for Python 3
-appengine-python-standard>=1.0.0

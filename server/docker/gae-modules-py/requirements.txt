@@ -1,8 +1,9 @@
 # Application dependencies for DanceDeets
 # Python 3.11 compatible versions
 
-# Twitter API (use tweepy instead of deprecated sixohsix/twitter)
+# Twitter API
 tweepy>=4.0.0
+twitter>=1.19.6
 
 # Utilities
 atomicwrites>=1.4.0
@@ -13,16 +14,13 @@ iso3166>=2.0.0
 
 # Authentication
 oauth2>=1.9.0.post1
-# Note: python-oauth2 may need to be replaced with authlib or oauthlib
 
 # Push notifications
 twilio>=8.0.0
-# python-gcm is deprecated, use firebase-admin for FCM
 firebase-admin>=6.0.0
 
 # CLI/Config
 python-gflags>=3.1.2
->>>>>>> 7bc44a70 (Migrate to App Engine Flexible Environment with modern stack)
 
 # Templating
 Jinja2>=3.0.0
@@ -32,17 +30,14 @@ humanize>=4.0.0
 htmlmin>=0.1.12
 
 # HTTP
-urllib3>=2.0.0
+urllib3>=1.26.2,<2
 requests>=2.28.0
 requests-toolbelt>=1.0.0
 
 # Web frameworks
-# webapp2 is App Engine Standard only - removed
 Flask>=2.0.0
 Flask-Admin>=1.6.0
 WTForms>=3.0.0
-# Because the published version doesn't work with JsonProperty:
-# https://github.com/wtforms/wtforms-appengine/commit/841b76c15a2658c73c7e705fb810fe7c224b104b
 git+https://github.com/wtforms/wtforms-appengine
 
 # GraphQL
@@ -54,27 +49,6 @@ python-slugify>=8.0.0
 
 # RSS/Atom feeds
 feedparser>=6.0.0
-
-<<<<<<< HEAD
-# ScrapingHub API
-scrapinghub==1.9.0
-scrapy==2.6.2
-scrapyjs==0.2
-html2text==2016.9.19
-
-pyyaml==5.4
-=======
-# App Engine specific (these may need migration to Cloud equivalents)
-# GoogleAppEngineMapReduce - deprecated, consider Cloud Dataflow
-# GoogleAppEnginePipeline - deprecated
-# GoogleAppEngineCloudStorageClient - use google-cloud-storage instead
-
-# Google services
-# gdata is deprecated, use google-api-python-client instead
->>>>>>> 7bc44a70 (Migrate to App Engine Flexible Environment with modern stack)
-
-# Firebase
-# python-firebase-gae is deprecated, use firebase-admin
 
 # Markdown
 Markdown>=3.4.0
@@ -98,14 +72,10 @@ IPy>=1.1
 
 # Email services
 mailchimp3>=3.0.0
-# mandrill is deprecated, use mailchimp-transactional
 mailchimp-transactional>=1.0.0
 
 # Debugging
 objgraph>=3.5.0
 
-# Text utilities
-# icemac.truncatetext may not be maintained, consider textwrap stdlib
-
-# Additional Python 3 compatibility
+# Python 3 compatibility
 six>=1.16.0
