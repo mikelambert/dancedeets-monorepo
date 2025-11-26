@@ -73,6 +73,7 @@
     "console-polyfill": "^0.3.0",
     "dancedeets-common": "file:../common",
     "date-fns": "^1.3.0",
+    "eslint": "^5.16.0",
     "eventemitter3": "^2.0.2",
     "exenv": "^1.2.1",
     "font-awesome": "^4.5.0",
