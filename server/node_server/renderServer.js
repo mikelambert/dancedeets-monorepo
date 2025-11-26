@@ -9,34 +9,20 @@ import http from 'http';
 import express from 'express';
 import bodyParser from 'body-parser';
 import reactRender from 'react-render';
-// We implement from yargs/yargs instead of yargs due to:
-// https://github.com/yargs/yargs/issues/781
-import yargs from 'yargs/yargs';
-import { mjml2html } from 'mjml';
+// mjml is kept as external in webpack config since it uses ES6+ syntax
+// that can't be bundled. Email rendering will fail if mjml is not installed,
+// but SSR will still work.
+let mjml2html = null;
+try {
+  mjml2html = require('mjml').mjml2html;
+} catch (e) {
+  console.log('mjml not available - email rendering disabled');
+}
 
-const parser = yargs()
-  .option('p', {
-    alias: 'port',
-    description: "Specify the server's port",
-    default: 8090,
-  })
-  .option('a', {
-    alias: 'address',
-    description: "Specify the server's address",
-    default: '127.0.0.1',
-  })
-  .help('h')
-  .alias('h', 'help')
-  .strict();
-const argv = parser.parse(process.argv);
-
-// Ensure support for loading files that contain ES6+7 & JSX
-// Disabled for now, since we cannot use this in a webpack-compiled script
-// And unfortunately, the 10K file limit on GAE keeps us from using uncompiled.
-// require('babel-core/register');
-
-const ADDRESS = argv.address;
-const PORT = argv.port;
+// Use environment variables or defaults for Docker deployment
+// This replaces yargs which doesn't bundle well with webpack
+const ADDRESS = process.env.RENDER_SERVER_ADDRESS || '0.0.0.0';
+const PORT = parseInt(process.env.RENDER_SERVER_PORT || '8090', 10);
 
 const app = express();
 const server = new http.Server(app);
@@ -127,6 +113,13 @@ app.post('/render', (req, res) => {
 });
 
 app.post('/mjml-render', (req, res) => {
+  if (!mjml2html) {
+    res.json({
+      error: { message: 'mjml not available in bundled mode' },
+      html: null,
+    });
+    return;
+  }
   const mjmlData = req.body.mjml;
   const html = mjml2html(mjmlData);
   res.json({

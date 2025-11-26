@@ -1,9 +1,8 @@
-# DanceDeets Docker ignore file
-# Files and directories to exclude from Docker build context
-
-# NOTE: node_modules is NO LONGER excluded - we need it for the render server
-# node_modules
-# node_server/node_modules
+# .gcloudignore - controls what gcloud uploads to Cloud Storage for deployment
+# This file overrides .gitignore patterns when it exists
+#
+# IMPORTANT: node_modules is NOT excluded because the render server needs it!
+# The webpack externals configuration requires node_modules at runtime.
 
 # Development/scratch files
 scratch
@@ -70,4 +69,6 @@ __pycache__
 # macOS
 .DS_Store
 
-# NOTE: Do NOT exclude docker/ - it contains requirements.txt files needed for build
+# Exclude node_modules directories we don't need
+# But keep the main node_modules for render server dependencies
+node_modules/.cache

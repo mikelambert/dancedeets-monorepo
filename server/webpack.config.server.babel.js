@@ -6,10 +6,24 @@
 
 import webpack from 'webpack';
 import path from 'path';
+import fs from 'fs';
 import { argv as env } from 'yargs';
 import combineLoaders from 'webpack-combine-loaders';
 
 const prod = !env.debug;
+
+// Use all node_modules as externals - they'll be included in Docker via .dockerignore update
+// This avoids webpack bundling issues with dynamic requires (like decache/react-render)
+const nodeModules = {};
+fs
+  .readdirSync('node_modules')
+  .filter(function(x) {
+    return ['.bin'].indexOf(x) === -1;
+  })
+  .forEach(function(mod) {
+    nodeModules[mod] = 'commonjs ' + mod;
+  });
+const externals = nodeModules;
 
 module.exports = {
   entry: {
@@ -44,12 +58,7 @@ module.exports = {
     extensions: ['.js', '.jsx', '.json'],
   },
   target: 'node',
-  node: {
-    fs: 'empty',
-    net: 'empty',
-    child_process: 'empty',
-    http: 'empty',
-  },
+  externals: externals,  // All node_modules external - included in Docker via .dockerignore
   module: {
     rules: [
       // Note: eslint-loader and shebang-loader removed - not needed for server builds
@@ -59,6 +68,7 @@ module.exports = {
         use: {
           loader: 'babel-loader',
           options: {
+            babelrc: false, // Ignore .babelrc files in source directories
             presets: [
               [
                 'latest',
