@@ -60,7 +60,7 @@ class Webapp2Request:
     @property
     def app(self):
         """Return the Flask app (needed for prod_mode check)."""
-        return self._flask_req.app if hasattr(self._flask_req, 'app') else None
+        return getattr(self, '_app', None)
 
     def get(self, key, default=''):
         """Get a request parameter (from GET or POST)."""
@@ -87,11 +87,24 @@ class Webapp2ResponseOut:
         return self._output.getvalue()
 
 
+class Webapp2Headers(dict):
+    """Dict-like object that also supports webapp2's add_header method."""
+
+    def add_header(self, name, value, **params):
+        """Add a header with optional parameters (webapp2 compatibility)."""
+        # Build header value with parameters
+        header_value = value
+        for param_name, param_value in params.items():
+            if param_value is not None:
+                header_value += f'; {param_name}={param_value}'
+        self[name] = header_value
+
+
 class Webapp2Response:
     """Adapter that makes Flask's response look like webapp2's response."""
 
     def __init__(self):
-        self._headers = {}
+        self._headers = Webapp2Headers()
         self._status = 200
         self._status_message = 'OK'
         self.out = Webapp2ResponseOut(self)

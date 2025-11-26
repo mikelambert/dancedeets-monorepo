@@ -61,3 +61,6 @@ import _strptime  # noqa: F401
 logging.info("Begin servlets")
 import dancedeets.all_servlets  # noqa: F401, E402
 logging.info("Finished servlets")
+
+# Alias for gunicorn (main:app)
+app = application

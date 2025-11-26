@@ -3,8 +3,8 @@
 import multiprocessing
 import os
 
-# Bind to port 8085 (nginx proxies from 8080)
-bind = "0.0.0.0:8085"
+# Bind to port 8080 (standard GAE Flexible Environment port)
+bind = "0.0.0.0:8080"
 
 # Worker configuration
 # Use gthread worker for better concurrency with I/O-bound workloads

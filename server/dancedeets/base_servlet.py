@@ -43,7 +43,7 @@ from dancedeets.util import timelog
 from dancedeets.util import text
 from dancedeets.util import urls
 
-CDN_HOST = 'https://static.dancedeets.com'
+CDN_HOST = 'https://storage.googleapis.com/dancedeets-static'
 
 
 class _ValidationError(Exception):
@@ -209,7 +209,10 @@ class BareBaseRequestHandler(FacebookMixinHandler):
 
     def set_cookie(self, name, value, expires=None):
         cookie = Cookie.SimpleCookie()
-        cookie[name] = str(base64.b64encode(value))
+        # In Python 3, b64encode requires bytes and returns bytes
+        if isinstance(value, str):
+            value = value.encode('utf-8')
+        cookie[name] = base64.b64encode(value).decode('ascii')
         cookie[name]['path'] = '/'
         cookie[name]['secure'] = ''
         cookie[name]['domain'] = self._get_cookie_domain()
@@ -220,7 +223,8 @@ class BareBaseRequestHandler(FacebookMixinHandler):
 
     def get_cookie(self, name):
         try:
-            value = str(base64.b64decode(self.request.cookies[name]))
+            # In Python 3, b64decode returns bytes
+            value = base64.b64decode(self.request.cookies[name]).decode('utf-8')
         except KeyError:
             value = None
         return value
@@ -271,8 +275,11 @@ class BareBaseRequestHandler(FacebookMixinHandler):
         try:
             result = render_server.render_jsx(template_name, props, static_html=static_html)
         except render_server.ComponentSourceFileNotFound:
+            # Set defaults so template can still render (client-side rendering will take over)
             self.display['react_props'] = json.dumps(props)
-            logging.exception('Error rendering React component')
+            self.display['react_html'] = ''
+            self.display['react_head'] = None
+            logging.exception('Error rendering React component: server bundle not found')
             return
 
         if result.error:
@@ -571,7 +578,8 @@ class BaseRequestHandler(BareBaseRequestHandler):
         login_url = '/login?%s' % urls.urlencode(params)
         return login_url
 
-    def redirect(self, url, **kwargs):
+    def redirect(self, url, permanent=False, abort=True):
+        from flask import redirect as flask_redirect
         if url.startswith('/'):
             spliturl = urlparse.urlsplit(self.request.url)
             # Redirect to the www.dancedeets.com domain if they requested the raw hostname
@@ -586,7 +594,10 @@ class BaseRequestHandler(BareBaseRequestHandler):
                 spliturl.fragment,
             ])
             url = str(urlparse.urljoin(new_url, url))
-        return super(BaseRequestHandler, self).redirect(url, **kwargs)
+        self.response.set_status(301 if permanent else 302)
+        self.response.headers['Location'] = url
+        if abort:
+            return flask_redirect(url, code=301 if permanent else 302)
 
     second_session_cookie_name = 'Second-Session-Visit'
 
@@ -609,7 +620,7 @@ class BaseRequestHandler(BareBaseRequestHandler):
             css_filename = os.path.join(os.path.dirname(__file__), '../dist-includes/css/%s' % css_path)
             try:
                 css = open(css_filename).read()
-                css = css.replace('url(../', 'url(https://static.dancedeets.com/')
+                css = css.replace('url(../', 'url(https://storage.googleapis.com/dancedeets-static/')
                 self.display['inline_css'] = css
             except IOError:
                 logging.error('Error loading %s', css_filename)
@@ -635,7 +646,7 @@ class BaseRequestHandler(BareBaseRequestHandler):
             self.response.headers.add_header('Strict-Transport-Security', 'max-age=%s' % https_redirect_duration)
         # This is how we detect if the incoming url is on https in GAE Flex (we cannot trust request.url)
         http_only_host = 'dev.dancedeets.com' in url.netloc or 'localhost' in url.netloc
-        if request.method == 'GET' and request.headers.get('x-forwarded-proto', 'http') == 'http' and not http_only_host:
+        if self.request.method == 'GET' and self.request.headers.get('x-forwarded-proto', 'http') == 'http' and not http_only_host:
             new_url = urlparse.urlunsplit([
                 'https',
                 url.netloc,
@@ -645,9 +656,10 @@ class BaseRequestHandler(BareBaseRequestHandler):
             ])
             self.run_handler = False
             self.redirect(new_url, permanent=True, abort=True)
+            return
 
         login_url = self.get_login_url()
-        redirect_url = self.handle_alternate_login(request)
+        redirect_url = self.handle_alternate_login(self.request)
         if redirect_url:
             self.run_handler = False
             # We need to run with abort=False here, or otherwise our set_cookie calls don't work. :(
@@ -655,7 +667,7 @@ class BaseRequestHandler(BareBaseRequestHandler):
             self.redirect(redirect_url, abort=False)
             return
 
-        self.setup_login_state(request)
+        self.setup_login_state(self.request)
 
         self.display['attempt_autologin'] = 1
         # If they've expired, and not already on the login page, then be sure we redirect them to there...
@@ -854,7 +866,7 @@ class BaseRequestHandler(BareBaseRequestHandler):
         self.display['debug_list'] = self.debug_list
         self.display['user'] = self.user
 
-        webview = bool(request.get('webview'))
+        webview = bool(self.request.get('webview'))
         self.display['webview'] = webview
         if webview:
             self.display['class_base_template'] = '_new_base_webview.html'
