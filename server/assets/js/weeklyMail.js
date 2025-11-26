@@ -37,7 +37,7 @@ class FontAwesomeIcon extends React.Component<{
   render() {
     return (
       <SmallIcon
-        url={`https://static.dancedeets.com/img/font-awesome/black/png/16/${this
+        url={`https://storage.googleapis.com/dancedeets-static/img/font-awesome/black/png/16/${this
           .props.name}.png`}
         alt={this.props.alt}
       />
@@ -86,7 +86,7 @@ class _MailEvent extends React.Component<{
         <tr>
           <td style={imageAlign}>
             <SmallIcon
-              url="https://static.dancedeets.com/img/categories-black.png"
+              url="https://storage.googleapis.com/dancedeets-static/img/categories-black.png"
               alt="Categories"
             />
           </td>

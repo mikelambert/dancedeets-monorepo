@@ -29,7 +29,7 @@ export class NavHeader extends React.Component<{}> {
           background-color="transparent"
           vertical-align="middle"
         >
-          <mj-image src="https://static.dancedeets.com/img/mail/header-dancedeets.png" />
+          <mj-image src="https://storage.googleapis.com/dancedeets-static/img/mail/header-dancedeets.png" />
         </mj-column>
         <mj-column width="70%" mj-class="alternate" vertical-align="middle">
           <mj-raw>
@@ -132,7 +132,7 @@ export class HeaderFindYourDance extends React.Component<{}> {
     return (
       <mj-section mj-class="alternate">
         <mj-column mj-class="alternate">
-          <mj-image src="https://static.dancedeets.com/img/mail/header-find-your-dance.jpg" />
+          <mj-image src="https://storage.googleapis.com/dancedeets-static/img/mail/header-find-your-dance.jpg" />
         </mj-column>
       </mj-section>
     );
@@ -154,7 +154,7 @@ class AlternateFeaturePromo extends FeaturePromoBase {
         <mj-section mj-class="alternate">
           <mj-column mj-class="alternate">
             <mj-image
-              src={`https://static.dancedeets.com/img/mail/purple-icons/${features[0]
+              src={`https://storage.googleapis.com/dancedeets-static/img/mail/purple-icons/${features[0]
                 .iconName}.png`}
               href={features[0].url}
               width="80px"
@@ -167,7 +167,7 @@ class AlternateFeaturePromo extends FeaturePromoBase {
           </mj-column>
           <mj-column mj-class="alternate">
             <mj-image
-              src={`https://static.dancedeets.com/img/mail/purple-icons/${features[1]
+              src={`https://storage.googleapis.com/dancedeets-static/img/mail/purple-icons/${features[1]
                 .iconName}.png`}
               href={features[1].url}
               width="80px"
@@ -184,7 +184,7 @@ class AlternateFeaturePromo extends FeaturePromoBase {
           </mj-column>
           <mj-column mj-class="alternate">
             <mj-image
-              src={`https://static.dancedeets.com/img/mail/purple-icons/${features[2]
+              src={`https://storage.googleapis.com/dancedeets-static/img/mail/purple-icons/${features[2]
                 .iconName}.png`}
               href={features[2].url}
               width="80px"
