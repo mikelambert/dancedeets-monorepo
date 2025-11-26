@@ -3,7 +3,7 @@ import dateparser
 import datetime
 import logging
 import re
-import urlparse
+from urllib import parse as urlparse
 
 from dancedeets import fb_api
 from dancedeets.compat.mapreduce import context

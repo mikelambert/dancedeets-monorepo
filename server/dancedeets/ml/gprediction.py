@@ -1,7 +1,7 @@
 import csv
+import io
 import logging
 import string
-import StringIO
 
 from dancedeets.events import eventdata
 from dancedeets.events import event_locations
@@ -9,7 +9,7 @@ from dancedeets import fb_api
 from dancedeets.util import fb_mapreduce
 
 convert_chars = string.punctuation + '\r\n\t'
-trans = string.maketrans(convert_chars, ' ' * len(convert_chars))
+trans = str.maketrans(convert_chars, ' ' * len(convert_chars))
 
 
 def strip_punctuation(s):
@@ -25,7 +25,7 @@ def training_data_for_pevents(fbl, pevents):
 
     good_event_ids = [x.fb_event_id for x in eventdata.DBEvent.get_by_ids(fb_event_ids, keys_only=True) if x]
 
-    csv_file = StringIO.StringIO()
+    csv_file = io.StringIO()
     csv_writer = csv.writer(csv_file)
 
     for potential_event in pevents:

@@ -111,8 +111,7 @@ def only_debug_result(func):
     return decorator
 
 
-class DanceStyleEventClassifier(object):
-    __metaclass__ = RuleGenerator
+class DanceStyleEventClassifier(object, metaclass=RuleGenerator):
 
     # mostly used for logging, for now...
     vertical = None

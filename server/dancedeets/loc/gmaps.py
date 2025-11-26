@@ -3,7 +3,7 @@ import hashlib
 import hmac
 import json
 import logging
-import urllib
+import requests
 
 from dancedeets import keys
 
@@ -42,7 +42,8 @@ class LiveBackend(gmaps_backends.GMapsBackend):
             url = "%s%s&key=%s" % (self.protocol_host, unsigned_url_path, google_server_key)
 
         logging.info('geocoding url: %s', url)
-        result = urllib.urlopen(url).read()
+        response = requests.get(url)
+        result = response.text
         logging.info('geocoding results: %s', result)
 
         try:

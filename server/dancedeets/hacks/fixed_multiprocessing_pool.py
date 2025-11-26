@@ -39,7 +39,7 @@ __all__ = ['Pool']
 #
 
 import threading
-import Queue
+import queue
 import itertools
 import collections
 import time
@@ -88,7 +88,7 @@ class MaybeEncodingError(Exception):
 
 
 def worker(inqueue, outqueue, initializer=None, initargs=(), maxtasks=None):
-    assert maxtasks is None or (type(maxtasks) in (int, long) and maxtasks > 0)
+    assert maxtasks is None or (type(maxtasks) == int and maxtasks > 0)
     put = outqueue.put
     get = inqueue.get
     if hasattr(inqueue, '_writer'):
@@ -140,7 +140,7 @@ class Pool(object):
 
     def __init__(self, processes=None, initializer=None, initargs=(), maxtasksperchild=None):
         self._setup_queues()
-        self._taskqueue = Queue.Queue()
+        self._taskqueue = queue.Queue()
         self._cache = {}
         self._state = RUN
         self._maxtasksperchild = maxtasksperchild
@@ -524,7 +524,7 @@ class Pool(object):
 class ApplyResult(object):
     def __init__(self, cache, callback):
         self._cond = threading.Condition(threading.Lock())
-        self._job = job_counter.next()
+        self._job = next(job_counter)
         self._cache = cache
         self._ready = False
         self._callback = callback
@@ -623,7 +623,7 @@ class MapResult(ApplyResult):
 class IMapIterator(object):
     def __init__(self, cache):
         self._cond = threading.Condition(threading.Lock())
-        self._job = job_counter.next()
+        self._job = next(job_counter)
         self._cache = cache
         self._items = collections.deque()
         self._index = 0
@@ -720,8 +720,8 @@ class ThreadPool(Pool):
         Pool.__init__(self, processes, initializer, initargs)
 
     def _setup_queues(self):
-        self._inqueue = Queue.Queue()
-        self._outqueue = Queue.Queue()
+        self._inqueue = queue.Queue()
+        self._outqueue = queue.Queue()
         self._quick_put = self._inqueue.put
         self._quick_get = self._outqueue.get
 

@@ -1,7 +1,7 @@
 import csv
+import io
 import json
 import logging
-import StringIO
 
 from dancedeets import fb_api
 from dancedeets.util import fb_mapreduce
@@ -15,7 +15,7 @@ def dump_fb_json(fbl, pe_list):
     fbl.request_multi(fb_api.LookupEvent, [x.fb_event_id for x in pe_list])
     fbl.batch_fetch()
 
-    csv_file = StringIO.StringIO()
+    csv_file = io.StringIO()
     csv_writer = csv.writer(csv_file)
 
     for pe in pe_list:

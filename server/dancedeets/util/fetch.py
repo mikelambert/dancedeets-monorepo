@@ -1,8 +1,11 @@
-import urllib2
+from urllib.request import Request, urlopen
 
 
 def fetch_data(url):
-    req = urllib2.Request(url.encode('utf-8'))
-    response = urllib2.urlopen(req)
-    mimetype = response.info().getheader('Content-Type')
+    # In Python 3, URL must be a string not bytes
+    if isinstance(url, bytes):
+        url = url.decode('utf-8')
+    req = Request(url)
+    response = urlopen(req)
+    mimetype = response.info().get('Content-Type')
     return mimetype, response.read()

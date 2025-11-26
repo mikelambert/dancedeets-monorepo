@@ -1,6 +1,7 @@
 # -*-*- encoding: utf-8 -*-*-
 
 import logging
+import markupsafe
 import math
 try:
     import re2
@@ -292,12 +293,12 @@ def relevant_keywords(event):
 
 
 def highlight_keywords(text):
-    import jinja2
-    processed_text = grammar_matcher.StringProcessor(jinja2.Markup.escape(text))
+    import markupsafe
+    processed_text = grammar_matcher.StringProcessor(markupsafe.Markup.escape(text))
     processed_text.replace_with(
-        rules.ANY_GOOD, lambda match: jinja2.Markup('<span class="matched-text">%s</span>') % match.group(0), flags=re.I
+        rules.ANY_GOOD, lambda match: markupsafe.Markup('<span class="matched-text">%s</span>') % match.group(0), flags=re.I
     )
-    return jinja2.Markup(processed_text.get_tokenized_text())
+    return markupsafe.Markup(processed_text.get_tokenized_text())
 
 
 if __name__ == '__main__':
@@ -315,6 +316,6 @@ if __name__ == '__main__':
         'worldbellydancealliance', 'soca', 'flamenco'
     ]
     a = sorted(a)
-    print a
-    print highlight_keywords(u' ๆ ซึ่งไม่ให้พี่น้อง Bboy ได้ผิดหวังอีกต่อไป*')
-    print highlight_keywords('matched-text')
+    print(a)
+    print(highlight_keywords(u' ๆ ซึ่งไม่ให้พี่น้อง Bboy ได้ผิดหวังอีกต่อไป*'))
+    print(highlight_keywords('matched-text'))

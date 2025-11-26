@@ -3,6 +3,7 @@
 
 import datetime
 import jinja2
+import markupsafe
 import re
 import wtforms
 
@@ -269,4 +270,4 @@ class SearchResult(object):
         html += [
             '</span>',
         ]
-        return jinja2.Markup('\n'.join(html))
+        return markupsafe.Markup('\n'.join(html))

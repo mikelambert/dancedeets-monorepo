@@ -1,8 +1,8 @@
 # -*-*- encoding: utf-8 -*-*-
 
 import datetime
-from icemac.truncatetext import truncate
 import logging
+import textwrap
 import urllib.parse
 
 from dancedeets import render_server
@@ -70,7 +70,7 @@ def email_for_event(organizer, event, should_send=False):
         raise NoEmailException(message)
     rendered_html = mjml_response['html']
 
-    short_name = truncate(event.name, 30, ellipsis=u'…')
+    short_name = textwrap.shorten(event.name, width=30, placeholder='…')
     message = {
         'from_email': 'events@dancedeets.com',
         'from_name': 'DanceDeets Events',

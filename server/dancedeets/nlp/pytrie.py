@@ -48,7 +48,7 @@ __all__ = ['Trie', 'StringTrie', 'SortedTrie', 'SortedStringTrie', 'Node']
 
 from copy import copy
 from operator import itemgetter
-from UserDict import DictMixin
+from collections.abc import MutableMapping
 
 
 # Singleton sentinel - works with pickling
@@ -98,7 +98,7 @@ class Node(object):
         self.value, self.children = state
 
 
-class Trie(DictMixin, object):
+class Trie(MutableMapping):
     '''Base trie class.
         
     As with regular dicts, keys are not necessarily returned sorted. Use
@@ -392,8 +392,8 @@ class StringTrie(Trie):
 # XXX: quick & dirty sorted dict; currently only iteritems() has to be overriden.
 # However this is implementation detail that may change in the future
 class _SortedDict(dict):
-    def iteritems(self):
-        return sorted(dict.iteritems(self), key=itemgetter(0))
+    def items(self):
+        return sorted(dict.items(self), key=itemgetter(0))
 
 
 class _SortedNode(Node):

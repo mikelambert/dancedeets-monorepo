@@ -151,15 +151,11 @@ def _parse_key_name(full_key_name):
 
 
 def _get_counter_map_for_ranking(ranking):
-    mapreduce_states = model.MapreduceState.gql(
-        "WHERE result_status = :result_status AND app_id = :app_id ORDER BY start_time DESC",
-        result_status="success",
-        app_id=ranking,
-    ).fetch(1)
-    if not mapreduce_states:
-        return None
-    final_counter_map = mapreduce_states[0].counters_map.counters
-    return final_counter_map
+    # MapReduce is not available in App Engine Flexible Environment.
+    # This function would have queried mapreduce.model.MapreduceState,
+    # but that API is not available. Return None to indicate no rankings data.
+    # TODO: Implement using Cloud Dataflow or BigQuery for batch processing.
+    return None
 
 
 def _group_cities_time_period(final_counter_map):

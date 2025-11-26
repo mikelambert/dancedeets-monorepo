@@ -125,7 +125,7 @@ class SitemapMapHandler(base_servlet.BaseRequestHandler):
         versioned_date = get_mapreduce_date(bucket, 'Generate Sitemaps')
         path = get_newest_path(bucket, 'Generate Sitemaps')
         version = os.path.basename(path.strip('/'))
-        print path, version
+        print(path, version)
         for i in range(MapReduceShards):
             root.append(sitemap_node('%s-%s' % (version, i), versioned_date))
 

@@ -1,7 +1,7 @@
-import objgraph
+import io
 import logging
+import objgraph
 import random
-import StringIO
 import sys
 
 NO_LEAK_TYPES = [
@@ -10,7 +10,7 @@ NO_LEAK_TYPES = [
 
 
 def gc_debug_diff(since, peak_stats={}, hide_growth=False):
-    sio = StringIO.StringIO()
+    sio = io.StringIO()
     objgraph.show_growth(limit=0, shortnames=False, peak_stats=peak_stats, file=sio)
     result = sio.getvalue()
     if not hide_growth:
@@ -22,7 +22,7 @@ def gc_debug_diff(since, peak_stats={}, hide_growth=False):
 
 def gc_debug_backtraces(magictype=None, count=1):
     all_objects = list(objgraph.by_type(magictype))
-    sio = StringIO.StringIO()
+    sio = io.StringIO()
     objgraph.show_backrefs(all_objects[:count], max_depth=10, shortnames=False, output=sio)
     #objgraph.show_chain(*chains, output=sio2)
     logging.info("%s", sio.getvalue())

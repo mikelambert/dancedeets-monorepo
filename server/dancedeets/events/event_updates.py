@@ -328,7 +328,7 @@ def _inner_make_event_findable_for_web_event(db_event, web_event, disable_update
         if 'regeocode' not in (disable_updates or []):
             db_event.location_geocode = None
         location_info = event_locations.LocationInfo(db_event=db_event)
-        print location_info, location_info.__dict__
+        print(location_info, location_info.__dict__)
         _update_geodata(db_event, location_info, disable_updates)
 
 

@@ -1,9 +1,7 @@
 import logging
 
-from twilio.rest import TwilioRestClient
-from twilio.rest.resources import base
-# This is the right import for 3.5.2
-from twilio import TwilioRestException
+from twilio.rest import Client
+from twilio.base.exceptions import TwilioRestException
 
 from dancedeets import keys
 
@@ -17,11 +15,8 @@ class InvalidPhoneNumberException(Exception):
 
 
 def send_email_link(phone_number):
-    client = TwilioRestClient(ACCOUNT_SID, AUTH_TOKEN)
-    orig_get_cert_file = base.get_cert_file
+    client = Client(ACCOUNT_SID, AUTH_TOKEN)
     try:
-        # We monkey patch the cert file to not use anything
-        base.get_cert_file = lambda: None
         logging.info("Sending SMS to %s", phone_number)
         client.messages.create(
             to=phone_number,
@@ -29,9 +24,7 @@ def send_email_link(phone_number):
             body="Download the DanceDeets App at https://www.dancedeets.com/mobile_apps?action=download",
         )
     except TwilioRestException as e:
-        if 'not a valid phone number' in e.msg:
-            raise InvalidPhoneNumberException(e.msg)
+        if 'not a valid phone number' in str(e):
+            raise InvalidPhoneNumberException(str(e))
         else:
             raise
-    finally:
-        base.get_cert_file = orig_get_cert_file

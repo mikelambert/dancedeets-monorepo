@@ -108,7 +108,7 @@ class ApiHandler(base_servlet.BareBaseRequestHandler):
             # If it's a string or a regular object
             if not hasattr(result, '__iter__'):
                 result = [result]
-            self.write_json_error({'success': False, 'errors': [unicode(x) for x in result]})
+            self.write_json_error({'success': False, 'errors': [str(x) for x in result]})
 
 
 def apiroute(path, *args, **kwargs):

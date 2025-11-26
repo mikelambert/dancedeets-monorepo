@@ -5,16 +5,16 @@ import re
 
 DAWN = 6  # sun rises at 6am-ish
 
-_DATETIME_SPAN_SEPARATOR = ur'(?:~|/|부터)'  # '부터' = 'from'
+_DATETIME_SPAN_SEPARATOR = r'(?:~|/|부터)'  # '부터' = 'from'
 
-_D_DATE = ur'(?P<day>\d+)[일\(]'
-_MD_DATE = ur'(?:(?P<month>\d+)월\s*)?' + _D_DATE
-_YMD_DATE = ur'(?:(?P<year>\d+)[년녀]\s*)?' + _MD_DATE
+_D_DATE = r'(?P<day>\d+)[일\(]'
+_MD_DATE = r'(?:(?P<month>\d+)월\s*)?' + _D_DATE
+_YMD_DATE = r'(?:(?P<year>\d+)[년녀]\s*)?' + _MD_DATE
 
 # WEEKDAY = r'(?:\(.\)| ..일)?'
 
-_AM_PM_TIME = ur'(?:(?P<ampm>오후|오전) )?(?P<hour>\d+)시 ?(?:(?P<minute>\d+)분|(?P<half>반))?'
-_TIME = ur'(?:(?P<dawn>새벽)|%s)' % _AM_PM_TIME
+_AM_PM_TIME = r'(?:(?P<ampm>오후|오전) )?(?P<hour>\d+)시 ?(?:(?P<minute>\d+)분|(?P<half>반))?'
+_TIME = r'(?:(?P<dawn>새벽)|%s)' % _AM_PM_TIME
 
 
 def _extract_date(m, date_default=None):
@@ -30,9 +30,9 @@ def _extract_time(m, time_default=None):
         minute = 30
     else:
         minute = int(m.group('minute') or 0)
-    if unicode(m.group('ampm')) == u'오후':
+    if str(m.group('ampm')) == '오후':
         ampm_offset = 12
-    elif m.group('ampm') == u'오전':
+    elif m.group('ampm') == '오전':
         ampm_offset = 0
     else:
         ampm_offset = 12

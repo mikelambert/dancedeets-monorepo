@@ -1,9 +1,9 @@
 import datetime
+import io
 import logging
 from PIL import Image
 from PIL import ImageFilter
 import subprocess
-import StringIO
 import tempfile
 
 from dancedeets import app
@@ -21,7 +21,7 @@ WEEKLY_IMAGE_BUCKET = 'dancedeets-weekly'
 def build_animated_image(results):
     images = [_generate_image(x.db_event) for x in results if x.db_event.full_image_url]
 
-    out_image = StringIO.StringIO()
+    out_image = io.BytesIO()
     images[0].save(out_image, format='gif', save_all=True, append_images=images[1:], duration=2500)
     out_image.seek(0)
     image_data = out_image.getvalue()
@@ -51,7 +51,7 @@ def _compress_image(image_data):
 
 def _generate_image(event):
     image_data = event_image.get_image(event)
-    im = Image.open(StringIO.StringIO(image_data))
+    im = Image.open(io.BytesIO(image_data))
     image_size = (im.width, im.height)
     scale = tuple(1.0 * x / y for x, y in zip(full_size, image_size))
 

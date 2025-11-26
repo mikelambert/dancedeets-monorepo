@@ -211,6 +211,6 @@ if __name__ == "__main__":
         import doctest
         doctest.testmod(verbose=True)
     elif len(sys.argv) == 2:
-        print Geohash(sys.argv[1]).bbox()
+        print(Geohash(sys.argv[1]).bbox())
     else:
-        print Geohash(map(float, sys.argv[1:3]))
+        print(Geohash(list(map(float, sys.argv[1:3]))))

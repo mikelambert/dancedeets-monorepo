@@ -1,7 +1,7 @@
 import logging
 import io
 
-from oauth2client.client import GoogleCredentials
+import google.auth
 from googleapiclient import errors
 from googleapiclient import http
 from googleapiclient.discovery import build
@@ -17,7 +17,7 @@ def _create_service():
     # Get the application default credentials. When running locally, these are
     # available after running `gcloud init`. When running on compute
     # engine, these are available from the environment.
-    credentials = GoogleCredentials.get_application_default()
+    credentials, project = google.auth.default()
 
     # Construct the service object for interacting with the Cloud Storage API -
     # the 'storage' service, at version 'v1'.

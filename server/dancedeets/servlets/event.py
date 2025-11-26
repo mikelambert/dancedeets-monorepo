@@ -3,6 +3,7 @@
 import datetime
 import jinja2
 import logging
+import markupsafe
 import os
 import pprint
 import re
@@ -120,7 +121,7 @@ class ShowEventHandler(base_servlet.BaseRequestHandler):
 
         self.display['next'] = self.request.url
         self.display['show_mobile_app_promo'] = True
-        self.jinja_env.filters['make_category_link'] = lambda lst: [jinja2.Markup('<a href="/?keywords=%s">%s</a>') % (x, x) for x in lst]
+        self.jinja_env.filters['make_category_link'] = lambda lst: [markupsafe.Markup('<a href="/?keywords=%s">%s</a>') % (x, x) for x in lst]
 
         self.display['canonical_url'] = urls.dd_event_url(db_event)
 
@@ -176,7 +177,7 @@ class ShowEventHandler(base_servlet.BaseRequestHandler):
                     event_amp_css = open(event_amp_css_filename).read()
                     event_amp_css = re.sub(r'@-ms-viewport\s*{.*?}', '', event_amp_css)
                     event_amp_css = re.sub(r'!important', '', event_amp_css)
-                    event_amp_css = event_amp_css.replace('url(../', 'url(https://static.dancedeets.com/')
+                    event_amp_css = event_amp_css.replace('url(../', 'url(https://storage.googleapis.com/dancedeets-static/')
                 except IOError as e:
                     logging.exception('Failed to load AMP CSS')
                     event_amp_css = ''
@@ -226,7 +227,7 @@ class DisplayableEvent(object):
         html += [
             '</span>',
         ]
-        return jinja2.Markup('\n'.join(html))
+        return markupsafe.Markup('\n'.join(html))
 
     @property
     def meta_description(self):

@@ -153,4 +153,7 @@ if SEARCH_AVAILABLE:
     QueryError = appengine_search.QueryError
     MAXIMUM_DOCUMENTS_RETURNED_PER_SEARCH = appengine_search.MAXIMUM_DOCUMENTS_RETURNED_PER_SEARCH
     MAXIMUM_DOCUMENTS_PER_PUT_REQUEST = appengine_search.MAXIMUM_DOCUMENTS_PER_PUT_REQUEST
-    _CheckQuery = appengine_search._CheckQuery
+    # _CheckQuery is a private API that may not exist in appengine-python-standard
+    if hasattr(appengine_search, '_CheckQuery'):
+        _CheckQuery = appengine_search._CheckQuery
+    # Otherwise use our local stub _CheckQuery defined above

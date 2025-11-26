@@ -141,8 +141,8 @@ class UserEmailExportHandler(base_servlet.BaseRequestHandler):
                     (user.full_name or '').encode('utf8'),
                     (user.first_name or '').encode('utf8'),
                     (user.last_name or '').encode('utf8'),
-                    unicode(user.expired_oauth_token),
-                    unicode(user.send_email),
+                    str(user.expired_oauth_token),
+                    str(user.send_email),
                     trimmed_locale,
                     user.location_country or '',
                 ])
