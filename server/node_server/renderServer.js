@@ -11,11 +11,11 @@ import bodyParser from 'body-parser';
 import React from 'react';
 import ReactDOMServer from 'react-dom/server';
 
-// mjml is kept as external in webpack config since it uses dynamic requires.
+// mjml is kept as external in esbuild config since it uses dynamic requires.
 // Email rendering will fail if mjml is not installed, but SSR will still work.
-let mjml2html = null;
+let mjml = null;
 try {
-  mjml2html = require('mjml').mjml2html;
+  mjml = require('mjml');
 } catch (e) {
   console.log('mjml not available - email rendering disabled');
 }
@@ -121,18 +121,18 @@ app.post('/render', (req, res) => {
 });
 
 app.post('/mjml-render', (req, res) => {
-  if (!mjml2html) {
+  if (!mjml) {
     res.json({
-      error: { message: 'mjml not available in bundled mode' },
+      error: { message: 'mjml not available - please install mjml package' },
       html: null,
     });
     return;
   }
   const mjmlData = req.body.mjml;
-  const html = mjml2html(mjmlData);
+  const result = mjml(mjmlData);
   res.json({
     error: null,
-    html,
+    html: result.html,
   });
 });
 
