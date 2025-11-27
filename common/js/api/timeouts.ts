@@ -1,7 +1,5 @@
 /**
  * Copyright 2016 DanceDeets.
- *
- * @flow
  */
 
 export function timeout<T>(timeoutMs: number, promise: Promise<T>): Promise<T> {

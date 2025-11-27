@@ -1,10 +1,9 @@
 /**
  * Copyright 2016 DanceDeets.
- *
- * @flow
  */
 
-export default {
+/* eslint-disable @typescript-eslint/no-var-requires */
+const icons: Record<string, unknown> = {
   break: require('./images/break.png'),
   hiphop: require('./images/hiphop.png'),
   pop: require('./images/pop.png'),
@@ -13,3 +12,5 @@ export default {
   krump: require('./images/krump.png'),
   other: require('./images/other.png'),
 };
+
+export default icons;

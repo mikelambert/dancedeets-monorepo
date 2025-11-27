@@ -1,11 +1,9 @@
 /**
  * Copyright 2016 DanceDeets.
- *
- * @flow
  */
 
 import * as React from 'react';
-import { addLocaleData, IntlProvider } from 'react-intl';
+import { addLocaleData, IntlProvider, InjectedIntl } from 'react-intl';
 import areIntlLocalesSupported from 'intl-locales-supported';
 import moment from 'moment';
 import 'moment/locale/fr';
@@ -17,16 +15,25 @@ import zh from './messages/zh.json';
 
 export const defaultLocale = 'en';
 
-const messages = {
-  en: null, // use built-ins...but ensure we have an entry so we don't have undefined flow errors
-  fr,
-  ja,
-  'zh-tw': zh,
+type MessageRecord = Record<string, string> | null;
+
+const messages: Record<string, MessageRecord> = {
+  en: null, // use built-ins...but ensure we have an entry so we don't have undefined errors
+  fr: fr as MessageRecord,
+  ja: ja as MessageRecord,
+  'zh-tw': zh as MessageRecord,
+};
+
+declare const global: {
+  Intl?: typeof Intl & {
+    __addLocaleData?: () => void;
+  };
+  IntlPolyfill?: typeof Intl;
 };
 
 // Skip the Intl polyfill if we are building for the browser
 if (!process.env.BROWSER) {
-  /* eslint-disable global-require, import/no-extraneous-dependencies */
+  /* eslint-disable global-require, import/no-extraneous-dependencies, @typescript-eslint/no-var-requires */
   // https://github.com/yahoo/intl-locales-supported#usage
   if (global.Intl) {
     // Determine if the built-in `Intl` has the locale data we need.
@@ -34,32 +41,43 @@ if (!process.env.BROWSER) {
       // `Intl` exists, but it doesn't have the data we need, so load the
       // polyfill and replace the constructors we need with the polyfill's.
       require('intl');
-      global.Intl.NumberFormat = global.IntlPolyfill.NumberFormat; // eslint-disable-line no-undef
-      global.Intl.DateTimeFormat = global.IntlPolyfill.DateTimeFormat; // eslint-disable-line no-undef
+      if (global.IntlPolyfill) {
+        (global.Intl as typeof Intl).NumberFormat = global.IntlPolyfill.NumberFormat;
+        (global.Intl as typeof Intl).DateTimeFormat = global.IntlPolyfill.DateTimeFormat;
+      }
     }
   } else {
     // No `Intl`, so use and load the polyfill.
-    global.Intl = require('intl');
+    (global as Record<string, unknown>).Intl = require('intl');
   }
 
   // Only load these if we're using the polyfill (that exposes this function)
-  if (global.Intl.__addLocaleData) {
-    // These have number formtting, useful for NumberFormat and DateTimeFormat
+  if (global.Intl?.__addLocaleData) {
+    // These have number formatting, useful for NumberFormat and DateTimeFormat
     require('intl/locale-data/jsonp/en');
     require('intl/locale-data/jsonp/fr');
     require('intl/locale-data/jsonp/ja');
     require('intl/locale-data/jsonp/zh');
   }
-  /* eslint-enable global-require, import/no-extraneous-dependencies */
+  /* eslint-enable global-require, import/no-extraneous-dependencies, @typescript-eslint/no-var-requires */
 }
 
 // These has pluralRuleFunction, necessary for react-intl's use of intl-messageformat
+/* eslint-disable global-require, @typescript-eslint/no-var-requires */
 addLocaleData(require('react-intl/locale-data/en'));
 addLocaleData(require('react-intl/locale-data/fr'));
 addLocaleData(require('react-intl/locale-data/ja'));
 addLocaleData(require('react-intl/locale-data/zh'));
+/* eslint-enable global-require, @typescript-eslint/no-var-requires */
 
-function intlProviderArgs(currentLocale) {
+interface IntlProviderArgs {
+  defaultLocale: string;
+  key: string;
+  locale: string;
+  messages: MessageRecord;
+}
+
+function intlProviderArgs(currentLocale: string): IntlProviderArgs {
   // Our Locale.constants().localeIdentifier returns zh-Hant_US (converted to zh-Hant-US).
   // But moment locales are zh-tw (traditional) and zh-cn (simplified).
   // So manually convert the currentLocale to the 'zh-tw' moment needs:
@@ -93,22 +111,22 @@ function intlProviderArgs(currentLocale) {
 // intlProviderArgs('fr-FR').locale == 'fr'
 // intlProviderArgs('de-XX').locale == 'en' // fallback
 
-export function constructIntl(currentLocale: string) {
+export function constructIntl(currentLocale: string): InjectedIntl {
   return new IntlProvider(intlProviderArgs(currentLocale), {}).getChildContext()
     .intl;
 }
 
-class Internationalize extends React.Component<{
-  currentLocale: string,
-  children: React.Node,
-}> {
-  render() {
-    return (
-      <IntlProvider {...intlProviderArgs(this.props.currentLocale)}>
-        {this.props.children}
-      </IntlProvider>
-    );
-  }
+interface InternationalizeProps {
+  currentLocale: string;
+  children?: React.ReactNode;
+}
+
+function Internationalize(props: InternationalizeProps): React.ReactElement {
+  return (
+    <IntlProvider {...intlProviderArgs(props.currentLocale)}>
+      {props.children}
+    </IntlProvider>
+  );
 }
 
 // props.currentLocale here is of the form:
@@ -116,9 +134,11 @@ class Internationalize extends React.Component<{
 // fr-FR
 // zh-TW
 // etc
-export function intlWeb(Wrapped: any) {
-  return (props: Object) => (
-    <Internationalize {...props}>
+export function intlWeb<P extends { currentLocale: string }>(
+  Wrapped: React.ComponentType<P>
+): React.FC<P> {
+  return (props: P) => (
+    <Internationalize currentLocale={props.currentLocale}>
       <Wrapped {...props} />
     </Internationalize>
   );
@@ -129,12 +149,12 @@ export function intlWeb(Wrapped: any) {
 // fr-FR
 // zh-Hant-US
 // etc
-export function intl(Wrapped: any, currentLocale: string) {
-  return (props: Object) => (
-    <Internationalize
-      currentLocale={currentLocale}
-      defaultLocale={defaultLocale}
-    >
+export function intl<P extends object>(
+  Wrapped: React.ComponentType<P>,
+  currentLocale: string
+): React.FC<P> {
+  return (props: P) => (
+    <Internationalize currentLocale={currentLocale}>
       <Wrapped {...props} />
     </Internationalize>
   );

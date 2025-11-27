@@ -1,17 +1,8 @@
 /**
  * Copyright 2016 DanceDeets.
- *
- * @flow
  */
 
-import { defineMessages } from 'react-intl';
-
-// Copied from react-intl, though we don't want a dependency on the full thing just for type-checking
-type messageDescriptorPropTypes = {
-  id: string,
-  description?: string,
-  defaultMessage?: string,
-};
+import { defineMessages, MessageDescriptor } from 'react-intl';
 
 export const messages = defineMessages({
   otherStylesTitle: {
@@ -101,16 +92,16 @@ export const messages = defineMessages({
   },
 });
 
-export type Style = {
-  id: string,
-  title: string,
-  titleMessage?: messageDescriptorPropTypes,
-  imageName: string,
-  width: number,
-  height: number,
-};
+export interface Style {
+  id: string;
+  title: string;
+  titleMessage?: MessageDescriptor;
+  imageName: string;
+  width: number;
+  height: number;
+}
 
-export default {
+const styles: Record<string, Style> = {
   break: {
     id: 'break',
     title: 'Bboy / Bgirl',
@@ -168,3 +159,5 @@ export default {
     height: 512,
   },
 };
+
+export default styles;

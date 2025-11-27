@@ -1,16 +1,26 @@
 /**
  * Copyright 2016 DanceDeets.
- *
- * @flow
  */
 
-import { intlShape } from 'react-intl';
 import { formatStartDateOnly } from '../dates';
-import { BaseEvent } from './models';
-import type { EventRsvpList } from './models';
+import { BaseEvent, EventRsvpList, JSONObject } from './models';
 import messages from './messages';
 
-export function formatAttending(intl: intlShape, rsvp: EventRsvpList) {
+// Simple type for react-intl's intl object
+interface IntlShape {
+  now(): number;
+  formatMessage(
+    descriptor: { id: string; defaultMessage: string },
+    values?: Record<string, string | number>
+  ): string;
+  formatDate(date: Date, options?: Intl.DateTimeFormatOptions): string;
+  formatTime(date: Date): string;
+}
+
+export function formatAttending(
+  intl: IntlShape,
+  rsvp: EventRsvpList
+): string | null {
   if (rsvp.attending_count) {
     if (rsvp.maybe_count) {
       return intl.formatMessage(messages.attendingMaybeCount, {
@@ -26,13 +36,13 @@ export function formatAttending(intl: intlShape, rsvp: EventRsvpList) {
   return null;
 }
 
-export function groupEventsByStartDate<T: BaseEvent>(
-  intl: intlShape,
+export function groupEventsByStartDate<T extends BaseEvent>(
+  intl: IntlShape,
   events: Array<T>
-): Array<{ header: string, events: Array<T> }> {
-  const results = [];
-  let currentDate = null;
-  events.forEach((event, index) => {
+): Array<{ header: string; events: Array<T> }> {
+  const results: Array<{ header: string; events: Array<T> }> = [];
+  let currentDate: string | null = null;
+  events.forEach(event => {
     const eventStartDate = formatStartDateOnly(
       event.getListDateMoment({ timezone: false }),
       intl
@@ -46,15 +56,17 @@ export function groupEventsByStartDate<T: BaseEvent>(
   return results;
 }
 
+type BaseEventConstructor = new (data: JSONObject) => BaseEvent;
+
 export function expandResults(
   events: Array<BaseEvent>,
-  EventClass: Class<BaseEvent>
-) {
-  const newEvents = [];
+  EventClass: BaseEventConstructor
+): Array<BaseEvent> {
+  const newEvents: Array<BaseEvent> = [];
   for (const event of events) {
     if (event.event_times) {
       for (const eventTime of event.event_times) {
-        const copiedEvent = new EventClass(event);
+        const copiedEvent = new EventClass(event as unknown as JSONObject);
         copiedEvent.start_time = eventTime.start_time;
         copiedEvent.end_time = eventTime.end_time;
         copiedEvent.event_times = null;

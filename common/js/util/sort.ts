@@ -1,16 +1,14 @@
 /**
  * Copyright 2016 DanceDeets.
- *
- * @flow
  */
 
 export function sortString<T>(
   list: Array<T>,
-  computeFunction: (value: T) => any
-) {
-  const sortValues = {};
+  computeFunction: (value: T) => string | number
+): Array<T> {
+  const sortValues: Record<string, Array<T>> = {};
   list.forEach(origValue => {
-    const key = computeFunction(origValue);
+    const key = String(computeFunction(origValue));
     if (!sortValues[key]) {
       sortValues[key] = [];
     }
@@ -20,15 +18,15 @@ export function sortString<T>(
     .sort()
     .map(sortValue => sortValues[sortValue]);
   // Flatten the array of arrays into a single flattened array
-  const origSorted = [].concat(...origSortedDeep);
+  const origSorted = ([] as Array<T>).concat(...origSortedDeep);
   return origSorted;
 }
 
 export function sortNumber<T>(
   list: Array<T>,
-  computeFunction: (value: T) => any
-) {
-  const sortValues = {};
+  computeFunction: (value: T) => number
+): Array<T> {
+  const sortValues: Record<number, Array<T>> = {};
   list.forEach(origValue => {
     const key = computeFunction(origValue);
     if (!sortValues[key]) {
@@ -41,6 +39,6 @@ export function sortNumber<T>(
     .sort((a, b) => a - b)
     .map(sortValue => sortValues[sortValue]);
   // Flatten the array of arrays into a single flattened array
-  const origSorted = [].concat(...origSortedDeep);
+  const origSorted = ([] as Array<T>).concat(...origSortedDeep);
   return origSorted;
 }

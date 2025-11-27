@@ -4,6 +4,9 @@ npm-debug.log
 # Where we store the build/messages/ from react-intl's plugin processing
 build/
 
+# TypeScript declaration output
+dist/
+
 .DS_Store
 
 *.swp

@@ -1,3 +1,7 @@
+/**
+ * Copyright 2016 DanceDeets.
+ */
+
 import { defineMessages } from 'react-intl';
 
 export const messages = defineMessages({

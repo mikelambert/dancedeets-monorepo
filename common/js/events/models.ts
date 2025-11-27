@@ -1,55 +1,53 @@
 /**
  * Copyright 2016 DanceDeets.
- *
- * @flow
  */
 
-import moment from 'moment';
+import moment, { Moment } from 'moment';
 import { addUrlArgs } from '../util/url';
 
 type JSON = string | number | boolean | null | JSONObject | JSONArray;
 export type JSONObject = { [key: string]: JSON };
 type JSONArray = Array<JSON>;
 
-export type ImageWithSizes = {
-  uri: string,
-  width: number,
-  height: number,
-};
+export interface ImageWithSizes {
+  uri: string;
+  width: number;
+  height: number;
+}
 
 const squareImageSize = 180;
 
-export type ImageOptionalSizes = {
-  uri: string,
-  height: ?number,
-  width: ?number,
-};
+export interface ImageOptionalSizes {
+  uri: string;
+  height: number | null | undefined;
+  width: number | null | undefined;
+}
 
 export class JsonDerivedObject {
-  constructor(data: any) {
+  constructor(data: Record<string, unknown>) {
     Object.keys(data).forEach(attr => {
-      (this: any)[attr] = data[attr];
+      (this as Record<string, unknown>)[attr] = data[attr];
     });
   }
 }
 
 export class Venue extends JsonDerivedObject {
-  geocode: ?{
-    latitude: number,
-    longitude: number,
-  };
-  address: ?{
-    street?: string,
-    city?: string,
-    state?: string,
-    zip?: string,
-    country: string,
-    countryCode: string,
-  };
-  name: ?string;
-  id: ?string;
+  geocode?: {
+    latitude: number;
+    longitude: number;
+  } | null;
+  address?: {
+    street?: string;
+    city?: string;
+    state?: string;
+    zip?: string;
+    country: string;
+    countryCode: string;
+  } | null;
+  name?: string | null;
+  id?: string | null;
 
-  fullAddress(seperator: string = ', ') {
+  fullAddress(seperator: string = ', '): string | null | undefined {
     if (this.address) {
       return [this.name, this.address.street, this.cityStateCountry()]
         .filter(x => x)
@@ -59,7 +57,7 @@ export class Venue extends JsonDerivedObject {
     }
   }
 
-  streetCityStateCountry(seperator: string = ', ') {
+  streetCityStateCountry(seperator: string = ', '): string | null {
     if (this.address) {
       return [this.address.street, this.cityStateCountry()]
         .filter(x => x)
@@ -69,7 +67,7 @@ export class Venue extends JsonDerivedObject {
     }
   }
 
-  cityState(seperator: string = ', ') {
+  cityState(seperator: string = ', '): string | null {
     if (this.address) {
       return [this.address.city, this.address.state]
         .filter(x => x)
@@ -79,7 +77,7 @@ export class Venue extends JsonDerivedObject {
     }
   }
 
-  cityStateCountry(separator: string = ', ') {
+  cityStateCountry(separator: string = ', '): string | null {
     if (this.address) {
       return [this.address.city, this.address.state, this.address.country]
         .filter(x => x)
@@ -90,24 +88,24 @@ export class Venue extends JsonDerivedObject {
   }
 }
 
-export type Admin = {
-  id: string,
-  name: string,
-};
+export interface Admin {
+  id: string;
+  name: string;
+}
 
-export type EventRsvpList = {
-  attending_count: number,
-  maybe_count: number,
-};
+export interface EventRsvpList {
+  attending_count: number;
+  maybe_count: number;
+}
 
 export class Picture extends JsonDerivedObject {
-  source: string;
-  height: number;
-  width: number;
+  source!: string;
+  height!: number;
+  width!: number;
 
   getCroppedCover(
-    width: ?number,
-    height: ?number,
+    width: number | null | undefined,
+    height: number | null | undefined,
     index?: number
   ): ImageOptionalSizes {
     let { source } = this;
@@ -121,7 +119,7 @@ export class Picture extends JsonDerivedObject {
     };
   }
 
-  getFlyer(dimensions: { width?: number, height?: number }): ImageWithSizes {
+  getFlyer(dimensions: { width?: number; height?: number }): ImageWithSizes {
     let { width, height } = dimensions;
     if (!width && !height) {
       return {
@@ -149,24 +147,31 @@ export class Picture extends JsonDerivedObject {
   }
 }
 
+export interface EventTime {
+  start_time: string;
+  end_time: string;
+}
+
 export class BaseEvent extends JsonDerivedObject {
-  id: string;
-  name: string;
-  slugged_name: string; // eslint-disable-line camelcase
-  start_time: string; // eslint-disable-line camelcase
-  end_time: ?string; // eslint-disable-line camelcase
-  venue: Venue;
-  picture: ?Picture;
-  event_times: ?Array<EventTime>; // eslint-disable-line camelcase
-  had_event_times: ?boolean; // eslint-disable-line camelcase
+  id!: string;
+  name!: string;
+  slugged_name!: string; // eslint-disable-line camelcase
+  start_time!: string; // eslint-disable-line camelcase
+  end_time?: string | null; // eslint-disable-line camelcase
+  venue!: Venue;
+  picture?: Picture | null;
+  event_times?: Array<EventTime> | null; // eslint-disable-line camelcase
+  had_event_times?: boolean | null; // eslint-disable-line camelcase
 
   constructor(eventData: JSONObject) {
-    super(eventData);
-    this.venue = new Venue(eventData.venue);
-    this.picture = eventData.picture ? new Picture(eventData.picture) : null;
+    super(eventData as Record<string, unknown>);
+    this.venue = new Venue(eventData.venue as Record<string, unknown>);
+    this.picture = eventData.picture
+      ? new Picture(eventData.picture as Record<string, unknown>)
+      : null;
   }
 
-  getRelativeUrl() {
+  getRelativeUrl(): string {
     let url = `/events/${this.id}/${this.slugged_name}`;
     if (this.had_event_times) {
       url += `#${this.start_time}`;
@@ -174,16 +179,16 @@ export class BaseEvent extends JsonDerivedObject {
     return url;
   }
 
-  getUrl(args: ?Object) {
+  getUrl(args?: Record<string, string | number | boolean | null | undefined> | null): string {
     const url = `https://www.dancedeets.com${this.getRelativeUrl()}`;
     return addUrlArgs(url, args);
   }
 
   getCroppedCover(
-    width: ?number,
-    height: ?number,
+    width: number | null | undefined,
+    height: number | null | undefined,
     index?: number
-  ): ?ImageOptionalSizes {
+  ): ImageOptionalSizes | null {
     if (!this.picture) {
       return null;
     }
@@ -192,7 +197,7 @@ export class BaseEvent extends JsonDerivedObject {
       : null;
   }
 
-  startTime({ timezone }: { timezone: boolean }) {
+  startTime({ timezone }: { timezone: boolean }): string {
     if (timezone) {
       return this.start_time;
     } else {
@@ -200,7 +205,7 @@ export class BaseEvent extends JsonDerivedObject {
     }
   }
 
-  endTime({ timezone }: { timezone: boolean }) {
+  endTime({ timezone }: { timezone: boolean }): string | null {
     if (!this.end_time) {
       return null;
     }
@@ -211,18 +216,18 @@ export class BaseEvent extends JsonDerivedObject {
     }
   }
 
-  getStartMoment({ timezone }: { timezone: boolean }): moment {
+  getStartMoment({ timezone }: { timezone: boolean }): Moment {
     return moment(this.startTime({ timezone }));
   }
 
-  getEndMoment({ timezone }: { timezone: boolean }): ?moment {
+  getEndMoment({ timezone }: { timezone: boolean }): Moment | null {
     if (!this.end_time) {
       return null;
     }
     return moment(this.endTime({ timezone }));
   }
 
-  getEndMomentWithFallback({ timezone }: { timezone: boolean }): moment {
+  getEndMomentWithFallback({ timezone }: { timezone: boolean }): Moment {
     const endMoment = this.getEndMoment({ timezone });
     if (endMoment) {
       return endMoment;
@@ -231,7 +236,7 @@ export class BaseEvent extends JsonDerivedObject {
     }
   }
 
-  getListDateMoment({ timezone }: { timezone: boolean }): moment {
+  getListDateMoment({ timezone }: { timezone: boolean }): Moment {
     const startFinalTimezone = this.getStartMoment({ timezone });
     const start = this.getStartMoment({ timezone: true });
     const end = this.getEndMoment({ timezone: true });
@@ -271,11 +276,11 @@ export class BaseEvent extends JsonDerivedObject {
     return startFinalTimezone;
   }
 
-  getFlyer(dimensions: { width?: number, height?: number }): ?ImageWithSizes {
+  getFlyer(dimensions: { width?: number; height?: number }): ImageWithSizes | null {
     return this.picture ? this.picture.getFlyer(dimensions) : null;
   }
 
-  getSquareFlyer(): ?ImageWithSizes {
+  getSquareFlyer(): ImageWithSizes | null {
     return this.picture
       ? this.picture.getFlyer({
           width: squareImageSize,
@@ -293,40 +298,35 @@ export class BaseEvent extends JsonDerivedObject {
 }
 
 export class SearchEvent extends BaseEvent {
-  rsvp: ?EventRsvpList;
-  annotations: {
-    categories: Array<string>,
-    keywords: Array<string>,
+  rsvp?: EventRsvpList | null;
+  annotations!: {
+    categories: Array<string>;
+    keywords: Array<string>;
   };
 }
 
-export type Post = Object;
-
-export type EventTime = {
-  start_time: string,
-  end_time: string,
-};
+export type Post = Record<string, unknown>;
 
 export class Event extends BaseEvent {
-  description: string;
-  source: {
-    url: string,
-    name: string,
+  description!: string;
+  source!: {
+    url: string;
+    name: string;
   };
-  rsvp: ?EventRsvpList;
-  venue: Venue;
-  annotations: {
-    categories: Array<string>,
+  rsvp?: EventRsvpList | null;
+  override venue!: Venue;
+  annotations!: {
+    categories: Array<string>;
     creation: {
-      creator: ?string,
-      creatorName: ?string,
-      method: string,
-      time: string,
-    },
+      creator?: string | null;
+      creatorName?: string | null;
+      method: string;
+      time: string;
+    };
   };
-  language: string;
-  admins: Array<Admin>;
-  posts: Array<Post>;
-  ticket_uri: string; // eslint-disable-line camelcase
-  extraImageCount: number;
+  language!: string;
+  admins!: Array<Admin>;
+  posts!: Array<Post>;
+  ticket_uri!: string; // eslint-disable-line camelcase
+  extraImageCount!: number;
 }

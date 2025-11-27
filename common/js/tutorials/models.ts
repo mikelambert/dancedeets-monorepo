@@ -1,10 +1,34 @@
 /**
  * Copyright 2016 DanceDeets.
- *
- * @flow
  */
 
 import moment from 'moment';
+
+interface VideoJson {
+  title: string;
+  duration: number;
+  youtubeId: string;
+  width: number;
+  height: number;
+  keywords?: string[];
+}
+
+interface SectionJson {
+  title: string;
+  videos: VideoJson[];
+}
+
+interface PlaylistJson {
+  id: string;
+  title: string;
+  subtitle: string;
+  keywords: string;
+  author: string;
+  style: string;
+  language: string;
+  thumbnail: string;
+  sections: SectionJson[];
+}
 
 export class Playlist {
   id: string;
@@ -18,7 +42,7 @@ export class Playlist {
   thumbnail: string;
   sections: Section[];
 
-  constructor(json: any) {
+  constructor(json: PlaylistJson) {
     this.id = json.id;
     this.key = this.id; // Important for use in FlatLists
     this.title = json.title;
@@ -38,15 +62,20 @@ export class Playlist {
     );
   }
 
-  getId() {
+  getId(): string {
     return `${this.style}/${this.id}`;
   }
 
-  getUrl() {
+  getUrl(): string {
     return `https://www.dancedeets.com/tutorials/${this.getId()}`;
   }
 
-  getSectionListData(index: number) {
+  getSectionListData(index: number): Array<{
+    data: Array<{ key: string; video: Video; selected: boolean }>;
+    realSection: Section;
+    key: string;
+    title: string;
+  }> {
     const realIndex = this.getVideoSectionRow(index);
     return this.sections.map((section, sectionIndex) => ({
       data: section.videos.map((video, videoIndex) => ({
@@ -92,7 +121,7 @@ export class Playlist {
     throw new Error('Video not in tutorial for index lookup');
   }
 
-  getVideoSectionRow(index: number): { section: number, row: number } {
+  getVideoSectionRow(index: number): { section: number; row: number } {
     let currentIndex = index;
     const originalIndex = index;
     for (let i = 0; i < this.sections.length; i += 1) {
@@ -106,7 +135,7 @@ export class Playlist {
     throw new Error(`Video index out of range: ${originalIndex}`);
   }
 
-  getVideoCount() {
+  getVideoCount(): number {
     let count = 0;
     for (let i = 0; i < this.sections.length; i += 1) {
       count += this.sections[i].videos.length;
@@ -115,8 +144,8 @@ export class Playlist {
   }
 
   // Generate a bunch of text contained by this tutorial, for searching purposes
-  getSearchText() {
-    const textBits = [];
+  getSearchText(): string {
+    const textBits: string[] = [];
     textBits.push(this.title);
     textBits.push(this.subtitle);
     textBits.push(this.keywords);
@@ -137,7 +166,7 @@ export class Section {
   title: string;
   videos: Video[];
 
-  constructor(json: any) {
+  constructor(json: SectionJson) {
     try {
       this.title = json.title;
       this.videos = json.videos.map(x => new Video(x));
@@ -154,13 +183,13 @@ export class Section {
     );
   }
 
-  getSearchText() {
-    const textBits = [];
+  getSearchText(): string {
+    const textBits: string[] = [];
     textBits.push(this.title);
     return textBits.join(' ').toLowerCase();
   }
 
-  key(index: number) {
+  key(index: number): string {
     return JSON.stringify({
       index,
       title: this.title,
@@ -172,13 +201,13 @@ export class Section {
 export class Video {
   title: string;
   duration: number;
-  url: string;
+  url!: string;
   youtubeId: string;
   width: number;
   height: number;
   keywords: Array<string>;
 
-  constructor(json: any) {
+  constructor(json: VideoJson) {
     try {
       this.title = json.title;
       this.duration = json.duration;
@@ -192,8 +221,8 @@ export class Video {
     }
   }
 
-  getSearchText() {
-    const textBits = [];
+  getSearchText(): string {
+    const textBits: string[] = [];
     textBits.push(this.title);
     textBits.push(...this.keywords);
     return textBits.join(' ').toLowerCase();
