@@ -1,7 +1,5 @@
 /**
  * Copyright 2016 DanceDeets.
- *
- * @flow
  */
 
 import 'core-js/stable';
@@ -10,8 +8,10 @@ import * as React from 'react';
 import ReactDOM from 'react-dom';
 import { AppContainer } from 'react-hot-loader';
 
-// Would like to define it as Class<React.Component<*, *>>, but doesn't work with the functions required by import
-export default function(Component: any, props?: Object) {
+export default function renderReact(
+  Component: React.ComponentType<Record<string, unknown>>,
+  props?: Record<string, unknown>
+): void {
   ReactDOM.render(
     <AppContainer>
       <Component {...window._REACT_PROPS} {...props} />

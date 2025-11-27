@@ -1,7 +1,5 @@
 /**
  * Copyright 2016 DanceDeets.
- *
- * @flow
  */
 
 // This is because of sticky touch CSS on mobile devices:
@@ -11,27 +9,39 @@
 // For other solutions, see:
 // http://stackoverflow.com/questions/17233804/how-to-prevent-sticky-hover-effects-for-buttons-on-touch-devices
 // http://stackoverflow.com/questions/23885255/how-to-remove-ignore-hover-css-style-on-touch-devices?lq=1
-function fixStickyTouch() {
+
+interface NavigatorWithTouch extends Navigator {
+  MaxTouchPoints?: number;
+  msMaxTouchPoints?: number;
+}
+
+interface CSSStyleRuleWithSelector extends CSSStyleRule {
+  selectorText: string;
+}
+
+function fixStickyTouch(): void {
+  const nav = window.navigator as NavigatorWithTouch;
   const touch =
     'ontouchstart' in window ||
-    window.navigator.MaxTouchPoints > 0 ||
-    window.navigator.msMaxTouchPoints > 0;
+    (nav.MaxTouchPoints ?? 0) > 0 ||
+    (nav.msMaxTouchPoints ?? 0) > 0;
 
   if (touch) {
     // remove all :hover stylesheets
     try {
       // prevent crash on browsers not supporting DOM styleSheets properly
-      const keepSelectors = [];
-      const keepNonHoverSelectors = s => {
+      const keepSelectors: string[] = [];
+      const keepNonHoverSelectors = (s: string): void => {
         if (!s.match(':hover')) {
           keepSelectors.push(s);
         }
       };
-      for (const si of window.document.styleSheets) {
-        const styleSheet = window.document.styleSheets[si];
-        if (styleSheet.rules) {
-          for (let ri = styleSheet.rules.length - 1; ri >= 0; ri -= 1) {
-            const st = styleSheet.rules[ri].selectorText;
+      for (let si = 0; si < window.document.styleSheets.length; si++) {
+        const styleSheet = window.document.styleSheets[si] as CSSStyleSheet;
+        if (styleSheet.cssRules) {
+          for (let ri = styleSheet.cssRules.length - 1; ri >= 0; ri -= 1) {
+            const rule = styleSheet.cssRules[ri] as CSSStyleRuleWithSelector;
+            const st = rule.selectorText;
             if (st) {
               if (st.match(':hover')) {
                 if (st.indexOf(',') === -1) {
@@ -41,7 +51,7 @@ function fixStickyTouch() {
                   keepSelectors.length = 0;
                   selectors.forEach(keepNonHoverSelectors);
                   const newSelectorText = keepSelectors.join(',');
-                  styleSheet.rules[ri].selectorText = newSelectorText;
+                  rule.selectorText = newSelectorText;
                 }
               }
             }
@@ -54,4 +64,4 @@ function fixStickyTouch() {
   }
 }
 
-module.exports = fixStickyTouch;
+export default fixStickyTouch;

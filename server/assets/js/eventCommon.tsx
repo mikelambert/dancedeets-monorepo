@@ -1,18 +1,18 @@
 /**
  * Copyright 2016 DanceDeets.
- *
- * @flow
  */
 
 import * as React from 'react';
 import LazyLoad from 'react-lazyload';
 import { SearchEvent } from 'dancedeets-common/js/events/models';
 
-export class SquareEventFlyer extends React.Component<{
-  event: SearchEvent,
-  lazyLoad?: boolean,
-}> {
-  render() {
+interface SquareEventFlyerProps {
+  event: SearchEvent;
+  lazyLoad?: boolean;
+}
+
+export class SquareEventFlyer extends React.Component<SquareEventFlyerProps> {
+  render(): React.ReactNode {
     const { event } = this.props;
     const width = 180;
     const height = 180;
@@ -21,7 +21,7 @@ export class SquareEventFlyer extends React.Component<{
     if (!croppedPicture) {
       return null;
     }
-    let imageTag = (
+    let imageTag: React.ReactNode = (
       <div className="square-flyer">
         <img alt="" src={croppedPicture.uri} className="full-width no-border" />
       </div>

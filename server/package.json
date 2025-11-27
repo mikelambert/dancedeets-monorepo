@@ -8,6 +8,7 @@
     "@babel/plugin-transform-flow-strip-types": "^7.23.0",
     "@babel/plugin-transform-object-rest-spread": "^7.23.0",
     "@babel/register": "^7.23.0",
+    "@types/jquery": "^3.5.33",
     "babel-loader": "^8.3.0",
     "chai": "^3.5.0",
     "chunk-manifest-webpack-plugin": "^1.1.2",

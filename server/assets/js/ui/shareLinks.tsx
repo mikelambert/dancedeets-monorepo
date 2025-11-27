@@ -1,17 +1,17 @@
 /**
  * Copyright 2016 DanceDeets.
- *
- * @flow
  */
 
 import * as React from 'react';
 import { Share as TwitterShare } from 'react-twitter-widgets';
 import FacebookShare from './fbShare';
 
-export default class ShareLinks extends React.Component<{
-  url: string,
-}> {
-  render() {
+interface ShareLinksProps {
+  url: string;
+}
+
+export default class ShareLinks extends React.Component<ShareLinksProps> {
+  render(): React.ReactNode {
     return (
       <div>
         <span style={{ display: 'inline-block' }}>

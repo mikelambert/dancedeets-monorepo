@@ -1,55 +1,47 @@
 /**
  * Copyright 2016 DanceDeets.
- *
- * @flow
  */
 
 import * as React from 'react';
-import Measure from 'react-measure';
+import Measure, { ContentRect } from 'react-measure';
 
-type Rect = {
-  top: number,
-  left: number,
-  width: number,
-  height: number,
-};
+interface TruncateProps {
+  height: number;
+  children: React.ReactNode;
+}
 
-type Props = {
-  height: number,
-  children: React.Node,
-};
+interface TruncateState {
+  expanded: boolean;
+  loading: boolean;
+  needsToggle: boolean;
+}
 
-export default class Truncate extends React.Component<
-  Props,
-  {
-    expanded: boolean,
-    loading: boolean,
-    needsToggle: boolean,
-  }
-> {
-  _div: React.Element<*>;
-
-  constructor(props: Props) {
+export default class Truncate extends React.Component<TruncateProps, TruncateState> {
+  constructor(props: TruncateProps) {
     super(props);
     this.state = { expanded: false, loading: true, needsToggle: true };
-    (this: any).toggleVisibility = this.toggleVisibility.bind(this);
-    (this: any).onResize = this.onResize.bind(this);
+    this.toggleVisibility = this.toggleVisibility.bind(this);
+    this.onResize = this.onResize.bind(this);
   }
 
-  onResize(contentRect: { scroll: Rect, bounds: Rect }) {
+  onResize(contentRect: ContentRect): void {
     this.setState({
       loading: false,
     });
-    if (contentRect.scroll.height <= contentRect.bounds.height) {
+    if (
+      contentRect.scroll &&
+      contentRect.bounds &&
+      contentRect.scroll.height <= contentRect.bounds.height
+    ) {
       this.setState({ needsToggle: false });
     }
   }
 
-  toggleVisibility() {
+  toggleVisibility(): void {
     this.setState({ expanded: !this.state.expanded });
   }
 
-  render() {
+  render(): React.ReactNode {
     if (!this.state.needsToggle || this.state.expanded) {
       return (
         <div>
@@ -62,7 +54,7 @@ export default class Truncate extends React.Component<
         </div>
       );
     } else {
-      let loadMoreButton = null;
+      let loadMoreButton: React.ReactNode = null;
       if (!this.state.loading) {
         loadMoreButton = (
           <button className="link-button" onClick={this.toggleVisibility}>

@@ -1,14 +1,18 @@
 /**
  * Copyright 2016 DanceDeets.
- *
- * @flow
  */
+
+interface MetaTag {
+  name?: string;
+  property?: string;
+  content: string;
+}
 
 export function generateMetaTags(
   title: string,
   url: string,
   thumbnail: string
-) {
+): MetaTag[] {
   return [
     { name: 'twitter:site', content: '@dancedeets' },
     { name: 'twitter:creator', content: '@dancedeets' },

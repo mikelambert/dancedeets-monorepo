@@ -1,7 +1,5 @@
 /**
  * Copyright 2016 DanceDeets.
- *
- * @flow
  */
 
 import * as React from 'react';
@@ -10,21 +8,25 @@ import type {
   ImageOptionalSizes,
 } from 'dancedeets-common/js/events/models';
 
-export type ImportedImage = {
-  uri: number, // aka require()'d package
-  width: ?number,
-  height: ?number,
-};
+export interface ImportedImage {
+  uri: number; // aka require()'d package
+  width?: number | null;
+  height?: number | null;
+}
+
 type ClientImage = ImportedImage | ImageOptionalSizes | ImageWithSizes;
 
-export class AmpImage extends React.Component<{
-  picture: ClientImage,
-  amp?: ?boolean,
-  width?: string,
-  srcSet?: string,
-  sizes?: string,
-}> {
-  render() {
+interface AmpImageProps {
+  picture: ClientImage;
+  amp?: boolean | null;
+  width?: string;
+  srcSet?: string;
+  sizes?: string;
+  alt?: string;
+}
+
+export class AmpImage extends React.Component<AmpImageProps> {
+  render(): React.ReactNode {
     const { picture, amp, width, srcSet, sizes, ...otherProps } = this.props;
     if (this.props.amp) {
       return (
@@ -41,7 +43,7 @@ export class AmpImage extends React.Component<{
       return (
         <img
           alt="" // Possibly overridden in caller's props
-          src={picture.uri}
+          src={picture.uri as string}
           width={width}
           srcSet={srcSet}
           sizes={sizes}

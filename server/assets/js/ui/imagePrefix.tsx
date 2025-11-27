@@ -1,24 +1,23 @@
 /**
  * Copyright 2016 DanceDeets.
- *
- * @flow
  */
 
 import * as React from 'react';
 import classNames from 'classnames';
 import type { ImageWithSizes } from 'dancedeets-common/js/events/models';
-import { AmpImage } from './ampImage';
-import type { ImportedImage } from './ampImage';
+import { AmpImage, ImportedImage } from './ampImage';
 
-export class ImagePrefix extends React.Component<{
-  icon?: number, // aka required package
-  iconUrl?: string,
-  iconName?: string,
-  className?: string,
-  amp?: boolean,
-  children: React.Node,
-}> {
-  render() {
+interface ImagePrefixProps {
+  icon?: number; // aka required package
+  iconUrl?: string;
+  iconName?: string;
+  className?: string;
+  amp?: boolean;
+  children: React.ReactNode;
+}
+
+export class ImagePrefix extends React.Component<ImagePrefixProps> {
+  render(): React.ReactNode {
     if (!this.props.icon && !this.props.iconName && !this.props.iconUrl) {
       console.error('Missing icon and iconName and iconUrl');
       return null;
@@ -32,7 +31,7 @@ export class ImagePrefix extends React.Component<{
       children,
       ...otherProps
     } = this.props;
-    let iconHtml = null;
+    let iconHtml: React.ReactNode = null;
     if (icon) {
       const picture: ImportedImage = {
         uri: icon,
@@ -67,11 +66,13 @@ export class ImagePrefix extends React.Component<{
   }
 }
 
-export class ImagePrefixInline extends React.Component<{
-  className?: string,
-  children: React.Node,
-}> {
-  render() {
+interface ImagePrefixInlineProps {
+  className?: string;
+  children: React.ReactNode;
+}
+
+export class ImagePrefixInline extends React.Component<ImagePrefixInlineProps> {
+  render(): React.ReactNode {
     const { className, ...otherProps } = this.props;
     return (
       <ImagePrefix className={classNames(className, 'span')} {...otherProps} />

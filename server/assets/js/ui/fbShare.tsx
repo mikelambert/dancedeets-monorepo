@@ -1,21 +1,21 @@
 /**
  * Copyright 2016 DanceDeets.
- *
- * @flow
  */
 
 import * as React from 'react';
 
-export default class FacebookShare extends React.Component<{
-  url: string,
-}> {
-  componentDidMount() {
+interface FacebookShareProps {
+  url: string;
+}
+
+export default class FacebookShare extends React.Component<FacebookShareProps> {
+  componentDidMount(): void {
     if (window.FB) {
       window.FB.XFBML.parse();
     }
   }
 
-  render() {
+  render(): React.ReactNode {
     return (
       <span
         style={{ verticalAlign: 'top' }}

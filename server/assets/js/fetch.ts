@@ -1,12 +1,13 @@
 /**
  * Copyright 2016 DanceDeets.
- *
- * @flow
  */
 
 import querystring from 'querystring';
 
-function ajaxFetch(url: string, body: Object) {
+function ajaxFetch(
+  url: string,
+  body: Record<string, string | number | boolean>
+): Promise<Response> {
   const result = fetch('/events/rsvp_ajax', {
     method: 'POST',
     credentials: 'same-origin',

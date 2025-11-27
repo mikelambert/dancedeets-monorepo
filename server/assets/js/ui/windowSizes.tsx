@@ -1,24 +1,23 @@
 /**
  * Copyright 2016 DanceDeets.
- *
- * @flow
  */
 
 import * as React from 'react';
 
-export type windowProps = {
-  width: number,
-  height: number,
-};
+export interface WindowProps {
+  width: number;
+  height: number;
+}
 
-export function wantsWindowSizes(WrappedComponent: Object) {
-  class WindowSizes extends React.Component<
-    {},
-    {
-      window: ?windowProps,
-    }
-  > {
-    constructor(props: Object) {
+interface WindowSizesState {
+  window: WindowProps | null;
+}
+
+export function wantsWindowSizes<P extends object>(
+  WrappedComponent: React.ComponentType<P & { window?: WindowProps | null }>
+): React.ComponentType<Omit<P, 'window'>> {
+  class WindowSizes extends React.Component<Omit<P, 'window'>, WindowSizesState> {
+    constructor(props: Omit<P, 'window'>) {
       super(props);
 
       // Unfortunately, sticking this code into the constructor directly,
@@ -37,19 +36,19 @@ export function wantsWindowSizes(WrappedComponent: Object) {
         ...this.getWindowState(),
       };
 
-      (this: any).updateDimensions = this.updateDimensions.bind(this);
+      this.updateDimensions = this.updateDimensions.bind(this);
     }
 
-    componentDidMount() {
+    componentDidMount(): void {
       window.addEventListener('resize', this.updateDimensions);
     }
 
-    componentWillUnmount() {
+    componentWillUnmount(): void {
       window.removeEventListener('resize', this.updateDimensions);
     }
 
-    getWindowState() {
-      if (global.window != null) {
+    getWindowState(): WindowSizesState {
+      if (typeof window !== 'undefined') {
         const width =
           window.innerWidth ||
           (document.documentElement && document.documentElement.clientWidth) ||
@@ -65,12 +64,17 @@ export function wantsWindowSizes(WrappedComponent: Object) {
       return { window: null };
     }
 
-    updateDimensions() {
+    updateDimensions(): void {
       this.setState(this.getWindowState());
     }
 
-    render() {
-      return <WrappedComponent {...this.props} window={this.state.window} />;
+    render(): React.ReactNode {
+      return (
+        <WrappedComponent
+          {...(this.props as P)}
+          window={this.state.window}
+        />
+      );
     }
   }
   return WindowSizes;

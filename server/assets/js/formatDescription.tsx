@@ -1,7 +1,5 @@
 /**
  * Copyright 2016 DanceDeets.
- *
- * @flow
  */
 
 import * as React from 'react';
@@ -15,33 +13,34 @@ import ExecutionEnvironment from 'exenv';
 const linkify = Linkify();
 linkify.tlds(tlds);
 
-class OEmbed extends React.Component<
-  {
-    url: string,
-    getOembedUrl: (pageUrl: string) => string, // eslint-disable-line react/no-unused-prop-types
-  },
-  {
-    embedCode: ?string,
-  }
-> {
-  constructor(props) {
+interface OEmbedProps {
+  url: string;
+  getOembedUrl: (pageUrl: string) => string;
+}
+
+interface OEmbedState {
+  embedCode: string | null;
+}
+
+class OEmbed extends React.Component<OEmbedProps, OEmbedState> {
+  constructor(props: OEmbedProps) {
     super(props);
     this.state = {
       embedCode: null,
     };
   }
 
-  componentWillMount() {
+  componentWillMount(): void {
     this.loadEmbed();
   }
 
-  componentDidUpdate(prevProps, prevState) {
+  componentDidUpdate(prevProps: OEmbedProps): void {
     if (prevProps.url !== this.props.url) {
       this.loadEmbed();
     }
   }
 
-  async loadEmbed() {
+  async loadEmbed(): Promise<void> {
     // Don't try to load/render oembeds serverside
     if (!ExecutionEnvironment.canUseDOM) {
       return;
@@ -59,43 +58,48 @@ class OEmbed extends React.Component<
     }
   }
 
-  render() {
+  render(): React.ReactNode {
     if (this.state.embedCode) {
-      return <div dangerouslySetInnerHTML={{ __html: this.state.embedCode }} />; // eslint-disable-line react/no-danger
+      return <div dangerouslySetInnerHTML={{ __html: this.state.embedCode }} />;
     } else {
       return <a href={this.props.url}>{this.props.url}</a>;
     }
   }
 }
 
-class SoundCloud extends React.Component<{
-  url: string,
-}> {
-  render() {
+interface SoundCloudProps {
+  url: string;
+}
+
+class SoundCloud extends React.Component<SoundCloudProps> {
+  render(): React.ReactNode {
     return (
       <OEmbed
         url={this.props.url}
-        getOembedUrl={mediaUrl =>
+        getOembedUrl={(mediaUrl: string) =>
           `https://soundcloud.com/oembed?${querystring.stringify({
             url: mediaUrl,
             format: 'json',
-          })}`}
+          })}`
+        }
       />
     );
   }
 }
 
-class FacebookPage extends React.Component<{
-  username: string,
-  amp: boolean,
-}> {
-  componentDidMount() {
+interface FacebookPageProps {
+  username: string;
+  amp: boolean;
+}
+
+class FacebookPage extends React.Component<FacebookPageProps> {
+  componentDidMount(): void {
     if (window.FB) {
       window.FB.XFBML.parse();
     }
   }
 
-  render() {
+  render(): React.ReactNode {
     const pageUrl = `https://www.facebook.com/${this.props.username}/`;
     return this.props.amp ? (
       <span>
@@ -129,11 +133,13 @@ class FacebookPage extends React.Component<{
   }
 }
 
-class FacebookPost extends React.Component<{
-  url: string,
-  amp: boolean,
-}> {
-  static isPostUrl(mediaUrl) {
+interface FacebookPostProps {
+  url: string;
+  amp: boolean;
+}
+
+class FacebookPost extends React.Component<FacebookPostProps> {
+  static isPostUrl(mediaUrl: string): boolean {
     return (
       mediaUrl.includes('/posts/') ||
       mediaUrl.includes('/activity/') ||
@@ -147,26 +153,15 @@ class FacebookPost extends React.Component<{
       mediaUrl.includes('/notes/') ||
       false
     );
-    /*
-    https://www.facebook.com/{page-name}/posts/{post-id}
-    https://www.facebook.com/{username}/posts/{post-id}
-    https://www.facebook.com/{username}/activity/{activity-id}
-    https://www.facebook.com/photo.php?fbid={photo-id}
-    https://www.facebook.com/photos/{photo-id}
-    https://www.facebook.com/permalink.php?story_fbid={post-id}
-    https://www.facebook.com/media/set?set={set-id}
-    https://www.facebook.com/questions/{question-id}
-    https://www.facebook.com/notes/{username}/{note-url}/{note-id}
-    */
   }
 
-  componentDidMount() {
+  componentDidMount(): void {
     if (window.FB) {
       window.FB.XFBML.parse();
     }
   }
 
-  render() {
+  render(): React.ReactNode {
     let mediaUrl = this.props.url;
     if (mediaUrl.includes('/story.php?story_fbid=')) {
       mediaUrl = mediaUrl.replace('story.php', 'permalink.php');
@@ -196,27 +191,23 @@ class FacebookPost extends React.Component<{
   }
 }
 
-class FacebookVideo extends React.Component<{
-  url: string,
-  amp: boolean,
-}> {
-  static isVideoUrl(mediaUrl) {
+interface FacebookVideoProps {
+  url: string;
+  amp: boolean;
+}
+
+class FacebookVideo extends React.Component<FacebookVideoProps> {
+  static isVideoUrl(mediaUrl: string): boolean {
     return mediaUrl.includes('/video.php') || mediaUrl.includes('/videos/');
-    /*
-    https://www.facebook.com/{page-name}/videos/{video-id}/
-    https://www.facebook.com/{username}/videos/{video-id}/
-    https://www.facebook.com/video.php?id={video-id}
-    https://www.facebook.com/video.php?v={video-id}
-    */
   }
 
-  componentDidMount() {
+  componentDidMount(): void {
     if (window.FB) {
       window.FB.XFBML.parse();
     }
   }
 
-  render() {
+  render(): React.ReactNode {
     return this.props.amp ? (
       <span>
         <Helmet
@@ -241,11 +232,13 @@ class FacebookVideo extends React.Component<{
   }
 }
 
-class YouTube extends React.Component<{
-  amp: boolean,
-  videoId: string,
-}> {
-  render() {
+interface YouTubeProps {
+  amp: boolean;
+  videoId: string;
+}
+
+class YouTube extends React.Component<YouTubeProps> {
+  render(): React.ReactNode {
     return this.props.amp ? (
       <span>
         <Helmet
@@ -269,7 +262,6 @@ class YouTube extends React.Component<{
         <iframe
           title="Youtube Video"
           id="ytplayer"
-          type="text/html"
           width="640"
           height="360"
           src={`https://www.youtube.com/embed/${this.props.videoId}`}
@@ -280,12 +272,27 @@ class YouTube extends React.Component<{
   }
 }
 
+interface FormatterOptions {
+  amp?: boolean;
+  target?: string;
+  rel?: string;
+}
+
+interface LinkifyMatch {
+  schema: string;
+  index: number;
+  lastIndex: number;
+  raw: string;
+  text: string;
+  url: string;
+}
+
 class Formatter {
   str: string;
-  options: Object;
-  elements: Array<React.Node>;
+  options: FormatterOptions;
+  elements: React.ReactNode[];
 
-  constructor(str, options) {
+  constructor(str: string, options: FormatterOptions) {
     this.str = str;
     this.options = options;
     this.elements = [];
@@ -293,11 +300,11 @@ class Formatter {
     this.reformat();
   }
 
-  reformat() {
+  reformat(): void {
     const matches = linkify.match(this.str) || [];
     let index = 0;
 
-    matches.forEach((match, i) => {
+    matches.forEach((match: LinkifyMatch, i: number) => {
       const part = this.str.slice(index, match.index);
 
       index = match.lastIndex;
@@ -309,23 +316,23 @@ class Formatter {
     this.splitNewlines(this.str.slice(index), matches.length);
   }
 
-  addText(str) {
+  addText(str: string): void {
     if (!str) {
       return;
     }
-    const remappers = {
-      snapchat: username => (
+    const remappers: Record<string, (username: string) => React.ReactNode> = {
+      snapchat: (username: string) => (
         <a href={`http://www.snapchat.com/add/${username}`}>{username}</a>
       ),
-      facebook: username => (
+      facebook: (username: string) => (
         <a href={`https://www.facebook.com/${username}`}>{username}</a>
       ),
-      instagram: username => (
+      instagram: (username: string) => (
         <a href={`https://instagram.com/${username.replace('@', '')}`}>
           {username}
         </a>
       ),
-      twitter: username => (
+      twitter: (username: string) => (
         <a href={`https://twitter.com/${username.replace('@', '')}`}>
           {username}
         </a>
@@ -352,7 +359,8 @@ class Formatter {
       this.elements.push(str);
     }
   }
-  splitNewlines(str, i) {
+
+  splitNewlines(str: string, i: number): void {
     const parts = str.split(/\r\n|\n|\r/);
 
     parts.forEach((part, j) => {
@@ -360,18 +368,18 @@ class Formatter {
         this.addText(part);
       }
       if (j < parts.length - 1) {
-        this.elements.push(<br key={`${i}.${j}`} />); // eslint-disable-line react/no-array-index-key
+        this.elements.push(<br key={`${i}.${j}`} />);
       }
     });
   }
 
-  replaceLink(match, i) {
+  replaceLink(match: LinkifyMatch, i: number): void {
     let { target, rel } = this.options;
     if (target !== undefined) {
-      target = /^http(s)?:/.test(match.url) ? '_blank' : null;
+      target = /^http(s)?:/.test(match.url) ? '_blank' : undefined;
     }
     if (rel !== undefined) {
-      rel = target === '_blank' ? 'noopener noreferrer' : null;
+      rel = target === '_blank' ? 'noopener noreferrer' : undefined;
     }
 
     const parsedUrl = url.parse(match.url, true);
@@ -381,14 +389,14 @@ class Formatter {
       parsedUrl.query &&
       parsedUrl.query.v
     ) {
-      const videoId = parsedUrl.query.v;
+      const videoId = parsedUrl.query.v as string;
       this.elements.push(
-        <YouTube key={i} videoId={videoId} amp={this.options.amp} />
+        <YouTube key={i} videoId={videoId} amp={this.options.amp ?? false} />
       );
     } else if (parsedUrl.host === 'youtu.be' && parsedUrl.pathname) {
       const videoId = parsedUrl.pathname.slice(1);
       this.elements.push(
-        <YouTube key={i} videoId={videoId} amp={this.options.amp} />
+        <YouTube key={i} videoId={videoId} amp={this.options.amp ?? false} />
       );
     } else if (
       parsedUrl.host === 'www.youtube.com' &&
@@ -400,7 +408,7 @@ class Formatter {
       const embedUrl = `https://www.youtube.com/embed/videoseries?list=${playlistId}`;
       this.elements.push(
         this.options.amp ? (
-          <span>
+          <span key={i}>
             <Helmet
               script={[
                 {
@@ -425,7 +433,6 @@ class Formatter {
             <iframe
               title="Youtube Video"
               id="ytplayer"
-              type="text/html"
               width="640"
               height="360"
               src={embedUrl}
@@ -443,7 +450,7 @@ class Formatter {
       FacebookPost.isPostUrl(match.url)
     ) {
       this.elements.push(
-        <FacebookPost key={i} url={match.url} amp={this.options.amp} />
+        <FacebookPost key={i} url={match.url} amp={this.options.amp ?? false} />
       );
     } else if (
       (parsedUrl.host === 'www.facebook.com' ||
@@ -451,7 +458,7 @@ class Formatter {
       FacebookVideo.isVideoUrl(match.url)
     ) {
       this.elements.push(
-        <FacebookVideo key={i} url={match.url} amp={this.options.amp} />
+        <FacebookVideo key={i} url={match.url} amp={this.options.amp ?? false} />
       );
     } else if (
       parsedUrl.host === 'www.facebook.com' &&
@@ -465,7 +472,7 @@ class Formatter {
         username = splits[splits.length - 1];
       }
       this.elements.push(
-        <FacebookPage key={i} username={username} amp={this.options.amp} />
+        <FacebookPage key={i} username={username} amp={this.options.amp ?? false} />
       );
     } else {
       this.elements.push(
@@ -477,10 +484,15 @@ class Formatter {
   }
 }
 
-export default class DescriptionFormatter extends React.Component<{
-  children: string,
-}> {
-  render() {
+interface DescriptionFormatterProps {
+  children: string;
+  amp?: boolean;
+  target?: string;
+  rel?: string;
+}
+
+export default class DescriptionFormatter extends React.Component<DescriptionFormatterProps> {
+  render(): React.ReactNode {
     const text = this.props.children;
     const formatter = new Formatter(text, this.props);
     return <span>{formatter.elements}</span>;

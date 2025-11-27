@@ -9,7 +9,11 @@
     "@babel/preset-react": "^7.23.0",
     "@babel/preset-typescript": "^7.23.0",
     "@babel/register": "^7.23.0",
-    "typescript": "^5.3.0",
+    "@types/classnames": "^2.3.0",
+    "@types/node": "^24.10.1",
+    "@types/react": "^19.2.7",
+    "@types/react-dom": "^19.2.3",
+    "@types/react-intl": "^2.3.18",
     "babel-plugin-react-intl": "^2.2.0",
     "core-js": "^3.33.0",
     "eslint": "^4.11.0",
@@ -25,7 +29,8 @@
     "fs-extra": "^1.0.0",
     "prettier": "1.6.1",
     "regenerator-runtime": "^0.14.0",
-    "shebang-loader": "0.0.1"
+    "shebang-loader": "0.0.1",
+    "typescript": "^5.3.0"
   },
   "scripts": {
     "eslint-check": "./node_modules/eslint/bin/eslint.js --print-config .eslintrc | node_modules/eslint-config-prettier/bin/cli.js",

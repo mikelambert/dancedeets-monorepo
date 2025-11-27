@@ -1,20 +1,21 @@
 /**
  * Copyright 2016 DanceDeets.
- *
- * @flow
  */
 
 import * as React from 'react';
 
-export default class GoogleAd extends React.Component<{
-  style: Object,
-  amp?: ?boolean,
-}> {
-  componentDidMount() {
+interface GoogleAdProps {
+  style: React.CSSProperties & { width: number | string; height: number | string };
+  amp?: boolean | null;
+  'data-ad-slot'?: string;
+}
+
+export default class GoogleAd extends React.Component<GoogleAdProps> {
+  componentDidMount(): void {
     (window.adsbygoogle = window.adsbygoogle || []).push({});
   }
 
-  render() {
+  render(): React.ReactNode {
     const { amp, ...props } = this.props;
     if (this.props.amp) {
       const { style, ...otherProps } = props;

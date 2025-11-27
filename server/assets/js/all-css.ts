@@ -1,7 +1,6 @@
 /**
  * Copyright 2016 DanceDeets.
- *
- * @flow
  */
 
+/* eslint-disable @typescript-eslint/no-var-requires */
 require('../css/everything.scss');

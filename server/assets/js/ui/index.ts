@@ -1,7 +1,5 @@
 /**
  * Copyright 2016 DanceDeets.
- *
- * @flow
  */
 
 import Card from './card';
@@ -13,13 +11,18 @@ import * as ImagePrefixes from './imagePrefix';
 import * as WindowSizes from './windowSizes';
 import Truncate from './truncate';
 
-module.exports = {
+export {
   Card,
   FacebookShare,
   Link,
   ShareLinks,
   Truncate,
-  ...AmpImage,
-  ...ImagePrefixes,
-  ...WindowSizes,
+  AmpImage,
+  ImagePrefixes,
+  WindowSizes,
 };
+
+// Re-export everything from sub-modules for backwards compatibility
+export * from './ampImage';
+export * from './imagePrefix';
+export * from './windowSizes';

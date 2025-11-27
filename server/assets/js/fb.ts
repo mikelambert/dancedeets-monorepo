@@ -1,12 +1,14 @@
 /**
  * Copyright 2016 DanceDeets.
- *
- * @flow
  */
 
 import EventEmitter from 'eventemitter3';
 import Cookies from 'universal-cookie';
 import { queryOn } from './dom';
+
+interface UserLogin {
+  uid: string;
+}
 
 export const fbLoadEmitter = new EventEmitter();
 
@@ -14,7 +16,7 @@ export function fbSetup(
   fbPermissions: string,
   fbAppId: string,
   baseHostname: string
-) {
+): void {
   const cookies = new Cookies();
 
   let loginPressed = false;
@@ -28,7 +30,7 @@ export function fbSetup(
     path: '/',
   };
 
-  function deleteLoginCookies() {
+  function deleteLoginCookies(): void {
     [cookieOptions, cookieOptions2].forEach(cookieOpts => {
       cookies.remove(`fbsr_${fbAppId}`, cookieOpts);
       cookies.remove(`fbm_${fbAppId}`, cookieOpts);
@@ -37,24 +39,24 @@ export function fbSetup(
     });
   }
 
-  function reloadWithNewToken() {
+  function reloadWithNewToken(): void {
     if (String(window.location).indexOf('?') === -1) {
-      window.location += '?nt=1';
+      window.location.href = window.location.href + '?nt=1';
     } else {
-      window.location += '&nt=1';
+      window.location.href = window.location.href + '&nt=1';
     }
   }
 
-  function currentUser() {
-    const userLogin = cookies.get(`user_login_${fbAppId}`);
+  function currentUser(): string | null {
+    const userLogin = cookies.get(`user_login_${fbAppId}`) as unknown as UserLogin | undefined;
     if (userLogin) {
       return userLogin.uid;
     }
     return null;
   }
 
-  function handleStatusChange(response) {
-    if (response.status === 'connected') {
+  function handleStatusChange(response: FBAuthResponse): void {
+    if (response.status === 'connected' && response.authResponse) {
       // We want to set this cookie before we attempt to do any reloads below,
       // so that the server will have access to our user_token_ (access token)
       const { accessToken } = response.authResponse;
@@ -71,12 +73,6 @@ export function fbSetup(
       }
     } else if (response.status === 'not_authorized') {
       // Disabled as long as we have the App Tokens creating logged-in users without a proper FB token
-      // if (currentUser()) {
-      //   // the user is logged in to Facebook, but not connected to the app
-      //   deleteLoginCookies();
-      //   // TODO(lambert): Add a full-screen overlay explaining what we are doing...
-      //   reloadWithNewToken('not_authorized');
-      // }
     } else {
       // the user isn't even logged in to Facebook.
 
@@ -86,26 +82,24 @@ export function fbSetup(
     }
   }
 
-  function initFBCode(FB) {
-    function login() {
+  function initFBCode(FB: Window['FB']): void {
+    function login(): void {
       loginPressed = true;
       window.mixpanel.track('Login - FBLogin Button Pressed');
-      FB.login((/* response */) => {}, {
+      FB.login(() => {}, {
         scope: fbPermissions,
       });
     }
 
-    function logout() {
+    function logout(): void {
       window.mixpanel.track('Logout');
       // Seems the logout callback isn't being called, so ensure we delete the cookie here
       deleteLoginCookies();
       FB.getLoginStatus(response => {
         if (response.status === 'connected') {
-          FB.logout(
-            (/* response */) => {
-              window.location.reload();
-            }
-          );
+          FB.logout(() => {
+            window.location.reload();
+          });
         } else {
           window.location.reload();
         }
@@ -142,12 +136,12 @@ export function fbSetup(
    */
 
   // Facebook/Login Code
-  ((d, s, id) => {
+  ((d: Document, s: string, id: string) => {
     const fjs = d.getElementsByTagName(s)[0];
     if (d.getElementById(id)) {
       return;
     }
-    const js = d.createElement(s);
+    const js = d.createElement(s) as HTMLScriptElement;
     js.id = id;
     js.src = 'https://connect.facebook.net/en_US/sdk.js';
     if (fjs.parentNode) {
