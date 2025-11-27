@@ -109,13 +109,12 @@ class BareBaseRequestHandler(FacebookMixinHandler):
         # set to false on various admin pages
         self.display['track_analytics'] = True
 
+        # esbuild doesn't use chunk manifests (no code splitting), so always set empty
         if not os.environ.get('HOT_SERVER_PORT'):
-            try:
-                self.display['webpack_manifest'] = open('dist/chunk-manifest.json').read()
-            except FileNotFoundError:
-                self.display['webpack_manifest'] = '{}'
+            self.display['webpack_manifest'] = '{}'
         try:
-            self.full_manifest = json.loads(open('dist/manifest.json').read())
+            # Load esbuild manifest for asset path resolution
+            self.full_manifest = json.loads(open('dist/manifest-esbuild.json').read())
         except FileNotFoundError:
             self.full_manifest = {}
 
@@ -195,17 +194,19 @@ class BareBaseRequestHandler(FacebookMixinHandler):
                 chunked_filename = self.full_manifest[path]
             else:
                 chunked_filename = path
-            # Determine subdirectory based on file extension
+            # Determine subdirectory based on file extension (using esbuild output dirs)
             extension = path.split('.')[-1]
-            subdir = 'css' if extension == 'css' else 'js'
+            subdir = 'css-esbuild' if extension == 'css' else 'js-esbuild'
             # The Amazon CloudFront CDN that proxies our https://storage.googleapis.com/dancedeets-static/ bucket
             final_path = '%s/%s/%s' % (CDN_HOST, subdir, chunked_filename)
             return final_path
         else:
             extension = path.split('.')[-1]
-            if extension == 'css':
+            if path in self.full_manifest:
                 path = self.full_manifest[path]
-            return '%s/dist/%s/%s' % (self._get_base_server(), extension, path)
+            # Use esbuild output directories
+            subdir = 'css-esbuild' if extension == 'css' else 'js-esbuild'
+            return '%s/dist/%s/%s' % (self._get_base_server(), subdir, path)
 
     def _get_base_server(self):
         return 'https://www.dancedeets.com' if self.request.app.prod_mode else 'http://dev.dancedeets.com:8080'
