@@ -10,14 +10,37 @@ without the Search API, with reduced search functionality.
 """
 
 import logging
+import os
 
-# Try to import the real App Engine Search API
-try:
-    from google.appengine.api import search as appengine_search
-    SEARCH_AVAILABLE = True
-except ImportError:
-    SEARCH_AVAILABLE = False
-    appengine_search = None
+
+def _is_flexible_environment():
+    """Check if running in App Engine Flexible Environment.
+
+    In Flexible Environment:
+    - GAE_ENV is 'flex' or 'flexible'
+    - GAE_VM is 'true'
+
+    The Search API is only available in Standard Environment.
+    """
+    gae_env = os.environ.get('GAE_ENV', '')
+    gae_vm = os.environ.get('GAE_VM', '')
+    return gae_env in ('flex', 'flexible') or gae_vm == 'true'
+
+
+# The App Engine Search API doesn't work in Flexible Environment.
+# Even though the import succeeds (from appengine-python-standard), the actual
+# API calls fail with "No api proxy found for service 'search'".
+#
+# Force SEARCH_AVAILABLE = False to always use the stub implementation.
+# This is necessary because:
+# 1. Environment detection at import time may not work reliably
+# 2. GAE Flex definitely doesn't support the Search API
+# 3. The stub implementation gracefully returns empty results
+#
+# If you need real search, implement Elasticsearch or Cloud Search instead.
+SEARCH_AVAILABLE = False
+appengine_search = None
+logging.info("Using Search API stub implementation (Search API not available in Flexible Environment)")
 
 
 class SearchError(Exception):
