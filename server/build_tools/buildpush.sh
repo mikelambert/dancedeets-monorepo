@@ -37,7 +37,7 @@ if [ -f "batch.yaml" ]; then
     sleep 30 && time gcloud app deploy --quiet --project $PROJECT batch.yaml "$@" &
 fi
 
-time gcloud app deploy --quiet --project $PROJECT app.yaml "$@"
+time gcloud app deploy --project $PROJECT app.yaml "$@"
 
 echo "=== Deployment complete! ==="
 echo "View at: https://$PROJECT.appspot.com"
