@@ -1,9 +1,11 @@
+// Tutorial page layout - flex row/column based on screen width
 .media-width-row-or-column {
   flex-direction: row;
 }
 
-@media (max-width: 1024px) {
+// On mobile/narrow screens, stack vertically
+@media (max-width: 900px) {
   .media-width-row-or-column {
-    flex-direction: column;
+    flex-direction: column !important;
   }
 }
