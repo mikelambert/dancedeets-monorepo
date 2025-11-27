@@ -22,7 +22,16 @@ const backgroundSectionHeaderColor = '#656595';
 const backgroundVideoColor = 'white';
 const backgroundVideoColorActive = '#E0E0F5';
 
-const headerHeight = 50;
+// Calculate header height dynamically to account for navbar + promo messages
+const getHeaderHeight = () => {
+  if (typeof document === 'undefined') return 50;
+  const navbar = document.querySelector('.navbar');
+  const promoMessages = document.querySelector('.alert.alert-info');
+  let height = 0;
+  if (navbar) height += navbar.offsetHeight;
+  if (promoMessages) height += promoMessages.offsetHeight;
+  return height || 50;
+};
 
 class _Duration extends React.Component<{
   duration: number,
@@ -242,7 +251,7 @@ class _TutorialView extends React.Component<
 
   render() {
     const height = this.props.window
-      ? this.props.window.height - headerHeight
+      ? this.props.window.height - getHeaderHeight()
       : '100vh';
     return (
       <div
