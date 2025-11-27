@@ -4,6 +4,8 @@ npm-debug.log
 # Where we store the build/messages/ from react-intl's plugin processing
 build/
 
+.DS_Store
+
 *.swp
 *.pyc
 

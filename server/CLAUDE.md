@@ -1,8 +1,44 @@
-# DanceDeeets Server
+# DanceDeets Server
 
 There's a main deployment server and a main batch server, both exist in our production deployments.
 
 There's also a basic "tutorials" server that one can run without the whole dancedeets setup, for simple iteration/demos.
+
+## IMPORTANT: Deployment Instructions (Claude Code)
+
+**DO NOT use raw `gcloud app deploy` commands directly.** Always use the provided deployment scripts.
+
+### Deploying to Production
+
+Use the main deployment script which handles both the app AND static files:
+
+```bash
+./build_tools/buildpush.sh
+```
+
+This script does the following:
+1. Optionally builds Docker images locally (if needed)
+2. **Uploads static files (JS/CSS) to the static file server** via `upload_static_files.py`
+3. Deploys the app to Google App Engine
+
+If you only run `gcloud app deploy`, the static files (webpack bundles, CSS) won't be uploaded and the site will be broken!
+
+### Building Frontend Assets
+
+Before deploying, ensure frontend assets are built:
+
+```bash
+# Build client-side bundles (JS/CSS for browsers)
+npx webpack --config webpack.config.client.babel.js
+
+# Build server-side bundles (for React SSR)
+npx webpack --config webpack.config.server.babel.js
+```
+
+### Other Useful Scripts
+
+- `./build_tools/upload_static_files.py` - Upload static files only (without deploying app)
+- `gulp buildDocker` - Build Docker base images (rarely needed, see Docker section below)
 
 # Tutorials Server
 
@@ -108,8 +144,9 @@ ADD . /app/
 Then deploy with:
 ```bash
 ./build_tools/buildpush.sh
-# or: gcloud app deploy
 ```
+
+**Note:** Do NOT use `gcloud app deploy` directly - it skips static file uploads and breaks the site.
 
 GAE builds the image in the cloud, pulling the cached base and just copying your code.
 
