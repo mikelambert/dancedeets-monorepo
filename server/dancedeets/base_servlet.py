@@ -195,8 +195,11 @@ class BareBaseRequestHandler(FacebookMixinHandler):
                 chunked_filename = self.full_manifest[path]
             else:
                 chunked_filename = path
+            # Determine subdirectory based on file extension
+            extension = path.split('.')[-1]
+            subdir = 'css' if extension == 'css' else 'js'
             # The Amazon CloudFront CDN that proxies our https://storage.googleapis.com/dancedeets-static/ bucket
-            final_path = '%s/js/%s' % (CDN_HOST, chunked_filename)
+            final_path = '%s/%s/%s' % (CDN_HOST, subdir, chunked_filename)
             return final_path
         else:
             extension = path.split('.')[-1]

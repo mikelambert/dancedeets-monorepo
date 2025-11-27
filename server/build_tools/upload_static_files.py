@@ -17,6 +17,7 @@ GCS_BUCKET = 'gs://dancedeets-static'
 UNHASHED_FILES = [
     'jquery.js',
     'homepageReact.js',
+    'common.css',  # CSS files are requested by unhashed name from templates
 ]
 
 
@@ -70,7 +71,9 @@ max_age = 60 * 60 * 24
 
 # Check if dist directories exist before uploading
 if os.path.exists('dist/js') or os.path.exists('dist/css'):
-    cmd = f'{gsutil} -m -h "Cache-Control:public,max-age={max_age}" cp -P -n -z svg,css,js,json,map -R dist/ gs://dancedeets-static/'
+    # Upload dist/* to bucket root (not dist/ folder, which would create dist/dist/...)
+    # The app expects files at gs://dancedeets-static/js/... not gs://dancedeets-static/dist/js/...
+    cmd = f'{gsutil} -m -h "Cache-Control:public,max-age={max_age}" cp -P -n -z svg,css,js,json,map -R dist/* gs://dancedeets-static/'
     subprocess.check_output(cmd, shell=True)
 
     paths = 'gs://dancedeets-static/img'
@@ -83,7 +86,7 @@ else:
 def create_unhashed_copies():
     """Create unhashed copies of files that aren't in the manifest.
 
-    Some files (like jquery.js, homepageReact.js) are requested by unhashed name
+    Some files (like jquery.js, homepageReact.js, common.css) are requested by unhashed name
     but only exist with hashed names in GCS. This function finds the latest
     hashed version and copies it to the unhashed name.
     """
@@ -91,19 +94,21 @@ def create_unhashed_copies():
 
     for filename in UNHASHED_FILES:
         base_name = filename.rsplit('.', 1)[0]  # e.g., 'jquery' from 'jquery.js'
-        ext = filename.rsplit('.', 1)[1]  # e.g., 'js'
+        ext = filename.rsplit('.', 1)[1]  # e.g., 'js' or 'css'
 
-        # List files matching the pattern (e.g., jquery.*.js)
-        pattern = f'{GCS_BUCKET}/js/{base_name}.*\\.{ext}'
+        # Use correct subdirectory based on file extension
+        subdir = 'css' if ext == 'css' else 'js'
+
+        # List files matching the pattern (e.g., jquery.*.js or common.*.css)
         try:
             result = subprocess.check_output(
-                f'{gsutil} ls "{GCS_BUCKET}/js/{base_name}."*".{ext}" 2>/dev/null || true',
+                f'{gsutil} ls "{GCS_BUCKET}/{subdir}/{base_name}."*".{ext}" 2>/dev/null || true',
                 shell=True,
                 text=True
             )
 
             # Find the hashed version (contains hash between name and extension)
-            # e.g., jquery.a9ded2cac92ff464a1d7.js
+            # e.g., jquery.a9ded2cac92ff464a1d7.js or common.2bddc9ed51d3782e06d54343e9ffcd88.css
             hashed_pattern = re.compile(rf'{base_name}\.[a-f0-9]+\.{ext}$')
             hashed_files = [
                 line.strip() for line in result.strip().split('\n')
@@ -113,7 +118,7 @@ def create_unhashed_copies():
             if hashed_files:
                 # Use the first (or most recent) hashed file
                 source_file = hashed_files[0]
-                dest_file = f'{GCS_BUCKET}/js/{filename}'
+                dest_file = f'{GCS_BUCKET}/{subdir}/{filename}'
 
                 print(f'Copying {source_file} -> {dest_file}')
                 cmd = f'{gsutil} cp "{source_file}" "{dest_file}"'
