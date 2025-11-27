@@ -72,12 +72,11 @@
     "@babel/preset-env": "^7.23.0",
     "@babel/preset-react": "^7.23.0",
     "babel-plugin-react-intl": "^2.4.0",
-    "core-js": "^3.33.0",
-    "regenerator-runtime": "^0.14.0",
     "bootstrap": "^3.3.7",
     "bootstrap-sass": "^3.3.6",
     "classnames": "^2.2.5",
     "console-polyfill": "^0.3.0",
+    "core-js": "^3.33.0",
     "dancedeets-common": "file:../common",
     "date-fns": "^1.3.0",
     "eslint": "^5.16.0",
@@ -127,6 +126,7 @@
     "react-twitter-widgets": "^1.5.0",
     "react-waypoint": "^7.1.0",
     "react-youtube": "^7.5.0",
+    "regenerator-runtime": "^0.14.0",
     "sass": "^1.94.2",
     "slick-carousel": "^1.6.0",
     "stackdriver-errors-js": "^0.2.0",
@@ -142,7 +142,10 @@
     "fsevents": "^1.1.1"
   },
   "scripts": {
-    "start": "bash ./renderServer.sh"
+    "start": "bash ./renderServer.sh",
+    "build:esbuild": "NODE_ENV=production node esbuild.client.js",
+    "build:esbuild:debug": "node esbuild.client.js --debug",
+    "test:esbuild": "node build_tools/test-esbuild-bundles.js"
   },
   "private": true
 }
