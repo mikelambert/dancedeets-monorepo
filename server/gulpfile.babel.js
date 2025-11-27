@@ -388,6 +388,41 @@ suffixes.forEach(suffix =>
 );
 
 gulp.task('compile:webpack', ['compile:webpack:all:prod:once']);
+
+// Generate rules for esbuild configs (client and server)
+function esbuild(configName) {
+  const esbuildCommand = `node esbuild.${configName}.js`;
+  gulp.task(
+    `compile:esbuild:${configName}:prod:once`,
+    $.shell.task([`NODE_ENV=production ${esbuildCommand}`])
+  );
+  gulp.task(
+    `compile:esbuild:${configName}:prod:watch`,
+    $.shell.task([`NODE_ENV=production ${esbuildCommand} --watch`])
+  );
+  gulp.task(
+    `compile:esbuild:${configName}:debug:once`,
+    $.shell.task([`${esbuildCommand} --debug`])
+  );
+  gulp.task(
+    `compile:esbuild:${configName}:debug:watch`,
+    $.shell.task([`${esbuildCommand} --watch --debug`])
+  );
+}
+esbuild('server');
+esbuild('client');
+
+const esbuildConfigs = ['server', 'client'];
+const esbuildSuffixes = ['prod:once', 'debug:once'];
+esbuildSuffixes.forEach(suffix =>
+  gulp.task(
+    `compile:esbuild:all:${suffix}`,
+    esbuildConfigs.map(x => `compile:esbuild:${x}:${suffix}`)
+  )
+);
+
+gulp.task('compile:esbuild', ['compile:esbuild:all:prod:once']);
+
 gulp.task('compile', [
   'compile:webpack',
   'compile:images',
