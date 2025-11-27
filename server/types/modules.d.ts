@@ -233,13 +233,14 @@ declare module 'bootstrap/js/transition' {}
 // eventemitter3
 declare module 'eventemitter3' {
   class EventEmitter {
+    constructor();
     on(event: string, listener: (...args: unknown[]) => void): this;
     once(event: string, listener: (...args: unknown[]) => void): this;
     off(event: string, listener?: (...args: unknown[]) => void): this;
     emit(event: string, ...args: unknown[]): boolean;
     removeAllListeners(event?: string): this;
   }
-  export default EventEmitter;
+  export = EventEmitter;
 }
 
 // universal-cookie

@@ -1,21 +1,37 @@
 /**
  * Copyright 2016 DanceDeets.
- *
- * @flow
  */
 
 import querystring from 'querystring';
 import { SearchEvent, Event } from 'dancedeets-common/js/events/models';
 import type { Address } from 'dancedeets-common/js/events/search';
 
-type BreadcrumbsSchema = ?Object;
+interface ListItem {
+  url: string;
+  name: string;
+}
 
-function locationFor(components) {
+interface SchemaListItem {
+  '@type': string;
+  position: number;
+  item: {
+    '@id': string;
+    name: string;
+  };
+}
+
+interface BreadcrumbsSchema {
+  '@context': string;
+  '@type': string;
+  itemListElement: SchemaListItem[];
+}
+
+function locationFor(components: (string | undefined | null)[]): string {
   const query = { location: components.filter(x => x).join(', ') };
   return `/?${querystring.stringify(query)}`;
 }
 
-function generateBreadcrumbs(listItems) {
+function generateBreadcrumbs(listItems: ListItem[]): BreadcrumbsSchema {
   const schemaListItems = listItems.map((listItem, index) => ({
     '@type': 'ListItem',
     position: index + 1,
@@ -34,8 +50,8 @@ function generateBreadcrumbs(listItems) {
 
 export function getBreadcrumbsForEvent(
   event: Event | SearchEvent
-): BreadcrumbsSchema {
-  const listItems = [];
+): BreadcrumbsSchema | null {
+  const listItems: ListItem[] = [];
   const { address } = event.venue;
   if (!address) {
     return null;
@@ -68,8 +84,8 @@ export function getBreadcrumbsForEvent(
 export function getBreadcrumbsForSearch(
   address: Address,
   keywords: string
-): BreadcrumbsSchema {
-  const listItems = [];
+): BreadcrumbsSchema | null {
+  const listItems: ListItem[] = [];
   if (Object.keys(address).length) {
     if (address.country) {
       listItems.push({
@@ -98,5 +114,5 @@ export function getBreadcrumbsForSearch(
       name: `Keywords: ${keywords}`,
     });
   }
-  return generateBreadcrumbs(listItems);
+  return listItems.length ? generateBreadcrumbs(listItems) : null;
 }

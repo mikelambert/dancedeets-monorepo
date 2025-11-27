@@ -1,25 +1,45 @@
 /**
  * Copyright 2016 DanceDeets.
- *
- * @flow
  */
 
 import moment from 'moment';
 import { SearchEvent, Event } from 'dancedeets-common/js/events/models';
 
-function formatSchemaDate(dateTime: moment) {
+function formatSchemaDate(dateTime: moment.Moment): string {
   return dateTime.format('YYYY-MM-DD[T]HH:mm:ss');
 }
 
-type Location = {
-  sameAs?: string,
-  geo?: Object,
-  name?: string,
-  address?: string,
-};
+interface Location {
+  '@type': string;
+  sameAs?: string;
+  geo?: {
+    '@type': string;
+    latitude: number;
+    longitude: number;
+  };
+  name?: string;
+  address?: string;
+}
 
-export function getEventSchema(event: Event | SearchEvent) {
-  const schema: Object = {
+interface EventSchema {
+  '@context': string;
+  '@type': string;
+  name: string;
+  mainEntityOfPage: string;
+  url: string;
+  startDate: string;
+  description?: string;
+  organizer?: string;
+  endDate?: string;
+  image?: string;
+  location?: Location;
+  offers?: {
+    url: string;
+  };
+}
+
+export function getEventSchema(event: Event | SearchEvent): EventSchema {
+  const schema: EventSchema = {
     '@context': 'http://schema.org/',
     '@type': 'Event',
     name: event.name,
@@ -71,7 +91,36 @@ export function getEventSchema(event: Event | SearchEvent) {
   return schema;
 }
 
-export function getArticleSchema(event: Event) {
+interface ArticleSchema {
+  '@context': string;
+  '@type': string;
+  mainEntityOfPage: string;
+  headline: string;
+  image: {
+    '@type': string;
+    url: string;
+    height: number | undefined;
+    width: number | undefined;
+  };
+  publisher: {
+    '@type': string;
+    name: string;
+    logo: {
+      '@type': string;
+      url: string;
+      width: number;
+      height: number;
+    };
+  };
+  datePublished: string;
+  author: {
+    '@type': string;
+    name: string;
+  };
+  description: string | undefined;
+}
+
+export function getArticleSchema(event: Event): ArticleSchema | null {
   // NewsArticles require an image:
   // https://developers.google.com/structured-data/rich-snippets/articles#article_markup_properties
   if (!event.picture) {
@@ -82,7 +131,7 @@ export function getArticleSchema(event: Event) {
   const datePublished = event.annotations.creation
     ? event.annotations.creation.time
     : event.start_time;
-  const schema = {
+  const schema: ArticleSchema = {
     '@context': 'http://schema.org',
     '@type': 'Article',
     mainEntityOfPage: event.getUrl(),

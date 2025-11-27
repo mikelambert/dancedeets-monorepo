@@ -2,7 +2,9 @@
  * Copyright 2016 DanceDeets.
  */
 
-import EventEmitter from 'eventemitter3';
+/// <reference path="../../types/window.d.ts" />
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const EventEmitter = require('eventemitter3');
 import Cookies from 'universal-cookie';
 import { queryOn } from './dom';
 

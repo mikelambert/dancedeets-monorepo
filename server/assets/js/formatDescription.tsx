@@ -2,6 +2,7 @@
  * Copyright 2016 DanceDeets.
  */
 
+/// <reference path="../../types/window.d.ts" />
 import * as React from 'react';
 import Linkify from 'linkify-it';
 import tlds from 'tlds';
