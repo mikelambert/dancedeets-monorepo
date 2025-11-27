@@ -3,8 +3,7 @@
 import json
 import re
 
-from google.appengine.api import memcache
-
+from dancedeets.util import memcache
 from dancedeets.util import fetch
 import twitter
 from .. import common

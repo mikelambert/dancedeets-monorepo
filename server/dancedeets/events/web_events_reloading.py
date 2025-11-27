@@ -6,7 +6,7 @@ import datetime
 import json
 import os
 import re
-import urllib
+import requests
 from . import namespaces
 
 urls = {
@@ -23,7 +23,7 @@ def fetch_jwjam(namespace, id):
     if os.path.exists(json_filename):
         data = open(json_filename).read()
     else:
-        data = urllib.urlopen(url).read()
+        data = requests.get(url).text
     try:
         json_data = json.loads(data)['data']
     except ValueError:

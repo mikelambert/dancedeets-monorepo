@@ -3,10 +3,10 @@ import feedparser
 import json
 import logging
 import time
-import urllib
+import urllib.parse
 
-from google.appengine.api import memcache
 from googleapiclient.discovery import build
+from dancedeets.util import memcache
 
 from dancedeets import app
 from dancedeets import base_servlet
@@ -74,7 +74,8 @@ class ApiHandler(base_servlet.BareBaseRequestHandler):
 
         if self.request.body:
             logging.info("Request body: %r", self.request.body)
-            escaped_body = urllib.unquote_plus(self.request.body.strip('='))
+            body_str = self.request.body.decode('utf-8') if isinstance(self.request.body, bytes) else self.request.body
+            escaped_body = urllib.parse.unquote_plus(body_str.strip('='))
             self.json_body = json.loads(escaped_body)
             logging.info("json_request: %r", self.json_body)
         else:
@@ -107,7 +108,7 @@ class ApiHandler(base_servlet.BareBaseRequestHandler):
             # If it's a string or a regular object
             if not hasattr(result, '__iter__'):
                 result = [result]
-            self.write_json_error({'success': False, 'errors': [unicode(x) for x in result]})
+            self.write_json_error({'success': False, 'errors': [str(x) for x in result]})
 
 
 def apiroute(path, *args, **kwargs):
@@ -460,7 +461,7 @@ class EventHandler(ApiHandler):
             self.response.out.write('Need an event_id.')
             return
         else:
-            event_id = urllib.unquote_plus(path_bits[1].strip('/'))
+            event_id = urllib.parse.unquote_plus(path_bits[1].strip('/'))
             db_event = eventdata.DBEvent.get_by_id(event_id)
             if not db_event:
                 self.add_error('No event found')

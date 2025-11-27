@@ -1,21 +1,51 @@
+#!/bin/bash
+# DanceDeets startup script for App Engine Flexible Environment
 # This runs inside the /app/ directory in the Docker container
-# Due to python-compat-multicore running: WORKDIR /app/ .
+# Starts: Node.js render server, nginx reverse proxy, and Python gunicorn server
 
-PATH=$PATH:/nodejs/bin NODE_ENV=production NODE_PATH=node_server/node_modules/ npm start &
+set -e
 
+cd /app
 
-# Copied in top-level Dockerfile: ADD . /app/
-# And runs in daemon mode
+echo "Starting DanceDeets services..."
+
+# Start Node.js render server in background
+# The render server handles React SSR and MJML email rendering
+echo "Starting Node.js render server..."
+NODE_ENV=production NODE_PATH=node_server/node_modules/ npm start &
+
+# Give Node.js a moment to start
+sleep 2
+
+# Start nginx in daemon mode as reverse proxy
+# nginx listens on port 8080 (App Engine expected port) and proxies to gunicorn on 8085
+echo "Starting nginx..."
 nginx -c /app/nginx.conf
 
-
-# Both of /app/gunicorn*.py are guaranteed to exist
+# Determine gunicorn config
 if [ "$DEBUG_MEMORY_LEAKS_GUNICORN" != "" ]; then
-  # Copied in top-level Dockerfile: ADD . /app/
-  CONF=gunicorn-debug_memory_leaks.conf.py # from mirroring . into /app/
+  CONF=/app/gunicorn-debug_memory_leaks.conf.py
 else
-  # Copied in python-compat-multicore: ADD resources/gunicorn.conf.py /app/gunicorn.conf.py
-  CONF=gunicorn.conf.py # from python-compat-multicore into /app
+  CONF=/app/gunicorn.conf.py
 fi
-# And of course, run our actual python appserver now too.
-/env/bin/gunicorn -b :8085 vmruntime.wsgi:meta_app --log-file=- -c $CONF
+
+# Check if config file exists, use defaults if not
+if [ ! -f "$CONF" ]; then
+  echo "Gunicorn config not found at $CONF, using defaults"
+  CONF=""
+fi
+
+# Start gunicorn with the Flask application
+# Gunicorn listens on port 8085, nginx proxies requests to it
+echo "Starting gunicorn..."
+if [ -n "$CONF" ]; then
+  exec gunicorn -b :8085 main:application --log-file=- -c $CONF
+else
+  exec gunicorn -b :8085 main:application --log-file=- \
+    --workers=2 \
+    --threads=4 \
+    --worker-class=gthread \
+    --timeout=60 \
+    --graceful-timeout=30 \
+    --keep-alive=5
+fi

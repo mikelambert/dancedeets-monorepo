@@ -48,7 +48,7 @@ __all__ = ['Trie', 'StringTrie', 'SortedTrie', 'SortedStringTrie', 'Node']
 
 from copy import copy
 from operator import itemgetter
-from UserDict import DictMixin
+from collections.abc import MutableMapping
 
 
 # Singleton sentinel - works with pickling
@@ -77,17 +77,17 @@ class Node(object):
 
     def numkeys(self):
         '''Return the number of keys in the subtree rooted at this node.'''
-        return ((self.value is not NULL) + sum(child.numkeys() for child in self.children.itervalues()))
+        return ((self.value is not NULL) + sum(child.numkeys() for child in self.children.values()))
 
     def __repr__(self):
         return '(%s, {%s})' % (
-            self.value is NULL and 'NULL' or repr(self.value), ', '.join('%r: %r' % t for t in self.children.iteritems())
+            self.value is NULL and 'NULL' or repr(self.value), ', '.join('%r: %r' % t for t in self.children.items())
         )
 
     def __copy__(self):
         clone = self.__class__(self.value)
         clone_children = clone.children
-        for key, child in self.children.iteritems():
+        for key, child in self.children.items():
             clone_children[key] = child.__copy__()
         return clone
 
@@ -98,7 +98,7 @@ class Node(object):
         self.value, self.children = state
 
 
-class Trie(DictMixin, object):
+class Trie(MutableMapping):
     '''Base trie class.
         
     As with regular dicts, keys are not necessarily returned sorted. Use
@@ -275,7 +275,7 @@ class Trie(DictMixin, object):
         def generator(node, NULL=NULL):
             if node.value is not NULL:
                 yield node.value
-            for part, child in node.children.iteritems():
+            for part, child in node.children.items():
                 for subresult in generator(child):
                     yield subresult
 
@@ -289,7 +289,7 @@ class Trie(DictMixin, object):
 
     def iteritems(self, prefix=None):
         '''Return an iterator over this trie's items (``(key,value)`` tuples).
-        
+
         :param prefix: If not None, yield only the items associated with keys
             prefixed by ``prefix``.
         '''
@@ -299,7 +299,7 @@ class Trie(DictMixin, object):
         def generator(node, key_factory=self.KeyFactory, parts=parts, append=append, NULL=NULL):
             if node.value is not NULL:
                 yield (key_factory(parts), node.value)
-            for part, child in node.children.iteritems():
+            for part, child in node.children.items():
                 append(part)
                 for subresult in generator(child):
                     yield subresult
@@ -321,7 +321,7 @@ class Trie(DictMixin, object):
         return self._root.numkeys()
 
     def __iter__(self):
-        return self.iterkeys()
+        return iter(self.keys())
 
     def __contains__(self, key):
         node = self._find(key)
@@ -373,7 +373,7 @@ class Trie(DictMixin, object):
         return clone
 
     def __repr__(self):
-        return '{%s}' % (', '.join('%r: %r' % t for t in self.iteritems()))
+        return '{%s}' % (', '.join('%r: %r' % t for t in self.items()))
 
     def _find(self, key):
         node = self._root
@@ -392,8 +392,8 @@ class StringTrie(Trie):
 # XXX: quick & dirty sorted dict; currently only iteritems() has to be overriden.
 # However this is implementation detail that may change in the future
 class _SortedDict(dict):
-    def iteritems(self):
-        return sorted(dict.iteritems(self), key=itemgetter(0))
+    def items(self):
+        return sorted(dict.items(self), key=itemgetter(0))
 
 
 class _SortedNode(Node):

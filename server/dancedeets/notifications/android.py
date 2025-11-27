@@ -1,15 +1,41 @@
+"""Android push notifications using Firebase Cloud Messaging (FCM).
+
+This replaces the deprecated python-gcm library with firebase-admin.
+"""
+
 import datetime
 import logging
 
-import gcm
+import firebase_admin
+from firebase_admin import credentials, messaging
 
 from dancedeets import keys
 
+# Notification types
 EVENT_REMINDER = 'EVENT_REMINDER'
 EVENT_ADDED = 'EVENT_ADDED'
 
+# Initialize Firebase Admin SDK (only once)
+_firebase_app = None
+
+
+def _get_firebase_app():
+    """Get or initialize the Firebase Admin app."""
+    global _firebase_app
+    if _firebase_app is None:
+        # Initialize with default credentials or service account
+        # In App Engine, this uses the default service account automatically
+        try:
+            _firebase_app = firebase_admin.get_app()
+        except ValueError:
+            # App not initialized yet
+            cred = credentials.ApplicationDefault()
+            _firebase_app = firebase_admin.initialize_app(cred)
+    return _firebase_app
+
 
 def _get_duration_seconds(event):
+    """Calculate the duration in seconds until event ends."""
     start_time = event.start_time
     end_notify_window = event.end_time or event.start_time
     now = datetime.datetime.now(start_time.tzinfo)
@@ -21,21 +47,16 @@ def _get_duration_seconds(event):
 
 
 def rsvp_notify(user, event):
+    """Send RSVP reminder notification to user about an event."""
     duration_seconds = _get_duration_seconds(event)
     extra_data = {
         'notification_type': EVENT_REMINDER,
-
-        # Deliver the message immediately
-        'delay_while_idle': 0,
-
-        # Keep trying to deliver it, as long as the event is scheduled
-        # If the phone doesn't come online until after the event is completed, ignore it.
-        'time_to_live': duration_seconds,
     }
-    return real_notify(user, event.id, extra_data)
+    return real_notify(user, event.id, extra_data, ttl=duration_seconds)
 
 
 def add_notify(user, event_id):
+    """Send notification about a newly added event."""
     extra_data = {
         'notification_type': EVENT_ADDED,
     }
@@ -43,46 +64,83 @@ def add_notify(user, event_id):
 
 
 def can_notify(user):
+    """Check if user has Android device tokens."""
     tokens = user.device_tokens('android')
     return bool(tokens)
 
 
-def real_notify(user, event_id, extra_data):
+def real_notify(user, event_id, extra_data, ttl=None):
+    """Send push notification to user's Android devices.
+
+    Args:
+        user: User object with device_tokens method
+        event_id: ID of the event to notify about
+        extra_data: Additional data to include in the notification
+        ttl: Time-to-live in seconds (optional)
+
+    Returns:
+        True if notification was sent successfully, False otherwise
+    """
     if not can_notify(user):
-        logging.info("No android GCM tokens.")
-        return
+        logging.info("No android FCM tokens.")
+        return False
 
-    # We don't pass debug=True, because gcm.py library keeps adding more loggers ad-infinitum.
-    # Instead we call GCM.enable_logging() once at the top-level.
-    g = gcm.GCM(keys.get('google_server_key'))
-    tokens = user.device_tokens('android')
+    # Ensure Firebase is initialized
+    _get_firebase_app()
 
+    tokens = list(user.device_tokens('android'))
+
+    # Build the data payload - all values must be strings
     data = {
-        # Important data for clientside lookups
-        'event_id': event_id,
+        'event_id': str(event_id),
     }
-    data.update(extra_data)
-    response = g.json_request(registration_ids=tokens, data=data)
+    data.update({k: str(v) for k, v in extra_data.items()})
 
-    changed_tokens = False
-    if 'errors' in response:
-        for error, reg_ids in response['errors'].iteritems():
-            if error in ('NotRegistered', 'InvalidRegistration'):
-                for reg_id in reg_ids:
-                    tokens.remove(reg_id)
-                    changed_tokens = True
-            else:
-                logging.error("Error for user %s with event %s: %s", user.fb_uid, event_id, error)
+    # Build Android-specific config
+    android_config = messaging.AndroidConfig(
+        priority='normal',
+        ttl=datetime.timedelta(seconds=ttl) if ttl else None,
+    )
 
-    if 'canonical' in response:
-        for reg_id, canonical_id in response['canonical'].iteritems():
-            tokens.remove(reg_id)
-            tokens.append(canonical_id)
-            changed_tokens = True
+    # Track tokens that need to be updated
+    tokens_to_remove = []
+    success = False
 
-    if changed_tokens:
-        user.put()
+    # Send to each token
+    for token in tokens:
+        message = messaging.Message(
+            data=data,
+            token=token,
+            android=android_config,
+        )
 
-    logging.info("User %s (%s), event %s: sent notification!", user.fb_uid, user.full_name, event_id)
+        try:
+            response = messaging.send(message)
+            logging.info("Successfully sent message: %s", response)
+            success = True
+        except messaging.UnregisteredError:
+            # Token is no longer valid
+            logging.info("Token %s is no longer registered, removing", token[:20])
+            tokens_to_remove.append(token)
+        except messaging.SenderIdMismatchError:
+            # Token doesn't match our sender ID
+            logging.warning("Token %s has sender ID mismatch, removing", token[:20])
+            tokens_to_remove.append(token)
+        except Exception as e:
+            logging.error("Error sending to user %s for event %s: %s", user.fb_uid, event_id, str(e))
 
-    return 'success' in response
+    # Update user's tokens if needed
+    if tokens_to_remove:
+        changed_tokens = False
+        current_tokens = list(user.device_tokens('android'))
+        for token in tokens_to_remove:
+            if token in current_tokens:
+                current_tokens.remove(token)
+                changed_tokens = True
+        if changed_tokens:
+            user.put()
+
+    if success:
+        logging.info("User %s (%s), event %s: sent notification!", user.fb_uid, user.full_name, event_id)
+
+    return success

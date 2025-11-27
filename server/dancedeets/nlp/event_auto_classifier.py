@@ -27,7 +27,7 @@ class AutoClassifier(object):
         street_name = street.Style.get_name()
 
         results = []
-        for style_name, classifier in styles.CLASSIFIERS.iteritems():
+        for style_name, classifier in styles.CLASSIFIERS.items():
             if style_name == street_name:
                 classified_event = self.classified_event
             else:

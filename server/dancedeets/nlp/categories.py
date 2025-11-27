@@ -193,7 +193,7 @@ def format_as_search_query(text, broad=True):
     processed_text = grammar_matcher.StringProcessor(text)
     category_list = EVENT_TYPES.copy()
     category_list.update(BROAD_STYLES if broad else STYLES)
-    for category, rule in category_list.iteritems():
+    for category, rule in category_list.items():
         replaced, count = processed_text.replace_with(rule, lambda x: ' categories:%s ' % category.categories_name)
     return processed_text.text
 
@@ -210,7 +210,7 @@ def find_rules_in_text(text, rule_dict):
     processed_text.real_tokenize(keywords.PREPROCESS_REMOVAL)
     # so we can match this with vogue, but not with house
     processed_text.real_tokenize(keywords.HOUSE_OF)
-    for style, rule in rule_dict.iteritems():
+    for style, rule in rule_dict.items():
         tokens = processed_text.get_tokens(rule)
         if tokens:
             found_styles[style] = tokens

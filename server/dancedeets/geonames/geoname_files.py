@@ -14,7 +14,7 @@ class GeonamesDialect(csv.Dialect):
 
 class Slotted(object):
     def __init__(self, kwargs):
-        for k, v in kwargs.iteritems():
+        for k, v in kwargs.items():
             setattr(self, k, v)
 
 
@@ -65,9 +65,8 @@ class AlternateName(Slotted):
 
 def _geo_open(filename):
     full_geonames_path = os.path.join(GEONAMES_PATH, filename)
-    for row in csv.reader(open(full_geonames_path), dialect=GeonamesDialect):
-        # decode UTF-8 back to Unicode, cell by cell:
-        yield [unicode(cell, 'utf-8') for cell in row]
+    for row in csv.reader(open(full_geonames_path, encoding='utf-8'), dialect=GeonamesDialect):
+        yield row
 
 
 def cities(min_population=5000):

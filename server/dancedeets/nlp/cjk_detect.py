@@ -35,15 +35,15 @@ def build_re_string():
         if isinstance(i, list):
             f, t = i
             try:
-                f = unichr(f)
-                t = unichr(t)
+                f = chr(f)
+                t = chr(t)
                 L.append('%s-%s' % (f, t))
             except:
                 pass  # A narrow python build, so can't use chars > 65535 without surrogate pairs!
 
         else:
             try:
-                L.append(unichr(i))
+                L.append(chr(i))
             except:
                 pass
 

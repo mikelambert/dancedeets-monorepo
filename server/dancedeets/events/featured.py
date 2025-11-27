@@ -3,7 +3,7 @@ import logging
 import random
 from shapely import geometry
 
-from google.appengine.ext import ndb
+from google.cloud import ndb
 
 from dancedeets.events import eventdata
 

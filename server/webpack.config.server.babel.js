@@ -7,9 +7,15 @@
 import webpack from 'webpack';
 import path from 'path';
 import { argv as env } from 'yargs';
-import combineLoaders from 'webpack-combine-loaders';
 
 const prod = !env.debug;
+
+// Bundle all dependencies into the output - no node_modules needed at runtime
+// This dramatically reduces deploy size (from 188k files to just the bundles)
+// mjml is kept external because it has complex ESM/dynamic requires that webpack 3 can't handle
+const externals = {
+  mjml: 'commonjs mjml',
+};
 
 module.exports = {
   entry: {
@@ -31,6 +37,7 @@ module.exports = {
   output: {
     path: path.join(__dirname, 'dist/js-server'),
     filename: '[name].js',
+    libraryTarget: 'commonjs2', // Export as module.exports for require()/eval()
   },
   devtool: prod ? 'source-map' : 'cheap-eval-source-map',
   plugins: [
@@ -44,31 +51,17 @@ module.exports = {
     extensions: ['.js', '.jsx', '.json'],
   },
   target: 'node',
-  node: {
-    fs: 'empty',
-    net: 'empty',
-    child_process: 'empty',
-    http: 'empty',
-  },
+  externals,
   module: {
     rules: [
-      {
-        test: /\.jsx?$/,
-        use: 'eslint-loader',
-        exclude: /node_modules/,
-        enforce: 'pre',
-      },
-      {
-        test: /\.jsx?$/,
-        include: /node_modules(?!\/dancedeets-common)/,
-        loader: 'shebang-loader',
-      },
+      // Note: eslint-loader and shebang-loader removed - not needed for server builds
       {
         test: /\.jsx?$/,
         exclude: /node_modules(?!\/dancedeets-common)/,
         use: {
           loader: 'babel-loader',
           options: {
+            babelrc: false, // Ignore .babelrc files in source directories
             presets: [
               [
                 'latest',
@@ -85,55 +78,18 @@ module.exports = {
           },
         },
       },
+      // Server-side doesn't need actual CSS/images/fonts - use null-loader to ignore them
       {
-        test: /\.(png|gif|jpg)$/,
-        use: [
-          {
-            loader: 'url-loader',
-            options: {
-              limit: 10000,
-              mimetype: 'application/font-woff',
-              name: '../img/[name].[ext]',
-            },
-          },
-          {
-            loader: 'image-webpack-loader',
-            options: {
-              bypassOnDebug: true,
-              query: {
-                optipng: {
-                  optimizationLevel: 7,
-                },
-                gifsicle: {
-                  interlaced: false,
-                },
-              },
-            },
-          },
-        ],
+        test: /\.(png|gif|jpg|jpeg|svg)$/,
+        loader: 'null-loader',
       },
-      {
-        // This exposes React variable so Chrome React devtools work
-        test: require.resolve('react'),
-        loader: 'expose-loader?React',
-      },
-      // We don't care about these on the server too much, but we would like them to avoid erroring-out:
       {
         test: /\.s?css$/,
-        use: [
-          { loader: 'css-loader?sourceMap' },
-          { loader: 'postcss-loader' },
-          { loader: 'sass-loader?sourceMap' },
-        ],
+        loader: 'null-loader',
       },
       {
-        test: /\.(ttf|otf|eot|svg|woff(2)?)(\?[a-z0-9=.]+)?$/,
-        use: {
-          loader: 'file-loader',
-          options: {
-            name: '../fonts/[name].[ext]',
-          },
-        },
+        test: /\.(ttf|otf|eot|woff(2)?)(\?[a-z0-9=.]+)?$/,
+        loader: 'null-loader',
       },
     ],
   },

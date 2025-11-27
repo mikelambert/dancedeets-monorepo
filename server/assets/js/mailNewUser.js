@@ -164,7 +164,7 @@ class FeaturePromo extends FeaturePromoBase {
                 <td style={{ verticalAlign: 'top' }}>
                   <a href={feature.url}>
                     <img
-                      src={`https://static.dancedeets.com/img/mail/purple-icons/${feature.iconName}.png`}
+                      src={`https://storage.googleapis.com/dancedeets-static/img/mail/purple-icons/${feature.iconName}.png`}
                       alt=""
                       width="80"
                       height="80"

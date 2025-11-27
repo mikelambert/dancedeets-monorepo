@@ -2,7 +2,7 @@ import datetime
 import logging
 import random
 import re
-import urllib
+import urllib.parse
 
 from dancedeets import app
 from dancedeets import base_servlet
@@ -79,7 +79,7 @@ def email_for_user(user, fbl, should_send=True):
         form, search_query, search_results, (2, 0), need_full_event, geocode, distance, skip_people=True
     )
     locale = user.locale or 'en_US'
-    email_unsubscribe_url = 'https://www.dancedeets.com/user/unsubscribe?email=%s' % urllib.quote(email_address)
+    email_unsubscribe_url = 'https://www.dancedeets.com/user/unsubscribe?email=%s' % urllib.parse.quote(email_address)
     props = {
         'user': {
             'userName': user.first_name or user.full_name or '',

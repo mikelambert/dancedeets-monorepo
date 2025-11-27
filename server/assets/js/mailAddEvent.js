@@ -23,7 +23,7 @@ class GenericCircle extends React.Component<{}> {
     return (
       <img
         alt="•"
-        src="https://static.dancedeets.com/img/mail/purple-circle.png"
+        src="https://storage.googleapis.com/dancedeets-static/img/mail/purple-circle.png"
         width="36px"
         height="36px"
       />
@@ -64,7 +64,7 @@ class Upsell extends React.Component<{
       <mj-section
         mj-class="alternate"
         padding={`0 ${outsideGutter}`}
-        background-url="https://static.dancedeets.com/img/mail/white-background-height.png"
+        background-url="https://storage.googleapis.com/dancedeets-static/img/mail/white-background-height.png"
         background-repeat="repeat-x"
       >
         <mj-group mj-class="alternate" background-color="transparent">
@@ -85,7 +85,7 @@ class Upsell extends React.Component<{
           </mj-column>
           <mj-column mj-class="alternate" background-color="transparent">
             <mj-image
-              src="https://static.dancedeets.com/img/mail/mobile-phone-featured-event.png"
+              src="https://storage.googleapis.com/dancedeets-static/img/mail/mobile-phone-featured-event.png"
               width="200px"
             />
           </mj-column>
@@ -147,7 +147,7 @@ export class ImageThumbnail extends React.Component<{
   imageName: string,
 }> {
   render() {
-    const imageUrl = `https://static.dancedeets.com/img/mail/${this.props
+    const imageUrl = `https://storage.googleapis.com/dancedeets-static/img/mail/${this.props
       .imageName}`;
     return (
       <mj-image src={imageUrl} width="80px" height="80px" padding-bottom="20" />
@@ -313,7 +313,7 @@ class HeaderFlyers extends React.Component<{}> {
     return (
       <mj-section mj-class="alternate">
         <mj-column mj-class="alternate">
-          <mj-image src="https://static.dancedeets.com/img/mail/header-flyers.jpg" />
+          <mj-image src="https://storage.googleapis.com/dancedeets-static/img/mail/header-flyers.jpg" />
         </mj-column>
       </mj-section>
     );

@@ -2,7 +2,7 @@
 # -*-*- encoding: utf-8 -*-*-
 
 import base64
-import Cookie
+from http import cookies as Cookie
 import datetime
 import jinja2
 import json
@@ -15,12 +15,12 @@ import os
 import re
 import time
 import traceback
-import urllib
-import urlparse
-import webapp2
+import urllib.parse as urllib
+import urllib.parse as urlparse
 
-from google.appengine.api.app_identity import app_identity
-from google.appengine.ext import db
+from flask import redirect as flask_redirect, make_response
+
+from google.cloud import ndb
 
 from dancedeets import abuse
 from dancedeets.users import users
@@ -43,7 +43,7 @@ from dancedeets.util import timelog
 from dancedeets.util import text
 from dancedeets.util import urls
 
-CDN_HOST = 'https://static.dancedeets.com'
+CDN_HOST = 'https://storage.googleapis.com/dancedeets-static'
 
 
 class _ValidationError(Exception):
@@ -64,19 +64,26 @@ class FacebookMixinHandler(object):
             #self.fbl.db.oldest_allowed = datetime.datetime.now() - datetime.timedelta(days=expiry_days)
 
 
-class BareBaseRequestHandler(webapp2.RequestHandler, FacebookMixinHandler):
+class BareBaseRequestHandler(FacebookMixinHandler):
+    """Base request handler compatible with Flask.
+
+    This provides webapp2-style interface while working with Flask.
+    """
     allow_minify = True
 
     def __init__(self, *args, **kwargs):
         self.display = {}
         self._errors = []
+        self.request = None
+        self.response = None
+        self._app = None
 
         self.jinja_env = jinja2.Environment(loader=jinja2.FileSystemLoader(['templates', 'dist/templates']), autoescape=True)
 
-        # This is necessary because appengine comes with Jinja 2.6 pre-installed, and this was added in 2.7+.
+        # URL encoding filter
         def do_urlencode(value):
             """Escape for use in URLs."""
-            return urllib.quote(value.encode('utf8'))
+            return urllib.quote(value.encode('utf8') if isinstance(value, str) else value)
 
         self.jinja_env.filters['urlencode'] = do_urlencode
         self.jinja_env.filters['format_html'] = text.format_html
@@ -93,7 +100,7 @@ class BareBaseRequestHandler(webapp2.RequestHandler, FacebookMixinHandler):
         self.jinja_env.filters['linkify'] = text.linkify
         self.jinja_env.filters['format_js'] = text.format_js
         self.display['urllib_quote_plus'] = urllib.quote_plus
-        self.display['urlencode'] = lambda x: urllib.quote_plus(x.encode('utf8'))
+        self.display['urlencode'] = lambda x: urllib.quote_plus(x.encode('utf8') if isinstance(x, str) else x)
 
         self.display['date_format'] = text.date_format
         self.display['format'] = text.format
@@ -103,10 +110,14 @@ class BareBaseRequestHandler(webapp2.RequestHandler, FacebookMixinHandler):
         self.display['track_analytics'] = True
 
         if not os.environ.get('HOT_SERVER_PORT'):
-            self.display['webpack_manifest'] = open('dist/chunk-manifest.json').read()
-        self.full_manifest = json.loads(open('dist/manifest.json').read())
-
-        super(BareBaseRequestHandler, self).__init__(*args, **kwargs)
+            try:
+                self.display['webpack_manifest'] = open('dist/chunk-manifest.json').read()
+            except FileNotFoundError:
+                self.display['webpack_manifest'] = '{}'
+        try:
+            self.full_manifest = json.loads(open('dist/manifest.json').read())
+        except FileNotFoundError:
+            self.full_manifest = {}
 
     def get(self, *args, **kwargs):
         raise NotImplementedError()
@@ -117,8 +128,13 @@ class BareBaseRequestHandler(webapp2.RequestHandler, FacebookMixinHandler):
         # Perhaps could run for everything but search-requests...?
         # return self.get(*args, **kwargs)
 
-    def initialize(self, request, response):
-        super(BareBaseRequestHandler, self).initialize(request, response)
+    def initialize(self, request, app):
+        """Initialize the handler with Flask request and app."""
+        from dancedeets.util.flask_adapter import Webapp2Request, Webapp2Response
+        self.request = Webapp2Request(request)
+        self.request._app = app  # For prod_mode access
+        self.response = Webapp2Response()
+        self._app = app
         http_request = '%s %s' % (self.request.method, self.request.url)
         logging.info(http_request)
         # LogFormat "%h %l %u %t \"%r\" %>s %b \"%{Referer}i\" \"%{User-agent}i\"" combined
@@ -179,8 +195,11 @@ class BareBaseRequestHandler(webapp2.RequestHandler, FacebookMixinHandler):
                 chunked_filename = self.full_manifest[path]
             else:
                 chunked_filename = path
+            # Determine subdirectory based on file extension
+            extension = path.split('.')[-1]
+            subdir = 'css' if extension == 'css' else 'js'
             # The Amazon CloudFront CDN that proxies our https://storage.googleapis.com/dancedeets-static/ bucket
-            final_path = '%s/js/%s' % (CDN_HOST, chunked_filename)
+            final_path = '%s/%s/%s' % (CDN_HOST, subdir, chunked_filename)
             return final_path
         else:
             extension = path.split('.')[-1]
@@ -193,7 +212,10 @@ class BareBaseRequestHandler(webapp2.RequestHandler, FacebookMixinHandler):
 
     def set_cookie(self, name, value, expires=None):
         cookie = Cookie.SimpleCookie()
-        cookie[name] = str(base64.b64encode(value))
+        # In Python 3, b64encode requires bytes and returns bytes
+        if isinstance(value, str):
+            value = value.encode('utf-8')
+        cookie[name] = base64.b64encode(value).decode('ascii')
         cookie[name]['path'] = '/'
         cookie[name]['secure'] = ''
         cookie[name]['domain'] = self._get_cookie_domain()
@@ -204,7 +226,8 @@ class BareBaseRequestHandler(webapp2.RequestHandler, FacebookMixinHandler):
 
     def get_cookie(self, name):
         try:
-            value = str(base64.b64decode(self.request.cookies[name]))
+            # In Python 3, b64decode returns bytes
+            value = base64.b64decode(self.request.cookies[name]).decode('utf-8')
         except KeyError:
             value = None
         return value
@@ -255,8 +278,11 @@ class BareBaseRequestHandler(webapp2.RequestHandler, FacebookMixinHandler):
         try:
             result = render_server.render_jsx(template_name, props, static_html=static_html)
         except render_server.ComponentSourceFileNotFound:
+            # Set defaults so template can still render (client-side rendering will take over)
             self.display['react_props'] = json.dumps(props)
-            logging.exception('Error rendering React component')
+            self.display['react_html'] = ''
+            self.display['react_head'] = None
+            logging.exception('Error rendering React component: server bundle not found')
             return
 
         if result.error:
@@ -362,7 +388,7 @@ class BaseRequestHandler(BareBaseRequestHandler):
 
         if len(request.get_all('nt')) > 1:
             logging.error('Have too many nt= parameters, something is Very Wrong!')
-            for k, v in request.cookies.iteritems():
+            for k, v in request.cookies.items():
                 logging.info("DEBUG: cookie %r = %r", k, v)
 
         fb_cookie_uid = login_logic.get_uid_from_fb_cookie(request.cookies)
@@ -555,7 +581,8 @@ class BaseRequestHandler(BareBaseRequestHandler):
         login_url = '/login?%s' % urls.urlencode(params)
         return login_url
 
-    def redirect(self, url, **kwargs):
+    def redirect(self, url, permanent=False, abort=True):
+        from flask import redirect as flask_redirect
         if url.startswith('/'):
             spliturl = urlparse.urlsplit(self.request.url)
             # Redirect to the www.dancedeets.com domain if they requested the raw hostname
@@ -570,7 +597,10 @@ class BaseRequestHandler(BareBaseRequestHandler):
                 spliturl.fragment,
             ])
             url = str(urlparse.urljoin(new_url, url))
-        return super(BaseRequestHandler, self).redirect(url, **kwargs)
+        self.response.set_status(301 if permanent else 302)
+        self.response.headers['Location'] = url
+        if abort:
+            return flask_redirect(url, code=301 if permanent else 302)
 
     second_session_cookie_name = 'Second-Session-Visit'
 
@@ -593,7 +623,7 @@ class BaseRequestHandler(BareBaseRequestHandler):
             css_filename = os.path.join(os.path.dirname(__file__), '../dist-includes/css/%s' % css_path)
             try:
                 css = open(css_filename).read()
-                css = css.replace('url(../', 'url(https://static.dancedeets.com/')
+                css = css.replace('url(../', 'url(https://storage.googleapis.com/dancedeets-static/')
                 self.display['inline_css'] = css
             except IOError:
                 logging.error('Error loading %s', css_filename)
@@ -619,7 +649,7 @@ class BaseRequestHandler(BareBaseRequestHandler):
             self.response.headers.add_header('Strict-Transport-Security', 'max-age=%s' % https_redirect_duration)
         # This is how we detect if the incoming url is on https in GAE Flex (we cannot trust request.url)
         http_only_host = 'dev.dancedeets.com' in url.netloc or 'localhost' in url.netloc
-        if request.method == 'GET' and request.headers.get('x-forwarded-proto', 'http') == 'http' and not http_only_host:
+        if self.request.method == 'GET' and self.request.headers.get('x-forwarded-proto', 'http') == 'http' and not http_only_host:
             new_url = urlparse.urlunsplit([
                 'https',
                 url.netloc,
@@ -629,9 +659,10 @@ class BaseRequestHandler(BareBaseRequestHandler):
             ])
             self.run_handler = False
             self.redirect(new_url, permanent=True, abort=True)
+            return
 
         login_url = self.get_login_url()
-        redirect_url = self.handle_alternate_login(request)
+        redirect_url = self.handle_alternate_login(self.request)
         if redirect_url:
             self.run_handler = False
             # We need to run with abort=False here, or otherwise our set_cookie calls don't work. :(
@@ -639,7 +670,7 @@ class BaseRequestHandler(BareBaseRequestHandler):
             self.redirect(redirect_url, abort=False)
             return
 
-        self.setup_login_state(request)
+        self.setup_login_state(self.request)
 
         self.display['attempt_autologin'] = 1
         # If they've expired, and not already on the login page, then be sure we redirect them to there...
@@ -699,9 +730,12 @@ class BaseRequestHandler(BareBaseRequestHandler):
         self.jinja_env.globals['event_image_url'] = urls.event_image_url
 
         locales = self.request.headers.get('Accept-Language', '').split(',')
-        self.locales = [x.split(';')[0] for x in locales]
+        self.locales = [x.split(';')[0] for x in locales if x.split(';')[0]]
         if self.request.get('hl'):
             self.locales = self.request.get('hl').split(',')
+        # Default to 'en' if no valid locale was found
+        if not self.locales:
+            self.locales = ['en']
         logging.info('Accept-Language is %s, final locales are %s', self.request.headers.get('Accept-Language', ''), self.locales)
         self.display['request'] = request
         self.display['app_id'] = facebook.FACEBOOK_CONFIG['app_id']
@@ -838,7 +872,7 @@ class BaseRequestHandler(BareBaseRequestHandler):
         self.display['debug_list'] = self.debug_list
         self.display['user'] = self.user
 
-        webview = bool(request.get('webview'))
+        webview = bool(self.request.get('webview'))
         self.display['webview'] = webview
         if webview:
             self.display['class_base_template'] = '_new_base_webview.html'
@@ -867,41 +901,65 @@ class BaseRequestHandler(BareBaseRequestHandler):
 
 
 def update_last_login_time(user_id, login_time):
+    @ndb.transactional()
     def _update_last_login_time():
         user = users.User.get_by_id(user_id)
-        user.last_login_time = login_time
-        if user.login_count:
-            user.login_count += 1
-        else:
-            # once for this one, once for initial creation
-            user.login_count = 2
-        # in read-only, keep trying until we succeed
-        user.put()
+        if user:
+            user.last_login_time = login_time
+            if user.login_count:
+                user.login_count += 1
+            else:
+                # once for this one, once for initial creation
+                user.login_count = 2
+            # in read-only, keep trying until we succeed
+            user.put()
 
-    db.run_in_transaction(_update_last_login_time)
+    _update_last_login_time()
 
 
-class JsonDataHandler(webapp2.RequestHandler):
-    def initialize(self, request, response):
-        super(JsonDataHandler, self).initialize(request, response)
+class JsonDataHandler:
+    """Handler for JSON data requests."""
+
+    def __init__(self):
+        self.request = None
+        self.response = None
+        self.json_body = None
+
+    def initialize(self, request, app):
+        from dancedeets.util.flask_adapter import Webapp2Request, Webapp2Response
+        self.request = Webapp2Request(request)
+        self.response = Webapp2Response()
 
         if self.request.body:
-            escaped_body = urllib.unquote_plus(self.request.body.strip('='))
+            escaped_body = urllib.unquote_plus(self.request.body.decode('utf-8').strip('='))
             self.json_body = json.loads(escaped_body)
         else:
             self.json_body = None
 
 
-class BaseTaskRequestHandler(webapp2.RequestHandler):
-    pass
+class BaseTaskRequestHandler:
+    """Base handler for task requests."""
+
+    def __init__(self):
+        self.request = None
+        self.response = None
+
+    def initialize(self, request, app):
+        from dancedeets.util.flask_adapter import Webapp2Request, Webapp2Response
+        self.request = Webapp2Request(request)
+        self.response = Webapp2Response()
+
+    def abort(self, code, detail=None):
+        from flask import abort as flask_abort
+        flask_abort(code, description=detail)
 
 
 class BaseTaskFacebookRequestHandler(BaseTaskRequestHandler, FacebookMixinHandler):
     def requires_login(self):
         return False
 
-    def initialize(self, request, response):
-        super(BaseTaskFacebookRequestHandler, self).initialize(request, response)
+    def initialize(self, request, app):
+        super().initialize(request, app)
 
         if self.request.get('user_id') == 'dummy':
             self.fb_uid = None

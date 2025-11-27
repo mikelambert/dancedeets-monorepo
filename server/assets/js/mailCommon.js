@@ -55,7 +55,7 @@ export class MobileAppPromo extends React.Component<{
                 <a href={this.props.mobileIosUrl}>
                   <img
                     alt="Download iPhone/iPad App"
-                    src="https://static.dancedeets.com/img/mail/mobile-ios-download.png"
+                    src="https://storage.googleapis.com/dancedeets-static/img/mail/mobile-ios-download.png"
                     width="122"
                     style={{ padding: 10 }}
                     border="0"
@@ -66,7 +66,7 @@ export class MobileAppPromo extends React.Component<{
                 <a href={this.props.mobileAndroidUrl}>
                   <img
                     alt="Download Android App"
-                    src="https://static.dancedeets.com/img/mail/mobile-android-download.png"
+                    src="https://storage.googleapis.com/dancedeets-static/img/mail/mobile-android-download.png"
                     width="122"
                     style={{ padding: 10 }}
                     border="0"
@@ -78,7 +78,7 @@ export class MobileAppPromo extends React.Component<{
         </mj-column>
         <mj-column>
           <mj-image
-            src="https://static.dancedeets.com/img/mail/mobile-phones-top.jpg"
+            src="https://storage.googleapis.com/dancedeets-static/img/mail/mobile-phones-top.jpg"
             alt=""
             align="center"
             border="none"
@@ -231,7 +231,7 @@ export class Footer extends React.Component<{
               <td>
                 <a href="https://www.facebook.com/dancedeets">
                   <img
-                    src="https://static.dancedeets.com/img/mail/social-facebook.png"
+                    src="https://storage.googleapis.com/dancedeets-static/img/mail/social-facebook.png"
                     alt="Facebook"
                     width="30"
                     style={{ margin: '0px 10px' }}
@@ -241,7 +241,7 @@ export class Footer extends React.Component<{
               <td>
                 <a href="https://www.twitter.com/dancedeets">
                   <img
-                    src="https://static.dancedeets.com/img/mail/social-twitter.png"
+                    src="https://storage.googleapis.com/dancedeets-static/img/mail/social-twitter.png"
                     alt="Facebook"
                     width="30"
                     style={{ margin: '0px 10px' }}
@@ -251,7 +251,7 @@ export class Footer extends React.Component<{
               <td>
                 <a href="https://www.instagram.com/dancedeets">
                   <img
-                    src="https://static.dancedeets.com/img/mail/social-instagram.png"
+                    src="https://storage.googleapis.com/dancedeets-static/img/mail/social-instagram.png"
                     alt="Facebook"
                     width="30"
                     style={{ margin: '0px 10px' }}
@@ -374,7 +374,7 @@ export class EmailWrapper extends React.Component<{
             <mj-section full-width="full-width">
               <mj-column>
                 <mj-image
-                  src="https://static.dancedeets.com/img/mail-top.png"
+                  src="https://storage.googleapis.com/dancedeets-static/img/mail-top.png"
                   alt=""
                 />
               </mj-column>
@@ -395,7 +395,7 @@ export class EmailWrapper extends React.Component<{
             <mj-section>
               <mj-column>
                 <mj-image
-                  src="https://static.dancedeets.com/img/mail-bottom.png"
+                  src="https://storage.googleapis.com/dancedeets-static/img/mail-bottom.png"
                   alt=""
                   align="center"
                   border="none"

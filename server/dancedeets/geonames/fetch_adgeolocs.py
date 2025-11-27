@@ -7,7 +7,7 @@ import json
 import logging
 import re
 import sqlite3
-import urllib
+import requests
 
 from dancedeets import facebook
 from dancedeets.util import urls
@@ -52,8 +52,8 @@ def load_targeting_key(cursor, geoname):
     cursor.execute('select data from AdGeoLocation where q = ? and country_code = ?', (geo_search['q'], geo_search['country_code']))
     result = cursor.fetchone()
     if not result:
-        result = urllib.urlopen('https://graph.facebook.com/v2.9/search?%s' % urls.urlencode(geo_search)).read()
-        result_json = json.loads(result)
+        response = requests.get('https://graph.facebook.com/v2.9/search', params=geo_search)
+        result_json = response.json()
         array_json = json.dumps(result_json['data'])
         data = {
             'q': geo_search['q'],
@@ -61,7 +61,7 @@ def load_targeting_key(cursor, geoname):
             'data': array_json,
         }
         sqlite_db.insert_record(cursor, 'AdGeoLocation', data)
-        print '\n'.join('- ' + str(x) for x in result_json['data'])
+        print('\n'.join('- ' + str(x) for x in result_json['data']))
 
 
 def fetch_database():

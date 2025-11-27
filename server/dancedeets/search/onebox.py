@@ -33,7 +33,7 @@ def get_links_for_query(query):
     search_latitudes = (query.bounds[0][0], query.bounds[1][0])
     search_longitudes = (query.bounds[0][1], query.bounds[1][1])
 
-    for (latitude, longitude), links in ONEBOX_DATA.iteritems():
+    for (latitude, longitude), links in ONEBOX_DATA.items():
         good_latitude = latitude >= search_latitudes[0] and latitude <= search_latitudes[1]
         if search_longitudes[0] < search_longitudes[1]:
             good_longitude = longitude >= search_longitudes[0] and longitude <= search_longitudes[1]

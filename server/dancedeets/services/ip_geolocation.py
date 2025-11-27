@@ -4,12 +4,12 @@ import json
 import logging
 import os
 import time
-import urllib2
+import urllib.request
 
-from google.appengine.api import memcache
 from google.cloud import datastore
 from google.cloud import exceptions
 
+from dancedeets.util import memcache
 from dancedeets.util import runtime
 from dancedeets.util import timelog
 
@@ -74,20 +74,30 @@ def get_location_data_for(ip):
     data = _get_cache(ip)
     timelog.log_time_since('Getting IP Cache', start)
     if not data:
-        #TODO: consider using http://geoiplookup.net/ , which might offer better granularity/resolution
-        url = 'http://freegeoip.net/json/%s' % ip
+        # Use ip-api.com (free for non-commercial use, no API key required)
+        # Note: freegeoip.net is deprecated and no longer working
+        url = 'http://ip-api.com/json/%s?fields=status,country,countryCode,region,regionName,city' % ip
         start = time.time()
-        opener = urllib2.build_opener()
-        opener.addheaders = [(
-            'User-agent',
-            'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.132 Safari/537.36'
-        )]
-        results = opener.open(url).read()
+        req = urllib.request.Request(url, headers={
+            'User-agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.132 Safari/537.36'
+        })
+        results = urllib.request.urlopen(req).read()
         timelog.log_time_since('Getting IPData', start)
         try:
-            data = json.loads(results)
+            raw_data = json.loads(results)
+            # Convert ip-api.com format to our expected format
+            if raw_data.get('status') == 'success':
+                data = {
+                    'country_code': raw_data.get('countryCode', ''),
+                    'country_name': raw_data.get('country', ''),
+                    'region_code': raw_data.get('region', ''),
+                    'city': raw_data.get('city', ''),
+                }
+            else:
+                logging.warning('ip-api.com lookup failed for IP %s: %s', ip, raw_data)
+                data = {'country_code': ''}
         except:
-            logging.error('Error processing freegeoip results: %s', results)
+            logging.error('Error processing ip-api results: %s', results)
             raise
         start = time.time()
         _save_cache(ip, data)

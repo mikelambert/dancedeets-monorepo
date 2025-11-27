@@ -2,7 +2,7 @@ import base64
 import datetime
 import pickle
 
-from google.appengine.ext import testbed
+from dancedeets.test_utils import testbed_compat as testbed
 
 from dancedeets.events import eventdata
 from dancedeets.events import event_updates

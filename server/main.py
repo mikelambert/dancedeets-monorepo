@@ -1,108 +1,117 @@
 #!/usr/bin/env python
+"""Main application entry point for DanceDeets.
+
+This module initializes the WSGI application and imports all servlets.
+"""
 
 import logging
 import os
-import sys
+import subprocess
 
-prod_mode = 'SERVER_SOFTWARE' in os.environ and not os.environ['SERVER_SOFTWARE'].startswith('Dev')
+# Determine if we're in production mode
+prod_mode = os.environ.get('GAE_ENV') == 'standard' or os.environ.get('GOOGLE_CLOUD_PROJECT')
 
-# Need to do this after vendoring lib-local/
-# And can't do it in appengine_config, since that gets loaded by appengine/api/lib_config
-# in places where we can't actually load pylibmc
-from dancedeets.services import memcache
+# Check render server status at startup
+def check_render_server():
+    """Check if Node.js render server is running."""
+    try:
+        # Check if Node is installed
+        node_version = subprocess.run(['node', '--version'], capture_output=True, text=True, timeout=5)
+        logging.info(f"Node.js version: {node_version.stdout.strip()} (stderr: {node_version.stderr.strip()})")
+    except Exception as e:
+        logging.error(f"Node.js not available: {e}")
 
-if not prod_mode:
-    # Make python-twitter work in the sandbox (not yet sure about prod...)
-    #import google
-    #google.__file__ = ''
-    #from google.appengine.tools.devappserver2.python import sandbox
-    #sandbox._WHITE_LIST_C_MODULES += ['_ssl']
+    try:
+        # Check if dist/js-server exists
+        js_server_dir = '/app/dist/js-server'
+        if os.path.exists(js_server_dir):
+            files = os.listdir(js_server_dir)
+            logging.info(f"Files in {js_server_dir}: {files[:10]}")  # First 10 files
+        else:
+            logging.error(f"Directory {js_server_dir} does not exist!")
+    except Exception as e:
+        logging.error(f"Error checking js-server dir: {e}")
 
-    # Remove the import hooks that disable C modules and built-in modules (popen et al)
-    new_path = []
-    for path in sys.meta_path:
-        name = path.__class__.__name__
-        if name not in ['StubModuleImportHook', 'CModuleImportHook']:
-            new_path.append(path)
-    logging.info('Trimmed sys.meta_path from %s to %s entries', len(sys.meta_path), len(new_path))
-    sys.meta_path = new_path
+    try:
+        # Check if render server is responding
+        import urllib.request
+        import json
+        req = urllib.request.Request(
+            'http://localhost:8090/render',
+            data=json.dumps({"path": "/app/dist/js-server/tutorialCategory.js", "serializedProps": "{}", "toStaticMarkup": False}).encode(),
+            headers={'Content-Type': 'application/json'},
+            method='POST'
+        )
+        with urllib.request.urlopen(req, timeout=5) as response:
+            data = response.read().decode()
+            logging.info(f"Render server response: {data[:200]}...")
+    except Exception as e:
+        logging.error(f"Render server NOT responding: {e}")
 
-from dancedeets.hacks import fixed_jinja2  # noqa: ignore=E402
-from dancedeets.hacks import fixed_ndb  # noqa: ignore=E402
-from dancedeets.hacks import fixed_mapreduce_util  # noqa: ignore=E402
-from dancedeets.hacks import memory_leaks  # noqa: ignore=E402
-from dancedeets.redirect_canonical import redirect_canonical  # noqa: ignore=E402
-from requests_toolbelt.adapters import appengine as appengine_adapter  # noqa: ignore=E402
-from requests.packages.urllib3.contrib import appengine as appengine_manager  # noqa: ignore=E402
+    try:
+        # Check running processes
+        ps_output = subprocess.run(['ps', 'aux'], capture_output=True, text=True, timeout=5)
+        node_processes = [line for line in ps_output.stdout.split('\n') if 'node' in line.lower()]
+        logging.info(f"Node processes running: {node_processes}")
+    except Exception as e:
+        logging.error(f"Error checking processes: {e}")
+
+# Run diagnostics at startup
+logging.info("=== STARTUP DIAGNOSTICS ===")
+check_render_server()
+logging.info("=== END DIAGNOSTICS ===")
+
+# Initialize memcache
+from dancedeets.services import memcache  # noqa: E402
+
+# Import hacks/patches (these will need to be updated for Cloud NDB)
+try:
+    from dancedeets.hacks import fixed_jinja2
+    fixed_jinja2.fix_stacktraces()
+except ImportError:
+    logging.warning('fixed_jinja2 not available')
 
 try:
-    from google.appengine.ext.vmruntime import middlewares
-except:
-    if prod_mode:
-        logging.error("Failed to import google.appengine.ext.vmruntime.middlewares")
-else:
-    middlewares.MAX_CONCURRENT_REQUESTS = 30  # Normally 501
+    from dancedeets.hacks import memory_leaks
+except ImportError:
+    memory_leaks = None
 
-# Disabled for now
-fixed_ndb.patch_logging(0)
-
-# Fix our runaway mapreduces
-fixed_ndb.fix_rpc_ordering()
-
-# Improve jinja2 stacktraces
-fixed_jinja2.fix_stacktraces()
-
-# Fix mapreduce to not require a certain version
-fixed_mapreduce_util.patch_function()
-
-# Make requests work with AppEngine's URLFetch
-if appengine_manager.is_local_appengine():
-    appengine_adapter.monkeypatch()
+from dancedeets.redirect_canonical import redirect_canonical  # noqa: E402
+from dancedeets.util.ndb_client import ndb_wsgi_middleware  # noqa: E402
 
 
-# Normally we'd set this up in appengine_config.py using webapp_add_wsgi_middleware
-# But the imports haven't been properly set up by then, so we can't safely run this code there
-# So instead, let's add the middleware directly, ourselves
 def add_wsgi_middleware(app):
-    # Disable appstats since it may be resulting in NDB OOM issues
-    # from google.appengine.ext.appstats import recording
-    # app = recording.appstats_wsgi_middleware(app)
+    """Add WSGI middleware to the application."""
+    # Add NDB context for Cloud NDB
+    app = ndb_wsgi_middleware(app)
 
-    # Clean up per-thread NDB memory "leaks", though don't try to finish all RPCs calls (which includes runaway iterators)
-    app = fixed_ndb.tasklets_toplevel(app)
-
-    # Should only use this in cases of serialized execution of requests in a multi-threaded processes.
-    # So setdeploy manually, and test from there. Never a live server, as it would be both broken *and* slow.
-    if os.environ.get('DEBUG_MEMORY_LEAKS'):
+    # Memory leak debugging middleware (only in debug mode)
+    if os.environ.get('DEBUG_MEMORY_LEAKS') and memory_leaks:
         app = memory_leaks.leak_middleware(app)
 
+    # Redirect dancedeets.com to www.dancedeets.com
     return redirect_canonical(app, 'dancedeets.com', 'www.dancedeets.com')
-
-    return app
 
 
 if os.environ.get('HOT_SERVER_PORT'):
     logging.info('Using hot reloader!')
 
-# Load this first, so 'app.prod_mode' is set asap
-from dancedeets.app import app as application
-application.debug = True
+# Load the main application
+from dancedeets.app import app as application  # noqa: E402
+application.debug = not prod_mode
 application.prod_mode = prod_mode
 application = add_wsgi_middleware(application)
 
 logging.info("Begin modules")
-import webapp2
-from google.appengine.ext.ndb import tasklets
 
-# We call this here to force loading _strptime module upfront,
-# because once threads come online and call strptime(), they try to load _strptime lazily,
-# and the second thread to call it while the first one is loading with the lock, triggers an exception.
-# More info:
-# http://bugs.python.org/issue7980
-# http://code-trick.com/python-bug-attribute-error-_strptime/
-import _strptime
+# Force loading _strptime module upfront to avoid threading issues
+# See: http://bugs.python.org/issue7980
+import _strptime  # noqa: F401
 
-# We import for the side-effects in adding routes to the wsgi app
+# Import servlets for their side-effects (route registration)
 logging.info("Begin servlets")
-import dancedeets.all_servlets
+import dancedeets.all_servlets  # noqa: F401, E402
 logging.info("Finished servlets")
+
+# Alias for gunicorn (main:app)
+app = application

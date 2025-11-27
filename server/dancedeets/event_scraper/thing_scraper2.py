@@ -1,7 +1,7 @@
 import json
 import logging
 
-from mapreduce import mapreduce_pipeline
+from dancedeets.compat.mapreduce import mapreduce_pipeline
 from dancedeets.util import fb_mapreduce
 
 from dancedeets import app

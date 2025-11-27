@@ -3,8 +3,8 @@
 import datetime
 import logging
 
-from pipeline import common
-from pipeline import pipeline
+from dancedeets.compat.pipeline import common
+from dancedeets.compat.pipeline import pipeline
 import scrapinghub
 
 from dancedeets import app
@@ -117,7 +117,7 @@ class EmailErrors(fixed_pipelines.Pipeline):
             return
 
         rendered = ["The following crawl errors occurred:"]
-        for crawler, errors in error_lines.iteritems():
+        for crawler, errors in error_lines.items():
             rendered += ["%s:" % crawler]
             rendered += errors
             rendered += []

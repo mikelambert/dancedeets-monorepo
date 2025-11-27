@@ -4,6 +4,22 @@
 {{ style|e }}
 {% endblock %}
 
+{% block head_stylesheet %}
+<style>
+/* Tutorial page layout - flex row/column based on screen width */
+.media-width-row-or-column {
+  flex-direction: row;
+}
+
+/* On mobile/narrow screens, stack vertically */
+@media (max-width: 900px) {
+  .media-width-row-or-column {
+    flex-direction: column !important;
+  }
+}
+</style>
+{% endblock %}
+
 {% block head_javascript %}
 <script defer src="{{ static_path('tutorialCategoryExec.js') }}"></script>
 <script>

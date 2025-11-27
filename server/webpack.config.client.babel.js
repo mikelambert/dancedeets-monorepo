@@ -121,18 +121,20 @@ const config = {
   },
   module: {
     rules: [
-      {
-        test: /\.jsx?$/,
-        use: 'eslint-loader',
-        exclude: /node_modules(?!\/dancedeets-common)/,
-        enforce: 'pre',
-      },
+      // Disabled eslint-loader due to eslint version incompatibilities
+      // {
+      //   test: /\.jsx?$/,
+      //   use: 'eslint-loader',
+      //   exclude: /node_modules(?!\/dancedeets-common)/,
+      //   enforce: 'pre',
+      // },
       {
         test: /\.jsx?$/,
         exclude: /node_modules(?!\/dancedeets-common)/,
         use: {
           loader: 'babel-loader',
           options: {
+            babelrc: false, // Don't use .babelrc files from dancedeets-common
             presets: [
               [
                 'latest',
@@ -192,7 +194,13 @@ const config = {
                 ],
               },
             },
-            { loader: 'sass-loader?sourceMap' },
+            {
+              loader: 'sass-loader',
+              options: {
+                sourceMap: true,
+                implementation: require('sass'),
+              },
+            },
           ],
         }),
       },
@@ -206,20 +214,21 @@ const config = {
               name: '../img/[name].[ext]',
             },
           },
-          {
-            loader: 'image-webpack-loader',
-            options: {
-              bypassOnDebug: true,
-              query: {
-                optipng: {
-                  optimizationLevel: 7,
-                },
-                gifsicle: {
-                  interlaced: false,
-                },
-              },
-            },
-          },
+          // Disabled image-webpack-loader - binaries not installed with --ignore-scripts
+          // {
+          //   loader: 'image-webpack-loader',
+          //   options: {
+          //     bypassOnDebug: true,
+          //     query: {
+          //       optipng: {
+          //         optimizationLevel: 7,
+          //       },
+          //       gifsicle: {
+          //         interlaced: false,
+          //       },
+          //     },
+          //   },
+          // },
         ],
       },
       {

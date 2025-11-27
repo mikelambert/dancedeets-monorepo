@@ -1,4 +1,4 @@
-from google.appengine.ext import ndb
+from google.cloud import ndb
 
 APP_TWITTER = 'APP_TWITTER'
 APP_TWITTER_DEV = 'APP_TWITTER_DEV'  # disabled twitter dev

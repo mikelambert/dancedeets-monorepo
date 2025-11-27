@@ -134,7 +134,7 @@ def _save_remapped_address_for(original_address, new_remapped_address):
             location_mapping.remapped_address = new_remapped_address
             try:
                 location_mapping.put()
-            except apiproxy_errors.CapabilityDisabledError, e:
+            except apiproxy_errors.CapabilityDisabledError as e:
                 logging.error("failed to save location mapping due to %s", e)
         else:
             if location_mapping:

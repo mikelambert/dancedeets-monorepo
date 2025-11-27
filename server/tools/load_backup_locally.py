@@ -1,8 +1,10 @@
 #!/usr/bin/python
 """
+DEPRECATED: This script requires the legacy App Engine SDK and dev_appserver.
+
 # App Engine import data from Datastore Backup to localhost
 
-You can use this script to import large(ish) App Engine Datastore backups to your localohst dev server.
+You can use this script to import large(ish) App Engine Datastore backups to your localhost dev server.
 
 ## Getting backup files
 
@@ -19,11 +21,13 @@ gsutil -m cp -R gs://your_bucket_name/your_path /local_target
 Copy-paste this gist to your Interactive Console, set correct paths and press `Execute`.
 (default: http://localhost:8000/console)
 
+NOTE: This script requires the legacy App Engine SDK for entity_pb, records, and ndb modules.
+It may not work in App Engine Flexible Environment.
 """
 import sys
 sys.path.insert(0, '/usr/local/google_appengine')
 
-print sys.path
+print(sys.path)
 from google.appengine.api.files import records
 from google.appengine.datastore import entity_pb
 from google.net.proto.ProtocolBuffer import ProtocolBufferDecodeError
@@ -49,24 +53,24 @@ def run():
     for file in onlyfiles:
         i = 0
         try:
-            raw = open(mypath + "/" + file, 'r')
-            reader = records.RecordsReader(raw)
-            to_put = list()
-            for record in reader:
-                entity_proto = entity_pb.EntityProto(contents=record)
-                entity_proto.key_.app_ = appname
-                obj = cls._from_pb(entity_proto)
+            with open(mypath + "/" + file, 'rb') as raw:
+                reader = records.RecordsReader(raw)
+                to_put = list()
+                for record in reader:
+                    entity_proto = entity_pb.EntityProto(contents=record)
+                    entity_proto.key_.app_ = appname
+                    obj = cls._from_pb(entity_proto)
 
-                to_put.append(obj)
-                i += 1
-                if i % 100 == 0:
-                    print "Saved %d %ss" % (i, '')  #entity.kind())
-                    ndb.put_multi(to_put)  # use_memcache=False)
-                    to_put = list()
+                    to_put.append(obj)
+                    i += 1
+                    if i % 100 == 0:
+                        print("Saved %d %ss" % (i, ''))  #entity.kind())
+                        ndb.put_multi(to_put)  # use_memcache=False)
+                        to_put = list()
 
-            ndb.put_multi(to_put)  # use_memcache=False)
-            to_put = list()
-            print "Saved %d" % i
+                ndb.put_multi(to_put)  # use_memcache=False)
+                to_put = list()
+                print("Saved %d" % i)
 
         except ProtocolBufferDecodeError:
             """ All good """

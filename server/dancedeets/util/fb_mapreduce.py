@@ -2,9 +2,9 @@ import datetime
 import logging
 import random
 
-from mapreduce import context
-from mapreduce import control
-from mapreduce import util
+from dancedeets.compat.mapreduce import context
+from dancedeets.compat.mapreduce import control
+from dancedeets.compat.mapreduce import util
 
 from dancedeets import fb_api
 from dancedeets.users import access_tokens

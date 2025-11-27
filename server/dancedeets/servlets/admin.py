@@ -1,29 +1,30 @@
 import json
 import pprint
 import time
-import webapp2
-from google.appengine.api import memcache
-from google.appengine.ext import db
+from google.cloud import ndb
 
 from dancedeets import app
 from dancedeets import base_servlet
 from dancedeets.events import eventdata
 from dancedeets import fb_api
 from dancedeets.util import urls
+from dancedeets.util import memcache
+from dancedeets.util.flask_adapter import BaseHandler
 
 
 @app.route('/tools/delete_fb_cache')
-class DeleteFBCacheHandler(webapp2.RequestHandler):
+class DeleteFBCacheHandler(BaseHandler):
     def get(self):
         self.response.headers['Content-Type'] = 'text/plain'
         try:
             while True:
-                q = db.GqlQuery("SELECT __key__ FROM FacebookCachedObject")
-                if not q.count():
+                # Use Cloud NDB for querying
+                q = fb_api.FacebookCachedObject.query().fetch(200, keys_only=True)
+                if not q:
                     break
-                db.delete(q.fetch(200))
+                ndb.delete_multi(q)
                 time.sleep(0.1)
-        except Exception, e:
+        except Exception as e:
             self.response.out.write(repr(e) + '\n')
             pass
 
@@ -80,6 +81,6 @@ class ShowNoOwnerEventsHandler(base_servlet.BaseRequestHandler):
 
 
 @app.route('/tools/test')
-class TestHandler(base_servlet.webapp2.RequestHandler):
+class TestHandler(BaseHandler):
     def get(self):
         pass

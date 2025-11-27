@@ -32,7 +32,7 @@ class StubCacheBackend(gmaps_backends.GMapsBackend):
             flattened_v = repr(v)
             flattened_v = CLEANUP_RE.sub('_', flattened_v)
             new_kwargs[k] = flattened_v[:30]
-        joined = '_'.join(sorted('%s_%s' % (k, unicode(v).strip().lower()) for (k, v) in new_kwargs.items()))
+        joined = '_'.join(sorted('%s_%s' % (k, str(v).strip().lower()) for (k, v) in new_kwargs.items()))
         return joined
 
     def get_json(self, **kwargs):

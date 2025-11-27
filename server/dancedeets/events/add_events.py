@@ -34,7 +34,7 @@ def _get_user_events(fbl):
     except fb_api.NoFetchedDataException as e:
         try:
             user_events = fbl.get(fb_api.LookupUserEvents, fbl.fb_uid)
-        except fb_api.NoFetchedDataException, e:
+        except fb_api.NoFetchedDataException as e:
             logging.error("Could not load event info for user: %s", e)
             user_events = None
     if user_events is not None:

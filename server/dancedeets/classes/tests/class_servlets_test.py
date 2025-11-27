@@ -12,7 +12,7 @@ def FilteredTestSuite(tests):
     except:
         # Otherwise, handle the base case, and treat it like the actual class under test.
         # Ensure we don't pass in protected classes:
-        if unicode(tests.__class__.__name__).startswith('_'):
+        if str(tests.__class__.__name__).startswith('_'):
             return None
         else:
             return tests

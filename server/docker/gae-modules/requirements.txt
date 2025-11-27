@@ -1,10 +1,28 @@
-Pillow==9.0.1
-cld2-cffi==0.1.4
-Shapely==1.5.17.post1
-dateparser==0.5.1
-timezonefinder==1.5.7
-pylibmc==1.5.1 #memcache
+# Core dependencies for DanceDeets
+# Python 3.11 compatible versions
 
-# We keep this at 1.5.3 until https://github.com/SathyaBhat/spotify-dl/issues/30 is resolved
-google-api-python-client==1.5.3
-google-cloud==0.27.0
+# Image processing
+Pillow>=10.0.0
+
+# Language detection
+langdetect>=1.0.9
+
+# Geospatial
+Shapely>=2.0.0
+
+# Date/time parsing
+dateparser>=1.1.0
+timezonefinder>=6.0.0
+
+# Memcache client
+pylibmc>=1.6.0
+
+# Google Cloud clients
+google-api-python-client>=2.0.0
+google-cloud-storage>=2.0.0
+google-cloud-datastore>=2.0.0
+google-cloud-ndb>=2.0.0
+google-cloud-tasks>=2.0.0
+
+# App Engine compatibility for Python 3
+appengine-python-standard>=1.0.0

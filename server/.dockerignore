@@ -1,6 +1,13 @@
-node_server/node_modules
-node_modules
+# DanceDeets Docker ignore file
+# Files and directories to exclude from Docker build context
+
+# NOTE: node_modules is NO LONGER excluded - we need it for the render server
+# node_modules
+# node_server/node_modules
+
+# Development/scratch files
 scratch
+scratch*
 download
 lib-local*
 local_data
@@ -8,32 +15,59 @@ local_data2
 local_data3
 grammar-processed.*
 full-logs.txt
-scratch*
-r/*
 snapshotted
 tmp
 build
-.git
+r/*
 webpack-client-output.json
 
-# Don't technically need the server-side JS maps,
-# as they're never accessed or used...
+# Git
+.git
+.gitignore
+
+# Source maps (not needed on server)
 dist/js-server/*.map
 dist-includes/*/*.map
-# We have moved these all over to GCS
+
+# Static assets moved to GCS
 dist/js
 dist/css
 
 # Downloaded data files
 tools/tmp
 
-# Source bits, that we actually don't need to run on the server
+# Source files not needed on server
 amp/
 assets/
-docker/
 tests/
 notes/
 test_data/
 
-# We don't need this on the server, this is just for our replacement dev_appserver
+# Dev server
 frankenserver
+
+# IDE/editor files
+.idea
+.vscode
+*.swp
+*.swo
+*~
+
+# Python cache
+__pycache__
+*.py[cod]
+*$py.class
+.Python
+*.so
+.eggs
+*.egg-info
+.pytest_cache
+
+# Documentation
+*.md
+!README.md
+
+# macOS
+.DS_Store
+
+# NOTE: Do NOT exclude docker/ - it contains requirements.txt files needed for build

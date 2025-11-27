@@ -1,0 +1,181 @@
+# .gcloudignore - controls what gcloud uploads to Cloud Storage for deployment
+# This file overrides .gitignore patterns when it exists
+#
+# node_modules is excluded - webpack bundles all dependencies into dist/js-server/
+
+# Development/scratch files
+scratch
+scratch*
+download
+lib-local*
+local_data
+local_data2
+local_data3
+grammar-processed.*
+full-logs.txt
+snapshotted
+tmp
+build
+r/*
+webpack-client-output.json
+
+# Git
+.git
+.gitignore
+
+# Source maps (not needed on server)
+dist/js-server/*.map
+dist-includes/*/*.map
+
+# Static assets moved to GCS
+dist/js
+dist/css
+
+# Downloaded data files
+tools/tmp
+
+# Source files not needed on server
+amp/
+assets/
+tests/
+notes/
+test_data/
+
+# Dev server
+frankenserver
+
+# IDE/editor files
+.idea
+.vscode
+*.swp
+*.swo
+*~
+
+# Python cache
+__pycache__
+*.py[cod]
+*$py.class
+.Python
+*.so
+.eggs
+*.egg-info
+.pytest_cache
+
+# Documentation
+*.md
+!README.md
+
+# macOS
+.DS_Store
+
+# Exclude most of node_modules - webpack bundles all dependencies except mjml
+# mjml (for email rendering) requires ~137 packages / 26MB at runtime
+node_modules/*
+# Keep mjml and all its dependencies (from: npm ls mjml --all)
+!node_modules/@babel
+!node_modules/@isaacs
+!node_modules/@one-ini
+!node_modules/@pkgjs
+!node_modules/abbrev
+!node_modules/ansi-colors
+!node_modules/ansi-regex
+!node_modules/ansi-styles
+!node_modules/anymatch
+!node_modules/balanced-match
+!node_modules/binary-extensions
+!node_modules/boolbase
+!node_modules/brace-expansion
+!node_modules/braces
+!node_modules/camel-case
+!node_modules/cheerio
+!node_modules/cheerio-select
+!node_modules/chokidar
+!node_modules/clean-css
+!node_modules/cliui
+!node_modules/color-convert
+!node_modules/color-name
+!node_modules/commander
+!node_modules/config-chain
+!node_modules/cross-spawn
+!node_modules/css-select
+!node_modules/css-what
+!node_modules/detect-node
+!node_modules/dom-serializer
+!node_modules/domelementtype
+!node_modules/domhandler
+!node_modules/domutils
+!node_modules/eastasianwidth
+!node_modules/editorconfig
+!node_modules/emoji-regex
+!node_modules/entities
+!node_modules/escalade
+!node_modules/escape-goat
+!node_modules/fill-range
+!node_modules/foreground-child
+!node_modules/fsevents
+!node_modules/get-caller-file
+!node_modules/glob
+!node_modules/glob-parent
+!node_modules/he
+!node_modules/html-minifier
+!node_modules/htmlparser2
+!node_modules/ini
+!node_modules/is-binary-path
+!node_modules/is-extglob
+!node_modules/is-fullwidth-code-point
+!node_modules/is-glob
+!node_modules/is-number
+!node_modules/isexe
+!node_modules/jackspeak
+!node_modules/js-beautify
+!node_modules/js-cookie
+!node_modules/juice
+!node_modules/lodash
+!node_modules/lower-case
+!node_modules/lru-cache
+!node_modules/mensch
+!node_modules/mime
+!node_modules/minimatch
+!node_modules/minipass
+!node_modules/mjml
+!node_modules/mjml-*
+!node_modules/no-case
+!node_modules/node-fetch
+!node_modules/nopt
+!node_modules/normalize-path
+!node_modules/nth-check
+!node_modules/package-json-from-dist
+!node_modules/param-case
+!node_modules/parse5
+!node_modules/parse5-htmlparser2-tree-adapter
+!node_modules/path-key
+!node_modules/path-scurry
+!node_modules/picomatch
+!node_modules/proto-list
+!node_modules/readdirp
+!node_modules/relateurl
+!node_modules/require-directory
+!node_modules/semver
+!node_modules/shebang-command
+!node_modules/shebang-regex
+!node_modules/signal-exit
+!node_modules/slick
+!node_modules/source-map
+!node_modules/string-width
+!node_modules/string-width-cjs
+!node_modules/strip-ansi
+!node_modules/strip-ansi-cjs
+!node_modules/to-regex-range
+!node_modules/tr46
+!node_modules/uglify-js
+!node_modules/upper-case
+!node_modules/valid-data-url
+!node_modules/web-resource-inliner
+!node_modules/webidl-conversions
+!node_modules/whatwg-url
+!node_modules/which
+!node_modules/wrap-ansi
+!node_modules/wrap-ansi-cjs
+!node_modules/y18n
+!node_modules/yargs
+!node_modules/yargs-parser

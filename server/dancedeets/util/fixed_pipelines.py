@@ -1,4 +1,4 @@
-from pipeline import pipeline
+from dancedeets.compat.pipeline import pipeline
 
 
 # The default base_path doesn't work on Managed VMs, so we override it here (and app.yaml).

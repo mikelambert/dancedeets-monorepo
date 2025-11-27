@@ -1,8 +1,8 @@
 import datetime
 import logging
 
-from mapreduce import context
-from mapreduce import operation as op
+from dancedeets.compat.mapreduce import context
+from dancedeets.compat.mapreduce import operation as op
 
 from dancedeets import app
 from dancedeets import base_servlet

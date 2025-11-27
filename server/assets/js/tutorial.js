@@ -22,7 +22,16 @@ const backgroundSectionHeaderColor = '#656595';
 const backgroundVideoColor = 'white';
 const backgroundVideoColorActive = '#E0E0F5';
 
-const headerHeight = 50;
+// Calculate header height dynamically to account for navbar + promo messages
+const getHeaderHeight = () => {
+  if (typeof document === 'undefined') return 50;
+  const navbar = document.querySelector('.navbar');
+  const promoMessages = document.querySelector('.alert.alert-info');
+  let height = 0;
+  if (navbar) height += navbar.offsetHeight;
+  if (promoMessages) height += promoMessages.offsetHeight;
+  return height || 50;
+};
 
 class _Duration extends React.Component<{
   duration: number,
@@ -211,51 +220,38 @@ class _TutorialView extends React.Component<
 
   renderPlayer() {
     const { video } = this.state;
-    // Standard YouTube aspect ratio is 16:9
-    const aspectRatio = 16 / 9;
 
     return (
       <div
         className="video-player-container"
         style={{
+          flex: 2,
+          width: '100%',
+          height: '100%',
           backgroundColor: '#000',
-          flexShrink: 0,
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
         }}
       >
-        <div
-          style={{
-            position: 'relative',
-            width: '100%',
-            paddingBottom: `${100 / aspectRatio}%`, // 56.25% for 16:9
-            height: 0,
+        <YouTube
+          ref={x => {
+            this._youtube = x;
           }}
-        >
-          <YouTube
-            ref={x => {
-              this._youtube = x;
-            }}
-            containerClassName="youtube-container"
-            opts={{
-              width: '100%',
-              height: '100%',
-              playerVars: {
-                autoplay: 1,
-              },
-            }}
-            videoId={video.youtubeId}
-            onEnd={this.onVideoEnd}
-          />
-        </div>
+          opts={{
+            width: '100%',
+            height: '100%',
+            playerVars: {
+              autoplay: 1,
+            },
+          }}
+          videoId={video.youtubeId}
+          onEnd={this.onVideoEnd}
+        />
       </div>
     );
   }
 
   render() {
     const height = this.props.window
-      ? this.props.window.height - headerHeight
+      ? this.props.window.height - getHeaderHeight()
       : '100vh';
     return (
       <div

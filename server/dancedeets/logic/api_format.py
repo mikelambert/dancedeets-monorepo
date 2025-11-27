@@ -24,7 +24,7 @@ def canonicalize_search_event_data(result, version):
     event_api = {}
     event_api['id'] = result.event_id
     event_api['name'] = result.data['name']
-    event_api['slugged_name'] = slugify(unicode(result.data['name']))
+    event_api['slugged_name'] = slugify(str(result.data['name']))
     event_api['start_time'] = result.data['start_time']
     event_api['end_time'] = result.data['end_time']
 
@@ -103,7 +103,7 @@ def canonicalize_base_event_data(db_event, version):
     event_api = {}
     event_api['id'] = db_event.id
     event_api['name'] = db_event.name
-    event_api['slugged_name'] = slugify(unicode(db_event.name))
+    event_api['slugged_name'] = slugify(str(db_event.name))
     event_api['start_time'] = db_event.start_time_with_tz.strftime(DATETIME_FORMAT_TZ)
     # end time can be optional, especially on single-day events that are whole-day events
     if db_event.end_time_with_tz:
@@ -219,7 +219,7 @@ def canonicalize_event_data(db_event, version, event_wall=None, event_keywords=N
         # bwcompat that let's this work without the need to re-save
         text = '%s. %s' % (event_api['name'], event_api['description'])
         try:
-            event_api['language'] = language.detect(text)
+            event_api['language'] = language.detect_language(text)
         except ValueError:
             logging.exception('Error detecting language on event %s with text %r', db_event.id, text)
             event_api['language'] = None
@@ -307,7 +307,7 @@ def people_groupings(geocode, distance, skip_people):
                         'ATTENDEE': {},
                     }
                     # These lists can get huge now...make sure we trim them down for what clients need!
-                    for person_type, styles in groupings.iteritems():
+                    for person_type, styles in groupings.items():
                         for style in event_types.STYLES:
                             index_style_name = style.index_name
                             public_style_name = style.public_name
@@ -320,7 +320,7 @@ def people_groupings(geocode, distance, skip_people):
                                 new_groupings[person_type][public_style_name] = styles[good_style][:10]
                     groupings = new_groupings
 
-                    logging.info('Person Groupings:\n%s', '\n'.join('%s: %s' % kv for kv in groupings.iteritems()))
+                    logging.info('Person Groupings:\n%s', '\n'.join('%s: %s' % kv for kv in groupings.items()))
     return groupings
 
 

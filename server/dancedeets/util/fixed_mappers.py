@@ -2,12 +2,12 @@ import logging
 
 from google.appengine.api import datastore_errors
 from google.appengine.ext import db
-from google.appengine.ext import ndb
+from google.cloud import ndb
 
-from mapreduce import context
-from mapreduce import handlers
-from mapreduce import model
-from mapreduce import util
+from dancedeets.compat.mapreduce import context
+from dancedeets.compat.mapreduce import handlers
+from dancedeets.compat.mapreduce import model
+from dancedeets.compat.mapreduce import util
 
 #class FixedKeyRangeEntityIterator(datastore_range_iterators.KeyRangeEntityIterator):
 #    def __iter__(self):

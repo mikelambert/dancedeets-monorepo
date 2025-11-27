@@ -1,7 +1,7 @@
 import logging
 import markdown
 
-from google.appengine.ext import ndb
+from google.cloud import ndb
 
 from dancedeets import app
 from dancedeets import base_servlet

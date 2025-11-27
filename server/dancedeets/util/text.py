@@ -8,13 +8,12 @@ import re
 
 
 def format_html(value):
-    return jinja2.Markup('<span>%s</span>' % jinja2.Markup.escape(value).replace('\n', jinja2.Markup('</span><br>\n<span>')))
+    return markupsafe.Markup('<span>%s</span>' % markupsafe.Markup.escape(value).replace('\n', markupsafe.Markup('</span><br>\n<span>')))
 
 
 # Commented multi-line version:
 url_finder_re = re.compile(
     r"""
-(?xi)
 \b
 (                            # Capture 1: entire matched URL
     (?:
@@ -57,7 +56,8 @@ url_finder_re = re.compile(
         (?!@)            # not succeeded by a @, avoid matching "foo.na" in "foo.na@example.com"
     )
 )
-"""
+""",
+    re.VERBOSE | re.IGNORECASE,
 )
 
 
@@ -70,9 +70,9 @@ def linkify(value):
         url = m.group(1)
         if '://' not in url:
             url = 'http://' + url
-        return jinja2.Markup('<a href="%s">%s</a>') % (url, m.group(1))
+        return markupsafe.Markup('<a href="%s">%s</a>') % (url, m.group(1))
 
-    return url_finder_re.sub(make_href, jinja2.Markup.escape(value))
+    return url_finder_re.sub(make_href, markupsafe.Markup.escape(value))
 
 
 # This code is taken from django
@@ -85,20 +85,20 @@ _js_escapes = (_base_js_escapes + tuple([('%c' % z, '\\u%04X' % z) for z in rang
 
 def escapejs(value):
     """Hex encodes characters for use in JavaScript strings."""
-    value = unicode(value)
+    value = str(value)
     for bad, good in _js_escapes:
         value = value.replace(bad, good)
     return markupsafe.Markup(value)
 
 
 def format_js(value):
-    if isinstance(value, basestring):
+    if isinstance(value, str):
         value = value.replace('\\', '\\\\')
         value = value.replace('"', '\\"')
         value = value.replace("'", "\\'")
         value = value.replace("\n", "\\n")
         return value
-    elif isinstance(value, (int, long, float)):
+    elif isinstance(value, (int, float)):
         return str(value)
     else:
         return ''
@@ -151,11 +151,11 @@ def htmlsafe_json_dumps(obj, **kwargs):
 
 
 def tojson_filter(obj, **kwargs):
-    return jinja2.Markup(htmlsafe_json_dumps(obj, **kwargs))
+    return markupsafe.Markup(htmlsafe_json_dumps(obj, **kwargs))
 
 
 def human_list(elems):
-    elems = list(unicode(x) for x in elems)
+    elems = list(str(x) for x in elems)
     s = []
     for i, elem in enumerate(elems):
         if i == 0:

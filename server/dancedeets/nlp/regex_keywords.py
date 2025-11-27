@@ -27,7 +27,9 @@ def _wrap_regex(regex_string, matching=False, word_boundaries=True, match_cjk=Fa
         regex_string = u'(?:' + regex_string + u')'
     if word_boundaries:
         # It seems like we might only care about this in match_cjk cases...but greek is important. We need it for greek matches.
-        regex_string = '(?u)%s' % regex_string
+        # Note: In Python 3, re.UNICODE is the default for str patterns, so we don't need (?u) anymore.
+        # In Python 3.11+, inline flags like (?u) must be at the very start of the expression, which breaks when wrapped.
+        pass  # regex_string stays as-is, Python 3 handles unicode by default
         if match_cjk:
             regex_string = r"(?:\b|%s)%s(?:\b|%s)" % (_CJK_ADJACENT_STRING, regex_string, _CJK_ADJACENT_STRING)
         else:

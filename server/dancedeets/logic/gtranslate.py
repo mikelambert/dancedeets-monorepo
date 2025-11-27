@@ -1,12 +1,6 @@
 import json
 import logging
-
-urllib2_fallback = False
-try:
-    from google.appengine.api import urlfetch
-except ImportError:
-    urllib2_fallback = True
-    import urllib2
+import requests
 
 from dancedeets.util import urls
 
@@ -22,16 +16,13 @@ def check_language(text):
     base_url = 'https://www.googleapis.com/language/translate/v2/detect'
     params = {'key': API_KEY, 'q': text}
     form_data = urls.urlencode(params)
-    if urllib2_fallback:
-        request = urllib2.Request(base_url, form_data, {'X-HTTP-Method-Override': 'GET'})
-        response_content = urllib2.urlopen(request).read()
-    else:
-        result = urlfetch.fetch(url=base_url, payload=form_data, method=urlfetch.POST, headers={'X-HTTP-Method-Override': 'GET'})
-        if result.status_code != 200:
-            error = "result status code is %s for content %s" % (result.status_code, result.content)
-            logging.error(error)
-            raise Exception("Error in translation: %s" % error)
-        response_content = result.content
+    # Use requests library for HTTP calls
+    result = requests.post(base_url, data=form_data, headers={'X-HTTP-Method-Override': 'GET'}, timeout=20)
+    if result.status_code != 200:
+        error = "result status code is %s for content %s" % (result.status_code, result.text)
+        logging.error(error)
+        raise Exception("Error in translation: %s" % error)
+    response_content = result.content
     json_content = json.loads(response_content)
     real_results = json_content['data']['detections'][0][0]
     logging.info("text classification returned %s", real_results)

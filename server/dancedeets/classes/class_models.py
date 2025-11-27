@@ -1,7 +1,8 @@
 import re
 
-from google.appengine.ext import ndb
-from google.appengine.api.search import search
+from google.cloud import ndb
+
+from dancedeets.util import search_compat as search
 
 DATETIME_FORMAT = '%Y-%m-%dT%H:%M:%S'
 
@@ -23,7 +24,9 @@ class StudioClass(ndb.Model):
             teacher = kwargs['teacher']
             computed_id = self.compute_id(studio_name, start_time, teacher)
             kwargs['id'] = computed_id
-            search._CheckDocumentId(kwargs['id'])
+            # Validate document ID format (max 500 chars, no spaces)
+            if len(kwargs['id']) > 500 or ' ' in kwargs['id']:
+                raise ValueError("Invalid document ID: %s" % kwargs['id'])
         super(StudioClass, self).__init__(**kwargs)
 
     @classmethod
@@ -35,10 +38,10 @@ class StudioClass(ndb.Model):
     recurrence_id = ndb.StringProperty()
 
     studio_name = ndb.StringProperty()
-    source_page = ndb.StringProperty(indexed=False)
-    style = ndb.StringProperty(indexed=False)
-    teacher = ndb.StringProperty(indexed=False)
-    teacher_link = ndb.StringProperty(indexed=False)
+    source_page = ndb.TextProperty()
+    style = ndb.TextProperty()
+    teacher = ndb.TextProperty()
+    teacher_link = ndb.TextProperty()
     start_time = ndb.DateTimeProperty()
     end_time = ndb.DateTimeProperty(indexed=False)
 
@@ -46,9 +49,9 @@ class StudioClass(ndb.Model):
 
     latitude = ndb.FloatProperty()
     longitude = ndb.FloatProperty(indexed=False)
-    address = ndb.StringProperty(indexed=False)
+    address = ndb.TextProperty()
 
-    sponsor = ndb.StringProperty(indexed=False)
+    sponsor = ndb.TextProperty()
 
     scrape_time = ndb.DateTimeProperty(indexed=False)
 

@@ -1,8 +1,7 @@
 import iso3166
 import logging
 
-from google.appengine.api import search
-
+from dancedeets.util import search_compat as search
 from dancedeets import app
 from dancedeets import base_servlet
 from dancedeets.event_scraper import thing_db

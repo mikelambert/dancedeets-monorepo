@@ -1,4 +1,4 @@
-from mapreduce import control
+from dancedeets.compat.mapreduce import control
 
 import datetime
 
@@ -19,7 +19,7 @@ class SocialPublisherHandler(base_servlet.BaseTaskRequestHandler):
 
 
 def yield_post_jp_event(db_events):
-    from mapreduce import context
+    from dancedeets.compat.mapreduce import context
     ctx = context.get()
     params = ctx.mapreduce_spec.mapper.params
     token_nickname = params.get('token_nickname')

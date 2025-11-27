@@ -6,7 +6,7 @@ import re
 import time
 from timezonefinder import TimezoneFinder
 
-from google.appengine.ext import ndb
+from google.cloud import ndb
 
 from dancedeets import fb_api
 from dancedeets.event_attendees import person_city
@@ -328,7 +328,7 @@ def _inner_make_event_findable_for_web_event(db_event, web_event, disable_update
         if 'regeocode' not in (disable_updates or []):
             db_event.location_geocode = None
         location_info = event_locations.LocationInfo(db_event=db_event)
-        print location_info, location_info.__dict__
+        print(location_info, location_info.__dict__)
         _update_geodata(db_event, location_info, disable_updates)
 
 
@@ -343,7 +343,7 @@ def _inner_common_setup(db_event, disable_updates=None):
         _inner_cache_photo(db_event)
 
     text = '%s. %s' % (db_event.name, db_event.description)
-    db_event.json_props['language'] = language.detect(text)
+    db_event.json_props['language'] = language.detect_language(text)
 
 
 def _update_geodata(db_event, location_info, disable_updates):

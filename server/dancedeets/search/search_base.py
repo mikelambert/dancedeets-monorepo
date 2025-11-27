@@ -3,11 +3,11 @@
 
 import datetime
 import jinja2
+import markupsafe
 import re
 import wtforms
 
-from google.appengine.api import search
-from google.appengine.api.search import search as inner_search
+from dancedeets.util import search_compat as search
 
 from dancedeets import event_types
 from dancedeets.loc import gmaps_api
@@ -34,11 +34,11 @@ def _no_wiki_or_html(form, field):
 
 
 def _valid_query(form, field):
-    keywords = _get_parsed_keywords(field.data.encode('utf-8'))
+    keywords = _get_parsed_keywords(field.data)
     try:
-        inner_search._CheckQuery(keywords.decode('utf-8'))
+        search._CheckQuery(keywords)
     except search.QueryError as e:
-        raise wtforms.ValidationError(unicode(e))
+        raise wtforms.ValidationError(str(e))
 
 
 def _geocodable_location(form, field):
@@ -49,7 +49,7 @@ def _geocodable_location(form, field):
 
 
 def _get_parsed_keywords(keywords):
-    cleaned_keywords = re.sub(ur'[<=>:(),|&/\\~?!.•\-]', ' ', keywords).replace(' - ', ' ')
+    cleaned_keywords = re.sub(r'[<=>:(),|&/\\~?!.•\-]', ' ', keywords.decode('utf-8') if isinstance(keywords, bytes) else keywords).replace(' - ', ' ')
     unquoted_quoted_keywords = cleaned_keywords.split('"')
     for i in range(0, len(unquoted_quoted_keywords), 2):
         unquoted_quoted_keywords[i] = categories.format_as_search_query(unquoted_quoted_keywords[i])
@@ -270,4 +270,4 @@ class SearchResult(object):
         html += [
             '</span>',
         ]
-        return jinja2.Markup('\n'.join(html))
+        return markupsafe.Markup('\n'.join(html))

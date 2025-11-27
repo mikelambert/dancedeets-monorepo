@@ -30,7 +30,8 @@ import json
 import logging
 import os
 import hashlib
-import urllib
+import urllib.parse
+import urllib.request
 import yaml
 
 from dancedeets.util import runtime
@@ -45,7 +46,8 @@ else:
 
 def load_yaml(filename):
     abs_filename = os.path.join(os.path.dirname(__file__), '..', filename)
-    return yaml.load(file(abs_filename, 'r'))
+    with open(abs_filename, 'r') as f:
+        return yaml.safe_load(f)
 
 
 FACEBOOK_CONFIG = load_yaml(filename)
@@ -129,8 +131,8 @@ def extend_access_token(access_token):
     app_secret = FACEBOOK_CONFIG['secret_key']
 
     args = dict(client_id=app_id, client_secret=app_secret, grant_type='fb_exchange_token', fb_exchange_token=access_token)
-    url = "https://graph.facebook.com/oauth/access_token?" + urllib.urlencode(args)
-    file = urllib.urlopen(url)
+    url = "https://graph.facebook.com/oauth/access_token?" + urllib.parse.urlencode(args)
+    file = urllib.request.urlopen(url)
     try:
         token_response = file.read()
     finally:

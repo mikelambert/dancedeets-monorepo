@@ -1,5 +1,5 @@
 import oauth2 as oauth
-import urlparse
+from urllib import parse as urlparse
 
 from dancedeets import base_servlet
 from dancedeets import app

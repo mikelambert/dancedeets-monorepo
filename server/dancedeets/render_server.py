@@ -27,7 +27,7 @@ class RenderedComponent(object):
         return self.markup
 
     def __unicode__(self):
-        return unicode(self.markup)
+        return str(self.markup)
 
 
 class RenderException(Exception):
@@ -40,8 +40,19 @@ class MjmlRenderException(RenderException):
 
 def render_jsx(template_name, props=None, static_html=False):
     path = os.path.abspath(os.path.join('dist/js-server/', template_name))
+
+    if props is not None:
+        serialized_props = json.dumps(props)
+    else:
+        serialized_props = None
+
+    empty_response = RenderedComponent('', None, serialized_props)
+
     if not os.path.exists(path):
-        raise ComponentSourceFileNotFound(path)
+        # Gracefully handle missing server-side bundle - client-side will render instead
+        logging.warning('Server-side React bundle not found: %s - falling back to client-side rendering', path)
+        empty_response.error = 'Server-side bundle not found: {}'.format(path)
+        return empty_response
 
     url = RENDER_URL % PORT
 

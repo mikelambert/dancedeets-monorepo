@@ -1,11 +1,28 @@
-# This basically pulls from:
-# https://github.com/GoogleCloudPlatform/python-compat-runtime/blob/master/Dockerfile
-# We run our own python-compat-multicore since the real one is out of date with respect to github
-FROM gcr.io/dancedeets-hrd/python-compat-multicore
+# Base image for DanceDeets: Python 3.11 + Node.js 20
+# Replaces the old python-compat-multicore base
 
-# Add the node version install script
-ADD setup_node.sh /app/setup_node.sh
-RUN /app/setup_node.sh
+FROM python:3.11-slim-bookworm
 
-# We install this for use by node/npm itself
-ADD install_node /usr/local/bin/install_node
+# Set environment variables
+ENV PYTHONUNBUFFERED=1 \
+    PYTHONDONTWRITEBYTECODE=1 \
+    PIP_NO_CACHE_DIR=1 \
+    PIP_DISABLE_PIP_VERSION_CHECK=1 \
+    NODE_ENV=production
+
+# Install base system dependencies and Node.js
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    build-essential \
+    curl \
+    git \
+    ca-certificates \
+    netbase \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install Node.js 20 LTS
+RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - \
+    && apt-get install -y nodejs \
+    && rm -rf /var/lib/apt/lists/*
+
+# Create working directory
+WORKDIR /app

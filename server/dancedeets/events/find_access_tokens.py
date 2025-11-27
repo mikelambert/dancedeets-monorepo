@@ -1,13 +1,13 @@
 import logging
 
-import cloudstorage
+from google.cloud import storage
 
-from mapreduce import base_handler
-from mapreduce import context
-from mapreduce import mapper_pipeline
-from mapreduce import mapreduce_pipeline
-from mapreduce import pipeline_base
-from mapreduce import util
+from dancedeets.compat.mapreduce import base_handler
+from dancedeets.compat.mapreduce import context
+from dancedeets.compat.mapreduce import mapper_pipeline
+from dancedeets.compat.mapreduce import mapreduce_pipeline
+from dancedeets.compat.mapreduce import pipeline_base
+from dancedeets.compat.mapreduce import util
 
 from dancedeets import app
 from dancedeets import base_servlet
@@ -147,9 +147,19 @@ class PassFileToAccessTokenFinder(pipeline_base._OutputSlotsMixin, pipeline_base
     output_names = mapper_pipeline.MapperPipeline.output_names
 
     def run(self, filenames):
-        handle = cloudstorage.open(filenames[0])
-        event_ids = handle.read().split('\n')
-        handle.close()
+        # Parse the GCS path (format: /bucket-name/path/to/file)
+        filename = filenames[0]
+        if filename.startswith('/'):
+            filename = filename[1:]
+        parts = filename.split('/', 1)
+        bucket_name = parts[0]
+        blob_name = parts[1] if len(parts) > 1 else ''
+
+        client = storage.Client()
+        bucket = client.bucket(bucket_name)
+        blob = bucket.blob(blob_name)
+        content = blob.download_as_text()
+        event_ids = content.split('\n')
         yield FindAccessTokensForEventsPipeline(event_ids)
 
 

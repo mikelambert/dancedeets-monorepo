@@ -1,4 +1,46 @@
-# DanceDeets Tutorials Server
+# DanceDeets Server
+
+There's a main deployment server and a main batch server, both exist in our production deployments.
+
+There's also a basic "tutorials" server that one can run without the whole dancedeets setup, for simple iteration/demos.
+
+## IMPORTANT: Deployment Instructions (Claude Code)
+
+**DO NOT use raw `gcloud app deploy` commands directly.** Always use the provided deployment scripts.
+
+### Deploying to Production
+
+Use the main deployment script which handles both the app AND static files:
+
+```bash
+./build_tools/buildpush.sh
+```
+
+This script does the following:
+1. Optionally builds Docker images locally (if needed)
+2. **Uploads static files (JS/CSS) to the static file server** via `upload_static_files.py`
+3. Deploys the app to Google App Engine
+
+If you only run `gcloud app deploy`, the static files (webpack bundles, CSS) won't be uploaded and the site will be broken!
+
+### Building Frontend Assets
+
+Before deploying, ensure frontend assets are built:
+
+```bash
+# Build client-side bundles (JS/CSS for browsers)
+npx webpack --config webpack.config.client.babel.js
+
+# Build server-side bundles (for React SSR)
+npx webpack --config webpack.config.server.babel.js
+```
+
+### Other Useful Scripts
+
+- `./build_tools/upload_static_files.py` - Upload static files only (without deploying app)
+- `gulp buildDocker` - Build Docker base images (rarely needed, see Docker section below)
+
+# Tutorials Server
 
 This is a standalone Node.js Express server that serves the DanceDeets tutorials application without requiring the Python/GAE backend.
 
@@ -16,71 +58,6 @@ node tutorialsServer.js
 ```
 
 The server will start on `http://localhost:3000`
-
-## Available Pages
-
-- **All Tutorials**: http://localhost:3000/tutorials
-- **Individual Tutorial Examples**:
-  - http://localhost:3000/tutorials/break/vincanitv-beginner
-  - http://localhost:3000/tutorials/hiphop/nextschool-dictionary
-  - http://localhost:3000/tutorials/pop/oldschool-dictionary
-
-## Architecture
-
-### Server (`tutorialsServer.js`)
-
-- Express server running on port 3000 (configurable via `PORT` env var)
-- Serves static assets from `/dist` directory
-- Provides two main routes:
-  - `/tutorials` - Lists all tutorials with filtering
-  - `/tutorials/:style/:tutorialId` - Individual tutorial player page
-- Includes browser locale detection for i18n
-
-### Frontend Bundles
-
-Built with webpack from these entry points:
-- `tutorialCategoryExec.js` - Tutorial listing/filtering page
-- `tutorialExec.js` - Individual tutorial player page
-
-### Key Features
-
-1. **Responsive Layout**
-   - Desktop (>900px): Video player and playlist side-by-side
-   - Mobile (≤900px): Stacked vertically
-
-2. **Lazy Loading**
-   - First 6 tutorial thumbnails load immediately
-   - Remaining thumbnails lazy-load as you scroll
-   - Uses window scroll detection (not nested scroll containers)
-
-3. **Internationalization**
-   - Automatically detects browser locale
-   - Falls back to 'en-US' if not detected
-
-4. **Tutorial Filtering**
-   - Filter by dance style (Breaking, Hip Hop, Popping, etc.)
-   - Filter by language (English, Spanish, Japanese, etc.)
-   - Search by keywords (teacher name, move name, etc.)
-
-## Development
-
-### Building
-
-The webpack build creates two bundles:
-```bash
-npx webpack --config webpack.config.tutorials.js
-```
-
-This generates:
-- `dist/js/tutorialCategoryExec.js` - Tutorial list page
-- `dist/js/tutorialExec.js` - Tutorial player page
-
-### Watching for Changes
-
-For development with auto-rebuild:
-```bash
-npx webpack --config webpack.config.tutorials.js --watch
-```
 
 ### Running the Server
 
@@ -106,109 +83,77 @@ lsof -ti:3000 | xargs kill -9 2>/dev/null && \
 node tutorialsServer.js
 ```
 
-## Technical Details
+# Main Server
 
-### Dependencies
+## Docker Layering Strategy
 
-Key packages:
-- **express**: Web server
-- **react**: UI framework
-- **react-intl**: Internationalization
-- **react-lazyload**: Image lazy loading
-- **react-masonry-component**: Grid layout for tutorial cards
-- **react-youtube**: YouTube player integration
-- **webpack**: Module bundler
-- **babel**: JavaScript transpiler (ES6/Flow to ES5)
+The deployment uses a multi-layer Docker image hierarchy to optimize build times. Each layer is pushed to GCR and changes only need to rebuild from the layer that changed (and all layers above it).
 
-### Babel Configuration
-
-The webpack config uses:
-- `babel-preset-latest`: Modern JavaScript support
-- `babel-preset-react`: JSX transformation
-- `babel-preset-stage-0`: Experimental features
-- `babel-plugin-transform-flow-strip-types`: Flow type removal
-
-All babel presets/plugins use `require.resolve()` to ensure proper resolution from server's `node_modules`.
-
-### Common Issues & Solutions
-
-#### 1. Module Not Found Errors
-
-**Problem**: Webpack can't find babel plugins or dependencies
-
-**Solution**: The webpack config uses `require.resolve()` for all babel presets/plugins:
-```javascript
-presets: [
-  [require.resolve('babel-preset-latest'), { es2015: { modules: false } }],
-  require.resolve('babel-preset-react'),
-  require.resolve('babel-preset-stage-0'),
-]
-```
-
-## File Structure
+### Image Hierarchy (bottom to top)
 
 ```
-server/
-├── tutorialsServer.js           # Express server
-├── webpack.config.tutorials.js  # Webpack build config
-├── package.json                 # Dependencies
-├── assets/js/
-│   ├── tutorialExec.js         # Tutorial player entry point
-│   ├── tutorial.js             # Tutorial player component
-│   ├── tutorialCategoryExec.js # Tutorial list entry point
-│   ├── tutorialCategory.js     # Tutorial list component
-│   ├── renderReact.js          # React rendering helper
-│   ├── ui.js                   # Shared UI components
-│   └── ...
-├── dist/js/                    # Built bundles (generated)
-└── node_modules/               # Dependencies (generated)
+python:3.11-slim-bookworm (official Python base)
+    └── gae-py-js        (adds Node.js 20 LTS)
+        └── gae-nginx    (adds nginx)
+            └── gae-geos (adds GEOS/Shapely libs)
+                └── gae-binaries (adds imagemagick, gifsicle, Pillow deps)
+                    └── gae-modules (adds core Python deps: pylibmc, google-cloud-*, etc.)
+                        └── gae-modules-py (adds app Python deps: Flask, tweepy, etc.)
+                            └── [main Dockerfile] (just copies app code)
 ```
 
-## Tutorial Data
+### Why This Matters
 
-Tutorial data comes from the shared `dancedeets-common` package:
-- `dancedeets-common/js/tutorials/playlistConfig.js` - Tutorial definitions
-- `dancedeets-common/js/tutorials/models.js` - Data models (Playlist, Video, Section)
+1. **Fast app deploys**: The main `Dockerfile` only does `ADD . /app/` - no package installs. All dependencies are pre-baked in `gae-modules-py`.
 
-## CSS & Styling
+2. **Layer caching**: If you only change app code, GAE pulls the cached `gae-modules-py` image and just adds your code on top. This takes seconds instead of 10+ minutes.
 
-The server uses inline styles in the HTML template with:
-- Fixed navbar (50px height)
-- Responsive YouTube player with 16:9 aspect ratio
-- Mobile-first responsive breakpoints
-- Font Awesome for icons
+3. **Infrequent base rebuilds**: You only need to rebuild base layers when:
+   - `gae-modules/requirements.txt` changes (core deps)
+   - `gae-modules-py/requirements.txt` changes (app deps)
+   - System packages need updating (apt-get installs)
 
-## Port Management
+### Building Base Images
 
-If you get "port already in use" errors:
+Use gulp tasks to build and push base images:
+
 ```bash
-# Find process using port 3000
-lsof -ti:3000
+# Build ALL layers from scratch (slow, rarely needed)
+gulp buildDocker
 
-# Kill process using port 3000
-lsof -ti:3000 | xargs kill -9
+# Build from a specific layer and everything above it
+gulp buildDocker:gae-modules-py   # Just rebuild Python app deps
+gulp buildDocker:gae-modules      # Rebuild core deps + app deps
+
+# Build just ONE specific layer
+gulp buildDocker:one:gae-modules-py
 ```
 
-## Mock Globals
+Each `docker/<layer>/build.sh` builds and pushes to `gcr.io/dancedeets-hrd/<layer>`.
 
-The server provides mock globals for client-side code:
-```javascript
-window.prodMode = false;
-window.fbPermissions = '';
-window.fbAppId = '';
-window.baseHostname = 'localhost';
-window.showSmartBanner = false;
-window.mixpanel = { track: function() {} };
+### Deploying the App
+
+The main `Dockerfile` should be minimal:
+
+```dockerfile
+FROM gcr.io/dancedeets-hrd/gae-modules-py
+
+ADD . /app/
 ```
 
-These prevent errors from code expecting the full production environment.
+Then deploy with:
+```bash
+./build_tools/buildpush.sh
+```
 
-## Future Improvements
+**Note:** Do NOT use `gcloud app deploy` directly - it skips static file uploads and breaks the site.
 
-Potential enhancements:
-1. Server-side rendering for faster initial load
-2. Production build optimization (minification, code splitting)
-3. Hot module replacement for faster development
-4. API endpoint for tutorial data (currently embedded)
-5. CDN integration for static assets
-6. Service worker for offline support
+GAE builds the image in the cloud, pulling the cached base and just copying your code.
+
+## Gulp Commands
+
+You can find all commands in `server/gulpfile.babel.js`:
+
+- `gulp buildDocker` - Build all Docker layers
+- `gulp buildDocker:<layer>` - Build from a specific layer up
+- `gulp buildDocker:one:<layer>` - Build just one layer

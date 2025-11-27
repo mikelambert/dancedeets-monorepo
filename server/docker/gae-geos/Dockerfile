@@ -1,4 +1,7 @@
+# Adds GEOS library for Shapely geospatial support
 FROM gcr.io/dancedeets-hrd/gae-nginx
 
-ADD install_geos.sh /install-postgis/install_geos.sh
-RUN /bin/bash /install-postgis/install_geos.sh
+# Install GEOS from Debian packages (much faster than compiling from source)
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends libgeos-dev \
+    && rm -rf /var/lib/apt/lists/*

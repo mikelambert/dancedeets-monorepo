@@ -1,7 +1,7 @@
 import json
 import logging
 import os
-from google.appengine.api import urlfetch
+import requests
 
 from dancedeets import fb_api
 
@@ -56,7 +56,7 @@ class DiskDBCache(fb_api.DBCache):
     def save_objects(self, keys_to_objects):
         if not keys_to_objects:
             return
-        for k, v in keys_to_objects.iteritems():
+        for k, v in keys_to_objects.items():
             if self._is_cacheable(k, v):
                 cache_key = self.key_to_cache_key(k)
                 save_object(self.cache_path, cache_key, v)
@@ -85,7 +85,7 @@ class FakeRPC(object):
     def get_result(self):
         results = []
         if self.do_timeout:
-            raise urlfetch.DownloadError("Deadline exceeded while waiting for HTTP response from URL")
+            raise requests.exceptions.Timeout("Deadline exceeded while waiting for HTTP response from URL")
         elif self.expired_token:
             return FakeResult(
                 400, {

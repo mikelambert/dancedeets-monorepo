@@ -1,7 +1,7 @@
 import json
 import logging
 import re
-import urllib2
+from urllib.request import urlopen
 
 from apiclient.discovery import build
 
@@ -37,7 +37,7 @@ class TopicListHandler(base_servlet.BaseRequestHandler):
 
 
 def get_instagrams_for(username):
-    text = urllib2.urlopen('https://www.instagram.com/%s/media/' % username).read()
+    text = urlopen('https://www.instagram.com/%s/media/' % username).read()
     json_data = json.loads(text)
     return json_data
 

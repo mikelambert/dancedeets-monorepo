@@ -252,7 +252,8 @@ def _build_geocode_from_json(json_data):
     try:
         geocode = parse_geocode(json_data)
     except GeocodeException as e:
-        if e.status == 'INVALID_REQUEST' or e.status == 'UNKNOWN_ERROR':
+        if e.status in ('INVALID_REQUEST', 'UNKNOWN_ERROR', 'REQUEST_DENIED', 'OVER_QUERY_LIMIT'):
+            logging.warning('GMaps API returned status %s, treating as no results', e.status)
             return None
         raise
     return geocode
