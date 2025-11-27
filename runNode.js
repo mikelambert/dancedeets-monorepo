@@ -9,8 +9,9 @@ process.on('unhandledRejection', (reason, p) => {
 });
 
 var path = require('path');
-require('babel-core/register');
-require('babel-polyfill');
+require('@babel/register');
+require('core-js/stable');
+require('regenerator-runtime/runtime');
 var binPath = process.argv[2];
 if (!binPath.startsWith('/')) {
   binPath = path.join(process.cwd(), binPath);

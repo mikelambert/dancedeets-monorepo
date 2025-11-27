@@ -4,9 +4,9 @@
  * @flow
  */
 
-import webpack from 'webpack';
-import path from 'path';
-import { argv as env } from 'yargs';
+const webpack = require('webpack');
+const path = require('path');
+const { argv: env } = require('yargs');
 
 const prod = !env.debug;
 
@@ -64,17 +64,14 @@ module.exports = {
             babelrc: false, // Ignore .babelrc files in source directories
             presets: [
               [
-                'latest',
+                '@babel/preset-env',
                 {
-                  es2015: {
-                    modules: false,
-                  },
+                  modules: false,
                 },
               ],
-              'react',
-              'stage-0',
+              '@babel/preset-react',
             ],
-            plugins: ['transform-flow-strip-types'],
+            plugins: ['@babel/plugin-transform-flow-strip-types'],
           },
         },
       },

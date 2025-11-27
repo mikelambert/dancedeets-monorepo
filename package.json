@@ -1,13 +1,15 @@
 {
   "name": "dancedeets-monorepo",
   "devDependencies": {
-    "babel-core": "^6.21.0",
-    "babel-eslint": "^7.1.1",
+    "@babel/core": "^7.23.0",
+    "@babel/eslint-parser": "^7.23.0",
+    "@babel/plugin-transform-flow-strip-types": "^7.23.0",
+    "@babel/plugin-transform-object-rest-spread": "^7.23.0",
+    "@babel/preset-env": "^7.23.0",
+    "@babel/preset-react": "^7.23.0",
+    "@babel/register": "^7.23.0",
     "babel-plugin-react-intl": "^2.2.0",
-    "babel-polyfill": "^6.23.0",
-    "babel-preset-latest": "^6.16.0",
-    "babel-preset-react": "^6.16.0",
-    "babel-preset-stage-0": "^6.16.0",
+    "core-js": "^3.33.0",
     "eslint": "^4.11.0",
     "eslint-config-airbnb": "^16.1.0",
     "eslint-config-prettier": "^1.7.0",
@@ -20,6 +22,7 @@
     "flow-typed": "^2.1.2",
     "fs-extra": "^1.0.0",
     "prettier": "1.6.1",
+    "regenerator-runtime": "^0.14.0",
     "shebang-loader": "0.0.1"
   },
   "scripts": {
@@ -28,6 +31,6 @@
     "prettier": "npm run --silent js-files | xargs ./node_modules/prettier/bin/prettier.js --single-quote  --trailing-comma es5 --write"
   },
   "dependencies": {
-    "babel-eslint": "^8.2.1"
+    "@babel/eslint-parser": "^7.23.0"
   }
 }

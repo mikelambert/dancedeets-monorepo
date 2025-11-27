@@ -72,9 +72,8 @@
     "ytdl-core": "^0.14.4"
   },
   "devDependencies": {
-    "babel-core": "^6.10.4",
-    "babel-plugin-transform-remove-console": "^6.8.4",
-    "babel-polyfill": "^6.9.1",
+    "@babel/core": "^7.23.0",
+    "@babel/plugin-transform-remove-console": "^7.23.0",
     "git-clone": "^0.1.0",
     "json-stable-stringify": "^1.0.1",
     "node-fetch": "^2.6.1",

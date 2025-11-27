@@ -4,17 +4,17 @@
  * @flow
  */
 
-import webpack from 'webpack';
-import ExtractTextPlugin from 'extract-text-webpack-plugin';
-import path from 'path';
-import uncss from 'uncss';
-import pleeease from 'pleeease';
-import { argv as env } from 'yargs';
-import OptimizeCssAssetsPlugin from 'optimize-css-assets-webpack-plugin';
+const webpack = require('webpack');
+const ExtractTextPlugin = require('extract-text-webpack-plugin');
+const path = require('path');
+const uncss = require('uncss');
+const pleeease = require('pleeease');
+const { argv: env } = require('yargs');
+const OptimizeCssAssetsPlugin = require('optimize-css-assets-webpack-plugin');
 
 const prod = !env.debug;
 
-export default function uncssWebpackGenerator(
+module.exports = function uncssWebpackGenerator(
   outputFilename: string,
   htmlFiles: Array<string>,
   ignore: ?Array<string> = undefined
@@ -68,17 +68,14 @@ export default function uncssWebpackGenerator(
             options: {
               presets: [
                 [
-                  'latest',
+                  '@babel/preset-env',
                   {
-                    es2015: {
-                      modules: false,
-                    },
+                    modules: false,
                   },
                 ],
-                'react',
-                'stage-0',
+                '@babel/preset-react',
               ],
-              plugins: ['transform-flow-strip-types'],
+              plugins: ['@babel/plugin-transform-flow-strip-types'],
             },
           },
         },

@@ -331,7 +331,7 @@ gulp.task(
 );
 
 function webpack(configName, dependencies = []) {
-  const webpackCommand = `node_modules/webpack/bin/webpack.js --color --progress --config webpack.config.${configName}.babel.js`;
+  const webpackCommand = `node_modules/webpack/bin/webpack.js --color --progress --config webpack.config.${configName}.js`;
   gulp.task(
     `compile:webpack:${configName}:prod:once`,
     dependencies,
