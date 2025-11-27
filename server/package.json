@@ -142,7 +142,10 @@
     "fsevents": "^1.1.1"
   },
   "scripts": {
-    "start": "bash ./renderServer.sh"
+    "start": "bash ./renderServer.sh",
+    "build:esbuild": "NODE_ENV=production node esbuild.client.js",
+    "build:esbuild:debug": "node esbuild.client.js --debug",
+    "test:esbuild": "node build_tools/test-esbuild-bundles.js"
   },
   "private": true
 }
