@@ -6,24 +6,16 @@
 
 import webpack from 'webpack';
 import path from 'path';
-import fs from 'fs';
 import { argv as env } from 'yargs';
-import combineLoaders from 'webpack-combine-loaders';
 
 const prod = !env.debug;
 
-// Use all node_modules as externals - they'll be included in Docker via .dockerignore update
-// This avoids webpack bundling issues with dynamic requires (like decache/react-render)
-const nodeModules = {};
-fs
-  .readdirSync('node_modules')
-  .filter(function(x) {
-    return ['.bin'].indexOf(x) === -1;
-  })
-  .forEach(function(mod) {
-    nodeModules[mod] = 'commonjs ' + mod;
-  });
-const externals = nodeModules;
+// Bundle all dependencies into the output - no node_modules needed at runtime
+// This dramatically reduces deploy size (from 188k files to just the bundles)
+// mjml is kept external because it has complex ESM/dynamic requires that webpack 3 can't handle
+const externals = {
+  mjml: 'commonjs mjml',
+};
 
 module.exports = {
   entry: {
@@ -45,6 +37,7 @@ module.exports = {
   output: {
     path: path.join(__dirname, 'dist/js-server'),
     filename: '[name].js',
+    libraryTarget: 'commonjs2', // Export as module.exports for require()/eval()
   },
   devtool: prod ? 'source-map' : 'cheap-eval-source-map',
   plugins: [
@@ -58,7 +51,7 @@ module.exports = {
     extensions: ['.js', '.jsx', '.json'],
   },
   target: 'node',
-  externals: externals,  // All node_modules external - included in Docker via .dockerignore
+  externals,
   module: {
     rules: [
       // Note: eslint-loader and shebang-loader removed - not needed for server builds
