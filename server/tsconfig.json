@@ -1,0 +1,22 @@
+{
+  "extends": "../tsconfig.base.json",
+  "compilerOptions": {
+    "rootDir": ".",
+    "baseUrl": ".",
+    "paths": {
+      "dancedeets-common/*": ["../common/js/*"]
+    }
+  },
+  "files": [],
+  "include": [
+    "assets/**/*.ts",
+    "assets/**/*.tsx",
+    "node_server/**/*.ts",
+    "node_server/**/*.tsx"
+  ],
+  "exclude": [
+    "node_modules",
+    "dist",
+    "build"
+  ]
+}

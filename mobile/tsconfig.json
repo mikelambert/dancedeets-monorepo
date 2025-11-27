@@ -1,0 +1,20 @@
+{
+  "extends": "../tsconfig.base.json",
+  "compilerOptions": {
+    "rootDir": ".",
+    "baseUrl": ".",
+    "lib": ["ES2017"],
+    "jsx": "react-native",
+    "paths": {
+      "dancedeets-common/*": ["../common/js/*"]
+    }
+  },
+  "files": [],
+  "include": [
+    "js/**/*.ts",
+    "js/**/*.tsx"
+  ],
+  "exclude": [
+    "node_modules"
+  ]
+}
