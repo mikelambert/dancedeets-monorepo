@@ -486,7 +486,7 @@ class Formatter {
 }
 
 interface DescriptionFormatterProps {
-  children: string;
+  children: React.ReactNode;
   amp?: boolean;
   target?: string;
   rel?: string;
@@ -494,7 +494,7 @@ interface DescriptionFormatterProps {
 
 export default class DescriptionFormatter extends React.Component<DescriptionFormatterProps> {
   render(): React.ReactNode {
-    const text = this.props.children;
+    const text = String(this.props.children || '');
     const formatter = new Formatter(text, this.props);
     return <span>{formatter.elements}</span>;
   }

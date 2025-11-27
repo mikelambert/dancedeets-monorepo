@@ -305,7 +305,12 @@ export class SearchEvent extends BaseEvent {
   };
 }
 
-export type Post = Record<string, unknown>;
+export interface Post {
+  message: string;
+  link?: string;
+  created_time: string;
+  from?: { id: string; name?: string };
+}
 
 export class Event extends BaseEvent {
   description!: string;

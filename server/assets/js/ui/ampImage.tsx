@@ -16,13 +16,15 @@ export interface ImportedImage {
 
 type ClientImage = ImportedImage | ImageOptionalSizes | ImageWithSizes;
 
-interface AmpImageProps {
+export interface AmpImageProps {
   picture: ClientImage;
   amp?: boolean | null;
   width?: string;
   srcSet?: string;
   sizes?: string;
   alt?: string;
+  className?: string;
+  style?: React.CSSProperties;
 }
 
 export class AmpImage extends React.Component<AmpImageProps> {

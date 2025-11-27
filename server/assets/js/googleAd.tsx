@@ -5,9 +5,11 @@
 import * as React from 'react';
 
 interface GoogleAdProps {
-  style: React.CSSProperties & { width: number | string; height: number | string };
+  style: React.CSSProperties;
   amp?: boolean | null;
+  id?: string;
   'data-ad-slot'?: string;
+  'data-ad-format'?: string;
 }
 
 export default class GoogleAd extends React.Component<GoogleAdProps> {

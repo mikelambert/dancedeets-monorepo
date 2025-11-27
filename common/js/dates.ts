@@ -5,11 +5,11 @@
 import upperFirst from 'lodash/upperFirst';
 import moment, { Moment } from 'moment';
 
-// Simple type for react-intl's intl object
+// Simple type for react-intl's intl object - using 'unknown' for formatTime to be compatible with react-intl
 interface IntlShape {
   now(): number;
   formatDate(date: Date, options?: Intl.DateTimeFormatOptions): string;
-  formatTime(date: Date | Moment): string;
+  formatTime(date: unknown): string;
 }
 
 // TODO: combine this with mobile's formats.js

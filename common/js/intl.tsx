@@ -134,10 +134,10 @@ function Internationalize(props: InternationalizeProps): React.ReactElement {
 // fr-FR
 // zh-TW
 // etc
-export function intlWeb<P extends { currentLocale: string }>(
-  Wrapped: React.ComponentType<P>
-): React.FC<P> {
-  return (props: P) => (
+export function intlWeb<P extends object>(
+  Wrapped: React.ComponentType<P & { currentLocale: string }>
+): React.FC<P & { currentLocale: string }> {
+  return (props: P & { currentLocale: string }) => (
     <Internationalize currentLocale={props.currentLocale}>
       <Wrapped {...props} />
     </Internationalize>

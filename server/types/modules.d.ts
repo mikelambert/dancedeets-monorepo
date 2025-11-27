@@ -280,3 +280,37 @@ declare module 'react-cookie' {
   export function load(name: string, doNotParse?: boolean): unknown;
   export function remove(name: string, options?: CookieSetOptions): void;
 }
+
+// stacktrace-js
+declare module 'stacktrace-js' {
+  interface StackFrame {
+    functionName?: string;
+    fileName?: string;
+    lineNumber?: number;
+    columnNumber?: number;
+  }
+
+  interface StackTrace {
+    get(options?: object): Promise<StackFrame[]>;
+    fromError(error: Error, options?: object): Promise<StackFrame[]>;
+  }
+
+  const stacktrace: StackTrace;
+  export default stacktrace;
+}
+
+// stackdriver-errors-js
+declare module 'stackdriver-errors-js' {
+  interface StartOptions {
+    key: string;
+    projectId: string;
+    service?: string;
+    version?: string;
+  }
+
+  export class StackdriverErrorReporter {
+    start(options: StartOptions): void;
+    report(error: Error | string, options?: object): void;
+  }
+}
+

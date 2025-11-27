@@ -6,7 +6,7 @@ import { formatStartDateOnly } from '../dates';
 import { BaseEvent, EventRsvpList, JSONObject } from './models';
 import messages from './messages';
 
-// Simple type for react-intl's intl object
+// Simple type for react-intl's intl object - using 'unknown' for formatTime to be compatible with react-intl
 interface IntlShape {
   now(): number;
   formatMessage(
@@ -14,7 +14,7 @@ interface IntlShape {
     values?: Record<string, string | number>
   ): string;
   formatDate(date: Date, options?: Intl.DateTimeFormatOptions): string;
-  formatTime(date: Date): string;
+  formatTime(date: unknown): string;
 }
 
 export function formatAttending(
