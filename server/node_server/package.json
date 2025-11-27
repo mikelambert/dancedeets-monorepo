@@ -6,9 +6,10 @@
     "start": "node node_server/renderServer.js"
   },
   "dependencies": {
-    "babel-core": "^6.1.20",
-    "babel-plugin-transform-react-jsx": "^6.1.18",
-    "babel-polyfill": "^6.9.1",
+    "@babel/core": "^7.23.0",
+    "@babel/plugin-transform-react-jsx": "^7.23.0",
+    "core-js": "^3.33.0",
+    "regenerator-runtime": "^0.14.0",
     "body-parser": "^1.14.1",
     "express": "^4.14.0",
     "mjml": "^3.3.4",

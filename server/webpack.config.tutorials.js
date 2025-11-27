@@ -44,12 +44,11 @@ module.exports = {
           options: {
             babelrc: false,
             presets: [
-              [require.resolve('babel-preset-latest'), { es2015: { modules: false } }],
-              require.resolve('babel-preset-react'),
-              require.resolve('babel-preset-stage-0'),
+              [require.resolve('@babel/preset-env'), { modules: false }],
+              require.resolve('@babel/preset-react'),
             ],
             plugins: [
-              require.resolve('babel-plugin-transform-flow-strip-types'),
+              require.resolve('@babel/plugin-transform-flow-strip-types'),
             ],
           },
         },

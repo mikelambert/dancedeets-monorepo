@@ -4,15 +4,15 @@
  * @flow
  */
 
-import webpack from 'webpack';
-import ExtractTextPlugin from 'extract-text-webpack-plugin';
-import OptimizeCssAssetsPlugin from 'optimize-css-assets-webpack-plugin';
-import ManifestPlugin from 'webpack-manifest-plugin';
-import ChunkManifestPlugin from 'chunk-manifest-webpack-plugin';
-import WebpackMd5Hash from 'webpack-md5-hash';
-import path from 'path';
-import { argv as env } from 'yargs';
-import pleeease from 'pleeease';
+const webpack = require('webpack');
+const ExtractTextPlugin = require('extract-text-webpack-plugin');
+const OptimizeCssAssetsPlugin = require('optimize-css-assets-webpack-plugin');
+const ManifestPlugin = require('webpack-manifest-plugin');
+const ChunkManifestPlugin = require('chunk-manifest-webpack-plugin');
+const WebpackMd5Hash = require('webpack-md5-hash');
+const path = require('path');
+const { argv: env } = require('yargs');
+const pleeease = require('pleeease');
 
 function isJQuery(module) {
   const userRequest = module.userRequest;
@@ -137,17 +137,14 @@ const config = {
             babelrc: false, // Don't use .babelrc files from dancedeets-common
             presets: [
               [
-                'latest',
+                '@babel/preset-env',
                 {
-                  es2015: {
-                    modules: false,
-                  },
+                  modules: false,
                 },
               ],
-              'react',
-              'stage-0',
+              '@babel/preset-react',
             ],
-            plugins: ['transform-flow-strip-types'],
+            plugins: ['@babel/plugin-transform-flow-strip-types'],
           },
         },
       },

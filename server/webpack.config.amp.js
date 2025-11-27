@@ -4,6 +4,6 @@
  * @flow
  */
 
-import uncssWebpackGenerator from './uncssWebpackGenerator';
+const uncssWebpackGenerator = require('./uncssWebpackGenerator');
 
 module.exports = uncssWebpackGenerator('amp', ['amp/generated/*-amp.html']);

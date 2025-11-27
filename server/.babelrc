@@ -1,12 +1,12 @@
 {
-  "presets": ["latest", "react", "stage-0"],
+  "presets": ["@babel/preset-env", "@babel/preset-react"],
   "plugins": [
     "react-hot-loader/babel",
-    "transform-flow-strip-types",
+    "@babel/plugin-transform-flow-strip-types",
     ["react-intl", {
         "messagesDir": "../build/messages/",
         "enforceDescriptions": true
-    }],
+    }]
   ],
   "retainLines": true
 }
