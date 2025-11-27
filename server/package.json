@@ -94,6 +94,7 @@
     "linkify-it": "^2.0.3",
     "lodash": "^4.17.2",
     "mjml": "^4.17.1",
+    "mjml-browser": "^4.17.1",
     "moment": "^2.11.2",
     "null-loader": "^4.0.1",
     "pleeease": "^4.1.0",
