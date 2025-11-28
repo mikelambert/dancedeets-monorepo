@@ -35,7 +35,7 @@ declare global {
     fbAsyncInit?: () => void;
     hasCalledFbInit?: boolean;
     mixpanel?: {
-      track(event: string): void;
+      track(event: string, properties?: Record<string, unknown>): void;
     };
     prodMode?: boolean;
     adsbygoogle?: Record<string, unknown>[];

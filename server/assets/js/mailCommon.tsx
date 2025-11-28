@@ -64,8 +64,7 @@ export class MobileAppPromo extends React.Component<MobileAppPromoProps> {
                     alt="Download iPhone/iPad App"
                     src="https://storage.googleapis.com/dancedeets-static/img/mail/mobile-ios-download.png"
                     width="122"
-                    style={{ padding: 10 }}
-                    border="0"
+                    style={{ padding: 10, border: 0 }}
                   />
                 </a>
               </td>
@@ -75,8 +74,7 @@ export class MobileAppPromo extends React.Component<MobileAppPromoProps> {
                     alt="Download Android App"
                     src="https://storage.googleapis.com/dancedeets-static/img/mail/mobile-android-download.png"
                     width="122"
-                    style={{ padding: 10 }}
-                    border="0"
+                    style={{ padding: 10, border: 0 }}
                   />
                 </a>
               </td>

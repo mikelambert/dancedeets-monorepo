@@ -4,7 +4,7 @@
 
 import * as React from 'react';
 import countBy from 'lodash/countBy';
-import { injectIntl } from 'react-intl';
+import { injectIntl, InjectedIntlProps } from 'react-intl';
 import Helmet from 'react-helmet';
 import Masonry from 'react-masonry-component';
 import LazyLoad from 'react-lazyload';
@@ -23,7 +23,7 @@ import messages from 'dancedeets-common/js/tutorials/messages';
 import { sortNumber } from 'dancedeets-common/js/util/sort';
 import { cdnBaseUrl } from 'dancedeets-common/js/util/url';
 import { Card, ShareLinks, wantsWindowSizes } from './ui';
-import type { windowProps } from './ui';
+import type { WindowProps } from './ui';
 import { generateMetaTags } from './meta';
 import {
   getSelected,
@@ -101,11 +101,12 @@ interface TutorialProps {
   tutorial: Playlist;
   searchKeywords: Array<string>;
   lazyLoad: boolean;
-  intl: { formatMessage: (msg: unknown, values?: unknown) => string; locale: string };
-  window: windowProps;
+  window: WindowProps;
 }
 
-class _Tutorial extends React.Component<TutorialProps> {
+type TutorialPropsWithIntl = TutorialProps & InjectedIntlProps;
+
+class _Tutorial extends React.Component<TutorialPropsWithIntl> {
   matchesKeywords(obj: Video | Section): boolean {
     const text = obj.getSearchText();
     return (

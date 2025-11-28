@@ -69,6 +69,9 @@ export class ImagePrefix extends React.Component<ImagePrefixProps> {
 interface ImagePrefixInlineProps {
   className?: string;
   children: React.ReactNode;
+  icon?: number;
+  iconUrl?: string;
+  iconName?: string;
 }
 
 export class ImagePrefixInline extends React.Component<ImagePrefixInlineProps> {

@@ -234,6 +234,7 @@ interface AddEventEmailProps {
   mobileIosUrl: string;
   mobileAndroidUrl: string;
   emailPreferencesUrl: string;
+  currentLocale: string;
 }
 
 class AddEventEmail extends React.Component<AddEventEmailProps> {

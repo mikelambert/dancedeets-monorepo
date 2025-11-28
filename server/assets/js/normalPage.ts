@@ -5,12 +5,5 @@
 import jQuery from 'jquery';
 import './common';
 
-declare global {
-  // eslint-disable-next-line no-var
-  var $: typeof jQuery;
-  // eslint-disable-next-line no-var
-  var jQuery: typeof jQuery;
-}
-
-global.$ = jQuery;
-global.jQuery = jQuery;
+(globalThis as unknown as { $: typeof jQuery }).$ = jQuery;
+(globalThis as unknown as { jQuery: typeof jQuery }).jQuery = jQuery;

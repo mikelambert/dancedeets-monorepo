@@ -2,8 +2,6 @@
  * Copyright 2016 DanceDeets.
  */
 
-/// <reference path="../../types/mjml.d.ts" />
-
 import * as React from 'react';
 import { constructIntl, intlWeb } from 'dancedeets-common/js/intl';
 import { Event } from 'dancedeets-common/js/events/models';
@@ -447,11 +445,12 @@ interface AddEventEmailProps {
   mobileIosUrl: string;
   mobileAndroidUrl: string;
   emailPreferencesUrl: string;
+  currentLocale: string;
 }
 
 class AddEventEmail extends React.Component<AddEventEmailProps> {
   render(): React.ReactElement {
-    const event = new Event(this.props.event);
+    const event = this.props.event;
     return (
       <NewEmailWrapper
         previewText="We want to help promote your event!"

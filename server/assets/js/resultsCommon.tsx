@@ -30,7 +30,7 @@ interface DatePickerProps {
   focused: boolean;
   onFocus: () => void;
   onBlur: () => void;
-  onComplete: () => void;
+  onComplete?: () => void;
   window: WindowProps;
 }
 
@@ -161,7 +161,7 @@ class _DatePicker extends React.Component<DatePickerProps, DatePickerState> {
     );
   }
 }
-const DatePicker = wantsWindowSizes(injectIntl(_DatePicker));
+const DatePicker = wantsWindowSizes(_DatePicker);
 
 function findNextTabStop(el: HTMLElement): HTMLElement {
   const universe = (global as unknown as { window: Window }).window.document.querySelectorAll(
@@ -620,6 +620,7 @@ class KeywordSearchBox extends React.Component<KeywordSearchBoxProps, KeywordSea
 
 interface DateSearchBoxProps {
   query: Query;
+  performSearch?: () => Promise<void>;
 }
 
 class DateSearchBox extends React.Component<DateSearchBoxProps> {
@@ -720,7 +721,7 @@ class _SearchBox extends React.Component<SearchBoxProps> {
     );
   }
 }
-export const SearchBox = injectIntl(_SearchBox);
+export const SearchBox = _SearchBox;
 
 export function canonicalizeQuery(query: Query): Partial<Query> {
   const newQuery: Partial<Query> = {};

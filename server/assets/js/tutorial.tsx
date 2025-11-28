@@ -3,7 +3,7 @@
  */
 
 import * as React from 'react';
-import { injectIntl } from 'react-intl';
+import { injectIntl, InjectedIntlProps } from 'react-intl';
 import YouTube from 'react-youtube';
 import Helmet from 'react-helmet';
 import ExecutionEnvironment from 'exenv';
@@ -12,7 +12,7 @@ import { getTutorials } from 'dancedeets-common/js/tutorials/playlistConfig';
 import { Playlist, Video } from 'dancedeets-common/js/tutorials/models';
 import { formatDuration } from 'dancedeets-common/js/tutorials/format';
 import { Link, ShareLinks, wantsWindowSizes } from './ui';
-import type { windowProps } from './ui';
+import type { WindowProps } from './ui';
 import { generateMetaTags } from './meta';
 
 const backgroundPlaylistHeaderColor = 'white';
@@ -34,10 +34,11 @@ const getHeaderHeight = (): number => {
 interface DurationProps {
   duration: number;
   style?: React.CSSProperties;
-  intl: { formatMessage: (msg: unknown) => string };
 }
 
-class _Duration extends React.Component<DurationProps> {
+type DurationPropsWithIntl = DurationProps & InjectedIntlProps;
+
+class _Duration extends React.Component<DurationPropsWithIntl> {
   render(): React.ReactElement {
     const duration = formatDuration(
       this.props.intl.formatMessage,
@@ -60,18 +61,19 @@ const Duration = injectIntl(_Duration);
 interface TutorialViewProps {
   tutorial: Playlist;
   videoIndex: number | null;
-  intl: { formatMessage: (msg: unknown) => string };
-  window: windowProps;
+  window: WindowProps;
 }
+
+type TutorialViewPropsWithIntl = TutorialViewProps & InjectedIntlProps;
 
 interface TutorialViewState {
   video: Video;
 }
 
-class _TutorialView extends React.Component<TutorialViewProps, TutorialViewState> {
+class _TutorialView extends React.Component<TutorialViewPropsWithIntl, TutorialViewState> {
   _youtube: YouTube | null = null;
 
-  constructor(props: TutorialViewProps) {
+  constructor(props: TutorialViewPropsWithIntl) {
     super(props);
 
     this.state = {

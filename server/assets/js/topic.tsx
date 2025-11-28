@@ -6,7 +6,7 @@ import * as React from 'react';
 import Masonry from 'react-masonry-component';
 import FormatText from 'react-format-text';
 import Helmet from 'react-helmet';
-import { injectIntl } from 'react-intl';
+import { injectIntl, InjectedIntlProps } from 'react-intl';
 import { SearchEvent } from 'dancedeets-common/js/events/models';
 import type { NewSearchResponse } from 'dancedeets-common/js/events/search';
 import { formatStartDateOnly } from 'dancedeets-common/js/dates';
@@ -19,7 +19,7 @@ import {
   Truncate,
   wantsWindowSizes,
 } from './ui';
-import type { windowProps } from './ui';
+import type { WindowProps } from './ui';
 import { SelectButton } from './MultiSelectList';
 
 type Topic = Record<string, unknown>;
@@ -29,10 +29,11 @@ interface TopicEventProps {
   event: SearchEvent;
   lazyLoad: boolean;
   width: number;
-  intl: { formatMessage: (msg: unknown) => string; locale: string };
 }
 
-export class _TopicEvent extends React.Component<TopicEventProps> {
+type TopicEventPropsWithIntl = TopicEventProps & InjectedIntlProps;
+
+export class _TopicEvent extends React.Component<TopicEventPropsWithIntl> {
   render(): React.ReactElement {
     const { event } = this.props;
 
@@ -248,7 +249,7 @@ interface EventListProps {
   response: NewSearchResponse;
   videos: { items: VideoData[] };
   instagrams: { items: InstagramData[] };
-  window: windowProps;
+  window: WindowProps;
 }
 
 interface EventListState {
@@ -396,6 +397,7 @@ interface TopicPageProps {
   videos: { items: VideoData[] };
   instagrams: { items: InstagramData[] };
   topic: Topic;
+  currentLocale: string;
 }
 
 class TopicPage extends React.Component<TopicPageProps> {

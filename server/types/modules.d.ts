@@ -314,3 +314,31 @@ declare module 'stackdriver-errors-js' {
   }
 }
 
+// react-masonry-component
+declare module 'react-masonry-component' {
+  import * as React from 'react';
+
+  interface MasonryOptions {
+    transitionDuration?: string | number;
+    columnWidth?: number | string;
+    itemSelector?: string;
+    gutter?: number;
+    percentPosition?: boolean;
+    horizontalOrder?: boolean;
+    fitWidth?: boolean;
+  }
+
+  interface MasonryProps {
+    elementType?: string;
+    options?: MasonryOptions;
+    disableImagesLoaded?: boolean;
+    updateOnEachImageLoad?: boolean;
+    className?: string;
+    style?: React.CSSProperties;
+    children?: React.ReactNode;
+  }
+
+  const Masonry: React.ComponentType<MasonryProps>;
+  export default Masonry;
+}
+

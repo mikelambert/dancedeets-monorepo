@@ -7,6 +7,7 @@ import * as React from 'react';
 interface LinkProps {
   children: React.ReactNode;
   style?: React.CSSProperties;
+  onClick?: () => void;
 }
 
 export default class Link extends React.Component<LinkProps> {

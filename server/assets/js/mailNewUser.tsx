@@ -216,6 +216,7 @@ interface NewUserEmailProps {
   mobileIosUrl: string;
   mobileAndroidUrl: string;
   emailPreferencesUrl: string;
+  currentLocale: string;
 }
 
 class NewUserEmail extends React.Component<NewUserEmailProps> {

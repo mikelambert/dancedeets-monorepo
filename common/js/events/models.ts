@@ -5,8 +5,8 @@
 import moment, { Moment } from 'moment';
 import { addUrlArgs } from '../util/url';
 
-type JSON = string | number | boolean | null | JSONObject | JSONArray;
-export type JSONObject = { [key: string]: JSON };
+type JSON = string | number | boolean | null | JSONObject | JSONArray | unknown;
+export type JSONObject = Record<string, unknown>;
 type JSONArray = Array<JSON>;
 
 export interface ImageWithSizes {

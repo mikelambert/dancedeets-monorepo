@@ -2,6 +2,8 @@
  * MJML React JSX element types for email templating.
  */
 
+import 'react';
+
 interface MjmlElementProps {
   'mj-class'?: string;
   padding?: string;
@@ -13,37 +15,41 @@ interface MjmlElementProps {
   'background-url'?: string;
   'background-repeat'?: string;
   'container-background-color'?: string;
+  'vertical-align'?: string;
+  'font-family'?: string;
+  width?: string;
+  color?: string;
+  align?: string;
+  border?: string;
   children?: React.ReactNode;
   key?: string | number;
 }
 
-declare global {
+declare module 'react' {
   namespace JSX {
     interface IntrinsicElements {
       'mj-section': MjmlElementProps;
       'mj-column': MjmlElementProps;
       'mj-group': MjmlElementProps;
       'mj-wrapper': MjmlElementProps;
+      'mj-container': MjmlElementProps;
       'mj-text': MjmlElementProps & {
         'font-size'?: string;
         'font-weight'?: string;
         'font-style'?: string;
         'line-height'?: string;
-        color?: string;
-        align?: 'left' | 'center' | 'right' | 'justify';
+        height?: string;
       };
       'mj-button': MjmlElementProps & {
         href?: string;
-        color?: string;
         height?: string;
         'border-radius'?: string;
-        align?: 'left' | 'center' | 'right';
       };
       'mj-image': MjmlElementProps & {
         src?: string;
-        width?: string;
         height?: string;
         alt?: string;
+        href?: string;
       };
       'mj-spacer': { height?: string; key?: string };
       'mj-table': MjmlElementProps;
@@ -63,5 +69,3 @@ declare global {
     }
   }
 }
-
-export {};
