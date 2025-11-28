@@ -1,20 +1,22 @@
 /**
  * Copyright 2016 DanceDeets.
- *
- * @flow
  */
 
-const webpack = require('webpack');
-const ExtractTextPlugin = require('extract-text-webpack-plugin');
-const OptimizeCssAssetsPlugin = require('optimize-css-assets-webpack-plugin');
-const ManifestPlugin = require('webpack-manifest-plugin');
-const ChunkManifestPlugin = require('chunk-manifest-webpack-plugin');
-const WebpackMd5Hash = require('webpack-md5-hash');
-const path = require('path');
-const { argv: env } = require('yargs');
-const pleeease = require('pleeease');
+import webpack from 'webpack';
+import ExtractTextPlugin from 'extract-text-webpack-plugin';
+import OptimizeCssAssetsPlugin from 'optimize-css-assets-webpack-plugin';
+import ManifestPlugin from 'webpack-manifest-plugin';
+import ChunkManifestPlugin from 'chunk-manifest-webpack-plugin';
+import WebpackMd5Hash from 'webpack-md5-hash';
+import path from 'path';
+import { argv as env } from 'yargs';
+import pleeease from 'pleeease';
 
-function isJQuery(module) {
+interface WebpackModule {
+  userRequest?: string;
+}
+
+function isJQuery(module: WebpackModule): boolean {
   const userRequest = module.userRequest;
   if (typeof userRequest !== 'string') {
     return false;
@@ -31,11 +33,11 @@ function isJQuery(module) {
   return false;
 }
 
-const prod = !env.debug;
+const prod = !(env as { debug?: boolean }).debug;
 
-const ifProd = plugin => (prod ? plugin : null);
+const ifProd = <T>(plugin: T): T | null => (prod ? plugin : null);
 
-const entry = {
+const entry: Record<string, string> = {
   addEvent: './assets/js/addEvent.js',
   bracketsExec: './assets/js/bracketsExec.js',
   calendarExec: './assets/js/calendarExec.js',
@@ -50,7 +52,7 @@ const entry = {
   tutorialCategoryExec: './assets/js/tutorialCategoryExec.js',
 };
 
-const config = {
+const config: webpack.Configuration = {
   entry,
   output: {
     path: path.join(__dirname, 'dist/js'),
@@ -76,21 +78,21 @@ const config = {
     new ExtractTextPlugin({
       filename: prod ? '../css/[name].[contenthash].css' : '../css/[name].css',
     }),
-    new webpack.optimize.CommonsChunkPlugin({
+    new (webpack.optimize as any).CommonsChunkPlugin({
       name: 'jquery',
       // For now this is *after* 'common', and so gets loaded first.
       // When we move jquery out of assets/js/common.js, we can flip these.
       chunks: ['common', ...Object.keys(entry)],
       minChunks: isJQuery,
     }),
-    new webpack.optimize.CommonsChunkPlugin({
+    new (webpack.optimize as any).CommonsChunkPlugin({
       name: 'common',
       chunks: ['homepage', 'normalPage', 'eventExec', 'eventSearchResultsExec'],
       minChunks: 2,
     }),
-    new webpack.optimize.ModuleConcatenationPlugin(),
+    new (webpack.optimize as any).ModuleConcatenationPlugin(),
     ifProd(
-      new webpack.optimize.UglifyJsPlugin({
+      new (webpack.optimize as any).UglifyJsPlugin({
         sourceMap: true,
         compress: {
           warnings: true,
@@ -102,7 +104,7 @@ const config = {
         canPrint: false,
       })
     ),
-    ifProd(new webpack.HashedModuleIdsPlugin()),
+    ifProd(new (webpack as any).HashedModuleIdsPlugin()),
     ifProd(new WebpackMd5Hash()),
     ifProd(
       new ManifestPlugin({
@@ -115,7 +117,7 @@ const config = {
         manifestVariable: 'webpackManifest',
       })
     ),
-  ].filter(x => x),
+  ].filter((x): x is webpack.Plugin => x !== null),
   resolve: {
     extensions: ['.js', '.jsx'],
   },
@@ -254,4 +256,5 @@ const config = {
     ],
   },
 };
-module.exports = config;
+
+export default config;

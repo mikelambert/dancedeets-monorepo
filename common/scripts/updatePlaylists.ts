@@ -2,16 +2,27 @@
 
 /**
  * Copyright 2016 DanceDeets.
- *
- * @flow
  */
 import fetch from 'node-fetch';
 import * as fs from 'fs';
 import zip from 'lodash/zip';
 import { loadPlaylist } from './fetchYoutubeVideos';
-import { findVideoDimensions, getUrl, YoutubeKey } from './_youtube';
+import { findVideoDimensions, getUrl, YoutubeKey, VideoDimensions } from './_youtube';
 
-async function loadPlaylistData(playlistIds) {
+interface PlaylistJson {
+  items: Array<{
+    id: string;
+    snippet: {
+      thumbnails: {
+        standard: {
+          url: string;
+        };
+      };
+    };
+  }>;
+}
+
+async function loadPlaylistData(playlistIds: string[]): Promise<PlaylistJson> {
   const playlistUrl = getUrl(
     'https://www.googleapis.com/youtube/v3/playlists',
     {
@@ -20,11 +31,11 @@ async function loadPlaylistData(playlistIds) {
       key: YoutubeKey,
     }
   );
-  const playlistJson = await (await fetch(playlistUrl)).json();
+  const playlistJson: PlaylistJson = await (await fetch(playlistUrl)).json();
   return playlistJson;
 }
 
-function transformTitle(title) {
+function transformTitle(title: string): string {
   const toTrim = [
     " | Beginner's Guide",
     ' | Beginners Guide',
@@ -43,13 +54,34 @@ function transformTitle(title) {
   return newTitle;
 }
 
-type PlaylistInfo = {
-  id: string,
-  name: string,
-  playlist: string,
-};
+interface PlaylistInfo {
+  id: string;
+  name: string;
+  playlist: string;
+}
 
-async function reloadPlaylists(playlistInfos: Array<PlaylistInfo>) {
+interface TutorialItem {
+  youtubeId: string;
+  duration: string;
+  title: string;
+  width?: number;
+  height?: number;
+}
+
+interface Tutorial {
+  id: string;
+  title: string;
+  author: string;
+  style: string;
+  language: string;
+  thumbnail: string;
+  sections: Array<{
+    title: string;
+    videos: TutorialItem[];
+  }>;
+}
+
+async function reloadPlaylists(playlistInfos: PlaylistInfo[]): Promise<void> {
   const playlistsJson = await loadPlaylistData(
     playlistInfos.map(x => x.playlist)
   );
@@ -64,16 +96,16 @@ async function reloadPlaylists(playlistInfos: Array<PlaylistInfo>) {
     const videoDimensions = await findVideoDimensions(
       tutorialItemsJson.map(x => x.youtubeId)
     );
-    const tempTutorialItems = tutorialItemsJson.map(x => ({
+    const tempTutorialItems: TutorialItem[] = tutorialItemsJson.map(x => ({
       ...x,
       title: transformTitle(x.title),
       ...videoDimensions[x.youtubeId],
     }));
     // De-dupe the array on ids, keeping only the first element (where pos == found-itself)
     const finalTutorialItems = tempTutorialItems.filter((item, pos, self) => {
-      return self.findIndex(x => x.id == item.id) == pos;
+      return self.findIndex(x => (x as any).id == (item as any).id) == pos;
     });
-    const tutorial = {
+    const tutorial: Tutorial = {
       id: playlistInfo.id,
       title: `VincaniTV: ${playlistInfo.name}`,
       author: 'VincaniTV Teachers',
@@ -94,11 +126,11 @@ async function reloadPlaylists(playlistInfos: Array<PlaylistInfo>) {
       '-',
       '_'
     )}.json`;
-    fs.writeFile(filename, JSON.stringify(tutorial, null, '  '));
+    fs.writeFile(filename, JSON.stringify(tutorial, null, '  '), () => {});
   }
 }
 
-const playlists = [
+const playlists: PlaylistInfo[] = [
   {
     id: 'vincanitv-beginner',
     name: 'Beginner',

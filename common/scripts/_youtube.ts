@@ -1,7 +1,5 @@
 /**
  * Copyright 2016 DanceDeets.
- *
- * @flow
  */
 
 import fetch from 'node-fetch';
@@ -9,7 +7,7 @@ import querystring from 'querystring';
 
 export const YoutubeKey = 'AIzaSyCV8QCRxSwv1vVk017qI3EZ9zlC8TefUjY';
 
-export function getUrl(path: string, args: Object) {
+export function getUrl(path: string, args: Record<string, any>): string {
   const formattedArgs = querystring.stringify(args);
   let fullPath = path;
   if (formattedArgs) {
@@ -18,8 +16,13 @@ export function getUrl(path: string, args: Object) {
   return fullPath;
 }
 
-export async function findVideoDimensions(videoIds: Array<string>) {
-  const dimensions = {};
+export interface VideoDimensions {
+  width: number;
+  height: number;
+}
+
+export async function findVideoDimensions(videoIds: string[]): Promise<Record<string, VideoDimensions>> {
+  const dimensions: Record<string, VideoDimensions> = {};
   for (const videoId of videoIds) {
     const oEmbedUrl = `https://www.youtube.com/oembed?url=https://www.youtube.com/watch?v=${videoId}&format=json`;
     try {
@@ -32,9 +35,14 @@ export async function findVideoDimensions(videoIds: Array<string>) {
   return dimensions;
 }
 
-export async function fetchAll(pageUrl: string, pageToken?: string) {
+export interface PageJson {
+  items: any[];
+  nextPageToken?: string;
+}
+
+export async function fetchAll(pageUrl: string, pageToken?: string): Promise<PageJson> {
   const newUrl = pageUrl + (pageToken ? `&pageToken=${pageToken}` : '');
-  const pageJson = await (await fetch(newUrl)).json();
+  const pageJson: PageJson = await (await fetch(newUrl)).json();
   if (pageJson.nextPageToken) {
     const pageJson2 = await fetchAll(pageUrl, pageJson.nextPageToken);
     Array.prototype.push.apply(pageJson.items, pageJson2.items);

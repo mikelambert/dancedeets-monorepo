@@ -1,7 +1,5 @@
 /**
  * Copyright 2016 DanceDeets.
- *
- * @flow
  */
 
 // This gulpfile makes use of new JavaScript features.
@@ -21,14 +19,14 @@ const $ = gulpLoadPlugins();
 
 const bucket = 'gs://dancedeets-hrd.appspot.com';
 
-function generateArgString(args: { [string]: any }) {
+function generateArgString(args: Record<string, any>): string {
   const argsString = Object.keys(args)
     .map(key => `--${key}=${String(args[key])}`)
     .join(' ');
   return argsString;
 }
 
-function remoteJob(name, module, args) {
+function remoteJob(name: string, module: string, args: Record<string, any>) {
   // args.run_on_fraction = true;
   const jobName = name.toLowerCase().replace(/[^-a-z0-9]/, '-');
   const argsString = generateArgString(args);
@@ -36,14 +34,14 @@ function remoteJob(name, module, args) {
   return $.shell.task([command]);
 }
 
-function localJob(name, module, args) {
+function localJob(name: string, module: string, args: Record<string, any>) {
   const argsString = generateArgString(args);
   return $.shell.task([
     `/usr/bin/python -m ${module} --log=DEBUG --run_locally=true ${argsString}`,
   ]);
 }
 
-function localRemoteTasks(name, module, args = {}) {
+function localRemoteTasks(name: string, module: string, args: Record<string, any> = {}) {
   gulp.task(`${name}:remote`, remoteJob(name, module, args));
   gulp.task(`${name}:local`, localJob(name, module, args));
 }

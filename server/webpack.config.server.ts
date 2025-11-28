@@ -1,23 +1,21 @@
 /**
  * Copyright 2016 DanceDeets.
- *
- * @flow
  */
 
-const webpack = require('webpack');
-const path = require('path');
-const { argv: env } = require('yargs');
+import webpack from 'webpack';
+import path from 'path';
+import { argv as env } from 'yargs';
 
-const prod = !env.debug;
+const prod = !(env as { debug?: boolean }).debug;
 
 // Bundle all dependencies into the output - no node_modules needed at runtime
 // This dramatically reduces deploy size (from 188k files to just the bundles)
 // mjml is kept external because it has complex ESM/dynamic requires that webpack 3 can't handle
-const externals = {
+const externals: Record<string, string> = {
   mjml: 'commonjs mjml',
 };
 
-module.exports = {
+const config: webpack.Configuration = {
   entry: {
     brackets: './assets/js/brackets.js',
     calendar: './assets/js/calendar.js',
@@ -91,3 +89,5 @@ module.exports = {
     ],
   },
 };
+
+export default config;

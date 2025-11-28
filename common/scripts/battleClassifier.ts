@@ -2,14 +2,31 @@
 
 /**
  * Copyright 2016 DanceDeets.
- *
- * @flow
  */
 
 import { fetchAll, getUrl, YoutubeKey } from './_youtube';
-import type { Bracket, Match } from '../../server/assets/js/bracketModels';
 
-const roundRegexes = {
+// Import types from bracketModels
+interface Match {
+  videoId: string;
+  first: string;
+  second: string;
+  winner?: number | null;
+}
+
+interface Bracket {
+  matches: Match[];
+}
+
+interface RoundRegexes {
+  final: RegExp;
+  top4: RegExp;
+  top8: RegExp;
+  top16: RegExp;
+  [key: string]: RegExp;
+}
+
+const roundRegexes: RoundRegexes = {
   final: /\bfinal\b/i,
   top4: /\b(?:(?:semi|1\s*\/\s*2)\W?final|(?:best|top)\W?4)\b/i,
   top8: /\b(?:(?:quarter|qtr|1\s*\/\s*4)\W?final|(?:best|top)\W?8)\b/i,
@@ -25,7 +42,20 @@ const anyRoundRegex = new RegExp(
 
 const vsRegex = /\bv\W?[zs]\b|versus|\bx\b|\b×\b/i;
 
-async function getPlaylistVideos(playlistId) {
+interface PlaylistItem {
+  snippet: {
+    title: string;
+    resourceId: {
+      videoId: string;
+    };
+  };
+}
+
+interface PlaylistResult {
+  items: PlaylistItem[];
+}
+
+async function getPlaylistVideos(playlistId: string): Promise<PlaylistResult> {
   const playlistItemsUrl = getUrl(
     'https://www.googleapis.com/youtube/v3/playlistItems',
     {
@@ -36,10 +66,15 @@ async function getPlaylistVideos(playlistId) {
     }
   );
   const playlistItemsJson = await fetchAll(playlistItemsUrl);
-  return playlistItemsJson;
+  return playlistItemsJson as PlaylistResult;
 }
 
-function getContestants(video) {
+interface BattleVideo {
+  title: string;
+  videoId: string;
+}
+
+function getContestants(video: BattleVideo): string[] {
   const components = video.title.split(anyRoundRegex);
   const contestantString = components.filter(x => vsRegex.test(x))[0];
   if (!vsRegex.test(contestantString)) {
@@ -57,10 +92,10 @@ function getContestants(video) {
 }
 
 function getUniqueMatchesForRound(
-  battleVideos,
-  roundRegex,
-  index
-): Array<Match> {
+  battleVideos: BattleVideo[],
+  roundRegex: RegExp,
+  index: number
+): Match[] {
   const roundMatchCount = 2 ** index;
   const roundVideos = battleVideos.filter(x => roundRegex.test(x.title));
   if (!roundVideos.length) {
@@ -71,8 +106,8 @@ function getUniqueMatchesForRound(
       `Found ${roundVideos.length} videos for round, expecting ${roundMatchCount}!`
     );
   }
-  const seenContestants = [];
-  const roundMatches: Array<Match> = [];
+  const seenContestants: string[] = [];
+  const roundMatches: Match[] = [];
   roundVideos.forEach(video => {
     const contestants = getContestants(video);
     if (
@@ -92,9 +127,9 @@ function getUniqueMatchesForRound(
   return roundMatches;
 }
 
-async function buildBracketFromPlaylist(playlistId) {
+async function buildBracketFromPlaylist(playlistId: string): Promise<Bracket> {
   const result = await getPlaylistVideos(playlistId);
-  const battleVideos = result.items.map(x => ({
+  const battleVideos: BattleVideo[] = result.items.map(x => ({
     title: x.snippet.title,
     videoId: x.snippet.resourceId.videoId,
   }));
@@ -109,7 +144,7 @@ async function buildBracketFromPlaylist(playlistId) {
     roundRegexes.top16,
   ];
 
-  let parentRoundContestantOrder = [];
+  let parentRoundContestantOrder: string[] = [];
   order.forEach((roundRegex, index) => {
     const foundMatches = getUniqueMatchesForRound(
       battleVideos,
@@ -119,7 +154,7 @@ async function buildBracketFromPlaylist(playlistId) {
     if (!foundMatches.length) {
       return;
     }
-    let sortedMatches = null;
+    let sortedMatches: Match[] | null = null;
     if (parentRoundContestantOrder.length) {
       sortedMatches = parentRoundContestantOrder.map(contestant => {
         const result = foundMatches.find(
@@ -143,8 +178,8 @@ async function buildBracketFromPlaylist(playlistId) {
     console.log('round ', index);
     console.log(sortedMatches);
     bracket.matches.push(...sortedMatches);
-    parentRoundContestantOrder = [].concat(
-      ...sortedMatches.map(x => (x ? [x.first, x.second] : [null, null]))
+    parentRoundContestantOrder = ([] as string[]).concat(
+      ...sortedMatches.map(x => (x ? [x.first, x.second] : []))
     );
   });
   return bracket;
@@ -200,7 +235,7 @@ async function buildBracketFromPlaylist(playlistId) {
 
 // PL02EtzYP5EDOh0QViYMiwCNhpDu-IbKsv best16 doesn't exist...need to use A vs B metrics
 
-async function run() {
+async function run(): Promise<void> {
   const args = process.argv.slice(2);
   const pl = args[1];
   const bracket = await buildBracketFromPlaylist(pl);

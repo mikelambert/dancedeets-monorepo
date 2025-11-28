@@ -1,24 +1,22 @@
 /**
  * Copyright 2016 DanceDeets.
- *
- * @flow
  */
 
-const webpack = require('webpack');
-const ExtractTextPlugin = require('extract-text-webpack-plugin');
-const path = require('path');
-const uncss = require('uncss');
-const pleeease = require('pleeease');
-const { argv: env } = require('yargs');
-const OptimizeCssAssetsPlugin = require('optimize-css-assets-webpack-plugin');
+import webpack from 'webpack';
+import ExtractTextPlugin from 'extract-text-webpack-plugin';
+import path from 'path';
+import uncss from 'uncss';
+import pleeease from 'pleeease';
+import { argv as env } from 'yargs';
+import OptimizeCssAssetsPlugin from 'optimize-css-assets-webpack-plugin';
 
-const prod = !env.debug;
+const prod = !(env as { debug?: boolean }).debug;
 
-module.exports = function uncssWebpackGenerator(
+export default function uncssWebpackGenerator(
   outputFilename: string,
-  htmlFiles: Array<string>,
-  ignore: ?Array<string> = undefined
-) {
+  htmlFiles: string[],
+  ignore?: string[]
+): webpack.Configuration {
   return {
     entry: {
       dummy: './assets/js/all-css.js',
@@ -34,7 +32,7 @@ module.exports = function uncssWebpackGenerator(
           NODE_ENV: JSON.stringify('production'),
         },
       }),
-      new webpack.optimize.UglifyJsPlugin({
+      new (webpack.optimize as any).UglifyJsPlugin({
         sourceMap: true,
         compress: {
           warnings: true,

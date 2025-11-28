@@ -2,28 +2,35 @@
 
 /**
  * Copyright 2016 DanceDeets.
- *
- * @flow
  */
 
 import * as path from 'path';
 import stableJsonStringify from 'json-stable-stringify';
 import fs from 'fs-extra';
 
-function generateJsonFile(translations) {
+interface Translation {
+  [key: string]: string;
+}
+
+function generateJsonFile(translations: Translation): string {
   return stableJsonStringify(translations, { space: 2 });
 }
 
 const locales = ['en', 'fr', 'ja', 'zh'];
 
-function loadJsonFile(filename) {
+function loadJsonFile(filename: string): Translation {
   return JSON.parse(fs.readFileSync(filename, 'utf8'));
 }
 
-async function updateWithTranslations(englishTranslation) {
+interface MessageEntry {
+  id: string;
+  defaultMessage: string;
+}
+
+async function updateWithTranslations(englishTranslation: Translation): Promise<void> {
   const promises = locales.map(locale => {
     const filename = path.resolve(`../common/js/messages/${locale}.json`);
-    const localeTranslation = locale === 'en' ? {} : loadJsonFile(filename);
+    const localeTranslation: Translation = locale === 'en' ? {} : loadJsonFile(filename);
     Object.keys(englishTranslation).forEach(key => {
       if (!localeTranslation[key]) {
         localeTranslation[key] = englishTranslation[key];
@@ -36,12 +43,12 @@ async function updateWithTranslations(englishTranslation) {
   await Promise.all(promises);
 }
 
-async function run() {
-  const filenames = fs.walkSync('../build/messages');
-  // $FlowFixMe: This is a dev script, and so can use dynamic includes
-  const jsons = filenames.map(file => require(file));
+async function run(): Promise<void> {
+  const filenames: string[] = (fs as any).walkSync('../build/messages');
+  // @ts-ignore: This is a dev script, and so can use dynamic includes
+  const jsons: MessageEntry[][] = filenames.map((file: string) => require(file));
   const json = jsons.reduce((result, jsList) => result.concat(jsList), []);
-  const translationLookup = {};
+  const translationLookup: Translation = {};
   json.forEach(x => {
     translationLookup[x.id] = x.defaultMessage;
   });

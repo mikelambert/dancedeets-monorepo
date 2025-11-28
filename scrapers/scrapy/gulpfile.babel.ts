@@ -1,7 +1,5 @@
 /**
  * Copyright 2016 DanceDeets.
- *
- * @flow
  */
 
 // This gulpfile makes use of new JavaScript features.
@@ -28,14 +26,14 @@ const argv = yargs
   })
   .help('h')
   .alias('h', 'help')
-  .strict().argv;
+  .strict().argv as { a: string };
 
 gulp.task('help', taskListing);
 gulp.task('default', taskListing);
 
 const $ = gulpLoadPlugins();
 
-function getScrapyNames(pattern) {
+function getScrapyNames(pattern: string): (string | null)[] {
   return glob
     .sync(pattern)
     .map(filename => {
@@ -86,11 +84,11 @@ gulp.task('scrape:classes', cb =>
 gulp.task('scrapeWeb', ['scrape:web']);
 gulp.task('scrapeClasses', ['scrape:classes']);
 
-function getScrapyKey() {
+function getScrapyKey(): string {
   if (!fs.existsSync('keys.yaml')) {
     return 'NO KEY';
   }
-  const yamlDoc = yaml.safeLoad(fs.readFileSync('keys.yaml', 'utf8'));
+  const yamlDoc = yaml.safeLoad(fs.readFileSync('keys.yaml', 'utf8')) as { scrapinghub_key: string };
   return yamlDoc.scrapinghub_key;
 }
 
