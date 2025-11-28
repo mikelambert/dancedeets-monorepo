@@ -2,8 +2,10 @@
  * Copyright 2016 DanceDeets.
  */
 
-import { MessageDescriptor } from 'react-intl';
+import { FormattedMessage } from 'react-intl';
 import messages from './messages';
+
+type MessageDescriptor = FormattedMessage.MessageDescriptor;
 
 type FormatMessageFn = (
   message: MessageDescriptor,

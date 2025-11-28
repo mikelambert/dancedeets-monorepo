@@ -2,7 +2,9 @@
  * Copyright 2016 DanceDeets.
  */
 
-import { defineMessages, MessageDescriptor } from 'react-intl';
+import { defineMessages, FormattedMessage } from 'react-intl';
+
+type MessageDescriptor = FormattedMessage.MessageDescriptor;
 
 export const messages = defineMessages({
   otherStylesTitle: {

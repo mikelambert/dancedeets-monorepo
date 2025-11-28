@@ -364,11 +364,14 @@ declare module 'react-native-geocoder' {
     subLocality: string | null;
   }
 
-  export default {
+  interface Geocoder {
     geocodeAddress(address: string): Promise<GeocodingObject[]>;
     geocodePosition(position: Position): Promise<GeocodingObject[]>;
     fallbackToGoogle(key: string): void;
-  };
+  }
+
+  const geocoder: Geocoder;
+  export default geocoder;
 }
 
 declare module 'react-native-send-intent' {

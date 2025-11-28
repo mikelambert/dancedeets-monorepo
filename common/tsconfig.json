@@ -7,11 +7,13 @@
     "declaration": true,
     "declarationMap": true,
     "emitDeclarationOnly": true,
-    "outDir": "./dist"
+    "outDir": "./dist",
+    "typeRoots": ["./types", "./node_modules/@types"]
   },
   "include": [
     "js/**/*.ts",
-    "js/**/*.tsx"
+    "js/**/*.tsx",
+    "types/**/*.d.ts"
   ],
   "exclude": [
     "node_modules"
