@@ -1,0 +1,51 @@
+/**
+ * Copyright 2016 DanceDeets.
+ */
+
+import { NavigationActions } from 'react-navigation';
+import { Event } from 'dancedeets-common/js/events/models';
+import type { ThunkAction, Dispatch } from './types';
+import WebsiteUrl from '../websiteUrl';
+import { event } from '../api/dancedeets';
+import { performSearch } from './search';
+import { updateKeywords, updateLocation } from '../ducks/searchQuery';
+
+export function processUrl(url: string): ThunkAction {
+  console.log(url);
+  return async (dispatch: Dispatch) => {
+    const processedUrl = url ? new WebsiteUrl(url) : null;
+    if (processedUrl && processedUrl.isEventUrl()) {
+      const eventId = processedUrl.eventId();
+      const eventData = await event(eventId);
+      dispatch(appNavigateToEvent(eventData));
+    } else if (processedUrl && processedUrl.isSearchUrl()) {
+      await dispatch(
+        NavigationActions.navigate({
+          routeName: 'Events',
+          params: {},
+          action: NavigationActions.navigate({
+            routeName: 'EventList',
+          }),
+        }) as unknown
+      );
+      await dispatch(updateLocation(processedUrl.location() || ''));
+      await dispatch(updateKeywords(processedUrl.keywords() || ''));
+      dispatch(performSearch());
+    }
+  };
+}
+
+export function appNavigateToEvent(navigateEvent: Event): ThunkAction {
+  return async (dispatch: Dispatch) => {
+    await dispatch(
+      NavigationActions.navigate({
+        routeName: 'Events',
+        params: {},
+        action: NavigationActions.navigate({
+          routeName: 'EventView',
+          params: { event: navigateEvent },
+        }),
+      }) as unknown
+    );
+  };
+}

@@ -7,12 +7,14 @@
     "jsx": "react-native",
     "paths": {
       "dancedeets-common/*": ["../common/js/*"]
-    }
+    },
+    "typeRoots": ["./types", "./node_modules/@types"]
   },
   "files": [],
   "include": [
     "js/**/*.ts",
-    "js/**/*.tsx"
+    "js/**/*.tsx",
+    "types/**/*.d.ts"
   ],
   "exclude": [
     "node_modules"

@@ -1,0 +1,81 @@
+/**
+ * Copyright 2016 DanceDeets.
+ */
+
+import * as React from 'react';
+import { StyleSheet, TouchableOpacity, View } from 'react-native';
+import { defineMessages, injectIntl, IntlShape, WrappedComponentProps } from 'react-intl';
+import { yellowColors } from '../Colors';
+import { Button, normalize, Text, semiNormalize } from '../ui';
+
+const messages = defineMessages({
+  loginButton: {
+    id: 'tutorial.login',
+    defaultMessage: 'Login with Facebook',
+    description: 'Login button',
+  },
+});
+
+interface Props extends WrappedComponentProps {
+  noLoginText: string;
+  onLogin: () => void;
+  onNoLogin: () => void;
+  intl: IntlShape;
+}
+
+interface State {
+  enabled: boolean;
+}
+
+class _LoginButtonWithAlternate extends React.Component<Props, State> {
+  constructor(props: Props) {
+    super(props);
+    this.state = { enabled: true };
+  }
+
+  render() {
+    return (
+      <View style={styles.bottomBox}>
+        <Button
+          color="purple"
+          icon={require('./icons/facebook.png')}
+          caption={this.props.intl.formatMessage(messages.loginButton)}
+          onPress={async () => {
+            this.setState({ enabled: false });
+            await this.props.onLogin();
+            this.setState({ enabled: true });
+          }}
+          enabled={this.state.enabled}
+          textStyle={styles.buttonStyle}
+          testID="loginButton"
+        />
+        <TouchableOpacity
+          style={styles.bottomLinkBox}
+          activeOpacity={0.7}
+          onPress={this.props.onNoLogin}
+        >
+          <Text style={styles.bottomLink}>{this.props.noLoginText}</Text>
+        </TouchableOpacity>
+      </View>
+    );
+  }
+}
+export default injectIntl(_LoginButtonWithAlternate);
+
+const styles = StyleSheet.create({
+  bottomBox: {
+    alignItems: 'center',
+    height: semiNormalize(120),
+  },
+  bottomLink: {
+    fontWeight: 'normal',
+    color: yellowColors[0],
+  },
+  bottomLinkBox: {
+    top: semiNormalize(15),
+  },
+  buttonStyle: {
+    fontSize: normalize(14),
+    lineHeight: normalize(18),
+  },
+});
