@@ -1,5 +1,5 @@
 {
-  "presets": ["react-native"],
+  "presets": ["react-native", "@babel/preset-typescript"],
   "plugins": [
     ["react-intl", {
         "messagesDir": "../build/messages/",

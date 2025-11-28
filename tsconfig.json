@@ -1,0 +1,20 @@
+{
+  "extends": "./tsconfig.base.json",
+  "compilerOptions": {
+    "baseUrl": "."
+  },
+  "files": [],
+  "include": [
+    "common/js/**/*.ts",
+    "common/js/**/*.tsx",
+    "server/assets/**/*.ts",
+    "server/assets/**/*.tsx",
+    "server/node_server/**/*.ts",
+    "server/node_server/**/*.tsx",
+    "mobile/js/**/*.ts",
+    "mobile/js/**/*.tsx"
+  ],
+  "exclude": [
+    "**/node_modules"
+  ]
+}

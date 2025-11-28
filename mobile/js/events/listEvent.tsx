@@ -1,0 +1,106 @@
+/**
+ * Copyright 2016 DanceDeets.
+ */
+
+import * as React from 'react';
+import {
+  Image,
+  StyleSheet,
+  StyleProp,
+  ViewStyle,
+  TouchableOpacity,
+  View,
+} from 'react-native';
+import { injectIntl, IntlShape, defineMessages } from 'react-intl';
+import { connect } from 'react-redux';
+import { Event, Venue } from 'dancedeets-common/js/events/models';
+import { HorizontalView, normalize, semiNormalize, Text } from '../ui';
+
+export const RowHeight = 130;
+
+interface EventVenueShortProps {
+  venue: Venue;
+  style?: StyleProp<ViewStyle>;
+}
+
+class EventVenueShort extends React.PureComponent<EventVenueShortProps> {
+  render() {
+    if (!this.props.venue.address) {
+      return null;
+    }
+    return (
+      <Text style={[eventStyles.cityText, this.props.style]}>
+        {this.props.venue.cityState()}
+      </Text>
+    );
+  }
+}
+
+interface EventRowProps {
+  onEventSelected: (x: Event) => void;
+  event: Event;
+}
+
+class _EventRow extends React.PureComponent<EventRowProps> {
+  constructor(props: EventRowProps) {
+    super(props);
+    this.onPress = this.onPress.bind(this);
+  }
+
+  onPress() {
+    this.props.onEventSelected(this.props.event);
+  }
+
+  render() {
+    const imageProps = this.props.event.getSquareFlyer();
+
+    return (
+      <View>
+        <TouchableOpacity onPress={this.onPress} activeOpacity={0.5}>
+          <HorizontalView>
+            <Image
+              source={imageProps}
+              style={{ height: RowHeight, width: RowHeight }}
+            />
+            <View style={{ flex: 1, margin: 5 }}>
+              <Text numberOfLines={2} style={eventStyles.rowTitle}>
+                {this.props.event.name}
+              </Text>
+              <EventVenueShort venue={this.props.event.venue} />
+              <Text numberOfLines={2} style={eventStyles.styleList}>
+                {this.props.event.annotations.categories.slice(0, 8).join(', ')}
+              </Text>
+            </View>
+          </HorizontalView>
+        </TouchableOpacity>
+      </View>
+    );
+  }
+}
+
+export const EventRow = _EventRow;
+
+const detailHeight = 15;
+
+const eventStyles = StyleSheet.create({
+  thumbnail: {
+    flexGrow: 1,
+    borderRadius: 5,
+  },
+  rowTitle: {
+    fontSize: semiNormalize(18),
+    lineHeight: semiNormalize(22),
+    fontWeight: 'bold',
+    flexShrink: 1,
+  },
+  cityText: {
+    fontSize: semiNormalize(detailHeight),
+    lineHeight: semiNormalize(detailHeight + 2),
+  },
+  styleList: {
+    position: 'absolute',
+    bottom: 0,
+    fontSize: semiNormalize(detailHeight - 3),
+    lineHeight: semiNormalize(detailHeight - 3 + 2),
+  },
+});
