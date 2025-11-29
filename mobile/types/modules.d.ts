@@ -700,21 +700,45 @@ declare module 'react-native-fabric-crashlytics' {
   export function recordError(error: Error): void;
 }
 
-declare module 'react-native-sentry' {
-  interface SentryConfig {
-    deactivateStacktraceMerging?: boolean;
+declare module '@sentry/react-native' {
+  interface SentryInitOptions {
+    dsn: string;
+    debug?: boolean;
+    environment?: string;
+    release?: string;
+    dist?: string;
+    tracesSampleRate?: number;
+    sampleRate?: number;
+    enableNativeCrashHandling?: boolean;
+    enableAutoSessionTracking?: boolean;
+    sessionTrackingIntervalMillis?: number;
+    attachStacktrace?: boolean;
+    attachScreenshot?: boolean;
+    beforeSend?: (event: any) => any | null;
+    beforeBreadcrumb?: (breadcrumb: any) => any | null;
+    integrations?: any[];
   }
 
-  interface SentryConfigurable {
-    install(config?: SentryConfig): void;
-  }
+  export function init(options: SentryInitOptions): void;
+  export function captureException(error: Error | string, captureContext?: object): string;
+  export function captureMessage(message: string, level?: string): string;
+  export function captureEvent(event: object): string;
+  export function setUser(user: { id?: string; email?: string; username?: string } | null): void;
+  export function setTag(key: string, value: string): void;
+  export function setTags(tags: Record<string, string>): void;
+  export function setExtra(key: string, value: any): void;
+  export function setExtras(extras: Record<string, any>): void;
+  export function setContext(name: string, context: Record<string, any> | null): void;
+  export function addBreadcrumb(breadcrumb: { message?: string; category?: string; level?: string; data?: object }): void;
+  export function configureScope(callback: (scope: any) => void): void;
+  export function withScope(callback: (scope: any) => void): void;
+  export function startTransaction(context: { name: string; op?: string }): any;
+  export function flush(timeout?: number): Promise<boolean>;
+  export function close(timeout?: number): Promise<boolean>;
 
-  export const Sentry: {
-    config(dsn: string): SentryConfigurable;
-    captureException(error: Error): void;
-    captureMessage(message: string): void;
-    setUserContext(user: object): void;
-  };
+  // React Native specific
+  export function wrap<P>(RootComponent: React.ComponentType<P>): React.ComponentType<P>;
+  export function nativeCrash(): void;
 }
 
 // Calendar

@@ -1,10 +1,12 @@
 /**
  * Copyright 2016 DanceDeets.
+ *
+ * Error tracking initialization - @sentry/react-native v5
  */
 
 import trackjs from 'react-native-trackjs';
 import crashlyticsReporter from 'react-native-fabric-crashlytics';
-import { Sentry } from 'react-native-sentry';
+import * as Sentry from '@sentry/react-native';
 
 export default function init(): void {
   if (__DEV__) {
@@ -12,12 +14,15 @@ export default function init(): void {
     // Live reloading and hot reloading in particular lead to tons of noise...
     return;
   }
-  // We deactivate stacktrace merging due to performance issues:
-  // https://github.com/getsentry/react-native-sentry/issues/109
-  // Seems that we pay a 100-200ms+ penalty on event-navigation transitions without this.
-  Sentry.config(
-    'https://56b58e9bc5c44335ab7ef39a1f85d1aa:5d0631b36af0489fab9eae00b9953e4f@sentry.io/106536'
-  ).install({ deactivateStacktraceMerging: true });
+
+  // Initialize Sentry with the new v5 API
+  Sentry.init({
+    dsn: 'https://56b58e9bc5c44335ab7ef39a1f85d1aa:5d0631b36af0489fab9eae00b9953e4f@sentry.io/106536',
+    // Enable automatic performance monitoring
+    tracesSampleRate: 1.0,
+    // Enable native crash reporting
+    enableNativeCrashHandling: true,
+  });
 
   trackjs.init({
     token: '77a8a7079d734df7a94150f8f0d7e16f',

@@ -52,7 +52,7 @@
     "react-native-push-notification": "^3.0.2",
     "react-native-segmented-android": "github:sooth-sayer/react-native-segmented-android",
     "react-native-send-intent": "^1.0.22",
-    "react-native-sentry": "^0.32.1",
+    "@sentry/react-native": "^5.15.0",
     "react-native-share": "^1.0.23",
     "react-native-trackjs": "^0.1.2",
     "react-native-vector-icons": "^4.5.0",
