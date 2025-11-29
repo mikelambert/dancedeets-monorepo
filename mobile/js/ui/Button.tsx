@@ -27,6 +27,7 @@ interface Props {
   onPress: () => Promise<void> | void;
   size: 'small' | 'large';
   textStyle?: StyleProp<TextStyle>;
+  disabledStyle?: StyleProp<ViewStyle>;
   color:
     | 'translucent'
     | 'purple'
@@ -37,6 +38,7 @@ interface Props {
   testID?: string | null;
   isLoading: boolean;
   enabled?: boolean | null;
+  isDisabled?: boolean | null;
   activityIndicatorColor: string;
 }
 

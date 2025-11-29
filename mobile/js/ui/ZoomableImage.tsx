@@ -166,6 +166,6 @@ export default class ZoomableImage extends React.Component<Props, State> {
 const styles = StyleSheet.create({
   image: {
     flex: 1,
-    resizeMode: Image.resizeMode.contain,
+    resizeMode: 'contain' as const,
   },
 });

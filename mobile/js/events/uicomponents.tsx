@@ -18,10 +18,10 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import { injectIntl, IntlShape, defineMessages } from 'react-intl';
+import { injectIntl, useIntl, IntlShape, defineMessages } from 'react-intl';
 import Locale from 'react-native-locale';
 import { usesMetricSystem } from '../util/geo';
-import { connect } from 'react-redux';
+import { connect, useSelector, useDispatch } from 'react-redux';
 import moment from 'moment';
 import geolib from 'geolib';
 import querystring from 'querystring';
@@ -42,7 +42,7 @@ import {
   semiNormalize,
   Text,
 } from '../ui';
-import { User, ThunkAction, Dispatch } from '../actions/types';
+import { User, ThunkAction, Dispatch, RootState } from '../actions/types';
 import { linkColor, purpleColors } from '../Colors';
 import { add as CalendarAdd } from '../api/calendar';
 import { performRequest } from '../api/fb';
@@ -481,159 +481,92 @@ const EventOrganizers = injectIntl(_EventOrganizers);
 interface EventRsvpControlProps {
   event: Event;
   style?: any;
-
-  // Self-managed props
-  intl: IntlShape;
-  user: User | null;
-  canGetValidLoginFor: (
-    feature: string,
-    props: { intl: IntlShape; user: User | null }
-  ) => Promise<void>;
 }
 
-interface EventRsvpControlState {
-  loading: boolean;
-  defaultRsvp: number;
-}
+function EventRsvpControl({ event, style }: EventRsvpControlProps) {
+  const intl = useIntl();
+  const dispatch = useDispatch();
+  const user = useSelector((state: RootState) => state.user.userData);
+  const isLoggedIn = useSelector((state: RootState) => state.user.isLoggedIn);
 
-class _EventRsvpControl extends React.PureComponent<
-  EventRsvpControlProps,
-  EventRsvpControlState
-> {
-  constructor(props: EventRsvpControlProps) {
-    super(props);
-    this.state = {
-      loading: false,
-      defaultRsvp: -1,
-    };
-    this.onRsvpChange = this.onRsvpChange.bind(this);
-  }
+  const [loading, setLoading] = React.useState(false);
+  const [defaultRsvp, setDefaultRsvp] = React.useState(-1);
 
-  componentDidMount() {
-    if (this.props.user) {
-      this.loadRsvp();
+  const loadRsvp = React.useCallback(async () => {
+    setLoading(true);
+    const rsvpIndex = await RsvpOnFB.getRsvpIndex(event.id);
+    setDefaultRsvp(rsvpIndex);
+    setLoading(false);
+  }, [event.id]);
+
+  React.useEffect(() => {
+    if (user) {
+      loadRsvp();
     }
-  }
+  }, [user, loadRsvp]);
 
-  async onRsvpChange(index: number, oldIndex: number): Promise<void> {
-    if (!this.props.user) {
+  const onRsvpChange = async (index: number, oldIndex: number): Promise<void> => {
+    if (!user) {
       if (
-        !(await this.props.canGetValidLoginFor(
-          this.props.intl.formatMessage(messages.featureRSVP),
-          this.props
-        ))
+        !isLoggedIn &&
+        !(await canGetValidLoginFor(intl.formatMessage(messages.featureRSVP), intl, dispatch))
       ) {
         throw new Error('Not logged in, do not allow changes!');
       }
-      // Have user, let's load!
     }
-    // Android's SegmentedControl doesn't upport enabled=,
-    // so it's possible onRsvpChange will be called while we are loading.
-    // Setting an RSVP while an RSVP is in-progress breaks the underlying FB API.
-    // So let's skip sending any RSVPs while we are setting-and-reloading the value.
-    // We enforce this by throwing an exception,
-    // which guarantees the SegmentedControl 'undoes' the selection.
-    if (this.state.loading) {
+    if (loading) {
       throw new Error('Already loading values, do not allow any changes!');
     }
     const rsvp = RsvpOnFB.RSVPs[index];
-    trackWithEvent('RSVP', this.props.event, { 'RSVP Value': rsvp });
-    // We await on this, so exceptions are propagated up (and segmentedControl can undo actions)
-    this.setState({ ...this.state, loading: true });
+    trackWithEvent('RSVP', event, { 'RSVP Value': rsvp });
+    setLoading(true);
     try {
-      await RsvpOnFB.send(this.props.event.id, rsvp);
-      console.log(
-        `Successfully RSVPed as ${rsvp} to event ${this.props.event.id}`
-      );
-      // Now while the state is still 'loading', let's reload the latest RSVP from the server.
-      // And when we receive it, we'll unset state.loading, re-render this component.
-      await this.loadRsvp();
+      await RsvpOnFB.send(event.id, rsvp);
+      console.log(`Successfully RSVPed as ${rsvp} to event ${event.id}`);
+      await loadRsvp();
     } catch (e) {
-      this.setState({ loading: false });
-      throw new Error(
-        `Error sending rsvp ${rsvp} for event ${this.props.event.id}: ${e}`
-      );
+      setLoading(false);
+      throw new Error(`Error sending rsvp ${rsvp} for event ${event.id}: ${e}`);
     }
-  }
+  };
 
-  async loadRsvp() {
-    // We don't check this.props.user here, since there may be a delay before it gets set,
-    // relative to the code flow that calls this from onRsvpChange.
-    this.setState({ loading: true });
-    const rsvpIndex = await RsvpOnFB.getRsvpIndex(this.props.event.id);
-    this.setState({ defaultRsvp: rsvpIndex, loading: false });
-  }
-
-  render() {
-    return (
-      <SegmentedControl
-        // When loading, we construct a "different" SegmentedControl here (forcing it via key=),
-        // so that when we flip to having a defaultRsvp, we construct a *new* SegmentedControl.
-        // This ensures that the SegmentedControl's constructor runs (and pulls in the new defaultRsvp).
-        key={this.state.loading ? 'loading' : 'segmentedControl'}
-        enabled={!this.state.loading}
-        values={RsvpOnFB.RSVPs.map(x =>
-          this.props.intl.formatMessage(messages[x])
-        )}
-        defaultIndex={this.state.defaultRsvp}
-        tintColor={purpleColors[0]}
-        style={[{ marginTop: 5, flexGrow: 1 }, this.props.style]}
-        tryOnChange={this.onRsvpChange}
-      />
-    );
-  }
+  return (
+    <SegmentedControl
+      key={loading ? 'loading' : 'segmentedControl'}
+      enabled={!loading}
+      values={RsvpOnFB.RSVPs.map(x => intl.formatMessage(messages[x]))}
+      defaultIndex={defaultRsvp}
+      tintColor={purpleColors[0]}
+      style={[{ marginTop: 5, flexGrow: 1 }, style]}
+      tryOnChange={onRsvpChange}
+    />
+  );
 }
-
-const EventRsvpControl = connect(
-  (state: any) => ({
-    isLoggedIn: state.user.isLoggedIn,
-  }),
-  (dispatch: any) => ({
-    canGetValidLoginFor: async (feature: string, props: any) => {
-      if (
-        !props.isLoggedIn &&
-        !(await canGetValidLoginFor(feature, props.intl, dispatch))
-      ) {
-        return false;
-      }
-      return true;
-    },
-  })
-)(injectIntl(_EventRsvpControl));
 
 interface EventRsvpProps {
   event: Event;
-
-  // Self-managed props
-  intl: IntlShape;
 }
 
-class _EventRsvp extends React.Component<EventRsvpProps> {
-  render() {
-    if (this.props.event.rsvp) {
-      const counts = formatAttending(this.props.intl, this.props.event.rsvp);
-      // TODO: Maybe make a pop-out to show the list-of-users-attending prepended by DD users
-      const countsText = <Text style={eventStyles.detailText}>{counts}</Text>;
-      const rsvpControl =
-        this.props.event.source.name === 'Facebook Event' ? (
-          <EventRsvpControl
-            event={this.props.event}
-            style={{ marginRight: 20 }}
-          />
-        ) : null;
-      return (
-        <SubEventLine icon={require('./images/attending.png')}>
-          {countsText}
-          {rsvpControl}
-        </SubEventLine>
-      );
-    } else {
-      return null;
-    }
+function EventRsvp({ event }: EventRsvpProps) {
+  const intl = useIntl();
+
+  if (event.rsvp) {
+    const counts = formatAttending(intl, event.rsvp);
+    const countsText = <Text style={eventStyles.detailText}>{counts}</Text>;
+    const rsvpControl =
+      event.source.name === 'Facebook Event' ? (
+        <EventRsvpControl event={event} style={{ marginRight: 20 }} />
+      ) : null;
+    return (
+      <SubEventLine icon={require('./images/attending.png')}>
+        {countsText}
+        {rsvpControl}
+      </SubEventLine>
+    );
+  } else {
+    return null;
   }
 }
-
-const EventRsvp = injectIntl(_EventRsvp);
 
 interface EventDescriptionProps {
   event: Event;

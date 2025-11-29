@@ -286,6 +286,7 @@ declare module 'react-native-photo-view' {
     showsHorizontalScrollIndicator?: boolean;
     showsVerticalScrollIndicator?: boolean;
     scale?: number;
+    androidScaleType?: 'center' | 'centerCrop' | 'centerInside' | 'fitCenter' | 'fitStart' | 'fitEnd' | 'fitXY';
     onLoadStart?: () => void;
     onLoad?: () => void;
     onLoadEnd?: () => void;
