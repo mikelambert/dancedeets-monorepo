@@ -547,34 +547,6 @@ declare module 'react-navigation' {
   export const TabBarBottom: React.ComponentType<unknown>;
 }
 
-// Create React Class (legacy)
-declare module 'create-react-class' {
-  import * as React from 'react';
-
-  interface ComponentSpec<P, S> {
-    render(): React.ReactNode;
-    getInitialState?(): S;
-    getDefaultProps?(): P;
-    propTypes?: object;
-    mixins?: unknown[];
-    statics?: object;
-    displayName?: string;
-    // React 18 lifecycle methods
-    componentDidMount?(): void;
-    shouldComponentUpdate?(nextProps: P, nextState: S): boolean;
-    componentDidUpdate?(prevProps: P, prevState: S): void;
-    componentWillUnmount?(): void;
-    // Deprecated lifecycle methods (UNSAFE_ prefix for React 18)
-    UNSAFE_componentWillMount?(): void;
-    UNSAFE_componentWillReceiveProps?(nextProps: P): void;
-    UNSAFE_componentWillUpdate?(nextProps: P, nextState: S): void;
-    [key: string]: unknown;
-  }
-
-  function createReactClass<P, S>(spec: ComponentSpec<P, S>): React.ComponentClass<P>;
-  export = createReactClass;
-}
-
 // Firebase
 declare module 'react-native-firebase' {
   interface ConfigResult {

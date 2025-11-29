@@ -9,7 +9,6 @@
   },
   "dependencies": {
     "cldr-data": "^29.0.1",
-    "create-react-class": "^15.6.2",
     "dancedeets-common": "file:../common",
     "emoji-flags": "^1.1.0",
     "fbjs": "^0.8.6",
@@ -67,7 +66,6 @@
     "redux-persist": "^6.0.0",
     "redux-thunk": "^2.4.2",
     "style-equal": "^1.0.0",
-    "undefined": "^0.1.0",
     "url": "^0.11.0",
     "uuid": "^3.1.0",
     "ytdl-core": "^0.14.4"
