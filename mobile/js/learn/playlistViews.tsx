@@ -365,9 +365,13 @@ class _PlaylistView extends React.Component<
     }
   }
 
-  componentWillReceiveProps(nextProps: _PlaylistViewProps) {
-    this.setState({ onScreen: nextProps.mainScreenKey === 'Learn' });
-    this.updateFromProps(nextProps);
+  componentDidUpdate(prevProps: _PlaylistViewProps) {
+    if (prevProps.mainScreenKey !== this.props.mainScreenKey) {
+      this.setState({ onScreen: this.props.mainScreenKey === 'Learn' });
+    }
+    if (prevProps.tutorialVideoIndex !== this.props.tutorialVideoIndex || prevProps.playlist !== this.props.playlist) {
+      this.updateFromProps(this.props);
+    }
   }
 
   componentWillUnmount() {

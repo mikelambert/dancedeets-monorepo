@@ -131,7 +131,7 @@ export class BlogList extends React.Component<BlogProps, BlogListState> {
     this.renderRow = this.renderRow.bind(this);
   }
 
-  componentWillMount() {
+  componentDidMount() {
     this.loadFeeds();
   }
 

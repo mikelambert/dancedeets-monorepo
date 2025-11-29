@@ -878,7 +878,7 @@ class _FullEventView extends React.Component<FullEventViewProps> {
     this.onFlyerClicked = this.onFlyerClicked.bind(this);
   }
 
-  componentWillMount() {
+  componentDidMount() {
     if (!this.props.loadedEvent) {
       this.props.loadEvent(this.props.event.id);
     }

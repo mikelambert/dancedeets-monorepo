@@ -512,13 +512,15 @@ declare module 'create-react-class' {
     mixins?: unknown[];
     statics?: object;
     displayName?: string;
-    componentWillMount?(): void;
+    // React 18 lifecycle methods
     componentDidMount?(): void;
-    componentWillReceiveProps?(nextProps: P): void;
     shouldComponentUpdate?(nextProps: P, nextState: S): boolean;
-    componentWillUpdate?(nextProps: P, nextState: S): void;
     componentDidUpdate?(prevProps: P, prevState: S): void;
     componentWillUnmount?(): void;
+    // Deprecated lifecycle methods (UNSAFE_ prefix for React 18)
+    UNSAFE_componentWillMount?(): void;
+    UNSAFE_componentWillReceiveProps?(nextProps: P): void;
+    UNSAFE_componentWillUpdate?(nextProps: P, nextState: S): void;
     [key: string]: unknown;
   }
 

@@ -40,7 +40,7 @@ class _TrackFirebase extends React.Component<TrackFirebaseProps> {
     this._setHandler = false;
   }
 
-  componentWillMount(): void {
+  componentDidMount(): void {
     const dbRef = firebase.database().ref(this.props.path);
     console.log(`Installing handler on path: ${this.props.path}`);
     dbRef.on('value', this.handleValueChange);

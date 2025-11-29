@@ -45,7 +45,7 @@ class _ScreenshotSlideshow extends React.Component<Props, State> {
     this.transitionPage = this.transitionPage.bind(this);
   }
 
-  componentWillMount() {
+  componentDidMount() {
     disableTracking();
     disableWrites();
     this.props.transitionPage(this);

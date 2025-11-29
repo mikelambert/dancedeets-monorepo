@@ -24,8 +24,10 @@ export default class ProgressiveLayout extends React.Component<Props, State> {
     this.state = this.getNewState(props);
   }
 
-  componentWillReceiveProps(nextProps: Props) {
-    this.setState(this.getNewState(nextProps));
+  componentDidUpdate(prevProps: Props) {
+    if (prevProps.children !== this.props.children) {
+      this.setState(this.getNewState(this.props));
+    }
   }
 
   getNewState(props: Props): State {
