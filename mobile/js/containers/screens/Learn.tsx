@@ -39,8 +39,6 @@ class TutorialStylesView extends React.Component<TutorialStylesViewProps> {
     title: screenProps.intl.formatMessage(messages.learnTitle),
   });
 
-  onSelected: (category: any) => void;
-
   constructor(props: TutorialStylesViewProps) {
     super(props);
     this.onSelected = this.onSelected.bind(this);
@@ -71,8 +69,6 @@ class TutorialListView extends React.Component<TutorialListViewProps> {
       }),
     };
   };
-
-  onSelected: (playlist: any) => void;
 
   constructor(props: TutorialListViewProps) {
     super(props);

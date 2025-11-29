@@ -256,9 +256,6 @@ class EventListScreen extends React.Component<EventListScreenProps> {
     };
   };
 
-  onEventSelected: (event: any) => void;
-  onFeaturedEventSelected: (event: any) => void;
-
   constructor(props: EventListScreenProps) {
     super(props);
     this.onEventSelected = this.onEventSelected.bind(this);
@@ -297,8 +294,6 @@ class FeaturedEventScreen extends React.Component<FeaturedEventScreenProps> {
     headerRight: <ShareEventIcon event={navigation.state.params.event} />,
   });
 
-  onFlyerSelected: (event: any) => void;
-
   constructor(props: FeaturedEventScreenProps) {
     super(props);
     this.onFlyerSelected = this.onFlyerSelected.bind(this);
@@ -334,9 +329,6 @@ class EventScreen extends React.Component<EventScreenProps> {
     title: navigation.state.params.event.name,
     headerRight: <ShareEventIcon event={navigation.state.params.event} />,
   });
-
-  onEventNavigated: (event: any) => void;
-  onFlyerSelected: (event: any) => void;
 
   constructor(props: EventScreenProps) {
     super(props);
@@ -420,7 +412,6 @@ interface EventScreensNavigatorProps {
 
 class _EventScreensNavigator extends React.Component<EventScreensNavigatorProps> {
   _nav: StackNavigator | null = null;
-  onAddEventClicked: (source: string) => void;
 
   constructor(props: EventScreensNavigatorProps) {
     super(props);

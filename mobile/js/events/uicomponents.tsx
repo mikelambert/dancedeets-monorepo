@@ -199,7 +199,7 @@ interface EventVenueProps {
 
 class _EventVenue extends React.PureComponent<EventVenueProps> {
   render() {
-    const components: JSX.Element[] = [];
+    const components: React.ReactElement[] = [];
     if (this.props.venue.name) {
       components.push(
         <Autolink
@@ -893,7 +893,7 @@ class _FullEventView extends React.Component<FullEventViewProps> {
     this.props.onFlyerSelected(this.props.event);
   }
 
-  renderFullEvent(event: Event, width: number, flyer: JSX.Element | null) {
+  renderFullEvent(event: Event, width: number, flyer: React.ReactElement | null) {
     let name = event.name;
     const translatedEvent = this.props.translatedEvent;
     if (translatedEvent && translatedEvent.visible) {
@@ -941,7 +941,7 @@ class _FullEventView extends React.Component<FullEventViewProps> {
     );
   }
 
-  renderLoadingEvent(searchEvent: SearchEvent, width: number, flyer: JSX.Element | null) {
+  renderLoadingEvent(searchEvent: SearchEvent, width: number, flyer: React.ReactElement | null) {
     const name = searchEvent.name;
     return (
       <ScrollView style={[eventStyles.container, { width }]}>

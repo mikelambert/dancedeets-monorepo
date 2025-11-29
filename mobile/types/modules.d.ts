@@ -412,18 +412,22 @@ declare module 'redux-persist' {
 declare module 'react-navigation' {
   import * as React from 'react';
 
-  export interface NavigationScreenProp<S> {
-    state: S;
-    dispatch: (action: unknown) => boolean;
+  export interface NavigationParams {
+    [key: string]: unknown;
+  }
+
+  export interface NavigationScreenProp<S, P = NavigationParams> {
+    state: S & { params?: P };
+    dispatch: (action: NavigationAction) => boolean;
     goBack: (routeKey?: string | null) => boolean;
-    navigate: (routeName: string, params?: object, action?: unknown) => boolean;
+    navigate: (routeName: string, params?: object, action?: NavigationAction) => boolean;
     setParams: (newParams: object) => boolean;
   }
 
-  export interface NavigationRoute {
+  export interface NavigationRoute<P = NavigationParams> {
     key: string;
     routeName: string;
-    params?: object;
+    params?: P;
   }
 
   export interface NavigationState {
@@ -431,25 +435,69 @@ declare module 'react-navigation' {
     routes: NavigationRoute[];
   }
 
-  export type NavigationContainer = React.ComponentType<unknown>;
+  export interface NavigationAction {
+    type: string;
+    routeName?: string;
+    params?: object;
+    action?: NavigationAction;
+    key?: string;
+  }
+
+  export interface NavigationNavigateAction extends NavigationAction {
+    type: 'Navigation/NAVIGATE';
+    routeName: string;
+    params?: object;
+  }
+
+  export type NavigationRouteConfigMap = Record<string, {
+    screen: React.ComponentType<unknown>;
+    navigationOptions?: object | ((options: { navigation: NavigationScreenProp<unknown> }) => object);
+  }>;
+
+  export interface StackNavigatorConfig {
+    initialRouteName?: string;
+    navigationOptions?: object;
+    mode?: 'card' | 'modal';
+    headerMode?: 'float' | 'screen' | 'none';
+    cardStyle?: object;
+    transitionConfig?: () => object;
+  }
+
+  export interface NavigationContainer extends React.ComponentClass<unknown> {
+    router: {
+      getStateForAction: (action: NavigationAction, state?: NavigationState) => NavigationState | null;
+      getActionForPathAndParams: (path: string, params?: object) => NavigationAction | null;
+    };
+  }
 
   export function StackNavigator(
-    routes: Record<string, { screen: React.ComponentType<unknown>; navigationOptions?: object }>,
-    config?: object
+    routes: NavigationRouteConfigMap,
+    config?: StackNavigatorConfig
   ): NavigationContainer;
 
   export function TabNavigator(
-    routes: Record<string, { screen: React.ComponentType<unknown>; navigationOptions?: object }>,
+    routes: NavigationRouteConfigMap,
     config?: object
   ): NavigationContainer;
 
   export function DrawerNavigator(
-    routes: Record<string, { screen: React.ComponentType<unknown>; navigationOptions?: object }>,
+    routes: NavigationRouteConfigMap,
     config?: object
   ): NavigationContainer;
 
-  export function NavigationActions(): unknown;
+  export const NavigationActions: {
+    navigate: (params: { routeName: string; params?: object; action?: NavigationAction }) => NavigationNavigateAction;
+    back: (params?: { key?: string }) => NavigationAction;
+    reset: (params: { index: number; actions: NavigationAction[] }) => NavigationAction;
+    setParams: (params: { key: string; params: object }) => NavigationAction;
+    NAVIGATE: string;
+    BACK: string;
+    RESET: string;
+    SET_PARAMS: string;
+  };
+
   export const addNavigationHelpers: (navigation: unknown) => unknown;
+  export const TabBarBottom: React.ComponentType<unknown>;
 }
 
 // Create React Class (legacy)
@@ -513,12 +561,20 @@ declare module 'react-native-firebase' {
     ref(path?: string): Reference;
   }
 
+  interface Analytics {
+    logEvent(name: string, params?: Record<string, unknown>): void;
+    setUserProperty(name: string, value: string | null): void;
+    setUserId(id: string | null): void;
+    setCurrentScreen(screenName: string, screenClass?: string): void;
+    setAnalyticsCollectionEnabled(enabled: boolean): void;
+  }
+
   interface FirebaseApp {
     config(): Config;
     database(): Database;
     auth(): unknown;
     messaging(): unknown;
-    analytics(): unknown;
+    analytics(): Analytics;
   }
 
   const firebase: FirebaseApp;
@@ -759,6 +815,414 @@ declare module 'react-native-fbsdk' {
     show(content: ShareContent): Promise<{ postId?: string }>;
     setMode(mode: string): void;
   };
+}
+
+// Additional missing modules
+declare module 'react-native-code-push' {
+  import * as React from 'react';
+
+  interface CodePushOptions {
+    checkFrequency?: number;
+    installMode?: number;
+    mandatoryInstallMode?: number;
+    minimumBackgroundDuration?: number;
+    updateDialog?: boolean | object;
+  }
+
+  interface SyncStatus {
+    UP_TO_DATE: number;
+    UPDATE_INSTALLED: number;
+    UPDATE_IGNORED: number;
+    UNKNOWN_ERROR: number;
+    SYNC_IN_PROGRESS: number;
+    CHECKING_FOR_UPDATE: number;
+    AWAITING_USER_ACTION: number;
+    DOWNLOADING_PACKAGE: number;
+    INSTALLING_UPDATE: number;
+  }
+
+  interface InstallMode {
+    IMMEDIATE: number;
+    ON_NEXT_RESTART: number;
+    ON_NEXT_RESUME: number;
+  }
+
+  interface CheckFrequency {
+    ON_APP_START: number;
+    ON_APP_RESUME: number;
+    MANUAL: number;
+  }
+
+  function codePush<P>(options?: CodePushOptions): (component: React.ComponentType<P>) => React.ComponentType<P>;
+  function codePush<P>(component: React.ComponentType<P>): React.ComponentType<P>;
+
+  namespace codePush {
+    export const SyncStatus: SyncStatus;
+    export const InstallMode: InstallMode;
+    export const CheckFrequency: CheckFrequency;
+    export function sync(options?: object): Promise<number>;
+    export function checkForUpdate(): Promise<object | null>;
+    export function getUpdateMetadata(): Promise<object | null>;
+    export function notifyAppReady(): Promise<void>;
+    export function restartApp(onlyIfUpdateIsPending?: boolean): void;
+  }
+
+  export = codePush;
+}
+
+declare module 'react-native-fabric' {
+  export const Crashlytics: {
+    crash(): void;
+    log(message: string): void;
+    setUserIdentifier(identifier: string): void;
+    setUserName(name: string): void;
+    setUserEmail(email: string): void;
+    recordError(error: Error): void;
+  };
+
+  export const Answers: {
+    logCustom(event: string, properties?: object): void;
+    logContentView(name: string, type?: string, id?: string, properties?: object): void;
+    logSignUp(method?: string, success?: boolean, properties?: object): void;
+    logLogin(method?: string, success?: boolean, properties?: object): void;
+    logSearch(query: string, properties?: object): void;
+    logShare(method?: string, contentName?: string, contentType?: string, contentId?: string, properties?: object): void;
+    logPurchase(price?: number, currency?: string, success?: boolean, itemName?: string, itemType?: string, itemId?: string, properties?: object): void;
+  };
+}
+
+declare module 'react-native-gifted-form' {
+  import * as React from 'react';
+
+  interface GiftedFormProps {
+    formName?: string;
+    openModal?: (route: object) => void;
+    clearOnClose?: boolean;
+    defaults?: object;
+    validators?: object;
+    children?: React.ReactNode;
+  }
+
+  export class GiftedForm extends React.Component<GiftedFormProps> {
+    static TextInputWidget: React.ComponentType<any>;
+    static SwitchWidget: React.ComponentType<any>;
+    static SelectWidget: React.ComponentType<any>;
+    static SelectCountryWidget: React.ComponentType<any>;
+    static DatePickerWidget: React.ComponentType<any>;
+    static ModalWidget: React.ComponentType<any>;
+    static GroupWidget: React.ComponentType<any>;
+    static RowWidget: React.ComponentType<any>;
+    static RowValueWidget: React.ComponentType<any>;
+    static SeparatorWidget: React.ComponentType<any>;
+    static NoticeWidget: React.ComponentType<any>;
+    static SubmitWidget: React.ComponentType<any>;
+    static LoadingWidget: React.ComponentType<any>;
+    static OptionWidget: React.ComponentType<any>;
+    static HiddenWidget: React.ComponentType<any>;
+  }
+
+  export class GiftedFormManager {
+    static getValue(formName: string, key: string): unknown;
+    static getValues(formName: string): object;
+    static setValue(formName: string, key: string, value: unknown): void;
+    static reset(formName: string): void;
+    static validate(formName: string): string[];
+  }
+}
+
+declare module 'react-native-processinfo' {
+  interface ProcessInfo {
+    environment: Record<string, string>;
+    arguments: string[];
+  }
+
+  const processInfo: ProcessInfo;
+  export default processInfo;
+}
+
+declare module 'react-native-tab-view/src/TabViewTypeDefinitions' {
+  export interface Route {
+    key: string;
+    title?: string;
+    icon?: string;
+    [key: string]: unknown;
+  }
+
+  export interface NavigationState<T extends Route> {
+    index: number;
+    routes: T[];
+  }
+
+  export interface Scene<T extends Route> {
+    route: T;
+    index: number;
+    focused: boolean;
+  }
+}
+
+declare module 'react-native-vector-icons/FontAwesome' {
+  import * as React from 'react';
+  import { TextProps } from 'react-native';
+
+  interface IconProps extends TextProps {
+    name: string;
+    size?: number;
+    color?: string;
+  }
+
+  export default class FontAwesome extends React.Component<IconProps> {
+    static getImageSource(name: string, size?: number, color?: string): Promise<unknown>;
+    static loadFont(): Promise<void>;
+  }
+}
+
+declare module 'react-native-vector-icons/Ionicons' {
+  import * as React from 'react';
+  import { TextProps } from 'react-native';
+
+  interface IconProps extends TextProps {
+    name: string;
+    size?: number;
+    color?: string;
+  }
+
+  export default class Ionicons extends React.Component<IconProps> {
+    static getImageSource(name: string, size?: number, color?: string): Promise<unknown>;
+    static loadFont(): Promise<void>;
+  }
+}
+
+declare module 'react-native/Libraries/StyleSheet/normalizeColor' {
+  function normalizeColor(color: string | number): number | null;
+  export = normalizeColor;
+}
+
+declare module 'react-navigation/src/TypeDefinition' {
+  export * from 'react-navigation';
+}
+
+declare module 'react-navigation/src/views/TouchableItem' {
+  import * as React from 'react';
+  import { TouchableOpacityProps } from 'react-native';
+
+  export default class TouchableItem extends React.Component<TouchableOpacityProps> {}
+}
+
+declare module 'react-redux/lib/utils/storeShape' {
+  import { Store } from 'redux';
+  const storeShape: object;
+  export default storeShape;
+}
+
+declare module 'react-tabs' {
+  import * as React from 'react';
+
+  interface TabProps {
+    className?: string;
+    disabled?: boolean;
+    disabledClassName?: string;
+    selectedClassName?: string;
+    children?: React.ReactNode;
+  }
+
+  interface TabListProps {
+    className?: string;
+    children?: React.ReactNode;
+  }
+
+  interface TabPanelProps {
+    className?: string;
+    forceRender?: boolean;
+    selectedClassName?: string;
+    children?: React.ReactNode;
+  }
+
+  interface TabsProps {
+    className?: string;
+    defaultFocus?: boolean;
+    defaultIndex?: number;
+    disabledTabClassName?: string;
+    domRef?: (node: HTMLElement) => void;
+    forceRenderTabPanel?: boolean;
+    onSelect?: (index: number, lastIndex: number, event: Event) => boolean | void;
+    selectedIndex?: number;
+    selectedTabClassName?: string;
+    selectedTabPanelClassName?: string;
+    children?: React.ReactNode;
+  }
+
+  export class Tab extends React.Component<TabProps> {}
+  export class TabList extends React.Component<TabListProps> {}
+  export class TabPanel extends React.Component<TabPanelProps> {}
+  export class Tabs extends React.Component<TabsProps> {}
+  export function resetIdCounter(): void;
+}
+
+declare module 'react-waypoint' {
+  import * as React from 'react';
+
+  interface WaypointProps {
+    onEnter?: (args: { previousPosition: string; currentPosition: string; event: Event }) => void;
+    onLeave?: (args: { previousPosition: string; currentPosition: string; event: Event }) => void;
+    onPositionChange?: (args: { previousPosition: string; currentPosition: string; event: Event }) => void;
+    fireOnRapidScroll?: boolean;
+    scrollableAncestor?: unknown;
+    horizontal?: boolean;
+    topOffset?: string | number;
+    bottomOffset?: string | number;
+    children?: React.ReactNode;
+  }
+
+  export default class Waypoint extends React.Component<WaypointProps> {}
+}
+
+declare module 'style-equal' {
+  function styleEqual(a: object, b: object): boolean;
+  export = styleEqual;
+}
+
+declare module 'react-dates' {
+  import * as React from 'react';
+  import * as Moment from 'moment';
+
+  interface DateRangePickerProps {
+    startDate: Moment.Moment | null;
+    startDateId: string;
+    endDate: Moment.Moment | null;
+    endDateId: string;
+    onDatesChange: (arg: { startDate: Moment.Moment | null; endDate: Moment.Moment | null }) => void;
+    focusedInput: 'startDate' | 'endDate' | null;
+    onFocusChange: (focusedInput: 'startDate' | 'endDate' | null) => void;
+    onClose?: (arg: { startDate: Moment.Moment | null; endDate: Moment.Moment | null }) => void;
+    minimumNights?: number;
+    isOutsideRange?: (day: Moment.Moment) => boolean;
+    displayFormat?: string | (() => string);
+    monthFormat?: string;
+    showClearDates?: boolean;
+    disabled?: boolean;
+    required?: boolean;
+    readOnly?: boolean;
+    screenReaderInputMessage?: string;
+    showDefaultInputIcon?: boolean;
+    customInputIcon?: React.ReactNode;
+    customArrowIcon?: React.ReactNode;
+    noBorder?: boolean;
+    block?: boolean;
+    small?: boolean;
+    regular?: boolean;
+    numberOfMonths?: number;
+    orientation?: 'horizontal' | 'vertical';
+    anchorDirection?: 'left' | 'right';
+    horizontalMargin?: number;
+    withPortal?: boolean;
+    withFullScreenPortal?: boolean;
+    initialVisibleMonth?: () => Moment.Moment;
+    firstDayOfWeek?: 0 | 1 | 2 | 3 | 4 | 5 | 6;
+    hideKeyboardShortcutsPanel?: boolean;
+    daySize?: number;
+    keepOpenOnDateSelect?: boolean;
+    reopenPickerOnClearDates?: boolean;
+    renderCalendarInfo?: () => React.ReactNode;
+    navPrev?: React.ReactNode;
+    navNext?: React.ReactNode;
+    renderMonthText?: (month: Moment.Moment) => React.ReactNode;
+    renderDayContents?: (day: Moment.Moment) => React.ReactNode;
+    enableOutsideDays?: boolean;
+    isDayBlocked?: (day: Moment.Moment) => boolean;
+    isDayHighlighted?: (day: Moment.Moment) => boolean;
+    phrases?: object;
+  }
+
+  export class DateRangePicker extends React.Component<DateRangePickerProps> {}
+
+  interface SingleDatePickerProps {
+    date: Moment.Moment | null;
+    onDateChange: (date: Moment.Moment | null) => void;
+    focused: boolean;
+    onFocusChange: (arg: { focused: boolean }) => void;
+    id: string;
+    placeholder?: string;
+    disabled?: boolean;
+    required?: boolean;
+    readOnly?: boolean;
+    displayFormat?: string | (() => string);
+    monthFormat?: string;
+    showClearDate?: boolean;
+    screenReaderInputMessage?: string;
+    showDefaultInputIcon?: boolean;
+    customInputIcon?: React.ReactNode;
+    noBorder?: boolean;
+    block?: boolean;
+    small?: boolean;
+    regular?: boolean;
+    numberOfMonths?: number;
+    orientation?: 'horizontal' | 'vertical';
+    anchorDirection?: 'left' | 'right';
+    horizontalMargin?: number;
+    withPortal?: boolean;
+    withFullScreenPortal?: boolean;
+    initialVisibleMonth?: () => Moment.Moment;
+    firstDayOfWeek?: 0 | 1 | 2 | 3 | 4 | 5 | 6;
+    hideKeyboardShortcutsPanel?: boolean;
+    daySize?: number;
+    keepOpenOnDateSelect?: boolean;
+    renderCalendarInfo?: () => React.ReactNode;
+    navPrev?: React.ReactNode;
+    navNext?: React.ReactNode;
+    onPrevMonthClick?: (newCurrentMonth: Moment.Moment) => void;
+    onNextMonthClick?: (newCurrentMonth: Moment.Moment) => void;
+    onClose?: (arg: { date: Moment.Moment | null }) => void;
+    renderMonthText?: (month: Moment.Moment) => React.ReactNode;
+    renderDayContents?: (day: Moment.Moment) => React.ReactNode;
+    enableOutsideDays?: boolean;
+    isDayBlocked?: (day: Moment.Moment) => boolean;
+    isOutsideRange?: (day: Moment.Moment) => boolean;
+    isDayHighlighted?: (day: Moment.Moment) => boolean;
+    phrases?: object;
+  }
+
+  export class SingleDatePicker extends React.Component<SingleDatePickerProps> {}
+
+  interface DayPickerRangeControllerProps {
+    startDate: Moment.Moment | null;
+    endDate: Moment.Moment | null;
+    onDatesChange: (arg: { startDate: Moment.Moment | null; endDate: Moment.Moment | null }) => void;
+    focusedInput: 'startDate' | 'endDate' | null;
+    onFocusChange: (focusedInput: 'startDate' | 'endDate' | null) => void;
+    minimumNights?: number;
+    isOutsideRange?: (day: Moment.Moment) => boolean;
+    isDayBlocked?: (day: Moment.Moment) => boolean;
+    isDayHighlighted?: (day: Moment.Moment) => boolean;
+    initialVisibleMonth?: () => Moment.Moment;
+    numberOfMonths?: number;
+    enableOutsideDays?: boolean;
+    withPortal?: boolean;
+    hideKeyboardShortcutsPanel?: boolean;
+    daySize?: number;
+    keepOpenOnDateSelect?: boolean;
+    renderDayContents?: (day: Moment.Moment) => React.ReactNode;
+    phrases?: object;
+  }
+
+  export class DayPickerRangeController extends React.Component<DayPickerRangeControllerProps> {}
+
+  export const START_DATE: 'startDate';
+  export const END_DATE: 'endDate';
+  export const HORIZONTAL_ORIENTATION: 'horizontal';
+  export const VERTICAL_ORIENTATION: 'vertical';
+  export const ANCHOR_LEFT: 'left';
+  export const ANCHOR_RIGHT: 'right';
+}
+
+declare module 'react-format-text' {
+  import * as React from 'react';
+
+  interface FormatTextProps {
+    children: string;
+    allowedFormats?: string[];
+  }
+
+  export default class FormatText extends React.Component<FormatTextProps> {}
 }
 
 // React Intl

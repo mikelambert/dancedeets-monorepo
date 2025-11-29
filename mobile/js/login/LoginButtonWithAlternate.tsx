@@ -4,7 +4,7 @@
 
 import * as React from 'react';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
-import { defineMessages, injectIntl, IntlShape, WrappedComponentProps } from 'react-intl';
+import { defineMessages, injectIntl, InjectedIntlProps } from 'react-intl';
 import { yellowColors } from '../Colors';
 import { Button, normalize, Text, semiNormalize } from '../ui';
 
@@ -16,11 +16,10 @@ const messages = defineMessages({
   },
 });
 
-interface Props extends WrappedComponentProps {
+interface Props extends InjectedIntlProps {
   noLoginText: string;
   onLogin: () => void;
   onNoLogin: () => void;
-  intl: IntlShape;
 }
 
 interface State {
