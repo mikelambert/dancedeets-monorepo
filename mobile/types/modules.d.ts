@@ -269,16 +269,52 @@ declare module 'react-native-back-android' {
   export function removeEventListener(event: string, handler: () => boolean): void;
 }
 
+// react-native-device-info v10+ API
 declare module 'react-native-device-info' {
-  export function getVersion(): string;
-  export function getBuildNumber(): string;
-  export function getDeviceId(): string;
-  export function getSystemVersion(): string;
-  export function getModel(): string;
-  export function getBrand(): string;
+  // Sync methods (available immediately)
+  export function getVersionSync(): string;
+  export function getBuildNumberSync(): string;
+  export function getDeviceIdSync(): string;
+  export function getSystemVersionSync(): string;
+  export function getModelSync(): string;
+  export function getBrandSync(): string;
+  export function getUniqueIdSync(): string;
+
+  // Async methods
+  export function getVersion(): Promise<string>;
+  export function getBuildNumber(): Promise<string>;
+  export function getDeviceId(): Promise<string>;
+  export function getSystemVersion(): Promise<string>;
+  export function getModel(): Promise<string>;
+  export function getBrand(): Promise<string>;
   export function getDeviceName(): Promise<string>;
   export function isEmulator(): Promise<boolean>;
-  export function getUniqueId(): string;
+  export function getUniqueId(): Promise<string>;
+  export function getDeviceType(): Promise<string>;
+  export function getApplicationName(): string;
+  export function getBundleId(): string;
+
+  const DeviceInfo: {
+    getVersionSync(): string;
+    getBuildNumberSync(): string;
+    getDeviceIdSync(): string;
+    getSystemVersionSync(): string;
+    getModelSync(): string;
+    getBrandSync(): string;
+    getUniqueIdSync(): string;
+    getVersion(): Promise<string>;
+    getBuildNumber(): Promise<string>;
+    getDeviceId(): Promise<string>;
+    getSystemVersion(): Promise<string>;
+    getModel(): Promise<string>;
+    getBrand(): Promise<string>;
+    getDeviceName(): Promise<string>;
+    isEmulator(): Promise<boolean>;
+    getUniqueId(): Promise<string>;
+    getApplicationName(): string;
+    getBundleId(): string;
+  };
+  export default DeviceInfo;
 }
 
 declare module 'react-native-locale' {
@@ -294,14 +330,91 @@ declare module 'react-native-mixpanel' {
   export function setOnce(properties: object): void;
 }
 
+// react-native-permissions v4 API
 declare module 'react-native-permissions' {
-  type PermissionType = 'location' | 'camera' | 'microphone' | 'photo' | 'contacts' | 'event' | 'bluetooth' | 'reminder' | 'notification' | 'backgroundRefresh' | 'speechRecognition' | 'mediaLibrary' | 'motion';
-  type PermissionStatus = 'authorized' | 'denied' | 'restricted' | 'undetermined';
+  // Permission results
+  export const RESULTS: {
+    UNAVAILABLE: 'unavailable';
+    DENIED: 'denied';
+    BLOCKED: 'blocked';
+    GRANTED: 'granted';
+    LIMITED: 'limited';
+  };
 
-  export function check(type: PermissionType): Promise<PermissionStatus>;
-  export function request(type: PermissionType): Promise<PermissionStatus>;
-  export function checkMultiple(types: PermissionType[]): Promise<Record<PermissionType, PermissionStatus>>;
+  type PermissionStatus = 'unavailable' | 'denied' | 'blocked' | 'granted' | 'limited';
+
+  // iOS Permissions
+  export const PERMISSIONS: {
+    IOS: {
+      APP_TRACKING_TRANSPARENCY: string;
+      BLUETOOTH_PERIPHERAL: string;
+      CALENDARS: string;
+      CAMERA: string;
+      CONTACTS: string;
+      FACE_ID: string;
+      LOCATION_ALWAYS: string;
+      LOCATION_WHEN_IN_USE: string;
+      MEDIA_LIBRARY: string;
+      MICROPHONE: string;
+      MOTION: string;
+      PHOTO_LIBRARY: string;
+      PHOTO_LIBRARY_ADD_ONLY: string;
+      REMINDERS: string;
+      SIRI: string;
+      SPEECH_RECOGNITION: string;
+      STOREKIT: string;
+    };
+    ANDROID: {
+      ACCEPT_HANDOVER: string;
+      ACCESS_BACKGROUND_LOCATION: string;
+      ACCESS_COARSE_LOCATION: string;
+      ACCESS_FINE_LOCATION: string;
+      ACCESS_MEDIA_LOCATION: string;
+      ACTIVITY_RECOGNITION: string;
+      ADD_VOICEMAIL: string;
+      ANSWER_PHONE_CALLS: string;
+      BLUETOOTH_ADVERTISE: string;
+      BLUETOOTH_CONNECT: string;
+      BLUETOOTH_SCAN: string;
+      BODY_SENSORS: string;
+      BODY_SENSORS_BACKGROUND: string;
+      CALL_PHONE: string;
+      CAMERA: string;
+      GET_ACCOUNTS: string;
+      NEARBY_WIFI_DEVICES: string;
+      POST_NOTIFICATIONS: string;
+      PROCESS_OUTGOING_CALLS: string;
+      READ_CALENDAR: string;
+      READ_CALL_LOG: string;
+      READ_CONTACTS: string;
+      READ_EXTERNAL_STORAGE: string;
+      READ_MEDIA_AUDIO: string;
+      READ_MEDIA_IMAGES: string;
+      READ_MEDIA_VIDEO: string;
+      READ_PHONE_NUMBERS: string;
+      READ_PHONE_STATE: string;
+      READ_SMS: string;
+      RECEIVE_MMS: string;
+      RECEIVE_SMS: string;
+      RECEIVE_WAP_PUSH: string;
+      RECORD_AUDIO: string;
+      SEND_SMS: string;
+      USE_SIP: string;
+      UWB_RANGING: string;
+      WRITE_CALENDAR: string;
+      WRITE_CALL_LOG: string;
+      WRITE_CONTACTS: string;
+      WRITE_EXTERNAL_STORAGE: string;
+    };
+  };
+
+  export function check(permission: string): Promise<PermissionStatus>;
+  export function request(permission: string): Promise<PermissionStatus>;
+  export function checkMultiple(permissions: string[]): Promise<Record<string, PermissionStatus>>;
+  export function requestMultiple(permissions: string[]): Promise<Record<string, PermissionStatus>>;
   export function openSettings(): Promise<void>;
+  export function checkNotifications(): Promise<{ status: PermissionStatus; settings: object }>;
+  export function requestNotifications(options: string[]): Promise<{ status: PermissionStatus; settings: object }>;
 }
 
 declare module 'react-native-share' {

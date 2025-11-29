@@ -1,10 +1,12 @@
 /**
  * Copyright 2016 DanceDeets.
+ *
+ * Calendar API with react-native-permissions v4
  */
 
 import moment from 'moment';
 import { Platform } from 'react-native';
-import Permissions from 'react-native-permissions';
+import { openSettings } from 'react-native-permissions';
 import CalendarEventsIOS from 'react-native-calendar-events';
 import SendIntentAndroid from 'react-native-send-intent';
 import { Event } from 'dancedeets-common/js/events/models';
@@ -48,9 +50,8 @@ async function addIOS(event: Event): Promise<boolean> {
           'Cannot Access Calendar',
           'Please open Settings to allow Calendar permissions.'
         );
-        if (await Permissions.canOpenSettings()) {
-          Permissions.openSettings();
-        }
+        // In react-native-permissions v4, openSettings is always available
+        await openSettings();
       } catch (err) {
         console.log('Canceled: Add to Calendar Permissions');
       }

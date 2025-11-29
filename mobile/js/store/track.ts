@@ -29,7 +29,8 @@ import type { Event } from 'dancedeets-common/js/events/models';
 import { performRequest } from '../api/fb';
 import type { Action } from '../actions/types';
 
-let trackingEnabled = DeviceInfo.getModel() !== 'Calypso AppCrawler';
+// In react-native-device-info v10+, getModel() is async. Use getModelSync() for synchronous access.
+let trackingEnabled = DeviceInfo.getModelSync() !== 'Calypso AppCrawler';
 
 export function disableTracking(): void {
   trackingEnabled = false;
@@ -47,7 +48,7 @@ function initMixpanel(): void {
   }
 
   Mixpanel.sharedInstanceWithToken(mixpanelApiKey);
-  if (DeviceInfo.getModel() === 'Calypso AppCrawler') {
+  if (DeviceInfo.getModelSync() === 'Calypso AppCrawler') {
     Mixpanel.registerSuperProperties({ $ignore: true });
   }
   // Don't use global track(), since this is a Mixpanel-only event:
