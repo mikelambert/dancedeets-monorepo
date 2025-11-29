@@ -5,7 +5,7 @@
 import * as React from 'react';
 import {
   FlatList,
-  ListView,
+  ListRenderItemInfo,
   StyleSheet,
   TouchableHighlight,
   View,
@@ -73,19 +73,21 @@ interface BlogPostProps {
 }
 
 export class BlogPostList extends React.Component<BlogPostProps> {
-  constructor(props: BlogPostProps) {
-    super(props);
-    this.renderRow = this.renderRow.bind(this);
-  }
+  renderItem = ({ item }: ListRenderItemInfo<Post>) => {
+    return <BlogPostTitle post={item} onPress={this.props.onSelected} />;
+  };
 
-  renderRow(row: { item: Post }) {
-    const post = row.item;
-    return <BlogPostTitle post={post} onPress={this.props.onSelected} />;
-  }
+  keyExtractor = (item: Post, index: number): string => {
+    return item.url || String(index);
+  };
 
   render() {
     return (
-      <FlatList data={this.props.blog.posts} renderItem={this.renderRow} />
+      <FlatList
+        data={this.props.blog.posts}
+        renderItem={this.renderItem}
+        keyExtractor={this.keyExtractor}
+      />
     );
   }
 }
@@ -116,32 +118,17 @@ interface BlogProps {
 }
 
 interface BlogListState {
-  dataSource: ListView.DataSource;
+  blogs: Blog[];
 }
 
 export class BlogList extends React.Component<BlogProps, BlogListState> {
   constructor(props: BlogProps) {
     super(props);
-    const dataSource = new ListView.DataSource({
-      rowHasChanged: (row1, row2) => row1 !== row2,
-    });
-    this.state = { dataSource };
-    // We don't take in any props.blogs, so no need to run this:
-    // this.state = this.getNewState(this.props.blogs);
-    this.renderRow = this.renderRow.bind(this);
+    this.state = { blogs: [] };
   }
 
   componentDidMount() {
     this.loadFeeds();
-  }
-
-  getNewState(blogs: Blog[]) {
-    const results = blogs || [];
-    const state = {
-      ...this.state,
-      dataSource: this.state.dataSource.cloneWithRows(results),
-    };
-    return state;
   }
 
   async loadFeeds() {
@@ -158,27 +145,31 @@ export class BlogList extends React.Component<BlogProps, BlogListState> {
           }
         } catch (e) {
           console.error(`Error opening ${x}: ${e}`);
-          return new Promise((resolve, reject) => resolve());
+          return null;
         }
       })
     );
-    const filteredBlogData = blogData.filter(x => x);
-    this.setState(this.getNewState(filteredBlogData));
+    const filteredBlogData = blogData.filter((x): x is Blog => x !== null);
+    this.setState({ blogs: filteredBlogData });
   }
 
-  renderRow(blog: Blog) {
-    return <BlogTitle blog={blog} onPress={this.props.onSelected} />;
-  }
+  renderItem = ({ item }: ListRenderItemInfo<Blog>) => {
+    return <BlogTitle blog={item} onPress={this.props.onSelected} />;
+  };
+
+  keyExtractor = (item: Blog, index: number): string => {
+    return item.title || String(index);
+  };
 
   render() {
     return (
-      <ListView
-        style={[styles.listView]}
-        dataSource={this.state.dataSource}
-        renderRow={this.renderRow}
-        initialListSize={10}
-        pageSize={5}
-        scrollRenderAheadDistance={10000}
+      <FlatList
+        style={styles.listView}
+        data={this.state.blogs}
+        renderItem={this.renderItem}
+        keyExtractor={this.keyExtractor}
+        initialNumToRender={10}
+        maxToRenderPerBatch={5}
         indicatorStyle="white"
       />
     );

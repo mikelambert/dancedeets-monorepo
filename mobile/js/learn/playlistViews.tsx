@@ -159,7 +159,7 @@ class _PlaylistStylesView extends React.Component<
       <FlatList
         data={this.state.stylePlaylists}
         renderItem={this.renderRow}
-        renderHeader={this.renderHeader}
+        ListHeaderComponent={this.renderHeader}
         contentContainerStyle={{
           alignSelf: 'center',
           justifyContent: 'flex-start',
@@ -302,8 +302,8 @@ class _PlaylistListView extends React.Component<_PlaylistListViewProps> {
       <FlatList
         data={this.props.playlists}
         renderItem={this.renderRow}
-        renderHeader={this.renderHeader}
-        renderFooter={this.renderFooter}
+        ListHeaderComponent={this.renderHeader}
+        ListFooterComponent={this.renderFooter}
         contentContainerStyle={{
           alignSelf: 'center',
           justifyContent: 'flex-start',
@@ -596,7 +596,7 @@ class _PlaylistView extends React.Component<
             )}
             renderItem={this.renderRow}
             renderSectionHeader={this.renderSectionHeader}
-            renderHeader={this.renderHeader}
+            ListHeaderComponent={this.renderHeader}
             stickySectionHeadersEnabled
             onScroll={this.onListViewScroll}
             onLayout={this.onListViewLayout}
