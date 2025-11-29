@@ -123,9 +123,23 @@ declare module 'react-native-video' {
 
 declare module 'react-native-video-controls' {
   import * as React from 'react';
-  import { VideoProps } from 'react-native-video';
+  import { Animated, PanResponderInstance } from 'react-native';
 
-  interface VideoControlsProps extends VideoProps {
+  interface VideoControlsProps {
+    source: { uri: string } | number;
+    paused?: boolean;
+    muted?: boolean;
+    volume?: number;
+    rate?: number;
+    repeat?: boolean;
+    resizeMode?: 'contain' | 'cover' | 'stretch';
+    controls?: boolean;
+    onLoad?: (data: unknown) => void;
+    onLoadStart?: () => void;
+    onProgress?: (data: { currentTime: number; playableDuration: number }) => void;
+    onEnd?: () => void;
+    onError?: (error: unknown) => void;
+    onBuffer?: (data: { isBuffering: boolean }) => void;
     toggleResizeModeOnFullscreen?: boolean;
     controlTimeout?: number;
     videoStyle?: object;
@@ -136,9 +150,67 @@ declare module 'react-native-video-controls' {
     onExitFullscreen?: () => void;
     onPause?: () => void;
     onPlay?: () => void;
+    style?: object;
   }
 
-  export default class VideoPlayer extends React.Component<VideoControlsProps> {}
+  interface VideoPlayerState {
+    paused: boolean;
+    seeking: boolean;
+    loading: boolean;
+    duration: number;
+    currentTime: number;
+    seekerOffset: number;
+    seekerFillWidth: number;
+    seekerPosition: number;
+    showControls: boolean;
+  }
+
+  export default class VideoPlayer extends React.Component<VideoControlsProps, VideoPlayerState> {
+    // Internal objects used when extending
+    events: {
+      onScreenPress: () => void;
+      onEnd: () => void;
+    };
+    animations: {
+      bottomControl: {
+        opacity: Animated.Value;
+        marginBottom: Animated.Value;
+      };
+      topControl: {
+        opacity: Animated.Value;
+        marginTop: Animated.Value;
+      };
+    };
+    player: {
+      seekPanResponder: PanResponderInstance;
+      seekerWidth: number;
+    };
+    methods: {
+      togglePlayPause: () => void;
+      toggleTimer: () => void;
+      toggleControls: () => void;
+    };
+
+    // Methods available for override
+    setControlTimeout(): void;
+    hideControlAnimation(): void;
+    showControlAnimation(): void;
+    initSeekPanResponder(): void;
+    setSeekerPosition(position: number): void;
+    calculateTimeFromSeekerPosition(): number;
+    seekTo(time: number): void;
+    calculateTime(): string;
+    renderControl(
+      children: React.ReactNode,
+      callback?: () => void,
+      style?: object
+    ): React.ReactElement;
+    renderTopControls(): React.ReactNode;
+    renderBottomControls(): React.ReactNode;
+    renderPlayPause(): React.ReactNode;
+    renderSeekbar(): React.ReactNode;
+    renderTimer(): React.ReactNode;
+  }
 }
 
 declare module 'react-native-tab-view' {
@@ -264,9 +336,15 @@ declare module 'geolib' {
 
 // React Native plugins
 declare module 'react-native-back-android' {
+  import * as React from 'react';
+
   export function exitApp(): void;
   export function addEventListener(event: string, handler: () => boolean): void;
   export function removeEventListener(event: string, handler: () => boolean): void;
+
+  // HOC that wraps a component with back button handling
+  function backAndroid<P>(WrappedComponent: React.ComponentType<P>): React.ComponentType<P>;
+  export default backAndroid;
 }
 
 // react-native-device-info v10+ API
@@ -324,10 +402,31 @@ declare module 'react-native-locale' {
 
 declare module 'react-native-mixpanel' {
   export function sharedInstanceWithToken(token: string): void;
-  export function track(event: string, properties?: object): void;
+  export function track(event: string): void;
+  export function trackWithProperties(event: string, properties: object): void;
   export function identify(id: string): void;
   export function set(properties: object): void;
   export function setOnce(properties: object): void;
+  export function registerSuperProperties(properties: object): void;
+  export function setPushRegistrationId(token: string): void;
+  export function addPushDeviceToken(token: string): void;
+  export function reset(): void;
+  export function timeEvent(event: string): void;
+
+  const Mixpanel: {
+    sharedInstanceWithToken(token: string): void;
+    track(event: string): void;
+    trackWithProperties(event: string, properties: object): void;
+    identify(id: string): void;
+    set(properties: object): void;
+    setOnce(properties: object): void;
+    registerSuperProperties(properties: object): void;
+    setPushRegistrationId(token: string): void;
+    addPushDeviceToken(token: string): void;
+    reset(): void;
+    timeEvent(event: string): void;
+  };
+  export default Mixpanel;
 }
 
 // react-native-permissions v4 API
@@ -457,6 +556,7 @@ declare module 'react-native-geocoder' {
     lng: number;
   }
 
+  // GeocodingObject is designed to be compatible with Address from formatAddress.ts
   interface GeocodingObject {
     position: Position;
     formattedAddress: string;
@@ -470,6 +570,12 @@ declare module 'react-native-geocoder' {
     adminArea: string | null;
     subAdminArea: string | null;
     subLocality: string | null;
+    // Optional properties to match Address interface
+    locale?: string;
+    thoroughfare?: string | null;
+    subThoroughfare?: string | null;
+    administrativeArea?: string | null;
+    subAdministrativeArea?: string | null;
   }
 
   interface Geocoder {
@@ -483,6 +589,15 @@ declare module 'react-native-geocoder' {
 }
 
 declare module 'react-native-send-intent' {
+  interface CalendarEventOptions {
+    title: string;
+    description?: string;
+    startDate: string;
+    endDate: string;
+    location?: string;
+    recurrence?: string;
+  }
+
   export function openCalendar(): void;
   export function openMaps(address: string): void;
   export function openMapsWithRoute(address: string, mode: string): void;
@@ -491,6 +606,20 @@ declare module 'react-native-send-intent' {
   export function sendMail(email: string, options: { subject?: string; body?: string }): void;
   export function openApp(packageName: string, extras?: object): Promise<boolean>;
   export function openAppWithData(packageName: string, dataUri: string): Promise<boolean>;
+  export function addCalendarEvent(options: CalendarEventOptions): void;
+
+  const SendIntentAndroid: {
+    openCalendar(): void;
+    openMaps(address: string): void;
+    openMapsWithRoute(address: string, mode: string): void;
+    sendPhoneDial(phoneNumber: string): void;
+    sendSms(phoneNumber: string, body: string): void;
+    sendMail(email: string, options: { subject?: string; body?: string }): void;
+    openApp(packageName: string, extras?: object): Promise<boolean>;
+    openAppWithData(packageName: string, dataUri: string): Promise<boolean>;
+    addCalendarEvent(options: CalendarEventOptions): void;
+  };
+  export default SendIntentAndroid;
 }
 
 declare module 'react-native-version-number' {
@@ -590,10 +719,10 @@ declare module '@react-navigation/native' {
   export interface NavigationContainerProps {
     ref?: React.RefObject<NavigationContainerRef<any>>;
     onStateChange?: (state: NavigationState | undefined) => void;
-    children: React.ReactNode;
+    children?: React.ReactNode;
   }
 
-  export function NavigationContainer(props: NavigationContainerProps): React.ReactElement;
+  export const NavigationContainer: React.FC<NavigationContainerProps>;
 
   export function useNavigation<T = any>(): T;
   export function useRoute<T = any>(): T;
@@ -866,8 +995,8 @@ declare module 'react-native-calendar-events' {
     url?: string;
   }
 
-  interface CalendarEventWritable {
-    title: string;
+  // Details object for saveEvent - title is passed as separate first parameter
+  interface CalendarEventDetails {
     startDate: string;
     endDate: string;
     location?: string;
@@ -880,7 +1009,7 @@ declare module 'react-native-calendar-events' {
   export function authorizeEventStore(): Promise<string>;
   export function findEventById(id: string): Promise<CalendarEvent | null>;
   export function fetchAllEvents(startDate: string, endDate: string): Promise<CalendarEvent[]>;
-  export function saveEvent(title: string, details: CalendarEventWritable): Promise<string>;
+  export function saveEvent(title: string, details: CalendarEventDetails): Promise<string>;
   export function removeEvent(id: string): Promise<boolean>;
 }
 
@@ -950,19 +1079,23 @@ declare module 'react-native-push-notification' {
 // URL parsing (for React Native)
 declare module 'url' {
   interface UrlObject {
-    protocol?: string;
-    slashes?: boolean;
-    auth?: string;
-    host?: string;
-    port?: string;
-    hostname?: string;
-    hash?: string;
-    search?: string;
-    query?: Record<string, string | undefined>;
-    pathname?: string;
-    path?: string;
+    protocol?: string | null;
+    slashes?: boolean | null;
+    auth?: string | null;
+    host?: string | null;
+    port?: string | null;
+    hostname?: string | null;
+    hash?: string | null;
+    search?: string | null;
+    query?: string | Record<string, string | undefined> | null;
+    pathname?: string | null;
+    path?: string | null;
     href?: string;
   }
+
+  export function parse(urlStr: string, parseQueryString?: boolean, slashesDenoteHost?: boolean): UrlObject;
+  export function format(urlObj: UrlObject): string;
+  export function resolve(from: string, to: string): string;
 
   export class Url {
     parse(urlStr: string, parseQueryString?: boolean): UrlObject;
@@ -1033,6 +1166,7 @@ declare module 'react-native-fbsdk' {
 
   export class GraphRequestManager {
     addRequest(request: GraphRequest): GraphRequestManager;
+    addBatchCallback(callback: (error: unknown, results: unknown[]) => void): GraphRequestManager;
     start(): void;
   }
 
@@ -1049,6 +1183,17 @@ declare module 'react-native-fbsdk' {
     canShow(content: ShareContent): Promise<boolean>;
     show(content: ShareContent): Promise<{ postId?: string }>;
     setMode(mode: string): void;
+  };
+
+  export const MessageDialog: {
+    canShow(content: ShareContent): Promise<boolean>;
+    show(content: ShareContent): Promise<{ postId?: string }>;
+  };
+
+  export const AppEventsLogger: {
+    logEvent(eventName: string, valueToSum?: number, params?: Record<string, unknown>): void;
+    logPurchase(purchaseAmount: number, currency: string, params?: Record<string, unknown>): void;
+    flush(): void;
   };
 }
 
