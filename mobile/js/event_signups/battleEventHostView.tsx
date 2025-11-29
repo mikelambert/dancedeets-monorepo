@@ -10,18 +10,15 @@ import {
   TouchableHighlight,
   View,
 } from 'react-native';
-import { injectIntl, defineMessages } from 'react-intl';
 import FitImage from 'react-native-fit-image';
-import type { Dispatch, User } from '../actions/types';
-import type { BattleCategory, BattleEvent, Signup } from './models';
+import type { BattleCategory, BattleEvent } from './models';
 import { getCategories } from './models';
 import { Button } from '../ui';
-import CategorySummaryCard from './categorySummaryCard';
 
 const boxMargin = 5;
 
 interface BattleEventHostViewProps {
-  battleId: string;
+  battleId?: string;
   battleEvent: BattleEvent;
   onSelected: (category: BattleCategory) => void;
 }
@@ -65,7 +62,7 @@ class _BattleEventHostView extends React.Component<BattleEventHostViewProps> {
       view = (
         <FlatList
           data={getCategories(this.props.battleEvent)}
-          renderHeader={this.renderHeader}
+          ListHeaderComponent={this.renderHeader}
           renderItem={this.renderRow}
           contentContainerStyle={{
             alignSelf: 'center',
@@ -78,6 +75,4 @@ class _BattleEventHostView extends React.Component<BattleEventHostViewProps> {
     return view;
   }
 }
-const BattleEventHostView = injectIntl(_BattleEventHostView);
-
-export default BattleEventHostView;
+export default _BattleEventHostView;

@@ -4,16 +4,14 @@
 
 import * as React from 'react';
 import { Dimensions, FlatList, TouchableHighlight, View } from 'react-native';
-import { injectIntl, defineMessages } from 'react-intl';
 import FitImage from 'react-native-fit-image';
-import type { Dispatch, User } from '../actions/types';
 import type { BattleCategory, BattleEvent, Signup } from './models';
 import CategorySummaryCard from './categorySummaryCard';
 
 const boxMargin = 5;
 
 interface BattleEventViewProps {
-  battleId: string;
+  battleId?: string;
   battleEvent: BattleEvent;
   onSelected: (category: BattleCategory) => void;
   onRegister: (category: BattleCategory) => void;
@@ -64,7 +62,7 @@ class _BattleEventView extends React.Component<BattleEventViewProps> {
       view = (
         <FlatList
           data={this.props.battleEvent.categories}
-          renderHeader={this.renderHeader}
+          ListHeaderComponent={this.renderHeader}
           renderItem={this.renderRow}
           contentContainerStyle={{
             alignSelf: 'center',
@@ -77,6 +75,4 @@ class _BattleEventView extends React.Component<BattleEventViewProps> {
     return view;
   }
 }
-const BattleEventView = injectIntl(_BattleEventView);
-
-export default BattleEventView;
+export default _BattleEventView;

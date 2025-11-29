@@ -14,7 +14,8 @@ import { setFirebaseState } from './actions';
 
 interface TrackFirebaseOwnProps {
   path: string;
-  children: React.ReactNode;
+  // Either children or renderContents should be provided
+  children?: React.ReactNode;
   // If set, render passing in the state, instead of just rendering children
   renderContents?: (contents: unknown) => React.ReactElement;
 }
