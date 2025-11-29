@@ -577,58 +577,105 @@ declare module '@react-navigation/bottom-tabs' {
   };
 }
 
-// Firebase
-declare module 'react-native-firebase' {
-  interface ConfigResult {
-    val(): string;
+// Firebase - Modular @react-native-firebase/* packages
+declare module '@react-native-firebase/analytics' {
+  interface FirebaseAnalyticsModule {
+    logEvent(name: string, params?: Record<string, unknown>): Promise<void>;
+    setUserProperty(name: string, value: string | null): Promise<void>;
+    setUserId(id: string | null): Promise<void>;
+    setCurrentScreen(screenName: string, screenClass?: string): Promise<void>;
+    setAnalyticsCollectionEnabled(enabled: boolean): Promise<void>;
   }
 
-  interface Config {
-    enableDeveloperMode(): void;
-    fetch(): Promise<void>;
-    activateFetched(): Promise<void>;
-    getValue(key: string): Promise<ConfigResult | null>;
+  function analytics(): FirebaseAnalyticsModule;
+  export default analytics;
+}
+
+declare module '@react-native-firebase/remote-config' {
+  interface ConfigValue {
+    asString(): string;
+    asNumber(): number;
+    asBoolean(): boolean;
+    getSource(): 'default' | 'remote' | 'static';
   }
 
-  interface DataSnapshot {
-    val(): unknown;
-    key: string | null;
-    exists(): boolean;
-    forEach(action: (snapshot: DataSnapshot) => boolean | void): boolean;
-    child(path: string): DataSnapshot;
+  interface ConfigSettings {
+    minimumFetchIntervalMillis?: number;
+    fetchTimeoutMillis?: number;
   }
 
-  interface Reference {
-    on(eventType: string, callback: (snapshot: DataSnapshot) => void): void;
-    off(eventType?: string, callback?: (snapshot: DataSnapshot) => void): void;
-    set(value: unknown): Promise<void>;
-    update(values: object): Promise<void>;
-    remove(): Promise<void>;
-    push(value?: unknown): Reference;
-    child(path: string): Reference;
+  interface FirebaseRemoteConfigModule {
+    setConfigSettings(settings: ConfigSettings): Promise<void>;
+    setDefaults(defaults: Record<string, unknown>): Promise<void>;
+    fetch(expirationDuration?: number): Promise<void>;
+    fetchAndActivate(): Promise<boolean>;
+    activate(): Promise<boolean>;
+    getValue(key: string): ConfigValue;
+    getAll(): Record<string, ConfigValue>;
   }
 
-  interface Database {
-    ref(path?: string): Reference;
+  function remoteConfig(): FirebaseRemoteConfigModule;
+  export default remoteConfig;
+}
+
+declare module '@react-native-firebase/database' {
+  export namespace FirebaseDatabaseTypes {
+    interface DataSnapshot {
+      val(): unknown;
+      key: string | null;
+      exists(): boolean;
+      forEach(action: (snapshot: DataSnapshot) => boolean | void): boolean;
+      child(path: string): DataSnapshot;
+      hasChild(path: string): boolean;
+      hasChildren(): boolean;
+      numChildren(): number;
+      ref: Reference;
+    }
+
+    interface Reference {
+      on(eventType: string, callback: (snapshot: DataSnapshot) => void): () => void;
+      off(eventType?: string, callback?: (snapshot: DataSnapshot) => void): void;
+      once(eventType: string): Promise<DataSnapshot>;
+      set(value: unknown): Promise<void>;
+      update(values: object): Promise<void>;
+      remove(): Promise<void>;
+      push(value?: unknown): Reference;
+      child(path: string): Reference;
+      key: string | null;
+      parent: Reference | null;
+      root: Reference;
+    }
   }
 
-  interface Analytics {
-    logEvent(name: string, params?: Record<string, unknown>): void;
-    setUserProperty(name: string, value: string | null): void;
-    setUserId(id: string | null): void;
-    setCurrentScreen(screenName: string, screenClass?: string): void;
-    setAnalyticsCollectionEnabled(enabled: boolean): void;
+  interface FirebaseDatabaseModule {
+    ref(path?: string): FirebaseDatabaseTypes.Reference;
+    goOnline(): void;
+    goOffline(): void;
+    setPersistenceEnabled(enabled: boolean): Promise<void>;
   }
 
+  function database(): FirebaseDatabaseModule;
+  export default database;
+  export { FirebaseDatabaseTypes };
+}
+
+declare module '@react-native-firebase/app' {
   interface FirebaseApp {
-    config(): Config;
-    database(): Database;
-    auth(): unknown;
-    messaging(): unknown;
-    analytics(): Analytics;
+    name: string;
+    options: {
+      apiKey: string;
+      appId: string;
+      projectId: string;
+      databaseURL?: string;
+      storageBucket?: string;
+      messagingSenderId?: string;
+    };
   }
 
-  const firebase: FirebaseApp;
+  const firebase: {
+    app(name?: string): FirebaseApp;
+    apps: FirebaseApp[];
+  };
   export default firebase;
 }
 
