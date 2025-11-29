@@ -3,11 +3,11 @@
  */
 
 import * as React from 'react';
-import { Platform, StyleSheet, WebView } from 'react-native';
+import { Platform, StyleSheet } from 'react-native';
 import { TabBarBottom, TabNavigator } from 'react-navigation';
 import type { SceneRendererProps } from 'react-native-tab-view/src/TabViewTypeDefinitions';
 import { defineMessages } from 'react-intl';
-import WKWebView from 'react-native-wkwebview-reborn';
+import { WebView } from 'react-native-webview';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {
   EventScreensNavigator,
@@ -62,11 +62,7 @@ const mediumUrl =
 
 class ArticlesScreensNavigator extends React.Component<{}> {
   render() {
-    if (Platform.OS === 'ios') {
-      return <WKWebView source={{ uri: mediumUrl }} />;
-    } else {
-      return <WebView source={{ uri: mediumUrl }} />;
-    }
+    return <WebView source={{ uri: mediumUrl }} />;
   }
 }
 

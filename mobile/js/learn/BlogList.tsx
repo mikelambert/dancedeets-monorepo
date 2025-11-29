@@ -10,7 +10,7 @@ import {
   TouchableHighlight,
   View,
 } from 'react-native';
-import WKWebView from 'react-native-wkwebview-reborn';
+import { WebView } from 'react-native-webview';
 import YouTube from 'react-native-youtube';
 import { Text } from '../ui';
 import { getRemoteBlogs } from './liveLearnConfig';
@@ -36,7 +36,7 @@ export class BlogPostContents extends React.Component<BlogPostContentsProps> {
       );
     } else {
       return (
-        <WKWebView
+        <WebView
           source={{ uri: this.props.post.url }}
           style={styles.listView}
         />

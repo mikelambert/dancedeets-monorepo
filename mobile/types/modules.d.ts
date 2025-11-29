@@ -223,12 +223,7 @@ declare module 'react-native-photo-view' {
   export default class PhotoView extends React.Component<PhotoViewProps> {}
 }
 
-declare module 'react-native-wkwebview-reborn' {
-  import * as React from 'react';
-  import { WebViewProps } from 'react-native';
-
-  export default class WKWebView extends React.Component<WebViewProps> {}
-}
+// Note: react-native-webview has its own TypeScript types
 
 // Utility packages
 declare module 'json-prune' {

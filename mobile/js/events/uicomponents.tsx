@@ -5,7 +5,7 @@
 import * as React from 'react';
 import {
   ActivityIndicator,
-  AlertIOS,
+  Alert,
   Dimensions,
   Image,
   ImageBackground,
@@ -119,7 +119,7 @@ class _AddToCalendarButton extends React.PureComponent<AddToCalendarButtonProps>
           trackWithEvent('Add to Calendar', this.props.event);
           const added = await CalendarAdd(this.props.event);
           if (added && Platform.OS === 'ios') {
-            AlertIOS.alert(
+            Alert.alert(
               this.props.intl.formatMessage(messages.addedToCalendar)
             );
           }
