@@ -175,6 +175,7 @@ export default class MyVideoPlayer extends VideoPlayer {
         <ImageBackground
           source={require('react-native-video-controls/assets/img/bottom-vignette.png')}
           style={[styles.controls.column, styles.controls.vignette]}
+          imageStyle={{ resizeMode: 'stretch' }}
         >
           <View
             style={[styles.controls.column, styles.controls.bottomControlGroup]}
@@ -244,7 +245,7 @@ const styles = {
       width: null,
     },
     vignette: {
-      resizeMode: 'stretch',
+      // resizeMode is handled via imageStyle prop on ImageBackground
     },
     control: {
       padding: 8,

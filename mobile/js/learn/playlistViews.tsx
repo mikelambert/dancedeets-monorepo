@@ -213,8 +213,8 @@ class _PlaylistListView extends React.Component<_PlaylistListViewProps> {
     );
     let title = playlist.title;
     if (this.props.intl.locale !== playlist.language) {
-      const localizedLanguage =
-        languages[this.props.intl.locale][playlist.language];
+      const languageMap = languages[this.props.intl.locale] as Record<string, string> | undefined;
+      const localizedLanguage = languageMap?.[playlist.language] || playlist.language;
       title = this.props.intl.formatMessage(messages.languagePrefixedTitle, {
         language: upperFirst(localizedLanguage),
         title: playlist.title,
@@ -285,9 +285,7 @@ class _PlaylistListView extends React.Component<_PlaylistListViewProps> {
             size="small"
             caption={this.props.intl.formatMessage(messages.contact)}
             onPress={this.sendTutorialContactEmail}
-          >
-            Contact Us
-          </Button>
+          />
           <DarkText>
             {' '}
             {this.props.intl.formatMessage(messages.contactSuffix)}
