@@ -95,20 +95,30 @@ declare module 'react-intl' {
   export function defineMessages<T extends Record<string, MessageDescriptor>>(messages: T): T;
 }
 
-// ReactDOM.render for older React (deprecated in React 18 types)
-declare module 'react-dom' {
+// React 18 createRoot API
+declare module 'react-dom/client' {
   import * as React from 'react';
 
-  export function render(
-    element: React.ReactElement,
-    container: Element | null,
-    callback?: () => void
-  ): React.Component | Element | void;
-  export function hydrate(
-    element: React.ReactElement,
-    container: Element | null,
-    callback?: () => void
-  ): React.Component | Element | void;
+  export interface Root {
+    render(children: React.ReactNode): void;
+    unmount(): void;
+  }
+
+  export interface RootOptions {
+    onRecoverableError?: (error: unknown) => void;
+    identifierPrefix?: string;
+  }
+
+  export function createRoot(
+    container: Element | DocumentFragment,
+    options?: RootOptions
+  ): Root;
+
+  export function hydrateRoot(
+    container: Element | Document,
+    initialChildren: React.ReactNode,
+    options?: RootOptions
+  ): Root;
 }
 
 // linkify-it
