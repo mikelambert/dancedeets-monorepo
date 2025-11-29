@@ -4,7 +4,6 @@
 
 import * as React from 'react';
 import { FlatList, View } from 'react-native';
-import { injectIntl, defineMessages } from 'react-intl';
 import { Card, Text } from '../ui';
 import type { BattleCategory, Signup } from './models';
 import { getCategorySignups } from './models';
@@ -41,12 +40,11 @@ class _TeamList extends React.Component<TeamListProps> {
       <FlatList
         data={this.props.signups}
         renderItem={this.renderRow}
-        renderHeader={this.props.renderHeader}
+        ListHeaderComponent={this.props.renderHeader}
       />
     );
   }
 }
-const TeamList = injectIntl(_TeamList);
 
 interface CategoryViewProps {
   category: BattleCategory;
@@ -54,11 +52,11 @@ interface CategoryViewProps {
   onUnregister: (category: BattleCategory, team: Signup) => void;
 }
 
-class _CategoryView extends React.Component<CategoryViewProps> {
+class CategoryView extends React.Component<CategoryViewProps> {
   render() {
     const signups = getCategorySignups(this.props.category);
     return (
-      <TeamList
+      <_TeamList
         signups={signups}
         renderHeader={() => (
           <View
@@ -79,6 +77,5 @@ class _CategoryView extends React.Component<CategoryViewProps> {
     );
   }
 }
-const CategoryView = injectIntl(_CategoryView);
 
 export default CategoryView;

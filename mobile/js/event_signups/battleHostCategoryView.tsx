@@ -4,7 +4,6 @@
 
 import * as React from 'react';
 import { FlatList, TouchableOpacity, View } from 'react-native';
-import { injectIntl } from 'react-intl';
 import { Card, HorizontalView, RibbonBanner, Text } from '../ui';
 import type { BattleCategory, PrelimStatus, Signup } from './models';
 import { getCategorySignups } from './models';
@@ -115,17 +114,15 @@ class _TeamList extends React.Component<TeamListProps, TeamListState> {
     );
   }
 }
-const TeamList = injectIntl(_TeamList);
-
 interface BattleHostCategoryViewProps {
   category: BattleCategory;
 }
 
-class _BattleHostCategoryView extends React.Component<BattleHostCategoryViewProps> {
+class BattleHostCategoryView extends React.Component<BattleHostCategoryViewProps> {
   render() {
     const signups = getCategorySignups(this.props.category);
     return (
-      <TeamList
+      <_TeamList
         signups={signups}
         renderHeader={() => (
           <View
@@ -141,6 +138,5 @@ class _BattleHostCategoryView extends React.Component<BattleHostCategoryViewProp
     );
   }
 }
-const BattleHostCategoryView = injectIntl(_BattleHostCategoryView);
 
 export default BattleHostCategoryView;
