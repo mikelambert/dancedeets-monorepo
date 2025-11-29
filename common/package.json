@@ -11,7 +11,7 @@
     "lodash": "^4.17.2",
     "moment": "^2.17.0",
     "react": "^18.0.0",
-    "react-intl": "^2.1.5",
+    "react-intl": "^6.6.0",
     "url": "^0.11.0"
   },
   "devDependencies": {

@@ -6,42 +6,41 @@ import * as React from 'react';
 import { AppState, Linking, StatusBar, StyleSheet, View } from 'react-native';
 import CodePush from 'react-native-code-push';
 import { connect } from 'react-redux';
-import storeShape from 'react-redux/lib/utils/storeShape';
-import { intlShape, IntlShape } from 'react-intl';
+import { injectIntl, WrappedComponentProps } from 'react-intl';
 import LoginFlow from '../login/LoginFlow';
 import TabApp from '../containers/TabApp';
 import { gradientTop } from '../Colors';
 import { setup as setupNotifications } from '../notifications/setup';
 import { processUrl } from '../actions';
 import { State } from '../reducers/user';
-import { Store } from 'redux';
+import { Dispatch } from 'redux';
 
-interface Props {
-  processUrl: (url: string) => void;
+interface StateProps {
   userState: State;
 }
 
-interface Context {
-  store: Store;
-  intl: IntlShape;
+interface DispatchProps {
+  processUrl: (url: string) => void;
+  dispatch: Dispatch;
 }
 
+type Props = StateProps & DispatchProps & WrappedComponentProps;
+
 class App extends React.Component<Props> {
-  static contextTypes = {
-    store: storeShape,
-    intl: intlShape,
-  };
+  private notificationsInitialized = false;
 
-  context!: Context;
-
-  constructor(props: Props, context: Context) {
-    super(props, context);
-    this.componentDidMount = this.componentDidMount.bind(this);
+  constructor(props: Props) {
+    super(props);
     this.handleOpenURL = this.handleOpenURL.bind(this);
-    setupNotifications(context.store.dispatch, context.intl);
   }
 
   componentDidMount() {
+    // Initialize notifications with dispatch and intl from props
+    if (!this.notificationsInitialized) {
+      setupNotifications(this.props.dispatch, this.props.intl);
+      this.notificationsInitialized = true;
+    }
+
     AppState.addEventListener('change', this.handleAppStateChange);
     CodePush.sync({
       installMode: CodePush.InstallMode.ON_NEXT_RESUME,
@@ -89,14 +88,17 @@ class App extends React.Component<Props> {
   // Add <PushNotificationsController /> back in to <View>...
 }
 
-export default connect(
-  (store: any) => ({
-    userState: store.user,
-  }),
-  (dispatch: any) => ({
-    processUrl: (event: string) => dispatch(processUrl(event)),
-  })
-)(App);
+// Use injectIntl to get intl prop, and connect for Redux state/dispatch
+const mapStateToProps = (state: any): StateProps => ({
+  userState: state.user,
+});
+
+const mapDispatchToProps = (dispatch: Dispatch): DispatchProps => ({
+  processUrl: (url: string) => dispatch(processUrl(url) as any),
+  dispatch,
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(injectIntl(App));
 
 const styles = StyleSheet.create({
   container: {

@@ -386,21 +386,73 @@ declare module 'react-native-version-number' {
   export const bundleIdentifier: string;
 }
 
-// Storage and persistence
+// Storage and persistence - redux-persist v6 API
 declare module 'redux-persist' {
-  import { Store } from 'redux';
+  import { Store, Reducer } from 'redux';
 
-  export interface PersistConfig {
-    key?: string;
-    storage?: unknown;
+  export interface PersistConfig<S = any> {
+    key: string;
+    storage: Storage;
+    version?: number;
     whitelist?: string[];
     blacklist?: string[];
-    transforms?: unknown[];
-    debounce?: number;
+    transforms?: Transform<any, any>[];
+    throttle?: number;
+    migrate?: (state: any, version: number) => Promise<any>;
+    stateReconciler?: (inbound: any, original: S, reduced: S) => S;
+    debug?: boolean;
+    serialize?: boolean;
+    writeFailHandler?: (err: Error) => void;
   }
 
-  export function persistStore(store: Store, config?: PersistConfig, callback?: () => void): unknown;
-  export function autoRehydrate(config?: { log?: boolean }): unknown;
+  export interface Storage {
+    getItem(key: string): Promise<string | null>;
+    setItem(key: string, value: string): Promise<void>;
+    removeItem(key: string): Promise<void>;
+  }
+
+  export interface Transform<HSS, ESS> {
+    in: (state: HSS, key: string) => ESS;
+    out: (state: ESS, key: string) => HSS;
+  }
+
+  export interface Persistor {
+    pause(): void;
+    persist(): void;
+    purge(): Promise<void>;
+    flush(): Promise<void>;
+    getState(): { bootstrapped: boolean };
+  }
+
+  export function persistStore(store: Store, options?: object, callback?: () => void): Persistor;
+  export function persistReducer<S>(config: PersistConfig<S>, baseReducer: Reducer<S>): Reducer<S>;
+  export function createMigrate(migrations: Record<number, (state: any) => any>): (state: any, version: number) => Promise<any>;
+  export function createTransform<HSS, ESS>(
+    inbound: (state: HSS, key: string) => ESS,
+    outbound: (state: ESS, key: string) => HSS,
+    config?: { whitelist?: string[]; blacklist?: string[] }
+  ): Transform<HSS, ESS>;
+
+  export const FLUSH: string;
+  export const REHYDRATE: string;
+  export const PAUSE: string;
+  export const PERSIST: string;
+  export const PURGE: string;
+  export const REGISTER: string;
+}
+
+declare module 'redux-persist/integration/react' {
+  import * as React from 'react';
+  import { Persistor } from 'redux-persist';
+
+  export interface PersistGateProps {
+    persistor: Persistor;
+    loading?: React.ReactNode;
+    onBeforeLift?: () => void | Promise<void>;
+    children?: React.ReactNode;
+  }
+
+  export class PersistGate extends React.Component<PersistGateProps> {}
 }
 
 // React Navigation (older version)
@@ -1005,11 +1057,8 @@ declare module 'react-navigation/src/views/TouchableItem' {
   export default class TouchableItem extends React.Component<TouchableOpacityProps> {}
 }
 
-declare module 'react-redux/lib/utils/storeShape' {
-  import { Store } from 'redux';
-  const storeShape: object;
-  export default storeShape;
-}
+// Note: react-redux/lib/utils/storeShape was removed in react-redux v8.
+// Use the connect HOC or useSelector/useDispatch hooks instead of legacy context.
 
 declare module 'react-tabs' {
   import * as React from 'react';
@@ -1242,15 +1291,19 @@ declare module 'react-intl' {
     messages: Record<string, string>;
   }
 
-  export const intlShape: IntlShape;
+  // Note: intlShape was removed in react-intl v6. Use injectIntl or useIntl hook instead.
 
-  export interface InjectedIntlProps {
+  // react-intl v6 renamed InjectedIntlProps to WrappedComponentProps
+  export interface WrappedComponentProps {
     intl: IntlShape;
   }
 
-  export function injectIntl<P extends InjectedIntlProps>(
+  // Backward compatibility alias
+  export type InjectedIntlProps = WrappedComponentProps;
+
+  export function injectIntl<P extends WrappedComponentProps>(
     component: React.ComponentType<P>
-  ): React.ComponentType<Omit<P, keyof InjectedIntlProps>>;
+  ): React.ComponentType<Omit<P, keyof WrappedComponentProps>>;
 
   export function defineMessages<T extends Record<string, MessageDescriptor>>(messages: T): T;
 
@@ -1271,4 +1324,15 @@ declare module 'react-intl' {
   export class FormattedMessage extends React.Component<FormattedMessageProps> {}
   export class FormattedNumber extends React.Component<{ value: number; style?: string }> {}
   export class FormattedDate extends React.Component<{ value: Date | number }> {}
+
+  // Hook for functional components
+  export function useIntl(): IntlShape;
+
+  // For creating intl instances outside of React
+  export interface IntlCache {}
+  export function createIntlCache(): IntlCache;
+  export function createIntl(
+    config: { locale: string; messages: Record<string, string>; defaultLocale?: string },
+    cache?: IntlCache
+  ): IntlShape;
 }

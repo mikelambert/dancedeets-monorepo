@@ -3,7 +3,7 @@
  */
 
 import * as React from 'react';
-import { addLocaleData, IntlProvider, InjectedIntl } from 'react-intl';
+import { IntlProvider, createIntl, createIntlCache, IntlShape } from 'react-intl';
 import areIntlLocalesSupported from 'intl-locales-supported';
 import moment from 'moment';
 import 'moment/locale/fr';
@@ -62,13 +62,9 @@ if (!process.env.BROWSER) {
   /* eslint-enable global-require, import/no-extraneous-dependencies, @typescript-eslint/no-var-requires */
 }
 
-// These has pluralRuleFunction, necessary for react-intl's use of intl-messageformat
-/* eslint-disable global-require, @typescript-eslint/no-var-requires */
-addLocaleData(require('react-intl/locale-data/en'));
-addLocaleData(require('react-intl/locale-data/fr'));
-addLocaleData(require('react-intl/locale-data/ja'));
-addLocaleData(require('react-intl/locale-data/zh'));
-/* eslint-enable global-require, @typescript-eslint/no-var-requires */
+// Note: addLocaleData was removed in react-intl v3+.
+// In react-intl v6, locale data is loaded automatically from the browser's Intl API
+// or from @formatjs/intl-* polyfill packages if needed.
 
 interface IntlProviderArgs {
   defaultLocale: string;
@@ -111,9 +107,20 @@ function intlProviderArgs(currentLocale: string): IntlProviderArgs {
 // intlProviderArgs('fr-FR').locale == 'fr'
 // intlProviderArgs('de-XX').locale == 'en' // fallback
 
-export function constructIntl(currentLocale: string): InjectedIntl {
-  return new IntlProvider(intlProviderArgs(currentLocale), {}).getChildContext()
-    .intl;
+// Cache for createIntl to improve performance
+const intlCache = createIntlCache();
+
+export function constructIntl(currentLocale: string): IntlShape {
+  const args = intlProviderArgs(currentLocale);
+  // Use createIntl from react-intl v6 instead of IntlProvider.getChildContext()
+  return createIntl(
+    {
+      locale: args.locale,
+      messages: args.messages || {},
+      defaultLocale: args.defaultLocale,
+    },
+    intlCache
+  );
 }
 
 interface InternationalizeProps {
@@ -122,8 +129,14 @@ interface InternationalizeProps {
 }
 
 function Internationalize(props: InternationalizeProps): React.ReactElement {
+  const args = intlProviderArgs(props.currentLocale);
   return (
-    <IntlProvider {...intlProviderArgs(props.currentLocale)}>
+    <IntlProvider
+      locale={args.locale}
+      messages={args.messages || {}}
+      defaultLocale={args.defaultLocale}
+      key={args.key}
+    >
       {props.children}
     </IntlProvider>
   );

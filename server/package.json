@@ -113,7 +113,7 @@
     "react-format-text": "^1.1.0",
     "react-helmet": "^5.2.0",
     "react-hot-loader": "^3.0.0-beta.6",
-    "react-intl": "^2.1.5",
+    "react-intl": "^6.6.0",
     "react-lazyload": "^2.2.0",
     "react-masonry-component": "^5.0.3",
     "react-measure": "^2.0.2",
