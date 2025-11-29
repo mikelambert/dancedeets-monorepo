@@ -106,10 +106,8 @@ class _TeamList extends React.Component<TeamListProps, TeamListState> {
   render() {
     return (
       <FlatList
-        maxSwipeDistance={120}
         renderItem={this.renderRow}
         data={this.state.prelims}
-        onScroll={e => {}}
       />
     );
   }

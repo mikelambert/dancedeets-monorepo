@@ -654,7 +654,7 @@ class _ListView extends React.Component<ListViewProps, ListViewState> {
           })),
         });
       }
-      const now = moment(intl.now());
+      const now = moment(Date.now());
       if (response.results != null && response.results.length > 0) {
         // Previously sorted by startDate from the server, we want to sort them by our listDate
         let resultEvents = response.results;

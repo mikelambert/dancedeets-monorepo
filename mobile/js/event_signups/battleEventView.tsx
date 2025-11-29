@@ -6,6 +6,7 @@ import * as React from 'react';
 import { Dimensions, FlatList, TouchableHighlight, View } from 'react-native';
 import FitImage from 'react-native-fit-image';
 import type { BattleCategory, BattleEvent, Signup } from './models';
+import { getCategories } from './models';
 import CategorySummaryCard from './categorySummaryCard';
 
 const boxMargin = 5;
@@ -61,7 +62,7 @@ class _BattleEventView extends React.Component<BattleEventViewProps> {
     if (this.props.battleEvent) {
       view = (
         <FlatList
-          data={this.props.battleEvent.categories}
+          data={getCategories(this.props.battleEvent)}
           ListHeaderComponent={this.renderHeader}
           renderItem={this.renderRow}
           contentContainerStyle={{

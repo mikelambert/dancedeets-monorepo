@@ -10,12 +10,11 @@ import type { MessageDescriptor } from 'react-intl';
 
 // Simple type for react-intl's intl object - using 'unknown' for formatTime to be compatible with react-intl
 interface IntlShape {
-  now(): number;
   formatMessage(
     descriptor: MessageDescriptor,
     values?: Record<string, string | number>
   ): string;
-  formatDate(date: Date, options?: Intl.DateTimeFormatOptions): string;
+  formatDate(date: Date | unknown, options?: Intl.DateTimeFormatOptions): string;
   formatTime(date: unknown): string;
 }
 

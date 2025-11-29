@@ -122,7 +122,7 @@ class Button extends React.Component<Props> {
     if (this.props.enabled) {
       return (
         <TouchableOpacity
-          accessibilityTraits="button"
+          accessibilityRole="button"
           onPress={this.props.onPress}
           activeOpacity={0.8}
           style={[this.props.style]}

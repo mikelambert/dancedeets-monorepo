@@ -96,7 +96,7 @@ export type BattleEvent = {
 };
 
 export function categoryDisplayName(category: BattleCategory): string {
-  const nxn = category.teamSize
+  const nxn = category.rules.teamSize
     ? `${category.rules.teamSize}×${category.rules.teamSize}`
     : '';
   const displayName = nxn

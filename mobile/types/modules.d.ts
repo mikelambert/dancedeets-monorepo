@@ -81,6 +81,7 @@ declare module 'react-native-youtube' {
     play?: boolean;
     loop?: boolean;
     fullscreen?: boolean;
+    hidden?: boolean;
     controls?: number;
     showInfo?: boolean;
     modestBranding?: boolean;
@@ -1679,9 +1680,9 @@ declare module 'react-intl' {
   export interface IntlShape {
     formatMessage(descriptor: MessageDescriptor, values?: Record<string, unknown>): string;
     formatNumber(value: number, options?: Intl.NumberFormatOptions): string;
-    formatDate(value: Date | number, options?: Intl.DateTimeFormatOptions): string;
-    formatTime(value: Date | number, options?: Intl.DateTimeFormatOptions): string;
-    formatRelative(value: Date | number): string;
+    formatDate(value: Date | number | unknown, options?: Intl.DateTimeFormatOptions): string;
+    formatTime(value: Date | number | unknown, options?: Intl.DateTimeFormatOptions): string;
+    formatRelativeTime?(value: number, unit?: string, options?: object): string;
     locale: string;
     messages: Record<string, string>;
   }

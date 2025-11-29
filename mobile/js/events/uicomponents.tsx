@@ -20,6 +20,7 @@ import {
 } from 'react-native';
 import { injectIntl, IntlShape, defineMessages } from 'react-intl';
 import Locale from 'react-native-locale';
+import { usesMetricSystem } from '../util/geo';
 import { connect } from 'react-redux';
 import moment from 'moment';
 import geolib from 'geolib';
@@ -137,7 +138,7 @@ interface EventDateTimeProps {
 
   // Self-managed props
   intl: IntlShape;
-  children: React.ReactNode;
+  children?: React.ReactNode;
 }
 
 class _EventDateTime extends React.Component<EventDateTimeProps> {
@@ -177,7 +178,10 @@ class _EventDateTime extends React.Component<EventDateTimeProps> {
 const EventDateTime = injectIntl(_EventDateTime);
 
 function formatDistance(intl: IntlShape, distanceKm: number) {
-  const useKm = Locale.constants().usesMetricSystem;
+  // Get country code from locale identifier (e.g., "en_US" -> "US")
+  const localeId = Locale.constants().localeIdentifier || '';
+  const countryCode = localeId.split('_')[1] || localeId.split('-')[1];
+  const useKm = usesMetricSystem(countryCode);
   if (useKm) {
     const km = Math.round(distanceKm);
     return intl.formatMessage(messages.kmAway, { km });
@@ -748,7 +752,7 @@ interface EventShareProps {
 
 class EventShare extends React.PureComponent<EventShareProps> {
   render() {
-    const shareContent = {
+    const shareContent: { contentType: 'link'; contentUrl: string } = {
       contentType: 'link',
       contentUrl: this.props.event.getUrl(),
     };

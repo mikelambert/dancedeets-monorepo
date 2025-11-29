@@ -70,6 +70,22 @@ export async function hasLocationPermission(): Promise<boolean> {
   }
 }
 
+// Countries that use imperial system (miles, Fahrenheit, etc)
+// Only USA, Myanmar (Burma), and Liberia officially use imperial
+const imperialCountries = new Set(['US', 'MM', 'LR']);
+
+/**
+ * Determine if the user's locale uses the metric system.
+ * Returns true for metric (kilometers), false for imperial (miles).
+ */
+export function usesMetricSystem(countryCode?: string): boolean {
+  if (!countryCode) {
+    // Default to metric if we don't know the country
+    return true;
+  }
+  return !imperialCountries.has(countryCode.toUpperCase());
+}
+
 export async function getAddress(): Promise<string> {
   if (Platform.OS === 'ios') {
     const status = await request(locationPermission);
