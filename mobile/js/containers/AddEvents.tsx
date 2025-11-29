@@ -15,7 +15,7 @@ import { AccessToken } from 'react-native-fbsdk';
 import { connect } from 'react-redux';
 import moment from 'moment';
 import { injectIntl, IntlShape, defineMessages } from 'react-intl';
-import type { AddEventData } from '../addEventsModels';
+import type { AddEventData, SortOrder } from '../addEventsModels';
 import type { DisplayOptions, State } from '../reducers/addEvents';
 import { track } from '../store/track';
 import {
@@ -148,7 +148,7 @@ const FilterHeader = connect(
   }),
   (dispatch: any) => ({
     setOnlyUnadded: (x: boolean): Promise<void> => dispatch(setOnlyUnadded(x)),
-    setSortOrder: (x: string) => dispatch(setSortOrder(x)),
+    setSortOrder: (x: SortOrder) => dispatch(setSortOrder(x)),
   })
 )(injectIntl(_FilterHeader));
 

@@ -133,6 +133,7 @@ declare module 'react-native-video-controls' {
     volume?: number;
     rate?: number;
     repeat?: boolean;
+    loop?: boolean;
     resizeMode?: 'contain' | 'cover' | 'stretch';
     controls?: boolean;
     onLoad?: (data: unknown) => void;
@@ -152,6 +153,7 @@ declare module 'react-native-video-controls' {
     onPause?: () => void;
     onPlay?: () => void;
     style?: object;
+    ignoreSilentSwitch?: string;
   }
 
   interface VideoPlayerState {
