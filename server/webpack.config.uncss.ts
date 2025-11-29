@@ -1,12 +1,10 @@
 /**
  * Copyright 2016 DanceDeets.
- *
- * @flow
  */
 
-const uncssWebpackGenerator = require('./uncssWebpackGenerator');
+import uncssWebpackGenerator from './uncssWebpackGenerator';
 
-module.exports = uncssWebpackGenerator(
+export default uncssWebpackGenerator(
   'full',
   ['amp/generated/*-full.html'],
   // This contains the css to hide modals on initial display (until shown).

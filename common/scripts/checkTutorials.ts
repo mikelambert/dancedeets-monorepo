@@ -2,18 +2,41 @@
 
 /**
  * Copyright 2016 DanceDeets.
- *
- * @flow
  */
 import fetch from 'node-fetch';
 import querystring from 'querystring';
 import parseJson from 'parse-json';
 import areEqual from 'fbjs/lib/areEqual';
 import fs from 'mz/fs';
-import { findVideoDimensions, getUrl, YoutubeKey } from './_youtube';
+import { findVideoDimensions, getUrl, YoutubeKey, VideoDimensions } from './_youtube';
 
-async function findVideoItems(inVideoIds): Promise<Object[]> {
-  const items = [];
+interface VideoItem {
+  id: string;
+  contentDetails: {
+    duration: string;
+  };
+}
+
+interface Video {
+  youtubeId: string;
+  duration: string;
+  width?: number;
+  height?: number;
+}
+
+interface Section {
+  videos: Video[];
+}
+
+interface TutorialJson {
+  style: string;
+  title: string;
+  thumbnail: string;
+  sections: Section[];
+}
+
+async function findVideoItems(inVideoIds: string[]): Promise<VideoItem[]> {
+  const items: VideoItem[] = [];
   const videoIds = inVideoIds.slice();
   while (videoIds.length) {
     // modifies videoIds
@@ -37,8 +60,8 @@ async function findVideoItems(inVideoIds): Promise<Object[]> {
   return items;
 }
 
-async function checkTutorial(tutorialJson) {
-  const videoIds = [];
+async function checkTutorial(tutorialJson: TutorialJson): Promise<TutorialJson> {
+  const videoIds: string[] = [];
   for (const section of tutorialJson.sections) {
     for (const video of section.videos) {
       videoIds.push(video.youtubeId);
@@ -57,7 +80,7 @@ async function checkTutorial(tutorialJson) {
     );
   }
   const videoItems = await findVideoItems(videoIds);
-  const videoItemsMap = {};
+  const videoItemsMap: Record<string, VideoItem> = {};
   for (const video of videoItems) {
     videoItemsMap[video.id] = video;
   }
@@ -104,25 +127,29 @@ async function checkTutorial(tutorialJson) {
   return tutorialJson;
 }
 
-async function reportAndFix(jsonFilename, jsonData) {
+async function reportAndFix(jsonFilename: string, jsonData: TutorialJson): Promise<void> {
   try {
     const fixedJson = await checkTutorial(jsonData);
     await fs.writeFile(jsonFilename, JSON.stringify(fixedJson, null, '  '));
   } catch (err) {
-    console.error('Error checking tutorial:', jsonFilename, ': ', err.stack);
+    console.error('Error checking tutorial:', jsonFilename, ': ', (err as Error).stack);
     throw err;
   }
 }
 
-async function checkAllTutorials() {
-  const files = (await fs.walk('../js/tutorials/playlists')).map(x => x.path);
-  const jsonFiles = files.filter(x => x.endsWith('.json'));
-  const promises = [];
-  const tutorials = [];
+interface WalkEntry {
+  path: string;
+}
+
+async function checkAllTutorials(): Promise<void> {
+  const files = ((await (fs as any).walk('../js/tutorials/playlists')) as WalkEntry[]).map((x: WalkEntry) => x.path);
+  const jsonFiles = files.filter((x: string) => x.endsWith('.json'));
+  const promises: Promise<void>[] = [];
+  const tutorials: TutorialJson[] = [];
   for (const jsonFilename of jsonFiles) {
-    let jsonData = null;
+    let jsonData: TutorialJson | null = null;
     try {
-      jsonData = parseJson(await fs.readFile(jsonFilename));
+      jsonData = parseJson(await fs.readFile(jsonFilename)) as TutorialJson;
       tutorials.push(jsonData);
     } catch (e) {
       console.error('Error loading ', jsonFilename, '\n', e);
@@ -133,7 +160,7 @@ async function checkAllTutorials() {
   await Promise.all(promises);
 
   // Used for testing down below
-  let defaultTutorials = null;
+  let defaultTutorials: Array<{ tutorials: Array<{ id: string }> }> | null = null;
   try {
     defaultTutorials = require('../js/tutorials/playlistConfig.js').getTutorials(
       ''
@@ -142,12 +169,12 @@ async function checkAllTutorials() {
     console.error('Error importing learnConfig.js\n', e);
     return;
   }
-  const configuredTutorials = [].concat(
-    ...defaultTutorials.map(style => style.tutorials)
+  const configuredTutorials = ([] as Array<{ id: string }>).concat(
+    ...defaultTutorials!.map(style => style.tutorials)
   );
   const missingTutorials = tutorials.filter(
     fileTut =>
-      !configuredTutorials.find(configTut => configTut.id === fileTut.id)
+      !configuredTutorials.find(configTut => configTut.id === (fileTut as any).id)
   );
   for (const tutorial of missingTutorials) {
     console.error('Tutorial not included: ', tutorial.style, tutorial.title);

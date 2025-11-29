@@ -1,7 +1,5 @@
 /**
  * Copyright 2016 DanceDeets.
- *
- * @flow
  */
 
 // This gulpfile makes use of new JavaScript features.
@@ -330,7 +328,7 @@ gulp.task(
   $.shell.task(['PYTHONPATH=lib-local:. ./amp/generate_amp_sources.py'])
 );
 
-function webpack(configName, dependencies = []) {
+function webpack(configName: string, dependencies: string[] = []) {
   const webpackCommand = `node_modules/webpack/bin/webpack.js --color --progress --config webpack.config.${configName}.js`;
   gulp.task(
     `compile:webpack:${configName}:prod:once`,
@@ -390,7 +388,7 @@ suffixes.forEach(suffix =>
 gulp.task('compile:webpack', ['compile:webpack:all:prod:once']);
 
 // Generate rules for esbuild configs (client and server)
-function esbuild(configName) {
+function esbuild(configName: string) {
   const esbuildCommand = `node esbuild.${configName}.js`;
   gulp.task(
     `compile:esbuild:${configName}:prod:once`,
@@ -486,12 +484,12 @@ gulp.task(
   $.shell.task([`mkdir -p ${storagePath}`])
 );
 
-function startDevAppServer(port) {
+function startDevAppServer(port: number) {
   // NOTE: If dev_appserver.py ever gets upgraded to the Dec 5, 2017 version,
   // we'll probably need to start using --enable_host_checking=false.
   // Should we run this explicitly: /usr/bin/python
   return $.shell.task([
-    `PYTHONPATH=lib-local /usr/bin/python ${argv.gae_dir}/dev_appserver.py app-devserver.yaml --port=${port} --runtime=python-compat --storage_path=${storagePath} 2>&1 | ~/Library/Python/2.7/bin/technicolor-yawn`,
+    `PYTHONPATH=lib-local /usr/bin/python ${(argv as { gae_dir: string }).gae_dir}/dev_appserver.py app-devserver.yaml --port=${port} --runtime=python-compat --storage_path=${storagePath} 2>&1 | ~/Library/Python/2.7/bin/technicolor-yawn`,
   ]);
 }
 gulp.task(

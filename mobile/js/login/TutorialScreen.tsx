@@ -5,7 +5,7 @@
 import * as React from 'react';
 import { Dimensions, ImageBackground, StyleSheet, View } from 'react-native';
 import Carousel from 'react-native-carousel';
-import { defineMessages, injectIntl, IntlShape, WrappedComponentProps } from 'react-intl';
+import { defineMessages, injectIntl, InjectedIntlProps } from 'react-intl';
 import LaunchScreen from './LaunchScreen';
 import LoginButtonWithAlternate from './LoginButtonWithAlternate';
 import { BottomFade, normalize, Text } from '../ui';
@@ -51,9 +51,8 @@ const messages = defineMessages({
   },
 });
 
-interface TopViewProps extends WrappedComponentProps {
+interface TopViewProps extends InjectedIntlProps {
   page: number;
-  intl: IntlShape;
 }
 
 class _TopView extends React.Component<TopViewProps> {
@@ -75,10 +74,9 @@ class _TopView extends React.Component<TopViewProps> {
 }
 const TopView = injectIntl(_TopView);
 
-interface TutorialScreenProps extends WrappedComponentProps {
+interface TutorialScreenProps extends InjectedIntlProps {
   onLogin: () => void;
   onNoLogin: (name: string) => void;
-  intl: IntlShape;
 }
 
 class _TutorialScreen extends React.Component<TutorialScreenProps> {

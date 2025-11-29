@@ -42,8 +42,6 @@ class MainScreen extends React.Component<MainScreenProps> {
     title: screenProps.intl.formatMessage(messages.about),
   });
 
-  onNotificationPreferences: () => void;
-
   constructor(props: MainScreenProps) {
     super(props);
     this.onNotificationPreferences = this.onNotificationPreferences.bind(

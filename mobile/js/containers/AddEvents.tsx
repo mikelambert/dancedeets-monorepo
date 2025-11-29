@@ -272,8 +272,6 @@ class _AddEventList extends React.Component<
     return finalResults;
   }
 
-  renderRow: (info: { item: AddEventData }) => React.ReactElement;
-
   constructor(props: AddEventListProps) {
     super(props);
     this.state = {

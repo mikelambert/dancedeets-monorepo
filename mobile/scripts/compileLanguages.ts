@@ -2,8 +2,6 @@
 
 /**
  * Copyright 2016 DanceDeets.
- *
- * @flow
  */
 
 import * as fs from 'fs';
@@ -12,7 +10,7 @@ import * as glob from 'glob';
 import clone from 'git-clone';
 import { sync as mkdirpSync } from 'mkdirp';
 
-function writeFile(filename, contents) {
+function writeFile(filename: string, contents: string): Promise<string> {
   return new Promise((resolve, reject) => {
     fs.writeFile(filename, contents, err => {
       if (err) {
@@ -40,7 +38,7 @@ const locales = [
   'es',
 ];
 
-function downloadCountryList(cb) {
+function downloadCountryList(cb: (err?: Error) => void): void {
   mkdirpSync('build');
   clone(
     'https://github.com/umpirsky/country-list.git',
@@ -50,21 +48,24 @@ function downloadCountryList(cb) {
   );
 }
 
-function getLocaleFrom(filename) {
+function getLocaleFrom(filename: string): string {
   const components = filename.split('/');
   return components[components.length - 2];
 }
 
-function combineCountryList(filter, cb) {
+function combineCountryList(
+  filter: (locale: string) => boolean,
+  cb: (combined: Record<string, Record<string, string>>) => void
+): void {
   const combined = glob
     .sync(`${REPO_PATH}/data/*/country.json`)
     .filter(filename => {
       const locale = getLocaleFrom(filename);
       return filter(locale);
     })
-    .reduce((reduced, filename) => {
+    .reduce((reduced: Record<string, Record<string, string>>, filename) => {
       const locale = getLocaleFrom(filename);
-      // $FlowFixMe: This is a dev script, and so can use dynamic includes
+      // @ts-ignore: This is a dev script, and so can use dynamic includes
       const data = require(`../${filename}`);
       reduced[locale] = data;
       return reduced;
@@ -73,15 +74,15 @@ function combineCountryList(filter, cb) {
   cb(combined);
 }
 
-function languageFilter(locale) {
+function languageFilter(locale: string): boolean {
   return locales.indexOf(locale) !== -1;
 }
 
-function saveCombinedList(combined) {
+function saveCombinedList(combined: Record<string, Record<string, string>>): void {
   let fileData = 'export default ';
   fileData += JSON.stringify(combined);
   mkdirpSync('js/data');
   writeFile('js/data/localizedCountries.js', fileData).then(() => null);
 }
 
-downloadCountryList(combineCountryList(languageFilter, saveCombinedList));
+downloadCountryList(() => combineCountryList(languageFilter, saveCombinedList));

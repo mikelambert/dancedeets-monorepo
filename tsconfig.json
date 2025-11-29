@@ -1,18 +1,26 @@
 {
   "extends": "./tsconfig.base.json",
   "compilerOptions": {
-    "baseUrl": "."
+    "baseUrl": ".",
+    "paths": {
+      "dancedeets-common/*": ["common/*"],
+      "dancedeets-common/js/*": ["common/js/*"]
+    },
+    "typeRoots": ["./common/types", "./mobile/types", "./server/types", "./node_modules/@types"]
   },
   "files": [],
   "include": [
     "common/js/**/*.ts",
     "common/js/**/*.tsx",
+    "common/types/**/*.d.ts",
     "server/assets/**/*.ts",
     "server/assets/**/*.tsx",
     "server/node_server/**/*.ts",
     "server/node_server/**/*.tsx",
+    "server/types/**/*.d.ts",
     "mobile/js/**/*.ts",
-    "mobile/js/**/*.tsx"
+    "mobile/js/**/*.tsx",
+    "mobile/types/**/*.d.ts"
   ],
   "exclude": [
     "**/node_modules"

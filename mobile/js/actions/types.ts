@@ -24,6 +24,7 @@ import { AccessToken } from 'react-native-fbsdk';
 import type { Event } from 'dancedeets-common/js/events/models';
 import type { SearchResponse } from 'dancedeets-common/js/events/search';
 import type { AddEventList, SortOrder } from '../addEventsModels';
+import type { State as SearchHeaderState } from '../ducks/searchHeader';
 
 export interface User {
   profile: {
@@ -96,6 +97,7 @@ export interface RootState {
     videoIndex: number;
   };
   loadedEvents: Record<string, Event>;
+  searchHeader: SearchHeaderState;
 }
 
 export type Dispatch = (
