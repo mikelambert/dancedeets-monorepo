@@ -40,6 +40,8 @@ export interface User {
   ddUser: {
     location: string;
     formattedCity?: string;
+    num_hand_added_events?: number;
+    num_auto_added_events?: number;
   };
 }
 
