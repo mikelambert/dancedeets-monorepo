@@ -1,11 +1,13 @@
 /**
  * Copyright 2016 DanceDeets.
+ *
+ * React Navigation v6 bottom tab navigator
  */
 
 import * as React from 'react';
 import { Platform, StyleSheet } from 'react-native';
-import { TabBarBottom, TabNavigator } from 'react-navigation';
-import type { SceneRendererProps } from 'react-native-tab-view/src/TabViewTypeDefinitions';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { useIntl, IntlShape } from 'react-intl';
 import { defineMessages } from 'react-intl';
 import { WebView } from 'react-native-webview';
 import Icon from 'react-native-vector-icons/Ionicons';
@@ -16,6 +18,8 @@ import {
 } from './screens';
 import { semiNormalize } from '../ui';
 import { purpleColors } from '../Colors';
+
+const Tab = createBottomTabNavigator();
 
 const messages = defineMessages({
   events: {
@@ -42,111 +46,87 @@ const messages = defineMessages({
   },
 });
 
-function image(focused: boolean, name: string) {
-  let imageName = null;
-  if (Platform.OS === 'android') {
-    imageName = `md-${name}`;
-  } else if (Platform.OS === 'ios') {
-    if (focused) {
-      imageName = `ios-${name}`;
+function getTabBarIcon(name: string) {
+  return ({ focused, color }: { focused: boolean; color: string }) => {
+    let iconName: string;
+    if (Platform.OS === 'android') {
+      iconName = `md-${name}`;
+    } else if (Platform.OS === 'ios') {
+      iconName = focused ? `ios-${name}` : `ios-${name}-outline`;
     } else {
-      imageName = `ios-${name}-outline`;
+      iconName = name;
     }
-  }
-  const color = focused ? purpleColors[2] : '#909090';
-  return <Icon name={imageName} size={30} style={styles.icon} color={color} />;
+    return <Icon name={iconName} size={30} style={styles.icon} color={color} />;
+  };
 }
 
 const mediumUrl =
   'https://medium.dancedeets.com/?utm_source=articles_tab&utm_medium=mobile_app&utm_campaign=articles_tab';
 
-class ArticlesScreensNavigator extends React.Component<{}> {
-  render() {
-    return <WebView source={{ uri: mediumUrl }} />;
-  }
+function ArticlesScreen(): React.ReactElement {
+  return <WebView source={{ uri: mediumUrl }} />;
 }
 
-const routeConfiguration = {
-  Events: {
-    screen: EventScreensNavigator,
-    onSameTabClick: ({ navigation }: any) => navigation.goBack(),
-    navigationOptions: ({ screenProps }: any) => ({
-      title: screenProps.intl.formatMessage(messages.events),
-      tabBarIcon: ({ focused }: any) => image(focused, 'calendar'),
-    }),
-  },
-  Learn: {
-    screen: LearnScreensNavigator,
-    onSameTabClick: ({ navigation }: any) => navigation.goBack(),
-    navigationOptions: ({ screenProps }: any) => ({
-      title: screenProps.intl.formatMessage(messages.learn),
-      tabBarIcon: ({ focused }: any) => image(focused, 'school'),
-    }),
-  },
-  Articles: {
-    screen: ArticlesScreensNavigator,
-    onSameTabClick: ({ navigation }: any) =>
-      console.log('Cannot go back on Articles tab'),
-    navigationOptions: ({ screenProps }: any) => ({
-      title: screenProps.intl.formatMessage(messages.articles),
-      tabBarIcon: ({ focused }: any) => image(focused, 'paper'),
-    }),
-  },
-  About: {
-    screen: AboutScreensNavigator,
-    onSameTabClick: ({ navigation }: any) => navigation.goBack(),
-    navigationOptions: ({ screenProps }: any) => ({
-      title: screenProps.intl.formatMessage(messages.about),
-      tabBarIcon: ({ focused }: any) => image(focused, 'person'),
-    }),
-  },
-};
-
-interface SameClickProps extends SceneRendererProps<any> {
-  navigation: any;
-  jumpToIndex: (index: number) => void;
+interface TabNavigatorProps {
+  intl?: IntlShape;
 }
 
-class SameClickTabBar extends React.PureComponent<SameClickProps> {
-  jumpToIndex(i: number) {
-    // check if clicked on same tab
-    if (i === this.props.navigationState.index) {
-      const route = this.props.navigationState.routes[i];
-      const routeConfig = (routeConfiguration as any)[route.key];
-      if (routeConfig.onSameTabClick) {
-        routeConfig.onSameTabClick(this.props);
-      }
-    }
-    this.props.jumpToIndex(i);
-  }
+function TabNavigatorInner({ intl }: TabNavigatorProps): React.ReactElement {
+  // Use hook if intl not provided via props
+  const intlFromHook = useIntl();
+  const intlToUse = intl || intlFromHook;
 
-  render() {
-    return (
-      <TabBarBottom {...this.props} jumpToIndex={i => this.jumpToIndex(i)} />
-    );
-  }
+  return (
+    <Tab.Navigator
+      screenOptions={{
+        tabBarActiveTintColor: purpleColors[2],
+        tabBarInactiveTintColor: '#909090',
+        tabBarStyle: {
+          backgroundColor: '#F2F2F2',
+        },
+        headerShown: false, // Nested navigators handle their own headers
+      }}
+    >
+      <Tab.Screen
+        name="Events"
+        component={EventScreensNavigator}
+        options={{
+          title: intlToUse.formatMessage(messages.events),
+          tabBarIcon: getTabBarIcon('calendar'),
+        }}
+      />
+      <Tab.Screen
+        name="Learn"
+        component={LearnScreensNavigator}
+        options={{
+          title: intlToUse.formatMessage(messages.learn),
+          tabBarIcon: getTabBarIcon('school'),
+        }}
+      />
+      <Tab.Screen
+        name="Articles"
+        component={ArticlesScreen}
+        options={{
+          title: intlToUse.formatMessage(messages.articles),
+          tabBarIcon: getTabBarIcon('paper'),
+          headerShown: true,
+        }}
+      />
+      <Tab.Screen
+        name="About"
+        component={AboutScreensNavigator}
+        options={{
+          title: intlToUse.formatMessage(messages.about),
+          tabBarIcon: getTabBarIcon('person'),
+        }}
+      />
+    </Tab.Navigator>
+  );
 }
 
-const tabBarConfiguration = {
-  // Use iOS bottom navigation system
-  ...TabNavigator.Presets.iOSBottomTabs,
-  // but override the tabbar with one that handles same-clicks
-  tabBarComponent: SameClickTabBar,
+export default TabNavigatorInner;
 
-  tabBarOptions: {
-    // tint color is passed to text and icons (if enabled) on the tab bar
-    activeTintColor: purpleColors[2],
-    inactiveTintColor: '#909090',
-    // background color is for the tab component
-    activeBackgroundColor: '#F2F2F2',
-    inactiveBackgroundColor: '#F2F2F2',
-  },
-  backBehavior: 'none',
-};
-
-export default TabNavigator(routeConfiguration, tabBarConfiguration);
-
-let styles = StyleSheet.create({
+const styles = StyleSheet.create({
   icon: {
     textAlign: 'center',
     width: semiNormalize(28),

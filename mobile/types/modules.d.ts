@@ -455,96 +455,126 @@ declare module 'redux-persist/integration/react' {
   export class PersistGate extends React.Component<PersistGateProps> {}
 }
 
-// React Navigation (older version)
-declare module 'react-navigation' {
+// React Navigation v6
+declare module '@react-navigation/native' {
   import * as React from 'react';
-
-  export interface NavigationParams {
-    [key: string]: unknown;
-  }
-
-  export interface NavigationScreenProp<S, P = NavigationParams> {
-    state: S & { params?: P };
-    dispatch: (action: NavigationAction) => boolean;
-    goBack: (routeKey?: string | null) => boolean;
-    navigate: (routeName: string, params?: object, action?: NavigationAction) => boolean;
-    setParams: (newParams: object) => boolean;
-  }
-
-  export interface NavigationRoute<P = NavigationParams> {
-    key: string;
-    routeName: string;
-    params?: P;
-  }
 
   export interface NavigationState {
     index: number;
-    routes: NavigationRoute[];
+    routes: { name: string; key: string; params?: object }[];
   }
 
-  export interface NavigationAction {
-    type: string;
-    routeName?: string;
-    params?: object;
-    action?: NavigationAction;
-    key?: string;
+  export interface NavigationContainerRef<ParamList = object> {
+    navigate<RouteName extends keyof ParamList>(
+      name: RouteName,
+      params?: ParamList[RouteName]
+    ): void;
+    goBack(): void;
+    reset(state: NavigationState): void;
+    getCurrentRoute(): { name: string; params?: object } | undefined;
   }
 
-  export interface NavigationNavigateAction extends NavigationAction {
-    type: 'Navigation/NAVIGATE';
-    routeName: string;
-    params?: object;
+  export interface NavigationContainerProps {
+    ref?: React.RefObject<NavigationContainerRef<any>>;
+    onStateChange?: (state: NavigationState | undefined) => void;
+    children: React.ReactNode;
   }
 
-  export type NavigationRouteConfigMap = Record<string, {
-    screen: React.ComponentType<unknown>;
-    navigationOptions?: object | ((options: { navigation: NavigationScreenProp<unknown> }) => object);
-  }>;
+  export function NavigationContainer(props: NavigationContainerProps): React.ReactElement;
 
-  export interface StackNavigatorConfig {
-    initialRouteName?: string;
-    navigationOptions?: object;
-    mode?: 'card' | 'modal';
-    headerMode?: 'float' | 'screen' | 'none';
+  export function useNavigation<T = any>(): T;
+  export function useRoute<T = any>(): T;
+  export function useFocusEffect(callback: () => void | (() => void)): void;
+  export function useIsFocused(): boolean;
+}
+
+declare module '@react-navigation/stack' {
+  import * as React from 'react';
+
+  export interface StackNavigationOptions {
+    title?: string;
+    headerTitle?: string | (() => React.ReactNode);
+    headerLeft?: () => React.ReactNode;
+    headerRight?: () => React.ReactNode;
+    headerTintColor?: string;
+    headerStyle?: object;
+    headerShown?: boolean;
     cardStyle?: object;
-    transitionConfig?: () => object;
+    gestureEnabled?: boolean;
   }
 
-  export interface NavigationContainer extends React.ComponentClass<unknown> {
-    router: {
-      getStateForAction: (action: NavigationAction, state?: NavigationState) => NavigationState | null;
-      getActionForPathAndParams: (path: string, params?: object) => NavigationAction | null;
+  export interface StackScreenProps<ParamList extends object, RouteName extends keyof ParamList = keyof ParamList> {
+    navigation: {
+      navigate<T extends keyof ParamList>(name: T, params?: ParamList[T]): void;
+      goBack(): void;
+      setParams(params: Partial<ParamList[RouteName]>): void;
+      setOptions(options: Partial<StackNavigationOptions>): void;
+    };
+    route: {
+      key: string;
+      name: RouteName;
+      params: ParamList[RouteName];
     };
   }
 
-  export function StackNavigator(
-    routes: NavigationRouteConfigMap,
-    config?: StackNavigatorConfig
-  ): NavigationContainer;
+  export interface StackNavigatorProps {
+    initialRouteName?: string;
+    screenOptions?: StackNavigationOptions;
+    children: React.ReactNode;
+  }
 
-  export function TabNavigator(
-    routes: NavigationRouteConfigMap,
-    config?: object
-  ): NavigationContainer;
+  export interface StackScreenConfig {
+    name: string;
+    component: React.ComponentType<any>;
+    options?: StackNavigationOptions | ((props: any) => StackNavigationOptions);
+  }
 
-  export function DrawerNavigator(
-    routes: NavigationRouteConfigMap,
-    config?: object
-  ): NavigationContainer;
-
-  export const NavigationActions: {
-    navigate: (params: { routeName: string; params?: object; action?: NavigationAction }) => NavigationNavigateAction;
-    back: (params?: { key?: string }) => NavigationAction;
-    reset: (params: { index: number; actions: NavigationAction[] }) => NavigationAction;
-    setParams: (params: { key: string; params: object }) => NavigationAction;
-    NAVIGATE: string;
-    BACK: string;
-    RESET: string;
-    SET_PARAMS: string;
+  export function createStackNavigator<ParamList extends object = object>(): {
+    Navigator: React.ComponentType<StackNavigatorProps>;
+    Screen: React.ComponentType<StackScreenConfig>;
+    Group: React.ComponentType<{ children: React.ReactNode }>;
   };
+}
 
-  export const addNavigationHelpers: (navigation: unknown) => unknown;
-  export const TabBarBottom: React.ComponentType<unknown>;
+declare module '@react-navigation/bottom-tabs' {
+  import * as React from 'react';
+
+  export interface BottomTabNavigationOptions {
+    title?: string;
+    tabBarIcon?: (props: { focused: boolean; color: string; size: number }) => React.ReactNode;
+    tabBarLabel?: string | ((props: { focused: boolean; color: string }) => React.ReactNode);
+    tabBarActiveTintColor?: string;
+    tabBarInactiveTintColor?: string;
+    tabBarStyle?: object;
+    headerShown?: boolean;
+  }
+
+  export interface BottomTabScreenProps<ParamList extends object, RouteName extends keyof ParamList = keyof ParamList> {
+    navigation: {
+      navigate<T extends keyof ParamList>(name: T, params?: ParamList[T]): void;
+      goBack(): void;
+    };
+    route: {
+      key: string;
+      name: RouteName;
+      params: ParamList[RouteName];
+    };
+  }
+
+  export interface BottomTabNavigatorProps {
+    initialRouteName?: string;
+    screenOptions?: BottomTabNavigationOptions;
+    children: React.ReactNode;
+  }
+
+  export function createBottomTabNavigator<ParamList extends object = object>(): {
+    Navigator: React.ComponentType<BottomTabNavigatorProps>;
+    Screen: React.ComponentType<{
+      name: string;
+      component: React.ComponentType<any>;
+      options?: BottomTabNavigationOptions | ((props: any) => BottomTabNavigationOptions);
+    }>;
+  };
 }
 
 // Firebase

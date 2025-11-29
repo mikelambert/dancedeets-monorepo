@@ -1,60 +1,37 @@
 /**
  * Copyright 2016 DanceDeets.
+ *
+ * React Navigation v6 root navigation container
  */
 
 import * as React from 'react';
-import { addNavigationHelpers } from 'react-navigation';
-import type {
-  NavigationNavigateAction,
-  NavigationParams,
-} from 'react-navigation/src/TypeDefinition';
-import { connect } from 'react-redux';
-import { injectIntl, IntlShape } from 'react-intl';
-import type { Dispatch } from '../actions/types';
+import { NavigationContainer, NavigationContainerRef } from '@react-navigation/native';
 import TabNavigator from './TabNavigator';
-import { TimeTracker } from '../util/timeTracker';
 import { track } from '../store/track';
 
-interface TabAppProps {
-  dispatch: Dispatch;
-  screens: any;
-  intl: IntlShape;
+// Navigation ref for programmatic navigation from outside components
+export const navigationRef = React.createRef<NavigationContainerRef<any>>();
+
+// Helper function to navigate from outside components
+export function navigate(name: string, params?: object): void {
+  navigationRef.current?.navigate(name, params);
 }
 
-class TabApp extends React.Component<TabAppProps> {
-  render() {
-    const { dispatch, screens, intl, ...props } = this.props;
-    const navigation = addNavigationHelpers({
-      dispatch,
-      state: screens,
-    });
-
-    const routeKey = screens.routes[screens.index].key;
-    return (
-      <TimeTracker eventName="Tab Time" eventValue={routeKey}>
-        <TabNavigator
-          screenProps={{
-            intl,
-          }}
-          navigation={{
-            ...navigation,
-            navigate: (
-              routeName: string,
-              params?: NavigationParams,
-              action?: NavigationNavigateAction
-            ) => {
-              // Override our navigation.navigate(), so we can track tab switchings
-              track('Tab Selected', { Tab: routeName });
-              navigation.navigate(routeName, params, action);
-              return true;
-            },
-          }}
-          {...props}
-        />
-      </TimeTracker>
-    );
-  }
+function TabApp(): React.ReactElement {
+  return (
+    <NavigationContainer
+      ref={navigationRef}
+      onStateChange={(state) => {
+        // Track tab changes
+        if (state) {
+          const currentRoute = state.routes[state.index];
+          track('Tab Selected', { Tab: currentRoute.name });
+        }
+      }}
+    >
+      <TabNavigator />
+    </NavigationContainer>
+  );
 }
-export default connect((store: any) => ({
-  screens: store.screens,
-}))(injectIntl(TabApp));
+
+export default TabApp;

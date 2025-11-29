@@ -1,21 +1,19 @@
 /**
  * Copyright 2016 DanceDeets.
+ *
+ * React Navigation v6 Learn screens
  */
 
 import * as React from 'react';
-import type {
-  NavigationAction,
-  NavigationRoute,
-  NavigationScreenProp,
-} from 'react-navigation/src/TypeDefinition';
-import { defineMessages } from 'react-intl';
+import { createStackNavigator, StackScreenProps } from '@react-navigation/stack';
+import { useIntl, defineMessages } from 'react-intl';
 import { track } from '../../store/track';
 import {
   PlaylistListView,
   PlaylistStylesView,
   PlaylistView,
 } from '../../learn/playlistViews';
-import StackNavigator from './Navigator';
+import { gradientTop } from '../../Colors';
 
 const messages = defineMessages({
   learnTitle: {
@@ -30,96 +28,98 @@ const messages = defineMessages({
   },
 });
 
-interface TutorialStylesViewProps {
-  navigation: NavigationScreenProp<any, any>;
-}
+// Type definitions for navigation
+type LearnStackParamList = {
+  TutorialStyles: undefined;
+  TutorialList: { category: any };
+  Tutorial: { playlist: any };
+};
 
-class TutorialStylesView extends React.Component<TutorialStylesViewProps> {
-  static navigationOptions = ({ screenProps }: any) => ({
-    title: screenProps.intl.formatMessage(messages.learnTitle),
-  });
+const Stack = createStackNavigator<LearnStackParamList>();
 
-  constructor(props: TutorialStylesViewProps) {
-    super(props);
-    this.onSelected = this.onSelected.bind(this);
-  }
+// Tutorial Styles View Screen
+interface TutorialStylesViewProps extends StackScreenProps<LearnStackParamList, 'TutorialStyles'> {}
 
-  onSelected(category: any) {
+function TutorialStylesViewScreen({ navigation }: TutorialStylesViewProps) {
+  const onSelected = (category: any) => {
     track('Tutorial Style Selected', {
       tutorialStyle: category.style.title,
     });
-    this.props.navigation.navigate('TutorialList', { category });
-  }
-
-  render() {
-    return <PlaylistStylesView onSelected={this.onSelected} />;
-  }
-}
-
-interface TutorialListViewProps {
-  navigation: NavigationScreenProp<any, any>;
-}
-
-class TutorialListView extends React.Component<TutorialListViewProps> {
-  static navigationOptions = ({ navigation, screenProps }: any) => {
-    const { category } = navigation.state.params;
-    return {
-      title: screenProps.intl.formatMessage(messages.styleTutorialTitle, {
-        style: category.style.title,
-      }),
-    };
+    navigation.navigate('TutorialList', { category });
   };
 
-  constructor(props: TutorialListViewProps) {
-    super(props);
-    this.onSelected = this.onSelected.bind(this);
-  }
+  return <PlaylistStylesView onSelected={onSelected} />;
+}
 
-  onSelected(playlist: any) {
+// Tutorial List View Screen
+interface TutorialListViewProps extends StackScreenProps<LearnStackParamList, 'TutorialList'> {}
+
+function TutorialListViewScreen({ navigation, route }: TutorialListViewProps) {
+  const { category } = route.params;
+
+  const onSelected = (playlist: any) => {
     track('Tutorial Selected', {
       tutorialName: playlist.title,
       tutorialStyle: playlist.style,
     });
-    this.props.navigation.navigate('Tutorial', { playlist });
-  }
-
-  render() {
-    const { category } = this.props.navigation.state.params;
-    return (
-      <PlaylistListView
-        playlists={category.tutorials}
-        onSelected={this.onSelected}
-      />
-    );
-  }
-}
-
-interface TutorialViewProps {
-  navigation: NavigationScreenProp<any, any>;
-}
-
-class TutorialView extends React.Component<TutorialViewProps> {
-  static navigationOptions = ({ navigation, screenProps }: any) => {
-    const { playlist } = navigation.state.params;
-    return { title: playlist.title };
+    navigation.navigate('Tutorial', { playlist });
   };
 
-  render() {
-    const { playlist } = this.props.navigation.state.params;
-    return <PlaylistView playlist={playlist} />;
-  }
+  return (
+    <PlaylistListView
+      playlists={category.tutorials}
+      onSelected={onSelected}
+    />
+  );
 }
 
-export const LearnScreensNavigator = StackNavigator(
-  'learn',
-  {
-    TutorialStyles: { screen: TutorialStylesView },
-    TutorialList: { screen: TutorialListView },
-    Tutorial: { screen: TutorialView },
-  },
-  {
-    cardStyle: {
-      backgroundColor: '#E9E9EF',
-    },
-  }
-);
+// Tutorial View Screen
+interface TutorialViewProps extends StackScreenProps<LearnStackParamList, 'Tutorial'> {}
+
+function TutorialViewScreen({ route }: TutorialViewProps) {
+  const { playlist } = route.params;
+  return <PlaylistView playlist={playlist} />;
+}
+
+// Main Learn Screens Navigator
+export function LearnScreensNavigator() {
+  const intl = useIntl();
+
+  return (
+    <Stack.Navigator
+      screenOptions={{
+        headerTintColor: 'white',
+        headerStyle: {
+          backgroundColor: gradientTop,
+        },
+        cardStyle: {
+          backgroundColor: '#E9E9EF',
+        },
+      }}
+    >
+      <Stack.Screen
+        name="TutorialStyles"
+        component={TutorialStylesViewScreen}
+        options={{
+          title: intl.formatMessage(messages.learnTitle),
+        }}
+      />
+      <Stack.Screen
+        name="TutorialList"
+        component={TutorialListViewScreen}
+        options={({ route }) => ({
+          title: intl.formatMessage(messages.styleTutorialTitle, {
+            style: route.params.category.style.title,
+          }),
+        })}
+      />
+      <Stack.Screen
+        name="Tutorial"
+        component={TutorialViewScreen}
+        options={({ route }) => ({
+          title: route.params.playlist.title,
+        })}
+      />
+    </Stack.Navigator>
+  );
+}

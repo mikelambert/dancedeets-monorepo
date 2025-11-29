@@ -1,19 +1,17 @@
 /**
  * Copyright 2016 DanceDeets.
+ *
+ * React Navigation v6 About screens
  */
 
 import * as React from 'react';
-import type {
-  NavigationAction,
-  NavigationRoute,
-  NavigationScreenProp,
-} from 'react-navigation/src/TypeDefinition';
-import { defineMessages } from 'react-intl';
+import { createStackNavigator, StackScreenProps } from '@react-navigation/stack';
+import { useIntl, defineMessages } from 'react-intl';
 import { track } from '../../store/track';
 import ProfilePage from '../Profile';
 import NotificationPreferences from '../NotificationPreferences';
-import StackNavigator from './Navigator';
 import Credits from '../Credits';
+import { gradientTop } from '../../Colors';
 
 const messages = defineMessages({
   notificationsTitle: {
@@ -33,59 +31,83 @@ const messages = defineMessages({
   },
 });
 
-interface MainScreenProps {
-  navigation: NavigationScreenProp<any, any>;
-}
+// Type definitions for navigation
+type AboutStackParamList = {
+  AboutMain: undefined;
+  Credits: undefined;
+  NotificationPreferences: undefined;
+};
 
-class MainScreen extends React.Component<MainScreenProps> {
-  static navigationOptions = ({ screenProps }: any) => ({
-    title: screenProps.intl.formatMessage(messages.about),
-  });
+const Stack = createStackNavigator<AboutStackParamList>();
 
-  constructor(props: MainScreenProps) {
-    super(props);
-    this.onNotificationPreferences = this.onNotificationPreferences.bind(
-      this
-    );
-  }
+// Main Screen
+interface MainScreenProps extends StackScreenProps<AboutStackParamList, 'AboutMain'> {}
 
-  onNotificationPreferences() {
+function MainScreen({ navigation }: MainScreenProps) {
+  const onNotificationPreferences = () => {
     track('Open Notification Preferences');
-    this.props.navigation.navigate('NotificationPreferences');
-  }
+    navigation.navigate('NotificationPreferences');
+  };
 
-  render() {
-    return (
-      <ProfilePage
-        onNotificationPreferences={this.onNotificationPreferences}
-        openCredits={() => this.props.navigation.navigate('Credits')}
+  const openCredits = () => {
+    navigation.navigate('Credits');
+  };
+
+  return (
+    <ProfilePage
+      onNotificationPreferences={onNotificationPreferences}
+      openCredits={openCredits}
+    />
+  );
+}
+
+// Credits Screen
+function CreditsScreen() {
+  return <Credits />;
+}
+
+// Notification Screen
+function NotificationScreen() {
+  return <NotificationPreferences />;
+}
+
+// Main About Screens Navigator
+export function AboutScreensNavigator() {
+  const intl = useIntl();
+
+  return (
+    <Stack.Navigator
+      screenOptions={{
+        headerTintColor: 'white',
+        headerStyle: {
+          backgroundColor: gradientTop,
+        },
+        cardStyle: {
+          backgroundColor: 'black',
+        },
+      }}
+    >
+      <Stack.Screen
+        name="AboutMain"
+        component={MainScreen}
+        options={{
+          title: intl.formatMessage(messages.about),
+        }}
       />
-    );
-  }
+      <Stack.Screen
+        name="Credits"
+        component={CreditsScreen}
+        options={{
+          title: intl.formatMessage(messages.credits),
+        }}
+      />
+      <Stack.Screen
+        name="NotificationPreferences"
+        component={NotificationScreen}
+        options={{
+          title: intl.formatMessage(messages.notificationsTitle),
+        }}
+      />
+    </Stack.Navigator>
+  );
 }
-
-class CreditsScreen extends React.Component<{}> {
-  static navigationOptions = ({ screenProps }: any) => ({
-    headerTitle: screenProps.intl.formatMessage(messages.credits),
-  });
-
-  render() {
-    return <Credits />;
-  }
-}
-
-class NotificationScreen extends React.Component<{}> {
-  static navigationOptions = ({ screenProps }: any) => ({
-    title: screenProps.intl.formatMessage(messages.notificationsTitle),
-  });
-
-  render() {
-    return <NotificationPreferences />;
-  }
-}
-
-export const AboutScreensNavigator = StackNavigator('about', {
-  AboutMain: { screen: MainScreen },
-  Credits: { screen: CreditsScreen },
-  NotificationPreferences: { screen: NotificationScreen },
-});

@@ -1,5 +1,7 @@
 /**
  * Copyright 2016 DanceDeets.
+ *
+ * React Navigation v6 Event screens
  */
 
 import * as React from 'react';
@@ -8,18 +10,13 @@ import {
   Dimensions,
   Image,
   Text as RealText,
+  TouchableOpacity,
   TouchableWithoutFeedback,
   View,
 } from 'react-native';
-import type {
-  NavigationAction,
-  NavigationRoute,
-  NavigationScreenProp,
-} from 'react-navigation/src/TypeDefinition';
-import { StackNavigator } from 'react-navigation';
+import { createStackNavigator, StackScreenProps } from '@react-navigation/stack';
 import { connect } from 'react-redux';
-import { injectIntl, IntlShape, defineMessages } from 'react-intl';
-import TouchableItem from 'react-navigation/src/views/TouchableItem';
+import { useIntl, defineMessages, IntlShape } from 'react-intl';
 import Icon from 'react-native-vector-icons/Ionicons';
 import type { SearchQuery } from 'dancedeets-common/js/events/search';
 import type { State } from '../../reducers/search';
@@ -36,9 +33,9 @@ import AddEvents from '../AddEvents';
 import { track, trackWithEvent } from '../../store/track';
 import PositionProvider from '../../providers/positionProvider';
 import { FullEventView } from '../../events/uicomponents';
-import MyNavigator from './Navigator';
 import type { State as SearchHeaderState } from '../../ducks/searchHeader';
 import ShareEventIcon from '../ShareEventIcon';
+import { gradientTop } from '../../Colors';
 
 const messages = defineMessages({
   eventsTitle: {
@@ -74,6 +71,18 @@ const messages = defineMessages({
   },
 });
 
+// Type definitions for navigation
+type EventStackParamList = {
+  EventList: undefined;
+  FeaturedEventView: { event: any };
+  EventView: { event: any };
+  FlyerView: { event: any };
+  AddEvents: undefined;
+};
+
+const Stack = createStackNavigator<EventStackParamList>();
+
+// Search Header Title Summary Component
 interface SearchHeaderTitleSummaryProps {
   onPress: () => void;
   searchHeader: any;
@@ -168,6 +177,7 @@ const SearchHeaderTitleSummary = connect((state: any) => ({
   searchHeader: state.searchHeader,
 }))(_SearchHeaderTitleSummary);
 
+// NavButton Component
 interface NavButtonProps {
   onPress: () => void;
   imageSource?: number;
@@ -175,309 +185,174 @@ interface NavButtonProps {
   disabled?: boolean;
 }
 
-class NavButton extends React.PureComponent<NavButtonProps> {
-  render() {
-    let contents: React.ReactNode[] = [];
-    if (this.props.imageSource) {
-      contents.push(<Image key="image" source={this.props.imageSource} />);
-    }
-    if (this.props.text) {
-      contents.push(
-        <Text
-          key="text"
-          style={{
-            fontSize: 17,
-            color: this.props.disabled ? '#bbb' : 'white',
-          }}
-        >
-          {this.props.text}
-        </Text>
-      );
-    }
-    if (this.props.disabled) {
-      contents = [
-        <TouchableItem key="touchable" onPress={() => this.props.onPress()}>
-          <View>{contents}</View>
-        </TouchableItem>
-      ];
-    }
-    return <View style={{ marginLeft: 10, marginRight: 10 }}>{contents}</View>;
+function NavButton({ onPress, imageSource, text, disabled }: NavButtonProps) {
+  const contents: React.ReactNode[] = [];
+  if (imageSource) {
+    contents.push(<Image key="image" source={imageSource} />);
   }
+  if (text) {
+    contents.push(
+      <Text
+        key="text"
+        style={{
+          fontSize: 17,
+          color: disabled ? '#bbb' : 'white',
+        }}
+      >
+        {text}
+      </Text>
+    );
+  }
+  return (
+    <TouchableOpacity onPress={onPress} style={{ marginLeft: 10, marginRight: 10 }}>
+      <View>{contents}</View>
+    </TouchableOpacity>
+  );
 }
 
-interface EventListScreenProps {
-  navigation: NavigationScreenProp<any, any>;
-  screenProps: any;
-}
+// Event List Screen
+interface EventListScreenProps extends StackScreenProps<EventStackParamList, 'EventList'> {}
 
-class EventListScreen extends React.Component<EventListScreenProps> {
-  static navigationOptions = ({ screenProps }: any) => {
-    // These screens need to be okay runing without a searchHeader (or anything other than intl, really)
-    // The outermost TabView computes navigationOptions to request some tabBar* properties
-    // We don't override them at all, or ever, so safely returning null here works.
-    // But we need to be careful in all our navigationOptions functions, that they never depend on too many things.
-    // I described the issue in more detail here:
-    // https://github.com/react-community/react-navigation/issues/1848
-    if (!screenProps.searchHeader) {
-      return null;
-    }
-    return {
-      ...(screenProps.searchHeader.navbarTitleVisible
-        ? {
-            headerTitle: (
-              <SearchHeaderTitleSummary onPress={screenProps.showSearchForm} />
-            ),
-          }
-        : { headerTitle: '' }),
-      ...(screenProps.searchHeader.searchFormVisible
-        ? {
-            headerLeft: (
-              <NavButton
-                onPress={screenProps.hideSearchForm}
-                text={screenProps.intl.formatMessage(messages.cancelButton)}
-              />
-            ),
-            headerRight: (
-              <NavButton
-                onPress={screenProps.performSearch}
-                text={screenProps.intl.formatMessage(messages.searchButton)}
-                disabled={!screenProps.canSearch}
-              />
-            ),
-          }
-        : {
-            headerRight: (
-              <NavButton
-                onPress={() => screenProps.onAddEventClicked('Search Header')}
-                imageSource={require('../../events/images/add_calendar.png')}
-              />
-            ),
-          }),
-    };
+function EventListScreen({ navigation }: EventListScreenProps) {
+  const onEventSelected = (event: any) => {
+    trackWithEvent('View Event', event);
+    navigation.navigate('EventView', { event });
   };
 
-  constructor(props: EventListScreenProps) {
-    super(props);
-    this.onEventSelected = this.onEventSelected.bind(this);
-    this.onFeaturedEventSelected = this.onFeaturedEventSelected.bind(
-      this
-    );
-  }
-
-  onEventSelected(event: any) {
-    trackWithEvent('View Event', event);
-    this.props.navigation.navigate('EventView', { event });
-  }
-
-  onFeaturedEventSelected(event: any) {
+  const onFeaturedEventSelected = (event: any) => {
     trackWithEvent('View Featured Event', event);
-    this.props.navigation.navigate('FeaturedEventView', { event });
-  }
+    navigation.navigate('FeaturedEventView', { event });
+  };
 
-  render() {
-    return (
-      <EventListContainer
-        onEventSelected={this.onEventSelected}
-        onFeaturedEventSelected={this.onFeaturedEventSelected}
-      />
-    );
-  }
+  return (
+    <EventListContainer
+      onEventSelected={onEventSelected}
+      onFeaturedEventSelected={onFeaturedEventSelected}
+    />
+  );
 }
 
-interface FeaturedEventScreenProps {
-  navigation: NavigationScreenProp<any, any>;
+// Featured Event Screen
+interface FeaturedEventScreenProps extends StackScreenProps<EventStackParamList, 'FeaturedEventView'> {}
+
+function FeaturedEventScreen({ navigation, route }: FeaturedEventScreenProps) {
+  const { event } = route.params;
+
+  const onFlyerSelected = (evt: any) => {
+    trackWithEvent('View Flyer', evt);
+    navigation.navigate('FlyerView', { event: evt });
+  };
+
+  return (
+    <PositionProvider
+      renderWithPosition={(position: any) => (
+        <FullEventView
+          onFlyerSelected={onFlyerSelected}
+          event={event}
+          currentPosition={position}
+        />
+      )}
+    />
+  );
 }
 
-class FeaturedEventScreen extends React.Component<FeaturedEventScreenProps> {
-  static navigationOptions = ({ navigation }: any) => ({
-    title: navigation.state.params.event.name,
-    headerRight: <ShareEventIcon event={navigation.state.params.event} />,
-  });
+// Event Screen
+interface EventScreenProps extends StackScreenProps<EventStackParamList, 'EventView'> {}
 
-  constructor(props: FeaturedEventScreenProps) {
-    super(props);
-    this.onFlyerSelected = this.onFlyerSelected.bind(this);
-  }
+function EventScreen({ navigation, route }: EventScreenProps) {
+  const { event } = route.params;
 
-  onFlyerSelected(event: any) {
-    trackWithEvent('View Flyer', event);
-    this.props.navigation.navigate('FlyerView', { event });
-  }
+  const onEventNavigated = (evt: any) => {
+    trackWithEvent('View Event', evt);
+    navigation.setParams({ event: evt });
+  };
 
-  render() {
-    const { event } = this.props.navigation.state.params;
-    return (
-      <PositionProvider
-        renderWithPosition={(position: any) => (
-          <FullEventView
-            onFlyerSelected={this.onFlyerSelected}
-            event={event}
-            currentPosition={position}
-          />
-        )}
-      />
-    );
-  }
+  const onFlyerSelected = (evt: any) => {
+    trackWithEvent('View Flyer', evt);
+    navigation.navigate('FlyerView', { event: evt });
+  };
+
+  return (
+    <EventPager
+      selectedEvent={event}
+      onFlyerSelected={onFlyerSelected}
+      onEventNavigated={onEventNavigated}
+    />
+  );
 }
 
-interface EventScreenProps {
-  navigation: NavigationScreenProp<any, any>;
+// Flyer Screen
+interface FlyerScreenProps extends StackScreenProps<EventStackParamList, 'FlyerView'> {}
+
+function FlyerScreen({ route }: FlyerScreenProps) {
+  const { event } = route.params;
+  return (
+    <ZoomableImage
+      url={event.picture.source}
+      width={event.picture.width}
+      height={event.picture.height}
+    />
+  );
 }
 
-class EventScreen extends React.Component<EventScreenProps> {
-  static navigationOptions = ({ navigation }: any) => ({
-    title: navigation.state.params.event.name,
-    headerRight: <ShareEventIcon event={navigation.state.params.event} />,
-  });
-
-  constructor(props: EventScreenProps) {
-    super(props);
-    this.onEventNavigated = this.onEventNavigated.bind(this);
-    this.onFlyerSelected = this.onFlyerSelected.bind(this);
-  }
-
-  onEventNavigated(event: any) {
-    trackWithEvent('View Event', event);
-    this.props.navigation.setParams({ event });
-  }
-
-  onFlyerSelected(event: any) {
-    trackWithEvent('View Flyer', event);
-    this.props.navigation.navigate('FlyerView', { event });
-  }
-
-  render() {
-    const { event } = this.props.navigation.state.params;
-    return (
-      <EventPager
-        selectedEvent={event}
-        onFlyerSelected={this.onFlyerSelected}
-        onEventNavigated={this.onEventNavigated}
-      />
-    );
-  }
+// Add Events Screen
+function AddEventsScreen() {
+  return <AddEvents />;
 }
 
-interface FlyerScreenProps {
-  navigation: NavigationScreenProp<any, any>;
-}
+// Main Event Screens Navigator
+export function EventScreensNavigator() {
+  const intl = useIntl();
 
-class FlyerScreen extends React.Component<FlyerScreenProps> {
-  static navigationOptions = ({ screenProps }: any) => ({
-    title: screenProps.intl.formatMessage(messages.viewFlyer),
-  });
-
-  render() {
-    const { event } = this.props.navigation.state.params;
-    return (
-      <ZoomableImage
-        url={event.picture.source}
-        width={event.picture.width}
-        height={event.picture.height}
-      />
-    );
-  }
-}
-
-class AddEventsScreen extends React.Component<{}> {
-  static navigationOptions = ({ screenProps }: any) => ({
-    title: screenProps.intl.formatMessage(messages.addEventTitle),
-  });
-
-  render() {
-    return <AddEvents />;
-  }
-}
-
-const RealEventScreensNavigator = MyNavigator('events', {
-  EventList: { screen: EventListScreen },
-  FeaturedEventView: { screen: FeaturedEventScreen },
-  EventView: { screen: EventScreen },
-  FlyerView: { screen: FlyerScreen },
-  AddEvents: { screen: AddEventsScreen },
-});
-
-interface EventScreensNavigatorProps {
-  navRef?: (nav: StackNavigator) => void;
-  navigation: NavigationScreenProp<any, any>;
-  intl: IntlShape;
-  canOpenAddEvent: (props: any) => Promise<boolean>;
-  search: State;
-  canSearch: boolean;
-  searchHeader: SearchHeaderState;
-  showSearchForm: () => void;
-  hideSearchForm: () => void;
-  performSearch: () => Promise<void>;
-}
-
-class _EventScreensNavigator extends React.Component<EventScreensNavigatorProps> {
-  _nav: StackNavigator | null = null;
-
-  constructor(props: EventScreensNavigatorProps) {
-    super(props);
-    this.onAddEventClicked = this.onAddEventClicked.bind(this);
-  }
-
-  async onAddEventClicked(source: string) {
-    console.log(this, source);
-    track('Add Event', { source });
-    if (await this.props.canOpenAddEvent(this.props)) {
-      this.props.navigation.navigate('AddEvents');
-    }
-  }
-
-  render() {
-    return (
-      <RealEventScreensNavigator
-        ref={(nav: any) => {
-          this._nav = nav;
-          if (nav && this.props.navRef != null) {
-            this.props.navRef(nav);
-          }
+  return (
+    <Stack.Navigator
+      screenOptions={{
+        headerTintColor: 'white',
+        headerStyle: {
+          backgroundColor: gradientTop,
+        },
+        cardStyle: {
+          backgroundColor: 'black',
+        },
+      }}
+    >
+      <Stack.Screen
+        name="EventList"
+        component={EventListScreen}
+        options={{
+          title: intl.formatMessage(messages.eventsTitle),
         }}
-        screenProps={{
-          intl: this.props.intl,
-
-          // For the Event List Screen
-          search: this.props.search,
-          searchHeader: this.props.searchHeader,
-          showSearchForm: this.props.showSearchForm,
-          hideSearchForm: this.props.hideSearchForm,
-          performSearch: this.props.performSearch,
-          onAddEventClicked: this.onAddEventClicked,
-          canSearch: this.props.canSearch,
-        }}
-        navigation={this.props.navigation}
       />
-    );
-  }
+      <Stack.Screen
+        name="FeaturedEventView"
+        component={FeaturedEventScreen}
+        options={({ route }) => ({
+          title: route.params.event.name,
+          headerRight: () => <ShareEventIcon event={route.params.event} />,
+        })}
+      />
+      <Stack.Screen
+        name="EventView"
+        component={EventScreen}
+        options={({ route }) => ({
+          title: route.params.event.name,
+          headerRight: () => <ShareEventIcon event={route.params.event} />,
+        })}
+      />
+      <Stack.Screen
+        name="FlyerView"
+        component={FlyerScreen}
+        options={{
+          title: intl.formatMessage(messages.viewFlyer),
+        }}
+      />
+      <Stack.Screen
+        name="AddEvents"
+        component={AddEventsScreen}
+        options={{
+          title: intl.formatMessage(messages.addEventTitle),
+        }}
+      />
+    </Stack.Navigator>
+  );
 }
-export const EventScreensNavigator = connect(
-  (state: any) => ({
-    search: state.search,
-    canSearch: state.searchQuery.location || state.searchQuery.keywords,
-    isLoggedIn: state.user.isLoggedIn,
-    searchHeader: state.searchHeader,
-  }),
-  (dispatch: any) => ({
-    performSearch: async () => {
-      await dispatch(performSearch());
-    },
-    showSearchForm: (status: boolean) => dispatch(showSearchForm()),
-    hideSearchForm: (status: boolean) => dispatch(hideSearchForm()),
-    canOpenAddEvent: async (props: any) => {
-      if (
-        !props.isLoggedIn &&
-        !await canGetValidLoginFor(
-          props.intl.formatMessage(messages.featureAddingEvents),
-          props.intl,
-          dispatch
-        )
-      ) {
-        return false;
-      }
-      return true;
-    },
-  })
-)(injectIntl(_EventScreensNavigator));
-(EventScreensNavigator as any).router = RealEventScreensNavigator.router;
