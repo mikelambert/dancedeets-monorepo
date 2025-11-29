@@ -6,7 +6,6 @@
 
 import { Platform } from 'react-native';
 import { request, check, PERMISSIONS, RESULTS, openSettings } from 'react-native-permissions';
-import type { Address } from '../events/formatAddress';
 import Geocoder from '../api/geocoder';
 import { format } from '../events/formatAddress';
 
@@ -23,6 +22,17 @@ interface GeolocationPosition {
     longitude: number;
   };
 }
+
+// Declare navigator.geolocation for React Native
+declare const navigator: {
+  geolocation: {
+    getCurrentPosition(
+      success: (position: GeolocationPosition) => void,
+      error?: (error: any) => void,
+      options?: { enableHighAccuracy?: boolean; timeout?: number; maximumAge?: number }
+    ): void;
+  };
+};
 
 function getCurrentPosition(): Promise<GeolocationPosition> {
   return new Promise((resolve, reject) => {
@@ -78,7 +88,8 @@ export async function getAddress(): Promise<string> {
     lat: position.coords.latitude,
     lng: position.coords.longitude,
   };
-  const address: Address = await Geocoder.geocodePosition(newCoords);
-  const formattedAddress = format(address[0]);
+  const addresses = await Geocoder.geocodePosition(newCoords);
+  // GeocodingObject is compatible with Address interface
+  const formattedAddress = format(addresses[0] as any);
   return formattedAddress;
 }

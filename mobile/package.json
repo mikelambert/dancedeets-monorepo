@@ -50,6 +50,7 @@
     "react-native-photo-view": "^1.5.2",
     "react-native-processinfo": "0.0.2",
     "react-native-push-notification": "^8.1.1",
+    "@react-native-segmented-control/segmented-control": "^2.4.0",
     "react-native-segmented-android": "github:sooth-sayer/react-native-segmented-android",
     "react-native-send-intent": "^1.0.22",
     "@sentry/react-native": "^5.15.0",
@@ -79,7 +80,7 @@
   },
   "devDependencies": {
     "@babel/core": "^7.23.0",
-    "@babel/plugin-transform-remove-console": "^7.23.0",
+    "babel-plugin-transform-remove-console": "^6.9.4",
     "@types/lodash": "^4.14.191",
     "@types/react": "^18.0.0",
     "@types/react-native": "^0.72.0",

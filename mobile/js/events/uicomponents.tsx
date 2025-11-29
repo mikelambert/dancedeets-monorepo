@@ -145,7 +145,7 @@ class _EventDateTime extends React.Component<EventDateTimeProps> {
 
   componentDidMount() {
     // refresh our 'relative start offset' every minute
-    this._interval = window.setInterval(() => this.forceUpdate(), 60 * 1000);
+    this._interval = setInterval(() => this.forceUpdate(), 60 * 1000) as unknown as number;
   }
 
   componentWillUnmount() {

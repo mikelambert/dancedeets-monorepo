@@ -1020,8 +1020,9 @@ declare module 'react-native-google-api-availability' {
 }
 
 // Segmented control
-declare module 'react-native-segmented-android' {
+declare module '@react-native-segmented-control/segmented-control' {
   import * as React from 'react';
+  import { StyleProp, ViewStyle } from 'react-native';
 
   interface SegmentedControlProps {
     values: string[];
@@ -1029,10 +1030,25 @@ declare module 'react-native-segmented-android' {
     onChange?: (event: { nativeEvent: { selectedSegmentIndex: number } }) => void;
     tintColor?: string;
     enabled?: boolean;
-    style?: object;
+    style?: StyleProp<ViewStyle>;
   }
 
   export default class SegmentedControl extends React.Component<SegmentedControlProps> {}
+}
+
+declare module 'react-native-segmented-android' {
+  import * as React from 'react';
+
+  interface SegmentedControlAndroidProps {
+    childText?: string[];
+    orientation?: 'horizontal' | 'vertical';
+    onChange?: (event: { selected: number }) => void;
+    tintColor?: string[];
+    selectedPosition?: number;
+    style?: object;
+  }
+
+  export default class SegmentedControlAndroid extends React.Component<SegmentedControlAndroidProps> {}
 }
 
 // Push notifications
@@ -1377,8 +1393,56 @@ declare module 'react-native/Libraries/StyleSheet/normalizeColor' {
   export = normalizeColor;
 }
 
+// Legacy react-navigation v1 types for backward compatibility
 declare module 'react-navigation/src/TypeDefinition' {
-  export * from 'react-navigation';
+  import * as React from 'react';
+
+  export interface NavigationAction {
+    type: string;
+    [key: string]: unknown;
+  }
+
+  export interface NavigationRoute {
+    key: string;
+    routeName: string;
+    params?: object;
+  }
+
+  export interface NavigationState {
+    index: number;
+    routes: NavigationRoute[];
+  }
+
+  export interface NavigationScene {
+    route: NavigationRoute;
+    index: number;
+    focused: boolean;
+    tintColor?: string;
+  }
+
+  export interface NavigationSceneRendererProps {
+    scene: NavigationScene;
+    scenes: NavigationScene[];
+    index: number;
+    navigation: NavigationScreenProp<any>;
+    position: any;
+  }
+
+  export interface NavigationScreenProp<S> {
+    state: S;
+    dispatch: (action: NavigationAction) => boolean;
+    goBack: (routeKey?: string | null) => boolean;
+    navigate: (routeName: string, params?: object, action?: NavigationAction) => boolean;
+    setParams: (newParams: object) => boolean;
+  }
+
+  export interface NavigationParams {
+    [key: string]: unknown;
+  }
+}
+
+declare module 'react-navigation' {
+  export * from 'react-navigation/src/TypeDefinition';
 }
 
 declare module 'react-navigation/src/views/TouchableItem' {

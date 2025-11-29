@@ -108,7 +108,7 @@ const messages = defineMessages({
 });
 
 const shareLinkContent = {
-  contentType: 'link',
+  contentType: 'link' as const,
   contentUrl: 'https://www.dancedeets.com',
   contentDescription: '',
 };

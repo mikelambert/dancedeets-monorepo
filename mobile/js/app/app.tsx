@@ -3,7 +3,8 @@
  */
 
 import * as React from 'react';
-import { AppState, Linking, StatusBar, StyleSheet, View } from 'react-native';
+import { AppState, Linking, StatusBar, StyleSheet, View, NativeEventSubscription } from 'react-native';
+import type { EmitterSubscription } from 'react-native';
 import CodePush from 'react-native-code-push';
 import { connect } from 'react-redux';
 import { injectIntl, WrappedComponentProps } from 'react-intl';
@@ -28,6 +29,8 @@ type Props = StateProps & DispatchProps & WrappedComponentProps;
 
 class App extends React.Component<Props> {
   private notificationsInitialized = false;
+  private appStateSubscription: NativeEventSubscription | null = null;
+  private linkingSubscription: EmitterSubscription | null = null;
 
   constructor(props: Props) {
     super(props);
@@ -41,17 +44,19 @@ class App extends React.Component<Props> {
       this.notificationsInitialized = true;
     }
 
-    AppState.addEventListener('change', this.handleAppStateChange);
+    // In RN 0.72+, addEventListener returns a subscription to remove
+    this.appStateSubscription = AppState.addEventListener('change', this.handleAppStateChange);
     CodePush.sync({
       installMode: CodePush.InstallMode.ON_NEXT_RESUME,
       minimumBackgroundDuration: 60 * 5,
     });
-    Linking.addEventListener('url', this.handleOpenURL);
+    this.linkingSubscription = Linking.addEventListener('url', this.handleOpenURL);
   }
 
   componentWillUnmount() {
-    AppState.removeEventListener('change', this.handleAppStateChange);
-    Linking.removeEventListener('url', this.handleOpenURL);
+    // Use subscription.remove() instead of deprecated removeEventListener
+    this.appStateSubscription?.remove();
+    this.linkingSubscription?.remove();
   }
 
   handleOpenURL = (event: { url: string }) => {
