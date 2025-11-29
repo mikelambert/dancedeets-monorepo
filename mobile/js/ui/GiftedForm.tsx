@@ -4,12 +4,28 @@
 
 import * as React from 'react';
 import { View } from 'react-native';
-import { GiftedForm } from 'react-native-gifted-form';
+import { GiftedForm, SubmitWidget } from 'react-native-gifted-form';
 import { purpleColors, yellowColors } from '../Colors';
 import Button from './Button';
 import { defaultFont } from './DDText';
 
-export class MyGiftedSubmitWidget extends (GiftedForm.SubmitWidget as any) {
+interface MyGiftedSubmitWidgetProps {
+  title?: string;
+  isDisabled?: boolean;
+  activityIndicatorColor?: string;
+  onSubmit?: (
+    isValid: boolean,
+    values: object,
+    validationResults: any,
+    postSubmit?: ((errors?: string[]) => void) | null,
+    modalNavigator?: any
+  ) => void | Promise<void>;
+}
+
+export class MyGiftedSubmitWidget extends (SubmitWidget as any) {
+  props!: MyGiftedSubmitWidgetProps;
+  state!: { isLoading: boolean };
+
   render() {
     return (
       <View>
@@ -20,9 +36,8 @@ export class MyGiftedSubmitWidget extends (GiftedForm.SubmitWidget as any) {
           isLoading={this.state.isLoading}
           isDisabled={this.props.isDisabled}
           activityIndicatorColor={this.props.activityIndicatorColor}
-          {...this.props}
           onPress={() => this._doSubmit()}
-          caption={this.props.title}
+          caption={this.props.title || 'Submit'}
         />
       </View>
     );

@@ -1298,6 +1298,32 @@ declare module 'react-native-gifted-form' {
     defaults?: object;
     validators?: object;
     children?: React.ReactNode;
+    scrollEnabled?: boolean;
+    formStyles?: object;
+    navigator?: object;
+    onValueChange?: (values: object) => void;
+  }
+
+  interface SubmitWidgetProps {
+    title?: string;
+    isDisabled?: boolean;
+    activityIndicatorColor?: string;
+    onSubmit?: (
+      isValid: boolean,
+      values: object,
+      validationResults: any,
+      postSubmit?: ((errors?: string[]) => void) | null,
+      modalNavigator?: any
+    ) => void | Promise<void>;
+  }
+
+  interface SubmitWidgetState {
+    isLoading: boolean;
+  }
+
+  export class SubmitWidget extends React.Component<SubmitWidgetProps, SubmitWidgetState> {
+    getStyle(name: string): object;
+    _doSubmit(): void;
   }
 
   export class GiftedForm extends React.Component<GiftedFormProps> {
@@ -1312,7 +1338,7 @@ declare module 'react-native-gifted-form' {
     static RowValueWidget: React.ComponentType<any>;
     static SeparatorWidget: React.ComponentType<any>;
     static NoticeWidget: React.ComponentType<any>;
-    static SubmitWidget: React.ComponentType<any>;
+    static SubmitWidget: typeof SubmitWidget;
     static LoadingWidget: React.ComponentType<any>;
     static OptionWidget: React.ComponentType<any>;
     static HiddenWidget: React.ComponentType<any>;

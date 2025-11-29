@@ -12,11 +12,10 @@ import {
   StyleProp,
   ViewStyle,
 } from 'react-native';
-import { injectIntl } from 'react-intl';
-import { connect } from 'react-redux';
+import { useSelector } from 'react-redux';
 import danceStyles from 'dancedeets-common/js/styles';
 import danceStyleIcons from 'dancedeets-common/js/styles/icons';
-import type { Dispatch, User } from '../actions/types';
+import type { RootState, User } from '../actions/types';
 import { categoryDisplayName, getCategorySignups } from './models';
 import { purpleColors } from '../Colors';
 import {
@@ -56,98 +55,80 @@ interface UserRegistrationStatusProps {
   category: BattleCategory;
   onRegister: (category: BattleCategory) => void;
   onUnregister: (category: BattleCategory, team: Signup) => void;
-
-  // Self-managed props
-  user?: User;
 }
 
-interface UserRegistrationStatusState {
-  isLoading: boolean;
-}
+function UserRegistrationStatus({ category, onRegister, onUnregister }: UserRegistrationStatusProps) {
+  const user = useSelector((state: RootState) => state.user.userData);
+  const [isLoading, setIsLoading] = React.useState(false);
 
-class _UserRegistrationStatus extends React.Component<
-  UserRegistrationStatusProps,
-  UserRegistrationStatusState
-> {
-  constructor(props: UserRegistrationStatusProps) {
-    super(props);
-    this.state = { isLoading: false };
-  }
+  const registerButton = (
+    <Button
+      caption="Register"
+      onPress={async () => {
+        setIsLoading(true);
+        await onRegister(category);
+        setIsLoading(false);
+      }}
+      isLoading={isLoading}
+    />
+  );
 
-  render() {
-    const registerButton = (
-      <Button
-        caption="Register"
-        onPress={async () => {
-          this.setState({ isLoading: true });
-          await this.props.onRegister(this.props.category);
-          this.setState({ isLoading: false });
-        }}
-        isLoading={this.state.isLoading}
-      />
-    );
-    if (this.props.user) {
-      const userId = this.props.user.profile.id;
-      const signups = getCategorySignups(this.props.category);
-      const signedUpTeams = signups.filter(signup => {
-        const dancerIds = signup.dancers.map(x => x.id);
-        return dancerIds.includes(userId);
-      });
-      if (signedUpTeams.length) {
-        const teamTexts = signedUpTeams.map(team => (
-          <HorizontalView
-            style={styles.registrationLineOuter}
-            key={team.teamName}
-          >
-            <CompactTeam team={team} style={styles.registrationIndent} />
-            <Button
-              caption="Unregister"
-              onPress={async () => {
-                this.setState({ isLoading: true });
-                await this.props.onUnregister(this.props.category, team);
-                this.setState({ isLoading: false });
-              }}
-              isLoading={this.state.isLoading}
+  if (user) {
+    const userId = user.profile.id;
+    const signups = getCategorySignups(category);
+    const signedUpTeams = signups.filter(signup => {
+      const dancerIds = signup.dancers.map(x => x.id);
+      return dancerIds.includes(userId);
+    });
+
+    if (signedUpTeams.length) {
+      const teamTexts = signedUpTeams.map(team => (
+        <HorizontalView
+          style={styles.registrationLineOuter}
+          key={team.teamName}
+        >
+          <CompactTeam team={team} style={styles.registrationIndent} />
+          <Button
+            caption="Unregister"
+            onPress={async () => {
+              setIsLoading(true);
+              await onUnregister(category, team);
+              setIsLoading(false);
+            }}
+            isLoading={isLoading}
+          />
+        </HorizontalView>
+      ));
+      return (
+        <View>
+          <HorizontalView style={styles.registrationLine}>
+            <Image
+              source={require('./images/green-check.png')}
+              style={styles.registrationStatusIcon}
             />
+            <Text style={styles.registrationStatusText}>Registered:</Text>
           </HorizontalView>
-        ));
-        return (
-          <View>
-            <HorizontalView style={styles.registrationLine}>
-              <Image
-                source={require('./images/green-check.png')}
-                style={styles.registrationStatusIcon}
-              />
-              <Text style={styles.registrationStatusText}>Registered:</Text>
-            </HorizontalView>
-            {teamTexts}
-          </View>
-        );
-      } else {
-        return (
-          <HorizontalView style={styles.registrationLineOuter}>
-            <HorizontalView style={styles.registrationLine}>
-              <Image
-                source={require('./images/red-x.png')}
-                style={styles.registrationStatusIcon}
-              />
-              <Text style={styles.registrationStatusText}>Not Registered</Text>
-            </HorizontalView>
-            {registerButton}
-          </HorizontalView>
-        );
-      }
+          {teamTexts}
+        </View>
+      );
     } else {
-      return registerButton;
+      return (
+        <HorizontalView style={styles.registrationLineOuter}>
+          <HorizontalView style={styles.registrationLine}>
+            <Image
+              source={require('./images/red-x.png')}
+              style={styles.registrationStatusIcon}
+            />
+            <Text style={styles.registrationStatusText}>Not Registered</Text>
+          </HorizontalView>
+          {registerButton}
+        </HorizontalView>
+      );
     }
+  } else {
+    return registerButton;
   }
 }
-const UserRegistrationStatus = connect(
-  (state: any) => ({
-    user: state.user.userData,
-  }),
-  (dispatch: Dispatch, props: any) => ({})
-)(injectIntl(_UserRegistrationStatus));
 
 interface CategorySummaryCardProps {
   category: BattleCategory;

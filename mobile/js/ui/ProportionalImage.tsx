@@ -17,7 +17,7 @@ interface Props {
   duration?: number;
   resizeDirection?: 'width' | 'height';
   initialDimensions?: Dimension;
-  source?: unknown;
+  source: any;
   [key: string]: any;
 }
 
