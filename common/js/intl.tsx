@@ -137,7 +137,7 @@ function Internationalize(props: InternationalizeProps): React.ReactElement {
       defaultLocale={args.defaultLocale}
       key={args.key}
     >
-      {props.children}
+      <>{props.children}</>
     </IntlProvider>
   );
 }
@@ -147,14 +147,17 @@ function Internationalize(props: InternationalizeProps): React.ReactElement {
 // fr-FR
 // zh-TW
 // etc
+// The wrapped component receives all props including currentLocale,
+// but may choose to ignore it since Internationalize uses it for the IntlProvider.
 export function intlWeb<P extends object>(
-  Wrapped: React.ComponentType<P & { currentLocale: string }>
-): React.FC<P & { currentLocale: string }> {
-  return (props: P & { currentLocale: string }) => (
+  Wrapped: React.ComponentType<P>
+): React.FC<Omit<P, 'currentLocale'> & { currentLocale: string }> {
+  const IntlWrapped: React.FC<Omit<P, 'currentLocale'> & { currentLocale: string }> = (props) => (
     <Internationalize currentLocale={props.currentLocale}>
-      <Wrapped {...props} />
+      <Wrapped {...(props as unknown as P)} />
     </Internationalize>
   );
+  return IntlWrapped;
 }
 
 // currentLocale here is of the form:
