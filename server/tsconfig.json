@@ -5,7 +5,7 @@
     "paths": {
       "dancedeets-common/js/*": ["../common/js/*"]
     },
-    "typeRoots": ["./types", "./node_modules/@types"]
+    "typeRoots": ["./types", "../common/types", "./node_modules/@types"]
   },
   "files": [],
   "include": [

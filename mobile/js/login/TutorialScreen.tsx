@@ -76,7 +76,7 @@ const TopView = injectIntl(_TopView);
 
 interface TutorialScreenProps extends InjectedIntlProps {
   onLogin: () => void;
-  onNoLogin: (name: string) => void;
+  onNoLogin: () => void;
 }
 
 class _TutorialScreen extends React.Component<TutorialScreenProps> {

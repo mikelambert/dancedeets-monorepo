@@ -22,11 +22,12 @@
 
 import { AccessToken } from 'react-native-fbsdk';
 import type { ThunkDispatch, ThunkAction as ReduxThunkAction } from 'redux-thunk';
-import type { AnyAction } from 'redux';
+import type { UnknownAction } from 'redux';
 import type { Event } from 'dancedeets-common/js/events/models';
 import type { search as searchApi } from '../api/dancedeets';
 import type { AddEventList, SortOrder } from '../addEventsModels';
 import type { State as SearchHeaderState } from '../ducks/searchHeader';
+import type { LoadedEventState } from '../reducers/loadedEvents';
 
 // Use the mobile-specific search response type
 type MobileSearchResponse = Awaited<ReturnType<typeof searchApi>>;
@@ -106,16 +107,16 @@ export interface RootState {
   tutorials: {
     videoIndex: number;
   };
-  loadedEvents: Record<string, Event>;
+  loadedEvents: Record<string, LoadedEventState>;
   searchHeader: SearchHeaderState;
 }
 
 export type GetState = () => RootState;
 
 // Use ThunkDispatch for proper compatibility with react-redux connect
-export type Dispatch = ThunkDispatch<RootState, undefined, AnyAction>;
+export type Dispatch = ThunkDispatch<RootState, undefined, UnknownAction>;
 
 // ThunkAction compatible with redux-thunk
-export type ThunkAction = ReduxThunkAction<unknown, RootState, undefined, AnyAction>;
+export type ThunkAction = ReduxThunkAction<unknown, RootState, undefined, UnknownAction>;
 
 export type PromiseAction = Promise<Action>;

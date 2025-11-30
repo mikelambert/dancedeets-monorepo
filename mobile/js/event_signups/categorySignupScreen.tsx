@@ -5,20 +5,21 @@
 import * as React from 'react';
 import { useSelector } from 'react-redux';
 import { GiftedForm } from 'react-native-gifted-form';
-import type {
-  NavigationAction,
-  NavigationRoute,
-  NavigationScreenProp,
-} from 'react-navigation/src/TypeDefinition';
 import { MyGiftedForm, MyGiftedSubmitWidget } from '../ui';
-import type { User, RootState } from '../actions/types';
+import type { RootState } from '../actions/types';
 import type { BattleCategory, BattleEvent } from './models';
 import { eventRegister } from '../api/dancedeets';
+
+// Simple navigation interface compatible with React Navigation v6
+interface NavigationProp {
+  navigate: (route: string, params?: Record<string, any>) => void;
+  goBack: () => void;
+}
 
 interface CategorySignupScreenProps {
   battle: BattleEvent;
   category: BattleCategory;
-  navigation: NavigationScreenProp<any>;
+  navigation: NavigationProp;
 }
 
 function CategorySignupScreen({ battle, category, navigation }: CategorySignupScreenProps) {

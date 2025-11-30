@@ -22,9 +22,13 @@ interface MyGiftedSubmitWidgetProps {
   ) => void | Promise<void>;
 }
 
-export class MyGiftedSubmitWidget extends (SubmitWidget as any) {
-  props!: MyGiftedSubmitWidgetProps;
-  state!: { isLoading: boolean };
+// Extend SubmitWidget at runtime but declare as React.Component for TypeScript
+const SubmitWidgetBase = SubmitWidget as unknown as new (props: MyGiftedSubmitWidgetProps) => React.Component<MyGiftedSubmitWidgetProps, { isLoading: boolean }>;
+
+export class MyGiftedSubmitWidget extends SubmitWidgetBase {
+  // Declare methods from SubmitWidget that we use
+  declare getStyle: (styleName: string) => any;
+  declare _doSubmit: () => void;
 
   render() {
     return (

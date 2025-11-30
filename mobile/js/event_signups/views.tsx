@@ -14,12 +14,6 @@ import {
 import { injectIntl, defineMessages } from 'react-intl';
 import { connect } from 'react-redux';
 import { GiftedForm } from 'react-native-gifted-form';
-import type {
-  NavigationRoute,
-  NavigationScene,
-  NavigationSceneRendererProps,
-  NavigationState,
-} from 'react-navigation/src/TypeDefinition';
 import { track } from '../store/track';
 import {
   Button,
