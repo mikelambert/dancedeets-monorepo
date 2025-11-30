@@ -74,9 +74,9 @@ class _ScreenshotSlideshow extends React.Component<Props, State> {
     await dispatch(performSearch());
   }
 
-  async setupEventView(dispatch: Dispatch) {
+  async setupEventView(_dispatch: Dispatch) {
+    // TODO: This function is incomplete - the dispatch call was missing an action
     // const fetchedEvent = await event('397757633752918'); // SYGU 2015
-    await dispatch();
     /*
       navigatePush('EVENT_NAV', {
         key: 'EventView',

@@ -318,7 +318,6 @@ function TutorialPage({ style, tutorial: tutorialId, hashLocation, currentLocale
     trackTutorial(tutorial);
     result = (
       <TutorialView
-        style={style}
         tutorial={tutorial}
         videoIndex={videoIndex}
       />

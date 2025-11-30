@@ -150,16 +150,13 @@ class _ShareButtons extends React.Component<ShareButtonsProps> {
           onPress={() => {
             track('Share DanceDeets', { Button: 'Send Native' });
             const localizedShareLinkContent = this.getShareLinkContent();
-            Share.open(
-              {
-                message: localizedShareLinkContent.contentDescription,
-                url: localizedShareLinkContent.contentUrl,
-                title: 'DanceDeets',
-              },
-              e => {
-                console.warn(e);
-              }
-            );
+            Share.open({
+              message: localizedShareLinkContent.contentDescription,
+              url: localizedShareLinkContent.contentUrl,
+              title: 'DanceDeets',
+            }).catch(e => {
+              console.warn(e);
+            });
           }}
           style={styles.noFlexButtonHorizontal}
         />

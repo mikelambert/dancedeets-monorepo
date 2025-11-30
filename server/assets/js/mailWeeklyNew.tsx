@@ -92,9 +92,7 @@ interface MainBodyProps {
 
 class MainBody extends React.Component<MainBodyProps> {
   render(): React.ReactElement[] {
-    const resultEvents = this.props.response.results.map(
-      eventData => new SearchEvent(eventData)
-    );
+    const resultEvents = this.props.response.results;
     return [
       <mj-section key="intro">
         <mj-column>

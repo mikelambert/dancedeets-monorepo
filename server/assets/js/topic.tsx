@@ -269,9 +269,7 @@ class _EventList extends React.Component<EventListProps, EventListState> {
   }
 
   render(): React.ReactElement {
-    const resultEvents = this.props.response.results
-      .map(eventData => new SearchEvent(eventData))
-      .reverse();
+    const resultEvents = [...this.props.response.results].reverse();
 
     const videos = this.props.videos as {
       items: Array<{ id: { videoId: string }; snippet: { publishedAt: string } }>;

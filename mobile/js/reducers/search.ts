@@ -2,12 +2,14 @@
  * Copyright 2016 DanceDeets.
  */
 
-import type { NewSearchResponse } from 'dancedeets-common/js/events/search';
+import type { search as searchApi } from '../api/dancedeets';
 import type { Action } from '../actions/types';
+
+type MobileSearchResponse = Awaited<ReturnType<typeof searchApi>>;
 
 export interface State {
   loading: boolean; // loading indicator
-  response: NewSearchResponse | null; // our last-searched response
+  response: MobileSearchResponse | null; // our last-searched response
   error: boolean; // whether there was an error fetching the current results
   errorString: string | null; // the error message to display to the user, if we have one
   waitingForLocationPermission: boolean; // are we waiitng for the user to grant the location permission

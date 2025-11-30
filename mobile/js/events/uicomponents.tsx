@@ -14,6 +14,7 @@ import {
   ScrollView,
   StyleSheet,
   StyleProp,
+  TextStyle,
   ViewStyle,
   TouchableOpacity,
   View,
@@ -193,7 +194,7 @@ function formatDistance(intl: IntlShape, distanceKm: number) {
 
 interface EventVenueProps {
   venue: Venue;
-  style: StyleProp<ViewStyle>;
+  style?: StyleProp<TextStyle>;
 
   currentPosition: any | null;
 

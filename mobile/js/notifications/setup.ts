@@ -54,10 +54,10 @@ class Handler {
 
   async shouldVibrate(): Promise<boolean> {
     const vibratePermission = await PermissionsAndroid.check(
-      'android.permission.VIBRATE'
+      PermissionsAndroid.PERMISSIONS.VIBRATE
     );
     const platformSupportsDefaultVibration =
-      Platform.OS === 'ios' || Platform.Version >= 18;
+      Platform.OS === 'ios' || (typeof Platform.Version === 'number' && Platform.Version >= 18);
     const vibratePreference = await getPreference(
       PreferenceNames.vibration,
       true

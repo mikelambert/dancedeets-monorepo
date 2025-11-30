@@ -21,7 +21,7 @@ import { connect } from 'react-redux';
 import Carousel from 'react-native-carousel';
 import upperFirst from 'lodash/upperFirst';
 import Icon from 'react-native-vector-icons/Ionicons';
-import { Event } from 'dancedeets-common/js/events/models';
+import { Event, SearchEvent } from 'dancedeets-common/js/events/models';
 import {
   FeaturedInfo,
   Onebox,
@@ -658,7 +658,7 @@ class _ListView extends React.Component<ListViewProps, ListViewState> {
       if (response.results != null && response.results.length > 0) {
         // Previously sorted by startDate from the server, we want to sort them by our listDate
         let resultEvents = response.results;
-        resultEvents = expandResults(resultEvents, Event);
+        resultEvents = expandResults(resultEvents, SearchEvent) as SearchEvent[];
         resultEvents = sortNumber(resultEvents, x =>
           x.getListDateMoment({ timezone: false }).valueOf()
         );

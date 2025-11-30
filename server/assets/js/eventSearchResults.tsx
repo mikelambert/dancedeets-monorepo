@@ -56,7 +56,7 @@ interface FormSearchQuery {
   keywords?: string;
   start?: string;
   end?: string;
-  min_worth?: string;
+  min_worth?: number;
 }
 
 function insertEvery<T>(
@@ -662,7 +662,7 @@ export async function search(
   keywords: string | null | undefined,
   start: string | null | undefined,
   end: string | null | undefined,
-  min_worth: string | null | undefined
+  min_worth: number | null | undefined
 ): Promise<NewSearchResponse> {
   const args: Record<string, unknown> = {};
   if (location) {
@@ -692,8 +692,8 @@ export async function search(
   const searchResponse = response as unknown as NewSearchResponse;
   searchResponse.featuredInfos = (searchResponse.featuredInfos || []).map(x => ({
     ...x,
-    event: new SearchEvent(x.event as unknown as Record<string, unknown>),
-  })) as FeaturedInfo[];
+    event: new Event(x.event as unknown as Record<string, unknown>),
+  }));
   searchResponse.results = searchResponse.results.map(x => new SearchEvent(x as unknown as Record<string, unknown>));
   return searchResponse;
 }

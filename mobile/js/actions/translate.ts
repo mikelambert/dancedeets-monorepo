@@ -44,7 +44,7 @@ export function toggleEventTranslation(
       ) {
         return;
       }
-      const translations = await translateEventApi(eventId, language);
+      const translations = await translateEventApi(eventId, language) as { name: string; description: string };
       await dispatch(eventTranslated(eventId, translations));
     } else {
       await dispatch(reallyToggleEventTranslation(eventId));
@@ -59,7 +59,7 @@ function reallyToggleEventTranslation(eventId: string): Action {
   };
 }
 
-function eventTranslated(eventId: string, translations: Record<string, unknown>): Action {
+function eventTranslated(eventId: string, translations: { name: string; description: string }): Action {
   return {
     type: 'TRANSLATE_EVENT_DONE',
     eventId,

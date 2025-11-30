@@ -6,7 +6,7 @@ import * as React from 'react';
 import moment from 'moment';
 import FormatText from 'react-format-text';
 import querystring from 'querystring';
-import { injectIntl, InjectedIntlProps, InjectedIntl } from 'react-intl';
+import { injectIntl, IntlShape } from 'react-intl';
 import Helmet from 'react-helmet';
 import { Share as TwitterShare } from 'react-twitter-widgets';
 import { intlWeb } from 'dancedeets-common/js/intl';
@@ -171,7 +171,7 @@ interface EventLinksProps {
   userRsvp?: RsvpValue;
 }
 
-type EventLinksPropsWithIntl = EventLinksProps & InjectedIntlProps;
+type EventLinksPropsWithIntl = EventLinksProps & { intl: IntlShape };
 
 class _EventLinks extends React.Component<EventLinksPropsWithIntl> {
   render(): React.ReactElement {
@@ -478,7 +478,7 @@ interface WallPostProps {
   amp?: boolean;
 }
 
-type WallPostPropsWithIntl = WallPostProps & InjectedIntlProps;
+type WallPostPropsWithIntl = WallPostProps & { intl: IntlShape };
 
 class _WallPost extends React.Component<WallPostPropsWithIntl> {
   render(): React.ReactElement {
@@ -656,7 +656,7 @@ interface EventRecommendationProps {
   event: BaseEvent;
 }
 
-type EventRecommendationPropsWithIntl = EventRecommendationProps & InjectedIntlProps;
+type EventRecommendationPropsWithIntl = EventRecommendationProps & { intl: IntlShape };
 
 class _EventRecommendation extends React.Component<EventRecommendationPropsWithIntl> {
   render(): React.ReactElement {
