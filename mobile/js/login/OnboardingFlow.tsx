@@ -4,11 +4,11 @@
 
 import * as React from 'react';
 import { connect } from 'react-redux';
-import { Dispatch } from 'redux';
 import TutorialScreen from './TutorialScreen';
 import NoLoginScreen from './NoLoginScreen';
 import { loginButtonPressed, skipLogin } from '../actions';
 import { track } from '../store/track';
+import type { Dispatch } from '../actions/types';
 
 type ScreenState = 'CAROUSEL' | 'NO_LOGIN';
 

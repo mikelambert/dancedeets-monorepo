@@ -12,7 +12,7 @@ import { ThunkAction } from '../actions/types';
 import { getPosition } from '../util/geo';
 
 interface EventPagerProps {
-  onFlyerSelected: (x: SearchEvent) => ThunkAction;
+  onFlyerSelected: (x: SearchEvent) => void;
   onEventNavigated: (x: SearchEvent) => void;
   selectedEvent: Event;
 

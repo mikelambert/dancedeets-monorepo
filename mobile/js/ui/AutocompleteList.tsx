@@ -29,6 +29,7 @@ type Term = {
 };
 
 type Result = {
+  key?: string;
   description: string;
   isCurrentLocation?: boolean;
   isLoading?: boolean;
