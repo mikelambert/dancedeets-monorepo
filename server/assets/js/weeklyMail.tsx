@@ -98,13 +98,13 @@ function MailEvent({ event }: MailEventProps): React.ReactElement {
       padding-right={outsideGutter}
       padding-bottom={verticalSpacing}
     >
-      <mj-column width="33%">{flyerImage}</mj-column>
+      <mj-column width="33%">{flyerImage as React.ReactNode}</mj-column>
       <mj-column width="66%">
         <mj-text mj-class="header">
           <a href={eventUrl}>{event.name}</a>
         </mj-text>
         <mj-table>
-          {danceCategories}
+          {danceCategories as React.ReactNode}
           <tr>
             <td style={imageAlign}>
               <FontAwesomeIcon name="clock-o" alt="Time" />
@@ -225,6 +225,7 @@ function BodyWrapper({ user, response }: BodyWrapperProps): React.ReactElement {
 interface WeeklyEmailProps {
   user: { userName: string };
   response: NewSearchResponse;
+  currentLocale: string;
 }
 
 function WeeklyEmail({ user, response }: WeeklyEmailProps): React.ReactElement {

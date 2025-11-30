@@ -57,7 +57,7 @@ function Duration({ duration, style }: DurationProps): React.ReactElement {
 interface TutorialViewProps {
   tutorial: Playlist;
   videoIndex: number | null;
-  window: WindowProps;
+  window?: WindowProps | null;
 }
 
 function TutorialViewInner({ tutorial, videoIndex: initialVideoIndex, window: windowProp }: TutorialViewProps): React.ReactElement {
