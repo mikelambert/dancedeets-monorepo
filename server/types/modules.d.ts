@@ -315,3 +315,18 @@ declare module 'react-masonry-component' {
   export default Masonry;
 }
 
+// Type augmentation for react-tabs - add style prop to TabPanel
+declare module 'react-tabs' {
+  import * as React from 'react';
+
+  export interface TabPanelProps {
+    style?: React.CSSProperties;
+    children?: React.ReactNode;
+    className?: string;
+    selectedClassName?: string;
+    forceRender?: boolean;
+  }
+
+  export class TabPanel extends React.Component<TabPanelProps> {}
+}
+

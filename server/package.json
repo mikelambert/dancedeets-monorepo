@@ -148,5 +148,8 @@
     "build:esbuild:debug": "node esbuild.client.js --debug",
     "test:esbuild": "node build_tools/test-esbuild-bundles.js"
   },
-  "private": true
+  "private": true,
+  "overrides": {
+    "@types/react": "^19.0.0"
+  }
 }

@@ -78,6 +78,7 @@ function TabNavigatorInner({ intl }: TabNavigatorProps): React.ReactElement {
 
   return (
     <Tab.Navigator
+      id="MainTabs"
       screenOptions={{
         tabBarActiveTintColor: purpleColors[2],
         tabBarInactiveTintColor: '#909090',

@@ -35,6 +35,7 @@ export default function createMyStackNavigator(
   function StackNavigatorComponent() {
     return (
       <Stack.Navigator
+        id={stateName}
         initialRouteName={initialRouteName}
         screenOptions={{
           ...defaultScreenOptions,

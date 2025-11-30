@@ -51,5 +51,8 @@
   },
   "dependencies": {
     "@babel/eslint-parser": "^7.23.0"
+  },
+  "overrides": {
+    "@types/react": "^19.0.0"
   }
 }

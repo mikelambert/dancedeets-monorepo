@@ -4,7 +4,7 @@
 
 import * as React from 'react';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
-import { defineMessages, injectIntl, InjectedIntlProps } from 'react-intl';
+import { defineMessages, injectIntl, WrappedComponentProps } from 'react-intl';
 import { yellowColors } from '../Colors';
 import { Button, normalize, Text, semiNormalize } from '../ui';
 
@@ -16,7 +16,7 @@ const messages = defineMessages({
   },
 });
 
-interface Props extends InjectedIntlProps {
+interface Props extends WrappedComponentProps {
   noLoginText: string;
   onLogin: () => void;
   onNoLogin: () => void;

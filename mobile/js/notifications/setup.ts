@@ -53,18 +53,15 @@ class Handler {
   }
 
   async shouldVibrate(): Promise<boolean> {
-    const vibratePermission = await PermissionsAndroid.check(
-      PermissionsAndroid.PERMISSIONS.VIBRATE
-    );
-    const platformSupportsDefaultVibration =
-      Platform.OS === 'ios' || (typeof Platform.Version === 'number' && Platform.Version >= 18);
+    // VIBRATE permission was removed in react-native-permissions v4+
+    // On modern Android, vibration doesn't require a permission
+    // On iOS, vibration is always allowed
+    const platformSupportsVibration = true;
     const vibratePreference = await getPreference(
       PreferenceNames.vibration,
       true
     );
-    const vibrate =
-      (vibratePermission || platformSupportsDefaultVibration) &&
-      vibratePreference;
+    const vibrate = platformSupportsVibration && vibratePreference;
     return vibrate;
   }
 

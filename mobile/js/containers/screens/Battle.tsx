@@ -185,6 +185,7 @@ export function BattleScreensNavigator() {
 
   return (
     <Stack.Navigator
+      id="BattleStack"
       screenOptions={{
         headerTintColor: 'white',
         headerStyle: {
