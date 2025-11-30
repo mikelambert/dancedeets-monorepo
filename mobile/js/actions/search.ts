@@ -2,7 +2,7 @@
  * Copyright 2016 DanceDeets.
  */
 
-import type { NewSearchResponse, TimePeriod } from 'dancedeets-common/js/events/search';
+import type { TimePeriod } from 'dancedeets-common/js/events/search';
 import type { Action, ThunkAction, Dispatch, GetState } from './types';
 
 import { search } from '../api/dancedeets';
@@ -70,7 +70,7 @@ function searchStart(): Action {
   };
 }
 
-function searchComplete(response: NewSearchResponse): Action {
+function searchComplete(response: Awaited<ReturnType<typeof search>>): Action {
   return {
     type: 'SEARCH_COMPLETE',
     response,

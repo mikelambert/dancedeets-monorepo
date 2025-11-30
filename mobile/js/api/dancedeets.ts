@@ -104,13 +104,15 @@ export async function feed(url: string): Promise<any> {
 
 interface FeaturedInfo {
   event: Event;
-  [key: string]: any;
+  showTitle: boolean;
+  overrideFlyer: string;
+  promotionText?: string | null;
 }
 
 interface MobileSearchResponse {
   featuredInfos: FeaturedInfo[];
   results: SearchEvent[];
-  people?: any;
+  people: any;
   onebox_links: any[];
   query: any;
   // Required fields from NewSearchResponse
@@ -145,6 +147,8 @@ export async function search(
     event: new Event(x.event),
   }));
   response.results = response.results.map((x: any) => new SearchEvent(x));
+  // Ensure people is always defined (can be empty object)
+  response.people = response.people || {};
   return response;
 }
 

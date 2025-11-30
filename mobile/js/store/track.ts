@@ -25,7 +25,7 @@ import analytics from '@react-native-firebase/analytics';
 import { AccessToken, AppEventsLogger } from 'react-native-fbsdk';
 import { Crashlytics } from 'react-native-fabric';
 import DeviceInfo from 'react-native-device-info';
-import type { Event } from 'dancedeets-common/js/events/models';
+import type { BaseEvent } from 'dancedeets-common/js/events/models';
 import { performRequest } from '../api/fb';
 import type { Action } from '../actions/types';
 
@@ -89,7 +89,7 @@ export function track(eventName: string, params?: Params | null): void {
 
 export function trackWithEvent(
   eventName: string,
-  event: Event,
+  event: BaseEvent,
   params?: Params | null
 ): void {
   if (!trackingEnabled) {

@@ -24,9 +24,12 @@ import { AccessToken } from 'react-native-fbsdk';
 import type { ThunkDispatch, ThunkAction as ReduxThunkAction } from 'redux-thunk';
 import type { AnyAction } from 'redux';
 import type { Event } from 'dancedeets-common/js/events/models';
-import type { NewSearchResponse } from 'dancedeets-common/js/events/search';
+import type { search as searchApi } from '../api/dancedeets';
 import type { AddEventList, SortOrder } from '../addEventsModels';
 import type { State as SearchHeaderState } from '../ducks/searchHeader';
+
+// Use the mobile-specific search response type
+type MobileSearchResponse = Awaited<ReturnType<typeof searchApi>>;
 
 export interface User {
   profile: {
@@ -53,7 +56,7 @@ export type Action =
   | { type: 'LOGIN_SKIPPED' }
   | { type: 'DETECTED_LOCATION'; location: string }
   | { type: 'START_SEARCH' }
-  | { type: 'SEARCH_COMPLETE'; response: NewSearchResponse }
+  | { type: 'SEARCH_COMPLETE'; response: MobileSearchResponse }
   | { type: 'SEARCH_FAILED'; errorString: string | null }
   | { type: 'WAITING_FOR_LOCATION'; waiting: boolean }
   | { type: 'searchHeader/START_OPEN' }
@@ -77,7 +80,7 @@ export type Action =
   | { type: 'ADD_EVENTS_SET_SORT_ORDER'; value: SortOrder }
   | { type: 'SET_CURRENT_LOCALE'; locale: string }
   | { type: 'TRANSLATE_EVENT_TOGGLE'; eventId: string }
-  | { type: 'TRANSLATE_EVENT_DONE'; eventId: string; translations: Record<string, unknown> }
+  | { type: 'TRANSLATE_EVENT_DONE'; eventId: string; translations: { name: string; description: string } }
   | { type: 'TUTORIAL_SET_VIDEO_INDEX'; index: number }
   | { type: 'FIREBASE_UPDATE'; key: string; value: unknown };
 
@@ -87,16 +90,19 @@ export interface RootState {
     isLoggedIn: boolean;
   };
   search: {
-    response: NewSearchResponse | null;
+    response: MobileSearchResponse | null;
     loading: boolean;
-    error: string | null;
+    error: boolean;
+    errorString: string | null;
   };
   addEvents: {
     results: AddEventList | null;
     loading: boolean;
   };
   firebase: Record<string, unknown>;
-  translate: Record<string, { translations: Record<string, unknown>; expanded: boolean }>;
+  translate: {
+    events: Record<string, { visible: boolean; translation: { name: string; description: string } }>;
+  };
   tutorials: {
     videoIndex: number;
   };

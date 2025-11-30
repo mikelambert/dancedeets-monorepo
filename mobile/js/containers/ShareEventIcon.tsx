@@ -18,16 +18,13 @@ export default class ShareEventIcon extends React.Component<ShareEventIconProps>
       <TouchableOpacity
         onPress={() => {
           trackWithEvent('Share Event', this.props.event);
-          Share.open(
-            {
-              message: this.props.event.name,
-              url: this.props.event.getUrl(),
-              title: 'Share Event',
-            },
-            e => {
-              console.warn(e);
-            }
-          );
+          Share.open({
+            message: this.props.event.name,
+            url: this.props.event.getUrl(),
+            title: 'Share Event',
+          }).catch(e => {
+            console.warn(e);
+          });
         }}
       >
         <Image

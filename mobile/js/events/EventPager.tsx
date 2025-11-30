@@ -70,10 +70,10 @@ class EventPager extends React.Component<EventPagerProps, EventPagerState> {
       if (results) {
         console.error(`Response results has ${results.length} elements`);
       } else {
-        const response = this.props.search.response;
+        const { response, error, errorString } = this.props.search;
         console.error(`Response is non-empty? ${String(response != null)}`);
-        console.error(`Response error: ${response.error}`);
-        console.error(`Response errorString: ${response.errorString}`);
+        console.error(`Response error: ${error}`);
+        console.error(`Response errorString: ${errorString}`);
       }
     }
     return this.props.onEventNavigated(event);
