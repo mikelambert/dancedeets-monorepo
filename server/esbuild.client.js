@@ -353,10 +353,12 @@ async function buildEntry(name, entryPath) {
       fontPlugin,
     ],
     loader: {
+      '.ts': 'ts',
+      '.tsx': 'tsx',
       '.js': 'jsx',
       '.jsx': 'jsx',
     },
-    resolveExtensions: ['.js', '.jsx', '.json'],
+    resolveExtensions: ['.ts', '.tsx', '.js', '.jsx', '.json'],
     // Add node_modules paths for resolution
     nodePaths: [
       path.join(__dirname, 'node_modules'),
