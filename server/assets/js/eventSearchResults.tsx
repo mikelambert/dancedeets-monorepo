@@ -7,7 +7,7 @@ import FormatText from 'react-format-text';
 import moment from 'moment';
 import ExecutionEnvironment from 'exenv';
 import isEqual from 'lodash/isEqual';
-import { injectIntl, InjectedIntlProps } from 'react-intl';
+import { useIntl } from 'react-intl';
 import Slider from 'react-slick';
 import Spinner from 'react-spinkit';
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
@@ -121,39 +121,34 @@ interface EventDescriptionProps {
   indexingBot?: boolean;
 }
 
-type EventDescriptionPropsWithIntl = EventDescriptionProps & InjectedIntlProps;
-
-class _EventDescription extends React.Component<EventDescriptionPropsWithIntl> {
-  render(): React.ReactElement {
-    const { event } = this.props;
-    const keywords = [...event.annotations.categories];
-    if (this.props.indexingBot) {
-      keywords.push(...event.annotations.keywords);
-    }
-
-    return (
-      <div className="event-description">
-        <h3 className="event-title">
-          <a href={event.getRelativeUrl()}>{event.name}</a>
-        </h3>
-        <ImagePrefix iconUrl={`${cdnBaseUrl}/img/categories-black.png`}>
-          {keywords.join(', ')}
-        </ImagePrefix>
-        <ImagePrefix iconName="clock-o">
-          {formatStartDateOnly(
-            event.getListDateMoment({ timezone: false }),
-            this.props.intl
-          )}
-        </ImagePrefix>
-        <ImagePrefix iconName="map-marker">
-          <div>{event.venue.name}</div>
-          <FormatText>{event.venue.cityStateCountry()}</FormatText>
-        </ImagePrefix>
-      </div>
-    );
+function EventDescription({ event, indexingBot }: EventDescriptionProps): React.ReactElement {
+  const intl = useIntl();
+  const keywords = [...event.annotations.categories];
+  if (indexingBot) {
+    keywords.push(...event.annotations.keywords);
   }
+
+  return (
+    <div className="event-description">
+      <h3 className="event-title">
+        <a href={event.getRelativeUrl()}>{event.name}</a>
+      </h3>
+      <ImagePrefix iconUrl={`${cdnBaseUrl}/img/categories-black.png`}>
+        {keywords.join(', ')}
+      </ImagePrefix>
+      <ImagePrefix iconName="clock-o">
+        {formatStartDateOnly(
+          event.getListDateMoment({ timezone: false }),
+          intl
+        )}
+      </ImagePrefix>
+      <ImagePrefix iconName="map-marker">
+        <div>{event.venue.name}</div>
+        <FormatText>{event.venue.cityStateCountry()}</FormatText>
+      </ImagePrefix>
+    </div>
+  );
 }
-const EventDescription = injectIntl(_EventDescription);
 
 interface HorizontalEventProps {
   event: SearchEvent;
@@ -306,77 +301,73 @@ interface EventsListProps {
   loadMoreContent: (() => void | Promise<void>) | null;
 }
 
-type EventsListPropsWithIntl = EventsListProps & InjectedIntlProps;
+function EventsList({ events, loadMoreContent }: EventsListProps): React.ReactElement {
+  const intl = useIntl();
+  const resultItems: React.ReactNode[] = [];
+  let overallEventIndex = 0;
 
-class _EventsList extends React.Component<EventsListPropsWithIntl> {
-  render(): React.ReactElement {
-    const resultItems: React.ReactNode[] = [];
-    let overallEventIndex = 0;
+  const hasMoreEventsToFetch = Boolean(loadMoreContent);
+  const eventIndexThreshold = Math.round(events.length * 0.75);
 
-    const hasMoreEventsToFetch = Boolean(this.props.loadMoreContent);
-    const eventIndexThreshold = Math.round(this.props.events.length * 0.75);
+  let waypoint: React.ReactElement | null = (
+    <Waypoint key="waypoint" onEnter={loadMoreContent || undefined} />
+  );
+  groupEventsByStartDate(
+    intl,
+    events
+  ).forEach(({ header, events: groupedEvents }) => {
+    const renderedEvents: React.ReactNode[] = groupedEvents.map((event, index) => (
+      <HorizontalEvent
+        key={`${event.id}-${event.start_time}`}
+        event={event as SearchEvent}
+        lazyLoad={overallEventIndex + index > 8}
+      />
+    ));
 
-    let waypoint: React.ReactElement | null = (
-      <Waypoint key="waypoint" onEnter={this.props.loadMoreContent || undefined} />
+    resultItems.push(
+      <div key={header} className="bold card-background">
+        {header}
+      </div>
     );
-    groupEventsByStartDate(
-      this.props.intl,
-      this.props.events
-    ).forEach(({ header, events }) => {
-      const renderedEvents: React.ReactNode[] = events.map((event, index) => (
-        <HorizontalEvent
-          key={`${event.id}-${event.start_time}`}
-          event={event as SearchEvent}
-          lazyLoad={overallEventIndex + index > 8}
-        />
-      ));
 
-      resultItems.push(
-        <div key={header} className="bold card-background">
-          {header}
-        </div>
+    if (
+      hasMoreEventsToFetch &&
+      eventIndexThreshold >= overallEventIndex &&
+      eventIndexThreshold < overallEventIndex + groupedEvents.length
+    ) {
+      renderedEvents.splice(
+        eventIndexThreshold - overallEventIndex,
+        0,
+        waypoint
       );
-
-      if (
-        hasMoreEventsToFetch &&
-        eventIndexThreshold >= overallEventIndex &&
-        eventIndexThreshold < overallEventIndex + events.length
-      ) {
-        renderedEvents.splice(
-          eventIndexThreshold - overallEventIndex,
-          0,
-          waypoint
-        );
-        waypoint = null;
-      }
-      resultItems.push(...renderedEvents);
-      overallEventIndex += events.length;
-    });
-
-    if (hasMoreEventsToFetch) {
-      if (waypoint) {
-        resultItems.push(waypoint);
-      }
-      resultItems.push(<Loading key="bottom_loading" style={{ margin: 80 }} />);
+      waypoint = null;
     }
+    resultItems.push(...renderedEvents);
+    overallEventIndex += groupedEvents.length;
+  });
 
-    function adItem(origIndex: number): React.ReactElement {
-      return (
-        <GoogleAd
-          key={`ad-${origIndex}`}
-          id={`ad-${origIndex}-adType-inline`}
-          style={{ display: 'block' }}
-          data-ad-format="auto"
-          data-ad-slot="8358307776"
-        />
-      );
+  if (hasMoreEventsToFetch) {
+    if (waypoint) {
+      resultItems.push(waypoint);
     }
-    const monetizedResultItems = insertEvery(resultItems, adItem, 1000);
-
-    return <div>{monetizedResultItems}</div>;
+    resultItems.push(<Loading key="bottom_loading" style={{ margin: 80 }} />);
   }
+
+  function adItem(origIndex: number): React.ReactElement {
+    return (
+      <GoogleAd
+        key={`ad-${origIndex}`}
+        id={`ad-${origIndex}-adType-inline`}
+        style={{ display: 'block' }}
+        data-ad-format="auto"
+        data-ad-slot="8358307776"
+      />
+    );
+  }
+  const monetizedResultItems = insertEvery(resultItems, adItem, 1000);
+
+  return <div>{monetizedResultItems}</div>;
 }
-const EventsList = injectIntl(_EventsList);
 
 interface OneboxLinksProps {
   links: Array<Onebox>;
@@ -712,108 +703,94 @@ interface PeopleListProps {
   categoryOrder: Array<string>;
 }
 
-type PeopleListPropsWithIntl = PeopleListProps & InjectedIntlProps;
+function PeopleList({ response, categoryOrder }: PeopleListProps): React.ReactElement {
+  const intl = useIntl();
+  const [people, setPeople] = React.useState<PeopleListing | null>(response.people);
+  const [failed, setFailed] = React.useState(false);
+  const loadingPeopleRef = React.useRef(false);
 
-interface PeopleListState {
-  people: PeopleListing | null;
-  failed: boolean;
-}
+  React.useEffect(() => {
+    setPeople(response.people);
+    setFailed(false);
+  }, [response.people]);
 
-class _PeopleList extends React.Component<PeopleListPropsWithIntl, PeopleListState> {
-  _loadingPeople: boolean = false;
-
-  constructor(props: PeopleListPropsWithIntl) {
-    super(props);
-    this.state = { people: props.response.people, failed: false };
-    this.loadPeopleIfNeeded = this.loadPeopleIfNeeded.bind(this);
-  }
-
-  componentDidUpdate(prevProps: PeopleListPropsWithIntl): void {
-    if (prevProps.response.people !== this.props.response.people) {
-      this.setState({ people: this.props.response.people, failed: false });
-    }
-  }
-
-  async loadPeopleIfNeeded(): Promise<void> {
+  const loadPeopleIfNeeded = React.useCallback(async (): Promise<void> => {
     if (
       !ExecutionEnvironment.canUseDOM ||
-      !this.state.people ||
-      Object.keys(this.state.people).length ||
-      this._loadingPeople
+      !people ||
+      Object.keys(people).length ||
+      loadingPeopleRef.current
     ) {
       return;
     }
     try {
-      this._loadingPeople = true;
+      loadingPeopleRef.current = true;
       const args = {
-        location: this.props.response.query.location,
-        locale: this.props.response.query.locale,
+        location: response.query.location,
+        locale: response.query.locale,
       };
-      const response = await performRequest('people', args, args);
-      this.setState({ people: (response as { people: PeopleListing }).people });
+      const fetchedResponse = await performRequest('people', args, args);
+      setPeople((fetchedResponse as { people: PeopleListing }).people);
     } catch (e) {
       console.error(e);
-      this.setState({ failed: true });
+      setFailed(true);
     }
-    this._loadingPeople = false;
+    loadingPeopleRef.current = false;
+  }, [people, response.query.location, response.query.locale]);
+
+  let adminContents: React.ReactElement | null = null;
+  let attendeeContents: React.ReactElement | null = null;
+  if (people) {
+    const admins = people.ADMIN;
+    const attendees = people.ATTENDEE;
+    if (!admins && !attendees) {
+      return (
+        <CallbackOnRender callback={loadPeopleIfNeeded}>
+          <Loading style={{ margin: 50 }} />
+        </CallbackOnRender>
+      );
+    } else {
+      adminContents =
+        admins && Object.keys(admins).length ? (
+          <PersonList
+            title={intl.formatMessage(messages.nearbyPromoters)}
+            subtitle={intl.formatMessage(
+              messages.nearbyPromotersMessage
+            )}
+            people={admins}
+            categoryOrder={categoryOrder}
+          />
+        ) : null;
+      attendeeContents =
+        attendees && Object.keys(attendees).length ? (
+          <PersonList
+            title={intl.formatMessage(messages.nearbyDancers)}
+            subtitle={intl.formatMessage(
+              messages.nearbyDancersMessage
+            )}
+            people={attendees}
+            categoryOrder={categoryOrder}
+          />
+        ) : null;
+    }
+  } else if (failed) {
+    adminContents = <span>Error Loading People</span>;
+    attendeeContents = <span>Error Loading People</span>;
   }
 
-  render(): React.ReactElement {
-    let adminContents: React.ReactElement | null = null;
-    let attendeeContents: React.ReactElement | null = null;
-    if (this.state.people) {
-      const admins = this.state.people.ADMIN;
-      const attendees = this.state.people.ATTENDEE;
-      if (!admins && !attendees) {
-        return (
-          <CallbackOnRender callback={this.loadPeopleIfNeeded}>
-            <Loading style={{ margin: 50 }} />
-          </CallbackOnRender>
-        );
-      } else {
-        adminContents =
-          admins && Object.keys(admins).length ? (
-            <PersonList
-              title={this.props.intl.formatMessage(messages.nearbyPromoters)}
-              subtitle={this.props.intl.formatMessage(
-                messages.nearbyPromotersMessage
-              )}
-              people={admins}
-              categoryOrder={this.props.categoryOrder}
-            />
-          ) : null;
-        attendeeContents =
-          attendees && Object.keys(attendees).length ? (
-            <PersonList
-              title={this.props.intl.formatMessage(messages.nearbyDancers)}
-              subtitle={this.props.intl.formatMessage(
-                messages.nearbyDancersMessage
-              )}
-              people={attendees}
-              categoryOrder={this.props.categoryOrder}
-            />
-          ) : null;
-      }
-    } else if (this.state.failed) {
-      adminContents = <span>Error Loading People</span>;
-      attendeeContents = <span>Error Loading People</span>;
-    }
-
-    const adminsDiv = adminContents ? (
-      <div className="col-sm-6">{adminContents}</div>
-    ) : null;
-    const attendeesDiv = attendeeContents ? (
-      <div className="col-sm-6">{attendeeContents}</div>
-    ) : null;
-    return (
-      <div className="row">
-        {adminsDiv}
-        {attendeesDiv}
-      </div>
-    );
-  }
+  const adminsDiv = adminContents ? (
+    <div className="col-sm-6">{adminContents}</div>
+  ) : null;
+  const attendeesDiv = attendeeContents ? (
+    <div className="col-sm-6">{attendeeContents}</div>
+  ) : null;
+  return (
+    <div className="row">
+      {adminsDiv}
+      {attendeesDiv}
+    </div>
+  );
 }
-const PeopleList = injectIntl(_PeopleList);
 
 interface CalendarProps {
   query: FormSearchQuery;

@@ -24,7 +24,7 @@ import { AccessToken } from 'react-native-fbsdk';
 import type { ThunkDispatch, ThunkAction as ReduxThunkAction } from 'redux-thunk';
 import type { AnyAction } from 'redux';
 import type { Event } from 'dancedeets-common/js/events/models';
-import type { SearchResponse } from 'dancedeets-common/js/events/search';
+import type { NewSearchResponse } from 'dancedeets-common/js/events/search';
 import type { AddEventList, SortOrder } from '../addEventsModels';
 import type { State as SearchHeaderState } from '../ducks/searchHeader';
 
@@ -53,7 +53,7 @@ export type Action =
   | { type: 'LOGIN_SKIPPED' }
   | { type: 'DETECTED_LOCATION'; location: string }
   | { type: 'START_SEARCH' }
-  | { type: 'SEARCH_COMPLETE'; response: SearchResponse }
+  | { type: 'SEARCH_COMPLETE'; response: NewSearchResponse }
   | { type: 'SEARCH_FAILED'; errorString: string | null }
   | { type: 'WAITING_FOR_LOCATION'; waiting: boolean }
   | { type: 'searchHeader/START_OPEN' }
@@ -87,7 +87,7 @@ export interface RootState {
     isLoggedIn: boolean;
   };
   search: {
-    response: SearchResponse | null;
+    response: NewSearchResponse | null;
     loading: boolean;
     error: string | null;
   };

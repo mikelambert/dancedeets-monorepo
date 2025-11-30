@@ -6,7 +6,7 @@ import jQuery from 'jquery';
 import * as React from 'react';
 import PropTypes from 'prop-types';
 import Scroll from 'react-scroll';
-import dateFormat from 'date-fns/format';
+import { format as dateFormat } from 'date-fns';
 import { intlWeb } from 'dancedeets-common/js/intl';
 import {
   MultiSelectList,

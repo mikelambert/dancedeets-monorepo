@@ -111,9 +111,20 @@ interface MobileSearchResponse {
   featuredInfos: FeaturedInfo[];
   results: SearchEvent[];
   people?: any;
-  onebox_links?: any[];
-  query?: any;
-  [key: string]: any;
+  onebox_links: any[];
+  query: any;
+  // Required fields from NewSearchResponse
+  title: string;
+  location: string;
+  address: {
+    city?: string;
+    state?: string;
+    country?: string;
+  };
+  location_box?: {
+    southwest: { latitude: number; longitude: number };
+    northeast: { latitude: number; longitude: number };
+  };
 }
 
 export async function search(

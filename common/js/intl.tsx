@@ -137,7 +137,7 @@ function Internationalize(props: InternationalizeProps): React.ReactElement {
       defaultLocale={args.defaultLocale}
       key={args.key}
     >
-      {props.children}
+      <>{props.children}</>
     </IntlProvider>
   );
 }

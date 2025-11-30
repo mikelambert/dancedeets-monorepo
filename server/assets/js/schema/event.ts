@@ -47,11 +47,11 @@ export function getEventSchema(event: Event | SearchEvent): EventSchema {
     url: event.getUrl(),
     startDate: formatSchemaDate(event.getStartMoment({ timezone: false })),
   };
-  if (event.description) {
-    // only true for full Event objects
-    schema.description = event.description;
-  }
   if (event instanceof Event) {
+    // These properties only exist on full Event objects
+    if (event.description) {
+      schema.description = event.description;
+    }
     schema.organizer = event.admins.map(x => x.name).join(', ');
   }
   if (event.end_time) {
@@ -83,7 +83,7 @@ export function getEventSchema(event: Event | SearchEvent): EventSchema {
     }
   }
   schema.location = location;
-  if (event.ticket_uri) {
+  if (event instanceof Event && event.ticket_uri) {
     schema.offers = {
       url: event.ticket_uri,
     };

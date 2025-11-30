@@ -3,7 +3,7 @@
  */
 
 import * as React from 'react';
-import { injectIntl, InjectedIntlProps } from 'react-intl';
+import { useIntl } from 'react-intl';
 import YouTube from 'react-youtube';
 import Helmet from 'react-helmet';
 import ExecutionEnvironment from 'exenv';
@@ -36,27 +36,23 @@ interface DurationProps {
   style?: React.CSSProperties;
 }
 
-type DurationPropsWithIntl = DurationProps & InjectedIntlProps;
-
-class _Duration extends React.Component<DurationPropsWithIntl> {
-  render(): React.ReactElement {
-    const duration = formatDuration(
-      this.props.intl.formatMessage,
-      this.props.duration
-    );
-    return (
-      <div
-        style={{
-          fontSize: '80%',
-          ...this.props.style,
-        }}
-      >
-        {duration}
-      </div>
-    );
-  }
+function Duration({ duration, style }: DurationProps): React.ReactElement {
+  const intl = useIntl();
+  const formattedDuration = formatDuration(
+    intl.formatMessage,
+    duration
+  );
+  return (
+    <div
+      style={{
+        fontSize: '80%',
+        ...style,
+      }}
+    >
+      {formattedDuration}
+    </div>
+  );
 }
-const Duration = injectIntl(_Duration);
 
 interface TutorialViewProps {
   tutorial: Playlist;
@@ -64,67 +60,57 @@ interface TutorialViewProps {
   window: WindowProps;
 }
 
-type TutorialViewPropsWithIntl = TutorialViewProps & InjectedIntlProps;
+function TutorialViewInner({ tutorial, videoIndex: initialVideoIndex, window: windowProp }: TutorialViewProps): React.ReactElement {
+  const intl = useIntl();
+  const [video, setVideo] = React.useState<Video>(tutorial.getVideo(initialVideoIndex || 0));
+  const youtubeRef = React.useRef<YouTube | null>(null);
+  const prevVideoRef = React.useRef<Video>(video);
 
-interface TutorialViewState {
-  video: Video;
-}
-
-class _TutorialView extends React.Component<TutorialViewPropsWithIntl, TutorialViewState> {
-  _youtube: YouTube | null = null;
-
-  constructor(props: TutorialViewPropsWithIntl) {
-    super(props);
-
-    this.state = {
-      video: this.props.tutorial.getVideo(this.props.videoIndex || 0),
-    };
-    this.onVideoEnd = this.onVideoEnd.bind(this);
-  }
-
-  componentDidUpdate(prevProps: TutorialViewProps, prevState: TutorialViewState): void {
-    if (this.props.videoIndex !== prevProps.videoIndex) {
-      const video = this.props.tutorial.getVideo(this.props.videoIndex || 0);
-      this.setState({ video });
+  React.useEffect(() => {
+    if (initialVideoIndex !== null) {
+      setVideo(tutorial.getVideo(initialVideoIndex || 0));
     }
+  }, [initialVideoIndex, tutorial]);
 
-    if (prevState.video !== this.state.video) {
-      const videoIndex = this.props.tutorial.getVideoIndex(this.state.video);
+  React.useEffect(() => {
+    if (prevVideoRef.current !== video) {
+      const currentVideoIndex = tutorial.getVideoIndex(video);
       const oldHash = window.location.hash || '#0';
-      const newHash = `#${videoIndex}`;
+      const newHash = `#${currentVideoIndex}`;
       if (oldHash !== newHash) {
         window.location.hash = newHash;
       }
 
       window.mixpanel?.track('Tutorial Video Selected', {
-        tutorialName: this.props.tutorial.title,
-        tutorialStyle: this.props.tutorial.style,
-        tutorialVideoIndex: videoIndex,
+        tutorialName: tutorial.title,
+        tutorialStyle: tutorial.style,
+        tutorialVideoIndex: currentVideoIndex,
       });
+      prevVideoRef.current = video;
+    }
+  }, [video, tutorial]);
+
+  function onVideoClick(clickedVideo: Video): void {
+    setVideo(clickedVideo);
+  }
+
+  function onVideoEnd(): void {
+    const currentVideoIndex = tutorial.getVideoIndex(video) + 1;
+    if (currentVideoIndex < tutorial.getVideoCount()) {
+      const nextVideo = tutorial.getVideo(currentVideoIndex);
+      setVideo(nextVideo);
     }
   }
 
-  onVideoClick(video: Video): void {
-    this.setState({ video });
-  }
-
-  onVideoEnd(): void {
-    const videoIndex = this.props.tutorial.getVideoIndex(this.state.video) + 1;
-    if (videoIndex < this.props.tutorial.getVideoCount()) {
-      const video = this.props.tutorial.getVideo(videoIndex);
-      this.setState({ video });
-    }
-  }
-
-  renderVideoLine(video: Video): React.ReactElement {
-    const activeRow = this.state.video.youtubeId === video.youtubeId;
+  function renderVideoLine(lineVideo: Video): React.ReactElement {
+    const activeRow = video.youtubeId === lineVideo.youtubeId;
     const backgroundColor = activeRow
       ? backgroundVideoColorActive
       : backgroundVideoColor;
 
     return (
       <Link
-        onClick={() => this.onVideoClick(video)}
+        onClick={() => onVideoClick(lineVideo)}
         style={{
           backgroundColor,
           display: 'flex',
@@ -143,9 +129,9 @@ class _TutorialView extends React.Component<TutorialViewPropsWithIntl, TutorialV
           />
         </div>
         <div style={{ marginLeft: 10 }}>
-          <div style={{ fontWeight: 'bold' }}>{video.title}</div>
+          <div style={{ fontWeight: 'bold' }}>{lineVideo.title}</div>
           <Duration
-            duration={video.getDurationSeconds()}
+            duration={lineVideo.getDurationSeconds()}
             style={{ color: '#777' }}
           />
         </div>
@@ -153,7 +139,7 @@ class _TutorialView extends React.Component<TutorialViewPropsWithIntl, TutorialV
     );
   }
 
-  renderSectionHeader(section: { title: string; getDurationSeconds: () => number }): React.ReactElement {
+  function renderSectionHeader(section: { title: string; getDurationSeconds: () => number }): React.ReactElement {
     return (
       <div
         style={{
@@ -168,22 +154,21 @@ class _TutorialView extends React.Component<TutorialViewPropsWithIntl, TutorialV
     );
   }
 
-  renderWholeSection(section: { title: string; videos: Video[]; getDurationSeconds: () => number }): React.ReactElement {
+  function renderWholeSection(section: { title: string; videos: Video[]; getDurationSeconds: () => number }): React.ReactElement {
     return (
       <div>
-        {this.renderSectionHeader(section)}
-        {section.videos.map((video) => (
-          <div key={video.youtubeId}>{this.renderVideoLine(video)}</div>
+        {renderSectionHeader(section)}
+        {section.videos.map((sectionVideo) => (
+          <div key={sectionVideo.youtubeId}>{renderVideoLine(sectionVideo)}</div>
         ))}
       </div>
     );
   }
 
-  renderHeader(): React.ReactElement {
-    const { tutorial } = this.props;
+  function renderHeader(): React.ReactElement {
     const subtitle = tutorial.subtitle ? <div>{tutorial.subtitle}</div> : null;
     const duration = formatDuration(
-      this.props.intl.formatMessage,
+      intl.formatMessage,
       tutorial.getDurationSeconds()
     );
     const subline = `${tutorial.author} - ${duration}`;
@@ -201,9 +186,7 @@ class _TutorialView extends React.Component<TutorialViewPropsWithIntl, TutorialV
     );
   }
 
-  renderPlayer(): React.ReactElement {
-    const { video } = this.state;
-
+  function renderPlayer(): React.ReactElement {
     return (
       <div
         className="video-player-container"
@@ -216,7 +199,7 @@ class _TutorialView extends React.Component<TutorialViewPropsWithIntl, TutorialV
       >
         <YouTube
           ref={x => {
-            this._youtube = x;
+            youtubeRef.current = x;
           }}
           opts={{
             width: '100%',
@@ -226,43 +209,41 @@ class _TutorialView extends React.Component<TutorialViewPropsWithIntl, TutorialV
             },
           }}
           videoId={video.youtubeId}
-          onEnd={this.onVideoEnd}
+          onEnd={onVideoEnd}
         />
       </div>
     );
   }
 
-  render(): React.ReactElement {
-    const height = this.props.window
-      ? this.props.window.height - getHeaderHeight()
-      : '100vh';
-    return (
+  const height = windowProp
+    ? windowProp.height - getHeaderHeight()
+    : '100vh';
+  return (
+    <div
+      className="media-width-row-or-column"
+      style={{
+        display: 'flex',
+        height,
+      }}
+    >
+      {renderPlayer()}
       <div
-        className="media-width-row-or-column"
         style={{
-          display: 'flex',
-          height,
+          flex: 1,
+          overflow: 'auto',
+          minHeight: 0,
+          minWidth: 0,
         }}
       >
-        {this.renderPlayer()}
-        <div
-          style={{
-            flex: 1,
-            overflow: 'auto',
-            minHeight: 0,
-            minWidth: 0,
-          }}
-        >
-          {this.renderHeader()}
-          {this.props.tutorial.sections.map((section) => (
-            <div key={section.title}>{this.renderWholeSection(section)}</div>
-          ))}
-        </div>
+        {renderHeader()}
+        {tutorial.sections.map((section) => (
+          <div key={section.title}>{renderWholeSection(section)}</div>
+        ))}
       </div>
-    );
-  }
+    </div>
+  );
 }
-const TutorialView = wantsWindowSizes(injectIntl(_TutorialView));
+const TutorialView = wantsWindowSizes(TutorialViewInner);
 
 interface StyleConfig {
   tutorials: Playlist[];
@@ -271,9 +252,9 @@ interface StyleConfig {
 function findTutorialById(config: StyleConfig[], id: string): Playlist | null {
   let foundTutorial: Playlist | null = null;
   config.forEach(style => {
-    style.tutorials.forEach(tutorial => {
-      if (tutorial.getId() === id) {
-        foundTutorial = tutorial;
+    style.tutorials.forEach(tutorialItem => {
+      if (tutorialItem.getId() === id) {
+        foundTutorial = tutorialItem;
       }
     });
   });
@@ -285,40 +266,40 @@ interface HtmlHeadProps {
   videoIndex: number | null;
 }
 
-class HtmlHead extends React.Component<HtmlHeadProps> {
-  render(): React.ReactElement {
-    const { tutorial } = this.props;
-    let title = 'Unknown tutorial';
-    let metaTags: Array<{ property?: string; name?: string; content: string }> = [];
-    if (tutorial) {
-      title = tutorial.title;
-      if (this.props.videoIndex != null) {
-        const video = tutorial.getVideo(this.props.videoIndex);
-        title += `: ${video.title}`;
-      }
-      title += ' | DanceDeets Tutorial';
-
-      metaTags = generateMetaTags(title, tutorial.getUrl(), tutorial.thumbnail);
+function HtmlHead({ tutorial, videoIndex }: HtmlHeadProps): React.ReactElement {
+  let title = 'Unknown tutorial';
+  let metaTags: Array<{ property?: string; name?: string; content: string }> = [];
+  if (tutorial) {
+    title = tutorial.title;
+    if (videoIndex != null) {
+      const video = tutorial.getVideo(videoIndex);
+      title += `: ${video.title}`;
     }
+    title += ' | DanceDeets Tutorial';
 
-    return <Helmet title={title} meta={metaTags} />;
+    metaTags = generateMetaTags(title, tutorial.getUrl(), tutorial.thumbnail);
   }
+
+  return <Helmet title={title} meta={metaTags} />;
 }
 
 interface TutorialPageProps {
   style: string;
   tutorial: string;
   hashLocation: string;
-  intl: { locale: string; formatMessage: (msg: unknown) => string };
+  currentLocale: string;
 }
 
-class _TutorialPage extends React.Component<TutorialPageProps> {
-  trackTutorial(tutorial: Playlist): void {
+function TutorialPage({ style, tutorial: tutorialId, hashLocation, currentLocale }: TutorialPageProps): React.ReactElement {
+  const intl = useIntl();
+  const trackedRef = React.useRef(false);
+
+  function trackTutorial(tutorial: Playlist): void {
     if (!ExecutionEnvironment.canUseDOM) {
       return;
     }
-    if (!(global as unknown as { window: Window & { sentMixpanelPing?: boolean } }).window.sentMixpanelPing) {
-      window.sentMixpanelPing = true;
+    if (!trackedRef.current) {
+      trackedRef.current = true;
       window.mixpanel?.track('Tutorial Selected', {
         tutorialName: tutorial.title,
         tutorialStyle: tutorial.style,
@@ -326,36 +307,32 @@ class _TutorialPage extends React.Component<TutorialPageProps> {
     }
   }
 
-  render(): React.ReactElement {
-    const config = getTutorials(this.props.intl.locale);
-    const tutorial = findTutorialById(config, this.props.tutorial);
+  const config = getTutorials(intl.locale);
+  const tutorial = findTutorialById(config, tutorialId);
 
-    let result: React.ReactElement;
-    const videoIndex = this.props.hashLocation
-      ? parseInt(this.props.hashLocation, 10)
-      : null;
-    if (tutorial) {
-      this.trackTutorial(tutorial);
-      result = (
-        <TutorialView
-          style={this.props.style}
-          tutorial={tutorial}
-          videoIndex={videoIndex}
-        />
-      );
-    } else {
-      result = <div>Unknown tutorial!</div>;
-    }
-    return (
-      <div>
-        <HtmlHead tutorial={tutorial} videoIndex={videoIndex} />
-        {result}
-      </div>
+  let result: React.ReactElement;
+  const videoIndex = hashLocation
+    ? parseInt(hashLocation, 10)
+    : null;
+  if (tutorial) {
+    trackTutorial(tutorial);
+    result = (
+      <TutorialView
+        style={style}
+        tutorial={tutorial}
+        videoIndex={videoIndex}
+      />
     );
+  } else {
+    result = <div>Unknown tutorial!</div>;
   }
+  return (
+    <div>
+      <HtmlHead tutorial={tutorial} videoIndex={videoIndex} />
+      {result}
+    </div>
+  );
 }
-
-const TutorialPage = injectIntl(_TutorialPage);
 
 export const HelmetRewind = Helmet.rewind;
 export default intlWeb(TutorialPage);
