@@ -49,7 +49,7 @@ interface SearchInputProps {
   iconName: string;
   style?: any;
   placeholder?: string;
-  returnKeyType?: string;
+  returnKeyType?: 'done' | 'go' | 'next' | 'search' | 'send' | 'default';
   onChangeText?: (text: string) => void;
   value?: string;
   autoFocus?: boolean;

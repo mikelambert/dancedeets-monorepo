@@ -4,7 +4,6 @@
 
 import * as React from 'react';
 import {
-  AlertIOS,
   Animated,
   Dimensions,
   FlatList,
@@ -160,7 +159,7 @@ class _PlaylistStylesView extends React.Component<
       <FlatList
         data={this.state.stylePlaylists}
         renderItem={this.renderRow}
-        renderHeader={this.renderHeader}
+        ListHeaderComponent={this.renderHeader}
         contentContainerStyle={{
           alignSelf: 'center',
           justifyContent: 'flex-start',
@@ -214,8 +213,8 @@ class _PlaylistListView extends React.Component<_PlaylistListViewProps> {
     );
     let title = playlist.title;
     if (this.props.intl.locale !== playlist.language) {
-      const localizedLanguage =
-        languages[this.props.intl.locale][playlist.language];
+      const languageMap = languages[this.props.intl.locale] as Record<string, string> | undefined;
+      const localizedLanguage = languageMap?.[playlist.language] || playlist.language;
       title = this.props.intl.formatMessage(messages.languagePrefixedTitle, {
         language: upperFirst(localizedLanguage),
         title: playlist.title,
@@ -286,9 +285,7 @@ class _PlaylistListView extends React.Component<_PlaylistListViewProps> {
             size="small"
             caption={this.props.intl.formatMessage(messages.contact)}
             onPress={this.sendTutorialContactEmail}
-          >
-            Contact Us
-          </Button>
+          />
           <DarkText>
             {' '}
             {this.props.intl.formatMessage(messages.contactSuffix)}
@@ -303,8 +300,8 @@ class _PlaylistListView extends React.Component<_PlaylistListViewProps> {
       <FlatList
         data={this.props.playlists}
         renderItem={this.renderRow}
-        renderHeader={this.renderHeader}
-        renderFooter={this.renderFooter}
+        ListHeaderComponent={this.renderHeader}
+        ListFooterComponent={this.renderFooter}
         contentContainerStyle={{
           alignSelf: 'center',
           justifyContent: 'flex-start',
@@ -365,9 +362,13 @@ class _PlaylistView extends React.Component<
     }
   }
 
-  componentWillReceiveProps(nextProps: _PlaylistViewProps) {
-    this.setState({ onScreen: nextProps.mainScreenKey === 'Learn' });
-    this.updateFromProps(nextProps);
+  componentDidUpdate(prevProps: _PlaylistViewProps) {
+    if (prevProps.mainScreenKey !== this.props.mainScreenKey) {
+      this.setState({ onScreen: this.props.mainScreenKey === 'Learn' });
+    }
+    if (prevProps.tutorialVideoIndex !== this.props.tutorialVideoIndex || prevProps.playlist !== this.props.playlist) {
+      this.updateFromProps(this.props);
+    }
   }
 
   componentWillUnmount() {
@@ -593,7 +594,7 @@ class _PlaylistView extends React.Component<
             )}
             renderItem={this.renderRow}
             renderSectionHeader={this.renderSectionHeader}
-            renderHeader={this.renderHeader}
+            ListHeaderComponent={this.renderHeader}
             stickySectionHeadersEnabled
             onScroll={this.onListViewScroll}
             onLayout={this.onListViewLayout}

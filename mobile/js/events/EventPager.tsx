@@ -37,18 +37,17 @@ class EventPager extends React.Component<EventPagerProps, EventPagerState> {
     this.onScrollEnd = this.onScrollEnd.bind(this);
   }
 
-  componentWillMount() {
-    this.loadLocation();
-  }
-
   componentDidMount() {
+    this.loadLocation();
     InteractionManager.runAfterInteractions(() => {
       this.setState({ loadInProgress: false });
     });
   }
 
-  componentWillReceiveProps(nextProps: EventPagerProps) {
-    this.setState(this.getNewState(nextProps, this.state.position));
+  componentDidUpdate(prevProps: EventPagerProps) {
+    if (prevProps.search !== this.props.search || prevProps.selectedEvent !== this.props.selectedEvent) {
+      this.setState(this.getNewState(this.props, this.state.position));
+    }
   }
 
   // From https://stackoverflow.com/questions/43370807/react-native-get-current-page-in-flatlist-when-using-pagingenabled

@@ -6,7 +6,7 @@ interface Props {
   style?: StyleProp<ViewStyle>;
   titleBackgroundStyle?: StyleProp<ViewStyle>;
   mainBackgroundStyle?: StyleProp<ViewStyle>;
-  title: React.ReactNode;
+  title?: React.ReactNode;
   children: React.ReactNode;
 }
 

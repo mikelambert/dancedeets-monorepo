@@ -81,6 +81,7 @@ declare module 'react-native-youtube' {
     play?: boolean;
     loop?: boolean;
     fullscreen?: boolean;
+    hidden?: boolean;
     controls?: number;
     showInfo?: boolean;
     modestBranding?: boolean;
@@ -123,9 +124,24 @@ declare module 'react-native-video' {
 
 declare module 'react-native-video-controls' {
   import * as React from 'react';
-  import { VideoProps } from 'react-native-video';
+  import { Animated, PanResponderInstance } from 'react-native';
 
-  interface VideoControlsProps extends VideoProps {
+  interface VideoControlsProps {
+    source: { uri: string } | number;
+    paused?: boolean;
+    muted?: boolean;
+    volume?: number;
+    rate?: number;
+    repeat?: boolean;
+    loop?: boolean;
+    resizeMode?: 'contain' | 'cover' | 'stretch';
+    controls?: boolean;
+    onLoad?: (data: unknown) => void;
+    onLoadStart?: () => void;
+    onProgress?: (data: { currentTime: number; playableDuration: number }) => void;
+    onEnd?: () => void;
+    onError?: (error: unknown) => void;
+    onBuffer?: (data: { isBuffering: boolean }) => void;
     toggleResizeModeOnFullscreen?: boolean;
     controlTimeout?: number;
     videoStyle?: object;
@@ -136,9 +152,68 @@ declare module 'react-native-video-controls' {
     onExitFullscreen?: () => void;
     onPause?: () => void;
     onPlay?: () => void;
+    style?: object;
+    ignoreSilentSwitch?: string;
   }
 
-  export default class VideoPlayer extends React.Component<VideoControlsProps> {}
+  interface VideoPlayerState {
+    paused: boolean;
+    seeking: boolean;
+    loading: boolean;
+    duration: number;
+    currentTime: number;
+    seekerOffset: number;
+    seekerFillWidth: number;
+    seekerPosition: number;
+    showControls: boolean;
+  }
+
+  export default class VideoPlayer extends React.Component<VideoControlsProps, VideoPlayerState> {
+    // Internal objects used when extending
+    events: {
+      onScreenPress: () => void;
+      onEnd: () => void;
+    };
+    animations: {
+      bottomControl: {
+        opacity: Animated.Value;
+        marginBottom: Animated.Value;
+      };
+      topControl: {
+        opacity: Animated.Value;
+        marginTop: Animated.Value;
+      };
+    };
+    player: {
+      seekPanResponder: PanResponderInstance;
+      seekerWidth: number;
+    };
+    methods: {
+      togglePlayPause: () => void;
+      toggleTimer: () => void;
+      toggleControls: () => void;
+    };
+
+    // Methods available for override
+    setControlTimeout(): void;
+    hideControlAnimation(): void;
+    showControlAnimation(): void;
+    initSeekPanResponder(): void;
+    setSeekerPosition(position: number): void;
+    calculateTimeFromSeekerPosition(): number;
+    seekTo(time: number): void;
+    calculateTime(): string;
+    renderControl(
+      children: React.ReactNode,
+      callback?: () => void,
+      style?: object
+    ): React.ReactElement;
+    renderTopControls(): React.ReactNode;
+    renderBottomControls(): React.ReactNode;
+    renderPlayPause(): React.ReactNode;
+    renderSeekbar(): React.ReactNode;
+    renderTimer(): React.ReactNode;
+  }
 }
 
 declare module 'react-native-tab-view' {
@@ -211,6 +286,7 @@ declare module 'react-native-photo-view' {
     showsHorizontalScrollIndicator?: boolean;
     showsVerticalScrollIndicator?: boolean;
     scale?: number;
+    androidScaleType?: 'center' | 'centerCrop' | 'centerInside' | 'fitCenter' | 'fitStart' | 'fitEnd' | 'fitXY';
     onLoadStart?: () => void;
     onLoad?: () => void;
     onLoadEnd?: () => void;
@@ -223,12 +299,7 @@ declare module 'react-native-photo-view' {
   export default class PhotoView extends React.Component<PhotoViewProps> {}
 }
 
-declare module 'react-native-wkwebview-reborn' {
-  import * as React from 'react';
-  import { WebViewProps } from 'react-native';
-
-  export default class WKWebView extends React.Component<WebViewProps> {}
-}
+// Note: react-native-webview has its own TypeScript types
 
 // Utility packages
 declare module 'json-prune' {
@@ -269,21 +340,63 @@ declare module 'geolib' {
 
 // React Native plugins
 declare module 'react-native-back-android' {
+  import * as React from 'react';
+
   export function exitApp(): void;
   export function addEventListener(event: string, handler: () => boolean): void;
   export function removeEventListener(event: string, handler: () => boolean): void;
+
+  // HOC that wraps a component with back button handling
+  function backAndroid<P>(WrappedComponent: React.ComponentType<P>): React.ComponentType<P>;
+  export default backAndroid;
 }
 
+// react-native-device-info v10+ API
 declare module 'react-native-device-info' {
-  export function getVersion(): string;
-  export function getBuildNumber(): string;
-  export function getDeviceId(): string;
-  export function getSystemVersion(): string;
-  export function getModel(): string;
-  export function getBrand(): string;
+  // Sync methods (available immediately)
+  export function getVersionSync(): string;
+  export function getBuildNumberSync(): string;
+  export function getDeviceIdSync(): string;
+  export function getSystemVersionSync(): string;
+  export function getModelSync(): string;
+  export function getBrandSync(): string;
+  export function getUniqueIdSync(): string;
+
+  // Async methods
+  export function getVersion(): Promise<string>;
+  export function getBuildNumber(): Promise<string>;
+  export function getDeviceId(): Promise<string>;
+  export function getSystemVersion(): Promise<string>;
+  export function getModel(): Promise<string>;
+  export function getBrand(): Promise<string>;
   export function getDeviceName(): Promise<string>;
   export function isEmulator(): Promise<boolean>;
-  export function getUniqueId(): string;
+  export function getUniqueId(): Promise<string>;
+  export function getDeviceType(): Promise<string>;
+  export function getApplicationName(): string;
+  export function getBundleId(): string;
+
+  const DeviceInfo: {
+    getVersionSync(): string;
+    getBuildNumberSync(): string;
+    getDeviceIdSync(): string;
+    getSystemVersionSync(): string;
+    getModelSync(): string;
+    getBrandSync(): string;
+    getUniqueIdSync(): string;
+    getVersion(): Promise<string>;
+    getBuildNumber(): Promise<string>;
+    getDeviceId(): Promise<string>;
+    getSystemVersion(): Promise<string>;
+    getModel(): Promise<string>;
+    getBrand(): Promise<string>;
+    getDeviceName(): Promise<string>;
+    isEmulator(): Promise<boolean>;
+    getUniqueId(): Promise<string>;
+    getApplicationName(): string;
+    getBundleId(): string;
+  };
+  export default DeviceInfo;
 }
 
 declare module 'react-native-locale' {
@@ -293,20 +406,118 @@ declare module 'react-native-locale' {
 
 declare module 'react-native-mixpanel' {
   export function sharedInstanceWithToken(token: string): void;
-  export function track(event: string, properties?: object): void;
+  export function track(event: string): void;
+  export function trackWithProperties(event: string, properties: object): void;
   export function identify(id: string): void;
   export function set(properties: object): void;
   export function setOnce(properties: object): void;
+  export function registerSuperProperties(properties: object): void;
+  export function setPushRegistrationId(token: string): void;
+  export function addPushDeviceToken(token: string): void;
+  export function reset(): void;
+  export function timeEvent(event: string): void;
+
+  const Mixpanel: {
+    sharedInstanceWithToken(token: string): void;
+    track(event: string): void;
+    trackWithProperties(event: string, properties: object): void;
+    identify(id: string): void;
+    set(properties: object): void;
+    setOnce(properties: object): void;
+    registerSuperProperties(properties: object): void;
+    setPushRegistrationId(token: string): void;
+    addPushDeviceToken(token: string): void;
+    reset(): void;
+    timeEvent(event: string): void;
+  };
+  export default Mixpanel;
 }
 
+// react-native-permissions v4 API
 declare module 'react-native-permissions' {
-  type PermissionType = 'location' | 'camera' | 'microphone' | 'photo' | 'contacts' | 'event' | 'bluetooth' | 'reminder' | 'notification' | 'backgroundRefresh' | 'speechRecognition' | 'mediaLibrary' | 'motion';
-  type PermissionStatus = 'authorized' | 'denied' | 'restricted' | 'undetermined';
+  // Permission results
+  export const RESULTS: {
+    UNAVAILABLE: 'unavailable';
+    DENIED: 'denied';
+    BLOCKED: 'blocked';
+    GRANTED: 'granted';
+    LIMITED: 'limited';
+  };
 
-  export function check(type: PermissionType): Promise<PermissionStatus>;
-  export function request(type: PermissionType): Promise<PermissionStatus>;
-  export function checkMultiple(types: PermissionType[]): Promise<Record<PermissionType, PermissionStatus>>;
+  type PermissionStatus = 'unavailable' | 'denied' | 'blocked' | 'granted' | 'limited';
+
+  // iOS Permissions
+  export const PERMISSIONS: {
+    IOS: {
+      APP_TRACKING_TRANSPARENCY: string;
+      BLUETOOTH_PERIPHERAL: string;
+      CALENDARS: string;
+      CAMERA: string;
+      CONTACTS: string;
+      FACE_ID: string;
+      LOCATION_ALWAYS: string;
+      LOCATION_WHEN_IN_USE: string;
+      MEDIA_LIBRARY: string;
+      MICROPHONE: string;
+      MOTION: string;
+      PHOTO_LIBRARY: string;
+      PHOTO_LIBRARY_ADD_ONLY: string;
+      REMINDERS: string;
+      SIRI: string;
+      SPEECH_RECOGNITION: string;
+      STOREKIT: string;
+    };
+    ANDROID: {
+      ACCEPT_HANDOVER: string;
+      ACCESS_BACKGROUND_LOCATION: string;
+      ACCESS_COARSE_LOCATION: string;
+      ACCESS_FINE_LOCATION: string;
+      ACCESS_MEDIA_LOCATION: string;
+      ACTIVITY_RECOGNITION: string;
+      ADD_VOICEMAIL: string;
+      ANSWER_PHONE_CALLS: string;
+      BLUETOOTH_ADVERTISE: string;
+      BLUETOOTH_CONNECT: string;
+      BLUETOOTH_SCAN: string;
+      BODY_SENSORS: string;
+      BODY_SENSORS_BACKGROUND: string;
+      CALL_PHONE: string;
+      CAMERA: string;
+      GET_ACCOUNTS: string;
+      NEARBY_WIFI_DEVICES: string;
+      POST_NOTIFICATIONS: string;
+      PROCESS_OUTGOING_CALLS: string;
+      READ_CALENDAR: string;
+      READ_CALL_LOG: string;
+      READ_CONTACTS: string;
+      READ_EXTERNAL_STORAGE: string;
+      READ_MEDIA_AUDIO: string;
+      READ_MEDIA_IMAGES: string;
+      READ_MEDIA_VIDEO: string;
+      READ_PHONE_NUMBERS: string;
+      READ_PHONE_STATE: string;
+      READ_SMS: string;
+      RECEIVE_MMS: string;
+      RECEIVE_SMS: string;
+      RECEIVE_WAP_PUSH: string;
+      RECORD_AUDIO: string;
+      SEND_SMS: string;
+      USE_SIP: string;
+      UWB_RANGING: string;
+      WRITE_CALENDAR: string;
+      WRITE_CALL_LOG: string;
+      WRITE_CONTACTS: string;
+      WRITE_EXTERNAL_STORAGE: string;
+    };
+  };
+
+  export function check(permission: string): Promise<PermissionStatus>;
+  export function request(permission: string): Promise<PermissionStatus>;
+  export function checkMultiple(permissions: string[]): Promise<Record<string, PermissionStatus>>;
+  export function requestMultiple(permissions: string[]): Promise<Record<string, PermissionStatus>>;
   export function openSettings(): Promise<void>;
+  export function checkNotifications(): Promise<{ status: PermissionStatus; settings: object }>;
+  export function requestNotifications(options: string[]): Promise<{ status: PermissionStatus; settings: object }>;
 }
 
 declare module 'react-native-share' {
@@ -349,6 +560,7 @@ declare module 'react-native-geocoder' {
     lng: number;
   }
 
+  // GeocodingObject is designed to be compatible with Address from formatAddress.ts
   interface GeocodingObject {
     position: Position;
     formattedAddress: string;
@@ -362,6 +574,12 @@ declare module 'react-native-geocoder' {
     adminArea: string | null;
     subAdminArea: string | null;
     subLocality: string | null;
+    // Optional properties to match Address interface
+    locale?: string;
+    thoroughfare?: string | null;
+    subThoroughfare?: string | null;
+    administrativeArea?: string | null;
+    subAdministrativeArea?: string | null;
   }
 
   interface Geocoder {
@@ -375,6 +593,15 @@ declare module 'react-native-geocoder' {
 }
 
 declare module 'react-native-send-intent' {
+  interface CalendarEventOptions {
+    title: string;
+    description?: string;
+    startDate: string;
+    endDate: string;
+    location?: string;
+    recurrence?: string;
+  }
+
   export function openCalendar(): void;
   export function openMaps(address: string): void;
   export function openMapsWithRoute(address: string, mode: string): void;
@@ -383,6 +610,20 @@ declare module 'react-native-send-intent' {
   export function sendMail(email: string, options: { subject?: string; body?: string }): void;
   export function openApp(packageName: string, extras?: object): Promise<boolean>;
   export function openAppWithData(packageName: string, dataUri: string): Promise<boolean>;
+  export function addCalendarEvent(options: CalendarEventOptions): void;
+
+  const SendIntentAndroid: {
+    openCalendar(): void;
+    openMaps(address: string): void;
+    openMapsWithRoute(address: string, mode: string): void;
+    sendPhoneDial(phoneNumber: string): void;
+    sendSms(phoneNumber: string, body: string): void;
+    sendMail(email: string, options: { subject?: string; body?: string }): void;
+    openApp(packageName: string, extras?: object): Promise<boolean>;
+    openAppWithData(packageName: string, dataUri: string): Promise<boolean>;
+    addCalendarEvent(options: CalendarEventOptions): void;
+  };
+  export default SendIntentAndroid;
 }
 
 declare module 'react-native-version-number' {
@@ -391,193 +632,296 @@ declare module 'react-native-version-number' {
   export const bundleIdentifier: string;
 }
 
-// Storage and persistence
+// Storage and persistence - redux-persist v6 API
 declare module 'redux-persist' {
-  import { Store } from 'redux';
+  import { Store, Reducer } from 'redux';
 
-  export interface PersistConfig {
-    key?: string;
-    storage?: unknown;
+  export interface PersistConfig<S = any> {
+    key: string;
+    storage: Storage;
+    version?: number;
     whitelist?: string[];
     blacklist?: string[];
-    transforms?: unknown[];
-    debounce?: number;
+    transforms?: Transform<any, any>[];
+    throttle?: number;
+    migrate?: (state: any, version: number) => Promise<any>;
+    stateReconciler?: (inbound: any, original: S, reduced: S) => S;
+    debug?: boolean;
+    serialize?: boolean;
+    writeFailHandler?: (err: Error) => void;
   }
 
-  export function persistStore(store: Store, config?: PersistConfig, callback?: () => void): unknown;
-  export function autoRehydrate(config?: { log?: boolean }): unknown;
+  export interface Storage {
+    getItem(key: string): Promise<string | null>;
+    setItem(key: string, value: string): Promise<void>;
+    removeItem(key: string): Promise<void>;
+  }
+
+  export interface Transform<HSS, ESS> {
+    in: (state: HSS, key: string) => ESS;
+    out: (state: ESS, key: string) => HSS;
+  }
+
+  export interface Persistor {
+    pause(): void;
+    persist(): void;
+    purge(): Promise<void>;
+    flush(): Promise<void>;
+    getState(): { bootstrapped: boolean };
+  }
+
+  export function persistStore(store: Store, options?: object, callback?: () => void): Persistor;
+  export function persistReducer<S>(config: PersistConfig<S>, baseReducer: Reducer<S>): Reducer<S>;
+  export function createMigrate(migrations: Record<number, (state: any) => any>): (state: any, version: number) => Promise<any>;
+  export function createTransform<HSS, ESS>(
+    inbound: (state: HSS, key: string) => ESS,
+    outbound: (state: ESS, key: string) => HSS,
+    config?: { whitelist?: string[]; blacklist?: string[] }
+  ): Transform<HSS, ESS>;
+
+  export const FLUSH: string;
+  export const REHYDRATE: string;
+  export const PAUSE: string;
+  export const PERSIST: string;
+  export const PURGE: string;
+  export const REGISTER: string;
 }
 
-// React Navigation (older version)
-declare module 'react-navigation' {
+declare module 'redux-persist/integration/react' {
   import * as React from 'react';
+  import { Persistor } from 'redux-persist';
 
-  export interface NavigationParams {
-    [key: string]: unknown;
+  export interface PersistGateProps {
+    persistor: Persistor;
+    loading?: React.ReactNode;
+    onBeforeLift?: () => void | Promise<void>;
+    children?: React.ReactNode;
   }
 
-  export interface NavigationScreenProp<S, P = NavigationParams> {
-    state: S & { params?: P };
-    dispatch: (action: NavigationAction) => boolean;
-    goBack: (routeKey?: string | null) => boolean;
-    navigate: (routeName: string, params?: object, action?: NavigationAction) => boolean;
-    setParams: (newParams: object) => boolean;
-  }
+  export class PersistGate extends React.Component<PersistGateProps> {}
+}
 
-  export interface NavigationRoute<P = NavigationParams> {
-    key: string;
-    routeName: string;
-    params?: P;
-  }
+// React Navigation v6
+declare module '@react-navigation/native' {
+  import * as React from 'react';
 
   export interface NavigationState {
     index: number;
-    routes: NavigationRoute[];
+    routes: { name: string; key: string; params?: object }[];
   }
 
-  export interface NavigationAction {
-    type: string;
-    routeName?: string;
-    params?: object;
-    action?: NavigationAction;
-    key?: string;
+  export interface NavigationContainerRef<ParamList = object> {
+    navigate<RouteName extends keyof ParamList>(
+      name: RouteName,
+      params?: ParamList[RouteName]
+    ): void;
+    goBack(): void;
+    reset(state: NavigationState): void;
+    getCurrentRoute(): { name: string; params?: object } | undefined;
   }
 
-  export interface NavigationNavigateAction extends NavigationAction {
-    type: 'Navigation/NAVIGATE';
-    routeName: string;
-    params?: object;
+  export interface NavigationContainerProps {
+    ref?: React.RefObject<NavigationContainerRef<any>>;
+    onStateChange?: (state: NavigationState | undefined) => void;
+    children?: React.ReactNode;
   }
 
-  export type NavigationRouteConfigMap = Record<string, {
-    screen: React.ComponentType<unknown>;
-    navigationOptions?: object | ((options: { navigation: NavigationScreenProp<unknown> }) => object);
-  }>;
+  export const NavigationContainer: React.FC<NavigationContainerProps>;
 
-  export interface StackNavigatorConfig {
-    initialRouteName?: string;
-    navigationOptions?: object;
-    mode?: 'card' | 'modal';
-    headerMode?: 'float' | 'screen' | 'none';
+  export function useNavigation<T = any>(): T;
+  export function useRoute<T = any>(): T;
+  export function useFocusEffect(callback: () => void | (() => void)): void;
+  export function useIsFocused(): boolean;
+}
+
+declare module '@react-navigation/stack' {
+  import * as React from 'react';
+
+  export interface StackNavigationOptions {
+    title?: string;
+    headerTitle?: string | (() => React.ReactNode);
+    headerLeft?: () => React.ReactNode;
+    headerRight?: () => React.ReactNode;
+    headerTintColor?: string;
+    headerStyle?: object;
+    headerShown?: boolean;
     cardStyle?: object;
-    transitionConfig?: () => object;
+    gestureEnabled?: boolean;
   }
 
-  export interface NavigationContainer extends React.ComponentClass<unknown> {
-    router: {
-      getStateForAction: (action: NavigationAction, state?: NavigationState) => NavigationState | null;
-      getActionForPathAndParams: (path: string, params?: object) => NavigationAction | null;
+  export interface StackScreenProps<ParamList extends object, RouteName extends keyof ParamList = keyof ParamList> {
+    navigation: {
+      navigate<T extends keyof ParamList>(name: T, params?: ParamList[T]): void;
+      goBack(): void;
+      setParams(params: Partial<ParamList[RouteName]>): void;
+      setOptions(options: Partial<StackNavigationOptions>): void;
+    };
+    route: {
+      key: string;
+      name: RouteName;
+      params: ParamList[RouteName];
     };
   }
 
-  export function StackNavigator(
-    routes: NavigationRouteConfigMap,
-    config?: StackNavigatorConfig
-  ): NavigationContainer;
+  export interface StackNavigatorProps {
+    initialRouteName?: string;
+    screenOptions?: StackNavigationOptions;
+    children: React.ReactNode;
+  }
 
-  export function TabNavigator(
-    routes: NavigationRouteConfigMap,
-    config?: object
-  ): NavigationContainer;
+  export interface StackScreenConfig {
+    name: string;
+    component: React.ComponentType<any>;
+    options?: StackNavigationOptions | ((props: any) => StackNavigationOptions);
+  }
 
-  export function DrawerNavigator(
-    routes: NavigationRouteConfigMap,
-    config?: object
-  ): NavigationContainer;
-
-  export const NavigationActions: {
-    navigate: (params: { routeName: string; params?: object; action?: NavigationAction }) => NavigationNavigateAction;
-    back: (params?: { key?: string }) => NavigationAction;
-    reset: (params: { index: number; actions: NavigationAction[] }) => NavigationAction;
-    setParams: (params: { key: string; params: object }) => NavigationAction;
-    NAVIGATE: string;
-    BACK: string;
-    RESET: string;
-    SET_PARAMS: string;
+  export function createStackNavigator<ParamList extends object = object>(): {
+    Navigator: React.ComponentType<StackNavigatorProps>;
+    Screen: React.ComponentType<StackScreenConfig>;
+    Group: React.ComponentType<{ children: React.ReactNode }>;
   };
-
-  export const addNavigationHelpers: (navigation: unknown) => unknown;
-  export const TabBarBottom: React.ComponentType<unknown>;
 }
 
-// Create React Class (legacy)
-declare module 'create-react-class' {
+declare module '@react-navigation/bottom-tabs' {
   import * as React from 'react';
 
-  interface ComponentSpec<P, S> {
-    render(): React.ReactNode;
-    getInitialState?(): S;
-    getDefaultProps?(): P;
-    propTypes?: object;
-    mixins?: unknown[];
-    statics?: object;
-    displayName?: string;
-    componentWillMount?(): void;
-    componentDidMount?(): void;
-    componentWillReceiveProps?(nextProps: P): void;
-    shouldComponentUpdate?(nextProps: P, nextState: S): boolean;
-    componentWillUpdate?(nextProps: P, nextState: S): void;
-    componentDidUpdate?(prevProps: P, prevState: S): void;
-    componentWillUnmount?(): void;
-    [key: string]: unknown;
+  export interface BottomTabNavigationOptions {
+    title?: string;
+    tabBarIcon?: (props: { focused: boolean; color: string; size: number }) => React.ReactNode;
+    tabBarLabel?: string | ((props: { focused: boolean; color: string }) => React.ReactNode);
+    tabBarActiveTintColor?: string;
+    tabBarInactiveTintColor?: string;
+    tabBarStyle?: object;
+    headerShown?: boolean;
   }
 
-  function createReactClass<P, S>(spec: ComponentSpec<P, S>): React.ComponentClass<P>;
-  export = createReactClass;
+  export interface BottomTabScreenProps<ParamList extends object, RouteName extends keyof ParamList = keyof ParamList> {
+    navigation: {
+      navigate<T extends keyof ParamList>(name: T, params?: ParamList[T]): void;
+      goBack(): void;
+    };
+    route: {
+      key: string;
+      name: RouteName;
+      params: ParamList[RouteName];
+    };
+  }
+
+  export interface BottomTabNavigatorProps {
+    initialRouteName?: string;
+    screenOptions?: BottomTabNavigationOptions;
+    children: React.ReactNode;
+  }
+
+  export function createBottomTabNavigator<ParamList extends object = object>(): {
+    Navigator: React.ComponentType<BottomTabNavigatorProps>;
+    Screen: React.ComponentType<{
+      name: string;
+      component: React.ComponentType<any>;
+      options?: BottomTabNavigationOptions | ((props: any) => BottomTabNavigationOptions);
+    }>;
+  };
 }
 
-// Firebase
-declare module 'react-native-firebase' {
-  interface ConfigResult {
-    val(): string;
+// Firebase - Modular @react-native-firebase/* packages
+declare module '@react-native-firebase/analytics' {
+  interface FirebaseAnalyticsModule {
+    logEvent(name: string, params?: Record<string, unknown>): Promise<void>;
+    setUserProperty(name: string, value: string | null): Promise<void>;
+    setUserId(id: string | null): Promise<void>;
+    setCurrentScreen(screenName: string, screenClass?: string): Promise<void>;
+    setAnalyticsCollectionEnabled(enabled: boolean): Promise<void>;
   }
 
-  interface Config {
-    enableDeveloperMode(): void;
-    fetch(): Promise<void>;
-    activateFetched(): Promise<void>;
-    getValue(key: string): Promise<ConfigResult | null>;
+  function analytics(): FirebaseAnalyticsModule;
+  export default analytics;
+}
+
+declare module '@react-native-firebase/remote-config' {
+  interface ConfigValue {
+    asString(): string;
+    asNumber(): number;
+    asBoolean(): boolean;
+    getSource(): 'default' | 'remote' | 'static';
   }
 
-  interface DataSnapshot {
-    val(): unknown;
-    key: string | null;
-    exists(): boolean;
-    forEach(action: (snapshot: DataSnapshot) => boolean | void): boolean;
-    child(path: string): DataSnapshot;
+  interface ConfigSettings {
+    minimumFetchIntervalMillis?: number;
+    fetchTimeoutMillis?: number;
   }
 
-  interface Reference {
-    on(eventType: string, callback: (snapshot: DataSnapshot) => void): void;
-    off(eventType?: string, callback?: (snapshot: DataSnapshot) => void): void;
-    set(value: unknown): Promise<void>;
-    update(values: object): Promise<void>;
-    remove(): Promise<void>;
-    push(value?: unknown): Reference;
-    child(path: string): Reference;
+  interface FirebaseRemoteConfigModule {
+    setConfigSettings(settings: ConfigSettings): Promise<void>;
+    setDefaults(defaults: Record<string, unknown>): Promise<void>;
+    fetch(expirationDuration?: number): Promise<void>;
+    fetchAndActivate(): Promise<boolean>;
+    activate(): Promise<boolean>;
+    getValue(key: string): ConfigValue;
+    getAll(): Record<string, ConfigValue>;
   }
 
-  interface Database {
-    ref(path?: string): Reference;
+  function remoteConfig(): FirebaseRemoteConfigModule;
+  export default remoteConfig;
+}
+
+declare module '@react-native-firebase/database' {
+  export namespace FirebaseDatabaseTypes {
+    interface DataSnapshot {
+      val(): unknown;
+      key: string | null;
+      exists(): boolean;
+      forEach(action: (snapshot: DataSnapshot) => boolean | void): boolean;
+      child(path: string): DataSnapshot;
+      hasChild(path: string): boolean;
+      hasChildren(): boolean;
+      numChildren(): number;
+      ref: Reference;
+    }
+
+    interface Reference {
+      on(eventType: string, callback: (snapshot: DataSnapshot) => void): () => void;
+      off(eventType?: string, callback?: (snapshot: DataSnapshot) => void): void;
+      once(eventType: string): Promise<DataSnapshot>;
+      set(value: unknown): Promise<void>;
+      update(values: object): Promise<void>;
+      remove(): Promise<void>;
+      push(value?: unknown): Reference;
+      child(path: string): Reference;
+      key: string | null;
+      parent: Reference | null;
+      root: Reference;
+    }
   }
 
-  interface Analytics {
-    logEvent(name: string, params?: Record<string, unknown>): void;
-    setUserProperty(name: string, value: string | null): void;
-    setUserId(id: string | null): void;
-    setCurrentScreen(screenName: string, screenClass?: string): void;
-    setAnalyticsCollectionEnabled(enabled: boolean): void;
+  interface FirebaseDatabaseModule {
+    ref(path?: string): FirebaseDatabaseTypes.Reference;
+    goOnline(): void;
+    goOffline(): void;
+    setPersistenceEnabled(enabled: boolean): Promise<void>;
   }
 
+  function database(): FirebaseDatabaseModule;
+  export default database;
+  export { FirebaseDatabaseTypes };
+}
+
+declare module '@react-native-firebase/app' {
   interface FirebaseApp {
-    config(): Config;
-    database(): Database;
-    auth(): unknown;
-    messaging(): unknown;
-    analytics(): Analytics;
+    name: string;
+    options: {
+      apiKey: string;
+      appId: string;
+      projectId: string;
+      databaseURL?: string;
+      storageBucket?: string;
+      messagingSenderId?: string;
+    };
   }
 
-  const firebase: FirebaseApp;
+  const firebase: {
+    app(name?: string): FirebaseApp;
+    apps: FirebaseApp[];
+  };
   export default firebase;
 }
 
@@ -602,21 +946,45 @@ declare module 'react-native-fabric-crashlytics' {
   export function recordError(error: Error): void;
 }
 
-declare module 'react-native-sentry' {
-  interface SentryConfig {
-    deactivateStacktraceMerging?: boolean;
+declare module '@sentry/react-native' {
+  interface SentryInitOptions {
+    dsn: string;
+    debug?: boolean;
+    environment?: string;
+    release?: string;
+    dist?: string;
+    tracesSampleRate?: number;
+    sampleRate?: number;
+    enableNativeCrashHandling?: boolean;
+    enableAutoSessionTracking?: boolean;
+    sessionTrackingIntervalMillis?: number;
+    attachStacktrace?: boolean;
+    attachScreenshot?: boolean;
+    beforeSend?: (event: any) => any | null;
+    beforeBreadcrumb?: (breadcrumb: any) => any | null;
+    integrations?: any[];
   }
 
-  interface SentryConfigurable {
-    install(config?: SentryConfig): void;
-  }
+  export function init(options: SentryInitOptions): void;
+  export function captureException(error: Error | string, captureContext?: object): string;
+  export function captureMessage(message: string, level?: string): string;
+  export function captureEvent(event: object): string;
+  export function setUser(user: { id?: string; email?: string; username?: string } | null): void;
+  export function setTag(key: string, value: string): void;
+  export function setTags(tags: Record<string, string>): void;
+  export function setExtra(key: string, value: any): void;
+  export function setExtras(extras: Record<string, any>): void;
+  export function setContext(name: string, context: Record<string, any> | null): void;
+  export function addBreadcrumb(breadcrumb: { message?: string; category?: string; level?: string; data?: object }): void;
+  export function configureScope(callback: (scope: any) => void): void;
+  export function withScope(callback: (scope: any) => void): void;
+  export function startTransaction(context: { name: string; op?: string }): any;
+  export function flush(timeout?: number): Promise<boolean>;
+  export function close(timeout?: number): Promise<boolean>;
 
-  export const Sentry: {
-    config(dsn: string): SentryConfigurable;
-    captureException(error: Error): void;
-    captureMessage(message: string): void;
-    setUserContext(user: object): void;
-  };
+  // React Native specific
+  export function wrap<P>(RootComponent: React.ComponentType<P>): React.ComponentType<P>;
+  export function nativeCrash(): void;
 }
 
 // Calendar
@@ -631,8 +999,8 @@ declare module 'react-native-calendar-events' {
     url?: string;
   }
 
-  interface CalendarEventWritable {
-    title: string;
+  // Details object for saveEvent - title is passed as separate first parameter
+  interface CalendarEventDetails {
     startDate: string;
     endDate: string;
     location?: string;
@@ -645,7 +1013,7 @@ declare module 'react-native-calendar-events' {
   export function authorizeEventStore(): Promise<string>;
   export function findEventById(id: string): Promise<CalendarEvent | null>;
   export function fetchAllEvents(startDate: string, endDate: string): Promise<CalendarEvent[]>;
-  export function saveEvent(title: string, details: CalendarEventWritable): Promise<string>;
+  export function saveEvent(title: string, details: CalendarEventDetails): Promise<string>;
   export function removeEvent(id: string): Promise<boolean>;
 }
 
@@ -656,8 +1024,9 @@ declare module 'react-native-google-api-availability' {
 }
 
 // Segmented control
-declare module 'react-native-segmented-android' {
+declare module '@react-native-segmented-control/segmented-control' {
   import * as React from 'react';
+  import { StyleProp, ViewStyle } from 'react-native';
 
   interface SegmentedControlProps {
     values: string[];
@@ -665,10 +1034,25 @@ declare module 'react-native-segmented-android' {
     onChange?: (event: { nativeEvent: { selectedSegmentIndex: number } }) => void;
     tintColor?: string;
     enabled?: boolean;
-    style?: object;
+    style?: StyleProp<ViewStyle>;
   }
 
   export default class SegmentedControl extends React.Component<SegmentedControlProps> {}
+}
+
+declare module 'react-native-segmented-android' {
+  import * as React from 'react';
+
+  interface SegmentedControlAndroidProps {
+    childText?: string[];
+    orientation?: 'horizontal' | 'vertical';
+    onChange?: (event: { selected: number }) => void;
+    tintColor?: string[];
+    selectedPosition?: number;
+    style?: object;
+  }
+
+  export default class SegmentedControlAndroid extends React.Component<SegmentedControlAndroidProps> {}
 }
 
 // Push notifications
@@ -715,19 +1099,23 @@ declare module 'react-native-push-notification' {
 // URL parsing (for React Native)
 declare module 'url' {
   interface UrlObject {
-    protocol?: string;
-    slashes?: boolean;
-    auth?: string;
-    host?: string;
-    port?: string;
-    hostname?: string;
-    hash?: string;
-    search?: string;
-    query?: Record<string, string | undefined>;
-    pathname?: string;
-    path?: string;
+    protocol?: string | null;
+    slashes?: boolean | null;
+    auth?: string | null;
+    host?: string | null;
+    port?: string | null;
+    hostname?: string | null;
+    hash?: string | null;
+    search?: string | null;
+    query?: string | Record<string, string | undefined> | null;
+    pathname?: string | null;
+    path?: string | null;
     href?: string;
   }
+
+  export function parse(urlStr: string, parseQueryString?: boolean, slashesDenoteHost?: boolean): UrlObject;
+  export function format(urlObj: UrlObject): string;
+  export function resolve(from: string, to: string): string;
 
   export class Url {
     parse(urlStr: string, parseQueryString?: boolean): UrlObject;
@@ -798,6 +1186,7 @@ declare module 'react-native-fbsdk' {
 
   export class GraphRequestManager {
     addRequest(request: GraphRequest): GraphRequestManager;
+    addBatchCallback(callback: (error: unknown, results: unknown[]) => void): GraphRequestManager;
     start(): void;
   }
 
@@ -814,6 +1203,17 @@ declare module 'react-native-fbsdk' {
     canShow(content: ShareContent): Promise<boolean>;
     show(content: ShareContent): Promise<{ postId?: string }>;
     setMode(mode: string): void;
+  };
+
+  export const MessageDialog: {
+    canShow(content: ShareContent): Promise<boolean>;
+    show(content: ShareContent): Promise<{ postId?: string }>;
+  };
+
+  export const AppEventsLogger: {
+    logEvent(eventName: string, valueToSum?: number, params?: Record<string, unknown>): void;
+    logPurchase(purchaseAmount: number, currency: string, params?: Record<string, unknown>): void;
+    flush(): void;
   };
 }
 
@@ -901,6 +1301,32 @@ declare module 'react-native-gifted-form' {
     defaults?: object;
     validators?: object;
     children?: React.ReactNode;
+    scrollEnabled?: boolean;
+    formStyles?: object;
+    navigator?: object;
+    onValueChange?: (values: object) => void;
+  }
+
+  interface SubmitWidgetProps {
+    title?: string;
+    isDisabled?: boolean;
+    activityIndicatorColor?: string;
+    onSubmit?: (
+      isValid: boolean,
+      values: object,
+      validationResults: any,
+      postSubmit?: ((errors?: string[]) => void) | null,
+      modalNavigator?: any
+    ) => void | Promise<void>;
+  }
+
+  interface SubmitWidgetState {
+    isLoading: boolean;
+  }
+
+  export class SubmitWidget extends React.Component<SubmitWidgetProps, SubmitWidgetState> {
+    getStyle(name: string): object;
+    _doSubmit(): void;
   }
 
   export class GiftedForm extends React.Component<GiftedFormProps> {
@@ -915,7 +1341,7 @@ declare module 'react-native-gifted-form' {
     static RowValueWidget: React.ComponentType<any>;
     static SeparatorWidget: React.ComponentType<any>;
     static NoticeWidget: React.ComponentType<any>;
-    static SubmitWidget: React.ComponentType<any>;
+    static SubmitWidget: typeof SubmitWidget;
     static LoadingWidget: React.ComponentType<any>;
     static OptionWidget: React.ComponentType<any>;
     static HiddenWidget: React.ComponentType<any>;
@@ -997,8 +1423,56 @@ declare module 'react-native/Libraries/StyleSheet/normalizeColor' {
   export = normalizeColor;
 }
 
+// Legacy react-navigation v1 types for backward compatibility
 declare module 'react-navigation/src/TypeDefinition' {
-  export * from 'react-navigation';
+  import * as React from 'react';
+
+  export interface NavigationAction {
+    type: string;
+    [key: string]: unknown;
+  }
+
+  export interface NavigationRoute {
+    key: string;
+    routeName: string;
+    params?: object;
+  }
+
+  export interface NavigationState {
+    index: number;
+    routes: NavigationRoute[];
+  }
+
+  export interface NavigationScene {
+    route: NavigationRoute;
+    index: number;
+    focused: boolean;
+    tintColor?: string;
+  }
+
+  export interface NavigationSceneRendererProps {
+    scene: NavigationScene;
+    scenes: NavigationScene[];
+    index: number;
+    navigation: NavigationScreenProp<any>;
+    position: any;
+  }
+
+  export interface NavigationScreenProp<S> {
+    state: S;
+    dispatch: (action: NavigationAction) => boolean;
+    goBack: (routeKey?: string | null) => boolean;
+    navigate: (routeName: string, params?: object, action?: NavigationAction) => boolean;
+    setParams: (newParams: object) => boolean;
+  }
+
+  export interface NavigationParams {
+    [key: string]: unknown;
+  }
+}
+
+declare module 'react-navigation' {
+  export * from 'react-navigation/src/TypeDefinition';
 }
 
 declare module 'react-navigation/src/views/TouchableItem' {
@@ -1008,11 +1482,8 @@ declare module 'react-navigation/src/views/TouchableItem' {
   export default class TouchableItem extends React.Component<TouchableOpacityProps> {}
 }
 
-declare module 'react-redux/lib/utils/storeShape' {
-  import { Store } from 'redux';
-  const storeShape: object;
-  export default storeShape;
-}
+// Note: react-redux/lib/utils/storeShape was removed in react-redux v8.
+// Use the connect HOC or useSelector/useDispatch hooks instead of legacy context.
 
 declare module 'react-tabs' {
   import * as React from 'react';
@@ -1238,22 +1709,26 @@ declare module 'react-intl' {
   export interface IntlShape {
     formatMessage(descriptor: MessageDescriptor, values?: Record<string, unknown>): string;
     formatNumber(value: number, options?: Intl.NumberFormatOptions): string;
-    formatDate(value: Date | number, options?: Intl.DateTimeFormatOptions): string;
-    formatTime(value: Date | number, options?: Intl.DateTimeFormatOptions): string;
-    formatRelative(value: Date | number): string;
+    formatDate(value: Date | number | unknown, options?: Intl.DateTimeFormatOptions): string;
+    formatTime(value: Date | number | unknown, options?: Intl.DateTimeFormatOptions): string;
+    formatRelativeTime?(value: number, unit?: string, options?: object): string;
     locale: string;
     messages: Record<string, string>;
   }
 
-  export const intlShape: IntlShape;
+  // Note: intlShape was removed in react-intl v6. Use injectIntl or useIntl hook instead.
 
-  export interface InjectedIntlProps {
+  // react-intl v6 renamed InjectedIntlProps to WrappedComponentProps
+  export interface WrappedComponentProps {
     intl: IntlShape;
   }
 
-  export function injectIntl<P extends InjectedIntlProps>(
+  // Backward compatibility alias
+  export type InjectedIntlProps = WrappedComponentProps;
+
+  export function injectIntl<P extends WrappedComponentProps>(
     component: React.ComponentType<P>
-  ): React.ComponentType<Omit<P, keyof InjectedIntlProps>>;
+  ): React.ComponentType<Omit<P, keyof WrappedComponentProps>>;
 
   export function defineMessages<T extends Record<string, MessageDescriptor>>(messages: T): T;
 
@@ -1274,4 +1749,15 @@ declare module 'react-intl' {
   export class FormattedMessage extends React.Component<FormattedMessageProps> {}
   export class FormattedNumber extends React.Component<{ value: number; style?: string }> {}
   export class FormattedDate extends React.Component<{ value: Date | number }> {}
+
+  // Hook for functional components
+  export function useIntl(): IntlShape;
+
+  // For creating intl instances outside of React
+  export interface IntlCache {}
+  export function createIntlCache(): IntlCache;
+  export function createIntl(
+    config: { locale: string; messages: Record<string, string>; defaultLocale?: string },
+    cache?: IntlCache
+  ): IntlShape;
 }

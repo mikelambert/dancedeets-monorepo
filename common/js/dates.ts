@@ -7,7 +7,6 @@ import moment, { Moment } from 'moment';
 
 // Simple type for react-intl's intl object - using 'unknown' for formatTime to be compatible with react-intl
 interface IntlShape {
-  now(): number;
   formatDate(date: Date, options?: Intl.DateTimeFormatOptions): string;
   formatTime(date: unknown): string;
 }
@@ -25,8 +24,8 @@ export const weekdayTime: Intl.DateTimeFormatOptions = {
 };
 
 // eslint-disable-next-line no-unused-vars
-function dateIsNearby(date: Moment, intl: IntlShape): boolean {
-  const now = moment(intl.now());
+function dateIsNearby(date: Moment, _intl: IntlShape): boolean {
+  const now = moment(Date.now());
   const diff = date.diff(now);
   return (
     diff > moment.duration(-3, 'months').asMilliseconds() &&

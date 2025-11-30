@@ -3,8 +3,9 @@
  */
 
 import * as React from 'react';
-import { Platform, SegmentedControlIOS, StyleProp, ViewStyle } from 'react-native';
+import { Platform, StyleProp, ViewStyle } from 'react-native';
 import normalizeColor from 'react-native/Libraries/StyleSheet/normalizeColor';
+import SegmentedControlIOS from '@react-native-segmented-control/segmented-control';
 import SegmentedControlAndroid from 'react-native-segmented-android';
 
 interface Props {

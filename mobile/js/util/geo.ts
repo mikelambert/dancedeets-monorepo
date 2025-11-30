@@ -1,14 +1,20 @@
 /**
  * Copyright 2016 DanceDeets.
+ *
+ * Geolocation utilities with react-native-permissions v4 API
  */
 
 import { Platform } from 'react-native';
-import Permissions from 'react-native-permissions';
-import type { Address } from '../events/formatAddress';
+import { request, check, PERMISSIONS, RESULTS, openSettings } from 'react-native-permissions';
 import Geocoder from '../api/geocoder';
 import { format } from '../events/formatAddress';
 
-const locationPermission = 'location';
+// Get the appropriate location permission for the platform
+const locationPermission = Platform.select({
+  ios: PERMISSIONS.IOS.LOCATION_WHEN_IN_USE,
+  android: PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION,
+  default: PERMISSIONS.IOS.LOCATION_WHEN_IN_USE,
+});
 
 interface GeolocationPosition {
   coords: {
@@ -16,6 +22,17 @@ interface GeolocationPosition {
     longitude: number;
   };
 }
+
+// Declare navigator.geolocation for React Native
+declare const navigator: {
+  geolocation: {
+    getCurrentPosition(
+      success: (position: GeolocationPosition) => void,
+      error?: (error: any) => void,
+      options?: { enableHighAccuracy?: boolean; timeout?: number; maximumAge?: number }
+    ): void;
+  };
+};
 
 function getCurrentPosition(): Promise<GeolocationPosition> {
   return new Promise((resolve, reject) => {
@@ -29,13 +46,12 @@ function getCurrentPosition(): Promise<GeolocationPosition> {
 }
 
 export async function getPosition(): Promise<GeolocationPosition> {
-  //  Permissions.openSettings();
   if (Platform.OS === 'ios') {
-    const status = await Permissions.requestPermission(locationPermission);
-    if (status !== Permissions.StatusAuthorized) {
+    const status = await request(locationPermission);
+    if (status !== RESULTS.GRANTED && status !== RESULTS.LIMITED) {
       // No location permission. Let's ignore it for now since the app will work fine
       // But if we ever change our mind, we can prompt and run:
-      // Permissions.openSettings();
+      // openSettings();
       throw new Error('No location permissions');
     }
     // Otherwise have authorized permissions now, let's get their location!
@@ -45,34 +61,51 @@ export async function getPosition(): Promise<GeolocationPosition> {
 
 export async function hasLocationPermission(): Promise<boolean> {
   if (Platform.OS === 'ios') {
-    const status = await Permissions.getPermissionStatus(locationPermission);
-    return status === Permissions.StatusAuthorized;
+    const status = await check(locationPermission);
+    return status === RESULTS.GRANTED || status === RESULTS.LIMITED;
   } else {
-    // TODO(permissions): The Permissions.getPermissionStatus checks for FINE_LOCATION.
-    // So wait until we fetch that new permission, to start using the above code paths.
+    // Check Android permission status
+    const status = await check(locationPermission);
+    return status === RESULTS.GRANTED;
+  }
+}
+
+// Countries that use imperial system (miles, Fahrenheit, etc)
+// Only USA, Myanmar (Burma), and Liberia officially use imperial
+const imperialCountries = new Set(['US', 'MM', 'LR']);
+
+/**
+ * Determine if the user's locale uses the metric system.
+ * Returns true for metric (kilometers), false for imperial (miles).
+ */
+export function usesMetricSystem(countryCode?: string): boolean {
+  if (!countryCode) {
+    // Default to metric if we don't know the country
     return true;
   }
+  return !imperialCountries.has(countryCode.toUpperCase());
 }
 
 export async function getAddress(): Promise<string> {
   if (Platform.OS === 'ios') {
-    const status = await Permissions.requestPermission(locationPermission);
-    if (status !== Permissions.StatusAuthorized) {
+    const status = await request(locationPermission);
+    if (status !== RESULTS.GRANTED && status !== RESULTS.LIMITED) {
       // No location permission. Let's ignore it for now since the app will work fine
       // But if we ever change our mind, we can prompt and run:
-      // Permissions.openSettings();
+      // openSettings();
       return '';
     }
     // Otherwise have authorized permissions now, let's get their location!
   }
-  // This has atimeout, so we need to do the user action (requesting permissions) above
+  // This has a timeout, so we need to do the user action (requesting permissions) above
   // to ensure this call doesn't unnecessarily time out.
   const position = await getPosition();
   const newCoords = {
     lat: position.coords.latitude,
     lng: position.coords.longitude,
   };
-  const address: Address = await Geocoder.geocodePosition(newCoords);
-  const formattedAddress = format(address[0]);
+  const addresses = await Geocoder.geocodePosition(newCoords);
+  // GeocodingObject is compatible with Address interface
+  const formattedAddress = format(addresses[0] as any);
   return formattedAddress;
 }

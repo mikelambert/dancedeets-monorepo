@@ -104,7 +104,7 @@ export async function loadUserData(dispatch: Dispatch): Promise<void> {
 
   dispatch({
     type: 'LOGIN_LOADED_USER',
-    user: user as User,
+    user: user as unknown as User,
   });
 }
 

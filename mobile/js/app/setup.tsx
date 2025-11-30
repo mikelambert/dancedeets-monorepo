@@ -3,7 +3,7 @@
  */
 
 import * as React from 'react';
-import { Platform } from 'react-native';
+import { LogBox, Platform } from 'react-native';
 import { Provider } from 'react-redux';
 import Mixpanel from 'react-native-mixpanel';
 import ProcessInfo from 'react-native-processinfo';
@@ -20,7 +20,8 @@ interface State {
 }
 
 export default function setup() {
-  console.disableYellowBox = true;
+  // In RN 0.63+, use LogBox instead of console.disableYellowBox
+  LogBox.ignoreAllLogs(true);
 
   class Root extends React.Component<{}, State> {
     constructor(props: {}) {

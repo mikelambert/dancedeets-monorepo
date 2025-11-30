@@ -1,23 +1,28 @@
 /**
  * Copyright 2016 DanceDeets.
+ *
+ * Firebase Remote Config - modular API
  */
 
-import firebase from 'react-native-firebase';
+import remoteConfig from '@react-native-firebase/remote-config';
 
 async function loadConfig(): Promise<void> {
+  // Set minimum fetch interval for development
   if (__DEV__) {
-    firebase.config().enableDeveloperMode();
+    await remoteConfig().setConfigSettings({
+      minimumFetchIntervalMillis: 0, // Allow fetching anytime in dev
+    });
   }
-  await firebase.config().fetch();
-  await firebase.config().activateFetched();
+  // Fetch and activate in one call
+  await remoteConfig().fetchAndActivate();
 }
 
 loadConfig();
 
 export async function get<T>(value: string): Promise<T | null> {
-  const result = await firebase.config().getValue(value);
-  if (result) {
-    return JSON.parse(result.val()) as T;
+  const result = remoteConfig().getValue(value);
+  if (result && result.asString()) {
+    return JSON.parse(result.asString()) as T;
   }
   return null;
 }

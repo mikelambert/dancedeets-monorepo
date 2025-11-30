@@ -1,9 +1,11 @@
 /**
  * Copyright 2016 DanceDeets.
+ *
+ * Firebase Realtime Database - modular API
  */
 
 import * as React from 'react';
-import firebase from 'react-native-firebase';
+import database, { FirebaseDatabaseTypes } from '@react-native-firebase/database';
 import { connect } from 'react-redux';
 import type { Dispatch } from './actions/types';
 import { setFirebaseState } from './actions';
@@ -12,7 +14,8 @@ import { setFirebaseState } from './actions';
 
 interface TrackFirebaseOwnProps {
   path: string;
-  children: React.ReactNode;
+  // Either children or renderContents should be provided
+  children?: React.ReactNode;
   // If set, render passing in the state, instead of just rendering children
   renderContents?: (contents: unknown) => React.ReactElement;
 }
@@ -27,10 +30,6 @@ interface TrackFirebaseDispatchProps {
 
 type TrackFirebaseProps = TrackFirebaseOwnProps & TrackFirebaseStateProps & TrackFirebaseDispatchProps;
 
-interface DataSnapshot {
-  val(): unknown;
-}
-
 class _TrackFirebase extends React.Component<TrackFirebaseProps> {
   _setHandler: boolean;
 
@@ -40,8 +39,8 @@ class _TrackFirebase extends React.Component<TrackFirebaseProps> {
     this._setHandler = false;
   }
 
-  componentWillMount(): void {
-    const dbRef = firebase.database().ref(this.props.path);
+  componentDidMount(): void {
+    const dbRef = database().ref(this.props.path);
     console.log(`Installing handler on path: ${this.props.path}`);
     dbRef.on('value', this.handleValueChange);
     this._setHandler = true;
@@ -50,14 +49,13 @@ class _TrackFirebase extends React.Component<TrackFirebaseProps> {
   componentWillUnmount(): void {
     if (this._setHandler) {
       console.log(`Uninstalling handler on path: ${this.props.path}`);
-      firebase
-        .database()
+      database()
         .ref(this.props.path)
         .off('value', this.handleValueChange);
     }
   }
 
-  handleValueChange(snapshot: DataSnapshot): void {
+  handleValueChange(snapshot: FirebaseDatabaseTypes.DataSnapshot): void {
     if (snapshot.val()) {
       this.props.setFirebaseState(this.props.path, snapshot.val());
     }

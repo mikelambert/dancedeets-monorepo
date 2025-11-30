@@ -2,22 +2,24 @@
  * Copyright 2016 DanceDeets.
  */
 
-import firebase from 'react-native-firebase';
+import remoteConfig from '@react-native-firebase/remote-config';
 
 // eslint-disable-next-line no-unused-vars
 async function loadConfig() {
   if (__DEV__) {
-    firebase.config().enableDeveloperMode();
+    await remoteConfig().setConfigSettings({
+      minimumFetchIntervalMillis: 0,
+    });
   }
-  await firebase.config().fetch();
-  await firebase.config().activateFetched();
+  await remoteConfig().fetch();
+  await remoteConfig().activate();
 }
 
 // loadConfig();
 
 export async function getRemoteBlogs(): Promise<any> {
-  const result = await firebase.config().getValue('Learn:blogs');
+  const result = remoteConfig().getValue('Learn:blogs');
   if (result) {
-    return JSON.parse(result.val());
+    return JSON.parse(result.asString());
   }
 }

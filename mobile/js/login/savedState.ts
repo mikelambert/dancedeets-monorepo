@@ -2,7 +2,7 @@
  * Copyright 2016 DanceDeets.
  */
 
-import { AsyncStorage } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export async function hasSkippedLogin(): Promise<boolean> {
   const result = await AsyncStorage.getItem('login.skipped');

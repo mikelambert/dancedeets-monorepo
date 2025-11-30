@@ -28,7 +28,7 @@ export default class PositionProvider extends React.Component<
     this.state = { position: null };
   }
 
-  componentWillMount(): void {
+  componentDidMount(): void {
     this.loadLocation();
   }
 

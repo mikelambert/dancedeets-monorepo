@@ -77,7 +77,7 @@ class _NotificationPreferences extends React.Component<
     this.state = {};
   }
 
-  componentWillMount() {
+  componentDidMount() {
     this.loadPreference();
   }
 

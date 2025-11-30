@@ -5,6 +5,11 @@
 import { defineMessages } from 'react-intl';
 
 export default defineMessages({
+  learnTitle: {
+    id: 'tutorialVideos.learnTitle',
+    defaultMessage: 'Learn',
+    description: 'Title for the Learn section',
+  },
   numTutorials: {
     id: 'tutorialVideos.numTutorials',
     defaultMessage: '{count,number} Tutorials',

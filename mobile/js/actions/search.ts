@@ -2,7 +2,7 @@
  * Copyright 2016 DanceDeets.
  */
 
-import type { SearchResponse } from 'dancedeets-common/js/events/search';
+import type { SearchResponse, TimePeriod } from 'dancedeets-common/js/events/search';
 import type { Action, ThunkAction, Dispatch, GetState } from './types';
 
 import { search } from '../api/dancedeets';
@@ -13,7 +13,7 @@ import { hideSearchForm } from '../ducks/searchHeader';
 interface SearchQuery {
   location: string;
   keywords: string;
-  timePeriod: string;
+  timePeriod: TimePeriod;
 }
 
 interface SearchState {

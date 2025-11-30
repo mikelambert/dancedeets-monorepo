@@ -21,7 +21,8 @@ export function addUrlArgs(
   parsedUrl.query = { ...parsedUrl.query, ...stringArgs };
   // Clear search so format uses query
   parsedUrl.search = null;
-  const newUrl = url.format(parsedUrl);
+  // Cast to any since url.format accepts both UrlObject and UrlWithParsedQuery at runtime
+  const newUrl = url.format(parsedUrl as any);
   return newUrl;
 }
 

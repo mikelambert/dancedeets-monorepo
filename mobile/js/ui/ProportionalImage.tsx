@@ -3,7 +3,7 @@
  */
 
 import * as React from 'react';
-import { Animated, Platform, StyleProp, View, ViewStyle } from 'react-native';
+import { Animated, Platform, StyleProp, View, ViewStyle, ImageStyle } from 'react-native';
 
 type Dimension = {
   width: number;
@@ -13,10 +13,11 @@ type Dimension = {
 interface Props {
   originalWidth: number;
   originalHeight: number;
-  style?: StyleProp<ViewStyle>;
-  duration: number;
-  resizeDirection: 'width' | 'height';
+  style?: StyleProp<ImageStyle>;
+  duration?: number;
+  resizeDirection?: 'width' | 'height';
   initialDimensions?: Dimension;
+  source: any;
   [key: string]: any;
 }
 

@@ -146,14 +146,14 @@ class Collapsible extends React.Component<Props, State> {
     };
   }
 
-  componentWillReceiveProps(nextProps: Props) {
-    if (nextProps.collapsed !== this.props.collapsed) {
-      this._toggleCollapsed(nextProps.collapsed);
+  componentDidUpdate(prevProps: Props) {
+    if (prevProps.collapsed !== this.props.collapsed) {
+      this._toggleCollapsed(this.props.collapsed);
     } else if (
-      nextProps.collapsed &&
-      nextProps.collapsedHeight !== this.props.collapsedHeight
+      this.props.collapsed &&
+      prevProps.collapsedHeight !== this.props.collapsedHeight
     ) {
-      this.state.height.setValue(nextProps.collapsedHeight);
+      this.state.height.setValue(this.props.collapsedHeight);
     }
   }
 

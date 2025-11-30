@@ -3,7 +3,7 @@
  */
 
 import * as React from 'react';
-import { AppState, AppStateStatus } from 'react-native';
+import { AppState, AppStateStatus, NativeEventSubscription } from 'react-native';
 import { trackEnd, trackStart } from '../store/track';
 
 interface TimeTrackerProps {
@@ -13,6 +13,8 @@ interface TimeTrackerProps {
 }
 
 export class TimeTracker extends React.Component<TimeTrackerProps> {
+  private appStateSubscription: NativeEventSubscription | null = null;
+
   _formatEvent(value: string | null = null): string {
     const trackValue = value || this.props.eventValue;
     return `${this.props.eventName}: ${trackValue}`;
@@ -27,21 +29,22 @@ export class TimeTracker extends React.Component<TimeTrackerProps> {
     }
   }
 
-  componentWillMount(): void {
+  componentDidMount(): void {
     trackStart(this._formatEvent());
-    AppState.addEventListener('change', this._handleAppStateChange);
+    // In RN 0.72+, addEventListener returns a subscription
+    this.appStateSubscription = AppState.addEventListener('change', this._handleAppStateChange);
   }
 
-  componentWillReceiveProps(nextProps: TimeTrackerProps): void {
-    if (this.props.eventValue !== nextProps.eventValue) {
-      trackEnd(this._formatEvent()); // Can't use track properties()
-      trackStart(this._formatEvent(nextProps.eventValue));
+  componentDidUpdate(prevProps: TimeTrackerProps): void {
+    if (prevProps.eventValue !== this.props.eventValue) {
+      trackEnd(this._formatEvent(prevProps.eventValue));
+      trackStart(this._formatEvent());
     }
   }
 
   componentWillUnmount(): void {
     trackEnd(this._formatEvent()); // Track against old tab
-    AppState.removeEventListener('change', this._handleAppStateChange);
+    this.appStateSubscription?.remove();
   }
 
   render(): React.ReactNode {

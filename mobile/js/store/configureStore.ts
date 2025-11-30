@@ -4,14 +4,17 @@
 
 import { applyMiddleware, createStore, Store } from 'redux';
 import thunk from 'redux-thunk';
-import createLogger from 'redux-logger';
+import { createLogger } from 'redux-logger';
 import promise from './promise';
 import array from './array';
 import analytics from './analytics';
 import reducers from '../reducers';
 import type { RootState, Action } from '../actions/types';
 
-const isDebuggingInChrome = __DEV__ && !!(window as any).navigator?.userAgent;
+// Declare global window for React Native Chrome debugging
+declare const window: any;
+
+const isDebuggingInChrome = __DEV__ && !!window?.navigator?.userAgent;
 
 const logger = createLogger({
   predicate: (getState: () => RootState, action: Action) => isDebuggingInChrome,

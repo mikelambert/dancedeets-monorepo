@@ -31,7 +31,7 @@ class OEmbed extends React.Component<OEmbedProps, OEmbedState> {
     };
   }
 
-  componentWillMount(): void {
+  componentDidMount(): void {
     this.loadEmbed();
   }
 

@@ -3,50 +3,44 @@
  */
 
 import * as React from 'react';
-import { ListView } from 'react-native';
+import { FlatList, ListRenderItemInfo } from 'react-native';
 
 interface Props {
   children: React.ReactElement[];
   [key: string]: any;
 }
 
-interface State {
-  dataSource: ListView.DataSource;
+interface DataItem {
+  key: string;
+  element: React.ReactElement;
 }
 
-export default class ProgressiveLayout extends React.Component<Props, State> {
-  constructor(props: Props) {
-    super(props);
-    const dataSource = new ListView.DataSource({
-      rowHasChanged: (row1, row2) => row1 !== row2,
-    });
-    this.state = { dataSource };
-    this.state = this.getNewState(props);
-  }
+export default class ProgressiveLayout extends React.Component<Props> {
+  renderItem = ({ item }: ListRenderItemInfo<DataItem>): React.ReactElement => {
+    return item.element;
+  };
 
-  componentWillReceiveProps(nextProps: Props) {
-    this.setState(this.getNewState(nextProps));
-  }
-
-  getNewState(props: Props): State {
-    return {
-      dataSource: this.state.dataSource.cloneWithRows(props.children),
-    };
-  }
-
-  renderRow(elem: React.ReactElement): React.ReactElement {
-    return elem;
-  }
+  keyExtractor = (item: DataItem): string => {
+    return item.key;
+  };
 
   render() {
     const { children, ...otherProps } = this.props;
+
+    // Convert children to data array with keys
+    const data: DataItem[] = React.Children.map(children, (child, index) => ({
+      key: String(index),
+      element: child,
+    })) || [];
+
     return (
-      <ListView
-        dataSource={this.state.dataSource}
-        renderRow={this.renderRow}
-        initialListSize={1}
-        pageSize={1}
-        scrollRenderAheadDistance={10000}
+      <FlatList
+        data={data}
+        renderItem={this.renderItem}
+        keyExtractor={this.keyExtractor}
+        initialNumToRender={1}
+        maxToRenderPerBatch={1}
+        windowSize={21}
         indicatorStyle="white"
         {...otherProps}
       />

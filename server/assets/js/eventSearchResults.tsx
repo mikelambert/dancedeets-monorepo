@@ -728,8 +728,10 @@ class _PeopleList extends React.Component<PeopleListPropsWithIntl, PeopleListSta
     this.loadPeopleIfNeeded = this.loadPeopleIfNeeded.bind(this);
   }
 
-  componentWillReceiveProps(nextProps: PeopleListPropsWithIntl): void {
-    this.setState({ people: nextProps.response.people, failed: false });
+  componentDidUpdate(prevProps: PeopleListPropsWithIntl): void {
+    if (prevProps.response.people !== this.props.response.people) {
+      this.setState({ people: this.props.response.people, failed: false });
+    }
   }
 
   async loadPeopleIfNeeded(): Promise<void> {

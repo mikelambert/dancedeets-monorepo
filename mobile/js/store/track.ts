@@ -21,7 +21,7 @@
  */
 
 import Mixpanel from 'react-native-mixpanel';
-import firebase from 'react-native-firebase';
+import analytics from '@react-native-firebase/analytics';
 import { AccessToken, AppEventsLogger } from 'react-native-fbsdk';
 import { Crashlytics } from 'react-native-fabric';
 import DeviceInfo from 'react-native-device-info';
@@ -29,7 +29,8 @@ import type { Event } from 'dancedeets-common/js/events/models';
 import { performRequest } from '../api/fb';
 import type { Action } from '../actions/types';
 
-let trackingEnabled = DeviceInfo.getModel() !== 'Calypso AppCrawler';
+// In react-native-device-info v10+, getModel() is async. Use getModelSync() for synchronous access.
+let trackingEnabled = DeviceInfo.getModelSync() !== 'Calypso AppCrawler';
 
 export function disableTracking(): void {
   trackingEnabled = false;
@@ -47,7 +48,7 @@ function initMixpanel(): void {
   }
 
   Mixpanel.sharedInstanceWithToken(mixpanelApiKey);
-  if (DeviceInfo.getModel() === 'Calypso AppCrawler') {
+  if (DeviceInfo.getModelSync() === 'Calypso AppCrawler') {
     Mixpanel.registerSuperProperties({ $ignore: true });
   }
   // Don't use global track(), since this is a Mixpanel-only event:
@@ -78,11 +79,11 @@ export function track(eventName: string, params?: Params | null): void {
     }
     AppEventsLogger.logEvent(eventName, 1, params);
     Mixpanel.trackWithProperties(eventName, params);
-    firebase.analytics().logEvent(firebaseSafe(eventName), firebaseSafeParams);
+    analytics().logEvent(firebaseSafe(eventName), firebaseSafeParams);
   } else {
     AppEventsLogger.logEvent(eventName, 1);
     Mixpanel.track(eventName);
-    firebase.analytics().logEvent(firebaseSafe(eventName));
+    analytics().logEvent(firebaseSafe(eventName));
   }
 }
 
@@ -127,7 +128,7 @@ async function setupPersonProperties(): Promise<void> {
   }
   Crashlytics.setUserIdentifier(token.userID);
   Mixpanel.identify(token.userID);
-  firebase.analytics().setUserId(token.userID);
+  await analytics().setUserId(token.userID);
 
   const user = await performRequest('GET', 'me', {
     fields: 'id,name,first_name,last_name,gender,locale,timezone,email,link',
@@ -147,13 +148,13 @@ async function setupPersonProperties(): Promise<void> {
   });
   Mixpanel.setOnce({ $created: now });
 
-  firebase.analytics().setUserProperty('FBFirstName', user.first_name);
-  firebase.analytics().setUserProperty('FBLastName', user.last_name);
-  firebase.analytics().setUserProperty('FBGender', user.gender);
-  firebase.analytics().setUserProperty('FBLocale', user.locale);
-  firebase.analytics().setUserProperty('FBTimezone', user.timezone.toString());
-  firebase.analytics().setUserProperty('FBEmail', user.email);
-  firebase.analytics().setUserProperty('LastLogin', now);
+  await analytics().setUserProperty('FBFirstName', user.first_name);
+  await analytics().setUserProperty('FBLastName', user.last_name);
+  await analytics().setUserProperty('FBGender', user.gender);
+  await analytics().setUserProperty('FBLocale', user.locale);
+  await analytics().setUserProperty('FBTimezone', user.timezone.toString());
+  await analytics().setUserProperty('FBEmail', user.email);
+  await analytics().setUserProperty('LastLogin', now);
 }
 
 export async function trackLogin(): Promise<void> {
@@ -174,7 +175,7 @@ export function trackLogout(): void {
   track('Logout');
   // Mixpanel.removePushToken();
   Mixpanel.reset();
-  firebase.analytics().setUserId(null);
+  analytics().setUserId(null);
 }
 
 export function trackDispatches(action: Action): void {}

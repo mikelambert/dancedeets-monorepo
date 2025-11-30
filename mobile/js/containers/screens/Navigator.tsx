@@ -1,66 +1,63 @@
 /**
  * Copyright 2016 DanceDeets.
+ *
+ * React Navigation v6 stack navigator factory
  */
 
-import { NavigationActions, StackNavigator } from 'react-navigation';
-import type {
-  NavigationAction,
-  NavigationRouteConfigMap,
-  NavigationState,
-  StackNavigatorConfig,
-} from 'react-navigation/src/TypeDefinition';
-import { hardwareBackPress } from 'react-native-back-android';
+import * as React from 'react';
+import { createStackNavigator, StackNavigationOptions } from '@react-navigation/stack';
 import { gradientTop } from '../../Colors';
 
-const navigateOnce = (
-  getStateForAction: (
-    action: NavigationAction,
-    lastState: NavigationState | null
-  ) => NavigationState | null
-) => (action: NavigationAction, state: NavigationState) => {
-  const { type } = action;
-  if (state && type === NavigationActions.NAVIGATE) {
-    const { routeName } = action as any;
-    if (routeName === state.routes[state.routes.length - 1].routeName) {
-      return state;
-    }
-  }
-  return getStateForAction(action, state);
+const Stack = createStackNavigator();
+
+export interface ScreenConfig {
+  screen: React.ComponentType<any>;
+  options?: StackNavigationOptions | ((props: any) => StackNavigationOptions);
+}
+
+export type RouteConfigMap = Record<string, ScreenConfig>;
+
+const defaultScreenOptions: StackNavigationOptions = {
+  headerTintColor: 'white',
+  headerStyle: {
+    backgroundColor: gradientTop,
+  },
 };
 
-export default (
+export default function createMyStackNavigator(
   stateName: string,
-  routeConfigMap: NavigationRouteConfigMap,
-  stackConfig: StackNavigatorConfig = {}
-) => {
-  const newRouteConfigMap = { ...routeConfigMap };
-  Object.keys(newRouteConfigMap).forEach(key => {
-    const newScreen = hardwareBackPress((routeConfigMap as any)[key].screen, (props: any) =>
-      props.navigation.goBack()
+  routeConfigMap: RouteConfigMap,
+  stackConfig: StackNavigationOptions = {}
+): React.ComponentType<any> {
+  const screenNames = Object.keys(routeConfigMap);
+  const initialRouteName = screenNames[0];
+
+  function StackNavigatorComponent() {
+    return (
+      <Stack.Navigator
+        initialRouteName={initialRouteName}
+        screenOptions={{
+          ...defaultScreenOptions,
+          cardStyle: {
+            backgroundColor: 'black',
+          },
+          ...stackConfig,
+        }}
+      >
+        {screenNames.map(name => {
+          const config = routeConfigMap[name];
+          return (
+            <Stack.Screen
+              key={name}
+              name={name}
+              component={config.screen}
+              options={config.options}
+            />
+          );
+        })}
+      </Stack.Navigator>
     );
-    // TODO: This is necessary until https://github.com/awesomejerry/react-native-back-android/issues/11 is fixed/deployed:
-    (newScreen as any).navigationOptions = (routeConfigMap as any)[key].screen.navigationOptions;
-    (newRouteConfigMap as any)[key] = {
-      ...(routeConfigMap as any)[key],
-      screen: newScreen,
-    };
-  });
+  }
 
-  const Navigator = StackNavigator(newRouteConfigMap, {
-    navigationOptions: {
-      headerTintColor: 'white',
-      headerStyle: {
-        backgroundColor: gradientTop,
-      },
-    },
-    cardStyle: {
-      backgroundColor: 'black',
-    },
-    ...stackConfig,
-  });
-
-  Navigator.router.getStateForAction = navigateOnce(
-    Navigator.router.getStateForAction
-  );
-  return Navigator;
-};
+  return StackNavigatorComponent;
+}

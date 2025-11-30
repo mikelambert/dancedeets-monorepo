@@ -51,15 +51,15 @@ class FullCalendar extends React.Component<Props> {
     (this._calendar as unknown as { fullCalendar: (options: Record<string, unknown>) => void }).fullCalendar(calendarOptions);
   }
 
-  componentWillReceiveProps(newProps: Props): void {
-    const { options: newOptions } = newProps;
-    const { options } = this.props;
+  componentDidUpdate(prevProps: Props): void {
+    const { options: newOptions } = this.props;
+    const { options: oldOptions } = prevProps;
 
     Object.keys(newOptions).forEach(optionName => {
       // update options dynamically
       if (
         isOption(optionName) &&
-        newOptions[optionName] !== options[optionName]
+        newOptions[optionName] !== oldOptions[optionName]
       ) {
         (this._calendar as unknown as { fullCalendar: (...args: unknown[]) => void }).fullCalendar(
           'option',

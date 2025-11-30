@@ -1,5 +1,8 @@
 /**
  * Copyright 2016 DanceDeets.
+ *
+ * Note: Navigation state is no longer stored in Redux.
+ * React Navigation v6 manages its own state internally.
  */
 
 import { combineReducers } from 'redux';
@@ -12,23 +15,11 @@ import { tutorials } from './tutorials';
 import { user } from './user';
 import searchHeader from '../ducks/searchHeader';
 import searchQuery from '../ducks/searchQuery';
-import TabNavigator from '../containers/TabNavigator';
-
-function screens(state: any, action: any): any {
-  // Reverse ordering: (state, action) => (action, state)
-  const nextState = TabNavigator.router.getStateForAction(action, state);
-
-  // If nextState is null, it means no-action. So let's return the existing state.
-  // https://github.com/react-community/react-navigation/issues/271#issuecomment-309482910
-  // https://reactnavigation.org/docs/guides/redux#Redux-Integration
-  return nextState || state;
-}
 
 export default combineReducers({
   addEvents,
   firebase,
   loadedEvents,
-  screens,
   search,
   searchHeader,
   searchQuery,

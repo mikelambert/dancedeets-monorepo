@@ -560,12 +560,12 @@ class _ListView extends React.Component<ListViewProps, ListViewState> {
     };
   }
 
-  componentWillReceiveProps(nextProps: ListViewProps) {
+  componentDidUpdate(prevProps: ListViewProps) {
     // Only zoom to top, if there are existing state.sections being rendered
     if (
-      nextProps.search.response !== this.props.search.response &&
-      this.props.search.response &&
-      nextProps.search.response
+      prevProps.search.response !== this.props.search.response &&
+      prevProps.search.response &&
+      this.props.search.response
     ) {
       // Only scroll if there are rendered items we can use to compute.
       // Otherwise we get errors since it doesn't know where "item 0" is.
@@ -584,11 +584,11 @@ class _ListView extends React.Component<ListViewProps, ListViewState> {
         });
       }
     }
-    if (nextProps.search) {
+    if (prevProps.search !== this.props.search) {
       this.setState({
         failed: false,
-        people: nextProps.search.response
-          ? nextProps.search.response.people
+        people: this.props.search.response
+          ? this.props.search.response.people
           : null,
       });
     }
@@ -654,7 +654,7 @@ class _ListView extends React.Component<ListViewProps, ListViewState> {
           })),
         });
       }
-      const now = moment(intl.now());
+      const now = moment(Date.now());
       if (response.results != null && response.results.length > 0) {
         // Previously sorted by startDate from the server, we want to sort them by our listDate
         let resultEvents = response.results;

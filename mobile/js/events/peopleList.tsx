@@ -90,6 +90,7 @@ interface HeaderCollapsibleProps {
   children: React.ReactNode;
   underlayColor?: string;
   onPress?: () => void | Promise<void>;
+  style?: StyleProp<ViewStyle>;
 }
 
 interface HeaderCollapsibleState {
@@ -120,10 +121,9 @@ class HeaderCollapsible extends React.Component<
     // The TouchableHighlight needs a native component that takes a ref.
     // Unfortunately the stateless HorizontalView component cannot take a ref, so we have a View wrapper.
     return (
-      <View>
+      <View style={this.props.style}>
         <TouchableOpacity
           onPress={this._toggle}
-          underlayColor={this.props.underlayColor}
         >
           <View
             style={{

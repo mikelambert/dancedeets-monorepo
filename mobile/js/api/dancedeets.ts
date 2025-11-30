@@ -107,9 +107,12 @@ interface FeaturedInfo {
   [key: string]: any;
 }
 
-interface SearchResponse {
+interface MobileSearchResponse {
   featuredInfos: FeaturedInfo[];
   results: SearchEvent[];
+  people?: any;
+  onebox_links?: any[];
+  query?: any;
   [key: string]: any;
 }
 
@@ -117,7 +120,7 @@ export async function search(
   location: string,
   keywords: string,
   timePeriod: TimePeriod
-): Promise<SearchResponse> {
+): Promise<MobileSearchResponse> {
   const response: any = await timeout(
     10000,
     performRequest('search', {

@@ -21,6 +21,8 @@
  */
 
 import { AccessToken } from 'react-native-fbsdk';
+import type { ThunkDispatch, ThunkAction as ReduxThunkAction } from 'redux-thunk';
+import type { AnyAction } from 'redux';
 import type { Event } from 'dancedeets-common/js/events/models';
 import type { SearchResponse } from 'dancedeets-common/js/events/search';
 import type { AddEventList, SortOrder } from '../addEventsModels';
@@ -38,6 +40,8 @@ export interface User {
   ddUser: {
     location: string;
     formattedCity?: string;
+    num_hand_added_events?: number;
+    num_auto_added_events?: number;
   };
 }
 
@@ -100,10 +104,12 @@ export interface RootState {
   searchHeader: SearchHeaderState;
 }
 
-export type Dispatch = (
-  action: Action | ThunkAction | PromiseAction | Action[]
-) => unknown;
-
 export type GetState = () => RootState;
-export type ThunkAction = (dispatch: Dispatch, getState: GetState) => unknown;
+
+// Use ThunkDispatch for proper compatibility with react-redux connect
+export type Dispatch = ThunkDispatch<RootState, undefined, AnyAction>;
+
+// ThunkAction compatible with redux-thunk
+export type ThunkAction = ReduxThunkAction<unknown, RootState, undefined, AnyAction>;
+
 export type PromiseAction = Promise<Action>;

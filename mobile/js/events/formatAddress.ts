@@ -7,24 +7,25 @@ export interface Address {
     lat: number;
     lng: number;
   };
-  locale: string;
+  // All properties are optional since format() handles null/undefined values
+  locale?: string | null;
 
-  thoroughfare: string;
-  subThoroughfare: string;
+  thoroughfare?: string | null;
+  subThoroughfare?: string | null;
 
-  subLocality: string;
-  locality: string;
-  postalCode: string;
+  subLocality?: string | null;
+  locality?: string | null;
+  postalCode?: string | null;
 
   // Why do we sometimes get one or the other?! :(
-  subAdminArea: string;
-  subAdministrativeArea: string;
+  subAdminArea?: string | null;
+  subAdministrativeArea?: string | null;
   // Why do we sometimes get one or the other?! :(
-  adminArea: string;
-  administrativeArea: string;
+  adminArea?: string | null;
+  administrativeArea?: string | null;
 
-  country: string;
-  countryCode: string;
+  country?: string | null;
+  countryCode?: string | null;
 }
 
 /*
