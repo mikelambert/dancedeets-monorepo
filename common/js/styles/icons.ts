@@ -2,15 +2,23 @@
  * Copyright 2016 DanceDeets.
  */
 
-/* eslint-disable @typescript-eslint/no-var-requires */
+// Image imports - bundlers (webpack, metro, esbuild) will handle these appropriately
+import breakIcon from './images/break.png';
+import hiphopIcon from './images/hiphop.png';
+import popIcon from './images/pop.png';
+import lockIcon from './images/lock.png';
+import houseIcon from './images/house.png';
+import krumpIcon from './images/krump.png';
+import otherIcon from './images/other.png';
+
 const icons: Record<string, unknown> = {
-  break: require('./images/break.png'),
-  hiphop: require('./images/hiphop.png'),
-  pop: require('./images/pop.png'),
-  lock: require('./images/lock.png'),
-  house: require('./images/house.png'),
-  krump: require('./images/krump.png'),
-  other: require('./images/other.png'),
+  break: breakIcon,
+  hiphop: hiphopIcon,
+  pop: popIcon,
+  lock: lockIcon,
+  house: houseIcon,
+  krump: krumpIcon,
+  other: otherIcon,
 };
 
 export default icons;

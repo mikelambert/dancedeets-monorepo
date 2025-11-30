@@ -6,10 +6,10 @@ import moment from 'moment';
 
 interface VideoJson {
   title: string;
-  duration: number;
+  duration: number | string;
   youtubeId: string;
-  width: number;
-  height: number;
+  width?: number;
+  height?: number;
   keywords?: string[];
 }
 
@@ -18,12 +18,13 @@ interface SectionJson {
   videos: VideoJson[];
 }
 
-interface PlaylistJson {
+// Some playlist JSON files don't have all fields - make them optional
+export interface PlaylistJson {
   id: string;
   title: string;
-  subtitle: string;
-  keywords: string;
-  author: string;
+  subtitle?: string;
+  keywords?: string;
+  author?: string;
   style: string;
   language: string;
   thumbnail: string;
@@ -46,9 +47,9 @@ export class Playlist {
     this.id = json.id;
     this.key = this.id; // Important for use in FlatLists
     this.title = json.title;
-    this.subtitle = json.subtitle;
-    this.keywords = json.keywords;
-    this.author = json.author;
+    this.subtitle = json.subtitle || '';
+    this.keywords = json.keywords || '';
+    this.author = json.author || '';
     this.style = json.style;
     this.language = json.language;
     this.thumbnail = json.thumbnail;
@@ -200,7 +201,7 @@ export class Section {
 
 export class Video {
   title: string;
-  duration: number;
+  duration: number | string;
   url!: string;
   youtubeId: string;
   width: number;
@@ -212,8 +213,8 @@ export class Video {
       this.title = json.title;
       this.duration = json.duration;
       this.youtubeId = json.youtubeId;
-      this.width = json.width;
-      this.height = json.height;
+      this.width = json.width || 0;
+      this.height = json.height || 0;
       this.keywords = json.keywords || [];
     } catch (e) {
       console.log('Error on video: ', json);

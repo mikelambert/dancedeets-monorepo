@@ -32,8 +32,12 @@ declare const global: {
 };
 
 // Skip the Intl polyfill if we are building for the browser
+// Note: This polyfill loading only runs on the server (Node.js).
+// Modern Node.js versions (18+) have full Intl support built-in, so this is rarely needed.
+// The require() calls are intentionally kept for server-side compatibility.
+// In ESM environments, the bundler (webpack/esbuild) or Node.js handles these appropriately.
 if (!process.env.BROWSER) {
-  /* eslint-disable global-require, import/no-extraneous-dependencies, @typescript-eslint/no-var-requires */
+  /* eslint-disable global-require, @typescript-eslint/no-var-requires */
   // https://github.com/yahoo/intl-locales-supported#usage
   if (global.Intl) {
     // Determine if the built-in `Intl` has the locale data we need.
@@ -59,7 +63,7 @@ if (!process.env.BROWSER) {
     require('intl/locale-data/jsonp/ja');
     require('intl/locale-data/jsonp/zh');
   }
-  /* eslint-enable global-require, import/no-extraneous-dependencies, @typescript-eslint/no-var-requires */
+  /* eslint-enable global-require, @typescript-eslint/no-var-requires */
 }
 
 // Note: addLocaleData was removed in react-intl v3+.
