@@ -3,14 +3,14 @@
  */
 
 import * as React from 'react';
-import { injectIntl, InjectedIntlProps, MessageDescriptor } from 'react-intl';
+import { injectIntl, WrappedComponentProps, MessageDescriptor } from 'react-intl';
 
 interface MessageProps {
   message: MessageDescriptor;
   values?: Record<string, string | number>;
 }
 
-class _Message extends React.Component<MessageProps & InjectedIntlProps> {
+class _Message extends React.Component<MessageProps & WrappedComponentProps> {
   render(): React.ReactNode {
     return (
       <span>

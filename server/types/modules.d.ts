@@ -81,87 +81,8 @@ declare module 'react-measure' {
   export default class Measure extends React.Component<MeasureProps> {}
 }
 
-// react-intl v6 augmentation
-declare module 'react-intl' {
-  import * as React from 'react';
-
-  export interface MessageDescriptor {
-    id: string;
-    defaultMessage?: string;
-    description?: string;
-  }
-
-  export interface IntlShape {
-    formatMessage(descriptor: MessageDescriptor, values?: Record<string, unknown>): string;
-    formatNumber(value: number, options?: Intl.NumberFormatOptions): string;
-    formatDate(value: Date | number, options?: Intl.DateTimeFormatOptions): string;
-    formatTime(value: Date | number, options?: Intl.DateTimeFormatOptions): string;
-    formatRelativeTime(value: number, unit?: string, options?: object): string;
-    locale: string;
-    messages: Record<string, string>;
-  }
-
-  export interface WrappedComponentProps {
-    intl: IntlShape;
-  }
-
-  // Backward compatibility alias
-  export type InjectedIntlProps = WrappedComponentProps;
-
-  export const FormattedMessage: React.ComponentType<MessageDescriptor & { values?: Record<string, unknown> }>;
-
-  export function injectIntl<P extends WrappedComponentProps>(
-    component: React.ComponentType<P>
-  ): React.ComponentType<Omit<P, keyof WrappedComponentProps>>;
-
-  export function defineMessages<T extends Record<string, MessageDescriptor>>(messages: T): T;
-
-  export interface IntlProviderProps {
-    locale: string;
-    messages?: Record<string, string>;
-    defaultLocale?: string;
-    children: React.ReactNode;
-  }
-
-  export class IntlProvider extends React.Component<IntlProviderProps> {}
-
-  // Hook for functional components
-  export function useIntl(): IntlShape;
-
-  // For creating intl instances outside of React
-  export interface IntlCache {}
-  export function createIntlCache(): IntlCache;
-  export function createIntl(
-    config: { locale: string; messages: Record<string, string>; defaultLocale?: string },
-    cache?: IntlCache
-  ): IntlShape;
-}
-
-// React 18 createRoot API
-declare module 'react-dom/client' {
-  import * as React from 'react';
-
-  export interface Root {
-    render(children: React.ReactNode): void;
-    unmount(): void;
-  }
-
-  export interface RootOptions {
-    onRecoverableError?: (error: unknown) => void;
-    identifierPrefix?: string;
-  }
-
-  export function createRoot(
-    container: Element | DocumentFragment,
-    options?: RootOptions
-  ): Root;
-
-  export function hydrateRoot(
-    container: Element | Document,
-    initialChildren: React.ReactNode,
-    options?: RootOptions
-  ): Root;
-}
+// Note: react-intl v7+ ships with built-in TypeScript definitions
+// Note: react-dom/client is built into React 19's @types/react-dom
 
 // linkify-it
 declare module 'linkify-it' {
@@ -392,5 +313,20 @@ declare module 'react-masonry-component' {
 
   const Masonry: React.ComponentType<MasonryProps>;
   export default Masonry;
+}
+
+// Type augmentation for react-tabs - add style prop to TabPanel
+declare module 'react-tabs' {
+  import * as React from 'react';
+
+  export interface TabPanelProps {
+    style?: React.CSSProperties;
+    children?: React.ReactNode;
+    className?: string;
+    selectedClassName?: string;
+    forceRender?: boolean;
+  }
+
+  export class TabPanel extends React.Component<TabPanelProps> {}
 }
 

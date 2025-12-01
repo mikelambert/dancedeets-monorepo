@@ -77,6 +77,7 @@ export function AboutScreensNavigator() {
 
   return (
     <Stack.Navigator
+      id="AboutStack"
       screenOptions={{
         headerTintColor: 'white',
         headerStyle: {

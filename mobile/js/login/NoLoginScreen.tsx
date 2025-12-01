@@ -4,7 +4,7 @@
 
 import * as React from 'react';
 import { ImageBackground, StyleSheet, View } from 'react-native';
-import { defineMessages, injectIntl, InjectedIntlProps } from 'react-intl';
+import { defineMessages, injectIntl, WrappedComponentProps } from 'react-intl';
 import LoginButtonWithAlternate from './LoginButtonWithAlternate';
 import { normalize, Text } from '../ui';
 import { linkColor } from '../Colors';
@@ -40,7 +40,7 @@ to help us help your dance scene.
   },
 });
 
-interface Props extends InjectedIntlProps {
+interface Props extends WrappedComponentProps {
   onLogin: () => void;
   onNoLogin: (name: string) => void;
 }

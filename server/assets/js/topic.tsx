@@ -6,7 +6,7 @@ import * as React from 'react';
 import Masonry from 'react-masonry-component';
 import FormatText from 'react-format-text';
 import Helmet from 'react-helmet';
-import { injectIntl, InjectedIntlProps } from 'react-intl';
+import { injectIntl, WrappedComponentProps } from 'react-intl';
 import { SearchEvent } from 'dancedeets-common/js/events/models';
 import type { NewSearchResponse } from 'dancedeets-common/js/events/search';
 import { formatStartDateOnly } from 'dancedeets-common/js/dates';
@@ -31,7 +31,7 @@ interface TopicEventProps {
   width: number;
 }
 
-type TopicEventPropsWithIntl = TopicEventProps & InjectedIntlProps;
+type TopicEventPropsWithIntl = TopicEventProps & WrappedComponentProps;
 
 export class _TopicEvent extends React.Component<TopicEventPropsWithIntl> {
   render(): React.ReactElement {

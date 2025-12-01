@@ -87,6 +87,7 @@ export function LearnScreensNavigator() {
 
   return (
     <Stack.Navigator
+      id="LearnStack"
       screenOptions={{
         headerTintColor: 'white',
         headerStyle: {

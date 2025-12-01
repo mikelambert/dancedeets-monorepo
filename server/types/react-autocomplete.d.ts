@@ -1,6 +1,7 @@
 /**
  * Custom type declarations for react-autocomplete
- * The @types/react-autocomplete package has incompatible types with React 18
+ * The @types/react-autocomplete package has incompatible types with React 18+
+ * This custom declaration provides compatible types for modern React versions.
  */
 declare module 'react-autocomplete' {
   import * as React from 'react';

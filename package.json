@@ -17,10 +17,8 @@
     "@types/jquery": "^3.5.33",
     "@types/moment": "^2.11.29",
     "@types/node": "^24.10.1",
-    "@types/react": "^18.3.27",
-    "@types/react-autocomplete": "^1.8.11",
-    "@types/react-dom": "^19.2.3",
-    "@types/react-native": "^0.72.8",
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
     "@types/react-scroll": "^1.8.10",
     "@types/react-slick": "^0.23.13",
     "@types/react-spinkit": "^3.0.10",
@@ -53,5 +51,8 @@
   },
   "dependencies": {
     "@babel/eslint-parser": "^7.23.0"
+  },
+  "overrides": {
+    "@types/react": "^19.0.0"
   }
 }

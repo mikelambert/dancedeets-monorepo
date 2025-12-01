@@ -306,6 +306,7 @@ export function EventScreensNavigator() {
 
   return (
     <Stack.Navigator
+      id="EventStack"
       screenOptions={{
         headerTintColor: 'white',
         headerStyle: {
