@@ -1,3 +1,14 @@
+"""
+Auto-add event classification logic.
+
+The batch processing has been migrated to Cloud Run Jobs.
+See: dancedeets.jobs.auto_add_events
+
+This module retains:
+- classify_events: Filter and classify potential events
+- really_classify_events: Core classification and adding logic
+- maybe_add_events: Add events by IDs (for non-batch contexts)
+"""
 import datetime
 import logging
 import re
@@ -9,50 +20,74 @@ from dancedeets.events import eventdata
 from dancedeets.nlp import event_auto_classifier
 from dancedeets.nlp import event_classifier
 from dancedeets.nlp.styles import street
-from dancedeets.util import fb_mapreduce
-from dancedeets.util import mr
 from . import add_entities
 from . import potential_events
 
 
 def is_good_event_by_text(fb_event, classified_event):
+    """Check if event is a good dance event based on text classification."""
     return event_auto_classifier.is_auto_add_event(classified_event).is_good_event()
 
 
-def classify_events(fbl, pe_list, fb_list):
+def classify_events(fbl, pe_list, fb_list, metrics=None):
+    """
+    Filter and classify potential events.
+
+    Args:
+        fbl: Facebook batch lookup
+        pe_list: List of PotentialEvent objects
+        fb_list: List of Facebook event data
+        metrics: Optional metrics counter (for Cloud Run Jobs)
+
+    Returns:
+        List of result strings for added events
+    """
     new_pe_list = []
     new_fb_list = []
     # Go through and find all potential events we actually want to attempt to classify
     for pe, fb_event in zip(pe_list, fb_list):
         # Get these past events out of the way, saved, then continue.
-        # Next time through this mapreduce, we shouldn't need to process them.
         if pe.set_past_event(fb_event):
             pe.put()
 
         if not fb_event or fb_event['empty']:
-            mr.increment('skip-due-to-empty')
+            if metrics:
+                metrics.increment('skip-due-to-empty')
             continue
 
         # Don't process events we've already looked at, or don't need to look at.
-        # This doesn't happen with the mapreduce that pre-filters them out,
-        # but it does happen when we scrape users potential events and throw them all in here.
         if pe.looked_at:
             logging.info('Already looked at event (added, or manually discarded), so no need to re-process.')
-            mr.increment('skip-due-to-looked-at')
+            if metrics:
+                metrics.increment('skip-due-to-looked-at')
             continue
 
         event_id = pe.fb_event_id
         if not re.match(r'^\d+$', event_id):
             logging.error('Found a very strange potential event id: %s', event_id)
-            mr.increment('skip-due-to-bad-id')
+            if metrics:
+                metrics.increment('skip-due-to-bad-id')
             continue
 
         new_pe_list.append(pe)
         new_fb_list.append(fb_event)
-    return really_classify_events(fbl, new_pe_list, new_fb_list)
+    return really_classify_events(fbl, new_pe_list, new_fb_list, metrics=metrics)
 
 
-def really_classify_events(fbl, new_pe_list, new_fb_list, allow_posting=True):
+def really_classify_events(fbl, new_pe_list, new_fb_list, allow_posting=True, metrics=None):
+    """
+    Core classification logic - classify and add dance events.
+
+    Args:
+        fbl: Facebook batch lookup
+        new_pe_list: List of PotentialEvent objects
+        new_fb_list: List of Facebook event data
+        allow_posting: Whether to post to social media
+        metrics: Optional metrics counter (for Cloud Run Jobs)
+
+    Returns:
+        List of result strings for added events
+    """
     if not new_pe_list:
         new_pe_list = [None] * len(new_fb_list)
     logging.info('Filtering out already-added events and others, have %s remaining events to run the classifier on', len(new_fb_list))
@@ -97,20 +132,19 @@ def really_classify_events(fbl, new_pe_list, new_fb_list, allow_posting=True):
                 pe2.looked_at = True
                 pe2.auto_looked_at = True
                 pe2.put()
-                # TODO(lambert): handle un-add-able events differently
                 results.append(result)
-                mr.increment('auto-added-dance-events')
-                if e.start_time < datetime.datetime.now():
-                    mr.increment('auto-added-dance-events-past')
-                    # mr.increment('auto-added-dance-events-past-eventid-%s' % event_id)
+                if metrics:
+                    metrics.increment('auto-added-dance-events')
+                    if e.start_time < datetime.datetime.now():
+                        metrics.increment('auto-added-dance-events-past')
+                        for vertical in e.verticals:
+                            metrics.increment('auto-added-dance-event-past-vertical-%s' % vertical)
+                    else:
+                        metrics.increment('auto-added-dance-events-future')
+                        for vertical in e.verticals:
+                            metrics.increment('auto-added-dance-event-future-vertical-%s' % vertical)
                     for vertical in e.verticals:
-                        mr.increment('auto-added-dance-event-past-vertical-%s' % vertical)
-                else:
-                    mr.increment('auto-added-dance-events-future')
-                    for vertical in e.verticals:
-                        mr.increment('auto-added-dance-event-future-vertical-%s' % vertical)
-                for vertical in e.verticals:
-                    mr.increment('auto-added-dance-event-vertical-%s' % vertical)
+                        metrics.increment('auto-added-dance-event-vertical-%s' % vertical)
             except fb_api.NoFetchedDataException as e:
                 logging.error("Error adding event %s, no fetched data: %s", event_id, e)
             except add_entities.AddEventException as e:
@@ -118,39 +152,19 @@ def really_classify_events(fbl, new_pe_list, new_fb_list, allow_posting=True):
     return results
 
 
-def classify_events_with_yield(fbl, pe_list):
-    fb_list = fbl.get_multi(fb_api.LookupEvent, [x.fb_event_id for x in pe_list], allow_fail=True)
-    results = classify_events(fbl, pe_list, fb_list)
-    yield ''.join(results).encode('utf-8')
-
-
-map_classify_events = fb_mapreduce.mr_wrap(classify_events_with_yield)
-
-
-def mr_classify_potential_events(fbl, past_event, dancey_only):
-    filters = []
-    if dancey_only:
-        filters.append(('should_look_at', '=', True))
-    if past_event is not None:
-        filters.append(('past_event', '=', past_event))
-    fb_mapreduce.start_map(
-        fbl,
-        'Auto-Add Events',
-        'dancedeets.event_scraper.auto_add.map_classify_events',
-        'dancedeets.event_scraper.potential_events.PotentialEvent',
-        filters=filters,
-        # Make sure we don't process so many that we cause the tasks to time out
-        handle_batch_size=10,
-        queue='fast-queue',
-        output_writer_spec='mapreduce.output_writers.GoogleCloudStorageOutputWriter',
-        output_writer={
-            'mime_type': 'text/plain',
-            'bucket_name': 'dancedeets-hrd.appspot.com',
-        },
-    )
-
-
 def maybe_add_events(fbl, event_ids):
+    """
+    Attempt to add events by their IDs.
+
+    Used for non-batch contexts where we have specific event IDs to check.
+
+    Args:
+        fbl: Facebook batch lookup
+        event_ids: List of Facebook event IDs
+
+    Returns:
+        List of result strings for added events
+    """
     fb_events = fbl.get_multi(fb_api.LookupEvent, event_ids)
     empty_ids = [eid for x, eid in zip(fb_events, event_ids) if x['empty']]
     logging.info('Found empty ids: %s', empty_ids)

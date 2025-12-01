@@ -1,3 +1,14 @@
+"""
+Weekly email functionality.
+
+The batch sending has been migrated to Cloud Run Jobs.
+See: dancedeets.jobs.send_weekly_emails
+
+This module retains:
+- email_for_user: Core function to generate and send email for a user
+- yield_email_user: Wrapper that handles FB token and error handling
+- DisplayEmailHandler: Admin tool to preview weekly emails
+"""
 import datetime
 import logging
 import random
@@ -13,7 +24,6 @@ from dancedeets.logic import api_format
 from dancedeets.logic import mobile
 from dancedeets.mail import mandrill_api
 from dancedeets.users import users
-from dancedeets.util import fb_mapreduce
 from . import search_base
 from . import search
 
@@ -178,17 +188,3 @@ def yield_email_user(fbl, user):
     except Exception as e:
         logging.exception("Error sending email for user %s", user.fb_uid)
         return None
-
-
-map_email_user = fb_mapreduce.mr_user_wrap(yield_email_user)
-email_user = fb_mapreduce.nomr_wrap(yield_email_user)
-
-
-def mr_email_user(fbl):
-    fb_mapreduce.start_map(
-        fbl=fbl,
-        name='Email Users',
-        #TODO: MOVE
-        handler_spec='dancedeets.search.email_events.map_email_user',
-        entity_kind='dancedeets.users.users.User',
-    )

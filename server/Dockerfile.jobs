@@ -1,0 +1,31 @@
+# Cloud Run Jobs Dockerfile
+# Used for batch processing jobs that replace MapReduce/Pipeline
+
+FROM python:3.11-slim
+
+# Set environment variables
+ENV PYTHONUNBUFFERED=1
+ENV PYTHONDONTWRITEBYTECODE=1
+ENV GOOGLE_CLOUD_PROJECT=dancedeets-hrd
+
+# Install system dependencies
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    gcc \
+    libffi-dev \
+    && rm -rf /var/lib/apt/lists/*
+
+# Create app directory
+WORKDIR /app
+
+# Copy requirements first for better caching
+COPY requirements-jobs.txt .
+RUN pip install --no-cache-dir -r requirements-jobs.txt
+
+# Copy application code
+COPY dancedeets/ ./dancedeets/
+
+# Set Python path
+ENV PYTHONPATH=/app
+
+# Default command (overridden by Cloud Run Job configuration)
+CMD ["python", "-m", "dancedeets.jobs.runner"]
