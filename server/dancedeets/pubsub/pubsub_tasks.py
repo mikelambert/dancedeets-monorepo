@@ -1,5 +1,14 @@
-from dancedeets.compat.mapreduce import control
+"""
+Social publishing task handlers.
 
+The batch posting of Japan events has been migrated to Cloud Run Jobs.
+See: dancedeets.jobs.post_japan_events
+
+This module retains:
+- SocialPublisherHandler: Pulls and publishes events from pubsub queue
+- WeeklyEventsPostHandler: Posts weekly events for top US cities
+- EventNotificationsHandler: Prepares event reminder notifications
+"""
 import datetime
 
 from dancedeets import app
@@ -8,7 +17,6 @@ from dancedeets.pubsub import pubsub
 from dancedeets.rankings import cities_db
 from dancedeets.search import search_base
 from dancedeets.search import search
-from dancedeets.util import dates
 from . import pubsub
 
 
@@ -16,36 +24,6 @@ from . import pubsub
 class SocialPublisherHandler(base_servlet.BaseTaskRequestHandler):
     def get(self):
         pubsub.pull_and_publish_event()
-
-
-def yield_post_jp_event(db_events):
-    from dancedeets.compat.mapreduce import context
-    ctx = context.get()
-    params = ctx.mapreduce_spec.mapper.params
-    token_nickname = params.get('token_nickname')
-    db_events = [x for x in db_events if x.actual_city_name and x.actual_city_name.endswith('Japan')]
-    for db_event in db_events:
-        pubsub.eventually_publish_event(db_event.id, token_nickname)
-
-
-@app.route('/tasks/post_japan_events')
-class PostJapanEventsHandler(base_servlet.BaseTaskFacebookRequestHandler):
-    def get(self):
-        token_nickname = self.request.get('token_nickname', None)
-        mapper_params = {
-            'entity_kind': 'dancedeets.events.eventdata.DBEvent',
-            'handle_batch_size': 20,
-            'filters': [('search_time_period', '=', dates.TIME_FUTURE)],
-            'token_nickname': token_nickname,
-        }
-        control.start_map(
-            name='Post Future Japan Events',
-            reader_spec='mapreduce.input_readers.DatastoreInputReader',
-            handler_spec='dancedeets.pubsub.pubsub_tasks.map_post_jp_event',
-            shard_count=8,  # since we want to stick it in the slow-queue, and don't care how fast it executes
-            queue_name='fast-queue',
-            mapper_parameters=mapper_params,
-        )
 
 
 def blacklisted(city):

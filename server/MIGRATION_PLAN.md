@@ -11,6 +11,36 @@ This document outlines the migration from legacy App Engine MapReduce/Pipeline t
 | Phase 3: GCS Output Jobs | ✅ COMPLETE | 5/5 jobs |
 | Phase 4: MapReduce Pipeline Jobs | ✅ COMPLETE | 3/4 jobs (find_access_tokens pending) |
 | Phase 5: Cloud Workflows | ✅ COMPLETE | 1 workflow + 3 jobs |
+| Phase 6: Code Cleanup | ✅ COMPLETE | Old mapreduce code removed |
+
+## Cleanup Completed
+
+The following original files have been cleaned up to remove mapreduce/pipeline code:
+
+**Files modified (old mapreduce code removed, core functions retained):**
+- `notifications/added_events.py` - Kept `promote_events_to_user()`, removed mapreduce handler
+- `sitemaps/events.py` - Kept `generate_sitemap_entry()`, removed mapreduce handler
+- `ml/gprediction.py` - Kept `predict()`, `get_predict_service()`, removed MR wrappers
+- `users/user_event_tasks.py` - Kept `update_user_qualities()`, removed mapreduce handler
+- `users/user_tasks.py` - Kept `fetch_and_save_fb_user()`, removed mapreduce handler
+- `search/email_events.py` - Kept `email_for_user()`, removed mapreduce wrapper
+- `pubsub/pubsub_tasks.py` - Kept social handlers, removed `PostJapanEventsHandler` MR code
+- `rankings/rankings.py` - Kept utility functions, removed all mapreduce code
+- `event_scraper/auto_add.py` - Kept classification logic, removed MR wrappers (added optional `metrics` param)
+- `event_scraper/thing_db.py` - Kept Source model and helpers, removed MR pipeline code
+- `event_scraper/thing_scraper2.py` - Replaced with deprecation stub
+- `classes/class_pipeline.py` - Replaced with deprecation stub
+
+**Files deleted (fully migrated to Cloud Run Jobs):**
+- `logic/mr_dump.py` → `jobs/dump_potential_events.py`
+- `logic/unique_attendees.py` → `jobs/count_unique_attendees.py`
+- `ml/mr_prediction.py` → `jobs/classify_events_ml.py`
+
+**Compat layer status:**
+- `compat/` directory retained with `LEGACY_APIS_ENABLED = False`
+- Provides stub implementations for imports that still reference mapreduce utilities
+- `json_util.JsonProperty` still used by Source model
+- Can be removed in future cleanup after all references are updated
 
 ### New Files Created
 
