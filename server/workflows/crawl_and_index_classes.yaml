@@ -1,0 +1,104 @@
+# Cloud Workflow: Crawl and Index Dance Classes
+#
+# Migrated from: dancedeets/classes/class_pipeline.py
+#
+# This workflow orchestrates the dance class scraping pipeline:
+# 1. Start spider jobs on ScrapingHub
+# 2. Wait for spiders to complete
+# 3. Reindex classes in search
+# 4. Email any crawl errors
+#
+# Usage:
+#   gcloud workflows run crawl-and-index-classes
+
+main:
+  params: [args]
+  steps:
+    - init:
+        assign:
+          - project_id: ${sys.get_env("GOOGLE_CLOUD_PROJECT")}
+          - region: "us-central1"
+          - run_time: ${time.format(sys.now())}
+
+    - start_spiders:
+        call: http.post
+        args:
+          url: ${"https://" + region + "-run.googleapis.com/apis/run.googleapis.com/v1/namespaces/" + project_id + "/jobs/start-spiders:run"}
+          auth:
+            type: OIDC
+        result: spider_result
+
+    - get_job_keys:
+        assign:
+          - job_keys: ${spider_result.body.jobKeys}
+
+    - wait_for_spiders:
+        call: wait_for_completion
+        args:
+          job_keys: ${job_keys}
+          max_attempts: 60
+          delay_seconds: 30
+        result: jobs_completed
+
+    - parallel_finalize:
+        parallel:
+          branches:
+            - reindex:
+                call: http.post
+                args:
+                  url: ${"https://" + region + "-run.googleapis.com/apis/run.googleapis.com/v1/namespaces/" + project_id + "/jobs/reindex-classes:run"}
+                  auth:
+                    type: OIDC
+            - email_errors:
+                call: http.post
+                args:
+                  url: ${"https://" + region + "-run.googleapis.com/apis/run.googleapis.com/v1/namespaces/" + project_id + "/jobs/email-crawl-errors:run"}
+                  body:
+                    run_time: ${run_time}
+                    job_keys: ${job_keys}
+                  auth:
+                    type: OIDC
+
+    - return_result:
+        return:
+          status: "completed"
+          run_time: ${run_time}
+          jobs_completed: ${jobs_completed}
+
+# Subworkflow: Wait for ScrapingHub jobs to complete
+wait_for_completion:
+  params: [job_keys, max_attempts, delay_seconds]
+  steps:
+    - init_wait:
+        assign:
+          - attempt: 0
+
+    - check_jobs:
+        call: http.get
+        args:
+          url: "https://app.scrapinghub.com/api/jobs/list.json"
+          query:
+            job: ${job_keys}
+          auth:
+            type: OIDC
+        result: jobs_status
+
+    - evaluate_status:
+        switch:
+          - condition: ${all(job.state == "finished" for job in jobs_status.body.jobs)}
+            next: return_success
+          - condition: ${attempt >= max_attempts}
+            raise: "Timeout waiting for spider jobs to complete"
+
+    - increment_attempt:
+        assign:
+          - attempt: ${attempt + 1}
+
+    - wait:
+        call: sys.sleep
+        args:
+          seconds: ${delay_seconds}
+        next: check_jobs
+
+    - return_success:
+        return: true

@@ -2,6 +2,58 @@
 
 This document outlines the migration from legacy App Engine MapReduce/Pipeline to modern Google Cloud services.
 
+## Migration Progress
+
+| Phase | Status | Jobs Migrated |
+|-------|--------|---------------|
+| Phase 1: Infrastructure | ✅ COMPLETE | Framework, Dockerfile, requirements |
+| Phase 2: Simple Mapper Jobs | ✅ COMPLETE | 6/6 jobs |
+| Phase 3: GCS Output Jobs | ✅ COMPLETE | 5/5 jobs |
+| Phase 4: MapReduce Pipeline Jobs | ✅ COMPLETE | 3/4 jobs (find_access_tokens pending) |
+| Phase 5: Cloud Workflows | ✅ COMPLETE | 1 workflow + 3 jobs |
+
+### New Files Created
+
+**Framework (`server/dancedeets/jobs/`):**
+- `__init__.py` - Module exports
+- `base.py` - Job, BatchJob, JobRunner classes
+- `fb_utils.py` - Facebook API token handling
+- `metrics.py` - JobMetrics, GroupedMetrics
+- `gcs_output.py` - GCSOutputWriter
+- `runner.py` - CLI entry point
+
+**Phase 2 Jobs:**
+- `notify_users.py` - Push notifications by timezone
+- `post_japan_events.py` - Post Japan events to social
+- `compute_rankings.py` - City/country rankings
+- `compute_user_stats.py` - User event statistics
+- `refresh_users.py` - Refresh Facebook profiles
+- `send_weekly_emails.py` - Weekly digest emails
+
+**Phase 3 Jobs:**
+- `generate_sitemaps.py` - XML sitemap generation
+- `dump_potential_events.py` - Export to CSV
+- `generate_training_data.py` - ML training data
+- `classify_events_ml.py` - ML classification
+- `auto_add_events.py` - Auto-add dance events
+
+**Phase 4 Jobs:**
+- `count_unique_attendees.py` - Unique RSVPs by city
+- `update_source_stats.py` - Source quality metrics
+- `scrape_and_classify.py` - Scrape and classify events
+
+**Phase 5 (Cloud Workflows):**
+- `workflows/crawl_and_index_classes.yaml` - Orchestration workflow
+- `start_spiders.py` - Start ScrapingHub spiders
+- `reindex_classes.py` - Rebuild class search index
+- `email_crawl_errors.py` - Send error reports
+
+**Docker/Config:**
+- `Dockerfile.jobs` - Cloud Run Jobs container
+- `requirements-jobs.txt` - Job dependencies
+
+---
+
 ## Migration Strategy
 
 | Legacy Pattern | Modern Replacement |
